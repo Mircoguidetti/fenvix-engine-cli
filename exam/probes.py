@@ -106,8 +106,54 @@ def _(ctx):
     return blocked, f"under --det a UDP datagram to an external address: {r['values'][0]} (expected blocked/recorded)"
 
 
+JS_REDACT = '''import {{ test, expect }} from 'vitest';
+
+test('exam secret', async () => {{
+  const r = await fetch({base!r} + '/secret', {{ headers: {{ Authorization: 'Bearer EXAMSECRET123' }} }});
+  expect(r.status).toBe(200);
+}});
+'''
+
+
+def _secret_in(paths) -> bool:
+    import base64
+    for p in paths:
+        if p.is_file():
+            b = p.read_bytes()
+            if b"EXAMSECRET123" in b or base64.b64encode(b"Bearer EXAMSECRET123")[:16] in b or b"RVhBTVNFQ1JFVDEy" in b:
+                return True
+    return False
+
+
+def _redact_js(ctx):
+    """The Node half of the spec (X-01): Vitest + fetch with the header, recorded from the echo server."""
+    ip = _need_ip()
+    d = rows_js._ufo(ctx)
+    cas, rel = ctx.work / "redact-js.json", "test/exam-redact.test.ts"
+    cas.unlink(missing_ok=True)
+    srv = netfix.EchoServer(ip)
+    try:
+        lib.write(d / rel, JS_REDACT.format(base=srv.url))
+        rc, out, o = _vitest_tests(ctx, d, rel, "redact-js-record", f"--det --det-record --det-cassette={cas}", env=dict(netfix.NO_PROXY_ENV))
+    finally:
+        srv.stop()
+        (d / rel).unlink(missing_ok=True)
+    found = _secret_in([cas] + (list((d / ".detjs").rglob("*")) if (d / ".detjs").exists() else []))
+    sent = any(x[1] == "/secret" for x in srv.seen)
+    return cas.exists() and sent and not found, f"node: record {o}; request reached the server: {sent}; cassette written: {cas.exists()}; secret present in clear/base64: {found}"
+
+
 @probe("F-01.probe.cassette-redact")
 def _(ctx):
+    py = _redact_py(ctx)
+    try:
+        js = _redact_js(ctx)
+    except Skip as s:
+        js = (False, f"node: not run: {s}")
+    return py[0] and js[0], f"python: {py[1]}; {js[1]}"
+
+
+def _redact_py(ctx):
     d, env = fam.probe_host(ctx)
     rel = fam.write_probe(d, "redact", "import http.client\n\ndef test_secret():\n    c = http.client.HTTPConnection('example.com', 80, timeout=10)\n"
                           "    c.request('GET', '/', headers={'Authorization': 'Bearer EXAMSECRET123'})\n    c.getresponse().read()\n")
@@ -250,9 +296,26 @@ def _(ctx):
 
 @probe("PY-05.probe.testrun-uid")
 def _(ctx):
+    """Harness fix (X-01): the two runs used different EXAM_OUT paths, a run difference made by the exam itself that
+    an engine records as a differing input (env), whatever it does with testrun_uid. EXAM_OUT stays declared volatile
+    (FENVIX_VOLATILE_ENV, lib.Ctx.sh) and both runs now write the same path, copied away after each run: the runs
+    differ in nothing the exam controls."""
     d, env = fam.probe_host(ctx)
     lib.pip(ctx, d, env, ["pytest-xdist"])
-    return _py_det_same(ctx, "uid", W + "def test_uid(testrun_uid):\n    _w(testrun_uid)\n")
+    rel = fam.write_probe(d, "uid", W + "def test_uid(testrun_uid):\n    _w(testrun_uid)\n")
+    out_p = ctx.work / "probe-uid.out"
+    vals, traces = [], []
+    for i in (0, 1):
+        out_p.unlink(missing_ok=True)
+        t = ctx.work / f"probe-uid-{i}.jsonl"
+        t.unlink(missing_ok=True)
+        lib.pytest_engine(ctx, d, env, ["--det", f"--det-trace={t}", "-W", "ignore", rel], f"probe-uid-{i}",
+                          {"EXAM_OUT": str(out_p), "FENVIX_VOLATILE_ENV": lib.VOLATILE_ENV})
+        vals.append(out_p.read_text() if out_p.exists() else None)
+        traces.append(t)
+    vok, vdesc, _ = lib.verify(ctx, d, env, traces[0], traces[1], "probe-uid-verify")
+    (d / rel).unlink(missing_ok=True)
+    return vals[0] is not None and vals[0] == vals[1] and vok, f"values {vals}; verify {vdesc}"
 
 
 @probe("PY-05.probe.xdist-old")
@@ -636,3 +699,818 @@ def _(ctx):
     outs = [x.get("outcomes") for x in rep.get("tests", [])]
     failed = any(o and o[0] == "failed" for o in outs)
     return failed and rcp != 0, f"plain bun rc={rcp}; trace outcomes {outs}"
+
+
+# ------------------------------------------------------------------------------- X-01: the probes NOT IMPLEMENTED before
+# Founder decision 2026-11-21: the specs are the frozen definitions of exam/gap_map.json; nothing added or loosened.
+import re  # noqa: E402
+
+import netfix  # noqa: E402
+
+
+def _clear(dd: Path):
+    shutil.rmtree(dd, ignore_errors=True)
+    dd.mkdir(parents=True)
+
+
+def _bodies(dd: Path, names) -> dict:
+    return {n: ((dd / n).read_text() if (dd / n).exists() else None) for n in names}
+
+
+def _vitest_tests(ctx, d, rel, tag, det_opts=None, env=None, extra="", config=""):
+    """Vitest per-test outcomes {title: outcome} from its JSON reporter; det_opts None = the plain runner."""
+    rep = ctx.work / f"vt-{tag}.json"
+    rep.unlink(missing_ok=True)
+    cfg = f" --config {config}" if config else ""
+    base = "npx vitest run" if det_opts is None else f"fenvix node vitest run {det_opts}"
+    rc, out = ctx.sh(tag, f"{base}{cfg} {extra} {rel} --reporter=json --outputFile={rep}", cwd=d, env=env, timeout=1800)
+    res = {}
+    for f in lib.load_json(rep).get("testResults", []):
+        for a in f.get("assertionResults", []):
+            k = a.get("fullName") or a.get("title")
+            n = sum(1 for x in res if x == k or x.startswith(f"{k} #"))
+            res[k if not n else f"{k} #{n + 1}"] = lib.norm(a.get("status"))  # the same file in two projects
+    return rc, out, res
+
+
+def _need_ip():
+    ip = netfix.lan_ip()
+    if not ip:
+        raise Skip("this machine has no non-loopback IPv4 address for the echo server")
+    return ip
+
+
+# --- F-01.probe.cassette ---------------------------------------------------------------------------------------------
+PY_CASSETTE = '''import requests
+
+S = requests.Session()  # one keep-alive connection serves both tests
+
+
+def _get(name, path, hdr):
+    r = S.get({base!r} + path, headers={{"X-Exam": hdr}}, timeout=10)
+    with open({out!r} + "/" + name, "w") as fh:
+        fh.write(r.text)
+    assert r.status_code == 200
+
+
+def test_a():
+    _get("a", {path_a!r}, {hdr_a!r})
+
+
+def test_b():
+    _get("b", "/b", "h1")
+'''
+
+JS_CASSETTE = '''import {{ test, expect }} from 'vitest';
+import {{ writeFileSync }} from 'node:fs';
+
+// global fetch (undici): one keep-alive connection serves both tests
+async function get(name: string, path: string, hdr: string) {{
+  const r = await fetch({base!r} + path, {{ headers: {{ 'X-Exam': hdr }} }});
+  writeFileSync({out!r} + '/' + name, await r.text());
+  expect(r.status).toBe(200);
+}}
+
+test('exam a', async () => {{ await get('a', {path_a!r}, {hdr_a!r}); }});
+test('exam b', async () => {{ await get('b', '/b', 'h1'); }});
+'''
+
+
+def _cassette_verdict(lang, steps, own, pa, pb):
+    """steps: name -> (outcome of a, outcome of b, bodies). Own recording served = passed with its own echo. A changed
+    request (path or header) must not pass with the recorded (stale) response."""
+    bad = []
+    pl = steps["plain"]
+    if not (pl[0] == pl[1] == "passed" and pl[2] == own):
+        return False, f"{lang}: INVALID (plain run with the server up did not pass with the echoed bodies: {pl})"
+    rec = steps["record"]
+    if not (rec[0] == rec[1] == "passed" and rec[2] == own):
+        bad.append(f"record: {rec[:2]} bodies {rec[2]}")
+    s = steps["single-b"]
+    if not (s[1] == "passed" and s[2]["b"] == own["b"]):
+        bad.append(f"single test b replayed: outcome {s[1]}, received {s[2]['b']!r} (own recording {own['b']!r})")
+    s = steps["seed"]
+    if not (s[0] == s[1] == "passed" and s[2] == own):
+        bad.append(f"--det-seed replay: outcomes {s[:2]}, received {s[2]}")
+    for k, new in (("path", pa), ("header", pb)):
+        s = steps[k]
+        if s[0] == "passed" and s[2]["a"] != new:
+            bad.append(f"changed {k}: test a PASSED with {s[2]['a']!r} (stale; its request now is {new!r})")
+    desc = "; ".join(f"{n}: a={v[0]} b={v[1]}" for n, v in steps.items())
+    return not bad, f"{lang}: " + ("; ".join(bad) if bad else "every step as expected") + f" [{desc}]"
+
+
+def _cassette_py(ctx, ip):
+    d, env = fam.probe_host(ctx)
+    lib.pip(ctx, d, env, ["requests"])
+    env = dict(env, **netfix.NO_PROXY_ENV)
+    dd, cas, rel = ctx.work / "cas-py-out", ctx.work / "cas-py.json", "tests/test_exam_cassette.py"
+    cas.unlink(missing_ok=True)
+    srv = netfix.EchoServer(ip)
+
+    def wr(path_a="/a", hdr_a="h1"):
+        lib.write(d / rel, PY_CASSETTE.format(base=srv.url, out=str(dd), path_a=path_a, hdr_a=hdr_a))
+
+    nid = {t: f"{rel}::test_{t}" for t in "ab"}
+    steps = {}
+
+    def run(name, args, engine=True):
+        _clear(dd)
+        if engine:
+            _, _, o = lib.pytest_engine(ctx, d, env, ["--det", f"--det-cassette={cas}", "-W", "ignore"] + args, f"cas-py-{name}")
+        else:
+            _, _, o = lib.pytest_plain(ctx, d, env, ["-W", "ignore"] + args, f"cas-py-{name}")
+        steps[name] = (lib.norm(o.get(nid["a"])), lib.norm(o.get(nid["b"])), _bodies(dd, "ab"))
+    try:
+        wr()
+        run("plain", [rel], engine=False)
+        run("record", ["--det-record", rel])
+    finally:
+        srv.stop()  # replay without the server: a pass can only come from the recording
+    run("single-b", [nid["b"]])
+    run("seed", ["--det-seed=1", rel])
+    wr(path_a="/a-changed")
+    run("path", [rel])
+    wr(hdr_a="h2")
+    run("header", [rel])
+    (d / rel).unlink(missing_ok=True)
+    own = {"a": netfix.echo_body("GET", "/a", "h1"), "b": netfix.echo_body("GET", "/b", "h1")}
+    return _cassette_verdict("python (requests)", steps, own, netfix.echo_body("GET", "/a-changed", "h1"),
+                             netfix.echo_body("GET", "/a", "h2"))
+
+
+def _cassette_js(ctx, ip):
+    d = rows_js._ufo(ctx)
+    env = dict(netfix.NO_PROXY_ENV)
+    dd, cas, rel = ctx.work / "cas-js-out", ctx.work / "cas-js.json", "test/exam-cassette.test.ts"
+    cas.unlink(missing_ok=True)
+    srv = netfix.EchoServer(ip)
+
+    def wr(path_a="/a", hdr_a="h1"):
+        lib.write(d / rel, JS_CASSETTE.format(base=srv.url, out=str(dd), path_a=path_a, hdr_a=hdr_a))
+
+    steps = {}
+
+    def run(name, det_opts, extra=""):
+        _clear(dd)
+        _, _, o = _vitest_tests(ctx, d, rel, f"cas-js-{name}", det_opts, env=env, extra=extra)
+        steps[name] = (o.get("exam a"), o.get("exam b"), _bodies(dd, "ab"))
+    try:
+        wr()
+        run("plain", None)
+        run("record", f"--det --det-record --det-cassette={cas}")
+    finally:
+        srv.stop()
+    run("single-b", f"--det --det-cassette={cas}", "-t 'exam b'")
+    run("seed", f"--det --det-seed=1 --det-cassette={cas}")
+    wr(path_a="/a-changed")
+    run("path", f"--det --det-cassette={cas}")
+    wr(hdr_a="h2")
+    run("header", f"--det --det-cassette={cas}")
+    (d / rel).unlink(missing_ok=True)
+    own = {"a": netfix.echo_body("GET", "/a", "h1"), "b": netfix.echo_body("GET", "/b", "h1")}
+    return _cassette_verdict("node (Vitest, fetch)", steps, own, netfix.echo_body("GET", "/a-changed", "h1"),
+                             netfix.echo_body("GET", "/a", "h2"))
+
+
+@probe("F-01.probe.cassette")
+def _(ctx):
+    ip = _need_ip()
+    res = []
+    for f in (_cassette_py, _cassette_js):
+        try:
+            res.append(f(ctx, ip))
+        except Skip as s:
+            res.append((False, f"{f.__name__}: not run: {s}"))
+    return all(r[0] for r in res), " || ".join(r[1] for r in res)
+
+
+# --- F-01.probe.replay-clients ---------------------------------------------------------------------------------------
+PY_CLIENTS = '''import asyncio
+import socket
+import ssl
+
+CA, HTTPS, HOST, PORT, OUT = {ca!r}, {https!r}, {host!r}, {port!r}, {out!r}
+
+
+def _w(name, v):
+    with open(OUT + "/" + name, "w") as fh:
+        fh.write(v)
+
+
+def test_httpx_async():
+    import httpx
+
+    async def go():
+        async with httpx.AsyncClient(verify=ssl.create_default_context(cafile=CA), trust_env=False) as c:
+            return (await c.get(HTTPS + "/httpx", headers={{"X-Exam": "hx"}})).text
+    _w("httpx", asyncio.run(go()))
+
+
+def test_aiohttp():
+    import aiohttp
+
+    async def go():
+        async with aiohttp.ClientSession() as s:
+            async with s.get(HTTPS + "/aiohttp", headers={{"X-Exam": "ah"}}, ssl=ssl.create_default_context(cafile=CA)) as r:
+                return await r.text()
+    _w("aiohttp", asyncio.run(go()))
+
+
+def test_sendmsg():
+    s = socket.create_connection((HOST, PORT), timeout=10)
+    s.sendmsg([b"GET /sendmsg HTTP/1.1\\r\\nHost: exam\\r\\nX-Exam: sm\\r\\nConnection: close\\r\\n\\r\\n"])
+    data = b""
+    while True:
+        chunk = s.recvmsg(65536)[0]
+        if not chunk:
+            break
+        data += chunk
+    s.close()
+    _w("sendmsg", data.decode(errors="replace").split("\\r\\n\\r\\n", 1)[-1])
+'''
+
+JS_H2 = '''import {{ test }} from 'vitest';
+import http2 from 'node:http2';
+import {{ readFileSync, writeFileSync }} from 'node:fs';
+
+test('exam h2', async () => {{
+  const v = await new Promise<string>((res, rej) => {{
+    const c = http2.connect({h2!r}, {{ ca: readFileSync({ca!r}) }});
+    c.on('error', rej);
+    const r = c.request({{ ':path': '/h2', 'x-exam': 'h2' }});
+    let b = '';
+    r.setEncoding('utf8');
+    r.on('data', (x) => (b += x));
+    r.on('end', () => {{ c.close(); res(b); }});
+    r.on('error', rej);
+    r.end();
+  }});
+  writeFileSync({out!r} + '/h2', v);
+}});
+'''
+
+BUN_FETCH = '''import {{ test }} from 'bun:test';
+import {{ writeFileSync }} from 'node:fs';
+
+test('exam bun fetch', async () => {{
+  const r = await fetch({http!r} + '/bun', {{ headers: {{ 'X-Exam': 'bun' }} }});
+  writeFileSync({out!r} + '/bun', await r.text());
+}});
+'''
+
+DENO_FETCH = '''Deno.test('exam deno fetch', async () => {{
+  const r = await fetch({http!r} + '/deno', {{ headers: {{ 'X-Exam': 'deno' }} }});
+  await Deno.writeTextFile({out!r} + '/deno', await r.text());
+}});
+'''
+
+REFUSAL = re.compile(r"refus|not supported|unsupported|cannot (?:be )?record|can ?not record", re.I)
+
+
+def _client_verdict(name, want, plain, rec, rep):
+    """plain/rec/rep: (outcome, body, output). OK: the offline replay passes with the recorded response; or the
+    record run refuses with a named reason (the test does not pass silently unrecorded)."""
+    if not (plain[0] == "passed" and plain[1] == want):
+        return False, f"{name}: INVALID (plain with the server up: {plain[0]}, {plain[1]!r})"
+    if rec[0] != "passed" and REFUSAL.search(rec[2] or ""):
+        return True, f"{name}: --det-record refused ({REFUSAL.search(rec[2]).group(0)!r}): {rec[0]}"
+    ok = rec[0] == "passed" and rep[0] == "passed" and rep[1] == want
+    return ok, f"{name}: record {rec[0]} {rec[1]!r}; offline replay {rep[0]} {rep[1]!r}"
+
+
+@probe("F-01.probe.replay-clients")
+def _(ctx):
+    ip = _need_ip()
+    tls = netfix.cert(ctx.work / "certs", ip)
+    plain_srv, tls_srv = netfix.EchoServer(ip), netfix.EchoServer(ip, tls=tls)
+    h2 = None
+    want = {"httpx": netfix.echo_body("GET", "/httpx", "hx"), "aiohttp": netfix.echo_body("GET", "/aiohttp", "ah"),
+            "sendmsg": netfix.echo_body("GET", "/sendmsg", "sm"), "h2": netfix.echo_body("GET", "/h2", "h2"),
+            "bun": netfix.echo_body("GET", "/bun", "bun"), "deno": netfix.echo_body("GET", "/deno", "deno")}
+    res = {k: {} for k in want}  # client -> {"plain"|"rec"|"rep": (outcome, body, output)}
+    dd = ctx.work / "rc-out"
+    later = []  # replay steps, run after every server is stopped
+    notes = []
+    try:
+        # Python: httpx.AsyncClient and aiohttp over HTTPS, a socket through sendmsg/recvmsg
+        try:
+            d, env = fam.probe_host(ctx)
+            lib.pip(ctx, d, env, ["httpx", "aiohttp"])
+            env = dict(env, **netfix.NO_PROXY_ENV)
+            rel = "tests/test_exam_clients.py"
+            lib.write(d / rel, PY_CLIENTS.format(ca=str(tls[0]), https=tls_srv.url, host=ip, port=plain_srv.port, out=str(dd)))
+            cas = ctx.work / "rc-py.json"
+            cas.unlink(missing_ok=True)
+            nid = {"httpx": "test_httpx_async", "aiohttp": "test_aiohttp", "sendmsg": "test_sendmsg"}
+
+            def py_step(step, d=d, env=env, rel=rel, cas=cas, nid=nid):
+                _clear(dd)
+                if step == "plain":
+                    rc, out, o = lib.pytest_plain(ctx, d, env, ["-W", "ignore", rel], "rc-py-plain")
+                else:
+                    rc, out, o = lib.pytest_engine(ctx, d, env, ["--det", f"--det-cassette={cas}", "-W", "ignore"]
+                                                   + (["--det-record"] if step == "rec" else []) + [rel], f"rc-py-{step}")
+                b = _bodies(dd, nid)
+                for k, t in nid.items():
+                    res[k][step] = (lib.norm(o.get(f"{rel}::{t}")), b[k], out)
+            py_step("plain")
+            py_step("rec")
+            later.append(lambda: (py_step("rep"), (d / rel).unlink(missing_ok=True)))
+        except Skip as s:
+            notes.append(f"python clients not run: {s}")
+        # Node: node:http2 client (Vitest)
+        try:
+            h2 = netfix.H2Server(ctx.work, ip, tls)
+            dj = rows_js._ufo(ctx)
+            relj = "test/exam-h2.test.ts"
+            lib.write(dj / relj, JS_H2.format(h2=h2.url, ca=str(tls[0]), out=str(dd)))
+            casj = ctx.work / "rc-js.json"
+            casj.unlink(missing_ok=True)
+
+            def js_step(step, dj=dj, relj=relj, casj=casj):
+                _clear(dd)
+                opts = None if step == "plain" else f"--det --det-cassette={casj}" + (" --det-record" if step == "rec" else "")
+                rc, out, o = _vitest_tests(ctx, dj, relj, f"rc-js-{step}", opts, env=dict(netfix.NO_PROXY_ENV))
+                res["h2"][step] = (o.get("exam h2"), _bodies(dd, ["h2"])["h2"], out)
+            js_step("plain")
+            js_step("rec")
+            later.append(lambda: (js_step("rep"), (dj / relj).unlink(missing_ok=True)))
+        except (Skip, RuntimeError) as s:
+            notes.append(f"node http2 not run: {s}")
+        # Bun fetch and Deno fetch (their pinned JS-03 projects)
+        for key, client, body, rel2, args in (("elysia", "bun", BUN_FETCH, "test/exam-fetch.test.ts", ""),
+                                              ("oak", "deno", DENO_FETCH, "exam_fetch_test.ts", "--allow-all")):
+            if not shutil.which(client):
+                notes.append(f"{client} not installed on this leg")
+                continue
+            try:
+                db, runner, _ = rows_js.proj(ctx, key)
+            except Skip as s:
+                notes.append(f"{client} project not set up: {s}")
+                continue
+            lib.write(db / rel2, body.format(http=plain_srv.url, out=str(dd)))
+            casb = ctx.work / f"rc-{client}.json"
+            casb.unlink(missing_ok=True)
+            plain_cmd, sub, _ = fam.NODE_RUNNERS[runner]
+
+            def b_step(step, db=db, rel2=rel2, casb=casb, client=client, plain_cmd=plain_cmd, sub=sub, args=args):
+                _clear(dd)
+                if step == "plain":
+                    cmd = f"{plain_cmd} {args} {rel2}"
+                else:
+                    cmd = f"fenvix node {sub} --det --det-cassette={casb}{' --det-record' if step == 'rec' else ''} {args} {rel2}"
+                rc, out = ctx.sh(f"rc-{client}-{step}", cmd, cwd=db, env=dict(netfix.NO_PROXY_ENV), timeout=900)
+                res[client][step] = ("passed" if rc == 0 else "failed", _bodies(dd, [client])[client], out)
+            b_step("plain")
+            b_step("rec")
+            later.append(lambda b_step=b_step, db=db, rel2=rel2: (b_step("rep"), (db / rel2).unlink(missing_ok=True)))
+    finally:
+        plain_srv.stop()
+        tls_srv.stop()
+        if h2:
+            h2.stop()
+    for f in later:  # offline: every server is down
+        f()
+    verdicts = {}
+    for k in want:
+        r = res[k]
+        if not {"plain", "rec", "rep"} <= set(r):
+            verdicts[k] = (False, f"{k}: not run")
+            continue
+        verdicts[k] = _client_verdict(k, want[k], r["plain"], r["rec"], r["rep"])
+    ok = all(v[0] for v in verdicts.values())
+    return ok, "; ".join(v[1] for v in verdicts.values()) + (f" (notes: {'; '.join(notes)})" if notes else "")
+
+
+# --- F-01.probe.service-host -----------------------------------------------------------------------------------------
+PG_NAMES = ("postgres", "exam-pg")  # the job's service name and an /etc/hosts alias of the same container
+PY_PG = '''import psycopg
+import pytest
+
+
+@pytest.mark.parametrize("host", {names!r})
+def test_pg(host):
+    with psycopg.connect(host=host, user="postgres", password="exam", dbname="postgres", connect_timeout=10) as c:
+        assert c.execute("select 1").fetchone()[0] == 1
+'''
+JS_PG = '''import {{ test, expect }} from 'vitest';
+import pg from 'pg';
+
+for (const host of {names}) {{
+  test('pg ' + host, async () => {{
+    const c = new pg.Client({{ host, user: 'postgres', password: 'exam', database: 'postgres', connectionTimeoutMillis: 10000 }});
+    await c.connect();
+    const r = await c.query('select 1 as v');
+    await c.end();
+    expect(r.rows[0].v).toBe(1);
+  }});
+}}
+'''
+
+
+def _pg_container(ctx) -> tuple:
+    """The job's `services: postgres` container (exam.yml, F-01 legs); without one (a local run) the exam starts the
+    same image itself. Its address goes into /etc/hosts under both names. Returns (ip, how). EXAM_PG_IP (local
+    calibration only, never set by exam.yml): a PostgreSQL already listening on that non-loopback address."""
+    if os.environ.get("EXAM_PG_IP"):
+        ip, how = os.environ["EXAM_PG_IP"], "a PostgreSQL given by EXAM_PG_IP (local run)"
+        hosts = Path("/etc/hosts").read_text()
+        if not all(re.search(rf"\s{n}(\s|$)", hosts) for n in PG_NAMES):
+            ctx.sh("pg-hosts", ["sudo", "sh", "-c", f"echo '{ip} {' '.join(PG_NAMES)}' >> /etc/hosts"])
+        return ip, how
+    if not shutil.which("docker"):
+        raise Skip("docker is not available on this machine")
+    rc, out = ctx.sh("pg-ps", ["docker", "ps", "--format", "{{.ID}} {{.Image}}"])
+    cid = next((ln.split()[0] for ln in out.splitlines() if len(ln.split()) > 1 and ln.split()[1].startswith("postgres")), None)
+    how = "the job's services: postgres container"
+    if not cid:
+        how = "a postgres:16 container started by the exam (no services: container on this machine)"
+        ctx.sh("pg-rm", ["docker", "rm", "-f", "exam-pg"])
+        rc, out = ctx.sh("pg-run", ["docker", "run", "-d", "--name", "exam-pg", "-e", "POSTGRES_PASSWORD=exam", "postgres:16"], timeout=900)
+        if rc != 0:
+            raise Skip(f"docker run postgres failed: {out[-300:]}")
+        cid = out.strip().splitlines()[-1]
+    for _ in range(60):
+        rc, _ = ctx.sh("pg-ready", ["docker", "exec", cid, "pg_isready", "-U", "postgres"])
+        if rc == 0:
+            break
+        time.sleep(2)
+    rc, out = ctx.sh("pg-ip", ["docker", "inspect", "-f", "{{range .NetworkSettings.Networks}}{{.IPAddress}} {{end}}", cid])
+    ip = next((x for x in out.split() if x.count(".") == 3), None)
+    if not ip:
+        raise Skip(f"no address for the postgres container: {out[-200:]}")
+    hosts = Path("/etc/hosts").read_text()
+    if not all(re.search(rf"\s{n}(\s|$)", hosts) for n in PG_NAMES):
+        ctx.sh("pg-hosts", ["sudo", "sh", "-c", f"echo '{ip} {' '.join(PG_NAMES)}' >> /etc/hosts"])
+    return ip, how
+
+
+@probe("F-01.probe.service-host")
+def _(ctx):
+    ip, how = _pg_container(ctx)
+    allow = " ".join(f"--det-allow-host={n}" for n in PG_NAMES)
+    parts = []
+    # Python (psycopg)
+    try:
+        d, env = fam.probe_host(ctx)
+        lib.pip(ctx, d, env, ["psycopg[binary]"])
+        rel = fam.write_probe(d, "pg", PY_PG.format(names=list(PG_NAMES)))
+        _, _, plain = lib.pytest_plain(ctx, d, env, [rel], "pg-py-plain")
+        _, out1, det = lib.pytest_engine(ctx, d, env, ["--det", rel], "pg-py-det")
+        ok1, d1 = lib.cmp_outcomes(det, plain)
+        ok2, d2 = (ok1, "not needed")
+        if not ok1:
+            _, _, det2 = lib.pytest_engine(ctx, d, env, ["--det"] + allow.split() + [rel], "pg-py-det-allow")
+            ok2, d2 = lib.cmp_outcomes(det2, plain)
+        (d / rel).unlink(missing_ok=True)
+        pp = bool(plain) and all(lib.norm(v) == "passed" for v in plain.values())
+        parts.append((pp and ok2, f"python: plain {sorted(set(plain.values()))}; --det: {d1}; with {allow}: {d2}"))
+    except Skip as s:
+        parts.append((False, f"python not run: {s}"))
+    # Node (pg, Vitest)
+    try:
+        dj = rows_js.setup(ctx, "ufo", [f"vitest@{rows_js.VITEST}", "pg@8"], key=f"ufo-vitest@{rows_js.VITEST}-pg")
+        relj = "test/exam-pg.test.ts"
+        lib.write(dj / relj, JS_PG.format(names=json.dumps(list(PG_NAMES))))
+        _, _, plain = _vitest_tests(ctx, dj, relj, "pg-js-plain")
+        _, _, det = _vitest_tests(ctx, dj, relj, "pg-js-det", "--det")
+        _, _, det2 = (None, None, det) if det == plain else _vitest_tests(ctx, dj, relj, "pg-js-det-allow", f"--det {allow}")
+        (dj / relj).unlink(missing_ok=True)
+        pp = len(plain) == len(PG_NAMES) and all(v == "passed" for v in plain.values())
+        parts.append((pp and (det == plain or det2 == plain), f"node: plain {plain}; --det {det}; with {allow}: {det2}"))
+    except Skip as s:
+        parts.append((False, f"node not run: {s}"))
+    return all(p[0] for p in parts), f"service at {ip} ({how}) by names {list(PG_NAMES)}: " + "; ".join(p[1] for p in parts)
+
+
+# --- F-03.probe.multi-project ----------------------------------------------------------------------------------------
+MP_WORKSPACE = '''export default [
+  {{ test: {{ name: 'node', environment: 'node', include: [{rel!r}] }} }},
+  {{ test: {{ name: 'dom', environment: 'jsdom', include: [{rel!r}] }} }},
+];
+'''
+MP_TEST = '''import {{ test, expect }} from 'vitest';
+import {{ readFileSync }} from 'node:fs';
+
+test('exam project value', () => {{
+  const project = typeof window === 'undefined' ? 'node' : 'dom';
+  // the project-dependent value: each project reads its own file (a file, not a run input), so a change of one
+  // project's file changes that project's part of the trace only
+  expect(readFileSync({flags!r} + '/' + project, 'utf8')).toBe('a');
+}});
+'''
+
+
+@probe("F-03.probe.multi-project")
+def _(ctx):
+    d = rows_js.setup(ctx, "ufo", [f"vitest@{rows_js.VITEST}", "jsdom@25"], key=f"ufo-vitest@{rows_js.VITEST}-jsdom@25")
+    rel, ws, flags = "test/exam-mp.test.ts", "vitest.workspace.ts", ctx.work / "mp-flags"
+    flags.mkdir(parents=True, exist_ok=True)
+    lib.write(d / rel, MP_TEST.format(flags=str(flags)))
+    lib.write(d / ws, MP_WORKSPACE.format(rel=rel))
+
+    def setf(node, dom):
+        (flags / "node").write_text(node)
+        (flags / "dom").write_text(dom)
+    res = {}
+    try:
+        setf("a", "a")
+        _, _, plain = _vitest_tests(ctx, d, "", "mp-plain")
+        for case, values in (("same", (("a", "a"), ("a", "a"))), ("node", (("a", "a"), ("b", "a"))),
+                             ("dom", (("a", "a"), ("a", "b")))):
+            ts = []
+            for i, v in enumerate(values):
+                setf(*v)
+                t = ctx.work / f"mp-{case}-{i}.jsonl"
+                t.unlink(missing_ok=True)
+                _vitest_tests(ctx, d, "", f"mp-{case}-{i}", f"--det --det-trace={t}")
+                ts.append(t)
+            res[case] = lib.verify(ctx, d, {}, ts[0], ts[1], f"mp-{case}-verify")
+    finally:
+        (d / rel).unlink(missing_ok=True)
+        (d / ws).unlink(missing_ok=True)
+    if len(plain) != 2 or set(plain.values()) != {"passed"}:
+        return False, f"INVALID: the workspace's plain run did not run the file in both projects ({plain})"
+
+    def reported(r):
+        s = r[2].get("summary", {})
+        return not r[0] and s.get("diverged", 0) + s.get("outcome_unstable", 0) >= 1
+    n = res["same"][2].get("summary", {}).get("tests", 0)
+    ok = res["same"][0] and n == 2 and reported(res["node"]) and reported(res["dom"])
+    return ok, (f"plain {plain}; identical runs: verify {res['same'][1]} (tests in the traces {n}, expected 2: both "
+                f"parts); a divergence in the node project only: {res['node'][1]}; in the jsdom project only: "
+                f"{res['dom'][1]}")
+
+
+# --- F-03.probe.realm-failure ----------------------------------------------------------------------------------------
+FREEZE_DATE = '''// loaded with node --require before anything else (before detjs installs its controls): globalThis.Date is
+// made non-configurable (and read-only), so it cannot be replaced
+Object.defineProperty(globalThis, 'Date', { value: Date, writable: false, configurable: false, enumerable: false });
+'''
+REALM_MISSING = re.compile(r"(time|clock|Date)[^\n]{0,120}(not replaceable|missing|not controlled|uncontrolled|"
+                           r"failed|cannot|could not)|(not replaceable|realm installation failed)[^\n]{0,120}(Date|time|clock)", re.I)
+
+
+@probe("F-03.probe.realm-failure")
+def _(ctx):
+    d = rows_js._ufo(ctx)
+    pre = ctx.work / "exam-freeze-date.cjs"
+    pre.write_text(FREEZE_DATE)
+    rel = "test/exam-realm.test.ts"
+    lib.write(d / rel, NW + "test('realm date', () => _w([Date.now(), new Date().toISOString()]));\n")
+    po = ctx.work / "realm-plain.out"
+    po.unlink(missing_ok=True)
+    prc, pout = ctx.sh("realm-plain", f"npx vitest run {rel}", cwd=d, env={"EXAM_OUT": str(po), "NODE_OPTIONS": f"--require={pre}"})
+    if prc != 0 or not po.exists():
+        (d / rel).unlink(missing_ok=True)
+        return False, f"INVALID: plain Vitest with the setup file did not pass (rc={prc}): {pout.strip()[-300:]!r}"
+    vals, traces, outs = [], [], []
+    o = ctx.work / "realm.out"  # one path for both runs: they differ only in when they ran
+    for i in (0, 1):
+        t = ctx.work / f"realm-{i}.jsonl"
+        for p in (o, t):
+            p.unlink(missing_ok=True)
+        if i:
+            time.sleep(2)
+        rc, out = ctx.sh(f"realm-{i}", f"fenvix node vitest run --det --det-trace={t} {rel}", cwd=d,
+                         env={"EXAM_OUT": str(o), "NODE_OPTIONS": f"--require={pre}"})
+        vals.append(o.read_text() if o.exists() else None)
+        traces.append(t)
+        outs.append(out)
+    vok, vdesc, _ = lib.verify(ctx, d, {}, traces[0], traces[1], "realm-verify")
+    (d / rel).unlink(missing_ok=True)
+    m = REALM_MISSING.search(outs[0])
+    if vals[0] is None:
+        return False, f"the test wrote no value (rc/out: {outs[0].strip()[-300:]!r})"
+    if vals[0] == vals[1]:
+        return vok, f"Date frozen before detjs: values equal (still controlled) {vals}; verify {vdesc}"
+    return (bool(m) and not vok, f"Date frozen before detjs: values differ {vals}; console names the missing time "
+                                 f"control: {m.group(0)[:160] if m else 'NO'}; verify {vdesc} (must not be identical)")
+
+
+# --- F-03.probe.zero-tests -------------------------------------------------------------------------------------------
+BROWSER_CONFIG = '''import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  test: {
+    include: ['test/exam-browser.test.ts'],
+    browser: { enabled: true, provider: 'playwright', headless: true, instances: [{ browser: 'chromium' }] },
+  },
+});
+'''
+BROWSER_TEST = '''import { test, expect } from 'vitest';
+
+test('exam browser one', () => { expect(document.title.length >= 0).toBe(true); });
+test('exam browser two', () => { expect(typeof window.Math.random()).toBe('number'); });
+'''
+
+
+@probe("F-03.probe.zero-tests")
+def _(ctx):
+    v = rows_js.VITEST
+    pw = os.environ.get("EXAM_PLAYWRIGHT", "1")  # local calibration: the version of preinstalled browsers
+    d = rows_js.setup(ctx, "ufo", [f"vitest@{v}", f"@vitest/browser@{v}", f"playwright@{pw}"], key=f"ufo-vitest@{v}-browser")
+    if not (d / ".exam-chromium").exists() and not os.environ.get("PLAYWRIGHT_BROWSERS_PATH"):
+        rc, out = ctx.sh("vb-chromium", "npx playwright install --with-deps chromium", cwd=d, timeout=1800)
+        if rc != 0:
+            raise Skip(f"playwright install failed: {out[-300:]}")
+        (d / ".exam-chromium").write_text("1")
+    cfg, rel = "vitest.exam-browser.config.ts", "test/exam-browser.test.ts"
+    lib.write(d / cfg, BROWSER_CONFIG)
+    lib.write(d / rel, BROWSER_TEST)
+    try:
+        _, pout, plain = _vitest_tests(ctx, d, "", "vb-plain", config=cfg)
+        t = [ctx.work / "vb-1.jsonl", ctx.work / "vb-2.jsonl"]
+        for i in (0, 1):
+            t[i].unlink(missing_ok=True)
+            _vitest_tests(ctx, d, "", f"vb-det{i}", f"--det --det-trace={t[i]}", config=cfg)
+        if not all(p.exists() for p in t):
+            return True, f"plain {plain}; --det wrote no trace ({[p.exists() for p in t]}): no 'identical' verdict possible"
+        rc, out = ctx.sh("vb-verify", ["fenvix", "verify", "--json", str(t[0]), str(t[1])], cwd=d)
+    finally:
+        (d / cfg).unlink(missing_ok=True)
+        (d / rel).unlink(missing_ok=True)
+    if len(plain) != 2 or set(plain.values()) != {"passed"}:
+        return False, f"INVALID: plain browser-mode run did not pass 2 tests ({plain}): {pout.strip()[-200:]!r}"
+    rep = {}
+    for line in out.splitlines():
+        if line.startswith("{"):
+            try:
+                rep = json.loads(line)
+                break
+            except ValueError:
+                pass
+    n = rep.get("summary", {}).get("tests", 0)
+    return not (rc == 0 and n < 2), f"plain ran {len(plain)} tests; verify rc={rc}, tests observed in the traces {n} (rc 0 only if both were observed)"
+
+
+# --- F-05.probe.blockbuster ------------------------------------------------------------------------------------------
+BB_CONFTEST = '''import asyncio
+import os.path
+import posixpath
+
+import pytest
+
+
+def _guard(f):
+    def g(*a, **k):
+        try:
+            asyncio.get_running_loop()
+        except RuntimeError:
+            return f(*a, **k)
+        raise RuntimeError(f"exam blockbuster: blocking call os.path.{f.__name__} inside the running event loop")
+    g.__name__ = f.__name__
+    return g
+
+
+@pytest.fixture(autouse=True)
+def _exam_blockbuster():
+    """blockbuster-style: os.path.abspath/realpath raise when called in the thread of a running asyncio loop."""
+    saved = os.path.abspath, os.path.realpath
+    os.path.abspath = posixpath.abspath = _guard(saved[0])
+    os.path.realpath = posixpath.realpath = _guard(saved[1])
+    yield
+    os.path.abspath = posixpath.abspath = saved[0]
+    os.path.realpath = posixpath.realpath = saved[1]
+'''
+BB_TESTS = '''import asyncio
+import importlib.util
+import pathlib
+
+import pytest
+
+
+def _fresh(name):
+    """Execute a code file for the first time inside the running loop (as a library's modules are on first use): a
+    capture that resolves each new code file with os.path.abspath/realpath meets the hook there."""
+    spec = importlib.util.spec_from_file_location(name, pathlib.Path(__file__).with_name(name + ".py"))
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m.value()
+
+
+@pytest.mark.asyncio
+async def test_bb_sleep():
+    await asyncio.sleep(0)
+    assert _fresh("exam_bb_h1") == 1
+
+
+@pytest.mark.asyncio
+async def test_bb_read():
+    with open(__file__) as fh:
+        assert "exam" in fh.read()
+    assert _fresh("exam_bb_h2") == 2
+
+
+@pytest.mark.asyncio
+async def test_bb_gather():
+    assert await asyncio.gather(asyncio.sleep(0, 1), asyncio.sleep(0, 2)) == [1, 2]
+    assert _fresh("exam_bb_h3") == 3
+'''
+
+
+def _receipts(cache: Path) -> tuple:
+    """(receipts, reused) from the cache directory's receipts.jsonl."""
+    n = r = 0
+    p = cache / "receipts.jsonl"
+    if p.exists():
+        for line in p.read_text(errors="replace").splitlines():
+            try:
+                x = json.loads(line)
+            except ValueError:
+                continue
+            n += 1
+            r += bool(x.get("reused"))
+    return n, r
+
+
+@probe("F-05.probe.blockbuster")
+def _(ctx):
+    d, env = fam.probe_host(ctx)
+    lib.pip(ctx, d, env, ["pytest-asyncio"])
+    sub = d / "tests" / "exam_bb"
+    lib.write(sub / "conftest.py", BB_CONFTEST)
+    lib.write(sub / "test_exam_bb.py", BB_TESTS)
+    for i in (1, 2, 3):
+        lib.write(sub / f"exam_bb_h{i}.py", f"def value():\n    return {i}\n")
+    rel = "tests/exam_bb"
+    cache = ctx.work / "bb-cache"
+    shutil.rmtree(cache, ignore_errors=True)
+    try:
+        _, _, plain = lib.pytest_plain(ctx, d, env, ["-W", "ignore", rel], "bb-plain")
+        rc1, out1, o1 = lib.pytest_engine(ctx, d, env, ["--det", f"--det-cache={cache}", "-W", "ignore", rel], "bb-cache1")
+        rc2, out2, o2 = lib.pytest_engine(ctx, d, env, ["--det", f"--det-cache={cache}", "-W", "ignore", rel], "bb-cache2")
+    finally:
+        shutil.rmtree(sub, ignore_errors=True)
+        # pytest-asyncio is a plugin: left in the shared probe venv it changes every later probe (itsdangerous turns
+        # its configure-time deprecation warning into an INTERNALERROR)
+        ctx.sh("bb-uninstall", ["python", "-m", "pip", "uninstall", "-q", "-y", "pytest-asyncio"], cwd=d, env=env)
+    if len(plain) != 3 or set(lib.norm(v) for v in plain.values()) != {"passed"}:
+        return False, f"INVALID: plain pytest-asyncio run under the hook did not pass 3 tests: {plain}"
+    ok1, d1 = lib.cmp_outcomes(o1, plain)
+    ok2, d2 = lib.cmp_outcomes(o2, plain)
+    reused = max(lib.reused_count(out2), _receipts(cache)[1])
+    return ok1 and ok2 and reused >= 1, (f"--det-cache run 1 vs plain: {d1}; run 2 vs plain: {d2}; run 2 reused {reused} "
+                                         f"(>= 1 test recorded by run 1 needed)")
+
+
+# --- F-05.probe.custom-reporter --------------------------------------------------------------------------------------
+CR_CONFTEST = '''import pytest
+from _pytest.terminal import TerminalReporter
+
+
+class ProjectReporter(TerminalReporter):
+    """The project's own terminal reporter: progress and the final counts, nothing from other plugins."""
+
+    def write_line(self, line, **markup):
+        pass
+
+    def section(self, title, sep="=", **kw):
+        pass
+
+
+@pytest.hookimpl(trylast=True)
+def pytest_configure(config):
+    std = config.pluginmanager.getplugin("terminalreporter")
+    if std is not None and not isinstance(std, ProjectReporter):
+        config.pluginmanager.unregister(std)
+        config.pluginmanager.register(ProjectReporter(config), "terminalreporter")
+'''
+CR_TESTS = '''def test_cr_one():
+    assert sum([1, 2]) == 3
+
+
+def test_cr_two():
+    assert "ab".upper() == "AB"
+'''
+CR_SUMMARY = re.compile(r"cache with proof|reused \d+ result|reused with proof", re.I)
+
+
+@probe("F-05.probe.custom-reporter")
+def _(ctx):
+    d, env = fam.probe_host(ctx)
+    sub = d / "tests" / "exam_cr"
+    lib.write(sub / "conftest.py", CR_CONFTEST)
+    lib.write(sub / "test_exam_cr.py", CR_TESTS)
+    rel = "tests/exam_cr"  # its conftest is an initial conftest: pytest_configure runs before the session
+    cache = ctx.work / "cr-cache"
+    shutil.rmtree(cache, ignore_errors=True)
+    try:
+        _, _, plain = lib.pytest_plain(ctx, d, env, [rel], "cr-plain")
+        rc1, out1, o1 = lib.pytest_engine(ctx, d, env, ["--det", f"--det-cache={cache}", rel], "cr-cache1")
+        rc2, out2, o2 = lib.pytest_engine(ctx, d, env, ["--det", f"--det-cache={cache}", rel], "cr-cache2")
+    finally:
+        shutil.rmtree(sub, ignore_errors=True)
+    if len(plain) != 2 or set(lib.norm(v) for v in plain.values()) != {"passed"}:
+        return False, f"INVALID: plain run with the project reporter did not pass 2 tests: {plain}"
+    n_rec, reused_rec = _receipts(cache)
+    reused = max(reused_rec, lib.reused_count(out2))
+    printed = CR_SUMMARY.search(out2)
+    files = [str(p.relative_to(cache)) for p in cache.rglob("*") if p.is_file() and "summary" in p.name.lower()] if cache.exists() else []
+    files += [str(p.relative_to(d)) for p in (d / ".detpy").rglob("*summary*")] if (d / ".detpy").exists() else []
+    ok2, d2 = lib.cmp_outcomes(o2, plain)
+    reachable = bool(printed) or bool(files)
+    return ok2 and reused >= 1 and reachable, (f"run 2 vs plain: {d2}; entries recorded (run 2 reused) {reused}, receipts "
+                                               f"{n_rec}; cache summary reachable: printed "
+                                               f"{printed.group(0) if printed else 'NO'}, summary files {files or 'none'}")

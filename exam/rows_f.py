@@ -86,7 +86,7 @@ def _py_value(ctx, src):
         t.unlink(missing_ok=True)
         e["EXAM_OUT"] = str(out_p)
         args = ["--det", f"--det-trace={t}", "-W", "ignore", rel]
-        e, cmd = _wrap_cmd(e, ["fenvix", "python", "-q", "-p", "no:cacheprovider"] + args, env["PATH"])
+        e, cmd = _wrap_cmd(e, ["fenvix", "python", "-q", "-p", "no:cacheprovider"] + args, env["PATH"], env)
         ctx.sh(f"f01-py-{src}-{i}", cmd, cwd=d, env=dict(env, **e))
         vals.append(out_p.read_text() if out_p.exists() else None)
         traces.append(t)
@@ -392,8 +392,12 @@ EDITS = {
          "def test_exam_new_failure():\n    assert False\n\n\ndef test_base64_bad():"),
     ],
     "click": [
-        ("edit-src-flip", "src/click/utils.py", "def make_str(value: t.Any) -> str:",
-         "def make_str(value: t.Any) -> str:\n    if value == 'exam':\n        return 'EXAM'"),
+        # a real behaviour change: short help one character shorter (plain: 9 tests of test_make_default_short_help
+        # flip; the earlier make_str('exam') edit flipped none)
+        ("edit-src-flip", "src/click/utils.py",
+         'def make_default_short_help(help: str, max_length: int = 45) -> str:\n    """Returns a condensed version of help string."""',
+         'def make_default_short_help(help: str, max_length: int = 45) -> str:\n    """Returns a condensed version of help string."""\n'
+         '    max_length -= 1  # exam edit'),
         ("edit-conftest", "tests/conftest.py", "def runner(request):", "def runner(request):\n    assert 0, 'exam edit'"),
     ],
 }
@@ -411,8 +415,13 @@ WRONG_REUSE = {
 }
 
 
-def _wrap_cmd(e: dict, args: list, path: str = "") -> tuple:
-    """Turn special env markers into the command wrapper that sets that machine property."""
+# sudo removes these even with -E (its built-in env_delete list): re-set inside the wrapper with `env`
+SUDO_STRIPPED = ("PYTHONPATH", "PYTHONHOME", "PYTHONUSERBASE", "LD_PRELOAD", "LD_LIBRARY_PATH")
+
+
+def _wrap_cmd(e: dict, args: list, path: str = "", keep: dict | None = None) -> tuple:
+    """Turn special env markers into the command wrapper that sets that machine property. `keep`: the command's
+    base environment; the variables sudo strips are passed through the hostname wrapper unchanged."""
     e = dict(e)
     pre = []
     if e.pop("EXAM_TASKSET", None) and shutil.which("taskset"):
@@ -424,7 +433,9 @@ def _wrap_cmd(e: dict, args: list, path: str = "") -> tuple:
     if "EXAM_UNSHARE_HOST" in e:
         h = e.pop("EXAM_UNSHARE_HOST")
         if shutil.which("unshare"):
-            pre = ["sudo", "-E", "env", f"PATH={path or os.environ.get('PATH', '')}", "unshare", "--uts", "sh", "-c", f"hostname {h} && exec \"$@\"", "sh"] + pre
+            base = dict(keep or {}, **e)
+            kept = [f"{k}={base[k]}" for k in SUDO_STRIPPED if base.get(k)]
+            pre = ["sudo", "-E", "env", f"PATH={path or os.environ.get('PATH', '')}"] + kept + ["unshare", "--uts", "sh", "-c", f"hostname {h} && exec \"$@\"", "sh"] + pre
     return e, pre + args
 
 
@@ -483,11 +494,11 @@ def F_05(ctx: Ctx):
                     ctx.sh("cc-preload", ["cc", "-shared", "-fPIC", "-o", str(so), str(src)])
                     e["LD_PRELOAD"] = str(so)
                 e, cmd = _wrap_cmd(e, ["fenvix", "python", "-q", "-p", "no:cacheprovider", "--det", f"--det-cache={cache}",
-                                       f"--det-outcomes={ctx.work / f'wr-{probe}-{i}.json'}", rel], env["PATH"])
+                                       f"--det-outcomes={ctx.work / f'wr-{probe}-{i}.json'}", rel], env["PATH"], env)
                 rc, out = ctx.sh(f"wr-{probe}-{i}", cmd, cwd=d, env=dict(env, **e))
                 res.append((rc, out, lib.load_json(ctx.work / f"wr-{probe}-{i}.json").get("outcomes", {})))
             e, cmd = _wrap_cmd(e if False else dict(e2) | ({"PYTHONPATH": f"{outside}:{lib.PLUGINS}"} if "EXAM_PP" in e2 else {}),
-                               ["python", "-m", "pytest", "-q", "-p", "no:detpy", "-p", "exam_outcomes", "-p", "no:cacheprovider", rel], env["PATH"])
+                               ["python", "-m", "pytest", "-q", "-p", "no:detpy", "-p", "exam_outcomes", "-p", "no:cacheprovider", rel], env["PATH"], env)
             e.pop("EXAM_PP", None)
             if "EXAM_LD_PRELOAD" in e2:
                 e["LD_PRELOAD"] = str(ctx.work / "libexampre.so")

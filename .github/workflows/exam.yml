@@ -70,6 +70,14 @@ jobs:
       max-parallel: 40
       matrix:
         include: ${{ fromJSON(needs.plan.outputs.legs) }}
+    services:
+      # F-01.probe.service-host: a `services: postgres` container, reached by name (exam/probes.py puts its address in
+      # /etc/hosts as `postgres` and `exam-pg`); an empty image skips the service on the other legs (actions/runner:
+      # "will not be started because the container definition has an empty image")
+      postgres:
+        image: ${{ contains(join(matrix.rows, ','), 'F-01') && 'postgres:16' || '' }}
+        env: {POSTGRES_PASSWORD: exam}
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 20
     env:
       EXAM_INSTALL: ci-artifact  # the only source (founder decision 2026-11-20)
       EXAM_RELEASE_RUN: ${{ github.event.inputs.release_run }}  # empty = newest trunk artifact (exam/install.sh)
@@ -96,9 +104,10 @@ jobs:
         with: {python-version: "${{ matrix.python }}", allow-prereleases: true}
       - uses: actions/setup-node@v4
         with: {node-version: "${{ matrix.node }}"}
-      - if: contains(join(matrix.rows, ','), 'JS-03')
+      # Bun and Deno: the JS-03 runners, and F-01.probe.replay-clients (Bun fetch, Deno fetch)
+      - if: contains(join(matrix.rows, ','), 'JS-03') || contains(join(matrix.rows, ','), 'F-01')
         uses: oven-sh/setup-bun@v2
-      - if: contains(join(matrix.rows, ','), 'JS-03')
+      - if: contains(join(matrix.rows, ','), 'JS-03') || contains(join(matrix.rows, ','), 'F-01')
         uses: denoland/setup-deno@v2
         with: {deno-version: v2.x}
       - name: machine prerequisites the install docs name (strace, locales)

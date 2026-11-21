@@ -17,6 +17,8 @@ from pathlib import Path
 
 EXAM = Path(__file__).resolve().parent
 PLUGINS = EXAM / "plugins"
+# the exam's own plumbing variables, declared volatile to the engine (DECISIONS 2026-11-20, env design A)
+VOLATILE_ENV = "EXAM_OUT,EXAM_OUTCOMES,EXAM_DIR,EXAM_OUT_DIR,EXAM_TMP,EXAM_WHEEL,EXAM_INSTALL_INFO"
 
 
 def leg_from_env() -> dict:
@@ -68,7 +70,7 @@ class Ctx:
         e = dict(os.environ)
         # The exam's own plumbing variables (output paths) are declared volatile to the engine: they are not inputs
         # of the code under test (DECISIONS 2026-11-20, env design A).
-        e.setdefault("FENVIX_VOLATILE_ENV", "EXAM_OUT,EXAM_OUTCOMES,EXAM_DIR,EXAM_OUT_DIR,EXAM_TMP,EXAM_WHEEL,EXAM_INSTALL_INFO")
+        e.setdefault("FENVIX_VOLATILE_ENV", VOLATILE_ENV)
         e.update({k: str(v) for k, v in (env or {}).items() if v is not None})
         for k, v in (env or {}).items():
             if v is None:
