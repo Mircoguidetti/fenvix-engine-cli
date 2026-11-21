@@ -981,6 +981,28 @@ fn runtime_with_paths(base: &str, root: PathBuf, site_dirs: Vec<PathBuf>, sys_pa
     (digest_bytes(all.as_bytes()).short(), pth_digest, norm)
 }
 
+/// The process's live C environment (`environ`), as `(name, value)` byte pairs.
+///
+/// P-061: `os.environ` / `os.environb._data` are Python-side mirrors. A variable set with `os.putenv` (or removed
+/// with `os.unsetenv`) is in the C `environ` only, so a child built from the mirror does not inherit it (and a
+/// variable the mirror still holds comes back). The followed-child spawn (`follow.py`) must replace an inherited
+/// environment (`env=None`) with exactly what `execve` would have passed, which is this.
+#[pyfunction]
+fn live_environ_items(py: Python<'_>) -> PyResult<Bound<'_, PyList>> {
+    let out = PyList::empty(py);
+    for (k, v) in std::env::vars_os() {
+        let kv = PyTuple::new(
+            py,
+            [
+                PyBytes::new(py, k.as_bytes()).into_any(),
+                PyBytes::new(py, v.as_bytes()).into_any(),
+            ],
+        )?;
+        out.append(kv)?;
+    }
+    Ok(out)
+}
+
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(dist_infos, m)?)?;
     m.add_function(wrap_pyfunction!(runtime_identity, m)?)?;
@@ -989,5 +1011,6 @@ pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(cache_epoch, m)?)?;
     m.add_function(wrap_pyfunction!(safe_env, m)?)?;
     m.add_function(wrap_pyfunction!(safe_str, m)?)?;
+    m.add_function(wrap_pyfunction!(live_environ_items, m)?)?;
     Ok(())
 }

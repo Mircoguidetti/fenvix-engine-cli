@@ -334,7 +334,11 @@ class Follower:
         env = args[5]
         if shim is not None:
             if env is None:
-                env = [k + b"=" + v for k, v in dict(os.environb._data).items()]  # noqa: SLF001 (no env event)
+                # P-061: the live C ``environ``, which is what execve would have passed with env=None. NOT
+                # ``os.environ`` / ``os.environb._data``: those are Python-side mirrors, so a variable set with
+                # ``os.putenv`` would be missing from the child and one removed with ``os.unsetenv`` would come
+                # back (a wrong outcome under --det and --det-cache, phase-1 finding of docs/CACHE-PRECISE.md 8).
+                env = [k + b"=" + v for k, v in _core.live_environ_items()]
             env = list(env)
             for i, kv in enumerate(env):
                 if kv.startswith(b"LD_PRELOAD="):
