@@ -4,9 +4,9 @@
  "repo": "sveltejs/kit",
  "ref": "7a1296872cde5e807832f7714c635df956d37643",
  "status": "ok",
- "run_id": "44783946608",
- "engine_commit": "ea649fcb86a3fb8533b97a6a82d5b3b20ff42cc6",
- "setup_s": 41,
+ "run_id": "44904997963",
+ "engine_commit": "ddf386f3226eb2c5043d5614fc1f9af5358e24b7",
+ "setup_s": 30,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -26,8 +26,8 @@
   "test/playwright"
  ],
  "runs": [],
- "epoch": "2026-11-20T17:35:00Z",
- "measured_at": "2026-11-20T17:35:28Z",
+ "epoch": "2026-11-21T12:48:00Z",
+ "measured_at": "2026-11-21T12:48:27Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "gate": [
   {
@@ -64,16 +64,16 @@
     ""
    ],
    "walls": [
-    22.3,
-    22.2,
-    22.3,
-    22.1,
-    22.1,
-    22.1,
-    22.1,
-    22.3,
-    22.2,
-    22.1
+    13.9,
+    13.8,
+    13.8,
+    13.8,
+    13.8,
+    13.8,
+    13.8,
+    13.8,
+    13.9,
+    13.8
    ],
    "stats": [
     null,
@@ -102,18 +102,60 @@
    "verify_all": [
     {
      "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]",
-     "status": "stable",
-     "distinct_fingerprints": 1,
+     "status": "diverged",
+     "distinct_fingerprints": 10,
      "runs": 10,
-     "divergence": null
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 4,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:5301 887384551f6dce9287e82a894054881d 8079"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:5301 06a17348db078e8d798dabb42abfbe97 8079"
+      },
+      "reason": "other",
+      "description": "event #4: server.fingerprint @  returned different values: \"http://localhost:5301 887384551f6dce9287e82a894054881d 8079\" vs \"http://localhost:5301 06a17348db078e8d798dabb42abfbe97 8079\""
+     }
     }
    ],
    "verify": {
     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]",
-    "status": "stable",
-    "distinct_fingerprints": 1,
+    "status": "diverged",
+    "distinct_fingerprints": 10,
     "runs": 10,
-    "divergence": null
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 4,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "server.fingerprint",
+      "at": "",
+      "v": "http://localhost:5301 887384551f6dce9287e82a894054881d 8079"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "server.fingerprint",
+      "at": "",
+      "v": "http://localhost:5301 06a17348db078e8d798dabb42abfbe97 8079"
+     },
+     "reason": "other",
+     "description": "event #4: server.fingerprint @  returned different values: \"http://localhost:5301 887384551f6dce9287e82a894054881d 8079\" vs \"http://localhost:5301 06a17348db078e8d798dabb42abfbe97 8079\""
+    }
    }
   },
   {
@@ -150,16 +192,16 @@
     ""
    ],
    "walls": [
-    128.0,
-    134.2,
-    125.0,
-    125.0,
-    127.1,
-    124.3,
-    129.9,
-    127.2,
-    127.2,
-    123.7
+    116.3,
+    116.4,
+    119.5,
+    119.5,
+    116.3,
+    117.1,
+    122.0,
+    119.5,
+    119.8,
+    119.4
    ],
    "stats": [
     null,
@@ -188,10 +230,31 @@
    "verify_all": [
     {
      "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]",
-     "status": "stable",
-     "distinct_fingerprints": 1,
+     "status": "diverged",
+     "distinct_fingerprints": 10,
      "runs": 10,
-     "divergence": null
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 31,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:5301 ae04b50c644d551495336b1e854b5caf 9277"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:5301 b35a109e7f2ee5d6a111af4557267b31 9278"
+      },
+      "reason": "other",
+      "description": "event #31: server.fingerprint @  returned different values: \"http://localhost:5301 ae04b50c644d551495336b1e854b5caf 9277\" vs \"http://localhost:5301 b35a109e7f2ee5d6a111af4557267b31 9278\""
+     }
     },
     {
      "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data failure does not trigger an unhandled rejection [chromium-dev]",
@@ -202,20 +265,62 @@
     },
     {
      "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data network failure does not trigger navigation [chromium-dev]",
-     "status": "stable",
-     "distinct_fingerprints": 1,
+     "status": "diverged",
+     "distinct_fingerprints": 2,
      "runs": 10,
-     "divergence": null
+     "divergence": {
+      "run_a": 0,
+      "run_b": 9,
+      "index": 4,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:5301 36338b55cb9d3fef710608f12793de54 175"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:5301 7168492f62cdc8871122eeec9dbb4f8c 176"
+      },
+      "reason": "other",
+      "description": "event #4: server.fingerprint @  returned different values: \"http://localhost:5301 36338b55cb9d3fef710608f12793de54 175\" vs \"http://localhost:5301 7168492f62cdc8871122eeec9dbb4f8c 176\""
+     }
     }
    ],
    "verify": {
     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]",
-    "status": "stable",
-    "distinct_fingerprints": 1,
+    "status": "diverged",
+    "distinct_fingerprints": 10,
     "runs": 10,
-    "divergence": null
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 31,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "server.fingerprint",
+      "at": "",
+      "v": "http://localhost:5301 ae04b50c644d551495336b1e854b5caf 9277"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "server.fingerprint",
+      "at": "",
+      "v": "http://localhost:5301 b35a109e7f2ee5d6a111af4557267b31 9278"
+     },
+     "reason": "other",
+     "description": "event #31: server.fingerprint @  returned different values: \"http://localhost:5301 ae04b50c644d551495336b1e854b5caf 9277\" vs \"http://localhost:5301 b35a109e7f2ee5d6a111af4557267b31 9278\""
+    }
    }
   }
  ],
- "elapsed_min": 25.6
+ "elapsed_min": 22.7
 }
