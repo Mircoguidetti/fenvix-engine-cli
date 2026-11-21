@@ -1,0 +1,76 @@
+{
+  "test": "test/session.test.ts::session::web::set session data (web)",
+  "configs_searched": 2,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 1093,
+  "minimal_length": 2,
+  "polluters": [
+    "test/session.test.ts::session::web::rejects legacy sessions with legacySealFallback: false (web)"
+  ],
+  "setters": [],
+  "order": [
+    "test/session.test.ts::session::web::rejects legacy sessions with legacySealFallback: false (web)",
+    "test/session.test.ts::session::web::set session data (web)"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "expected { Object (session) } to match object { Object (session) }",
+    "test/session.test.ts:89"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "cf9850abafe0a5f40d3589b4fbc9e361"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 11,
+    "reason": "time",
+    "description": "event #11: [time] Date.now @ src/utils/internal/iron-crypto.ts:92 = 4000  <>  [outcome] outcome @  = failed",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "Date.now",
+      "at": "src/utils/internal/iron-crypto.ts:92",
+      "v": "4000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "d7996cbeec72d31d357222490e0beebe",
+      "cf9850abafe0a5f40d3589b4fbc9e361"
+    ]
+  },
+  "runs": 31,
+  "seconds": 256.87,
+  "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+  ],
+  "detpy": "0.1.0",
+  "command": "detjs vitest run --det --det-seed=1 --det-order=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/h3/set_session_data_web_-2602aba1/order.txt",
+  "replay_command": "python -m detpy.fenvix_js replay /home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/h3/set_session_data_web_-2602aba1",
+  "bundle": "/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/h3/set_session_data_web_-2602aba1",
+  "runner": "vitest",
+  "runner_args": [],
+  "root": "/tmp/claude-0/-home-user/940e5d2f-b0b8-5040-a0a4-0b9e2362a3f3/scratchpad/work/src/h3",
+  "node": "v22.23.5",
+  "uncontrolled": []
+}

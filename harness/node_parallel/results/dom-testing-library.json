@@ -1,0 +1,137 @@
+{
+ "name": "dom-testing-library",
+ "runner": "jest",
+ "workers": 4,
+ "commands": {
+  "plain": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js jest",
+  "det_serial": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js jest --det",
+  "det_parallel": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js jest --det --det-workers=4",
+  "det_parallel_2": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js jest --det --det-workers=4",
+  "det_serial_2": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js jest --det",
+  "cache_cold_parallel": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js jest --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/dom-testing-library/.detjs-par-cache",
+  "cache_warm_parallel": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js jest --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/dom-testing-library/.detjs-par-cache",
+  "fresh_serial": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js jest --det",
+  "cache_verify_parallel": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js jest --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/dom-testing-library/.detjs-par-cache --det-cache-verify",
+  "cache_warm_serial_on_parallel_store": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js jest --det --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/dom-testing-library/.detjs-par-cache"
+ },
+ "plain": {
+  "exit": 0,
+  "wall_s": 18.58
+ },
+ "det_serial": {
+  "exit": 0,
+  "wall_s": 28.05,
+  "tests": 666,
+  "carried": 0
+ },
+ "det_parallel": {
+  "exit": 0,
+  "wall_s": 30.43,
+  "tests": 666,
+  "plan_digest": "8716bc02f5ba4a3c002fc67d746e958f",
+  "lanes": [
+   6,
+   7,
+   8,
+   8
+  ],
+  "deviations": 0,
+  "hazards": 0,
+  "waited_s": 0.003,
+  "carried": 0
+ },
+ "det_parallel_2": {
+  "exit": 0,
+  "wall_s": 21.05,
+  "tests": 666,
+  "plan_digest": "8716bc02f5ba4a3c002fc67d746e958f",
+  "lanes": [
+   6,
+   7,
+   8,
+   8
+  ],
+  "deviations": 0,
+  "hazards": 0,
+  "waited_s": 0.003,
+  "carried": 0
+ },
+ "plan_identical": true,
+ "parallel_vs_serial": {
+  "common": 666,
+  "only_a": 0,
+  "only_b": 0,
+  "equal_fingerprint_and_outcome": 664,
+  "equal_outcome": 666,
+  "differ": [
+   "src/__tests__/queries.find.js::find rejects when something cannot be found",
+   "src/__tests__/role.js::has no useful error message in findBy"
+  ]
+ },
+ "det_serial_2": {
+  "exit": 0,
+  "wall_s": 17.05,
+  "tests": 666,
+  "carried": 0
+ },
+ "serial_noise": {
+  "common": 666,
+  "only_a": 0,
+  "only_b": 0,
+  "equal_fingerprint_and_outcome": 666,
+  "equal_outcome": 666,
+  "differ": []
+ },
+ "parallel_differs_not_noise": [
+  "src/__tests__/queries.find.js::find rejects when something cannot be found",
+  "src/__tests__/role.js::has no useful error message in findBy"
+ ],
+ "cache_cold_parallel": {
+  "exit": 0,
+  "wall_s": 22.57,
+  "recorded": 658,
+  "not_cached": {
+   "reads the worker or pool id the runner gives its process (depends on placement)": 10
+  }
+ },
+ "cache_warm_parallel": {
+  "exit": 0,
+  "wall_s": 5.71,
+  "reused_tests": 658,
+  "reused_files": 27,
+  "ran_files": 2,
+  "total_tests": 666,
+  "reuse_pct": 98.8,
+  "miss_reasons": {
+   "new": 2
+  }
+ },
+ "fresh_serial": {
+  "exit": 0,
+  "wall_s": 15.47,
+  "tests": 666,
+  "carried": 0
+ },
+ "wrong_reuse_vs_fresh_serial": {
+  "reused_checked": 658,
+  "reused_not_in_fresh": 0,
+  "wrong_outcome": 0,
+  "wrong": [],
+  "fingerprint_equal": 656
+ },
+ "cache_verify_parallel": {
+  "exit": 0,
+  "wall_s": 19.15,
+  "verified_tests": 658,
+  "mismatches_tests": 0,
+  "mismatches": []
+ },
+ "cache_warm_serial_on_parallel_store": {
+  "exit": 0,
+  "wall_s": 4.87,
+  "reused_tests": 658,
+  "miss_reasons": {
+   "new": 2
+  }
+ }
+}

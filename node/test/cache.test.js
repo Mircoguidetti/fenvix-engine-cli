@@ -261,7 +261,16 @@ for (const runner of RUNNERS) {
         ...tfile(runner, 'tz', "test('tz', () => { expect(new Date(0).getHours()).toBe(new Date(0).getHours()); });"),
       });
       const files = [F(runner, 'tz')];
-      cycle(runner, dir, files, () => {}, files, { env: { TZ: 'UTC' }, env3: { TZ: 'Asia/Tokyo' } });
+      // the job's own zone (--det-tz=keep): keyed, a change reruns
+      cycle(runner, dir, files, () => {}, files, { args: ['--det-tz=keep'], env: { TZ: 'UTC' }, env3: { TZ: 'Asia/Tokyo' } });
+    });
+
+    test('runtime: by default TZ is pinned to UTC (a TZ of the environment changes nothing, reused)', T, () => {
+      const dir = fixture(runner, 'tz-pinned', {
+        ...tfile(runner, 'tzp', "test('tzp', () => { expect(new Date(0).getHours()).toBe(0); });"),
+      });
+      const files = [F(runner, 'tzp')];
+      cycle(runner, dir, files, () => {}, [], { env: { TZ: 'UTC' }, env3: { TZ: 'Asia/Tokyo' } });
     });
 
     test('configuration: runner configuration, detjs options and tsconfig changes', T, () => {

@@ -7,7 +7,8 @@
 //     the configuration digest is the command line (uvu has no configuration file) and the runner version;
 //   * --det: one process; `parse`'s result is restricted to and ordered by detjs' list (sorted by path; --det-seed:
 //     shared shuffle), so the files load and run in that order;
-//   * --det-cache: every file in its own fresh process (`-r` modules load in each), see docs/ALL-RUNNERS.md;
+//   * --det-cache: uvu's own single process (audit G-0149), the cache unit is that process (all files reused or all
+//     run); --det-isolate: every file in its own fresh process (`-r` modules load in each), the unit is the file;
 //   * tests: uvu's runner is a closure, so its source is hooked when it loads (module.registerHooks, both the
 //     CommonJS and the ES module build): the start of each test (before its `before.each` hooks), its end (after its
 //     `after.each` hooks), the order of the tests of a suite and of the suites of a file (--det-seed: shared
@@ -31,7 +32,7 @@ async function discover(ctx) {
   const config = {
     args: rest.filter((a) => !/^(-c|--color|--no-color)(=|$)/.test(a)),
     requires: doc.requires || [],
-    mode: ctx.pc ? 'process per file' : 'one process',
+    mode: ctx.opts.isolate ? 'process per file' : 'one process',
   };
   return { files, config, uncacheable: null, notes, order: 'path' };
 }
@@ -39,7 +40,7 @@ async function discover(ctx) {
 function launch(ctx, files) {
   const { runner, rest } = ctx;
   const env = { DETJS_UVU_DIR: runner.dir };
-  if (!ctx.pc) return common.runChild(ctx, [runner.binPath, ...rest], { role: 'single', env });
+  if (!ctx.opts.isolate) return common.runChild(ctx, [runner.binPath, ...rest], { role: 'single', env });
   let status = 0;
   for (const f of files) {
     const s = common.runChild(ctx, [runner.binPath, ...rest], { role: 'single', env: { ...env, DETJS_RUNNER_FILE: f } });
@@ -55,7 +56,8 @@ function main(argv) {
     plain: (rest, r) => [r.binPath, ...rest],
     discover,
     launch,
-    isolation: (ctx) => (ctx.pc ? 'uvu: one process per test file (--det-cache), tests in sequence' : 'uvu: one process, files in sequence'),
+    isolation: (ctx) => (ctx.opts.isolate ? 'uvu: one process per test file (--det-isolate), tests in sequence' : 'uvu: one process, files in sequence'),
+    sharedProcess: true,
   }, argv);
 }
 
@@ -123,7 +125,8 @@ function hookSource() {
   const state = { patched: 0, refused: [] };
   const isRunner = (f) => f.startsWith(dist) && /^index\.m?js$/.test(path.basename(f));
   const patch = (f, source) => {
-    let src = String(source);
+    // another load hook in the chain (the cache capture's) may hand the source on as bytes
+    let src = typeof source === 'string' ? source : Buffer.from(source.buffer ? new Uint8Array(source.buffer, source.byteOffset, source.byteLength) : source).toString('utf8');
     if (src.includes('Symbol.for("detjs.uvu")')) return src;
     for (const [from, to] of PATCHES) {
       if (!src.includes(from)) { state.refused.push(`${path.basename(f)}: ${from}`); return null; }
@@ -189,7 +192,7 @@ function preloadSingle() {
     process.on('exit', (code) => { if (file) { if (code || !hooked.patched) file.fail(); else file.close(ok); } });
   }
   const shuffle = (list, key) => (c.controls.has('order') && c.shuffle && list.length > 1
-    ? native.shuffleIndices(list.length, c.seed, key).map((i) => list[i]) : list);
+    ? native.shuffleIndices(list.length, c.orderSeed, key).map((i) => list[i]) : list);
   globalThis[Symbol.for('detjs.uvu')] = {
     group(name, runners) {
       const f = fileOfGroup(name);

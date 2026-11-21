@@ -109,12 +109,13 @@ for (const runner of RUNNERS) {
       noWrongReuse(runner, dir, F('sdesc'), { 'data/blob.bin': 'abcd' });
     });
 
+    // util.inspect reads every field, the file times too (src/fstime.js: a real-clock read): never reused
     t('G1b Stats fields read by util.inspect', T, () => {
       const dir = fixture(runner, 'stat-inspect', {
         'data/blob.bin': 'abc',
         ...tfile(runner, 'sinsp', "test('sinsp', () => { expect(util.inspect(fs.statSync('data/blob.bin'))).toContain('size: 3,'); });"),
       });
-      noWrongReuse(runner, dir, F('sinsp'), { 'data/blob.bin': 'abcd' });
+      noWrongReuse(runner, dir, F('sinsp'), { 'data/blob.bin': 'abcd' }, { mayRefuse: true });
     });
 
     t('held (not cacheable): Stats spread and JSON.stringify', T, () => {

@@ -1,0 +1,76 @@
+{
+  "test": "packages/svelte/tests/runtime-legacy/test.ts::window-bind-scroll-update-2 (hydrate)",
+  "configs_searched": 2,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 2580,
+  "minimal_length": 2,
+  "polluters": [
+    "packages/svelte/tests/runtime-legacy/test.ts::window-binding-scroll-store (dom)"
+  ],
+  "setters": [],
+  "order": [
+    "packages/svelte/tests/runtime-legacy/test.ts::window-binding-scroll-store (dom)",
+    "packages/svelte/tests/runtime-legacy/test.ts::window-bind-scroll-update-2 (hydrate)"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "TypeError",
+    "call",
+    "Cannot assign to read only property 'scrollY' of object '#<Object>'",
+    "packages/svelte/tests/runtime-legacy/samples/window-bind-scroll-update-2/_config.js:14"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "cf6eb0b35a28b9671a1145e6778368de"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 9,
+    "reason": "fs",
+    "description": "event #9: fs.readdirSync @ <deps>/fdir/dist/index.mjs:244 returned different values: \"packages/svelte/tests/runtime-legacy/samples/window-bind-scroll-update-2/_output/client|3|98481d6dcf65607f2d0ee912b4c12321\" vs \"packages/svelte/tests/runtime-legacy/samples/window-bind-scroll-update-2/_output/client|2|277e1d86b48a4a89f0aff2f89f8ce4ef\"",
+    "event_a": {
+      "t": 0,
+      "s": "fs",
+      "o": "fs.readdirSync",
+      "at": "<deps>/fdir/dist/index.mjs:244",
+      "v": "packages/svelte/tests/runtime-legacy/samples/window-bind-scroll-update-2/_output/client|3|98481d6dcf65607f2d0ee912b4c12321"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "fs",
+      "o": "fs.readdirSync",
+      "at": "<deps>/fdir/dist/index.mjs:244",
+      "v": "packages/svelte/tests/runtime-legacy/samples/window-bind-scroll-update-2/_output/client|2|277e1d86b48a4a89f0aff2f89f8ce4ef"
+    },
+    "fingerprints": [
+      "edf5cbb73e0f114d5c5a29f1ccc284be",
+      "cf6eb0b35a28b9671a1145e6778368de"
+    ]
+  },
+  "runs": 29,
+  "seconds": 902.17,
+  "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+  ],
+  "detpy": "0.1.0",
+  "command": "detjs vitest run --det --det-seed=1 --det-order=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/svelte-flaky/window-bind-scroll-update-2_hydrate_-75ba116c/order.txt",
+  "replay_command": "python -m detpy.fenvix_js replay /home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/svelte-flaky/window-bind-scroll-update-2_hydrate_-75ba116c",
+  "bundle": "/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/svelte-flaky/window-bind-scroll-update-2_hydrate_-75ba116c",
+  "runner": "vitest",
+  "runner_args": [],
+  "root": "/tmp/claude-0/-home-user/940e5d2f-b0b8-5040-a0a4-0b9e2362a3f3/scratchpad/work/src/svelte-flaky",
+  "node": "v22.23.5",
+  "uncontrolled": []
+}

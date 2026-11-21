@@ -130,10 +130,19 @@ def test_explore_finds_and_bundles_the_flaky_test(project):
 
 @pytest.mark.parametrize("runner,test", [("vitest", "src/sum.test.ts"), ("jest", "src/sum.test.js"),
                                          ("playwright", "e2e/login.spec.ts")])
-def test_js_adapters_are_planned_and_say_so(tmp_path, runner, test):
+def test_js_adapters_are_the_detjs_ones_and_say_what_is_missing(tmp_path, runner, test):
+    # F-02 Node: fenvix.py registers detpy.fenvix_js (the planned adapters are replaced); in a directory without the
+    # runner installed, repro says so (exit 2); where the runner resolves from outside the project (a global
+    # install), the empty directory has no such test: `not collected` (exit 1). Never a traceback.
+    from detpy import fenvix, fenvix_js
+
+    assert isinstance(fenvix.ADAPTERS[runner], fenvix_js.DetjsAdapter)
     p = fx("repro", test, "--runner", runner, cwd=tmp_path)
-    assert p.returncode == 2
-    assert f"not available for {runner}" in p.stderr and "docs/CLI.md" in p.stderr, p.stderr
+    assert "Traceback" not in p.stderr + p.stdout
+    if p.returncode == 2:
+        assert "not installed" in p.stderr or "detjs" in p.stderr, p.stderr
+    else:
+        assert p.returncode == 1 and "not collected" in p.stdout, p.stdout + p.stderr
 
 
 def test_adapter_is_picked_from_the_test_id(tmp_path):

@@ -57,8 +57,10 @@ test('performance.now and hrtime', () => {
 `;
 
 const TIMERS = `
-test('setTimeout longer than the test timeout', async () => { await new Promise((r) => setTimeout(r, 3000)); }, 1000);
-test('timers/promises longer than the test timeout', async () => { await sleepP(3000); }, 1000);
+// slow in real time (CPU), short in virtual time: the runner's timeout is virtual under --det (G-0144)
+const cpu = () => { let x = 0; for (let j = 0; j < 2e8; j++) x += j; return x; };
+test('setTimeout loop longer than the real test timeout', async () => { for (let i = 0; i < 6; i++) { await new Promise((r) => setTimeout(r, 10)); cpu(); } }, 500);
+test('timers/promises loop longer than the real test timeout', async () => { for (let i = 0; i < 6; i++) { await sleepP(10); cpu(); } }, 500);
 test('setInterval ticks in a measured window', async () => {
   let n = 0;
   const iv = setInterval(() => { n++; }, 10);
@@ -176,7 +178,7 @@ for (const runner of RUNNERS) {
       const dir = project(runner, 'timers', { timers: TIMERS });
       const t0 = Date.now();
       const { b2, d1 } = goldenCheck(runner, dir);
-      assert.ok(failed(b2).some((n) => n.includes('longer than the test timeout')));
+      assert.ok(failed(b2).some((n) => n.includes('longer than the real test timeout')));
       const iv = d1.trace.tests.find((t) => t.nodeid.includes('setInterval'));
       assert.ok(iv.events.some((e) => e.o === 'setInterval' && e.v.startsWith('fire:')));
       assert.ok(Date.now() - t0 < 120000);

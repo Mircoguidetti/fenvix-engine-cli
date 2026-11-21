@@ -41,7 +41,9 @@ if (!globalThis[KEY]) {
     // user preloads after this one (command line after it, or NODE_OPTIONS without it)
     const PRE = /^(?:-r|--require|--import|--loader|--experimental-loader)(?:=|$)/;
     const mine = process.execArgv.findIndex((a) => a === SELF || a.endsWith(`=${SELF}`));
-    const later = process.execArgv.slice(mine + 1).some((a) => PRE.test(a));
+    // (detjs' own runner-deadline preload, src/deadline-preload.js, is not user code)
+    const OWN = /[\\/]src[\\/]deadline-preload\.js$/;
+    const later = process.execArgv.slice(mine + 1).some((a, i, l) => PRE.test(a) && !OWN.test(a) && !OWN.test(String(l[i + 1])));
     const nodeOpts = String(process.env.NODE_OPTIONS || '').split(/\s+/).filter((a) => a && !a.includes(SELF));
     const userPreloads = r === 'main' || later || nodeOpts.some((a) => PRE.test(a));
     if (!userPreloads) {
@@ -50,6 +52,17 @@ if (!globalThis[KEY]) {
       CAPTURE.install({ role: r, root, early: true, hooks: false });
       CAPTURE.endPreload('run');
       return;
+    }
+    // a worker whose user preloads are ES modules (`--import`) may register off-thread hooks (module.register: tsx,
+    // ts-node/esm, a custom loader); Node 22 then fails every resolution once in-thread hooks were registered in
+    // that thread, even deregistered (MEASURED, Node 22.23: ERR_METHOD_NOT_IMPLEMENTED, the worker dies: a false
+    // failure of the whole run). There the capture registers no module hooks before the preloads ran: the runner's
+    // installation registers them afterwards unless a preload registered off-thread hooks (then the tests are
+    // not cacheable, flag `loader`). The preload files themselves are keyed by content (proof.js `preloads`).
+    const esmPreload = r === 'worker' && [...process.execArgv, ...nodeOpts].some((a) => /^--import(=|$)/.test(a));
+    if (esmPreload) {
+      CAPTURE.install({ role: r, root, early: true, hooks: false });
+      return; // the preload phase ends when the runner installs the capture
     }
     CAPTURE.install({ role: r, root, early: true });
     const mainFile = r === 'main' ? path.resolve(process.argv[1]) : null;

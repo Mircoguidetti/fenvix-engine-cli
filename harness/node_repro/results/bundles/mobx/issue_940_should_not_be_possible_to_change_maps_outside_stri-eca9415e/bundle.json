@@ -1,0 +1,100 @@
+{
+  "test": "packages/mobx/__tests__/base/map.js::issue 940, should not be possible to change maps outside strict mode",
+  "configs_searched": 2,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "brittle",
+  "prefix_length": 223,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "packages/mobx/__tests__/base/map.js::map crud",
+    "packages/mobx/__tests__/base/map.js::map merge",
+    "packages/mobx/__tests__/base/map.js::observe value",
+    "packages/mobx/__tests__/base/map.js::initialize with entries",
+    "packages/mobx/__tests__/base/map.js::initialize with empty value",
+    "packages/mobx/__tests__/base/map.js::observe collections",
+    "packages/mobx/__tests__/base/map.js::cleanup",
+    "packages/mobx/__tests__/base/map.js::getAtom encapsulation leak test",
+    "packages/mobx/__tests__/base/map.js::strict",
+    "packages/mobx/__tests__/base/map.js::issue 100",
+    "packages/mobx/__tests__/base/map.js::issue 119 - unobserve before delete",
+    "packages/mobx/__tests__/base/map.js::issue 116 - has should not throw on invalid keys",
+    "packages/mobx/__tests__/base/map.js::map modifier",
+    "packages/mobx/__tests__/base/map.js::map modifier with modifier",
+    "packages/mobx/__tests__/base/map.js::256, map.clear should not be tracked",
+    "packages/mobx/__tests__/base/map.js::256, map.merge should be not be tracked for target",
+    "packages/mobx/__tests__/base/map.js::308, map keys should be coerced to strings correctly",
+    "packages/mobx/__tests__/base/map.js::map should support iterall / iterable ",
+    "packages/mobx/__tests__/base/map.js::support for ES6 Map",
+    "packages/mobx/__tests__/base/map.js::deepEqual map",
+    "packages/mobx/__tests__/base/map.js::798, cannot return observable map from computed prop",
+    "packages/mobx/__tests__/base/map.js::869, deeply observable map should make added items observables as well",
+    "packages/mobx/__tests__/base/map.js::using deep map",
+    "packages/mobx/__tests__/base/map.js::using deep map - toJS",
+    "packages/mobx/__tests__/base/map.js::issue 893",
+    "packages/mobx/__tests__/base/map.js::work with 'toString' key"
+  ],
+  "order": [
+    "packages/mobx/__tests__/base/map.js::issue 940, should not be possible to change maps outside strict mode"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "Error",
+    "call",
+    "expect(received).toMatchInlineSnapshot(snapshot) / Snapshot name: `issue 940, should not be possible to change maps outside strict mode 1` / Snapshot: \"<STDOUT> [MobX] Since strict-mode is enabled, ch",
+    "packages/mobx/__tests__/base/map.js:676"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "214284b09894c726bb4150da8040cc9e"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "31af55e422bc4accd412eab03c7f8ad0",
+      "214284b09894c726bb4150da8040cc9e"
+    ]
+  },
+  "runs": 128,
+  "seconds": 2570.3,
+  "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+  ],
+  "detpy": "0.1.0",
+  "command": "detjs jest --det --det-seed=1 --det-order=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/mobx/issue_940_should_not_be_possible_to_change_maps_outside_stri-eca9415e/order.txt",
+  "replay_command": "python -m detpy.fenvix_js replay /home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/mobx/issue_940_should_not_be_possible_to_change_maps_outside_stri-eca9415e",
+  "bundle": "/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/mobx/issue_940_should_not_be_possible_to_change_maps_outside_stri-eca9415e",
+  "runner": "jest",
+  "runner_args": [],
+  "root": "/tmp/claude-0/-home-user/940e5d2f-b0b8-5040-a0a4-0b9e2362a3f3/scratchpad/work/src/mobx",
+  "node": "v22.23.5",
+  "uncontrolled": []
+}

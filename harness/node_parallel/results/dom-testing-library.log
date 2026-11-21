@@ -1,0 +1,455 @@
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/dom-testing-library && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js jest)  # exit 0, 18.58 s
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+PASS dom src/__tests__/get-queries-for-element.js
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+PASS dom src/__tests__/ariaAttributes.js
+PASS dom src/__tests__/label-helpers.js
+PASS node src/__node_tests__/index.js (6.553 s)
+PASS node src/__node_tests__/pretty-dom.js
+PASS dom src/__tests__/suggestions.js (6.426 s)
+PASS dom src/__tests__/role-helpers.js
+PASS dom src/__tests__/base-queries-warn-on-invalid-container.js
+PASS dom src/__tests__/element-queries.js (6.547 s)
+PASS dom src/__tests__/text-matchers.js
+PASS dom src/__tests__/events.js
+PASS dom src/__tests__/role.js
+PASS dom src/__tests__/wait-for.js
+PASS dom src/__tests__/query-helper.js
+PASS node src/__node_tests__/screen.js
+PASS dom src/__tests__/misc.js
+PASS dom src/__tests__/log-dom.js
+PASS dom src/__tests__/get-by-errors.js
+PASS dom src/__tests__/queries.find.js
+PASS dom src/__tests__/wait-for-element-to-be-removed.js
+PASS dom src/__tests__/matches.js
+PASS dom src/__tests__/screen.js
+PASS dom src/__tests__/pretty-dom.js
+PASS dom src/__tests__/get-node-text.js
+PASS dom src/__tests__/config.js
+PASS dom src/__tests__/fake-timers.js
+PASS dom src/__tests__/event-wrapper.js
+PASS dom src/__tests__/get-user-code-frame.js
+PASS dom src/__tests__/helpers.js
+
+Test Suites: 29 passed, 29 total
+Tests:       666 passed, 666 total
+Snapshots:   125 passed, 125 total
+Time:        17.835 s
+Ran all test suites in 2 projects.
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/dom-testing-library && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js jest --det)  # exit 0, 28.05 s
+detjs 0.1.0: Level 0 active; runner=jest 29.7.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: serial execution (runInBand); network=block; timers=virtual; node v22.23.5
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+PASS dom src/__tests__/ariaAttributes.js
+PASS dom src/__tests__/base-queries-warn-on-invalid-container.js
+PASS dom src/__tests__/config.js
+PASS dom src/__tests__/element-queries.js
+PASS dom src/__tests__/event-wrapper.js
+PASS dom src/__tests__/events.js
+PASS dom src/__tests__/fake-timers.js
+PASS dom src/__tests__/get-by-errors.js
+PASS dom src/__tests__/get-node-text.js
+PASS dom src/__tests__/get-queries-for-element.js
+PASS dom src/__tests__/get-user-code-frame.js
+PASS dom src/__tests__/helpers.js
+PASS dom src/__tests__/label-helpers.js
+PASS dom src/__tests__/log-dom.js
+PASS dom src/__tests__/matches.js
+PASS dom src/__tests__/misc.js
+PASS dom src/__tests__/pretty-dom.js
+PASS dom src/__tests__/queries.find.js
+PASS dom src/__tests__/query-helper.js
+PASS dom src/__tests__/role-helpers.js
+PASS dom src/__tests__/role.js
+PASS dom src/__tests__/screen.js
+PASS dom src/__tests__/suggestions.js
+PASS dom src/__tests__/text-matchers.js
+PASS dom src/__tests__/wait-for-element-to-be-removed.js
+PASS dom src/__tests__/wait-for.js
+PASS node src/__node_tests__/index.js
+PASS node src/__node_tests__/pretty-dom.js
+PASS node src/__node_tests__/screen.js
+
+Test Suites: 29 passed, 29 total
+Tests:       666 passed, 666 total
+Snapshots:   125 passed, 125 total
+Time:        26.141 s
+Ran all test suites in 2 projects.
+Force exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?
+detjs: trace .detjs/trace.jsonl: 666 tests, order digest fb13b593b77934cf613b30633eb66bb6
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/dom-testing-library && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js jest --det --det-workers=4)  # exit 0, 30.43 s
+detjs 0.1.0: Level 0 active; runner=jest 29.7.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: parallel execution in 4 lanes with a fixed plan (--det-workers) (--maxWorkers=4, one lane per worker); network=block; timers=virtual; node v22.23.5
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+PASS dom src/__tests__/base-queries-warn-on-invalid-container.js (8.715 s)
+PASS dom src/__tests__/ariaAttributes.js (9.49 s)
+PASS dom src/__tests__/events.js (8.719 s)
+PASS dom src/__tests__/helpers.js
+PASS dom src/__tests__/matches.js
+PASS dom src/__tests__/misc.js
+PASS dom src/__tests__/get-by-errors.js
+PASS dom src/__tests__/get-node-text.js
+PASS dom src/__tests__/get-queries-for-element.js
+PASS dom src/__tests__/label-helpers.js
+PASS dom src/__tests__/role-helpers.js
+PASS dom src/__tests__/element-queries.js (16.604 s)
+PASS dom src/__tests__/role.js
+PASS dom src/__tests__/event-wrapper.js
+PASS dom src/__tests__/wait-for-element-to-be-removed.js
+PASS dom src/__tests__/config.js
+PASS dom src/__tests__/fake-timers.js
+PASS dom src/__tests__/get-user-code-frame.js
+PASS dom src/__tests__/queries.find.js
+PASS dom src/__tests__/log-dom.js
+PASS dom src/__tests__/suggestions.js (7.448 s)
+PASS dom src/__tests__/pretty-dom.js
+PASS dom src/__tests__/screen.js
+PASS node src/__node_tests__/index.js (6.566 s)
+PASS dom src/__tests__/text-matchers.js
+PASS dom src/__tests__/query-helper.js
+PASS node src/__node_tests__/screen.js
+PASS dom src/__tests__/wait-for.js
+PASS node src/__node_tests__/pretty-dom.js
+
+Test Suites: 29 passed, 29 total
+Tests:       666 passed, 666 total
+Snapshots:   125 passed, 125 total
+Time:        28.27 s
+Ran all test suites in 2 projects.
+Force exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?
+detjs: parallel: 4 lanes, plan 8716bc02f5ba4a3c002fc67d746e958f; 29 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+detjs: trace .detjs/trace.jsonl: 666 tests, order digest fb13b593b77934cf613b30633eb66bb6
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/dom-testing-library && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js jest --det --det-workers=4)  # exit 0, 21.05 s
+detjs 0.1.0: Level 0 active; runner=jest 29.7.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: parallel execution in 4 lanes with a fixed plan (--det-workers) (--maxWorkers=4, one lane per worker); network=block; timers=virtual; node v22.23.5
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+PASS dom src/__tests__/ariaAttributes.js (8.186 s)
+PASS dom src/__tests__/base-queries-warn-on-invalid-container.js (8.574 s)
+PASS dom src/__tests__/events.js (8.039 s)
+PASS dom src/__tests__/helpers.js
+PASS dom src/__tests__/get-by-errors.js
+PASS dom src/__tests__/get-node-text.js
+PASS dom src/__tests__/matches.js
+PASS dom src/__tests__/get-queries-for-element.js
+PASS dom src/__tests__/config.js
+PASS dom src/__tests__/misc.js
+PASS dom src/__tests__/label-helpers.js
+PASS dom src/__tests__/get-user-code-frame.js
+PASS dom src/__tests__/queries.find.js
+PASS dom src/__tests__/role.js
+PASS dom src/__tests__/role-helpers.js
+PASS dom src/__tests__/element-queries.js (12.855 s)
+PASS dom src/__tests__/screen.js
+PASS dom src/__tests__/wait-for-element-to-be-removed.js
+PASS dom src/__tests__/event-wrapper.js
+PASS dom src/__tests__/fake-timers.js
+PASS dom src/__tests__/log-dom.js
+PASS dom src/__tests__/pretty-dom.js
+PASS node src/__node_tests__/pretty-dom.js
+PASS dom src/__tests__/query-helper.js
+PASS dom src/__tests__/wait-for.js
+PASS node src/__node_tests__/index.js
+PASS dom src/__tests__/suggestions.js
+PASS dom src/__tests__/text-matchers.js
+PASS node src/__node_tests__/screen.js
+
+Test Suites: 29 passed, 29 total
+Tests:       666 passed, 666 total
+Snapshots:   125 passed, 125 total
+Time:        19.801 s
+Ran all test suites in 2 projects.
+Force exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?
+detjs: parallel: 4 lanes, plan 8716bc02f5ba4a3c002fc67d746e958f (sticky); 29 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+detjs: trace .detjs/trace.jsonl: 666 tests, order digest fb13b593b77934cf613b30633eb66bb6
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/dom-testing-library && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js jest --det)  # exit 0, 17.05 s
+detjs 0.1.0: Level 0 active; runner=jest 29.7.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: serial execution (runInBand); network=block; timers=virtual; node v22.23.5
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+PASS dom src/__tests__/ariaAttributes.js
+PASS dom src/__tests__/base-queries-warn-on-invalid-container.js
+PASS dom src/__tests__/config.js
+PASS dom src/__tests__/element-queries.js
+PASS dom src/__tests__/event-wrapper.js
+PASS dom src/__tests__/events.js
+PASS dom src/__tests__/fake-timers.js
+PASS dom src/__tests__/get-by-errors.js
+PASS dom src/__tests__/get-node-text.js
+PASS dom src/__tests__/get-queries-for-element.js
+PASS dom src/__tests__/get-user-code-frame.js
+PASS dom src/__tests__/helpers.js
+PASS dom src/__tests__/label-helpers.js
+PASS dom src/__tests__/log-dom.js
+PASS dom src/__tests__/matches.js
+PASS dom src/__tests__/misc.js
+PASS dom src/__tests__/pretty-dom.js
+PASS dom src/__tests__/queries.find.js
+PASS dom src/__tests__/query-helper.js
+PASS dom src/__tests__/role-helpers.js
+PASS dom src/__tests__/role.js
+PASS dom src/__tests__/screen.js
+PASS dom src/__tests__/suggestions.js
+PASS dom src/__tests__/text-matchers.js
+PASS dom src/__tests__/wait-for-element-to-be-removed.js
+PASS dom src/__tests__/wait-for.js
+PASS node src/__node_tests__/index.js
+PASS node src/__node_tests__/pretty-dom.js
+PASS node src/__node_tests__/screen.js
+
+Test Suites: 29 passed, 29 total
+Tests:       666 passed, 666 total
+Snapshots:   125 passed, 125 total
+Time:        15.761 s
+Ran all test suites in 2 projects.
+Force exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?
+detjs: trace .detjs/trace.jsonl: 666 tests, order digest fb13b593b77934cf613b30633eb66bb6
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/dom-testing-library && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js jest --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/dom-testing-library/.detjs-par-cache)  # exit 0, 22.57 s
+detjs 0.1.0: Level 0 active; runner=jest 29.7.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: parallel execution in 4 lanes with a fixed plan (--det-workers) (--maxWorkers=4, one lane per worker); network=block; timers=virtual; node v22.23.5
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+PASS dom src/__tests__/ariaAttributes.js (5.928 s)
+PASS dom src/__tests__/base-queries-warn-on-invalid-container.js (5.633 s)
+PASS dom src/__tests__/config.js
+PASS dom src/__tests__/events.js (7.671 s)
+PASS dom src/__tests__/get-by-errors.js
+PASS dom src/__tests__/get-user-code-frame.js
+PASS dom src/__tests__/get-node-text.js
+PASS dom src/__tests__/element-queries.js (8.749 s)
+PASS dom src/__tests__/helpers.js
+PASS dom src/__tests__/get-queries-for-element.js
+PASS dom src/__tests__/matches.js
+PASS dom src/__tests__/queries.find.js
+PASS dom src/__tests__/label-helpers.js
+PASS dom src/__tests__/misc.js
+PASS dom src/__tests__/screen.js
+PASS dom src/__tests__/role.js
+PASS dom src/__tests__/wait-for-element-to-be-removed.js
+PASS dom src/__tests__/role-helpers.js
+PASS dom src/__tests__/event-wrapper.js
+PASS dom src/__tests__/fake-timers.js
+PASS dom src/__tests__/log-dom.js
+PASS node src/__node_tests__/pretty-dom.js (5.183 s)
+PASS dom src/__tests__/pretty-dom.js
+PASS dom src/__tests__/query-helper.js
+PASS node src/__node_tests__/index.js (5.264 s)
+PASS dom src/__tests__/wait-for.js
+PASS dom src/__tests__/suggestions.js (5.55 s)
+PASS dom src/__tests__/text-matchers.js
+PASS node src/__node_tests__/screen.js
+
+Test Suites: 29 passed, 29 total
+Tests:       666 passed, 666 total
+Snapshots:   125 passed, 125 total
+Time:        20.577 s
+Ran all test suites in 2 projects.
+Force exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?
+detjs: parallel: 4 lanes, plan 8716bc02f5ba4a3c002fc67d746e958f (sticky); 29 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+detjs cache: reused with proof 0 tests in 0 files (0 s recorded); ran 29 files; recorded 658 tests; check 0.001 s, identity 0.08 s, record 0.092 s
+detjs cache: not cached: reads the worker or pool id the runner gives its process (depends on placement) 10
+detjs cache: receipts .detjs/receipts.jsonl
+detjs: trace .detjs/trace.jsonl: 666 tests, order digest fb13b593b77934cf613b30633eb66bb6
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/dom-testing-library && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js jest --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/dom-testing-library/.detjs-par-cache)  # exit 0, 5.71 s
+detjs 0.1.0: Level 0 active; runner=jest 29.7.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: parallel execution in 4 lanes with a fixed plan (--det-workers) (--maxWorkers=4, one lane per worker); network=block; timers=virtual; node v22.23.5
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+PASS node src/__node_tests__/pretty-dom.js
+PASS node src/__node_tests__/index.js
+
+Test Suites: 2 passed, 2 total
+Tests:       8 passed, 8 total
+Snapshots:   11 passed, 11 total
+Time:        3.814 s
+Ran all test suites.
+Force exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?
+detjs: parallel: 4 lanes, plan fa811a77ea233fb18e872512b6263293 (sticky); 2 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+detjs cache: reused with proof 658 tests in 27 files (48.095 s recorded); ran 2 files; recorded 0 tests; check 0.031 s, identity 0.08 s, record 0.012 s
+detjs cache: not cached: reads the worker or pool id the runner gives its process (depends on placement) 10
+detjs cache: receipts .detjs/receipts.jsonl
+detjs: trace .detjs/trace.jsonl: 8 tests, order digest 5814568fcb45c2f9b42fbd65aceac4b8
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/dom-testing-library && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js jest --det)  # exit 0, 15.47 s
+detjs 0.1.0: Level 0 active; runner=jest 29.7.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: serial execution (runInBand); network=block; timers=virtual; node v22.23.5
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+PASS dom src/__tests__/ariaAttributes.js
+PASS dom src/__tests__/base-queries-warn-on-invalid-container.js
+PASS dom src/__tests__/config.js
+PASS dom src/__tests__/element-queries.js
+PASS dom src/__tests__/event-wrapper.js
+PASS dom src/__tests__/events.js
+PASS dom src/__tests__/fake-timers.js
+PASS dom src/__tests__/get-by-errors.js
+PASS dom src/__tests__/get-node-text.js
+PASS dom src/__tests__/get-queries-for-element.js
+PASS dom src/__tests__/get-user-code-frame.js
+PASS dom src/__tests__/helpers.js
+PASS dom src/__tests__/label-helpers.js
+PASS dom src/__tests__/log-dom.js
+PASS dom src/__tests__/matches.js
+PASS dom src/__tests__/misc.js
+PASS dom src/__tests__/pretty-dom.js
+PASS dom src/__tests__/queries.find.js
+PASS dom src/__tests__/query-helper.js
+PASS dom src/__tests__/role-helpers.js
+PASS dom src/__tests__/role.js
+PASS dom src/__tests__/screen.js
+PASS dom src/__tests__/suggestions.js
+PASS dom src/__tests__/text-matchers.js
+PASS dom src/__tests__/wait-for-element-to-be-removed.js
+PASS dom src/__tests__/wait-for.js
+PASS node src/__node_tests__/index.js
+PASS node src/__node_tests__/pretty-dom.js
+PASS node src/__node_tests__/screen.js
+
+Test Suites: 29 passed, 29 total
+Tests:       666 passed, 666 total
+Snapshots:   125 passed, 125 total
+Time:        14.262 s
+Ran all test suites in 2 projects.
+Force exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?
+detjs: trace .detjs/trace.jsonl: 666 tests, order digest fb13b593b77934cf613b30633eb66bb6
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/dom-testing-library && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js jest --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/dom-testing-library/.detjs-par-cache --det-cache-verify)  # exit 0, 19.15 s
+detjs 0.1.0: Level 0 active; runner=jest 29.7.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: parallel execution in 4 lanes with a fixed plan (--det-workers) (--maxWorkers=4, one lane per worker); network=block; timers=virtual; node v22.23.5
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+PASS dom src/__tests__/event-wrapper.js
+PASS dom src/__tests__/ariaAttributes.js (5.485 s)
+PASS dom src/__tests__/base-queries-warn-on-invalid-container.js (5.142 s)
+PASS dom src/__tests__/fake-timers.js
+PASS dom src/__tests__/events.js
+PASS dom src/__tests__/get-node-text.js
+PASS dom src/__tests__/misc.js
+PASS dom src/__tests__/pretty-dom.js
+PASS dom src/__tests__/element-queries.js (7.921 s)
+PASS dom src/__tests__/get-queries-for-element.js
+PASS dom src/__tests__/queries.find.js
+PASS dom src/__tests__/query-helper.js
+PASS dom src/__tests__/screen.js
+PASS dom src/__tests__/text-matchers.js
+PASS dom src/__tests__/config.js
+PASS dom src/__tests__/helpers.js
+PASS dom src/__tests__/wait-for-element-to-be-removed.js
+PASS dom src/__tests__/label-helpers.js
+PASS dom src/__tests__/get-by-errors.js
+PASS dom src/__tests__/get-user-code-frame.js
+PASS node src/__node_tests__/index.js
+PASS dom src/__tests__/log-dom.js
+PASS dom src/__tests__/matches.js
+PASS dom src/__tests__/role-helpers.js
+PASS node src/__node_tests__/pretty-dom.js
+PASS dom src/__tests__/role.js
+PASS dom src/__tests__/wait-for.js
+PASS dom src/__tests__/suggestions.js
+PASS node src/__node_tests__/screen.js
+
+Test Suites: 29 passed, 29 total
+Tests:       666 passed, 666 total
+Snapshots:   125 passed, 125 total
+Time:        17.005 s
+Ran all test suites in 2 projects.
+Force exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?
+detjs: parallel: 4 lanes, plan ec9cb03eb98e1f588448e58700a6a418 (sticky); 29 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+detjs cache: would reuse (verify mode: run anyway) 658 tests in 27 files (48.095 s recorded); ran 2 files; recorded 658 tests; check 0.036 s, identity 0.066 s, record 0.106 s
+detjs cache: not cached: reads the worker or pool id the runner gives its process (depends on placement) 10
+detjs cache: verified 685 results, 0 differ
+detjs cache: receipts .detjs/receipts.jsonl
+detjs: trace .detjs/trace.jsonl: 666 tests, order digest fb13b593b77934cf613b30633eb66bb6
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/dom-testing-library && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js jest --det --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/dom-testing-library/.detjs-par-cache)  # exit 0, 4.87 s
+detjs 0.1.0: Level 0 active; runner=jest 29.7.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: serial execution (runInBand); network=block; timers=virtual; node v22.23.5
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+PASS node src/__node_tests__/index.js
+PASS node src/__node_tests__/pretty-dom.js
+
+Test Suites: 2 passed, 2 total
+Tests:       8 passed, 8 total
+Snapshots:   11 passed, 11 total
+Time:        3.143 s
+Ran all test suites.
+Force exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?
+detjs cache: reused with proof 658 tests in 27 files (37.91 s recorded); ran 2 files; recorded 0 tests; check 0.027 s, identity 0.07 s, record 0 s
+detjs cache: not cached: reads the worker or pool id the runner gives its process (depends on placement) 10
+detjs cache: receipts .detjs/receipts.jsonl
+detjs: trace .detjs/trace.jsonl: 8 tests, order digest 5814568fcb45c2f9b42fbd65aceac4b8
+
