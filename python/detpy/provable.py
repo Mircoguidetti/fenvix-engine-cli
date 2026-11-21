@@ -133,7 +133,7 @@ class Sensor:
     test is running), and the Rust core decides what that means.
     """
 
-    __slots__ = ("tool", "active", "_verdicts", "_keep", "_seen", "outside", "_native_ok", "_native_seen",
+    __slots__ = ("tool", "active", "_verdicts", "_seen", "outside", "_native_ok", "_native_seen",
                  "_reason", "_transparent_memo", "_seen_for", "_native_bad")
 
     def __init__(self) -> None:
@@ -143,10 +143,6 @@ class Sensor:
         # call: the table is a pure function, so its answer can be remembered for the life of the process.
         self._verdicts: dict = {}
         self._transparent_memo: dict = {}   # module name -> its code is Python
-        # every callable this sensor has classified, kept alive on purpose. Without the reference, CPython could
-        # free the object and hand its address to a different callable, and a cache keyed on identity would then
-        # answer for the wrong one.
-        self._keep: list = []
         self._seen: set = set()          # gaps already reported for the test named by _seen_for
         self._seen_for: str | None = None
         self._native_bad: list = []      # unaudited extensions found, reported again for every later test
@@ -252,8 +248,10 @@ class Sensor:
             if ok is None:
                 # a Python-level callable is not a boundary crossing at all; everything else must be in the table
                 ok = self._transparent(k[0]) or _core.provable_account(k[0], k[1]) != "unaccounted"
+                # keyed by the name, not by the object's identity: a bound builtin method is a fresh object on
+                # every attribute access, so an identity cache would need a reference to each one -- and holding
+                # `fh.read` would hold the open file, and `sock.recv` the socket, for the whole session.
                 self._verdicts[k] = ok
-                self._keep.append(c)
             if not ok:
                 # Only now, when a gap is about to be reported, is it worth asking whose call this is. A call the
                 # runner makes for its own bookkeeping is not something the test observed (Rule E), and finding
