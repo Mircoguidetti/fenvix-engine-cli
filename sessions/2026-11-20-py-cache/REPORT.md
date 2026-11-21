@@ -8,7 +8,7 @@ Branch `claude/py-cache` (from `claude/parallel-proof-3` @ dce6c36e; `claude/rel
 **Why PARTIAL.** The coordinator's condition for F-05 (DECISIONS 2026-11-20) is 0 wrong reuses AND cached runs
 faster than uncached on moto, pydantic-ai, litellm and esphome. Wrong reuses: 0 in every measured run. Tests that
 ran under the cache with another outcome than uncached: litellm 2,073 per commit in run g (a child-protocol bug, fixed
-and MEASURED equal locally since, section 1) and moto 8 per commit (open, section 2.9). Speed: green on
+and MEASURED equal locally since, section 1) and moto 8 per commit (the file's own outcome without earlier files' state, not reported as a placement finding: section 2.9). Speed: green on
 unchanged reruns and on moto's serial walk, red on moto's `-n 4` walk (MEASURED, CI run 44825894259, 10 commits):
 
 | moto 96f50b1a walk, 10 commits | cached | uncached |
@@ -161,13 +161,16 @@ difference, as `fenvix verify` names it: `env:EXAM_OUT`). Reported to the coordi
    ...])` in `pytest_runtest_setup`, a name resolution in every test, and a resolved name is a network input
    (release-1's rule, `test_review_r023b::test_2b_*`): 4,126 of 4,181 tests "not cacheable: network connection",
    MEASURED locally. Cached runs pay the per-file cost for nothing there: 220-240 s against 48 s at -n 4.
-9. **moto, run g: 8 outcomes changed in tests that ran (not reused).** The 8 `ResourceWarning` checks of
-   `tests/test_s3/test_s3_file_handles.py` (`gc.collect()`, then assert no ResourceWarning) failed cached and passed
-   uncached on every commit, -n 4 and serial (MEASURED, run g, engine b8444007, Python 3.12). Not reproduced on this
-   head locally (moto 38a79b903, Python 3.13, cached: `tests/test_s3/` alone, and the file with the walk's whole
-   collection: 24 / 24 passed, with and without the child-protocol fix). Likely cause, not proven: the file's child
-   inherits the parent's uncollected garbage at the fork, and its finalizers warn inside these tests. UNKNOWN until
-   the next CI walk on this head; it is not a wrong reuse, and it is not reported as a placement finding.
+9. **moto, run g: 8 outcomes differ from one process, silently.** The 8 tests of
+   `tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks` failed cached and passed uncached on
+   every commit, -n 4 and serial (MEASURED, run g). Cause (MEASURED, run h on 5295ff0f and locally with AWS_* unset):
+   their `setUp` builds `boto3.client("s3")` outside `mock_aws` and works only after an earlier test file of the same
+   process has left credentials or boto3 session state behind; the file alone fails the same 8 without the cache
+   (run h `det-n`: 8 failed / 16 passed, `NoCredentialsError`). The per-file result is the file's own outcome, not a
+   wrong reuse (none was reused). It is silent because no in-process result is in the store to compare with (2.1):
+   on moto the in-process cached run records nothing (549 of 565 `after an earlier test or fixture of this process`).
+   Coordinator's decision pending (rerun a test that fails in a file's child in the parent process, and report a
+   placement finding when it passes there).
 
 ## 3. Audit gaps of these rows (audit 2026-11-20), one line each
 
@@ -271,7 +274,7 @@ Serial subset (30 files, 2,375 tests): no cache 13.7 s; per-file cold 25.9 s, wa
 
 | repository, walk | mode | cached | uncached | reused | wrong reuses |
 |---|---|---|---|---|---|
-| moto 96f50b1a, 10 commits | -n 4 | 755 s | 648 s | 8,561 of 24,924 | 0 (0 mismatches); 8 ran tests changed, 2.9 |
+| moto 96f50b1a, 10 commits | -n 4 | 755 s | 648 s | 8,561 of 24,924 | 0 (0 mismatches); 8 ran tests differ from one process, 2.9 |
 | moto, same | serial | 1,577 s | 1,702 s | 8,561 of 24,924 | 0; the same 8 changed |
 | moto, unchanged rerun (commit 0) | -n 4 | 24.8 s | 67.3 s | (in the walk's unchanged step) | 0 |
 | litellm 17e6ea8c `tests/unit/llms/vertex_ai`, 10 commits | -n 4 | 458-970 s per commit | 62-77 s | 0 | 0, but 2,073 outcomes changed per commit (fixed after the run, section 1) |
