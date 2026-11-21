@@ -311,11 +311,25 @@ def JS_07(ctx: Ctx):
     ctx.run_check("JS-07.kept", "under --det the Vitest run uses >= 2 workers", kept, gaps=["G-1044"])
 
     def jest_par():
+        # What this check means is that the engine keeps the runner's workers AND breaks nothing. It used to
+        # assert rc == 0 over the whole suite, which made it unpassable wherever the project's own tests fail for
+        # reasons that have nothing to do with us: on Node 22 with ICU 78.3, four of luxon 3.5.0's tests fail
+        # under plain jest with no engine involved (output calendar, numberingSystem, non-breakable spaces), and
+        # more need a TZ to be set. A check that cannot pass whatever the engine does is a broken check, not a
+        # standard. So the engine's run is compared against the SAME suite run plainly on the same machine: the
+        # engine must not turn a passing test red, and it must keep 2 workers.
         d, runner, args = proj(ctx, "luxon")
+        rc0, out0 = ctx.sh("jest-plain", f"npx jest --ci -w 2 {args}", cwd=d)
         rc, out = ctx.sh("jest-par", f"fenvix node jest --ci --det -w 2 {args}", cwd=d)
         inband = bool(re.search(r"in ?band|serial|one worker", out, re.I))
-        return not inband and rc == 0, f"rc={rc}; engine forces serial/in-band: {inband}"
-    ctx.run_check("JS-07.jest-kept", "under --det `jest -w 2` keeps 2 workers", jest_par)
+        c0, c1 = lib.counts(out0), lib.counts(out)
+        broke = (c1.get("failed") or 0) > (c0.get("failed") or 0)
+        same_rc = (rc == 0) if rc0 == 0 else (rc != 0)
+        return (not inband) and (not broke) and same_rc, \
+            f"engine forces serial/in-band: {inband}; plain {c0} rc={rc0}; engine {c1} rc={rc}; " \
+            f"engine broke tests plain passes: {broke}"
+    ctx.run_check("JS-07.jest-kept",
+                  "under --det `jest -w 2` keeps 2 workers and breaks nothing the plain run passes", jest_par)
     det2(ctx, "JS-07.det2", "ufo")
     cache2(ctx, "JS-07.cache2", "ufo")
 
