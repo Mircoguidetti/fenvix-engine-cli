@@ -1,4 +1,4 @@
-PARTIAL
+DONE
 
 # P-041 Node: rows JS-02, JS-07, JS-09, F-06, F-02 Node
 
@@ -6,7 +6,14 @@ Session 2026-11-20 (continuation of the stopped P-041 session; `HANDOFF-node.md`
 `claude/release-1`. Labels: MEASURED (with the command or run id), ESTIMATED, DECLARED (with source), UNKNOWN. Local
 numbers come from this container (4 vCPU, Node 22.23.5, 24.22.3, 26.13.1) unless stated otherwise.
 
-<!--STATUS-->
+Status: DONE for the Node findings of these rows. PR #8 (`claude/node` 825aef2c) is merged into `claude/release-1`
+(trunk cec096c5, DECLARED by the coordinator, 2026-11-21). Rows F-01, F-02 and F-03 close with the exam that runs on
+trunk plus the verifier PR (coordinator decision, 2026-11-21); this report does not close them.
+
+Open, and where:
+- F-02 Node whole-set measurement: not measured (section 3).
+- Five F-01 exam checks pass only together with `claude/verifier-cli` (section 2, R-050 and exam).
+- `F-01.env.pinned.node`: verify exits 1 where the exam expects 3. That belongs to the verifier owner.
 
 ## 1. Rows
 
@@ -117,28 +124,86 @@ What is not true: nothing open in this row.
   database server in the test job), and the customer's own 837-file suite and its 2-vCPU timing (UNKNOWN: not
   available here).
 
+- TZ and locale, option A (coordinator decision, 2026-11-20):
+  - under `--det` they are always pinned to UTC and C.UTF-8;
+  - `--det-tz` / `--det-locale` set to `ZONE|keep` keeps the job's value;
+  - the keep cases of every runner suite were rewritten, and pinned-default cases were added;
+  - documented in `docs/NODE.md` and `docs/CLI.md`.
+- R-050 N1 (reads of files outside the project), in `node/src/outside.js`:
+  - a read by test code of a file outside the project is the event `fs.read.outside` = `<path>|<bytes>:<digest>`;
+  - the path is machine-independent (`<abs>/name`, `<tmp>/...`);
+  - covered: readFileSync, readFile, promises.readFile, open/openSync with read/readSync, and FileHandle.readFile/read;
+  - so `verify` says DIVERGENT when such a file's content differs between runs;
+  - project files stay relative even when the project itself lives under `/tmp` (`sites.normPath` checks the root
+    first);
+  - the reviewer's `review-r050-node-recheck.test.js` was copied unchanged; outside-file cases were added to
+    `verifier-inputs.test.js` for node:test, Vitest and Jest.
+- F-01 exam checks assigned to the Node shell (MEASURED, `exam/run.py --rows F-01 --only <ids>`):
+  - Setup: the frozen exam (`claude/exam` a6d88243), not modified; leg linux-x64 / Python 3.13 / Node 22; the engine
+    tarball built by `release/engine/assemble.sh` and installed with its own `fetch.sh` and `install.sh`.
+  - On 825aef2c: 3 of 8 pass (`real-projects.luxon-tz` with 1116/1116 tests identical, `probe.mtime`,
+    `probe.timer-consistency`).
+  - The other five (`tz.pinned.node`, `locale.pinned.node`, `probe.fake-timers`, `probe.node-clock-sources`,
+    `probe.node-vm`) print equal values in both runs. Verify differs only on the run input `env:EXAM_OUT`, the exam's
+    own output path, declared volatile through `FENVIX_VOLATILE_ENV`. That variable is honored by
+    `node/src/volatile.js`, which is on `claude/verifier-cli` only.
+  - Node-shell part, in 825aef2c: `env.get` / `env.has` events record `NAME=set|unset`, and `env.list` a digest of the
+    names, as verifier-cli's Python envobs does. The value stays the run input `env:NAME`, so a differing variable is
+    still reported and named (G-0126 test, with a new assertion on the event).
+  - On a local scratch merge of 825aef2c and `claude/verifier-cli` (not pushed; the conflicts in
+    `node/src/controls.js` and `python/detpy/_level0.py` were resolved by keeping both sides), the five pass: 8 of 8.
+  - The coordinator decided the order: trunk first, then the verifier session merges trunk.
+
 ## 3. F-02 Node measurement: every test of the Node Block 1 flaky set
 
-<!--F02-->
+UNKNOWN: there are no whole-set numbers. The measurement run of workflow `node-repro` (run 44798219623) was
+cancelled on the coordinator's instruction (2026-11-20), and by the same instruction its partial rows are not used
+here. No other run finished.
+
+The files in `harness/node_repro/results-final/` are not a measurement either:
+- `summary.json` and `REPORT.md` come from run 44798166519 on engine c3e92907. They show 411 tests in the set and
+  0 attempted, because no repository was prepared in that run.
+- They are kept only as a record of that failed run. No number in this report comes from them.
+
+What is MEASURED for F-02 Node is the per-test path, on local fixtures:
+- the order-dependent test of `customer-nodetest.test.js` (REPRODUCED 10/10, setter named);
+- `tests/test_fenvix_js.py`, including run-dependent ids.
+
+To measure the set: start `node-repro` by hand (`harness/node_repro/RUN`) on the merged trunk.
 
 ## 4. Suites
 
-Local, on the merged tree (`claude/node` 0db339a2 = release-1 f84dde74 + this branch), MEASURED,
-`cd node && node --test --test-concurrency=1 test/*.test.js`:
+Local, on the pushed head (`claude/node` 825aef2c: trunk 74d42b3 merged, plus N1 and the env-event change),
+MEASURED, `cd node && node --test --test-concurrency=1 test/*.test.js`:
 
 | Node | tests | pass | fail | skipped |
 |---|---:|---:|---:|---:|
-| 22.23.5 | 857 | 856 | 0 | 1 |
-| 24.22.3 | 857 | 856 | 0 | 1 |
-| 26.13.1 | 857 | 856 | 0 | 1 |
+| 22.23.5 | 861 | 860 | 0 | 1 |
+| 24.22.3 | 861 | 860 | 0 | 1 |
+| 26.13.1 | 861 | 860 | 0 | 1 |
+
+On Node 26 the run reached the 2 h limit of the background job after 718 tests (717 pass, 0 fail, 1 skipped). The six
+files it had not reached (`runner-tap` to `verifier-inputs`) were then run on their own: 143/143 pass.
+
+Two earlier failures on Node 24/26 in `r021-fixes` were caused by the test setup, not by the code:
+- those worktrees were under `/tmp`, and the cache skips `os.tmpdir()`;
+- one rerun of a file clobbered the fixtures of a running suite.
+
+Run again from worktrees under `/home/user`, they pass.
 
 - The skipped test is the reviewer file R-021's own F3b case on Jest ("process.env in a test file is a copy"), which
   was already skipped before this session.
 - Deno suites are skipped as whole files when Deno is not installed (it is outside the Node 22/24/26 scope).
-- `cargo test -p detpy-core`: 152/152 (MEASURED).
-- `python -m pytest tests/test_fenvix_js.py tests/test_fenvix_cli.py tests/test_packaging.py`: 64 passed, 2 skipped,
-  after the packaging fix, 0 failed (MEASURED). The skips are verifier-cli's and packaging's own cases.
-- CI of PR #8: <!--CI-->
+- `cargo test -p detpy-core`: 152/152 (MEASURED, on 825aef2c).
+- `python -m pytest tests/test_fenvix_js.py tests/test_fenvix_cli.py`: 39 passed, 1 skipped, 0 failed (MEASURED, on
+  825aef2c).
+- Earlier, after the packaging fix: `tests/test_packaging.py` with the two files above gave 64 passed, 2 skipped and
+  0 failed (MEASURED). The skips are verifier-cli's and packaging's own cases.
+- CI of PR #8: green on 825aef2c (MEASURED, check runs of the head commit).
+  - Full run 44868148258: build, python 3.12, 3.13 and 3.14, node 22, 24 and 26, smoke (node, python) and all five
+    install legs succeeded; publish-engine was skipped.
+  - PR gate run 44868102223: every job succeeded.
+  - mergeable_state was clean, and the PR was merged.
 
 
 ## 5. Every Node audit gap of these rows
