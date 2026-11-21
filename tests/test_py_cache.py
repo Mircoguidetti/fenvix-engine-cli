@@ -280,7 +280,13 @@ def test_py08_a_test_that_starts_a_process_runs_every_time(pytester):
         p, c, _ = run(pytester, label, "-rA", "tests")
         assert p.returncode == 0, p.stdout
         assert "tests/test_p.py::test_child" not in reused(c)
-    assert "tests/test_p.py::test_pure" in reused(c)
+    # review R-050 P2 (coordinator decision 2026-11-21, (a)): test_child is never recorded, so it may consume what any
+    # earlier test of its process leaves; test_pure runs before it every time, as in the user's run (before: reused,
+    # and the never-cached test ran without it)
+    assert "tests/test_p.py::test_pure" not in reused(c)
+    rows = [json.loads(x) for x in (pytester.path / ".c" / "receipts.jsonl").read_text().splitlines() if x.strip()]
+    why = [x.get("why") for x in rows if x["nodeid"] == "tests/test_p.py::test_pure"][-1]
+    assert why == "placement: a predecessor of tests/test_p.py::test_child, which runs in this session", why
 
 
 def test_py08_a_fixture_that_starts_a_process_refuses_its_tests(pytester):
@@ -390,8 +396,13 @@ def test_status_of_an_unlinked_temporary_file_is_not_a_refusal(pytester):
     for label in ("r1", "r2"):
         p, c, _ = run(pytester, label, "-rA", "tests")
         assert p.returncode == 0, p.stdout
-    assert "tests/test_p.py::test_size" in reused(c), c.get("not_cached_ids")
     assert "tests/test_p.py::test_time" not in reused(c)
+    # review R-050 P2 (decision (a)): test_time is never recorded, so test_size, before it, runs before it every time;
+    # selected alone, test_size is reused (its record stands)
+    assert "tests/test_p.py::test_size" not in reused(c), c.get("not_cached_ids")
+    p, c, _ = run(pytester, "alone", "-rA", "tests/test_p.py::test_size")
+    assert p.returncode == 0, p.stdout
+    assert "tests/test_p.py::test_size" in reused(c), c.get("not_cached_ids")
 
 
 def test_g0159_cache_epoch_is_the_virtual_day_and_the_real_clock_check_reports(pytester):
