@@ -1047,7 +1047,9 @@ class _DetSession(_Outcomes):
             if not S.order_digest:  # collection failed before the trace was opened
                 st.recorder.open(S.trace_path, json.dumps({"detpy": __version__, "collection": "failed"}), [])
             try:  # what was read after the header, outside any test (R-055 V12): in the footer
-                st.recorder.set_late(json.dumps(_level0.late_inputs()))
+                late = _level0.late_inputs()
+                if late:  # the footer gets `late` only when the run read something outside the tests
+                    st.recorder.set_late(json.dumps(late))
             except Exception:
                 pass
             st.recorder.close()

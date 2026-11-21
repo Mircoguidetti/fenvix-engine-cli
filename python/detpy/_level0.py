@@ -519,8 +519,8 @@ def outside_fields(files=(), env=(), not_proven=()) -> dict:
 
 def late_inputs() -> dict:
     """What the run did outside any test until its end (the footer `late`: same field names as the header, the
-    verifier merges them, R-055 V12)."""
-    return outside_fields()
+    verifier merges them, R-055 V12). Empty fields are left out: an empty dict when nothing was read."""
+    return {k: v for k, v in outside_fields().items() if v}
 
 
 _CODE_EXTRA: list = []  # xdist controller: the workers' (code, deps) lists (plugin._controller_meta)

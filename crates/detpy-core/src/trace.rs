@@ -49,7 +49,7 @@ pub struct Footer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub plan_digest: Option<String>,
     /// What the run read after the header was written, outside any test (a session-finish hook, a finalizer):
-    /// `env_read_outside_tests`, `inputs` (`file:<path>`), merged with the header's by the verifier (R-055 V12).
+    /// the header's field names (docs/VERIFY-CONTRACT.md section 1), merged with the header's by the verifier (R-055 V12).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub late: Option<serde_json::Value>,
 }

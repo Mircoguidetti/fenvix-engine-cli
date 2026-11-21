@@ -968,7 +968,12 @@ def _note_live(sock, address) -> None:
         return
     from . import uncontrolled
 
-    where = address if isinstance(address, str) else ":".join(str(x) for x in address[:2])
+    if isinstance(address, str):
+        where = address
+    else:  # a loopback server's port is ephemeral (bound to 0): not what the test observed (Node: `<port>` too)
+        host = str(address[0])
+        loop = host in ("localhost", "::1") or host.startswith("127.")
+        where = f"{host}:{'<port>' if loop else address[1]}"
     uncontrolled._mark("net", f"live endpoint {where}", _caller_depth())
 
 
