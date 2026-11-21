@@ -74,8 +74,8 @@ without this branch, F-01 passed 3/33. Fixed in this round, each as a class with
   line.
 - **The entropy run input named the device** (F-02, exam `numpy-repro`, interim CI exam run 44891607359): the
   input was `urandom`, so every bundle's provenance of a numpy test said "urandom". It is now `entropy`, the name of
-  the option and of the verify reason (Python and Node headers); verify reads `urandom` in older traces as the same
-  input. `F-02.probe.numpy-repro` and `F-03.probe.numpy` PASS locally after it (MEASURED).
+  the option and of the verify reason (Python and Node headers). Verify reading `urandom` in older traces as the
+  same input did not hold for the run-input comparison in `57d76c4` (R-051 R2); fixed in the follow-up. `F-02.probe.numpy-repro` and `F-03.probe.numpy` PASS locally after it (MEASURED).
 - **A configuration that did not run the target was counted as searched** (F-02, exam `py-autodoc`). Cause
   (MEASURED, the exam's own project venv): two of the project's modules do not import (`requests` is not installed),
   so pytest interrupted every `--det` session with 0 tests run, while `--collect-only` still listed the target.
@@ -132,6 +132,23 @@ Fixed in this round, each as a class with a regression test:
   a socket local), records the plaintext with the handshake's details, and on replay is the identity over the
   plaintext stream. Test: `tests/test_network_gaps.py::test_tls_over_memory_bios_is_recorded_as_plaintext_and_replayed`
   (asyncio, and the anyio shape used by httpx).
+
+### Follow-up after R-051 (prepared locally on `followup-r051`, pushed after PR #11 merges)
+
+R-051 found four non-blocking defects in `57d76c4`; its tests (`tests/test_review_r051_verifier.py`, unchanged) pass
+after these fixes (MEASURED, Python 3.13, local):
+
+- R1 (F-03): traces whose `inputs` object is empty were IDENTICAL (exit 0). An empty `inputs` is now no record of
+  the inputs: NOT PROVEN, exit 1.
+- R2 (F-03): an older trace's `urandom` input was not the same input as `entropy` when the run inputs were compared
+  (the earlier claim in this report did not hold). `run_inputs` now reads `urandom` as `entropy`.
+- R3 (F-02): replay of a target that is now skipped said "fixed, or ...". A replay in which the test body did not
+  run (skipped, or not collected) exits 2 and says the test did not run.
+- R4 (F-01): TLS over memory BIOs was bound to the first socket in the caller. With several sockets there, the
+  replay binds to the one whose recording was made above TLS, and the recording binds, once the handshake is done,
+  to the socket that sent the ClientHello (its handshake ciphertext is dropped from the recording).
+- A NOT REPRODUCIBLE bundle no longer prints `replay:` or `rerun:` lines (no command reproduces it); the `[entropy]`
+  hint names `--det-entropy=observe` for Python and `--det-urandom` for Node.
 
 ## Local suites before the PR #11 push (MEASURED, this container, editable installs, the code head of this push: the branch merged with release-1 `cec096c`)
 

@@ -380,12 +380,18 @@ def replay(bundle: Path, runs: int, python: str = sys.executable) -> dict:
     rs = []
     for i in range(runs):
         rs.append(runner.run(data["config"], data["order"], f"replay-{i}"))
-        if rs[-1].outcome(data.get("test")) == "missing":
+        outcome = rs[-1].outcome(data.get("test"))
+        if outcome == "missing":
             # reviewer #9: the test did not run at all (another directory, a renamed test, a suite that no longer
             # collects): that is not "no longer fails", and the remaining runs would say the same
             return {"test": data.get("test"), "runs": runs, "fails": 0, "identical_fingerprint": False,
                     "matches_bundle": False, "status": "not-collected",
                     "suite_error": getattr(runner, "problem", "") or f"runner exit {rs[-1].exit_code}: the test was not collected"}
+        if isinstance(outcome, str) and outcome.startswith("skip"):
+            # R-051 R3: collected but its body did not run (skipped, quarantined): the replay says nothing either
+            return {"test": data.get("test"), "runs": runs, "fails": 0, "identical_fingerprint": False,
+                    "matches_bundle": False, "status": "not-run",
+                    "suite_error": f"the test was {outcome}: its body did not run"}
     return _core.repro_replay_verdict(data, rs, runs)
 
 

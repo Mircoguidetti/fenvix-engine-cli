@@ -281,12 +281,20 @@ pub struct InputDifference {
 /// Key under which a producer records its run inputs in the trace header's `meta`.
 pub const INPUTS_KEY: &str = "inputs";
 
-/// The run inputs of a trace (`meta.inputs`), values as strings; None when the producer recorded none.
+/// The run inputs of a trace (`meta.inputs`), values as strings; None when the producer recorded none (no
+/// `inputs`, or an empty one: R-051 R1, an empty object is no record of the inputs). An input named after an older
+/// spelling is read under its current name (`urandom` is `entropy`, R-051 R2).
 pub fn run_inputs(t: &Trace) -> Option<BTreeMap<String, String>> {
     let obj = t.header.meta.get(INPUTS_KEY)?.as_object()?;
+    if obj.is_empty() {
+        return None;
+    }
     Some(
         obj.iter()
-            .map(|(k, v)| (k.clone(), v.as_str().map(str::to_string).unwrap_or_else(|| v.to_string())))
+            .map(|(k, v)| {
+                let k = if k == "urandom" { "entropy".to_string() } else { k.clone() };
+                (k, v.as_str().map(str::to_string).unwrap_or_else(|| v.to_string()))
+            })
             .collect(),
     )
 }
@@ -913,8 +921,9 @@ pub fn check_compatible(traces: &[Trace], labels: &[String]) -> Result<(), Trace
 
 /// What to do for each reason (audit G-2210, G-2019): printed once per reason present.
 pub const HINTS: &[(&str, &str)] = &[
-    ("entropy", "the test reads OS entropy (os.urandom, uuid4, secrets), observed but not controlled by --det; add \
-                 --det-urandom to draw it from the seeded stream (not for tests of cryptography)"),
+    ("entropy", "the test reads OS entropy (os.urandom, uuid4, secrets) and the runs did not control it alike: \
+                 Python controls it by default under --det (--det-entropy=observe leaves it real); Node controls \
+                 crypto.randomBytes & co. with --det-urandom (not for tests of cryptography)"),
     ("env", "an environment variable differs between the runs; give both runs the same environment, or declare it \
              irrelevant with --ignore-env NAME"),
     ("tz", "the runs used different time zones; keep the default --det-tz=UTC (or the same zone in both runs)"),
@@ -1214,7 +1223,7 @@ mod tests {
     #[test]
     fn every_recorded_input_is_compared_and_named() {
         // environment variables: design A (input-differs for the tests that read them), see env_* tests below
-        let cases: [(&str, &str, Reason); 10] = [
+        let cases: [(&str, &str, Reason); 9] = [
             ("runtime", "CPython 3.12.0 linux x86_64", Reason::Runtime),
             ("hashseed", "7", Reason::Hashseed),
             ("seed", "3", Reason::Seed),
@@ -1224,7 +1233,6 @@ mod tests {
             ("network", "record", Reason::Net),
             ("fs", "real", Reason::Fs),
             ("entropy", "controlled", Reason::Entropy),
-            ("urandom", "controlled", Reason::Entropy), // traces written before the input was renamed
         ];
         for (name, value, reason) in cases {
             let a = with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &BASE);
@@ -1243,6 +1251,20 @@ mod tests {
             assert!(text.contains("run inputs: DIFFER"), "{text}");
             assert!(text.contains(&format!("[{}]", reason.as_str())), "{text}");
         }
+        // an older trace's `urandom` is the same input as `entropy` (R-051 R2); an empty `inputs` records nothing (R1)
+        let mut old: Vec<(&str, &str)> = BASE.to_vec();
+        old.push(("urandom", "controlled"));
+        let mut new: Vec<(&str, &str)> = BASE.to_vec();
+        new.push(("entropy", "controlled"));
+        let r = verify(
+            &[with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &old),
+              with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &new)],
+            &[],
+        );
+        assert_eq!((r.summary.stable, r.summary.identical), (1, 1), "{:?}", r.input_differences);
+        let empty = || with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &[]);
+        let r = verify(&[empty(), empty()], &[]);
+        assert!(!r.summary.inputs_recorded && !render_text(&r, false).contains("verdict: IDENTICAL"));
         // same inputs: identical
         let a = with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &BASE);
         let b = with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &BASE);

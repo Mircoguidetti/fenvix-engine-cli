@@ -373,12 +373,13 @@ def render_repro(b: dict, out: Path) -> str:
         lines.append(f"  error: {str(exc).splitlines()[0][:300]}")
     # replay: the failing run itself, once, as a command a developer (or CI) runs: it fails when the defect reproduces
     # and takes runner arguments (`-x`, `--det-trace=PATH`); check: N replays with one fingerprint
-    one = _product_command(b.get("command"))
+    # (only for a reproduced defect: a NOT REPRODUCIBLE bundle has no command that reproduces it, R-051)
+    one = _product_command(b.get("command")) if status == "reproduced" else None
     if one:
         lines.append(f"  replay: {one}")
     lines.append(f"  check: {PROG} replay {_q(bundle_dir)}  (replays {rp.get('runs') or 10}x, exit 0 when every run "
                  f"fails with the bundle's fingerprint)")
-    if b.get("command"):
+    if b.get("command") and status == "reproduced":
         lines.append(f"  rerun: {b['command']}")
     lines.append(f"  bundle: {bundle_dir} ({b.get('runs')} runs, {b.get('seconds')} s)")
     return "\n".join(lines)
@@ -403,10 +404,11 @@ def _slug(test: str) -> str:
 
 
 def render_replay(res: dict, bundle: Path) -> str:
-    if res.get("status") == "not-collected":
+    if res.get("status") in ("not-collected", "not-run"):
         err = res.get("suite_error") or ""
-        return "\n".join([f"{PROG} replay: {res.get('test')}: NOT RUN: the test was not collected, so the replay "
-                          f"says nothing about the defect ({err.splitlines()[0] if err else 'no output'})"]
+        why = "the test was not collected" if res.get("status") == "not-collected" else "the test did not run"
+        return "\n".join([f"{PROG} replay: {res.get('test')}: NOT RUN: {why}, so the replay says nothing about the "
+                          f"defect ({err.splitlines()[0] if err else 'no output'})"]
                          + ["    " + ln for ln in err.splitlines()[1:]])
     ok = res.get("fails") == res.get("runs") and res.get("identical_fingerprint")
     head = "REPRODUCED" if ok else "NOT REPRODUCED"
@@ -610,7 +612,7 @@ def cmd_replay(argv: list) -> int:
         print(f"{PROG} replay: {e}", file=sys.stderr)
         return 2
     print(json.dumps(res, indent=2) if ns.json else render_replay(res, bundle))
-    if res.get("status") == "not-collected":
+    if res.get("status") in ("not-collected", "not-run"):
         return 2
     return 0 if res["fails"] == res["runs"] and res["identical_fingerprint"] else 1
 

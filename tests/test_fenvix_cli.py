@@ -393,3 +393,16 @@ def test_image_help_lists_every_product_command_on_its_own_line():
 
     for cmd in ("python", "node", "repro", "explore", "replay", "verify", "version", "pytest"):
         assert re.search(rf"^\s+fenvix {cmd}\b", p.stdout, re.M), (cmd, p.stdout)
+
+
+def test_a_not_reproducible_bundle_prints_no_command_that_would_reproduce_it(tmp_path):
+    # R-051: a failure that does not replay every time has no command that reproduces it: no `replay:` or `rerun:`
+    # line, only the check (which says whether it does now)
+    from detpy.fenvix import render_repro
+
+    b = {"test": "t.py::x", "status": "replay-unstable", "config": "fixed", "order": ["t.py::x"],
+         "replay": {"fails": 1, "runs": 2, "identical_fingerprint": False},
+         "command": "pytest --det --det-order=.detpy/repro/x/order.txt"}
+    out = render_repro(b, tmp_path)
+    assert "NOT REPRODUCIBLE" in out and "  check: fenvix replay" in out, out
+    assert "\n  replay: " not in out and "rerun:" not in out, out

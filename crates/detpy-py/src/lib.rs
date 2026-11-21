@@ -195,6 +195,15 @@ impl Cassette {
         lock(&self.inner).continue_in(from, idx, nodeid).ok_or_else(|| PyKeyError::new_err(format!("{from}#{idx}")))
     }
 
+    /// Forget what was recorded on a connection so far (the TLS handshake's ciphertext, once the TLS object above
+    /// it is known to record the plaintext).
+    fn clear_segments(&self, nodeid: &str, idx: usize) -> PyResult<()> {
+        let mut c = lock(&self.inner);
+        let conn = c.connection_mut(nodeid, idx).ok_or_else(|| PyKeyError::new_err(format!("{nodeid}#{idx}")))?;
+        conn.segments.clear();
+        Ok(())
+    }
+
     /// The server closed this connection (a read returned end of file): its replay ends with end of file.
     fn set_closed(&self, nodeid: &str, idx: usize) -> PyResult<()> {
         let mut c = lock(&self.inner);

@@ -230,6 +230,7 @@ def test_entropy_divergence_hints_at_det_urandom(tmp_path):
     p = subprocess.run([sys.executable, "-m", "detpy.fenvix", "verify", str(a), str(b)], capture_output=True,
                        text=True)
     assert p.returncode == 1 and "hint [entropy]" in p.stdout and "--det-urandom" in p.stdout, p.stdout
+    assert "--det-entropy=observe" in p.stdout, p.stdout  # the Python control is named (R-051)
 
 
 # ------------------------------------------------------------------------------------------------------ first use
