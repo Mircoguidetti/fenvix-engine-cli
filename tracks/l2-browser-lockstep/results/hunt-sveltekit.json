@@ -3,10 +3,10 @@
  "job": "hunt",
  "repo": "sveltejs/kit",
  "ref": "7a1296872cde5e807832f7714c635df956d37643",
- "status": "running",
- "run_id": "44909741100",
- "engine_commit": "cb8849a5620959c299160a0c2409fcd6c73a258a",
- "setup_s": 33,
+ "status": "ok",
+ "run_id": "44921091693",
+ "engine_commit": "d5757847fe8b6e93494577452388e2eb4c083c83",
+ "setup_s": 28,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -26,8 +26,8 @@
   "test/playwright"
  ],
  "runs": [],
- "epoch": "2026-11-21T13:46:00Z",
- "measured_at": "2026-11-21T13:46:30Z",
+ "epoch": "2026-11-21T15:55:00Z",
+ "measured_at": "2026-11-21T15:55:04Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "hunt": {
   "seeds": 8,
@@ -47,6 +47,42 @@
      ],
      [
       2,
+      "missing",
+      "",
+      null
+     ],
+     [
+      3,
+      "missing",
+      "",
+      null
+     ],
+     [
+      4,
+      "missing",
+      "",
+      null
+     ],
+     [
+      5,
+      "missing",
+      "",
+      null
+     ],
+     [
+      6,
+      "missing",
+      "",
+      null
+     ],
+     [
+      7,
+      "missing",
+      "",
+      null
+     ],
+     [
+      8,
       "missing",
       "",
       null
@@ -75,6 +111,42 @@
       "missing",
       "",
       null
+     ],
+     [
+      3,
+      "missing",
+      "",
+      null
+     ],
+     [
+      4,
+      "missing",
+      "",
+      null
+     ],
+     [
+      5,
+      "missing",
+      "",
+      null
+     ],
+     [
+      6,
+      "missing",
+      "",
+      null
+     ],
+     [
+      7,
+      "missing",
+      "",
+      null
+     ],
+     [
+      8,
+      "missing",
+      "",
+      null
      ]
     ],
     "seed": null,
@@ -100,6 +172,42 @@
       "missing",
       "",
       null
+     ],
+     [
+      3,
+      "missing",
+      "",
+      null
+     ],
+     [
+      4,
+      "missing",
+      "",
+      null
+     ],
+     [
+      5,
+      "missing",
+      "",
+      null
+     ],
+     [
+      6,
+      "missing",
+      "",
+      null
+     ],
+     [
+      7,
+      "missing",
+      "",
+      null
+     ],
+     [
+      8,
+      "missing",
+      "",
+      null
      ]
     ],
     "seed": null,
@@ -116,7 +224,7 @@
     "wall_s": 2701.0,
     "counts": {},
     "error": "",
-    "log_tail": "detjs 0.1.0: Level 2 browser prototype; playwright 1.63.0; seed 1 (seeded order); epoch 2026-11-21T13:46:00Z; vtime=paced; net=on; server=on; workers=1\n[WebServer] [WARN] Your node_modules are out of sync with your lockfile. a linked package is out of date\n[WebServer] $ vite dev --force --port 5301 --strictPort\n\nRunning 7 tests using 1 worker, shard 1 of 1\ndetjs: lockstep runs channel 'chrome' on Playwright's chromium headless shell (engine-issued frames)\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]\",\"t_ms\":4630,\"settles\":325,\"releases\":1,\"advances\":128,\"fired\":172,\"stalls\":0,\"probeWaits\":0,\"idleWaits\":0,\"frames\":99,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]\",\"t_ms\":13971,\"settles\":1049,\"releases\":10,\"advances\":482,\"fired\":652,\"stalls\":0,\"probeWaits\":0,\"idleWaits\":0,\"frames\":394,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data failure does not trigger an unhandled rejection [chromium-dev]\",\"t_ms\":17502,\"settles\":175,\"releases\":1,\"advances\":61,\"fired\":74,\"stalls\":0,\"probeWaits\":29190,\"idleWaits\":0,\"frames\":31,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data network failure does not trigger navigation [chromium-dev]\",\"t_ms\":21287,\"settles\":196,\"releases\":1,\"advances\":80,\"fired\":100,\"stalls\":0,\"probeWaits\":0,\"idleWaits\":0,\"frames\":46,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data error does not block user navigation [chromium-dev]\",\"t_ms\":25232,\"settles\":217,\"releases\":2,\"advances\":92,\"fired\":120,\"stalls\":0,\"probeWaits\":0,\"idleWaits\":0,\"frames\":57,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data tap works after data-sveltekit-preload-code hover [chromium-dev]\",\"t_ms\":29283,\"settles\":217,\"releases\":2,\"advances\":97,\"fired\":122,\"stalls\":0,\"probeWaits\":0,\"idleWaits\":0,\"frames\":63,\"calls\":[]}\n"
+    "log_tail": "detjs 0.1.0: Level 2 browser prototype; playwright 1.63.0; seed 1 (seeded order); epoch 2026-11-21T15:55:00Z; vtime=paced; net=on; server=on; workers=1\n[WebServer] [WARN] Your node_modules are out of sync with your lockfile. a linked package is out of date\n[WebServer] $ vite dev --force --port 5301 --strictPort\n\nRunning 7 tests using 1 worker, shard 1 of 1\ndetjs: lockstep runs channel 'chrome' on Playwright's chromium headless shell (engine-issued frames)\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]\",\"t_ms\":4630,\"settles\":270,\"releases\":1,\"advances\":125,\"fired\":167,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":97,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]\",\"t_ms\":13972,\"settles\":1053,\"releases\":10,\"advances\":482,\"fired\":649,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":392,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data failure does not trigger an unhandled rejection [chromium-dev]\",\"t_ms\":17488,\"settles\":176,\"releases\":1,\"advances\":61,\"fired\":76,\"stalls\":1,\"probeWaits\":31269,\"idleWaits\":0,\"frames\":29,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data network failure does not trigger navigation [chromium-dev]\",\"t_ms\":21273,\"settles\":197,\"releases\":1,\"advances\":76,\"fired\":96,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":45,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data error does not block user navigation [chromium-dev]\",\"t_ms\":25218,\"settles\":228,\"releases\":2,\"advances\":97,\"fired\":115,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":55,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data tap works after data-sveltekit-preload-code hover [chromium-dev]\",\"t_ms\":29289,\"settles\":224,\"releases\":2,\"advances\":98,\"fired\":123,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":63,\"calls\":[]}\n"
    },
    {
     "label": "h-latency-s2",
@@ -124,8 +232,60 @@
     "wall_s": 2701.0,
     "counts": {},
     "error": "",
-    "log_tail": "detjs 0.1.0: Level 2 browser prototype; playwright 1.63.0; seed 2 (seeded order); epoch 2026-11-21T13:46:00Z; vtime=paced; net=on; server=on; workers=1\n[WebServer] [WARN] Your node_modules are out of sync with your lockfile. a linked package is out of date\n[WebServer] $ vite dev --force --port 5301 --strictPort\n\nRunning 7 tests using 1 worker, shard 1 of 1\ndetjs: lockstep runs channel 'chrome' on Playwright's chromium headless shell (engine-issued frames)\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]\",\"t_ms\":4400,\"settles\":259,\"releases\":1,\"advances\":122,\"fired\":157,\"stalls\":0,\"probeWaits\":0,\"idleWaits\":0,\"frames\":85,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]\",\"t_ms\":14790,\"settles\":1090,\"releases\":9,\"advances\":524,\"fired\":726,\"stalls\":0,\"probeWaits\":0,\"idleWaits\":0,\"frames\":459,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data failure does not trigger an unhandled rejection [chromium-dev]\",\"t_ms\":18321,\"settles\":177,\"releases\":2,\"advances\":61,\"fired\":74,\"stalls\":0,\"probeWaits\":29385,\"idleWaits\":0,\"frames\":31,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data network failure does not trigger navigation [chromium-dev]\",\"t_ms\":22106,\"settles\":196,\"releases\":1,\"advances\":80,\"fired\":100,\"stalls\":0,\"probeWaits\":0,\"idleWaits\":0,\"frames\":46,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data error does not block user navigation [chromium-dev]\",\"t_ms\":26051,\"settles\":225,\"releases\":2,\"advances\":100,\"fired\":119,\"stalls\":0,\"probeWaits\":0,\"idleWaits\":0,\"frames\":57,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data tap works after data-sveltekit-preload-code hover [chromium-dev]\",\"t_ms\":30112,\"settles\":219,\"releases\":2,\"advances\":99,\"fired\":124,\"stalls\":0,\"probeWaits\":0,\"idleWaits\":0,\"frames\":64,\"calls\":[]}\n"
+    "log_tail": "detjs 0.1.0: Level 2 browser prototype; playwright 1.63.0; seed 2 (seeded order); epoch 2026-11-21T15:55:00Z; vtime=paced; net=on; server=on; workers=1\n[WebServer] [WARN] Your node_modules are out of sync with your lockfile. a linked package is out of date\n[WebServer] $ vite dev --force --port 5301 --strictPort\n\nRunning 7 tests using 1 worker, shard 1 of 1\ndetjs: lockstep runs channel 'chrome' on Playwright's chromium headless shell (engine-issued frames)\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]\",\"t_ms\":4400,\"settles\":263,\"releases\":1,\"advances\":119,\"fired\":153,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":84,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]\",\"t_ms\":14790,\"settles\":1084,\"releases\":9,\"advances\":520,\"fired\":721,\"stalls\":0,\"probeWaits\":0,\"idleWaits\":0,\"frames\":456,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data failure does not trigger an unhandled rejection [chromium-dev]\",\"t_ms\":18306,\"settles\":179,\"releases\":2,\"advances\":62,\"fired\":75,\"stalls\":1,\"probeWaits\":32797,\"idleWaits\":0,\"frames\":29,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data network failure does not trigger navigation [chromium-dev]\",\"t_ms\":22091,\"settles\":199,\"releases\":1,\"advances\":76,\"fired\":96,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":45,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data error does not block user navigation [chromium-dev]\",\"t_ms\":26036,\"settles\":227,\"releases\":2,\"advances\":97,\"fired\":115,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":55,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data tap works after data-sveltekit-preload-code hover [chromium-dev]\",\"t_ms\":30097,\"settles\":225,\"releases\":2,\"advances\":98,\"fired\":124,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":63,\"calls\":[]}\n"
+   },
+   {
+    "label": "h-latency-s3",
+    "rc": "timeout",
+    "wall_s": 2701.1,
+    "counts": {},
+    "error": "",
+    "log_tail": "detjs 0.1.0: Level 2 browser prototype; playwright 1.63.0; seed 3 (seeded order); epoch 2026-11-21T15:55:00Z; vtime=paced; net=on; server=on; workers=1\n[WebServer] [WARN] Your node_modules are out of sync with your lockfile. a linked package is out of date\n[WebServer] $ vite dev --force --port 5301 --strictPort\n\nRunning 7 tests using 1 worker, shard 1 of 1\ndetjs: lockstep runs channel 'chrome' on Playwright's chromium headless shell (engine-issued frames)\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]\",\"t_ms\":4435,\"settles\":259,\"releases\":1,\"advances\":118,\"fired\":156,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":85,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]\",\"t_ms\":13796,\"settles\":1040,\"releases\":10,\"advances\":472,\"fired\":642,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":393,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data failure does not trigger an unhandled rejection [chromium-dev]\",\"t_ms\":17312,\"settles\":176,\"releases\":1,\"advances\":61,\"fired\":76,\"stalls\":1,\"probeWaits\":30875,\"idleWaits\":0,\"frames\":29,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data network failure does not trigger navigation [chromium-dev]\",\"t_ms\":21097,\"settles\":197,\"releases\":1,\"advances\":76,\"fired\":96,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":45,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data error does not block user navigation [chromium-dev]\",\"t_ms\":25042,\"settles\":227,\"releases\":2,\"advances\":97,\"fired\":115,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":55,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data tap works after data-sveltekit-preload-code hover [chromium-dev]\",\"t_ms\":29113,\"settles\":223,\"releases\":2,\"advances\":98,\"fired\":123,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":63,\"calls\":[]}\n"
+   },
+   {
+    "label": "h-latency-s4",
+    "rc": "timeout",
+    "wall_s": 2701.1,
+    "counts": {},
+    "error": "",
+    "log_tail": "detjs 0.1.0: Level 2 browser prototype; playwright 1.63.0; seed 4 (seeded order); epoch 2026-11-21T15:55:00Z; vtime=paced; net=on; server=on; workers=1\n[WebServer] [WARN] Your node_modules are out of sync with your lockfile. a linked package is out of date\n[WebServer] $ vite dev --force --port 5301 --strictPort\n\nRunning 7 tests using 1 worker, shard 1 of 1\ndetjs: lockstep runs channel 'chrome' on Playwright's chromium headless shell (engine-issued frames)\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]\",\"t_ms\":4410,\"settles\":265,\"releases\":1,\"advances\":122,\"fired\":158,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":85,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]\",\"t_ms\":13450,\"settles\":1022,\"releases\":10,\"advances\":453,\"fired\":619,\"stalls\":1,\"probeWaits\":2,\"idleWaits\":0,\"frames\":374,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data failure does not trigger an unhandled rejection [chromium-dev]\",\"t_ms\":16966,\"settles\":175,\"releases\":1,\"advances\":60,\"fired\":72,\"stalls\":1,\"probeWaits\":28352,\"idleWaits\":0,\"frames\":28,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data network failure does not trigger navigation [chromium-dev]\",\"t_ms\":20751,\"settles\":198,\"releases\":1,\"advances\":77,\"fired\":98,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":45,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data error does not block user navigation [chromium-dev]\",\"t_ms\":24696,\"settles\":228,\"releases\":2,\"advances\":98,\"fired\":117,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":56,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data tap works after data-sveltekit-preload-code hover [chromium-dev]\",\"t_ms\":28757,\"settles\":222,\"releases\":2,\"advances\":96,\"fired\":120,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":62,\"calls\":[]}\n"
+   },
+   {
+    "label": "h-latency-s5",
+    "rc": "timeout",
+    "wall_s": 2701.0,
+    "counts": {},
+    "error": "",
+    "log_tail": "detjs 0.1.0: Level 2 browser prototype; playwright 1.63.0; seed 5 (seeded order); epoch 2026-11-21T15:55:00Z; vtime=paced; net=on; server=on; workers=1\n[WebServer] [WARN] Your node_modules are out of sync with your lockfile. a linked package is out of date\n[WebServer] $ vite dev --force --port 5301 --strictPort\n\nRunning 7 tests using 1 worker, shard 1 of 1\ndetjs: lockstep runs channel 'chrome' on Playwright's chromium headless shell (engine-issued frames)\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]\",\"t_ms\":4400,\"settles\":261,\"releases\":1,\"advances\":119,\"fired\":153,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":84,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]\",\"t_ms\":13372,\"settles\":1034,\"releases\":10,\"advances\":464,\"fired\":615,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":369,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data failure does not trigger an unhandled rejection [chromium-dev]\",\"t_ms\":16888,\"settles\":177,\"releases\":1,\"advances\":62,\"fired\":75,\"stalls\":1,\"probeWaits\":31541,\"idleWaits\":0,\"frames\":28,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data network failure does not trigger navigation [chromium-dev]\",\"t_ms\":20673,\"settles\":198,\"releases\":1,\"advances\":77,\"fired\":98,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":45,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data error does not block user navigation [chromium-dev]\",\"t_ms\":24618,\"settles\":228,\"releases\":2,\"advances\":98,\"fired\":118,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":56,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data tap works after data-sveltekit-preload-code hover [chromium-dev]\",\"t_ms\":28679,\"settles\":222,\"releases\":2,\"advances\":96,\"fired\":120,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":62,\"calls\":[]}\n"
+   },
+   {
+    "label": "h-latency-s6",
+    "rc": "timeout",
+    "wall_s": 2701.1,
+    "counts": {},
+    "error": "",
+    "log_tail": "detjs 0.1.0: Level 2 browser prototype; playwright 1.63.0; seed 6 (seeded order); epoch 2026-11-21T15:55:00Z; vtime=paced; net=on; server=on; workers=1\n[WebServer] [WARN] Your node_modules are out of sync with your lockfile. a linked package is out of date\n[WebServer] $ vite dev --force --port 5301 --strictPort\n\nRunning 7 tests using 1 worker, shard 1 of 1\ndetjs: lockstep runs channel 'chrome' on Playwright's chromium headless shell (engine-issued frames)\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]\",\"t_ms\":4450,\"settles\":256,\"releases\":1,\"advances\":116,\"fired\":157,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":87,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]\",\"t_ms\":15372,\"settles\":1148,\"releases\":10,\"advances\":579,\"fired\":769,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":491,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data failure does not trigger an unhandled rejection [chromium-dev]\",\"t_ms\":18888,\"settles\":177,\"releases\":1,\"advances\":62,\"fired\":74,\"stalls\":1,\"probeWaits\":32589,\"idleWaits\":0,\"frames\":28,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data network failure does not trigger navigation [chromium-dev]\",\"t_ms\":22673,\"settles\":198,\"releases\":1,\"advances\":76,\"fired\":96,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":45,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data error does not block user navigation [chromium-dev]\",\"t_ms\":26618,\"settles\":228,\"releases\":2,\"advances\":98,\"fired\":117,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":56,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data tap works after data-sveltekit-preload-code hover [chromium-dev]\",\"t_ms\":30679,\"settles\":222,\"releases\":2,\"advances\":96,\"fired\":119,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":62,\"calls\":[]}\n"
+   },
+   {
+    "label": "h-latency-s7",
+    "rc": "timeout",
+    "wall_s": 2701.1,
+    "counts": {},
+    "error": "",
+    "log_tail": "detjs 0.1.0: Level 2 browser prototype; playwright 1.63.0; seed 7 (seeded order); epoch 2026-11-21T15:55:00Z; vtime=paced; net=on; server=on; workers=1\n[WebServer] [WARN] Your node_modules are out of sync with your lockfile. a linked package is out of date\n[WebServer] $ vite dev --force --port 5301 --strictPort\n\nRunning 7 tests using 1 worker, shard 1 of 1\ndetjs: lockstep runs channel 'chrome' on Playwright's chromium headless shell (engine-issued frames)\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]\",\"t_ms\":4450,\"settles\":256,\"releases\":1,\"advances\":116,\"fired\":157,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":87,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]\",\"t_ms\":16295,\"settles\":1177,\"releases\":10,\"advances\":608,\"fired\":836,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":548,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data failure does not trigger an unhandled rejection [chromium-dev]\",\"t_ms\":19811,\"settles\":175,\"releases\":1,\"advances\":60,\"fired\":72,\"stalls\":1,\"probeWaits\":28737,\"idleWaits\":0,\"frames\":28,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data network failure does not trigger navigation [chromium-dev]\",\"t_ms\":23596,\"settles\":198,\"releases\":1,\"advances\":76,\"fired\":97,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":45,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data error does not block user navigation [chromium-dev]\",\"t_ms\":27541,\"settles\":226,\"releases\":2,\"advances\":97,\"fired\":115,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":54,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data tap works after data-sveltekit-preload-code hover [chromium-dev]\",\"t_ms\":31602,\"settles\":224,\"releases\":2,\"advances\":98,\"fired\":123,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":63,\"calls\":[\"Browser.newContext\"]}\n"
+   },
+   {
+    "label": "h-latency-s8",
+    "rc": "timeout",
+    "wall_s": 1373.4,
+    "counts": {},
+    "error": "",
+    "log_tail": "detjs 0.1.0: Level 2 browser prototype; playwright 1.63.0; seed 8 (seeded order); epoch 2026-11-21T15:55:00Z; vtime=paced; net=on; server=on; workers=1\n[WebServer] [WARN] Your node_modules are out of sync with your lockfile. a linked package is out of date\n[WebServer] $ vite dev --force --port 5301 --strictPort\n\nRunning 7 tests using 1 worker, shard 1 of 1\ndetjs: lockstep runs channel 'chrome' on Playwright's chromium headless shell (engine-issued frames)\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]\",\"t_ms\":4435,\"settles\":261,\"releases\":1,\"advances\":118,\"fired\":156,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":85,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]\",\"t_ms\":12688,\"settles\":999,\"releases\":10,\"advances\":427,\"fired\":567,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":325,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data failure does not trigger an unhandled rejection [chromium-dev]\",\"t_ms\":16209,\"settles\":175,\"releases\":1,\"advances\":60,\"fired\":73,\"stalls\":1,\"probeWaits\":28741,\"idleWaits\":0,\"frames\":29,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data network failure does not trigger navigation [chromium-dev]\",\"t_ms\":19994,\"settles\":197,\"releases\":1,\"advances\":76,\"fired\":97,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":45,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data error does not block user navigation [chromium-dev]\",\"t_ms\":23939,\"settles\":227,\"releases\":2,\"advances\":97,\"fired\":115,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":55,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::data-sveltekit attributes::data-sveltekit-preload-data tap works after data-sveltekit-preload-code hover [chromium-dev]\",\"t_ms\":28000,\"settles\":223,\"releases\":2,\"advances\":98,\"fired\":123,\"stalls\":1,\"probeWaits\":0,\"idleWaits\":0,\"frames\":63,\"calls\":[]}\n"
    }
-  ]
- }
+  ],
+  "reproduced": 0,
+  "found_seed": 0,
+  "n": 3
+ },
+ "elapsed_min": 338.0
 }
