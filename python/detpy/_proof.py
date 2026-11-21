@@ -1307,6 +1307,15 @@ class ProofSession:
                     content[rel] = "?"
             return content[rel]
 
+        # the collection order (the serial one), not the process lists: the lists of a -n plan change with the
+        # recorded durations, and a digest over them would never match from one session to the next. Every file
+        # before the test in that order covers every file before it in its process (a superset: conservative).
+        # Per-file children (--det-isolate-scope=file): the process is the file.
+        if getattr(self, "iso_scope", "test") != "file":
+            order = list(getattr(self, "prefix_nids", None) or [n for lst in lists for n in lst])
+            present = {n for lst in lists for n in lst}
+            lists = [[n for n in order if n in present]]
+
         def compute():
             now = {}
             for lst in lists:

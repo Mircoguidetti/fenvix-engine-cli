@@ -128,14 +128,16 @@ def test_e4_st_mode_through_os_stat_is_keyed(pytester):
 @needs_cache
 def test_e7_an_earlier_test_the_running_one_cannot_reach_stays_reused(pytester):
     """Two test files that import nothing and share no file: the second one's carried set holds no test of the first
-    (Entry::needs is empty), so when it runs the first stays reused."""
+    (Entry::needs is empty), so when it runs the first stays reused. It runs because a data file it reads changed,
+    not its code (an edit of a test file makes its stored needs stale: review R-052, every earlier test runs)."""
     write(pytester, **{
         "tests/test_x.py": "def test_x():\n    assert 1\n",
-        "tests/test_y.py": "def test_y():\n    assert 1\n",
+        "tests/test_y.py": "def test_y():\n    assert open('tests/data.txt').read()\n",
+        "tests/data.txt": "1\n",
     })
     cache_run(pytester, "s1", "tests")[0].assert_outcomes(passed=2)
     assert reused(cache_run(pytester, "s2", "tests")[1]) == {"tests/test_x.py::test_x", "tests/test_y.py::test_y"}
-    (pytester.path / "tests" / "test_y.py").write_text("def test_y():\n    assert 2\n")
+    (pytester.path / "tests" / "data.txt").write_text("2\n")
     r, c = cache_run(pytester, "s3", "tests")
     r.assert_outcomes(passed=2)
     assert reused(c) == {"tests/test_x.py::test_x"}

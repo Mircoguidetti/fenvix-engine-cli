@@ -216,7 +216,9 @@ def test_class_state_makes_the_class_the_unit_of_reuse(tmp_path):
     # predecessor whose in-process state it may need)
     assert r.reused == set(), r
     receipts = (root.parent / "p-cache" / "receipts.jsonl").read_text()
-    assert '"why": "placement: a predecessor of test_s.py::S::test_' in receipts
+    # (or, since review R-052, the code reason: test_s.py, a test file of the process, changed)
+    assert ('"why": "placement: a predecessor of test_s.py::S::test_' in receipts
+            or '"why": "code: a test file at or before it in its process changed' in receipts), receipts
     assert '"why": "unit: test_s.py::S::test_a runs"' in receipts
 
 
