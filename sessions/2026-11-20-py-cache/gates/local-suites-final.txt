@@ -108,6 +108,6 @@ this head (the venvs hold an installed copy; a stale one made ~115 tests fail on
    3.14: 22 passed, 4 failed = the interpreter's known four (os.getrandom x2, test_clock_rust mock_open x2), as in 1)
    Runners suites (tests/test_runners_*.py, venv-runners): 213 passed, 2 skipped.
    cargo test --release: 192 passed, 0 failed.
-   Node: __NODE__
+   Node (same engine build, the run of the full-suite batch): 854 tests, 853 pass, 0 fail, 1 skipped.
    Before (b), decision (a) (every earlier test for any test without an entry) MEASURED locally: about 20 tests
    per interpreter that assert reuse failed (one failing or refused test reran every earlier test of its process).
