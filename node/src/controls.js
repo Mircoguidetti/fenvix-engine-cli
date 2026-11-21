@@ -35,8 +35,10 @@ function installProcess() {
   if (c.controls.has('fs')) fsorder.installProcess(PATCHER, c);
   if (c.controls.has('fs')) require('./outside').installProcess(PATCHER); // files outside the project: recorded (R-050 N1)
   if (c.controls.has('net')) STATE.netMode = network.installProcess(PATCHER, c);
-  // environment reads (audit G-0126): every variable a test reads is an event `env.get NAME=<digest of the value>`
-  // (`env.has`, `env.list` for enumerations); values never reach the trace
+  // environment reads (audit G-0126): every variable a test reads is an event `env.get NAME=set|unset`
+  // (`env.has`, `env.list` of the names for enumerations): which variable, not its value, as detpy's envobs (design A,
+  // 2026-11-20). The value is a run input (`env:NAME`, src/session.js): a differing one is reported `input-differs`
+  // for the tests that read it, naming it; a CI-volatile one never diverges a test. Values never reach the trace.
   installEnvRecord(process);
   // detjs' own variables are not shown to test code (src/envview.js, audit G-2162)
   require('./envview').install();
@@ -84,13 +86,12 @@ function installEnvRecord(proc) {
       STATE.quietDepth++;
       try {
         if (op === 'env.list') {
-          const pairs = Object.keys(realEnv).filter((n) => !OWN_ENV.test(n)).sort().map((n) => `${n}=${realEnv[n]}`);
-          value = `${pairs.length}:${native.digest(Buffer.from(pairs.join('\u0000'))).slice(0, 12)}`;
+          const names = Object.keys(realEnv).filter((n) => !OWN_ENV.test(n)).sort();
+          value = `${names.length}:${native.digest(Buffer.from(names.join('\u0000'))).slice(0, 12)}`;
         } else if (op === 'env.has') {
           value = `${k}=${Object.prototype.hasOwnProperty.call(realEnv, k) ? 'set' : 'unset'}`;
         } else {
-          const raw = Object.prototype.hasOwnProperty.call(realEnv, k) ? realEnv[k] : undefined;
-          value = raw === undefined ? `${k}=unset` : `${k}=${native.digest(Buffer.from(String(raw))).slice(0, 12)}`;
+          value = `${k}=${Object.prototype.hasOwnProperty.call(realEnv, k) ? 'set' : 'unset'}`;
         }
       } finally { STATE.quietDepth--; }
       STATE.recordAt('other', op, site, value);

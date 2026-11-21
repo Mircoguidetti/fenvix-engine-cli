@@ -424,8 +424,9 @@ for (const runner of RUNNERS) {
   });
 }
 
-// G-0126: environment variables read by a test are events (`env.get NAME=<digest>`): two runs that differ only in a
-// variable the test read are not identical, and the verifier names the variable; values never reach the trace.
+// G-0126: environment variables read by a test are events (`env.get NAME=set`, which variable, not its value: design
+// A; the value is the run input `env:NAME`): two runs that differ only in a variable the test read are not identical,
+// and the verifier names the variable; values never reach the trace.
 for (const runner of RUNNERS) {
   test(`${runner}: G-0126 environment reads are recorded; a different value diverges`, T, () => {
     const dir = proj(runner, 'env', {
@@ -437,6 +438,7 @@ for (const runner of RUNNERS) {
     const text = fs.readFileSync(path.join(dir, 'one.jsonl'), 'utf8');
     assert.match(text, /"env\.get"/);
     assert.ok(!text.includes('secret-one'), 'values never reach the trace');
+    assert.match(text, /"P041_FLAG=set"/, 'the event names the variable, not its value (exam F-01: a volatile one never diverges a test)');
     const r2 = run(runner, dir, [], { cache: false, env: { P041_FLAG: 'secret-two' } });
     assert.equal(r2.status, 0, show(r2));
     const rep = JSON.parse(native.verify([path.join(dir, 'one.jsonl'), path.join(dir, '.detjs', 'trace.jsonl')]));
