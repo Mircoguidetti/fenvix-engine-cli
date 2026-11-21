@@ -499,11 +499,13 @@ def _seal(creation, key: str, fp: str, test_name: str) -> tuple[str, str | None]
     return tpl, None
 
 
-def _touch(rec: dict) -> None:
+def _touch(rec: dict, skip: set = frozenset()) -> None:
     """On a reuse: read the build's recorded inputs again, so that the capture of the cache with proof sees them as
     the build made it see them (an edited migration still changes every test's key that read it)."""
     for kind in ("code", "data"):
         for p in (rec.get("inputs", {}).get(kind) or {}):
+            if p in skip:
+                continue
             with contextlib.suppress(OSError):
                 open(p, "rb").close()
 
@@ -542,6 +544,10 @@ def _create(creation, args, kw):
     nid = st.nodeid
     st.nodeid = None  # the setup is not an event of the test that happens to need it first
     done: list = []
+    # modules loaded before the setup are already inputs through the imports the capture saw: only what the build
+    # alone used (migrations, migrate's own modules, RunPython helpers, data files) is read again below; re-reading
+    # the models made every test depend on every model (PY-04.edit: 0 reused instead of 346)
+    preloaded = _module_files(list(sys.modules))
     try:
         # nothing of the setup itself is observed (a build reads migrations, a reuse reads the template: the run
         # would differ by how the database was made); what it depends on is observed once, below, the same way
@@ -550,7 +556,7 @@ def _create(creation, args, kw):
             return _create_quiet(creation, args, kw, settings, done)
     finally:
         if done:
-            _touch(done[0])  # outside any test: run inputs (files_read_outside_tests), read by the capture
+            _touch(done[0], preloaded)  # outside any test: run inputs (files_read_outside_tests), the capture
         st.nodeid = nid
         if nid is not None:
             _restart_test(nid)
