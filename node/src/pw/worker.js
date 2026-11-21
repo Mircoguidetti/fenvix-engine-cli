@@ -931,7 +931,8 @@ async function setupContext(ctx) {
   if (CONTEXTS.has(ctx)) return;
   CONTEXTS.add(ctx);
   const key = rememberTest();
-  if (FREEZE) { TEST_CONTEXTS.add(ctx); hookTestEnd(); }
+  if (FREEZE || LS) TEST_CONTEXTS.add(ctx);
+  if (FREEZE) hookTestEnd();
   if (seedsInstalled) maybeReseed();
   const seedKey = key ? testIdOf(key) : '<outside>';
   if (SEEDS) {
@@ -1281,8 +1282,30 @@ if (LOCKSTEP) {
     if (!proto || proto.__detjsTeardown || typeof proto._didFinishTestFunction !== 'function') return;
     Object.defineProperty(proto, '__detjsTeardown', { value: true });
     const orig = proto._didFinishTestFunction;
-    proto._didFinishTestFunction = function _didFinishTestFunction(...a) {
+    proto._didFinishTestFunction = async function _didFinishTestFunction(...a) {
       try { if (LS) LS.beginTeardown(this.testId); } catch { /* never break the runner */ }
+      // The pages' final state (DOM digest, page randomness counts) is taken here, at the first quiet point after
+      // the test function returned, not at context close: fixture teardown before the close (trace and video
+      // stop) runs in real time, and the engine time at the close varied by a frame (MEASURED, gate run
+      // 44953971010, actual "[Tracking] applies budget template": identical page diagnostics, but 701 vs 702 page
+      // Math.random draws at the close, 3 fingerprints in 10 runs). DETJS_LS_OBSERVE_AT_END=0 keeps the old point.
+      if (LS && ENV.DETJS_LS_OBSERVE_AT_END !== '0') {
+        const key = currentKey();
+        try {
+          await Promise.race([LS.atQuiet(async () => {
+            for (const ctx of [...TEST_CONTEXTS]) {
+              let pages = [];
+              try { pages = ctx.pages(); } catch { continue; }
+              for (const page of pages) {
+                if (OBSERVED.has(page)) continue;
+                OBSERVED.add(page);
+                LS.trace('observe at test end');
+                await observe(page, key);
+              }
+            }
+          }), new Promise((r) => { const h = require('./runner-clock').REAL.setTimeout(r, 30000); if (h && h.unref) h.unref(); })]);
+        } catch { /* never break the runner */ }
+      }
       return orig.apply(this, a);
     };
   };
