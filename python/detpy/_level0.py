@@ -17,10 +17,10 @@ import os
 import platform
 import sys
 
-from . import __version__, _core, _sites, _state, clock, envobs, fsorder, fstime, network, reexec, seeds, sqlvirt, uncontrolled
+from . import __version__, _core, _sites, _state, clock, envobs, fsorder, fstime, network, osstate, reexec, seeds, sqlvirt, uncontrolled
 from ._patch import Patcher
 
-CONTROLS = ("order", "seeds", "hashseed", "bytecode", "time", "fs", "net", "env", "tz", "locale")
+CONTROLS = ("order", "seeds", "hashseed", "bytecode", "time", "fs", "net", "env", "tz", "locale", "os")
 DEFAULT_TZ = "UTC"
 DEFAULT_LOCALE = "C.UTF-8"
 # fallbacks when the default locale does not exist on the machine (macOS has no C.UTF-8 before 13)
@@ -420,6 +420,7 @@ def run_inputs(net_mode, runner: str, runner_version) -> dict:
         "bytecode": ("precompiled" if reexec.bytecode_active(hashseed_value()) else "default") + _rewrite_input(),
         "aslr": {True: "off", False: "on", None: "unknown"}[reexec.aslr_disabled()],
         "order": "fixed" if "order" in c else "runner order (order control off)",
+        "os": osstate.input_text() if "os" in c else "real (os control off)",
     }
     inputs.update(env_inputs())
     return inputs
@@ -484,6 +485,8 @@ def install_controls(cfg: _state.Config, root: str | None) -> list:
         fsorder.install(PATCHER)
     if "env" in controls:
         envobs.install()
+    if "os" in controls:
+        osstate.install(PATCHER, cfg)  # after fstime: wraps its open
     uncontrolled.install(PATCHER)
     return rebound
 
@@ -593,6 +596,8 @@ def begin_test(nodeid: str, index: int) -> None:
     st.recorder.begin_test(nodeid, index)
     _state.reset_threads()
     uncontrolled.start_test()
+    if "os" in controls:
+        osstate.start_test()
     if "time" in controls:
         clock.start_test()
         fstime.start_test()
@@ -611,6 +616,7 @@ def end_test(outcome: str):
         seeds.end_test()
     if "net" in controls:
         network.end_test()
+    uncontrolled.end_test()  # threads that ran during the test (G-0180)
     st.nodeid = None
     return st.recorder.end_test(outcome)
 
@@ -655,6 +661,7 @@ def trace_meta(status: str, net_mode, rebound: int, order_digest: str, runner: s
 
 def uninstall() -> None:
     PATCHER.undo_all()
+    osstate.uninstall()
     envobs.uninstall()
     fstime.uninstall()
     clock.uninstall()

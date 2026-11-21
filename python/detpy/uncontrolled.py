@@ -16,18 +16,112 @@ from __future__ import annotations
 import os
 import selectors
 import subprocess
+import sys
 import threading
 
-from . import _state
+from . import _sites, _state
 
 _seen: set = set()
 
 
 _OWN = os.path.dirname(os.path.abspath(__file__)) + os.sep
 
+# Threads alive when a test starts (review P1 finding 3, G-0180): a pool or server started at import or by a wider
+# fixture runs the test's work without any ``Thread.start`` during the test. Each such thread (test infrastructure
+# excepted) is remembered with its CPU time; when the test ends, one that consumed CPU time, or ended, ran during the
+# test and marks it ``uncontrolled.thread``. A Python thread unknown to ``threading`` (started with ``_thread``) has
+# no readable CPU clock: its top frame is compared instead.
+_others: dict = {}
+try:
+    import time as _time
+
+    _real_clock_gettime_ns = _time.clock_gettime_ns  # captured before the clock control replaces it
+except (ImportError, AttributeError):  # pragma: no cover - not on POSIX
+    _real_clock_gettime_ns = None
+_LINUX = sys.platform.startswith("linux")
+
+
+def _thread_cpu_ns(t):
+    """CPU time of a ``threading`` thread (Linux thread CPU clock of its native id), -1 when it is gone, None when it
+    cannot be read here."""
+    nid = getattr(t, "native_id", None)
+    if nid is None or _real_clock_gettime_ns is None or not _LINUX:
+        return None
+    try:
+        return _real_clock_gettime_ns(((~nid) << 3) | 6)  # MAKE_THREAD_CPUCLOCK(tid, CPUCLOCK_SCHED)
+    except (OSError, OverflowError, ValueError):
+        return -1
+
+
+def _infra_file(fn) -> bool:
+    return bool(fn) and _sites._classify(fn)[0] == _sites._INFRA
+
+
+def _infra_thread(t) -> bool:
+    """A thread of the test infrastructure (pytest, its plugins, xdist/execnet, detpy), or the main thread while the
+    test runs on another one (it runs the runner then)."""
+    if t is threading.main_thread():
+        return True
+    run = type(t).run
+    f = getattr(t, "_target", None) if run is threading.Thread.run else run
+    f = getattr(f, "func", f)  # functools.partial
+    code = getattr(f, "__code__", None)
+    if code is not None:
+        return _infra_file(code.co_filename)
+    mod = sys.modules.get(getattr(f, "__module__", None) or "")
+    return _infra_file(getattr(mod, "__file__", None))
+
+
+def _infra_stack(frame) -> bool:
+    while frame is not None:
+        if _infra_file(frame.f_code.co_filename):
+            return True
+        frame = frame.f_back
+    return False
+
 
 def start_test() -> None:
     _seen.clear()
+    _others.clear()
+    try:
+        me = threading.get_ident()
+        known = dict(threading._active)
+        for ident, t in known.items():
+            if ident != me and not _infra_thread(t):
+                _others[ident] = (t, _thread_cpu_ns(t), None, -1)
+        for ident, frame in sys._current_frames().items():
+            if ident != me and ident not in known and not _infra_stack(frame):
+                _others[ident] = (None, None, frame, frame.f_lasti)
+    except Exception:  # never break the code under test
+        _others.clear()
+
+
+def end_test() -> None:
+    """Mark the test ``uncontrolled.thread`` when a thread that was alive when it started ran during it."""
+    st = _state.STATE
+    if not _others or "thread" in _seen or st.recorder is None or st.nodeid is None:
+        _others.clear()
+        return
+    ran = None
+    try:
+        frames = sys._current_frames()
+        for ident, (t, cpu, frame, lasti) in _others.items():
+            if t is not None:
+                now = _thread_cpu_ns(t) if t.is_alive() else -1
+                if cpu is None or now is None or now == -1 or now != cpu:
+                    ran = t.name
+                    break
+            else:
+                cur = frames.get(ident)
+                if cur is None or cur is not frame or cur.f_lasti != lasti:
+                    ran = f"thread {ident:#x}"
+                    break
+    except Exception:
+        ran = None
+    _others.clear()
+    if ran is not None:
+        _seen.add("thread")
+        _state.record_at("other", "uncontrolled.thread", "<thread alive before the test>", ran)
 
 
 def _mark(kind: str, value: str, depth: int) -> None:
@@ -185,6 +279,23 @@ def install(patcher) -> None:
         return real_start(self)
 
     patcher.set(threading.Thread, "start", start)
+
+    # threads started below ``threading`` (review P1 finding 3): ``threading`` keeps its own references to these, so
+    # only direct callers go through the wrappers
+    import _thread
+
+    for name in ("start_new_thread", "start_new", "start_joinable_thread"):
+        real_raw = getattr(_thread, name, None)
+        if real_raw is None:
+            continue
+
+        def raw_start(function, *a, _real=real_raw, **kw):
+            _mark("thread", getattr(function, "__qualname__", None) or repr(function), 1)
+            return _real(function, *a, **kw)
+
+        raw_start.__name__ = name
+        raw_start.__doc__ = real_raw.__doc__
+        patcher.set(_thread, name, raw_start)
 
     real_popen_init = subprocess.Popen.__init__
 
