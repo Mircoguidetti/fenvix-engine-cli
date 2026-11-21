@@ -361,3 +361,33 @@ with `_core` copied into `python/detpy` as in the CI `python` job; strace was pr
     on this branch. It FAILS on 2a7f0d1e (3.12, 3.13, 3.14) and passes on fdf6029. It asserts its preconditions
     (plain and `--det` fail the victim). It passes once the victim is reported failed, or reported with a placement
     finding.
+
+## Re-check PR #11 (claude/verifier-cli @ baaeba0, code ac497c0): MERGE OK F-18 no, F-02 no
+
+Coordinator re-check round, 2026-11-21. This report stays on `claude/review-p1-packages` of fenvix-engine-cli, as all
+earlier rounds did. The message named the repository fenvix-brain-cli, which is outside this session's scope and
+outside the rule "no pushes to any other branch".
+
+- **Build:** the wheel was built from ac497c0 (its `crates/` changed); baaeba0 differs from ac497c0 only in its report.
+  A fresh venv per version held pytest, pytest-xdist and the wheel, with `_core` copied into `python/detpy` as in the
+  CI `python` job.
+- **Tests used:** the reviewer's tests were taken verbatim from `claude/review-p1-verifier:tests/test_review_p1_verifier.py`
+  (604a64f). The PR tree does not carry that file. CPython 3.12.13, 3.13.18 and 3.14.6.
+
+| item | verdict | evidence (MEASURED, all three versions) |
+|---|---|---|
+| #5 F-02 repro names a polluter that is not the cause | **NOT FIXED** | `test_f02_repro_does_not_name_a_polluter_that_is_not_the_cause` FAILS. It prints "status: NOT REPRODUCIBLE … failed 2/4 replays", then "cause: test order: it fails when run after tests/test_a.py::test_noop", and builds `replay:` and `rerun:` commands on that unconfirmed order. The PR report says #5 is "fixed in PR 2, not open yet": not in this head. |
+| #8 F-03 traces without run inputs called IDENTICAL | **NOT FIXED** | `test_f03_traces_without_run_inputs_are_not_called_identical` FAILS. Output: "verdict: IDENTICAL: all 1 tests ran with the same inputs" above "run inputs: NOT RECORDED in every trace", exit 0. (PR 2, as above.) |
+| #9 F-02 replay outside the project root | **NOT FIXED** | `test_f02_replay_outside_the_project_is_an_error_not_a_fix` FAILS. Exit 1: "NOT REPRODUCED: failed 0/2 runs … the defect no longer fails the same way: fixed, or …". (PR 2, as above.) |
+| #10 F-18 explore exits 0 when the suite cannot run | **NOT FIXED** (partly) | The reviewer's test (only a syntax-error file) PASSES. `explore -- tests/nope.py` now exits 2. But one syntax-error file next to one good file is not caught: plain pytest gives "Interrupted: 1 error during collection", exit 2, no test run; `fenvix explore` gives "0 flaky failing tests (0 always failing, not flaky)", **exit 0**. New test **V10** on this branch, `tests/test_review_r050_verifier.py`, FAILS on ac497c0 on its final assertion; its precondition (plain pytest exit 2) holds. |
+| #12 F-18 unclear errors | **FIXED** | `fenvix repro tests/test_broken.py::test_ok` (syntax error): "not collected: the suite did not collect cleanly … The runner said:" plus the error lines. `fenvix explore --python /nonexistent/python`: one line, "--python /nonexistent/python: no such executable interpreter", exit 2, no traceback. |
+| replay-command line (F-02/F-18) | **FIXED for reproduced defects** | Real order-dependent victim, in a project that also has a module that does not import. `fenvix repro` gives "REPRODUCED: failed 3/3 replays with one fingerprint", printing `replay: fenvix pytest --det --det-order=.detpy/repro/…/order.txt --continue-on-collection-errors`. Running that printed line as is: exit 1, `FAILED tests/test_b.py::test_victim - AssertionError: assert 'bad' == 'good'`. For a NOT REPRODUCIBLE target the line is still printed from the unconfirmed cause (#5). |
+| py-autodoc fix 157e2ee (F-02) | **FIXED** | PASS 3/3 on each version: `test_a_module_that_does_not_import_does_not_hide_the_target`, `test_a_target_that_never_ran_is_not_run_not_searched`, `test_a_runner_that_stops_before_any_test_is_not_run_with_its_error`. It hides nothing: next to a module that does not import, a real failure is still REPRODUCED (3/3, above), and a target inside that module is "not collected" with the runner's ImportError lines, never "passed". |
+
+**MERGE OK:**
+
+- **F-18: no.** V10 is a false clean exploration (#10 not fully fixed). #12 and the replay line are fine.
+- **F-02: no.** #5 and #9 are not in this head. The py-autodoc fix itself is correct and, in what I checked, hides
+  nothing. If the coordinator merges this head for the py-autodoc fix alone, nothing here argues against that; it does
+  not close F-02 or F-18.
+- Not re-checked, as instructed: #3 (multi-project), #4 (kept-alive TCP) and the replay-clients part of #5 (next push).
