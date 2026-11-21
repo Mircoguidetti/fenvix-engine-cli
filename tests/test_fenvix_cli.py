@@ -406,3 +406,13 @@ def test_a_not_reproducible_bundle_prints_no_command_that_would_reproduce_it(tmp
     out = render_repro(b, tmp_path)
     assert "NOT REPRODUCIBLE" in out and "  check: fenvix replay" in out, out
     assert "\n  replay: " not in out and "rerun:" not in out, out
+
+
+def test_explore_reports_what_it_found_although_a_module_does_not_import(project):
+    # exam F-02.py-explore (py-autodoc: modules that need an uninstalled library): the failing tests it found are
+    # reported and the run exits 0, with the collection errors named; finding nothing there exits 2 (R-050 V10)
+    (project / "tests" / "test_needs_missing_dep.py").write_text("import no_such_module_fenvix\n\ndef test_x():\n    pass\n")
+    p = fx("explore", "--budget", "60", "--max-seeds", "3", "--out", str(project / "ex"), cwd=project)
+    assert p.returncode == 0, p.stdout + p.stderr
+    assert "tests/test_o.py::test_victim" in p.stdout, p.stdout
+    assert "does not collect cleanly" in p.stderr and "no_such_module_fenvix" in p.stderr, p.stderr

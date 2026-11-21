@@ -567,14 +567,18 @@ def cmd_explore(argv: list) -> int:
             print("    " + ln, file=sys.stderr)
         return 2
     if s.get("collection_errors"):
-        # R-050 V10: plain pytest cannot run this suite (it stops at collection): the exploration above covers the
-        # tests that collected, and the suite is not reported clean
+        # plain pytest cannot run this suite (it stops at collection): the exploration above covers the tests that
+        # collected. Failing tests it found are findings all the same (exit 0); finding none is no verdict that the
+        # suite is clean, since part of it never ran (R-050 V10: exit 2)
         err = s["collection_errors"]
+        found = bool(s.get("failing_tests"))
         print(f"{PROG} explore: the suite does not collect cleanly ({err.splitlines()[0]}): only the "
-              f"{s.get('collected', 0)} test(s) that collected were explored. The runner said:", file=sys.stderr)
+              f"{s.get('collected', 0)} test(s) that collected were explored"
+              + ("" if found else ", so finding nothing does not mean the suite is clean")
+              + ". The runner said:", file=sys.stderr)
         for ln in err.splitlines()[1:]:
             print("    " + ln, file=sys.stderr)
-        return 2
+        return 0 if found else 2
     return 0
 
 
