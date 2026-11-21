@@ -1,0 +1,116 @@
+{
+ "engine": "",
+ "host": {
+  "cpus": 4,
+  "platform": "Linux-6.18.44-fc-v726-x86_64-with-glibc2.39",
+  "python": null,
+  "runner": ""
+ },
+ "mode": "serial",
+ "scenarios": {
+  "add-test": {
+   "change": "added tests/test_itsdangerous/test_p061_added.py",
+   "flaky": [],
+   "not_reused": "not reused: new 1, placement 297",
+   "passing": 298,
+   "ran": 298,
+   "rc": {
+    "cold": 0,
+    "uncached": 0,
+    "warm": 0
+   },
+   "reused": 0,
+   "reused_share_of_passing": 0.0,
+   "tests": 298,
+   "wall_s": {
+    "cold": 4.5,
+    "uncached": 2.27,
+    "warm": 4.22
+   },
+   "wrong": []
+  },
+  "edit-test": {
+   "change": "tests/test_itsdangerous/test_encoding.py: a new always-failing test before its first test",
+   "flaky": [],
+   "not_reused": "not reused: code 8, new 1, placement 289",
+   "passing": 297,
+   "ran": 298,
+   "rc": {
+    "cold": 0,
+    "uncached": 1,
+    "warm": 1
+   },
+   "reused": 0,
+   "reused_share_of_passing": 0.0,
+   "tests": 298,
+   "wall_s": {
+    "cold": 4.15,
+    "uncached": 2.23,
+    "warm": 3.93
+   },
+   "wrong": []
+  },
+  "failing-test": {
+   "change": "tests/test_itsdangerous/test_p061_fails.py present in both runs",
+   "flaky": [],
+   "not_reused": "not reused: new 1, placement 8",
+   "passing": 297,
+   "ran": 9,
+   "rc": {
+    "cold": 1,
+    "uncached": 1,
+    "warm": 1
+   },
+   "reused": 289,
+   "reused_share_of_passing": 0.9731,
+   "tests": 298,
+   "wall_s": {
+    "cold": 4.94,
+    "uncached": 2.12,
+    "warm": 2.04
+   },
+   "wrong": []
+  },
+  "unchanged": {
+   "change": "nothing changed",
+   "flaky": [],
+   "not_reused": "",
+   "passing": 297,
+   "ran": 0,
+   "rc": {
+    "cold": 0,
+    "uncached": 0,
+    "warm": 0
+   },
+   "reused": 297,
+   "reused_share_of_passing": 1.0,
+   "tests": 297,
+   "wall_s": {
+    "cold": 5.28,
+    "uncached": 2.0,
+    "warm": 1.69
+   },
+   "wrong": []
+  }
+ },
+ "spec": {
+  "add_dir": "tests/test_itsdangerous",
+  "args": [
+   "tests",
+   "-p",
+   "no:randomly"
+  ],
+  "edit_anchor": "def test_base64_bad():",
+  "edit_file": "tests/test_itsdangerous/test_encoding.py",
+  "install": [
+   "-e",
+   ".",
+   "pytest",
+   "freezegun"
+  ],
+  "name": "itsdangerous",
+  "note": "the exam's pin (2.2.0) and its F-05.edit-test edit (a new failing test before test_base64_bad)",
+  "sha": "096c8d42545d3b68ea21a4f890fb2b2d8979c0bd",
+  "url": "https://github.com/pallets/itsdangerous"
+ }
+}
