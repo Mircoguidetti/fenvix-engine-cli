@@ -194,9 +194,56 @@ def _target(sock, address):
     return POLICY.hostname(host), port
 
 
+_real_listen = socket.socket.listen
+_LISTENERS = weakref.WeakSet()
+
+
+def _listen(self, *args):
+    r = _real_listen(self, *args)
+    _LISTENERS.add(self)
+    return r
+
+
+def _own_listener(family, address) -> bool:
+    for s in list(_LISTENERS):
+        try:
+            if s.family != family:
+                continue
+            name = s.getsockname()
+        except OSError:
+            continue
+        if family == socket.AF_UNIX:
+            if name == address:
+                return True
+        elif isinstance(address, tuple) and len(address) >= 2 and name[1] == address[1]:
+            return True
+    return False
+
+
+def _note_live(sock, address) -> None:
+    """claude/verifier-cli (docs/VERIFY-INPUTS.md): a live endpoint the closed network lets through marks the test
+    uncontrolled.net, unless it is this process's own listener."""
+    if _state.STATE.nodeid is None or _state.is_quiet():
+        return
+    try:
+        fam = sock.family
+    except Exception:
+        return
+    if fam not in (socket.AF_INET, socket.AF_INET6, getattr(socket, "AF_UNIX", -1)):
+        return
+    if _own_listener(fam, address):
+        return
+    from detpy import uncontrolled
+
+    where = address if isinstance(address, str) else ":".join(str(x) for x in address[:2])
+    uncontrolled._mark("net", f"live endpoint {where}", 4)  # (_connect_common, _connect: Python frames here)
+
+
 def _connect_common(sock, address, real):
     target = _target(sock, address)
     if target is None:
+        if POLICY is not None:
+            _note_live(sock, address)
         return real(sock, address)
     host, port = target
     mode = POLICY.mode
@@ -575,6 +622,7 @@ def install(patcher: Patcher, record: bool, cassette_path: str | None, allow_hos
         mode, cassette = "block", None
     POLICY = _Policy(mode, cassette, allow_hosts)
     patcher.set(socket.socket, "connect", _connect)
+    patcher.set(socket.socket, "listen", _listen)
     patcher.set(socket.socket, "connect_ex", _connect_ex)
     patcher.set(socket.socket, "sendto", _sendto)
     patcher.set(socket, "getaddrinfo", _getaddrinfo)

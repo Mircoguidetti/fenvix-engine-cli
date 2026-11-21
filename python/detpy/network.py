@@ -897,6 +897,53 @@ def _sslproto_connection_made(real):
     return connection_made
 
 
+# Live endpoints (docs/VERIFY-INPUTS.md) -------------------------------------------------------------------------
+_real_listen = socket.socket.listen
+_LISTENERS = weakref.WeakSet()  # sockets this process listens on: a test talking to its own server
+
+
+def _listen(self, *args):
+    r = _real_listen(self, *args)
+    _LISTENERS.add(self)
+    return r
+
+
+def _own_listener(family, address) -> bool:
+    for s in list(_LISTENERS):
+        try:
+            if s.family != family:
+                continue
+            name = s.getsockname()
+        except OSError:
+            continue
+        if family == socket.AF_UNIX:
+            if name == address:
+                return True
+        elif isinstance(address, tuple) and len(address) >= 2 and name[1] == address[1]:
+            return True
+    return False
+
+
+def _note_live(sock, address) -> None:
+    """A connection the closed network lets through (localhost, an allowed host, a unix socket) reaches a server the
+    run does not control, whose answers can differ between runs: the test is marked ``uncontrolled.net`` and is never
+    reported identical. Its own server (a socket this process listens on) is not."""
+    if _state.STATE.nodeid is None or _state.is_quiet():
+        return
+    try:
+        fam = sock.family
+    except Exception:
+        return
+    if fam not in (socket.AF_INET, socket.AF_INET6, getattr(socket, "AF_UNIX", -1)):
+        return
+    if _own_listener(fam, address):
+        return
+    from . import uncontrolled
+
+    where = address if isinstance(address, str) else ":".join(str(x) for x in address[:2])
+    uncontrolled._mark("net", f"live endpoint {where}", 2)
+
+
 # Installation ---------------------------------------------------------------
 def install(patcher: Patcher, record: bool, cassette_path: str | None, allow_hosts, max_age_days: float = 0) -> str:
     global POLICY
@@ -918,6 +965,7 @@ def install(patcher: Patcher, record: bool, cassette_path: str | None, allow_hos
 
     patcher.set(subprocess.Popen, "__init__", _closed_children(subprocess.Popen.__init__))
     patcher.set(socket.socket, "connect", _connect)
+    patcher.set(socket.socket, "listen", _listen)
     patcher.set(socket.socket, "connect_ex", _connect_ex)
     # UDP record/replay (audit G-1518): the Python wrapper only where it has work (record mode, or a cassette with
     # UDP exchanges); otherwise the Rust wrapper, whose blocked-event site is its caller's

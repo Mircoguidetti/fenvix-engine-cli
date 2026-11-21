@@ -132,6 +132,7 @@ impl Reason {
             "child" => Reason::Child,
             "io" => Reason::Io,
             "native" => Reason::Native,
+            "net" => Reason::Net,
             _ => Reason::Other,
         }
     }

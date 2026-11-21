@@ -189,6 +189,11 @@ function prepare(opts, root, runner) {
   if (cfg.active && cfg.controls.has('net')) {
     try { require('./network').installStartup(new (require('./patch').Patcher)(), cfg); } catch (e) { process.stderr.write(`detjs: WARNING: the network control could not be installed in the main process: ${e && e.message}\n`); }
   }
+  // the project's own reads in this process (the runner's configuration, globalSetup) are reads outside any test
+  // (docs/VERIFY-INPUTS.md)
+  if (cfg.active) {
+    try { require('./controls').installMainEnvRecord(root); } catch (e) { process.stderr.write(`detjs: WARNING: environment reads of the main process are not recorded: ${e && e.message}\n`); }
+  }
   // Jest runs the tests in this process, and its test environment loads Node's bundled undici (it copies the
   // global descriptors) before the detjs test runner installs Level 0; from Node 24 undici keeps the
   // `crypto.randomFillSync` / `randomInt` it finds when it loads (WebSocket masks, FormData boundaries). The OS entropy

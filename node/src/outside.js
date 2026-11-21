@@ -20,6 +20,9 @@ function outsidePath(p) {
   if (typeof p === 'number') return FDS.get(p) || null;
   let n;
   try { n = sites.normPath(p); } catch { return null; }
+  // a file of the project read by the test's own code (a fixture, a data file): its bytes are an input too, they
+  // can change between two runs of one checkout (docs/VERIFY-INPUTS.md); installed packages (<deps>/) are not
+  if (!n.startsWith('<')) return n === '.' || n.startsWith('node_modules/') || n.startsWith('.detjs/') ? null : n;
   if (!n.startsWith('<abs>/') && !n.startsWith('<tmp>/')) return null;
   let abs;
   try { abs = path.resolve(typeof p === 'string' ? p : Buffer.isBuffer(p) ? p.toString() : require('node:url').fileURLToPath(p)); } catch { return null; }
@@ -39,7 +42,7 @@ function record(where, data, n) {
   if (typeof data === 'string') bytes = Buffer.from(data);
   else if (ArrayBuffer.isView(data)) bytes = Buffer.from(data.buffer, data.byteOffset + (n && n.offset || 0), n && n.length !== undefined ? n.length : data.byteLength);
   else return;
-  STATE.record('fs', 'fs.read.outside', `${where}|${bytes.length}:${native.digest(bytes)}`);
+  STATE.record('fs', where.startsWith('<') ? 'fs.read.outside' : 'fs.read', `${where}|${bytes.length}:${native.digest(bytes)}`);
 }
 
 function installProcess(patcher) {

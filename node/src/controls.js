@@ -91,6 +91,41 @@ function noteOutside(op, k) {
 }
 let envSeen = new Set();
 require('./concur').register({ name: 'env', save: () => envSeen, restore: (x) => { envSeen = x; } });
+/**
+ * The main process (the runner's configuration file, globalSetup): no test runs here, so a read from the project's
+ * own code is a read outside any test (noteOutside); the runner's and its dependencies' reads are not (their first
+ * frame outside detjs is under node_modules or node:). Replaced by installEnvRecord where tests run in this process.
+ */
+function installMainEnvRecord(root) {
+  if (STATE.__envHooked || STATE.__envMainHooked) return;
+  STATE.__envMainHooked = true;
+  // detjs' own code: its src and bin directories (not the whole package: a project can live below it, as the test
+  // fixtures do)
+  const own = [path.resolve(__dirname) + path.sep, path.resolve(__dirname, '..', 'bin') + path.sep];
+  STATE.onEnvRead = (op, k) => {
+    if (STATE.quietDepth > 0) return;
+    if (k !== '*' && OWN_ENV.test(String(k))) return;
+    if (!projectFrame(root, own)) return;
+    noteOutside(op, k);
+  };
+  try { require('./cache/capture').installLevel0Env(process); } catch (e) { level0Gap(`env: ${e && e.message}`, false); }
+}
+
+function projectFrame(root, own) {
+  const stack = String(new Error().stack || '').split('\n').slice(2);
+  for (const line of stack) {
+    const m = line.match(/\(?((?:file:\/\/)?[^\s()]+?):\d+:\d+\)?\s*$/);
+    if (!m) continue;
+    let f = m[1];
+    if (f.startsWith('file://')) { try { f = require('node:url').fileURLToPath(f); } catch { continue; } }
+    if (f.startsWith('node:') || own.some((o) => f.startsWith(o))) continue;
+    // Vite bundles the project's configuration file into node_modules/.vite-temp: it is the project's code
+    const bundled = f.includes(`${path.sep}node_modules${path.sep}.vite-temp${path.sep}`);
+    return f.startsWith(root + path.sep) && (bundled || !f.includes(`${path.sep}node_modules${path.sep}`));
+  }
+  return false;
+}
+
 function installEnvRecord(proc) {
   if (!STATE.__envHooked) {
     STATE.__envHooked = true;
@@ -263,5 +298,5 @@ function writeJson(file, obj) {
 
 module.exports = {
   cfg, installProcess, installRealm, openFile, closeFile, partName, uniqueIds, shuffleTree, writeJson,
-  PATCHER, STATE,
+  installMainEnvRecord, PATCHER, STATE,
 };

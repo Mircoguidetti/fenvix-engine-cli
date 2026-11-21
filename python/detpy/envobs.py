@@ -100,6 +100,54 @@ def _note_flag(key, present) -> None:
         pass
 
 
+def _install_ctypes_getenv() -> None:
+    """``getenv``/``secure_getenv`` looked up through ctypes (``CDLL(None).getenv``): their reads are events too. The C
+    code of an extension that calls getenv itself is not observed (docs/VERIFY-INPUTS.md, gap)."""
+    try:
+        import ctypes
+    except ImportError:  # pragma: no cover
+        return
+    base = ctypes.CDLL
+    if getattr(base, "_detpy_getenv", False):
+        return
+    real_getattr, real_getitem = base.__getattr__, base.__getitem__
+
+    def wrap(fn):
+        if getattr(fn, "_detpy_getenv", False):
+            return fn  # CDLL.__getattr__ goes through __getitem__: wrapped there already
+
+        class _Getenv:
+            _detpy_getenv = True
+            __slots__ = ("_f",)
+
+            def __init__(self, f):
+                object.__setattr__(self, "_f", f)
+
+            def __call__(self, key, *a):
+                v = self._f(key, *a)
+                if _ACTIVE:
+                    _note_value("env.get", key, v)
+                return v
+
+            def __getattr__(self, n):
+                return getattr(self._f, n)
+
+            def __setattr__(self, n, v):
+                setattr(self._f, n, v)
+        return _Getenv(fn)
+
+    def __getattr__(self, name):
+        f = real_getattr(self, name)
+        return wrap(f) if name in ("getenv", "secure_getenv") else f
+
+    def __getitem__(self, name):
+        f = real_getitem(self, name)
+        return wrap(f) if name in ("getenv", "secure_getenv") else f
+
+    base.__getattr__, base.__getitem__ = __getattr__, __getitem__
+    base._detpy_getenv = True
+
+
 def _note_list(env) -> None:
     if _state.STATE.nodeid is None:
         _outside("*")
@@ -114,14 +162,91 @@ def _note_list(env) -> None:
         pass
 
 
+class _PosixEnviron(dict):
+    """``posix.environ`` under the env control: the same bytes mapping ``os.environ`` keeps (its ``_data``), whose
+    reads are events like ``os.environ``'s (docs/VERIFY-INPUTS.md: a read through posix.environ was no event). A dict
+    subclass over the live data: every read goes to that data, so ``os.environ`` writes are seen."""
+
+    def __init__(self, data):
+        super().__init__()
+        self._d = data
+
+    def __getitem__(self, key):
+        try:
+            v = self._d[key]
+        except KeyError:
+            if _ACTIVE:
+                _note_value("env.get", key, None)
+            raise
+        if _ACTIVE:
+            _note_value("env.get", key, v)
+        return v
+
+    def get(self, key, default=None):
+        v = self._d.get(key)
+        if _ACTIVE:
+            _note_value("env.get", key, v)
+        return default if v is None else v
+
+    def __contains__(self, key):
+        r = key in self._d
+        if _ACTIVE:
+            _note_flag(key, r)
+        return r
+
+    def _listed(self):
+        if _ACTIVE:
+            _note_list(os.environ)
+        return self._d
+
+    def __iter__(self):
+        return iter(self._listed())
+
+    def __len__(self):
+        return len(self._d)
+
+    def keys(self):
+        return self._listed().keys()
+
+    def items(self):
+        return self._listed().items()
+
+    def values(self):
+        return self._listed().values()
+
+    def copy(self):
+        return dict(self._listed())
+
+    def __repr__(self):
+        return repr(self._d)
+
+    def __setitem__(self, key, value):
+        self._d[key] = value
+
+    def __delitem__(self, key):
+        del self._d[key]
+
+
+def _install_posix() -> None:
+    try:
+        import posix
+    except ImportError:  # pragma: no cover - not POSIX
+        return
+    data = getattr(os.environ, "_data", None)
+    if isinstance(data, dict) and not isinstance(posix.environ, _PosixEnviron):
+        posix.environ = _PosixEnviron(data)
+
+
 def install() -> None:
     """Observe os.environ / os.environb (the class of the instances is swapped once; ``uninstall`` only stops the
-    events, so a later wrapper, such as the cache's, is never undone)."""
+    events, so a later wrapper, such as the cache's, is never undone), and posix.environ."""
     global _ACTIVE, _PATCHED
     _ACTIVE = True
     if _PATCHED:
         return
     _PATCHED = True
+    _install_posix()
+    _install_ctypes_getenv()
     for name in ("environ", "environb"):
         o = getattr(os, name, None)
         if o is not None:
