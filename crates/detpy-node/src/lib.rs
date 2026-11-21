@@ -554,6 +554,7 @@ impl ProofCache {
                 hooks: vec![],
                 units: vec![],
                 startup: o.startup,
+                needs: None,
             },
         ))
     }

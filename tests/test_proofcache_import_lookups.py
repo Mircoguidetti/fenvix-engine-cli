@@ -399,7 +399,8 @@ def test_root_conftest_lookups_do_not_key_site_packages(pytester):
     pytester.makepyfile(test_c="def test_c():\n    assert True\n")
     cache = pytester.path / ".c"
     pytester.runpytest_subprocess("--det", f"--det-cache={cache}", "-p", "no:cacheprovider").assert_outcomes(passed=1)
-    entry = json.loads((cache / "proof-cache.json").read_text())["tests"]["test_c.py::test_c"]
+    from detpy._proof import load_store
+    entry = load_store(str(cache / "proof-cache.json"))["tests"]["test_c.py::test_c"]
     purelib = sysconfig.get_paths()["purelib"]
     keyed = [k for k, _ in entry["data"] if k.startswith(purelib) or k.startswith(sysconfig.get_paths()["stdlib"])]
     assert not keyed, keyed

@@ -212,8 +212,13 @@ def test_class_state_makes_the_class_the_unit_of_reuse(tmp_path):
     write(root, {"test_s.py": src.replace("self.seen.append(1)", "self.seen.extend([1, 2])")})
     r = ut(root)
     assert "test_s.py::S::test_b" not in r.reused and r.outcomes["test_s.py::S::test_b"] == "failed", r
-    assert r.reused == {"test_s.py::Other::test_c"}, r
+    # Other.test_c runs before S in the same process: review R-023c E7 runs it too (a running test runs after every
+    # predecessor whose in-process state it may need)
+    assert r.reused == set(), r
     receipts = (root.parent / "p-cache" / "receipts.jsonl").read_text()
+    # (or, since review R-052, the code reason: test_s.py, a test file of the process, changed)
+    assert ('"why": "placement: a predecessor of test_s.py::S::test_' in receipts
+            or '"why": "code: a test file at or before it in its process changed' in receipts), receipts
     assert '"why": "unit: test_s.py::S::test_a runs"' in receipts
 
 
@@ -321,7 +326,8 @@ def test_new_test_module_runs_and_the_others_are_reused(tmp_path):
     write(root, {"test_two.py": "import unittest\n\nclass Two(unittest.TestCase):\n    def test_2(self):\n"
                                 "        self.fail('new')\n"})
     r = ut(root)
-    assert r.outcomes["test_two.py::Two::test_2"] == "failed" and r.reused == {"test_one.py::One::test_1"}, r
+    # review R-050 P2 (b): a new test may consume what every earlier test of its process leaves: test_1 runs first
+    assert r.outcomes["test_two.py::Two::test_2"] == "failed" and r.reused == set(), r
     assert r.code == 1
 
 

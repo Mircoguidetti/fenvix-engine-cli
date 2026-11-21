@@ -42,6 +42,14 @@ def pytest_addoption(parser, pluginmanager):
                 help="run each test in a child process forked from the session's snapshot (after collection): no "
                      "test sees state an earlier test left in memory, so a test's cache key carries no earlier test "
                      "(Linux; elsewhere the carried-set rule applies). Higher-scoped fixtures are set up per test")
+    g.addoption("--det-cache-in-process", action="store_true", default=False,
+                help="with --det-cache: run the tests in the session's process(es) as without the cache (the carried-set "
+                     "rule keys a test on the earlier tests of its process); the default (one child per test file "
+                     "only with --det-isolate)")
+    g.addoption("--det-isolate-scope", default="file", choices=("test", "file"),
+                help="with --det-isolate: 'file' (default) forks one child per test file, whose tests share that child "
+                     "in order (in-process state is carried within the file only, as in the serial run); 'test' forks "
+                     "a child per test")
     _early_reexec(parser, pluginmanager)
 
 
@@ -201,7 +209,7 @@ S = _Session()
 
 def _controls(ns) -> frozenset:
     try:
-        return _level0.controls_of(getattr(ns, "det_disable", "") or "")
+        return _level0.controls_of(getattr(ns, "det_disable", "") or "", bool(getattr(ns, "det_cache_real_clock", False)))
     except _level0.UsageError as e:
         raise pytest.UsageError(str(e))
 
@@ -758,6 +766,17 @@ def pytest_configure(config):
         config.pluginmanager.register(_Outcomes(out), "detpy-outcomes")
 
 
+class _SerialTestrunUid:
+    """``testrun_uid`` of a serial ``--det`` session (registered after pytest-xdist: this definition wins)."""
+
+    def __init__(self, uid: str):
+        self.uid = uid
+
+    @pytest.fixture(scope="session")
+    def testrun_uid(self) -> str:
+        return self.uid
+
+
 def _configure_det(config) -> None:
     # pytest-xdist: the controller plans and merges, each worker writes its own trace (xdist.py)
     wid = _xdist.worker_id(config)
@@ -773,6 +792,12 @@ def _configure_det(config) -> None:
         _xdist.export_controller_env(ctl.barrier)
         S.controller = ctl
         config.pluginmanager.register(ctl, "detpy-xdist-controller")
+    elif (config.pluginmanager.has_plugin("xdist") or config.pluginmanager.has_plugin("xdist.plugin")) \
+            and not getattr(config.option, "det_plan_worker", None):  # a replayed worker has the plan's uid
+        # audit G-0174: a serial session with pytest-xdist installed: xdist's testrun_uid fixture draws uuid4() in
+        # infrastructure code (neither controlled nor observed); under --det it is the derived value, as under -n
+        config.pluginmanager.register(_SerialTestrunUid(
+            _xdist.derived_testrunuid(config, _state.STATE.config.seed)), "detpy-serial-testrunuid")
     root = str(config.rootpath)
     _sites.refresh(root)
     opt = config.option
@@ -783,8 +808,25 @@ def _configure_det(config) -> None:
         S.trace_path = _xdist.worker_path(S.trace_path, S.worker)
         if opt.det_record:
             S.cassette_out = _xdist.worker_path(_state.STATE.config.cassette_path, S.worker)
+    if os.environ.get("DETPY_CACHE_IN_PROCESS") == "1":
+        opt.det_cache_in_process = True  # the same as --det-cache-in-process (detpy's own test suites set it)
+    if os.environ.get("DETPY_ISOLATE") in ("test", "file") and not getattr(opt, "det_isolate", False) \
+            and not getattr(opt, "det_plan_worker", None):
+        # the same as --det-isolate --det-isolate-scope=<value>, with or without the cache (detpy's own suites run
+        # the review gates with uncached runs isolated like the cached ones: the oracle of a per-file result)
+        opt.det_isolate = True
+        opt.det_isolate_scope = os.environ["DETPY_ISOLATE"]
+    if opt.det_cache and not getattr(opt, "det_isolate", False):
+        # coordinator decision 2026-11-21 (review R-050 P2): under --det-cache the tests run in the session's
+        # process(es), as the user runs the suite: the reported outcome is that run's, for every test; the carried-set
+        # rule (E7) keys a test on the earlier tests of its process. One child per test file only under an explicit
+        # --det-isolate. --det-cache-in-process names this default (the same key with or without it).
+        opt.det_cache_in_process = True
     if opt.det_cache:
         proofcache.install(config)
+    if (getattr(opt, "det_isolate", False) and getattr(opt, "det_isolate_scope", "test") == "file"
+            and proofcache.PLUGIN is not None):
+        proofcache.PLUGIN.iso_scope = "file"  # the controller too: it decides and plans per file
     if getattr(opt, "det_isolate", False) and S.controller is None:
         from . import isolate as _isolate
 
@@ -792,7 +834,12 @@ def _configure_det(config) -> None:
             S.isolate = True
             if proofcache.PLUGIN is not None:
                 proofcache.PLUGIN.isolate = True
-            config.pluginmanager.register(_isolate.Isolate(config), "detpy-isolate")
+            if config.getoption("det_isolate_scope", "test") == "file":
+                if proofcache.PLUGIN is not None:
+                    proofcache.PLUGIN.iso_scope = "file"
+                config.pluginmanager.register(_isolate.FileIsolate(config), "detpy-isolate")
+            else:
+                config.pluginmanager.register(_isolate.Isolate(config), "detpy-isolate")
         else:
             S.adjustments.append("--det-isolate: fork is not available here; the carried-set rule applies")
     factory = getattr(config, "_tmp_path_factory", None)

@@ -33,19 +33,51 @@ def git(repo, *args) -> str:
 def pytest(repo, py, args, out_json, timeout):
     env = {k: v for k, v in os.environ.items() if k not in ("DETPY_REEXEC", "PYTHONHASHSEED")}
     t0 = time.perf_counter()
-    try:
-        p = subprocess.run([py, "-m", "pytest", "-p", "no:cacheprovider", "-q", f"--det-outcomes={out_json}", *args],
-                           cwd=repo, capture_output=True, text=True, timeout=timeout, env=env)
-        tail = (p.stdout + p.stderr).strip().splitlines()[-1:] or [""]
-        rc = p.returncode
-    except subprocess.TimeoutExpired:
-        tail, rc = ["timeout"], "timeout"
+    log = out_json + ".log"
+    peak_kb = None
+    with open(log, "w") as fh:
+        p = subprocess.Popen([py, "-m", "pytest", "-p", "no:cacheprovider", "-q", f"--det-outcomes={out_json}", *args],
+                             cwd=repo, stdout=fh, stderr=subprocess.STDOUT, text=True, env=env)
+        # py-cache item 4: the peak resident set of the pytest process and of every worker it reaped (Linux: wait4's
+        # ru_maxrss covers the reaped descendants). The child is reaped here, by wait4, not by Popen.wait.
+        deadline = time.perf_counter() + timeout
+        while True:
+            pid, status, ru = os.wait4(p.pid, os.WNOHANG)
+            if pid:
+                p.returncode = os.waitstatus_to_exitcode(status)
+                peak_kb = ru.ru_maxrss
+                break
+            if time.perf_counter() > deadline:
+                p.kill()
+                _, status, ru = os.wait4(p.pid, 0)
+                p.returncode = -9
+                peak_kb = ru.ru_maxrss
+                break
+            time.sleep(0.2)
+    with open(log) as fh:
+        lines = fh.read().strip().splitlines()
+    tail = lines[-1:] or [""]
+    rc = p.returncode if p.returncode is not None else "timeout"
+    if rc == -9:
+        rc = "killed"
     wall = round(time.perf_counter() - t0, 1)
     data = {}
     if os.path.exists(out_json):
         with open(out_json) as f:
             data = json.load(f)
-    return {"wall_s": wall, "rc": rc, "tail": tail[0]}, data
+    return {"wall_s": wall, "rc": rc, "tail": tail[0], "peak_rss_mb": round(peak_kb / 1024, 1) if peak_kb else None}, data
+
+
+def store_mb(cache_dir) -> float | None:
+    """Size of a cache directory's files (the store, its shards), MB."""
+    total = 0
+    for dp, _, fns in os.walk(cache_dir):
+        for fn in fns:
+            try:
+                total += os.path.getsize(os.path.join(dp, fn))
+            except OSError:
+                pass
+    return round(total / 2**20, 2) if total else None
 
 
 def deps_digest(repo) -> str:
@@ -75,12 +107,19 @@ def main(argv=None) -> int:
                     help="cache modes to walk besides the truth run b (a_ser can be left out to fit a CI job)")
     ap.add_argument("--det-args", default="",
                     help="extra detpy options for every --det run (cache runs and truth), e.g. --det-urandom")
+    ap.add_argument("--cache-args", default="",
+                    help="extra detpy options for the cache runs only (a_par, a_ser), e.g. --det-isolate "
+                         "--det-isolate-scope=file; the truth b stays a plain --det run")
     ap.add_argument("--shard", default="",
                     help="K/M: walk only the K-th of M contiguous slices of the commits (0-based); each slice starts "
                          "with an empty cache at its first commit")
+    ap.add_argument("--unchanged", action="store_true",
+                    help="at each shard's first commit, run every cache mode a second time on the same commit (the "
+                         "reuse of an unchanged commit, rows a_par_u / a_ser_u)")
     ap.add_argument("pytest_args", nargs="*")
     a = ap.parse_args(argv)
     det_args = a.det_args.split()
+    cache_args = a.cache_args.split()
     work = os.path.abspath(a.work or os.path.join(os.path.dirname(os.path.abspath(a.out)), "walk-work"))
     os.makedirs(work, exist_ok=True)
     head = git(a.repo, "rev-parse", "HEAD").strip()
@@ -107,17 +146,27 @@ def main(argv=None) -> int:
         row = {"i": i + offset, "sha": sha, "shard_first": i == 0}
         runs = {}
         modes = [m for m in a.modes.split(",") if m]
-        variants = (("a_par", ["--det", *det_args, f"--det-cache={work}/cache-par", f"--det-trace={work}/a_par.jsonl",
-                               *par]),
-                    ("a_ser", ["--det", *det_args, f"--det-cache={work}/cache-ser", f"--det-trace={work}/a_ser.jsonl"]),
+        variants = (("a_par", ["--det", *det_args, *cache_args, f"--det-cache={work}/cache-par",
+                               f"--det-trace={work}/a_par.jsonl", *par]),
+                    ("a_ser", ["--det", *det_args, *cache_args, f"--det-cache={work}/cache-ser",
+                               f"--det-trace={work}/a_ser.jsonl"]),
+                    # the time of the same -n run without the cache (the speed baseline of a_par)
+                    ("b_par", ["--det", *det_args, f"--det-trace={work}/b_par.jsonl", *par]),
                     ("b", ["--det", *det_args, f"--det-trace={work}/b.jsonl"]))
-        for name, extra in [v for v in variants if v[0] in modes or v[0] == "b"]:
-            cf = os.path.join(work, "cache-par" if name == "a_par" else "cache-ser", "carried.jsonl")
+        todo = [v for v in variants if v[0] in modes or v[0] == "b"]
+        if a.unchanged and i == 0:
+            # the same commit again, warm: an unchanged commit's reuse (py-cache item 5)
+            todo = [v for v in todo if v[0] != "b"] + [(v[0] + "_u", v[1]) for v in todo if v[0] in ("a_par", "a_ser")] + \
+                [v for v in todo if v[0] == "b"]
+        for name, extra in todo:
+            cf = os.path.join(work, "cache-par" if name.startswith("a_par") else "cache-ser", "carried.jsonl")
             off = os.path.getsize(cf) if os.path.exists(cf) else 0
             meta, data = pytest(a.repo, a.python, [*a.pytest_args, *extra], f"{work}/{name}-{i}.json", a.timeout)
             runs[name] = data
             row[name] = meta
-            if name != "b" and os.path.exists(cf):
+            if not name.startswith("b"):
+                meta["store_mb"] = store_mb(os.path.join(work, "cache-par" if name.startswith("a_par") else "cache-ser"))
+            if not name.startswith("b") and os.path.exists(cf):
                 # the carried-set rule: tests whose key carries earlier contexts of their process (every worker's
                 # recording session appends one line)
                 with open(cf) as fh:
@@ -143,7 +192,7 @@ def main(argv=None) -> int:
                 row["b_plain"] = pm
                 row["order_dependent"] = sorted([n, plain.get(n), truth[n]] for n in truth
                                                 if n in plain and plain[n] != truth[n])
-        for mode in [m for m in ("a_par", "a_ser") if m in runs]:
+        for mode in [m for m in ("a_par", "a_ser", "a_par_u", "a_ser_u") if m in runs]:
             c = runs[mode].get("cache", {})
             reused = c.get("reused_ids", [])
             outcomes = runs[mode].get("outcomes", {})
@@ -163,12 +212,18 @@ def main(argv=None) -> int:
                 for n in bad:
                     (wrong if o2.get(n) == truth[n] else flaky).append([n, outcomes.get(n), truth[n], o2.get(n)])
             row[mode].update(mismatches=len(bad), wrong_reuses=wrong, flaky=flaky)
+            # the tests that ran in the cache session and ended otherwise than in the truth (a reused predecessor's
+            # missing state would show here; a flaky test too)
+            rs = set(reused)
+            row[mode]["ran_differ"] = sorted([n, outcomes.get(n), truth[n]] for n in outcomes
+                                             if n not in rs and n in truth and outcomes.get(n) != truth[n])[:50]
         rows.append(row)
         with open(a.out, "w") as f:
             json.dump({"repo": os.path.basename(os.path.abspath(a.repo)), "workers": a.workers, "args": a.pytest_args,
                        "det_args": det_args, "shard": a.shard, "commits": rows}, f, indent=1)
         print(json.dumps({k: (v if not isinstance(v, dict) else {x: v[x] for x in ("wall_s", "reused", "ran",
                                                                                    "mismatches", "wrong_reuses",
+                                                                                   "peak_rss_mb", "store_mb",
                                                                                    "reused_time_s", "test_time_s")
                                                                  if x in v}) for k, v in row.items()}), flush=True)
     git(a.repo, "checkout", "-q", "--force", head)

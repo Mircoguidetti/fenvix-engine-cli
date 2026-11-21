@@ -35,6 +35,7 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 
 import pytest
 
@@ -47,7 +48,9 @@ from ._proof import (  # noqa: F401
     _ScandirEntry,
     _TimedStat,
     _time_helper_caller,
+    _reaches_user,
     _user_stat_caller,
+    _kind_check_caller,
     _DETPY_OWN_ENV,
     AVAILABLE,
     Capture,
@@ -87,7 +90,9 @@ _VOLATILE_OPTIONS = {
 }
 
 
-def config_identity(config) -> tuple[str, dict]:
+def config_identity(config, as_if: dict | None = None) -> tuple[str, dict]:
+    """The configuration digest and its parts; ``as_if``: option values to use instead of the session's (the serial
+    session's configuration of an isolated one)."""
     plugins = sorted({f"{dist.project_name}=={dist.version}"
                       for _, dist in config.pluginmanager.list_plugin_distinfo()})
     ini = getattr(config, "_inicfg", None)
@@ -105,6 +110,8 @@ def config_identity(config) -> tuple[str, dict]:
     for k, v in sorted(vars(config.option).items()):
         if k in _VOLATILE_OPTIONS or (inert and k.startswith(inert)):
             continue
+        if as_if and k in as_if:
+            v = as_if[k]
         r = repr(v)
         if " at 0x" in r:
             r = type(v).__name__
@@ -143,6 +150,23 @@ class ProofCachePlugin(ProofSession):
                 basetemp = None
             self.cap.basetemp = basetemp
         self.open(str(config.rootpath), *config_identity(config))
+        # audit G-0169: the configuration of the same session without --det-isolate, under which the serial results
+        # of these tests are stored (_expect_serial compares an isolated outcome with them)
+        # (the in-process session: --det-cache-in-process, without isolation; --det-isolate-scope at its default)
+        self.serial_config_digest = (config_identity(config, as_if={"det_isolate": False, "det_isolate_scope": "file",
+                                                                    "det_cache_in_process": True})[0]
+                                     if config.getoption("det_isolate", False) else None)
+        # audit G-0159: the nightly real-clock check compares with the results recorded on the virtual day
+        self.real_clock = bool(config.getoption("det_cache_real_clock", False))
+        if self.real_clock:
+            cfg = _state.STATE.config
+            saved = cfg.controls
+            try:
+                cfg.controls = frozenset(saved | {"time"})
+                self.serial_config_digest = config_identity(config, as_if={"det_cache_real_clock": False})[0]
+            finally:
+                cfg.controls = saved
+
 
     # -- collection -------------------------------------------------------------
     @pytest.hookimpl(hookwrapper=True, tryfirst=True)
@@ -167,6 +191,12 @@ class ProofCachePlugin(ProofSession):
             return
         nids = [item.nodeid for item in session.items]
         self.check(nids, dict(zip(nids, session.items)), _unittest_units(nids, session.items))
+        if (self.isolate and not self.iso_child) or self.real_clock:
+            self._expect_serial(nids)
+            self.demote_for_running([nids])  # a result _expect_serial withdrew runs after its file's earlier tests
+        if self.real_clock:
+            for nid in nids:  # every test runs on the real clock
+                self.sess.demote(nid, "real-clock check: every test runs")
 
     # -- pytest-xdist under --det: the controller --------------------------------------------------------------
     def decide_controller(self, nids: list) -> set:
@@ -195,9 +225,143 @@ class ProofCachePlugin(ProofSession):
             seed = _core.CacheSession.controller_verify_seed(_state.STATE.config.seed, list(nids), self.config_digest)
             self.sess.decide(store, list(nids), self.max_age_s, _now(), _run_time, self.verify, seed)
             self._demote_writers_of_running_readers(list(nids))
+            self.prefix_check(list(nids))
+            self._expect_serial(list(nids))
+            if self.real_clock:
+                for nid in nids:
+                    self.sess.demote(nid, "real-clock check: every test runs")
             return set(self.sess.hit_ids)
         finally:
             self.sess.t_check = _perf() - t0
+
+    # -- PY-05 / audit G-0175, G-0169: -n and --det-isolate never change an outcome silently ----------------------
+    def _expect_serial(self, nids) -> None:
+        """The outcome a serial session gives each test that runs here, where the store proves it: a serial entry (or
+        a parallel one proven equal to the serial result) whose inputs are unchanged. ``placement_findings`` compares
+        it with the outcome this session got."""
+        exp = self.serial_expect = {}
+        store = self.store
+        # set for --det-isolate (per test or per file, the default under the cache: the -n controller too, which
+        # isolates nothing itself) and for the real-clock check
+        view = None
+        if getattr(self, "serial_config_digest", None):
+            if self.store.entries_with_config(self.serial_config_digest):
+                # a read-only view of the same store under the serial session's configuration
+                cap, was = self.cap, self.cap.active
+                cap.active = False
+                try:
+                    view = _core.ProofCache(self.dir, self.root)
+                    view.begin(self.serial_config_digest, self.runtime_digest, self.epoch, dict(cap.env0))
+                finally:
+                    cap.active = was
+            # no result of the in-process session in the store: nothing to compare with but pending findings (the
+            # store itself holds this mode's results, not the in-process ones)
+            store = view
+        pending = self._pending_findings() if (getattr(self, "serial_config_digest", None) or self.role == "controller") \
+            and not getattr(self, "real_clock", False) else {}
+        for nid in list(nids):
+            hit = self.sess.is_hit(nid)
+            p = pending.get(nid)
+            if p is not None:
+                # a placement finding of an earlier session that no session has resolved: never reused here, compared
+                # again (it is reported until this mode gives the in-process outcome or the in-process session gives
+                # this mode's)
+                if hit:
+                    self.sess.demote(nid, f"placement: a pending finding: {p.get('here')} under {p.get('how')}, "
+                                          f"{p.get('in_process')} in the in-process session")
+                exp.setdefault(nid, p.get("in_process"))
+                continue
+            if store is None or (hit and store is self.store):
+                continue
+            try:
+                ok, _ = store.check(nid)
+                if not ok:
+                    continue
+                e = json.loads(store.entry(nid))
+            except Exception:
+                continue
+            if not (e.get("placement", "") in ("", "parallel-proven") and e.get("outcome")):
+                continue
+            if hit:
+                # coordinator condition 2: a result of this mode (one child per file or per test) whose outcome is not
+                # the in-process session's with the same inputs is not reused: it runs, and is a finding again
+                try:
+                    mine = json.loads(self.store.entry(nid)).get("outcome")
+                except Exception:
+                    mine = None
+                if mine != e["outcome"] and self.sess.demote(
+                        nid, f"placement: {mine} here, {e['outcome']} in the in-process session with the same inputs"):
+                    exp[nid] = e["outcome"]
+                continue
+            exp[nid] = e["outcome"]
+
+    def _note_outcome(self, report) -> None:
+        got = self.__dict__.setdefault("got_outcome", {})
+        nid = report.nodeid
+        if report.failed:
+            got[nid] = "failed"
+        elif got.get(nid) == "failed":
+            return
+        elif report.when == "call" or (report.when == "setup" and report.skipped):
+            out = report.outcome
+            if hasattr(report, "wasxfail"):
+                out = "xfailed" if report.skipped else "xpassed"
+            got[nid] = out
+
+    def placement_findings(self) -> list:
+        """(nodeid, serial outcome, this session's outcome) of every test whose outcome under -n / --det-isolate
+        differs from the outcome a serial session gives it with the same inputs (the store's proof)."""
+        exp = getattr(self, "serial_expect", None) or {}
+        got = getattr(self, "got_outcome", None) or {}
+        return [(n, exp[n], got[n]) for n in exp if n in got and got[n] != exp[n]]
+
+    FINDINGS = "placement-findings.json"
+
+    def _pending_findings(self) -> dict:
+        d = self.engine_json_load(os.path.join(self.dir, self.FINDINGS))
+        return d if isinstance(d, dict) else {}
+
+    def _save_findings(self) -> None:
+        """Placement findings persist until resolved (coordinator condition 2: never silent; the store keeps one entry
+        per test, so the in-process result they were found against may be gone). A session of this mode resolves one
+        when it gives the in-process outcome; an in-process session resolves one when it gives this mode's."""
+        pending = self._pending_findings()
+        got = getattr(self, "got_outcome", None) or {}
+        before = dict(pending)
+        if (getattr(self, "serial_config_digest", None) or self.role == "controller") \
+                and not getattr(self, "real_clock", False):
+            how = "-n" if self.role == "controller" and getattr(self, "iso_scope", "test") != "file" else (
+                "one child per test file" if getattr(self, "iso_scope", "test") == "file" else "one child per test")
+            exp = getattr(self, "serial_expect", None) or {}
+            for nid, want in exp.items():
+                if nid not in got:
+                    continue
+                if got[nid] == want:
+                    pending.pop(nid, None)
+                else:
+                    pending[nid] = {"in_process": want, "here": got[nid], "how": how, "run": self.run_id}
+        elif self.role != "worker" and not getattr(self, "isolate", False):
+            for nid in list(pending):  # the in-process session
+                if nid in got and got[nid] == pending[nid].get("here"):
+                    pending.pop(nid)
+        if pending != before:
+            self.engine_json_save(os.path.join(self.dir, self.FINDINGS), pending, sort_keys=True)
+
+    @pytest.hookimpl(trylast=True)
+    def pytest_sessionfinish(self, session):
+        try:
+            self._save_findings()
+        except Exception:  # never break the session
+            pass
+        if self.placement_findings() and session.exitstatus == 0:
+            session.exitstatus = pytest.ExitCode.TESTS_FAILED
+        if self.role != "worker" and not self.iso_child \
+                and session.config.pluginmanager.getplugin("terminalreporter") is None:
+            # no terminal reporter (-p no:terminal): no summary hook will run; the summary file still holds it (G-0412)
+            try:
+                self.terminal_summary(_NoTerminal(session.config))
+            except Exception:  # noqa: BLE001 - never break the session's end
+                pass
 
     def check_workers(self, nids: list, assign: dict) -> list:
         """After the plan: reused results that read ``PYTEST_XDIST_WORKER`` and that this run's plan places on
@@ -299,6 +463,8 @@ class ProofCachePlugin(ProofSession):
     # -- pytest-xdist under --det: a worker ----------------------------------------------------------------------
     def worker_output(self) -> dict:
         self.iso_merge_summaries()
+        if self.isolate:
+            self.iso_flush()
         out = {"detpy_cache_summary": list(self.sess.worker_summary())}
         if self.shard_path:
             out["detpy_cache_shard"] = self.shard_path
@@ -378,6 +544,11 @@ class ProofCachePlugin(ProofSession):
         return super().iso_record(_plugin.S.fingerprints if fingerprints is None else fingerprints)
 
     def pytest_runtest_logreport(self, report):
+        if self.role != "worker" and not self.iso_child:
+            for k, v in getattr(report, "user_properties", None) or ():
+                if k == "detpy_placement":  # a failure only the per-file isolation caused (isolate.FileIsolate)
+                    self.__dict__.setdefault("replay_findings", {})[report.nodeid] = v
+            self._note_outcome(report)  # findings (and their resolution by an in-process session)
         if self.isolate and not self.iso_child and report.nodeid in self.iso_forked:
             return  # the child reported it to its own session
         self.sess.report(report)
@@ -463,10 +634,59 @@ class ProofCachePlugin(ProofSession):
         except (OSError, ValueError, AttributeError):
             return []
 
+    SUMMARY_FILE = "summary.txt"
+
     def terminal_summary(self, tr) -> None:
+        """The cache's summary, printed and written to ``<cache>/summary.txt`` (audit G-0412: a project that replaces
+        pytest's terminal reporter can swallow every line a plugin prints; the file keeps the summary, a 0-entry store's
+        reasons included, reachable)."""
+        rec = _SummaryRecorder(tr)
+        try:
+            self._terminal_summary(rec)
+        finally:
+            self.summary_saved = True
+            text = "\n".join(rec.lines) + "\n"
+
+            def save(path=os.path.join(self.dir, self.SUMMARY_FILE)):
+                try:
+                    with open(path + f".tmp{os.getpid()}", "w") as fh:
+                        fh.write(text)
+                    os.replace(path + f".tmp{os.getpid()}", path)
+                except OSError:
+                    pass
+
+            _core.detpy_probe_call(save)
+
+    def _terminal_summary(self, tr) -> None:
+        found = self.placement_findings()
+        if found:
+            if getattr(self, "real_clock", False):
+                tr.section("detpy REAL-CLOCK FINDINGS: outcomes on the real clock differ from the virtual day", red=True)
+                for nid, want, got in found:
+                    tr.write_line(f"real clock: {nid}: {got} on the real clock, {want} on the virtual day with the "
+                                  f"same inputs (it depends on the real date or time)", red=True)
+            else:
+                how = "-n" if self.role == "controller" else "--det-isolate"
+                tr.section(f"detpy PLACEMENT FINDINGS: outcomes under {how} differ from the serial run", red=True)
+                for nid, want, got in found:
+                    tr.write_line(f"placement: {nid}: {got} here, {want} in a serial session with the same inputs "
+                                  f"(it depends on another test's in-process state or on its worker)", red=True)
+        rf = getattr(self, "replay_findings", None) or {}
+        if rf:
+            tr.section("detpy PLACEMENT FINDINGS: tests that fail only when their file runs in its own process",
+                       yellow=True)
+            for nid in sorted(rf):
+                tr.write_line(f"placement: {rf[nid]}", yellow=True)
         tr.section("detpy cache with proof")
-        for text, markup in self.summary_lines(tr.config.option.verbose):
+        for text, markup in self.summary_lines(getattr(tr.config.option, "verbose", 0)):
             tr.write_line(text, **({markup: True} if markup else {}))
+        fo = getattr(self.cap, "follower", None)
+        why = getattr(fo, "why_not", None) if fo is not None else None
+        if why and why != "--det-cache-no-follow":
+            # audit G-1544: processes started at import, collection or start-up are followed with strace; without
+            # it, the tests after them are refused for "subprocess" and nothing said why
+            tr.write_line(f"processes started outside a test are not followed ({why}): install strace so that the "
+                          f"tests after them can be reused", yellow=True)
         m = self.merge_result
         if m is not None:
             tr.write_line(f"parallel: decided once in the controller; {m['merged']} entries merged from the workers' "
@@ -478,6 +698,37 @@ class ProofCachePlugin(ProofSession):
                 tr.write_line(f"parallel vs serial (P5): {m['proven']} entr(ies) proven equal to the serial result "
                               f"(reusable by serial sessions), {len(m['diverged'])} diverged (not stored: the serial "
                               f"entry stays), {m['unproven']} unproven (no stable serial fingerprint under their key)")
+
+
+class _NoTerminal:
+    def __init__(self, config):
+        self.config = config
+
+    def section(self, *a, **kw):
+        pass
+
+    def write_line(self, *a, **kw):
+        pass
+
+
+class _SummaryRecorder:
+    """The terminal reporter as the cache's summary sees it: every section and line also kept in ``lines``."""
+
+    def __init__(self, tr):
+        self._tr = tr
+        self.lines: list = []
+        self.config = tr.config
+
+    def section(self, title, *a, **kw):
+        self.lines.append(f"== {title} ==")
+        return self._tr.section(title, *a, **kw)
+
+    def write_line(self, text, **kw):
+        self.lines.append(str(text))
+        return self._tr.write_line(text, **kw)
+
+    def __getattr__(self, name):
+        return getattr(self._tr, name)
 
 
 def _location_of(nodeid: str) -> tuple:

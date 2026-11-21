@@ -138,4 +138,8 @@ def test_a_changed_epoch_is_a_miss_for_a_test_that_read_sqlite_now(project):
     reused = set(c.get("reused_ids") or ())
     # the tests that read SQLite's now depend on the epoch; the one with explicit dates does not
     assert "test_sq.py::test_rows" not in reused
-    assert "test_sq.py::test_explicit_dates_keep_sqlite_semantics" in reused
+    # the one with explicit dates does not: reused, unless it runs before an epoch reader of its process (review
+    # R-023c E7, py-cache: a test that runs runs after every earlier test whose in-process state it may need)
+    why = (c.get("miss_ids") or {}).get("test_sq.py::test_explicit_dates_keep_sqlite_semantics", "")
+    assert "test_sq.py::test_explicit_dates_keep_sqlite_semantics" in reused or why.startswith(
+        "placement: a predecessor of"), why

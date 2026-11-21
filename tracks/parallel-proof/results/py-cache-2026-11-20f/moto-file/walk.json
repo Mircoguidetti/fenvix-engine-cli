@@ -1,0 +1,1633 @@
+{
+ "repo": "repo",
+ "workers": 4,
+ "args": [
+  "./tests/test_batch",
+  "./tests/test_dynamodb",
+  "./tests/test_ec2",
+  "tests/test_s3/",
+  "./tests/test_sqs",
+  "-m",
+  "not requires_clean_slate",
+  "-p",
+  "no:randomly",
+  "--timeout=600"
+ ],
+ "det_args": [
+  "--det-urandom"
+ ],
+ "shard": "",
+ "commits": [
+  {
+   "i": 0,
+   "sha": "807987390e6079f2306c829a041dc834a304c7d4",
+   "shard_first": true,
+   "a_par": {
+    "wall_s": 118.0,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m16 failed\u001b[0m, \u001b[32m2460 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m\u001b[31m in 104.55s (0:01:44)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 452.4,
+    "store_mb": 23.43,
+    "carried": 2467,
+    "carried_of_recorded": 2415,
+    "reused": 0,
+    "ran": 2483,
+    "recorded": 2355,
+    "tests": 2483,
+    "miss_reasons": {
+     "new": 2483
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "a_ser": {
+    "wall_s": 204.9,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m16 failed\u001b[0m, \u001b[32m2460 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m\u001b[31m in 203.75s (0:03:23)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 556.2,
+    "store_mb": 23.63,
+    "carried": 2467,
+    "carried_of_recorded": 2415,
+    "reused": 0,
+    "ran": 2483,
+    "recorded": 2385,
+    "tests": 2483,
+    "miss_reasons": {
+     "new": 2461,
+     "unit": 22
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "b_par": {
+    "wall_s": 67.5,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2468 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 66.61s (0:01:06)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 415.7
+   },
+   "a_par_u": {
+    "wall_s": 59.3,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m16 failed\u001b[0m, \u001b[32m2460 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m\u001b[31m in 57.69s\u001b[0m\u001b[0m",
+    "peak_rss_mb": 374.8,
+    "store_mb": 25.48,
+    "carried": 923,
+    "carried_of_recorded": 871,
+    "reused": 1544,
+    "ran": 939,
+    "recorded": 841,
+    "tests": 2483,
+    "miss_reasons": {
+     "new": 128,
+     "reader": 3,
+     "placement": 808
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 78.029,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "a_ser_u": {
+    "wall_s": 50.8,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m16 failed\u001b[0m, \u001b[32m2460 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m\u001b[31m in 49.04s\u001b[0m\u001b[0m",
+    "peak_rss_mb": 398.9,
+    "store_mb": 25.71,
+    "carried": 160,
+    "carried_of_recorded": 108,
+    "reused": 2307,
+    "ran": 176,
+    "recorded": 78,
+    "tests": 2483,
+    "miss_reasons": {
+     "new": 91,
+     "unit": 7,
+     "reader": 3,
+     "placement": 75
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 121.91,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "b": {
+    "wall_s": 164.5,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2468 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 161.08s (0:02:41)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 569.2,
+    "test_time_s": 158.551
+   }
+  },
+  {
+   "i": 1,
+   "sha": "61cf46e13bdce11f614a3c0087ed55cdb9374fdd",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 68.1,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m16 failed\u001b[0m, \u001b[32m2460 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m\u001b[31m in 66.46s (0:01:06)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 454.0,
+    "store_mb": 26.21,
+    "carried": 1541,
+    "carried_of_recorded": 1489,
+    "reused": 926,
+    "ran": 1557,
+    "recorded": 1459,
+    "tests": 2483,
+    "miss_reasons": {
+     "code": 124,
+     "new": 98,
+     "reader": 3,
+     "placement": 1332
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 53.124,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "a_ser": {
+    "wall_s": 66.3,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m16 failed\u001b[0m, \u001b[32m2460 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m\u001b[31m in 64.36s (0:01:04)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 429.9,
+    "store_mb": 26.84,
+    "carried": 318,
+    "carried_of_recorded": 266,
+    "reused": 2149,
+    "ran": 334,
+    "recorded": 236,
+    "tests": 2483,
+    "miss_reasons": {
+     "code": 124,
+     "new": 91,
+     "unit": 7,
+     "reader": 3,
+     "placement": 109
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 110.841,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "b_par": {
+    "wall_s": 65.7,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2468 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 64.82s (0:01:04)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 459.7
+   },
+   "b": {
+    "wall_s": 163.5,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2468 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 159.10s (0:02:39)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 573.6,
+    "test_time_s": 156.599
+   }
+  },
+  {
+   "i": 2,
+   "sha": "602bfc008d2e32548600773409cd8637b72501ad",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 95.9,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m16 failed\u001b[0m, \u001b[32m2461 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m\u001b[31m in 94.19s (0:01:34)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 565.9,
+    "store_mb": 26.1,
+    "carried": 2468,
+    "carried_of_recorded": 2416,
+    "reused": 0,
+    "ran": 2484,
+    "recorded": 2386,
+    "tests": 2484,
+    "miss_reasons": {
+     "code": 2385,
+     "new": 99
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "a_ser": {
+    "wall_s": 220.2,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m16 failed\u001b[0m, \u001b[32m2461 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m\u001b[31m in 218.41s (0:03:38)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 656.0,
+    "store_mb": 26.49,
+    "carried": 2468,
+    "carried_of_recorded": 2416,
+    "reused": 0,
+    "ran": 2484,
+    "recorded": 2386,
+    "tests": 2484,
+    "miss_reasons": {
+     "code": 2370,
+     "new": 92,
+     "unit": 22
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "b_par": {
+    "wall_s": 63.3,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2469 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 62.49s (0:01:02)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 429.6
+   },
+   "b": {
+    "wall_s": 163.5,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2469 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 159.38s (0:02:39)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 565.0,
+    "test_time_s": 156.876
+   }
+  },
+  {
+   "i": 3,
+   "sha": "446649ec31bde7777f2ca841278189dfa52e0572",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 91.1,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m16 failed\u001b[0m, \u001b[32m2472 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m\u001b[31m in 89.35s (0:01:29)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 566.2,
+    "store_mb": 26.71,
+    "carried": 2479,
+    "carried_of_recorded": 2427,
+    "reused": 0,
+    "ran": 2495,
+    "recorded": 2397,
+    "tests": 2495,
+    "miss_reasons": {
+     "code": 2386,
+     "new": 109
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "a_ser": {
+    "wall_s": 225.2,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m16 failed\u001b[0m, \u001b[32m2472 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m\u001b[31m in 223.34s (0:03:43)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 657.5,
+    "store_mb": 27.1,
+    "carried": 2479,
+    "carried_of_recorded": 2427,
+    "reused": 0,
+    "ran": 2495,
+    "recorded": 2397,
+    "tests": 2495,
+    "miss_reasons": {
+     "code": 2371,
+     "new": 102,
+     "unit": 22
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "b_par": {
+    "wall_s": 69.1,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2480 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 68.15s (0:01:08)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 469.0
+   },
+   "b": {
+    "wall_s": 171.3,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2480 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 167.09s (0:02:47)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 573.1,
+    "test_time_s": 164.426
+   }
+  },
+  {
+   "i": 4,
+   "sha": "74ca878062e648e14646a894e7b3aace5249c636",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 74.3,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m16 failed\u001b[0m, \u001b[32m2472 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m\u001b[31m in 72.60s (0:01:12)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 367.6,
+    "store_mb": 28.39,
+    "carried": 782,
+    "carried_of_recorded": 730,
+    "reused": 1697,
+    "ran": 798,
+    "recorded": 696,
+    "tests": 2495,
+    "miss_reasons": {
+     "new": 98,
+     "reader": 3,
+     "placement": 697
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 77.28,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "a_ser": {
+    "wall_s": 47.6,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m16 failed\u001b[0m, \u001b[32m2472 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m\u001b[31m in 45.84s\u001b[0m\u001b[0m",
+    "peak_rss_mb": 401.1,
+    "store_mb": 29.12,
+    "carried": 160,
+    "carried_of_recorded": 108,
+    "reused": 2319,
+    "ran": 176,
+    "recorded": 78,
+    "tests": 2495,
+    "miss_reasons": {
+     "new": 91,
+     "unit": 7,
+     "reader": 3,
+     "placement": 75
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 124.056,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "b_par": {
+    "wall_s": 65.7,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2480 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 64.72s (0:01:04)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 456.8
+   },
+   "b": {
+    "wall_s": 168.3,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2480 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 164.39s (0:02:44)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 565.3,
+    "test_time_s": 161.769
+   }
+  },
+  {
+   "i": 5,
+   "sha": "15e28066d6af28f8fa8a58db658936a9f2b9396d",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 88.9,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m16 failed\u001b[0m, \u001b[32m2472 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m\u001b[31m in 87.20s (0:01:27)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 567.2,
+    "store_mb": 28.13,
+    "carried": 2479,
+    "carried_of_recorded": 2427,
+    "reused": 0,
+    "ran": 2495,
+    "recorded": 2397,
+    "tests": 2495,
+    "miss_reasons": {
+     "code": 2393,
+     "new": 102
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "a_ser": {
+    "wall_s": 211.9,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m16 failed\u001b[0m, \u001b[32m2472 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m\u001b[31m in 210.18s (0:03:30)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 656.8,
+    "store_mb": 28.7,
+    "carried": 2479,
+    "carried_of_recorded": 2427,
+    "reused": 0,
+    "ran": 2495,
+    "recorded": 2397,
+    "tests": 2495,
+    "miss_reasons": {
+     "code": 2382,
+     "new": 91,
+     "unit": 22
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "b_par": {
+    "wall_s": 67.9,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2480 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 67.02s (0:01:07)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 431.8
+   },
+   "b": {
+    "wall_s": 166.7,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2480 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 162.62s (0:02:42)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 566.3,
+    "test_time_s": 159.99
+   }
+  },
+  {
+   "i": 6,
+   "sha": "9fffae82ade817200e2bef7fc29997331d019c0c",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 62.9,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m16 failed\u001b[0m, \u001b[32m2473 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m\u001b[31m in 61.20s (0:01:01)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 445.5,
+    "store_mb": 29.6,
+    "carried": 1433,
+    "carried_of_recorded": 1381,
+    "reused": 1047,
+    "ran": 1449,
+    "recorded": 1351,
+    "tests": 2496,
+    "miss_reasons": {
+     "code": 50,
+     "new": 99,
+     "reader": 3,
+     "placement": 1297
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 64.241,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "a_ser": {
+    "wall_s": 57.8,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m16 failed\u001b[0m, \u001b[32m2473 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m\u001b[31m in 56.08s\u001b[0m\u001b[0m",
+    "peak_rss_mb": 431.4,
+    "store_mb": 30.74,
+    "carried": 214,
+    "carried_of_recorded": 162,
+    "reused": 2266,
+    "ran": 230,
+    "recorded": 132,
+    "tests": 2496,
+    "miss_reasons": {
+     "code": 50,
+     "new": 92,
+     "unit": 7,
+     "reader": 3,
+     "placement": 78
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 112.021,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "b_par": {
+    "wall_s": 64.5,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2481 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 63.57s (0:01:03)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 421.9
+   },
+   "b": {
+    "wall_s": 159.9,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2481 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 155.57s (0:02:35)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 565.0,
+    "test_time_s": 153.121
+   }
+  },
+  {
+   "i": 7,
+   "sha": "980d15c304e72c384dfb6aa8cae9b4bf39c73100",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 104.7,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m16 failed\u001b[0m, \u001b[32m2473 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m\u001b[31m in 102.97s (0:01:42)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 566.5,
+    "store_mb": 29.6,
+    "carried": 2480,
+    "carried_of_recorded": 2428,
+    "reused": 0,
+    "ran": 2496,
+    "recorded": 2398,
+    "tests": 2496,
+    "miss_reasons": {
+     "config": 2398,
+     "new": 98
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "a_ser": {
+    "wall_s": 217.4,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m16 failed\u001b[0m, \u001b[32m2473 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m\u001b[31m in 215.51s (0:03:35)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 657.2,
+    "store_mb": 30.49,
+    "carried": 2480,
+    "carried_of_recorded": 2428,
+    "reused": 0,
+    "ran": 2496,
+    "recorded": 2398,
+    "tests": 2496,
+    "miss_reasons": {
+     "config": 2383,
+     "new": 91,
+     "unit": 22
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "b_par": {
+    "wall_s": 62.9,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2481 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 62.12s (0:01:02)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 449.9
+   },
+   "b": {
+    "wall_s": 165.9,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2481 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 161.76s (0:02:41)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 573.4,
+    "test_time_s": 159.236
+   }
+  },
+  {
+   "i": 8,
+   "sha": "38a79b90386f6c2ebc99a81d29bcf26102e36616",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 96.9,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m16 failed\u001b[0m, \u001b[32m2473 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m\u001b[31m in 95.27s (0:01:35)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 567.2,
+    "store_mb": 29.93,
+    "carried": 2480,
+    "carried_of_recorded": 2428,
+    "reused": 0,
+    "ran": 2496,
+    "recorded": 2398,
+    "tests": 2496,
+    "miss_reasons": {
+     "code": 2398,
+     "new": 98
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "a_ser": {
+    "wall_s": 213.1,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m16 failed\u001b[0m, \u001b[32m2473 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m\u001b[31m in 211.33s (0:03:31)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 657.2,
+    "store_mb": 30.82,
+    "carried": 2480,
+    "carried_of_recorded": 2428,
+    "reused": 0,
+    "ran": 2496,
+    "recorded": 2398,
+    "tests": 2496,
+    "miss_reasons": {
+     "code": 2383,
+     "new": 91,
+     "unit": 22
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "b_par": {
+    "wall_s": 62.5,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2481 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 61.66s (0:01:01)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 463.2
+   },
+   "b": {
+    "wall_s": 160.7,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2481 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 156.45s (0:02:36)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 566.8,
+    "test_time_s": 153.994
+   }
+  },
+  {
+   "i": 9,
+   "sha": "96f50b1aa902eccb0a3763b80f37d7af265d9130",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 75.1,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m16 failed\u001b[0m, \u001b[32m2478 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m\u001b[31m in 73.42s (0:01:13)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 507.7,
+    "store_mb": 31.15,
+    "carried": 1821,
+    "carried_of_recorded": 1769,
+    "reused": 664,
+    "ran": 1837,
+    "recorded": 1739,
+    "tests": 2501,
+    "miss_reasons": {
+     "new": 103,
+     "data": 468,
+     "placement": 1266
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 35.969,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "a_ser": {
+    "wall_s": 81.1,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m16 failed\u001b[0m, \u001b[32m2478 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m\u001b[31m in 79.28s (0:01:19)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 443.8,
+    "store_mb": 32.65,
+    "carried": 559,
+    "carried_of_recorded": 507,
+    "reused": 1926,
+    "ran": 575,
+    "recorded": 477,
+    "tests": 2501,
+    "miss_reasons": {
+     "new": 96,
+     "data": 468,
+     "unit": 7,
+     "placement": 4
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 103.277,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt",
+      "failed",
+      "passed"
+     ],
+     [
+      "tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "b_par": {
+    "wall_s": 64.9,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2486 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 64.05s (0:01:04)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 445.2
+   },
+   "b": {
+    "wall_s": 165.1,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2486 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 160.80s (0:02:40)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 566.8,
+    "test_time_s": 158.254
+   }
+  }
+ ]
+}

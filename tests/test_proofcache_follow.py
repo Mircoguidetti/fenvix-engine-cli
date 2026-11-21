@@ -43,16 +43,16 @@ def test_child_file_read_is_an_input(pytester, run_cache):
     run_cache()
     r, reused, data = run_cache()
     r.assert_outcomes(passed=2)
-    assert reused == ids("test_cat", "test_plain")
-    # the child read data.txt: changing it reruns the test (and here the fresh run fails)
+    # PY-08 (py-cache): a test that starts a process is never reused; the test before it is
+    assert reused == set()  # review R-050 P2 (b): a never-cached or failing test's needs hold the earlier tests of its file; they run before it
+    assert "[a test that starts a process is never reused]" in data["cache"]["not_cached_where"]["test_m.py::test_cat"]
     (pytester.path / "data.txt").write_text("changed\n")
     r, reused, data = run_cache()
-    assert reused == ids("test_plain")
-    assert miss(data)["test_m.py::test_cat"].startswith("data")
+    assert reused == set()  # review R-050 P2 (b): it runs before a later test that may consume its state (never cached or failed)
     r.assert_outcomes(passed=1, failed=1)
-    # a failure is never reused, even with every input unchanged
+    # a failure is never reused, even with every input unchanged (and test_plain, before it, runs before it: R-050 P2 (b))
     r, reused, data = run_cache()
-    assert reused == ids("test_plain")
+    assert reused == set()
     r.assert_outcomes(passed=1, failed=1)
 
 
@@ -67,12 +67,12 @@ def test_child_python_module_is_an_input(pytester, run_cache):
             assert out.stdout.strip() == "1", out.stderr
         """})
     run_cache()
-    _, reused, _ = run_cache()
-    assert reused == ids("test_child")
+    _, reused, data = run_cache()
+    assert reused == set()  # PY-08 (py-cache): a test that starts a process is never reused
+    assert "[a test that starts a process is never reused]" in data["cache"]["not_cached_where"]["test_m.py::test_child"]
     (pytester.path / "pkg" / "helper.py").write_text("X = 2\n")
     r, reused, data = run_cache()
     assert reused == set()
-    assert miss(data)["test_m.py::test_child"].startswith("data")
     r.assert_outcomes(failed=1)
 
 
@@ -91,11 +91,10 @@ def test_child_program_is_an_input(pytester, run_cache):
         """})
     run_cache()
     _, reused, _ = run_cache()
-    assert reused == ids("test_tool")
+    assert reused == set()  # PY-08 (py-cache): a test that starts a process is never reused
     tool.write_text("#!/bin/sh\necho two\n")
     r, reused, data = run_cache()
     assert reused == set()
-    assert miss(data)["test_m.py::test_tool"].startswith("data")
     r.assert_outcomes(failed=1)
 
 
@@ -114,11 +113,10 @@ def test_child_inheriting_the_environment_depends_on_all_of_it(pytester, run_cac
         """})
     run_cache()
     _, reused, _ = run_cache()
-    assert reused == ids("test_inherits", "test_explicit_env")
+    assert reused == set()  # PY-08 (py-cache): a test that starts a process is never reused
     monkeypatch.setenv("DETPY_T_A", "2")
     _, reused, data = run_cache()
-    assert reused == ids("test_explicit_env")
-    assert miss(data)["test_m.py::test_inherits"].startswith("env")
+    assert reused == set()
 
 
 def test_child_network_is_never_cached(pytester, run_cache, outside_server):
@@ -136,7 +134,7 @@ def test_child_network_is_never_cached(pytester, run_cache, outside_server):
         """})
     run_cache()
     _, reused, data = run_cache()
-    assert reused == ids("test_plain")
+    assert reused == set()  # review R-050 P2 (b): a never-cached or failing test's needs hold the earlier tests of its file; they run before it
     assert nc(data)["test_m.py::test_child_connects"] == "subprocess"
     assert "[network: connect AF_INET]" in data["cache"]["not_cached_where"]["test_m.py::test_child_connects"]
 
@@ -199,7 +197,7 @@ def test_child_still_running_at_the_end_is_never_cached(pytester, run_cache):
         """})
     run_cache()
     _, reused, data = run_cache()
-    assert reused == ids("test_plain")
+    assert reused == set()  # review R-050 P2 (b): a never-cached or failing test's needs hold the earlier tests of its file; they run before it
     # the daemon lives from its spawn on, so test_after ran during its lifetime and gets its refusal as its own
     # (review R-009 F1), whatever the tracer's start-up latency: strace's first logged system call of the child may
     # come after test_after ended (it did on a fast machine, not on CI), and the reason was then only the carried one
@@ -236,7 +234,9 @@ def test_file_a_child_wrote_is_not_an_input_of_another_test(pytester, run_cache)
     run_cache()
     _, reused, data = run_cache()
     assert "test_m.py::test_b_reader" not in reused
-    assert nc(data)["test_m.py::test_b_reader"].startswith("reads a file another test or fixture wrote")
+    # (py-cache PY-08: the writer is refused, its refusal is carried into the reader first)
+    assert nc(data)["test_m.py::test_b_reader"].startswith(("reads a file another test or fixture wrote",
+                                                            "after an earlier test or fixture of this process"))
 
 
 def test_child_own_temporary_files_are_not_inputs(pytester, run_cache):
@@ -251,7 +251,8 @@ def test_child_own_temporary_files_are_not_inputs(pytester, run_cache):
     run_cache()
     _, reused, data = run_cache()
     c = data.get("cache") or {}
-    assert reused == ids("test_tmp"), (c.get("not_cached_ids"), c.get("not_cached_where"), c.get("stale_hits"))
+    assert reused == set(), (c.get("not_cached_ids"), c.get("not_cached_where"), c.get("stale_hits"))  # PY-08
+    assert "[a test that starts a process is never reused]" in c["not_cached_where"]["test_m.py::test_tmp"]
 
 
 
@@ -391,19 +392,22 @@ def _git(path, *args, date=None):
 
 
 @pytest.mark.skipif(shutil.which("git") is None, reason="needs git")
-def test_cache_epoch_is_kept_across_commits_within_the_window(pytester, run_cache):
+def test_cache_epoch_is_the_virtual_day_across_commits(pytester, run_cache):
     # structlog in r5: a clock read at import time made every test depend on the epoch, and --det-epoch=auto (the
-    # HEAD commit time) moved at every commit, so nothing was ever reused across commits
-    project(pytester, **{"pkg/stamp.py": "import time\n\nSTAMP = time.time()\n", "test_m.py": """
-        import json, time
+    # HEAD commit time) moved at every commit. Audit G-0159 (py-cache): under the cache the epoch is the virtual day
+    # (today 00:00 UTC), the same for every commit of the day; the nightly --det-cache-real-clock check covers the rest
+    import time as _t
+
+    day = int(_t.time()) // 86400 * 86400
+    project(pytester, **{"pkg/stamp.py": "import time\n\nSTAMP = time.time()\n", "test_m.py": f"""
+        import time
         from pkg import stamp
 
         def test_reads_import_stamp():
             assert stamp.STAMP > 0
 
-        def test_now_is_the_cache_epoch():
-            epoch = json.load(open(".cachedir/epoch.json"))["epoch_ns"] / 1e9
-            assert abs(time.time() - epoch) < 1
+        def test_now_is_the_virtual_day():
+            assert abs(time.time() - {day}) < 1
         """, "other.txt": "1\n"})
     p = pytester.path
     _git(p, "init", "-q")
@@ -412,20 +416,12 @@ def test_cache_epoch_is_kept_across_commits_within_the_window(pytester, run_cach
     r, _, _ = run_cache()
     r.assert_outcomes(passed=2)
     (p / "other.txt").write_text("2\n")
-    _git(p, "commit", "-qam", "c2", date="2026-01-10T00:00:00Z")
+    _git(p, "commit", "-qam", "c2", date="2026-03-10T00:00:00Z")
     r, reused, data = run_cache()
-    assert reused == ids("test_reads_import_stamp", "test_now_is_the_cache_epoch")
-    # the epoch is a configuration input: past the window it moves to the HEAD commit time and the readers rerun
-    (p / "other.txt").write_text("3\n")
-    _git(p, "commit", "-qam", "c3", date="2026-03-01T00:00:00Z")
-    r, reused, data = run_cache()
-    r.assert_outcomes(passed=2)
-    assert reused == set()
-    assert miss(data)["test_m.py::test_reads_import_stamp"].startswith("clock")
-    assert json.load(open(p / ".cachedir" / "epoch.json"))["epoch_ns"] == 1772323200 * 10**9
-    # an explicit --det-epoch is used as given
+    assert reused == ids("test_reads_import_stamp", "test_now_is_the_virtual_day")
+    # an explicit --det-epoch is used as given: a clock reader reruns under it
     r, reused, data = run_cache("--det-epoch=2026-03-01T00:00:00")
-    assert reused == ids("test_reads_import_stamp", "test_now_is_the_cache_epoch")
+    assert "test_m.py::test_reads_import_stamp" not in reused
 
 
 def test_write_on_a_connection_between_two_own_sockets_is_not_the_network(pytester, run_cache, outside_server):
@@ -452,7 +448,7 @@ def test_write_on_a_connection_between_two_own_sockets_is_not_the_network(pytest
         """})
     run_cache()
     _, reused, data = run_cache()
-    assert reused == ids("test_own")
+    assert reused == set()  # review R-050 P2 (b): a never-cached or failing test's needs hold the earlier tests of its file; they run before it
     # a socketpair's peer is not a TCP address: still refused (conservative)
     assert nc(data)["test_m.py::test_unix_pair"] == "network connection"
 
@@ -480,9 +476,9 @@ def test_device_listing_is_an_input_and_device_content_is_refused(pytester, run_
     _, reused, data = run_cache()
     assert "test_m.py::test_read_proc_content" not in reused
     assert nc(data)["test_m.py::test_read_proc_content"] == "reads /proc, /sys or /dev"
-    assert reused >= ids("test_missing_dev_dir")
+    assert "test_m.py::test_missing_dev_dir" not in reused  # review R-050 P2 (b): a never-cached or failing test's needs hold the earlier tests of its file; they run before it
     # /dev's listing is reused only while it is the same (a device appearing reruns the test)
-    assert "test_m.py::test_list_dev" in reused or miss(data)["test_m.py::test_list_dev"].startswith("data")
+    assert "test_m.py::test_list_dev" not in reused  # review R-050 P2 (b): it runs before a later test that may consume its state (never cached or failed)
 
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -589,7 +585,7 @@ def test_sqlite_statement_reading_now_is_refused_and_others_are_not(pytester, ru
         """})
     run_cache("--det-disable=time")
     _, reused, data = run_cache("--det-disable=time")
-    assert reused == ids("test_plain_sql")
+    assert reused == set()  # review R-050 P2 (b): a never-cached or failing test's needs hold the earlier tests of its file; they run before it
     for t in ("test_current_timestamp", "test_date_without_value"):
         assert nc(data)[f"test_m.py::{t}"] == "real clock read outside the virtual clock"
 
@@ -638,7 +634,7 @@ def test_sqlite_schema_reading_the_clock_is_refused_wherever_it_was_defined(pyte
         """})
     run_cache("--det-disable=time")
     _, reused, data = run_cache("--det-disable=time")
-    assert reused == ids("test_plain")
+    assert reused == set()  # review R-050 P2 (b): a never-cached or failing test's needs hold the earlier tests of its file; they run before it
     for t in ("test_attached", "test_fixture_schema"):
         assert nc(data)[f"test_m.py::{t}"] == "real clock read outside the virtual clock"
     assert "aux.db (t_log)" in data["cache"]["not_cached_where"]["test_m.py::test_attached"]
@@ -657,7 +653,8 @@ def test_python_child_start_is_exempt_and_its_time_reads_are_refused(pytester, r
         """})
     run_cache()
     _, reused, data = run_cache()
-    assert reused == ids("test_child_no_clock")
+    assert reused == set()  # PY-08 (py-cache): a test that starts a process is never reused
+    assert "[a test that starts a process is never reused]" in data["cache"]["not_cached_where"]["test_m.py::test_child_no_clock"]
     assert "reads the real clock" in data["cache"]["not_cached_where"]["test_m.py::test_child_clock"]
 
 
@@ -749,7 +746,7 @@ def test_child_exclusive_create_is_an_input(pytester, run_cache):
         """})
     run_cache()
     _, reused, _ = run_cache()
-    assert reused == ids("test_lock")
+    assert reused == set()  # PY-08 (py-cache): a test that starts a process is never reused
     (pytester.path / "app.lock").write_text("")
     r, reused, _ = run_cache()
     assert reused == set()

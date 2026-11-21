@@ -619,6 +619,14 @@ def test_parse_review_r009b_cases(tmp_path):
                            'unlinkat(AT_FDCWD</w>, "d/x", 0) = 0', 'newfstatat(AT_FDCWD</w>, "d/x", 0x1, 0) = 0',
                            'execve("/bin/ls", ["ls", "-l"], 0x1) = 0',
                            'mkdir("y", 0755) = 0', 'stat("y", 0x1) = 0')],
+        # py-cache CI: GitHub runners' cat statx-es the file its own tree wrote; its output is the content only
+        "cat-own": [_log('openat(AT_FDCWD</w>, "f", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3</w/f>',
+                         'execve("/usr/bin/cat", ["cat", "f"], 0x1) = 0',
+                         'statx(AT_FDCWD</w>, "f", AT_STATX_SYNC_AS_STAT, STATX_ALL, 0x1) = 0',
+                         'openat(AT_FDCWD</w>, "f", O_RDONLY) = 3</w/f>')],
+        "ls-own": [_log('openat(AT_FDCWD</w>, "f", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3</w/f>',
+                        'execve("/usr/bin/ls", ["ls", "-l", "f"], 0x1) = 0',
+                        'statx(AT_FDCWD</w>, "f", AT_STATX_SYNC_AS_STAT, STATX_ALL, 0x1) = 0')],
         "cat-exempt": [_log('openat(AT_FDCWD</w>, "f", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3</w/f>',
                             'execve("/usr/bin/cat", ["cat", "f"], 0x1) = 0',
                             'statx(AT_FDCWD</w>, "f", AT_STATX_SYNC_AS_STAT, STATX_ALL, 0x1) = 0'),
@@ -640,5 +648,7 @@ def test_parse_review_r009b_cases(tmp_path):
     assert out["proc-pid"].clock and "process start time" in out["proc-pid"].clock
     assert out["proc-self-task"].clock
     assert out["rm-exempt"].clock and "/w/y" in out["rm-exempt"].clock
+    assert out["cat-own"].clock is None, out["cat-own"].clock
+    assert out["ls-own"].clock and "statx /w/f" in out["ls-own"].clock
     # a program that reads the file it wrote (cat) does not read its time; stat does, and is named
     assert out["cat-exempt"].clock and "stat statx /w/f" in out["cat-exempt"].clock

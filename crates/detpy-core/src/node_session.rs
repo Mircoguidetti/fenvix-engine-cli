@@ -419,6 +419,7 @@ fn observed(snap: &Snapshot, outcome: &str, report: Value, fingerprint: String, 
         hooks: vec![],
         units: vec![],
         startup: input.startup.clone(),
+        needs: None,
     }
 }
 

@@ -101,7 +101,9 @@ def test_text_file_change_reruns_it(tmp_path):
     write(root, {"README.txt": "Text\n\n>>> 1 + 1\n3\n"})
     r = dt(root, "README.txt", "m.py")
     assert r.outcomes["README.txt::README.txt"] == "failed" and "README.txt::README.txt" not in r.reused, r
-    assert r.reused == {"m.py::m.clock", "m.py::m.rand", "m.py::m.order"}, r
+    # review R-052: README.txt runs before m.py's doctests in the process and its code changed; what it does to shared
+    # state is unknown until it runs, so the later doctests run too (their stored needs may be stale)
+    assert r.reused == set(), r
 
 
 def test_docstring_change_reruns_the_module_doctests(tmp_path):

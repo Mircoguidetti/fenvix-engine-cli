@@ -71,6 +71,13 @@ def main(argv: list[str] | None = None) -> int:
     rp.add_argument("--runs", type=int, default=10)
     rp.add_argument("--python", default=sys.executable)
 
+    c = sub.add_parser("cache", help="inspect, explain, bound or clear a --det-cache directory")
+    c.add_argument("action", choices=["stats", "explain", "gc", "clear"])
+    c.add_argument("dir", help="the --det-cache directory")
+    c.add_argument("test", nargs="?", help="explain: the test id")
+    c.add_argument("--max-age", type=float, default=None, help="gc: drop entries recorded more than DAYS ago")
+    c.add_argument("--max-mb", type=float, default=None, help="gc: then drop the oldest until the store is under MB")
+
     argv = list(sys.argv[1:] if argv is None else argv)
     extra: list[str] = []
     if "--" in argv:
@@ -94,6 +101,10 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(res, indent=2))
         return 0 if res["fails"] == res["runs"] and res["identical_fingerprint"] else 1
 
+    if args.cmd == "cache":
+        from . import cachecmd
+
+        return cachecmd.main(args)
     if args.cmd == "backends":
         print(json.dumps(json.loads(_core.backends()), indent=2))
         return 0

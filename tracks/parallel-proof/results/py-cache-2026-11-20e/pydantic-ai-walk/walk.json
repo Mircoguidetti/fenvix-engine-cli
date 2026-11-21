@@ -1,0 +1,494 @@
+{
+ "repo": "repo",
+ "workers": 4,
+ "args": [
+  "tests/models",
+  "tests/harness/code_mode",
+  "tests/harness/refine_output",
+  "tests/harness/detect_loops",
+  "tests/providers/test_openai_compatible_http_clients.py",
+  "-m",
+  "not temporal",
+  "-p",
+  "no:randomly",
+  "--timeout=300"
+ ],
+ "det_args": [],
+ "shard": "",
+ "commits": [
+  {
+   "i": 0,
+   "sha": "1aec4c3859b5d08029b3830fafdc87bc9d43acc8",
+   "shard_first": true,
+   "a_par": {
+    "wall_s": 756.7,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 1290.1,
+    "store_mb": 7.13,
+    "carried": 5891,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 8698,
+    "recorded": 0,
+    "tests": 8042,
+    "miss_reasons": {
+     "new": 8042
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "a_ser": {
+    "wall_s": 1275.1,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 2741.3,
+    "store_mb": 4.51,
+    "carried": 5266,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 8042,
+    "recorded": 0,
+    "tests": 8042,
+    "miss_reasons": {
+     "new": 8042
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "a_par_u": {
+    "wall_s": 705.1,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 1495.3,
+    "store_mb": 8.87,
+    "carried": 5621,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 8430,
+    "recorded": 0,
+    "tests": 8042,
+    "miss_reasons": {
+     "new": 8042
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "a_ser_u": {
+    "wall_s": 1346.8,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 2740.0,
+    "store_mb": 6.12,
+    "carried": 5266,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 8042,
+    "recorded": 0,
+    "tests": 8042,
+    "miss_reasons": {
+     "new": 8042
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 232.1,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 939.5,
+    "test_time_s": 205.033
+   }
+  },
+  {
+   "i": 1,
+   "sha": "0a7221d20e4c93b4ecdd2d753c6ac2ade3637841",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 738.7,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 1491.5,
+    "store_mb": 10.52,
+    "carried": 5381,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 8219,
+    "recorded": 0,
+    "tests": 8043,
+    "miss_reasons": {
+     "new": 8043
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "a_ser": {
+    "wall_s": 1333.0,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 2741.8,
+    "store_mb": 7.72,
+    "carried": 5267,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 8043,
+    "recorded": 0,
+    "tests": 8043,
+    "miss_reasons": {
+     "new": 8043
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 219.9,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 927.2,
+    "test_time_s": 193.605
+   }
+  },
+  {
+   "i": 2,
+   "sha": "6dbbcb4798b4531c296847b78184af350d2d4723",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 711.1,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 1454.2,
+    "store_mb": 12.14,
+    "carried": 5315,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 8105,
+    "recorded": 0,
+    "tests": 8043,
+    "miss_reasons": {
+     "new": 8043
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "a_ser": {
+    "wall_s": 1305.0,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 2741.1,
+    "store_mb": 9.33,
+    "carried": 5267,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 8043,
+    "recorded": 0,
+    "tests": 8043,
+    "miss_reasons": {
+     "new": 8043
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 215.3,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 927.8,
+    "test_time_s": 188.963
+   }
+  },
+  {
+   "i": 3,
+   "sha": "a2df543325761f0750f9209fb34fb6b03d95b3f3",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 700.9,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 1443.2,
+    "store_mb": 13.76,
+    "carried": 5237,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 8077,
+    "recorded": 0,
+    "tests": 8051,
+    "miss_reasons": {
+     "new": 8051
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "a_ser": {
+    "wall_s": 1354.6,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 2740.4,
+    "store_mb": 10.94,
+    "carried": 5275,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 8051,
+    "recorded": 0,
+    "tests": 8051,
+    "miss_reasons": {
+     "new": 8051
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 219.9,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 927.6,
+    "test_time_s": 193.426
+   }
+  },
+  {
+   "i": 4,
+   "sha": "ba082ea2c8429998d36a23e7a73b2402ba83031d",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 699.6,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 1514.2,
+    "store_mb": 15.37,
+    "carried": 5279,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 8075,
+    "recorded": 0,
+    "tests": 8059,
+    "miss_reasons": {
+     "new": 8059
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "a_ser": {
+    "wall_s": 1312.6,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 2742.0,
+    "store_mb": 12.55,
+    "carried": 5275,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 8059,
+    "recorded": 0,
+    "tests": 8059,
+    "miss_reasons": {
+     "new": 8059
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 223.3,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 928.6,
+    "test_time_s": 196.783
+   }
+  },
+  {
+   "i": 5,
+   "sha": "bb3a7e131e87c0d40f751a8322e61eeb87e2fb99",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 705.7,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 1485.3,
+    "store_mb": 16.98,
+    "carried": 5263,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 8061,
+    "recorded": 0,
+    "tests": 8059,
+    "miss_reasons": {
+     "new": 8059
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "a_ser": {
+    "wall_s": 1310.2,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 2739.6,
+    "store_mb": 14.16,
+    "carried": 5275,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 8059,
+    "recorded": 0,
+    "tests": 8059,
+    "miss_reasons": {
+     "new": 8059
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 221.5,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 928.0,
+    "test_time_s": 195.095
+   }
+  },
+  {
+   "i": 6,
+   "sha": "ad4a5f9b1dc87af3a4052a4d03b52eb612e4e1b0",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 703.6,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 1517.4,
+    "store_mb": 18.59,
+    "carried": 5224,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 8061,
+    "recorded": 0,
+    "tests": 8059,
+    "miss_reasons": {
+     "new": 8059
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "a_ser": {
+    "wall_s": 1327.2,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 2742.7,
+    "store_mb": 15.77,
+    "carried": 5275,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 8059,
+    "recorded": 0,
+    "tests": 8059,
+    "miss_reasons": {
+     "new": 8059
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 215.1,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 927.3,
+    "test_time_s": 188.9
+   }
+  },
+  {
+   "i": 7,
+   "sha": "62e7b66c9f4da5c788eb360e49522a98e8fa0c86",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 724.1,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 1500.2,
+    "store_mb": 20.21,
+    "carried": 5262,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 8079,
+    "recorded": 0,
+    "tests": 8072,
+    "miss_reasons": {
+     "new": 8072
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "a_ser": {
+    "wall_s": 1347.4,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 2746.0,
+    "store_mb": 17.39,
+    "carried": 5280,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 8072,
+    "recorded": 0,
+    "tests": 8072,
+    "miss_reasons": {
+     "new": 8072
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 216.9,
+    "rc": 1,
+    "tail": "         2 xfailed",
+    "peak_rss_mb": 928.9,
+    "test_time_s": 190.585
+   }
+  }
+ ]
+}

@@ -77,9 +77,14 @@ def test_reuse_is_withdrawn_when_a_new_earlier_test_writes_its_input(pytester, t
     shared.write_text("x\n")
     r, c = cache_run(pytester, n, "s3", *args, "tests")
     assert "tests/test_b_reader.py::test_b_reads" not in c["reused_ids"]
-    assert c["miss_ids"]["tests/test_b_reader.py::test_b_reads"].startswith("written:")
+    # serial (py-cache): the tests before the reader in its session are not those it was recorded after (a new one):
+    # it runs, decided before the run ("placement:"); under -n the write is found after the run ("written:")
+    # (since review R-052, a new earlier test file also changes the reader's code prefix: "code:", decided before
+    # the run, either way the reader runs)
+    assert c["miss_ids"]["tests/test_b_reader.py::test_b_reads"].startswith(
+        ("written:", "code:") if n else ("placement:", "code:"))
     r.assert_outcomes(passed=1, failed=1)  # the serial result: A wrote y before B read it
-    if n:
+    if n and c["miss_ids"]["tests/test_b_reader.py::test_b_reads"].startswith("written:"):
         assert "withdrawn after the run" in r.stdout.str()
     # truth
     shared.write_text("x\n")
@@ -150,7 +155,8 @@ def test_plan_worker_replay_records_parallel_entries(pytester, no_outer_xdist):
 # -- F3: the previous plan of another --dist is not used ---------------------------------------------------------------
 def test_previous_plan_of_another_dist_is_ignored(pytester, no_outer_xdist):
     write(pytester, **{"tests/test_x.py": "def test_1(): pass\n", "tests/test_y.py": "def test_2(): pass\n"})
-    fresh_run(pytester, 2, "tests").assert_outcomes(passed=2)
+    # --dist load named: with no --dist asked the plan keeps a file's tests together (loadfile) since the exam round
+    fresh_run(pytester, 2, "--dist", "load", "tests").assert_outcomes(passed=2)
     fresh_run(pytester, 2, "--dist", "loadfile", "tests").assert_outcomes(passed=2)
     assert plan_of(pytester)["previous_ignored"] == "another --dist"
     fresh_run(pytester, 2, "--dist", "loadfile", "tests").assert_outcomes(passed=2)

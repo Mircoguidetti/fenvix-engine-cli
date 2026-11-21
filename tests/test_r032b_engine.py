@@ -66,6 +66,10 @@ CASES = {
         "f.txt": "abc",
         "test_t.py": "import pathlib\n\ndef test_t():\n    assert pathlib.Path('f.txt').stat()[8] < 2e9\n",
     }, ("utime", "f.txt", 3e9), "test_t.py::test_t"),
+    "w6f_atime_index": ({
+        "f.txt": "abc",
+        "test_t.py": "import os\n\ndef test_t():\n    assert os.stat('f.txt')[7] < 2e9\n",
+    }, ("utime", "f.txt", 3e9), "test_t.py::test_t"),
     "w6e_getmtime": ({
         "f.txt": "abc",
         "test_t.py": "import os\n\ndef test_t():\n    assert os.path.getmtime('f.txt') < 2e9\n",
@@ -87,7 +91,7 @@ def _write(root, files):
     if isinstance(files, tuple) and files[0] == "utime":  # the same content, another modification time
         import os
 
-        os.utime(root / files[1], (files[2], files[2]))
+        os.utime(root / files[1], (files[2], files[2]))  # atime and mtime
         return
     for name, text in files.items():
         p = root / name
@@ -135,3 +139,16 @@ def test_detpy_own_stat_is_never_a_user_time_read():
     assert ns["own"]() is False
     exec(compile("def user():\n    return checked()\n", "/somewhere/project/test_u.py", "exec"), ns)
     assert ns["user"]() is True
+
+
+def test_a_keyed_mtime_is_reused_when_unchanged(pytester, monkeypatch):
+    """Round 4: a read of st_mtime is an input (keyed), not a refusal: unchanged, the test is reused."""
+    for k in ("PYTEST_XDIST_WORKER", "PYTEST_XDIST_WORKER_COUNT", "PYTEST_XDIST_TESTRUNUID", "PYTEST_ADDOPTS"):
+        monkeypatch.delenv(k, raising=False)
+    pytester.makeini("[pytest]\n")
+    _write(pytester.path, {"f.txt": "abc",
+                           "test_t.py": "import os\n\ndef test_t():\n    assert os.stat('f.txt').st_mtime > 0\n"})
+    cache = f"--det-cache={pytester.path / '.c'}"
+    _run(pytester, 0, cache)
+    _, _, reused = _run(pytester, 1, cache)
+    assert reused == {"test_t.py::test_t"}

@@ -32,6 +32,8 @@ struct Inner {
     last_reads: BTreeMap<String, Vec<String>>,
     /// The last recorded session's tests in run order (a worker's in-process order: `Entry::preds`).
     last_order: Vec<String>,
+    /// The shards of this process's children folded into one (`shard_absorb`, --det-isolate).
+    absorbed: Option<proof::Shard>,
 }
 
 /// The on-disk store of one cache directory plus the reuse checker of the
@@ -80,7 +82,7 @@ impl ProofCache {
         let store = Store::load(&dir);
         let checker = Checker::new(Current { root, ..Default::default() });
         let written0 = store.written.clone();
-        ProofCache { dir, inner: Mutex::new(Inner { store, checker, touched: BTreeSet::new(), written0, receipts: HashMap::new(), last_written: BTreeMap::new(), last_fixtures: BTreeMap::new(), fetched: None, origins: BTreeMap::new(), merged_ids: Vec::new(), last_reads: BTreeMap::new(), last_order: Vec::new() }) }
+        ProofCache { dir, inner: Mutex::new(Inner { store, checker, touched: BTreeSet::new(), written0, receipts: HashMap::new(), last_written: BTreeMap::new(), last_fixtures: BTreeMap::new(), fetched: None, origins: BTreeMap::new(), merged_ids: Vec::new(), last_reads: BTreeMap::new(), last_order: Vec::new(), absorbed: None }) }
     }
 
     /// Set the current session state: configuration and runtime digests, clock
@@ -244,7 +246,7 @@ impl ProofCache {
 
     /// Record the inputs and result of a test that ran; returns its key.
     #[allow(clippy::too_many_arguments)]
-    #[pyo3(signature = (nodeid, outcome, report_json, fingerprint, duration, run, config, runtime, epoch, env, data, content, skeleton, hooks, units))]
+    #[pyo3(signature = (nodeid, outcome, report_json, fingerprint, duration, run, config, runtime, epoch, env, data, content, skeleton, hooks, units, needs=None))]
     fn record(
         &self,
         nodeid: &str,
@@ -262,6 +264,7 @@ impl ProofCache {
         skeleton: Vec<u32>,
         hooks: Vec<u32>,
         units: Vec<(u32, u32)>,
+        needs: Option<Vec<String>>,
     ) -> PyResult<String> {
         let report = serde_json::from_str(report_json).map_err(|e| PyValueError::new_err(format!("report: {e}")))?;
         let mut g = lock(&self.inner);
@@ -284,6 +287,7 @@ impl ProofCache {
                 hooks,
                 units,
                 fixtures: Vec::new(),
+                needs,
                 startup: String::new(),
             },
         ))
@@ -376,6 +380,18 @@ impl ProofCache {
     /// Together edges of the store: `[(writer test, reader test)]` (`Store::edges`).
     fn edges(&self) -> Vec<(String, String)> {
         lock(&self.inner).store.edges.iter().cloned().collect()
+    }
+
+    /// Review R-023c E7: per test, the earlier tests its stored entry may have consumed state from
+    /// (`Entry::needs`): `None` for every earlier test (its carried set reached the library node). A test with no
+    /// entry: the needs it had when it last ran (failed, or not cacheable: `Store::loose_needs`), or every earlier
+    /// test when it never ran (new) (review R-050 P2: before, none, so its predecessors stayed reused).
+    fn needs(&self, nodeids: Vec<String>) -> Vec<Option<Vec<String>>> {
+        let g = lock(&self.inner);
+        nodeids
+            .iter()
+            .map(|n| g.store.needs_of(n))
+            .collect()
     }
 
     fn __len__(&self) -> usize {
@@ -487,7 +503,7 @@ impl ProofCache {
             .map(|(k, v)| (k.clone(), v.iter().cloned().collect()))
             .collect();
         let n = sub.tests.len();
-        let shard = proof::Shard {
+        let mut shard = proof::Shard {
             format: proof::SHARD_FORMAT.into(),
             version: proof::SHARD_VERSION,
             worker,
@@ -500,6 +516,46 @@ impl ProofCache {
         drop(g);
         py.detach(|| shard.save(&path))?;
         Ok(n)
+    }
+
+    /// How many entries were recorded under configuration `digest` (py-cache: the in-process session's results an
+    /// isolated session compares with; none, and the read-only view of the store is not opened).
+    fn entries_with_config(&self, digest: String) -> usize {
+        lock(&self.inner).store.tests.values().filter(|e| e.config == digest).count()
+    }
+
+    /// A child's shard (--det-isolate: one child per test or per test file) folded into this process's one shard
+    /// (`proof::Shard::absorb`); the file is removed. False when it cannot be read (it is then left for the merge).
+    fn shard_absorb(&self, py: Python<'_>, path: PathBuf) -> bool {
+        let Ok(s) = py.detach(|| proof::Shard::load(&path)) else { return false };
+        let mut g = lock(&self.inner);
+        match g.absorbed.as_mut() {
+            Some(a) => a.absorb(s),
+            None => g.absorbed = Some(s),
+        }
+        drop(g);
+        let _ = std::fs::remove_file(&path);
+        true
+    }
+
+    /// The reused results among `hits` whose input a test of this process's children wrote earlier in this session
+    /// (their shards folded by `shard_absorb`): `[(nodeid, path key, writer)]` (`proof::hits_with_written_inputs`
+    /// over the folded shard's writers; `order`: the session's tests in run order). A serial session with one child
+    /// per test file checks a file's results before the file starts (the in-process session withdraws them as the
+    /// writer runs; its children's writes are not this process's).
+    fn absorbed_written_hits(&self, hits: Vec<String>, order: Vec<String>) -> Vec<(String, String, String)> {
+        let g = lock(&self.inner);
+        let Some(a) = g.absorbed.as_ref() else { return Vec::new() };
+        let (written, dirs) = proof::writer_union(std::slice::from_ref(a));
+        proof::hits_with_written_inputs(&g.store, &hits, &order, &written, &dirs)
+    }
+
+    /// Write the folded shard (`shard_absorb`) at `path` under `worker`'s name; false when nothing was folded.
+    fn shard_absorbed_save(&self, py: Python<'_>, path: PathBuf, worker: String) -> PyResult<bool> {
+        let Some(mut s) = lock(&self.inner).absorbed.take() else { return Ok(false) };
+        s.worker = worker;
+        py.detach(|| s.save(&path))?;
+        Ok(true)
     }
 
     /// The controller's end of a parallel session: the cross-worker write rule over the shards at `paths`, then one
@@ -670,7 +726,9 @@ impl ProofCache {
         if std::fs::create_dir_all(&self.dir).is_ok() {
             if let Ok(mut f) = std::fs::OpenOptions::new().create(true).append(true).open(self.dir.join("carried.jsonl")) {
                 use std::io::Write;
-                let _ = writeln!(f, "{line}");
+                // one write per line: test files' children append at the same time (O_APPEND keeps a single write
+                // whole; writeln! of a JSON value writes it in pieces, which interleaved on esphome)
+                let _ = f.write_all(format!("{line}\n").as_bytes());
             }
         }
         Ok(out)
@@ -962,6 +1020,20 @@ pub fn dist_identity(py: Python<'_>, path: PathBuf) -> Option<(String, String, S
         let rec = read_text_universal(&path.join("RECORD")).unwrap_or(None).unwrap_or_default();
         Some((name.unwrap_or_else(|| "?".into()), version, detpy_core::fingerprint::digest_bytes(rec.as_bytes()).short()))
     })
+}
+
+/// "<mtime>.<ns>,<ctime>.<ns>" or "missing" (`detpy_core::proof::time_digest`, round 4).
+#[pyfunction]
+#[pyo3(signature = (path, follow=true))]
+pub fn time_digest(path: PathBuf, follow: bool) -> String {
+    proof::time_digest_of(&path, follow)
+}
+
+/// A path's status fields other than its times (`detpy_core::proof::fields_digest`, review R-023c E4).
+#[pyfunction]
+#[pyo3(signature = (path, follow=true))]
+pub fn fields_digest(path: PathBuf, follow: bool) -> String {
+    proof::fields_digest(&path, follow)
 }
 
 /// "file:<size>", "dir", "other" or "missing" (`detpy_core::proof::size_kind`, review R-032b F2).
