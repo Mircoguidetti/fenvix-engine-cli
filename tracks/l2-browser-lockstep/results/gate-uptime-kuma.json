@@ -1,0 +1,289 @@
+{
+ "name": "uptime-kuma",
+ "job": "gate",
+ "repo": "louislam/uptime-kuma",
+ "ref": "e6ea9509e68b31a996f3fdf5c24cfba24340962b",
+ "status": "ok",
+ "run_id": "44783946608",
+ "engine_commit": "ea649fcb86a3fb8533b97a6a82d5b3b20ff42cc6",
+ "setup_s": 98,
+ "params": {
+  "plain": 20,
+  "stress": 10,
+  "base": 0,
+  "det": 0,
+  "freeze": 0,
+  "freeze_control": 0,
+  "budget_min": 330,
+  "run_timeout_min": 45,
+  "target_timeout_min": 10,
+  "runs": 10,
+  "plain_runs": 2,
+  "per_run_s": 240
+ },
+ "pw_dir": ".",
+ "pw_args": [],
+ "runs": [],
+ "epoch": "2026-11-20T17:36:00Z",
+ "measured_at": "2026-11-20T17:36:20Z",
+ "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
+ "gate": [
+  {
+   "key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]",
+   "file": "monitor-history-settings.spec.js",
+   "grep": "saves the data retention period",
+   "project": "specs",
+   "plain": [
+    "passed",
+    "passed"
+   ],
+   "runs": [
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "errors": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "walls": [
+    65.1,
+    65.1,
+    65.2,
+    65.1,
+    65.3,
+    65.1,
+    65.0,
+    65.2,
+    65.2,
+    65.0
+   ],
+   "stats": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "traces": [
+    "gate-uptime-kuma/g1-det-1.jsonl.gz",
+    "gate-uptime-kuma/g1-det-2.jsonl.gz",
+    "gate-uptime-kuma/g1-det-3.jsonl.gz",
+    "gate-uptime-kuma/g1-det-4.jsonl.gz",
+    "gate-uptime-kuma/g1-det-5.jsonl.gz",
+    "gate-uptime-kuma/g1-det-6.jsonl.gz",
+    "gate-uptime-kuma/g1-det-7.jsonl.gz",
+    "gate-uptime-kuma/g1-det-8.jsonl.gz",
+    "gate-uptime-kuma/g1-det-9.jsonl.gz",
+    "gate-uptime-kuma/g1-det-10.jsonl.gz"
+   ],
+   "verify_all": [
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::login [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::failed login shows error alert [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::logout [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::take sqlite snapshot [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    }
+   ],
+   "verify": {
+    "key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]",
+    "status": "stable",
+    "distinct_fingerprints": 1,
+    "runs": 10,
+    "divergence": null
+   }
+  },
+  {
+   "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
+   "file": "status-page.spec.js",
+   "grep": "RSS feed escapes malicious monitor names",
+   "project": "specs",
+   "plain": [
+    "passed",
+    "passed"
+   ],
+   "runs": [
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "errors": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "walls": [
+    85.6,
+    85.7,
+    85.6,
+    85.7,
+    86.1,
+    85.4,
+    86.0,
+    85.6,
+    85.6,
+    85.7
+   ],
+   "stats": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "traces": [
+    "gate-uptime-kuma/g2-det-1.jsonl.gz",
+    "gate-uptime-kuma/g2-det-2.jsonl.gz",
+    "gate-uptime-kuma/g2-det-3.jsonl.gz",
+    "gate-uptime-kuma/g2-det-4.jsonl.gz",
+    "gate-uptime-kuma/g2-det-5.jsonl.gz",
+    "gate-uptime-kuma/g2-det-6.jsonl.gz",
+    "gate-uptime-kuma/g2-det-7.jsonl.gz",
+    "gate-uptime-kuma/g2-det-8.jsonl.gz",
+    "gate-uptime-kuma/g2-det-9.jsonl.gz",
+    "gate-uptime-kuma/g2-det-10.jsonl.gz"
+   ],
+   "verify_all": [
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::login [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::failed login shows error alert [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::logout [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::take sqlite snapshot [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    }
+   ],
+   "verify": {
+    "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
+    "status": "stable",
+    "distinct_fingerprints": 1,
+    "runs": 10,
+    "divergence": null
+   }
+  }
+ ],
+ "elapsed_min": 26.2
+}

@@ -1,0 +1,508 @@
+{
+ "name": "documenso",
+ "job": "hunt",
+ "repo": "documenso/documenso",
+ "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
+ "status": "running",
+ "run_id": "44783946608",
+ "engine_commit": "ea649fcb86a3fb8533b97a6a82d5b3b20ff42cc6",
+ "setup_s": 718,
+ "params": {
+  "plain": 20,
+  "stress": 10,
+  "base": 0,
+  "det": 0,
+  "freeze": 0,
+  "freeze_control": 0,
+  "budget_min": 340,
+  "run_timeout_min": 45,
+  "target_timeout_min": 8,
+  "seeds": 8,
+  "replays": 10,
+  "per_run_s": 900,
+  "only": [
+   "delete-recipient.spec.ts",
+   "find-inbox.spec.ts",
+   "delete-organisation.spec.ts",
+   "admin-find-documents.spec.ts",
+   "email-transport-claims.spec.ts",
+   "update-envelope-items.spec.ts",
+   "template-field-prefill.spec.ts"
+  ]
+ },
+ "pw_dir": "packages/app-tests",
+ "pw_args": [
+  "--project=api",
+  "--project=license"
+ ],
+ "runs": [],
+ "epoch": "2026-11-20T17:50:00Z",
+ "measured_at": "2026-11-20T17:50:27Z",
+ "machine": "4 vCPU, Ubuntu 22.04.5 LTS",
+ "hunt": {
+  "seeds": 8,
+  "replays": 10,
+  "targets": [
+   {
+    "key": "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix matches by recipient name case-insensitively [api]",
+    "real": "Error: apiRequestContext.get: read ECONNRESET",
+    "step": "GET http://localhost:3000/api/trpc/admin.document.find",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: a second delete call after deletion is harmless (NOT_FOUND or no-op) [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/admin.organisation.delete",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: admin can delete via the tRPC endpoint directly [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/admin.organisation.delete",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: organisation owner (non-admin) cannot delete their own org via admin route [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/admin.organisation.delete",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400 [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/admin.recipient.delete",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin can remove a recipient who has opened the document and inserted fields [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/admin.recipient.delete",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin cannot remove a recipient from a completed document [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/admin.recipient.delete",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin cannot remove a recipient who has completed signing [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/admin.recipient.delete",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: document with no remaining signers is not sealed [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/admin.recipient.delete",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: non-admin authenticated user is rejected with 401 [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/admin.recipient.delete",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: sequential signing advances to the next recipient [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/admin.recipient.delete",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "email-transport-claims.spec.ts::[ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITH backport propagates to organisation claims [ui]",
+    "real": "Error: locator.click: Element is outside of the viewport",
+    "step": null,
+    "mechanism": "latency",
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "email-transport-claims.spec.ts::[ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITHOUT backport does not touch organisation claims [ui]",
+    "real": "Error: locator.click: Element is outside of the viewport",
+    "step": null,
+    "mechanism": "latency",
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "find-inbox.spec.ts::Inbox Find - Recipient Scoping::should not return documents the user is not a recipient of, even when searched by title [api]",
+    "real": "Error: apiRequestContext.get: read ECONNRESET",
+    "step": "GET http://localhost:3000/api/trpc/document.inbox.find",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "find-inbox.spec.ts::Inbox Find - Search Hardening::should keep wildcard searches scoped to the recipient inbox [api]",
+    "real": "Error: apiRequestContext.get: read ECONNRESET",
+    "step": "GET http://localhost:3000/api/trpc/document.inbox.find",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "find-inbox.spec.ts::Inbox Find - Status Filter Hardening::should reject draft and virtual status values [api]",
+    "real": "Error: apiRequestContext.get: read ECONNRESET",
+    "step": "GET http://localhost:3000/api/trpc/document.inbox.find",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "find-inbox.spec.ts::Inbox Find - Status Filter Hardening::should reject pagination values outside of the allowed range [api]",
+    "real": "Error: apiRequestContext.get: read ECONNRESET",
+    "step": "GET http://localhost:3000/api/trpc/document.inbox.find",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "find-inbox.spec.ts::Inbox Find - Status Filter Hardening::should scope each status filter to exactly that status [api]",
+    "real": "Error: apiRequestContext.get: read ECONNRESET",
+    "step": "GET http://localhost:3000/api/trpc/document.inbox.find",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "template-field-prefill.spec.ts::Template Field Prefill API v1::should create a document from template with prefilled fields [api]",
+    "real": "Error: expect(locator).toBeVisible() failed",
+    "step": null,
+    "mechanism": "latency",
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "update-envelope-items.spec.ts::Update envelope items::should reject combined title and order change on a PENDING envelope [api]",
+    "real": "Error: expect(received).toBeFalsy()",
+    "step": null,
+    "mechanism": "latency",
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "update-envelope-items.spec.ts::Update envelope items::should reject order change on a PENDING envelope [api]",
+    "real": "Error: expect(received).toBeFalsy()",
+    "step": null,
+    "mechanism": "latency",
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   }
+  ]
+ }
+}

@@ -1,0 +1,169 @@
+{
+ "name": "uptime-kuma",
+ "job": "hunt",
+ "repo": "louislam/uptime-kuma",
+ "ref": "e6ea9509e68b31a996f3fdf5c24cfba24340962b",
+ "status": "ok",
+ "run_id": "44783946608",
+ "engine_commit": "ea649fcb86a3fb8533b97a6a82d5b3b20ff42cc6",
+ "setup_s": 73,
+ "params": {
+  "plain": 20,
+  "stress": 10,
+  "base": 0,
+  "det": 0,
+  "freeze": 0,
+  "freeze_control": 0,
+  "budget_min": 340,
+  "run_timeout_min": 45,
+  "target_timeout_min": 8,
+  "seeds": 8,
+  "replays": 10,
+  "per_run_s": 900
+ },
+ "pw_dir": ".",
+ "pw_args": [],
+ "runs": [],
+ "epoch": "2026-11-20T17:35:00Z",
+ "measured_at": "2026-11-20T17:35:58Z",
+ "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
+ "hunt": {
+  "seeds": 8,
+  "replays": 10,
+  "targets": [
+   {
+    "key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]",
+    "real": "Error: expect(locator).toHaveValue(expected) failed",
+    "step": null,
+    "mechanism": "latency",
+    "tried": [
+     [
+      1,
+      "failed",
+      "Error: expect(locator).toHaveValue(expected) failed",
+      null
+     ]
+    ],
+    "seed": 1,
+    "replays": [
+     "failed",
+     "failed",
+     "failed",
+     "failed",
+     "failed",
+     "failed",
+     "failed",
+     "failed",
+     "failed",
+     "failed"
+    ],
+    "replay_errors": [
+     "Error: expect(locator).toHaveValue(expected) failed",
+     "Error: expect(locator).toHaveValue(expected) failed",
+     "Error: expect(locator).toHaveValue(expected) failed",
+     "Error: expect(locator).toHaveValue(expected) failed",
+     "Error: expect(locator).toHaveValue(expected) failed",
+     "Error: expect(locator).toHaveValue(expected) failed",
+     "Error: expect(locator).toHaveValue(expected) failed",
+     "Error: expect(locator).toHaveValue(expected) failed",
+     "Error: expect(locator).toHaveValue(expected) failed",
+     "Error: expect(locator).toHaveValue(expected) failed"
+    ],
+    "fingerprints": 2,
+    "reproduced": false,
+    "replay_match": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "divergence": {
+     "run_a": 0,
+     "run_b": 7,
+     "index": 121,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "net",
+      "o": "browser.done",
+      "at": "",
+      "v": "5 GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=9esxhpsf&sid=cMSABw_7EKqU3RDmAAAJ 200 4d3d6a4f2a2f61551f7a38dbbce5c41f"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "net",
+      "o": "browser.done",
+      "at": "",
+      "v": "5 GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=9esxhpsf&sid=cMSABw_7EKqU3RDmAAAJ 200 6abb41f3c3b10b5a8ab1a1d6e8c320cb"
+     },
+     "reason": "net",
+     "description": "event #121: browser.done @  returned different values: \"5 GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=9esxhpsf&sid=cMSABw_7EKqU3RDmAAAJ 200 4d3d6a4f2a2f61551f7a38dbbce5c41f\" vs \"5 GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=9esxhpsf&sid=cMSABw_7EKqU3RDmAAAJ 200 6abb41f3c3b10b5a8ab1a1d6e8c320cb\""
+    }
+   },
+   {
+    "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
+    "real": "Test timeout of 60000ms exceeded.",
+    "step": null,
+    "mechanism": "timeout_body",
+    "tried": [
+     [
+      1,
+      "timedOut",
+      "Test timeout of 60000ms exceeded.",
+      null
+     ]
+    ],
+    "seed": 1,
+    "replays": [
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut"
+    ],
+    "replay_errors": [
+     "Test timeout of 60000ms exceeded.",
+     "Test timeout of 60000ms exceeded.",
+     "Test timeout of 60000ms exceeded.",
+     "Test timeout of 60000ms exceeded.",
+     "Test timeout of 60000ms exceeded.",
+     "Test timeout of 60000ms exceeded.",
+     "Test timeout of 60000ms exceeded.",
+     "Test timeout of 60000ms exceeded.",
+     "Test timeout of 60000ms exceeded.",
+     "Test timeout of 60000ms exceeded."
+    ],
+    "fingerprints": 1,
+    "reproduced": true,
+    "replay_match": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "divergence": null
+   }
+  ],
+  "reproduced": 1,
+  "found_seed": 2,
+  "n": 2
+ },
+ "elapsed_min": 49.0
+}

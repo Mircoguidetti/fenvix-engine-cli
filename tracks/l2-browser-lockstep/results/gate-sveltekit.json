@@ -1,0 +1,221 @@
+{
+ "name": "sveltekit",
+ "job": "gate",
+ "repo": "sveltejs/kit",
+ "ref": "7a1296872cde5e807832f7714c635df956d37643",
+ "status": "ok",
+ "run_id": "44783946608",
+ "engine_commit": "ea649fcb86a3fb8533b97a6a82d5b3b20ff42cc6",
+ "setup_s": 41,
+ "params": {
+  "plain": 20,
+  "stress": 10,
+  "base": 0,
+  "det": 0,
+  "freeze": 0,
+  "freeze_control": 0,
+  "budget_min": 330,
+  "run_timeout_min": 45,
+  "target_timeout_min": 10,
+  "runs": 10,
+  "plain_runs": 2,
+  "per_run_s": 300
+ },
+ "pw_dir": "packages/kit/test/apps/basics",
+ "pw_args": [
+  "test/playwright"
+ ],
+ "runs": [],
+ "epoch": "2026-11-20T17:35:00Z",
+ "measured_at": "2026-11-20T17:35:28Z",
+ "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
+ "gate": [
+  {
+   "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]",
+   "file": "client.test.js",
+   "grep": "data-sveltekit attributes data-sveltekit-preload-code",
+   "project": null,
+   "plain": [
+    "passed",
+    "passed"
+   ],
+   "runs": [
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "errors": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "walls": [
+    22.3,
+    22.2,
+    22.3,
+    22.1,
+    22.1,
+    22.1,
+    22.1,
+    22.3,
+    22.2,
+    22.1
+   ],
+   "stats": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "traces": [
+    "gate-sveltekit/g1-det-1.jsonl.gz",
+    "gate-sveltekit/g1-det-2.jsonl.gz",
+    "gate-sveltekit/g1-det-3.jsonl.gz",
+    "gate-sveltekit/g1-det-4.jsonl.gz",
+    "gate-sveltekit/g1-det-5.jsonl.gz",
+    "gate-sveltekit/g1-det-6.jsonl.gz",
+    "gate-sveltekit/g1-det-7.jsonl.gz",
+    "gate-sveltekit/g1-det-8.jsonl.gz",
+    "gate-sveltekit/g1-det-9.jsonl.gz",
+    "gate-sveltekit/g1-det-10.jsonl.gz"
+   ],
+   "verify_all": [
+    {
+     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    }
+   ],
+   "verify": {
+    "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]",
+    "status": "stable",
+    "distinct_fingerprints": 1,
+    "runs": 10,
+    "divergence": null
+   }
+  },
+  {
+   "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]",
+   "file": "client.test.js",
+   "grep": "data-sveltekit attributes data-sveltekit-preload-data",
+   "project": null,
+   "plain": [
+    "passed",
+    "passed"
+   ],
+   "runs": [
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "errors": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "walls": [
+    128.0,
+    134.2,
+    125.0,
+    125.0,
+    127.1,
+    124.3,
+    129.9,
+    127.2,
+    127.2,
+    123.7
+   ],
+   "stats": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "traces": [
+    "gate-sveltekit/g2-det-1.jsonl.gz",
+    "gate-sveltekit/g2-det-2.jsonl.gz",
+    "gate-sveltekit/g2-det-3.jsonl.gz",
+    "gate-sveltekit/g2-det-4.jsonl.gz",
+    "gate-sveltekit/g2-det-5.jsonl.gz",
+    "gate-sveltekit/g2-det-6.jsonl.gz",
+    "gate-sveltekit/g2-det-7.jsonl.gz",
+    "gate-sveltekit/g2-det-8.jsonl.gz",
+    "gate-sveltekit/g2-det-9.jsonl.gz",
+    "gate-sveltekit/g2-det-10.jsonl.gz"
+   ],
+   "verify_all": [
+    {
+     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data failure does not trigger an unhandled rejection [chromium-dev]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data network failure does not trigger navigation [chromium-dev]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    }
+   ],
+   "verify": {
+    "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]",
+    "status": "stable",
+    "distinct_fingerprints": 1,
+    "runs": 10,
+    "divergence": null
+   }
+  }
+ ],
+ "elapsed_min": 25.6
+}

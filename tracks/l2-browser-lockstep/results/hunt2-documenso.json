@@ -1,0 +1,547 @@
+{
+ "name": "documenso",
+ "job": "hunt2",
+ "repo": "documenso/documenso",
+ "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
+ "status": "running",
+ "run_id": "44783946608",
+ "engine_commit": "ea649fcb86a3fb8533b97a6a82d5b3b20ff42cc6",
+ "setup_s": 314,
+ "params": {
+  "plain": 20,
+  "stress": 10,
+  "base": 0,
+  "det": 0,
+  "freeze": 0,
+  "freeze_control": 0,
+  "budget_min": 340,
+  "run_timeout_min": 45,
+  "target_timeout_min": 8,
+  "seeds": 8,
+  "replays": 10,
+  "per_run_s": 900,
+  "only": [
+   "search-documents.spec.ts",
+   "set-envelope-contents-audit-logs.spec.ts",
+   "set-envelope-contents-ids.spec.ts",
+   "set-envelope-contents-limits.spec.ts",
+   "test-unauthorized-analytics-access.spec.ts",
+   "search-templates.spec.ts"
+  ]
+ },
+ "pw_dir": "packages/app-tests",
+ "pw_args": [
+  "--project=api",
+  "--project=license"
+ ],
+ "runs": [],
+ "epoch": "2026-11-20T17:41:00Z",
+ "measured_at": "2026-11-20T17:41:03Z",
+ "machine": "4 vCPU, Ubuntu 22.04.5 LTS",
+ "hunt": {
+  "seeds": 8,
+  "replays": 10,
+  "targets": [
+   {
+    "key": "search-documents.spec.ts::Document Search - Cross-Team Isolation::should not cross team boundaries when searching SQL wildcard \"%\" [api]",
+    "real": "Error: apiRequestContext.get: read ECONNRESET",
+    "step": "GET http://localhost:3000/api/trpc/document.search",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "search-documents.spec.ts::Document Search - Cross-Team Isolation::should not reveal documents from other teams [api]",
+    "real": "Error: apiRequestContext.get: read ECONNRESET",
+    "step": "GET http://localhost:3000/api/trpc/document.search",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "search-documents.spec.ts::Document Search - Filtering::should find documents by externalId [api]",
+    "real": "Error: apiRequestContext.get: read ECONNRESET",
+    "step": "GET http://localhost:3000/api/trpc/document.search",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "search-documents.spec.ts::Document Search - Token Masking::should not expose other recipients signing tokens to the owner [api]",
+    "real": "Error: apiRequestContext.get: read ECONNRESET",
+    "step": "GET http://localhost:3000/api/trpc/document.search",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "search-documents.spec.ts::Document Search - Token Masking::should not expose signing token in value field [api]",
+    "real": "Error: apiRequestContext.get: read ECONNRESET",
+    "step": "GET http://localhost:3000/api/trpc/document.search",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "search-documents.spec.ts::Document Search - Visibility::should respect team document visibility per role [api]",
+    "real": "Error: apiRequestContext.get: read ECONNRESET",
+    "step": "GET http://localhost:3000/api/trpc/document.search",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "search-templates.spec.ts::Template Search - Cross-Team Isolation::should not cross team boundaries when searching SQL wildcard \"%\" [api]",
+    "real": "Error: apiRequestContext.get: read ECONNRESET",
+    "step": "GET http://localhost:3000/api/trpc/template.search",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "search-templates.spec.ts::Template Search - Visibility::should respect team template visibility per role [api]",
+    "real": "Error: apiRequestContext.get: read ECONNRESET",
+    "step": "GET http://localhost:3000/api/trpc/template.search",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "set-envelope-contents-audit-logs.spec.ts::does not log a save which changed nothing [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/envelope.content.set",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "set-envelope-contents-audit-logs.spec.ts::logs a created content [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/envelope.content.set",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "set-envelope-contents-audit-logs.spec.ts::logs a moved content as updated, recording the position [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/envelope.content.set",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "set-envelope-contents-audit-logs.spec.ts::rejects moving a content to another envelope item [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/envelope.content.set",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "set-envelope-contents-ids.spec.ts::creates several new contents in one save [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/envelope.content.set",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "set-envelope-contents-ids.spec.ts::rejects a content listed twice without changing it [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/envelope.content.set",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "set-envelope-contents-limits.spec.ts::allows an over limit envelope to be trimmed back down [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/envelope.content.set",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "set-envelope-contents-limits.spec.ts::rejects a save which exceeds the image content limit [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/envelope.content.set",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "test-unauthorized-analytics-access.spec.ts::Organisation Analytics API - Adversarial: Access::should reject a recipient of an organisation document on every procedure [api]",
+    "real": "Error: apiRequestContext.get: read ECONNRESET",
+    "step": "GET http://localhost:3000/api/trpc/organisation.analytics.getOverview",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "test-unauthorized-analytics-access.spec.ts::Organisation Analytics API - Adversarial: Access::should reject a team manager who is an organisation member on every procedure [api]",
+    "real": "Error: apiRequestContext.get: read ECONNRESET",
+    "step": "GET http://localhost:3000/api/trpc/organisation.analytics.getOverview",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "test-unauthorized-analytics-access.spec.ts::Team Analytics API - Adversarial: Access::should reject an admin of a sibling team on every procedure [api]",
+    "real": "Error: apiRequestContext.get: read ECONNRESET",
+    "step": "GET http://localhost:3000/api/trpc/team.analytics.getOverview",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "test-unauthorized-analytics-access.spec.ts::Team Analytics API - Adversarial: Tampering::should not grant access through the x-team-id header [api]",
+    "real": "Error: apiRequestContext.get: read ECONNRESET",
+    "step": "GET http://localhost:3000/api/trpc/team.analytics.getOverview",
+    "mechanism": "reset",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   }
+  ]
+ }
+}

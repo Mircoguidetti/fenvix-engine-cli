@@ -1,0 +1,226 @@
+{
+ "name": "documenso",
+ "job": "huntp",
+ "repo": "documenso/documenso",
+ "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
+ "status": "running",
+ "run_id": "44783946608",
+ "engine_commit": "ea649fcb86a3fb8533b97a6a82d5b3b20ff42cc6",
+ "setup_s": 336,
+ "params": {
+  "plain": 20,
+  "stress": 10,
+  "base": 0,
+  "det": 0,
+  "freeze": 0,
+  "freeze_control": 0,
+  "budget_min": 340,
+  "run_timeout_min": 45,
+  "target_timeout_min": 8,
+  "seeds": 7,
+  "seed_from": 0,
+  "replays": 10,
+  "per_run_s": 900,
+  "workers": 2
+ },
+ "pw_dir": "packages/app-tests",
+ "pw_args": [
+  "--project=api",
+  "--project=license"
+ ],
+ "runs": [],
+ "epoch": "2026-11-20T17:43:00Z",
+ "measured_at": "2026-11-20T17:43:17Z",
+ "machine": "4 vCPU, Ubuntu 22.04.5 LTS",
+ "hunt": {
+  "seeds": 7,
+  "replays": 10,
+  "targets": [
+   {
+    "key": "email-transport-claims.spec.ts::[ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITH backport propagates to organisation claims [ui]",
+    "real": "Error: locator.click: Element is outside of the viewport",
+    "step": null,
+    "mechanism": "latency",
+    "tried": [
+     [
+      0,
+      "timedOut",
+      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
+      null
+     ],
+     [
+      1,
+      "failed",
+      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
+      null
+     ],
+     [
+      2,
+      "passed",
+      "",
+      null
+     ],
+     [
+      3,
+      "passed",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "email-transport-claims.spec.ts::[ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITHOUT backport does not touch organisation claims [ui]",
+    "real": "Error: locator.click: Element is outside of the viewport",
+    "step": null,
+    "mechanism": "latency",
+    "tried": [
+     [
+      0,
+      "timedOut",
+      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
+      null
+     ],
+     [
+      1,
+      "failed",
+      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
+      null
+     ],
+     [
+      2,
+      "timedOut",
+      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
+      null
+     ],
+     [
+      3,
+      "passed",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "template-field-prefill.spec.ts::Template Field Prefill API v1::should create a document from template with prefilled fields [api]",
+    "real": "Error: expect(locator).toBeVisible() failed",
+    "step": null,
+    "mechanism": "latency",
+    "tried": [
+     [
+      0,
+      "failed",
+      "TimeoutError: frame.goto: Timeout 30000ms exceeded.",
+      null
+     ],
+     [
+      1,
+      "failed",
+      "PrismaClientKnownRequestError:",
+      null
+     ],
+     [
+      2,
+      "failed",
+      "PrismaClientKnownRequestError:",
+      null
+     ],
+     [
+      3,
+      "failed",
+      "TimeoutError: frame.goto: Timeout 30000ms exceeded.",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "update-envelope-items.spec.ts::Update envelope items::should reject combined title and order change on a PENDING envelope [api]",
+    "real": "Error: expect(received).toBeFalsy()",
+    "step": null,
+    "mechanism": "latency",
+    "tried": [
+     [
+      0,
+      "passed",
+      "",
+      null
+     ],
+     [
+      1,
+      "passed",
+      "",
+      null
+     ],
+     [
+      2,
+      "passed",
+      "",
+      null
+     ],
+     [
+      3,
+      "passed",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "update-envelope-items.spec.ts::Update envelope items::should reject order change on a PENDING envelope [api]",
+    "real": "Error: expect(received).toBeFalsy()",
+    "step": null,
+    "mechanism": "latency",
+    "tried": [
+     [
+      0,
+      "passed",
+      "",
+      null
+     ],
+     [
+      1,
+      "passed",
+      "",
+      null
+     ],
+     [
+      2,
+      "passed",
+      "",
+      null
+     ],
+     [
+      3,
+      "passed",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   }
+  ]
+ }
+}

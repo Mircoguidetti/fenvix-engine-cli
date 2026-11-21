@@ -1,0 +1,1416 @@
+'use strict';
+// Level 2 for browser tests: the controls applied from a Playwright Test
+// worker process (loaded by boot.js when TEST_WORKER_INDEX is set).
+//
+// For every browser context the tests create:
+//   * browser time: CDP Emulation.setVirtualTimePolicy on every page
+//     (pauseIfNetworkFetchesPending: timers never overtake a pending fetch;
+//     the page starts at the run's epoch); `fast` grants virtual time as fast
+//     as the page idles, `paced` never lets it run ahead of real time;
+//   * seeds: an init script seeding Math.random / crypto in every frame;
+//   * network order: requests of the app (documents, fetch, XHR) and the
+//     runner's API requests go through one queue per worker: after a quiet
+//     window the next request is chosen from the pending set (sorted; with a
+//     seed, a seeded choice), released with an `x-detjs-test` header (the app
+//     server's test bracket) and awaited to completion before the next one;
+//     WebSocket frames are relayed in order and recorded;
+//   * fingerprint: choices, request/response digests, frame digests, page
+//     seeds stats, final DOM digest and the app server's per-test fingerprint
+//     become events of the test, written to <DETJS_DIR>/buckets/ and turned
+//     into the shared trace by reporter.js.
+const fs = require('node:fs');
+const path = require('node:path');
+const http = require('node:http');
+const Module = require('node:module');
+const native = require('../native');
+const { pageInitSource } = require('./page-init');
+
+const ENV = process.env;
+const SEED = BigInt(ENV.DETJS_SEED || '0');
+const SHUFFLE = ENV.DETJS_SHUFFLE === '1';
+const DIR = ENV.DETJS_DIR || path.join(process.cwd(), '.detjs', 'run');
+const ROOT = ENV.DETJS_ROOT || process.cwd();
+const VTIME = ENV.DETJS_PW_VTIME || 'paced';
+const WINDOW_MS = Number(ENV.DETJS_PW_NET_WINDOW || 15);
+const NET = ENV.DETJS_PW_NET !== 'off';
+const SEEDS = ENV.DETJS_PW_SEEDS !== 'off';
+const VCAP_MS = Number(ENV.DETJS_PW_VTIME_CAP || 600000);
+const EPOCH_MS = Date.parse(ENV.DETJS_EPOCH || '2025-01-01T00:00:00Z');
+const SERVER_HOSTS = new Set((ENV.DETJS_PW_SERVER_HOSTS || 'localhost,127.0.0.1,[::1],0.0.0.0').split(','));
+const COMPLETE_TIMEOUT_MS = Number(ENV.DETJS_PW_COMPLETE_TIMEOUT || 5000);
+const APP_TYPES = new Set(['document', 'fetch', 'xhr']);
+const DEBUG = ENV.DETJS_PW_DEBUG === '1';
+// Round 4: lockstep (runner, pages and app servers on one engine clock; see lockstep.js). Default on with --det.
+const LOCKSTEP = ENV.DETJS_PW_LOCKSTEP !== '0' && ENV.DETJS_PW_VTIME !== 'off';
+const lockstep = require('./lockstep');
+// The driver's own clock is the real one, captured before the test code's clock is made virtual (round 2: a
+// virtual Date.now() here stalled the paced virtual-time grants: found on uptime-kuma).
+// Real elapsed time from the monotonic clock: Date may be frozen by libfaketime (documenso harness) or virtual.
+const realNow = require("./runner-clock").REAL.perfNow;
+// The engine's own timers are real ones (lockstep makes the globals virtual inside tests).
+const { REAL: REAL_TIMERS } = require('./runner-clock');
+const setTimeout = REAL_TIMERS.setTimeout;
+const clearTimeout = REAL_TIMERS.clearTimeout;
+const T_START = realNow();
+function dbg(...a) { if (DEBUG) process.stderr.write(`[detjs ${realNow() - T_START}ms] ${a.join(' ')}\n`); }
+
+// ---------------------------------------------------------------- buckets
+const BUCKET_DIR = path.join(DIR, 'buckets');
+fs.mkdirSync(BUCKET_DIR, { recursive: true });
+const PENDING = new Map(); // testId -> [[source, op, site, value]]
+let PW_TEST = null;
+
+function testInfo() {
+  if (!PW_TEST) return null;
+  try { return PW_TEST.test.info(); } catch { return null; }
+}
+function currentKey() {
+  const ti = testInfo();
+  return ti ? ti.testId : null;
+}
+function rec(key, source, op, value) {
+  if (!key) return;
+  if (LS) { LS.record(key, source, op, value); return; }
+  recNow(key, source, op, value);
+}
+// Lockstep: a test's event list is closed when its context was observed; traffic of its pages that is still in
+// flight afterwards (a WebSocket frame sent while the page closes) is not part of the test's fingerprint.
+const CLOSED_KEYS = new Set();
+function recNow(key, source, op, value) {
+  if (!key || CLOSED_KEYS.has(key)) return;
+  let list = PENDING.get(key);
+  if (!list) PENDING.set(key, (list = []));
+  list.push([source, op, '', String(value)]);
+}
+function flush(key) {
+  const keys = key ? [key] : [...PENDING.keys()];
+  for (const k of keys) {
+    const list = PENDING.get(k);
+    if (!list || !list.length) continue;
+    fs.appendFileSync(path.join(BUCKET_DIR, `${k}.jsonl`), list.map((e) => JSON.stringify(e)).join('\n') + '\n');
+    list.length = 0;
+  }
+}
+process.on('exit', () => { try { flush(); } catch { /* ignore */ } });
+
+// Diagnosis (DETJS_PW_DIAG_DIR): the texts behind the digests (response bodies, frames, final DOM),
+// one file per test, so that two replays can be diffed where their fingerprints diverge.
+const DIAG_DIR = ENV.DETJS_PW_DIAG_DIR || '';
+const DIAG_MAX = Number(ENV.DETJS_PW_DIAG_MAX || 4000);
+function diag(key, op, target, data, max = DIAG_MAX) {
+  if (!DIAG_DIR || !key) return;
+  try {
+    let text = data === undefined || data === null ? '' : Buffer.isBuffer(data) ? data.toString('utf8') : String(data);
+    if (text.length > max) text = `${text.slice(0, max)}...[${text.length}]`;
+    const name = testIdOf(key).replace(/[^A-Za-z0-9._-]+/g, '_').slice(-180);
+    fs.mkdirSync(DIAG_DIR, { recursive: true });
+    fs.appendFileSync(path.join(DIAG_DIR, `${name}.jsonl`), `${JSON.stringify({ t: realNow() - T_START, op, target, text })}\n`);
+  } catch { /* diagnosis never breaks a run */ }
+}
+
+function digest(data) {
+  if (data === undefined || data === null) return '-';
+  return native.digest(Buffer.isBuffer(data) ? data : Buffer.from(String(data)));
+}
+
+// ------------------------------------------------------- network queue
+// One queue per worker process (workers are serialized: one process runs at a time).
+const QUEUE = { pending: [], busy: false, timer: null, decisions: new Map() };
+
+function keyOf(item) {
+  return `${item.kind} ${item.method} ${item.target} ${item.bodyDigest}`;
+}
+
+function schedule() {
+  if (QUEUE.busy || QUEUE.timer || !QUEUE.pending.length) return;
+  QUEUE.timer = setTimeout(pump, WINDOW_MS);
+}
+
+// Navigations requested by the test code (page.goto, reload, ...) reach the queue only after a
+// round trip through the browser; a runner API request issued just before would be chosen alone
+// or together with the document depending on that latency (found on the fixture's "runner write
+// vs browser read"). The queue waits until every navigation the test started has either reached
+// it as a document request or finished without one.
+const NAV = { pending: [], maxWait: Number(ENV.DETJS_PW_NAV_WAIT || 3000) };
+let LS = null; // the lockstep coordinator (created below, once the module's state exists)
+function navStarted() {
+  const n = { open: true };
+  NAV.pending.push(n);
+  return () => navClaim(n);
+}
+function navClaim(n) {
+  const x = n || NAV.pending[0];
+  if (!x || !x.open) return;
+  x.open = false;
+  NAV.pending.splice(NAV.pending.indexOf(x), 1);
+  if (QUEUE.pending.length) { if (QUEUE.timer) { clearTimeout(QUEUE.timer); QUEUE.timer = null; } schedule(); }
+}
+async function navSettled() {
+  const t = realNow();
+  while (NAV.pending.length && realNow() - t < NAV.maxWait) await new Promise((r) => setTimeout(r, 2));
+}
+// Page.goto delegates to its main frame's goto: Frame gets goto, Page the page-level ones.
+const NAV_METHODS = { frame: ['goto'], page: ['reload', 'goBack', 'goForward'] };
+function patchNavigation(obj, kind) {
+  const proto = obj && Object.getPrototypeOf(obj);
+  if (!proto || Object.prototype.hasOwnProperty.call(proto, '__detjsNav')) return;
+  Object.defineProperty(proto, '__detjsNav', { value: true });
+  for (const m of NAV_METHODS[kind]) {
+    const orig = proto[m];
+    if (typeof orig !== 'function') continue;
+    proto[m] = function (...args) {
+      if (!NET || !currentKey() || LS) return orig.apply(this, args); // lockstep: marked at admission (lockstep.js)
+      const done = navStarted();
+      let p;
+      try { p = orig.apply(this, args); } catch (e) { done(); throw e; }
+      Promise.resolve(p).then(done, done);
+      return p;
+    };
+  }
+}
+
+function enqueue(item) {
+  if (LS) { if (item.nav) navClaim(); return LS.enqueue(item); }
+  return new Promise((resolve) => {
+    item.release = resolve;
+    QUEUE.pending.push(item);
+    if (item.nav) navClaim();
+    if (item.nav && VT.waiters.length) { const w = VT.waiters; VT.waiters = []; for (const f of w) f(); }
+    if (QUEUE.timer) { clearTimeout(QUEUE.timer); QUEUE.timer = null; }
+    schedule();
+  });
+}
+
+const QUIET_MS = Number(ENV.DETJS_PW_QUIET_MS || 20);
+const QUIET_MAX = Number(ENV.DETJS_PW_QUIET_MAX || 1000); // round 2: 3000 kept busy servers' tests waiting (uptime-kuma)
+const PASSTHROUGH = new RegExp(ENV.DETJS_PW_PASSTHROUGH || '[?&]transport=polling|/sockjs/|/__vite_ping|/@vite/|hot-update');
+// Dev-server channels (Vite HMR `/?token=`, webpack/Next HMR): relayed as is, not app traffic (round 2: actual's
+// Vite HMR pings entered the queue).
+const WS_PASSTHROUGH = new RegExp(ENV.DETJS_PW_WS_PASSTHROUGH || '^wss?://[^/]+/\\?token=[^&/]+$|/_next/webpack-hmr|/__webpack_hmr|/sockjs-node|/ws\\?.*hmr');
+
+function serverQuiet(origin) {
+  return new Promise((resolve) => {
+    let u;
+    try { u = new URL(`/__detjs/quiet?ms=${QUIET_MS}&max=${QUIET_MAX}`, origin); } catch { resolve(null); return; }
+    const req = http.get(u, { timeout: QUIET_MAX + 2000 }, (res) => {
+      const chunks = [];
+      res.on('data', (c) => chunks.push(c));
+      res.on('end', () => { try { resolve(JSON.parse(Buffer.concat(chunks).toString('utf8'))); } catch { resolve(null); } });
+    });
+    req.on('error', () => resolve(null));
+    req.on('timeout', () => { req.destroy(); resolve(null); });
+  });
+}
+
+/** Wait until every app server touched so far has finished the work of earlier messages. */
+async function barrier(test) {
+  if (!QUIET_MS) return;
+  for (const origin of [...ORIGINS].sort()) {
+    const r = await serverQuiet(origin);
+    if (r && !r.quiet) rec(test, 'sched', 'server.busy', origin); // still busy after QUIET_MAX: recorded
+  }
+}
+
+async function pump() {
+  QUEUE.timer = null;
+  if (QUEUE.busy || !QUEUE.pending.length) return;
+  QUEUE.busy = true;
+  // Never deliver a response while a page is inside a virtual time chunk, except a main-frame
+  // navigation: Chrome suspends the page's DevTools session while its navigation request is
+  // pending, so the chunk cannot end before the document arrives (deadlock: found on a first
+  // page.goto issued right after a grant). The new document starts at the page's virtual instant.
+  await navSettled();
+  if (!QUEUE.pending.some((it) => it.nav)) await whenPaused();
+  await barrier(QUEUE.pending[0].test);
+  QUEUE.busy = false;
+  if (!QUEUE.pending.length) return;
+  // Sort the pending set by a stable key (repeated keys keep arrival order: same URL twice
+  // is the same choice either way), then choose: index 0 without a seed, a seeded index with one.
+  // Frames of one WebSocket keep their order: only the oldest pending frame of a connection is eligible.
+  const head = new Map();
+  for (const it of QUEUE.pending) if (it.conn !== undefined && !head.has(it.conn)) head.set(it.conn, it);
+  const eligible = QUEUE.pending.filter((it) => it.conn === undefined || head.get(it.conn) === it);
+  const sorted = eligible.map((it, i) => ({ it, i, k: keyOf(it) }))
+    .sort((a, b) => (a.k < b.k ? -1 : a.k > b.k ? 1 : a.i - b.i));
+  const testKey = sorted[0].it.test || '<none>';
+  const n = sorted.length;
+  const d = (QUEUE.decisions.get(testKey) || 0) + 1;
+  QUEUE.decisions.set(testKey, d);
+  let idx = 0;
+  if (SHUFFLE && n > 1) idx = native.shuffleIndices(n, SEED, `${testKey}\0net\0${d}`)[0];
+  const chosen = sorted[idx].it;
+  // Seeded latency (round 2, exploration): with --det-seed a released message may first wait a
+  // seeded number of virtual-time chunks while the pages keep running: "slow server" schedules are
+  // explored, and the failing one replays. Never for main-frame navigations (they gate the chunks).
+  if (SHUFFLE && LATENCY.length > 1 && !chosen.nav && !chosen.delayed && HOLD.pages > 0) {
+    chosen.delayed = true;
+    const c = latencyChunks(LATENCY[native.shuffleIndices(LATENCY.length, SEED, `${testKey}\0lat\0${d}`)[0]]);
+    if (c > 0) {
+      QUEUE.pending.splice(QUEUE.pending.indexOf(chosen), 1);
+      chosen.until = HOLD.grants + c;
+      HOLD.items.push(chosen);
+      rec(chosen.test, 'sched', 'sched.delay', `${c}:${keyOf(chosen)}`);
+      dbg('delay', c, keyOf(chosen));
+      QUEUE.busy = false;
+      schedule();
+      return;
+    }
+  }
+  QUEUE.pending.splice(QUEUE.pending.indexOf(chosen), 1);
+  rec(chosen.test, 'sched', 'sched.io', `${idx}/${n}:${keyOf(chosen)}`);
+  diag(chosen.test, 'sched.io', keyOf(chosen), sorted.map((x) => x.k).join('\n'));
+  dbg('release', keyOf(chosen));
+  QUEUE.busy = true;
+  lastTest = chosen.test;
+  const done = () => {
+    PUSH.dirty = true;
+    QUEUE.busy = false;
+    schedule();
+  };
+  chosen.release(done);
+}
+
+function targetOf(url) {
+  try {
+    const u = new URL(url);
+    return `${u.protocol}//${u.host}${u.pathname}${u.search}`;
+  } catch { return String(url); }
+}
+function isServerHost(url) {
+  try { return SERVER_HOSTS.has(new URL(url).hostname); } catch { return false; }
+}
+
+// ----------------------------------------------------- app servers
+const ORIGINS = new Set(); // origins that received a bracket header
+
+function serverEnd(origin) {
+  return new Promise((resolve) => {
+    let u;
+    try { u = new URL('/__detjs/end', origin); } catch { resolve(null); return; }
+    const req = http.get(u, { timeout: 3000 }, (res) => {
+      const chunks = [];
+      res.on('data', (c) => chunks.push(c));
+      res.on('end', () => {
+        try { resolve(JSON.parse(Buffer.concat(chunks).toString('utf8'))); } catch { resolve(null); }
+      });
+    });
+    req.on('error', () => resolve(null));
+    req.on('timeout', () => { req.destroy(); resolve(null); });
+  });
+}
+
+// ------------------------------------------------- round 2: frames and pushes
+const SCOPE = ENV.DETJS_PW_SCOPE !== '0';
+const GATE_PUSH = ENV.DETJS_PW_GATE_PUSH !== '0';
+function announceFrame(wsUrl, testId) {
+  return new Promise((resolve) => {
+    let u;
+    try {
+      const w = new URL(wsUrl);
+      u = new URL(`/__detjs/frame?test=${encodeURIComponent(testId)}`, `${w.protocol === 'wss:' ? 'https:' : 'http:'}//${w.host}`);
+    } catch { resolve(); return; }
+    const req = http.get(u, { timeout: 3000 }, (res) => { res.resume(); res.on('end', resolve); });
+    req.on('error', () => resolve());
+    req.on('timeout', () => { req.destroy(); resolve(); });
+  });
+}
+// Held server-to-page frames, delivered in arrival order at the next chunk boundary.
+const PUSH = { held: [], dirty: false, fallback: null };
+function flushPushes() {
+  const list = PUSH.held;
+  PUSH.held = [];
+  for (const f of list) f();
+}
+function armPushFallback() {
+  // No page is granting virtual time (all paused for long, or none): deliver after a real second.
+  if (PUSH.fallback) return;
+  PUSH.fallback = setTimeout(() => { PUSH.fallback = null; if (PUSH.held.length) { dbg('push fallback', PUSH.held.length); flushPushes(); } }, 1000);
+}
+/** At a chunk boundary: after a message completed, wait for the servers to be quiet, then deliver pushes. */
+async function boundary() {
+  if (PUSH.dirty) {
+    PUSH.dirty = false;
+    await barrier(lastTest);
+  }
+  if (PUSH.held.length) flushPushes();
+}
+let lastTest = null;
+
+// ----------------------------------------------------- browser contexts
+const CONTEXTS = new WeakSet();
+
+async function seedWorkerScript(route, request, key) {
+  // Dedicated / shared workers: the page's seed script prepended to the worker's main script
+  // (round 2, source S4: actual makes its ids in a web worker). Same key as the test's pages; the
+  // stream differs per document through the script URL.
+  try {
+    const resp = await route.fetch({ url: request.url().replace(/([?&])__detjs_w=1&?/, '$1').replace(/[?&]$/, '') });
+    const body = await resp.text();
+    const [hi, lo] = native.deriveSeedWords(SEED, `${testIdOf(key)}\0page`);
+    rec(key, 'random', 'worker.seeded', targetOf(request.url()));
+    return route.fulfill({ response: resp, body: `${pageInitSource(hi, lo)}\n${body}` });
+  } catch (e) {
+    dbg('worker seed failed', request.url(), e && e.message);
+    return route.fallback();
+  }
+}
+
+// Lockstep: subresources (not ordered) in flight keep the runner busy until they finished loading.
+const LOADS = new Set(['stylesheet', 'script', 'image', 'font', 'other', 'texttrack']);
+function trackLoad(request) {
+  let page = null;
+  try { page = request.frame().page(); } catch { return; }
+  lockstep.netStart();
+  let open = true;
+  const end = () => {
+    if (!open) return;
+    open = false;
+    page.off('requestfinished', onEnd); page.off('requestfailed', onEnd); page.off('close', end);
+    clearTimeout(timer);
+    lockstep.netEnd();
+  };
+  const onEnd = (r) => { if (r === request) end(); };
+  const timer = setTimeout(end, 20000);
+  page.on('requestfinished', onEnd); page.on('requestfailed', onEnd); page.on('close', end);
+}
+
+async function routeHandler(route, request) {
+  if (!LS) return routeHandlerInner(route, request);
+  lockstep.ACT.routes++;
+  lockstep.activity();
+  let counted = true;
+  const uncount = () => { if (counted) { counted = false; lockstep.ACT.routes--; lockstep.activity(); LS.poke(); } };
+  try {
+    return await routeHandlerInner(route, request, uncount);
+  } finally { uncount(); }
+}
+
+async function routeHandlerInner(route, request, uncount = () => {}) {
+  if (LS) {
+    let pg = null;
+    try { pg = request.frame().page(); } catch { pg = null; }
+    if (pg) LS.routedAny(pg, request.url());
+    else if (typeof request.serviceWorker === 'function' && request.serviceWorker()) LS.routedServiceWorker();
+  }
+  const key = currentKey();
+  const reqT = LS ? LS.now() : 0; // engine time at which the page asked (responses are held until reqT + FETCH_MS)
+  const url = request.url();
+  const type = request.resourceType();
+  if (/[?&]__detjs_w=1/.test(url)) {
+    if (SEEDS && key && ENV.DETJS_PW_WORKER_SEEDS !== '0') return seedWorkerScript(route, request, key);
+    return route.fallback({ url: url.replace(/([?&])__detjs_w=1&?/, '$1').replace(/[?&]$/, '') });
+  }
+  if (LS && (type === 'fetch' || type === 'xhr') && /^https?:/.test(url)) {
+    try { LS.routed(request.frame().page()); } catch { /* detached frame */ }
+  }
+  if (!key || !APP_TYPES.has(type) || !/^https?:/.test(url)) {
+    if (LS && LOADS.has(type) && /^https?:/.test(url) && !PASSTHROUGH.test(url)) {
+      // Lockstep: a subresource is fetched by the engine and handed to the page between two time slices (in URL
+      // order), so how long it takes on the network never becomes page time.
+      try { const pg = request.frame().page(); if (pg) return lockstep.OWN.run(true, () => lsLoad(route, request, url, pg, reqT, uncount)); } catch { /* detached */ }
+      trackLoad(request);
+    }
+    return route.fallback();
+  }
+  if (PASSTHROUGH.test(url) || /text\/event-stream/.test(request.headers().accept || '')) {
+    // Long-lived requests (long polling, event streams, dev-server pings) would hold the
+    // queue: not ordered, not recorded; they still carry the test bracket.
+    if (LS && !/text\/event-stream/.test(request.headers().accept || '')) {
+      // Lockstep: a long poll is a message too (released in order, its response handed over at a quiet point),
+      // but its completion does not hold the engine: it ends when the server has something to say.
+      let page = null;
+      try { page = request.frame().page(); } catch { page = null; }
+      if (page) {
+        const item = { kind: 'browser', test: key, method: request.method(), target: targetOf(url), bodyDigest: digest(request.postDataBuffer()), page, longPoll: true, reqT };
+        LS.addOrigin(new URL(url).origin);
+        const pEnq = enqueue(item);
+        uncount();
+        const release = await pEnq;
+        release();
+        return lockstep.OWN.run(true, () => lsFetch(route, request, item, key, page, url, () => {}, { noMsg: true }));
+      }
+    }
+    if (LS) { request.__detjsLongPoll = true; try { LS.blockOn(request.frame().page(), request); } catch { /* detached */ } }
+    if (!isServerHost(url)) return route.fallback();
+    released();
+    return route.fallback({ headers: { ...request.headers(), 'x-detjs-test': testIdOf(key) } });
+  }
+  let nav = false;
+  try { nav = type === 'document' && request.isNavigationRequest() && request.frame().parentFrame() === null; } catch { nav = false; }
+  const page = request.frame && (() => { try { return request.frame().page(); } catch { return null; } })();
+  const item = { kind: 'browser', test: key, method: request.method(), target: targetOf(url), bodyDigest: digest(request.postDataBuffer()), nav, doc: type === 'document', rtype: type, page, reqT };
+  if (LS && isServerHost(url)) LS.addOrigin(new URL(url).origin);
+  if (LS && page && !nav) LS.blockOn(page, request);
+  const pEnq = enqueue(item);
+  uncount(); // queued: the pending set is complete for this request
+  const release = await pEnq;
+  if (LS && item.fault && item.fault !== 'none' && require('./faults').applyBrowser(route, item, release)) return;
+  // Documents too: the bytes of a page reach the renderer at a quiet point, so the parser (and the scripts it
+  // discovers) start at the same page time in every run (found on uptime-kuma's setup page).
+  if (LS && page && ENV.DETJS_LS_FULFILL !== '0') return lockstep.OWN.run(true, () => lsFetch(route, request, item, key, page, url, release));
+  let finished = false;
+  const finish = (how) => {
+    if (finished) return;
+    finished = true;
+    if (page) { page.off('requestfinished', onDone); page.off('requestfailed', onFail); page.off('response', onResponse); }
+    clearTimeout(timer);
+    rec(key, 'net', 'browser.done', `${item.method} ${item.target} ${how}`);
+    dbg('done', item.target, how);
+    release();
+  };
+  const onDone = async (r) => {
+    if (r !== request) return;
+    let how = 'finished';
+    try {
+      const resp = await r.response();
+      if (resp) {
+        let body = '-';
+        try { const buf = await resp.body(); body = digest(buf); diag(key, 'browser.body', `${item.method} ${item.target} ${resp.status()}`, buf); } catch { body = 'nobody'; }
+        how = `${resp.status()} ${body}`;
+      }
+    } catch { /* ignore */ }
+    finish(how);
+  };
+  const onFail = (r) => { if (r === request) finish(`failed ${r.failure() ? r.failure().errorText : ''}`); };
+  const timer = setTimeout(() => finish('incomplete'), COMPLETE_TIMEOUT_MS);
+  // A document's body is consumed by the page's loader, which waits for virtual time:
+  // its response headers complete it (the final DOM digest covers its content).
+  const onResponse = (resp) => { if (resp.request() === request) finish(`${resp.status()} document`); };
+  if (LS && page) {
+    // Lockstep: the message is complete when its response headers reached the browser. The page reads the body
+    // in its own (virtual) time; Chromium does not finish loading it while the page's time is paused. The body
+    // digest is recorded when it arrives, at the message's place in the test's event list (recordLate).
+    const onResp = (resp) => { if (resp.request() === request) { page.off('response', onResp); finish(`${resp.status()}`); } };
+    page.on('response', onResp);
+    page.on('requestfailed', onFail);
+    const decision = item.decision;
+    const onBody = async (r) => {
+      if (r !== request) return;
+      page.off('requestfinished', onBody);
+      let body = 'nobody';
+      try { const resp = await r.response(); if (resp) { const buf = await resp.body(); body = digest(buf); diag(key, 'browser.body', `${item.method} ${item.target} ${resp.status()}`, buf); } } catch { body = 'nobody'; }
+      LS.recordLate(key, decision, 'net', 'browser.body', `${item.method} ${item.target} ${body}`);
+    };
+    if (type !== 'document') page.on('requestfinished', onBody);
+  } else if (type === 'document' && page) { page.on('response', onResponse); page.on('requestfailed', onFail); }
+  else if (page) { page.on('requestfinished', onDone); page.on('requestfailed', onFail); }
+  rec(key, 'net', 'browser.request', `${item.method} ${item.target} ${item.bodyDigest}`);
+  try {
+    if (isServerHost(url)) {
+      ORIGINS.add(new URL(url).origin);
+      released();
+      await route.fallback({ headers: { ...request.headers(), 'x-detjs-test': testIdOf(key), ...(LS ? { 'x-detjs-msg': String(item.lsId), 'x-detjs-t': String(item.lsT) } : {}) } });
+    } else {
+      await route.fallback();
+    }
+  } catch (e) {
+    finish(`route-error ${e && e.message}`);
+  }
+  if (!page) finish('nopage');
+}
+
+// Lockstep: a page's fetch/XHR is performed by the engine (route.fetch, in this process) and its response is
+// handed to the page (route.fulfill) as a scheduled delivery: at most one response per page is waiting for the
+// page's time, so the order in which the page sees responses is the engine's, not the network's.
+const HOP = new Set(['content-encoding', 'content-length', 'transfer-encoding', 'connection', 'keep-alive']);
+// The engine's fetch ends at a real-time moment, possibly after the engine took further decisions (a server request
+// blocked on a server timer lets time advance): its result is recorded at the message's decision index (found on
+// sveltekit: 'browser.done' of the first document fell before or after the next decision).
+function recDone(key, item, value) {
+  if (LS && item.decision !== undefined) LS.recordLate(key, item.decision, 'net', 'browser.done', value);
+  else rec(key, 'net', 'browser.done', value);
+}
+
+async function lsFetch(route, request, item, key, page, url, release, opt = {}) {
+  rec(key, 'net', 'browser.request', `${item.method} ${item.target} ${item.bodyDigest}`);
+  const headers = { ...request.headers(), 'x-detjs-own': '1' };
+  if (isServerHost(url)) {
+    ORIGINS.add(new URL(url).origin);
+    Object.assign(headers, { 'x-detjs-test': testIdOf(key), 'x-detjs-t': String(item.lsT) });
+    if (!opt.noMsg) headers['x-detjs-msg'] = String(item.lsId);
+    else headers['x-detjs-lp'] = String(item.lsId);
+    if (item.fault && item.fault !== 'none') { headers['x-detjs-fault'] = item.fault; rec(key, 'net', 'browser.fault', `${item.method} ${item.target} ${item.fault}`); }
+  }
+  let resp = null;
+  let body = null;
+  try {
+    const tf = realNow();
+    resp = await route.fetch({ headers, maxRedirects: 0, timeout: 0 });
+    const tb = realNow();
+    body = await resp.body();
+    if (LS) LS.trace(`lsfetch ${item.target} fetch=${tb - tf} body=${realNow() - tb}`);
+  } catch (e) {
+    recDone(key, item, `${item.method} ${item.target} failed ${String(e && e.message).split('\n')[0].slice(0, 80)}`);
+    release();
+    LS.respond(page, item, async () => { await route.abort('failed'); });
+    if (opt.noMsg) LS.longPollArrived(item.lsId);
+    return;
+  }
+  const out = {};
+  for (const { name, value } of resp.headersArray()) {
+    const n = name.toLowerCase();
+    if (HOP.has(n) || n.startsWith('x-detjs')) continue;
+    out[n] = out[n] === undefined ? value : `${out[n]}${n === 'set-cookie' ? '\n' : ', '}${value}`;
+  }
+  recDone(key, item, `${item.method} ${item.target} ${resp.status()} ${digest(body)}`);
+  diag(key, 'browser.body', `${item.method} ${item.target} ${resp.status()}`, body);
+  // A main-frame document keeps its page "navigating" until the page has it (Chromium suspends the page meanwhile).
+  const nav = item.nav ? LS.navHold(page) : null;
+  release();
+  // A document carries the engine time of its delivery (Server-Timing, read by page-init.js from the navigation
+  // entry): its scripts may read Date.now() before the engine first anchors the page, and Chromium's own clock is not
+  // the engine's (MEASURED on uptime-kuma's RSS replays: socket.io's polling id, Date.now() of a reloaded page, 262 s
+  // apart in two replays). A CDP new-document script cannot do it: Chromium answers it only after the navigation.
+  const isDoc = (() => { try { return request.resourceType() === 'document'; } catch { return false; } })();
+  LS.respond(page, item, async () => {
+    const h = isDoc ? { ...out, 'server-timing': `${out['server-timing'] ? `${out['server-timing']}, ` : ''}detjs;desc="${LS.pageClockMs()}"` } : out;
+    try { await route.fulfill({ status: resp.status(), headers: h, body }); } finally { if (nav) nav(); }
+  }, request);
+  if (opt.noMsg) LS.longPollArrived(item.lsId);
+}
+
+let LOAD_SEQ = 0;
+let SRV_LOAD_SEQ = 0;
+async function lsLoad(route, request, url, page, reqT, uncount = () => {}) {
+  LS.blockOn(page, request); // pause policy: the page waits for its subresources like for its fetches
+  // To an app server: the load is in flight on the server's side of the clock (the server reports it as held once
+  // it arrived; settle then lets time advance, which is what a dev server holding it on a timer needs). Elsewhere:
+  // network in flight, the engine waits for it.
+  const srvId = isServerHost(url) ? `L${++SRV_LOAD_SEQ}` : null;
+  if (srvId) { LS.srvLoads.set(srvId, new URL(url).origin); uncount(); } else lockstep.netStart();
+  const netEnd = () => { if (srvId) { LS.srvLoads.delete(srvId); lockstep.activity(); LS.poke(); } else lockstep.netEnd(); };
+  let resp = null;
+  let body = null;
+  try {
+    resp = await route.fetch({ maxRedirects: 0, timeout: 0, ...(srvId ? { headers: { ...request.headers(), 'x-detjs-own': '1', 'x-detjs-load': srvId } } : {}) });
+    body = await resp.body();
+  } catch {
+    netEnd();
+    LS.respond(page, { key: `~load ${url}`, lsId: ++LOAD_SEQ, reqT }, async () => { await route.abort('failed'); });
+    return;
+  }
+  const out = {};
+  for (const { name, value } of resp.headersArray()) {
+    const n = name.toLowerCase();
+    if (HOP.has(n)) continue;
+    out[n] = out[n] === undefined ? value : `${out[n]}${n === 'set-cookie' ? '\n' : ', '}${value}`;
+  }
+  // Queued before the load counts as finished, so the quiet point that sees the load done also sees its response.
+  LS.respond(page, { key: `~load ${url}`, lsId: ++LOAD_SEQ, reqT }, async () => { await route.fulfill({ status: resp.status(), headers: out, body }); }, request);
+  netEnd();
+}
+
+// Readable test ids for the server bracket (the server part uses them as node ids).
+const READABLE = new Map();
+function testIdOf(key) {
+  return READABLE.get(key) || key;
+}
+function rememberTest() {
+  const ti = testInfo();
+  if (!ti) return null;
+  if (!READABLE.has(ti.testId)) {
+    const file = path.relative(ROOT, ti.file).split(path.sep).join('/');
+    READABLE.set(ti.testId, `${file}::${ti.titlePath.slice(1).join('::')}${ti.project && ti.project.name ? ` [${ti.project.name}]` : ''}`);
+  }
+  return ti.testId;
+}
+
+function wsKeep(text) {
+  // engine.io heartbeats ("2" ping / "3" pong, optionally "2probe") depend on real time: not fingerprinted.
+  return !(typeof text === 'string' && /^[23](probe)?$/.test(text));
+}
+
+let WS_CONNS = 0;
+let WS_OPENS = 0;
+async function setupWebSockets(ctx) {
+  if (typeof ctx.routeWebSocket !== 'function') return;
+  await ctx.routeWebSocket(() => true, async (ws) => {
+    const key = currentKey();
+    let server;
+    // Lockstep (round 4): the connection to the server is the engine's (Node side), opened when the scheduler
+    // releases it; the page's socket turns OPEN at that quiet point (MEASURED: with the page's own connection the
+    // 'open' event, and the upgrade probe the client sends from it, landed at real-time moments: 2 vs 3 pending
+    // messages at the same decision, uptime-kuma).
+    const engineSide = LS && key && ENV.DETJS_LS_WS_NODE !== '0' && typeof WebSocket === 'function' && !WS_PASSTHROUGH.test(ws.url());
+    let opened = null;
+    if (engineSide) {
+      const r = await lsSocket(ctx, ws, key);
+      if (!r) return;
+      server = r.server; opened = r.opened;
+    } else {
+      try { server = ws.connectToServer(); } catch { return; }
+    }
+    if (WS_PASSTHROUGH.test(ws.url())) {
+      ws.onMessage((m) => { if (LS) LS.routedWs++; try { server.send(m); } catch { /* closed */ } });
+      server.onMessage((m) => { try { ws.send(m); } catch { /* closed */ } });
+      ws.onClose((code, reason) => { try { server.close({ code, reason }); } catch { /* closed */ } });
+      server.onClose((code, reason) => { try { ws.close({ code, reason }); } catch { /* closed */ } });
+      return;
+    }
+    const conn = ++WS_CONNS;
+    rec(key, 'net', 'ws.open', targetOf(ws.url()));
+    ws.onMessage((m) => {
+      if (LS) LS.routedWs++;
+      const k = currentKey() || key;
+      if (!k || (!wsKeep(m) && !LS)) { server.send(m); return; }
+      if (LS && !wsKeep(m)) {
+        // Lockstep: heartbeats and upgrade probes are ordered too (their timing decides when a client upgrades),
+        // but they are not part of the fingerprint.
+        LS.enqueue({ kind: 'ws', conn, test: k, method: 'SEND', target: targetOf(ws.url()), bodyDigest: digest(m), quiet: true }).then((done) => { try { server.send(m); } finally { done(); } });
+        return;
+      }
+      // Page -> server frames are messages to the app like requests: same queue, same barrier.
+      if (LS) LS.trace(`ws-send-in ${String(m).slice(0, 80)}`);
+      enqueue({ kind: 'ws', conn, test: k, method: 'SEND', target: targetOf(ws.url()), bodyDigest: digest(m) }).then(async (release) => {
+        rec(k, 'net', 'ws.send', digest(m));
+        // The app server handles the frame in its own message context (server.js, round 2).
+        if (SCOPE && isServerHost(ws.url())) { released(); await announceFrame(ws.url(), testIdOf(k)); }
+        diag(k, 'ws.send', targetOf(ws.url()), m, 1500);
+        try { server.send(m); } finally { release(); }
+      });
+    });
+    server.onMessage((m) => {
+      // Server pushes reach the page only between two virtual-time chunks, after the server is
+      // quiet (round 2, source S5): a push no longer lands before or after a response by chance.
+      if (LS) LS.trace(`ws-recv-in ${String(m).slice(0, 80)}`);
+      const deliver = () => {
+        if (wsKeep(m)) { rec(currentKey() || key, 'net', 'ws.recv', digest(m)); diag(currentKey() || key, 'ws.recv', targetOf(ws.url()), m, 1500); }
+        try { ws.send(m); } catch { /* closed */ }
+      };
+      if ((!wsKeep(m) && !LS) || !GATE_PUSH || VTIME === 'off') return deliver();
+      if (LS) {
+        // Lockstep: a server push is a message like any other; the scheduler decides when it reaches the page.
+        const k = currentKey() || key;
+        if (!k) return deliver();
+        LS.enqueue({ kind: 'push', conn: -conn, test: k, method: 'RECV', target: targetOf(ws.url()), bodyDigest: digest(m) }).then((done) => { deliver(); done(); });
+        return undefined;
+      }
+      PUSH.held.push(deliver);
+      armPushFallback();
+    });
+    ws.onClose((code, reason) => { try { server.close({ code, reason }); } catch { /* closed */ } });
+    server.onClose((code, reason) => { try { ws.close({ code, reason }); } catch { /* closed */ } });
+    if (opened) await opened();
+  });
+}
+
+/** Lockstep: open the server side of a routed WebSocket from Node, as an engine message ("ws OPEN"). Returns a
+ * server adapter with the WebSocketRoute server API, and `opened()`: turns the page's socket OPEN (its 'open'
+ * handlers run inside that call, at the quiet point) and ends the message. */
+async function lsSocket(ctx, ws, key) {
+  const url = ws.url();
+  const target = targetOf(url);
+  const done = await LS.enqueue({ kind: 'ws', conn: 1000000 + (++WS_OPENS), test: key, method: 'OPEN', target, bodyDigest: '-' });
+  let sock = null;
+  let ok = false;
+  await lockstep.OWN.run(true, async () => {
+    const httpUrl = url.replace(/^ws/, 'http');
+    const headers = {};
+    try { headers.origin = new URL(httpUrl).origin; } catch { /* keep none */ }
+    try {
+      const cookie = (await ctx.cookies(httpUrl)).map((c) => `${c.name}=${c.value}`).join('; ');
+      if (cookie) headers.cookie = cookie;
+    } catch { /* context closing */ }
+    let protocols = [];
+    try { protocols = typeof ws.protocols === 'function' ? ws.protocols() : []; } catch { /* older Playwright */ }
+    try {
+      sock = new WebSocket(url, { protocols, headers });
+      sock.binaryType = 'arraybuffer';
+      ok = await new Promise((res) => {
+        sock.onopen = () => res(true);
+        sock.onerror = () => res(false);
+        sock.onclose = () => res(false);
+      });
+    } catch { ok = false; }
+  });
+  if (!ok) {
+    try { if (sock) sock.close(); } catch { /* closed */ }
+    try { await lockstep.OWN.run(true, () => ws.close({ code: 1000, reason: 'detjs: server connection failed' })); } catch { /* closed */ }
+    done();
+    return null;
+  }
+  let onMsg = null; let onClose = null; const early = [];
+  sock.onmessage = (ev) => {
+    const m = typeof ev.data === 'string' ? ev.data : Buffer.from(ev.data);
+    if (onMsg) onMsg(m); else early.push(m);
+  };
+  sock.onclose = (ev) => { if (onClose) onClose(ev.code, ev.reason); };
+  sock.onerror = () => {};
+  const server = {
+    send: (m) => sock.send(m),
+    onMessage: (h) => { onMsg = h; for (const m of early.splice(0)) h(m); },
+    onClose: (h) => { onClose = h; },
+    close: (o = {}) => {
+      try { sock.close(o.code === 1000 || (o.code >= 3000 && o.code <= 4999) ? o.code : undefined, o.reason); } catch { try { sock.close(); } catch { /* closed */ } }
+    },
+  };
+  const opened = async () => {
+    try {
+      await lockstep.OWN.run(true, () => (ws._channel && ws._channel.ensureOpened ? ws._channel.ensureOpened({}, { signal: undefined, timeout: 0 }) : null));
+    } catch { /* page gone */ }
+    done();
+  };
+  return { server, opened };
+}
+
+// Virtual time is granted in small chunks (policy `advance` with a budget):
+// the page runs its timers, animations and rendering through one chunk, then
+// stops until the next grant. Between chunks the driver lets the requests
+// issued during the chunk reach the queue (SETTLE_MS) and runs the queue to
+// completion before the next grant, and the queue releases requests only
+// while no page is inside a chunk: responses always land between two chunks,
+// at the same virtual instant in every run. (Chrome's own
+// pauseIfNetworkFetchesPending policy freezes the page for as long as any
+// request is open, so long polling apps stop: socket.io, found on uptime-kuma.)
+// paced: virtual time never runs ahead of real time (the app server and
+// WebSocket peers live in real time); fast: idle time is skipped.
+const CHUNK_MS = Number(ENV.DETJS_PW_VTIME_CHUNK || 20);
+// Seeded latency choices, in chunks (DETJS_PW_LATENCY=0: off). Round 3 (experiment E6, review R-011): a choice
+// `D` (or `D<factor>`, e.g. D1.5) holds the message for factor x the test's deadline (DETJS_PW_DEADLINE_MS, else
+// the project's expect timeout, else Playwright's 5000 ms default): the seed space then reaches the tests'
+// timeouts, as load does on a busy CI machine. The default list (max 25 chunks = 500 ms) never does.
+const LATENCY = String(ENV.DETJS_PW_LATENCY || '0,0,0,1,5,25').split(',').map((x) => x.trim())
+  .filter((x) => /^D[\d.]*$/.test(x) || Number(x) >= 0).map((x) => (x[0] === 'D' ? x : Number(x)));
+function deadlineMs() {
+  if (ENV.DETJS_PW_DEADLINE_MS) return Number(ENV.DETJS_PW_DEADLINE_MS);
+  const ti = testInfo();
+  const p = ti && ti.project;
+  const t = p && ((p.expect && p.expect.timeout) || (ti.config && ti.config.expect && ti.config.expect.timeout));
+  return Number(t) || 5000;
+}
+function latencyChunks(c) {
+  if (typeof c === 'number') return c;
+  const f = Number(c.slice(1)) || 1.5;
+  return Math.ceil((f * deadlineMs()) / CHUNK_MS);
+}
+const HOLD = { items: [], grants: 0, pages: 0 };
+function releaseHeld() {
+  if (!HOLD.items.length) return;
+  const due = HOLD.items.filter((it) => it.until <= HOLD.grants);
+  if (!due.length) return;
+  HOLD.items = HOLD.items.filter((it) => it.until > HOLD.grants);
+  for (const it of due) QUEUE.pending.push(it);
+  if (QUEUE.timer) { clearTimeout(QUEUE.timer); QUEUE.timer = null; }
+  schedule();
+}
+const SETTLE_MS = Number(ENV.DETJS_PW_VTIME_SETTLE || 10);
+const VT = { running: 0, waiters: [] };
+function whenPaused() {
+  return VT.running === 0 ? Promise.resolve() : new Promise((r) => VT.waiters.push(r));
+}
+function chunkEnded() {
+  VT.running = Math.max(0, VT.running - 1);
+  if (VT.running === 0) { const w = VT.waiters; VT.waiters = []; for (const f of w) f(); }
+}
+function queueIdle() {
+  return !QUEUE.busy && !QUEUE.pending.length && !QUEUE.timer;
+}
+async function whenQueueIdle() {
+  while (!queueIdle()) await new Promise((r) => setTimeout(r, 2));
+}
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+async function setupPage(ctx, page, key) {
+  if (VTIME === 'off') return;
+  if (LS) { await LS.addPage(ctx, page); return; }
+  let cdp;
+  try { cdp = await ctx.newCDPSession(page); } catch { rec(key, 'other', 'vtime', 'unsupported'); return; }
+  const started = realNow();
+  let granted = 0;
+  let stopped = false;
+  let inChunk = false;
+  let frozen = null; // round 3 (E2): resolve() once the current chunk ended and no new chunk will start
+  const end = () => { if (inChunk) { inChunk = false; chunkEnded(); } if (frozen && !inChunk) frozen(); };
+  const grant = async (first) => {
+    if (stopped) return;
+    if (!first) {
+      await sleep(SETTLE_MS);
+      await whenQueueIdle();
+    }
+    if (granted >= VCAP_MS) { rec(currentKey() || key, 'time', 'vtime.cap', String(granted)); return; }
+    if (VTIME === 'paced') {
+      const ahead = granted - (realNow() - started);
+      if (ahead > 0) await sleep(ahead);
+      await whenQueueIdle();
+    }
+    if (!first && GATE_PUSH) { await boundary(); await whenQueueIdle(); }
+    if (stopped || frozen) { if (frozen) frozen(); return; }
+    if (!first) { HOLD.grants++; releaseHeld(); if (QUEUE.pending.length || QUEUE.busy) await whenQueueIdle(); }
+    granted += CHUNK_MS;
+    const params = { policy: 'advance', budget: CHUNK_MS };
+    if (first) params.initialVirtualTime = EPOCH_MS / 1000;
+    inChunk = true;
+    VT.running++;
+    dbg('grant', granted, first ? 'first' : '');
+    try { await cdp.send('Emulation.setVirtualTimePolicy', params); } catch { if (!stopped) HOLD.pages--; stopped = true; end(); }
+  };
+  cdp.on('Emulation.virtualTimeBudgetExpired', () => {
+    if (!inChunk) return; // a chunk already ended by a stall
+    dbg('expired', granted);
+    end();
+    grant(false).catch(() => {});
+  });
+  if (DEBUG) {
+    page.on('framenavigated', (f) => dbg('framenavigated', f === page.mainFrame() ? 'main' : 'sub', f.url()));
+    page.on('requestfailed', (r) => dbg('requestfailed', r.url(), r.failure() && r.failure().errorText));
+    page.on('crash', () => dbg('crash'));
+    page.on('request', (r) => dbg('request', r.resourceType(), r.url()));
+  }
+  FREEZERS.set(page, () => new Promise((resolve) => {
+    if (stopped) { resolve(); return; }
+    frozen = resolve;
+    if (!inChunk) resolve();
+  }));
+  HOLD.pages++;
+  page.on('close', () => {
+    if (!stopped) HOLD.pages--;
+    stopped = true;
+    end();
+    if (HOLD.pages <= 0 && HOLD.items.length) { HOLD.grants += 1e9; releaseHeld(); } // no page left to wait for
+  });
+  await grant(true);
+}
+
+// Round 3, experiment E2 (review R-011): freeze-before-observe. With DETJS_PW_FREEZE=1, when the test function
+// returns (Playwright's didFinishTestFunction callbacks), every page of the test stops receiving virtual time
+// (the running chunk ends, no new one starts) and the final DOM and page-random stats are taken from the frozen
+// pages at once: no real-time settle loop, so the observation instant no longer depends on real time.
+const FREEZE = ENV.DETJS_PW_FREEZE === '1';
+const FREEZERS = new WeakMap(); // page -> () => Promise (resolved when frozen)
+const OBSERVED = new WeakSet(); // pages whose final state was taken at freeze
+const TEST_CONTEXTS = new Set();
+async function observe(page, key) {
+  try {
+    const res = await Promise.race([
+      page.evaluate(() => ({
+        stats: window.__detjs ? window.__detjs.stats() : null,
+        dom: document.documentElement ? document.documentElement.outerHTML : '',
+      })),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 2000)),
+    ]);
+    if (res.stats) rec(key, 'random', 'page.random', `${res.stats.random}/${res.stats.crypto}/${res.stats.uuid}:${res.stats.digest}`);
+    rec(key, 'other', 'dom.digest', digest(res.dom));
+    diag(key, 'dom', page.url(), res.dom, 400000);
+    if (res.stats) diag(key, 'page.random', page.url(), JSON.stringify(res.stats));
+  } catch (e) {
+    rec(key, 'other', 'dom.digest', 'unavailable');
+  }
+}
+async function freezeAndObserve() {
+  const key = currentKey();
+  if (!key) return;
+  for (const ctx of [...TEST_CONTEXTS]) {
+    let pages = [];
+    try { pages = ctx.pages(); } catch { continue; }
+    for (const page of pages) {
+      const f = FREEZERS.get(page);
+      if (f) await Promise.race([f(), sleep(3000)]);
+    }
+    for (const page of pages) {
+      if (OBSERVED.has(page)) continue;
+      OBSERVED.add(page);
+      await observe(page, key);
+    }
+  }
+  rec(key, 'other', 'observe', 'frozen');
+}
+const HOOKED = new WeakSet();
+function hookTestEnd() {
+  if (!FREEZE) return;
+  const ti = testInfo();
+  if (!ti || HOOKED.has(ti)) return;
+  HOOKED.add(ti);
+  if (ti._onDidFinishTestFunctionCallbacks instanceof Set) ti._onDidFinishTestFunctionCallbacks.add(freezeAndObserve);
+  else if ('_onDidFinishTestFunction' in ti) {
+    const prev = ti._onDidFinishTestFunction;
+    ti._onDidFinishTestFunction = async () => { await freezeAndObserve(); if (prev) await prev(); };
+  } else rec(currentKey(), 'other', 'observe', 'no-hook');
+}
+
+async function setupContext(ctx) {
+  if (CONTEXTS.has(ctx)) return;
+  CONTEXTS.add(ctx);
+  const key = rememberTest();
+  if (FREEZE) { TEST_CONTEXTS.add(ctx); hookTestEnd(); }
+  if (seedsInstalled) maybeReseed();
+  const seedKey = key ? testIdOf(key) : '<outside>';
+  if (SEEDS) {
+    const [hi, lo] = native.deriveSeedWords(SEED, `${seedKey}\0page`);
+    await ctx.addInitScript({ content: pageInitSource(hi, lo) });
+  }
+  if (NET) {
+    await ctx.route(() => true, routeHandler);
+    await setupWebSockets(ctx);
+    patchApiRequest(ctx.request);
+  }
+  // Virtual time must be on before the first navigation: newPage() waits for it; pages the
+  // app opens itself (popups) get it as soon as the 'page' event is handled (limit B5).
+  const ready = new WeakMap();
+  const prepare = (page) => {
+    patchNavigation(page, 'page');
+    try { patchNavigation(page.mainFrame(), 'frame'); } catch { /* closed */ }
+    if (!ready.has(page)) ready.set(page, setupPage(ctx, page, currentKey() || key).catch(() => {}));
+    return ready.get(page);
+  };
+  ctx.on('page', (page) => { prepare(page); });
+  for (const p of ctx.pages()) await prepare(p);
+  const origNewPage = ctx.newPage;
+  ctx.newPage = async function newPage(...args) {
+    const page = await origNewPage.apply(this, args);
+    await prepare(page);
+    return page;
+  };
+  const origClose = ctx.close;
+  ctx.close = async function close(...args) {
+    await finishContext(ctx).catch(() => {});
+    return origClose.apply(this, args);
+  };
+}
+
+// The final DOM is taken once it stops changing (round 2, source S6: a toast captured mid-animation):
+// up to SETTLE_TRIES snapshots SETTLE_GAP real ms apart (virtual time keeps running in between).
+const SETTLE_GAP = Number(ENV.DETJS_PW_SETTLE_MS || 100);
+const SETTLE_TRIES = Number(ENV.DETJS_PW_SETTLE_TRIES || 10);
+async function settle(page) {
+  if (!SETTLE_GAP) return;
+  let prev = null;
+  for (let i = 0; i < SETTLE_TRIES; i++) {
+    let dom;
+    try {
+      dom = await Promise.race([page.evaluate(() => (document.documentElement ? document.documentElement.outerHTML : '')),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 2000))]);
+    } catch { return; }
+    if (dom === prev) return;
+    prev = dom;
+    await sleep(SETTLE_GAP);
+  }
+}
+
+async function finishContext(ctx) {
+  const key = currentKey();
+  if (!key) return;
+  if (LS) {
+    // Lockstep: the final state is taken at a quiet point (no page inside a budget, nothing in flight).
+    await LS.atQuiet(async () => {
+      for (const page of ctx.pages()) {
+        if (OBSERVED.has(page)) continue;
+        OBSERVED.add(page);
+        await observe(page, key);
+      }
+    });
+    TEST_CONTEXTS.delete(ctx);
+    await serverFingerprints(key);
+    LS.flushWindow();
+    LS.flushLate(key);
+    flush(key);
+    CLOSED_KEYS.add(key);
+    return;
+  }
+  for (const page of ctx.pages()) {
+    if (OBSERVED.has(page)) continue;
+    await settle(page);
+    await observe(page, key);
+  }
+  TEST_CONTEXTS.delete(ctx);
+  await serverFingerprints(key);
+  flush(key);
+}
+
+async function serverFingerprints(key) {
+  for (const origin of [...ORIGINS].sort()) {
+    const res = await serverEnd(origin);
+    if (!res || !res.finished) continue;
+    const mine = res.finished[testIdOf(key)];
+    if (mine) rec(key, 'other', 'server.fingerprint', `${origin} ${mine.fingerprint} ${mine.events}`);
+  }
+}
+
+// -------------------------------------------------- runner API requests
+let apiPatched = false;
+// The wrapper is compiled with a file name inside the playwright-core package: Playwright names an API call after the
+// first library frame above user code (captureLibraryStackTrace), so with a frame of ours in between an error would
+// read "apiRequestContext.fetch: ..." instead of the user's "apiRequestContext.post: ..." (found with the socket
+// faults: round 3's real failures read "apiRequestContext.post: read ECONNRESET"). The frame is also left out of the
+// stacks Playwright shows, like its own.
+const API_WRAP_SRC = `(function (deps) {
+  return async function fetch(urlOrRequest, options = {}) {
+    const h = deps.before(this, urlOrRequest, options);
+    if (!h) return deps.origFetch.call(this, urlOrRequest, options);
+    const opts = await h.ready;
+    try {
+      const resp = await deps.origFetch.call(this, urlOrRequest, opts);
+      await h.done(resp);
+      return resp;
+    } catch (e) {
+      h.error(e);
+      throw e;
+    } finally {
+      h.release();
+    }
+  };
+})`;
+
+function playwrightCoreRoot(fn) {
+  // The playwright-core whose client code defines this method (the project's, not the engine's own copy).
+  const own = path.resolve(__dirname, '..', '..');
+  const roots = [];
+  for (const f of Object.keys(require.cache)) {
+    const m = /^(.*[\\/]playwright-core)[\\/]/.exec(f);
+    if (m && !roots.includes(m[1])) roots.push(m[1]);
+  }
+  const src = fn ? Function.prototype.toString.call(fn) : '';
+  for (const r of roots) {
+    if (r.startsWith(own + path.sep)) continue;
+    for (const f of Object.keys(require.cache)) {
+      if (!f.startsWith(r + path.sep)) continue;
+      const m = require.cache[f];
+      if (src && m && m.exports && Object.values(m.exports).some((v) => typeof v === 'function' && v.prototype && v.prototype.fetch && Function.prototype.toString.call(v.prototype.fetch) === src)) return r;
+    }
+  }
+  return roots.find((r) => !r.startsWith(own + path.sep)) || roots[0] || null;
+}
+
+function patchApiRequest(reqCtx) {
+  if (apiPatched || !reqCtx) return;
+  const proto = Object.getPrototypeOf(reqCtx);
+  if (!proto || typeof proto.fetch !== 'function') return;
+  apiPatched = true;
+  const origFetch = proto.fetch;
+  const before = (self, urlOrRequest, options) => {
+    const key = currentKey();
+    if (!key || !NET) return null;
+    const url = typeof urlOrRequest === 'string' ? urlOrRequest : (urlOrRequest && urlOrRequest.url && urlOrRequest.url()) || '';
+    let abs = url;
+    const ti = testInfo();
+    const base = (self._options && self._options.baseURL) || (ti && ti.project && ti.project.use && ti.project.use.baseURL) || undefined;
+    try { abs = new URL(url, base).toString(); } catch { /* relative without base */ }
+    const method = (options.method || (typeof urlOrRequest === 'object' && urlOrRequest.method && urlOrRequest.method()) || 'GET').toUpperCase();
+    const body = options.data !== undefined ? (typeof options.data === 'string' || Buffer.isBuffer(options.data) ? options.data : JSON.stringify(options.data)) : options.form ? JSON.stringify(options.form) : undefined;
+    const item = { kind: 'api', test: key, method, target: targetOf(abs), bodyDigest: digest(body) };
+    if (LS && isServerHost(abs)) LS.addOrigin(new URL(abs).origin);
+    let release = () => {};
+    const ready = enqueue(item).then((rel) => {
+      release = rel;
+      rec(key, 'net', 'api.request', `${method} ${item.target} ${item.bodyDigest}`);
+      let opts = options;
+      if (isServerHost(abs)) {
+        ORIGINS.add(new URL(abs).origin);
+        released();
+        const faulted = LS && item.fault && item.fault !== 'none';
+        opts = { ...options, headers: { ...(options.headers || {}), 'x-detjs-test': testIdOf(key), ...(LS ? { 'x-detjs-msg': String(item.lsId), 'x-detjs-t': String(item.lsT) } : {}),
+          ...(faulted ? { 'x-detjs-fault': item.fault } : {}) } };
+        if (faulted) rec(key, 'net', 'api.fault', `${method} ${item.target} ${item.fault}`);
+      }
+      return opts;
+    });
+    return {
+      ready,
+      done: async (resp) => {
+        let b = '-';
+        try { const buf = await resp.body(); b = digest(buf); diag(key, 'api.body', `${method} ${item.target} ${resp.status()}`, buf); } catch { b = 'nobody'; }
+        rec(key, 'net', 'api.done', `${method} ${item.target} ${resp.status()} ${b}`);
+      },
+      error: () => rec(key, 'net', 'api.done', `${method} ${item.target} error`),
+      release: () => release(),
+    };
+  };
+  const root = playwrightCoreRoot(origFetch);
+  let wrapped = null;
+  if (root) {
+    try { wrapped = require('node:vm').runInThisContext(API_WRAP_SRC, { filename: path.join(root, 'lib', 'detjs-api-request.js') })({ before, origFetch }); } catch { wrapped = null; }
+  }
+  if (!wrapped) wrapped = (0, eval)(API_WRAP_SRC)({ before, origFetch });
+  proto.fetch = wrapped;
+}
+
+// ------------------------------------------- test code's own HTTP (Node fetch) to the app servers
+// Lockstep: a request the test code makes with Node's fetch (uptime-kuma restores its database snapshot that way)
+// is a message like the runner's API requests: ordered, stamped with T, and the runner waits on the engine
+// while it is pending.
+const NODE_FETCH = { inflight: 0 };
+function patchNodeFetch() {
+  if (typeof globalThis.fetch !== 'function' || globalThis.fetch.__detjs) return;
+  const realFetch = globalThis.fetch;
+  const f = async function fetch(input, init = {}) {
+    const key = currentKey();
+    let url;
+    try { url = new URL(typeof input === 'string' ? input : input instanceof URL ? input.href : input.url); } catch { url = null; }
+    if (!LS || !key || !url || !isServerHost(url.href)) return realFetch(input, init);
+    const method = String(init.method || (typeof input === 'object' && input.method) || 'GET').toUpperCase();
+    const body = typeof init.body === 'string' || Buffer.isBuffer(init.body) ? init.body : undefined;
+    const item = { kind: 'api', test: key, method, target: targetOf(url.href), bodyDigest: digest(body) };
+    LS.addOrigin(url.origin);
+    NODE_FETCH.inflight++;
+    let done;
+    try {
+      done = await enqueue(item);
+    } catch (e) { NODE_FETCH.inflight--; throw e; }
+    rec(key, 'net', 'node.request', `${method} ${item.target} ${item.bodyDigest}`);
+    const headers = new Headers(init.headers || (typeof input === 'object' && input.headers) || {});
+    headers.set('x-detjs-test', testIdOf(key));
+    headers.set('x-detjs-msg', String(item.lsId));
+    headers.set('x-detjs-t', String(item.lsT));
+    try {
+      const resp = await realFetch(input, { ...init, headers });
+      const buf = Buffer.from(await resp.arrayBuffer());
+      rec(key, 'net', 'node.done', `${method} ${item.target} ${resp.status} ${digest(buf)}`);
+      return new Response(resp.status === 204 || resp.status === 304 ? null : buf, { status: resp.status, statusText: resp.statusText, headers: resp.headers });
+    } catch (e) {
+      rec(key, 'net', 'node.done', `${method} ${item.target} error`);
+      throw e;
+    } finally {
+      NODE_FETCH.inflight--;
+      done();
+    }
+  };
+  Object.defineProperty(f, '__detjs', { value: true });
+  globalThis.fetch = f;
+}
+
+// ------------------------------------------- seeds of the test code itself
+// Test code draws random names (pads, users, e-mails) with Math.random or
+// crypto.randomUUID: the worker's own generators are seeded per test.
+// Run-wide clock of the test code (round 3): ms after the epoch, shared with the app server's message count.
+const STEP_MS = Number(ENV.DETJS_PW_SERVER_STEP_MS || 100);
+const WAIT_Q = Number(ENV.DETJS_PW_WORKER_CLOCK_WAIT_MS || 1000);
+const RUN_CLOCK_FILE = path.join(DIR, 'worker-clock.json');
+const RUN_CLOCK = (() => {
+  try { const j = JSON.parse(fs.readFileSync(RUN_CLOCK_FILE, 'utf8')); return { released: j.released | 0, last: Number(j.last) || 0 }; } catch { return { released: 0, last: 0 }; }
+})();
+function saveRunClock() {
+  try { fs.writeFileSync(RUN_CLOCK_FILE, JSON.stringify(RUN_CLOCK)); } catch { /* best effort */ }
+}
+/** A message carrying a test bracket was released to an app server: the server's clock moves one STEP. */
+function released() {
+  RUN_CLOCK.released += 1;
+  saveRunClock();
+}
+process.on('exit', saveRunClock);
+let seedsInstalled = false;
+let lastSeeded = null;
+function installWorkerSeeds() {
+  if (!SEEDS || seedsInstalled) return;
+  const config = require('../config');
+  const { STATE } = require('../state');
+  const seeds = require('../seeds');
+  const { Patcher } = require('../patch');
+  if (!STATE.config) STATE.config = { ...config.fromEnv(), urandom: false };
+  const patcher = new Patcher();
+  seeds.installProcess(patcher, STATE.config);
+  seeds.installRealm(patcher, globalThis, STATE.config, { sameRealm: true });
+  seeds.seedFile(`playwright-worker`);
+  // Every seeded draw (Math.random, crypto.getRandomValues/randomUUID, nanoid's pool) first switches to the
+  // current test's stream. Round 2 fix: only Math.random reseeded, so after a failing test Playwright's new worker
+  // started from the same initial stream and the next test drew the previous worker's bytes (documenso: the same
+  // nanoid e-mail, a unique-constraint failure, a new worker, and the cascade again: 266 of 595 tests).
+  if (ENV.DETJS_PW_RESEED_ANY === '0') {
+    const rnd = Math.random;
+    Math.random = function random() { maybeReseed(); return rnd(); };
+  } else {
+    seeds.setStreamHook(() => { maybeReseed(); return null; });
+  }
+  seedsInstalled = true;
+  // Round 2: the test code's clock (Date, performance.now) is virtual too: seed helpers write
+  // `new Date()` into rows (documenso's emailVerified). Playwright's own frames keep the real clock (runner
+  // infrastructure); timers stay real.
+  // Round 3 (review R-011): one clock for test code and app server, and time the test waits stays visible.
+  //   * Aligned with the server (R2): the server's clock is epoch + (messages it received) x STEP; the test
+  //     code's clock follows the same count (RUN_CLOCK.released, every message this worker released with a
+  //     test bracket), so "now" in test code and in the server agree to within the time one test waited.
+  //     Round 2 started each test at epoch + (hash of the test id mod 2^31) ms: up to 24.8 days of skew.
+  //   * Waits visible (R1): real time since the test's first clock read, floored to WAIT_Q ms, is added, so an
+  //     elapsed-time budget that a real wait misses by >= WAIT_Q still fails. Floor: the clock never reports
+  //     more than the real wait (no false failures); a miss by less than WAIT_Q can still pass (DECLARED band).
+  //     Values read within WAIT_Q of the test's first read stay deterministic. Round 2: 1 ms per read only, a
+  //     1.5 s request measured 1 ms. DETJS_PW_WORKER_CLOCK_WAIT_MS=0 restores that.
+  //   * Unique: strictly increasing over the whole run (>= 1 ms per read), also across worker restarts
+  //     (state in <DETJS_DIR>/worker-clock.json), so names built from Date.now() never repeat.
+  // DETJS_PW_WORKER_CLOCK_SPREAD=0 / =hash: the earlier round-2 behaviours (epoch per test / hash offset).
+  if (ENV.DETJS_PW_WORKER_CLOCK !== '0' && !LOCKSTEP) {
+    const clock = require('../clock');
+    const cfgT = { ...STATE.config, controls: new Set(['time']) };
+    clock.installProcess(patcher, cfgT);
+    clock.installRealm(patcher, globalThis, cfgT, { sameRealm: true });
+    const MODE = ENV.DETJS_PW_WORKER_CLOCK_SPREAD === '0' ? 'epoch' : ENV.DETJS_PW_WORKER_CLOCK_SPREAD === 'hash' ? 'hash' : 'run';
+    let ck;  // undefined: no read yet (a read outside any test has key null and must initialise too)
+    let base = 0;
+    let n = 0;
+    let firstReal = realNow();
+    clock.setValueHook(() => {
+      const k = currentKey();
+      if (k !== ck) {
+        ck = k;
+        n = 0;
+        firstReal = realNow();
+        if (k) rememberTest();
+        base = MODE === 'hash' && k ? parseInt(digest(testIdOf(k)).slice(0, 8), 16) % 2147483648 : 0;
+        if (MODE === 'run') saveRunClock();
+      }
+      n += 1;
+      if (MODE !== 'run') return { e: (base + n) * 1e6, rel: '' };
+      // Outside a test (module level, worker fixtures) no wait is added: those values must not depend on real time.
+      const waited = WAIT_Q > 0 && k ? Math.floor((realNow() - firstReal) / WAIT_Q) * WAIT_Q : 0;
+      const v = Math.max(RUN_CLOCK.last + 1, RUN_CLOCK.released * STEP_MS + waited);
+      RUN_CLOCK.last = v;
+      return { e: v * 1e6, rel: '' };
+    });
+  }
+  installWorkerSeeds.reseed = (id) => seeds.reseed(id);
+}
+function maybeReseed() {
+  const key = currentKey();
+  if (key && key !== lastSeeded) {
+    lastSeeded = key;
+    rememberTest();
+    installWorkerSeeds.reseed(testIdOf(key));
+  }
+}
+if (LOCKSTEP) {
+  LS = lockstep.create({
+    seed: SEED, seeded: SHUFFLE, epochMs: EPOCH_MS, dir: DIR,
+    currentTest: () => currentKey(),
+    readable: (k) => testIdOf(k),
+    record: (key, source, op, value) => recNow(key, source, op, value),
+  });
+  LS.navPending = NAV.pending;
+  // Teardown hold (lockstep.js beginTeardown): Playwright calls TestInfo._didFinishTestFunction once the test
+  // function is done, before afterEach hooks and fixture teardown. Hooked on the class, on the first test seen.
+  LS.o.onTest = () => {
+    const ti = testInfo();
+    const proto = ti && Object.getPrototypeOf(ti);
+    if (!proto || proto.__detjsTeardown || typeof proto._didFinishTestFunction !== 'function') return;
+    Object.defineProperty(proto, '__detjsTeardown', { value: true });
+    const orig = proto._didFinishTestFunction;
+    proto._didFinishTestFunction = function _didFinishTestFunction(...a) {
+      try { if (LS) LS.beginTeardown(this.testId); } catch { /* never break the runner */ }
+      return orig.apply(this, a);
+    };
+  };
+  LS.extraWaiting = () => NODE_FETCH.inflight;
+  // With one worker too: test code that seeds rows concurrently (Promise.all of creates) got them in the database's
+  // real-time order (MEASURED locally, documenso seedDocuments: list order by createdAt swapped between replays;
+  // with the gate 19 of 19 tests of the seed-1 group identical in 2 replays). DETJS_LS_DB_GATE=0 turns it off.
+  if (ENV.DETJS_LS_DB_GATE !== '0') {
+    require('../prisma').setGate(async (p, runIt) => {
+      const key = currentKey();
+      if (!key) return runIt();
+      const item = { kind: 'db', test: key, method: String(p.action || '?'), target: String(p.model || '-'), bodyDigest: '-' };
+      NODE_FETCH.inflight++;
+      let done;
+      try { done = await enqueue(item); } catch (e) { NODE_FETCH.inflight--; throw e; }
+      rec(key, 'net', 'db.request', `${item.method} ${item.target}`);
+      try { return await runIt(); } finally { NODE_FETCH.inflight--; done(); }
+    });
+  }
+  patchNodeFetch();
+}
+installWorkerSeeds();
+
+// ------------------------------------------------- Playwright hooks
+const EXECUTABLE = ENV.DETJS_PW_EXECUTABLE || '';
+let SW_NOTED = false;
+
+function patchBrowser(browser) {
+  const proto = Object.getPrototypeOf(browser);
+  if (!proto || proto.__detjsPatched) return;
+  Object.defineProperty(proto, '__detjsPatched', { value: true });
+  const origNewContext = proto.newContext;
+  proto.newContext = async function newContext(...args) {
+    // Lockstep: service workers are blocked (DETJS_LS_SW=allow keeps them). A worker answering the page's requests
+    // (from its cache or with fetches of its own) hides them from the engine's request barrier, and its time is not
+    // the engine's (found on sveltekit's basics app: every settle waited out the 3 s barrier timeout).
+    if (LS && ENV.DETJS_LS_SW !== 'allow' && !(args[0] && args[0].serviceWorkers === 'block')) {
+      if (!SW_NOTED) { SW_NOTED = true; process.stderr.write('detjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n'); }
+      args[0] = { ...(args[0] || {}), serviceWorkers: 'block' };
+    }
+    const ctx = await origNewContext.apply(this, args);
+    await setupContext(ctx);
+    return ctx;
+  };
+}
+
+function patchBrowserType(bt) {
+  const proto = Object.getPrototypeOf(bt);
+  if (!proto || proto.__detjsPatched) return;
+  Object.defineProperty(proto, '__detjsPatched', { value: true });
+  const origLaunch = proto.launch;
+  proto.launch = async function launch(options = {}) {
+    let opts = EXECUTABLE && this.name() === 'chromium' ? { ...options, executablePath: EXECUTABLE } : options;
+    // Lockstep frames need the headless shell (HeadlessExperimental.beginFrame). A project that launches a full browser
+    // (channel 'chrome' / 'chromium', or headed) would get --deterministic-mode without any way to issue frames: no
+    // rAF and no input ever (found on sveltekit: channel 'chrome', every hover hung). Such launches run on the headless
+    // shell of the same Playwright instead (a recorded deviation from the project's browser).
+    // (The test runner passes its options as the client's default launch options, merged under these.)
+    const eff = { ...((this._playwright && this._playwright._defaultLaunchOptions) || {}), ...opts };
+    if (LS && this.name() === 'chromium' && ENV.DETJS_LS_FRAMES !== '0' && !eff.executablePath && (eff.channel || eff.headless === false)) {
+      process.stderr.write(`detjs: lockstep runs ${eff.channel ? `channel '${eff.channel}'` : 'a headed browser'} on Playwright's chromium headless shell (engine-issued frames)\n`);
+      opts = { ...opts, channel: undefined, headless: true };
+    }
+    // Lockstep: animation frames only when the engine issues them (headless shell; ignored by other builds).
+    if (LS && this.name() === 'chromium' && ENV.DETJS_LS_FRAMES !== '0') opts = { ...opts, args: [...(opts.args || []), '--deterministic-mode',
+      // Documents the engine fulfils have no network address: without this Chromium treats them as public and blocks
+      // their requests to localhost (WebSocket: ERR_BLOCKED_BY_LOCAL_NETWORK_ACCESS_CHECKS, found on uptime-kuma).
+      // Script compilation off the main thread finishes in real time and would let a script start in an earlier or
+      // later time slice: compile on the main thread (V8 single-threaded, no script streaming).
+      ...(ENV.DETJS_LS_V8_SINGLE === '1' ? ['--js-flags=--single-threaded'] : []), // off by default: it crashes WebAssembly-heavy apps (actual)
+      '--disable-features=LocalNetworkAccessChecks,BlockInsecurePrivateNetworkRequests,PrivateNetworkAccessSendPreflights,ScriptStreaming,ScriptStreamingForNonHTTP,ScriptStreamingForInlineScripts,OffMainThreadCSSPaintImageGeneration'] };
+    // A runner under libfaketime (documenso harness: native code such as Prisma's query engine on the engine clock)
+    // does not hand the preload to the browser: Chromium keeps the machine's clocks (its time is virtual anyway).
+    if (process.env.LD_PRELOAD && /faketime/.test(process.env.LD_PRELOAD)) {
+      const env = { ...(opts.env || process.env) };
+      env.LD_PRELOAD = String(env.LD_PRELOAD || '').split(/[: ]/).filter((x) => x && !/faketime/.test(x)).join(':');
+      if (!env.LD_PRELOAD) delete env.LD_PRELOAD;
+      for (const k of Object.keys(env)) if (k.startsWith('FAKETIME')) delete env[k];
+      opts = { ...opts, env };
+    }
+    const browser = await origLaunch.call(this, opts);
+    patchBrowser(browser);
+    return browser;
+  };
+  for (const m of ['connect', 'connectOverCDP']) {
+    const orig = proto[m];
+    if (typeof orig !== 'function') continue;
+    proto[m] = async function (...args) {
+      const browser = await orig.apply(this, args);
+      patchBrowser(browser);
+      return browser;
+    };
+  }
+  const origPersistent = proto.launchPersistentContext;
+  if (typeof origPersistent === 'function') {
+    proto.launchPersistentContext = async function (...args) {
+      const ctx = await origPersistent.apply(this, args);
+      await setupContext(ctx);
+      return ctx;
+    };
+  }
+}
+
+let corePatched = false;
+if (LS) require('../prisma').install({ monotonic: true }); // seeding code's @default(now()) / @updatedAt on the runner clock, one ms per write
+const origLoad = Module._load;
+Module._load = function load(request, parent, isMain) {
+  const exp = origLoad.apply(this, arguments);
+  if (LOCKSTEP) lockstep.onModuleLoaded(exp);
+  try {
+    if (!PW_TEST && exp && exp.test && typeof exp.test.info === 'function' && /playwright/.test(request)) PW_TEST = exp;
+    if (!corePatched && exp && exp.chromium && typeof exp.chromium.launch === 'function' && /playwright/.test(request)) {
+      corePatched = true;
+      patchBrowserType(exp.chromium);
+      // The `request` fixture is an APIRequestContext of its own (no browser context): tests that only
+      // call the API were neither ordered nor fingerprinted in round 1.
+      if (exp.request && typeof exp.request.newContext === 'function' && !exp.request.__detjsPatched) {
+        const origNew = exp.request.newContext;
+        exp.request.newContext = async function newContext(...args) {
+          const rc = await origNew.apply(this, args);
+          if (NET) patchApiRequest(rc);
+          return rc;
+        };
+        Object.defineProperty(exp.request, '__detjsPatched', { value: true });
+      }
+    }
+  } catch { /* never break module loading */ }
+  return exp;
+};
+
+module.exports = { setupContext, flush, _queue: QUEUE };

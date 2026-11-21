@@ -1,0 +1,113 @@
+{
+ "name": "sveltekit",
+ "job": "hunt",
+ "repo": "sveltejs/kit",
+ "ref": "7a1296872cde5e807832f7714c635df956d37643",
+ "status": "running",
+ "run_id": "44783946608",
+ "engine_commit": "ea649fcb86a3fb8533b97a6a82d5b3b20ff42cc6",
+ "setup_s": 58,
+ "params": {
+  "plain": 20,
+  "stress": 10,
+  "base": 0,
+  "det": 0,
+  "freeze": 0,
+  "freeze_control": 0,
+  "budget_min": 340,
+  "run_timeout_min": 45,
+  "target_timeout_min": 8,
+  "seeds": 8,
+  "replays": 10,
+  "per_run_s": 900
+ },
+ "pw_dir": "packages/kit/test/apps/basics",
+ "pw_args": [
+  "test/playwright"
+ ],
+ "runs": [],
+ "epoch": "2026-11-20T17:35:00Z",
+ "measured_at": "2026-11-20T17:35:39Z",
+ "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
+ "hunt": {
+  "seeds": 8,
+  "replays": 10,
+  "targets": [
+   {
+    "key": "client.test.js::INP::does not block next paint [chromium-dev]",
+    "real": "Error: expect(received).toBeLessThan(expected)",
+    "step": null,
+    "mechanism": "latency",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]",
+    "real": "Error: expect(received).toEqual(expected) // deep equality",
+    "step": null,
+    "mechanism": "latency",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]",
+    "real": "Error: expect(received).toBe(expected) // Object.is equality",
+    "step": null,
+    "mechanism": "latency",
+    "tried": [
+     [
+      1,
+      "missing",
+      "",
+      null
+     ],
+     [
+      2,
+      "missing",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   }
+  ]
+ }
+}

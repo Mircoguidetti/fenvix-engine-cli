@@ -58,8 +58,9 @@ const REAL = {
 const realNowMs = () => REAL.perfNow();
 
 class VirtualClock {
-  constructor(epochNs, tickNs, adaptAfter) {
+  constructor(epochNs, tickNs, adaptAfter, wallReset = true) {
     this.epochMs = Number(epochNs / 1000000n);
+    this.wallReset = wallReset; // false for long-lived app servers (Level 2 browser): one wall clock for the run
     this.baseTick = tickNs;
     this.tick = tickNs;
     this.adaptAfter = adaptAfter;
@@ -102,7 +103,7 @@ class VirtualClock {
   }
 
   wallMs(e) {
-    return this.epochMs + (e - this.testStart) / NS_PER_MS;
+    return this.epochMs + (e - (this.wallReset ? this.testStart : 0)) / NS_PER_MS;
   }
 
   rel(e) {
@@ -119,8 +120,20 @@ function callerIsInfra() {
 }
 
 // Clock reads ------------------------------------------------------------------
+// Level 2 app servers scope clock values to the message being handled (pw/server.js): the hook
+// returns { e: elapsed ns, rel: recorded value } or null for the default single counter.
+let VALUE_HOOK = null;
+function setValueHook(f) { VALUE_HOOK = f; }
+
 let onRead = null; // set by src/fstime.js: the virtual clock advanced (real -> virtual checkpoints)
 function readFor(op) {
+  if (VALUE_HOOK) {
+    const r = VALUE_HOOK(op);
+    if (r) {
+      STATE.record('time', op, r.rel);
+      return r.e;
+    }
+  }
   concur.sync(); // a concurrent test reads its own clock
   const e = CLOCK.read();
   STATE.record('time', op, CLOCK.rel(e));
@@ -281,9 +294,19 @@ hrtime.bigint = function bigint() {
 let nextId = 1;
 const BY_ID = new Map();
 
+// Lockstep (round 4, Level 2 app servers): every timer of the process is virtual, also outside test brackets;
+// before the engine attaches they fire at their real deadlines (server start-up); once attached they fire only
+// when the engine clock reaches them (Driver.fireDue), at T + delay.
+const LOCK = { on: false, attached: false, parked: false, now: () => 0, runIn: null };
+function setLockstep(o) { Object.assign(LOCK, o); }
+
+let TIMER_CTX_HOOK = null; // Level 2 servers: the message context a timer was created in (pw/server.js)
+function setTimerContextHook(f) { TIMER_CTX_HOOK = f; }
+
 class Timeout {
   constructor(fn, args, delayMs, repeat, site, realm) {
     this._realm = realm;
+    this._mctx = TIMER_CTX_HOOK ? TIMER_CTX_HOOK() : null;
     this._test = STATE.testId;
     this._ctx = concur.store(); // a concurrent test's timer fires in its context (src/concur.js)
     this._handle = null; // realm timer once the timer was released to real time
@@ -427,7 +450,7 @@ class Driver {
   }
 
   schedule(t) {
-    t._due = CLOCK.elapsed + t._delayMs * NS_PER_MS;
+    t._due = LOCK.attached ? Math.ceil((LOCK.now() + t._delayMs * NS_PER_MS) / NS_PER_MS - 1e-6) * NS_PER_MS : CLOCK.elapsed + t._delayMs * NS_PER_MS;
     t._seq = this.seq++;
     t._realDeadline = realNowMs() + t._delayMs;
     t._graced = false;
@@ -484,6 +507,7 @@ class Driver {
       if (a.kind === 'immediate') REAL.clearImmediate(a.handle); else REAL.clearTimeout(a.handle);
     }
     if (!this.queue.length) return;
+    if (LOCK.attached || LOCK.parked) return; // fired by fireDue only (parked: frozen until the engine attaches)
     const anyRef = this.queue.some((t) => t._ref);
     if (this.fast()) {
       const h = REAL.setImmediate(() => this.fire(true));
@@ -586,10 +610,56 @@ class Driver {
   runTimer(t) {
     CLOCK.advanceTo(t._due);
     CLOCK.otherEvent();
-    STATE.recordAt('time', t._repeat ? 'setInterval' : 'setTimeout', t._site, `fire:${CLOCK.rel(t._due)}`);
+    // With scoped values (Level 2 servers) the global counter is not part of the fingerprint: the delay is.
+    STATE.recordAt('time', t._repeat ? 'setInterval' : 'setTimeout', t._site, VALUE_HOOK ? `fire+${t._delayMs * NS_PER_MS}` : `fire:${CLOCK.rel(t._due)}`);
     if (!t._repeat) BY_ID.delete(t.id); // intervals are rescheduled after the callback
     if (onRead !== null) onRead(CLOCK.elapsed);
     t._fn.apply(undefined, t._args);
+  }
+
+  /** Lockstep: the engine attached at T = tNs; pending timers restart from there (their full delay). */
+  attachAt(tNs) {
+    LOCK.attached = true;
+    this.rearm(); // cancels the real arming
+    const q = this.queue.slice().sort((a, b) => a._seq - b._seq);
+    for (const t of q) t._due = tNs + t._delayMs * NS_PER_MS;
+    this.queue = q.sort((a, b) => (a._due - b._due) || (a._seq - b._seq));
+  }
+
+  /** Lockstep: earliest due instant, or null. */
+  nextDue() {
+    return this.queue.length ? this.queue[0]._due : null;
+  }
+
+  /** Lockstep: fire every timer due at or before tNs, in (due, creation) order, one per macrotask. */
+  async fireDue(tNs) {
+    let n = 0;
+    while (this.queue.length && this.queue[0]._due <= tNs) {
+      const t = this.queue.shift();
+      t._active = false;
+      n++;
+      CLOCK.advanceTo(t._due);
+      STATE.recordAt('time', t._repeat ? 'setInterval' : 'setTimeout', t._site, `fire+${t._delayMs * NS_PER_MS}`);
+      if (!t._repeat) BY_ID.delete(t.id);
+      const call = () => t._fn.apply(undefined, t._args);
+      try {
+        if (LOCK.runIn && t._mctx) LOCK.runIn(t._mctx, call); else call();
+      } catch (e) {
+        REAL.setImmediate(() => { throw e; });
+      } finally {
+        if (t._repeat && !t._destroyed && !t._active) {
+          t._seq = this.seq++;
+          t._due += t._delayMs * NS_PER_MS;
+          t._active = true;
+          const q = this.queue;
+          let i = 0;
+          while (i < q.length && (q[i]._due < t._due || (q[i]._due === t._due && q[i]._seq < t._seq))) i++;
+          q.splice(i, 0, t);
+        }
+      }
+      await new Promise((r) => REAL.setImmediate(r));
+    }
+    return n;
   }
 
   /**
@@ -600,6 +670,7 @@ class Driver {
    */
   releaseTest(testId) {
     for (const d of [...this.deadlines]) if (d._test === testId) this.clear(d); // a runner leaves none behind
+    if (LOCK.on) return 0; // lockstep: server timers stay on the engine clock across tests
     const leaked = this.queue.filter((t) => t._test === testId);
     if (!leaked.length) return 0;
     this.queue = this.queue.filter((t) => t._test !== testId);
@@ -678,7 +749,7 @@ function makeSetTimeout(repeat, R) {
   const real = repeat ? R.setInterval : R.setTimeout;
   return function (fn, ms, ...args) {
     // Outside tests (module level, beforeAll, teardown) timers stay the realm's own.
-    if (typeof fn !== 'function' || STATE.testId === null) return real(fn, ms, ...args);
+    if (typeof fn !== 'function' || (STATE.testId === null && !LOCK.on)) return real(fn, ms, ...args);
     let site = '';
     if (STATE.config.sites) {
       site = STATE.quiet(() => sites.resolve());
@@ -820,7 +891,7 @@ function wrapPerformance(hostPerf) {
 /** Process-wide installation (once per process). */
 function installProcess(patcher, cfg) {
   if (!CLOCK) {
-    CLOCK = new VirtualClock(cfg.epochNs, cfg.tickNs, cfg.tickAdapt);
+    CLOCK = new VirtualClock(cfg.epochNs, cfg.tickNs, cfg.tickAdapt, cfg.wallReset !== false);
     if (cfg.tickAdapt) STATE.onOtherEvent = () => CLOCK.otherEvent();
     DRIVER.budget = cfg.timerBudget;
     DRIVER.mode = cfg.timers;
@@ -949,7 +1020,7 @@ function installRealm(patcher, g, cfg, { sameRealm }) {
 
 module.exports = {
   virtualNowMs, virtualNowNs,
-  REAL, VirtualClock, installProcess, installRealm, TIMERS, DRIVER, Timeout, startFile, fakeNow, normDelay, realNowMs,
+  REAL, VirtualClock, installProcess, installRealm, TIMERS, DRIVER, Timeout, startFile, fakeNow, normDelay, realNowMs, setValueHook, setTimerContextHook, setLockstep, LOCK,
   get CLOCK() { return CLOCK; },
   setOnRead(f) { onRead = f; },
   setFreshIO(f) { freshIO = f; },
