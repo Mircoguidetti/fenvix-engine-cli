@@ -118,7 +118,7 @@ function relText(v) {
   return d >= 0 ? `+${d}` : String(d);
 }
 
-const REALDEP_QUIET = process.env.DETJS_FS_REALDEP_RECORD === '0';
+const REALDEP_QUIET = process.env.DETJS_LEVEL2 === '1';
 
 function siteOrNull() {
   if (!STATE.config || !STATE.config.sites) return '';
@@ -156,7 +156,7 @@ function mappedValue(st, e, k) {
   }
   if (!e.seen.has(k)) {
     e.seen.add(k);
-    // Level 2 browser runs (DETJS_FS_REALDEP_RECORD=0, set by `detjs playwright` / `detjs serve`): a time whose
+    // Level 2 browser runs (DETJS_LEVEL2=1, set by `detjs playwright` / `detjs serve`): a time whose
     // mapped value depends on when the run happens (a file's real age) is not an event there; the app servers start
     // in real time after a setup whose duration varies (MEASURED, gate run 44904997963: uptime-kuma's glob of
     // server/model gave 10 fingerprints in 10 runs). It is still a real-clock input for the cache.

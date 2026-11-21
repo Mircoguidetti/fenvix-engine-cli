@@ -25,6 +25,11 @@ const sched = require('./sched');
 const concur = require('./concur');
 
 const HOLD_MAX_MS = 200;
+// Level 2 browser runs (DETJS_LEVEL2=1): completion order is delivered as Level 1 does, but not recorded. In app
+// servers the operation index counts the server's own real-time background work (Vite's watcher and dependency
+// scans), so the same completion got another number in every replay (MEASURED, gate run 44909741100: sveltekit
+// io.complete fs.readFile#28 vs fs.stat#231). The responses the operations feed are recorded by the lockstep.
+const L2_QUIET = process.env.DETJS_LEVEL2 === '1';
 let clock = null; // src/clock.js (set at installation)
 let REAL_SET_IMMEDIATE = setImmediate;
 let REAL_SET_TIMEOUT = setTimeout;
@@ -127,7 +132,7 @@ function begin(kind) {
     op.overlapped = true;
     if (!marked) {
       marked = true;
-      STATE.recordAt('other', 'uncontrolled.io', site, 'concurrent I/O');
+      if (!L2_QUIET) STATE.recordAt('other', 'uncontrolled.io', site, 'concurrent I/O');
     }
   }
   pending.add(op);
@@ -138,7 +143,7 @@ function end(op) {
   if (!op || op.done) return;
   op.done = true;
   pending.delete(op);
-  if (op.overlapped && STATE.testId === op.test) STATE.recordAt('other', 'io.complete', op.site, `${op.kind}#${op.n}`);
+  if (op.overlapped && STATE.testId === op.test) !L2_QUIET && STATE.recordAt('other', 'io.complete', op.site, `${op.kind}#${op.n}`);
   progressed(op, op.kind);
 }
 
@@ -271,7 +276,7 @@ function installProcess(patcher) {
         if (first && chunk !== null && chunk !== undefined) {
           first = false;
           op.data = true;
-          if (op.overlapped && STATE.testId === op.test) STATE.recordAt('other', 'io.complete', op.site, `net#${op.n}:data`);
+          if (op.overlapped && STATE.testId === op.test) !L2_QUIET && STATE.recordAt('other', 'io.complete', op.site, `net#${op.n}:data`);
           progressed(op, 'net:data');
         }
         return origPush.call(this, chunk, enc);

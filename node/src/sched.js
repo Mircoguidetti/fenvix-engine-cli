@@ -224,15 +224,21 @@ function startTest() { siteCounters = new Map(); }
 // per-test state of a concurrent test (src/concur.js)
 require('./concur').register({ name: 'sched', save: () => siteCounters, restore: (x) => { siteCounters = x; } });
 
+// Level 2 browser runs (DETJS_LEVEL2=1): these Level 1 decisions are not events. In app servers the "test" is a
+// lockstep message scope and the server's background work runs in real time (MEASURED, gate run 44909741100:
+// sveltekit's Vite dev server, sched.io fs.realpath#2 vs fs.stat#91); the lockstep records its own decisions.
+const L2_QUIET = process.env.DETJS_LEVEL2 === '1';
+
 /** A virtual timer was chosen while `n` operations of the test were still pending. */
 function timerChosen(site, n) {
-  STATE.recordAt('sched', 'sched.timer', site || '', `0/${1 + n}:${stableId(site)}`);
+  if (!L2_QUIET) STATE.recordAt('sched', 'sched.timer', site || '', `0/${1 + n}:${stableId(site)}`);
   // real time decided the order: the test's result is not reusable (src/cache/capture.js)
   if (STATE.onRealClock) STATE.onRealClock('a virtual timer fired while I/O of the test was pending (real time decided the order)');
 }
 
 /** An operation of the test completed while `n` virtual timers of the test were waiting. */
 function ioChosen(site, kind, n) {
+  if (L2_QUIET) return;
   STATE.recordAt('sched', 'sched.io', site || '', `0/${1 + n}:${stableId(site)}|${kind}`);
 }
 
