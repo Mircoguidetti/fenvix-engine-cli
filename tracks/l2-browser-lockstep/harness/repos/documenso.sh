@@ -51,3 +51,16 @@ reset() {  # before every run: the database must be up (a dead one is restarted 
     wait_cmd 90 docker exec database pg_isready -U documenso || true
   fi
 }
+
+# Local mode (L2_LOCAL=1, a session's container without Docker): the checkout is already installed, built, migrated
+# and seeded, and Postgres runs natively on 54320 under libfaketime with its clock file at L2_DBCLOCK_FILE (set by the
+# caller). setup() only writes the state spec; reset() checks the native database.
+if [ "${L2_LOCAL:-0}" = 1 ]; then
+  setup() {
+    echo '{"postgres": ["postgres://documenso:password@127.0.0.1:54320/documenso"]}' > detjs-state.json
+    persist L2_DBCLOCK_FILE "${L2_DBCLOCK_FILE:?L2_DBCLOCK_FILE}"
+  }
+  reset() {
+    pg_isready -h 127.0.0.1 -p 54320 >/dev/null 2>&1 || echo "detjs-harness: native database down before run" >&2
+  }
+fi

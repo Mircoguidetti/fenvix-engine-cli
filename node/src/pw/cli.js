@@ -109,7 +109,17 @@ function writeWrapper(configFile) {
   return out;
 }
 
+// The Level 0 shell (src/playwright/cli.js: test code only, browser and servers not controlled) serves the repro
+// driver's interface (`fenvix repro --runner=playwright`: --det-order, --det-outcomes, --det-collect) and an explicit
+// --det-level=0; every other --det run is Level 2.
+const LEVEL0_FLAGS = /^--det-(?:order|order-seed|outcomes|collect)(?:=|$)/;
+function wantsLevel0(argv) {
+  return argv.some((a) => a === '--det-level=0' || LEVEL0_FLAGS.test(a));
+}
+
 async function main(argv) {
+  if (wantsLevel0(argv)) return require('../playwright/cli').main(argv.filter((a) => a !== '--det-level=0'));
+  argv = argv.filter((a) => a !== '--det-level=2');
   const { env: pwEnv, rest: afterPw } = splitPwFlags(argv);
   const { opts, rest } = session.parseArgs(afterPw);
   const cwd = process.cwd();
