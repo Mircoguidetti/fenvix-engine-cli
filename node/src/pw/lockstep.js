@@ -304,11 +304,10 @@ class Coordinator {
     // passed (MEASURED locally: the next test started 20 ms later in one of two replays, so every row it created
     // carried another timestamp). Time still moves for what the teardown's test code waits on (a sleep, a message);
     // a hold without any runner activity for DETJS_LS_TEARDOWN_HOLD_MS real ms is given up (recorded).
-    // The hold is opt-in (DETJS_LS_TEARDOWN=1): it settled the pages every 10 ms of real time while it waited, and a
-    // settle pumps page frames, so a final DOM captured mid-animation depended on real time (MEASURED, gate run
-    // 44783946608: actual "[Tracking] applies budget template" gave 6 fingerprints in 10 runs). Test start alignment
-    // replaces it by default.
-    this.teardownHold = ENV.DETJS_LS_TEARDOWN === '1';
+    // Without the hold, documenso's context teardown on GitHub Actions advanced T to the 60 s test deadline in every
+    // run (MEASURED, gate runs 44904997963 and 44909741100: 'Tearing down "context" exceeded the test timeout', 0 of
+    // 10 passed; plain 2 of 2 passed). DETJS_LS_TEARDOWN=0 turns it off. Test start alignment (below) is on as well.
+    this.teardownHold = ENV.DETJS_LS_TEARDOWN !== '0';
     // Test start alignment: the next test starts at T(end of the previous test function) + DETJS_LS_TEST_GAP_MS
     // (default 3000) of engine time, whatever the teardown in between did (its runner calls still advance T in
     // ACTION-ms steps, a number that depends on real time). A teardown that runs past the gap is recorded as a stall
@@ -1285,9 +1284,16 @@ class Coordinator {
         continue;
       }
       if (this.holdTime(key, rs)) {
-        // Teardown: the runner's calls run without engine time (see beginTeardown).
+        // Teardown: the runner's calls run without engine time (see beginTeardown). The wait does not go back
+        // through settle() until something happens: a settle pumps the pages' frames, and doing it every 10 ms of real
+        // time captured an animation at a real-time dependent point (MEASURED, gate run 44783946608: actual
+        // "[Tracking] applies budget template", 6 fingerprints in 10 runs).
         if (ENV.DETJS_LS_TRACE_ALL) this.trace(`hold ${rs.state}/${rs.why}`);
-        await new Promise((r) => { this.wake = r; REAL.setTimeout(r, 10); });
+        const a0 = ACT.n;
+        do {
+          await new Promise((r) => { this.wake = r; REAL.setTimeout(r, 10); });
+        } while (ACT.n === a0 && this.clock.sync() === key && !this.admits.length && !this.responses.length
+          && this.sched.pending() === 0 && this.holdTime(key, this.runnerState()));
         continue;
       }
       if (rs.stall) { this.stats.stalls++; this.decision(key, 'ls.stall', rs.why.split(':')[0]); }
