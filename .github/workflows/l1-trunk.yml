@@ -52,7 +52,10 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     strategy:
-      fail-fast: false
+      # GATE. The engine's own suite is the regression gate for this work, and a red gate ends the run (founder
+      # rule, "Red CI stops everything at once"): there is nothing to learn from the other versions once one of
+      # them says the port broke something.
+      fail-fast: true
       matrix:
         python: ["3.12", "3.13", "3.14"]
     steps:
@@ -70,6 +73,9 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     strategy:
+      # MEASUREMENT (the stated exception to the gate rule): what a probe does on 3.14 is evidence even when
+      # 3.12 is red, and these checks report INCONCLUSIVE rather than passing or failing on a host where the
+      # race does not occur.
       fail-fast: false
       matrix:
         python: ["3.12", "3.13", "3.14"]
@@ -91,6 +97,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 240
     strategy:
+      # MEASUREMENT (the stated exception): these produce the two numbers the row is judged on, over hours. One
+      # suite failing must not throw away the others, and a later push must not cancel them (see concurrency).
       fail-fast: false
       max-parallel: 6
       matrix:
