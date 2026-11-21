@@ -285,7 +285,18 @@ def _gethostbyname_ex(host):
 def _append(sock, direction, data) -> None:
     entry = _conns.get(sock)
     if entry is not None and data:
+        nodeid = _state.STATE.nodeid
+        if direction == "send" and isinstance(nodeid, str) and isinstance(entry[0], str) and nodeid != entry[0]:
+            # a connection kept alive from an earlier test: this test's exchange, recorded under this test
+            entry = _conns[sock] = (nodeid, POLICY.cassette.continue_in(entry[0], entry[1], nodeid))
         POLICY.cassette.append(entry[0], entry[1], direction, bytes(data))
+
+
+def _eof(sock) -> None:
+    """The server closed the connection: its replay ends with end of file too."""
+    entry = _conns.get(sock)
+    if entry is not None:
+        POLICY.cassette.set_closed(entry[0], entry[1])
 
 
 def _rec_send(self, data, flags=0):
@@ -302,12 +313,16 @@ def _rec_sendall(self, data, flags=0):
 
 def _rec_recv(self, bufsize, flags=0):
     data = _real_recv(self, bufsize, flags)
+    if data == b"":
+        _eof(self)
     _append(self, "recv", data)
     return data
 
 
 def _rec_recv_into(self, buffer, nbytes=0, flags=0):
     n = _real_recv_into(self, buffer, nbytes, flags)
+    if n == 0:
+        _eof(self)
     _append(self, "recv", memoryview(buffer)[:n])
     return n
 
@@ -326,6 +341,8 @@ def _rec_ssl_write(self, data):
 
 def _rec_ssl_read(self, len=1024, buffer=None):
     r = _real_ssl_read(self, len, buffer)
+    if r == b"" or r == 0:
+        _eof(self)
     if buffer is not None:
         _append(self, "recv", memoryview(buffer)[:r])
     else:
@@ -400,19 +417,50 @@ def _recv_upto(peer, n: int) -> bytes:
     return bytes(buf)
 
 
-def _serve(peer, segments, label, mismatches) -> None:
+def _play(peer, segments, label, mismatches) -> bool:
+    for direction, data in segments:
+        if direction == "send":
+            got = _recv_upto(peer, len(data))
+            # secret header values are compared masked (a cassette stores them masked: audit G-0167)
+            if _core.net_redact(got) != _core.net_redact(data):
+                mismatches.append((label, len(data), len(got), _core.digest(data), _core.digest(got)))
+                # the test sent another request than the recorded one: the recorded answer is not served
+                # (audit G-0166: a stale cassette answered requests it never saw); the test reads end of file
+                return False
+        else:
+            peer.sendall(data)
+    return True
+
+
+def _next_replay(host, port):
+    """The running test's next recorded connection to host:port, counted as a connect: (label, segments, keep)."""
+    nodeid = _state.STATE.nodeid
+    key = (host, port)
+    nth = POLICY.counters.get(key, 0)
+    idx = POLICY.cassette.find(nodeid, host, port, nth) if isinstance(nodeid, str) else None
+    if idx is None:
+        return None
+    POLICY.counters[key] = nth + 1
+    return f"{host}:{port}#{idx}", POLICY.cassette.segments(nodeid, idx), POLICY.cassette.keeps_open(nodeid, idx)
+
+
+def _serve(peer, segments, label, mismatches, keep=False) -> None:
     try:
-        for direction, data in segments:
-            if direction == "send":
-                got = _recv_upto(peer, len(data))
-                # secret header values are compared masked (a cassette stores them masked: audit G-0167)
-                if _core.net_redact(got) != _core.net_redact(data):
-                    mismatches.append((label, len(data), len(got), _core.digest(data), _core.digest(got)))
-                    # the test sent another request than the recorded one: the recorded answer is not served
-                    # (audit G-0166: a stale cassette answered requests it never saw); the test reads end of file
+        ok = _play(peer, segments, label, mismatches)
+        # kept open (keep-alive, or a later test went on with it): the next request is the sending test's
+        while ok and keep:
+            peer.settimeout(None)
+            try:
+                if not peer.recv(1, socket.MSG_PEEK):
                     break
-            else:
-                peer.sendall(data)
+            except OSError:
+                break
+            host, port = label.rsplit("#", 1)[0].rsplit(":", 1)
+            nxt = _next_replay(host, int(port))
+            if nxt is None:
+                break
+            label, segments, keep = nxt
+            ok = _play(peer, segments, label, mismatches)
         try:
             peer.shutdown(socket.SHUT_WR)
         except OSError:
@@ -442,7 +490,8 @@ def _start_replay(sock, host: str, port: int) -> bool:
     sock.settimeout(timeout)
     label = f"{host}:{port}#{idx}"
     _replays[sock] = label
-    threading.Thread(target=_serve, args=(peer, segments, label, POLICY.mismatches), daemon=True,
+    keep = POLICY.cassette.keeps_open(nodeid, idx)
+    threading.Thread(target=_serve, args=(peer, segments, label, POLICY.mismatches, keep), daemon=True,
                      name=f"detpy-replay-{label}").start()
     _state.record("net", "socket.connect", f"{host}:{port} replay#{idx}", depth=3)
     return True

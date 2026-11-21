@@ -1,0 +1,92 @@
+{
+ "name": "idoft-coinbase-commerce-python",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "fenvix",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+  "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+  "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+  "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+  "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping",
+  "tests/test_api_client.py::TestApiClient::test_authentication_error",
+  "tests/test_api_client.py::TestApiClient::test_invalid_request_error",
+  "tests/test_api_client.py::TestApiClient::test_resource_not_found_error"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000012266",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "seeds_log": [],
+ "explore_exit": 1,
+ "explore_printed": "",
+ "bundles": [
+  {
+   "test": "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_api_client.py::TestApiClient::test_authentication_error",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_api_client.py::TestApiClient::test_invalid_request_error",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_api_client.py::TestApiClient::test_resource_not_found_error",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  }
+ ],
+ "seconds": 2.63
+}

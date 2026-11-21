@@ -179,6 +179,10 @@ pub fn test_key(test_id: &str, project: &str) -> String {
     if project.is_empty() {
         return test_id.to_string();
     }
+    // already qualified: a Vitest test of a named project carries its project in its id (src/vitest/shell.js)
+    if test_id.split("::").next().is_some_and(|head| head.contains("@@")) {
+        return test_id.to_string();
+    }
     match test_id.find("::") {
         None => format!("{test_id}@@{project}"),
         Some(i) => format!("{}@@{project}{}", &test_id[..i], &test_id[i..]),
@@ -610,6 +614,7 @@ mod tests {
         assert_eq!(test_key("a.test.js::x", "p"), "a.test.js@@p::x");
         assert_eq!(test_key("a.test.js", "p"), "a.test.js@@p");
         assert_eq!(test_key("a.test.js::x", ""), "a.test.js::x");
+        assert_eq!(test_key("a.test.js@@p::x", "p"), "a.test.js@@p::x");
         assert_eq!(id_of("a.test.js", "p"), "a.test.js@@p");
     }
 

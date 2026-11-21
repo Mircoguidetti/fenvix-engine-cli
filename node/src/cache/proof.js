@@ -501,6 +501,7 @@ class ProofSession {
   testKey(testId, project) {
     if (!project) return testId;
     const i = testId.indexOf('::');
+    if ((i < 0 ? testId : testId.slice(0, i)).includes('@@')) return testId; // already qualified (Vitest projects)
     return i < 0 ? `${testId}@@${project}` : `${testId.slice(0, i)}@@${project}${testId.slice(i)}`;
   }
 

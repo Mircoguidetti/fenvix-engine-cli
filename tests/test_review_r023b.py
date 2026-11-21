@@ -58,6 +58,20 @@ def reused(c):
     return set(c.get("reused_ids", ()))
 
 
+def _entropy_controlled_by_default_and_observed_on_request(pytester, n):
+    """Default (controlled): the draw is seeded per test, so the proof holds and the test is reused. Opt-out
+    (--det-entropy=observe): the draw is real OS entropy, observed, and the test is never reused."""
+    for label in ("s1", "s2"):
+        cache_run(pytester, n, label, "tests")[0].assert_outcomes(passed=2)
+    r, c = cache_run(pytester, n, "s3", "tests")
+    assert "tests/test_rand.py::test_draw" in reused(c), "controlled OS entropy (the default) was not reused"
+    obs = f"{pytester.path / '.c'}-observed"
+    for label in ("o1", "o2"):
+        cache_run(pytester, n, label, "--det-entropy=observe", f"--det-cache={obs}", "tests")[0].assert_outcomes(passed=2)
+    r, c = cache_run(pytester, n, "o3", "--det-entropy=observe", f"--det-cache={obs}", "tests")
+    assert "tests/test_rand.py::test_draw" not in reused(c), "a test that drew observed OS entropy was reused"
+
+
 def three_sessions(pytester, n, change, nid, *args, truth_outcomes, record_outcomes):
     """Record (two sessions, so the entry exists whatever the first session dropped), apply ``change``, then a
     fresh run (the truth) and a cache run. The cache run must give the truth's outcomes and must not reuse ``nid``."""
@@ -762,7 +776,9 @@ def test_2d_variable_set_by_a_worker_only_hook_from_a_recorded_file(pytester, tm
 @pytest.mark.parametrize("n", NS)
 def test_2e_os_getrandom_is_entropy(pytester, n):
     """os.getrandom (getrandom(2), the same kernel pool as os.urandom) is neither controlled nor observed: a test
-    that draws from it is cached without --det-urandom, which the design forbids for OS entropy."""
+    that draws from it is cached without --det-urandom, which the design forbids for OS entropy. Since 2026-11-21
+    (coordinator decision, the frozen exam's F-01.random.pinned) OS entropy is controlled by default: the draw is
+    seeded per test and the test may be reused; with --det-entropy=observe it is real and never reused."""
     write(pytester, **{
         "tests/test_rand.py": """
             import os
@@ -770,10 +786,7 @@ def test_2e_os_getrandom_is_entropy(pytester, n):
             def test_other(): pass
             """,
     })
-    for label in ("s1", "s2"):
-        cache_run(pytester, n, label, "tests")[0].assert_outcomes(passed=2)
-    r, c = cache_run(pytester, n, "s3", "tests")
-    assert "tests/test_rand.py::test_draw" not in reused(c), "a test that drew OS entropy was reused"
+    _entropy_controlled_by_default_and_observed_on_request(pytester, n)
 
 
 @needs_cache
@@ -787,10 +800,7 @@ def test_2e_ssl_rand_bytes_is_entropy(pytester, n):
             def test_other(): pass
             """,
     })
-    for label in ("s1", "s2"):
-        cache_run(pytester, n, label, "tests")[0].assert_outcomes(passed=2)
-    r, c = cache_run(pytester, n, "s3", "tests")
-    assert "tests/test_rand.py::test_draw" not in reused(c), "a test that drew OS entropy was reused"
+    _entropy_controlled_by_default_and_observed_on_request(pytester, n)
 
 
 @needs_cache

@@ -35,7 +35,7 @@ A run that crashed has no footer (the verifier marks it `(partial)`).
 | `tz` | the pinned zone (`UTC (pinned)`), or the machine's when `--det-tz=keep` |
 | `locale` | the pinned locale, or the machine's when `--det-locale=keep` |
 | `env` | whether environment reads are recorded |
-| `env:NAME` | one per environment variable: a digest of `NAME=value` (never the value) |
+| `env:NAME` | one per environment variable, CI-volatile ones excepted (docs/CLI.md): a digest of `NAME=value` (never the value) |
 | `network` | mode (block, record, replay), allowed hosts, cassette digest |
 | `fs`, `urandom`, `bytecode`, `aslr`, `order` | the state of those controls. `bytecode` ends with `test modules rewritten from source in this run (cold rewrite cache: N)` when a run compiled test modules from source and did not find them in the cache (a run started without the re-exec, a module outside the project's test files): such a run can lay out memory differently from a later one, so it is never identical to it. The process that starts a `--det` run writes the rewritten test modules into the cache before the re-exec (nothing is imported), so a first run after a checkout or an edit is laid out like every later run |
 
@@ -54,7 +54,7 @@ Engine-internal variables (`DETPY_*`, `PYTEST_XDIST_*`) are not inputs.
 | `worker`, `worker_index` | parallel runs (merged trace): the worker and the position in it |
 
 Sources: `time`, `random`, `fs`, `net`, `entropy`, `outcome`, `syscall` (reserved), `other`, `sched`. Operations
-under `other`: `env.get`, `env.has`, `env.list` (environment reads; value `NAME=<digest>`), `uncontrolled.thread`,
+under `other`: `env.get`, `env.has`, `env.list` (environment reads; value `NAME=set` / `NAME=<unset>`: which variable, not its value), `uncontrolled.thread`,
 `uncontrolled.child`, `uncontrolled.io`. The site is `path:line` relative to the project, `<stdlib>/...`,
 `<site>/...` for libraries, `<end>` for summaries written when the test ends, `<run>` for run-level events.
 
@@ -92,8 +92,12 @@ and its fingerprints are equal. The counters keep their historical names: `cover
 | `missing` | the test did not run in every trace | |
 | `config` | another recorded input differs, or one trace has no inputs | |
 
-Exit codes: 0 every test identical, 1 otherwise (and when no test ran), 2 a trace is missing, unreadable or of
-another encoding.
+A test that read an environment variable whose value differs, and is otherwise identical, has status `input-differs`
+(summary `input_differs`; design A). Header `env_reads_recorded: true` says the shell records environment reads (the
+Python shells with the env control); without it every test counts as reading every differing variable.
+
+Exit codes: 0 every test identical, 3 the only differences are environment variables tests read (input differs), 1
+otherwise (and when no test ran), 2 a trace is missing, unreadable or of another encoding.
 
 ## `detpy backends`
 

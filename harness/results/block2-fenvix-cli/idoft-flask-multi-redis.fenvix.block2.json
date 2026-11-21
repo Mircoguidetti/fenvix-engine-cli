@@ -1,0 +1,541 @@
+{
+ "name": "idoft-flask-multi-redis",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "fenvix",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "test/integration/test_flask_multi_redis.py::test_aggregated_delitem_method",
+  "test/integration/test_flask_multi_redis.py::test_aggregated_setitem_method",
+  "test/integration/test_flask_multi_redis.py::test_aggregator_keys_method",
+  "test/integration/test_flask_multi_redis.py::test_aggregator_set_method",
+  "test/integration/test_flask_multi_redis.py::test_aggregator_strategy",
+  "test/integration/test_flask_multi_redis.py::test_custom_default_config",
+  "test/integration/test_flask_multi_redis.py::test_custom_node",
+  "test/integration/test_flask_multi_redis.py::test_custom_prefix",
+  "test/integration/test_flask_multi_redis.py::test_extension_registration_if_app_has_no_extensions",
+  "test/integration/test_flask_multi_redis.py::test_init_app",
+  "test/integration/test_flask_multi_redis.py::test_loadbalanced_delitem_method",
+  "test/integration/test_flask_multi_redis.py::test_loadbalanced_setitem_method",
+  "test/integration/test_flask_multi_redis.py::test_methods_transmission_from_aggregator",
+  "test/integration/test_flask_multi_redis.py::test_task_runner"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000012281",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261116.202.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 1.657,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 1.648,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 1.653,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 1.644,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 1.696,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 1.673,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 1.673,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 0.611,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 0.599,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 0.591,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 0.598,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 0.594,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 0.596,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 0.611,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 0.613,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 0.638,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 0.598,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 0.609,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 1.836,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 0.611,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 0.593,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 0.593,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 0.598,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 0.617,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 0.594,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 0.6,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 0.601,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 0.596,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 0.593,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 0.592,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 0.593,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 0.601,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 0.609,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 0.597,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 0.598,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 0.603,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 0.603,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 0.594,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 0.604,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 0.598,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 0.597,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 0.608,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 0.597,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 0.595,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 0.596,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 0.594,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 0.607,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 0.599,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 0.605,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 0.589,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  }
+ ],
+ "explore_exit": 0,
+ "explore_printed": "fenvix explore: 50 seeds in 40.38 s; 0 flaky failing tests (0 always failing, not flaky); 0 replay bundles; 0 distinct first diverging events, 0 distinct polluter sets\n{\n  \"seeds\": 50,\n  \"seconds\": 40.38,\n  \"runs\": 50,\n  \"collected\": 0,\n  \"failing_tests\": 0,\n  \"always_failing\": [],\n  \"flaky_failing\": [],\n  \"bundles\": [],\n  \"not_reproduced_budget\": [],\n  \"families_by_divergence\": {},\n  \"families_by_polluter\": {},\n  \"seeds_log\": [\n    {\n      \"seed\": 1,\n      \"seconds\": 1.657,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 2,\n      \"seconds\": 1.648,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 3,\n      \"seconds\": 1.653,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 4,\n      \"seconds\": 1.644,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 5,\n      \"seconds\": 1.696,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 6,\n      \"seconds\": 1.673,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 7,\n      \"seconds\": 1.673,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 8,\n      \"seconds\": 0.611,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 9,\n      \"seconds\": 0.599,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 10,\n      \"seconds\": 0.591,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 11,\n      \"seconds\": 0.598,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 12,\n      \"seconds\": 0.594,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 13,\n      \"seconds\": 0.596,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 14,\n      \"seconds\": 0.611,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 15,\n      \"seconds\": 0.613,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 16,\n      \"seconds\": 0.638,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 17,\n      \"seconds\": 0.598,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 18,\n      \"seconds\": 0.609,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 19,\n      \"seconds\": 1.836,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false",
+ "bundles": [
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_aggregated_delitem_method",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_aggregated_setitem_method",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_aggregator_keys_method",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_aggregator_set_method",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_aggregator_strategy",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_custom_default_config",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_custom_node",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_custom_prefix",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_extension_registration_if_app_has_no_extensions",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_init_app",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_loadbalanced_delitem_method",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_loadbalanced_setitem_method",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_methods_transmission_from_aggregator",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_task_runner",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  }
+ ],
+ "seconds": 40.45
+}

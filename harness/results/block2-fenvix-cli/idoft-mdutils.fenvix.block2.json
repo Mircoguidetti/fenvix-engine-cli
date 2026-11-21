@@ -1,0 +1,92 @@
+{
+ "name": "idoft-mdutils",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "fenvix",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_mdutils.py::TestMdUtils::test_create_md_file",
+  "tests/test_mdutils.py::TestMdUtils::test_new_checkbox_checked_list",
+  "tests/test_mdutils.py::TestMdUtils::test_new_checkbox_list",
+  "tests/test_mdutils.py::TestMdUtils::test_new_header",
+  "tests/test_mdutils.py::TestMdUtils::test_new_list",
+  "tests/test_mdutils.py::TestMdUtils::test_new_reference_image_markdown_data",
+  "tests/test_mdutils.py::TestMdUtils::test_new_table_of_contents",
+  "tests/test_mdutils.py::TestMdUtils::test_references_placed_in_markdown_file"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000012270",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "seeds_log": [],
+ "explore_exit": 1,
+ "explore_printed": "",
+ "bundles": [
+  {
+   "test": "tests/test_mdutils.py::TestMdUtils::test_create_md_file",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_mdutils.py::TestMdUtils::test_new_checkbox_checked_list",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_mdutils.py::TestMdUtils::test_new_checkbox_list",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_mdutils.py::TestMdUtils::test_new_header",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_mdutils.py::TestMdUtils::test_new_list",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_mdutils.py::TestMdUtils::test_new_reference_image_markdown_data",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_mdutils.py::TestMdUtils::test_new_table_of_contents",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_mdutils.py::TestMdUtils::test_references_placed_in_markdown_file",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  }
+ ],
+ "seconds": 1.45
+}

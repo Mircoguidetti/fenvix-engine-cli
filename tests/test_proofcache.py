@@ -476,10 +476,13 @@ def test_clock_reader_depends_on_the_epoch(pytester, run_cache):
 
 def test_os_entropy_is_cached_only_when_controlled(pytester, run_cache):
     project(pytester, **{"test_m.py": "import uuid\n\ndef test_uuid():\n    assert uuid.uuid4()\n"})
-    run_cache()
-    _, reused, data = run_cache()
+    run_cache("--det-entropy=observe")
+    _, reused, data = run_cache("--det-entropy=observe")
     assert reused == set()
     assert data["cache"]["not_cached_ids"]["test_m.py::test_uuid"].startswith("os entropy")
+    run_cache()  # controlled: the default under --det (2026-11-21)
+    _, reused, _ = run_cache()
+    assert reused == ids("test_uuid")
     run_cache("--det-urandom")
     _, reused, _ = run_cache("--det-urandom")
     assert reused == ids("test_uuid")

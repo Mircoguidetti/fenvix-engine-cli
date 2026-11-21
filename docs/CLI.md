@@ -51,8 +51,8 @@ A failing test under `--det` ends the run with the command that turns it into a 
 
 Compares two or more traces of the same suite. A test is **identical** only when:
 
-1. every run had the same inputs (header `inputs`: runtime, runner, seed, hash seed, clock, time zone, locale, every
-   environment variable, network, file-system order, entropy control, bytecode, ASLR);
+1. every run had the same inputs (header `inputs`: runtime, runner, seed, hash seed, clock, time zone, locale,
+   network, file-system order, entropy control, bytecode, ASLR, and the environment variables it read);
 2. it ran after the same tests (serial runs; a parallel run is compared by placement);
 3. it used no source this release does not control (threads, child processes, I/O readiness);
 4. it observed the same events with the same outcome (same fingerprint).
@@ -60,8 +60,25 @@ Compares two or more traces of the same suite. A test is **identical** only when
 Otherwise it is **divergent** and the first divergent event is named: the first differing input (`[tz]`, `[locale]`,
 `[env]`, `[seed]`, `[hashseed]`, `[time]`, `[net]`, `[fs]`, `[entropy]`, `[runtime]`, `[config]`), the order
 (`[order]`), the uncontrolled source (`[thread]`, `[child]`, `[io]`), or the first differing event of the test
-(`[time]`, `[random]`, `[fs]`, `[net]`, `[env]`, ...). When the test itself read a differing environment variable,
-that read (with its site) is named. Two runs where no test ran verify nothing (exit 1).
+(`[time]`, `[random]`, `[fs]`, `[net]`, `[env]`, ...). Two runs where no test ran verify nothing (exit 1).
+
+**Environment (design A).** A test that read an environment variable whose value differs between the runs, and is
+otherwise identical, is **input differs** (`INPUT-DIFFERS`, `verdict: INPUT DIFFERS: NAME`), not divergent and not
+unstable: the variable is named, with the read's site. Variables no test read are listed as `not compared`. The Node
+shell does not record which test read a variable: every test of its runs counts as reading it. CI-volatile variables
+are never inputs: under `--det` the run and attempt ids, the job and runner names and the host name are pinned
+(`GITHUB_RUN_ID=0`, `GITHUB_RUN_NUMBER=0`, `GITHUB_RUN_ATTEMPT=1`, `GITHUB_JOB=fenvix`, `RUNNER_NAME=fenvix-runner`,
+`RUNNER_TRACKING_ID=fenvix`, `HOSTNAME=localhost`; `socket.gethostname()` / `os.hostname()` answer `localhost`; the
+CPU count is 2 for `os.cpu_count()`, `os.process_cpu_count()`, `len(os.sched_getaffinity(0))`, `multiprocessing.cpu_count()`,
+`os.cpus().length` and `os.availableParallelism()`, while `-n auto` and the engine's own workers use the machine), and
+temp and workspace paths, per-step files, CI tokens and session variables (`RUNNER_TEMP`, `GITHUB_WORKSPACE`,
+`GITHUB_ENV`, `GITHUB_OUTPUT`, `TMPDIR`, `PWD`, `ACTIONS_RUNTIME_TOKEN`, ...: `VOLATILE_KEPT` in
+`python/detpy/_level0.py`, `node/src/volatile.js`) keep their values but are not compared. Add a project's own with
+`FENVIX_VOLATILE_ENV=NAME,PREFIX*` (a per-run output path, say).
+
+Exit codes: 0 every test identical; 3 the only differences are environment variables tests read (input differs);
+1 a test diverged or is missing, no test ran, or the traces do not record their run inputs; 2 a trace is missing or
+unreadable.
 
 ```
 fenvix verify: 2 runs, 5 tests
@@ -73,8 +90,8 @@ NOT-COVERED tests/test_x.py::test_env  [env] outcomes=passed,failed
 ```
 
 `--ignore-env NAME` (or `PREFIX*`) leaves out a variable you declare irrelevant; the report lists it. Traces without
-`inputs` (older engines, shells that do not record them yet) are reported as `run inputs: NOT RECORDED`.
-Exit: 0 every test identical, 1 otherwise, 2 unreadable or missing trace.
+`inputs` (older engines, shells that do not record them yet) are reported as `run inputs: NOT RECORDED` and are never
+identical: same events give `verdict: NOT PROVEN` (exit 1), since the runs cannot be shown to have had the same inputs.
 
 ## Flaky test to reproducible defect
 
@@ -90,19 +107,26 @@ Output (exit 0 when reproduced):
 
 ```
 fenvix repro: tests/test_o.py::test_victim
-  status:  REPRODUCED: failed 10/10 replays with one fingerprint a63bad0ce5fccfced3e227003bc9d3cc
-  cause:   test order: it fails when run after tests/test_o.py::test_polluter (state left behind by that test)
-  seed:    none (fixed order)
-  order:   tests/test_o.py::test_polluter -> tests/test_o.py::test_victim
-  error:   AssertionError: assert 'x' not in {'x': 1} (tests/test_o.py:5)
-  replay:  fenvix replay .detpy/repro/test_victim-a60269ec
-  rerun:   pytest --det --det-order=.detpy/repro/test_victim-a60269ec/order.txt
-  bundle:  .detpy/repro/test_victim-a60269ec (10 runs, 6.5 s)
+  status: REPRODUCED: failed 10/10 replays with one fingerprint a63bad0ce5fccfced3e227003bc9d3cc
+  cause: test order: it fails when run after tests/test_o.py::test_polluter (state left behind by that test)
+  seed: none (fixed order)
+  order: tests/test_o.py::test_polluter -> tests/test_o.py::test_victim
+  error: AssertionError: assert 'x' not in {'x': 1} (tests/test_o.py:5)
+  replay: fenvix pytest --det --det-order=.detpy/repro/test_victim-a60269ec/order.txt
+  check: fenvix replay .detpy/repro/test_victim-a60269ec  (replays 10x, exit 0 when every run fails with the bundle's fingerprint)
+  rerun: pytest --det --det-order=.detpy/repro/test_victim-a60269ec/order.txt
+  bundle: .detpy/repro/test_victim-a60269ec (10 runs, 6.5 s)
 ```
+
+`replay` is the failing run itself: it fails (exit 1) when the defect reproduces and takes runner arguments
+(`--det-trace=PATH`, `-x`, ...). `check` replays the bundle N times and exits 0 when every run fails with the bundle's
+fingerprint.
 
 Causes: `test order` (polluters, or state setters), `seed` (fails alone under one seed, passes under another), or the
 first divergent event against a passing run. A failure that does not replay N/N with one fingerprint is reported
-`NOT REPRODUCIBLE under fenvix`, with the uncontrolled source when the test used one.
+`NOT REPRODUCIBLE under fenvix`, with the uncontrolled source when the test used one, and its cause is `not
+established`: the tests and seed it was found with are not named as its cause, since the configuration does not fail
+every time.
 
 Options: `--seeds N`, `--seed fixed|N` (skip the search), `--confirm N`, `--max-runs N`, `--timeout S`, `--out DIR`,
 `--runner NAME`, `--python PATH`, `--json`; runner arguments after `--`.
@@ -113,10 +137,16 @@ Runs the whole suite under seeds 1, 2, ... until the budget or `--max-seeds` is 
 under one seed and pass under another, and runs `repro` on each (`--no-repro`: exploration only; `--targets FILE`:
 bundles only for those ids). Summary in `<out>/explore.json`, bundles in `<out>/bundles/`.
 
+Exit 0 when the suite ran; 2 when it cannot run (collection errors, an unknown runner argument, an interpreter that
+does not exist): no test ran under any seed, so nothing was explored, and the runner's error lines are printed.
+`fenvix repro` on such a suite reports `not collected: the suite did not collect cleanly` with the same lines.
+
 ### `fenvix replay BUNDLE`
 
-Replays the bundle `--runs` times (default 10). Exit 0 when it failed every time with one fingerprint. The bundle's
-`runner` field picks the adapter.
+Replays the bundle `--runs` times (default 10). Exit 0 when it failed every time with one fingerprint, 1 when it did
+not (fixed, or something the bundle does not hold changed). Run it from the project root, the directory `fenvix repro`
+ran in (the bundle records it as `project`): from elsewhere, or when the test is no longer collected, it exits 2 and
+says the test did not run, never that the defect is fixed. The bundle's `runner` field picks the adapter.
 
 ## Runner adapters (how Vitest, Jest and Playwright plug in)
 

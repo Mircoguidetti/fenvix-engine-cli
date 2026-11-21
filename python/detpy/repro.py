@@ -68,6 +68,17 @@ class Run:
         return _core.repro_outcome(self.outcomes, nid)
 
 
+CONTINUE_ON_COLLECTION_ERRORS = "--continue-on-collection-errors"
+
+
+def with_collection_errors(args: list) -> list:
+    """pytest arguments of a search, minimisation or replay run: a module that fails to import must not stop the
+    collected tests from running (pytest interrupts the whole session otherwise, so the target never runs and every
+    configuration would say nothing about it)."""
+    args = list(args)
+    return args if CONTINUE_ON_COLLECTION_ERRORS in args else [CONTINUE_ON_COLLECTION_ERRORS, *args]
+
+
 @dataclass
 class Runner:
     """Runs pytest --det in a project directory and reads its outcomes file."""
@@ -82,10 +93,12 @@ class Runner:
     orders: dict = field(default_factory=dict)
     runs: int = 0
     seconds: float = 0.0
+    problem: str = ""  # the runner's output when a run ran no test and failed: why the suite cannot run
     log: list = field(default_factory=list)
 
     def _cmd(self, config: str, extra: list) -> list:
-        cmd = [self.python, "-m", "pytest", "-q", "-p", "no:cacheprovider", "--det", *self.pytest_args, *extra]
+        cmd = [self.python, "-m", "pytest", "-q", "-p", "no:cacheprovider", "--det",
+               *with_collection_errors(self.pytest_args), *extra]
         if config != FIXED:
             cmd.append(f"--det-seed={int(config)}")
         return cmd
@@ -108,7 +121,7 @@ class Runner:
                                timeout=self.timeout, env=self.env)
             code = p.returncode
         except subprocess.TimeoutExpired:
-            code, timed_out = -9, True
+            code, timed_out, p = -9, True, None
         dur = time.monotonic() - t0
         self.runs += 1
         self.seconds += dur
@@ -123,7 +136,17 @@ class Runner:
                 {k: data.get(k) for k in ("controls", "seed", "order_missing")})
         self.log.append({"tag": tag, "config": config, "tests": len(r.order), "seconds": round(dur, 3),
                          "exit": code})
+        if p is not None and code != 0 and not r.outcomes:  # (r.order falls back to the order asked for)
+            self.note_problem(p, code)
         return r
+
+    def note_problem(self, p, code: int) -> None:
+        """Keep why the suite cannot run (collection errors, a missing plugin, a bad argument): the end of the
+        runner's output, shown by repro and explore instead of "not collected" or an empty exploration."""
+        lines = [ln.rstrip() for ln in ((p.stdout or "") + (p.stderr or "")).splitlines() if ln.strip()]
+        # pytest: the error lines (`E ...`), the short summary (`ERROR path`) and the last line; else the tail
+        key = [ln for ln in lines if ln.startswith(("E ", "ERROR ", "error:", "usage:")) or "Error" in ln[:40]]
+        self.problem = f"runner exit {code}\n" + "\n".join((key[-20:] + lines[-1:]) if key else lines[-25:])
 
     def drop_traces(self) -> None:
         """Delete the traces of finished runs (large suites: one trace per run adds up)."""
@@ -147,6 +170,8 @@ class Runner:
         t0 = time.monotonic()
         p = subprocess.run(cmd, cwd=self.cwd, capture_output=True, text=True, timeout=self.timeout, env=self.env)
         self.seconds += time.monotonic() - t0
+        if p.returncode != 0:
+            self.note_problem(p, p.returncode)
         if not out.exists():
             raise RuntimeError("collection failed:\n" + (p.stdout + p.stderr)[-2000:])
         order = json.loads(out.read_text())["order"]
@@ -258,7 +283,10 @@ def reproduce(runner: Runner, target: str, *, collected: list | None = None, see
     (``status`` = reproduced | not-found | not-minimised | replay-unstable)."""
     result, fail_trace, pass_trace = _core.repro_reproduce(runner, target, collected, seeds, known_fail, known_pass,
                                                            confirm, max_runs)
-    if fail_trace is None:  # not collected, not found or not minimised: no bundle
+    if fail_trace is None:  # not collected, not run, not found or not minimised: no bundle
+        problem = getattr(runner, "problem", "")  # (any Driver: simulated runners in tests have none)
+        if result.get("status") in ("not-collected", "not-run") and problem:
+            result["suite_error"] = problem
         return result
     if out_dir is not None:
         b = Path(out_dir) / _slug(target)
@@ -270,6 +298,8 @@ def reproduce(runner: Runner, target: str, *, collected: list | None = None, see
         if pass_trace is not None and os.path.exists(pass_trace):
             shutil.copy2(pass_trace, b / "pass.trace.jsonl")
         args = list(command_args if command_args is not None else runner.pytest_args)
+        if isinstance(runner, Runner) and not isinstance(runner, ShellRunner):  # the replay runs as the search did
+            args = with_collection_errors(args)
         result.update(_core.repro_bundle_commands(result["config"], str(b), args))
         (b / "bundle.json").write_text(json.dumps(result, indent=2))
     if not runner.keep_traces:
@@ -319,9 +349,12 @@ def finish_bundle(b: dict, out_dir: Path, cwd: Path, python: str, runner_name: s
     data["runner"] = runner_name
     data["replay_command"] = f"fenvix replay {data.get('bundle', bdir)}"
     data["provenance"] = provenance(cwd, bdir / "fail.trace.jsonl", python)
+    data["project"] = str(Path(cwd).resolve())  # where `fenvix replay` runs from (named when run elsewhere)
     _relative_exception(data, cwd)
     f.write_text(json.dumps(data, indent=2))
     b.update({k: data[k] for k in ("replay_command", "provenance", "exception") if k in data})
+    if data.get("command"):
+        b.setdefault("command", data["command"])  # the single failing run (printed as `fenvix pytest ...`)
     return b
 
 
@@ -340,10 +373,32 @@ def replay(bundle: Path, runs: int, python: str = sys.executable) -> dict:
     shell = data.get("runner") not in (None, "pytest")
     cls = ShellRunner if shell else Runner
     kw = {"runner_name": data["runner"]} if shell else {}
-    runner = cls(cwd=Path.cwd(), workdir=bundle / "replay", python=python, pytest_args=data.get("pytest_args", []),
+    cwd = Path.cwd()
+    _check_project(data, cwd)
+    runner = cls(cwd=cwd, workdir=bundle / "replay", python=python, pytest_args=data.get("pytest_args", []),
                  **kw)
-    rs = [runner.run(data["config"], data["order"], f"replay-{i}") for i in range(runs)]
+    rs = []
+    for i in range(runs):
+        rs.append(runner.run(data["config"], data["order"], f"replay-{i}"))
+        if rs[-1].outcome(data.get("test")) == "missing":
+            # reviewer #9: the test did not run at all (another directory, a renamed test, a suite that no longer
+            # collects): that is not "no longer fails", and the remaining runs would say the same
+            return {"test": data.get("test"), "runs": runs, "fails": 0, "identical_fingerprint": False,
+                    "matches_bundle": False, "status": "not-collected",
+                    "suite_error": getattr(runner, "problem", "") or f"runner exit {rs[-1].exit_code}: the test was not collected"}
     return _core.repro_replay_verdict(data, rs, runs)
+
+
+def _check_project(data: dict, cwd: Path) -> None:
+    """A bundle replays from its project's root (the directory `fenvix repro` ran in): its order names files
+    relative to it. From anywhere else the runner would collect nothing, or a whole other tree (reviewer #9)."""
+    path = str(data.get("test", "")).split("::", 1)[0]
+    if not path.endswith(".py") or (cwd / path).exists():
+        return  # not a file id (unittest dotted names, doctest), or found here
+    proj = data.get("project")
+    where = f" ({proj})" if proj else ""
+    raise ValueError(f"{path} is not under {cwd}: run `fenvix replay` from the project root, the directory "
+                     f"`fenvix repro` ran in{where}")
 
 
 def explore(runner: Runner, *, budget_s: float, max_seeds: int, out_dir: Path, confirm: int = 10,
@@ -353,6 +408,9 @@ def explore(runner: Runner, *, budget_s: float, max_seeds: int, out_dir: Path, c
     book = _core.ExploreBook(budget_s, max_seeds, first_seed)
     out_dir.mkdir(parents=True, exist_ok=True)
     collected = runner.order_of(FIXED)
+    # a module that does not import: the tests that collect are explored, and the suite is reported as not
+    # collecting cleanly (plain pytest stops at collection there; R-050 V10)
+    collection_errors = getattr(runner, "problem", "") if collected else ""
     while (s := book.next_seed()) is not None:
         r = runner.run(str(s), None, f"seed-{s}")
         if r.order:
@@ -375,6 +433,10 @@ def explore(runner: Runner, *, budget_s: float, max_seeds: int, out_dir: Path, c
         if not runner.keep_traces:
             runner.drop_traces()
     summary = book.summary(runner.runs, len(collected), runner.log)
+    if not collected and getattr(runner, "problem", ""):  # the suite cannot run: say why (reviewer #10)
+        summary["suite_error"] = runner.problem
+    if collection_errors:
+        summary["collection_errors"] = collection_errors
     (out_dir / "explore.json").write_text(json.dumps(summary, indent=1))
     return summary
 

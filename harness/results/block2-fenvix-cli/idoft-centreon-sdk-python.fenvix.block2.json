@@ -1,0 +1,356 @@
+{
+ "name": "idoft-centreon-sdk-python",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "fenvix",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_command.py::TestCommands::test_command_add",
+  "tests/test_command.py::TestCommands::test_command_delete",
+  "tests/test_command.py::TestCommands::test_command_list",
+  "tests/test_command.py::TestCommands::test_command_not_exist",
+  "tests/test_command.py::TestCommands::test_command_setparam",
+  "tests/test_hosts.py::TestHost::test_host_addcontact",
+  "tests/test_hosts.py::TestHost::test_host_addcontactgroupt",
+  "tests/test_hosts.py::TestHost::test_host_addparent",
+  "tests/test_hosts.py::TestHost::test_host_addtemplate",
+  "tests/test_hosts.py::TestHost::test_host_applytemplate",
+  "tests/test_hosts.py::TestHost::test_host_deletecontact",
+  "tests/test_hosts.py::TestHost::test_host_deletecontactgroup",
+  "tests/test_hosts.py::TestHost::test_host_deletehostgroup",
+  "tests/test_hosts.py::TestHost::test_host_delmacro",
+  "tests/test_hosts.py::TestHost::test_host_deteletemplate",
+  "tests/test_hosts.py::TestHost::test_host_disable",
+  "tests/test_hosts.py::TestHost::test_host_enable",
+  "tests/test_hosts.py::TestHost::test_host_getcontact",
+  "tests/test_hosts.py::TestHost::test_host_getcontactgroup",
+  "tests/test_hosts.py::TestHost::test_host_gethostgroup",
+  "tests/test_hosts.py::TestHost::test_host_getmacro",
+  "tests/test_hosts.py::TestHost::test_host_getparents",
+  "tests/test_hosts.py::TestHost::test_host_gettemplate",
+  "tests/test_hosts.py::TestHost::test_host_setcontact",
+  "tests/test_hosts.py::TestHost::test_host_setcontactgroup",
+  "tests/test_hosts.py::TestHost::test_host_setinstance",
+  "tests/test_hosts.py::TestHost::test_host_setmacro",
+  "tests/test_hosts.py::TestHost::test_host_setparam",
+  "tests/test_hosts.py::TestHost::test_host_setparent",
+  "tests/test_hosts.py::TestHost::test_host_settemplate",
+  "tests/test_hosts.py::TestHosts::test_hosts_add",
+  "tests/test_hosts.py::TestHosts::test_hosts_delete",
+  "tests/test_hosts.py::TestHosts::test_hosts_delete_with_obj",
+  "tests/test_hosts.py::TestHosts::test_hosts_list",
+  "tests/test_hosts.py::TestHosts::test_hosts_not_exist",
+  "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_add",
+  "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line",
+  "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_delete",
+  "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_get_one",
+  "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist",
+  "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000012267",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "INTEL(R) XEON(R) PLATINUM 8573C"
+ },
+ "seeds_log": [],
+ "explore_exit": 1,
+ "explore_printed": "",
+ "bundles": [
+  {
+   "test": "tests/test_command.py::TestCommands::test_command_add",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_command.py::TestCommands::test_command_delete",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_command.py::TestCommands::test_command_list",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_command.py::TestCommands::test_command_not_exist",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_command.py::TestCommands::test_command_setparam",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_addcontact",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_addcontactgroupt",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_addparent",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_addtemplate",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_applytemplate",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_deletecontact",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_deletecontactgroup",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_deletehostgroup",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_delmacro",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_deteletemplate",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_disable",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_enable",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_getcontact",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_getcontactgroup",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_gethostgroup",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_getmacro",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_getparents",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_gettemplate",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_setcontact",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_setcontactgroup",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_setinstance",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_setmacro",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_setparam",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_setparent",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_settemplate",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHosts::test_hosts_add",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHosts::test_hosts_delete",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHosts::test_hosts_delete_with_obj",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHosts::test_hosts_list",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHosts::test_hosts_not_exist",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_add",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_delete",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_get_one",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  }
+ ],
+ "seconds": 3.49
+}
