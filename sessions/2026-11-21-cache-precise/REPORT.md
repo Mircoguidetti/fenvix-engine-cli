@@ -44,7 +44,7 @@ Branch `claude/py-cache-precise`, from `claude/py-cache` @ 0fbf228. Phase 1 chan
 | Python | passed | failed | xfailed (phase-2 targets) |
 |---|---|---|---|
 | 3.13.18 | 282 | 6 (every `putenv` scenario) | 8 |
-| 3.12.3 | see below | | |
+| 3.12.3 | 282 | 6 (the same `putenv` scenarios) | 8 |
 
 The 6 failures are **not wrong reuses**: the cache ran every test (`ran 3`). They are a wrong outcome of tests the
 cache runs, present in a cold cached run.
