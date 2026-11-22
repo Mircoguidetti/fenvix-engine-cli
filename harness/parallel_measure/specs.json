@@ -1,0 +1,429 @@
+{
+ "networkx": {
+  "repo": "https://github.com/networkx/networkx",
+  "commit": "6c1a31d1613ad04cf2b2e3d63090b94979521981",
+  "runner": "pytest",
+  "dir": "$PM_WORK/repos/networkx",
+  "python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [
+   "--doctest-modules",
+   "--pyargs",
+   "networkx",
+   "-q",
+   "-p",
+   "no:cacheprovider"
+  ],
+  "ci": "DECLARED pyproject.toml:358 test-default = pytest -n auto --doctest-modules --durations=10 --pyargs networkx",
+  "ci_parallel": true,
+  "plan_verdict": false,
+  "why_outside": "its own CI runs the suite in parallel (not serial on purpose): outside the plan's verdict"
+ },
+ "attrs": {
+  "repo": "https://github.com/python-attrs/attrs",
+  "commit": "f830e60f9c6485aa7037a52f03fdd28428dfbfc4",
+  "runner": "pytest",
+  "dir": "$PM_WORK/repos/attrs",
+  "python": "$PM_WORK/venv/attrs/bin/python",
+  "args": [
+   "-q",
+   "-p",
+   "no:cacheprovider"
+  ],
+  "ci": "DECLARED tox.ini:31 tests: pytest {posargs:-n auto} (addopts -ra --import-mode=importlib)",
+  "install": "pip install --no-deps -e . (shallow clone: version 0.1.dev50)",
+  "ci_parallel": true,
+  "plan_verdict": false,
+  "why_outside": "its own CI runs the suite in parallel (not serial on purpose): outside the plan's verdict"
+ },
+ "yaml": {
+  "repo": "https://github.com/eemeli/yaml",
+  "commit": "528ef30d6ded4bd9f2c3521b670eb2b29d503c5c",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/yaml",
+  "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [],
+  "ci": "DECLARED .github/workflows/nodejs.yml:25 npm test = vitest run (Vitest default: files in parallel)",
+  "ci_parallel": true,
+  "plan_verdict": false,
+  "why_outside": "its own CI runs the suite in parallel (not serial on purpose): outside the plan's verdict"
+ },
+ "nestjs-pino": {
+  "repo": "https://github.com/iamolegga/nestjs-pino",
+  "commit": "82d92198747c64e87057dfb50c6215a936a1a052",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/nestjs-pino",
+  "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [],
+  "ci": "DECLARED vitest.config.mts:24 fileParallelism: false; package.json test = vitest run",
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "npm ci --ignore-scripts --no-audit --no-fund",
+  "ci_parallel": false,
+  "plan_verdict": true
+ },
+ "codex-multi-auth": {
+  "repo": "https://github.com/ndycode/codex-multi-auth",
+  "commit": "b9886168aafcebd8581d4e344daf7abd19b510ce",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/codex-multi-auth",
+  "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [],
+  "ci": "DECLARED package.json test = vitest run --maxWorkers=1; vitest.config.ts:40-46 fileParallelism: false (fixed-port OAuth callback 1455 and shared-port suites)",
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "npm ci --ignore-scripts --no-audit --no-fund",
+  "ci_parallel": false,
+  "plan_verdict": true
+ },
+ "agentsys": {
+  "repo": "https://github.com/agent-sh/agentsys",
+  "commit": "ce58913304d88a1d1a0513e1837ae43c33f5f6f5",
+  "runner": "jest",
+  "dir": "$PM_WORK/repos/agentsys",
+  "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [],
+  "ci": "DECLARED jest.config.js:52 maxWorkers: 1; package.json test = jest",
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "npm ci --ignore-scripts --no-audit --no-fund",
+  "ci_parallel": false,
+  "plan_verdict": true
+ },
+ "react-confirm-alert": {
+  "repo": "https://github.com/GA-MO/react-confirm-alert",
+  "commit": "d1498d2cece210b9ef204a4455abe8d7745f480c",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/react-confirm-alert",
+  "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [],
+  "ci": "DECLARED vitest.config.mts:30 fileParallelism: false; package.json test = vitest run",
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "npm ci --ignore-scripts --no-audit --no-fund",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "excluded": "MEASURED (smoke, 1 round): its suite runs in Vitest browser mode (Playwright firefox/webkit, not installed here); detjs refuses browser mode for parallel (docs/NODE.md Parallel table). Not measured."
+ },
+ "ironcurtain": {
+  "repo": "https://github.com/provos/ironcurtain",
+  "commit": "abf2b44c2e1b6138ede2d0b46337c684258088d0",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/ironcurtain",
+  "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [],
+  "ci": "DECLARED package.json test = bash scripts/test.sh (root vitest run, then web-ui); vitest.config.ts:45 fileParallelism: false for a project; measured: root vitest run only",
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "npm ci --ignore-scripts --no-audit --no-fund",
+  "ci_parallel": false,
+  "plan_verdict": true
+ },
+ "faker": {
+  "repo": "https://github.com/joke2k/faker",
+  "commit": "b0f38add8d3d6a9ab2561f08920674971f073f25",
+  "runner": "pytest",
+  "dir": "$PM_WORK/repos/faker",
+  "python": "$PM_WORK/venv/faker/bin/python",
+  "args": [
+   "-q",
+   "-p",
+   "no:cacheprovider"
+  ],
+  "ci": "DECLARED tox.ini [testenv] commands: coverage run --source=faker -m pytest (no xdist: serial); measured: the first pytest command without coverage",
+  "install": "pip install engine wheel coverage freezegun pytest python-stdnum ukpostcodeparser validators sphinx Pillow xmltodict; pip install --no-deps -e .",
+  "ci_parallel": false,
+  "plan_verdict": false,
+  "why_outside": "serial CI, but chosen by this session, not a serial-scan candidate: outside the plan's verdict"
+ },
+ "mpmath": {
+  "repo": "https://github.com/mpmath/mpmath",
+  "commit": "9b9a1ccbe2a6af5cc3b54fd1cee306ca11b1d13e",
+  "runner": "pytest",
+  "dir": "$PM_WORK/repos/mpmath",
+  "python": "$PM_WORK/venv/mpmath/bin/python",
+  "args": [
+   "-q",
+   "-p",
+   "no:cacheprovider"
+  ],
+  "ci": "DECLARED .github/workflows (coverage job) run: pytest (serial; testpaths mpmath docs, --doctest-modules)",
+  "install": "pip install engine wheel pytest numpy packaging pytest-timeout pexpect ipython hypothesis pytest-xdist; pip install --no-deps -e .",
+  "ci_parallel": false,
+  "plan_verdict": false,
+  "why_outside": "serial CI, but chosen by this session, not a serial-scan candidate: outside the plan's verdict"
+ },
+ "wind-comic": {
+  "repo": "https://github.com/ChrisChen667788/wind-comic",
+  "commit": "4657448338bed6e217cad80b207221bd44c830bc",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/wind-comic",
+  "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [],
+  "ci": "DECLARED .github/workflows/ci.yml:53 npm test = vitest run; vitest.config.ts:36 pool forks singleFork: true (shared better-sqlite3 file data/qfmj.db: 'database is locked' in parallel), retry: 1",
+  "ci_parallel": true,
+  "plan_verdict": false,
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "npm ci --ignore-scripts --no-audit --no-fund",
+  "why_outside": "not serial in practice: its own `vitest run` on vitest 4.1.11 already runs files in parallel (268 s vs 639 s forced serial, MEASURED by session B, claude/parallel-measure-b); out of the verdict (coordinator, 2026-11-22)"
+ },
+ "claudekit": {
+  "repo": "https://github.com/carlrannaberg/claudekit",
+  "commit": "f22a4f9030520394bf1a517b46ad7585badf5130",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/claudekit",
+  "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [],
+  "ci": "DECLARED .github/workflows/ci.yml:184 npm test -> test:vitest = vitest run; vitest.config.ts:64 singleFork: true",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "npm install --ignore-scripts --no-audit --no-fund (no lockfile in the repository)"
+ },
+ "sqlectron": {
+  "repo": "https://github.com/sqlectron/sqlectron",
+  "commit": "b0f5e24015bca7974fbce6ab5e4ada69d51b48b3",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/sqlectron",
+  "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [
+   "test/browser",
+   "test/renderer",
+   "test/common"
+  ],
+  "ci": "DECLARED package.json test = vitest run test/browser && vitest run test/renderer test/common; vitest.config.mts:13 fileParallelism: false; measured: both selections in one vitest run",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "npm install --ignore-scripts --no-audit --no-fund (MEASURED: `npm ci --ignore-scripts` with npm 10.9.9 fails EUSAGE 'Missing: type-fest@4.41.0 from lock file'; npm install rewrote package-lock.json)"
+ },
+ "agentic-qe": {
+  "repo": "https://github.com/proffesor-for-testing/agentic-qe",
+  "commit": "9a42d9ebd56ed419925738cef5cf84748a108d9e",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/agentic-qe",
+  "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [
+   "--bail=0"
+  ],
+  "ci": "DECLARED package.json test = vitest run (NODE_OPTIONS --max-old-space-size=1024 --expose-gc); vitest.config.ts:58 fileParallelism: false",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "npm ci --ignore-scripts --no-audit --no-fund, then npm rebuild better-sqlite3 hnswlib-node argon2 sharp (native bindings; MEASURED: missing bindings otherwise)",
+  "env": {
+   "NODE_OPTIONS_NOTE": "CI sets NODE_OPTIONS; the harness drops NODE_OPTIONS (detjs uses it)"
+  },
+  "measurement_choice": "--bail=0 on every run (plain, plain_par, engine, repro), coordinator 2026-11-22 option (a): vitest.config.ts:63 bail: process.env.CI ? 5 : 3 truncates runs (MEASURED: 21 of 1496 files); CI stays unset"
+ },
+ "smart-second-brain": {
+  "repo": "https://github.com/s2b-dev/smart-second-brain",
+  "commit": "93fb0ffe5b815c355bf063891858ec8ae676c579",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/smart-second-brain",
+  "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [],
+  "ci": "DECLARED .github/workflows/ci.yml:48 bun run test = vitest run; vitest.config.ts:34 fileParallelism: false",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "bun install --frozen-lockfile --ignore-scripts (MEASURED: `npm install --ignore-scripts` fails ERESOLVE vite@7 vs @sveltejs/vite-plugin-svelte@5 peer vite@^6; CI uses bun)"
+ },
+ "lerna-lite": {
+  "repo": "https://github.com/lerna-lite/lerna-lite",
+  "commit": "fec3cb9660bac71efe5d5e5749f615a3802c1cc1",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/lerna-lite",
+  "fenvix_python": "$PM_WORK/venv/engine/bin/python",
+  "args": [
+   "--config",
+   "./e2e/vitest.config.ts"
+  ],
+  "ci": "DECLARED e2e/vitest.config.ts:4-8 pool forks + singleFork: true ('E2E tests should run sequentially to avoid conflicts'); .github/workflows/main.yml:196 pnpm test:e2e",
+  "source": "claude/serial-scan harness/serial_scan/candidates.json (its collect/run 'cd e2e && vitest' finds no tests: the config's include is relative to the repo root, so this spec runs from the root with --config)",
+  "install": "npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts && npx -y pnpm@11.28.5 build (the e2e suite runs the built CLI); without Verdaccio (package.json test:e2e:no-verdaccio): all 107 e2e tests pass without it",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "build": "npx -y pnpm@11.28.5 build"
+ },
+ "rosclaw": {
+  "repo": "https://github.com/ros-claw/rosclaw",
+  "commit": "8edd694066490416aa5fd53d39978f0d81f68fbb",
+  "runner": "pytest",
+  "dir": "$PM_WORK/repos/rosclaw",
+  "python": "$PM_WORK/venv/rosclaw/bin/python",
+  "args": [
+   "-q",
+   "-p",
+   "no:cacheprovider",
+   "-m",
+   "(perf_serial or embedded_seekdb) and not slow and not integration and not deployment"
+  ],
+  "ci": "DECLARED .github/workflows/ci.yml:342 pytest -q -p no:xdist -m '(perf_serial or embedded_seekdb) and not slow and not integration and not deployment' ('resource-sensitive suite (serial: wall-clock and embedded engine)'); -p no:xdist is left out here because the engine's parallel run needs xdist (-n N); plain/serial runs have no -n, so they are single-process as in CI",
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "python3 -m venv; pip install -e '.[dev]' (as CI ci.yml:324; the candidates.json chain stops at the nonexistent '.[test]' extra, which pip accepts, and leaves rosclaw-know/pyseekdb/xdist out)",
+  "ci_parallel": false,
+  "plan_verdict": false,
+  "why_outside": "Python candidate removed from the queue on 2026-11-22 (founder decision D14: Node only until 28 November); not measured"
+ },
+ "get-physics-done": {
+  "repo": "https://github.com/psi-oss/get-physics-done",
+  "commit": "0f417695ccf1f987af44bb4f4b3cbbdeb5f2c48b",
+  "runner": "pytest",
+  "dir": "$PM_WORK/repos/get-physics-done",
+  "python": "$PM_WORK/venv/get-physics-done/bin/python",
+  "args": [
+   "-q",
+   "-p",
+   "no:cacheprovider",
+   "-n",
+   "0",
+   "tests/test_release_consistency.py",
+   "tests/test_import_stability_contracts.py",
+   "tests/test_metadata_consistency.py::test_python_floor_is_consistent_across_install_surfaces",
+   "tests/test_runtime_catalog_bootstrap_contract.py",
+   "tests/test_runtime_install_smoke.py",
+   "tests/test_install_lifecycle.py::test_markdown_command_runtime_lifecycle_round_trip",
+   "tests/test_bootstrap_installer.py::test_bootstrap_prefers_versioned_python_when_generic_alias_is_newer",
+   "tests/test_bootstrap_installer.py::test_bootstrap_recreates_managed_env_when_selected_minor_changes"
+  ],
+  "ci": "DECLARED .github/workflows/release.yml:109 pytest -n 0 tests/test_release_consistency.py; test.yml:115 pytest -n 0 tests/test_import_stability_contracts.py; test.yml:125-131 pytest -n 0 (installer/runtime targets). The three serial (-n 0) CI invocations are joined into one run here. pyproject addopts is '-n auto --dist=worksteal', so -n 0 is in args; the engine's parallel run appends -n N after it (last wins)",
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "python3 -m venv; pip install -e . ; pip install 'pytest>=9.0.2' 'pytest-asyncio>=1.3.0' 'pytest-xdist>=3.8.0' (the dev dependency-group; CI uses uv sync --dev)",
+  "ci_parallel": false,
+  "plan_verdict": false,
+  "why_outside": "Python candidate removed from the queue on 2026-11-22 (founder decision D14: Node only until 28 November); not measured"
+ },
+ "yalc": {
+  "repo": "https://github.com/Othmane-Khadri/YALC-the-GTM-operating-system",
+  "commit": "5686d1f2f526346133f78eef3349fc5a655757b4",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/YALC-the-GTM-operating-system",
+  "fenvix_python": "$PM_WORK/venv/engine/bin/python",
+  "args": [],
+  "ci": "DECLARED vitest.config.ts:7-16 pool forks, forks.singleFork: true, fileParallelism: false (shared SQLite file gtm-os.db, libsql single-writer lock: 'running files in parallel workers causes sporadic SQLITE_BUSY'); .github/workflows/ci.yml:22 pnpm test = vitest run",
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts; (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace). The candidates.json pnpm@9 (= CI ci.yml:15 version 9) fails here: 'packages field missing or empty' in pnpm-workspace.yaml. vitest.globalSetup.ts spawns `pnpm exec drizzle-kit push`: pnpm 10.28.0 on PATH",
+  "ci_parallel": false,
+  "plan_verdict": true
+ },
+ "beevibe": {
+  "repo": "https://github.com/beevibe-ai/beevibe",
+  "commit": "81530ccae3519738b16a2b5d4aa81a61989a4ce8",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/beevibe/packages/core",
+  "fenvix_python": "$PM_WORK/venv/engine/bin/python",
+  "args": [],
+  "env": {
+   "DATABASE_URL": "postgresql://beevibe:beevibe@localhost:5433/beevibe",
+   "DATABASE_URL_TEST": "postgresql://beevibe:beevibe@localhost:5433/beevibe_test"
+  },
+  "ci": "DECLARED packages/core/vitest.config.ts:12-20 pool forks, singleFork: true, fileParallelism: false ('Test files share the beevibe_test DB; parallel file execution would interleave TRUNCATE + queries and cause FK violations. Serial is mandatory'); .github/workflows/ci.yml pnpm test (turbo test --concurrency=1)",
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "npx -y pnpm@9.12.0 install --frozen-lockfile --ignore-scripts; local PostgreSQL 16 + apt postgresql-16-pgvector (CI: pgvector/pgvector:pg16 service on port 5433), initdb -U beevibe --auth=trust, CREATE DATABASE beevibe, beevibe_test; pnpm run migrate up / migrate:test up with DATABASE_URL(_TEST) exported. CI's .env (OPENAI_API_KEY, ANTHROPIC_API_KEY secrets) is not available: 7 live-API tests fail in plain serial (ENV)",
+  "ci_parallel": false,
+  "plan_verdict": true
+ },
+ "agentlang": {
+  "fenvix_python": "$PM_WORK/venv/engine/bin/python",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "source": "claude/serial-scan harness/serial_scan/scan.jsonl (added 2026-11-22 on the coordinator's instruction: documented breakage, largest test_count_estimate)",
+  "repo": "https://github.com/agentlang-ai/agentlang",
+  "commit": "f02e27199b193096c19985b7877ad1644974507a",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/agentlang",
+  "args": [],
+  "env": {
+   "NODE_ENV": "test"
+  },
+  "ci": "DECLARED vitest.config.ts:27-35 pool forks singleFork + fileParallelism: false ('Run tests sequentially to prevent SQLite database lock issues'); .github/workflows/ci.yml:62 NODE_ENV=test npm test (= vitest run)",
+  "install": "npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts (packageManager pnpm@10.28.2; CI uses npm ci on package-lock.json); Langium generated files are committed"
+ },
+ "alakajam": {
+  "fenvix_python": "$PM_WORK/venv/engine/bin/python",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "source": "claude/serial-scan harness/serial_scan/scan.jsonl (added 2026-11-22 on the coordinator's instruction: documented breakage, largest test_count_estimate)",
+  "repo": "https://github.com/alakajam-team/alakajam",
+  "commit": "af63a7e0993f2f7de2ec8dff53a941ccfe855572",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/alakajam",
+  "args": [],
+  "ci": "DECLARED vitest.config.ts:28 fileParallelism: false ('Specs share a single sqlite database'); .github/workflows CI npm run test:unit:ci (= vitest run)",
+  "install": "npm ci --ignore-scripts --no-audit --no-fund"
+ },
+ "neat": {
+  "fenvix_python": "$PM_WORK/venv/engine/bin/python",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "source": "claude/serial-scan harness/serial_scan/scan.jsonl (added 2026-11-22 on the coordinator's instruction: documented breakage, largest test_count_estimate)",
+  "repo": "https://github.com/ndbroadbent/neat",
+  "commit": "e47291c416205ee3d33d5f3b97b6d5da3241ed82",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/neat",
+  "args": [],
+  "build": "npx --no-install svelte-kit sync",
+  "ci": "DECLARED vite.config.ts:11 fileParallelism: false ('prevent test isolation issues (all tests share the same in-memory SQLite database)'); .github/workflows/ci.yml:53 bun run test:coverage (= vitest run --coverage; coverage left out here)",
+  "install": "bun install --frozen-lockfile --ignore-scripts (bun.lock only); build = svelte-kit sync (the package's prepare script, skipped by --ignore-scripts)"
+ },
+ "instar": {
+  "fenvix_python": "$PM_WORK/venv/engine/bin/python",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "runner": "vitest",
+  "source": "claude/flaky-scan harness/flaky_scan/scan.jsonl 0208987 (serial_and_flaky; added 2026-11-22 on the coordinator's instruction)",
+  "repo": "https://github.com/JKHeadley/instar",
+  "commit": "76a46184ed04b2a233fb2a816a2837bc9642b532",
+  "dir": "$PM_WORK/fr/JKHeadley_instar",
+  "args": [
+   "--config",
+   "vitest.integration.config.ts"
+  ],
+  "ci": "DECLARED vitest.integration.config.ts:30 fileParallelism: false (+ one worker: 'Node can recycle a just-closed ephemeral localhost' port); .github/workflows/ci.yml:518 npm run test:integration (= vitest run --config vitest.integration.config.ts), Node 20 in CI (Node 22 here)",
+  "install": "npm ci --ignore-scripts --no-audit --no-fund (depth-1 fetch of the pinned commit); the config's globalSetup builds dist inside the run"
+ },
+ "open-knowledge": {
+  "fenvix_python": "$PM_WORK/venv/engine/bin/python",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "runner": "vitest",
+  "source": "claude/flaky-scan harness/flaky_scan/scan.jsonl 0208987 (serial_and_flaky; added 2026-11-22 on the coordinator's instruction)",
+  "repo": "https://github.com/inkeep/open-knowledge",
+  "commit": "7141136a2759b6f2f34ae1eb730c5e0e273e7056",
+  "dir": "$PM_WORK/fr/inkeep_open-knowledge/packages/app",
+  "args": [
+   "--config",
+   "vitest.integration.config.ts"
+  ],
+  "env": {
+   "PATH": "/opt/node24/bin:$PATH"
+  },
+  "ci": "DECLARED packages/app/vitest.integration.config.ts:30-36 fileParallelism: false ('running many files concurrently ... makes convergence assertions flake'); packages/app/package.json test:integration (CI runs it in 12 shards)",
+  "install": "Node 24.22.3 (devEngines.runtime); npx -y pnpm@12.8.1 install --frozen-lockfile --ignore-scripts at the root"
+ },
+ "drydock": {
+  "fenvix_python": "$PM_WORK/venv/engine/bin/python",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "runner": "vitest",
+  "source": "claude/flaky-scan harness/flaky_scan/scan.jsonl 0208987 (serial_and_flaky; added 2026-11-22 on the coordinator's instruction)",
+  "repo": "https://github.com/CodesWhat/drydock",
+  "commit": "ce562a6a84c91b7e101398766d7de560cd18e35f",
+  "dir": "$PM_WORK/fr/CodesWhat_drydock/app",
+  "args": [],
+  "env": {
+   "PATH": "/opt/node24/bin:$PATH"
+  },
+  "ci": "DECLARED app/vitest.config.ts:59-60 fileParallelism: false ('Coverage writes can race with clean-up; keep file execution serial'); app/package.json test = vitest run --coverage --maxWorkers=1 --fileParallelism=false (Node >= 24; coverage left out here)",
+  "install": "Node 24.22.3; npm ci --ignore-scripts at the root and in app/"
+ },
+ "kodus-ai": {
+  "fenvix_python": "$PM_WORK/venv/engine/bin/python",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "runner": "vitest",
+  "source": "claude/flaky-scan harness/flaky_scan/scan.jsonl 0208987 (serial_and_flaky; added 2026-11-22 on the coordinator's instruction)",
+  "repo": "https://github.com/kodustech/kodus-ai",
+  "commit": "8bc021d805313e2d23a4bb4e5fdcd7a6e1eb3fd1",
+  "dir": "$PM_WORK/fr/kodustech_kodus-ai/apps/cli",
+  "args": [],
+  "build": "npx -y pnpm@11.9.0 run build",
+  "ci": "DECLARED apps/cli/vitest.config.ts:6-11 fileParallelism: false (vi.doMock('os') homedir mock 'can leak across workers and flake unrelated FS-touching tests'); .github/workflows/cli-ci.yml pnpm build && pnpm test (= vitest run), Node 22",
+  "install": "npx -y pnpm@11.9.0 install --frozen-lockfile --ignore-scripts in apps/cli (its own lockfile, as CI)"
+ }
+}

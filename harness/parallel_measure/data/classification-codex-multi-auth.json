@@ -1,0 +1,74 @@
+{
+ "repo": "codex-multi-auth",
+ "not_identical_tests": 8667,
+ "boxes": {
+  "OURS": 8217,
+  "UNDECIDED": 434,
+  "ENV": 6,
+  "THEIRS": 10
+ },
+ "by_box_reason_serialnoise": [
+  [
+   "OURS",
+   "fs",
+   true,
+   8217
+  ],
+  [
+   "UNDECIDED",
+   "fs",
+   true,
+   425
+  ],
+  [
+   "THEIRS",
+   "fs",
+   true,
+   10
+  ],
+  [
+   "UNDECIDED",
+   "missing",
+   false,
+   7
+  ],
+  [
+   "ENV",
+   "fs",
+   true,
+   6
+  ],
+  [
+   "UNDECIDED",
+   "missing",
+   true,
+   2
+  ]
+ ],
+ "plain_runs": [
+  "plain par4-1",
+  "plain par4-2",
+  "plain serial 1",
+  "plain serial 2",
+  "plain serial 3",
+  "plain shuffle-1",
+  "plain shuffle-2"
+ ],
+ "engine_runs": [
+  "engine P1w2",
+  "engine P1w4",
+  "engine P2w2",
+  "engine P2w4",
+  "engine P3w2",
+  "engine P3w4",
+  "engine S1",
+  "engine S2",
+  "engine S3"
+ ],
+ "rule": {
+  "zero_OURS_UNDECIDED_ENV": false,
+  "THEIRS_all_reproduced": true,
+  "THEIRS_reported_equal_or_named": true,
+  "THEIRS_reported_bad": []
+ }
+}

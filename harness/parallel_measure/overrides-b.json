@@ -1,0 +1,32 @@
+{
+ "smart-second-brain": {
+  "test/agent/deltaMessages.test.ts::messages stored as deltas::reads back exactly what full copies read back, and stores far less": {
+   "box": "OURS",
+   "evidence": "engine-only failure: fails under `--det` in every run (full suite S1-S3, P w2/w4 x3; and `detjs vitest run <2 files> --det --det-workers=1` alone), never without the engine (plain full suite x3; `npx --no-install vitest run --no-file-parallelism test/providers/huggingfaceOAuth.test.ts test/agent/deltaMessages.test.ts` alone x1, with --sequence.shuffle seeds 1-5, and with a wall clock shifted to 1970: 15/15 passed each time). Mechanism UNKNOWN (candidates: detjs virtual timers / loopback socket handling)"
+  },
+  "test/providers/huggingfaceOAuth.test.ts::desktop sign-in (loopback redirect)::cancel rejects with the cancellation marker and closes the listener": {
+   "box": "OURS",
+   "evidence": "engine-only failure: fails under `--det` in every run (full suite S1-S3, P w2/w4 x3; and `detjs vitest run <2 files> --det --det-workers=1` alone), never without the engine (plain full suite x3; `npx --no-install vitest run --no-file-parallelism test/providers/huggingfaceOAuth.test.ts test/agent/deltaMessages.test.ts` alone x1, with --sequence.shuffle seeds 1-5, and with a wall clock shifted to 1970: 15/15 passed each time). Mechanism UNKNOWN (candidates: detjs virtual timers / loopback socket handling)"
+  },
+  "test/providers/huggingfaceOAuth.test.ts::desktop sign-in (loopback redirect)::ignores a redirect with the wrong state and keeps waiting": {
+   "box": "OURS",
+   "evidence": "engine-only failure: fails under `--det` in every run (full suite S1-S3, P w2/w4 x3; and `detjs vitest run <2 files> --det --det-workers=1` alone), never without the engine (plain full suite x3; `npx --no-install vitest run --no-file-parallelism test/providers/huggingfaceOAuth.test.ts test/agent/deltaMessages.test.ts` alone x1, with --sequence.shuffle seeds 1-5, and with a wall clock shifted to 1970: 15/15 passed each time). Mechanism UNKNOWN (candidates: detjs virtual timers / loopback socket handling)"
+  },
+  "test/providers/huggingfaceOAuth.test.ts::desktop sign-in (loopback redirect)::opens the consent page, exchanges the redirected code, and stores the session": {
+   "box": "OURS",
+   "evidence": "engine-only failure: fails under `--det` in every run (full suite S1-S3, P w2/w4 x3; and `detjs vitest run <2 files> --det --det-workers=1` alone), never without the engine (plain full suite x3; `npx --no-install vitest run --no-file-parallelism test/providers/huggingfaceOAuth.test.ts test/agent/deltaMessages.test.ts` alone x1, with --sequence.shuffle seeds 1-5, and with a wall clock shifted to 1970: 15/15 passed each time). Mechanism UNKNOWN (candidates: detjs virtual timers / loopback socket handling)"
+  },
+  "test/providers/huggingfaceOAuth.test.ts::desktop sign-in (loopback redirect)::rejects when the user declines on Hugging Face": {
+   "box": "OURS",
+   "evidence": "engine-only failure: fails under `--det` in every run (full suite S1-S3, P w2/w4 x3; and `detjs vitest run <2 files> --det --det-workers=1` alone), never without the engine (plain full suite x3; `npx --no-install vitest run --no-file-parallelism test/providers/huggingfaceOAuth.test.ts test/agent/deltaMessages.test.ts` alone x1, with --sequence.shuffle seeds 1-5, and with a wall clock shifted to 1970: 15/15 passed each time). Mechanism UNKNOWN (candidates: detjs virtual timers / loopback socket handling)"
+  },
+  "test/providers/huggingfaceOAuth.test.ts::mobile sign-in (obsidian:// redirect)::completes from the persisted grant after Obsidian restarted mid-sign-in": {
+   "box": "OURS",
+   "evidence": "engine-only failure: fails under `--det` in every run (full suite S1-S3, P w2/w4 x3; and `detjs vitest run <2 files> --det --det-workers=1` alone), never without the engine (plain full suite x3; `npx --no-install vitest run --no-file-parallelism test/providers/huggingfaceOAuth.test.ts test/agent/deltaMessages.test.ts` alone x1, with --sequence.shuffle seeds 1-5, and with a wall clock shifted to 1970: 15/15 passed each time). Mechanism UNKNOWN (candidates: detjs virtual timers / loopback socket handling)"
+  },
+  "test/providers/huggingfaceOAuth.test.ts::mobile sign-in (obsidian:// redirect)::reports no restart when the setup screen is still waiting for the sign-in": {
+   "box": "OURS",
+   "evidence": "engine-only failure: fails under `--det` in every run (full suite S1-S3, P w2/w4 x3; and `detjs vitest run <2 files> --det --det-workers=1` alone), never without the engine (plain full suite x3; `npx --no-install vitest run --no-file-parallelism test/providers/huggingfaceOAuth.test.ts test/agent/deltaMessages.test.ts` alone x1, with --sequence.shuffle seeds 1-5, and with a wall clock shifted to 1970: 15/15 passed each time). Mechanism UNKNOWN (candidates: detjs virtual timers / loopback socket handling)"
+  }
+ }
+}
