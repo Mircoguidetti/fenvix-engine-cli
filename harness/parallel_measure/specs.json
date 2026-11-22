@@ -300,5 +300,48 @@
   "install": "npx -y pnpm@9.12.0 install --frozen-lockfile --ignore-scripts; local PostgreSQL 16 + apt postgresql-16-pgvector (CI: pgvector/pgvector:pg16 service on port 5433), initdb -U beevibe --auth=trust, CREATE DATABASE beevibe, beevibe_test; pnpm run migrate up / migrate:test up with DATABASE_URL(_TEST) exported. CI's .env (OPENAI_API_KEY, ANTHROPIC_API_KEY secrets) is not available: 7 live-API tests fail in plain serial (ENV)",
   "ci_parallel": false,
   "plan_verdict": true
+ },
+ "agentlang": {
+  "fenvix_python": "$PM_WORK/venv/engine/bin/python",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "source": "claude/serial-scan harness/serial_scan/scan.jsonl (added 2026-11-22 on the coordinator's instruction: documented breakage, largest test_count_estimate)",
+  "repo": "https://github.com/agentlang-ai/agentlang",
+  "commit": "f02e27199b19bbd6d17ff2b67e5a5fba6043da40",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/agentlang",
+  "args": [],
+  "env": {
+   "NODE_ENV": "test"
+  },
+  "ci": "DECLARED vitest.config.ts:27-35 pool forks singleFork + fileParallelism: false ('Run tests sequentially to prevent SQLite database lock issues'); .github/workflows/ci.yml:62 NODE_ENV=test npm test (= vitest run)",
+  "install": "npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts (packageManager pnpm@10.28.2; CI uses npm ci on package-lock.json); Langium generated files are committed"
+ },
+ "alakajam": {
+  "fenvix_python": "$PM_WORK/venv/engine/bin/python",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "source": "claude/serial-scan harness/serial_scan/scan.jsonl (added 2026-11-22 on the coordinator's instruction: documented breakage, largest test_count_estimate)",
+  "repo": "https://github.com/alakajam-team/alakajam",
+  "commit": "af63a7e0993f2f7de2ec8dff53a941ccfe855572",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/alakajam",
+  "args": [],
+  "ci": "DECLARED vitest.config.ts:28 fileParallelism: false ('Specs share a single sqlite database'); .github/workflows CI npm run test:unit:ci (= vitest run)",
+  "install": "npm ci --ignore-scripts --no-audit --no-fund"
+ },
+ "neat": {
+  "fenvix_python": "$PM_WORK/venv/engine/bin/python",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "source": "claude/serial-scan harness/serial_scan/scan.jsonl (added 2026-11-22 on the coordinator's instruction: documented breakage, largest test_count_estimate)",
+  "repo": "https://github.com/ndbroadbent/neat",
+  "commit": "e47291c416205ee3d33d5f3b97b6d5da3241ed82",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/neat",
+  "args": [],
+  "build": "npx --no-install svelte-kit sync",
+  "ci": "DECLARED vite.config.ts:11 fileParallelism: false ('prevent test isolation issues (all tests share the same in-memory SQLite database)'); .github/workflows/ci.yml:53 bun run test:coverage (= vitest run --coverage; coverage left out here)",
+  "install": "bun install --frozen-lockfile --ignore-scripts (bun.lock only); build = svelte-kit sync (the package's prepare script, skipped by --ignore-scripts)"
  }
 }
