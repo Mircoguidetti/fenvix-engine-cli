@@ -8,7 +8,7 @@ Intel(R) Xeon(R) Processor @ 2.10GHz (also recorded per row).
 
 ```bash
 git clone https://github.com/mircoguidetti/fenvix-engine-cli && cd fenvix-engine-cli
-git checkout 5a6463fd                       # origin/claude/release-1 at the time of measurement (each row: engine_commit)
+git checkout bfaf70b4                       # trunk of the final set (each row: engine_commit; earlier sets 5a6463fd)
 python3 -m venv /tmp/pm/venv/py && /tmp/pm/venv/py/bin/pip install maturin
 (cd node && npm run build)                  # Node addon: node/detjs.linux-x64.node
 /tmp/pm/venv/py/bin/maturin build --release -o /tmp/pm/wheels
@@ -46,17 +46,24 @@ python3.12 -m venv $PM_WORK/venv/attrs && $PM_WORK/venv/attrs/bin/pip install $P
 
 ## 3. Measure
 
-One repository at a time, nothing else running:
+One repository at a time, nothing else running (a round of codex-multi-auth takes about 45 min: run rounds in
+separate processes with `--reps 1 --first-rep N` to stay under a 2 h job limit):
 
 ```bash
 cd fenvix-engine-cli/harness/parallel_measure
-python3 measure.py --spec specs.json --name <repo> --reps 3 --workers 2,4 --out $PM_WORK/final
-python3 table.py $PM_WORK/final/results.jsonl specs.json > TABLE.md
+for r in nestjs-pino agentsys ironcurtain codex-multi-auth; do
+  python3 measure.py --spec specs.json --name $r --reps 3 --workers 2,4 --out $PM_WORK/final
+  python3 repro.py   --spec specs.json --name $r --out $PM_WORK/final --runs 2 --seeds 1,2   # plain runs for classify.py
+  python3 classify.py --out $PM_WORK/final --name $r --bugs bugs                             # THEIRS / OURS / UNDECIDED / ENV
+done
+python3 table.py $PM_WORK/final/results.jsonl specs.json      # the rows of TABLE.md
 ```
 
+Before every run: `git checkout -- . && git clean -fdx -e node_modules` in the checkout (and its submodules), the
+optional `build` of the spec, and an empty `TMPDIR=/tmp/pm-<repo>` (also TMP, TEMP).
 Per round `measure.py` runs: (Python, round 1 only) bare pytest with `-p no:detpy`; plain serial (pytest with
 `--det-outcomes`; Node: `npx --no-install vitest run --no-file-parallelism` / `npx --no-install jest --runInBand` with
-the JSON reporter); for repositories whose CI is parallel, the runner's own `-n N` / `--maxWorkers=N`; `--det` serial
+the JSON reporter); the runner's own parallel mode with N workers, no engine (`-n N` / `--maxWorkers=N`), for every repository; `--det` serial
 (`detjs ... --det --det-workers=1`); `--det` parallel at 2 and 4 workers; `fenvix verify S_i P_i --json` per worker
 count; in round 2 `fenvix verify S_1 S_2` (serial noise). Engine state: per (kind, workers), round 1 cold, later
 rounds start from what the previous run of the same kind left.

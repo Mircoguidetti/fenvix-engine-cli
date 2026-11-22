@@ -1,0 +1,69 @@
+{
+ "repo": "ironcurtain",
+ "not_identical_tests": 6913,
+ "boxes": {
+  "OURS": 6277,
+  "UNDECIDED": 632,
+  "THEIRS": 4
+ },
+ "by_box_reason_serialnoise": [
+  [
+   "OURS",
+   "fs",
+   true,
+   6277
+  ],
+  [
+   "UNDECIDED",
+   "fs",
+   true,
+   387
+  ],
+  [
+   "UNDECIDED",
+   "missing",
+   true,
+   245
+  ],
+  [
+   "THEIRS",
+   "fs",
+   true,
+   3
+  ],
+  [
+   "THEIRS",
+   "missing",
+   true,
+   1
+  ]
+ ],
+ "plain_runs": [
+  "plain par4-1",
+  "plain par4-2",
+  "plain serial 1",
+  "plain serial 2",
+  "plain serial 3",
+  "plain shuffle-1",
+  "plain shuffle-2"
+ ],
+ "engine_runs": [
+  "engine P1w2",
+  "engine P1w4",
+  "engine P2w2",
+  "engine P2w4",
+  "engine P3w2",
+  "engine P3w4",
+  "engine S1",
+  "engine S2",
+  "engine S3"
+ ],
+ "rule": {
+  "zero_OURS_UNDECIDED_ENV": false,
+  "THEIRS_all_reproduced": true,
+  "THEIRS_reported_equal_or_named": false,
+  "THEIRS_reported_bad": [
+   "test/proxy-integration.test.ts@@main::Proxy MCP Server Integration::control API + MITM proxy domain management::lists initial domains (providers only, no dynamic)"
+  ]
+ }
+}
