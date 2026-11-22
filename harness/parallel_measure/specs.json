@@ -205,5 +205,67 @@
   "env": {
    "NODE_OPTIONS_NOTE": "CI sets NODE_OPTIONS; the harness drops NODE_OPTIONS (detjs uses it)"
   }
+ },
+ "lerna-lite": {
+  "repo": "https://github.com/lerna-lite/lerna-lite",
+  "commit": "fec3cb9660bac71efe5d5e5749f615a3802c1cc1",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/lerna-lite",
+  "fenvix_python": "$PM_WORK/venv/engine/bin/python",
+  "args": [
+   "--config",
+   "./e2e/vitest.config.ts"
+  ],
+  "ci": "DECLARED e2e/vitest.config.ts:4-8 pool forks + singleFork: true ('E2E tests should run sequentially to avoid conflicts'); .github/workflows/main.yml:196 pnpm test:e2e",
+  "source": "claude/serial-scan harness/serial_scan/candidates.json (its collect/run 'cd e2e && vitest' finds no tests: the config's include is relative to the repo root, so this spec runs from the root with --config)",
+  "install": "npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts && npx -y pnpm@11.28.5 build (the e2e suite runs the built CLI); without Verdaccio (package.json test:e2e:no-verdaccio): all 107 e2e tests pass without it",
+  "ci_parallel": false,
+  "plan_verdict": true
+ },
+ "rosclaw": {
+  "repo": "https://github.com/ros-claw/rosclaw",
+  "commit": "8edd694066490416aa5fd53d39978f0d81f68fbb",
+  "runner": "pytest",
+  "dir": "$PM_WORK/repos/rosclaw",
+  "python": "$PM_WORK/venv/rosclaw/bin/python",
+  "args": [
+   "-q",
+   "-p",
+   "no:cacheprovider",
+   "-m",
+   "(perf_serial or embedded_seekdb) and not slow and not integration and not deployment"
+  ],
+  "ci": "DECLARED .github/workflows/ci.yml:342 pytest -q -p no:xdist -m '(perf_serial or embedded_seekdb) and not slow and not integration and not deployment' ('resource-sensitive suite (serial: wall-clock and embedded engine)'); -p no:xdist is left out here because the engine's parallel run needs xdist (-n N); plain/serial runs have no -n, so they are single-process as in CI",
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "python3 -m venv; pip install -e '.[dev]' (as CI ci.yml:324; the candidates.json chain stops at the nonexistent '.[test]' extra, which pip accepts, and leaves rosclaw-know/pyseekdb/xdist out)",
+  "ci_parallel": false,
+  "plan_verdict": true
+ },
+ "get-physics-done": {
+  "repo": "https://github.com/psi-oss/get-physics-done",
+  "commit": "0f417695ccf1f987af44bb4f4b3cbbdeb5f2c48b",
+  "runner": "pytest",
+  "dir": "$PM_WORK/repos/get-physics-done",
+  "python": "$PM_WORK/venv/get-physics-done/bin/python",
+  "args": [
+   "-q",
+   "-p",
+   "no:cacheprovider",
+   "-n",
+   "0",
+   "tests/test_release_consistency.py",
+   "tests/test_import_stability_contracts.py",
+   "tests/test_metadata_consistency.py::test_python_floor_is_consistent_across_install_surfaces",
+   "tests/test_runtime_catalog_bootstrap_contract.py",
+   "tests/test_runtime_install_smoke.py",
+   "tests/test_install_lifecycle.py::test_markdown_command_runtime_lifecycle_round_trip",
+   "tests/test_bootstrap_installer.py::test_bootstrap_prefers_versioned_python_when_generic_alias_is_newer",
+   "tests/test_bootstrap_installer.py::test_bootstrap_recreates_managed_env_when_selected_minor_changes"
+  ],
+  "ci": "DECLARED .github/workflows/release.yml:109 pytest -n 0 tests/test_release_consistency.py; test.yml:115 pytest -n 0 tests/test_import_stability_contracts.py; test.yml:125-131 pytest -n 0 (installer/runtime targets). The three serial (-n 0) CI invocations are joined into one run here. pyproject addopts is '-n auto --dist=worksteal', so -n 0 is in args; the engine's parallel run appends -n N after it (last wins)",
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "python3 -m venv; pip install -e . ; pip install 'pytest>=9.0.2' 'pytest-asyncio>=1.3.0' 'pytest-xdist>=3.8.0' (the dev dependency-group; CI uses uv sync --dev)",
+  "ci_parallel": false,
+  "plan_verdict": true
  }
 }
