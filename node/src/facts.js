@@ -69,6 +69,9 @@ function recQuietSafe(op, v, source) {
   try { rec(op, v, source); } finally { STATE.quietDepth = depth; }
 }
 
+//: the `process.binding` tables that are a function of the Node version alone (a run input), and nothing else
+const PURE_BINDINGS = new Set(['constants']);
+
 const OS_FACTS = ['hostname', 'userInfo', 'homedir', 'tmpdir', 'networkInterfaces', 'availableParallelism', 'totalmem',
   'freemem', 'loadavg', 'uptime', 'release', 'version', 'machine', 'getPriority', 'type', 'arch', 'endianness'];
 
@@ -88,6 +91,29 @@ function installProcessFacts(patcher, proc) {
     if (typeof real.rss === 'function') w.rss = function rss() { const r = real.rss(); if (STATE.testId !== null) recQuietSafe('process.memoryUsage.rss', r); return r; };
     Object.defineProperty(w, '__detjsFacts', { value: true });
     patcher.set(proc, n, w);
+  }
+  // `process.binding(name)` hands out a raw internal binding, BYPASSING the modules the engine patched: a test
+  // that asked for `fs` or `crypto` this way would read files or draw entropy where no observer can see it. So
+  // the decision is per ARGUMENT, by the predicate that knows which argument it was, and not by the name:
+  //   * `constants` is a table of numbers (O_RDONLY, the errno values, the signal numbers) that reads nothing
+  //     and cannot change within a Node version, and the version is a run input (`runtime`). Recorded as an
+  //     event so the call is in the fingerprint, and that is all it is.
+  //   * anything else marks the running test `uncontrolled.io` at this call: unobserved, so unprovable.
+  // Named because Emscripten's generated code asks for `constants`, and PGlite is Emscripten: MEASURED, the
+  // pilot's own stack (node:test + PGlite, 36 files) had every test NOT PROVEN with
+  // "unaccounted.api: process.binding", so nothing of it could be cached or spread across cores.
+  const realBinding = proc.binding;
+  if (typeof realBinding === 'function' && !realBinding.__detjsFacts) {
+    const w = function binding(name, ...rest) {
+      const r = realBinding.call(this, name, ...rest);
+      try {
+        if (PURE_BINDINGS.has(String(name))) recQuietSafe(`process.binding.${name}`, String(name));
+        else if (STATE.testId !== null) STATE.recordAt('other', 'uncontrolled.io', '<detjs>', `process.binding(${name})`);
+      } catch { /* never break the call */ }
+      return r;
+    };
+    Object.defineProperty(w, '__detjsFacts', { value: true });
+    patcher.set(proc, 'binding', w);
   }
   for (const n of ['pid', 'ppid']) {
     const d = Object.getOwnPropertyDescriptor(proc, n);

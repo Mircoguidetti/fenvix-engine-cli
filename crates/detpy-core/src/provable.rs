@@ -976,6 +976,12 @@ pub fn account_node(module: &str, export: &str) -> Accounting {
             // pinned or virtual under `--det`
             "hrtime" | "uptime" | "pid" | "ppid" | "cwd" | "chdir" | "umask" | "getuid" | "geteuid" | "getgid"
             | "getegid" | "getgroups" | "setuid" | "setgid" | "title" => Accounting::Controlled,
+            // `binding` hands out a raw internal binding, bypassing the patched modules, so the decision is
+            // per ARGUMENT and the engine's wrapper makes it (node/src/facts.js): `constants` is a table of
+            // numbers pinned by the `runtime` input and is recorded; every other binding marks the test
+            // `uncontrolled.io`. Emscripten's generated code -- PGlite, which the pilot's suite runs on --
+            // asks for `constants`, and without this every test of such a suite was NOT PROVEN.
+            "binding" => Accounting::Controlled,
             // hands out a builtin module: what is in it is this table's own business, and what was loaded is
             // `inputs.code` / `inputs.deps`
             "getBuiltinModule" => Accounting::Input,
