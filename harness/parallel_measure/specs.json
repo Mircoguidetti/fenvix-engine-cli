@@ -343,5 +343,70 @@
   "build": "npx --no-install svelte-kit sync",
   "ci": "DECLARED vite.config.ts:11 fileParallelism: false ('prevent test isolation issues (all tests share the same in-memory SQLite database)'); .github/workflows/ci.yml:53 bun run test:coverage (= vitest run --coverage; coverage left out here)",
   "install": "bun install --frozen-lockfile --ignore-scripts (bun.lock only); build = svelte-kit sync (the package's prepare script, skipped by --ignore-scripts)"
+ },
+ "instar": {
+  "fenvix_python": "$PM_WORK/venv/engine/bin/python",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "runner": "vitest",
+  "source": "claude/flaky-scan harness/flaky_scan/scan.jsonl 0208987 (serial_and_flaky; added 2026-11-22 on the coordinator's instruction)",
+  "repo": "https://github.com/JKHeadley/instar",
+  "commit": "76a46184ed04b2a233fb2a816a2837bc9642b532",
+  "dir": "$PM_WORK/fr/JKHeadley_instar",
+  "args": [
+   "--config",
+   "vitest.integration.config.ts"
+  ],
+  "ci": "DECLARED vitest.integration.config.ts:30 fileParallelism: false (+ one worker: 'Node can recycle a just-closed ephemeral localhost' port); .github/workflows/ci.yml:518 npm run test:integration (= vitest run --config vitest.integration.config.ts), Node 20 in CI (Node 22 here)",
+  "install": "npm ci --ignore-scripts --no-audit --no-fund (depth-1 fetch of the pinned commit); the config's globalSetup builds dist inside the run"
+ },
+ "open-knowledge": {
+  "fenvix_python": "$PM_WORK/venv/engine/bin/python",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "runner": "vitest",
+  "source": "claude/flaky-scan harness/flaky_scan/scan.jsonl 0208987 (serial_and_flaky; added 2026-11-22 on the coordinator's instruction)",
+  "repo": "https://github.com/inkeep/open-knowledge",
+  "commit": "7141136a2759b6f2f34ae1eb730c5e0e273e7056",
+  "dir": "$PM_WORK/fr/inkeep_open-knowledge/packages/app",
+  "args": [
+   "--config",
+   "vitest.integration.config.ts"
+  ],
+  "env": {
+   "PATH": "/opt/node24/bin:$PATH"
+  },
+  "ci": "DECLARED packages/app/vitest.integration.config.ts:30-36 fileParallelism: false ('running many files concurrently ... makes convergence assertions flake'); packages/app/package.json test:integration (CI runs it in 12 shards)",
+  "install": "Node 24.22.3 (devEngines.runtime); npx -y pnpm@12.8.1 install --frozen-lockfile --ignore-scripts at the root"
+ },
+ "drydock": {
+  "fenvix_python": "$PM_WORK/venv/engine/bin/python",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "runner": "vitest",
+  "source": "claude/flaky-scan harness/flaky_scan/scan.jsonl 0208987 (serial_and_flaky; added 2026-11-22 on the coordinator's instruction)",
+  "repo": "https://github.com/CodesWhat/drydock",
+  "commit": "ce562a6a84c91b7e101398766d7de560cd18e35f",
+  "dir": "$PM_WORK/fr/CodesWhat_drydock/app",
+  "args": [],
+  "env": {
+   "PATH": "/opt/node24/bin:$PATH"
+  },
+  "ci": "DECLARED app/vitest.config.ts:59-60 fileParallelism: false ('Coverage writes can race with clean-up; keep file execution serial'); app/package.json test = vitest run --coverage --maxWorkers=1 --fileParallelism=false (Node >= 24; coverage left out here)",
+  "install": "Node 24.22.3; npm ci --ignore-scripts at the root and in app/"
+ },
+ "kodus-ai": {
+  "fenvix_python": "$PM_WORK/venv/engine/bin/python",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "runner": "vitest",
+  "source": "claude/flaky-scan harness/flaky_scan/scan.jsonl 0208987 (serial_and_flaky; added 2026-11-22 on the coordinator's instruction)",
+  "repo": "https://github.com/kodustech/kodus-ai",
+  "commit": "8bc021d805313e2d23a4bb4e5fdcd7a6e1eb3fd1",
+  "dir": "$PM_WORK/fr/kodustech_kodus-ai/apps/cli",
+  "args": [],
+  "build": "npx -y pnpm@11.9.0 run build",
+  "ci": "DECLARED apps/cli/vitest.config.ts:6-11 fileParallelism: false (vi.doMock('os') homedir mock 'can leak across workers and flake unrelated FS-touching tests'); .github/workflows/cli-ci.yml pnpm build && pnpm test (= vitest run), Node 22",
+  "install": "npx -y pnpm@11.9.0 install --frozen-lockfile --ignore-scripts in apps/cli (its own lockfile, as CI)"
  }
 }
