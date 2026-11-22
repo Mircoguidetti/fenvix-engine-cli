@@ -224,6 +224,105 @@ The 13<!--skips_ref_open--> skips with an open issue sit in 7<!--repos_with_open
 if every UNKNOWN reference were open, the share with an open issue would still be below 9% (ESTIMATED as the sum of
 the open and UNKNOWN rows).
 
+## Serial and flaky (added on request, for the next measurement)
+
+**What was asked for.** Another session asked for this after D21/D22: list the repositories that both live with
+flaky tests and run their tests serially on purpose, with an approximate test count.
+
+**How it was measured.** **MEASURED** with `python3 harness/flaky_scan/serial_scan.py`, then `build_scan.py`. The
+check re-fetched the same files the same read-only way for the 546<!--serial_scanned--> repositories that live
+with flaky tests. A serial setting is any setting that forces one worker in CI:
+
+- Jest `--runInBand` / `-i` / `--maxWorkers=1` / `maxWorkers: 1`;
+- Vitest `fileParallelism: false` / `--no-file-parallelism` / `singleThread`/`singleFork: true` /
+  `maxThreads`/`maxForks`/`maxWorkers`/`maxConcurrency: 1`;
+- Playwright `workers: 1` (or `CI ? 1 : …`) / `--workers=1` / `fullyParallel: false`;
+- pytest `-n 0` / `-p no:xdist` / `--dist no` / `@pytest.mark.serial` / `xdist_group`.
+
+**What counts as "on purpose".** The comment on the line, or in the comment lines directly above or below it (at
+most 3), gives a reason: shared state, database, port, conflict, race, flaky, memory, lock, concurrency, and so on.
+Restating the setting ("run serially") is not a reason. Playwright's generated `workers: process.env.CI ? 1 :
+undefined`, with its generated comment, is neither a decision nor a reason, and is excluded.
+
+**The test count is ESTIMATED.** It is the number of lines in the fetched test files that open a JavaScript test
+(`it(`/`test(` and their `.skip/.only/.each` forms) or a Python `def test_`. It counts the whole repository, not
+only the serial package. Parametrised tests count once, and tests in copied directories count again.
+
+**Results.**
+
+- **Some serial setting:** 189<!--serial_any--> of the repositories that live with flaky tests
+  (34.6%<!--pct_serial_any-->). Another 64<!--serial_scaffold_workers--> carry the Playwright generated
+  `workers` default.
+- **Serial on purpose with a stated reason ("serial and flaky"):** **54<!--serial_and_flaky-->**, which is
+  9.9%<!--pct_serial_and_flaky--> of the repositories that live with flaky tests.
+- **Stated flakiness:** 35<!--serial_and_flaky_stated--> of those 54 state it (the rest have retries only).
+- **From the neutral frame:** 5<!--serial_and_flaky_neutral-->.
+- **Test counts:** the median is 8313<!--serial_and_flaky_tests_median--> tests (ESTIMATED).
+  53<!--serial_and_flaky_100tests--> have at least 100 tests and 49<!--serial_and_flaky_1000tests--> at least 1,000.
+
+The table lists one serial line per repository (the first with a stated reason), sorted by estimated test count.
+`verify_scan.py` regenerates it from `scan.jsonl` and fails if it differs. The full list of serial settings per
+repository is `serial_signals` in `scan.jsonl`.
+
+<!--serial-table-->
+| repository | stars | flaky signal | serial setting (file:line, verbatim) | reason words | tests (est.) |
+|---|---|---|---|---|---|
+| `rush86999/atom` | 912 | stated: playwright_retries, pytest_mark_flaky, pytest_reruns, skip_flaky | `.github/workflows/ci.yml:1827` `run: npx jest tests/lib/rpc-client-failure.test.ts tests/components/mini-app-harness-rpc-f` | shared | 116221 |
+| `openobserve/openobserve` | 23147 | stated: ci_rerun, playwright_retries, skip_flaky | `tests/api-testing/tests/ingest/test_traces.py:173` `@pytest.mark.serial` | shared | 82530 |
+| `PostHog/posthog` | 41022 | stated: ci_rerun, jest_retryTimes, playwright_retries, pytest_mark_flaky, pytest_reruns, quarantine_ci, skip_flaky, vitest_retry | `products/desktop/apps/code/tests/e2e/playwright.config.ts:15` `workers: 1,` | lock | 80121 |
+| `dbn1972/civitasone-suite` | 0 | stated: playwright_retries, quarantine_list, skip_flaky, vitest_retry | `services/building-service/vitest.config.ts:95` `fileParallelism: false,` | race | 69262 |
+| `JKHeadley/instar` | 86 | stated: skip_flaky | `vitest.integration.config.ts:30` `fileParallelism: false,` | port | 69172 |
+| `EvanZhang008/open-walnut` | 142 | implied: playwright_retries, vitest_retry | `scripts/demos/playwright.config.ts:28` `fullyParallel: false,` | share | 67541 |
+| `inclusionAI/Avernet` | 609 | stated: pytest_reruns, skip_flaky | `apps/evolverun/clawweb/public/modules/clawinsight/vitest.preview.config.ts:3` `export default defineConfig({ test: { environment: 'node', include: ['preview/__tests__/*.` | shared | 59697 |
+| `inkeep/open-knowledge` | 4891 | stated: ci_rerun, playwright_retries, skip_flaky, vitest_retry | `packages/app/vitest.integration.config.ts:36` `fileParallelism: false,` | flake, timing | 49161 |
+| `CandleViewer/CandleViewer` | 12 | stated: ci_rerun, playwright_retries, pytest_mark_flaky, quarantine_ci, vitest_retry | `apps/desktop/e2e/playwright.config.ts:21` `workers: 1,` | flaky | 42779 |
+| `Okan-wqm/aquaculture_platform` | 1 | stated: playwright_retries, skip_flaky | `libs/migration-harness/jest.config.cts:25` `maxWorkers: 1,` | postgresql | 32826 |
+| `evenfire-ai/evenfire` | 500 | implied: playwright_retries | `control-api/vitest.config.ts:31` `fileParallelism: false,` | leak, shared | 31578 |
+| `Porabuild/Poracode` | 124 | stated: vitest_retry | `vitest.integration.config.ts:26` `fileParallelism: false,` | concurrent, resources | 31513 |
+| `mposition/Tomverse` | 0 | implied: playwright_retries | `playwright.admin.config.ts:65` `workers: 1,` | concurrent, database | 29292 |
+| `CodesWhat/drydock` | 280 | implied: ci_rerun, playwright_retries | `app/vitest.config.ts:60` `fileParallelism: false,` | flake, race | 26212 |
+| `imbue-ai/mngr` | 434 | stated: pytest_mark_flaky, skip_flaky | `apps/minds/test/e2e/playwright.config.js:17` `workers: 1,` | port, singleton | 26110 |
+| `supermarsx/standard-red-notes` | 6 | implied: ci_rerun, mocha_retries | `e2e/playwright.config.ts:49` `workers: 1,` | shared | 24663 |
+| `kitelev/exocortex` | 10 | stated: playwright_retries, quarantine_list | `packages/obsidian-plugin/playwright-e2e.config.ts:6` `fullyParallel: false,` | share | 20046 |
+| `kodustech/kodus-ai` | 1646 | stated: jest_retryTimes, skip_flaky | `apps/cli/vitest.config.ts:11` `fileParallelism: false,` | flake, leak | 17822 |
+| `cypress-io/cypress` | 51044 | stated: mocha_retries, skip_flaky, vitest_retry | `npm/webpack-dev-server/vitest.config.ts:8` `fileParallelism: false,` | collisions, flaky | 16417 |
+| `haseeb-heaven/open-agent` | 279 | implied: vitest_retry | `memory-tests/vitest.config.ts:16` `fileParallelism: false, // Must run serially to avoid memory interference` | interference, memory | 14167 |
+| `steerlabs/opensteer` | 266 | stated: quarantine_list, vitest_retry | `apps/control-plane/vitest.config.ts:9` `fileParallelism: false,` | database, locks, postgresql, race | 13160 |
+| `dbn1972/ProctiraErp` | 0 | stated: playwright_retries, skip_flaky | `packages/backend/hostel/vitest.config.ts:14` `fileParallelism: false,` | race | 12878 |
+| `uncovering-world/track-your-regions` | 2 | stated: playwright_retries | `backend/vitest.db.config.ts:43` `fileParallelism: false,` | database, share | 10163 |
+| `Ocelot-Social-Community/Ocelot-Social` | 115 | implied: playwright_retries | `backend/vitest.config.ts:180` `fileParallelism: false,` | concurrently, shared | 9876 |
+| `quanwangniuniu/zmarkio` | 11 | implied: playwright_retries, pytest_reruns | `variations-studio-api/jest.config.js:16` `maxWorkers: 1,` | postgres | 9175 |
+| `chive-pub/chive` | 17 | implied: playwright_retries | `vitest.config.ts:14` `fileParallelism: false,` | postgresql, redis | 9159 |
+| `inkeep/agents` | 1500 | stated: cypress_retries, skip_flaky, vitest_retry | `agents-api/vitest.integration.config.ts:26` `fileParallelism: false,` | conflicts, shared | 8313 |
+| `sudocode-ai/sudocode` | 296 | stated: playwright_retries, vitest_retry | `plugins/integration-beads/vitest.config.ts:14` `singleFork: true, // Run tests serially to avoid CLI conflicts` | conflicts | 7768 |
+| `TortoiseWolfe/ScriptHammer` | 7 | stated: playwright_retries | `vitest.rls.config.ts:41` `fileParallelism: false,` | races, share | 7758 |
+| `dcccrypto/percolator-launch` | 51 | implied: playwright_retries, vitest_retry | `playwright.config.ts:24` `fullyParallel: false,` | conflicts | 7652 |
+| `ChrisChen667788/wind-comic` | 722 | implied: vitest_retry | `vitest.config.ts:36` `forks: { singleFork: true },` | contention, lock | 6618 |
+| `barbaradenney/uswds-wc` | 0 | stated: playwright_retries, quarantine_ci, skip_flaky | `packages/vitest.config.base.ts:42` `fileParallelism: false,` | conflicts | 5789 |
+| `MaximilianIsing/Stagify.ai` | 0 | stated: playwright_retries | `playwright.config.js:22` `workers: 1, // one server, and the masking test paints via the shared mouse` | shared | 5391 |
+| `tamagui/tamagui` | 14318 | stated: jest_retryTimes, playwright_retries, skip_flaky, vitest_retry | `code/sandbox/playwright.config.ts:53` `workers: 1,` | concurrent, leak | 4939 |
+| `langchain-ai/langgraphjs` | 3422 | implied: vitest_retry | `libs/checkpoint-redis/vitest.config.js:20` `fileParallelism: false, // Sequential to avoid Docker resource limits` | resource | 4883 |
+| `mmazune/nimbuspos-old` | 0 | stated: playwright_retries, skip_flaky | `apps/web/playwright.config.js:14` `fullyParallel: false, // Run sequentially to avoid auth conflicts` | conflicts | 4029 |
+| `theimaginaryfoundation/what-iff` | 22 | stated: playwright_retries, skip_flaky | `web/app/e2e/playwright.config.base.ts:230` `workers: 1,` | concurrency | 3526 |
+| `rh-aiservices-bu/litemaas` | 80 | stated: playwright_retries, vitest_retry | `backend/vitest.config.ts:10` `maxConcurrency: 1,` | concurrency, database, deadlocks | 3154 |
+| `Krivega/sip-connector` | 5 | implied: playwright_retries | `playwright.config.ts:18` `fullyParallel: false,` | share | 2860 |
+| `feldera/feldera` | 2181 | implied: pytest_reruns | `js-packages/web-console/playwright.config.ts:24` `workers: 1,` | concurrent, resource, shared | 2642 |
+| `lyestarzalt/x-dispatch` | 82 | implied: playwright_retries | `playwright.config.ts:18` `workers: 1,` | share | 2547 |
+| `guillempuche/batuda` | 9 | stated: ci_rerun, playwright_retries | `apps/internal/playwright.config.ts:138` `fullyParallel: false,` | db, shared | 2480 |
+| `SMK1085/paigasus-core` | 0 | stated: playwright_retries | `ts/apps/gateway-console/playwright.config.ts:19` `fullyParallel: false,` | shares | 2351 |
+| `saleor/apps` | 164 | implied: playwright_retries | `apps/payment-apps-testclient/playwright.config.ts:5` `fullyParallel: false,` | port, shares | 2322 |
+| `Artist-Alley-Org/artist-alley` | 4 | stated: playwright_retries | `scripts/dogfood/ui/playwright.config.ts:129` `workers: process.env.CI ? 1 : 2,` | flake | 2278 |
+| `KirilMT/mockCMMS` | 0 | stated: playwright_retries | `playwright.config.js:101` `fullyParallel: false,` | race | 1665 |
+| `DhananjayThomble/GridLock` | 0 | stated: playwright_retries, skip_flaky | `playwright.config.js:30` `fullyParallel: false,        // game tests share backend socket state` | share | 1393 |
+| `gnu-lorien/yorick` | 3 | stated: playwright_retries | `playwright.config.js:145` `fullyParallel: false,` | concurrency | 1120 |
+| `portel-dev/photon` | 100 | implied: playwright_retries | `playwright.config.ts:9` `fullyParallel: false, // Run tests sequentially to avoid port conflicts` | conflicts, port | 1094 |
+| `code4history/MaplatEditor` | 19 | stated: playwright_retries | `playwright.config.ts:7` `workers: 1,` | flaky | 411 |
+| `gajus/teemux` | 91 | implied: playwright_retries | `playwright.config.ts:5` `fullyParallel: false, // Run tests sequentially to avoid port conflicts` | conflicts, port | 194 |
+| `imharvol/mineflayer-web-inventory` | 99 | stated: vitest_retry | `vitest.config.ts:44` `fileParallelism: false,` | flakes, timing | 150 |
+| `Quantinuum/qnexus` | 26 | implied: pytest_reruns | `scripts/run_unit_tests.sh:8` `uv run pytest --cov-reset tests/test_auth.py::test_token_refresh -n 0` | interfere | 149 |
+| `NolanNachbar/OptiGainsOS` | 1 | stated: skip_flaky | `e2e/playwright.config.mjs:12` `workers: 1, // one test account, shared rows: keep tests serial` | shared | 97 |
+<!--/serial-table-->
+
 ## Limits
 
 - **Matching is lexical.** A flaky reason more than 5 lines from its skip is missed. A word like "race" can describe
@@ -246,4 +345,5 @@ the open and UNKNOWN rows).
 - **`build_scan.py`:** the filters and merge; writes `scan.jsonl`, one line per repository. Each line holds the
   repository, commit, stars, language, frame and query, the signals with file:line and the verbatim line, stated or
   implied, and the skipped flaky tests with `added_date`, `age_bucket` and `issue_ref`.
-- **`verify_scan.py`:** re-derives every tagged number above from `scan.jsonl`.
+- **`serial_scan.py`:** the serial-settings and test-count pass for "Serial and flaky"; writes `serial_scan.jsonl`.
+- **`verify_scan.py`:** re-derives every tagged number above, and the serial-and-flaky table, from `scan.jsonl`.

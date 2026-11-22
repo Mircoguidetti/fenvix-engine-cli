@@ -133,6 +133,16 @@ def group_skips(skips: list[dict]) -> list[dict]:
     return groups
 
 
+def keep_serial(x: dict) -> bool:
+    """A serial setting counts when it forces one worker in CI: not in docs/examples, not inside a print/echo
+    string, and a conditional Playwright `workers` only when its CI branch is 1 (`CI ? 6 : 1` is parallel in CI)."""
+    if PATH_EXCLUDE.search(x["file"]) or re.search(r"\bprint\(|\becho\b|console\.log", x["text"]):
+        return False
+    if x["mechanism"] == "playwright_workers1" and x["value"].startswith("conditional"):
+        return bool(re.search(r"CI[\w\]\[\"'.]*\s*\?\s*1\s*:", x["value"]))
+    return True
+
+
 def strict_stated(words: list[str]) -> bool:
     return any(w in STRICT_WORDS or w.startswith("quarantin") for w in words)
 
@@ -141,6 +151,10 @@ def main() -> None:
     cands = {j["repo"]: j for j in map(json.loads, (HERE / "candidates.jsonl").open())}
     meta = {j["repo"]: j for j in map(json.loads, (HERE / "meta.jsonl").open())}
     raw = {j["repo"]: j for j in map(json.loads, (HERE / "raw_scan.jsonl").open())}
+    serial = {}
+    sp = HERE / "serial_scan.jsonl"
+    if sp.exists():
+        serial = {j["repo"]: j for j in map(json.loads, sp.open())}
     dates = {}
     p = HERE / "skip_dates.jsonl"
     if p.exists():
@@ -186,6 +200,14 @@ def main() -> None:
                        classification=("stated" if stated else "implied" if sigs else "none"),
                        classification_strict=("stated" if strict else "implied" if (sigs or skips) else "none"),
                        only_scaffold_default=bool(sigs) and not skips and all(s["scaffold_default"] for s in sigs))
+            se = serial.get(repo)
+            ssig = [x for x in (se["serial_signals"] if se else []) if keep_serial(x)]
+            chosen = [x for x in ssig if not x["value"].startswith("scaffold-default")]
+            rec.update(serial_scanned=bool(se), serial_signals=ssig,
+                       test_count_estimated=(se["test_count"] if se else None),
+                       serial_any=bool(chosen),
+                       serial_on_purpose=any(x["reason_stated"] for x in chosen))
+            rec["serial_and_flaky"] = rec["lives_with_flaky"] and rec["serial_on_purpose"]
             f.write(json.dumps(rec) + "\n")
 
 
