@@ -204,6 +204,15 @@ const INFRA_PREFIXES: &[&str] = &[
 pub const CONTROLLED_NATIVE: &[&str] = &[
     // the engine's own extension and the accelerators of the pure modules above
     "detpy._core",
+    // `markupsafe._speedups`: Jinja2's HTML escaper, which Django and Flask pull in, so WITHOUT this entry
+    // every test of every Django or Jinja2 suite is NOT PROVEN -- MEASURED on this branch: the Django runner
+    // suites had 87 failures locally and 58 in CI 44995653567, and every trace said
+    // `native:markupsafe._speedups`.
+    // Audited by measurement (docs/NATIVE-AUDITS.md): its whole surface is ONE function, `_escape_inner`,
+    // which takes a string and returns it with `<`, `>`, `&`, `"` and `'` replaced. 200 calls under `strace`
+    // made 9 `brk` calls -- memory for the result -- and NOTHING else: no file, no clock, no entropy, no
+    // socket, no process id, no directory read. A pure function of its argument, and the measurement says so.
+    "markupsafe._speedups",
     // `time-machine`'s extension, which the ENGINE itself imports: `python/detpy/clock.py` reads an active
     // travel through `clock_time_machine_ns` so that a travel is honoured under `--det` instead of being
     // ignored, and while a travel is active the virtual clock returns its destination (a ticking travel
