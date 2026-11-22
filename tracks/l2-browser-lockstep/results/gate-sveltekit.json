@@ -4,9 +4,9 @@
  "repo": "sveltejs/kit",
  "ref": "7a1296872cde5e807832f7714c635df956d37643",
  "status": "ok",
- "run_id": "44958432899",
- "engine_commit": "f4902c1a1f3be935457200f92904043e8ed0e478",
- "setup_s": 28,
+ "run_id": "44962405782",
+ "engine_commit": "9b866f2158b5fb191d0825ac276ca1c7ff704567",
+ "setup_s": 26,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -26,8 +26,8 @@
   "test/playwright"
  ],
  "runs": [],
- "epoch": "2026-11-21T22:55:00Z",
- "measured_at": "2026-11-21T22:55:27Z",
+ "epoch": "2026-11-21T23:41:00Z",
+ "measured_at": "2026-11-21T23:41:06Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "gate": [
   {
@@ -64,16 +64,16 @@
     ""
    ],
    "walls": [
-    30.8,
-    27.8,
-    28.3,
-    28.7,
-    28.2,
-    28.0,
-    28.8,
-    28.9,
-    28.1,
-    28.6
+    31.0,
+    30.3,
+    30.5,
+    30.6,
+    30.5,
+    30.6,
+    30.4,
+    30.2,
+    30.2,
+    30.4
    ],
    "stats": [
     null,
@@ -168,16 +168,16 @@
     ""
    ],
    "walls": [
-    189.7,
-    192.6,
-    188.1,
-    187.8,
-    187.1,
-    186.3,
-    186.2,
-    189.3,
-    189.3,
-    191.3
+    198.6,
+    192.3,
+    193.4,
+    199.5,
+    195.3,
+    193.8,
+    195.2,
+    194.4,
+    194.0,
+    201.7
    ],
    "stats": [
     null,
@@ -206,30 +206,18 @@
    "verify_all": [
     {
      "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]",
-     "status": "diverged",
-     "distinct_fingerprints": 2,
+     "status": "not-proven",
+     "distinct_fingerprints": 1,
      "runs": 10,
      "divergence": {
       "run_a": 0,
-      "run_b": 1,
-      "index": 31,
+      "run_b": 0,
+      "index": null,
       "window": null,
-      "event_a": {
-       "t": 0,
-       "s": "other",
-       "o": "server.fingerprint",
-       "at": "",
-       "v": "http://localhost:5301 240c157d7832b14eea94d79e6e48eee8 15515"
-      },
-      "event_b": {
-       "t": 0,
-       "s": "other",
-       "o": "server.fingerprint",
-       "at": "",
-       "v": "http://localhost:5301 b39e5e5ad1a71d71300d8defb18982db 15515"
-      },
-      "reason": "other",
-      "description": "event #31: server.fingerprint @  returned different values: \"http://localhost:5301 240c157d7832b14eea94d79e6e48eee8 15515\" vs \"http://localhost:5301 b39e5e5ad1a71d71300d8defb18982db 15515\""
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
      }
     },
     {
@@ -267,33 +255,21 @@
    ],
    "verify": {
     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]",
-    "status": "diverged",
-    "distinct_fingerprints": 2,
+    "status": "not-proven",
+    "distinct_fingerprints": 1,
     "runs": 10,
     "divergence": {
      "run_a": 0,
-     "run_b": 1,
-     "index": 31,
+     "run_b": 0,
+     "index": null,
      "window": null,
-     "event_a": {
-      "t": 0,
-      "s": "other",
-      "o": "server.fingerprint",
-      "at": "",
-      "v": "http://localhost:5301 240c157d7832b14eea94d79e6e48eee8 15515"
-     },
-     "event_b": {
-      "t": 0,
-      "s": "other",
-      "o": "server.fingerprint",
-      "at": "",
-      "v": "http://localhost:5301 b39e5e5ad1a71d71300d8defb18982db 15515"
-     },
-     "reason": "other",
-     "description": "event #31: server.fingerprint @  returned different values: \"http://localhost:5301 240c157d7832b14eea94d79e6e48eee8 15515\" vs \"http://localhost:5301 b39e5e5ad1a71d71300d8defb18982db 15515\""
+     "event_a": null,
+     "event_b": null,
+     "reason": "sensor",
+     "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
     }
    }
   }
  ],
- "elapsed_min": 37.1
+ "elapsed_min": 38.6
 }
