@@ -221,7 +221,7 @@ def start_test(patcher: Patcher, nodeid: str) -> None:
         _hook.append(_NumpyOnImport(patcher))
         sys.meta_path.insert(0, _hook[0])
     np = sys.modules.get("numpy")
-    if np is not None and hasattr(np, "random"):
+    if np is not None:
         try:
             # quietly, as the product (detpy/seeds.py, audit G-0179): numpy imports numpy.random._pickle lazily on
             # the first seed call and reads OS entropy there, which is no event of whichever test came first

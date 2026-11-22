@@ -2,6 +2,8 @@
 
 import time
 
+import pytest
+
 CLOCK_TESTS = """
 import asyncio, datetime, threading, time, queue
 import pytest
@@ -211,6 +213,7 @@ def test_adaptive_tick_unblocks_calibration(pytester, run_det):
     fixed.assert_outcomes(failed=1)
 
 
+@pytest.mark.benchmark_plugin
 def test_real_pytest_benchmark(pytester, run_det):
     pytest = __import__("pytest")
     pytest.importorskip("pytest_benchmark")

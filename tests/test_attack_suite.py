@@ -20,7 +20,8 @@ from attacks import NODE_ATTACKS, PYTHON_ATTACKS, ROOT
 #: A file is an attack file when its name says so, or when its text asserts on a `fenvix verify` verdict while
 #: changing something between two runs. The patterns are deliberately wide: a false hit is one line of registry,
 #: a miss is an attack nobody runs.
-_NAME_HINTS = ("verifier", "verify_inputs", "verify-inputs", "attacks", "review_r05", "review-r05")
+_NAME_HINTS = ("verifier", "verify_inputs", "verify-inputs", "attacks", "review_r05", "review-r05",
+                "pycache", "review_r023c")
 
 
 def _candidates() -> dict[str, list[str]]:
@@ -76,8 +77,18 @@ def test_the_registry_has_no_duplicate_entries():
 
 
 def test_the_attack_files_really_assert_on_a_verify_verdict():
-    """A file in the registry that never looks at a verdict is not an attack, and the registry would be lying."""
-    verdict = re.compile(r"verify|IDENTICAL|NOT PROVEN|returncode|identical", re.I)
+    """A file in the registry that never looks at a verdict is not an attack, and the registry would be lying.
+
+    There are two verdicts the engine can state falsely, and an attack file must look at one of them: the
+    verifier's ("identical", NOT PROVEN) and the cache's ("reused", a test reported passed from the cache). The
+    second was added with Block 2's files: a wrong reuse is the same defect as a false IDENTICAL, so refusing it
+    a place here would leave the cache's attacks with no entry point. Neither half is a weaker test than the
+    other: a file matching neither is still rejected.
+    """
+    verify_verdict = re.compile(r"verify|IDENTICAL|NOT PROVEN|returncode|identical", re.I)
+    cache_verdict = re.compile(r"reuse|reused|cache_run|det-cache|det_cache|assert_outcomes", re.I)
     for f in list(PYTHON_ATTACKS) + list(NODE_ATTACKS):
         text = (ROOT / f).read_text(errors="replace")
-        assert verdict.search(text), f"{f} never mentions a verify verdict: is it really an attack file?"
+        assert verify_verdict.search(text) or cache_verdict.search(text), (
+            f"{f} never looks at a verifier verdict or a cache reuse: is it really an attack file?"
+        )

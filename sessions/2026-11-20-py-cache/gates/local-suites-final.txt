@@ -1,0 +1,113 @@
+Local suites on the merged head (claude/py-cache with origin/claude/release-1 a996b68b merged; fc3ab726), MEASURED
+2026-11-20, 4 CPUs, the three Python suites run in parallel. Engine installed into each venv from the wheel built at
+this head (the venvs hold an installed copy; a stale one made ~115 tests fail on the first post-merge run).
+
+1) Full suite: python -m pytest -q -p no:randomly tests --deselect tests/test_review_r017.py::test_h2_report_says_ci_never_sees_tmp_name_exhaustion_but_p8_does
+   at the merge commit (before fc3ab726):
+== Python 3.12   5 failed, 1148 passed, 88 skipped, 1 deselected  (2305 s)
+== Python 3.13   5 failed, 1151 passed, 85 skipped, 1 deselected  (2290 s)
+== Python 3.14   9 failed, 1150 passed, 82 skipped, 1 deselected  (2451 s)
+   Failures and what was done:
+   - test_py_cache: test_environment_variable_no_python_read_sees_is_an_input and test_g2197_* (all versions):
+     release-1 pins TZ under --det, so the probes' TZ change no longer reaches the test (reuse there is correct);
+     the probes now run with --det-tz=keep, where TZ is an input again. fc3ab726.
+   - test_py_cache::test_g1539_runner_shells_refuse_pytest_only_options (all versions): release-1's runner-shell
+     unknown-option check ran before the G-1539 message; it names pytest-only options again. fc3ab726.
+   - test_clock::test_waiting_for_a_{child,daemonized}_process_waits_for_real (3.13, 3.14): mkdtemp under --det
+     tries 20 deterministic names; this machine's /tmp held the first 20 from earlier local runs (the test never
+     removes its directory). Leftovers removed; fresh CI runners start without them.
+   - 3.12 test_level0_rust::test_level0_traces_match_reference, test_review_r023c::test_1a_*[serial]: timing under
+     three parallel suites; pass when rerun (below).
+   - 3.14 test_rand::test_draw, test_review_r023b::test_2e_* (os.getrandom absent in uv's standalone 3.14.6) and
+     test_clock_rust's two mock_open cases: the same failures as with the trunk engine in this interpreter; CI's
+     3.14 runs them.
+
+2) Every failing test above, rerun after fc3ab726 (3.12 / 3.13 / 3.14):
+   72 passed, 3 skipped  /  72 passed, 3 skipped  /  72 passed, 3 skipped
+
+3) Suites touching the code changed by fc3ab726 (runner shells, CLI, packaging, test_py_cache, test_clock):
+   191 passed, 9 skipped  /  191 passed, 9 skipped  /  191 passed, 9 skipped
+
+4) cargo test --release (merged head): 0 failed (156 + 19 + 13 + 2 + 1 passed).
+
+5) Final head 600cf868 (adds the carried.jsonl one-write fix and its regression test; Rust rebuilt, wheel
+   reinstalled in all three venvs), full suite again (the container restarted once; the run was redone whole):
+== Python 3.12   4 failed, 1156 passed, 83 skipped, 1 deselected  (2203 s)
+     test_clock_rust::test_cache_matches_reference, test_level0_rust::test_level0_{traces,cache}_matches_reference,
+     test_review_r023b::test_2b_loopback_name_answered_by_dns_is_not_reused[serial]
+== Python 3.13   5 failed, 1155 passed, 83 skipped, 1 deselected  (2171 s)
+     test_review_r023b::test_2b_* (5: loopback/dns, hosts file, HOSTALIASES; serial and n2)
+== Python 3.14   5 failed, 1156 passed, 82 skipped, 1 deselected  (2320 s)
+     test_clock_rust::test_cache_matches_reference and the interpreter's known three (mock_open x2 counted in
+     test_clock_rust, os.getrandom x2), as in 1)
+   Rerun alone (3.12 / 3.13 / 3.14): test_review_r023b -k test_2b: 4 passed, 2 skipped (HOSTALIASES not honoured for
+   this name here) on each; test_clock_rust::test_cache_matches_reference + test_level0_rust x2: 3 passed on each.
+   They are name-resolution and timing comparisons under three parallel suites (the r023b DNS cases failed only
+   after the container restart, under load).
+6) Node 22.23.5, node --test --test-concurrency=1 test/*.test.js, final head, addon rebuilt after the merge:
+   628 tests, 627 pass, 0 fail, 1 skipped. (Before the rebuild, the pre-merge addon failed the 4 verifier-inputs
+   tests release-1 added; they pass with the rebuilt addon.)
+7) cargo test --release, final head: 191 passed, 0 failed.
+
+8) Exam-round head 574bad87 (exam fixes: PYTHONPATH reuse, import-time effects, odpair/isolate default, the
+   --det-cache-audit option, trunk 74d42b3 merged; Rust and Node addon rebuilt, wheel reinstalled in all venvs),
+   MEASURED 2026-11-21, full suite, three suites in parallel on 4 CPUs:
+== Python 3.12   21 failed, 1154 passed, 83 skipped, 1 deselected  (2184 s)
+== Python 3.13   24 failed, 1149 passed, 85 skipped, 1 deselected  (2110 s)
+== Python 3.14   25 failed, 1151 passed, 82 skipped, 1 deselected  (2329 s)
+   (failures are reference-trace, timing and control comparisons: level0/clock/network/repro *_rust, controls_f01,
+   fingerprint, verifier_truth, f01_gaps, test_py_cache::test_g2214; the run was heavier than 5) because each child
+   of the new per-file default isolation is a process)
+   Every failing test rerun alone, per version, at 574bad87:
+   3.12: 21 passed (test_f01_gaps::test_first_run_after_a_checkout... failed in the batch rerun, passed alone: 1 passed)
+   3.13: 24 passed
+   3.14: 21 passed, 4 failed = the interpreter's known four (test_review_r023b::test_2e_os_getrandom_is_entropy
+         [serial,n2]: os.getrandom absent in uv's standalone 3.14; test_clock_rust x2: the mock_open TypeError), as in 1)
+   Runners suites (venv-runners, 3.13): 147 passed, 1 skipped.
+   Node: 628 tests, 627 pass, 0 fail, 1 skipped.  cargo test --release: 191 passed, 0 failed.
+
+9) Pushed head (ca7b647f: a file's child runs each test inside the other plugins' pytest_runtest_protocol wrappers;
+   wheel rebuilt and reinstalled in every venv), MEASURED 2026-11-21, full suite, three suites in parallel:
+== Python 3.12   29 failed, 1149 passed, 83 skipped, 1 deselected  (2271 s)
+== Python 3.13   26 failed, 1150 passed, 85 skipped, 1 deselected  (2193 s)
+== Python 3.14   26 failed, 1153 passed, 82 skipped, 1 deselected  (2411 s)
+   (the same classes as 8): reference-trace, timing and control comparisons under three parallel suites)
+   Every failing test rerun alone, per version:
+   3.12: 28 passed + test_f01_gaps::test_first_run_after_a_checkout... alone: 1 passed
+   3.13: 26 passed
+   3.14: 22 passed, 4 failed = the interpreter's known four (os.getrandom x2, test_clock_rust mock_open x2), as in 1)
+   Runners suites (tests/test_runners_*.py, venv-runners): 213 passed, 2 skipped.
+   Node unchanged since 8) (no JS or addon change): 628 tests, 627 pass, 0 fail, 1 skipped.
+
+10) Final head (b23026c4 placement replay in one process + trunk cec096c merged + 8b93c009 G-0412 cache summary
+    file; Node addon rebuilt, wheel rebuilt and reinstalled in every venv), MEASURED 2026-11-21, full suite, three
+    suites in parallel on 4 CPUs:
+== Python 3.12   21 failed, 1160 passed, 104 skipped, 1 deselected  (2303 s)
+== Python 3.13   21 failed, 1158 passed, 106 skipped, 1 deselected  (2211 s)
+== Python 3.14   19 failed, 1163 passed, 103 skipped, 1 deselected  (2438 s)
+   (the same classes as 8) and 9): reference-trace, timing and control comparisons; the controls_f01 ones name a
+   temporary directory fenvix-det vs fenvix-det.1, i.e. the three parallel suites sharing /tmp)
+   Every failing test rerun alone, per version, with /tmp cleared:
+   3.12: 21 passed
+   3.13: 21 passed
+   3.14: 15 passed, 4 failed = the interpreter's known four (os.getrandom x2, test_clock_rust mock_open x2), as in 1)
+   Runners suites (tests/test_runners_*.py, venv-runners): 213 passed, 2 skipped.
+   Node (after the cec096c merge): 854 tests, 853 pass, 0 fail, 1 skipped.
+
+11) Head with review R-050 P2 fixed (in-process default; needs kept for tests without an entry, decision (b);
+    Rust store loose_needs; wheel and Node addon rebuilt and reinstalled), MEASURED 2026-11-21, full suite, three
+    suites in parallel on 4 CPUs:
+== Python 3.12   25 failed, 1158 passed, 104 skipped, 1 deselected  (2440 s)
+== Python 3.13   25 failed, 1156 passed, 106 skipped, 1 deselected  (2323 s)
+== Python 3.14   24 failed, 1160 passed, 103 skipped, 1 deselected  (2573 s)
+   (the classes of 8)-10): reference-trace, timing and control comparisons under three parallel suites)
+   Every failing test rerun alone, per version (plus test_r050_a_late_failure_keeps_the_earlier_independent_tests_reused,
+   added after the full run started):
+   3.12: 26 passed; test_f01_gaps::test_first_run_after_a_checkout... failed in the batch rerun, alone: 1 passed
+   3.13: 27 passed
+   3.14: 22 passed, 4 failed = the interpreter's known four (os.getrandom x2, test_clock_rust mock_open x2), as in 1)
+   Runners suites (tests/test_runners_*.py, venv-runners): 213 passed, 2 skipped.
+   cargo test --release: 192 passed, 0 failed.
+   Node (same engine build, the run of the full-suite batch): 854 tests, 853 pass, 0 fail, 1 skipped.
+   Before (b), decision (a) (every earlier test for any test without an entry) MEASURED locally: about 20 tests
+   per interpreter that assert reuse failed (one failing or refused test reran every earlier test of its process).

@@ -144,7 +144,9 @@ def test_a_killed_worker_leaves_missing_tests_and_its_replacement_runs_the_rest(
     assert "replacing crashed worker" in out
     r.assert_outcomes(passed=4, failed=1)
     h, tests, footer = load_trace(pytester.path / "trace.jsonl")
-    assert set(tests) == {f"tests/test_k.py::test_{i}" for i in (1, 2, 4, 5)}
+    # audit G-2214 (py-cache): the crashed test is a record of the merged trace (outcome "crashed")
+    assert set(tests) == {f"tests/test_k.py::test_{i}" for i in (1, 2, 4, 5)} | {"tests/test_k.py::test_crash"}
+    assert tests["tests/test_k.py::test_crash"]["outcome"] == "crashed"
     assert footer["missing"] == ["tests/test_k.py::test_crash"]
     # the replacement worker ran the rest of the dead worker's list, in order
     assert tests["tests/test_k.py::test_4"]["worker"] == "gw1"
@@ -271,6 +273,12 @@ def after_worker_reader(pytester):
     for lst in plan["lists"].values():
         if "tests/test_c.py::test_worker" in lst:
             out |= set(lst[lst.index("tests/test_c.py::test_worker"):])
+    # review R-023c E7 (py-cache): a test that runs runs after the earlier tests of its worker whose state it may need
+    # (here every earlier one: they reach modules outside the repository)
+    for lst in plan["lists"].values():
+        idx = [i for i, n in enumerate(lst) if n in out]
+        if idx:
+            out |= set(lst[:max(idx) + 1])
     return out
 
 
@@ -332,6 +340,7 @@ def test_serial_and_parallel_sessions_take_the_same_decisions(pytester):
     assert set(ser["reused_ids"]) - after == set(par["reused_ids"])
     assert "tests/test_c.py::test_worker" not in par["reused_ids"]
     assert len(par["reused_ids"]) == N_SUITE - len(after)
+    assert all(why.startswith(("env:", "placement: a predecessor of")) for why in par["miss_ids"].values()), par
     # receipts come from the controller and cover every test
     assert len(receipts(rc_par)) == N_SUITE
 

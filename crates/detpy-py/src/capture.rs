@@ -84,6 +84,80 @@ fn os_mod(py: Python<'_>) -> PyResult<Bound<'_, PyModule>> {
     Ok(OS.get_or_try_init(py, || py.import("os").map(|m| m.unbind()))?.bind(py).clone())
 }
 
+/// The real `os.path.abspath`, `os.path.realpath` and `os.getcwd`, bound when the capture is created (session start).
+static REAL_OS: pyo3::sync::PyOnceLock<(Py<PyAny>, Py<PyAny>, Py<PyAny>)> = pyo3::sync::PyOnceLock::new();
+
+/// The real `os.fspath`, `os.fsdecode`, `os.fsencode` and `os.path.basename` (review R-023c E8: pure functions the
+/// capture calls inside user code's calls; a tool that patches them must not make the capture raise into a test).
+static REAL_FS: pyo3::sync::PyOnceLock<[Py<PyAny>; 4]> = pyo3::sync::PyOnceLock::new();
+
+fn real_fs(py: Python<'_>, i: usize) -> PyResult<Bound<'_, PyAny>> {
+    let f = REAL_FS.get_or_try_init(py, || -> PyResult<_> {
+        let os = os_mod(py)?;
+        Ok([
+            os.getattr("fspath")?.unbind(),
+            os.getattr("fsdecode")?.unbind(),
+            os.getattr("fsencode")?.unbind(),
+            os.getattr("path")?.getattr("basename")?.unbind(),
+        ])
+    })?;
+    Ok(f[i].bind(py).clone())
+}
+const FSPATH: usize = 0;
+const FSDECODE: usize = 1;
+const FSENCODE: usize = 2;
+const BASENAME: usize = 3;
+
+fn real_os(py: Python<'_>) -> PyResult<&(Py<PyAny>, Py<PyAny>, Py<PyAny>)> {
+    REAL_OS.get_or_try_init(py, || -> PyResult<_> {
+        let os = os_mod(py)?;
+        let path = os.getattr("path")?;
+        Ok((path.getattr("abspath")?.unbind(), path.getattr("realpath")?.unbind(), os.getattr("getcwd")?.unbind()))
+    })
+}
+
+/// `os.path.<name>(arg)` or `os.getcwd()` as the session sees them (a tool may patch them: pyfakefs), falling back to
+/// the real function when the patched one raises something else than OSError/ValueError: blockbuster's wrappers raise
+/// BlockingError when detpy's own audit hook resolves a path inside an event loop (pydantic-ai: 81 tests failed under
+/// --det-cache only).
+fn os_call<'py>(py: Python<'py>, name: &str, arg: Option<&Bound<'py, PyAny>>) -> PyResult<Bound<'py, PyAny>> {
+    let os = os_mod(py)?;
+    let f = if name == "getcwd" { os.getattr("getcwd")? } else { os.getattr("path")?.getattr(name)? };
+    let r = match arg {
+        Some(a) => f.call1((a,)),
+        None => f.call0(),
+    };
+    match r {
+        Err(e) if !(e.is_instance_of::<pyo3::exceptions::PyOSError>(py)
+            || e.is_instance_of::<pyo3::exceptions::PyValueError>(py)) =>
+        {
+            let real = real_os(py)?;
+            let g = match name {
+                "abspath" => real.0.bind(py),
+                "realpath" => real.1.bind(py),
+                _ => real.2.bind(py),
+            };
+            // Python 3.12's posixpath.realpath calls the module's abspath at each use: the patched one raised again
+            // (review R-023c 5a on 3.12). The real abspath is the module's for the call, then the patch is restored.
+            let path_mod = os.getattr("path")?;
+            let cur_abs = path_mod.getattr("abspath")?;
+            let swap = name == "realpath" && !cur_abs.is(real.0.bind(py));
+            if swap {
+                path_mod.setattr("abspath", real.0.bind(py))?;
+            }
+            let r = match arg {
+                Some(a) => g.call1((a,)),
+                None => g.call0(),
+            };
+            if swap {
+                path_mod.setattr("abspath", cur_abs)?;
+            }
+            r
+        }
+        r => r,
+    }
+}
+
 /// `w_of(s)`: the lossless bytes of a Python `str`.
 fn w_of(s: &Bound<'_, PyString>) -> PyResult<W> {
     match s.to_cow() {
@@ -278,6 +352,8 @@ struct State {
     seen_mods: HashSet<W>,
     nmods: usize,
     basetemp: Option<W>,
+    /// `sys.pycache_prefix` + "/" (detpy's bytecode cache): the import system's own files, like `__pycache__`
+    pycache: Option<W>,
     site_dirs: Vec<W>,
     stdlib_dirs: Vec<W>,
     dist_info_ok: Vec<W>,
@@ -306,6 +382,11 @@ impl State {
     fn key<'a>(&self, p: &'a [u8]) -> &'a [u8] {
         if p.starts_with(&self.root_sep) {
             &p[self.root_sep.len()..]
+        } else if p.len() + 1 == self.root_sep.len() && self.root_sep.starts_with(p) {
+            // the project root itself: ".", the parent key of its top-level paths (proof::parent_key), so a listing of
+            // the root is matched to the writers of the files in it (py-cache: moto's rb.tmp, written and removed by
+            // one test while another listed the root in another worker)
+            b"."
         } else {
             p
         }
@@ -317,6 +398,11 @@ impl State {
         }
         if let Some(bt) = &self.basetemp {
             if p == bt.as_slice() || (p.starts_with(bt) && p.get(bt.len()) == Some(&b'/')) {
+                return true;
+            }
+        }
+        if let Some(pc) = &self.pycache {
+            if p.starts_with(pc) || p == &pc[..pc.len() - 1] {
                 return true;
             }
         }
@@ -440,13 +526,59 @@ fn process_state(p: &[u8]) -> bool {
             }
             return None;
         }
+        if matches!(kind, b'y' | b'Y' | b'x' | b'X') {
+            // a file's modification and change times (round 4: "y"; "Y" the symlink's own, os.lstat) or its other
+            // status fields (review R-023c E4: "x", "X"), read by user code: keyed beside the path's own dependency;
+            // a status this session changed (it wrote the file) is a read of a session-written file
+            if self.writers.contains_key(p) {
+                let mut f = b"rw:".to_vec();
+                f.extend_from_slice(p);
+                self.flag_set(ctx).add(f);
+                return None;
+            }
+            let mut hk = vec![kind];
+            hk.extend_from_slice(p);
+            let dep = match self.hashed.get(&hk) {
+                Some(d) => d.clone(),
+                None => {
+                    let path = os_path(p);
+                    let d = match kind {
+                        b'y' => format!("y:{}", proof::time_digest_of(path, true)),
+                        b'Y' => format!("y:L{}", proof::time_digest_of(path, false)),
+                        b'x' => format!("x:{}", proof::fields_digest(path, true)),
+                        _ => format!("x:L{}", proof::fields_digest(path, false)),
+                    }
+                    .into_bytes();
+                    self.hashed.insert(hk, d.clone());
+                    d
+                }
+            };
+            let mut k = self.key(p).to_vec();
+            k.extend_from_slice(
+                match kind {
+                    b'y' => proof::TIME_SUFFIX,
+                    b'Y' => proof::LTIME_SUFFIX,
+                    b'x' => proof::FIELDS_SUFFIX,
+                    _ => proof::LFIELDS_SUFFIX,
+                }
+                .as_bytes(),
+            );
+            if !self.data.contains_key(&ctx) {
+                self.data_order.push(ctx);
+            }
+            let m = self.data.entry(ctx).or_default();
+            if !m.idx.contains_key(&k) {
+                m.set(k, dep);
+            }
+            return None;
+        }
         if kind == b's' || kind == b'l' || kind == b'z' {
             // an existence or kind check (os.stat / lstat / access, a module lookup): the path's kind is the input
             // (absent inputs: a file, conftest.py, module or __init__.py that appears later). The project root and
             // its ancestors are directories for the whole session.
             let mut ps = p.to_vec();
             ps.push(b'/');
-            if self.root_sep.starts_with(&ps) || p == b"/" || is_temp_root(p) {
+            if self.root_sep.starts_with(&ps) || p == b"/" {
                 return None;
             }
             if self.writers.contains_key(p) {
@@ -485,7 +617,9 @@ fn process_state(p: &[u8]) -> bool {
             }
             return None;
         }
-        if kind == b'm' {
+        if kind == b'm' || (kind == b'f' && MACHINE_FILES.contains(&p)) {
+            // a machine identity file (uuid.getnode's /sys reads; filelock's boot_id at import): its content is the
+            // input, keyed like a file (it changes with the machine or the boot, never during a session)
             kind = b'f';
         } else if kind == b'a' {
             // a child's exclusive create that succeeded: the path did not exist then (its state now is irrelevant)
@@ -593,7 +727,7 @@ fn process_state(p: &[u8]) -> bool {
                 self.writers_order.push(p.to_vec());
             }
             self.writers.entry(p.to_vec()).or_default().insert(ctx);
-            for k in [b'f', b'd', b's', b'l', b'z', b'q', b'Q'] {
+            for k in [b'f', b'd', b's', b'l', b'z', b'q', b'Q', b'y', b'Y', b'x', b'X'] {
                 let mut hk = vec![k];
                 hk.extend_from_slice(p);
                 self.hashed.remove(&hk);
@@ -618,21 +752,15 @@ fn process_state(p: &[u8]) -> bool {
 
 }
 
-/// The system's temporary roots (`/tmp`, `/var/tmp`, `$TMPDIR`): directories for the whole session, like the
-/// project root and its ancestors. A kind check of one is no input; a failed `os.mkdir` of one (makedirs with
-/// exist_ok) is recorded as a write, which made every later kind check a read of a file another test wrote.
-fn is_temp_root(p: &[u8]) -> bool {
-    let p = if p.len() > 1 { p.strip_suffix(b"/").unwrap_or(p) } else { p };
-    if p == b"/tmp" || p == b"/var/tmp" {
-        return true;
-    }
-    std::env::var_os("TMPDIR").is_some_and(|t| {
-        use std::os::unix::ffi::OsStrExt;
-        let t = t.as_bytes();
-        let t = if t.len() > 1 { t.strip_suffix(b"/").unwrap_or(t) } else { t };
-        !t.is_empty() && t == p
-    })
-}
+/// Kernel identity files whose content does not change during a boot: read as content inputs, not refused as /proc
+/// state (round 4: pydantic-ai's conftest imports filelock, which reads boot_id at import: every test was refused).
+const MACHINE_FILES: &[&[u8]] = &[
+    b"/proc/sys/kernel/random/boot_id",
+    b"/proc/sys/kernel/hostname",
+    b"/proc/sys/kernel/osrelease",
+    b"/proc/sys/kernel/ostype",
+    b"/proc/sys/kernel/version",
+];
 
 /// Python objects and constants of the capture.
 struct Env {
@@ -726,6 +854,26 @@ impl Classifier {
 /// own frames are infrastructure).
 fn is_runner_entry(code: &Bound<'_, PyAny>) -> PyResult<bool> {
     code.getattr(intern!(code.py(), "co_name"))?.eq("_detpy_runner_entry")
+}
+
+thread_local! {
+    /// Depth of detpy's own probes made outside the capture whose audit events are not the test's (the virtual
+    /// clock's listing of `/proc/self/task` and reads of its `children` files: py-cache, they refused every test
+    /// that slept with no other thread alive, and the tests after it).
+    static PROBE: std::cell::Cell<u32> = const { std::cell::Cell::new(0) };
+}
+
+/// Run `f` as one of detpy's own probes (see [`PROBE`]).
+pub(crate) fn detpy_probe<T>(f: impl FnOnce() -> T) -> T {
+    struct Guard;
+    impl Drop for Guard {
+        fn drop(&mut self) {
+            PROBE.with(|c| c.set(c.get() - 1));
+        }
+    }
+    PROBE.with(|c| c.set(c.get() + 1));
+    let _g = Guard;
+    f()
 }
 
 thread_local! {
@@ -838,13 +986,7 @@ impl CaptureCore {
         let mut w = false;
         let mut rel = None;
         if !k.is_empty() && !k.starts_with(b"<") {
-            let os = os_mod(py)?;
-            let path = os.getattr(intern!(py, "path"))?;
-            let p = match internal(|| {
-                path.getattr(intern!(py, "abspath"))?
-                    .call1((fs,))
-                    .and_then(|a| path.getattr(intern!(py, "realpath"))?.call1((a,)))
-            }) {
+            let p = match internal(|| os_call(py, "abspath", Some(fs.as_any())).and_then(|a| os_call(py, "realpath", Some(&a)))) {
                 Ok(p) => w_of(p.cast::<PyString>()?)?,
                 Err(e) if e.is_instance_of::<pyo3::exceptions::PyOSError>(py)
                     || e.is_instance_of::<pyo3::exceptions::PyValueError>(py) =>
@@ -890,8 +1032,7 @@ impl CaptureCore {
             return Ok(());
         }
         let k = stat_key(&p);
-        let realpath = os_mod(py)?.getattr("path")?.getattr("realpath")?;
-        let r = match internal(|| realpath.call1((py_of(py, &p)?,))) {
+        let r = match internal(|| os_call(py, "realpath", Some(&py_of(py, &p)?))) {
             Ok(r) => Some(w_of(r.cast::<PyString>()?)?),
             Err(e) if e.is_instance_of::<pyo3::exceptions::PyOSError>(py)
                 || e.is_instance_of::<pyo3::exceptions::PyValueError>(py) =>
@@ -912,8 +1053,7 @@ impl CaptureCore {
     /// is a link, or is in a linked directory), or None; links outside it (the root reached through a linked path)
     /// are resolved (review R-015b G2).
     fn code_link(&self, py: Python<'_>, filename: &Bound<'_, PyString>) -> PyResult<Option<W>> {
-        let os = os_mod(py)?;
-        let a = match os.getattr("path")?.getattr("abspath")?.call1((filename,)) {
+        let a = match os_call(py, "abspath", Some(filename.as_any())) {
             Ok(a) => w_of(a.cast::<PyString>()?)?,
             Err(e) if e.is_instance_of::<pyo3::exceptions::PyOSError>(py)
                 || e.is_instance_of::<pyo3::exceptions::PyValueError>(py) =>
@@ -948,7 +1088,7 @@ impl CaptureCore {
                     }
                     return Ok(Some(out));
                 }
-                cur = w_of(internal(|| os.getattr("path")?.getattr("realpath")?.call1((py_of(py, &q)?,)))?.cast::<PyString>()?)?;
+                cur = w_of(internal(|| os_call(py, "realpath", Some(&py_of(py, &q)?)))?.cast::<PyString>()?)?;
             } else {
                 cur = q;
             }
@@ -973,7 +1113,23 @@ impl CaptureCore {
                 continue;
             }
             match hub.classify(py, &fname)?.0 {
-                Kind::User => return Ok(Caller::User),
+                Kind::User => {
+                    // a user function installed in place of the spawn primitive (Popen._execute_child replaced by a
+                    // guard, pydantic-ai's cost_guards) is a hook, not the code that started the process: who called
+                    // into subprocess decides (xdist's worker set-up asking platform.platform() spawns `uname`)
+                    let back = level0::back(&fr)?;
+                    let hooked = match &back {
+                        Some(b) => {
+                            let (_c, bf) = code_filename(b)?;
+                            let bw = w_of(bf.cast::<PyString>()?)?;
+                            bw.ends_with(b"/subprocess.py") || bw.ends_with(b"/multiprocessing/util.py")
+                        }
+                        None => false,
+                    };
+                    if !hooked {
+                        return Ok(Caller::User);
+                    }
+                }
                 Kind::Infra => return Ok(Caller::Infra),
                 Kind::Stdlib => {}
             }
@@ -1099,9 +1255,8 @@ impl CaptureCore {
         if argv.len() != 2 {
             return Ok(false);
         }
-        let os = os_mod(py)?;
-        let a0 = os.getattr("fsdecode")?.call1((argv.get_item(0)?,))?;
-        let base = os.getattr("path")?.getattr("basename")?.call1((a0,))?;
+        let a0 = real_fs(py, FSDECODE)?.call1((argv.get_item(0)?,))?;
+        let base = real_fs(py, BASENAME)?.call1((a0,))?;
         if !base.eq("ldconfig")? || !argv.get_item(1)?.eq("-p")? {
             return Ok(false);
         }
@@ -1121,9 +1276,8 @@ impl CaptureCore {
         if p.is_none() || p.is_instance_of::<pyo3::types::PyInt>() {
             return Ok(None);
         }
-        let os = os_mod(py)?;
-        // os.fsdecode(os.fspath(p)): a str is itself (no call)
-        let s = match if p.is_exact_instance_of::<PyString>() { Ok(p.clone()) } else { os.getattr(intern!(py, "fspath"))?.call1((p,)).and_then(|x| os.getattr(intern!(py, "fsdecode"))?.call1((x,))) } {
+        // os.fsdecode(os.fspath(p)): a str is itself (no call); the real functions (review R-023c E8)
+        let s = match if p.is_exact_instance_of::<PyString>() { Ok(p.clone()) } else { real_fs(py, FSPATH)?.call1((p,)).and_then(|x| real_fs(py, FSDECODE)?.call1((x,))) } {
             Ok(s) => s,
             Err(e) if e.is_instance_of::<pyo3::exceptions::PyTypeError>(py)
                 || e.is_instance_of::<pyo3::exceptions::PyValueError>(py) =>
@@ -1138,7 +1292,7 @@ impl CaptureCore {
             return Ok(None);
         }
         if !w.starts_with(b"/") {
-            let cwd = match os.getattr(intern!(py, "getcwd"))?.call0() {
+            let cwd = match os_call(py, "getcwd", None) {
                 Ok(c) => w_of(c.cast::<PyString>()?)?,
                 Err(e) if e.is_instance_of::<pyo3::exceptions::PyOSError>(py) => return Ok(None),
                 Err(e) => return Err(e),
@@ -1367,6 +1521,9 @@ impl CaptureCore {
     }
 
     fn audit_impl(&self, py: Python<'_>, slf: &Bound<'_, PyAny>, event: &str, args: &Bound<'_, PyTuple>) -> PyResult<()> {
+        if PROBE.with(|c| c.get()) > 0 {
+            return Ok(()); // detpy's own probe (see `detpy_probe`)
+        }
         if !self.active() {
             return Ok(());
         }
@@ -1482,6 +1639,29 @@ impl CaptureCore {
                 // temporary directory): taken as a write of the directory, it made every probe of it stale
                 if writes && !is_dir(&p) {
                     self.wrote_impl(ctx, &p);
+                }
+                Ok(())
+            }
+            "ctypes.dlsym" | "ctypes.dlsym/handle" | "ctypes.call_function" => {
+                // review R-023c E3: a C function repository code takes from a library through ctypes, whatever handle
+                // it came from (ctypes.pythonapi, the standard library's PyDLL(None): the program's symbols, libc
+                // among them; a library a dependency opened): its file, clock and environment reads are not
+                // observed. CPython raises "ctypes.dlsym" when a symbol is looked up (an attribute of a CDLL object is
+                // looked up once, then cached on it) and "ctypes.call_function" only for _ctypes.call_function, not
+                // for an ordinary call. (Repository native code is refused as "native" whenever it is loaded.)
+                if self.caller_kind(py)? == Caller::User && self.caller_in_repo(py)? {
+                    let ctx = self.cur(py)?;
+                    let lib = arg(0)
+                        .and_then(|a| if event == "ctypes.dlsym" { a.getattr("_name").ok() } else { Some(a) })
+                        .and_then(|n| n.str().ok().map(|x| x.to_string_lossy().into_owned()))
+                        .unwrap_or_default();
+                    let sym = arg(1).and_then(|n| n.str().ok().map(|x| x.to_string_lossy().into_owned())).unwrap_or_default();
+                    let detail = match event {
+                        "ctypes.call_function" => "a C function called from repository code".to_string(),
+                        _ if lib == "None" || lib.is_empty() => format!("{sym} from the program's symbols"),
+                        _ => format!("{sym} from {lib}"),
+                    };
+                    self.flag_impl(py, ctx, b"cdll", Some(detail.into_bytes()))?;
                 }
                 Ok(())
             }
@@ -1708,9 +1888,17 @@ impl CaptureCore {
                         continue;
                     }
                     if let Some(p) = self.abs(py, &a)? {
-                        if !self.ignored(&p) {
-                            self.wrote_impl(ctx, &p);
+                        if self.ignored(&p) {
+                            continue;
                         }
+                        if event == "os.mkdir" && std::fs::symlink_metadata(os_path(&p)).is_ok() {
+                            // review R-023c E1: a mkdir of a path that exists fails (EEXIST) and writes nothing; its
+                            // outcome is the path's existence, a kind input (makedirs/Path.mkdir with exist_ok of
+                            // /tmp, of the project's own directories)
+                            self.read_impl(py, ctx, &p, b's')?;
+                            continue;
+                        }
+                        self.wrote_impl(ctx, &p);
                     }
                 }
                 Ok(())
@@ -1869,6 +2057,8 @@ impl CaptureCore {
         o_flags: (i64, i64, i64, i64, i64, i64, i64),
     ) -> PyResult<Self> {
         let _ = hot;
+        real_os(py)?; // the real path functions, before a test or a plugin patches them
+        real_fs(py, FSPATH)?;
         let mut root_sep = w_of(&root)?;
         root_sep.push(b'/');
         let st = State {
@@ -1884,6 +2074,17 @@ impl CaptureCore {
             timeline: vec![(now(), 0)],
             ..Default::default()
         };
+        let mut st = st;
+        // round 4 (pydantic-ai: 454 tests refused for 'a file another worker wrote' under the bytecode cache)
+        if let Ok(pc) = py.import("sys").and_then(|m| m.getattr("pycache_prefix")) {
+            if let Ok(pc) = pc.cast::<PyString>() {
+                let mut w = w_of(pc)?;
+                if !w.is_empty() {
+                    w.push(b'/');
+                    st.pycache = Some(w);
+                }
+            }
+        }
         let (o_rdonly, o_wronly, o_rdwr, o_creat, o_excl, o_trunc, o_tmpfile) = o_flags;
         Ok(CaptureCore {
             st: Mutex::new(st),
@@ -2322,6 +2523,37 @@ impl CaptureCore {
         self.native_check(py, ctx, &p)
     }
 
+    /// A user read of a file's modification or change time (round 4: keyed, "y:"; the caller is checked by the
+    /// Python side, which sees the stat result's field reads).
+    #[pyo3(signature = (path, link=false))]
+    fn time_check(&self, py: Python<'_>, path: &Bound<'_, PyAny>, link: bool) -> PyResult<()> {
+        if !self.active() {
+            return Ok(());
+        }
+        let Some(p) = self.abs(py, path)? else { return Ok(()) };
+        if self.ignored(&p) {
+            return Ok(());
+        }
+        let ctx = self.cur(py)?;
+        self.read_impl(py, ctx, &p, if link { b'Y' } else { b'y' })
+    }
+
+    /// A user read of a file's other status fields (review R-023c E4: st_mode, st_uid, st_ino, ..., an os.access
+    /// permission): keyed, "x:"; the caller is checked by the Python side, like `time_check`.
+    #[pyo3(signature = (path, link=false))]
+    fn fields_check(&self, py: Python<'_>, path: &Bound<'_, PyAny>, link: bool) -> PyResult<()> {
+        if !self.active() {
+            return Ok(());
+        }
+        let Some(p) = self.abs(py, path)? else { return Ok(()) };
+        if self.ignored(&p) {
+            return Ok(());
+        }
+        let ctx = self.cur(py)?;
+        self.read_impl(py, ctx, &p, if link { b'X' } else { b'x' })
+    }
+
+
     /// An existence or kind check of `path` by user code (`os.stat`, `os.lstat`, `os.access`: no audit event): the
     /// path's kind is an input of the running context (absent inputs, review of the serial cache; ported from
     /// claude/dep-verdict-abjcfw 8b5a1d8 onto the Rust capture). `link`: `os.lstat`, the kind without following a
@@ -2335,7 +2567,11 @@ impl CaptureCore {
     ///
     /// `sized` (claude/parallel-proof-3, review R-032b F2): the size only (`z:`, `proof::size_kind`), replacing a kind
     /// check of the same path. `meta` is the stronger dependency and wins when both are given.
-    #[pyo3(signature = (path, link=false, meta=false, sized=false))]
+    ///
+    /// `user`: whether the status goes to user code, decided by the caller (review R-023c E2: the Python stat wrapper
+    /// walks out through standard library and infrastructure frames); None: the first frame outside detpy and the
+    /// standard library decides (`caller_kind`).
+    #[pyo3(signature = (path, link=false, meta=false, sized=false, user=None))]
     fn stat_check(
         &self,
         py: Python<'_>,
@@ -2343,6 +2579,7 @@ impl CaptureCore {
         link: bool,
         meta: bool,
         sized: bool,
+        user: Option<bool>,
     ) -> PyResult<()> {
         if !self.active() || INTERNAL.with(|c| c.get()) > 0 {
             return Ok(());
@@ -2350,7 +2587,14 @@ impl CaptureCore {
         let Some(p) = self.abs(py, path)? else { return Ok(()) };
         // --det-cache-dists: a file a bump adds or removes under a site directory is an input (review R-020b N3)
         let site = self.dist_site(py, &p).is_some();
-        if (!site && self.ignored(&p)) || self.caller_kind(py)? != Caller::User {
+        if !site && self.ignored(&p) {
+            return Ok(());
+        }
+        let user = match user {
+            Some(u) => u,
+            None => self.caller_kind(py)? == Caller::User,
+        };
+        if !user {
             return Ok(());
         }
         let ctx = self.cur(py)?;
@@ -2478,7 +2722,7 @@ impl CaptureCore {
         let name = if key.is_exact_instance_of::<PyString>() {
             key.clone()
         } else if key.is_instance_of::<PyString>() || key.is_instance_of::<PyBytes>() {
-            os_mod(py)?.getattr(intern!(py, "fsdecode"))?.call1((key,))?
+            real_fs(py, FSDECODE)?.call1((key,))?
         } else {
             key.repr()?.into_any()
         };
@@ -2663,7 +2907,7 @@ impl CaptureCore {
         let follow = py.import("detpy.follow")?;
         let logdir_s = fo.getattr("logdir")?;
         let logdir = w_any(&logdir_s)?;
-        let fsenc = os_mod(py)?.getattr("fsencode")?;
+        let fsenc = real_fs(py, FSENCODE)?;
         let logdir_fs: Vec<u8> = fsenc.call1((&logdir_s,))?.extract()?;
         let t0 = std::time::Instant::now();
         let mono = || t0.elapsed().as_secs_f64();
@@ -2733,7 +2977,7 @@ impl CaptureCore {
                 me.flag_impl(py, ctx, b"spawn", Some(cat(&[&d, b" [not followed: no trace log]"])))?;
                 continue;
             }
-            let fsdec = os_mod(py)?.getattr("fsdecode")?;
+            let fsdec = real_fs(py, FSDECODE)?;
             let logs_py: Vec<Bound<'_, PyAny>> = logs.iter().map(|l| fsdec.call1((l.clone(),))).collect::<PyResult<_>>()?;
             let res = follow.getattr("parse")?.call1((PyList::new(py, &logs_py)?, sp.getattr("cwd")?))?;
             for f in &logs {
@@ -2916,6 +3160,24 @@ impl CaptureCore {
     /// `Capture._credit_child(ctx, sp, res)`: the inputs, writes and refusals of one followed process tree, as
     /// inputs of context `ctx`.
     fn credit_child_impl(&self, py: Python<'_>, logdir: Option<&[u8]>, ctx: usize, sp: &Bound<'_, PyAny>, res: &Bound<'_, PyAny>) -> PyResult<()> {
+        self.credit_child_reads(py, logdir, ctx, sp, res)?;
+        let detail = w_any(&sp.getattr("detail")?)?;
+        // PY-08 (go-live scope): a process started by a test or by a fixture runs, and the test is never reused: what
+        // a child does (its clock, its randomness, files it reads through paths the trace does not name, the native
+        // code it runs) is not under the controls. Children of the import, collection and start-up contexts are
+        // followed and keyed as before (a library's find_library probe at import time).
+        let test_ctx = {
+            let st = lock(&self.st);
+            st.ctx_names.get(ctx).is_some_and(|n| n.starts_with(b"t|") || n.starts_with(b"f|"))
+        };
+        if test_ctx {
+            self.flag_impl(py, ctx, b"spawn", Some(cat(&[&detail, b" [a test that starts a process is never reused]"])))?;
+        }
+        Ok(())
+    }
+
+    /// What a followed child read and wrote, credited to `ctx` (`credit_child_impl`).
+    fn credit_child_reads(&self, py: Python<'_>, logdir: Option<&[u8]>, ctx: usize, sp: &Bound<'_, PyAny>, res: &Bound<'_, PyAny>) -> PyResult<()> {
         let detail = w_any(&sp.getattr("detail")?)?;
         let opt = |name: &str| -> PyResult<Option<W>> {
             let v = res.getattr(name)?;
@@ -2992,7 +3254,7 @@ impl CaptureCore {
                 if let Some(fsb) = fs_bytes(&p) {
                     let path = std::ffi::OsString::from(std::ffi::OsStr::from_bytes(&fsb));
                     if let Some(interp) = crate::follow::follow_shebang(py, path)? {
-                        let s = os_mod(py)?.getattr("fsdecode")?.call1((interp,))?;
+                        let s = real_fs(py, FSDECODE)?.call1((interp,))?;
                         let iw = w_any(&s)?;
                         if !iw.is_empty() {
                             self.child_read_w(py, logdir, ctx, &iw, b'f')?;
@@ -3101,8 +3363,25 @@ pub fn cap_note_env(py: Python<'_>, key: &Bound<'_, PyAny>) -> PyResult<()> {
     }
 }
 
+/// `_core.detpy_probe(fn)`: call `fn()` as one of detpy's own probes (its audit events are not the test's); the
+/// Python references of the clock use it for their `/proc/self/task` reads, as the engine's clock does.
+#[pyfunction]
+pub fn detpy_probe_call(py: Python<'_>, f: Bound<'_, PyAny>) -> PyResult<Py<PyAny>> {
+    let _ = py;
+    detpy_probe(|| f.call0().map(|r| r.unbind()))
+}
+
+/// `_core.detpy_probe_active()`: whether one of detpy's own probes is running on this thread (the Python reference
+/// of the capture skips their audit events, as `CaptureCore.audit` does).
+#[pyfunction]
+pub fn detpy_probe_active() -> bool {
+    PROBE.with(|c| c.get()) > 0
+}
+
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<CaptureCore>()?;
+    m.add_function(wrap_pyfunction!(detpy_probe_call, m)?)?;
+    m.add_function(wrap_pyfunction!(detpy_probe_active, m)?)?;
     m.add_function(wrap_pyfunction!(cap_set_env_capture, m)?)?;
     m.add_function(wrap_pyfunction!(cap_note_env, m)?)?;
     Ok(())

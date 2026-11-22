@@ -1,8 +1,8 @@
-{{STATUS}}
+PARTIAL
 
 # Parallel with proof, round 3: P4, P5, SQLite clock, speed, absent inputs, review R-023b
 
-Branch `claude/parallel-proof-3` (from `claude/parallel-proof` at a13e2dc). Final engine: **{{ENGINE}}** (later commits add
+Branch `claude/parallel-proof-3` (from `claude/parallel-proof` at a13e2dc). Final engine: **21b57571 (gates); the Actions measurements of this report ran on 3471d45 (r3-p4), before the R-032b fixes (c5f0e70 ... 0f45362) and the dep-verdict merge 9b20f6a** (later commits add
 results and this report only). Review R-023b's tests (`tests/test_review_r023b.py`,
 from `claude/review-r023b` e9e6c16) were merged unchanged and are this round's gate.
 
@@ -10,16 +10,27 @@ Labels: **MEASURED** = a run named here with its committed raw file; **ESTIMATED
 **DECLARED** = read from a repository's configuration or said by another session, no raw file here; **UNKNOWN** = not
 available, what was checked is said.
 
-{{PARTIAL_BECAUSE}}
+**Why PARTIAL.** The engine work of every item is done and its gates pass (below), and no measured run reused a wrong
+result (0 wrong reuses in 182 walk commits of three repositories, MEASURED). But the round's measurements show that the
+soundness rules added in this round and the previous one cost almost all reuse on four of the five repositories:
+moto reuses 21.4 % of its tests on warm walk commits (19.4 % by test time), esphome, litellm, prefect and pydantic-ai 0 %
+(MEASURED, r3-p4). The causes are measured and named per item: refusals in contexts that precede every test (start-up,
+between tests, the import of a test module: a socket connect through pytest-socket, `uname`/`git` subprocesses, OS
+entropy without `--det-urandom`), carried into every test by the R-020 prefix rule and the carried-set rule; and on
+changing commits, a change in any input of any earlier test of a worker misses every later test. The cached runs are
+also slower than the uncached ones on litellm and pydantic-ai (cause UNKNOWN, below). Not done: mlflow (job not
+finished when this report was written), the brain repository delivery (no access), P4's two-machine run. Fork isolation
+(`--det-isolate`, the coordinator's variant, round 4) removes the carried set by construction; its first local numbers
+are in "The scheduler" below.
 
-## Gates (MEASURED, final engine, this container: 4 vCPU, Python 3.13.18, pytest 9.2.0, xdist 3.8.0)
+## Gates (MEASURED, engine 21b57571, this container: 4 vCPU, Python 3.13.18, pytest 9.2.0, xdist 3.8.0)
 
 | gate | result | raw file |
 |---|---|---|
-| `tests/test_review_r023b.py` (review R-023b) + `tests/test_review_r023.py` | **77 passed, 4 skipped**, 0 failed (on a13e2dc: 50 failed, 11 passed, 3 skipped, per the review) | `tracks/parallel-proof/gates/r3/review-r023b-and-r023.txt` |
-| full Python suite (`pytest tests -p no:randomly`, without `-n`) | **788 passed, 12 skipped**, 0 failed (1 deselected: `test_review_r017.py::test_h2_...`, the pre-existing failure REPORT-2 names; it reads a tracks file no change here touches) | `tracks/parallel-proof/gates/r3/pytest-full-summary.txt`, `pytest-full-tail.txt` |
+| `tests/test_review_r023b.py` + `tests/test_review_r023.py` + review R-032b (`tests/review_r032b/`, `tests/test_r032b_engine.py`) | **107 passed, 21 skipped**, 0 failed (the skips: R-023b's own 4, R-032b's 17 runner-driver cases, which need claude/all-runners-2) | `tracks/parallel-proof/gates/r3/review-r023b-r023-r032b.txt` |
+| full Python suite (`pytest tests -p no:randomly`, without `-n`) | **820 passed, 29 skipped**, 0 failed (1 deselected: `test_review_r017.py::test_h2_...`, the pre-existing failure REPORT-2 names) | `tracks/parallel-proof/gates/r3/pytest-full-summary.txt`, `pytest-full-tail.txt` |
 | `cargo test --release` (workspace) | **113 + 1 passed**, 0 failed (REPORT-2: 94) | `tracks/parallel-proof/gates/r3/cargo-test.txt` |
-| the coordinator's attacks (`tests/test_carried_library_memo.py`: library memo 5 kinds, order dependence, own output outside the repository, quarantine; `tests/test_isolate.py`) | all pass, serial and `-n 2` (part of the full suite) | as above |
+| the coordinator's attacks (`tests/test_carried_library_memo.py`, `tests/test_isolate.py`, `tests/test_r032b_engine.py`) | all pass, serial and `-n 2` (part of the full suite) | as above |
 
 The 4 skips of the review file are the review's own conditions (`HOSTALIASES` ignored by libc here; the `[n2]` variant
 of the session-fixture test, which the review marks as not applicable under `loadfile`).
@@ -48,7 +59,7 @@ of the session-fixture test, which the review marks as not applicable under `loa
 | F2 first discovery | the workers' shards carry every test's read paths (any outcome). After every worker finished, the controller finds readers of a path a test on another worker wrote with no wait in this plan (`proof::racy_readers`). Under `--det-cache -n` the workers' reports are held until the run loop ends; a racy reader whose cross-worker writers all come before it in the serial order runs again in a fresh worker after them, in the serial order, and that run's reports replace its own (first report dropped). A reader with a cross-worker writer *after* it cannot be rerun into the serial view (the file holds the later write): reported **UNSETTLED** (summary line, merged trace `parallel.unsettled`); every racy pair becomes a data edge |
 | related hole closed | the plan's waits: for an edge whose writer comes after the reader in the serial order (on another worker) the writer now waits for the reader (`schedule.rs`, Rust test `round3_a_writer_after_its_reader_waits_for_the_reader_across_workers`) |
 | tests (MEASURED locally) | proven entries serve a serial session (6 of 6 reused); an unproven one does not; first-session reader gets the serial verdict (passes, as the serial truth) where it read the stale file before; later-writer reader reported unsettled, next session the writer waits and both pass; review `test_f1v_*` passes |
-| remaining (stated) | the rerun gives the serial view only for writers that overwrite the file; an UNSETTLED verdict is reported, not corrected; held reports remove the live progress of `--det-cache -n` (they all appear at the end of the run loop); the proof needs a serial fingerprint under the same key, so a pure `-n` CI has no proven entries until a serial session (or `--det-cache-verify` in -n after one) records them. Proven/diverged/unproven counts per repository: {{P5_COUNTS}} |
+| remaining (stated) | the rerun gives the serial view only for writers that overwrite the file; an UNSETTLED verdict is reported, not corrected; held reports remove the live progress of `--det-cache -n` (they all appear at the end of the run loop); the proof needs a serial fingerprint under the same key, so a pure `-n` CI has no proven entries until a serial session (or `--det-cache-verify` in -n after one) records them. Proven/diverged/unproven counts per repository: r3-p4, MEASURED (terminal summaries in `*/logs-tail.txt`): moto 0 proven, 0 diverged, 1,067 / 1,436 unproven (cold / warm): no serial entry had the same key (the carried sets differ between a serial session and a worker); prefect, litellm, pydantic-ai: 0 / 0 / 0 (nothing recorded) |
 
 ## Item 3: SQLite's clock and randomness under Level 0 (prefect)
 
@@ -56,30 +67,51 @@ of the session-fixture test, which the review marks as not applicable under `loa
 |---|---|
 | change | `crates/detpy-py/src/sqlvirt.rs` (new), glue `detpy/sqlvirt.py`: every connection made through `sqlite3.connect` under Level 0 gets per-connection overrides of `date`, `time`, `datetime`, `julianday`, `unixepoch`, `strftime`, `timediff`, `current_date`, `current_time`, `current_timestamp` (column defaults included) and `random()`, `randomblob(N)`. A `'now'` time value (or a missing one) becomes the virtual wall clock at ms precision, read once per statement (the connection's trace starts each statement), and the call is evaluated by SQLite's own built-in on a private helper connection (exact semantics). `random`/`randomblob` draw from a SplitMix64 stream seeded per test. Clock reads are Level 0 events (`sqlite.<function>`; the cache then keys the epoch), draws are `random` events. The cache's statement trace sits behind the connection's own; a virtualised connection is not flagged `rclock` |
 | tests (`tests/test_sqlite_virtual.py`, MEASURED locally) | 5 pass: identical rows and values in every `--det` run (serial, `-n 2`, `-n 3`), different without `--det`; a schema with `DEFAULT CURRENT_TIMESTAMP` and `randomblob` ids is cached and every reuse equals a fresh serial run (serial and `-n 2`); one statement's `'now'`s are one instant; explicit dates keep SQLite's semantics; a changed epoch is a miss only for the tests that read `'now'`. The real-clock refusal is kept for unvirtualised connections (`--det-disable=time`: four existing tests run that way now) |
-| prefect reuse after (Actions {{RUN}}) | {{PREFECT_REUSE}} |
-| N12 (review) | REPORT-2's prefect blocker was described twice, inconsistently: `uncacheable()` returns the *first* reason and `rclock` precedes `spawn`/`connect`, so "real clock 2,418" could hide a connection to prefect's API server. With the clock virtualised, the remaining reasons are visible in this round's run: {{PREFECT_BLOCKERS}} |
+| prefect reuse after (Actions r3-p4 (run 44655491088, engine 3471d45, results `tracks/parallel-proof/results/r3-p4-2026-11-20/`)) | MEASURED: **0 reused**, 0 recorded of 2,438 in every cache variant (cold, warm x3, cross, serial cold) |
+| N12 (review) | REPORT-2's prefect blocker was described twice, inconsistently: `uncacheable()` returns the *first* reason and `rclock` precedes `spawn`/`connect`, so "real clock 2,418" could hide a connection to prefect's API server. With the clock virtualised, the remaining reasons are visible in this round's run: MEASURED: 2,418 tests refused for `subprocess: git (subprocess.Popen) at tests/utilities/test_dockerutils.py:13 [reads the real clock (gettimeofday)] (import of tests/utilities/test_dockerutils.py)`: a `git` subprocess at the import of one test module, which every worker collects, carried into every test; 20 failed tests. The SQLite clock is no longer among the reasons |
 
 ## Item 4: speed (re-exec before the other plugins; prefect's extra time)
 
 | what | result |
 |---|---|
 | change | the re-exec now happens in detpy's own `pytest_addoption` (called as detpy registers, while pytest loads the entry points) instead of `pytest_load_initial_conftests`, with the options rebuilt from `invocation_params.args`, `PYTEST_ADDOPTS` and the ini `addopts` (`plugin.py _early_reexec`). Plugins that register after detpy are imported once (test: a `PYTEST_PLUGINS` plugin is imported by 1 process, before by 2). Plugins pytest loaded *before* detpy are still imported twice (entry-point order is not ours). Anything unusual (nested session, worker, unparsable options) leaves the decision to the old place. A plugin the user blocked (`-p no:randomly`) is never re-blocked (two review-b1 tests) |
-| `--det -n 4` vs plain `-n 4` after (Actions {{RUN}}) | {{SPEED_TABLE}} |
-| prefect's extra time (phase times, `harness/parallel_proof/phasetimes.py`, variants `*-pt`) | {{PREFECT_PHASES}} |
+| `--det -n 4` vs plain `-n 4` after (Actions r3-p4 (run 44655491088, engine 3471d45, results `tracks/parallel-proof/results/r3-p4-2026-11-20/`)) | MEASURED, wall seconds, one runner per repository, `--det -n 4` (runs a, b, c) vs plain `-n 4` (runs 1, 2, 3):
+
+| repository | plain -n 4 | --det -n 4 | ratio (median) |
+|---|---|---|---|
+| prefect | 179.6, 180.5, 179.1 | 242.9, 190.5, 193.0 | 1.07 |
+| litellm (vertex_ai) | 73.5, 74.6, 73.3 | 87.5, 77.3, 78.2 | 1.05 |
+| pydantic-ai | 139.1, 140.0, 139.9 | 158.0, 141.0, 142.2 | 1.02 |
+| moto | 164.5, 164.3, 160.3 | 83.9, 84.2, 84.4 | 0.51 (Level 0 blocks the network: moto's Docker probes return at once) |
+
+The cached runs are much slower than `--det` alone: litellm warm 1,043 / 884 / 873 s, pydantic-ai warm 1,882 / 1,802 /
+1,798 s, prefect warm 445 / 566 / 493 s, while their cache phases (check, record, merge) take under 1 s (MEASURED,
+`cache.phase_seconds`); cause UNKNOWN: not the record step, not the decision; the runs record nothing (every test
+refused), so the cost is in the capture while tests run (candidates: the subprocess follower, the held reports of
+`-n`); to be profiled in round 4 |
+| prefect's extra time (phase times, `harness/parallel_proof/phasetimes.py`, variants `*-pt`) | MEASURED (`prefect-g1/*-pt.phases.jsonl`, mean over the 4 workers): import 0.2 / 0.2 s, configure 3.5 / 3.9 s,
+collection 11.2 / 10.9 s, tests 157.0 / 159.7 s (plain / det; repeat: 156.9 / 161.2); wall 179.9 / 189.6 s. Of the ~10 s,
+~3-4 s are in the workers' test phase (Level 0 per test) and 0.4 s in configure; the rest (~6 s) is the controller
+(start-up, plan, trace merge) — ESTIMATED as the difference |
 
 ## Item 5: moto's Docker probe stays uncached
 
 | what | result |
 |---|---|
 | expectation | a connection to `/var/run/docker.sock` is a real outside input: those tests stay uncached, nothing else does |
-| measurement (Actions {{RUN}}, `moto/cache-*.outcomes.json.gz`, not-cached ids with reasons) | {{MOTO_DOCKER}} |
+| measurement (Actions r3-p4 (run 44655491088, engine 3471d45, results `tracks/parallel-proof/results/r3-p4-2026-11-20/`), `moto/cache-*.outcomes.json.gz`, not-cached ids with reasons) | MEASURED: **not only the Docker probes stay uncached**. cache-x (records on the serial store's keys): 529 not cached,
+528 of them for the Docker socket — 527 attributed to the context "between tests" (moto's Docker probe runs in a
+background thread or at fixture teardown, after its test ended, and the refusal falls on the shared between-tests
+context) and 1 for a file another test wrote (`text.txt`). cache-n-warm: 1,057 not cached, 1,038 for the Docker socket
+(558 between tests, 466 carried from an earlier test, 14 the test's own). The quarantine applies to tests, not to the
+between-tests context |
 
 ## Item 6: mlflow
 
 | what | result |
 |---|---|
 | cause of the earlier collection errors | our selection lacked the CI's `--ignore=tests/examples --ignore=tests/evaluate --ignore=tests/genai --ignore=tests/docker` (DECLARED: mlflow `.github/workflows/master.yml` COMMON_ARGS, recorded in `tracks/parallel-proof/CI-FACTS.md`); those directories import the extras the group's install lacks. Fixed in `run.json` (`--requires-ssh` left out: no SSH server on the runner) |
-| measurement (Actions {{RUN}}) | {{MLFLOW}} |
+| measurement (Actions r3-p4 (run 44655491088, engine 3471d45, results `tracks/parallel-proof/results/r3-p4-2026-11-20/`)) | UNKNOWN: the mlflow job of r3-p4 had not finished when this report was written (the CI `--ignore` arguments are in run.json; the earlier collection errors are explained above) |
 
 ## Item 7: walks on the final engine (50 commits, 5 shards each, truth = fresh serial `--det` per commit)
 
@@ -87,7 +119,19 @@ Each shard walks 10 consecutive first-parent commits with its own cache, startin
 commits per repository instead of 1). Reuse by test time = sum of the truth run's per-test time of the reused tests /
 sum over all tests (durations now in the outcomes file).
 
-{{WALKS}}
+| repository | shards | commits (warm) | tests per commit | reused, warm commits (count) | reused by test time, warm commits | commits with >= 50 % reused | wrong reuses | flaky rechecks | carried / recorded | a_par wall s (warm median) | truth wall s (median) |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| esphome | 5 | 50 (45) | 14331-14446 | 0 of 647556 (0.0 %) | 0.0 % | 0 of 45 | 0 | 0 | 334722 / 83297 | 529.6 | 135.6 |
+| litellm-vertex | 5 | 50 (45) | 4165-4181 | 0 of 187973 (0.0 %) | 0.0 % | 0 of 45 | 0 | 0 | 0 / 0 | 838.9 | 105.1 |
+| moto | 5 | 47 (42) | 2480-2501 | 22348 of 104335 (21.4 %) | 19.4 % | 6 of 42 | 0 | 0 | 55944 / 55944 | 162.2 | 197.4 |
+
+
+Before the scheduler fix (r3-p3, the same moto walks, engine e1f4527): 238 of 67,101 test runs reused (0.4 %), 0 wrong
+(MEASURED). esphome: every commit records at most 1,886 of 14,333 tests (the others refused for subprocesses in tests,
+OS entropy, native code from the repository read by freetype: all carried); misses "runtime" on the recorded ones at
+every commit (UNKNOWN which part of the runtime identity changes). litellm: nothing recorded (start-up `socket.connect
+localhost:41999` through pytest-socket, every test). The esphome and litellm a_par runs are 4-8x slower than their
+truth runs (cause UNKNOWN, as above).
 
 ## Item 8: pydantic-ai's flaky parallel verdict
 
@@ -97,7 +141,7 @@ sum over all tests (durations now in the outcomes file).
 | cause | traceback of the failing run: `pydantic_ai/_uuid.py uuid7` → `with _lock_v7:` → detpy `_TimedLock.__enter__` → `acquire` → blockbuster's wrapper → `BlockingError`. `_lock_v7` is a module-level `threading.Lock()` created under `--det`, so it is Level 0's `_TimedLock`. A plain `with lock:` enters through the lock type's `__enter__` slot, which blockbuster does not wrap; `_TimedLock.__enter__` called the Python-visible `acquire`, which it wraps. Blockbuster raises only when the acquire would block (`lock.locked()`), i.e. when two of the test's four threads contend for the lock: timing |
 | fix | `_TimedLock.__enter__` enters the real lock through its `__enter__` (no timeout in a `with`, nothing for the virtual clock to do; no event was recorded there) |
 | after (MEASURED locally) | **0 of 25** `--det` runs fail; `tests/test_timed_lock_enter.py` (2 tests) |
-| on Actions ({{RUN}}) | {{PAI}} |
+| on Actions (r3-p4 (run 44655491088, engine 3471d45, results `tracks/parallel-proof/results/r3-p4-2026-11-20/`)) | MEASURED: `fpcompare`: 0 outcome differences between the serial and parallel `--det` runs (8,072 tests), 0 new failures caused by the split (r3-p0c had 1) |
 
 ## Item 9: absent inputs (and review R-023b N6)
 
@@ -186,4 +230,13 @@ import-time `/proc/self/fd` listing stays allowed (`pstate`).
 
 ## Not done, and why
 
-{{NOT_DONE}}
+* **Reuse on Actions** (above): 0 % on esphome, litellm, prefect, pydantic-ai; the causes are named; the fixes they need
+  (start-up and between-tests refusals that should not reach every test, or a narrower attribution of background
+  threads; the cached runs' slowness) are not in this round.
+* **mlflow**: not measured (job pending).
+* **P4 two-machine run** on Actions: not run.
+* **R-032b under the runner drivers** (unittest, nose2, zope, django, ward, doctest): run on claude/all-runners-2
+  (merged there), not here.
+* **Fork isolation** (`--det-isolate`): built and tested (17 tests), measured locally only; round 4.
+* **Brain repository** (Mircoguidetti/fenvix-brain-cli): not read and this report not copied there: adding the
+  repository was refused by the session's permission classifier twice.

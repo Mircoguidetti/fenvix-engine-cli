@@ -1,0 +1,41 @@
+OK    E12 conftest reads an allowlisted env var at import (GITHUB_JOB) [serial] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.034s); config 872265980b9f3d493ade67f6c8cb228f, runtime 3eb9244318757203165119f9cab18d45']
+  run2 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.023s); config 872265980b9f3d493ade67f6c8cb228f, runtime 3eb9244318757203165119f9cab18d45']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    E12b test module reads an allowlisted env var at import (GITHUB_RUN_ID) [serial] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.034s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.025s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    E12c test reads an allowlisted env var (GITHUB_RUN_ID) via os.environ [serial] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.016s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.025s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+WRONG H1 /etc/passwd read by C (pwd.getpwuid) [serial] (vs plain: DIFFERS)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 1, recorded 1 (check 0.001s, record 0.03s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 1 result(s) with proof, ran 0, recorded 0 (check 0.065s, record 0.038s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    E12 conftest reads an allowlisted env var at import (GITHUB_JOB) [n2] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan f8187a6941f1cd54d97089c354e89716: 2 workers (ran/planned gw0=1/1, gw1=0/0), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.0s); config 872265980b9f3d493ade67f6c8cb228f, runtime 3eb9244318757203165119f9cab18d45']
+  run2 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan 4330a716844712b3d509c050ba5eabf6: 2 workers (ran/planned gw0=0/0, gw1=1/1), planned makespan 0.0s (LPT 0.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.004s); config 872265980b9f3d493ade67f6c8cb228f, runtime 3eb9244318757203165119f9cab18d45']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    E12b test module reads an allowlisted env var at import (GITHUB_RUN_ID) [n2] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan f8187a6941f1cd54d97089c354e89716: 2 workers (ran/planned gw0=1/1, gw1=0/0), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan 4330a716844712b3d509c050ba5eabf6: 2 workers (ran/planned gw0=0/0, gw1=1/1), planned makespan 0.0s (LPT 0.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.007s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    E12c test reads an allowlisted env var (GITHUB_RUN_ID) via os.environ [n2] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan f8187a6941f1cd54d97089c354e89716: 2 workers (ran/planned gw0=1/1, gw1=0/0), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan 4330a716844712b3d509c050ba5eabf6: 2 workers (ran/planned gw0=0/0, gw1=1/1), planned makespan 0.0s (LPT 0.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.004s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+WRONG H1 /etc/passwd read by C (pwd.getpwuid) [n2] (vs plain: DIFFERS)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan f8187a6941f1cd54d97089c354e89716: 2 workers (ran/planned gw0=1/1, gw1=0/0), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 1 (check 0.001s, record 0.002s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan f8187a6941f1cd54d97089c354e89716: 2 workers (ran/planned gw0=0/1, gw1=0/0), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 1', 'reused 1 result(s) with proof, ran 0, recorded 0 (check 0.043s, record 0.011s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+== 6 OK, 2 WRONG: ['H1 /etc/passwd read by C (pwd.getpwuid)[serial]', 'H1 /etc/passwd read by C (pwd.getpwuid)[n2]']

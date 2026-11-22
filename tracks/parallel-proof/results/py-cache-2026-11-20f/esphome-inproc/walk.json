@@ -1,0 +1,164 @@
+{
+ "repo": "repo",
+ "workers": 4,
+ "args": [
+  "--no-cov",
+  "tests",
+  "--ignore=tests/integration",
+  "--ignore=tests/benchmarks",
+  "-p",
+  "no:randomly",
+  "-k",
+  "not udp",
+  "--timeout=120"
+ ],
+ "det_args": [],
+ "shard": "",
+ "commits": [
+  {
+   "i": 0,
+   "sha": "773afa0bb1d409dfa9c823450b15add826f76bc8",
+   "shard_first": true,
+   "a_par": {
+    "wall_s": 195.6,
+    "rc": 1,
+    "tail": "27 failed, 14404 passed, 15 skipped, 63 warnings in 181.37s (0:03:01)",
+    "peak_rss_mb": 639.3,
+    "store_mb": 62.95,
+    "carried": 15260,
+    "carried_of_recorded": 3850,
+    "reused": 0,
+    "ran": 15287,
+    "recorded": 2269,
+    "tests": 14446,
+    "miss_reasons": {
+     "new": 14446
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 67.1,
+    "rc": 1,
+    "tail": "27 failed, 14404 passed, 15 skipped, 62 warnings in 65.65s (0:01:05)",
+    "peak_rss_mb": 550.1
+   },
+   "a_par_u": {
+    "wall_s": 229.2,
+    "rc": 1,
+    "tail": "27 failed, 14404 passed, 15 skipped, 62 warnings in 226.08s (0:03:46)",
+    "peak_rss_mb": 1402.6,
+    "store_mb": 78.97,
+    "carried": 14453,
+    "carried_of_recorded": 11681,
+    "reused": 0,
+    "ran": 14480,
+    "recorded": 2471,
+    "tests": 14446,
+    "miss_reasons": {
+     "runtime": 2225,
+     "new": 12221
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b": {
+    "wall_s": 118.1,
+    "rc": 1,
+    "tail": "27 failed, 14404 passed, 15 skipped, 102 deselected, 62 warnings in 112.06s (0:01:52)",
+    "peak_rss_mb": 689.8,
+    "test_time_s": 97.638
+   }
+  },
+  {
+   "i": 1,
+   "sha": "c4df1b163c4dd3a9f2a03ea1cf20b55ed3726619",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 221.0,
+    "rc": 1,
+    "tail": "27 failed, 14404 passed, 15 skipped, 62 warnings in 217.36s (0:03:37)",
+    "peak_rss_mb": 1418.7,
+    "store_mb": 81.28,
+    "carried": 14419,
+    "carried_of_recorded": 11681,
+    "reused": 0,
+    "ran": 14446,
+    "recorded": 2471,
+    "tests": 14446,
+    "miss_reasons": {
+     "runtime": 2471,
+     "new": 11975
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 70.9,
+    "rc": 1,
+    "tail": "27 failed, 14404 passed, 15 skipped, 62 warnings in 69.22s (0:01:09)",
+    "peak_rss_mb": 549.0
+   },
+   "b": {
+    "wall_s": 119.7,
+    "rc": 1,
+    "tail": "27 failed, 14404 passed, 15 skipped, 102 deselected, 62 warnings in 113.72s (0:01:53)",
+    "peak_rss_mb": 689.8,
+    "test_time_s": 99.15
+   }
+  },
+  {
+   "i": 2,
+   "sha": "141789d2400fb9f465d95263167c367a79aa8277",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 217.2,
+    "rc": 1,
+    "tail": "27 failed, 14404 passed, 15 skipped, 62 warnings in 213.67s (0:03:33)",
+    "peak_rss_mb": 1419.9,
+    "store_mb": 83.58,
+    "carried": 14419,
+    "carried_of_recorded": 11681,
+    "reused": 0,
+    "ran": 14446,
+    "recorded": 2471,
+    "tests": 14446,
+    "miss_reasons": {
+     "runtime": 2471,
+     "new": 11975
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 70.1,
+    "rc": 1,
+    "tail": "27 failed, 14404 passed, 15 skipped, 62 warnings in 68.82s (0:01:08)",
+    "peak_rss_mb": 549.0
+   },
+   "b": {
+    "wall_s": 119.7,
+    "rc": 1,
+    "tail": "27 failed, 14404 passed, 15 skipped, 102 deselected, 62 warnings in 113.45s (0:01:53)",
+    "peak_rss_mb": 689.8,
+    "test_time_s": 98.937
+   }
+  }
+ ]
+}

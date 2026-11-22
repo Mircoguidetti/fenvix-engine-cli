@@ -1,0 +1,729 @@
+{
+ "repo": "repo",
+ "workers": 4,
+ "args": [
+  "./tests/test_batch",
+  "./tests/test_dynamodb",
+  "./tests/test_ec2",
+  "tests/test_s3/",
+  "./tests/test_sqs",
+  "-m",
+  "not requires_clean_slate",
+  "-p",
+  "no:randomly",
+  "--timeout=600"
+ ],
+ "det_args": [
+  "--det-urandom"
+ ],
+ "shard": "",
+ "commits": [
+  {
+   "i": 0,
+   "sha": "807987390e6079f2306c829a041dc834a304c7d4",
+   "shard_first": true,
+   "a_par": {
+    "wall_s": 158.4,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m9 failed\u001b[0m, \u001b[32m2467 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 112.37s (0:01:52)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 498.6,
+    "store_mb": 22.12,
+    "carried": 2489,
+    "carried_of_recorded": 1188,
+    "reused": 0,
+    "ran": 2498,
+    "recorded": 1188,
+    "tests": 2483,
+    "miss_reasons": {
+     "new": 2483
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": [
+     [
+      "tests/test_sqs/test_sqs_integration.py::test_invoke_function_from_sqs_fifo_queue",
+      "failed",
+      "passed"
+     ]
+    ]
+   },
+   "a_ser": {
+    "wall_s": 217.5,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2468 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 211.73s (0:03:31)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 732.4,
+    "store_mb": 2.48,
+    "carried": 2475,
+    "carried_of_recorded": 36,
+    "reused": 0,
+    "ran": 2483,
+    "recorded": 36,
+    "tests": 2483,
+    "miss_reasons": {
+     "new": 2461,
+     "unit": 22
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 74.7,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2468 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 73.66s (0:01:13)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 431.9
+   },
+   "a_par_u": {
+    "wall_s": 98.7,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2468 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 97.10s (0:01:37)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 571.3,
+    "store_mb": 32.35,
+    "carried": 2475,
+    "carried_of_recorded": 1647,
+    "reused": 0,
+    "ran": 2483,
+    "recorded": 1647,
+    "tests": 2483,
+    "miss_reasons": {
+     "new": 1297,
+     "env": 1162,
+     "placement": 24
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "a_ser_u": {
+    "wall_s": 206.3,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2468 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 201.00s (0:03:21)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 725.7,
+    "store_mb": 2.86,
+    "carried": 2439,
+    "carried_of_recorded": 0,
+    "reused": 36,
+    "ran": 2447,
+    "recorded": 0,
+    "tests": 2483,
+    "miss_reasons": {
+     "new": 2425,
+     "unit": 22
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 3.216,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b": {
+    "wall_s": 196.1,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2468 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 190.98s (0:03:10)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 573.3,
+    "test_time_s": 188.227
+   }
+  },
+  {
+   "i": 1,
+   "sha": "61cf46e13bdce11f614a3c0087ed55cdb9374fdd",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 99.1,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2468 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 97.25s (0:01:37)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 596.0,
+    "store_mb": 32.74,
+    "carried": 2475,
+    "carried_of_recorded": 1647,
+    "reused": 0,
+    "ran": 2483,
+    "recorded": 1647,
+    "tests": 2483,
+    "miss_reasons": {
+     "code": 1377,
+     "new": 836,
+     "placement": 270
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "a_ser": {
+    "wall_s": 212.3,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2468 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 206.82s (0:03:26)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 734.4,
+    "store_mb": 3.21,
+    "carried": 2475,
+    "carried_of_recorded": 36,
+    "reused": 0,
+    "ran": 2483,
+    "recorded": 36,
+    "tests": 2483,
+    "miss_reasons": {
+     "code": 34,
+     "new": 2425,
+     "unit": 22,
+     "placement": 2
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 71.7,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2468 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 70.71s (0:01:10)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 426.8
+   },
+   "b": {
+    "wall_s": 192.3,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2468 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 187.22s (0:03:07)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 570.9,
+    "test_time_s": 184.479
+   }
+  },
+  {
+   "i": 2,
+   "sha": "602bfc008d2e32548600773409cd8637b72501ad",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 98.9,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2469 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 97.03s (0:01:37)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 534.3,
+    "store_mb": 32.01,
+    "carried": 2476,
+    "carried_of_recorded": 1656,
+    "reused": 0,
+    "ran": 2484,
+    "recorded": 1656,
+    "tests": 2484,
+    "miss_reasons": {
+     "code": 1647,
+     "new": 837
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "a_ser": {
+    "wall_s": 208.5,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2469 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 203.14s (0:03:23)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 735.0,
+    "store_mb": 3.57,
+    "carried": 2476,
+    "carried_of_recorded": 36,
+    "reused": 0,
+    "ran": 2484,
+    "recorded": 36,
+    "tests": 2484,
+    "miss_reasons": {
+     "code": 36,
+     "new": 2426,
+     "unit": 22
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 73.3,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2469 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 72.23s (0:01:12)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 423.2
+   },
+   "b": {
+    "wall_s": 194.5,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2469 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 189.31s (0:03:09)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 566.1,
+    "test_time_s": 186.562
+   }
+  },
+  {
+   "i": 3,
+   "sha": "446649ec31bde7777f2ca841278189dfa52e0572",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 98.9,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2480 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 96.90s (0:01:36)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 543.9,
+    "store_mb": 31.87,
+    "carried": 2487,
+    "carried_of_recorded": 1656,
+    "reused": 0,
+    "ran": 2495,
+    "recorded": 1656,
+    "tests": 2495,
+    "miss_reasons": {
+     "code": 1656,
+     "new": 839
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "a_ser": {
+    "wall_s": 210.5,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2480 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 205.11s (0:03:25)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 735.0,
+    "store_mb": 3.94,
+    "carried": 2487,
+    "carried_of_recorded": 36,
+    "reused": 0,
+    "ran": 2495,
+    "recorded": 36,
+    "tests": 2495,
+    "miss_reasons": {
+     "code": 36,
+     "new": 2437,
+     "unit": 22
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 70.9,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2480 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 69.93s (0:01:09)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 442.1
+   },
+   "b": {
+    "wall_s": 192.3,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2480 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 187.19s (0:03:07)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 565.4,
+    "test_time_s": 184.442
+   }
+  },
+  {
+   "i": 4,
+   "sha": "74ca878062e648e14646a894e7b3aace5249c636",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 100.7,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2480 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 98.81s (0:01:38)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 541.6,
+    "store_mb": 25.08,
+    "carried": 2487,
+    "carried_of_recorded": 1656,
+    "reused": 0,
+    "ran": 2495,
+    "recorded": 1154,
+    "tests": 2495,
+    "miss_reasons": {
+     "new": 839,
+     "reader": 2,
+     "env": 1222,
+     "placement": 432
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "a_ser": {
+    "wall_s": 208.3,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2480 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 202.99s (0:03:22)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 726.2,
+    "store_mb": 4.32,
+    "carried": 2451,
+    "carried_of_recorded": 0,
+    "reused": 36,
+    "ran": 2459,
+    "recorded": 0,
+    "tests": 2495,
+    "miss_reasons": {
+     "new": 2437,
+     "unit": 22
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 3.286,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 70.9,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2480 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 69.93s (0:01:09)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 424.6
+   },
+   "b": {
+    "wall_s": 198.5,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2480 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 193.26s (0:03:13)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 565.8,
+    "test_time_s": 189.779
+   }
+  },
+  {
+   "i": 5,
+   "sha": "15e28066d6af28f8fa8a58db658936a9f2b9396d",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 110.3,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2480 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 108.68s (0:01:48)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 508.1,
+    "store_mb": 33.79,
+    "carried": 2487,
+    "carried_of_recorded": 1656,
+    "reused": 0,
+    "ran": 2495,
+    "recorded": 1656,
+    "tests": 2495,
+    "miss_reasons": {
+     "code": 1154,
+     "new": 1341
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "a_ser": {
+    "wall_s": 213.9,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2480 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 208.40s (0:03:28)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 734.8,
+    "store_mb": 4.67,
+    "carried": 2487,
+    "carried_of_recorded": 36,
+    "reused": 0,
+    "ran": 2495,
+    "recorded": 36,
+    "tests": 2495,
+    "miss_reasons": {
+     "code": 36,
+     "new": 2437,
+     "unit": 22
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 88.3,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2480 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 87.24s (0:01:27)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 437.7
+   },
+   "b": {
+    "wall_s": 201.9,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2480 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 196.52s (0:03:16)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 565.8,
+    "test_time_s": 191.673
+   }
+  },
+  {
+   "i": 6,
+   "sha": "9fffae82ade817200e2bef7fc29997331d019c0c",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 119.1,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2481 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 117.04s (0:01:57)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 576.8,
+    "store_mb": 22.49,
+    "carried": 2491,
+    "carried_of_recorded": 1659,
+    "reused": 0,
+    "ran": 2499,
+    "recorded": 830,
+    "tests": 2496,
+    "miss_reasons": {
+     "code": 1149,
+     "new": 840,
+     "env": 206,
+     "placement": 301
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "a_ser": {
+    "wall_s": 233.2,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2481 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 227.63s (0:03:47)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 736.3,
+    "store_mb": 5.03,
+    "carried": 2488,
+    "carried_of_recorded": 36,
+    "reused": 0,
+    "ran": 2496,
+    "recorded": 36,
+    "tests": 2496,
+    "miss_reasons": {
+     "code": 34,
+     "new": 2438,
+     "unit": 22,
+     "placement": 2
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 74.5,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2481 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 73.43s (0:01:13)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 469.0
+   },
+   "b": {
+    "wall_s": 200.3,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2481 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 195.01s (0:03:15)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 573.0,
+    "test_time_s": 192.187
+   }
+  },
+  {
+   "i": 7,
+   "sha": "980d15c304e72c384dfb6aa8cae9b4bf39c73100",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 109.9,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2481 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 108.26s (0:01:48)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 573.2,
+    "store_mb": 44.04,
+    "carried": 2490,
+    "carried_of_recorded": 2055,
+    "reused": 0,
+    "ran": 2498,
+    "recorded": 2054,
+    "tests": 2496,
+    "miss_reasons": {
+     "new": 1668,
+     "config": 828
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "a_ser": {
+    "wall_s": 213.2,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2481 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 207.72s (0:03:27)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 735.3,
+    "store_mb": 5.41,
+    "carried": 2488,
+    "carried_of_recorded": 36,
+    "reused": 0,
+    "ran": 2496,
+    "recorded": 36,
+    "tests": 2496,
+    "miss_reasons": {
+     "config": 36,
+     "new": 2438,
+     "unit": 22
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 73.9,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2481 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 72.99s (0:01:12)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 466.7
+   },
+   "b": {
+    "wall_s": 195.3,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2481 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 190.22s (0:03:10)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 566.1,
+    "test_time_s": 187.416
+   }
+  },
+  {
+   "i": 8,
+   "sha": "38a79b90386f6c2ebc99a81d29bcf26102e36616",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 101.3,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2481 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 99.26s (0:01:39)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 570.7,
+    "store_mb": 43.13,
+    "carried": 2488,
+    "carried_of_recorded": 2042,
+    "reused": 0,
+    "ran": 2496,
+    "recorded": 2042,
+    "tests": 2496,
+    "miss_reasons": {
+     "code": 2054,
+     "new": 442
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "a_ser": {
+    "wall_s": 210.7,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2481 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 205.20s (0:03:25)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 735.5,
+    "store_mb": 5.77,
+    "carried": 2488,
+    "carried_of_recorded": 36,
+    "reused": 0,
+    "ran": 2496,
+    "recorded": 36,
+    "tests": 2496,
+    "miss_reasons": {
+     "code": 36,
+     "new": 2438,
+     "unit": 22
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 73.5,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2481 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 72.37s (0:01:12)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 464.0
+   },
+   "b": {
+    "wall_s": 200.9,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2481 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 195.46s (0:03:15)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 564.5,
+    "test_time_s": 192.538
+   }
+  },
+  {
+   "i": 9,
+   "sha": "96f50b1aa902eccb0a3763b80f37d7af265d9130",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 104.6,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2486 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 102.38s (0:01:42)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 579.9,
+    "store_mb": 43.87,
+    "carried": 2493,
+    "carried_of_recorded": 2047,
+    "reused": 0,
+    "ran": 2501,
+    "recorded": 2047,
+    "tests": 2501,
+    "miss_reasons": {
+     "new": 459,
+     "data": 1058,
+     "placement": 984
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "a_ser": {
+    "wall_s": 212.6,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2486 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 207.01s (0:03:27)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 727.0,
+    "store_mb": 6.16,
+    "carried": 2457,
+    "carried_of_recorded": 0,
+    "reused": 36,
+    "ran": 2465,
+    "recorded": 0,
+    "tests": 2501,
+    "miss_reasons": {
+     "new": 2443,
+     "unit": 22
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 3.223,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 73.3,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2486 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 72.35s (0:01:12)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 463.9
+   },
+   "b": {
+    "wall_s": 194.9,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2486 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 189.69s (0:03:09)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 566.2,
+    "test_time_s": 186.886
+   }
+  }
+ ]
+}

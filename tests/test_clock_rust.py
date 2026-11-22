@@ -559,10 +559,13 @@ def test_cache_matches_reference(pytester, ref_env):
     assert ref[0] == new[0]                      # the store, byte for byte
     assert ref[1] == new[1]                      # warm receipts
     assert ref[2:] == new[2:]
-    assert new[5]["reused"], new[5]              # the warm run reused results (the receipts mean something)
-    # a virtual sleep reads /proc (/proc/self/task/<tid>/children: this process's state since review R-023b N1)
-    assert {"reads /proc, /sys or /dev",
-            "reads this process's state under /proc (descriptors, status counters, threads)"} & set(new[4]["not_cached"] or {}), new[4]
+    assert new[1] and new[5]["ran"], new[5]  # warm receipts exist (review R-050 P2 (b): the failing test of the project's one file needs its earlier tests, so the warm run may reuse none)
+    # py-cache: a virtual sleep's check of /proc/self/task/<tid>/children is detpy's own probe; it is the test's
+    # read (this process's state, review R-023b N1) only when it finds a live child (the sleep is then real): here
+    # the tests with a child started it (refused for the subprocess first), and no other sleep refuses its test
+    assert "reads this process's state under /proc (descriptors, status counters, threads)" not in (
+        new[4]["not_cached"] or {}), new[4]
+    assert "subprocess" in (new[4]["not_cached"] or {}), new[4]
 
 
 # -- unit level ------------------------------------------------------------------------------------------------------

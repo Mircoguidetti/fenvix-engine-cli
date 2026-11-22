@@ -1,0 +1,41 @@
+OK    P3 conftest child (at import) writes a file the victim reads [serial] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 1, recorded 1 (check 0.001s, record 0.031s); config 872265980b9f3d493ade67f6c8cb228f, runtime 3eb9244318757203165119f9cab18d45']
+  run2 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 1, recorded 0 (check 0.038s, record 0.015s); config 872265980b9f3d493ade67f6c8cb228f, runtime 3eb9244318757203165119f9cab18d45']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    P5 test forks; child reads a file, exit code is the result [serial] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.025s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.018s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    P6 repository native library (ctypes) reads a file in C [serial] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.036s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 1, recorded 0 (check 0.005s, record 0.013s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    P7 installed (out-of-repo) native library reads a file in C [serial] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.02s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 1, recorded 0 (check 0.005s, record 0.015s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    P3 conftest child (at import) writes a file the victim reads [n2] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan f8187a6941f1cd54d97089c354e89716: 2 workers (ran/planned gw0=1/1, gw1=0/0), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 1 (check 0.0s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime 3eb9244318757203165119f9cab18d45']
+  run2 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan f8187a6941f1cd54d97089c354e89716: 2 workers (ran/planned gw0=1/1, gw1=0/0), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 0 (check 0.04s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime 3eb9244318757203165119f9cab18d45']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    P5 test forks; child reads a file, exit code is the result [n2] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan f8187a6941f1cd54d97089c354e89716: 2 workers (ran/planned gw0=1/1, gw1=0/0), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.016s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan 4330a716844712b3d509c050ba5eabf6: 2 workers (ran/planned gw0=0/0, gw1=1/1), planned makespan 0.0s (LPT 0.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    P6 repository native library (ctypes) reads a file in C [n2] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan f8187a6941f1cd54d97089c354e89716: 2 workers (ran/planned gw0=1/1, gw1=0/0), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.005s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan 4330a716844712b3d509c050ba5eabf6: 2 workers (ran/planned gw0=0/0, gw1=1/1), planned makespan 0.0s (LPT 0.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.01s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    P7 installed (out-of-repo) native library reads a file in C [n2] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan f8187a6941f1cd54d97089c354e89716: 2 workers (ran/planned gw0=1/1, gw1=0/0), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 0 (check 0.0s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan 4330a716844712b3d509c050ba5eabf6: 2 workers (ran/planned gw0=0/0, gw1=1/1), planned makespan 0.0s (LPT 0.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+== 8 OK, 0 WRONG: []

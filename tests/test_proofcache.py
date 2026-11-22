@@ -83,7 +83,9 @@ def test_function_change_reruns_the_tests_that_executed_it_and_the_later_ones(py
     run_cache()
     (pytester.path / "pkg/mod.py").write_text(MOD.replace("return x * 2", "return 2 * x"))
     r, reused, data = run_cache()
-    assert reused == ids("test_f")
+    # test_f ran before test_g: review R-023c E7 (py-cache): a test that runs runs after every earlier test of its process whose in-process state it may need
+    assert reused == set()
+    assert data["cache"]["miss_ids"]["test_m.py::test_f"].startswith("placement: a predecessor of test_m.py::")
     assert data["cache"]["miss_ids"]["test_m.py::test_g"].startswith("code: pkg/mod.py::g")
     assert data["cache"]["miss_ids"]["test_m.py::test_limit"].startswith("code: pkg/mod.py::g")
 
@@ -148,8 +150,9 @@ def test_data_file_change_reruns_its_reader(pytester, run_cache):
     run_cache()
     (pytester.path / "data.txt").write_text("world")
     r, reused, data = run_cache()
-    # test_other ran before the reader: reused; test_after ran after it in the same process (R-020 O1): reruns
-    assert reused == ids("test_other")
+    # test_other ran before the reader: review R-023c E7 (py-cache): a test that runs runs after every earlier test of its process whose in-process state it may need; test_after ran after it (R-020 O1): reruns
+    assert reused == set()
+    assert data["cache"]["miss_ids"]["test_m.py::test_other"].startswith("placement: a predecessor of")
     assert data["cache"]["miss_ids"]["test_m.py::test_data"].startswith("data: data.txt")
     assert data["cache"]["miss_ids"]["test_m.py::test_after"].startswith("data: data.txt")
     r.assert_outcomes(passed=2, failed=1)
@@ -248,14 +251,19 @@ def test_environment_variable_read_is_an_input_and_unread_ones_are_not(pytester,
         """})
     monkeypatch.delenv("DETPY_T_FLAG", raising=False)
     run_cache()
-    monkeypatch.setenv("DETPY_T_UNREAD", "x")
+    # py-cache F-05: the process environment is part of every key (C code and libraries read it without a recorded
+    # read), except the variables of _proof.ENV_ALLOWLIST, each with its reason
+    monkeypatch.setenv("GITHUB_RUN_ID", "123")
     _, reused, _ = run_cache()
     assert reused == ids("test_flag", "test_other", "test_after")
+    monkeypatch.setenv("DETPY_T_UNREAD", "x")
+    _, reused, data = run_cache()
+    assert reused == set()
+    assert data["cache"]["miss_ids"]["test_m.py::test_other"].startswith("config")
+    run_cache()
     monkeypatch.setenv("DETPY_T_FLAG", "1")
     r, reused, data = run_cache()
-    assert reused == ids("test_other")  # test_after ran after the reader (R-020 O1, prefix rule)
-    assert data["cache"]["miss_ids"]["test_m.py::test_flag"] == "env: environment variable DETPY_T_FLAG"
-    assert data["cache"]["miss_ids"]["test_m.py::test_after"] == "env: environment variable DETPY_T_FLAG"
+    assert reused == set()
     r.assert_outcomes(passed=2, failed=1)
 
 
@@ -305,7 +313,7 @@ def test_network_connection_and_subprocess_are_never_cached(pytester, run_cache,
         """})
     run_cache("--det-cache-no-follow")
     _, reused, data = run_cache("--det-cache-no-follow")
-    assert reused == ids("test_plain")
+    assert reused == set()  # review R-050 P2 (b): a never-cached or failing test's needs hold the earlier tests of its file; they run before it
     nc = data["cache"]["not_cached_ids"]
     assert nc["test_m.py::test_loopback"] == "network connection"
     assert nc["test_m.py::test_spawn"] == "subprocess"
@@ -358,7 +366,7 @@ def test_external_service_through_a_loopback_proxy_is_never_cached(pytester, run
     run_cache()
     r, reused, data = run_cache()
     r.assert_outcomes(passed=1, failed=1)
-    assert reused == ids("test_plain")
+    assert reused == set()  # review R-050 P2 (b): a never-cached or failing test's needs hold the earlier tests of its file; they run before it
     assert data["cache"]["not_cached_ids"]["test_m.py::test_external"] == "outcome failed"
     # without the proxy the same loopback port is "localhost" to Level 0 and the test passes, but a service the
     # test process tree did not start is outside too: a connection, loopback or not, is never cached
@@ -369,7 +377,7 @@ def test_external_service_through_a_loopback_proxy_is_never_cached(pytester, run
     run_cache()
     r, reused, data = run_cache()
     r.assert_outcomes(passed=2)
-    assert reused == ids("test_plain")
+    assert reused == set()  # review R-050 P2 (b): it runs before a later test that may consume its state (never cached or failed)
     assert data["cache"]["not_cached_ids"]["test_m.py::test_external"] == "network connection"
 
 
@@ -415,7 +423,7 @@ def test_name_lookup_and_c_level_sockets_are_never_cached(pytester, run_cache, o
     run_cache()
     r, reused, data = run_cache()
     r.assert_outcomes(passed=5)
-    assert reused == ids("test_numeric_address_is_not_a_lookup", "test_loopback_name_is_read_from_the_hosts_file")
+    assert reused == set()  # review R-050 P2 (b): a never-cached or failing test's needs hold the earlier tests of its file; they run before it
     nc = data["cache"]["not_cached_ids"]
     assert nc["test_m.py::test_lookup"] == "host name lookup"
     assert nc["test_m.py::test_c_socket"] == "network socket opened outside Python (C extension)"
@@ -458,7 +466,9 @@ def test_clock_reader_depends_on_the_epoch(pytester, run_cache):
     _, reused, _ = run_cache("--det-epoch=2025-01-01T00:00:00")
     assert reused == ids("test_clock", "test_no_clock", "test_after_clock")
     _, reused, data = run_cache("--det-epoch=2025-06-01T00:00:00")
-    assert reused == ids("test_no_clock")
+    # test_no_clock ran before the clock reader: review R-023c E7 (py-cache): a test that runs runs after every earlier test of its process whose in-process state it may need
+    assert reused == set()
+    assert data["cache"]["miss_ids"]["test_m.py::test_no_clock"].startswith("placement: a predecessor of")
     assert data["cache"]["miss_ids"]["test_m.py::test_clock"].startswith("clock")
     # a time test_clock read can be kept for a later test (R-020 O1, prefix rule)
     assert data["cache"]["miss_ids"]["test_m.py::test_after_clock"].startswith("clock")
@@ -501,12 +511,20 @@ def test_skip_and_xfail_are_reused_with_their_reports(pytester, run_cache):
     r.stdout.fnmatch_lines(["*SKIPPED*not here*", "*SKIPPED*inside*", "*XFAIL*known*"])
 
 
-def test_new_test_in_one_module_keeps_the_other_modules(pytester, run_cache):
+@pytest.mark.parametrize("scope", ["session", "file"])
+def test_new_test_in_one_module_keeps_the_other_modules_only_when_files_are_isolated(pytester, run_cache, scope):
+    # py-cache (a wrong reuse found on 2026-11-20): in one process a new test runs before the later modules' tests
+    # and may leave state they read, which their entries cannot hold (it did not exist): they run again
+    # (prefix-session.json). With one child per file (--det-isolate-scope=file) only the file's own tests are before
+    # them: the other module is kept.
+    if scope == "file" and not sys.platform.startswith("linux"):
+        pytest.skip("fork per file: Linux")
+    args = ("--det-isolate", "--det-isolate-scope=file") if scope == "file" else ()
     project(pytester, **{"test_a.py": "def test_a1():\n    pass\n", "test_b.py": "def test_b1():\n    pass\n"})
-    run_cache()
+    run_cache(*args)
     (pytester.path / "test_a.py").write_text("def test_a1():\n    pass\n\ndef test_a2():\n    pass\n")
-    _, reused, _ = run_cache()
-    assert reused == {"test_b.py::test_b1"}
+    _, reused, _ = run_cache(*args)
+    assert reused == ({"test_b.py::test_b1"} if scope == "file" else set())
 
 
 def test_conftest_fixture_change_reruns_only_its_directory(pytester, run_cache):
@@ -517,10 +535,14 @@ def test_conftest_fixture_change_reruns_only_its_directory(pytester, run_cache):
         "sub2/test_s2.py": "def test_s2(other):\n    assert other == 2\n",
     })
     run_cache()
-    (pytester.path / "sub1/conftest.py").write_text(
-        "import pytest\n\nX = 1\n\n@pytest.fixture\ndef val():\n    return 1\n")
+    # review R-053 K1 and R-052: a conftest.py is in the code prefix of every later test of the process (its fixtures
+    # and import-time code may write state they read), and a test whose prefix changed runs after every earlier test
+    # (its stored needs may be stale). Both tests run; recovering the earlier test's reuse needs the carried set
+    # recomputed from the current code (the cache-inputs session, sessions/2026-11-20-py-cache/PROMPT-cache-inputs.md)
+    (pytester.path / "sub2/conftest.py").write_text(
+        "import pytest\n\nX = 1\n\n@pytest.fixture\ndef other():\n    return 2\n")
     _, reused, _ = run_cache()
-    assert reused == {"sub2/test_s2.py::test_s2"}
+    assert reused == set()
     # a new hook in a conftest can act on every test
     (pytester.path / "sub1/conftest.py").write_text(
         "import pytest\n\nX = 1\n\ndef pytest_runtest_setup(item):\n    pass\n\n"
@@ -606,4 +628,24 @@ def test_env_name_not_valid_utf8_refuses_the_test(pytester):
     assert [d["outcomes"]["test_m.py::test_e"] for d in res] == ["passed", "failed"]
     assert res[0]["cache"]["not_cached_ids"]["test_m.py::test_e"] == (
         "reads an environment variable whose name is not valid UTF-8")
-    assert res[1]["cache"]["reused_ids"] == ["test_m.py::test_plain"]
+    # the variable's value is part of the process environment, a part of every key (py-cache F-05)
+    assert res[1]["cache"]["reused_ids"] == []
+
+
+def test_g0204_cache_audit_option_is_listed_and_reruns_reusable_tests(pytester, run_cache):
+    """Audit G-0204 / exam F-05.probe.audit-rerun: `fenvix python --help` lists the cache audit option
+    (--det-cache-audit, the same as --det-cache-verify); with it on, reusable tests run fresh and are compared."""
+    import os
+    import shutil
+    import subprocess
+
+    fx = shutil.which("fenvix", path=os.path.dirname(sys.executable))
+    if fx is not None:
+        p = subprocess.run([fx, "python", "--help"], capture_output=True, text=True, timeout=300)
+        assert "--det-cache-audit" in p.stdout, p.stdout[-2000:]
+    project(pytester, **{"pkg/mod.py": MOD, "test_m.py": TESTS})
+    run_cache()
+    r, reused, data = run_cache("--det-cache-audit=1.0")
+    assert reused == set()
+    assert sorted(data["cache"]["verified_ids"]) == sorted(ids("test_f", "test_g", "test_limit"))
+    assert data["cache"]["verify_mismatches"] == []

@@ -538,7 +538,7 @@ def test_cache_matches_reference(pytester, net_env):
         assert ref[0] == new[0], net_mode          # the store, byte for byte
         assert ref[1] == new[1], net_mode          # warm receipts
         assert ref[2:] == new[2:], net_mode
-        assert new[5]["reused"], new[5]
+        assert new[1] and new[5]["ran"], new[5]  # warm receipts exist (review R-050 P2 (b): the failing test of the project's one file needs its earlier tests, so the warm run may reuse none)
 
 
 # -- unit level ------------------------------------------------------------------------------------------------------

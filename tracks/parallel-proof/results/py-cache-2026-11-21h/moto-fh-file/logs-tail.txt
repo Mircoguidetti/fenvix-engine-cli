@@ -1,0 +1,125 @@
+==> /home/runner/work/_temp/out/cache-n-cold.log <==
+bringing up nodes...
+bringing up nodes...
+
+[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[32m.[0m
+=================================================================================================================================================================================================== FAILURES ===================================================================================================================================================================================================
+[gw0] linux -- Python 3.12.16 /home/runner/work/_temp/venv/bin/python
+[1m[31mE   botocore.exceptions.NoCredentialsError: Unable to locate credentials[0m
+/home/runner/work/_temp/venv/lib/python3.12/site-packages/botocore/auth.py:433: botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[gw0] linux -- Python 3.12.16 /home/runner/work/_temp/venv/bin/python
+[1m[31mE   botocore.exceptions.NoCredentialsError: Unable to locate credentials[0m
+/home/runner/work/_temp/venv/lib/python3.12/site-packages/botocore/auth.py:433: botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[gw0] linux -- Python 3.12.16 /home/runner/work/_temp/venv/bin/python
+[1m[31mE   botocore.exceptions.NoCredentialsError: Unable to locate credentials[0m
+/home/runner/work/_temp/venv/lib/python3.12/site-packages/botocore/auth.py:433: botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[gw0] linux -- Python 3.12.16 /home/runner/work/_temp/venv/bin/python
+[1m[31mE   botocore.exceptions.NoCredentialsError: Unable to locate credentials[0m
+/home/runner/work/_temp/venv/lib/python3.12/site-packages/botocore/auth.py:433: botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[gw0] linux -- Python 3.12.16 /home/runner/work/_temp/venv/bin/python
+[1m[31mE   botocore.exceptions.NoCredentialsError: Unable to locate credentials[0m
+/home/runner/work/_temp/venv/lib/python3.12/site-packages/botocore/auth.py:433: botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[gw0] linux -- Python 3.12.16 /home/runner/work/_temp/venv/bin/python
+[1m[31mE   botocore.exceptions.NoCredentialsError: Unable to locate credentials[0m
+/home/runner/work/_temp/venv/lib/python3.12/site-packages/botocore/auth.py:433: botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[gw0] linux -- Python 3.12.16 /home/runner/work/_temp/venv/bin/python
+[1m[31mE   botocore.exceptions.NoCredentialsError: Unable to locate credentials[0m
+/home/runner/work/_temp/venv/lib/python3.12/site-packages/botocore/auth.py:433: botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[gw0] linux -- Python 3.12.16 /home/runner/work/_temp/venv/bin/python
+[1m[31mE   botocore.exceptions.NoCredentialsError: Unable to locate credentials[0m
+/home/runner/work/_temp/venv/lib/python3.12/site-packages/botocore/auth.py:433: botocore.exceptions.NoCredentialsError: Unable to locate credentials
+=============================================================================================================================================================================================== detpy (Level 0) ================================================================================================================================================================================================
+trace: /home/runner/work/_temp/out/cache-n-cold.jsonl  order digest: a2221f043d032b518955dc472e5dd16f  seed: 0
+plan 91e5d1ef6be82f7f2cc655d2c93352ae: 4 workers (ran/planned gw0=24/24, gw1=0/0, gw2=0/0, gw3=0/0), planned makespan 24.0s (LPT 24.0s); reused by the controller: 0
+merged trace: 24 tests from 4 worker traces
+replay tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart: pytest --det --det-plan=/home/runner/work/_temp/repo/.detpy/plan.json --det-plan-worker=gw0 (worker gw0's list, serially; copy the plan file to replay elsewhere)
+replay tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version: pytest --det --det-plan=/home/runner/work/_temp/repo/.detpy/plan.json --det-plan-worker=gw0 (worker gw0's list, serially; copy the plan file to replay elsewhere)
+replay tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file: pytest --det --det-plan=/home/runner/work/_temp/repo/.detpy/plan.json --det-plan-worker=gw0 (worker gw0's list, serially; copy the plan file to replay elsewhere)
+replay tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping: pytest --det --det-plan=/home/runner/work/_temp/repo/.detpy/plan.json --det-plan-worker=gw0 (worker gw0's list, serially; copy the plan file to replay elsewhere)
+replay tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form: pytest --det --det-plan=/home/runner/work/_temp/repo/.detpy/plan.json --det-plan-worker=gw0 (worker gw0's list, serially; copy the plan file to replay elsewhere)
+8 test(s) failed under --det (seed 0, fixed order). Turn each into a reproducible defect (cause, seed, order, replay command):
+    fenvix repro tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart
+    fenvix repro tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version
+    fenvix repro tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file
+    fenvix repro tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping
+    fenvix repro tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form
+    ... and 3 more
+  the same run again: pytest --det (with the same arguments)
+  under -n each worker ran its own list: fenvix repro TEST --plan /home/runner/work/_temp/repo/.detpy/plan.json; one worker's list again: pytest --det --det-plan=/home/runner/work/_temp/repo/.detpy/plan.json --det-plan-worker=gwN
+============================================================================================================================================================================================ detpy cache with proof ============================================================================================================================================================================================
+reused 0 result(s) with proof, ran 24, recorded 16 (check 0.004s, record 0.004s); config 9c9c19151a41598213e365b2cb01d275, runtime cb9a9fe4bf9ffb635e9a823547dd7ecd
+not reused: new 24
+not cacheable: outcome 8
+receipts: /home/runner/work/_temp/out/cache-n-cold.receipts.jsonl
+parallel: decided once in the controller; 16 entries merged from the workers' shards, 0 dropped by the cross-worker write rule, 0 reused results dropped (inputs written by this session), 0 together edge(s) noted for the next plans
+parallel vs serial (P5): 0 entr(ies) proven equal to the serial result (reusable by serial sessions), 0 diverged (not stored: the serial entry stays), 16 unproven (no stable serial fingerprint under their key)
+[36m[1m=========================================================================================================================================================================================== short test summary info ============================================================================================================================================================================================[0m
+[31mFAILED[0m tests/test_s3/test_s3_file_handles.py::[1mTestS3FileHandleClosuresUsingMocks::test_create_multipart[0m - botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[31mFAILED[0m tests/test_s3/test_s3_file_handles.py::[1mTestS3FileHandleClosuresUsingMocks::test_delete_object_with_version[0m - botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[31mFAILED[0m tests/test_s3/test_s3_file_handles.py::[1mTestS3FileHandleClosuresUsingMocks::test_overwrite_file[0m - botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[31mFAILED[0m tests/test_s3/test_s3_file_handles.py::[1mTestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping[0m - botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[31mFAILED[0m tests/test_s3/test_s3_file_handles.py::[1mTestS3FileHandleClosuresUsingMocks::test_upload_using_form[0m - botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[31mFAILED[0m tests/test_s3/test_s3_file_handles.py::[1mTestS3FileHandleClosuresUsingMocks::test_use_decorator[0m - botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[31mFAILED[0m tests/test_s3/test_s3_file_handles.py::[1mTestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt[0m - botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[31mFAILED[0m tests/test_s3/test_s3_file_handles.py::[1mTestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers[0m - botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[31m[31m[1m8 failed[0m, [32m16 passed[0m[31m in 4.02s[0m[0m
+fenvix: compiling the standard library and site-packages under PYTHONHASHSEED=0 into /home/runner/.cache/detpy/pyc/cpython-312-hashseed0 (once per environment and hash seed)
+
+==> /home/runner/work/_temp/out/det-n.log <==
+bringing up nodes...
+bringing up nodes...
+
+[32m.[0m[32m.[0m[31mF[0m[31mF[0m[31mF[0m[32m.[0m[31mF[0m[32m.[0m[31mF[0m[32m.[0m[31mF[0m[31mF[0m[32m.[0m[31mF[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                                                                                                                                                                                                                                                                                                                                                                                 [100%][0m
+=================================================================================================================================================================================================== FAILURES ===================================================================================================================================================================================================
+[gw1] linux -- Python 3.12.16 /home/runner/work/_temp/venv/bin/python
+[1m[31mE   botocore.exceptions.NoCredentialsError: Unable to locate credentials[0m
+/home/runner/work/_temp/venv/lib/python3.12/site-packages/botocore/auth.py:433: botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[gw1] linux -- Python 3.12.16 /home/runner/work/_temp/venv/bin/python
+[1m[31mE   botocore.exceptions.NoCredentialsError: Unable to locate credentials[0m
+/home/runner/work/_temp/venv/lib/python3.12/site-packages/botocore/auth.py:433: botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[gw1] linux -- Python 3.12.16 /home/runner/work/_temp/venv/bin/python
+[1m[31mE   botocore.exceptions.NoCredentialsError: Unable to locate credentials[0m
+/home/runner/work/_temp/venv/lib/python3.12/site-packages/botocore/auth.py:433: botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[gw1] linux -- Python 3.12.16 /home/runner/work/_temp/venv/bin/python
+[1m[31mE   botocore.exceptions.NoCredentialsError: Unable to locate credentials[0m
+/home/runner/work/_temp/venv/lib/python3.12/site-packages/botocore/auth.py:433: botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[gw1] linux -- Python 3.12.16 /home/runner/work/_temp/venv/bin/python
+[1m[31mE   botocore.exceptions.NoCredentialsError: Unable to locate credentials[0m
+/home/runner/work/_temp/venv/lib/python3.12/site-packages/botocore/auth.py:433: botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[gw1] linux -- Python 3.12.16 /home/runner/work/_temp/venv/bin/python
+[1m[31mE   botocore.exceptions.NoCredentialsError: Unable to locate credentials[0m
+/home/runner/work/_temp/venv/lib/python3.12/site-packages/botocore/auth.py:433: botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[gw1] linux -- Python 3.12.16 /home/runner/work/_temp/venv/bin/python
+[1m[31mE   botocore.exceptions.NoCredentialsError: Unable to locate credentials[0m
+/home/runner/work/_temp/venv/lib/python3.12/site-packages/botocore/auth.py:433: botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[gw1] linux -- Python 3.12.16 /home/runner/work/_temp/venv/bin/python
+[1m[31mE   botocore.exceptions.NoCredentialsError: Unable to locate credentials[0m
+/home/runner/work/_temp/venv/lib/python3.12/site-packages/botocore/auth.py:433: botocore.exceptions.NoCredentialsError: Unable to locate credentials
+=============================================================================================================================================================================================== detpy (Level 0) ================================================================================================================================================================================================
+trace: /home/runner/work/_temp/out/det-n.jsonl  order digest: a2221f043d032b518955dc472e5dd16f  seed: 0
+plan a5fd3ef9aa38f664ab73257fbcb49649: 4 workers (ran/planned gw0=15/15, gw1=8/8, gw2=1/1, gw3=0/0), planned makespan 0.6s (LPT 0.6s); reused by the controller: 0
+merged trace: 24 tests from 4 worker traces
+replay tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart: pytest --det --det-plan=/home/runner/work/_temp/repo/.detpy/plan.json --det-plan-worker=gw1 (worker gw1's list, serially; copy the plan file to replay elsewhere)
+replay tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version: pytest --det --det-plan=/home/runner/work/_temp/repo/.detpy/plan.json --det-plan-worker=gw1 (worker gw1's list, serially; copy the plan file to replay elsewhere)
+replay tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file: pytest --det --det-plan=/home/runner/work/_temp/repo/.detpy/plan.json --det-plan-worker=gw1 (worker gw1's list, serially; copy the plan file to replay elsewhere)
+replay tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping: pytest --det --det-plan=/home/runner/work/_temp/repo/.detpy/plan.json --det-plan-worker=gw1 (worker gw1's list, serially; copy the plan file to replay elsewhere)
+replay tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form: pytest --det --det-plan=/home/runner/work/_temp/repo/.detpy/plan.json --det-plan-worker=gw1 (worker gw1's list, serially; copy the plan file to replay elsewhere)
+8 test(s) failed under --det (seed 0, fixed order). Turn each into a reproducible defect (cause, seed, order, replay command):
+    fenvix repro tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_create_multipart
+    fenvix repro tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_delete_object_with_version
+    fenvix repro tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_overwrite_file
+    fenvix repro tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping
+    fenvix repro tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks::test_upload_using_form
+    ... and 3 more
+  the same run again: pytest --det (with the same arguments)
+  under -n each worker ran its own list: fenvix repro TEST --plan /home/runner/work/_temp/repo/.detpy/plan.json; one worker's list again: pytest --det --det-plan=/home/runner/work/_temp/repo/.detpy/plan.json --det-plan-worker=gwN
+[36m[1m=========================================================================================================================================================================================== short test summary info ============================================================================================================================================================================================[0m
+[31mFAILED[0m tests/test_s3/test_s3_file_handles.py::[1mTestS3FileHandleClosuresUsingMocks::test_create_multipart[0m - botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[31mFAILED[0m tests/test_s3/test_s3_file_handles.py::[1mTestS3FileHandleClosuresUsingMocks::test_delete_object_with_version[0m - botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[31mFAILED[0m tests/test_s3/test_s3_file_handles.py::[1mTestS3FileHandleClosuresUsingMocks::test_overwrite_file[0m - botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[31mFAILED[0m tests/test_s3/test_s3_file_handles.py::[1mTestS3FileHandleClosuresUsingMocks::test_update_versioned_object__while_looping[0m - botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[31mFAILED[0m tests/test_s3/test_s3_file_handles.py::[1mTestS3FileHandleClosuresUsingMocks::test_upload_using_form[0m - botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[31mFAILED[0m tests/test_s3/test_s3_file_handles.py::[1mTestS3FileHandleClosuresUsingMocks::test_use_decorator[0m - botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[31mFAILED[0m tests/test_s3/test_s3_file_handles.py::[1mTestS3FileHandleClosuresUsingMocks::test_use_decorator_and_context_mngt[0m - botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[31mFAILED[0m tests/test_s3/test_s3_file_handles.py::[1mTestS3FileHandleClosuresUsingMocks::test_use_multiple_context_managers[0m - botocore.exceptions.NoCredentialsError: Unable to locate credentials
+[31m[31m[1m8 failed[0m, [32m16 passed[0m[31m in 2.24s[0m[0m

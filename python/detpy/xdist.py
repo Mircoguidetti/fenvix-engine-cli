@@ -79,6 +79,19 @@ CHUNK_DIV = int(os.environ.get("DETPY_PLAN_CHUNK_DIV", "8"))
 _UNSUPPORTED = {"each"}
 
 
+def _asked_dist(config) -> str | None:
+    """The --dist value on the command line (or in addopts), before pytest-xdist's own change."""
+    args = list(getattr(getattr(config, "invocation_params", None), "args", ()) or ())
+    args += list(getattr(config.option, "addopts", None) or ())
+    asked = None
+    for i, a in enumerate(args):
+        if a == "--dist" and i + 1 < len(args):
+            asked = args[i + 1]
+        elif isinstance(a, str) and a.startswith("--dist="):
+            asked = a.split("=", 1)[1]
+    return asked
+
+
 def is_worker(config) -> bool:
     return hasattr(config, "workerinput")
 
@@ -240,7 +253,9 @@ class DetScheduling:
         node.send_runtest_some([idx])
 
     def remove_pending_tests_from_node(self, node, indices) -> None:
-        raise NotImplementedError("--det: work stealing is not used (fixed plan)")
+        """Work stealing is not used (fixed plan): nothing is taken from a worker's list. A call (an xdist version
+        that asks on node loss) is answered by keeping the plan, never by a crash (audit G-0708)."""
+        return None
 
     def remove_node(self, node):
         pending = self.node2pending.pop(node)
@@ -310,6 +325,21 @@ class Controller:
         self.config = config
         self.S = session_state
         self.dist = config.getoption("dist", "load") or "load"
+        # the --dist the user asked for (xdist turns "no" into "load" under -n): said in the header (audit G-2215)
+        self.asked_dist = _asked_dist(config)
+        if self.asked_dist is None and self.dist == "load":
+            # exam PY-05.odpair (audit G-0172, G-0175): with no --dist asked, a test file's tests stay on one worker,
+            # in the serial order, so a test that relies on an earlier test of its file has the serial verdict
+            self.dist = "loadfile"
+            self.dist_note = " (no --dist asked: a file's tests stay together, in the serial order)"
+        else:
+            self.dist_note = ""
+        if self.dist in _UNSUPPORTED and config.getoption("det_cache", None):
+            # audit G-1548: every worker runs every test: one test id has as many results as workers, so no result
+            # is the test's own; the cache cannot record or reuse them. Said, not silently recorded
+            raise pytest.UsageError("--det-cache with pytest-xdist --dist=each is not supported: every worker runs "
+                                    "every test, so a test has one result per worker (run --dist each without "
+                                    "--det-cache, or -n with another --dist)")
         self.dir = state_dir(config)
         self.plan: dict | None = None
         self.ids: list[str] = []
@@ -345,6 +375,13 @@ class Controller:
         environment, so the controller decides with it too, not with its own start environment."""
         from . import proofcache
 
+        for spec in specs or ():
+            # audit G-1552: the plan, the worker traces, the cache shards and the barrier are files under this
+            # machine's <rootdir>/.detpy; a worker on another machine (ssh, socket) cannot reach them
+            if not getattr(spec, "popen", False) or getattr(spec, "ssh", None) or getattr(spec, "socket", None):
+                raise pytest.UsageError(f"--det with a remote pytest-xdist worker ({spec}) is not supported: detpy's "
+                                        f"plan, traces and cache shards are files of this machine; use local workers "
+                                        f"(-n N / --tx popen)")
         env = dict(os.environ)
         # review R-023b N4: --tx popen//env:NAME=VALUE starts the workers with more variables than the controller
         # has. The same items on every spec are the workers' values; a variable the specs set differently gets a
@@ -368,6 +405,8 @@ class Controller:
             self.workeroutput[node.gateway.id] = {k: v for k, v in out.items() if k.startswith("detpy_")}
 
     def pytest_runtest_logreport(self, report):
+        if report.failed:
+            self.__dict__.setdefault("failed", []).append(report.nodeid)
         if any(k == "detpy_cache" and v == "reused" for k, v in getattr(report, "user_properties", ()) or ()):
             self.reused.add(report.nodeid)
             return
@@ -405,8 +444,13 @@ class Controller:
             if replay is None:
                 raise pytest.UsageError(f"--det-plan: {replay_path} is not a detpy plan")
         hist = load_json(os.path.join(self.dir, "durations.json")) or {}
+        # --det-isolate-scope=file: a test's in-process predecessors are the earlier tests of its file (one child per
+        # file), wherever the file runs: files are the atoms and the plan balances the tests that run (no sticky
+        # placement is needed to keep keys from churning)
+        file_scope = (pc is not None and self.config.getoption("det_isolate", False)
+                      and self.config.getoption("det_isolate_scope", "test") == "file")
         inp = {
-            "ids": self.ids, "hits": [n for n in self.ids if n in hits], "dist": self.dist,
+            "ids": self.ids, "hits": [n for n in self.ids if n in hits], "dist": "loadfile" if file_scope else self.dist,
             "groups": self._groups(nodes) if self.dist == "loadgroup" else {}, "workers": wids,
             # under the cache, a test's carried inputs are those of the tests before it on its worker: the placement
             # is kept whatever the balance (new atoms by LPT), so that keys do not churn with timing noise
@@ -415,7 +459,8 @@ class Controller:
             "quarantine": pc.quarantine() if pc is not None and not self.config.getoption("det_isolate", False) else [],
             "history": {k: v for k, v in hist.items() if isinstance(v, list)},
             "cached": pc.durations(self.ids) if pc is not None else {},
-            "previous": load_json(os.path.join(self.dir, "plan.json")), "replay": replay,
+            "previous": (self._worker_reader_atoms(pc, hits, wids) if file_scope
+                         else load_json(os.path.join(self.dir, "plan.json"))), "replay": replay,
             "edges": [list(e) for e in pc.store.edges()] if pc is not None else [],
         }
         try:
@@ -438,6 +483,9 @@ class Controller:
                     for m in lst[:lst.index(n)]:
                         if pc.sess.demote(m, f"placement: a predecessor of {n}, which runs in this session"):
                             withdrawn.append(m)
+            # review R-023c E7: every test that runs (not only a withdrawn one) runs after the predecessors on its
+            # worker whose state it may consume
+            withdrawn.extend(pc.demote_for_running([list(v) for v in p["lists"].values()]))
         index = {nid: i for i, nid in enumerate(self.ids)}
         # sent: the plan's list of each worker without the results reused in the end
         lists = [[index[nid] for nid in p["lists"].get(w, []) if pc is None or not pc.sess.is_hit(nid)]
@@ -449,7 +497,8 @@ class Controller:
         if self.waits:
             write_json(os.path.join(self.barrier, "waits.json"), {"waits": self.waits})
         self.plan = {
-            "format": PLAN_FORMAT, "version": PLAN_VERSION, "workers": len(wids), "dist": self.dist,
+            "format": PLAN_FORMAT, "version": PLAN_VERSION, "workers": len(wids),
+            "dist": "loadfile" if file_scope else self.dist,
             "mode": p["mode"], "testrunuid": self.testrunuid, "digest": p["digest"],
             "makespan": round(p["makespan"], 6), "lpt_makespan": round(p["lpt_makespan"], 6), "sticky": p["sticky"],
             "kept": p["kept"], "replayed": p["replayed"], "previous_ignored": p["previous_ignored"],
@@ -459,6 +508,29 @@ class Controller:
             "assign": p["assign"], "waits": p["waits"],
         }
         return lists
+
+    def _worker_reader_atoms(self, pc, hits, wids) -> dict:
+        """--det-isolate-scope=file: a previous plan holding only the files of reused tests that read the worker's id
+        (PYTEST_XDIST_WORKER, pinned to the worker they were recorded on: Checker::worker_check), each on that worker;
+        every other file is placed by LPT on the tests that run."""
+        import hashlib
+
+        hit_ids = [n for n in self.ids if n in hits]
+        readers = [n for n, _ in pc.store.worker_check(hit_ids, {n: "" for n in hit_ids})]
+        recorded: dict = {}
+        for r in readers:
+            f = "f:" + r.split("::", 1)[0]  # the plan's atom key of a file (schedule::atom_key)
+            w = next((i for i, w in enumerate(wids) if not pc.store.worker_check([r], {r: w})), None)
+            recorded.setdefault(f, set()).add(w)
+        atoms: dict = {}
+        for f, ws in recorded.items():
+            if len(ws) == 1 and None not in ws:
+                atoms[f] = next(iter(ws))
+            else:
+                # its readers were recorded on different workers (esphome: they flipped from run to run, 2,348
+                # withdrawn): a worker fixed by the file's name, so the next runs agree
+                atoms[f] = int(hashlib.blake2b(f.encode(), digest_size=8).hexdigest(), 16) % len(wids)
+        return {"format": PLAN_FORMAT, "workers": len(wids), "dist": "loadfile", "atoms": atoms}
 
     def all_finished(self, last_node) -> list[int]:
         """Every worker finished its list. Reused results whose input a test that comes before them wrote in this
@@ -473,6 +545,8 @@ class Controller:
         if pc is None:
             return []
         shards = [o.get("detpy_cache_shard") for o in self.workeroutput.values() if o.get("detpy_cache_shard")]
+        # --det-isolate (one child per test or per file, the cache's default): a worker's children's shards
+        shards += [p for o in self.workeroutput.values() for p in (o.get("detpy_cache_shards") or ())]
         withdrawn = pc.written_hits(shards, self.ids)
         pc.report_hits(self.pending_hits)
         self.pending_hits = []
@@ -570,6 +644,7 @@ class Controller:
         self.merge_summary = summary
         for nid, fp, _outcome, _w in summary["tests"]:
             self.S.fingerprints[nid] = fp
+        self._record_crashes(trace_path, summary)
         if self.plan is not None:
             write_json(os.path.join(self.dir, "plan.json"), self.plan)
         import shutil
@@ -580,6 +655,41 @@ class Controller:
         if proofcache.PLUGIN is not None:
             proofcache.PLUGIN.merge_workers(self.workeroutput, self.sent, self.racy_edges,
                                             (self.plan or {}).get("lists") or {})
+        if summary.get("missing") and session.exitstatus == 0:
+            # audit G-1551: planned tests that never ran (their worker died with no restart left): the run is not
+            # complete, so it does not pass
+            session.exitstatus = pytest.ExitCode.TESTS_FAILED
+
+    def _record_crashes(self, trace_path: str, summary: dict) -> None:
+        """Audit G-2214: a test that crashed its worker gets a record in the merged trace (outcome "crashed", a
+        fingerprint of the test id and that outcome), so that `detpy verify` compares it like any other test: crashing
+        in every run is a reproducible defect, crashing in one run only a divergence."""
+        have = {nid for nid, *_ in summary.get("tests", ())}
+        crashed = [(w, t) for w, t in self.crashed if t not in have]
+        if not crashed or not os.path.exists(trace_path):
+            return
+        try:
+            with open(trace_path) as fh:
+                lines = [ln for ln in fh.read().splitlines() if ln.strip()]
+            footer = json.loads(lines[-1]) if lines and '"footer"' in lines[-1] else None
+            body = lines[:-1] if footer is not None else lines
+            n = sum(1 for ln in body if '"type":"test"' in ln)
+            for i, (w, t) in enumerate(crashed):
+                fp = _core.digest(json.dumps(["detpy-crash", t]).encode())[:32]
+                body.append(json.dumps({"type": "test", "nodeid": t, "index": self.ids.index(t) if t in self.ids else n + i,
+                                        "outcome": "crashed", "fingerprint": fp, "n_events": 1, "truncated": False,
+                                        "counts": {"outcome": 1}, "checkpoints": [],
+                                        "events": [{"t": 0, "s": "outcome", "o": "outcome", "at": "", "v": "crashed"}],
+                                        "worker": w}, separators=(",", ":")))
+                self.S.fingerprints[t] = fp
+            if footer is not None:
+                footer["n_tests"] = n + len(crashed)
+                body.append(json.dumps(footer, separators=(",", ":")))
+            with open(trace_path, "w") as fh:
+                fh.write("\n".join(body) + "\n")
+            summary["missing"] = [m for m in summary.get("missing", ()) if m not in {t for _, t in crashed}]
+        except (OSError, ValueError):
+            pass
 
     def _save_durations(self) -> None:
         if not self.durations:
@@ -614,7 +724,13 @@ class Controller:
     def header_lines(self) -> list[str]:
         if self.dist in _UNSUPPORTED:
             return [f"detpy: pytest-xdist --dist={self.dist} is not planned by detpy (xdist's own scheduling)"]
-        return [f"detpy: pytest-xdist under a fixed plan (--dist={self.dist}); testrun_uid {self.testrunuid}"]
+        note = ""
+        if self.asked_dist and self.asked_dist != self.dist:
+            note = f" (--dist={self.asked_dist} asked; pytest-xdist runs {self.dist} under -n)"
+        note += getattr(self, "dist_note", "")
+        if self.dist == "worksteal":
+            note += " (work stealing is replaced by the fixed plan: LPT on recorded durations, sticky across runs)"
+        return [f"detpy: pytest-xdist under a fixed plan (--dist={self.dist}){note}; testrun_uid {self.testrunuid}"]
 
     def summary_lines(self) -> list[str]:
         p = self.plan
@@ -647,6 +763,19 @@ class Controller:
                          + (f"; unreadable worker traces: {', '.join(s['unreadable'])}" if s["unreadable"] else ""))
         for w, t in self.crashed:
             lines.append(f"worker {w} crashed in {t}; its remaining tests went to its replacement")
+        failed = list(dict.fromkeys(getattr(self, "failed", ())))
+        if failed and self.plan is not None:
+            # audit G-1549 / G-1557: the plan is a function of the worker count; a failure under -n replays on any
+            # machine with this run's plan, one worker's list in one process
+            plan = os.path.join(self.dir, "plan.json")
+            for nid in failed[:5]:
+                w = next((w for w, ids in self.sent.items() if nid in ids), None)
+                if w:
+                    lines.append(f"replay {nid}: pytest --det --det-plan={plan} --det-plan-worker={w} (worker {w}'s "
+                                 f"list, serially; copy the plan file to replay elsewhere)")
+        if s is not None and s.get("missing"):
+            lines.append(f"NOT RUN: {len(s['missing'])} planned test(s) never ran (a worker died with no restart "
+                         f"left): {', '.join(list(s['missing'])[:5])}; the session fails")
         return lines
 
 

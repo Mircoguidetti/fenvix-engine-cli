@@ -49,7 +49,7 @@ from types import CodeType, FunctionType
 
 import pytest
 
-from . import __version__, _codefacts, _core, _sites, _state, follow
+from . import __version__, _codefacts, _core, _proof, _sites, _state, follow
 
 # bound once: a test may remove sys._getframe (attrs' test_missing_sys_getframe) while detpy's hooks run
 _getframe = sys._getframe
@@ -67,7 +67,7 @@ _AUDIT_EVENTS = ("exec", "open", "ctypes.dlopen", "sqlite3.connect", "os.listdir
                  "socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr", "subprocess.Popen", "os.posix_spawn",
                  "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn", "os.remove", "os.rename", "os.mkdir",
                  "os.rmdir", "os.truncate", "shutil.rmtree", "shutil.copyfile", "shutil.move", "os.symlink",
-                 "os.link")
+                 "os.link", "ctypes.dlsym", "ctypes.dlsym/handle", "ctypes.call_function")
 _SPAWN = {"subprocess.Popen", "os.posix_spawn", "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn"}
 _WRITE_EVENTS = {"os.remove": (0,), "os.rename": (0, 1), "os.mkdir": (0,), "os.rmdir": (0,),
                  "shutil.rmtree": (0,), "shutil.copyfile": (1,), "shutil.move": (0, 1), "os.symlink": (1,),
@@ -174,10 +174,6 @@ def _user_stat_caller() -> bool:
     library helper); Path.stat() counts as its caller's. Called from the os.stat wrapper (frame 1)."""
     f = _getframe(2)
     while f is not None:
-        mod = f.f_globals.get("__name__", "")
-        if mod in ("pathlib", "pathlib._local", "pathlib._abc") and f.f_code.co_name in ("stat", "lstat"):
-            f = f.f_back
-            continue
         fn = f.f_code.co_filename
         # detpy's own reads (the capture, Level 0's patches) are not the test's
         return not (mod in _STDLIB_PATH_MODULES or fn.startswith(_STDLIB_DIR) or fn.startswith("<frozen")
@@ -194,41 +190,88 @@ def _time_helper_caller() -> bool:
     """True when os.stat was called by os.path.getmtime/getctime/getatime (the time goes to their caller). Called
     from the os.stat wrapper (frame 1)."""
     f = _getframe(2)
-    return (f is not None and f.f_code.co_name in _TIME_HELPERS
-            and f.f_globals.get("__name__", "") in ("genericpath", "posixpath", "ntpath"))
+    if (f is not None and f.f_code.co_name in _TIME_HELPERS
+            and f.f_globals.get("__name__", "") in ("genericpath", "posixpath", "ntpath")):
+        return f.f_code.co_name
+    return None
 
 
 class _TimedStat:
     """An ``os.stat_result`` given to user code: reading a time field flags the context "mtime" (not cached).
     Everything else is the result's own."""
 
-    __slots__ = ("_r", "_cap", "_path")
+    __slots__ = ("_r", "_cap", "_path", "_link", "_sized")
 
-    def __init__(self, r, cap, path):
+    def __init__(self, r, cap, path, link=False, sized=False):
         self._r = r
         self._cap = cap
         self._path = path
+        self._link = link
+        self._sized = sized
 
-    def _timed(self):
+    def _p(self):
+        return os.fsdecode(os.fspath(self._path)) if not isinstance(self._path, int) else str(self._path)
+
+    def _named(self):
+        """The path to key, "" for no input, None when the descriptor's file cannot be named."""
+        if not isinstance(self._path, int):
+            return self._path
         try:
             p = self._path
             self._cap.flag(self._cap._cur(), "mtime", str(p) if isinstance(p, int) else os.fsdecode(os.fspath(p)))
         except Exception:
             pass
 
-    def __getattr__(self, name):
-        if name.startswith(_TIME_FIELDS):
+    def _timed(self):
+        self._flag("mtime", self._p())
+
+    def _input(self, check):
+        p = self._named()
+        if p is None:
+            return self._flag("pstate", f"the status of descriptor {self._path} (its file cannot be named)")
+        if p == "":
+            return
+        try:
+            getattr(self._cap, check)(p, self._link)
+        except Exception:
             self._timed()
+
+    def _keyed(self):
+        self._input("time_check")
+
+    def _fields(self):
+        self._input("fields_check")
+
+    def _size(self):
+        if not self._sized:
+            self._fields()
+
+    def __getattr__(self, name):
+        if name.startswith(("st_mtime", "st_ctime")):
+            self._keyed()
+        elif name.startswith(("st_atime", "st_birthtime")):
+            self._timed()
+        elif name == "st_size":
+            self._size()
+        elif name.startswith("st_"):
+            self._fields()
         return getattr(self._r, name)
 
     def __getitem__(self, i):
         idx = range(len(self._r))[i]
-        if (7 in idx or 8 in idx or 9 in idx) if isinstance(idx, range) else idx in (7, 8, 9):
+        idx = list(idx) if isinstance(idx, range) else [idx]
+        if 7 in idx:
             self._timed()
+        elif 8 in idx or 9 in idx:
+            self._keyed()
+        if any(j < 6 for j in idx):
+            self._fields()
+        if 6 in idx:
+            self._size()
         return self._r[i]
 
     def __iter__(self):
-        self._timed()  # unpacking gives every field
+        self._timed()  # unpacking gives every field, the access time among them
         return iter(self._r)
 
     def __len__(self):
@@ -243,6 +286,7 @@ class _TimedStat:
         return hash(self._r)
 
     def __repr__(self):
+        self._timed()
         return repr(self._r)
 
     def __reduce__(self):
@@ -274,7 +318,8 @@ class _ScandirEntry:
 
     def stat(self, *, follow_symlinks=True):
         self._check(True, follow_symlinks)
-        return _TimedStat(self._e.stat(follow_symlinks=follow_symlinks), self._cap, self._e.path)
+        return _TimedStat(self._e.stat(follow_symlinks=follow_symlinks), self._cap, self._e.path,
+                          not follow_symlinks, follow_symlinks)
 
     def is_file(self, *, follow_symlinks=True):
         self._check(False, follow_symlinks)
@@ -287,6 +332,13 @@ class _ScandirEntry:
     def is_symlink(self):
         self._check(False, False)
         return self._e.is_symlink()
+
+    def inode(self):
+        try:
+            self._cap.fields_check(self._e.path, True)
+        except Exception:
+            pass
+        return self._e.inode()
 
     def __fspath__(self):
         return self._e.__fspath__()
@@ -613,7 +665,7 @@ class Capture:
             if isinstance(path, int) or cap._in_stat:
                 return it
             try:
-                if cap._caller_kind() != "user":
+                if not _reaches_user(_getframe(1)):  # review R-023c E2
                     return it
             except Exception:
                 return it
@@ -672,7 +724,12 @@ class Capture:
             def checked(path, *args, **kwargs):
                 timed = False
                 if not kwargs.get("dir_fd"):
-                    note(path, own or kwargs.get("follow_symlinks") is False, True)
+                    # py-cache (as detpy/_proof.py): an existence or kind check of the standard library sees the kind
+                    try:
+                        kind = name in ("stat", "lstat") and _proof._kind_check_caller()
+                    except Exception:
+                        kind = False
+                    note(path, own or kwargs.get("follow_symlinks") is False, not kind)
                     if name in ("stat", "lstat") and not cap._in_stat and not isinstance(path, int):
                         try:
                             timed = _user_stat_caller() and cap._caller_kind() == "user"
@@ -753,8 +810,11 @@ class Capture:
                 continue
             kind, _ = _sites._classify(fn)
             if kind == _sites._USER:
-                return "user"
-            if kind == _sites._INFRA:
+                b = f.f_back
+                # a user hook installed in place of the spawn primitive: who called into subprocess decides
+                if not (b is not None and b.f_code.co_filename.endswith(("/subprocess.py", "/multiprocessing/util.py"))):
+                    return "user"
+            elif kind == _sites._INFRA:
                 return "infra"
             f = f.f_back
         return "user"
@@ -917,8 +977,11 @@ class Capture:
                 continue
             kind, _ = _sites._classify(fn)
             if kind == _sites._USER:
-                return "user"
-            if kind == _sites._INFRA:
+                b = f.f_back
+                # a user hook installed in place of the spawn primitive: who called into subprocess decides
+                if not (b is not None and b.f_code.co_filename.endswith(("/subprocess.py", "/multiprocessing/util.py"))):
+                    return "user"
+            elif kind == _sites._INFRA:
                 return "infra"
             f = f.f_back
         return "user"
@@ -943,6 +1006,9 @@ class Capture:
         if any(s in p for s in _SKIP_DATA):
             return True
         if self.basetemp and (p == self.basetemp or p.startswith(self.basetemp + os.sep)):
+            return True
+        pc = sys.pycache_prefix  # round 4: detpy's bytecode cache, like __pycache__
+        if pc and (p == pc or p.startswith(pc + os.sep)):
             return True
         for d in self.site_dirs:
             if p.startswith(d):
@@ -990,8 +1056,7 @@ class Capture:
         if kind in ("s", "l", "z"):
             # parallel-proof round 3, item 9: an existence or kind check; the project root and its ancestors are
             # directories for the whole session; a kind never replaces a content or listing read of the same path
-            if self.root_sep.startswith(p.rstrip(os.sep) + os.sep) or p == os.sep or \
-                    p.rstrip(os.sep) in ("/tmp", "/var/tmp", _tmpdir_raw().rstrip(os.sep)):
+            if self.root_sep.startswith(p.rstrip(os.sep) + os.sep) or p == os.sep:
                 return
             if p in self.writers:
                 self.flags.setdefault(ctx, set()).add("rw:" + p)
@@ -1007,7 +1072,7 @@ class Capture:
             if k not in m or (kind == "z" and m[k].startswith(("s:", "l:"))):
                 m[k] = dep
             return
-        if kind == "m":
+        if kind == "m" or (kind == "f" and p in _MACHINE_FILES):
             kind = "f"  # a machine identity file under /sys read on purpose (uuid.getnode): its content is the input
         elif kind == "a":
             # a child's exclusive create that succeeded: the path did not exist then (its state now is irrelevant)
@@ -1063,6 +1128,8 @@ class Capture:
     def _audit(self, event, args):
         if not self.active:
             return
+        if _core.detpy_probe_active():
+            return  # detpy's own probe (py-cache: the clock's /proc/self/task check), as CaptureCore.audit
         if event == "exec":
             # every module body (import, runpy, exec) passes here before it runs; the functions and classes
             # it defines are nested code objects, armed with it
@@ -1166,6 +1233,16 @@ class Capture:
                     self.read(self._cur(), f, "f")
                 return
             self.flag(self._cur(), "dns", f"{event} {host} at {_first_user_site()}")
+        elif event in ("ctypes.dlsym", "ctypes.dlsym/handle", "ctypes.call_function"):
+            # review R-023c E3: a C function repository code takes from a library (ctypes.pythonapi among them)
+            if self._caller_kind() == "user" and _caller_in_repo(self):
+                if event == "ctypes.call_function":
+                    detail = "a C function called from repository code"
+                else:
+                    lib = str(getattr(args[0], "_name", "")) if event == "ctypes.dlsym" else str(args[0])
+                    sym = str(args[1]) if len(args) > 1 else ""
+                    detail = f"{sym} from the program's symbols" if lib in ("None", "") else f"{sym} from {lib}"
+                self.flag(self._cur(), "cdll", detail)
         elif event == "ctypes.dlopen":
             name = args[0] if args else None
             if name is None:
@@ -1238,6 +1315,10 @@ class Capture:
             for i in idx:
                 p = self._abs(args[i] if len(args) > i else None)
                 if p is not None and not self._ignored(p):
+                    if event == "os.mkdir" and _lexists_raw(p):
+                        # review R-023c E1: a mkdir of a path that exists writes nothing; its outcome is the kind
+                        self.read(ctx, p, "s")
+                        continue
                     self.wrote(ctx, p)
 
     def _own_listener(self, args) -> bool:
@@ -1543,6 +1624,9 @@ class Capture:
                 if interp:
                     self.child_read(ctx, interp)
             self.child_read(ctx, p, "d" if op == "d" else "f")
+        # PY-08 (py-cache, as capture.rs credit_child_impl): a process started by a test or fixture: never reused
+        if self.ctx_names[ctx].startswith(("t|", "f|")):
+            self.flag(ctx, "spawn", f"{sp.detail} [a test that starts a process is never reused]")
 
 
     def env_read(self, name: str) -> None:
@@ -1848,6 +1932,8 @@ def config_identity(config) -> tuple[str, dict]:
         # review R-009 F3: the time zone and locale are read by C (getenv, tzset, /etc/localtime), never through
         # os.environ: they are configuration of every test
         "tz_locale": tz_locale_identity(),
+        # py-cache F-05: process-level state (as detpy/_proof.py)
+        "process": _proof.process_identity(),
     }
     return _core.digest(json.dumps(d, sort_keys=True, default=str).encode()), d
 
@@ -1989,6 +2075,54 @@ class ProofCachePlugin:
             if r in self.items and w in self.items and w in self.hits and r not in self.hits:
                 del self.hits[w]
                 self.misses[w] = f"reader: its output is read by {r}, which runs in this session"
+        self.demote_for_running([list(self.items)])
+
+    def demote_for_running(self, lists) -> list:
+        """Review R-023c E7: a test that runs in this session runs after the earlier tests of its process whose
+        in-process state it may consume (the tests of its carried set when it was recorded, ``Entry::needs``; every
+        earlier test when it reached the library node, or when it has no entry), as in a fresh run of the suite: those
+        are not reused. A demoted test runs too: its own predecessors follow, and so do the reused writers whose output
+        it reads (review R-023b N8). ``lists``: the tests of each process, in order. Not under --det-isolate (each test
+        in its own child: no in-process state reaches it). Returns the demoted tests."""
+        out: list = []
+        if self.config is not None and self.config.getoption("det_isolate", False):
+            return out
+        ids = [n for lst in lists for n in lst]
+        needs = dict(zip(ids, self.store.needs(ids)))
+        present = set(ids)
+        changed = True
+        while changed:
+            changed = False
+            for lst in lists:
+                for i in range(len(lst) - 1, -1, -1):
+                    n = lst[i]
+                    if self._is_hit(n):
+                        continue
+                    need = needs.get(n)
+                    want = None if need is None else set(need)
+                    for m in lst[:i]:
+                        if (want is None or m in want) and self._demote(
+                                m, f"placement: a predecessor of {n}, which runs in this session"):
+                            out.append(m)
+                            changed = True
+                    if want is None:
+                        break
+            for w, r in self.store.edges():
+                if r in present and w in present and self._is_hit(w) and not self._is_hit(r):
+                    if self._demote(w, f"reader: its output is read by {r}, which runs in this session"):
+                        out.append(w)
+                        changed = True
+        return out
+
+    def _is_hit(self, nid) -> bool:
+        return nid in self.hits
+
+    def _demote(self, nid, why) -> bool:
+        if nid not in self.hits:
+            return False
+        del self.hits[nid]
+        self.misses[nid] = why
+        return True
 
     # -- fixtures and tests ------------------------------------------------------
     @pytest.hookimpl(hookwrapper=True, tryfirst=True)
@@ -2129,6 +2263,10 @@ class ProofCachePlugin:
                 self.fingerprints[nid] = fp
         cap = self.cap
         cap.switch("s")
+        try:
+            _proof.ProofSession._outside_modules(self)  # py-cache, audit G-0164 (as detpy/_proof.py)
+        except Exception:
+            pass
         cap.stop()
         t0 = _perf()
         try:
@@ -2844,6 +2982,18 @@ def _uncacheable(flags: set, cfg) -> str | None:
     if "unacc" in flags:
         return "did something the engine cannot account for (NOT PROVEN: see the trace's unaccounted list)"
     return None
+
+
+_MACHINE_FILES = frozenset({"/proc/sys/kernel/random/boot_id", "/proc/sys/kernel/hostname", "/proc/sys/kernel/osrelease",
+                            "/proc/sys/kernel/ostype", "/proc/sys/kernel/version"})
+
+
+def _lexists_raw(p) -> bool:
+    try:
+        os.lstat.__wrapped__(p) if hasattr(os.lstat, "__wrapped__") else os.lstat(p)
+    except OSError:
+        return False
+    return True
 
 
 def _tmpdir_raw() -> str:

@@ -107,8 +107,8 @@ fn entry(fingerprint: &str, placement: &str) -> Entry {
         config: "c".into(),
         runtime: "node24".into(),
         epoch: None,
-        env: vec![],
-        data: vec![],
+        env: vec![].into(),
+        data: vec![].into(),
         content: 0,
         skeleton: 0,
         hooks: 0,
@@ -119,6 +119,10 @@ fn entry(fingerprint: &str, placement: &str) -> Entry {
         serial_noise: false,
         preds: String::new(),
         startup: String::new(),
+        // `None` is the conservative value the cache gives an entry whose needs are unknown (R-050 P2: it then
+        // needs every earlier test). This fixture is about a fingerprint, not about reuse, so it must not claim
+        // a narrower set than the cache would.
+        needs: None,
     }
 }
 
