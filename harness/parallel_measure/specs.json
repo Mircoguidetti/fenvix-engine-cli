@@ -1,14 +1,41 @@
 {
- "networkx": {"repo": "https://github.com/networkx/networkx", "commit": "6c1a31d1613ad04cf2b2e3d63090b94979521981",
-   "runner": "pytest", "dir": "$PM_WORK/repos/networkx", "python": "$PM_WORK/venv/networkx/bin/python",
-   "args": ["--doctest-modules", "--pyargs", "networkx", "-q", "-p", "no:cacheprovider"],
-   "ci": "DECLARED pyproject.toml:358 test-default = pytest -n auto --doctest-modules --durations=10 --pyargs networkx"},
- "attrs": {"repo": "https://github.com/python-attrs/attrs", "commit": "f830e60f9c6485aa7037a52f03fdd28428dfbfc4",
-   "runner": "pytest", "dir": "$PM_WORK/repos/attrs", "python": "$PM_WORK/venv/attrs/bin/python",
-   "env": {"PYTHONPATH": "$PM_WORK/repos/attrs/src"},
-   "args": ["-q", "-p", "no:cacheprovider"],
-   "ci": "DECLARED tox.ini:31 tests: pytest {posargs:-n auto} (addopts -ra --import-mode=importlib)"},
- "yaml": {"repo": "https://github.com/eemeli/yaml", "commit": "528ef30d6ded4bd9f2c3521b670eb2b29d503c5c",
-   "runner": "vitest", "dir": "$PM_WORK/repos/yaml", "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
-   "args": [], "ci": "DECLARED package.json scripts.test = vitest run"}
+ "networkx": {
+  "repo": "https://github.com/networkx/networkx",
+  "commit": "6c1a31d1613ad04cf2b2e3d63090b94979521981",
+  "runner": "pytest",
+  "dir": "$PM_WORK/repos/networkx",
+  "python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [
+   "--doctest-modules",
+   "--pyargs",
+   "networkx",
+   "-q",
+   "-p",
+   "no:cacheprovider"
+  ],
+  "ci": "DECLARED pyproject.toml:358 test-default = pytest -n auto --doctest-modules --durations=10 --pyargs networkx"
+ },
+ "attrs": {
+  "repo": "https://github.com/python-attrs/attrs",
+  "commit": "f830e60f9c6485aa7037a52f03fdd28428dfbfc4",
+  "runner": "pytest",
+  "dir": "$PM_WORK/repos/attrs",
+  "python": "$PM_WORK/venv/attrs/bin/python",
+  "args": [
+   "-q",
+   "-p",
+   "no:cacheprovider"
+  ],
+  "ci": "DECLARED tox.ini:31 tests: pytest {posargs:-n auto} (addopts -ra --import-mode=importlib)",
+  "install": "pip install --no-deps -e . (shallow clone: version 0.1.dev50)"
+ },
+ "yaml": {
+  "repo": "https://github.com/eemeli/yaml",
+  "commit": "528ef30d6ded4bd9f2c3521b670eb2b29d503c5c",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/yaml",
+  "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [],
+  "ci": "DECLARED package.json scripts.test = vitest run"
+ }
 }

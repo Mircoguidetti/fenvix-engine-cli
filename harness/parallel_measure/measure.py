@@ -30,7 +30,13 @@ VOLATILE = ("CI", "GITHUB_ACTIONS", "DETJS", "NODE_OPTIONS", "DETJS_SEED", "DETJ
 
 
 def engine_commit():
-    return subprocess.run(["git", "-C", ENGINE, "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+    """The trunk commit the engine was built from: origin/claude/release-1, provided the engine's sources in this
+    checkout (crates, python, node, Cargo.*) equal it; otherwise HEAD with a '+modified' suffix."""
+    g = lambda *a: subprocess.run(["git", "-C", ENGINE, *a], capture_output=True, text=True).stdout.strip()
+    trunk = g("rev-parse", "origin/claude/release-1")
+    same = subprocess.run(["git", "-C", ENGINE, "diff", "--quiet", trunk, "--", "crates", "python", "node/src",
+                           "node/bin", "Cargo.toml", "Cargo.lock", "pyproject.toml"]).returncode == 0
+    return trunk if same else g("rev-parse", "HEAD") + "+modified"
 
 
 def cpu_sample(dt=1.0):
