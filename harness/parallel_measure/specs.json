@@ -37,5 +37,88 @@
   "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
   "args": [],
   "ci": "DECLARED package.json scripts.test = vitest run"
+ },
+ "nestjs-pino": {
+  "repo": "https://github.com/iamolegga/nestjs-pino",
+  "commit": "82d92198747c64e87057dfb50c6215a936a1a052",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/nestjs-pino",
+  "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [],
+  "ci": "DECLARED vitest.config.mts:24 fileParallelism: false; package.json test = vitest run",
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "npm ci --ignore-scripts --no-audit --no-fund"
+ },
+ "codex-multi-auth": {
+  "repo": "https://github.com/ndycode/codex-multi-auth",
+  "commit": "b9886168aafcebd8581d4e344daf7abd19b510ce",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/codex-multi-auth",
+  "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [],
+  "ci": "DECLARED package.json test = vitest run --maxWorkers=1; vitest.config.ts:40-46 fileParallelism: false (fixed-port OAuth callback 1455 and shared-port suites)",
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "npm ci --ignore-scripts --no-audit --no-fund"
+ },
+ "agentsys": {
+  "repo": "https://github.com/agent-sh/agentsys",
+  "commit": "ce58913304d88a1d1a0513e1837ae43c33f5f6f5",
+  "runner": "jest",
+  "dir": "$PM_WORK/repos/agentsys",
+  "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [],
+  "ci": "DECLARED jest.config.js:52 maxWorkers: 1; package.json test = jest",
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "npm ci --ignore-scripts --no-audit --no-fund"
+ },
+ "react-confirm-alert": {
+  "repo": "https://github.com/GA-MO/react-confirm-alert",
+  "commit": "d1498d2cece210b9ef204a4455abe8d7745f480c",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/react-confirm-alert",
+  "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [],
+  "ci": "DECLARED vitest.config.mts:30 fileParallelism: false; package.json test = vitest run",
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "npm ci --ignore-scripts --no-audit --no-fund"
+ },
+ "ironcurtain": {
+  "repo": "https://github.com/provos/ironcurtain",
+  "commit": "abf2b44c2e1b6138ede2d0b46337c684258088d0",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/ironcurtain",
+  "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [],
+  "ci": "DECLARED package.json test = bash scripts/test.sh (root vitest run, then web-ui); vitest.config.ts:45 fileParallelism: false for a project; measured: root vitest run only",
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "npm ci --ignore-scripts --no-audit --no-fund"
+ },
+ "faker": {
+  "repo": "https://github.com/joke2k/faker",
+  "commit": "b0f38add8d3d6a9ab2561f08920674971f073f25",
+  "runner": "pytest",
+  "dir": "$PM_WORK/repos/faker",
+  "python": "$PM_WORK/venv/faker/bin/python",
+  "args": [
+   "-q",
+   "-p",
+   "no:cacheprovider"
+  ],
+  "ci": "DECLARED tox.ini [testenv] commands: coverage run --source=faker -m pytest (no xdist: serial); measured: the first pytest command without coverage",
+  "install": "pip install engine wheel coverage freezegun pytest python-stdnum ukpostcodeparser validators sphinx Pillow xmltodict; pip install --no-deps -e ."
+ },
+ "mpmath": {
+  "repo": "https://github.com/mpmath/mpmath",
+  "commit": "9b9a1ccbe2a6af5cc3b54fd1cee306ca11b1d13e",
+  "runner": "pytest",
+  "dir": "$PM_WORK/repos/mpmath",
+  "python": "$PM_WORK/venv/mpmath/bin/python",
+  "args": [
+   "-q",
+   "-p",
+   "no:cacheprovider"
+  ],
+  "ci": "DECLARED .github/workflows (coverage job) run: pytest (serial; testpaths mpmath docs, --doctest-modules)",
+  "install": "pip install engine wheel pytest numpy packaging pytest-timeout pexpect ipython hypothesis pytest-xdist; pip install --no-deps -e ."
  }
 }

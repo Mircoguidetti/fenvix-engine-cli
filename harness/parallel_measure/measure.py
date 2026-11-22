@@ -155,7 +155,8 @@ def main():
         base = ["node", DETJS, runner] + (["run"] if runner == "vitest" else []) + args
         one = ["--no-file-parallelism"] if runner == "vitest" else ["--runInBand"]
         plain = lambda i: base + one + spec.get("plain_extra", [])
-        serial = lambda i: base + ["--det", f"--det-trace={out}/S{i}.jsonl"]
+        # --det-workers=1: on the trunk at 5a6463fd `--det` alone is parallel (node/src/parallel.js:62, G-1044)
+        serial = lambda i: base + ["--det", "--det-workers=1", f"--det-trace={out}/S{i}.jsonl"]
         par = lambda i: base + ["--det", f"--det-workers={o.workers}", f"--det-trace={out}/P{i}.jsonl"]
 
     def record(kind, i, cmd, r, **extra):
