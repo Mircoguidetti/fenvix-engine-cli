@@ -27,6 +27,12 @@ engine trunk **bfaf70b4**; 4-vCPU container; 3 rounds; 2 and 4 workers):
   the 17,850 not-identical tests (94 %) are OURS (stable outcome in every run, plain and engine, serial, parallel and
   shuffled; refused anyway), and in each repository the same refusal appears when two *serial* runs are compared.
 
+**Idea verdict** (founder's rule, recomputed from these runs: (a) the runner's own plain parallel at least 2x its
+plain serial; (b) at least one THEIRS test): nestjs-pino **no** (a yes 2.73x, b no: 0 THEIRS), agentsys **no** (a yes
+2.55x, b no: 0), ironcurtain **yes** (a 3.36x, b 4 THEIRS), codex-multi-auth **yes** (a 3.53x, b 10 THEIRS): 2 of 4.
+These suites could run 2.5-3.5x faster in parallel than they do, and two of the four carry real order defects that
+a serial-only CI hides.
+
 In one sentence: on these repositories parallel with proof is faster than serial on three of four but proven
 identical on none, because the engine refuses for reasons that are not parallelism (run-level inputs, process ids,
 files the suite writes itself) and on two of four its own runs change outcomes or drop tests.

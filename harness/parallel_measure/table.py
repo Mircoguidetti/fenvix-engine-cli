@@ -58,7 +58,8 @@ def main():
            "runner's own parallel s (no engine)", "`--det` serial s", "workers", "parallel with proof s",
            "speedup vs plain serial", "outcome map identical (per test id, every round)", "engine verdict (per round)",
            "causes named (max per round)", "serial noise (S1 vs S2)", "row state", "engine state", "NOISY runs",
-           "nproc / CPU", "engine commit", "boxes (classify.py)", "counts (rule)"]
+           "nproc / CPU", "engine commit", "boxes (classify.py)", "counts (rule)",
+           "(a) own plain parallel >= 2x plain serial", "(b) THEIRS >= 1", "idea verdict"]
     print("| " + " | ".join(hdr) + " |")
     print("|" + "---|" * len(hdr))
     for name in repos:
@@ -138,7 +139,17 @@ def main():
                 if not r.get("THEIRS_reported_equal_or_named", True):
                     fails.append("(4) a THEIRS outcome reported differently and not named")
                 counts = "yes (rule 1-4)" if not fails else "no: " + "; ".join(fails)
-            cells += [boxes, counts]
+            # idea verdict (founder, 2026-11-22): (a) the runner's own parallel mode, no engine, best of w2/w4
+            # (median), at least 2x faster than plain serial (median); (b) at least one THEIRS test (reproduced
+            # without the engine, not ENV). Engine defects (OURS / UNDECIDED) do not enter it.
+            best = min((m for m in (med(ok(get("plain_par", w))) for w in (2, 4)) if m), default=None)
+            sa = bool(mp and best and mp / best >= 2.0)
+            nt = (cl or {}).get("boxes", {}).get("THEIRS", 0) if cl else None
+            sb = bool(nt)
+            cells += [boxes, counts,
+                      (f"yes ({round(mp / best, 2)}x)" if sa else f"no ({round(mp / best, 2)}x)") if mp and best else "UNKNOWN",
+                      ("yes" if sb else "no") + f" ({nt})" if cl else "UNKNOWN (not classified)",
+                      "yes" if sa and sb else "no"]
             print("| " + " | ".join(cells) + " |")
 
 
