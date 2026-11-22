@@ -17,6 +17,13 @@ const { Xoshiro128 } = require('./seeds');
 const ESUCCESS = 0;
 const EFAULT = 21;
 const EINVAL = 28;
+//: the WASI imports that reach the real filesystem (or the real standard streams): the engine replaces
+//: `random_get` and `clock_time_get` and observes neither of these, so each one marks the test.
+const FS_IMPORTS = [
+  'path_open', 'fd_read', 'fd_pread', 'fd_readdir', 'fd_filestat_get', 'fd_prestat_get', 'fd_prestat_dir_name',
+  'path_filestat_get', 'path_readlink', 'fd_seek', 'fd_tell', 'poll_oneoff', 'sock_recv', 'sock_accept',
+];
+
 const MEMORY = new WeakMap(); // WASI object -> WebAssembly.Memory
 const GEN = new Xoshiro128();
 let genKey = null;
@@ -63,6 +70,19 @@ function virtualize(self, wrap) {
       if (ns === null) return realClock(id, precision, ptr);
       new DataView(mem.buffer, mem.byteOffset).setBigUint64(ptr, BigInt.asUintN(64, ns), true);
       return ESUCCESS;
+    };
+  }
+  // The two native sources WASI exposes that are not functions of the process are replaced above and
+  // recorded. What is NOT observed is the filesystem a WASI instance may be given through `preopens`: those
+  // imports go straight to the real one. So the engine does not claim a test that reads through them: each one
+  // marks the running test `uncontrolled.io` at its own call, which is per-thing and not per-feature -- a test
+  // whose module only draws entropy and reads the clock stays provable, and one that opens a file does not.
+  for (const n of FS_IMPORTS) {
+    const real = wrap[n];
+    if (typeof real !== 'function') continue;
+    wrap[n] = function (...a) {
+      try { STATE.recordAt('other', 'uncontrolled.io', '<wasi>', `wasi.${n}`); } catch { /* never break the call */ }
+      return real.apply(this, a);
     };
   }
   Object.defineProperty(wrap, '__detjsWasi', { value: true });

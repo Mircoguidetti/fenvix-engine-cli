@@ -682,19 +682,22 @@ class DetSSLObject(ssl.SSLObject):
 
     _det_replay = None  # the recorded handshake (dict) once bound to a replayed socket
     _det_in = _det_out = None
+    _det_cands = None  # record, several sockets in the caller: bound once the handshake shows which one
 
     @classmethod
     def _create(cls, incoming, outgoing, *args, **kwargs):
         self = super()._create(incoming, outgoing, *args, **kwargs)
         self._det_in, self._det_out = incoming, outgoing
         if POLICY is not None and POLICY.mode in ("record", "replay"):
-            _bind_sslobj(self, _caller_socket())
+            _bind_candidates(self, _caller_sockets())
         return self
 
     def do_handshake(self):
         if self._det_replay is not None:
             return None
         r = super().do_handshake()
+        if self._det_cands is not None and POLICY is not None and POLICY.mode == "record":
+            _bind_after_handshake(self)
         entry = _core.net_conn_of(self) if POLICY is not None and POLICY.mode == "record" else None
         if entry is not None:
             _record_tls_info(self, entry)
@@ -774,30 +777,88 @@ def _controlled(sock) -> bool:
     return isinstance(sock, socket.socket) and (_core.net_is_replayed(sock) or _core.net_conn_of(sock) is not None)
 
 
-def _caller_socket(depth: int = 8):
-    """The recorded or replayed socket a ``wrap_bio`` caller is about to run TLS over: a socket held by one of the
-    calling frames (asyncio's ``_create_connection_transport(sock)``, urllib3's and httpcore's TLS-in-TLS), or the
-    raw socket of a stream they hold (anyio's ``TLSStream.wrap(transport_stream)``, used by httpx)."""
+_TLS_BOUND = weakref.WeakSet()  # sockets a DetSSLObject runs over (a second TLS object never takes them)
+
+
+def _caller_sockets(depth: int = 8) -> list:
+    """The recorded or replayed sockets a ``wrap_bio`` caller may run TLS over, from the nearest calling frame that
+    holds any: sockets (asyncio's ``_create_connection_transport(sock)``, urllib3's and httpcore's TLS-in-TLS) or the
+    raw socket of a stream (anyio's ``TLSStream.wrap(transport_stream)``, used by httpx). Sockets already under a TLS
+    object are left out."""
     import sys
 
     f = sys._getframe(2)
     for _ in range(depth):
         if f is None:
-            return None
+            return []
+        found = []
         for v in list(f.f_locals.values()):
-            if _controlled(v):
-                return _raw(v)
+            cands = [v]
             attrs = getattr(v, "extra_attributes", None)
             if isinstance(attrs, dict):
                 for get in attrs.values():
                     try:
-                        r = get()
+                        cands.append(get())
                     except Exception:
                         continue
-                    if _controlled(r):
-                        return _raw(r)
+            for c in cands:
+                if _controlled(c):
+                    r = _raw(c)
+                    if r not in _TLS_BOUND and not any(r is x for x in found):
+                        found.append(r)
+        if found:
+            return found
         f = f.f_back
-    return None
+    return []
+
+
+def _replayed_tls(sock) -> bool:
+    """Whether the recording a replayed socket plays was made above TLS."""
+    where = _REPLAYED.get(sock)
+    try:
+        return bool(where is not None and POLICY.cassette.info(*where)[2])
+    except Exception:
+        return False
+
+
+def _sent_tls_hello(sock) -> bool:
+    """Whether a recorded socket's first bytes out are a TLS handshake record (its ClientHello)."""
+    entry = _core.net_conn_of(sock)
+    if entry is None:
+        return False
+    try:
+        sends = [d for k, d in POLICY.cassette.segments(*entry) if k == "send"]
+    except Exception:
+        return False
+    return bool(sends) and bytes(sends[0][:2]) == b"\x16\x03"
+
+
+def _bind_candidates(sslobj, cands) -> None:
+    """Bind at creation when the socket is known: one candidate, or (replay) the one candidate whose recording was
+    made above TLS. Otherwise (record, several sockets in the caller) the binding waits for the handshake: the
+    socket that sent the ClientHello is the one (R-051 R4)."""
+    if len(cands) == 1:
+        _bind_sslobj(sslobj, cands[0])
+        return
+    replayed = [c for c in cands if _core.net_is_replayed(c)]
+    if replayed:
+        tls = [c for c in replayed if _replayed_tls(c)]
+        if tls:
+            _bind_sslobj(sslobj, tls[0])
+        return
+    if cands:
+        sslobj._det_cands = [weakref.ref(c) for c in cands]
+
+
+def _bind_after_handshake(sslobj) -> None:
+    cands = [r() for r in getattr(sslobj, "_det_cands", None) or []]
+    sslobj._det_cands = None
+    hello = [c for c in cands if c is not None and c not in _TLS_BOUND and _sent_tls_hello(c)]
+    if hello:
+        entry = _core.net_conn_of(hello[0])
+        _bind_sslobj(sslobj, hello[0])
+        if entry is not None:
+            POLICY.cassette.clear_segments(*entry)  # the handshake's ciphertext: the plaintext follows
 
 
 def _bind_sslobj(sslobj, sock) -> None:
@@ -814,11 +875,13 @@ def _bind_sslobj(sslobj, sock) -> None:
             except Exception:
                 info = {}
         sslobj._det_replay = info
+        _TLS_BOUND.add(sock)
         return
     entry = _core.net_conn_of(sock)
     if entry is not None:
         _core.net_conn_tls(sslobj, entry)  # the plaintext above TLS is the recording
         _core.net_conn_drop(sock)  # not the ciphertext below it
+        _TLS_BOUND.add(sock)
 
 
 def _sslproto_connection_made(real):
@@ -832,6 +895,86 @@ def _sslproto_connection_made(real):
 
     connection_made.__doc__ = real.__doc__
     return connection_made
+
+
+# Live endpoints (docs/VERIFY-INPUTS.md) -------------------------------------------------------------------------
+_real_listen = socket.socket.listen
+_LISTENERS = weakref.WeakSet()  # sockets this process listens on: a test talking to its own server
+
+
+def _listen(self, *args):
+    r = _real_listen(self, *args)
+    _LISTENERS.add(self)
+    return r
+
+
+_real_bind = socket.socket.bind
+
+
+def _bind(self, *args):
+    r = _real_bind(self, *args)
+    try:
+        if self.type == socket.SOCK_DGRAM:  # a datagram server of this process answers like a listener
+            _LISTENERS.add(self)
+    except OSError:
+        pass
+    return r
+
+
+def _own_listener(family, address) -> bool:
+    for s in list(_LISTENERS):
+        try:
+            if s.family != family:
+                continue
+            name = s.getsockname()
+        except OSError:
+            continue
+        if family == socket.AF_UNIX:
+            if name == address:
+                return True
+        elif isinstance(address, tuple) and len(address) >= 2 and name[1] == address[1]:
+            return True
+    return False
+
+
+def _caller_depth() -> int:
+    """Depth (for ``uncontrolled._mark`` called from ``_note_live``) of the first frame above it that is neither the
+    standard library (``socket.create_connection``) nor this module: the code that used the endpoint."""
+    import sys
+
+    from . import _sites
+
+    stdlib = tuple(d + os.sep for d in _sites._stdlib_dirs)
+    depth, f = 1, sys._getframe(2)
+    while f is not None and (f.f_code.co_filename.startswith(stdlib) or f.f_code.co_filename == __file__):
+        f = f.f_back
+        depth += 1
+    return depth
+
+
+def _note_live(sock, address) -> None:
+    """A connection the closed network lets through (localhost, an allowed host, a unix socket) reaches a server the
+    run does not control, whose answers can differ between runs: the test is marked ``uncontrolled.net`` and is never
+    reported identical. Its own server (a socket this process listens on) is not."""
+    if _state.STATE.nodeid is None or _state.is_quiet():
+        return
+    try:
+        fam = sock.family
+    except Exception:
+        return
+    if fam not in (socket.AF_INET, socket.AF_INET6, getattr(socket, "AF_UNIX", -1)):
+        return
+    if _own_listener(fam, address):
+        return
+    from . import uncontrolled
+
+    if isinstance(address, str):
+        where = address
+    else:  # a loopback server's port is ephemeral (bound to 0): not what the test observed (Node: `<port>` too)
+        host = str(address[0])
+        loop = host in ("localhost", "::1") or host.startswith("127.")
+        where = f"{host}:{'<port>' if loop else address[1]}"
+    uncontrolled._mark("net", f"live endpoint {where}", _caller_depth())
 
 
 # Installation ---------------------------------------------------------------
@@ -855,6 +998,8 @@ def install(patcher: Patcher, record: bool, cassette_path: str | None, allow_hos
 
     patcher.set(subprocess.Popen, "__init__", _closed_children(subprocess.Popen.__init__))
     patcher.set(socket.socket, "connect", _connect)
+    patcher.set(socket.socket, "listen", _listen)
+    patcher.set(socket.socket, "bind", _bind)
     patcher.set(socket.socket, "connect_ex", _connect_ex)
     # UDP record/replay (audit G-1518): the Python wrapper only where it has work (record mode, or a cassette with
     # UDP exchanges); otherwise the Rust wrapper, whose blocked-event site is its caller's

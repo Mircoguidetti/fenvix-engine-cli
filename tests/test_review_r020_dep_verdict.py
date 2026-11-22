@@ -89,10 +89,16 @@ def walk(pytester):
             o = {t["nodeid"]: t["outcome"] for t in o}
         return {k: (v["outcome"] if isinstance(v, dict) else v) for k, v in o.items()}
 
-    def go(bump):
+    def go(bump, recorded=True):
+        """`recorded=False`: the project loads something the general rule refuses, so nothing is recorded and
+        the wrong reuse this walk looks for cannot happen at all. The caller then says so, and says what the
+        engine refused -- the premise is not dropped, it moves to the caller."""
         cache = f"--det-cache={pytester.path / '.cachedir'}"
         r0, d0 = run(cache, "--det-cache-dists")
-        assert (d0.get("cache") or {}).get("recorded", 1), r0.stdout.str()
+        if recorded:
+            assert (d0.get("cache") or {}).get("recorded", 1), r0.stdout.str()
+        else:
+            assert not (d0.get("cache") or {}).get("recorded", 1), r0.stdout.str()
         bump()
         r1, d1 = run(cache, "--det-cache-dists")
         r2, d2 = run()  # fresh: no cache
@@ -299,7 +305,14 @@ def test_native_library_dlopened_lazily_by_an_extension(pytester, env, walk):
         shutil.rmtree(os.path.join(env, "natlib_b-1.0.dist-info"))
         install_natlib("1.1", 2)
 
-    reused, p, cached, fresh, rs = walk(bump)
+    # The test imports `nat`, a compiled extension built in this test and on no audited list, so the general
+    # rule refuses every test of the run and nothing is recorded: the wrong reuse this walk looks for cannot
+    # happen, and the safety property holds for a stronger reason than a correct key. That is the declared
+    # residual working (docs/NATIVE-AUDITS.md, founder 2026-11-21), asserted rather than assumed.
+    # MEASURED: recorded 0, "did something the engine cannot account for (NOT PROVEN".
+    reused, p, cached, fresh, rs = walk(bump, recorded=False)
+    assert "NOT PROVEN" in rs[0].stdout.str(), rs[0].stdout.str()
+    assert reused == set(), (reused, rs[1].stdout.str())
     assert p.get("test_nat.py::test_value") == "passed", rs[0].stdout.str()
     assert fresh.get("test_nat.py::test_value") == "failed", rs[2].stdout.str()
     assert _wrong(reused, cached, fresh) == {}, rs[1].stdout.str()

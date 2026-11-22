@@ -54,6 +54,20 @@ def identical(a: Path, b: Path) -> str:
     return p.stdout
 
 
+def refused(a: Path, b: Path) -> str:
+    """`fenvix verify` of two runs it must NOT call identical: it exits non-zero and says why.
+
+    The counterpart of `identical`, for the channels the engine refuses on purpose (an unaudited compiled
+    extension, a thread, a child process). A zero exit here would be a false green, which is the one thing the
+    rule exists to prevent.
+    """
+    p = subprocess.run([sys.executable, "-m", "detpy.fenvix", "verify", str(a), str(b)], capture_output=True,
+                       text=True, timeout=120)
+    assert p.returncode != 0, "two runs the engine cannot prove must not verify clean:\n" + p.stdout
+    assert "NOT PROVEN" in p.stdout, p.stdout
+    return p.stdout
+
+
 def twice(proj: Path, key: str, *args, env=None) -> list:
     pa, ta = det(proj, "a", *args, env=env)
     pb, tb = det(proj, "b", *args, env=env)
@@ -89,7 +103,19 @@ def test_loop():
         return t0, scheduled, loop.time(), time.monotonic()
     print("LOOP", asyncio.run(main()))
 ''')
-    v = twice(proj, "LOOP")
+    # An async test is NOT PROVEN on this trunk: what makes it unprovable is the ORDER the loop runs its
+    # callbacks in, which is Level 1 (row PY-07, reviewed on its own branch and not on this trunk), so
+    # `_asyncio`'s tasks, futures and handles are refused by name. That is the rule working, and it does not
+    # touch what this test is about: the loop's CLOCK. The assertions below are unchanged -- the printed values
+    # must be equal in both runs and the virtual clock must have advanced -- and the verdict is asserted too,
+    # because a run the engine cannot prove must never come out clean.
+    pa, ta = det(proj, "a")
+    pb, tb = det(proj, "b")
+    va, vb = values(pa, "LOOP"), values(pb, "LOOP")
+    assert va and va == vb, (pa.stdout[-3000:] + pa.stderr[-2000:], pb.stdout[-3000:])
+    out = refused(ta, tb)
+    assert "_asyncio" in out, out
+    v = va
     t0, scheduled, end, mono = eval(v[0])
     assert scheduled - t0 >= 0.05 and end - scheduled >= 0.03, v  # the sleeps advanced the loop's clock
     assert t0 < 2000  # the virtual monotonic base (1000 s), not the machine's uptime
@@ -102,10 +128,22 @@ import os, resource, time
 
 def test_cpu():
     sum(range(200000))
+    print("CPU", time.process_time(), time.process_time_ns(), time.thread_time(), tuple(os.times()))
+
+def test_rusage():
     r = resource.getrusage(resource.RUSAGE_SELF)
-    print("CPU", time.process_time(), time.process_time_ns(), time.thread_time(), tuple(os.times()), r.ru_utime, r.ru_stime)
+    print("RUSAGE", r.ru_utime, r.ru_stime)
 ''')
-    twice(proj, "CPU")
+    pa, ta = det(proj, "a")
+    pb, tb = det(proj, "b")
+    for key in ("CPU", "RUSAGE"):
+        assert values(pa, key) and values(pa, key) == values(pb, key), key
+    # getrusage's memory and I/O counters stay real: the test that read them is never identical (R-055 V14)
+    v = subprocess.run([sys.executable, "-m", "detpy.fenvix", "verify", "--json", str(ta), str(tb)], cwd=proj,
+                       capture_output=True, text=True, timeout=300)
+    by = {t["nodeid"].split("::")[-1]: t for t in json.loads(v.stdout[v.stdout.index("{"):])["tests"]}
+    assert by["test_cpu"]["status"] == "stable", by
+    assert by["test_rusage"]["status"] != "stable" and by["test_rusage"]["divergence"]["event_a"]["o"] == "resource.getrusage"
 
 
 def test_times_of_files_the_test_wrote_are_virtual(tmp_path):
@@ -176,13 +214,28 @@ def test_lazy():
           np.random.Generator(np.random.PCG64()).random(), np.random.Generator(np.random.MT19937()).random(),
           isinstance(np.random.mtrand._rand, np.random.RandomState))
 ''')
-    v = twice(proj, "NP", env=_env(PYTHONPATH=libs))
-    assert v[0].endswith("True")
+    # The founder's compiled-extension decision of 2026-11-21 (route 1) applies here: numpy is a third-party
+    # compiled extension nobody has audited, so the test that imports it is NOT PROVEN, and `fenvix verify`
+    # exits non-zero. That is this test's subject now, and it is a stronger assertion than "identical" was:
+    # the seeding must still work (the printed values equal in both runs), the refusal must name numpy, and the
+    # test that does NOT touch numpy must stay covered by Level 0 -- a blanket refusal of the whole run would
+    # fail here. MEASURED (2026-11-22, numpy 2.5.5): "not accounted for: api:numpy._core._multiarray_umath.
+    # _make_extobj (and 21 more)"; the audit that would clear numpy is open, with its measurement in
+    # docs/NATIVE-AUDITS.md (2 `getrandom` calls during ordinary array work that could not be attributed, so
+    # under "never a green on a doubt" numpy stays unlisted).
+    pa, ta = det(proj, "a", env=_env(PYTHONPATH=libs))
+    pb, tb = det(proj, "b", env=_env(PYTHONPATH=libs))
+    va, vb = values(pa, "NP"), values(pb, "NP")
+    assert va and va == vb, (pa.stdout[-3000:] + pa.stderr[-2000:], pb.stdout[-3000:])
+    assert va[0].endswith("True")
+    out = refused(ta, tb)
+    assert "not proven: 1" in out and "covered by Level 0: 1" in out, out
+    assert "numpy" in out, out
     # numpy imported before the first test (conftest): no entropy event in the first test (G-0179)
     (proj / "tests" / "conftest.py").write_text("import numpy\n")
     pa, ta = det(proj, "c", env=_env(PYTHONPATH=libs))
     pb, tb = det(proj, "d", env=_env(PYTHONPATH=libs))
-    out = identical(ta, tb)
+    out = refused(ta, tb)
     assert "entropy" not in out, out
 
 
@@ -230,6 +283,7 @@ def test_entropy_divergence_hints_at_det_urandom(tmp_path):
     p = subprocess.run([sys.executable, "-m", "detpy.fenvix", "verify", str(a), str(b)], capture_output=True,
                        text=True)
     assert p.returncode == 1 and "hint [entropy]" in p.stdout and "--det-urandom" in p.stdout, p.stdout
+    assert "--det-entropy=observe" in p.stdout, p.stdout  # the Python control is named (R-051)
 
 
 # ------------------------------------------------------------------------------------------------------ first use

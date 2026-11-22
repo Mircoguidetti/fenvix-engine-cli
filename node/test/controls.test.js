@@ -31,6 +31,10 @@ function goldenCheck(runner, dir, detArgs = []) {
   const b2 = run(runner, dir, ['--maxWorkers=2']);
   assertSomeFail(b2, 'baseline run 2');
   resetGolden(dir);
+  // a first --det run stores the golden values: the two compared runs then both read them (the golden file is a
+  // project file the test reads, an input since R-050 N1; a run that writes it and one that reads it differ)
+  const d0 = run(runner, dir, ['--det', ...detArgs]);
+  assertAllPass(d0, '--det run 0 (stores the golden values)');
   const d1 = run(runner, dir, ['--det', ...detArgs]);
   assertAllPass(d1, '--det run 1');
   const d1Trace = d1.tracePath + '.1';

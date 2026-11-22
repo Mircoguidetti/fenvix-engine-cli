@@ -74,8 +74,8 @@ without this branch, F-01 passed 3/33. Fixed in this round, each as a class with
   line.
 - **The entropy run input named the device** (F-02, exam `numpy-repro`, interim CI exam run 44891607359): the
   input was `urandom`, so every bundle's provenance of a numpy test said "urandom". It is now `entropy`, the name of
-  the option and of the verify reason (Python and Node headers); verify reads `urandom` in older traces as the same
-  input. `F-02.probe.numpy-repro` and `F-03.probe.numpy` PASS locally after it (MEASURED).
+  the option and of the verify reason (Python and Node headers). Verify reading `urandom` in older traces as the
+  same input did not hold for the run-input comparison in `57d76c4` (R-051 R2); fixed in the follow-up. `F-02.probe.numpy-repro` and `F-03.probe.numpy` PASS locally after it (MEASURED).
 - **A configuration that did not run the target was counted as searched** (F-02, exam `py-autodoc`). Cause
   (MEASURED, the exam's own project venv): two of the project's modules do not import (`requests` is not installed),
   so pytest interrupted every `--det` session with 0 tests run, while `--collect-only` still listed the target.
@@ -132,6 +132,139 @@ Fixed in this round, each as a class with a regression test:
   a socket local), records the plaintext with the handshake's details, and on replay is the identity over the
   plaintext stream. Test: `tests/test_network_gaps.py::test_tls_over_memory_bios_is_recorded_as_plaintext_and_replayed`
   (asyncio, and the anyio shape used by httpx).
+
+### Follow-up after R-051 (prepared locally on `followup-r051`, pushed after PR #11 merges)
+
+R-051 found four non-blocking defects in `57d76c4`; its tests (`tests/test_review_r051_verifier.py`, unchanged) pass
+after these fixes (MEASURED, Python 3.13, local):
+
+- R1 (F-03): traces whose `inputs` object is empty were IDENTICAL (exit 0). An empty `inputs` is now no record of
+  the inputs: NOT PROVEN, exit 1.
+- R2 (F-03): an older trace's `urandom` input was not the same input as `entropy` when the run inputs were compared
+  (the earlier claim in this report did not hold). `run_inputs` now reads `urandom` as `entropy`.
+- R3 (F-02): replay of a target that is now skipped said "fixed, or ...". A replay in which the test body did not
+  run (skipped, or not collected) exits 2 and says the test did not run.
+- R4 (F-01): TLS over memory BIOs was bound to the first socket in the caller. With several sockets there, the
+  replay binds to the one whose recording was made above TLS, and the recording binds, once the handshake is done,
+  to the socket that sent the ClientHello (its handshake ciphertext is dropped from the recording).
+- A NOT REPRODUCIBLE bundle no longer prints `replay:` or `rerun:` lines (no command reproduces it); the `[entropy]`
+  hint names `--det-entropy=observe` for Python and `--det-urandom` for Node.
+
+### After PR #11 merged (exam run 44902718930 on `57d76c4`, results `claude/exam` `f303716`)
+
+F-18 5/5, F-01 32/33, F-02 16/17, F-03 15/18 (MEASURED, that run). The five failing checks, each run locally:
+
+| check | cause | status |
+|---|---|---|
+| `F-01.hostname.pinned.node` | the Node header did not say that the tests' environment reads are recorded, so verify counted every differing variable as read: the second run (under sudo: other `USER`, `LOGNAME`) was INPUT DIFFERS although no test read them | fixed (`d917b43`): the header carries `env_reads_recorded` (not for Bun and Deno, whose own environment APIs are not recorded); PASS locally |
+| `F-02.py-explore.idoft-py-autodoc` | V10 (R-050) made explore exit 2 whenever the suite did not collect cleanly, also when it found the flaky test | fixed (`94f41d5`): findings exit 0 with the collection errors named; finding nothing in such a suite exits 2; PASS locally, V10 still passes |
+| `F-03.random` | the check expects two `--det` runs reading `os.urandom` to diverge; under the founder's decision OS entropy is controlled by default, so the values are equal and verify is IDENTICAL, which is correct | not an engine defect: a conflict between the frozen check and the decision (the Node check `F-03.node-random` accepts "values equal: controlled") |
+| `F-03.thread` | INCONCLUSIVE: the race never happens on this interpreter, with or without `--det` (plain pytest 3/3 passed, `--det` 3/3 passed, CPython 3.13.18, MEASURED); verify reports the test NOT COVERED [thread] as required | harness limit, not an engine defect |
+| `F-03.node-thread` | the worker's `Math.random` is controlled (equal values) but every test that starts a worker gets `uncontrolled.thread` (node/src/children.js: worker interleaving is not controlled), so verify never says identical; the check wants identical when the values are equal | open: needs a decision (relax for one worker without shared memory, or keep "never identical") |
+
+### R-054 (round 2 on PR #12, `4a30ac4`): fixed, tests in `tests/test_review_r054_verifier.py` (unchanged)
+
+- N1 (regression from `d917b43`, Node): with `env_reads_recorded` declared, a read made outside a test body (module
+  scope, a before/beforeAll hook, a dependency at import) was no event, so a differing variable read there gave
+  IDENTICAL. Such reads now go to the header (`env_read_outside_tests`) and verify counts them as read by every test.
+  The sudo case stays identical: nobody reads `USER`/`LOGNAME` (`F-01.hostname.pinned.node` PASS locally, MEASURED).
+- N2 (Python, same class): a module-level `os.environ` read is listed the same way (reads before the trace opens:
+  test modules, conftest, plugins at import; xdist workers send theirs to the controller).
+- N3: `is_fail` matched `xfailed`, so an `xfail(run=False)` target replayed as REPRODUCED. An expected failure is no
+  failure (core and the reference spec), and a replay of an xfail target is not run (exit 2).
+- `fenvix replay` exits 0 only when every run fails with the bundle's fingerprint (its own `check:` line); a failure
+  with another fingerprint says so.
+- `node/test/verifier-inputs.test.js` "runs differing only in env": its tests now read the variable; the case where
+  nothing reads it is the test added in `d917b43`.
+
+### Every input channel of a test (founder decision, `2023045`)
+
+`docs/VERIFY-INPUTS.md` lists every way a Python or Node test can read its environment and inputs (environment
+variables through every API and at every point: test body, module scope, conftest and setup files, hooks and fixtures
+of every scope, the runner's configuration, dependencies at import and in the test, threads, child processes; files
+in and outside the project; time, entropy, host, CPU, time zone, locale; network), the rule verify applies to each,
+and one attack test per channel: `tests/test_verify_inputs_attacks.py` (27 cases) and
+`node/test/verify-inputs-attacks.test.js` (22 cases). Each changes one channel between two runs and checks that verify
+says IDENTICAL only if the test observed the same value. All pass locally (MEASURED, Python 3.13, Node 22).
+
+The attacks found five channels where verify said IDENTICAL although the test observed different values; fixed:
+`posix.environ` and ctypes `getenv` (Python), live endpoints the closed network lets through (Python:
+`uncontrolled.net` unless the test's own listener), the runner configuration's env reads in the Node main process,
+and Node reads of project files. The remaining gaps (C `getenv` in extensions, Python reads after the trace opened,
+the Node configuration's dependencies, Deno/Bun untested here, `sys.argv`/cwd on Python) are listed in the document.
+
+### Session closed mid-round: coordinator review of bf13934 (state at the last commit)
+
+Done (committed, targeted, MEASURED on CPython 3.12): `tests/test_review_r055_verifier.py` 24/24, which includes the
+five new cases (os.access, a stat at module scope, a module imported inside a test, a `-p` switch, PYTEST_ADDOPTS)
+and V14, made reliable with `PYTHONMALLOC=malloc_debug` in run 1 (maxrss 43916 vs 48580 KiB locally).
+- `os.access`: an `fs.stat` event (`osstate._access_observed`, rebound like stat).
+- A stat outside any test: `files_read_outside_tests` entry `stat:<value>` (`osstate.OUTSIDE_STATS`, xdist too).
+- `argv`: the effective command line (ini addopts + PYTEST_ADDOPTS + invocation args, `-p` included;
+  `_level0.effective_args`).
+- A variable read by pytest or a plugin outside a test counts (`envobs._reader_kind`); every PYTEST_* variable
+  present counts too, because pytest reads them before detpy is installed. The runner's enumerations do not count.
+- The footer `late` carries only what the header does not already say, plus `code` / `deps` recomputed when a
+  module was imported inside a test.
+- `_stat_question` walks past detpy's own frames instead of a fixed frame offset.
+
+Half-done: `tests/test_capture_rust.py::test_capture_sessions_match_reference` still fails ("session 1: stores
+differ"). Cause found: the reference capture (`tests/rust_hotpaths_ref/_ref_proofcache.py`, compiled under detpy's
+own file name by `_capref.py`) calls `os.path.exists` / `os.stat` from Python on files the test opens. The new
+`fs.stat` observer records those calls as the test's (`config.txt|file size=...` before the `fs.read`), and the Rust
+capture makes the same checks in C, which is not observed. The fingerprints differ, so the stores do. This is a stale
+reference, not a capture regression. A module marker did not work, because the reference's frames carry detpy's
+file name. Next step: have the reference call `osstate._real_stat` / run its checks under `_state.quiet()`, or make
+`_note_stat` skip calls whose nearest non-stdlib caller is a detpy frame that is not a pass-through wrapper. Then
+rerun the capture test and the R-055 file.
+
+Not done: `network._own_listener` matches by port only (minor, reported by the coordinator).
+
+### R-055 integration with the Node session (docs/VERIFY-CONTRACT.md)
+
+The R-055 work was split by the coordinator: the Node session wrote `node/src` and the contract, this session the
+Rust core and Python. Merged here with one implementation per side:
+
+- `verify.rs` is the contract's (`Status::NotProven`, `files_read_outside_tests`, reasons `deps` / `code`, `<random>`
+  hash seed), plus the trace footer `late` with the header's field names (Python reads after the header, V12).
+- Python writes `files_read_outside_tests` (`{path, digest}`), `not_proven_outside_tests` (`env:<NAME>` for a
+  volatile or proxy variable read outside a test, `native:<library>` for ctypes), `code` / `deps` as
+  `"<n> files <digest>"`, `fs.stat` as `<path>|missing` / `<path>|<type>` plus ` size=` / ` mtime_ns=` when the call
+  returns them. Deviation from the Node side, kept on purpose: Python keeps `mtime_ns` on a direct `os.stat` because
+  the reviewer's V6-file-mtime case reads `st_mtime` (Node records type and size only).
+- `--det-compare` output counts `not-proven` and names those tests.
+
+Local, targeted (MEASURED): Rust 158/158; Python verifier suites (R-055, attacks, R-050/051/054, truth, absent
+inputs, F-01 gaps, fingerprint) 149 tests, all pass except V14 (its precondition, maxrss differing between the two
+runs, does not hold on this machine) and one timing test that fails only under `-n 3` load (passes alone); Node
+targeted (review-r055, verify-inputs-attacks, network-p041, controls, r021b-fixes) 120/121: `r021b fixes: jest`
+"keeps: isFile() of a Stats object does not make its size an input" fails, because the Node `fs.stat` event carries
+the size even when the code only asks `isFile()` (in `node/src`, the Node session's part: reported to it).
+
+### R-055 (full review of `688e4fe`): every defect fixed
+
+R-055 found 26 wrong IDENTICAL verdicts in 16 channels (F-01 no, F-03 no), and E1, D1, D3. Its tests
+(`tests/test_review_r055_verifier.py`, 19; `node/test/review-r055.test.js`, 8) are in the branch unchanged, and its
+section of `docs/VERIFY-INPUTS.md` is copied in, with the status of each channel. After the fixes (MEASURED, local,
+Python 3.13, Node 22): 18 of 19 Python cases and 8 of 8 Node cases pass. The one left, V14 (`getrusage`), fails on its
+own precondition here: the two runs' `ru_maxrss` were equal on this machine, so the attack changed nothing the test saw;
+the engine records the real counters as an event (my test `test_cpu_time_clocks_are_virtual` shows the divergence).
+
+What changed, as rules (docs/VERIFY-INPUTS.md, "Status of the R-055 channels"):
+- reading a CI-volatile kept variable or a closed network's proxy variable: `uncontrolled.env`, never identical (V1, V2)
+- files read outside any test: run inputs `file:<path>`; reads after the header: the trace footer (`late`) (V3, V12)
+- run inputs `code`, `deps` and `argv` (V4, V5, V10); an input `<random>` never equal (V13)
+- `os.stat`/`lstat` and Node `existsSync`/`statSync`/`lstatSync`: events with what the caller asked (V6)
+- sqlite database files read like files; ctypes libraries: `uncontrolled.native` (V7, V15)
+- UDP and unix-socket live endpoints: `uncontrolled.net` from the frame that used them (V8, V9)
+- `os.environ._data`/`posix.environ`: one recording mapping (V11); `process.loadEnvFile` read like a file (V16)
+- explore exits 1 when seeds crashed with no result (E1); NOT PROVEN headline for uncontrolled-only differences (D1);
+  repro counts a test that kills the process as a failure (D3)
+
+Changed expectations in my own earlier tests, each because a stricter event is now the first difference:
+`test_fingerprint.py::test_control_flow_divergence` (the existence check before the clock read),
+`::test_outcome_only_divergence` (`fs.stat` or `fs.read`), `test_f01_gaps.py::test_cpu_time_clocks_are_virtual`
+(getrusage's real counters are an event). No reviewer's test was changed.
 
 ## Local suites before the PR #11 push (MEASURED, this container, editable installs, the code head of this push: the branch merged with release-1 `cec096c`)
 

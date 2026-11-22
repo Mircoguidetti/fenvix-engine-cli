@@ -15,7 +15,7 @@
 //! remembers the code object, which the Python side re-arms at the next context
 //! switch.
 
-use pyo3::exceptions::PyTypeError;
+use pyo3::exceptions::{PyTypeError, PyValueError};
 use pyo3::ffi;
 use pyo3::prelude::*;
 use pyo3::types::{PyBytes, PyList, PyTuple};
@@ -267,15 +267,27 @@ impl LineRecorder {
 // Audit hook filtered in Rust: only the listed events reach the Python callable
 // (a Python audit hook is called for every event, e.g. the frequent
 // "builtins.id" and "object.__getattr__"). Audit hooks cannot be removed, so
-// one hook is installed per process and dispatches to the current filter,
-// which `set_audit_hook` replaces (None turns it off). Replaced filters are
+// one hook is installed per process and dispatches to the current filters,
+// which `set_audit_hook` replaces (None turns a slot off). Replaced filters are
 // leaked on purpose: another thread may still be reading one.
+//
+// There are several slots because two parts of the engine want the hook at the same time: the cache with proof
+// asks for a named list of events, and the general rule's sensor (`detpy/provable.py`) asks for *every* event,
+// because an event it has no rule for is itself the gap it is looking for. An empty `names` means every event.
+
+const SLOTS: usize = 4;
 
 static INSTALLED: AtomicBool = AtomicBool::new(false);
-static CURRENT: AtomicPtr<AuditFilter> = AtomicPtr::new(std::ptr::null_mut());
+static CURRENT: [AtomicPtr<AuditFilter>; SLOTS] = [
+    AtomicPtr::new(std::ptr::null_mut()),
+    AtomicPtr::new(std::ptr::null_mut()),
+    AtomicPtr::new(std::ptr::null_mut()),
+    AtomicPtr::new(std::ptr::null_mut()),
+];
 
 struct AuditFilter {
     callable: *mut ffi::PyObject,
+    /// Empty = every event reaches the callable.
     names: Vec<Vec<u8>>,
 }
 
@@ -286,33 +298,72 @@ extern "C" {
     ) -> c_int;
 }
 
+/// Set once the interpreter has begun shutting down: from there the hook is inert.
+///
+/// `Py_FinalizeEx` keeps raising audit events while it tears the interpreter down, and by then the Python
+/// callable a slot points at can already have been freed -- the hook would call a dead object.
+/// MEASURED (CPython 3.12.3, this branch): every `pytest --det` run of a one-test project ended in SIGSEGV
+/// (exit 139) after the run had passed and the trace had been written; a native backtrace put the crash in
+/// `Py_FinalizeEx -> _core::sysmon::audit_hook -> PyObject_CallFunctionObjArgs`. That is the whole of the
+/// `attacks (py 3.12)` red in CI 44964230574, and on 3.12 it would have ended every customer run with a
+/// crash exit code after a green suite.
+static SHUTTING_DOWN: AtomicBool = AtomicBool::new(false);
+
+/// The event CPython raises while it removes the audit hooks: finalization has started, whether or not the
+/// `atexit` callback ran (`os._exit` skips both, and then nothing is torn down at all).
+const CLEAR_AUDIT_HOOKS: &[u8] = b"cpython._PySys_ClearAuditHooks";
+
 unsafe extern "C" fn audit_hook(event: *const c_char, args: *mut ffi::PyObject, _data: *mut c_void) -> c_int {
-    let f = CURRENT.load(Ordering::Acquire);
-    if f.is_null() || event.is_null() {
+    if event.is_null() || SHUTTING_DOWN.load(Ordering::Acquire) {
         return 0;
     }
-    let f = &*f;
     let ev = CStr::from_ptr(event).to_bytes();
-    if !f.names.iter().any(|n| n.as_slice() == ev) {
+    if ev == CLEAR_AUDIT_HOOKS {
+        SHUTTING_DOWN.store(true, Ordering::Release);
         return 0;
     }
-    let py_ev = ffi::PyUnicode_FromStringAndSize(event, ev.len() as ffi::Py_ssize_t);
-    if py_ev.is_null() {
-        return -1;
+    let mut py_ev: *mut ffi::PyObject = std::ptr::null_mut();
+    let mut rc = 0;
+    for slot in CURRENT.iter() {
+        let f = slot.load(Ordering::Acquire);
+        if f.is_null() {
+            continue;
+        }
+        let f = &*f;
+        // an empty list means every event: that is what the general rule's sensor asks for
+        if !f.names.is_empty() && !f.names.iter().any(|n| n.as_slice() == ev) {
+            continue;
+        }
+        if py_ev.is_null() {
+            py_ev = ffi::PyUnicode_FromStringAndSize(event, ev.len() as ffi::Py_ssize_t);
+            if py_ev.is_null() {
+                return -1;
+            }
+        }
+        let r = ffi::PyObject_CallFunctionObjArgs(f.callable, py_ev, args, std::ptr::null_mut::<ffi::PyObject>());
+        if r.is_null() {
+            rc = -1;
+            break;
+        }
+        ffi::Py_DECREF(r);
     }
-    let r = ffi::PyObject_CallFunctionObjArgs(f.callable, py_ev, args, std::ptr::null_mut::<ffi::PyObject>());
-    ffi::Py_DECREF(py_ev);
-    if r.is_null() {
-        return -1;
+    if !py_ev.is_null() {
+        ffi::Py_DECREF(py_ev);
     }
-    ffi::Py_DECREF(r);
-    0
+    rc
 }
 
-/// `set_audit_hook(callable, names)`: call `callable(event, args)` for the listed
-/// audit events only; `set_audit_hook(None, ())` stops calling it.
+/// `set_audit_hook(callable, names, slot=0)`: call `callable(event, args)` for the listed audit events, or for
+/// every event when `names` is empty; `set_audit_hook(None, (), slot)` stops calling that slot's callable.
+///
+/// The slots are independent: the cache with proof uses one with its own event list, the general rule's sensor
+/// another with every event. A slot out of range is an error rather than a silently ignored registration.
 #[pyfunction]
-pub fn set_audit_hook(callable: &Bound<'_, PyAny>, names: &Bound<'_, PyTuple>) -> PyResult<()> {
+#[pyo3(signature = (callable, names, slot = 0))]
+pub fn set_audit_hook(callable: &Bound<'_, PyAny>, names: &Bound<'_, PyTuple>, slot: usize) -> PyResult<()> {
+    if slot >= SLOTS {
+        return Err(PyValueError::new_err(format!("audit hook slot {slot} out of range (0..{SLOTS})")));
+    }
     let new = if callable.is_none() {
         std::ptr::null_mut()
     } else {
@@ -326,7 +377,7 @@ pub fn set_audit_hook(callable: &Bound<'_, PyAny>, names: &Bound<'_, PyTuple>) -
         }
         Box::into_raw(Box::new(AuditFilter { callable: callable.clone().into_ptr(), names: v }))
     };
-    CURRENT.store(new, Ordering::Release);
+    CURRENT[slot].store(new, Ordering::Release);
     if !INSTALLED.swap(true, Ordering::AcqRel) {
         let rc = unsafe { PySys_AddAuditHook(Some(audit_hook), std::ptr::null_mut()) };
         if rc != 0 {
@@ -334,8 +385,27 @@ pub fn set_audit_hook(callable: &Bound<'_, PyAny>, names: &Bound<'_, PyTuple>) -
             return Err(PyErr::take(callable.py())
                 .unwrap_or_else(|| PyTypeError::new_err("PySys_AddAuditHook failed")));
         }
+        // An audit hook cannot be removed, so the one way to stop it calling into a half-torn-down interpreter
+        // is to make it inert before the teardown begins. `atexit` callbacks run at the start of
+        // `Py_FinalizeEx`, before modules are cleared and before the hooks themselves are removed, which is
+        // early enough: whichever part of the engine installs a slot first, every slot goes quiet there.
+        let py = callable.py();
+        let f = py.import("detpy._core")?.getattr("audit_hooks_off")?;
+        py.import("atexit")?.call_method1("register", (f,))?;
     }
     Ok(())
+}
+
+/// Stop calling every audit slot's callable, for good. Registered with `atexit` the first time a slot is set.
+///
+/// The filters are leaked rather than freed, as they are when a slot is replaced: another thread may still be
+/// inside the hook reading one.
+#[pyfunction]
+pub fn audit_hooks_off() {
+    SHUTTING_DOWN.store(true, Ordering::Release);
+    for slot in CURRENT.iter() {
+        slot.store(std::ptr::null_mut(), Ordering::Release);
+    }
 }
 
 // ---------------------------------------------------------------------------

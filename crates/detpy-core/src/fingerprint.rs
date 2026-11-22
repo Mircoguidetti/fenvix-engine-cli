@@ -91,10 +91,23 @@ pub struct TestRecord {
     /// covered by the verifier: identical fingerprints are no evidence of an identical execution then.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub uncontrolled: Vec<String>,
+    /// What the run's wide sensor saw the test do and could not place in the accounting table
+    /// ([`crate::provable`]): `api:<module>.<name>`, `module:<name>`, `native:<module>`, `audit:<event>`. One
+    /// entry per distinct thing, kept even when `events` is truncated. A test with any entry is NOT PROVEN,
+    /// whatever its fingerprint: this is the general rule, and the reason a channel nobody has thought of yet
+    /// does not come out as IDENTICAL.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub unaccounted: Vec<String>,
 }
 
 /// Prefix of the op of an event that marks the use of a source Level 0 does not control.
 pub const UNCONTROLLED_PREFIX: &str = "uncontrolled.";
+
+/// Prefix of the op of an event that marks something the wide sensor could not account for
+/// ([`crate::provable`]). Kept apart from [`UNCONTROLLED_PREFIX`] because the two say different things: a mark
+/// is a channel the engine knows about and deliberately refuses, an unaccounted entry is a channel the engine
+/// does not know about at all.
+pub const UNACCOUNTED_PREFIX: &str = "unaccounted.";
 
 /// Incrementally fingerprints the event stream of one test.
 #[derive(Clone, Debug)]
@@ -109,6 +122,7 @@ pub struct Fingerprinter {
     counts: BTreeMap<Source, u64>,
     scratch: Vec<u8>,
     uncontrolled: std::collections::BTreeSet<String>,
+    unaccounted: std::collections::BTreeSet<String>,
 }
 
 impl Default for Fingerprinter {
@@ -130,6 +144,7 @@ impl Fingerprinter {
             counts: BTreeMap::new(),
             scratch: Vec::with_capacity(256),
             uncontrolled: std::collections::BTreeSet::new(),
+            unaccounted: std::collections::BTreeSet::new(),
         }
     }
 
@@ -160,6 +175,13 @@ impl Fingerprinter {
                 self.uncontrolled.insert(kind.to_string());
             }
         }
+        if let Some(kind) = event.op.strip_prefix(UNACCOUNTED_PREFIX) {
+            // the value carries the name (`posix.getxattr`), the op the class (`api`, `module`, `native`, `audit`)
+            let entry = if event.value.is_empty() { kind.to_string() } else { format!("{kind}:{}", event.value) };
+            if !self.unaccounted.contains(&entry) {
+                self.unaccounted.insert(entry);
+            }
+        }
         if self.count % self.checkpoint_every == 0 {
             self.checkpoints.push((self.count, self.chain.short()));
         }
@@ -186,6 +208,7 @@ impl Fingerprinter {
             worker: None,
             worker_index: None,
             uncontrolled: self.uncontrolled.into_iter().collect(),
+            unaccounted: self.unaccounted.into_iter().collect(),
         }
     }
 }

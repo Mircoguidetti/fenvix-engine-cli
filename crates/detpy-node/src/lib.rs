@@ -294,6 +294,52 @@ fn trace_err(e: trace::TraceError) -> Error {
 }
 
 /// Verify traces of the same suite; returns the report as JSON.
+// ---------------------------------------------------------------------------
+// The general rule (detpy_core::provable). The table and the predicate live in the core; the Node sensor
+// (`node/src/provable.js`) asks it to classify an export and reports what it could not place. One
+// implementation, used by both shells, by the verifier and by the cache.
+
+/// Classify one export of one Node builtin module: `pure`, `controlled`, `recorded`, `input` or `unaccounted`.
+/// Anything the core's table does not list answers `unaccounted`, which is what makes the sensor default-deny.
+#[napi]
+pub fn provable_account(module: String, export: String) -> &'static str {
+    detpy_core::provable::account_node(&module, &export).as_str()
+}
+
+/// How a Node builtin module is treated as a whole: `pure`, `enumerated` or `unknown`. An `unknown` module is
+/// one the table has no rule for, so reaching it at all is the gap.
+/// Whether a native addon's path is one of the audited ones (`detpy_core::provable::NODE_AUDITED_NATIVE`).
+/// Everything else is the declared residual and makes every test of the run NOT PROVEN.
+#[napi]
+pub fn provable_native_audited(path: String) -> bool {
+    detpy_core::provable::node_native_audited(&path)
+}
+
+#[napi]
+pub fn provable_module_policy(module: String) -> &'static str {
+    detpy_core::provable::node_module_policy(&module)
+}
+
+/// What the shell must write into the trace header as `meta.provable`, as a JSON object. The verifier refuses a
+/// trace whose values are not these.
+#[napi]
+pub fn provable_header(sensor: String, runtime: String) -> String {
+    serde_json::json!({
+        "sensor": sensor,
+        "contract": detpy_core::provable::SENSOR_CONTRACT,
+        "surface": detpy_core::provable::surface_digest(),
+        "runtime": runtime,
+    })
+    .to_string()
+}
+
+/// The runtime keys the accounting table was audited against. A run on anything else is NOT PROVEN, so the shell
+/// checks this before claiming a sensor.
+#[napi]
+pub fn provable_runtimes() -> Vec<&'static str> {
+    detpy_core::provable::AUDITED_RUNTIMES.to_vec()
+}
+
 #[napi]
 pub fn verify(paths: Vec<String>) -> Result<String> {
     let report = v::verify_paths(&paths).map_err(trace_err)?;

@@ -48,7 +48,8 @@ FIXED = "fixed"
 
 
 def is_fail(outcome) -> bool:
-    return isinstance(outcome, str) and ("failed" in outcome or "error" in outcome)
+    # an expected failure (xfailed) is not a failure: pytest does not report it as one (R-054 N3)
+    return isinstance(outcome, str) and not outcome.startswith("xfail") and ("failed" in outcome or "error" in outcome)
 
 
 @dataclass

@@ -104,8 +104,14 @@ REPORT = ROOT / "sessions" / "2026-11-18-rust-hotpaths" / "REPORT-R2.md"
 def test_h2_report_says_ci_never_sees_tmp_name_exhaustion_but_p8_does():
     d = json.loads(P8.read_text())
     plain_ok = all(x["exit"] == 0 for x in d["cache"]["P0"])
-    failing = {k: [i for i, x in enumerate(v) if x["exit"] != 0 and (x.get("cache") or {}).get("not_cached", {})
-                   .get("outcome")] for k, v in d["cache"].items() if k != "P0"}
+    # `not_cached` is present and null on a run that recorded no breakdown (MEASURED: 12 such rows in this
+    # file, every one of them a failing run of B:base, B:r1, B:r2 and B:r2cp), so the default of `get` never
+    # fires and the chain used to raise AttributeError on None instead of skipping the row. A defect of this
+    # test, not of the data or the engine: the question it asks is "which failing runs reported an outcome
+    # under not_cached", and a row without a breakdown is simply not one of them.
+    failing = {k: [i for i, x in enumerate(v) if x["exit"] != 0
+                   and ((x.get("cache") or {}).get("not_cached") or {}).get("outcome")]
+               for k, v in d["cache"].items() if k != "P0"}
     failing = {k: v for k, v in failing.items() if v}
     assert plain_ok and failing, "precondition: p8 pygments --det runs fail tests where plain pytest passes"
     # the cold-run medians of the headline table include runs with 2 failing tests

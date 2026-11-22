@@ -21,9 +21,10 @@ use std::path::Path;
 /// The configuration without a seed (the collection order).
 pub const FIXED: &str = "fixed";
 
-/// `is_fail`: a failing outcome (`failed`, `error`, `xfailed`... names that contain them).
+/// `is_fail`: a failing outcome (`failed`, `error`, `setup-error`... names that contain them). An expected failure
+/// (`xfailed`: marked xfail, run or not) is not one: pytest does not report it as a failure (R-054 N3).
 pub fn is_fail(outcome: &str) -> bool {
-    outcome.contains("failed") || outcome.contains("error")
+    !outcome.starts_with("xfail") && (outcome.contains("failed") || outcome.contains("error"))
 }
 
 /// The tests up to `target`, plus the next one (its teardown matches the full run); None when `target` is absent.

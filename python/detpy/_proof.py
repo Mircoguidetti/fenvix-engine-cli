@@ -260,6 +260,11 @@ class Capture(_core.CaptureCore):
         _mon.register_callback(self.tool, _mon.events.PY_RETURN, self.rec.ret)
         self.active = True
         _core.set_audit_hook(self.audit, _AUDIT_EVENTS)
+        # the general rule: a gap the wide sensor finds makes this test uncacheable, so the cache never reuses a
+        # result the rule refuses (detpy_core::record::uncacheable, flag "unacc")
+        from . import provable as _provable
+
+        _provable.ON_GAP = self._note_unaccounted
         self._patch_sqlite()
         self._patch_stat()
         self._patch_scandir()
@@ -283,10 +288,29 @@ class Capture(_core.CaptureCore):
             self.arm(f.f_code)
             f = f.f_back
 
+    def _note_unaccounted(self, key: str) -> None:
+        """The general rule found something it cannot account for in the running test: never store it.
+
+        Starting a child is NOT one of these gaps any more: the accounting table answers for the names that
+        start a child the engine follows, because the follow itself is the accounting (and a follow it cannot
+        trust sets the `spawn` flag). Flagging them here refused every followed-child test instead, which is
+        reuse the product is sold on.
+        """
+        try:
+            self.flag(self._cur(), "unacc", key)
+        except Exception:
+            pass   # between contexts (nothing to flag): the test is refused by the verifier regardless
+
     def stop(self) -> None:
         if not self.active:
             return
         self.active = False
+        try:
+            from . import provable as _provable
+
+            _provable.ON_GAP = None
+        except Exception:
+            pass
         _core.l0_listener_memo(None)
         _core.set_audit_hook(None, ())
         for obj, name, v in getattr(self, "_sqlite_saved", ()):

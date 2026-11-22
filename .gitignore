@@ -2,7 +2,7 @@
 *.so
 __pycache__/
 *.pyc
-.venv/
+.venv*/
 /dist/
 .pytest_cache/
 .detpy/
@@ -20,3 +20,4 @@ jvm/fixtures/**/.fenvix/
 jvm/test/results/logs/
 jvm/harness/results/**/fx/
 .fenvix/
+.venv314/

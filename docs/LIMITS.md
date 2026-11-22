@@ -114,3 +114,29 @@ partial key. Each row has a test that changes only that input and requires the t
 | A2 | A library `dlopen()`ed and `dlclose()`d within one context leaves no mapping to scan. | D (dependency verdict REPORT-2) | Through `ctypes`, the `ctypes.dlopen` audit event names the path: refused as A1 when it is in the project root. A load by C code without an event is A1 or S1 (that C code is itself mapped). | `test_library_loaded_and_unloaded_within_one_test` |
 | A3 | `os.stat` / `os.lstat` / `os.access` bound before the session (`from os import stat` in a plugin loaded with `-p` at startup). | D (coordinator) | At capture start every module global that is the original function is rebound to the recording wrapper (except `posix`, the import system's own module, whose probes the module-lookup finder records). References in closures, default arguments or C code stay unseen (S3, S1). | `test_stat_bound_before_the_session` |
 | A4 | `os.lstat` / `os.path.lexists` / `islink` of a dangling symlink: following the link, it reads as missing either way. | D (coordinator) | `os.lstat` (and `follow_symlinks=False`) records the kind without following a final symlink (`l:<kind>`, kinds `link`, `file`, `dir`, `other`, `missing`). | `test_dangling_symlink_that_goes_away` |
+
+## A compiled extension nobody has audited makes a test NOT PROVEN (founder, 2026-11-22)
+
+**What the customer sees.** A Python suite that imports **numpy, pydantic-core, lxml or psycopg** — and any
+other third-party compiled extension that is not in `CONTROLLED_NATIVE` / `NODE_AUDITED_NATIVE` — comes out
+`NOT PROVEN`. Its tests run and their outcomes are the suite's own; what the engine will not do is claim two
+runs were identical, so those tests are **not skipped from the cache and not spread across cores**. Slower,
+never wrong.
+
+**Why.** A compiled extension's own C code is invisible to every in-process sensor, so the engine cannot say
+what the test observed through it. The rule is "never a green on a doubt" (founder, 2026-11-21).
+
+**What was audited instead, one at a time, by measuring** (evidence in `docs/NATIVE-AUDITS.md`): jest 30's own
+module resolver `@unrs/resolver-binding-*`, Jinja2's `markupsafe._speedups`, the engine's own addon, and
+`_time_machine` (the engine's own integration). Each entry carries its `strace` measurement.
+
+**numpy was measured and NOT cleared.** Ordinary array work with a seeded generator makes two `getrandom`
+calls that could not be attributed in-process (numpy 2.5.5, CPython 3.13.18, MEASURED). Clearing it on that
+evidence would be a green on a doubt.
+
+**Cost in the exam:** `F-03.probe.numpy` and `F-02.py-replay.idoft-py-autodoc` fail on this limit and only on
+it (exam run 44996027924: F-01 33/33, F-02 16/17, F-03 17/18). The founder accepted them as failing on this
+written limit on 2026-11-22, as he did for F-05/PY-05 on 2026-11-21.
+
+**When it goes away:** with a sensor that sees under Python and Node, briefed in
+`fenvix-brain-cli prompts/P-066-compiled-extensions-sensor.md`. Until then this limit stands.

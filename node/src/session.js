@@ -189,6 +189,11 @@ function prepare(opts, root, runner) {
   if (cfg.active && cfg.controls.has('net')) {
     try { require('./network').installStartup(new (require('./patch').Patcher)(), cfg); } catch (e) { process.stderr.write(`detjs: WARNING: the network control could not be installed in the main process: ${e && e.message}\n`); }
   }
+  // the project's own reads in this process (the runner's configuration, globalSetup) are reads outside any test
+  // (docs/VERIFY-INPUTS.md)
+  if (cfg.active) {
+    try { require('./controls').installMainEnvRecord(root); } catch (e) { process.stderr.write(`detjs: WARNING: environment reads of the main process are not recorded: ${e && e.message}\n`); }
+  }
   // Jest runs the tests in this process, and its test environment loads Node's bundled undici (it copies the
   // global descriptors) before the detjs test runner installs Level 0; from Node 24 undici keeps the
   // `crypto.randomFillSync` / `randomInt` it finds when it loads (WebSocket masks, FormData boundaries). The OS entropy
@@ -296,6 +301,81 @@ function runInputs(run, meta) {
   return inputs;
 }
 
+const ENV_UNRECORDED_RUNNERS = new Set(['bun', 'deno']);
+
+/** The variables the run's processes read outside any test (src/controls.js noteOutside), sorted. */
+function envReadOutside(dir) {
+  const names = new Set();
+  const d = path.join(dir, 'envout');
+  try {
+    for (const f of fs.readdirSync(d)) {
+      for (const l of fs.readFileSync(path.join(d, f), 'utf8').split('\n')) if (l) names.add(l);
+    }
+  } catch { /* none read */ }
+  return [...names].sort();
+}
+
+/** The lines of every <run dir>/<sub>/*.txt, deduplicated. */
+/**
+ * `meta.provable` for the run, assembled from what every process declared (`prov/<pid>.txt`).
+ *
+ * The run declares a sensor only when every part declared the same one. A part that could not start a sensor, or
+ * a part that wrote nothing, makes the run declare none -- and then the verifier reports every test NOT PROVEN,
+ * which is the honest answer: that part's tests were not watched. Node runs tests in worker processes and merges
+ * their traces here, so a worker's sensor is not otherwise visible where the header is built.
+ */
+function provableField(dir, reusedTests, order) {
+  const lines = [...runLines(dir, 'prov')];
+  const absent = lines.find((l) => l.startsWith('absent '));
+  if (absent) return { provable_absent: absent.slice('absent '.length) };
+  const decls = new Set(lines.filter((l) => l.startsWith('ok ')).map((l) => l.slice('ok '.length)));
+  if (decls.size === 1) {
+    try { return { provable: JSON.parse([...decls][0]) }; } catch { return {}; }
+  }
+  if (decls.size > 1) {
+    return { provable_absent: `the run's processes declared ${decls.size} different sensors` };
+  }
+  // No process declared anything. That is right for a run in which nothing ran: every test came from the cache.
+  // The claim this declaration rests on is that the RECORDING run could not have stored a test the rule refuses,
+  // and it is kept by two paths that exist and are called (R-058 found this comment citing `admit_record`, which
+  // has no caller outside its own test -- a premise nothing implemented, the same shape as the fail-open hole it
+  // sat above, so it is replaced by what actually runs):
+  //   * src/provable.js, on a gap -> STATE.onLevel0Gap, the engine's "never reuse this test" signal;
+  //   * src/controls.js level0Gap, which fires when a sensor could not start, so a process without one makes the
+  //     whole run store nothing.
+  // There was nothing for this run to watch, and the fingerprints it compares are the ones the recording run was
+  // held to, so the run declares the build's own table under `cache-reuse/1`. That name is in the core's known
+  // set and carries the Node shell's required controls (crates/detpy-core/src/provable.rs: `sensor_known`,
+  // `required_controls`), so a run that switched a control off is refused rather than waved through.
+  const reused = (reusedTests || []).length;
+  if (reused > 0 && reused === (order || []).length) {
+    try {
+      return { provable: JSON.parse(native.provableHeader('cache-reuse/1', require('./provable').runtimeKey())) };
+    } catch { return {}; }
+  }
+  return {};
+}
+
+function runLines(dir, sub) {
+  const out = new Set();
+  const d = path.join(dir, sub);
+  try {
+    for (const f of fs.readdirSync(d)) {
+      for (const l of fs.readFileSync(path.join(d, f), 'utf8').split('\n')) if (l) out.add(l);
+    }
+  } catch { /* none */ }
+  return out;
+}
+
+/** Files read while no test ran (src/outside.js; docs/VERIFY-CONTRACT.md `files_read_outside_tests`), sorted. */
+function filesReadOutside(dir) {
+  const out = [];
+  for (const l of runLines(dir, 'filesout')) {
+    try { const e = JSON.parse(l); if (e && typeof e.path === 'string' && typeof e.digest === 'string') out.push({ path: e.path, digest: e.digest }); } catch { /* torn line */ }
+  }
+  return out.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : a.digest < b.digest ? -1 : a.digest > b.digest ? 1 : 0));
+}
+
 /** Merge the parts of the run into the final trace. `files`: [{fileId, part}] in execution order. */
 function finish(run, opts, files, meta) {
   // what the main process (globalSetup) recorded
@@ -324,6 +404,18 @@ function finish(run, opts, files, meta) {
     network: run.netMode,
     urandom_controlled: run.cfg.urandom,
     entropy: run.cfg.urandom ? 'controlled' : 'observed',
+    // the tests' environment reads are events (src/controls.js installEnvRecord) in Node processes; Bun's and
+    // Deno's own environment APIs are not recorded. Without this the verifier counts every differing variable as
+    // read by every test (exam F-01.hostname.pinned.node: USER/LOGNAME under sudo, read by no test)
+    env_reads_recorded: !ENV_UNRECORDED_RUNNERS.has(String((meta && meta.runner) || '')),
+    env_read_outside_tests: envReadOutside(run.dir),
+    // review R-055 (docs/VERIFY-CONTRACT.md): files read and uncontrolled variables read while no test ran
+    files_read_outside_tests: filesReadOutside(run.dir),
+    not_proven_outside_tests: [...runLines(run.dir, 'npout')].sort(),
+    // The general rule (crates/detpy-core/src/provable.rs): what this run watched. The verifier reports a test
+    // IDENTICAL only when the run declared a sensor it knows, so leaving this out is not a cosmetic omission --
+    // it is the run saying "I cannot show anything identical", which is what a run without a sensor must say.
+    ...provableField(run.dir, reusedTests, order),
     cassette_max_age_days: run.cfg.cassetteMaxAge || 0,
     cassette_oldest_days: run.cassetteOldestDays === undefined ? null : run.cassetteOldestDays,
     node: process.version,
@@ -338,6 +430,8 @@ function finish(run, opts, files, meta) {
     locale: (() => { try { return `${Intl.DateTimeFormat().resolvedOptions().locale} LC_ALL=${process.env.LC_ALL || ''} LANG=${process.env.LANG || ''} LANGUAGE=${process.env.LANGUAGE || ''}`; } catch { return '?'; } })(),
   };
   try { full.inputs = runInputs(run, meta); } catch (e) { full.inputs_error = String(e && e.message); }
+  // the installed dependencies of the project (src/loaded.js, review R-055 V5)
+  try { const d = require('./loaded').depsInput(run.dir); if (d && full.inputs) full.inputs.deps = d; } catch (e) { full.inputs_error = String(e && e.message); }
   const res = native.mergeTraces(all, run.tracePath, JSON.stringify(full), order);
   let reproLines = [];
   try { reproLines = require('./repro').afterMerge(run, opts, files, meta.runner); } catch (e) { reproLines = [`detjs: --det-outcomes not written: ${e && e.message}`]; }

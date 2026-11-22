@@ -126,7 +126,14 @@ def test_native_library_installed_outside_site_packages(pytester, env, walk):
         shutil.rmtree(os.path.join(env, "natlib_b-1.0.dist-info"))
         install_natlib("1.1", 2)
 
-    reused, p, cached, fresh, rs = walk(bump)
+    # The test imports `nat`, a compiled extension built here and on no audited list, so the general rule
+    # refuses it and the run records nothing: the wrong reuse this walk looks for cannot happen, and the
+    # safety property holds for a stronger reason than a correct key. That is the declared residual working
+    # (docs/NATIVE-AUDITS.md, founder 2026-11-21), and it is asserted rather than assumed.
+    # MEASURED: "not cacheable: did something the engine cannot account for (NOT PROVEN 1", recorded 0.
+    reused, p, cached, fresh, rs = walk(bump, recorded=False)
+    assert "NOT PROVEN" in rs[0].stdout.str(), rs[0].stdout.str()
+    assert reused == set(), (reused, rs[1].stdout.str())
     assert p.get("test_nat.py::test_value") == "passed", rs[0].stdout.str()
     assert fresh.get("test_nat.py::test_value") == "failed", rs[2].stdout.str()
     assert _wrong(reused, cached, fresh) == {}, rs[1].stdout.str()

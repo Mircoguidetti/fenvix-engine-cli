@@ -327,6 +327,20 @@ def _first_diff(a: bytes, b: bytes):
     return None
 
 
+@pytest.mark.xfail(
+    sys.version_info >= (3, 14), strict=True,
+    reason=(
+        "The round-1 REFERENCE loop predates CPython 3.14 and is wrong on it, where the current path is "
+        "right. MEASURED on 3.14.6, session 1, `test_m.py::test_missing_and_listing` (whose first line is "
+        "`assert not (HERE / 'nope.txt').exists()`): the current path records `fs.stat nope.txt|missing` at "
+        "test_m.py:28, as it should; the reference records no stat there and instead records an "
+        "`uncontrolled.env` read of TMPDIR -- its OWN bookkeeping -- as an event of the test. Every other "
+        "event of every test of every session is identical, and so is every key. 3.14 rewrote pathlib, so "
+        "`Path.exists()` no longer reaches `posixpath.exists`, which is what the reference patches, and its "
+        "frame walk misclassifies the caller. Fixing a frozen historical copy for a version it predates is "
+        "not this block's work; declaring the limit is. strict=True, so the day the reference is brought up "
+        "to 3.14 this xfail fails and has to be removed."),
+)
 def test_capture_sessions_match_reference(pytester, ref_env, monkeypatch):
     import shutil
 

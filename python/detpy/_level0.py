@@ -18,7 +18,7 @@ import platform
 import sys
 
 from . import (__version__, _core, _machine, _sites, _state, clock, envobs, fsorder, fstime, network, osstate, reexec,
-               seeds, sqlvirt, uncontrolled)
+               provable, seeds, sqlvirt, uncontrolled)
 from ._patch import Patcher
 
 CONTROLS = ("order", "seeds", "hashseed", "bytecode", "time", "fs", "net", "env", "tz", "locale", "os")
@@ -496,7 +496,183 @@ def run_inputs(net_mode, runner: str, runner_version) -> dict:
     # closed they are its part, not inputs; while recording (the real network) they are inputs
     closed = "net" in c and not cfg.record_net
     inputs.update(env_inputs(skip=PROXY_ENV if closed else ()))
+    inputs.update(code_inputs(_CODE_EXTRA))
+    _HEADER["code"] = {k: inputs[k] for k in ("code", "deps")}
+    inputs["argv"] = argv_input()
     return inputs
+
+
+def outside_fields(files=(), env=(), not_proven=()) -> dict:
+    """The header fields of what the run did outside any test (docs/VERIFY-CONTRACT.md section 1): the files it read
+    (module scope, conftest, a dependency at import: R-055 V3), the variables it read (R-054 N2) and the uncontrolled
+    sources it used (a CI-volatile or proxy variable, a native library loaded through ctypes: R-055 V1 V2 V7 V15).
+    ``files`` / ``env`` / ``not_proven``: the xdist workers' (plugin._controller_meta)."""
+    fl = {(p, v) for p, v in osstate.OUTSIDE_FILES.items()}
+    fl |= {(p, f"stat:{v}") for p, v in osstate.OUTSIDE_STATS.items()}
+    for f in files:
+        fl.update(f.items() if isinstance(f, dict) else f)
+    return {
+        "files_read_outside_tests": [{"path": p, "digest": v} for p, v in sorted(fl)],
+        # + the runner's own namespace: pytest reads its PYTEST_* variables (PYTEST_ADDOPTS, PYTEST_PLUGINS, ...)
+        # before detpy is installed, where no read is observed
+        "env_read_outside_tests": sorted(set(envobs.OUTSIDE).union(*env, _runner_env_names())),
+        # + whatever the general rule's wide sensor could not account for while no test was running
+        "not_proven_outside_tests": sorted({f"native:{n}" for n in osstate.NATIVE_OUTSIDE}
+                                           | set(envobs.NOT_PROVEN_OUTSIDE)
+                                           | set(provable.SENSOR_OBJ.outside)
+                                           .union(*not_proven)),
+    }
+
+
+def _runner_env_names() -> set:
+    return {k for k in dict.keys(os.environ._data) if isinstance(k, bytes)
+            for k in [os.fsdecode(k)] if k.startswith("PYTEST_") and not k.startswith(ENGINE_ENV_PREFIXES)} \
+        if isinstance(getattr(os.environ, "_data", None), dict) else set()
+
+
+def late_inputs() -> dict:
+    """What the run did outside any test until its end (the footer `late`: same field names as the header, the
+    verifier merges them, R-055 V12): only what the header does not already say, an empty dict when nothing was
+    read after it. A project module first imported inside a test (R-055) changes ``code`` / ``deps``: recomputed."""
+    now, then = outside_fields(), _HEADER.get("outside") or {}
+    late = {}
+    for k, v in now.items():
+        old = then.get(k) or []
+        new = [x for x in v if x not in old]
+        if new:
+            late[k] = new
+    inputs = {k: v for k, v in code_inputs(_CODE_EXTRA).items() if (_HEADER.get("code") or {}).get(k) != v}
+    if inputs:
+        late["inputs"] = inputs
+    return late
+
+
+_HEADER: dict = {}  # what the trace header said (late_inputs: the footer carries only what is new)
+
+
+_CODE_EXTRA: list = []  # xdist controller: the workers' (code, deps) lists (plugin._controller_meta)
+
+
+ARGV_PATHS = ("--det-trace", "--det-outcomes", "--det-order", "--det-plan", "--det-compare", "--det-cassette",
+              "--basetemp", "--junitxml",
+              "--junit-xml", "--result-log", "--resultlog")
+
+
+ARGV_PARALLEL = ("-n", "--numprocesses", "--dist", "--maxprocesses", "--max-worker-restart")
+
+
+def effective_args() -> list:
+    """The whole effective command line, in pytest's order: the ini ``addopts``, ``PYTEST_ADDOPTS``, then the
+    invocation's arguments (R-055: a plugin switch, an option given only through the environment or the ini file
+    changes what runs as much as one typed on the command line)."""
+    import shlex
+
+    try:
+        from . import plugin
+
+        config = plugin.S.config
+    except Exception:
+        config = None
+    if config is None:
+        return list(sys.argv[1:])
+    args = list(config.invocation_params.args)
+    env = os.environ.get("PYTEST_ADDOPTS")
+    if env:
+        try:
+            args = [*shlex.split(env), *args]
+        except ValueError:
+            args = [env, *args]
+    try:
+        args = [*config.getini("addopts"), *args]
+    except (ValueError, KeyError):
+        pass
+    return [str(a) for a in args]
+
+
+def argv_input() -> str:
+    """The effective command line (R-055 V10: a test can read sys.argv; runner options, plugin switches, addopts and
+    PYTEST_ADDOPTS change what runs), without the per-run output paths (traces, outcomes, the order file: their content
+    is an input of its own) and the parallel options (the plan is its own input)."""
+    out, skip = [], False
+    for a in effective_args():
+        if skip:
+            skip = False
+            continue
+        if a.startswith(ARGV_PATHS):
+            skip = "=" not in a
+            continue
+        if a in ARGV_PARALLEL:
+            skip = True
+            continue
+        if a.startswith(tuple(f"{x}=" for x in ARGV_PARALLEL if x.startswith("--"))) or (a.startswith("-n") and a[2:].isdigit()):
+            continue
+        out.append(a)
+    return _core.digest("\0".join(out).encode("utf-8", "surrogateescape"))[:16] + f" ({len(out)} args)"
+
+
+def _module_files():
+    for m in list(sys.modules.values()):
+        f = getattr(m, "__file__", None)
+        if isinstance(f, str) and f:
+            yield os.path.abspath(f)
+
+
+def _file_identity(path: str) -> str | None:
+    """Content digest of a Python source; size and mtime of anything else (a native extension)."""
+    try:
+        if path.endswith(".py"):
+            with open(path, "rb") as fh:
+                return _core.digest(fh.read())[:16]
+        st = os.stat(path)
+        return f"{st.st_size}:{st.st_mtime_ns}"
+    except OSError:
+        return None
+
+
+def code_inputs(extra: list | None = None) -> dict:
+    """The code that ran, as two run inputs: ``code`` (the project's modules and test files imported so far: an
+    uncommitted edit counts, R-055 V4) and ``deps`` (every other non-standard-library module: an installed dependency
+    changed, R-055 V5); the runner's own packages (pytest, its plugins, detpy) are the ``runner`` input. ``extra``:
+    the lists of xdist workers (the controller imports no test). Modules imported later inside a test are not in it
+    (docs/VERIFY-INPUTS.md, gap)."""
+    code, deps = code_files()
+    for c, d in extra or []:
+        code, deps = sorted(set(code) | set(c)), sorted(set(deps) | set(d))
+    dig = lambda xs: f"{len(xs)} files " + _core.digest("\n".join(xs).encode("utf-8", "surrogateescape"))[:16]
+    return {"code": dig(code), "deps": dig(deps)}
+
+
+def code_files() -> tuple:
+    with _state.quiet():
+        root = _sites._rootdir or os.getcwd()
+        stdlib = tuple(d + os.sep for d in _sites._stdlib_dirs)
+        site = tuple(d + os.sep for d in _sites._site_dirs)  # (site-packages sits inside the stdlib directory)
+        own = os.path.dirname(os.path.abspath(__file__)) + os.sep
+        code, deps = [], []
+        for f in sorted(set(_module_files())):
+            if f.startswith(own) or (f.startswith(stdlib) and not f.startswith(site)):
+                continue
+            if _sites._classify(f)[0] == _sites._INFRA or _infra_module_file(f):
+                continue  # the runner (pytest, its plugins, xdist): the `runner` input
+            ident = _file_identity(f)
+            if ident is None:
+                continue
+            if f.startswith(root + os.sep) and "site-packages" not in f and f"{os.sep}.venv{os.sep}" not in f:
+                code.append(f"{os.path.relpath(f, root)}={ident}")
+            else:
+                deps.append(f"{_sites.norm_path(f)}={ident}")
+    return sorted(set(code)), sorted(set(deps))
+
+
+_RUNNER_TOPS = ("pytest", "_pytest", "pluggy", "xdist", "execnet", "iniconfig", "py", "pytest_")
+
+
+def _infra_module_file(f: str) -> bool:
+    parts = f.replace(os.sep, "/").split("/site-packages/", 1)
+    if len(parts) != 2:
+        return False
+    top = parts[1].split("/", 1)[0].removesuffix(".py")
+    return top in _RUNNER_TOPS or top.startswith("pytest_") or top.startswith("_pytest") or top in INFRA_PACKAGES
 
 
 def reexec_status(ns, controls, root: str, block: list[str], before_exec=None) -> str:
@@ -562,9 +738,14 @@ def install_controls(cfg: _state.Config, root: str | None) -> list:
         envobs.install()
         pin_hostname(PATCHER)
         pin_cpu_count(PATCHER)
+        pin_terminal_size(PATCHER)
     if "os" in controls:
         osstate.install(PATCHER, cfg)  # after fstime: wraps its open
     uncontrolled.install(PATCHER)
+    # The general rule's wide sensor, last: it watches every call, this module's own patches included, and the
+    # core's accounting table classifies the engine's own machinery as controlled. A run that cannot start it
+    # declares no sensor, and then every test of the run is NOT PROVEN (never IDENTICAL) -- the honest answer.
+    provable.SENSOR_OBJ.start()
     return rebound
 
 
@@ -605,6 +786,25 @@ def pin_cpu_count(patcher) -> None:
     if hasattr(os, "sched_getaffinity"):
         patcher.set(os, "sched_getaffinity", lambda pid: set(range(n)))
     patcher.set(multiprocessing, "cpu_count", lambda: n)
+
+
+#: Terminal size under --det. The real one differs between machines and between a terminal and a pipe, and the
+#: runner's own formatting reads it, so it is CI-volatile in exactly the sense design A pins (same class as the
+#: host name and the CPU count). 80x24 is the POSIX default and what every stdlib fallback uses.
+PINNED_TERMINAL_SIZE = (80, 24)
+
+
+def pin_terminal_size(patcher) -> None:
+    """Design A, same class as the host name: the terminal size differs between runners and between a terminal and
+    a pipe. Under --det ``os.get_terminal_size`` and ``shutil.get_terminal_size`` answer
+    ``PINNED_TERMINAL_SIZE``, so the general rule can account for them (``provable.rs``: ``Controlled``) instead of
+    reporting every run NOT PROVEN for a value the runner reads to lay out its own output."""
+    import shutil
+
+    cols, lines = PINNED_TERMINAL_SIZE
+    if hasattr(os, "get_terminal_size"):
+        patcher.set(os, "get_terminal_size", lambda fd=1: os.terminal_size((cols, lines)))
+    patcher.set(shutil, "get_terminal_size", lambda fallback=(cols, lines): os.terminal_size((cols, lines)))
 
 
 class real_cpu_count:
@@ -732,6 +932,7 @@ def begin_test(nodeid: str, index: int) -> None:
     st.recorder.begin_test(nodeid, index)
     _state.reset_threads()
     uncontrolled.start_test()
+    provable.SENSOR_OBJ.start_test()
     if "os" in controls:
         osstate.start_test()
     if "time" in controls:
@@ -753,6 +954,9 @@ def end_test(outcome: str):
     if "net" in controls:
         network.end_test()
     uncontrolled.end_test()  # threads that ran during the test (G-0180)
+    # a native extension loaded by this test (or before it): its own C reads raise no call and no audit event,
+    # so a module nobody audited makes the test NOT PROVEN (the declared residual of docs/REPORT-verifier-rule.md)
+    provable.SENSOR_OBJ.check_native()
     st.nodeid = None
     return st.recorder.end_test(outcome)
 
@@ -795,6 +999,19 @@ def trace_meta(status: str, net_mode, rebound: int, order_digest: str, runner: s
     # every os.environ read by a test is an event (envobs): the verifier then reports a differing variable only for
     # the tests that read it (design A)
     meta["env_reads_recorded"] = "env" in cfg.controls
+    # the variables read outside any test before the trace opened (module scope, conftest, plugins at import):
+    # read by every test as far as the verifier knows (R-054 N2)
+    meta.update(outside_fields())
+    _HEADER["outside"] = outside_fields()
+    # The general rule (docs/REPORT-verifier-rule.md, crates/detpy-core/src/provable.rs): what this run watched.
+    # The verifier reports a test IDENTICAL only when the run declared a sensor it knows, so leaving this out is
+    # not a cosmetic omission -- it is the run saying "I cannot show anything identical", which is what a run
+    # without a sensor must say.
+    ph = provable.SENSOR_OBJ.header()
+    if ph is not None:
+        meta["provable"] = ph
+    elif provable.SENSOR_OBJ.reason:
+        meta["provable_absent"] = provable.SENSOR_OBJ.reason
     return meta
 
 

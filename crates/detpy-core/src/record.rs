@@ -181,6 +181,18 @@ pub fn uncacheable(flags: &BTreeSet<&str>, control_urandom: bool) -> Option<&'st
     if has("cdll") {
         return Some("calls a C library through ctypes (its file, clock and environment reads are not observed)");
     }
+    // The general rule ([`crate::provable`]) AFTER the named flags, and never instead of one: the wide sensor saw
+    // the test do something the accounting table does not account for. The cache and the verifier refuse for the
+    // same reason here, so a channel nobody has thought of is refused by both and not reused by either.
+    //
+    // It comes last for the reason `judge` puts its channel rules before the sensor's own findings: both answers
+    // are a refusal, and the specific name wins over the generic one whenever the engine has it. "subprocess"
+    // tells the reader what to do; "did something the engine cannot account for" sends them to a list. Checking
+    // it first cost every named cause in the cache's report (tests/test_proofcache.py: subprocess, network
+    // connection, host name lookup), which is the receipt a customer reads to find out why a test was rerun.
+    if has("unacc") {
+        return Some("did something the engine cannot account for (NOT PROVEN: see the trace's unaccounted list)");
+    }
     None
 }
 
