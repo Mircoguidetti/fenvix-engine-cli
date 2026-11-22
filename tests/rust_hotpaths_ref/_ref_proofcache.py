@@ -722,7 +722,7 @@ class Capture:
             checked.__wrapped__ = orig
             rebind(os, name, orig, checked)
 
-        real_stat, real_lstat = os.stat, os.lstat
+        real_stat, real_lstat = _unobserved_stat, _unobserved_lstat
         for name in ("stat", "lstat", "access", "readlink"):
             wrap(name)
         if os.path is not posixpath:
@@ -858,7 +858,7 @@ class Capture:
                     break
                 continue
             cands = _core.import_candidates(d, tail, suffixes)
-            missing = not os.path.exists(cands[0])
+            missing = not _unobserved_exists(cands[0])
             self.read(ctx, cands[0], "s")
             regular = False
             for c in (cands[1 + n:] if missing else cands[1:]):
@@ -1065,7 +1065,7 @@ class Capture:
             self.flag(ctx, "pstate", p)  # this process's own state: counted in a test's own contexts only
             return
         elif p.startswith(("/proc/", "/sys/", "/dev/")) and not p.startswith("/dev/shm/") \
-                and ((kind != "d" or p.startswith("/proc/")) and os.path.exists(p)):
+                and ((kind != "d" or p.startswith("/proc/")) and _unobserved_exists(p)):
             # the content of a pseudo-file (process state, kernel tunables, a device) is not a file's content;
             # a listing (device enumeration such as /dev/bus/usb) and a missing path are ordinary inputs
             self.flag(ctx, "proc", p)
@@ -1090,7 +1090,7 @@ class Capture:
                 dep = f"d:{d}" if d is not None else "missing"
             else:
                 d = _core.file_digest(p)
-                dep = f"f:{d}" if d is not None else ("missing" if not os.path.exists(p) else "s:" + (
+                dep = f"f:{d}" if d is not None else ("missing" if not _unobserved_exists(p) else "s:" + (
                     "dir" if os.path.isdir(p) else "other"))
             self._hashed[hk] = dep
         self.data.setdefault(ctx, {})[self._key(p)] = dep
@@ -1157,7 +1157,7 @@ class Capture:
                 # whether the path exists, so that is an input: "missing", or the content it fails on. (The open has
                 # not happened yet.) The first one in the session is remembered for the reuse decision (_decide).
                 if p not in self.writers and p not in self.excl_pre:
-                    self.excl_pre[p] = os.path.lexists(p)
+                    self.excl_pre[p] = _unobserved_lexists(p)
                 self.read(ctx, p, "f")
             elif reads and not trunc:
                 self.read(ctx, p, "f")
@@ -1400,7 +1400,7 @@ class Capture:
         sig = []
         for f in (path, path + "-wal"):
             try:
-                st = os.stat(f)
+                st = _unobserved_stat(f)
                 sig.append((st.st_ino, st.st_size, st.st_mtime_ns))
             except OSError:
                 sig.append(None)
@@ -1549,7 +1549,7 @@ class Capture:
             if follow.special(p, res.pids) is not None or self.child_ignored(p):
                 continue
             try:
-                st = os.stat(p)
+                st = _unobserved_stat(p)
             except (OSError, ValueError):
                 continue
             if _stat.S_ISREG(st.st_mode) and st.st_ctime_ns >= t0:
@@ -1580,7 +1580,7 @@ class Capture:
                 self.child_entropy += 1
                 continue
             if sk == "proc":
-                if op == "d" or (op != "w" and not os.path.exists(p)):
+                if op == "d" or (op != "w" and not _unobserved_exists(p)):
                     self.read(ctx, p, "d" if op == "d" else "f")  # a listing or a missing path: an input
                 else:
                     self.flag(ctx, "spawn", f"{sp.detail} [reads {p}]")
@@ -1742,7 +1742,7 @@ def _code_key(path: str):
 
 def _stat_key(path: str):
     try:
-        st = os.stat(path)
+        st = _unobserved_stat(path)
     except OSError:
         return None
     return [st.st_size, st.st_mtime_ns, st.st_ctime_ns, st.st_ino]
@@ -2574,6 +2574,41 @@ def _is_find_library_ldconfig(args) -> bool:
 
 
 import re as _re  # noqa: E402
+
+# --- the reference's own metadata calls, unobserved ------------------------------------------------------------
+# This file is the Python original of the capture that now lives in Rust (crates/detpy-py/src/capture.rs), and
+# tests/test_capture_rust.py asserts the two produce the same store. The Rust capture makes its own metadata
+# checks in C, where Level 0 observes nothing. This copy makes them from Python, so after review R-055 added the
+# `fs.stat` observer they became `fs.stat` events of whichever test happened to be running, and the two stores
+# could never match again (a stale reference, not a capture regression).
+#
+# So the reference asks the operating system through the functions detpy captured before it installed its own
+# observer. The cache dependencies it records are unchanged -- `note()` still runs -- only the Level 0 event is
+# gone, which is what the Rust capture does too.
+try:  # pragma: no cover - the plain path when detpy is importable, which it always is here
+    from detpy import osstate as _osstate
+
+    _unobserved_stat = _osstate._real_stat
+    _unobserved_lstat = _osstate._real_lstat
+except Exception:  # pragma: no cover - never on a supported build
+    _unobserved_stat, _unobserved_lstat = os.stat, os.lstat
+
+
+def _unobserved_exists(path) -> bool:
+    try:
+        _unobserved_stat(path)
+    except (OSError, ValueError):
+        return False
+    return True
+
+
+def _unobserved_lexists(path) -> bool:
+    try:
+        _unobserved_lstat(path)
+    except (OSError, ValueError):
+        return False
+    return True
+
 
 # sqlite reads the real clock for 'now', CURRENT_TIMESTAMP/DATE/TIME and the date functions called without a time
 # value (date(), datetime(), time(), julianday(), unixepoch(), strftime(format))

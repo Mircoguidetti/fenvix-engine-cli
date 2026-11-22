@@ -398,6 +398,14 @@ def install(patcher: Patcher, epoch_ns: int, tick_ns: int, skip_module, adapt_af
             secs = process_time()
             vals = list(r)
             vals[0], vals[1] = secs, 0.0
+            # the memory and I/O counters stay real: a test that reads them observed this run's values (R-055 V14)
+            from . import _state as _st
+
+            if _st.STATE.nodeid is not None and not _st.is_quiet():
+                try:
+                    _st.record("other", "resource.getrusage", _core.digest(repr(vals[2:]).encode())[:16], 1)
+                except Exception:
+                    pass
             return type(r)(vals)
 
         getrusage.__doc__ = real_getrusage.__doc__

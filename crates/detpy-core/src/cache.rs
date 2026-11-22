@@ -108,8 +108,34 @@ impl Default for CachePolicy {
 impl CachePolicy {
     /// `counts` are the per-source event counts of the test (from its record).
     pub fn admit(&self, verdict: &TestVerdict, counts: &BTreeMap<Source, u64>) -> bool {
+        // `Status::Stable` is itself the general rule's answer: the verifier reaches it only through
+        // [`crate::provable::judge`], which is default-deny, so a test the sensor could not fully account for
+        // never gets here. The two extra conditions are the cache's own: enough runs, and none of the sources
+        // this policy forbids outright.
         verdict.status == Status::Stable
             && verdict.fingerprints.len() >= self.min_runs
+            && self.forbidden.iter().all(|s| counts.get(s).copied().unwrap_or(0) == 0)
+    }
+
+    /// Admit a test straight from its record, without going through the verifier: the same predicate, for a
+    /// producer that has one run in hand (the cache with proof, deciding whether to store what it just saw).
+    ///
+    /// This is the second caller of [`crate::provable::judge`] the founder's rule asks for: the cache must not
+    /// have a reuse rule of its own.
+    ///
+    /// Unlike [`Self::admit`] it does not ask for `min_runs`: a producer holding the run it has just finished has
+    /// one by definition, and the general rule is what decides whether that one run may be trusted. The cache
+    /// with proof reaches the same refusal through [`crate::record::uncacheable`]'s `unacc` flag, which the
+    /// shells' sensors set.
+    pub fn admit_record(
+        &self,
+        record: &crate::fingerprint::TestRecord,
+        provable_meta: Option<&serde_json::Value>,
+        controls: &[String],
+        outside: &[String],
+        counts: &BTreeMap<Source, u64>,
+    ) -> bool {
+        crate::provable::judge_record(record, provable_meta, controls, outside).is_provable()
             && self.forbidden.iter().all(|s| counts.get(s).copied().unwrap_or(0) == 0)
     }
 }
@@ -128,6 +154,34 @@ mod tests {
             outcome_stable: true,
             divergence: None,
         }
+    }
+
+    #[test]
+    fn admit_record_is_the_general_rule_and_nothing_else() {
+        use crate::fingerprint::Fingerprinter;
+
+        let policy = CachePolicy::default();
+        let meta = serde_json::json!({
+            "sensor": "py-monitoring/1",
+            "contract": crate::provable::SENSOR_CONTRACT,
+            "surface": crate::provable::surface_digest(),
+            "runtime": "cpython3.13",
+        });
+        let controls: Vec<String> =
+            crate::provable::required_controls("py-monitoring/1").iter().map(|s| s.to_string()).collect();
+        let counts = BTreeMap::new();
+
+        let clean = Fingerprinter::default().finish("t", 0, "passed");
+        assert!(policy.admit_record(&clean, Some(&meta), &controls, &[], &counts));
+        // a run that cannot say what it watched: never stored, so never reused
+        assert!(!policy.admit_record(&clean, None, &controls, &[], &counts));
+        // a control the accounting rests on switched off
+        assert!(!policy.admit_record(&clean, Some(&meta), &[], &[], &counts));
+        // something the sensor could not place
+        let mut f = Fingerprinter::default();
+        f.push(crate::Event::new(Source::Other, "unaccounted.api", "t.py:1", "posix.getxattr"));
+        let gap = f.finish("t", 0, "passed");
+        assert!(!policy.admit_record(&gap, Some(&meta), &controls, &[], &counts));
     }
 
     #[test]

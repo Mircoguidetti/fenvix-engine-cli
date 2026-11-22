@@ -5,12 +5,25 @@ import json
 import pytest
 
 from detpy import _core
+from detpy import provable as _provable
+
+#: the controls the general rule's `Controlled` answers rest on, as `--det` has them on
+_REQUIRED_CONTROLS = ["time", "seeds", "fs", "net", "env", "os", "tz", "locale", "hashseed"]
 
 
 def test_recorder_trace_and_verify(tmp_path):
+    # The header a real shell writes: the seed, plus what the run watched and the controls it had on. Without the
+    # `provable` declaration the general rule answers NOT PROVEN for every test of the trace, which is what a run
+    # that cannot say what it watched must get (crates/detpy-core/src/provable.rs).
+    meta = {
+        "seed": 1,
+        "provable": json.loads(_core.provable_header("py-monitoring/1", _provable.runtime_key())),
+        "controls": _REQUIRED_CONTROLS,
+    }
+
     def run(path, value):
         r = _core.Recorder(max_events=100)
-        r.open(str(path), json.dumps({"seed": 1}), ["t::a", "t::b"])
+        r.open(str(path), json.dumps(meta), ["t::a", "t::b"])
         r.begin_test("t::a", 0)
         assert r.in_test
         r.record("time", "time.time", "t.py:1", "1000")

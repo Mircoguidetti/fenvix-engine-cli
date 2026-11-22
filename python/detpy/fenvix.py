@@ -373,12 +373,13 @@ def render_repro(b: dict, out: Path) -> str:
         lines.append(f"  error: {str(exc).splitlines()[0][:300]}")
     # replay: the failing run itself, once, as a command a developer (or CI) runs: it fails when the defect reproduces
     # and takes runner arguments (`-x`, `--det-trace=PATH`); check: N replays with one fingerprint
-    one = _product_command(b.get("command"))
+    # (only for a reproduced defect: a NOT REPRODUCIBLE bundle has no command that reproduces it, R-051)
+    one = _product_command(b.get("command")) if status == "reproduced" else None
     if one:
         lines.append(f"  replay: {one}")
     lines.append(f"  check: {PROG} replay {_q(bundle_dir)}  (replays {rp.get('runs') or 10}x, exit 0 when every run "
                  f"fails with the bundle's fingerprint)")
-    if b.get("command"):
+    if b.get("command") and status == "reproduced":
         lines.append(f"  rerun: {b['command']}")
     lines.append(f"  bundle: {bundle_dir} ({b.get('runs')} runs, {b.get('seconds')} s)")
     return "\n".join(lines)
@@ -403,17 +404,22 @@ def _slug(test: str) -> str:
 
 
 def render_replay(res: dict, bundle: Path) -> str:
-    if res.get("status") == "not-collected":
+    if res.get("status") in ("not-collected", "not-run"):
         err = res.get("suite_error") or ""
-        return "\n".join([f"{PROG} replay: {res.get('test')}: NOT RUN: the test was not collected, so the replay "
-                          f"says nothing about the defect ({err.splitlines()[0] if err else 'no output'})"]
+        why = "the test was not collected" if res.get("status") == "not-collected" else "the test did not run"
+        return "\n".join([f"{PROG} replay: {res.get('test')}: NOT RUN: {why}, so the replay says nothing about the "
+                          f"defect ({err.splitlines()[0] if err else 'no output'})"]
                          + ["    " + ln for ln in err.splitlines()[1:]])
-    ok = res.get("fails") == res.get("runs") and res.get("identical_fingerprint")
+    # the check promised by repro's `check:` line: every run fails with the bundle's fingerprint (R-054)
+    ok = res.get("fails") == res.get("runs") and res.get("identical_fingerprint") and res.get("matches_bundle")
     head = "REPRODUCED" if ok else "NOT REPRODUCED"
     lines = [f"{PROG} replay: {res.get('test')}: {head}: failed {res.get('fails')}/{res.get('runs')} runs, "
              f"identical fingerprint: {res.get('identical_fingerprint')}, same fingerprint as the bundle: "
              f"{res.get('matches_bundle')}"]
-    if not ok:
+    if not ok and res.get("fails") and res.get("fails") == res.get("runs"):
+        lines.append("  it still fails, but not as recorded (another fingerprint): a different failure, or the code, "
+                     "dependencies or environment changed since the bundle was written")
+    elif not ok:
         lines.append("  the defect no longer fails the same way: fixed, or it depends on something the bundle "
                      "does not hold (code, dependencies, environment changed since it was written)")
     return "\n".join(lines)
@@ -564,15 +570,26 @@ def cmd_explore(argv: list) -> int:
         for ln in err.splitlines()[1:]:
             print("    " + ln, file=sys.stderr)
         return 2
+    if s.get("crashed_seeds"):
+        # R-055 E1: a run that died with no test result is a defect, whatever the other seeds found
+        cs = s["crashed_seeds"]
+        print(f"{PROG} explore: {len(cs)} seed run(s) crashed with no test result (seed(s) {', '.join(map(str, cs))}): "
+              f"the process died during a test; the failing tests above name the test it died in when its order is "
+              f"known", file=sys.stderr)
+        return 1
     if s.get("collection_errors"):
-        # R-050 V10: plain pytest cannot run this suite (it stops at collection): the exploration above covers the
-        # tests that collected, and the suite is not reported clean
+        # plain pytest cannot run this suite (it stops at collection): the exploration above covers the tests that
+        # collected. Failing tests it found are findings all the same (exit 0); finding none is no verdict that the
+        # suite is clean, since part of it never ran (R-050 V10: exit 2)
         err = s["collection_errors"]
+        found = bool(s.get("failing_tests"))
         print(f"{PROG} explore: the suite does not collect cleanly ({err.splitlines()[0]}): only the "
-              f"{s.get('collected', 0)} test(s) that collected were explored. The runner said:", file=sys.stderr)
+              f"{s.get('collected', 0)} test(s) that collected were explored"
+              + ("" if found else ", so finding nothing does not mean the suite is clean")
+              + ". The runner said:", file=sys.stderr)
         for ln in err.splitlines()[1:]:
             print("    " + ln, file=sys.stderr)
-        return 2
+        return 0 if found else 2
     return 0
 
 
@@ -610,9 +627,9 @@ def cmd_replay(argv: list) -> int:
         print(f"{PROG} replay: {e}", file=sys.stderr)
         return 2
     print(json.dumps(res, indent=2) if ns.json else render_replay(res, bundle))
-    if res.get("status") == "not-collected":
+    if res.get("status") in ("not-collected", "not-run"):
         return 2
-    return 0 if res["fails"] == res["runs"] and res["identical_fingerprint"] else 1
+    return 0 if res["fails"] == res["runs"] and res["identical_fingerprint"] and res.get("matches_bundle") else 1
 
 
 def cmd_verify(argv: list) -> int:
@@ -650,10 +667,10 @@ def cmd_verify(argv: list) -> int:
 
 
 def verify_exit_code(s: dict) -> int:
-    """0: every test identical. 1: a test diverged or is missing, no test ran, or a trace does not record its run
-    inputs (not proven). 3: the only differences are
+    """0: every test identical. 1: a test diverged or is missing, no test ran, a test used an uncontrolled source
+    (not proven, docs/VERIFY-CONTRACT.md), or a trace does not record its run inputs (not proven). 3: the only differences are
     environment variables tests read (input differs, design A). 2: unreadable or incompatible traces."""
-    if s["tests"] == 0 or s["diverged"] or s["missing"]:
+    if s["tests"] == 0 or s["diverged"] or s["missing"] or s.get("not_proven"):
         return 1
     if not s.get("inputs_recorded", True):  # same events, inputs unknown: not proven identical (reviewer #8)
         return 1

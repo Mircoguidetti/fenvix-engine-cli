@@ -1081,6 +1081,7 @@ class _DetSession(_Outcomes):
         finally:
             level0_end(item, self.outcomes.get(item.nodeid, "unknown"))
 
+    @pytest.hookimpl(trylast=True)  # after the project's own session-finish hooks: their reads go in the footer
     def pytest_sessionfinish(self, session, exitstatus):
         st = _state.STATE
         if S.controller is not None:
@@ -1092,6 +1093,12 @@ class _DetSession(_Outcomes):
         if st.recorder is not None and S.controller is None:
             if not S.order_digest:  # collection failed before the trace was opened
                 st.recorder.open(S.trace_path, json.dumps({"detpy": __version__, "collection": "failed"}), [])
+            try:  # what was read after the header, outside any test (R-055 V12): in the footer
+                late = _level0.late_inputs()
+                if late:  # the footer gets `late` only when the run read something outside the tests
+                    st.recorder.set_late(json.dumps(late))
+            except Exception:
+                pass
             st.recorder.close()
         if S.net_mode == "record" and S.controller is None:
             S.saved_cassette = network.save_recordings(S.cassette_out or st.config.cassette_path)
@@ -1112,6 +1119,10 @@ class _DetSession(_Outcomes):
             # cold in the first -n run of a cache) lays out no memory a test sees. Review P1 finding 11: counting it
             # made the first -n run after any serial run fully divergent
             _level0.REWRITE["cold"] = 0
+        outs = list(S.controller.workeroutput.values()) if S.controller is not None else []
+        if S.controller is not None:  # the workers imported the tests (R-055 V4, V5)
+            _level0._CODE_EXTRA[:] = [tuple(o["detpy_code_files"]) for o in S.controller.workeroutput.values()
+                                      if o.get("detpy_code_files")]
         return {
             "detpy": __version__, "seed": cfg.seed, "shuffle": cfg.shuffle, "controls": sorted(cfg.controls),
             "hashseed": os.environ.get("PYTHONHASHSEED"), "reexec": S.reexec_status,
@@ -1126,6 +1137,11 @@ class _DetSession(_Outcomes):
             # PYTEST_XDIST_* variables are engine-internal)
             "inputs": _level0.run_inputs(S.net_mode, "pytest", pytest.__version__),
             "env_reads_recorded": "env" in cfg.controls,
+            # what the workers did outside any test (module scope: the controller imports no test), and the
+            # controller (R-054 N2, R-055 V3)
+            **_level0.outside_fields(files=[o.get("detpy_files_outside") or {} for o in outs],
+                                     env=[o.get("detpy_env_outside") or [] for o in outs],
+                                     not_proven=[o.get("detpy_not_proven_outside") or [] for o in outs]),
         }
 
     def pytest_terminal_summary(self, terminalreporter, exitstatus, config):
@@ -1176,12 +1192,14 @@ class _DetSession(_Outcomes):
             return
         s = rep["summary"]
         tr.write_line(f"compare with {rep['labels'][0]}: covered={s['stable']} not-covered={s['diverged']} "
-                      f"missing={s['missing']} outcome-unstable={s['outcome_unstable']}"
+                      f"missing={s['missing']} not-proven={s.get('not_proven', 0)} "
+                      f"outcome-unstable={s['outcome_unstable']}"
                       f"{'' if s['order_identical'] else ' (ORDER DIFFERS)'}")
         for t in rep["tests"]:
             d = t.get("divergence")
-            if d and t["status"] == "diverged":
-                tr.write_line(f"NOT COVERED by Level 0: {t['nodeid']} [{d['reason']}]", yellow=True)
+            if d and t["status"] in ("diverged", "not-proven"):
+                what = "NOT COVERED by Level 0" if t["status"] == "diverged" else "NOT PROVEN (uncontrolled source)"
+                tr.write_line(f"{what}: {t['nodeid']} [{d['reason']}]", yellow=True)
                 tr.write_line(f"    {d['description']}")
 
 

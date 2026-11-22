@@ -155,9 +155,19 @@ impl Entry {
         if self.serial_noise {
             return None;
         }
+        // An empty fingerprint is not a value: it is what a shell writes when it has no evidence about a test
+        // (a test that never ended, a receipt that held none). `"" == ""` is two absences agreeing, and this
+        // function's answer is the thing `prove` compares, so the absence has to stop here (R-058 #3).
+        fn present(fp: &str) -> Option<&str> {
+            if fp.is_empty() {
+                None
+            } else {
+                Some(fp)
+            }
+        }
         match self.placement.as_str() {
-            "" => Some(self.fingerprint.as_str()),
-            PLACEMENT_PROVEN => self.serial_fp.as_deref(),
+            "" => present(self.fingerprint.as_str()),
+            PLACEMENT_PROVEN => self.serial_fp.as_deref().and_then(present),
             _ => None,
         }
     }
@@ -174,6 +184,11 @@ pub enum Proof {
 }
 
 pub fn prove(parallel: &Entry, stored: Option<&Entry>) -> Proof {
+    // The parallel side must hold evidence too: with no fingerprint there is nothing that could have been shown
+    // equal to the serial result (R-058 #3).
+    if parallel.fingerprint.is_empty() {
+        return Proof::Unproven;
+    }
     match stored {
         Some(d) if d.key == parallel.key => match d.serial_fingerprint() {
             Some(sf) if sf == parallel.fingerprint => Proof::Proven,

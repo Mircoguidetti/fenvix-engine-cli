@@ -13,6 +13,17 @@ import importlib.util
 import os
 import sys
 
+# Warmed in BOTH modes, before anything else: the two capture implementations do not import the same modules, so a
+# lazy standard-library import that one of them has already triggered lands inside a test in the other, and the
+# test that happened to trigger it gets an event the other run's test does not.
+#
+# MEASURED (this is the one that bit): test_dns_loopback calls socket.getaddrinfo, which imports encodings.idna
+# the first time a host name is resolved; that import makes posixpath.realpath stat /usr, which the R-055 fs.stat
+# observer records as the test's. The Rust capture had not imported it, the reference had, so the two stores could
+# never match again. Warming it here is a property of the harness, not of either capture: the comparison is about
+# what the captures record, not about which modules they happen to pull in.
+import encodings.idna  # noqa: F401,E402
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 def _wanted() -> bool:

@@ -15,7 +15,7 @@
 //! remembers the code object, which the Python side re-arms at the next context
 //! switch.
 
-use pyo3::exceptions::PyTypeError;
+use pyo3::exceptions::{PyTypeError, PyValueError};
 use pyo3::ffi;
 use pyo3::prelude::*;
 use pyo3::types::{PyBytes, PyList, PyTuple};
@@ -267,15 +267,27 @@ impl LineRecorder {
 // Audit hook filtered in Rust: only the listed events reach the Python callable
 // (a Python audit hook is called for every event, e.g. the frequent
 // "builtins.id" and "object.__getattr__"). Audit hooks cannot be removed, so
-// one hook is installed per process and dispatches to the current filter,
-// which `set_audit_hook` replaces (None turns it off). Replaced filters are
+// one hook is installed per process and dispatches to the current filters,
+// which `set_audit_hook` replaces (None turns a slot off). Replaced filters are
 // leaked on purpose: another thread may still be reading one.
+//
+// There are several slots because two parts of the engine want the hook at the same time: the cache with proof
+// asks for a named list of events, and the general rule's sensor (`detpy/provable.py`) asks for *every* event,
+// because an event it has no rule for is itself the gap it is looking for. An empty `names` means every event.
+
+const SLOTS: usize = 4;
 
 static INSTALLED: AtomicBool = AtomicBool::new(false);
-static CURRENT: AtomicPtr<AuditFilter> = AtomicPtr::new(std::ptr::null_mut());
+static CURRENT: [AtomicPtr<AuditFilter>; SLOTS] = [
+    AtomicPtr::new(std::ptr::null_mut()),
+    AtomicPtr::new(std::ptr::null_mut()),
+    AtomicPtr::new(std::ptr::null_mut()),
+    AtomicPtr::new(std::ptr::null_mut()),
+];
 
 struct AuditFilter {
     callable: *mut ffi::PyObject,
+    /// Empty = every event reaches the callable.
     names: Vec<Vec<u8>>,
 }
 
@@ -287,32 +299,52 @@ extern "C" {
 }
 
 unsafe extern "C" fn audit_hook(event: *const c_char, args: *mut ffi::PyObject, _data: *mut c_void) -> c_int {
-    let f = CURRENT.load(Ordering::Acquire);
-    if f.is_null() || event.is_null() {
+    if event.is_null() {
         return 0;
     }
-    let f = &*f;
     let ev = CStr::from_ptr(event).to_bytes();
-    if !f.names.iter().any(|n| n.as_slice() == ev) {
-        return 0;
+    let mut py_ev: *mut ffi::PyObject = std::ptr::null_mut();
+    let mut rc = 0;
+    for slot in CURRENT.iter() {
+        let f = slot.load(Ordering::Acquire);
+        if f.is_null() {
+            continue;
+        }
+        let f = &*f;
+        // an empty list means every event: that is what the general rule's sensor asks for
+        if !f.names.is_empty() && !f.names.iter().any(|n| n.as_slice() == ev) {
+            continue;
+        }
+        if py_ev.is_null() {
+            py_ev = ffi::PyUnicode_FromStringAndSize(event, ev.len() as ffi::Py_ssize_t);
+            if py_ev.is_null() {
+                return -1;
+            }
+        }
+        let r = ffi::PyObject_CallFunctionObjArgs(f.callable, py_ev, args, std::ptr::null_mut::<ffi::PyObject>());
+        if r.is_null() {
+            rc = -1;
+            break;
+        }
+        ffi::Py_DECREF(r);
     }
-    let py_ev = ffi::PyUnicode_FromStringAndSize(event, ev.len() as ffi::Py_ssize_t);
-    if py_ev.is_null() {
-        return -1;
+    if !py_ev.is_null() {
+        ffi::Py_DECREF(py_ev);
     }
-    let r = ffi::PyObject_CallFunctionObjArgs(f.callable, py_ev, args, std::ptr::null_mut::<ffi::PyObject>());
-    ffi::Py_DECREF(py_ev);
-    if r.is_null() {
-        return -1;
-    }
-    ffi::Py_DECREF(r);
-    0
+    rc
 }
 
-/// `set_audit_hook(callable, names)`: call `callable(event, args)` for the listed
-/// audit events only; `set_audit_hook(None, ())` stops calling it.
+/// `set_audit_hook(callable, names, slot=0)`: call `callable(event, args)` for the listed audit events, or for
+/// every event when `names` is empty; `set_audit_hook(None, (), slot)` stops calling that slot's callable.
+///
+/// The slots are independent: the cache with proof uses one with its own event list, the general rule's sensor
+/// another with every event. A slot out of range is an error rather than a silently ignored registration.
 #[pyfunction]
-pub fn set_audit_hook(callable: &Bound<'_, PyAny>, names: &Bound<'_, PyTuple>) -> PyResult<()> {
+#[pyo3(signature = (callable, names, slot = 0))]
+pub fn set_audit_hook(callable: &Bound<'_, PyAny>, names: &Bound<'_, PyTuple>, slot: usize) -> PyResult<()> {
+    if slot >= SLOTS {
+        return Err(PyValueError::new_err(format!("audit hook slot {slot} out of range (0..{SLOTS})")));
+    }
     let new = if callable.is_none() {
         std::ptr::null_mut()
     } else {
@@ -326,7 +358,7 @@ pub fn set_audit_hook(callable: &Bound<'_, PyAny>, names: &Bound<'_, PyTuple>) -
         }
         Box::into_raw(Box::new(AuditFilter { callable: callable.clone().into_ptr(), names: v }))
     };
-    CURRENT.store(new, Ordering::Release);
+    CURRENT[slot].store(new, Ordering::Release);
     if !INSTALLED.swap(true, Ordering::AcqRel) {
         let rc = unsafe { PySys_AddAuditHook(Some(audit_hook), std::ptr::null_mut()) };
         if rc != 0 {

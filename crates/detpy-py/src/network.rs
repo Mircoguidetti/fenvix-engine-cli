@@ -1161,7 +1161,14 @@ fn connect_common<'py>(
     let real = n.g(py, real_key)?;
     let Some(pol) = n.policy(py)? else { return real.call1((sock, address)) };
     let pol = pol.get();
-    let Some((host, port)) = target(py, &n, pol, sock, address)? else { return real.call1((sock, address)) };
+    let Some((host, port)) = target(py, &n, pol, sock, address)? else {
+        // a connection the closed network lets through (a local or allowed endpoint, a unix socket): the test talks
+        // to something the run does not control, unless it is this process's own listener (network._note_live)
+        if let Ok(f) = n.g(py, intern!(py, "_note_live")) {
+            f.call1((sock, address))?;
+        }
+        return real.call1((sock, address));
+    };
     let mode = pol.mode;
     let nodeid = state_attr(py, intern!(py, "nodeid"))?;
     if mode == Mode::Record {
@@ -1423,6 +1430,9 @@ fn m_sendto<'py>(py: Python<'py>, a: Args<'_, 'py>) -> PyResult<Bound<'py, PyAny
                     record(py, "socket.sendto", join3(&host, &pb, " blocked"))?;
                     return Err(n.blocked(py, &join3(&host, &pb, " (udp)"))?);
                 }
+            } else if let Ok(f) = n.g(py, intern!(py, "_note_live")) {
+                // a datagram to a local or allowed endpoint: like a connection to one (R-055 V8)
+                f.call1((slf, address))?;
             }
         }
     }
