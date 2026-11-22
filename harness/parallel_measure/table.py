@@ -41,6 +41,14 @@ def verdict_of(v):
 
 def main():
     rows = [json.loads(x) for x in open(sys.argv[1]) if x.strip()]
+    import os
+    base = os.path.dirname(os.path.abspath(sys.argv[1]))
+
+    def classification(name):
+        try:
+            return json.load(open(os.path.join(base, name, "classification.json")))["summary"]
+        except (OSError, ValueError, KeyError):
+            return None
     specs = json.load(open(sys.argv[2]))
     repos = []
     for r in rows:
@@ -50,7 +58,7 @@ def main():
            "runner's own parallel s (no engine)", "`--det` serial s", "workers", "parallel with proof s",
            "speedup vs plain serial", "outcome map identical (per test id, every round)", "engine verdict (per round)",
            "causes named (max per round)", "serial noise (S1 vs S2)", "row state", "engine state", "NOISY runs",
-           "nproc / CPU", "engine commit"]
+           "nproc / CPU", "engine commit", "boxes (classify.py)", "counts (rule)"]
     print("| " + " | ".join(hdr) + " |")
     print("|" + "---|" * len(hdr))
     for name in repos:
@@ -104,6 +112,29 @@ def main():
                      "round 1 cold, later warm" if states == ["cold", "warm"] else "/".join(states), str(noisy),
                      f"{rr[0].get('nproc', rr[0]['cpus'])} / {rr[0].get('cpu_model', '?')}",
                      ", ".join(sorted({r["engine_commit"][:8] for r in rr}))]
+            cl = classification(name)
+            boxes = ", ".join(f"{k} {v}" for k, v in sorted((cl or {}).get("boxes", {}).items())) if cl else "not classified"
+            # counting rule (coordinator, 2026-11-22): identical and faster; or all of (1)-(4)
+            if state == "IDENTICAL AND FASTER":
+                counts = "yes (identical and faster)"
+            elif cl is None:
+                counts = "no: not classified"
+            else:
+                fails = []
+                if not faster:
+                    fails.append("(1) not faster than plain serial (re-run included)")
+                b = cl.get("boxes", {})
+                if any(b.get(k) for k in ("OURS", "UNDECIDED")):
+                    fails.append(f"(2) OURS {b.get('OURS', 0)}, UNDECIDED {b.get('UNDECIDED', 0)}")
+                if b.get("ENV"):
+                    fails.append(f"(3) ENV {b['ENV']}")
+                r = cl.get("rule", {})
+                if not r.get("THEIRS_all_reproduced", True):
+                    fails.append("(3) a THEIRS test not reproduced")
+                if not r.get("THEIRS_reported_equal_or_named", True):
+                    fails.append("(4) a THEIRS outcome reported differently and not named")
+                counts = "yes (rule 1-4)" if not fails else "no: " + "; ".join(fails)
+            cells += [boxes, counts]
             print("| " + " | ".join(cells) + " |")
 
 
