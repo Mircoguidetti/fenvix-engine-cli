@@ -70,6 +70,7 @@ def main():
                 extra = ["--maxWorkers=4"] if mode == "par" else ["--runInBand", "--randomize", f"--seed={seed}"]
             cmd = direct + extra + rep
         M.reset_tree(cwd)
+        built = M.build_after_reset(cwd, spec.get("build"), env, log)
         f_ids = f.replace(".raw.json", ".ids.json")
         r, _ = M.run(cmd, cwd, {**env, "PM_IDS_OUT": f_ids}, log, o.timeout)
         oc = M.outcomes_file(f) if runner == "pytest" else (M.ids_outcomes(f_ids, cwd) if os.path.exists(f_ids) else M.runner_outcomes(f, cwd))
@@ -78,7 +79,7 @@ def main():
             json.dump(oc, g)
         line = {"repo": o.name, "run": name, "cmd": " ".join(cmd), "cwd": cwd, "tests": len(oc),
                 "outcome_counts": M.counts(oc), "engine_commit": M.engine_commit(),
-                "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), **r}
+                "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), **built, **r}
         with open(os.path.join(os.path.abspath(o.out), "repro.jsonl"), "a") as g:
             g.write(json.dumps(line) + "\n")
         print(json.dumps({k: line[k] for k in ("repo", "run", "exit", "wall_s", "tests")}), flush=True)
