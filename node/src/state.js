@@ -50,7 +50,7 @@ class State {
   record(source, op, value, callSite) {
     if (source !== 'time' && this.onOtherEvent) this.onOtherEvent();
     if (this.testId === null || this.quietDepth > 0 || this.recorder === null) {
-      if (this.onEvent !== null && this.quietDepth === 0) this.onEvent(source, value);
+      if (this.onEvent !== null && this.quietDepth === 0) this.onEvent(source, value, op);
       return;
     }
     let site = '';
@@ -64,14 +64,14 @@ class State {
       }
       if (site === null) return; // runner infrastructure
     }
-    if (this.onEvent !== null) this.onEvent(source, value);
+    if (this.onEvent !== null) this.onEvent(source, value, op);
     this.buffer.push(source + FS + op + FS + site + FS + value);
     if (this.buffer.length >= FLUSH_AT) this.flush();
   }
 
   /** Record with an explicit site (used by detjs itself). */
   recordAt(source, op, site, value) {
-    if (this.onEvent !== null && this.quietDepth === 0) this.onEvent(source, value);
+    if (this.onEvent !== null && this.quietDepth === 0) this.onEvent(source, value, op);
     if (this.testId === null || this.recorder === null) return;
     this.buffer.push(source + FS + op + FS + site + FS + value);
   }

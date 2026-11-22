@@ -115,6 +115,10 @@ function installProcessFacts(patcher, proc) {
     Object.defineProperty(w, '__detjsFacts', { value: true });
     patcher.set(proc, 'binding', w);
   }
+  // `process.pid` / `process.ppid` are plain properties, read synchronously at the reader's own site, so they go
+  // through rec() and its `<node>`-site rule like every other fact: a read with no user frame on the stack (MEASURED,
+  // jest 29.7.0 --maxWorkers=2: Node's own machinery reading `process.pid` inside a worker while a test is in flight)
+  // is not an event of the test, so serial and parallel fingerprints stay equal.
   for (const n of ['pid', 'ppid']) {
     const d = Object.getOwnPropertyDescriptor(proc, n);
     if (!d || !d.configurable || d.get) continue;
