@@ -1323,6 +1323,92 @@ class ProofSession:
             if self._is_hit(n) and (now is None or self.effects_stored.get(n) != now):
                 self._demote(n, "code: import-time code of the collected test modules changed (it runs before every test)")
 
+    OUTSIDE_IMPORTS_GLOB = "outside-imports"
+
+    def _outside_import_files(self) -> dict:
+        """Every module file the process has imported from OUTSIDE the project, with the digest of its content.
+
+        Review R-056 W7: the runtime key holds each installed distribution as a name and a version, so a file
+        edited in place under an unchanged version is invisible -- which is what happens with a dependency
+        installed from a git branch, with patched site-packages and with a CI cache of a venv. The capture tracks
+        code only inside the project root (`want` in `crates/detpy-py/src/capture.rs`), so none of these files is
+        a dependency of anything today.
+
+        The content of what the run actually imported is the answer that needs no version to be honest.
+        """
+        import hashlib
+
+        root_sep = os.path.join(os.path.abspath(self.root), "")
+        out = {}
+        for mod in list(sys.modules.values()):
+            f = getattr(mod, "__file__", None)
+            if not f or not isinstance(f, str) or f.startswith("<"):
+                continue
+            try:
+                p = os.path.realpath(f)
+            except OSError:
+                continue
+            if p.startswith(root_sep) or not p.endswith((".py", ".so", ".pyd", ".dylib")):
+                continue
+            try:
+                with open(p, "rb") as fh:
+                    out[p] = hashlib.blake2b(fh.read(), digest_size=12).hexdigest()
+            except OSError:
+                out[p] = "?"
+        return out
+
+    def outside_imports_save(self) -> None:
+        """One file per recording process (no two writers, so no merge race under ``-n``)."""
+        if self.role == "controller":
+            return
+        try:
+            files = _core.detpy_probe_call(self._outside_import_files)
+        except Exception:
+            return
+        who = getattr(self, "worker", None) or self.role
+        self.engine_json_save(os.path.join(self.dir, f"{self.OUTSIDE_IMPORTS_GLOB}.{who}.json"), files)
+
+    def outside_imports_check(self, nids) -> None:
+        """A reused result was recorded against the installed code that is on disk now; otherwise it is not reused.
+
+        The stored list is what the recording process imported from outside the project. Re-reading exactly those
+        paths works in the controller too, which never imports the project's modules under ``-n`` and so could
+        never answer this from its own ``sys.modules``. A test cannot import a NEW outside module without its own
+        code changing, which the code prefix already holds.
+        """
+        import glob
+        import hashlib
+
+        stored: dict = {}
+        for path in sorted(glob.glob(os.path.join(self.dir, f"{self.OUTSIDE_IMPORTS_GLOB}.*.json"))):
+            part = self.engine_json_load(path)
+            if isinstance(part, dict):
+                stored.update(part)
+        if not stored:
+            return
+
+        def changed():
+            for p, d in stored.items():
+                try:
+                    with open(p, "rb") as fh:
+                        now = hashlib.blake2b(fh.read(), digest_size=12).hexdigest()
+                except OSError:
+                    now = "?"
+                if now != d:
+                    return p
+            return None
+
+        try:
+            bad = _core.detpy_probe_call(changed)
+        except Exception:
+            bad = "unknown"
+        if bad is None:
+            return
+        where = bad if bad != "unknown" else "an installed file the engine could not read"
+        for n in nids:
+            if self._is_hit(n):
+                self._demote(n, f"code: installed code the run imports changed in place ({where})")
+
     def import_effects_save(self) -> None:
         now = getattr(self, "effects_now", None)
         if now is None:
@@ -1339,6 +1425,7 @@ class ProofSession:
         Unknown: not reused."""
         self.prefix_nids = list(nids)
         self.import_effects_check(nids)
+        self.outside_imports_check(nids)
         scope = self._prefix_scope()
         self.prefix_scope = scope
         if scope is None:
@@ -1471,6 +1558,7 @@ class ProofSession:
     def prefix_save(self) -> None:
         self.code_prefix_save()
         self.import_effects_save()
+        self.outside_imports_save()
         now = getattr(self, "prefix_now", None)
         scope = getattr(self, "prefix_scope", None)
         if now is None or scope is None:

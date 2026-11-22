@@ -323,13 +323,11 @@ def epoch_for(ns, root: str) -> int:
     configuration input of every test that reads the clock; one that moved at every commit made those tests (and,
     through a clock read at import time, every test) unreusable from one commit to the next."""
     cache = getattr(ns, "det_cache", None)
-    if cache and ns.det_epoch == "auto":
-        # audit G-0159 (the rule of every language, DECISIONS 2026-11-19): under the cache the epoch is the virtual
-        # day, today 00:00 UTC; the day is in the key of every test that reads the clock, so a result is reused on
-        # the day it was recorded only, and the nightly --det-cache-real-clock check shows what the real clock changes
-        day = int(_real_time()) // 86400 * 86400
-        EPOCH_SOURCE.update(source="virtual day (today 00:00 UTC, --det-cache)", value=day)
-        return day * 1_000_000_000
+    # Review R-056 W10, founder decision 2026-11-21: the cache runs tests at the epoch uncached `--det` uses, and
+    # the promise wins over the virtual-day epoch. The virtual day (today 00:00 UTC, DECISIONS 2026-11-19) made a
+    # date-dependent test pass under `--det` and fail under `--det-cache`, or the reverse: outside a git checkout
+    # `datetime.date.today()` was 2025-01-01 uncached and today's date under the cache (MEASURED). A test the
+    # cache reports red that is green without it is the same damage as a green that was red.
     ns_epoch = epoch_ns(ns.det_epoch, root)
     if cache and ns.det_epoch == "auto" and EPOCH_SOURCE.get("source") == "git HEAD commit time":
         window = getattr(ns, "det_cache_epoch_window", 30.0)
