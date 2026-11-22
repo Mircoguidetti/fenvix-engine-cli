@@ -706,22 +706,32 @@ mod tests {
         let d = tempfile::tempdir().unwrap();
         let mut store = Store::load(d.path());
         let j = |v: Value| -> Vec<Value> { v.as_array().unwrap().clone() };
+        // a well-formed Node sensor declaration and every control it rests on, so `judge` passes the clean writer
+        // and the refusal below is the cross-file read, the thing this test is about
+        let header = serde_json::json!({
+            "sensor": "node-surface/1", "contract": crate::provable::SENSOR_CONTRACT,
+            "surface": crate::provable::surface_digest(), "runtime": "node22",
+        });
+        let controls: Vec<String> =
+            crate::provable::required_controls("node-surface/1").iter().map(|s| s.to_string()).collect();
         let input = RecordInput {
             captures: vec![
                 Capture {
+                    provable: Some(header.clone()),
                     label: "w".into(), file_id: "w.test.js".into(), ok: true,
                     tests: vec![CapturedTest { id: "w.test.js::w".into(), upto: 1, outcome: "passed".into(), ..Default::default() }],
                     items: vec![j(serde_json::json!(["write", "out.txt"]))],
                     ..Default::default()
                 },
                 Capture {
+                    provable: Some(header.clone()),
                     label: "r".into(), file_id: "r.test.js".into(), ok: true,
                     tests: vec![CapturedTest { id: "r.test.js::r".into(), upto: 2, outcome: "passed".into(), ..Default::default() }],
                     items: vec![j(serde_json::json!(["data", "out.txt", "f:1"])), j(serde_json::json!(["flag", "entropy", "crypto"]))],
                     ..Default::default()
                 },
             ],
-            run_id: "R".into(), runtime: "T".into(), urandom: true,
+            run_id: "R".into(), runtime: "T".into(), urandom: true, controls,
             ..Default::default()
         };
         let out = record_session(&mut store, &input);
