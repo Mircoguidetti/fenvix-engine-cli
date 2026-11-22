@@ -17,15 +17,32 @@ const fs = require('node:fs');
 const nodeCrypto = require('node:crypto');
 const path = require('node:path');
 const { STATE } = require('./state');
+const sites = require('./sites');
 const native = require('./native');
 
 const dig = (v) => native.digest(Buffer.from(typeof v === 'string' ? v : JSON.stringify(v) || String(v))).slice(0, 12);
 
 function rec(op, v, source = 'other') {
   if (STATE.testId === null || STATE.quietDepth > 0) return;
+  // A fact is a SYNCHRONOUS read of this process's or this machine's state (`process.pid`, `os.hostname`,
+  // `process.memoryUsage`, ...): the frame that asked for it is on the stack right now. If there is no user
+  // frame at all, nobody in the test asked, and crediting the test for it makes a parallel run
+  // irreproducible: MEASURED, a Jest worker emits Node's `_channel` deprecation warning and Node's warning
+  // PRINTER reads `process.pid` for its `(node:NNNN)` prefix, which landed inside whichever test was awaiting
+  // a timer -- 2 of 12 tests in a 2-worker run got an event their serial run did not have, so the parallel
+  // fingerprints stopped matching the serial ones (the `node (24, shard 0/4)` red of CI 44964230574).
+  // The same question, with the same answer, as the general rule's sensor asks in src/provable.js.
+  // This is deliberately only the facts path. An ASYNCHRONOUS observation (`fs.promises.access`, a stream)
+  // completes with nothing but internal frames on the stack although the test did ask for it at call time,
+  // and dropping those made `fenvix verify` answer IDENTICAL on two runs that saw different bytes -- caught
+  // by tests/attacks.py (node/test/verifier-inputs.test.js and node/test/verify-inputs-attacks.test.js).
+  let site;
+  STATE.quietDepth++;
+  try { site = sites.resolve(); } finally { STATE.quietDepth--; }
+  if (site === null || site === '<node>') return;
   let s;
   try { s = dig(v); } catch { s = '?'; }
-  STATE.record(source, op, s);
+  STATE.record(source, op, s, site);
 }
 
 function wrap(obj, name, op, patcher, source = 'other', view = (r) => r) {
