@@ -54,9 +54,20 @@ function workerCount(v) {
 }
 
 /**
- * The number of workers of a `--det` run: `--det-workers` if given, else the runner's own worker option when the
- * user passed one on the command line (Vitest `--maxWorkers`, `--fileParallelism`; Jest `--maxWorkers`/`-w`), else 1
- * (serial, the default). `runner.serial`: the user asked for serial (`--runInBand`, `--no-file-parallelism`).
+ * The number of workers of a `--det` run, in precedence order:
+ *   1. `--det-workers=N|N%|auto`, always;
+ *   2. the user's own serial request (`--runInBand`, `--no-file-parallelism`, `-w 1`, `--test-concurrency=1`): 1 lane;
+ *   3. the runner's own worker option when the user passed one on the command line (Vitest `--maxWorkers`,
+ *      `--fileParallelism`; Jest `--maxWorkers`/`-w`; node:test `--test-concurrency`);
+ *   4. otherwise this machine's CPUs (row JS-07, gap G-1044: `--det` is parallel by default).
+ *
+ * (4) is a default, not a promise that the run WILL be parallel: the caller still refuses parallel lanes for any
+ * configuration where placement could decide what a test observes (a worker shared by several files, browser mode,
+ * the vm pools, `isolate=false`, network recording, a custom Jest runner, `--detectOpenHandles`), and falls back to
+ * one lane. Founder rule: the refusal is the safe side, so it is never skipped to gain a default.
+ *
+ * `runner.serial`: the user asked for serial. `runner.workers === 1`: the user asked for one worker by number, which
+ * is the same request and must not be read as "said nothing".
  */
 function resolveWorkers(opts, runner) {
   if (opts.workers !== null && opts.workers !== undefined) {
@@ -65,8 +76,15 @@ function resolveWorkers(opts, runner) {
     return { workers: n, source: '--det-workers' };
   }
   if (runner.serial) return { workers: 1, source: runner.serialSource || 'runner option' };
+  if (runner.workers === 1) return { workers: 1, source: runner.source || 'runner option' };
   if (runner.workers && runner.workers > 1) return { workers: runner.workers, source: runner.source || 'runner option' };
-  return { workers: 1, source: 'default' };
+  return { workers: defaultWorkers(), source: "default (this machine's CPUs)" };
+}
+
+/** The default lane count of a `--det` run with no worker option: this machine's usable CPUs (>= 1). */
+function defaultWorkers() {
+  const n = workerCount('auto');
+  return n === null ? 1 : Math.max(1, n);
 }
 
 // -- state across runs -----------------------------------------------------------------------------------------------
@@ -664,6 +682,6 @@ function collect(root, dir, keysIn, plan, { shared, planned, write = true } = {}
 }
 
 module.exports = {
-  PLACEMENT_VARS, workerCount, resolveWorkers, makePlan, readReplay, writeRunPlan, enter, leave, markDone, installFootprint, skipDirs,
+  PLACEMENT_VARS, workerCount, defaultWorkers, resolveWorkers, makePlan, readReplay, writeRunPlan, enter, leave, markDone, installFootprint, skipDirs,
   carriedBefore, carriedAfter, collect, loadState, statePath, hazards,
 };

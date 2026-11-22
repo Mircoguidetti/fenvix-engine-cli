@@ -444,3 +444,52 @@ describe('node-test: adversarial (runner configuration, loaders, node:test featu
     assert.ok(r.summary.ran_files[F('b')], 'the new file ran');
   });
 });
+
+// P1 (docs/LIMITS.md section 10, row JS-07): a placement must never decide an outcome. The wrapper that re-runs
+// the files of a cross-worker hazard in one lane is src/parallel-rerun.js; the two tests that prove the fix for
+// each conflict class are in test/parallel-p041.test.js, which covers Vitest and Jest. This one covers node:test,
+// because node:test is the only runner whose file patterns and the re-run's explicit paths are a UNION: the first
+// version of the wrapper made node:test run each affected file TWICE and put every record in the merged trace
+// twice, with the second copy having seen the state the first one left. That is what this guards.
+describe('node-test: P1 one-lane re-run', () => {
+  const body = (n) => `
+const LOG = path.join(process.cwd(), 'shared.log');
+const lines = () => { try { return fs.readFileSync(LOG, 'utf8').trim().split('\\n'); } catch { return []; } };
+test('${n} block', () => {
+  fs.appendFileSync(LOG, '${n}-start\\n');
+  const sab = new Int32Array(new SharedArrayBuffer(4));
+  for (let i = 0; i < 60; i++) {
+    if (lines().some((l) => l.endsWith('-start') && !l.startsWith('${n}'))) break;
+    Atomics.wait(sab, 0, 0, 50);
+  }
+  fs.appendFileSync(LOG, '${n}-end\\n');
+  assert.deepEqual(lines().slice(-2), ['${n}-start', '${n}-end']);
+});
+`;
+
+  test('a shared path: the re-run is reported, and each affected test appears once', T, () => {
+    const dir = proj('p1-rerun', { ...tf('x', body('X')), ...tf('y', body('Y')) });
+    const log = path.join(dir, 'shared.log');
+    // the lanes are forced: once the first run has learnt the together-edge, every later plan puts the pair in one
+    // lane and the conflict cannot recur (docs/LIMITS.md P2), so a test that relies on the planner proves nothing
+    write(dir, { 'plan.json': JSON.stringify({ lanes: [[F('x')], [F('y')]] }) });
+
+    // the disease, with the wrapper switched off
+    fs.rmSync(log, { force: true });
+    const off = crun(R, dir, ['--det-plan=plan.json'], { cache: false, env: { DETJS_HAZARD_RERUN: '1' } });
+    assert.notEqual(off.status, 0, show(off));
+    assert.match(off.stderr, /CROSS-WORKER read-write .*shared\.log/, show(off));
+
+    // the fix
+    fs.rmSync(log, { force: true });
+    const on = crun(R, dir, ['--det-plan=plan.json'], { cache: false });
+    assert.equal(on.status, 0, show(on));
+    assert.match(on.stderr, /named by a cross-worker hazard run again in one lane/, show(on));
+    const t = trace(dir);
+    assert.deepEqual(t.order.slice().sort(), [`${F('x')}::X block`, `${F('y')}::Y block`], show(on));
+    assert.equal(t.order.length, new Set(t.order).size, `each test once, got ${JSON.stringify(t.order)}`);
+    for (const id of t.order) assert.equal(t.tests[id].outcome, 'passed', show(on));
+    assert.equal(t.header.meta.hazard_rerun.complete, true, show(on));
+    assert.ok(t.header.meta.hazard_rerun.first_run_failed.length > 0, show(on));
+  });
+});

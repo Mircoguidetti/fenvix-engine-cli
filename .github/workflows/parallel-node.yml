@@ -1,0 +1,185 @@
+name: parallel-node
+
+# Parallel with proof for the JavaScript runners (row JS-07), across Node versions.
+#
+# What this proves, per Node version:
+#   tests   -> node/test/parallel-p041.test.js: the plan is deterministic, parallel fingerprints equal the serial
+#              ones, cross-worker hazards are reported, a shared worker keeps the run serial.
+#   prove   -> real pinned projects: one lane vs N lanes, then `fenvix verify` on the two traces. The job FAILS
+#              unless the verdict is IDENTICAL (harness/node_parallel/prove.sh). A test whose outcome differs
+#              between serial and parallel is a blocker, not a note, so it must break the build.
+#   measure -> wall clock, serial vs 2/4/8 lanes, whole-command time, median of 3. Committed as an artifact only:
+#              a hosted runner's core count and noise are not a benchmark, they are a direction.
+#
+# Numbers in the artifact are MEASURED (a run on that runner). Nothing here is ESTIMATED.
+# The projects are pinned by commit, the same ones the exam uses (exam/projects.py).
+
+on:
+  workflow_dispatch:
+    inputs:
+      lanes:
+        description: "lanes for the proof run"
+        default: "4"
+      measure:
+        description: "also measure wall clock (slow)"
+        type: boolean
+        default: true
+  push:
+    branches: [claude/parallel-node]
+    paths:
+      - "node/src/parallel.js"
+      - "node/src/vitest/**"
+      - "node/src/jest/**"
+      - "node/src/nodetest/**"
+      - "node/test/parallel-p041.test.js"
+      - "harness/node_parallel/**"
+      - ".github/workflows/parallel-node.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: parallel-node-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONUNBUFFERED: "1"
+  # pinned with the exam (exam/rows_js.py): vitest 3, jest 29
+  EXAM_VITEST: "3"
+  EXAM_JEST: "29"
+
+jobs:
+  matrix:
+    name: node ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ["22", "24", "26"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: build and install the engine
+        run: |
+          pip install maturin
+          pip install -e . --no-build-isolation
+          echo "FENVIX_HOME=$GITHUB_WORKSPACE" >> "$GITHUB_ENV"
+
+      - name: the engine is installed and knows the JavaScript shell
+        run: |
+          fenvix version
+          fenvix version | grep -E '^detjs ' || { echo "detjs not available"; exit 1; }
+
+      - name: node shell dependencies
+        working-directory: node
+        run: |
+          npm install --no-audit --no-fund --ignore-scripts --legacy-peer-deps
+          # vitest >= 5 needs vite as a peer; without it every Vitest fixture fails to start
+          npm install --no-audit --no-fund --ignore-scripts --legacy-peer-deps --no-save vite
+          git checkout -- package.json package-lock.json || true
+
+      # The native core of the JavaScript shell. `pip install -e .` above builds the PYTHON extension
+      # (crates/detpy-py); the shell needs crates/detpy-node, which this builds and copies to
+      # node/detjs.<platform>-<arch>.node. Without it every test fails with "native core not found".
+      - name: build the detjs native core
+        working-directory: node
+        run: |
+          npm run build
+          ls -l detjs.*.node
+
+      - name: parallel regression tests (plan, fingerprints, hazards, refusals)
+        working-directory: node
+        run: node --test --test-concurrency=1 test/parallel-p041.test.js
+
+      - name: machine
+        run: |
+          echo "nproc=$(nproc)"
+          node -e "console.log('availableParallelism=' + require('node:os').availableParallelism())"
+
+      - name: check out and install the pinned projects
+        run: |
+          set -e
+          mkdir -p "$RUNNER_TEMP/proj"
+          clone() {
+            mkdir -p "$RUNNER_TEMP/proj/$1" && cd "$RUNNER_TEMP/proj/$1"
+            git init -q . && git remote add origin "$2"
+            git fetch -q --depth 1 origin "$3" && git checkout -q FETCH_HEAD
+          }
+          # ufo v1.5.4 (vitest), luxon 3.5.0 (jest), simple-statistics v7.9.3 (node:test)
+          clone ufo https://github.com/unjs/ufo 0f15ddc67f06c7abe16ef863d71a58b0c615b477
+          npm install --no-audit --no-fund --ignore-scripts --legacy-peer-deps
+          npm install --no-audit --no-fund --ignore-scripts --legacy-peer-deps -D "vitest@$EXAM_VITEST"
+          clone luxon https://github.com/moment/luxon a4044fe60eaae88d2397069eb43f018491a6a698
+          npm install --no-audit --no-fund --ignore-scripts --legacy-peer-deps
+          npm install --no-audit --no-fund --ignore-scripts --legacy-peer-deps -D "jest@$EXAM_JEST"
+          clone simple-statistics https://github.com/simple-statistics/simple-statistics f9d368f4878c0e99197296dce22f1add1ecf9601
+          npm install --no-audit --no-fund --ignore-scripts --legacy-peer-deps
+
+      # Each of these FAILS the job unless `fenvix verify` says IDENTICAL.
+      - name: proof - vitest threads (ufo)
+        run: harness/node_parallel/prove.sh "$RUNNER_TEMP/proj/ufo" vitest "${{ inputs.lanes || '4' }}" "$RUNNER_TEMP/proof" run
+
+      - name: proof - vitest forks (ufo)
+        run: harness/node_parallel/prove.sh "$RUNNER_TEMP/proj/ufo" vitest "${{ inputs.lanes || '4' }}" "$RUNNER_TEMP/proof-forks" run --pool=forks
+
+      - name: proof - jest workers (luxon)
+        run: harness/node_parallel/prove.sh "$RUNNER_TEMP/proj/luxon" jest "${{ inputs.lanes || '4' }}" "$RUNNER_TEMP/proof" --ci test
+
+      - name: proof - node:test (simple-statistics)
+        run: harness/node_parallel/prove.sh "$RUNNER_TEMP/proj/simple-statistics" node-test "${{ inputs.lanes || '4' }}" "$RUNNER_TEMP/proof" 'test/*.test.js'
+
+      - name: wall clock, serial vs lanes
+        if: ${{ inputs.measure != false }}
+        run: |
+          set -u
+          out="$RUNNER_TEMP/proof/scaling-node${{ matrix.node }}.csv"
+          echo "project,runner,config,rep,wall_s,rc" > "$out"
+          measure() {  # measure <dir> <runner> <name> <args...>
+            d="$1"; runner="$2"; name="$3"; shift 3
+            for n in 1 2 4 8; do
+              for r in 1 2 3; do
+                ( cd "$d" && rm -rf .detjs )
+                st=$(date +%s.%N)
+                ( cd "$d" && timeout 3600 fenvix node "$runner" --det --det-workers=$n "$@" >/dev/null 2>&1 )
+                rc=$?
+                en=$(date +%s.%N)
+                cfg=$([ "$n" = "1" ] && echo serial || echo "w$n")
+                echo "$name,$runner,$cfg,$r,$(echo "$en - $st" | bc),$rc" >> "$out"
+              done
+            done
+          }
+          measure "$RUNNER_TEMP/proj/ufo" vitest ufo run
+          measure "$RUNNER_TEMP/proj/luxon" jest luxon --ci test
+          measure "$RUNNER_TEMP/proj/simple-statistics" node-test simple-statistics 'test/*.test.js'
+          echo "=== medians (MEASURED on this runner, nproc=$(nproc)) ==="
+          python3 - "$out" <<'PY'
+          import csv, statistics as st, sys, collections
+          rows = list(csv.DictReader(open(sys.argv[1])))
+          g = collections.defaultdict(list)
+          for r in rows:
+              g[(r["project"], r["runner"], r["config"])].append(float(r["wall_s"]))
+          seen = []
+          for (p, runner, cfg), v in g.items():
+              seen.append((p, runner, cfg, st.median(v)))
+          base = {(p, r): m for p, r, c, m in seen if c == "serial"}
+          for p, runner, cfg, m in sorted(seen):
+              b = base.get((p, runner))
+              sp = f"{b / m:.2f}x" if b else "-"
+              print(f"{p:20} {runner:10} {cfg:7} {m:7.2f}s  speedup {sp}")
+          PY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: parallel-node-${{ matrix.node }}
+          path: ${{ runner.temp }}/proof*
+          if-no-files-found: ignore

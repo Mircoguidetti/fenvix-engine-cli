@@ -81,6 +81,15 @@ async function main(argv) {
     if (run.netMode === 'record') reasons.push('--det-record (one cassette per process)');
     if (customRunners.size) reasons.push(`custom Jest runner ${[...customRunners].join(',')} (it places the tests itself)`);
     if (rest.includes('--detectOpenHandles') || (shown && shown.globalConfig && shown.globalConfig.detectOpenHandles)) reasons.push('--detectOpenHandles runs in band');
+    // Jest 30 resolves modules with a native addon (@unrs/resolver), and in a worker it is loaded outside any
+    // test: the general rule then marks every test of the run NOT PROVEN (`meta.not_proven_outside_tests`).
+    // MEASURED, jest 30.5.2, two files, two runs: --det-workers=1 verifies IDENTICAL with `covered by Level 0: 2`;
+    // --det-workers=4 gives `NOT PROVEN 2 of 2, reasons: native=2`. Vitest is unaffected (IDENTICAL at 1 and 4).
+    // So the DEFAULT must not buy lanes with the proof -- we sell a proven run, and losing it by default is not a
+    // trade the user asked for. A user who asks for lanes explicitly (`--det-workers=N`, `-w N`) still gets them,
+    // and the refusal line below says what it costs. Lifting this needs @unrs/resolver audited by what it asks
+    // the system for (founder, 2026-11-21, route 1), not a whitelist on a look.
+    if (want.source === "default (this machine's CPUs)") reasons.push('Jest 30 loads its native module resolver in each worker outside any test, which makes every test NOT PROVEN; one lane keeps the proof (--det-workers=N to take the lanes instead)');
     if (reasons.length) {
       par.refused = reasons.join('; ');
       par.workers = 1;
@@ -204,7 +213,7 @@ async function main(argv) {
   // frame in the async stack traces the tests see (found on babel: stack-trace
   // inline snapshots); Jest's own bin does not await run() either.
   return new Promise((resolve, reject) => {
-    jestCli.run([...stripWorkerArgs(rest, par.workers > 1), ...extra], undefined).then(async () => {
+    jestCli.run([...stripWorkerArgs(rest), ...extra], undefined).then(async () => {
       collectParallel();
       if (pc) await pc.finish();
       finalize();
@@ -227,14 +236,19 @@ function jestWorkersArg(args) {
   return { workers, source, serial };
 }
 
-/** The runner arguments without Jest's own worker options (detjs sets them from the plan). */
-function stripWorkerArgs(args, parallelRun) {
-  if (!parallelRun) return args;
+/**
+ * The runner arguments without Jest's own worker options: detjs always sets its own, from the plan
+ * (`--maxWorkers=N`) or for one lane (`--runInBand`). Both must be stripped whichever way the run goes: leaving the
+ * user's `-w 1` in place next to detjs' `--runInBand` made Jest exit with "Both --runInBand and --maxWorkers were
+ * specified, only one is allowed" (so `fenvix node jest --det -w 1` ran nothing at all).
+ */
+function stripWorkerArgs(args) {
   const out = [];
   for (let i = 0; i < args.length; i++) {
     const a = args[i];
     if (/^(?:--maxWorkers|--max-workers|-w)=/.test(a)) continue;
     if (a === '--maxWorkers' || a === '--max-workers' || a === '-w') { i++; continue; }
+    if (a === '--runInBand' || a === '-i' || a === '--runInBand=true') continue;
     out.push(a);
   }
   return out;

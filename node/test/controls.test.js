@@ -237,7 +237,10 @@ for (const runner of RUNNERS) {
       fs.rmSync(log, { force: true });
       assertSomeFail(run(runner, dir, ['--maxWorkers=2']), 'baseline (2 workers)');
       fs.rmSync(log, { force: true });
-      const d = run(runner, dir, ['--det']);
+      // one lane, asked for explicitly: `--det` is parallel by default since G-1044. These two files share
+      // shared.log, so in lanes they interfere and the hazard is only reported after the run
+      // (docs/LIMITS.md, "Parallel: a first run with cross-file state"). The subject here is the isolation control.
+      const d = run(runner, dir, ['--det', '--det-workers=1']);
       assertAllPass(d, '--det');
       assert.equal(d.trace.header.meta.serial, true);
       assert.match(d.trace.header.meta.isolation, runner === 'vitest' ? /maxWorkers=1/ : /runInBand/);
@@ -249,16 +252,17 @@ for (const runner of RUNNERS) {
       fs.rmSync(marker, { force: true });
       assertSomeFail(run(runner, dir, ['--maxWorkers=2']), 'baseline (2 workers)');
       fs.rmSync(marker, { force: true });
-      const d = run(runner, dir, ['--det']);
+      // one lane: the subject is the order the files are scheduled in, not how they overlap in time
+      const d = run(runner, dir, ['--det', '--det-workers=1']);
       assertAllPass(d, '--det');
       assert.deepEqual(d.trace.header.meta.files, ['tests/a_writer' + (runner === 'vitest' ? '.test.mjs' : '.test.js'), 'tests/b_reader' + (runner === 'vitest' ? '.test.mjs' : '.test.js')]);
       // seeds give reproducible file orders; some seed puts the reader first
       const orders = new Set();
       for (let s = 1; s <= 6; s++) {
         fs.rmSync(marker, { force: true });
-        const a = run(runner, dir, ['--det', `--det-seed=${s}`]);
+        const a = run(runner, dir, ['--det', '--det-workers=1', `--det-seed=${s}`]);
         fs.rmSync(marker, { force: true });
-        const b = run(runner, dir, ['--det', `--det-seed=${s}`]);
+        const b = run(runner, dir, ['--det', '--det-workers=1', `--det-seed=${s}`]);
         assert.deepEqual(a.trace.header.meta.files, b.trace.header.meta.files, `seed ${s}`);
         assert.deepEqual(a.outcomes, b.outcomes, `seed ${s}`);
         orders.add(a.trace.header.meta.files.join(','));
