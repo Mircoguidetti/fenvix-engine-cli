@@ -1,0 +1,60 @@
+WRONG G1 installed dist module edited in place (same version) [serial] (vs plain: DIFFERS)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.007s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime b6bbeacb94170a07c83481ba6eea8cf8']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 2 result(s) with proof, ran 0, recorded 0 (check 0.017s, record 0.011s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime b6bbeacb94170a07c83481ba6eea8cf8']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+WRONG G1 installed dist module edited in place (same version) [n2] (vs plain: DIFFERS)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.003s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime b6bbeacb94170a07c83481ba6eea8cf8']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=0/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 2', 'reused 2 result(s) with proof, ran 0, recorded 0 (check 0.029s, record 0.001s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime b6bbeacb94170a07c83481ba6eea8cf8']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    G2 sitecustomize added [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.007s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime b6bbeacb94170a07c83481ba6eea8cf8']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 2 result(s) with proof, ran 0, recorded 0 (check 0.016s, record 0.007s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime b6bbeacb94170a07c83481ba6eea8cf8']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0
+OK    G2 sitecustomize added [n2] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.0s, record 0.0s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime b6bbeacb94170a07c83481ba6eea8cf8']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=0/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 2', 'reused 2 result(s) with proof, ran 0, recorded 0 (check 0.019s, record 0.001s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime b6bbeacb94170a07c83481ba6eea8cf8']
+  --det     ={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0
+  plain     ={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0
+OK    G3 sitecustomize edited [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.008s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime b6bbeacb94170a07c83481ba6eea8cf8']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 2 result(s) with proof, ran 0, recorded 0 (check 0.016s, record 0.006s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime b6bbeacb94170a07c83481ba6eea8cf8']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0
+OK    G3 sitecustomize edited [n2] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime b6bbeacb94170a07c83481ba6eea8cf8']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=0/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 2', 'reused 2 result(s) with proof, ran 0, recorded 0 (check 0.016s, record 0.001s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime b6bbeacb94170a07c83481ba6eea8cf8']
+  --det     ={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0
+  plain     ={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0
+OK    G4 .pth import line added [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.009s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime b6bbeacb94170a07c83481ba6eea8cf8']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.001s, record 0.008s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime fe1dec6d3fbd0ae5230c1b1b4c907e8a']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    G4 .pth import line added [n2] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime b6bbeacb94170a07c83481ba6eea8cf8']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.001s, record 0.033s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime fe1dec6d3fbd0ae5230c1b1b4c907e8a']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+WRONG G5 module run by an unchanged .pth edited [serial] (vs plain: DIFFERS)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.009s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime fe1dec6d3fbd0ae5230c1b1b4c907e8a']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 2 result(s) with proof, ran 0, recorded 0 (check 0.016s, record 0.007s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime fe1dec6d3fbd0ae5230c1b1b4c907e8a']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+WRONG G5 module run by an unchanged .pth edited [n2] (vs plain: DIFFERS)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.0s, record 0.001s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime fe1dec6d3fbd0ae5230c1b1b4c907e8a']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=0/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 2', 'reused 2 result(s) with proof, ran 0, recorded 0 (check 0.031s, record 0.001s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime fe1dec6d3fbd0ae5230c1b1b4c907e8a']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+WRONG G7 loose module in site-packages (no dist) edited [serial] (vs plain: DIFFERS)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.008s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime b6bbeacb94170a07c83481ba6eea8cf8']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 2 result(s) with proof, ran 0, recorded 0 (check 0.016s, record 0.006s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime b6bbeacb94170a07c83481ba6eea8cf8']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+WRONG G7 loose module in site-packages (no dist) edited [n2] (vs plain: DIFFERS)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.0s, record 0.0s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime b6bbeacb94170a07c83481ba6eea8cf8']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=0/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 2', 'reused 2 result(s) with proof, ran 0, recorded 0 (check 0.015s, record 0.001s); config 1a7468e22815d7bfb2f19e6c08a4a328, runtime b6bbeacb94170a07c83481ba6eea8cf8']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1

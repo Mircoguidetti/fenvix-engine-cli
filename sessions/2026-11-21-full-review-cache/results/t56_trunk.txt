@@ -1,0 +1,994 @@
+bringing up nodes...
+bringing up nodes...
+
+FF..F.......F...FF..F.FFFFFF.FFFF                                        [100%]
+=================================== FAILURES ===================================
+___ test_w1_a_conftest_in_a_directory_without_test_files[tests/a/sub-serial] ___
+[gw3] linux -- Python 3.13.18 /tmp/claude-0/vtrunk/bin/python
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw3/test_w1_a_conftest_in_a_direct0')
+par = (), where = 'tests/a/sub'
+
+    @pytest.mark.parametrize("par", [(), ("-n", "2"), ("-n", "1")], ids=["serial", "n2", "n1"])
+    @pytest.mark.parametrize("where", ["tests/c", "tests/0", "tests/a/sub"])
+    def test_w1_a_conftest_in_a_directory_without_test_files(tmp_path, par, where):
+>       _check(tmp_path, {**HELPER, f"{where}/data.txt": "x"}, {f"{where}/conftest.py": POISON_AT_IMPORT}, par)
+
+tests/test_review_r056_pycache.py:90: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw3/test_w1_a_conftest_in_a_direct0')
+before = {'helper.py': "STATE = {'mode': 'good'}\n\ndef poison(f=None):\n    STATE['mode'] = 'bad'\n    return f\n\nclass Poiso...ef test_victim():\n    assert helper.STATE['mode'] == 'good'\n", 'tests/z/test_z.py': 'def test_z():\n    pass\n', ...}
+after = {'tests/a/sub/conftest.py': "import helper\nhelper.STATE['mode'] = 'bad'\n"}
+par = (), ctx1 = {}, ctx2 = {}, between = None
+
+    def _check(root, before, after=None, par=(), ctx1=None, ctx2=None, between=None):
+        """Cold cached run (``ctx1``), change (``after`` files, ``between(root)``), warm cached run (``ctx2``); uncached
+        --det under ``ctx2`` must fail the victim, and so must the cached run."""
+        ctx1 = ctx1 or {}
+        ctx2 = ctx2 if ctx2 is not None else ctx1
+        cache = f"--det-cache={root / '.c'}"
+        _write(root, {**INI, **before})
+        p1, o1 = _pytest(root, "--det", cache, *par, **ctx1)
+        assert o1.get(VICTIM) == "passed", p1.stdout[-1500:]
+        if after:
+            _write(root, after)
+        if between:
+            between(root)
+        p, o = _pytest(root, "--det", cache, *par, **ctx2)
+        det, do = _pytest(root, "--det", *par, **ctx2)
+        assert det.returncode == 1 and do.get(VICTIM) == "failed", det.stdout[-1500:]
+>       assert p.returncode == 1 and o.get(VICTIM) == "failed", (
+            f"--det-cache reports {o} (exit {p.returncode}); uncached --det fails {VICTIM}:\n{p.stdout[-2000:]}")
+E       AssertionError: --det-cache reports {'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed', 'tests/z/test_z.py::test_z': 'passed'} (exit 0); uncached --det fails tests/b/test_b.py::test_victim:
+E         ...
+E         ==================================== PASSES ====================================
+E         =============================== detpy (Level 0) ================================
+E         trace: /tmp/pytest-of-root/pytest-156/popen-gw3/test_w1_a_conftest_in_a_direct0/.detpy/trace.jsonl  order digest: 6fd2806bc97e42aa246897b2adcc9958  seed: 0
+E         ============================ detpy cache with proof ============================
+E         reused 3 result(s) with proof, ran 0, recorded 0 (check 0.018s, record 0.009s); config 682e80e2d281787fd8d515b678e823ab, runtime d1a03f08f31682aa974925d2704bbdf7
+E         receipts: /tmp/pytest-of-root/pytest-156/popen-gw3/test_w1_a_conftest_in_a_direct0/.c/receipts.jsonl
+E         =========================== short test summary info ============================
+E         PASSED tests/a/test_a.py::test_a
+E         PASSED tests/b/test_b.py::test_victim
+E         PASSED tests/z/test_z.py::test_z
+E         3 passed in 0.05s
+E         
+E       assert (0 == 1)
+E        +  where 0 = CompletedProcess(args=['/tmp/claude-0/vtrunk/bin/python', '-m', 'pytest', '-q', '-rA', '-s', '-p', 'no:cacheprovider',...a.py::test_a\nPASSED tests/b/test_b.py::test_victim\nPASSED tests/z/test_z.py::test_z\n3 passed in 0.05s\n', stderr='').returncode
+
+tests/test_review_r056_pycache.py:79: AssertionError
+_____ test_w1_a_conftest_in_a_directory_without_test_files[tests/c-serial] _____
+[gw0] linux -- Python 3.13.18 /tmp/claude-0/vtrunk/bin/python
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw0/test_w1_a_conftest_in_a_direct0')
+par = (), where = 'tests/c'
+
+    @pytest.mark.parametrize("par", [(), ("-n", "2"), ("-n", "1")], ids=["serial", "n2", "n1"])
+    @pytest.mark.parametrize("where", ["tests/c", "tests/0", "tests/a/sub"])
+    def test_w1_a_conftest_in_a_directory_without_test_files(tmp_path, par, where):
+>       _check(tmp_path, {**HELPER, f"{where}/data.txt": "x"}, {f"{where}/conftest.py": POISON_AT_IMPORT}, par)
+
+tests/test_review_r056_pycache.py:90: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw0/test_w1_a_conftest_in_a_direct0')
+before = {'helper.py': "STATE = {'mode': 'good'}\n\ndef poison(f=None):\n    STATE['mode'] = 'bad'\n    return f\n\nclass Poiso...ef test_victim():\n    assert helper.STATE['mode'] == 'good'\n", 'tests/z/test_z.py': 'def test_z():\n    pass\n', ...}
+after = {'tests/c/conftest.py': "import helper\nhelper.STATE['mode'] = 'bad'\n"}
+par = (), ctx1 = {}, ctx2 = {}, between = None
+
+    def _check(root, before, after=None, par=(), ctx1=None, ctx2=None, between=None):
+        """Cold cached run (``ctx1``), change (``after`` files, ``between(root)``), warm cached run (``ctx2``); uncached
+        --det under ``ctx2`` must fail the victim, and so must the cached run."""
+        ctx1 = ctx1 or {}
+        ctx2 = ctx2 if ctx2 is not None else ctx1
+        cache = f"--det-cache={root / '.c'}"
+        _write(root, {**INI, **before})
+        p1, o1 = _pytest(root, "--det", cache, *par, **ctx1)
+        assert o1.get(VICTIM) == "passed", p1.stdout[-1500:]
+        if after:
+            _write(root, after)
+        if between:
+            between(root)
+        p, o = _pytest(root, "--det", cache, *par, **ctx2)
+        det, do = _pytest(root, "--det", *par, **ctx2)
+        assert det.returncode == 1 and do.get(VICTIM) == "failed", det.stdout[-1500:]
+>       assert p.returncode == 1 and o.get(VICTIM) == "failed", (
+            f"--det-cache reports {o} (exit {p.returncode}); uncached --det fails {VICTIM}:\n{p.stdout[-2000:]}")
+E       AssertionError: --det-cache reports {'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed', 'tests/z/test_z.py::test_z': 'passed'} (exit 0); uncached --det fails tests/b/test_b.py::test_victim:
+E         ...
+E         ==================================== PASSES ====================================
+E         =============================== detpy (Level 0) ================================
+E         trace: /tmp/pytest-of-root/pytest-156/popen-gw0/test_w1_a_conftest_in_a_direct0/.detpy/trace.jsonl  order digest: 6fd2806bc97e42aa246897b2adcc9958  seed: 0
+E         ============================ detpy cache with proof ============================
+E         reused 3 result(s) with proof, ran 0, recorded 0 (check 0.018s, record 0.01s); config 682e80e2d281787fd8d515b678e823ab, runtime d1a03f08f31682aa974925d2704bbdf7
+E         receipts: /tmp/pytest-of-root/pytest-156/popen-gw0/test_w1_a_conftest_in_a_direct0/.c/receipts.jsonl
+E         =========================== short test summary info ============================
+E         PASSED tests/a/test_a.py::test_a
+E         PASSED tests/b/test_b.py::test_victim
+E         PASSED tests/z/test_z.py::test_z
+E         3 passed in 0.05s
+E         
+E       assert (0 == 1)
+E        +  where 0 = CompletedProcess(args=['/tmp/claude-0/vtrunk/bin/python', '-m', 'pytest', '-q', '-rA', '-s', '-p', 'no:cacheprovider',...a.py::test_a\nPASSED tests/b/test_b.py::test_victim\nPASSED tests/z/test_z.py::test_z\n3 passed in 0.05s\n', stderr='').returncode
+
+tests/test_review_r056_pycache.py:79: AssertionError
+_____ test_w1_a_conftest_in_a_directory_without_test_files[tests/0-serial] _____
+[gw1] linux -- Python 3.13.18 /tmp/claude-0/vtrunk/bin/python
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw1/test_w1_a_conftest_in_a_direct1')
+par = (), where = 'tests/0'
+
+    @pytest.mark.parametrize("par", [(), ("-n", "2"), ("-n", "1")], ids=["serial", "n2", "n1"])
+    @pytest.mark.parametrize("where", ["tests/c", "tests/0", "tests/a/sub"])
+    def test_w1_a_conftest_in_a_directory_without_test_files(tmp_path, par, where):
+>       _check(tmp_path, {**HELPER, f"{where}/data.txt": "x"}, {f"{where}/conftest.py": POISON_AT_IMPORT}, par)
+
+tests/test_review_r056_pycache.py:90: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw1/test_w1_a_conftest_in_a_direct1')
+before = {'helper.py': "STATE = {'mode': 'good'}\n\ndef poison(f=None):\n    STATE['mode'] = 'bad'\n    return f\n\nclass Poiso...ef test_victim():\n    assert helper.STATE['mode'] == 'good'\n", 'tests/z/test_z.py': 'def test_z():\n    pass\n', ...}
+after = {'tests/0/conftest.py': "import helper\nhelper.STATE['mode'] = 'bad'\n"}
+par = (), ctx1 = {}, ctx2 = {}, between = None
+
+    def _check(root, before, after=None, par=(), ctx1=None, ctx2=None, between=None):
+        """Cold cached run (``ctx1``), change (``after`` files, ``between(root)``), warm cached run (``ctx2``); uncached
+        --det under ``ctx2`` must fail the victim, and so must the cached run."""
+        ctx1 = ctx1 or {}
+        ctx2 = ctx2 if ctx2 is not None else ctx1
+        cache = f"--det-cache={root / '.c'}"
+        _write(root, {**INI, **before})
+        p1, o1 = _pytest(root, "--det", cache, *par, **ctx1)
+        assert o1.get(VICTIM) == "passed", p1.stdout[-1500:]
+        if after:
+            _write(root, after)
+        if between:
+            between(root)
+        p, o = _pytest(root, "--det", cache, *par, **ctx2)
+        det, do = _pytest(root, "--det", *par, **ctx2)
+        assert det.returncode == 1 and do.get(VICTIM) == "failed", det.stdout[-1500:]
+>       assert p.returncode == 1 and o.get(VICTIM) == "failed", (
+            f"--det-cache reports {o} (exit {p.returncode}); uncached --det fails {VICTIM}:\n{p.stdout[-2000:]}")
+E       AssertionError: --det-cache reports {'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed', 'tests/z/test_z.py::test_z': 'passed'} (exit 0); uncached --det fails tests/b/test_b.py::test_victim:
+E         ...
+E         ==================================== PASSES ====================================
+E         =============================== detpy (Level 0) ================================
+E         trace: /tmp/pytest-of-root/pytest-156/popen-gw1/test_w1_a_conftest_in_a_direct1/.detpy/trace.jsonl  order digest: 6fd2806bc97e42aa246897b2adcc9958  seed: 0
+E         ============================ detpy cache with proof ============================
+E         reused 3 result(s) with proof, ran 0, recorded 0 (check 0.015s, record 0.007s); config 682e80e2d281787fd8d515b678e823ab, runtime d1a03f08f31682aa974925d2704bbdf7
+E         receipts: /tmp/pytest-of-root/pytest-156/popen-gw1/test_w1_a_conftest_in_a_direct1/.c/receipts.jsonl
+E         =========================== short test summary info ============================
+E         PASSED tests/a/test_a.py::test_a
+E         PASSED tests/b/test_b.py::test_victim
+E         PASSED tests/z/test_z.py::test_z
+E         3 passed in 0.04s
+E         
+E       assert (0 == 1)
+E        +  where 0 = CompletedProcess(args=['/tmp/claude-0/vtrunk/bin/python', '-m', 'pytest', '-q', '-rA', '-s', '-p', 'no:cacheprovider',...a.py::test_a\nPASSED tests/b/test_b.py::test_victim\nPASSED tests/z/test_z.py::test_z\n3 passed in 0.04s\n', stderr='').returncode
+
+tests/test_review_r056_pycache.py:79: AssertionError
+_ test_w3_file_size_read_through_posix[posix.stat('data.txt').st_size == 4-serial] _
+[gw2] linux -- Python 3.13.18 /tmp/claude-0/vtrunk/bin/python
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw2/test_w3_file_size_read_through0')
+par = (), call = "posix.stat('data.txt').st_size == 4"
+
+    @pytest.mark.parametrize("par", [(), ("-n", "2")], ids=["serial", "n2"])
+    @pytest.mark.parametrize("call", ["posix.stat('data.txt').st_size == 4", "posix.lstat('data.txt').st_size == 4"])
+    def test_w3_file_size_read_through_posix(tmp_path, par, call):
+>       _check(tmp_path, {"data.txt": "abcd", **_single(f"assert {call}")}, {"data.txt": "abcdefgh"}, par)
+
+tests/test_review_r056_pycache.py:122: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw2/test_w3_file_size_read_through0')
+before = {'data.txt': 'abcd', 'tests/a/test_a.py': 'def test_a():\n    pass\n', 'tests/b/test_b.py': "import os, posix\n\ndef test_victim():\n    assert posix.stat('data.txt').st_size == 4\n"}
+after = {'data.txt': 'abcdefgh'}, par = (), ctx1 = {}, ctx2 = {}, between = None
+
+    def _check(root, before, after=None, par=(), ctx1=None, ctx2=None, between=None):
+        """Cold cached run (``ctx1``), change (``after`` files, ``between(root)``), warm cached run (``ctx2``); uncached
+        --det under ``ctx2`` must fail the victim, and so must the cached run."""
+        ctx1 = ctx1 or {}
+        ctx2 = ctx2 if ctx2 is not None else ctx1
+        cache = f"--det-cache={root / '.c'}"
+        _write(root, {**INI, **before})
+        p1, o1 = _pytest(root, "--det", cache, *par, **ctx1)
+        assert o1.get(VICTIM) == "passed", p1.stdout[-1500:]
+        if after:
+            _write(root, after)
+        if between:
+            between(root)
+        p, o = _pytest(root, "--det", cache, *par, **ctx2)
+        det, do = _pytest(root, "--det", *par, **ctx2)
+        assert det.returncode == 1 and do.get(VICTIM) == "failed", det.stdout[-1500:]
+>       assert p.returncode == 1 and o.get(VICTIM) == "failed", (
+            f"--det-cache reports {o} (exit {p.returncode}); uncached --det fails {VICTIM}:\n{p.stdout[-2000:]}")
+E       AssertionError: --det-cache reports {'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} (exit 0); uncached --det fails tests/b/test_b.py::test_victim:
+E         ..
+E         ==================================== PASSES ====================================
+E         =============================== detpy (Level 0) ================================
+E         trace: /tmp/pytest-of-root/pytest-156/popen-gw2/test_w3_file_size_read_through0/.detpy/trace.jsonl  order digest: d2a4c4bb5bfac9aef7402c4b6424b4ae  seed: 0
+E         ============================ detpy cache with proof ============================
+E         reused 2 result(s) with proof, ran 0, recorded 0 (check 0.015s, record 0.006s); config 682e80e2d281787fd8d515b678e823ab, runtime d1a03f08f31682aa974925d2704bbdf7
+E         receipts: /tmp/pytest-of-root/pytest-156/popen-gw2/test_w3_file_size_read_through0/.c/receipts.jsonl
+E         =========================== short test summary info ============================
+E         PASSED tests/a/test_a.py::test_a
+E         PASSED tests/b/test_b.py::test_victim
+E         2 passed in 0.03s
+E         
+E       assert (0 == 1)
+E        +  where 0 = CompletedProcess(args=['/tmp/claude-0/vtrunk/bin/python', '-m', 'pytest', '-q', '-rA', '-s', '-p', 'no:cacheprovider',...============\nPASSED tests/a/test_a.py::test_a\nPASSED tests/b/test_b.py::test_victim\n2 passed in 0.03s\n', stderr='').returncode
+
+tests/test_review_r056_pycache.py:79: AssertionError
+___________ test_w3_file_existence_read_through_posix_access[serial] ___________
+[gw2] linux -- Python 3.13.18 /tmp/claude-0/vtrunk/bin/python
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw2/test_w3_file_existence_read_th0')
+par = ()
+
+    @pytest.mark.parametrize("par", [(), ("-n", "2")], ids=["serial", "n2"])
+    def test_w3_file_existence_read_through_posix_access(tmp_path, par):
+>       _check(tmp_path, {"marker": "x", **_single("assert posix.access('marker', posix.F_OK)")}, {"marker": None}, par)
+
+tests/test_review_r056_pycache.py:127: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw2/test_w3_file_existence_read_th0')
+before = {'marker': 'x', 'tests/a/test_a.py': 'def test_a():\n    pass\n', 'tests/b/test_b.py': "import os, posix\n\ndef test_victim():\n    assert posix.access('marker', posix.F_OK)\n"}
+after = {'marker': None}, par = (), ctx1 = {}, ctx2 = {}, between = None
+
+    def _check(root, before, after=None, par=(), ctx1=None, ctx2=None, between=None):
+        """Cold cached run (``ctx1``), change (``after`` files, ``between(root)``), warm cached run (``ctx2``); uncached
+        --det under ``ctx2`` must fail the victim, and so must the cached run."""
+        ctx1 = ctx1 or {}
+        ctx2 = ctx2 if ctx2 is not None else ctx1
+        cache = f"--det-cache={root / '.c'}"
+        _write(root, {**INI, **before})
+        p1, o1 = _pytest(root, "--det", cache, *par, **ctx1)
+        assert o1.get(VICTIM) == "passed", p1.stdout[-1500:]
+        if after:
+            _write(root, after)
+        if between:
+            between(root)
+        p, o = _pytest(root, "--det", cache, *par, **ctx2)
+        det, do = _pytest(root, "--det", *par, **ctx2)
+        assert det.returncode == 1 and do.get(VICTIM) == "failed", det.stdout[-1500:]
+>       assert p.returncode == 1 and o.get(VICTIM) == "failed", (
+            f"--det-cache reports {o} (exit {p.returncode}); uncached --det fails {VICTIM}:\n{p.stdout[-2000:]}")
+E       AssertionError: --det-cache reports {'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} (exit 0); uncached --det fails tests/b/test_b.py::test_victim:
+E         ..
+E         ==================================== PASSES ====================================
+E         =============================== detpy (Level 0) ================================
+E         trace: /tmp/pytest-of-root/pytest-156/popen-gw2/test_w3_file_existence_read_th0/.detpy/trace.jsonl  order digest: d2a4c4bb5bfac9aef7402c4b6424b4ae  seed: 0
+E         ============================ detpy cache with proof ============================
+E         reused 2 result(s) with proof, ran 0, recorded 0 (check 0.014s, record 0.006s); config 682e80e2d281787fd8d515b678e823ab, runtime d1a03f08f31682aa974925d2704bbdf7
+E         receipts: /tmp/pytest-of-root/pytest-156/popen-gw2/test_w3_file_existence_read_th0/.c/receipts.jsonl
+E         =========================== short test summary info ============================
+E         PASSED tests/a/test_a.py::test_a
+E         PASSED tests/b/test_b.py::test_victim
+E         2 passed in 0.03s
+E         
+E       assert (0 == 1)
+E        +  where 0 = CompletedProcess(args=['/tmp/claude-0/vtrunk/bin/python', '-m', 'pytest', '-q', '-rA', '-s', '-p', 'no:cacheprovider',...============\nPASSED tests/a/test_a.py::test_a\nPASSED tests/b/test_b.py::test_victim\n2 passed in 0.03s\n', stderr='').returncode
+
+tests/test_review_r056_pycache.py:79: AssertionError
+_ test_w3_file_size_read_through_posix[posix.lstat('data.txt').st_size == 4-serial] _
+[gw0] linux -- Python 3.13.18 /tmp/claude-0/vtrunk/bin/python
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw0/test_w3_file_size_read_through0')
+par = (), call = "posix.lstat('data.txt').st_size == 4"
+
+    @pytest.mark.parametrize("par", [(), ("-n", "2")], ids=["serial", "n2"])
+    @pytest.mark.parametrize("call", ["posix.stat('data.txt').st_size == 4", "posix.lstat('data.txt').st_size == 4"])
+    def test_w3_file_size_read_through_posix(tmp_path, par, call):
+>       _check(tmp_path, {"data.txt": "abcd", **_single(f"assert {call}")}, {"data.txt": "abcdefgh"}, par)
+
+tests/test_review_r056_pycache.py:122: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw0/test_w3_file_size_read_through0')
+before = {'data.txt': 'abcd', 'tests/a/test_a.py': 'def test_a():\n    pass\n', 'tests/b/test_b.py': "import os, posix\n\ndef test_victim():\n    assert posix.lstat('data.txt').st_size == 4\n"}
+after = {'data.txt': 'abcdefgh'}, par = (), ctx1 = {}, ctx2 = {}, between = None
+
+    def _check(root, before, after=None, par=(), ctx1=None, ctx2=None, between=None):
+        """Cold cached run (``ctx1``), change (``after`` files, ``between(root)``), warm cached run (``ctx2``); uncached
+        --det under ``ctx2`` must fail the victim, and so must the cached run."""
+        ctx1 = ctx1 or {}
+        ctx2 = ctx2 if ctx2 is not None else ctx1
+        cache = f"--det-cache={root / '.c'}"
+        _write(root, {**INI, **before})
+        p1, o1 = _pytest(root, "--det", cache, *par, **ctx1)
+        assert o1.get(VICTIM) == "passed", p1.stdout[-1500:]
+        if after:
+            _write(root, after)
+        if between:
+            between(root)
+        p, o = _pytest(root, "--det", cache, *par, **ctx2)
+        det, do = _pytest(root, "--det", *par, **ctx2)
+        assert det.returncode == 1 and do.get(VICTIM) == "failed", det.stdout[-1500:]
+>       assert p.returncode == 1 and o.get(VICTIM) == "failed", (
+            f"--det-cache reports {o} (exit {p.returncode}); uncached --det fails {VICTIM}:\n{p.stdout[-2000:]}")
+E       AssertionError: --det-cache reports {'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} (exit 0); uncached --det fails tests/b/test_b.py::test_victim:
+E         ..
+E         ==================================== PASSES ====================================
+E         =============================== detpy (Level 0) ================================
+E         trace: /tmp/pytest-of-root/pytest-156/popen-gw0/test_w3_file_size_read_through0/.detpy/trace.jsonl  order digest: d2a4c4bb5bfac9aef7402c4b6424b4ae  seed: 0
+E         ============================ detpy cache with proof ============================
+E         reused 2 result(s) with proof, ran 0, recorded 0 (check 0.032s, record 0.015s); config 682e80e2d281787fd8d515b678e823ab, runtime d1a03f08f31682aa974925d2704bbdf7
+E         receipts: /tmp/pytest-of-root/pytest-156/popen-gw0/test_w3_file_size_read_through0/.c/receipts.jsonl
+E         =========================== short test summary info ============================
+E         PASSED tests/a/test_a.py::test_a
+E         PASSED tests/b/test_b.py::test_victim
+E         2 passed in 0.07s
+E         
+E       assert (0 == 1)
+E        +  where 0 = CompletedProcess(args=['/tmp/claude-0/vtrunk/bin/python', '-m', 'pytest', '-q', '-rA', '-s', '-p', 'no:cacheprovider',...============\nPASSED tests/a/test_a.py::test_a\nPASSED tests/b/test_b.py::test_victim\n2 passed in 0.07s\n', stderr='').returncode
+
+tests/test_review_r056_pycache.py:79: AssertionError
+__________________ test_w5_kernel_release[platform.release()] __________________
+[gw0] linux -- Python 3.13.18 /tmp/claude-0/vtrunk/bin/python
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw0/test_w5_kernel_release_platfor0')
+call = 'platform.release()'
+
+    @pytest.mark.skipif(not shutil.which("setarch"), reason="needs setarch")
+    @pytest.mark.parametrize("call", ["platform.release()", "posix.uname().release"])
+    def test_w5_kernel_release(tmp_path, call):
+>       _check(tmp_path, _single(f"assert not {call}.startswith('2.6')", "import platform, posix"),
+               ctx1={}, ctx2={"prefix": ("setarch", "x86_64", "--uname-2.6")})
+
+tests/test_review_r056_pycache.py:143: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw0/test_w5_kernel_release_platfor0')
+before = {'tests/a/test_a.py': 'def test_a():\n    pass\n', 'tests/b/test_b.py': "import platform, posix\n\ndef test_victim():\n    assert not platform.release().startswith('2.6')\n"}
+after = None, par = (), ctx1 = {}
+ctx2 = {'prefix': ('setarch', 'x86_64', '--uname-2.6')}, between = None
+
+    def _check(root, before, after=None, par=(), ctx1=None, ctx2=None, between=None):
+        """Cold cached run (``ctx1``), change (``after`` files, ``between(root)``), warm cached run (``ctx2``); uncached
+        --det under ``ctx2`` must fail the victim, and so must the cached run."""
+        ctx1 = ctx1 or {}
+        ctx2 = ctx2 if ctx2 is not None else ctx1
+        cache = f"--det-cache={root / '.c'}"
+        _write(root, {**INI, **before})
+        p1, o1 = _pytest(root, "--det", cache, *par, **ctx1)
+        assert o1.get(VICTIM) == "passed", p1.stdout[-1500:]
+        if after:
+            _write(root, after)
+        if between:
+            between(root)
+        p, o = _pytest(root, "--det", cache, *par, **ctx2)
+        det, do = _pytest(root, "--det", *par, **ctx2)
+        assert det.returncode == 1 and do.get(VICTIM) == "failed", det.stdout[-1500:]
+>       assert p.returncode == 1 and o.get(VICTIM) == "failed", (
+            f"--det-cache reports {o} (exit {p.returncode}); uncached --det fails {VICTIM}:\n{p.stdout[-2000:]}")
+E       AssertionError: --det-cache reports {'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} (exit 0); uncached --det fails tests/b/test_b.py::test_victim:
+E         ..
+E         ==================================== PASSES ====================================
+E         =============================== detpy (Level 0) ================================
+E         trace: /tmp/pytest-of-root/pytest-156/popen-gw0/test_w5_kernel_release_platfor0/.detpy/trace.jsonl  order digest: d2a4c4bb5bfac9aef7402c4b6424b4ae  seed: 0
+E         ============================ detpy cache with proof ============================
+E         reused 2 result(s) with proof, ran 0, recorded 0 (check 0.019s, record 0.01s); config 682e80e2d281787fd8d515b678e823ab, runtime d1a03f08f31682aa974925d2704bbdf7
+E         receipts: /tmp/pytest-of-root/pytest-156/popen-gw0/test_w5_kernel_release_platfor0/.c/receipts.jsonl
+E         =========================== short test summary info ============================
+E         PASSED tests/a/test_a.py::test_a
+E         PASSED tests/b/test_b.py::test_victim
+E         2 passed in 0.05s
+E         
+E       assert (0 == 1)
+E        +  where 0 = CompletedProcess(args=['setarch', 'x86_64', '--uname-2.6', '/tmp/claude-0/vtrunk/bin/python', '-m', 'pytest', '-q', '-...============\nPASSED tests/a/test_a.py::test_a\nPASSED tests/b/test_b.py::test_victim\n2 passed in 0.05s\n', stderr='').returncode
+
+tests/test_review_r056_pycache.py:79: AssertionError
+__________________ test_w3_file_mtime_read_through_posix_stat __________________
+[gw1] linux -- Python 3.13.18 /tmp/claude-0/vtrunk/bin/python
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw1/test_w3_file_mtime_read_throug0')
+
+    def test_w3_file_mtime_read_through_posix_stat(tmp_path):
+>       _check(tmp_path, {"data.txt": "abcd", **_single("assert posix.stat('data.txt').st_mtime < 2000000000")},
+               between=lambda root: os.utime(root / "data.txt", (2200000000, 2200000000)))
+
+tests/test_review_r056_pycache.py:131: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw1/test_w3_file_mtime_read_throug0')
+before = {'data.txt': 'abcd', 'tests/a/test_a.py': 'def test_a():\n    pass\n', 'tests/b/test_b.py': "import os, posix\n\ndef test_victim():\n    assert posix.stat('data.txt').st_mtime < 2000000000\n"}
+after = None, par = (), ctx1 = {}, ctx2 = {}
+between = <function test_w3_file_mtime_read_through_posix_stat.<locals>.<lambda> at 0x7fee243e5940>
+
+    def _check(root, before, after=None, par=(), ctx1=None, ctx2=None, between=None):
+        """Cold cached run (``ctx1``), change (``after`` files, ``between(root)``), warm cached run (``ctx2``); uncached
+        --det under ``ctx2`` must fail the victim, and so must the cached run."""
+        ctx1 = ctx1 or {}
+        ctx2 = ctx2 if ctx2 is not None else ctx1
+        cache = f"--det-cache={root / '.c'}"
+        _write(root, {**INI, **before})
+        p1, o1 = _pytest(root, "--det", cache, *par, **ctx1)
+        assert o1.get(VICTIM) == "passed", p1.stdout[-1500:]
+        if after:
+            _write(root, after)
+        if between:
+            between(root)
+        p, o = _pytest(root, "--det", cache, *par, **ctx2)
+        det, do = _pytest(root, "--det", *par, **ctx2)
+        assert det.returncode == 1 and do.get(VICTIM) == "failed", det.stdout[-1500:]
+>       assert p.returncode == 1 and o.get(VICTIM) == "failed", (
+            f"--det-cache reports {o} (exit {p.returncode}); uncached --det fails {VICTIM}:\n{p.stdout[-2000:]}")
+E       AssertionError: --det-cache reports {'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} (exit 0); uncached --det fails tests/b/test_b.py::test_victim:
+E         ..
+E         ==================================== PASSES ====================================
+E         =============================== detpy (Level 0) ================================
+E         trace: /tmp/pytest-of-root/pytest-156/popen-gw1/test_w3_file_mtime_read_throug0/.detpy/trace.jsonl  order digest: d2a4c4bb5bfac9aef7402c4b6424b4ae  seed: 0
+E         ============================ detpy cache with proof ============================
+E         reused 2 result(s) with proof, ran 0, recorded 0 (check 0.018s, record 0.01s); config 682e80e2d281787fd8d515b678e823ab, runtime d1a03f08f31682aa974925d2704bbdf7
+E         receipts: /tmp/pytest-of-root/pytest-156/popen-gw1/test_w3_file_mtime_read_throug0/.c/receipts.jsonl
+E         =========================== short test summary info ============================
+E         PASSED tests/a/test_a.py::test_a
+E         PASSED tests/b/test_b.py::test_victim
+E         2 passed in 0.05s
+E         
+E       assert (0 == 1)
+E        +  where 0 = CompletedProcess(args=['/tmp/claude-0/vtrunk/bin/python', '-m', 'pytest', '-q', '-rA', '-s', '-p', 'no:cacheprovider',...============\nPASSED tests/a/test_a.py::test_a\nPASSED tests/b/test_b.py::test_victim\n2 passed in 0.05s\n', stderr='').returncode
+
+tests/test_review_r056_pycache.py:79: AssertionError
+____________________ test_w4_pwd_read_through_posix_environ ____________________
+[gw3] linux -- Python 3.13.18 /tmp/claude-0/vtrunk/bin/python
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw3/test_w4_pwd_read_through_posix0')
+
+    def test_w4_pwd_read_through_posix_environ(tmp_path):
+>       _check(tmp_path, _single("assert posix.environ.get(b'PWD', b'').endswith(b'/one')"),
+               ctx1={"env": {"PWD": "/x/one"}}, ctx2={"env": {"PWD": "/x/two"}})
+
+tests/test_review_r056_pycache.py:136: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw3/test_w4_pwd_read_through_posix0')
+before = {'tests/a/test_a.py': 'def test_a():\n    pass\n', 'tests/b/test_b.py': "import os, posix\n\ndef test_victim():\n    assert posix.environ.get(b'PWD', b'').endswith(b'/one')\n"}
+after = None, par = (), ctx1 = {'env': {'PWD': '/x/one'}}
+ctx2 = {'env': {'PWD': '/x/two'}}, between = None
+
+    def _check(root, before, after=None, par=(), ctx1=None, ctx2=None, between=None):
+        """Cold cached run (``ctx1``), change (``after`` files, ``between(root)``), warm cached run (``ctx2``); uncached
+        --det under ``ctx2`` must fail the victim, and so must the cached run."""
+        ctx1 = ctx1 or {}
+        ctx2 = ctx2 if ctx2 is not None else ctx1
+        cache = f"--det-cache={root / '.c'}"
+        _write(root, {**INI, **before})
+        p1, o1 = _pytest(root, "--det", cache, *par, **ctx1)
+        assert o1.get(VICTIM) == "passed", p1.stdout[-1500:]
+        if after:
+            _write(root, after)
+        if between:
+            between(root)
+        p, o = _pytest(root, "--det", cache, *par, **ctx2)
+        det, do = _pytest(root, "--det", *par, **ctx2)
+        assert det.returncode == 1 and do.get(VICTIM) == "failed", det.stdout[-1500:]
+>       assert p.returncode == 1 and o.get(VICTIM) == "failed", (
+            f"--det-cache reports {o} (exit {p.returncode}); uncached --det fails {VICTIM}:\n{p.stdout[-2000:]}")
+E       AssertionError: --det-cache reports {'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} (exit 0); uncached --det fails tests/b/test_b.py::test_victim:
+E         ..
+E         ==================================== PASSES ====================================
+E         =============================== detpy (Level 0) ================================
+E         trace: /tmp/pytest-of-root/pytest-156/popen-gw3/test_w4_pwd_read_through_posix0/.detpy/trace.jsonl  order digest: d2a4c4bb5bfac9aef7402c4b6424b4ae  seed: 0
+E         ============================ detpy cache with proof ============================
+E         reused 2 result(s) with proof, ran 0, recorded 0 (check 0.018s, record 0.01s); config 682e80e2d281787fd8d515b678e823ab, runtime d1a03f08f31682aa974925d2704bbdf7
+E         receipts: /tmp/pytest-of-root/pytest-156/popen-gw3/test_w4_pwd_read_through_posix0/.c/receipts.jsonl
+E         =========================== short test summary info ============================
+E         PASSED tests/a/test_a.py::test_a
+E         PASSED tests/b/test_b.py::test_victim
+E         2 passed in 0.05s
+E         
+E       assert (0 == 1)
+E        +  where 0 = CompletedProcess(args=['/tmp/claude-0/vtrunk/bin/python', '-m', 'pytest', '-q', '-rA', '-s', '-p', 'no:cacheprovider',...============\nPASSED tests/a/test_a.py::test_a\nPASSED tests/b/test_b.py::test_victim\n2 passed in 0.05s\n', stderr='').returncode
+
+tests/test_review_r056_pycache.py:79: AssertionError
+_________________________ test_w6_a_file_openssl_reads _________________________
+[gw0] linux -- Python 3.13.18 /tmp/claude-0/vtrunk/bin/python
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw0/test_w6_a_file_openssl_reads0')
+
+    @pytest.mark.skipif(not os.path.exists(_CA), reason="needs a CA bundle")
+    def test_w6_a_file_openssl_reads(tmp_path):
+        with open(_CA) as fh:
+            pem = re.search(r"-----BEGIN CERTIFICATE-----.*?-----END CERTIFICATE-----\n", fh.read(), re.S).group(0)
+>       _check(tmp_path, {"ca.pem": pem, **_single("ssl.create_default_context(cafile='ca.pem')", "import ssl")},
+               {"ca.pem": "-----BEGIN CERTIFICATE-----\ngarbage\n-----END CERTIFICATE-----\n"})
+
+tests/test_review_r056_pycache.py:154: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw0/test_w6_a_file_openssl_reads0')
+before = {'ca.pem': '-----BEGIN CERTIFICATE-----\nMIIH0zCCBbugAwIBAgIIXsO3pkN/pOAwDQYJKoZIhvcNAQEFBQAwQjESMBAGA1UE\nAwwJQUNDVlJ...   pass\n', 'tests/b/test_b.py': "import ssl\n\ndef test_victim():\n    ssl.create_default_context(cafile='ca.pem')\n"}
+after = {'ca.pem': '-----BEGIN CERTIFICATE-----\ngarbage\n-----END CERTIFICATE-----\n'}
+par = (), ctx1 = {}, ctx2 = {}, between = None
+
+    def _check(root, before, after=None, par=(), ctx1=None, ctx2=None, between=None):
+        """Cold cached run (``ctx1``), change (``after`` files, ``between(root)``), warm cached run (``ctx2``); uncached
+        --det under ``ctx2`` must fail the victim, and so must the cached run."""
+        ctx1 = ctx1 or {}
+        ctx2 = ctx2 if ctx2 is not None else ctx1
+        cache = f"--det-cache={root / '.c'}"
+        _write(root, {**INI, **before})
+        p1, o1 = _pytest(root, "--det", cache, *par, **ctx1)
+        assert o1.get(VICTIM) == "passed", p1.stdout[-1500:]
+        if after:
+            _write(root, after)
+        if between:
+            between(root)
+        p, o = _pytest(root, "--det", cache, *par, **ctx2)
+        det, do = _pytest(root, "--det", *par, **ctx2)
+        assert det.returncode == 1 and do.get(VICTIM) == "failed", det.stdout[-1500:]
+>       assert p.returncode == 1 and o.get(VICTIM) == "failed", (
+            f"--det-cache reports {o} (exit {p.returncode}); uncached --det fails {VICTIM}:\n{p.stdout[-2000:]}")
+E       AssertionError: --det-cache reports {'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} (exit 0); uncached --det fails tests/b/test_b.py::test_victim:
+E         ..
+E         ==================================== PASSES ====================================
+E         =============================== detpy (Level 0) ================================
+E         trace: /tmp/pytest-of-root/pytest-156/popen-gw0/test_w6_a_file_openssl_reads0/.detpy/trace.jsonl  order digest: d2a4c4bb5bfac9aef7402c4b6424b4ae  seed: 0
+E         ============================ detpy cache with proof ============================
+E         reused 2 result(s) with proof, ran 0, recorded 0 (check 0.018s, record 0.01s); config 682e80e2d281787fd8d515b678e823ab, runtime d1a03f08f31682aa974925d2704bbdf7
+E         receipts: /tmp/pytest-of-root/pytest-156/popen-gw0/test_w6_a_file_openssl_reads0/.c/receipts.jsonl
+E         =========================== short test summary info ============================
+E         PASSED tests/a/test_a.py::test_a
+E         PASSED tests/b/test_b.py::test_victim
+E         2 passed in 0.05s
+E         
+E       assert (0 == 1)
+E        +  where 0 = CompletedProcess(args=['/tmp/claude-0/vtrunk/bin/python', '-m', 'pytest', '-q', '-rA', '-s', '-p', 'no:cacheprovider',...============\nPASSED tests/a/test_a.py::test_a\nPASSED tests/b/test_b.py::test_victim\n2 passed in 0.05s\n', stderr='').returncode
+
+tests/test_review_r056_pycache.py:79: AssertionError
+________________ test_w5_kernel_release[posix.uname().release] _________________
+[gw2] linux -- Python 3.13.18 /tmp/claude-0/vtrunk/bin/python
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw2/test_w5_kernel_release_posix_u0')
+call = 'posix.uname().release'
+
+    @pytest.mark.skipif(not shutil.which("setarch"), reason="needs setarch")
+    @pytest.mark.parametrize("call", ["platform.release()", "posix.uname().release"])
+    def test_w5_kernel_release(tmp_path, call):
+>       _check(tmp_path, _single(f"assert not {call}.startswith('2.6')", "import platform, posix"),
+               ctx1={}, ctx2={"prefix": ("setarch", "x86_64", "--uname-2.6")})
+
+tests/test_review_r056_pycache.py:143: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw2/test_w5_kernel_release_posix_u0')
+before = {'tests/a/test_a.py': 'def test_a():\n    pass\n', 'tests/b/test_b.py': "import platform, posix\n\ndef test_victim():\n    assert not posix.uname().release.startswith('2.6')\n"}
+after = None, par = (), ctx1 = {}
+ctx2 = {'prefix': ('setarch', 'x86_64', '--uname-2.6')}, between = None
+
+    def _check(root, before, after=None, par=(), ctx1=None, ctx2=None, between=None):
+        """Cold cached run (``ctx1``), change (``after`` files, ``between(root)``), warm cached run (``ctx2``); uncached
+        --det under ``ctx2`` must fail the victim, and so must the cached run."""
+        ctx1 = ctx1 or {}
+        ctx2 = ctx2 if ctx2 is not None else ctx1
+        cache = f"--det-cache={root / '.c'}"
+        _write(root, {**INI, **before})
+        p1, o1 = _pytest(root, "--det", cache, *par, **ctx1)
+        assert o1.get(VICTIM) == "passed", p1.stdout[-1500:]
+        if after:
+            _write(root, after)
+        if between:
+            between(root)
+        p, o = _pytest(root, "--det", cache, *par, **ctx2)
+        det, do = _pytest(root, "--det", *par, **ctx2)
+        assert det.returncode == 1 and do.get(VICTIM) == "failed", det.stdout[-1500:]
+>       assert p.returncode == 1 and o.get(VICTIM) == "failed", (
+            f"--det-cache reports {o} (exit {p.returncode}); uncached --det fails {VICTIM}:\n{p.stdout[-2000:]}")
+E       AssertionError: --det-cache reports {'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} (exit 0); uncached --det fails tests/b/test_b.py::test_victim:
+E         ..
+E         ==================================== PASSES ====================================
+E         =============================== detpy (Level 0) ================================
+E         trace: /tmp/pytest-of-root/pytest-156/popen-gw2/test_w5_kernel_release_posix_u0/.detpy/trace.jsonl  order digest: d2a4c4bb5bfac9aef7402c4b6424b4ae  seed: 0
+E         ============================ detpy cache with proof ============================
+E         reused 2 result(s) with proof, ran 0, recorded 0 (check 0.024s, record 0.009s); config 682e80e2d281787fd8d515b678e823ab, runtime d1a03f08f31682aa974925d2704bbdf7
+E         receipts: /tmp/pytest-of-root/pytest-156/popen-gw2/test_w5_kernel_release_posix_u0/.c/receipts.jsonl
+E         =========================== short test summary info ============================
+E         PASSED tests/a/test_a.py::test_a
+E         PASSED tests/b/test_b.py::test_victim
+E         2 passed in 0.06s
+E         
+E       assert (0 == 1)
+E        +  where 0 = CompletedProcess(args=['setarch', 'x86_64', '--uname-2.6', '/tmp/claude-0/vtrunk/bin/python', '-m', 'pytest', '-q', '-...============\nPASSED tests/a/test_a.py::test_a\nPASSED tests/b/test_b.py::test_victim\n2 passed in 0.06s\n', stderr='').returncode
+
+tests/test_review_r056_pycache.py:79: AssertionError
+________________________ test_w6_etc_passwd_read_by_pwd ________________________
+[gw1] linux -- Python 3.13.18 /tmp/claude-0/vtrunk/bin/python
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw1/test_w6_etc_passwd_read_by_pwd0')
+
+    @pytest.mark.skipif(os.geteuid() != 0 or not shutil.which("unshare"), reason="needs root and unshare")
+    def test_w6_etc_passwd_read_by_pwd(tmp_path):
+        with open("/etc/passwd") as fh:
+            text = fh.read()
+        home = next(ln.split(":")[5] for ln in text.splitlines() if ln.startswith("root:"))
+        other = tmp_path / "passwd2"
+        other.write_text(text.replace(f"root:x:0:0:root:{home}:", f"root:x:0:0:root:{home}OTHER:", 1))
+>       _check(tmp_path, _single(f"assert pwd.getpwuid(0).pw_dir == {home!r}", "import pwd"),
+               ctx1={}, ctx2={"prefix": _bind(other, "/etc/passwd")})
+
+tests/test_review_r056_pycache.py:169: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw1/test_w6_etc_passwd_read_by_pwd0')
+before = {'tests/a/test_a.py': 'def test_a():\n    pass\n', 'tests/b/test_b.py': "import pwd\n\ndef test_victim():\n    assert pwd.getpwuid(0).pw_dir == '/root'\n"}
+after = None, par = (), ctx1 = {}
+ctx2 = {'prefix': ('unshare', '-m', 'sh', '-c', 'mount --bind /tmp/pytest-of-root/pytest-156/popen-gw1/test_w6_etc_passwd_read_by_pwd0/passwd2 /etc/passwd && exec "$@"', 'sh')}
+between = None
+
+    def _check(root, before, after=None, par=(), ctx1=None, ctx2=None, between=None):
+        """Cold cached run (``ctx1``), change (``after`` files, ``between(root)``), warm cached run (``ctx2``); uncached
+        --det under ``ctx2`` must fail the victim, and so must the cached run."""
+        ctx1 = ctx1 or {}
+        ctx2 = ctx2 if ctx2 is not None else ctx1
+        cache = f"--det-cache={root / '.c'}"
+        _write(root, {**INI, **before})
+        p1, o1 = _pytest(root, "--det", cache, *par, **ctx1)
+        assert o1.get(VICTIM) == "passed", p1.stdout[-1500:]
+        if after:
+            _write(root, after)
+        if between:
+            between(root)
+        p, o = _pytest(root, "--det", cache, *par, **ctx2)
+        det, do = _pytest(root, "--det", *par, **ctx2)
+        assert det.returncode == 1 and do.get(VICTIM) == "failed", det.stdout[-1500:]
+>       assert p.returncode == 1 and o.get(VICTIM) == "failed", (
+            f"--det-cache reports {o} (exit {p.returncode}); uncached --det fails {VICTIM}:\n{p.stdout[-2000:]}")
+E       AssertionError: --det-cache reports {'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} (exit 0); uncached --det fails tests/b/test_b.py::test_victim:
+E         ..
+E         ==================================== PASSES ====================================
+E         =============================== detpy (Level 0) ================================
+E         trace: /tmp/pytest-of-root/pytest-156/popen-gw1/test_w6_etc_passwd_read_by_pwd0/.detpy/trace.jsonl  order digest: d2a4c4bb5bfac9aef7402c4b6424b4ae  seed: 0
+E         ============================ detpy cache with proof ============================
+E         reused 2 result(s) with proof, ran 0, recorded 0 (check 0.018s, record 0.01s); config 682e80e2d281787fd8d515b678e823ab, runtime d1a03f08f31682aa974925d2704bbdf7
+E         receipts: /tmp/pytest-of-root/pytest-156/popen-gw1/test_w6_etc_passwd_read_by_pwd0/.c/receipts.jsonl
+E         =========================== short test summary info ============================
+E         PASSED tests/a/test_a.py::test_a
+E         PASSED tests/b/test_b.py::test_victim
+E         2 passed in 0.05s
+E         
+E       assert (0 == 1)
+E        +  where 0 = CompletedProcess(args=['unshare', '-m', 'sh', '-c', 'mount --bind /tmp/pytest-of-root/pytest-156/popen-gw1/test_w6_etc...============\nPASSED tests/a/test_a.py::test_a\nPASSED tests/b/test_b.py::test_victim\n2 passed in 0.05s\n', stderr='').returncode
+
+tests/test_review_r056_pycache.py:79: AssertionError
+_____________ test_w7_installed_code_edited_in_place[dist-module] ______________
+[gw3] linux -- Python 3.13.18 /tmp/claude-0/vtrunk/bin/python
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw3/test_w7_installed_code_edited_0')
+kind = 'dist-module'
+
+    @pytest.mark.parametrize("kind", ["dist-module", "loose-module", "pth-module"])
+    def test_w7_installed_code_edited_in_place(tmp_path, kind):
+        py, sp = _venv(tmp_path)
+        root = tmp_path / "proj"
+        root.mkdir()
+    
+        def put(rel, text):
+            with open(os.path.join(sp, rel), "w") as fh:
+                fh.write(text)
+    
+        if kind == "dist-module":
+            os.makedirs(os.path.join(sp, "r056lib-1.0.dist-info"))
+            put("r056lib-1.0.dist-info/METADATA", "Metadata-Version: 2.1\nName: r056lib\nVersion: 1.0\n")
+            put("r056lib-1.0.dist-info/RECORD", "r056lib.py,,\nr056lib-1.0.dist-info/METADATA,,\n")
+            put("r056lib.py", "MODE = 'good'\n")
+            victim, edit = "import r056lib\n\ndef test_victim():\n    assert r056lib.MODE == 'good'\n", ("r056lib.py", "MODE = 'bad'\n")
+        elif kind == "loose-module":
+            put("r056loose.py", "MODE = 'good'\n")
+            victim, edit = "import r056loose\n\ndef test_victim():\n    assert r056loose.MODE == 'good'\n", ("r056loose.py", "MODE = 'bad'\n")
+        else:
+            put("r056pth.py", "X = 1\n")
+            put("r056.pth", "import r056pth\n")
+            victim, edit = VB, ("r056pth.py", "import builtins\nbuiltins.R056 = 1\n")
+>       _check(root, {"tests/a/test_a.py": "def test_a():\n    pass\n", "tests/b/test_b.py": victim},
+               ctx1={"py": py}, between=lambda _: put(*edit))
+
+tests/test_review_r056_pycache.py:213: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw3/test_w7_installed_code_edited_0/proj')
+before = {'tests/a/test_a.py': 'def test_a():\n    pass\n', 'tests/b/test_b.py': "import r056lib\n\ndef test_victim():\n    assert r056lib.MODE == 'good'\n"}
+after = None, par = ()
+ctx1 = {'py': '/tmp/pytest-of-root/pytest-156/popen-gw3/test_w7_installed_code_edited_0/venv/bin/python'}
+ctx2 = {'py': '/tmp/pytest-of-root/pytest-156/popen-gw3/test_w7_installed_code_edited_0/venv/bin/python'}
+between = <function test_w7_installed_code_edited_in_place.<locals>.<lambda> at 0x7fc00d9871a0>
+
+    def _check(root, before, after=None, par=(), ctx1=None, ctx2=None, between=None):
+        """Cold cached run (``ctx1``), change (``after`` files, ``between(root)``), warm cached run (``ctx2``); uncached
+        --det under ``ctx2`` must fail the victim, and so must the cached run."""
+        ctx1 = ctx1 or {}
+        ctx2 = ctx2 if ctx2 is not None else ctx1
+        cache = f"--det-cache={root / '.c'}"
+        _write(root, {**INI, **before})
+        p1, o1 = _pytest(root, "--det", cache, *par, **ctx1)
+        assert o1.get(VICTIM) == "passed", p1.stdout[-1500:]
+        if after:
+            _write(root, after)
+        if between:
+            between(root)
+        p, o = _pytest(root, "--det", cache, *par, **ctx2)
+        det, do = _pytest(root, "--det", *par, **ctx2)
+        assert det.returncode == 1 and do.get(VICTIM) == "failed", det.stdout[-1500:]
+>       assert p.returncode == 1 and o.get(VICTIM) == "failed", (
+            f"--det-cache reports {o} (exit {p.returncode}); uncached --det fails {VICTIM}:\n{p.stdout[-2000:]}")
+E       AssertionError: --det-cache reports {'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} (exit 0); uncached --det fails tests/b/test_b.py::test_victim:
+E         ..
+E         ==================================== PASSES ====================================
+E         =============================== detpy (Level 0) ================================
+E         trace: /tmp/pytest-of-root/pytest-156/popen-gw3/test_w7_installed_code_edited_0/proj/.detpy/trace.jsonl  order digest: d2a4c4bb5bfac9aef7402c4b6424b4ae  seed: 0
+E         ============================ detpy cache with proof ============================
+E         reused 2 result(s) with proof, ran 0, recorded 0 (check 0.014s, record 0.007s); config 682e80e2d281787fd8d515b678e823ab, runtime 46ce55ffadbee14e5e6ed59100dd5742
+E         receipts: /tmp/pytest-of-root/pytest-156/popen-gw3/test_w7_installed_code_edited_0/proj/.c/receipts.jsonl
+E         =========================== short test summary info ============================
+E         PASSED tests/a/test_a.py::test_a
+E         PASSED tests/b/test_b.py::test_victim
+E         2 passed in 0.03s
+E         
+E       assert (0 == 1)
+E        +  where 0 = CompletedProcess(args=['/tmp/pytest-of-root/pytest-156/popen-gw3/test_w7_installed_code_edited_0/venv/bin/python', '-m...into /tmp/pytest-of-root/pytest-156/popen-gw3/detpy-pyc0/cpython-313-hashseed0 (once per environment and hash seed)\n').returncode
+
+tests/test_review_r056_pycache.py:79: AssertionError
+_____________ test_w7_installed_code_edited_in_place[loose-module] _____________
+[gw0] linux -- Python 3.13.18 /tmp/claude-0/vtrunk/bin/python
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw0/test_w7_installed_code_edited_0')
+kind = 'loose-module'
+
+    @pytest.mark.parametrize("kind", ["dist-module", "loose-module", "pth-module"])
+    def test_w7_installed_code_edited_in_place(tmp_path, kind):
+        py, sp = _venv(tmp_path)
+        root = tmp_path / "proj"
+        root.mkdir()
+    
+        def put(rel, text):
+            with open(os.path.join(sp, rel), "w") as fh:
+                fh.write(text)
+    
+        if kind == "dist-module":
+            os.makedirs(os.path.join(sp, "r056lib-1.0.dist-info"))
+            put("r056lib-1.0.dist-info/METADATA", "Metadata-Version: 2.1\nName: r056lib\nVersion: 1.0\n")
+            put("r056lib-1.0.dist-info/RECORD", "r056lib.py,,\nr056lib-1.0.dist-info/METADATA,,\n")
+            put("r056lib.py", "MODE = 'good'\n")
+            victim, edit = "import r056lib\n\ndef test_victim():\n    assert r056lib.MODE == 'good'\n", ("r056lib.py", "MODE = 'bad'\n")
+        elif kind == "loose-module":
+            put("r056loose.py", "MODE = 'good'\n")
+            victim, edit = "import r056loose\n\ndef test_victim():\n    assert r056loose.MODE == 'good'\n", ("r056loose.py", "MODE = 'bad'\n")
+        else:
+            put("r056pth.py", "X = 1\n")
+            put("r056.pth", "import r056pth\n")
+            victim, edit = VB, ("r056pth.py", "import builtins\nbuiltins.R056 = 1\n")
+>       _check(root, {"tests/a/test_a.py": "def test_a():\n    pass\n", "tests/b/test_b.py": victim},
+               ctx1={"py": py}, between=lambda _: put(*edit))
+
+tests/test_review_r056_pycache.py:213: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw0/test_w7_installed_code_edited_0/proj')
+before = {'tests/a/test_a.py': 'def test_a():\n    pass\n', 'tests/b/test_b.py': "import r056loose\n\ndef test_victim():\n    assert r056loose.MODE == 'good'\n"}
+after = None, par = ()
+ctx1 = {'py': '/tmp/pytest-of-root/pytest-156/popen-gw0/test_w7_installed_code_edited_0/venv/bin/python'}
+ctx2 = {'py': '/tmp/pytest-of-root/pytest-156/popen-gw0/test_w7_installed_code_edited_0/venv/bin/python'}
+between = <function test_w7_installed_code_edited_in_place.<locals>.<lambda> at 0x7f80b6f7ab60>
+
+    def _check(root, before, after=None, par=(), ctx1=None, ctx2=None, between=None):
+        """Cold cached run (``ctx1``), change (``after`` files, ``between(root)``), warm cached run (``ctx2``); uncached
+        --det under ``ctx2`` must fail the victim, and so must the cached run."""
+        ctx1 = ctx1 or {}
+        ctx2 = ctx2 if ctx2 is not None else ctx1
+        cache = f"--det-cache={root / '.c'}"
+        _write(root, {**INI, **before})
+        p1, o1 = _pytest(root, "--det", cache, *par, **ctx1)
+        assert o1.get(VICTIM) == "passed", p1.stdout[-1500:]
+        if after:
+            _write(root, after)
+        if between:
+            between(root)
+        p, o = _pytest(root, "--det", cache, *par, **ctx2)
+        det, do = _pytest(root, "--det", *par, **ctx2)
+        assert det.returncode == 1 and do.get(VICTIM) == "failed", det.stdout[-1500:]
+>       assert p.returncode == 1 and o.get(VICTIM) == "failed", (
+            f"--det-cache reports {o} (exit {p.returncode}); uncached --det fails {VICTIM}:\n{p.stdout[-2000:]}")
+E       AssertionError: --det-cache reports {'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} (exit 0); uncached --det fails tests/b/test_b.py::test_victim:
+E         ..
+E         ==================================== PASSES ====================================
+E         =============================== detpy (Level 0) ================================
+E         trace: /tmp/pytest-of-root/pytest-156/popen-gw0/test_w7_installed_code_edited_0/proj/.detpy/trace.jsonl  order digest: d2a4c4bb5bfac9aef7402c4b6424b4ae  seed: 0
+E         ============================ detpy cache with proof ============================
+E         reused 2 result(s) with proof, ran 0, recorded 0 (check 0.018s, record 0.01s); config 682e80e2d281787fd8d515b678e823ab, runtime ff49d7a1e0a9089a7b4679ca3b292e69
+E         receipts: /tmp/pytest-of-root/pytest-156/popen-gw0/test_w7_installed_code_edited_0/proj/.c/receipts.jsonl
+E         =========================== short test summary info ============================
+E         PASSED tests/a/test_a.py::test_a
+E         PASSED tests/b/test_b.py::test_victim
+E         2 passed in 0.05s
+E         
+E       assert (0 == 1)
+E        +  where 0 = CompletedProcess(args=['/tmp/pytest-of-root/pytest-156/popen-gw0/test_w7_installed_code_edited_0/venv/bin/python', '-m...into /tmp/pytest-of-root/pytest-156/popen-gw0/detpy-pyc0/cpython-313-hashseed0 (once per environment and hash seed)\n').returncode
+
+tests/test_review_r056_pycache.py:79: AssertionError
+______________ test_w7_installed_code_edited_in_place[pth-module] ______________
+[gw2] linux -- Python 3.13.18 /tmp/claude-0/vtrunk/bin/python
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw2/test_w7_installed_code_edited_0')
+kind = 'pth-module'
+
+    @pytest.mark.parametrize("kind", ["dist-module", "loose-module", "pth-module"])
+    def test_w7_installed_code_edited_in_place(tmp_path, kind):
+        py, sp = _venv(tmp_path)
+        root = tmp_path / "proj"
+        root.mkdir()
+    
+        def put(rel, text):
+            with open(os.path.join(sp, rel), "w") as fh:
+                fh.write(text)
+    
+        if kind == "dist-module":
+            os.makedirs(os.path.join(sp, "r056lib-1.0.dist-info"))
+            put("r056lib-1.0.dist-info/METADATA", "Metadata-Version: 2.1\nName: r056lib\nVersion: 1.0\n")
+            put("r056lib-1.0.dist-info/RECORD", "r056lib.py,,\nr056lib-1.0.dist-info/METADATA,,\n")
+            put("r056lib.py", "MODE = 'good'\n")
+            victim, edit = "import r056lib\n\ndef test_victim():\n    assert r056lib.MODE == 'good'\n", ("r056lib.py", "MODE = 'bad'\n")
+        elif kind == "loose-module":
+            put("r056loose.py", "MODE = 'good'\n")
+            victim, edit = "import r056loose\n\ndef test_victim():\n    assert r056loose.MODE == 'good'\n", ("r056loose.py", "MODE = 'bad'\n")
+        else:
+            put("r056pth.py", "X = 1\n")
+            put("r056.pth", "import r056pth\n")
+            victim, edit = VB, ("r056pth.py", "import builtins\nbuiltins.R056 = 1\n")
+>       _check(root, {"tests/a/test_a.py": "def test_a():\n    pass\n", "tests/b/test_b.py": victim},
+               ctx1={"py": py}, between=lambda _: put(*edit))
+
+tests/test_review_r056_pycache.py:213: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw2/test_w7_installed_code_edited_0/proj')
+before = {'tests/a/test_a.py': 'def test_a():\n    pass\n', 'tests/b/test_b.py': "import builtins\n\ndef test_victim():\n    assert not hasattr(builtins, 'R056')\n"}
+after = None, par = ()
+ctx1 = {'py': '/tmp/pytest-of-root/pytest-156/popen-gw2/test_w7_installed_code_edited_0/venv/bin/python'}
+ctx2 = {'py': '/tmp/pytest-of-root/pytest-156/popen-gw2/test_w7_installed_code_edited_0/venv/bin/python'}
+between = <function test_w7_installed_code_edited_in_place.<locals>.<lambda> at 0x7f18eae676a0>
+
+    def _check(root, before, after=None, par=(), ctx1=None, ctx2=None, between=None):
+        """Cold cached run (``ctx1``), change (``after`` files, ``between(root)``), warm cached run (``ctx2``); uncached
+        --det under ``ctx2`` must fail the victim, and so must the cached run."""
+        ctx1 = ctx1 or {}
+        ctx2 = ctx2 if ctx2 is not None else ctx1
+        cache = f"--det-cache={root / '.c'}"
+        _write(root, {**INI, **before})
+        p1, o1 = _pytest(root, "--det", cache, *par, **ctx1)
+        assert o1.get(VICTIM) == "passed", p1.stdout[-1500:]
+        if after:
+            _write(root, after)
+        if between:
+            between(root)
+        p, o = _pytest(root, "--det", cache, *par, **ctx2)
+        det, do = _pytest(root, "--det", *par, **ctx2)
+        assert det.returncode == 1 and do.get(VICTIM) == "failed", det.stdout[-1500:]
+>       assert p.returncode == 1 and o.get(VICTIM) == "failed", (
+            f"--det-cache reports {o} (exit {p.returncode}); uncached --det fails {VICTIM}:\n{p.stdout[-2000:]}")
+E       AssertionError: --det-cache reports {'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} (exit 0); uncached --det fails tests/b/test_b.py::test_victim:
+E         ..
+E         ==================================== PASSES ====================================
+E         =============================== detpy (Level 0) ================================
+E         trace: /tmp/pytest-of-root/pytest-156/popen-gw2/test_w7_installed_code_edited_0/proj/.detpy/trace.jsonl  order digest: d2a4c4bb5bfac9aef7402c4b6424b4ae  seed: 0
+E         ============================ detpy cache with proof ============================
+E         reused 2 result(s) with proof, ran 0, recorded 0 (check 0.015s, record 0.006s); config 682e80e2d281787fd8d515b678e823ab, runtime 58e0cd54ebfe749aa59180768da5d5a6
+E         receipts: /tmp/pytest-of-root/pytest-156/popen-gw2/test_w7_installed_code_edited_0/proj/.c/receipts.jsonl
+E         =========================== short test summary info ============================
+E         PASSED tests/a/test_a.py::test_a
+E         PASSED tests/b/test_b.py::test_victim
+E         2 passed in 0.03s
+E         
+E       assert (0 == 1)
+E        +  where 0 = CompletedProcess(args=['/tmp/pytest-of-root/pytest-156/popen-gw2/test_w7_installed_code_edited_0/venv/bin/python', '-m...into /tmp/pytest-of-root/pytest-156/popen-gw2/detpy-pyc0/cpython-313-hashseed0 (once per environment and hash seed)\n').returncode
+
+tests/test_review_r056_pycache.py:79: AssertionError
+_______________ test_w8_c_seeded_random_is_controlled_or_refused _______________
+[gw1] linux -- Python 3.13.18 /tmp/claude-0/vtrunk/bin/python
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw1/test_w8_c_seeded_random_is_con0')
+
+    def test_w8_c_seeded_random_is_controlled_or_refused(tmp_path):
+        """Reused only if the value fresh --det runs see is the same every run (R-053 E1 shape)."""
+        _write(tmp_path, {**INI, "tests/test_e.py": "import _random\n\ndef test_e():\n    print('VALUE', _random.Random().random())\n"})
+        cache = f"--det-cache={tmp_path / '.c'}"
+        _pytest(tmp_path, "--det", cache)
+        p, _ = _pytest(tmp_path, "--det", cache)
+        reused = any(line.startswith("reused 1 ") for line in p.stdout.splitlines())
+        vals = [next(line for line in _pytest(tmp_path, "--det")[0].stdout.splitlines() if line.startswith("VALUE"))
+                for _ in range(2)]
+>       assert not (reused and vals[0] != vals[1]), f"reused while fresh --det runs read {vals}:\n{p.stdout[-1500:]}"
+E       AssertionError: reused while fresh --det runs read ['VALUE 0.5815681526502865', 'VALUE 0.6588663435283538']:
+E         .
+E         ==================================== PASSES ====================================
+E         =============================== detpy (Level 0) ================================
+E         trace: /tmp/pytest-of-root/pytest-156/popen-gw1/test_w8_c_seeded_random_is_con0/.detpy/trace.jsonl  order digest: 4c01d7447a95e96c885193c5db9b40e1  seed: 0
+E         ============================ detpy cache with proof ============================
+E         reused 1 result(s) with proof, ran 0, recorded 0 (check 0.026s, record 0.009s); config 682e80e2d281787fd8d515b678e823ab, runtime d1a03f08f31682aa974925d2704bbdf7
+E         receipts: /tmp/pytest-of-root/pytest-156/popen-gw1/test_w8_c_seeded_random_is_con0/.c/receipts.jsonl
+E         =========================== short test summary info ============================
+E         PASSED tests/test_e.py::test_e
+E         1 passed in 0.05s
+E         
+E       assert not (True and 'VALUE 0.5815681526502865' != 'VALUE 0.6588663435283538')
+
+tests/test_review_r056_pycache.py:227: AssertionError
+_________________ test_w11_object_addresses_match_uncached_det _________________
+[gw0] linux -- Python 3.13.18 /tmp/claude-0/vtrunk/bin/python
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw0/test_w11_object_addresses_matc0')
+
+    def test_w11_object_addresses_match_uncached_det(tmp_path):
+        probe = ("class K:\n    def __init__(self, n):\n        self.n = n\n\ndef order():\n"
+                 "    return [k.n for k in {K(i) for i in range(6)}]\n\n")
+        _write(tmp_path, {**INI, "tests/test_w.py": probe + "def test_w():\n    print('ORDER', order())\n"})
+        det, _ = _pytest(tmp_path, "--det")
+        order = next(line for line in det.stdout.splitlines() if line.startswith("ORDER"))[6:]
+>       _same_outcome(tmp_path, probe + f"def test_w():\n    assert order() == {order}\n")
+
+tests/test_review_r056_pycache.py:249: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/tmp/pytest-of-root/pytest-156/popen-gw0/test_w11_object_addresses_matc0')
+body = 'class K:\n    def __init__(self, n):\n        self.n = n\n\ndef order():\n    return [k.n for k in {K(i) for i in range(6)}]\n\ndef test_w():\n    assert order() == [3, 0, 5, 2, 4, 1]\n'
+
+    def _same_outcome(root, body):
+        _write(root, {**INI, "tests/test_w.py": body})
+        det, do = _pytest(root, "--det")
+        p, o = _pytest(root, "--det", f"--det-cache={root / '.c'}")
+>       assert o == do, f"uncached --det: {do}; --det-cache: {o}\n{p.stdout[-1500:]}"
+E       AssertionError: uncached --det: {'tests/test_w.py::test_w': 'passed'}; --det-cache: {'tests/test_w.py::test_w': 'failed'}
+E         F
+E         =================================== FAILURES ===================================
+E         ____________________________________ test_w ____________________________________
+E         
+E             def test_w():
+E         >       assert order() == [3, 0, 5, 2, 4, 1]
+E         E       assert [4, 0, 1, 3, 2, 5] == [3, 0, 5, 2, 4, 1]
+E         E         
+E         E         At index 0 diff: 4 != 3
+E         E         Use -v to get more diff
+E         
+E         tests/test_w.py:9: AssertionError
+E         =============================== detpy (Level 0) ================================
+E         trace: /tmp/pytest-of-root/pytest-156/popen-gw0/test_w11_object_addresses_matc0/.detpy/trace.jsonl  order digest: e73026ffca9a47e4182492b38f4c889e  seed: 0
+E         1 test(s) failed under --det (seed 0, fixed order). Turn each into a reproducible defect (cause, seed, order, replay command):
+E             fenvix repro tests/test_w.py::test_w
+E           the same run again: pytest --det (with the same arguments)
+E         ============================ detpy cache with proof ============================
+E         reused 0 result(s) with proof, ran 1, recorded 0 (check 0.0s, record 0.007s); config 682e80e2d281787fd8d515b678e823ab, runtime d1a03f08f31682aa974925d2704bbdf7
+E         not reused: new 1
+E         not cacheable: outcome 1
+E         receipts: /tmp/pytest-of-root/pytest-156/popen-gw0/test_w11_object_addresses_matc0/.c/receipts.jsonl
+E         =========================== short test summary info ============================
+E         FAILED tests/test_w.py::test_w - assert [4, 0, 1, 3, 2, 5] == [3, 0, 5, 2, 4, 1]
+E         1 failed in 0.04s
+E         
+E       assert {'tests/test_..._w': 'failed'} == {'tests/test_..._w': 'passed'}
+E         
+E         Differing items:
+E         {'tests/test_w.py::test_w': 'failed'} != {'tests/test_w.py::test_w': 'passed'}
+E         Use -v to get more diff
+
+tests/test_review_r056_pycache.py:235: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_review_r056_pycache.py::test_w1_a_conftest_in_a_directory_without_test_files[tests/a/sub-serial]
+FAILED tests/test_review_r056_pycache.py::test_w1_a_conftest_in_a_directory_without_test_files[tests/c-serial]
+FAILED tests/test_review_r056_pycache.py::test_w1_a_conftest_in_a_directory_without_test_files[tests/0-serial]
+FAILED tests/test_review_r056_pycache.py::test_w3_file_size_read_through_posix[posix.stat('data.txt').st_size == 4-serial]
+FAILED tests/test_review_r056_pycache.py::test_w3_file_existence_read_through_posix_access[serial]
+FAILED tests/test_review_r056_pycache.py::test_w3_file_size_read_through_posix[posix.lstat('data.txt').st_size == 4-serial]
+FAILED tests/test_review_r056_pycache.py::test_w5_kernel_release[platform.release()]
+FAILED tests/test_review_r056_pycache.py::test_w3_file_mtime_read_through_posix_stat
+FAILED tests/test_review_r056_pycache.py::test_w4_pwd_read_through_posix_environ
+FAILED tests/test_review_r056_pycache.py::test_w6_a_file_openssl_reads - Asse...
+FAILED tests/test_review_r056_pycache.py::test_w5_kernel_release[posix.uname().release]
+FAILED tests/test_review_r056_pycache.py::test_w6_etc_passwd_read_by_pwd - As...
+FAILED tests/test_review_r056_pycache.py::test_w7_installed_code_edited_in_place[dist-module]
+FAILED tests/test_review_r056_pycache.py::test_w7_installed_code_edited_in_place[loose-module]
+FAILED tests/test_review_r056_pycache.py::test_w7_installed_code_edited_in_place[pth-module]
+FAILED tests/test_review_r056_pycache.py::test_w8_c_seeded_random_is_controlled_or_refused
+FAILED tests/test_review_r056_pycache.py::test_w11_object_addresses_match_uncached_det
+17 failed, 16 passed in 68.29s (0:01:08)

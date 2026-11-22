@@ -42,6 +42,13 @@ PYTHON_ATTACKS: dict[str, str] = {
     "tests/test_review_r055_verifier.py": "review R-055: the 16 channels that answered IDENTICAL on 688e4fe",
     "tests/test_verifier_truth.py":
         "the verifier tells the truth: runs differing in one source are divergent and name it",
+    # The cache with proof, Python (Block 2). A wrong reuse is the same defect as a false IDENTICAL: the engine
+    # states something it cannot know. Each file asserts its own precondition against uncached `pytest --det`.
+    "tests/test_review_r023c.py": "review R-023c's wrong reuses through the loosened rules (E1-E8)",
+    "tests/test_review_r052_pycache.py": "review R-052's wrong reuses in the Python cache (S1 S3 S5 C3 C5)",
+    "tests/test_review_r053_pycache.py": "review R-053: conftest/__init__ prefix, real CPU and host name, posix.urandom",
+    "tests/test_review_r056_pycache.py":
+        "review R-056's 11 families of wrong reuse and wrong outcome in the Python cache (W1-W11)",
 }
 
 #: The Node attack files. Each is run by ``node --test``.
