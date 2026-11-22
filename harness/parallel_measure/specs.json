@@ -283,5 +283,22 @@
   "install": "npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts; (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace). The candidates.json pnpm@9 (= CI ci.yml:15 version 9) fails here: 'packages field missing or empty' in pnpm-workspace.yaml. vitest.globalSetup.ts spawns `pnpm exec drizzle-kit push`: pnpm 10.28.0 on PATH",
   "ci_parallel": false,
   "plan_verdict": true
+ },
+ "beevibe": {
+  "repo": "https://github.com/beevibe-ai/beevibe",
+  "commit": "81530ccae3519738b16a2b5d4aa81a61989a4ce8",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/beevibe/packages/core",
+  "fenvix_python": "$PM_WORK/venv/engine/bin/python",
+  "args": [],
+  "env": {
+   "DATABASE_URL": "postgresql://beevibe:beevibe@localhost:5433/beevibe",
+   "DATABASE_URL_TEST": "postgresql://beevibe:beevibe@localhost:5433/beevibe_test"
+  },
+  "ci": "DECLARED packages/core/vitest.config.ts:12-20 pool forks, singleFork: true, fileParallelism: false ('Test files share the beevibe_test DB; parallel file execution would interleave TRUNCATE + queries and cause FK violations. Serial is mandatory'); .github/workflows/ci.yml pnpm test (turbo test --concurrency=1)",
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "npx -y pnpm@9.12.0 install --frozen-lockfile --ignore-scripts; local PostgreSQL 16 + apt postgresql-16-pgvector (CI: pgvector/pgvector:pg16 service on port 5433), initdb -U beevibe --auth=trust, CREATE DATABASE beevibe, beevibe_test; pnpm run migrate up / migrate:test up with DATABASE_URL(_TEST) exported. CI's .env (OPENAI_API_KEY, ANTHROPIC_API_KEY secrets) is not available: 7 live-API tests fail in plain serial (ENV)",
+  "ci_parallel": false,
+  "plan_verdict": true
  }
 }
