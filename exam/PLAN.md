@@ -363,6 +363,7 @@ Legs: linux-x64 x {22, 26}. Projects: ufo (Vitest), zustand (Vitest), luxon (Jes
 | F-06.fake-timers | G-0122: a test reading the real clock through fake timers is not reused across days. Reference: a fresh `fenvix node vitest run --det` without `--det-cache` (`.detjs` removed), not a plain runner run (founder decision 2026-11-22: --det pins the clock and the CPU count on purpose (row F-01)) |
 | F-06.disable-time | G-0123 |
 | F-06.wrong-reuse probes | env var, host name, cpu count, child process output, worker output. cpu-count reference: `taskset -c 0 fenvix node vitest run --det test/exam-cpu.test.ts` without `--det-cache` (`.detjs` removed), not `taskset -c 0 npx vitest run` (founder decision 2026-11-22: --det pins the clock and the CPU count on purpose (row F-01)) |
+| F-06.probe.dir-listing | G-0097: a Vite plugin generates a module from `fs.readdirSync('routes/')` and a test asserts the route count; one route file added between the two `--det-cache` runs: run 2 reruns that test and its outcome equals the plain runner's on the new listing. The plain runner is measured on both listings first: it must pass with 2 routes and fail with 3, otherwise the check is INVALID |
 | F-06.gaps | assigned gap probes |
 
 ### F-09 the artifact installs and works on Linux x86_64

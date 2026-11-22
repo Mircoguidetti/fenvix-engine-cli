@@ -1514,3 +1514,84 @@ def _(ctx):
     return ok2 and reused >= 1 and reachable, (f"run 2 vs plain: {d2}; entries recorded (run 2 reused) {reused}, receipts "
                                                f"{n_rec}; cache summary reachable: printed "
                                                f"{printed.group(0) if printed else 'NO'}, summary files {files or 'none'}")
+
+
+# --- F-06.probe.dir-listing ------------------------------------------------------------------------------------------
+# Spec (gap_map.json, G-0097): "Vitest project with a Vite plugin that generates a module from fs.readdirSync('routes/');
+# a test asserts the route count; add a route file: --det-cache run 2 reruns that test, outcome equals plain".
+# The listing is read by the plugin while Vite builds the module, not by the test: nothing the test file itself touches
+# changes between the two runs, only the contents of the directory the plugin listed.
+DIR_LISTING_CONFIG = """// Exam fixture: a Vite plugin that generates a module from the listing of routes/.
+import { readdirSync } from 'node:fs';
+
+const VID = 'virtual:exam-routes';
+
+export default {
+  plugins: [{
+    name: 'exam-dir-listing',
+    enforce: 'pre',
+    resolveId(id) { return id === VID ? '\\0' + VID : null; },
+    load(id) {
+      if (id !== '\\0' + VID) return null;
+      const names = readdirSync('routes/').sort();
+      return 'export const routes = ' + JSON.stringify(names) + ';\\n';
+    },
+  }],
+  test: { include: ['test/exam-dir-listing.test.ts'] },
+};
+"""
+DIR_LISTING_TEST = """import { test, expect } from 'vitest';
+// @ts-expect-error the virtual module the Vite plugin generates from the listing of routes/
+import { routes } from 'virtual:exam-routes';
+
+test('route count', () => { expect(routes.length).toBe(2); });
+"""
+
+
+def _total_counts(res: dict) -> dict:
+    """Pass/fail/skip totals of a js_run outcome map, over every file it reports."""
+    tot = {"passed": 0, "failed": 0, "skipped": 0}
+    for counts in ((res or {}).get("files") or {}).values():
+        for k in tot:
+            tot[k] += counts.get(k, 0)
+    return tot
+
+
+@probe("F-06.probe.dir-listing")
+def _(ctx):
+    d = rows_js._ufo(ctx)
+    cfg, rel, routes = "exam-dir-listing.config.mjs", "test/exam-dir-listing.test.ts", d / "routes"
+    args = f"--config {cfg} {rel}"
+    shutil.rmtree(routes, ignore_errors=True)
+    lib.write(d / cfg, DIR_LISTING_CONFIG)
+    lib.write(d / rel, DIR_LISTING_TEST)
+    for n in ("a", "b"):
+        lib.write(routes / f"{n}.ts", f'export default "{n}";\n')
+    cache = ctx.work / "f06-dir-listing"
+    shutil.rmtree(cache, ignore_errors=True)
+    try:
+        # the reference the spec names: the plain runner, before the route is added and after it
+        _, _, plain1 = fam.js_run(ctx, d, "vitest", args, "dir-listing-plain1", False)
+        shutil.rmtree(d / ".detjs", ignore_errors=True)
+        rc1, out1, j1 = fam.js_run(ctx, d, "vitest", args, "dir-listing-1", True, f"--det --det-cache={cache}")
+        o1, n1 = fam._receipt_outcomes(d, j1)
+        lib.write(routes / "c.ts", 'export default "c";\n')  # the only change between the two cache runs
+        shutil.rmtree(d / ".detjs", ignore_errors=True)
+        rc2, out2, j2 = fam.js_run(ctx, d, "vitest", args, "dir-listing-2", True, f"--det --det-cache={cache}")
+        o2, n2 = fam._receipt_outcomes(d, j2)
+        reused_ids = sorted(lib.detjs_receipts(d, reused_only=True)[0])
+        _, _, plain2 = fam.js_run(ctx, d, "vitest", args, "dir-listing-plain2", False)
+    finally:
+        shutil.rmtree(routes, ignore_errors=True)
+        (d / cfg).unlink(missing_ok=True)
+        (d / rel).unlink(missing_ok=True)
+        ctx.reset(d)
+    # the fixture must bite: the plain runner passes the test with two routes and fails it with three. Without that
+    # the comparison below could not tell a reused result from a fresh one.
+    want = ({"passed": 1, "failed": 0, "skipped": 0}, {"passed": 0, "failed": 1, "skipped": 0})
+    got = (_total_counts(plain1), _total_counts(plain2))
+    if got != want:
+        return False, f"INVALID: the plain runner did not pass with 2 routes and fail with 3: {plain1} then {plain2}"
+    ok, desc = fam.js_cmp({"files": o2}, plain2)
+    return ok and n2 == 0, (f"plain: 2 routes pass, 3 routes fail; run 1 {o1} (reused {n1}); route file added; run 2 "
+                            f"reused {n2} {reused_ids[:3]}, outcomes {o2}; vs plain on the 3-route listing: {desc}")
