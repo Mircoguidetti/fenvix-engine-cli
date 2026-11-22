@@ -1,6 +1,6 @@
 {
  "exam": "go-live acceptance exam (exam/PLAN.md)",
- "run_id": "44970336579",
+ "run_id": "44973176779",
  "base_run": null,
  "rows_rerun_in_run_id": null,
  "release_run_requested": "44969241012",
@@ -13,13 +13,13 @@
    "selected": "requested",
    "install_ok": true,
    "legs": [
-    "F-06@linux-x64/py3.13/node22 (exam run 44970336579)",
-    "F-06@linux-x64/py3.13/node26 (exam run 44970336579)"
+    "F-06@linux-x64/py3.13/node22 (exam run 44973176779)",
+    "F-06@linux-x64/py3.13/node26 (exam run 44973176779)"
    ]
   }
  ],
  "installed": {
-  "44970336579": {
+  "44973176779": {
    "ok": true,
    "source": "ci-artifact",
    "platform": "linux-x64",
@@ -47,12 +47,12 @@
  ],
  "summary": {
   "rows": 24,
-  "pass": 0,
-  "fail": 24,
+  "pass": 1,
+  "fail": 23,
   "checks": 24,
-  "checks_passed": 22,
+  "checks_passed": 24,
   "gaps_in_scope": 207,
-  "gaps_closed": 5,
+  "gaps_closed": 6,
   "gaps_out_of_scope": 410,
   "gaps_unassignable": 7,
   "gaps_other_row_F14": 15
@@ -128,13 +128,13 @@
    }
   },
   "F-06": {
-   "status": "FAIL",
+   "status": "PASS",
    "legs": {
     "linux-x64/py3.13/node22": {
      "job": "F-06 linux-x64 py3.13 node22",
-     "job_id": 137048539033,
-     "run_id": "44970336579",
-     "seconds": 154,
+     "job_id": 137057390579,
+     "run_id": "44973176779",
+     "seconds": 160,
      "install_ok": true,
      "runner": {
       "os": "Linux",
@@ -155,15 +155,15 @@
     },
     "linux-x64/py3.13/node26": {
      "job": "F-06 linux-x64 py3.13 node26",
-     "job_id": 137048539063,
-     "run_id": "44970336579",
-     "seconds": 142,
+     "job_id": 137057390597,
+     "run_id": "44973176779",
+     "seconds": 166,
      "install_ok": true,
      "runner": {
       "os": "Linux",
       "arch": "X64",
       "image": "ubuntu24",
-      "image_version": "20261116.133.1"
+      "image_version": "20261116.376.1"
      },
      "artifact": {
       "ok": true,
@@ -184,7 +184,7 @@
      "ok": true,
      "expected": "EDIT on src: dependent files rerun, others reused, outcomes equal plain",
      "observed": "src/utils.ts edited; run 2 reused 24 tests; vs plain rerun: 13 files / 471 tests in plain; differing files 0 []",
-     "run_id": "44970336579",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node22"
     },
     {
@@ -193,7 +193,7 @@
      "ok": true,
      "expected": "EDIT that flips tests: no stale reuse",
      "observed": "src/utils.ts edited; run 2 reused 24 tests; vs plain rerun: 13 files / 471 tests in plain; differing files 0 []",
-     "run_id": "44970336579",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node22"
     },
     {
@@ -202,7 +202,7 @@
      "ok": true,
      "expected": "EDIT on src (Jest): no stale reuse",
      "observed": "src/impl/english.js edited; run 2 reused 0 tests; vs plain rerun: 58 files / 1116 tests in plain; differing files 0 []",
-     "run_id": "44970336579",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node22"
     },
     {
@@ -211,7 +211,7 @@
      "ok": true,
      "expected": "EDIT on a test file (Jest + ts-jest)",
      "observed": "test/functional/validation-options.spec.ts edited; run 2 reused 669 tests; vs plain rerun: 15 files / 745 tests in plain; differing files 0 []",
-     "run_id": "44970336579",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node22"
     },
     {
@@ -220,7 +220,7 @@
      "ok": true,
      "expected": ">= 90% reused on an unchanged checkout",
      "observed": "run 2 reused 135 (needed >= 121 of 135 passing); outcomes vs plain: 12 files / 139 tests in plain; differing files 0 []",
-     "run_id": "44970336579",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node22"
     },
     {
@@ -229,7 +229,7 @@
      "ok": true,
      "expected": "a test reading the real clock through fake timers is not reused after the deadline",
      "observed": "deadline passed between runs; run 2 reused 1; vs --det without cache: 1 files / 1 tests in plain; differing files 0 []",
-     "run_id": "44970336579",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node22",
      "gaps": [
       "G-0122",
@@ -242,7 +242,7 @@
      "ok": true,
      "expected": "with --det-disable=time a real-clock test is not reused after the deadline",
      "observed": "deadline passed between runs; run 2 reused 0; vs plain: 1 files / 1 tests in plain; differing files 0 []",
-     "run_id": "44970336579",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node22",
      "gaps": [
       "G-0123"
@@ -254,7 +254,7 @@
      "ok": true,
      "expected": "an env var read that changed: not reused",
      "observed": "run1 {'test/exam-env.test.ts': {'passed': 1, 'failed': 0, 'skipped': 0}}; run2 reused 0, outcomes {'test/exam-env.test.ts': {'passed': 0, 'failed': 1, 'skipped': 0}}; vs plain under the changed input: 1 files / 1 tests in plain; differing files 0 []",
-     "run_id": "44970336579",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node22"
     },
     {
@@ -263,16 +263,16 @@
      "ok": true,
      "expected": "a test depending on the CPU count is not reused when it changes",
      "observed": "one CPU in run 2: engine rc=0, --det without cache rc=0",
-     "run_id": "44970336579",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node22"
     },
     {
      "id": "F-06.probe.dir-listing",
      "leg": "linux-x64/py3.13/node22",
-     "ok": false,
+     "ok": true,
      "expected": "Vitest project with a Vite plugin that generates a module from fs.readdirSync('routes/'); a test asserts the route count; add a route file: --det-cache run 2 reruns that test, outcome equals plain",
-     "observed": "NOT IMPLEMENTED in this exam version: the gap stays open",
-     "run_id": "44970336579",
+     "observed": "plain: 2 routes pass, 3 routes fail; run 1 {'test/exam-dir-listing.test.ts': {'passed': 1, 'failed': 0, 'skipped': 0}} (reused 0); route file added; run 2 reused 0 [], outcomes {'test/exam-dir-listing.test.ts': {'passed': 0, 'failed': 1, 'skipped': 0}}; vs plain on the 3-route listing: 1 files / 1 tests in plain; differing files 0 []",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node22",
      "gaps": [
       "G-0097"
@@ -284,7 +284,7 @@
      "ok": true,
      "expected": "Vitest/Jest setup file captures `const rf = require('fs').readFileSync` before tests; a test asserts rf(F); change F: --det-cache run 2 does not reuse the test, outcome equals plain",
      "observed": "run1 {'test/exam-earlyfs.test.ts': {'passed': 1, 'failed': 0, 'skipped': 0}}; run2 reused 0, outcomes {'test/exam-earlyfs.test.ts': {'passed': 0, 'failed': 1, 'skipped': 0}}; vs plain under the changed input: 1 files / 1 tests in plain; differing files 0 []",
-     "run_id": "44970336579",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node22",
      "gaps": [
       "G-0096"
@@ -296,7 +296,7 @@
      "ok": true,
      "expected": "Node test asserts new Date() (virtual) is before a date D derived from today; run 1 --det-cache; run 2 on the next UTC day (libfaketime or a dated runner): the receipt's epoch changes and the test is not reused, outcome equals plain",
      "observed": "next UTC day (faketime +1d): reused 0 (expected 0: the virtual day changed); rc=1",
-     "run_id": "44970336579",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node22",
      "gaps": [
       "G-0120",
@@ -309,7 +309,7 @@
      "ok": true,
      "expected": "EDIT on src: dependent files rerun, others reused, outcomes equal plain",
      "observed": "src/utils.ts edited; run 2 reused 24 tests; vs plain rerun: 13 files / 471 tests in plain; differing files 0 []",
-     "run_id": "44970336579",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node26"
     },
     {
@@ -318,7 +318,7 @@
      "ok": true,
      "expected": "EDIT that flips tests: no stale reuse",
      "observed": "src/utils.ts edited; run 2 reused 24 tests; vs plain rerun: 13 files / 471 tests in plain; differing files 0 []",
-     "run_id": "44970336579",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node26"
     },
     {
@@ -327,7 +327,7 @@
      "ok": true,
      "expected": "EDIT on src (Jest): no stale reuse",
      "observed": "src/impl/english.js edited; run 2 reused 0 tests; vs plain rerun: 58 files / 1116 tests in plain; differing files 0 []",
-     "run_id": "44970336579",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node26"
     },
     {
@@ -336,7 +336,7 @@
      "ok": true,
      "expected": "EDIT on a test file (Jest + ts-jest)",
      "observed": "test/functional/validation-options.spec.ts edited; run 2 reused 669 tests; vs plain rerun: 15 files / 745 tests in plain; differing files 0 []",
-     "run_id": "44970336579",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node26"
     },
     {
@@ -345,7 +345,7 @@
      "ok": true,
      "expected": ">= 90% reused on an unchanged checkout",
      "observed": "run 2 reused 135 (needed >= 121 of 135 passing); outcomes vs plain: 12 files / 139 tests in plain; differing files 0 []",
-     "run_id": "44970336579",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node26"
     },
     {
@@ -354,7 +354,7 @@
      "ok": true,
      "expected": "a test reading the real clock through fake timers is not reused after the deadline",
      "observed": "deadline passed between runs; run 2 reused 1; vs --det without cache: 1 files / 1 tests in plain; differing files 0 []",
-     "run_id": "44970336579",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node26",
      "gaps": [
       "G-0122",
@@ -367,7 +367,7 @@
      "ok": true,
      "expected": "with --det-disable=time a real-clock test is not reused after the deadline",
      "observed": "deadline passed between runs; run 2 reused 0; vs plain: 1 files / 1 tests in plain; differing files 0 []",
-     "run_id": "44970336579",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node26",
      "gaps": [
       "G-0123"
@@ -379,7 +379,7 @@
      "ok": true,
      "expected": "an env var read that changed: not reused",
      "observed": "run1 {'test/exam-env.test.ts': {'passed': 1, 'failed': 0, 'skipped': 0}}; run2 reused 0, outcomes {'test/exam-env.test.ts': {'passed': 0, 'failed': 1, 'skipped': 0}}; vs plain under the changed input: 1 files / 1 tests in plain; differing files 0 []",
-     "run_id": "44970336579",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node26"
     },
     {
@@ -388,16 +388,16 @@
      "ok": true,
      "expected": "a test depending on the CPU count is not reused when it changes",
      "observed": "one CPU in run 2: engine rc=0, --det without cache rc=0",
-     "run_id": "44970336579",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node26"
     },
     {
      "id": "F-06.probe.dir-listing",
      "leg": "linux-x64/py3.13/node26",
-     "ok": false,
+     "ok": true,
      "expected": "Vitest project with a Vite plugin that generates a module from fs.readdirSync('routes/'); a test asserts the route count; add a route file: --det-cache run 2 reruns that test, outcome equals plain",
-     "observed": "NOT IMPLEMENTED in this exam version: the gap stays open",
-     "run_id": "44970336579",
+     "observed": "plain: 2 routes pass, 3 routes fail; run 1 {'test/exam-dir-listing.test.ts': {'passed': 1, 'failed': 0, 'skipped': 0}} (reused 0); route file added; run 2 reused 0 [], outcomes {'test/exam-dir-listing.test.ts': {'passed': 0, 'failed': 1, 'skipped': 0}}; vs plain on the 3-route listing: 1 files / 1 tests in plain; differing files 0 []",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node26",
      "gaps": [
       "G-0097"
@@ -409,7 +409,7 @@
      "ok": true,
      "expected": "Vitest/Jest setup file captures `const rf = require('fs').readFileSync` before tests; a test asserts rf(F); change F: --det-cache run 2 does not reuse the test, outcome equals plain",
      "observed": "run1 {'test/exam-earlyfs.test.ts': {'passed': 1, 'failed': 0, 'skipped': 0}}; run2 reused 0, outcomes {'test/exam-earlyfs.test.ts': {'passed': 0, 'failed': 1, 'skipped': 0}}; vs plain under the changed input: 1 files / 1 tests in plain; differing files 0 []",
-     "run_id": "44970336579",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node26",
      "gaps": [
       "G-0096"
@@ -421,7 +421,7 @@
      "ok": true,
      "expected": "Node test asserts new Date() (virtual) is before a date D derived from today; run 1 --det-cache; run 2 on the next UTC day (libfaketime or a dated runner): the receipt's epoch changes and the test is not reused, outcome equals plain",
      "observed": "next UTC day (faketime +1d): reused 0 (expected 0: the virtual day changed); rc=1",
-     "run_id": "44970336579",
+     "run_id": "44973176779",
      "job": "F-06 linux-x64 py3.13 node26",
      "gaps": [
       "G-0120",
@@ -429,17 +429,14 @@
      ]
     }
    ],
-   "failed": [
-    "F-06.probe.dir-listing @ linux-x64/py3.13/node22",
-    "F-06.probe.dir-listing @ linux-x64/py3.13/node26"
-   ],
+   "failed": [],
    "missing_legs": [],
    "n_checks": 24,
-   "n_passed": 22,
+   "n_passed": 24,
    "gaps": {
     "total": 6,
-    "closed": 5,
-    "open": 1,
+    "closed": 6,
+    "open": 0,
     "no_check_ran": 0
    }
   },
@@ -1123,7 +1120,7 @@
   "G-0097": {
    "row": "F-06",
    "check": "F-06.probe.dir-listing",
-   "status": "OPEN",
+   "status": "CLOSED",
    "severity": "WRONG-RESULT",
    "checks": [
     "F-06.probe.dir-listing @ linux-x64/py3.13/node22",
