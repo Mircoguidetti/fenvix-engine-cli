@@ -1,0 +1,18 @@
+[
+  {"fn": "runExit", "case": "all passed", "input": {"failed": 0, "not_proven": 0, "passed": 3, "skipped": 0, "runnerCode": 0, "internalError": false}, "expected": 0},
+  {"fn": "runExit", "case": "one failed", "input": {"failed": 1, "not_proven": 0, "passed": 2, "skipped": 0, "runnerCode": 0, "internalError": false}, "expected": 1},
+  {"fn": "runExit", "case": "one not proven", "input": {"failed": 0, "not_proven": 1, "passed": 2, "skipped": 0, "runnerCode": 0, "internalError": false}, "expected": 1},
+  {"fn": "runExit", "case": "one failed and one not proven", "input": {"failed": 1, "not_proven": 1, "passed": 1, "skipped": 0, "runnerCode": 0, "internalError": false}, "expected": 1},
+  {"fn": "runExit", "case": "runner code 1 with zero counts", "input": {"failed": 0, "not_proven": 0, "passed": 0, "skipped": 0, "runnerCode": 1, "internalError": false}, "expected": 1},
+  {"fn": "runExit", "case": "runner code 2", "input": {"failed": 1, "not_proven": 0, "passed": 0, "skipped": 0, "runnerCode": 2, "internalError": false}, "expected": 2},
+  {"fn": "runExit", "case": "internal error of detjs", "input": {"failed": 0, "not_proven": 0, "passed": 0, "skipped": 0, "runnerCode": 0, "internalError": true}, "expected": 2},
+  {"fn": "verifyExit", "case": "identical", "input": {"tests": 3, "diverged": 0, "missing": 0, "not_proven": 0, "inputs_recorded": true, "input_differs": 0}, "expected": 0, "status": "identical"},
+  {"fn": "verifyExit", "case": "diverged", "input": {"tests": 3, "diverged": 1, "missing": 0, "not_proven": 0, "inputs_recorded": true, "input_differs": 0}, "expected": 1, "status": "diverged"},
+  {"fn": "verifyExit", "case": "missing", "input": {"tests": 3, "diverged": 0, "missing": 1, "not_proven": 0, "inputs_recorded": true, "input_differs": 0}, "expected": 1, "status": "diverged"},
+  {"fn": "verifyExit", "case": "not proven", "input": {"tests": 3, "diverged": 0, "missing": 0, "not_proven": 1, "inputs_recorded": true, "input_differs": 0}, "expected": 1, "status": "not_proven"},
+  {"fn": "verifyExit", "case": "no test ran", "input": {"tests": 0, "diverged": 0, "missing": 0, "not_proven": 0, "inputs_recorded": true, "input_differs": 0}, "expected": 1, "status": "not_proven"},
+  {"fn": "verifyExit", "case": "inputs not recorded", "input": {"tests": 3, "diverged": 0, "missing": 0, "not_proven": 0, "inputs_recorded": false, "input_differs": 0}, "expected": 1, "status": "not_proven"},
+  {"fn": "verifyExit", "case": "only input differs", "input": {"tests": 3, "diverged": 0, "missing": 0, "not_proven": 0, "inputs_recorded": true, "input_differs": 2}, "expected": 3, "status": "input_differs"},
+  {"fn": "verifyExit", "case": "diverged and not proven and input differs: diverged first", "input": {"tests": 3, "diverged": 1, "missing": 0, "not_proven": 1, "inputs_recorded": true, "input_differs": 1}, "expected": 1, "status": "diverged"},
+  {"fn": "verifyExit", "case": "not proven and input differs: not proven first", "input": {"tests": 3, "diverged": 0, "missing": 0, "not_proven": 1, "inputs_recorded": true, "input_differs": 1}, "expected": 1, "status": "not_proven"}
+]
