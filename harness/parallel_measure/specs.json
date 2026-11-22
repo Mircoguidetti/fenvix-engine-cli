@@ -146,5 +146,64 @@
   "ci_parallel": false,
   "plan_verdict": false,
   "why_outside": "serial CI, but chosen by this session, not a serial-scan candidate: outside the plan's verdict"
+ },
+ "wind-comic": {
+  "repo": "https://github.com/ChrisChen667788/wind-comic",
+  "commit": "4657448338bed6e217cad80b207221bd44c830bc",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/wind-comic",
+  "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [],
+  "ci": "DECLARED .github/workflows/ci.yml:53 npm test = vitest run; vitest.config.ts:36 pool forks singleFork: true (shared better-sqlite3 file data/qfmj.db: 'database is locked' in parallel), retry: 1",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "npm ci --ignore-scripts --no-audit --no-fund"
+ },
+ "claudekit": {
+  "repo": "https://github.com/carlrannaberg/claudekit",
+  "commit": "f22a4f9030520394bf1a517b46ad7585badf5130",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/claudekit",
+  "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [],
+  "ci": "DECLARED .github/workflows/ci.yml:184 npm test -> test:vitest = vitest run; vitest.config.ts:64 singleFork: true",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "npm ci --ignore-scripts --no-audit --no-fund"
+ },
+ "sqlectron": {
+  "repo": "https://github.com/sqlectron/sqlectron",
+  "commit": "b0f5e24015bca7974fbce6ab5e4ada69d51b48b3",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/sqlectron",
+  "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [
+   "test/browser",
+   "test/renderer",
+   "test/common"
+  ],
+  "ci": "DECLARED package.json test = vitest run test/browser && vitest run test/renderer test/common; vitest.config.mts:13 fileParallelism: false; measured: both selections in one vitest run",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "npm ci --ignore-scripts --no-audit --no-fund"
+ },
+ "agentic-qe": {
+  "repo": "https://github.com/proffesor-for-testing/agentic-qe",
+  "commit": "9a42d9ebd56ed419925738cef5cf84748a108d9e",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/agentic-qe",
+  "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [],
+  "ci": "DECLARED package.json test = vitest run (NODE_OPTIONS --max-old-space-size=1024 --expose-gc); vitest.config.ts:58 fileParallelism: false",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "npm ci --ignore-scripts --no-audit --no-fund",
+  "env": {
+   "NODE_OPTIONS_NOTE": "CI sets NODE_OPTIONS; the harness drops NODE_OPTIONS (detjs uses it)"
+  }
  }
 }
