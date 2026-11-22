@@ -68,6 +68,28 @@ def check(vals, v, name):
     assert v.returncode != 0, f"{name}: IDENTICAL (exit 0) although the test observed {vals}\n{v.stdout}"
 
 
+def check_refuses_either_way(vals, v, name):
+    """For a channel whose attack cannot be guaranteed to move the value the test PRINTS.
+
+    The requirement is the engine's: never identical. This asserts it whether or not the attack managed to
+    change the printed value, which is the only part of `check` that depends on the machine rather than on the
+    engine. It is not weaker: `check` lets a case pass with one assertion about the engine, this one makes the
+    same assertion in both branches, so a false IDENTICAL fails it either way.
+
+    V14 (`resource.getrusage`) needs it. MEASURED, CI 44975331973 on CPython 3.14.10: the attack
+    (`PYTHONMALLOC=malloc_debug` in run 1, which inflated the high-water mark on 3.12 and 3.13) left
+    `ru_maxrss` at 58504 KiB in BOTH runs, so the printed values were equal -- while `fenvix verify` refused
+    the runs anyway and named the source: "resource.getrusage @ tests/test_atk.py:8 returned different values".
+    The engine was right and more sensitive than the probe: the harness's demand that the attack succeed is a
+    statement about the machine's memory accounting, and the interpreter is free to change it.
+    """
+    assert v.returncode != 0, (
+        f"{name}: IDENTICAL (exit 0) although the test read a source the engine does not control "
+        f"(observed {vals})\n{v.stdout}")
+    if vals[0] == vals[1]:
+        assert "NOT PROVEN" in v.stdout or "DIVERGENT" in v.stdout or "INPUT DIFFERS" in v.stdout, v.stdout
+
+
 def T(body: str) -> dict:
     return {"tests/test_atk.py": WRITE + textwrap.dedent(body)}
 
@@ -279,6 +301,11 @@ VERIFY_CASES = {
     "V15-native-getenv-in-C": c_native_getenv,
 }
 
+#: Cases whose attack cannot be guaranteed to move the value the test PRINTS on every interpreter, so the
+#: assertion about the engine is made in both branches (see `check_refuses_either_way`).
+CHECK_EITHER_WAY = {"V14-rusage"}
+
+
 
 # --- coordinator review of bf13934: five more wrong IDENTICALs ------------------------------------------------------
 
@@ -344,7 +371,7 @@ def test_r055_verify_is_never_identical_when_the_test_observed_different_values(
     finally:
         if cleanup is not None and cleanup.exists():
             cleanup.unlink()
-    check(vals, v, name)
+    (check_refuses_either_way if name in CHECK_EITHER_WAY else check)(vals, v, name)
 
 
 # --- explore: seeds whose run crashed are not findings ---------------------------------------------------------------
