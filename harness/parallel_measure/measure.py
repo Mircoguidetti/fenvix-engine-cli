@@ -103,6 +103,32 @@ def outcomes_file(path):
     return {x["nodeid"]: x.get("outcome") for x in j if isinstance(x, dict) and "nodeid" in x}
 
 
+NPROC = os.cpu_count()
+try:
+    CPU_MODEL = next(l.split(":", 1)[1].strip() for l in open("/proc/cpuinfo") if l.startswith("model name"))
+except (OSError, StopIteration):
+    CPU_MODEL = "UNKNOWN"
+
+
+def norm(m):
+    """one vocabulary for outcomes: pending / todo / disabled are skipped."""
+    return {k: ("skipped" if v in ("pending", "todo", "disabled", "skip") else v) for k, v in m.items()}
+
+
+def runner_outcomes(path, cwd):
+    """Vitest / Jest JSON report -> test id in detjs' form (relative file::ancestor::...::title) -> outcome."""
+    if not os.path.exists(path):
+        return {}
+    with open(path) as f:
+        j = json.load(f)
+    out = {}
+    for tr in j.get("testResults", []):
+        rel = os.path.relpath(tr["name"], cwd)
+        for a in tr.get("assertionResults", []):
+            out["::".join([rel] + list(a.get("ancestorTitles") or []) + [a["title"]])] = a.get("status")
+    return out
+
+
 def compare_outcomes(a, b):
     common = set(a) & set(b)
     diff = sorted(k for k in common if a[k] != b[k])
@@ -124,7 +150,7 @@ def main():
     ap.add_argument("--spec", required=True)
     ap.add_argument("--name", required=True)
     ap.add_argument("--reps", type=int, default=3)
-    ap.add_argument("--workers", type=int, default=os.cpu_count())
+    ap.add_argument("--workers", default=f"2,{os.cpu_count()}", help="comma list of parallel worker counts")
     ap.add_argument("--out", required=True)
     ap.add_argument("--timeout", type=int, default=3600)
     ap.add_argument("--skip", default="", help="comma list of phases to skip (plain,serial,par)")
@@ -150,18 +176,25 @@ def main():
         base = [py, "-m", "pytest"] + args
         plain = lambda i: base + [f"--det-outcomes={out}/plain{i}.outcomes.json"]
         serial = lambda i: base + ["--det", f"--det-trace={out}/S{i}.jsonl"]
-        par = lambda i: base + ["--det", "-n", str(o.workers), f"--det-trace={out}/P{i}.jsonl"]
+        par = lambda i, n: base + ["--det", "-n", str(n), f"--det-trace={out}/P{i}w{n}.jsonl"]
     else:
         base = ["node", DETJS, runner] + (["run"] if runner == "vitest" else []) + args
         one = ["--no-file-parallelism"] if runner == "vitest" else ["--runInBand"]
-        plain = lambda i: base + one + spec.get("plain_extra", [])
+        rep_json = (["--reporter=default", "--reporter=json", "--outputFile.json={f}"] if runner == "vitest"
+                    else ["--json", "--outputFile={f}"])
+        plain = lambda i: base + one + spec.get("plain_extra", []) + [a.format(f=f"{out}/plain{i}.runner.json") for a in rep_json]
         # --det-workers=1: on the trunk at 5a6463fd `--det` alone is parallel (node/src/parallel.js:62, G-1044)
         serial = lambda i: base + ["--det", "--det-workers=1", f"--det-trace={out}/S{i}.jsonl"]
-        par = lambda i: base + ["--det", f"--det-workers={o.workers}", f"--det-trace={out}/P{i}.jsonl"]
+        par = lambda i, n: base + ["--det", f"--det-workers={n}", f"--det-trace={out}/P{i}w{n}.jsonl"]
 
-    def record(kind, i, cmd, r, **extra):
+    wlist = [int(x) for x in str(o.workers).split(",") if x]
+    plain_oc = lambda i: outcomes_file(f"{out}/plain{i}.outcomes.json") if runner == "pytest" \
+        else runner_outcomes(f"{out}/plain{i}.runner.json", cwd)
+
+    def record(kind, i, cmd, r, workers=1, **extra):
         line = {"repo": o.name, "commit": spec.get("commit"), "runner": runner, "kind": kind, "rep": i,
-                "workers": o.workers if kind == "par" else 1, "engine_commit": commit, "cpus": os.cpu_count(),
+                "workers": workers, "engine_commit": commit, "cpus": os.cpu_count(), "nproc": NPROC,
+                "cpu_model": CPU_MODEL,
                 "cmd": " ".join(cmd), "cwd": cwd, "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), **r, **extra}
         with open(results, "a") as f:
             f.write(json.dumps(line) + "\n")
@@ -174,25 +207,27 @@ def main():
         if "plain" not in skip:
             cmd = plain(i)
             r, _ = run(cmd, cwd, env, log, o.timeout)
-            oc = outcomes_file(f"{out}/plain{i}.outcomes.json") if runner == "pytest" else {}
+            oc = plain_oc(i)
             record("plain", i, cmd, r, tests=len(oc) or None, outcome_counts=counts(oc) or None)
         if "serial" not in skip:
             cmd = serial(i)
             r, _ = run(cmd, cwd, env, log, o.timeout)
             _, t = trace_tests(f"{out}/S{i}.jsonl")
             record("serial", i, cmd, r, tests=len(t), outcome_counts=counts({k: v[0] for k, v in t.items()}))
-        if "par" not in skip:
-            cmd = par(i)
+        for n in ([] if "par" in skip else wlist):
+            for d in (".detpy", ".detjs"):
+                shutil.rmtree(os.path.join(cwd, d), ignore_errors=True)
+            cmd = par(i, n)
             r, _ = run(cmd, cwd, env, log, o.timeout)
-            h, t = trace_tests(f"{out}/P{i}.jsonl")
-            workers = sorted({v[2] for v in t.values() if v[2]})
-            record("par", i, cmd, r, tests=len(t), outcome_counts=counts({k: v[0] for k, v in t.items()}),
-                   workers_seen=workers)
-        # the engine's verdict on this round's parallel run against this round's serial run
-        pairs = [("verify", f"{out}/S{i}.jsonl", f"{out}/P{i}.jsonl")]
+            h, t = trace_tests(f"{out}/P{i}w{n}.jsonl")
+            seen = sorted({v[2] for v in t.values() if v[2]})
+            record("par", i, cmd, r, workers=n, tests=len(t), outcome_counts=counts({k: v[0] for k, v in t.items()}),
+                   workers_seen=seen)
+        # the engine's verdict on this round's parallel runs against this round's serial run
+        pairs = [("verify", f"{out}/S{i}.jsonl", f"{out}/P{i}w{n}.jsonl", n) for n in wlist]
         if i == 2:
-            pairs.append(("verify_serial_noise", f"{out}/S1.jsonl", f"{out}/S2.jsonl"))
-        for kind, a, b in pairs:
+            pairs.append(("verify_serial_noise", f"{out}/S1.jsonl", f"{out}/S2.jsonl", 1))
+        for kind, a, b, n in pairs:
             if not (os.path.exists(a) and os.path.exists(b)):
                 continue
             cmd = fenvix + ["verify", a, b, "--json"]
@@ -201,16 +236,15 @@ def main():
                 rep = json.loads(text[text.index("{"):])
             except ValueError:
                 rep = {"unparsed": text[-2000:]}
-            with open(f"{out}/{kind}{i}.json", "w") as f:
+            with open(f"{out}/{kind}{i}w{n}.json", "w") as f:
                 json.dump(rep, f, indent=1)
             _, ta = trace_tests(a)
             _, tb = trace_tests(b)
             oc = compare_outcomes({k: v[0] for k, v in ta.items()}, {k: v[0] for k, v in tb.items()})
             extra = {"verdict": rep.get("verdict"), "summary": rep.get("summary"), "outcomes_trace_vs_trace": oc}
-            if kind == "verify" and runner == "pytest":
-                extra["outcomes_plain_vs_par"] = compare_outcomes(outcomes_file(f"{out}/plain{i}.outcomes.json"),
-                                                                  {k: v[0] for k, v in tb.items()})
-            record(kind, i, cmd, r, **extra)
+            if kind == "verify":
+                extra["outcomes_plain_vs_par"] = compare_outcomes(norm(plain_oc(i)), norm({k: v[0] for k, v in tb.items()}))
+            record(kind, i, cmd, r, workers=n, **extra)
 
 
 if __name__ == "__main__":
