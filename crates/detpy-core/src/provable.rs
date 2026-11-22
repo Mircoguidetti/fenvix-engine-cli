@@ -530,6 +530,21 @@ fn io_account(name: &str) -> Accounting {
         "StringIO" | "BytesIO" | "IncrementalNewlineDecoder" | "text_encoding" | "DEFAULT_BUFFER_SIZE" => {
             Accounting::Pure
         }
+        // The stream TYPES, for the same reason `_thread.lock` had to be named: the sensor reports a type when
+        // the type itself is called, and `open()` builds its stream by calling `_io.TextIOWrapper` around a
+        // `_io.BufferedReader` around a `_io.FileIO`. Constructing a stream is not an observation -- the bytes
+        // are, and they were accounted for at `open` (the `fs.read` event carries the digest of what was read),
+        // which is why the methods above answer `Recorded` and these do too.
+        // MEASURED on this branch: `python -m detpy unittest` on a project whose first test does
+        // `open(path, "w").write("x")` reported `unaccounted.api: _io.TextIOWrapper`, so that test was NOT
+        // PROVEN, and the refusal was carried to the test after it in the same process, which was then never
+        // reused (tests/test_runners_unittest.py::test_rmtree_of_a_temporary_directory_is_not_a_write_in_the_project).
+        "TextIOWrapper" | "BufferedReader" | "BufferedWriter" | "BufferedRandom" | "BufferedRWPair" | "FileIO"
+        | "_IOBase" | "_RawIOBase" | "_BufferedIOBase" | "_TextIOBase" | "_BytesIOBuffer" => {
+            Accounting::Recorded
+        }
+        // the exception types of the `_io` module: carriers of a failure, no state of their own
+        "BlockingIOError" | "UnsupportedOperation" => Accounting::Pure,
         _ => Accounting::Unaccounted,
     }
 }

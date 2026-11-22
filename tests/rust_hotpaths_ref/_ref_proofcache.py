@@ -524,6 +524,16 @@ class Capture:
         _mon.register_callback(self.tool, _mon.events.PY_RETURN, self.rec.ret)
         self.active = True
         _core.set_audit_hook(self._audit, _AUDIT_EVENTS)
+        # The general rule, which this reference loop is older than: a gap the wide sensor finds makes the
+        # running test uncacheable, through the same flag and the same words as the current path
+        # (python/detpy/_proof.py). Without it the reference stored tests the rule refuses -- MEASURED on
+        # session 1 of the capture-equivalence test: the reference held 16 entries and the current path 12, the
+        # four being `test_spawn`, which ran a subprocess, and the three tests that ran after it in the same
+        # process and carried its refusal. The reference was the side that was wrong, and the comparison is
+        # about what the two paths RECORD, not about a rule only one of them has heard of.
+        from detpy import provable as _provable
+
+        _provable.ON_GAP = self._note_unaccounted
         self._patch_sqlite()
         self._patch_stat()
         self._patch_scandir()
@@ -553,10 +563,24 @@ class Capture:
             self.arm(f.f_code)
             f = f.f_back
 
+    def _note_unaccounted(self, key: str) -> None:
+        """The rule found something it cannot account for in the running test: never store it.
+
+        The same two flags as python/detpy/_proof.py, so that the receipt names the child channel where the gap
+        is the act of starting a child and the generic rule otherwise.
+        """
+        try:
+            self.flag(self._cur(), "spawn" if key in _CHILD_GAPS else "unacc", key)
+        except Exception:
+            pass
+
     def stop(self) -> None:
         if not self.active:
             return
         self.active = False
+        from detpy import provable as _provable
+
+        _provable.ON_GAP = None
         _core.l0_listener_memo(None)
         _core.set_audit_hook(None, ())
         for obj, name, v in getattr(self, "_sqlite_saved", ()):
@@ -2780,6 +2804,9 @@ def _addr(args) -> str:
         return f"{a[0]}:{a[1]}" if isinstance(a, tuple) else str(a)
     except (IndexError, TypeError):
         return "?"
+
+
+from detpy._proof import _CHILD_GAPS  # the same set, not a copy: one list of the child-start callables
 
 
 def _uncacheable(flags: set, cfg) -> str | None:
