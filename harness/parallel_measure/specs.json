@@ -155,10 +155,11 @@
   "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
   "args": [],
   "ci": "DECLARED .github/workflows/ci.yml:53 npm test = vitest run; vitest.config.ts:36 pool forks singleFork: true (shared better-sqlite3 file data/qfmj.db: 'database is locked' in parallel), retry: 1",
-  "ci_parallel": false,
-  "plan_verdict": true,
+  "ci_parallel": true,
+  "plan_verdict": false,
   "source": "claude/serial-scan harness/serial_scan/candidates.json",
-  "install": "npm ci --ignore-scripts --no-audit --no-fund"
+  "install": "npm ci --ignore-scripts --no-audit --no-fund",
+  "why_outside": "not serial in practice: its own `vitest run` on vitest 4.1.11 already runs files in parallel (268 s vs 639 s forced serial, MEASURED by session B, claude/parallel-measure-b); out of the verdict (coordinator, 2026-11-22)"
  },
  "claudekit": {
   "repo": "https://github.com/carlrannaberg/claudekit",
