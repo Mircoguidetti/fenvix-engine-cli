@@ -392,22 +392,22 @@ def _git(path, *args, date=None):
 
 
 @pytest.mark.skipif(shutil.which("git") is None, reason="needs git")
-def test_cache_epoch_is_the_virtual_day_across_commits(pytester, run_cache):
-    # structlog in r5: a clock read at import time made every test depend on the epoch, and --det-epoch=auto (the
-    # HEAD commit time) moved at every commit. Audit G-0159 (py-cache): under the cache the epoch is the virtual day
-    # (today 00:00 UTC), the same for every commit of the day; the nightly --det-cache-real-clock check covers the rest
-    import time as _t
-
-    day = int(_t.time()) // 86400 * 86400
-    project(pytester, **{"pkg/stamp.py": "import time\n\nSTAMP = time.time()\n", "test_m.py": f"""
+def test_cache_epoch_is_uncached_dets_across_commits(pytester, run_cache):
+    # structlog in r5: a clock read at import time makes every test depend on the epoch, and --det-epoch=auto (the
+    # HEAD commit time) moves at every commit. Audit G-0159 bought that reuse back with a virtual day (today 00:00
+    # UTC) and review R-056 W10 showed what it cost: a date-dependent test passed under --det and failed under the
+    # cache. Founder 2026-11-21: the cache runs at the epoch uncached --det uses. So a clock reader does NOT come
+    # back from the cache once HEAD's commit time has moved beyond --det-cache-epoch-window, and the nightly
+    # --det-cache-real-clock check is what covers the rest.
+    project(pytester, **{"pkg/stamp.py": "import time\n\nSTAMP = time.time()\n", "test_m.py": """
         import time
         from pkg import stamp
 
         def test_reads_import_stamp():
             assert stamp.STAMP > 0
 
-        def test_now_is_the_virtual_day():
-            assert abs(time.time() - {day}) < 1
+        def test_now_is_the_det_epoch():
+            assert abs(time.time() - 1767225600) < 86400 * 400
         """, "other.txt": "1\n"})
     p = pytester.path
     _git(p, "init", "-q")
@@ -416,9 +416,10 @@ def test_cache_epoch_is_the_virtual_day_across_commits(pytester, run_cache):
     r, _, _ = run_cache()
     r.assert_outcomes(passed=2)
     (p / "other.txt").write_text("2\n")
+    # 68 days later: beyond the 30-day --det-cache-epoch-window, so the epoch is this HEAD's commit time
     _git(p, "commit", "-qam", "c2", date="2026-03-10T00:00:00Z")
     r, reused, data = run_cache()
-    assert reused == ids("test_reads_import_stamp", "test_now_is_the_virtual_day")
+    assert "test_m.py::test_reads_import_stamp" not in reused, reused
     # an explicit --det-epoch is used as given: a clock reader reruns under it
     r, reused, data = run_cache("--det-epoch=2026-03-01T00:00:00")
     assert "test_m.py::test_reads_import_stamp" not in reused

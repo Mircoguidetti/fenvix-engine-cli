@@ -1068,10 +1068,65 @@ def _conftests_in_tree(root: str, rels) -> set:
     return {f for f in out if os.path.exists(os.path.join(root, f))}
 
 
-def _import_effect_nodes(body) -> list:
+def _applied_is_benign(e) -> bool:
+    """An expression that is APPLIED, not merely evaluated: a decorator, a class base, a class keyword.
+
+    Review R-056 W2: this is where the digest leaked. ``_pure_expr`` answers whether EVALUATING an expression
+    carries information into the process, and reading ``helper.poison`` is indeed pure. But a decorator is
+    **called** and a class base **creates a class** (``__init_subclass__``, a metaclass), so the purity of the
+    expression says nothing about what applying it does. Three of W2's six wrong results were exactly this:
+    ``@helper.poison``, ``class TestZ(helper.Poison)`` and a keyword.
+
+    Default-deny, with one named exception that carries its evidence: pytest's own marks and fixtures
+    (``pytest.mark.x(...)``, ``pytest.fixture``) define and do not act, and they are on almost every test, so
+    counting them would put every parametrize list in the digest of every other file.
+    """
+    if e is None or isinstance(e, ast.Constant):
+        return True
+    f = e
+    while isinstance(f, (ast.Attribute, ast.Call)):
+        f = f.value if isinstance(f, ast.Attribute) else f.func
+    return isinstance(f, ast.Name) and f.id == "pytest" and _pure_expr(e)
+
+
+def _annotations_run(tree) -> bool:
+    """Whether annotations are evaluated at definition time: not under ``from __future__ import annotations``, and
+    not from 3.14 (PEP 649, lazy). Where they run, a non-constant annotation is import-time code."""
+    if sys.version_info >= (3, 14):
+        return False
+    for st in tree.body:
+        if isinstance(st, ast.ImportFrom) and st.module == "__future__":
+            if any(a.name == "annotations" for a in st.names):
+                return False
+    return True
+
+
+def _annotations_of(st) -> list:
+    """The annotation expressions a ``def`` evaluates when it is defined (review R-056 W2: the code checked the
+    decorators and the defaults and never looked at the annotations, which is the sixth case)."""
+    a = st.args
+    out = [st.returns]
+    for arg in [*a.posonlyargs, *a.args, *a.kwonlyargs, a.vararg, a.kwarg]:
+        if arg is not None:
+            out.append(arg.annotation)
+    return [x for x in out if x is not None]
+
+
+def _import_effect_nodes(body, hooks=False, annotations=True) -> list:
     """The top-level statements of a module (and of its class bodies, which run at import too) that may do more
-    than define names: anything but imports, ``def``/``class`` with pure decorators and defaults, docstrings,
-    assignments of pure expressions to names, and ``if``/``try`` around those."""
+    than define names: anything but imports, ``def``/``class`` whose decorators, defaults, class bases, class
+    keywords and annotations are all benign, docstrings, assignments of pure expressions to names, and
+    ``if``/``try`` around those.
+
+    A ``def``'s or a class's BODY is not import-time code, so it is never in the digest: only the expressions the
+    definition itself evaluates or applies are. That is both sounder and cheaper than appending the whole
+    statement, which used to put a test's body in the digest of every other file of the session.
+
+    ``hooks``: this file is a ``conftest.py``, where a ``def pytest_*`` is not a definition — the runner calls it
+    during collection, in every process, before any test (W2's sixth case was a
+    ``pytest_collection_modifyitems`` that wrote the state). Its whole body is therefore import-time code.
+    ``annotations``: whether this module's annotations are evaluated at definition time.
+    """
     out: list = []
     for st in body:
         if isinstance(st, (ast.Import, ast.ImportFrom, ast.Pass)):
@@ -1079,36 +1134,41 @@ def _import_effect_nodes(body) -> list:
         if isinstance(st, ast.Expr) and isinstance(st.value, ast.Constant):
             continue
         if isinstance(st, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            a = st.args
-            if all(_pure_expr(d) for d in st.decorator_list) and all(_pure_expr(d) for d in a.defaults) \
-                    and all(_pure_expr(d) for d in a.kw_defaults):
+            if hooks and st.name.startswith("pytest_"):
+                out.append(st)  # a collection hook: the runner calls it, body included
                 continue
-            out.append(st)
+            a = st.args
+            applied = [*st.decorator_list]
+            evaluated = [*a.defaults, *a.kw_defaults]
+            if annotations:
+                evaluated.extend(_annotations_of(st))
+            out.extend(d for d in applied if not _applied_is_benign(d))
+            out.extend(d for d in evaluated if d is not None and not _pure_expr(d))
             continue
         if isinstance(st, ast.ClassDef):
-            if not (all(_pure_expr(d) for d in st.decorator_list) and all(_pure_expr(b) for b in st.bases)
-                    and all(_pure_expr(k.value) for k in st.keywords)):
-                out.append(st)
-                continue
-            out.extend(_import_effect_nodes(st.body))
+            applied = [*st.decorator_list, *st.bases, *[k.value for k in st.keywords]]
+            out.extend(d for d in applied if not _applied_is_benign(d))
+            out.extend(_import_effect_nodes(st.body, hooks=False, annotations=annotations))
             continue
         if isinstance(st, (ast.Assign, ast.AnnAssign)):
             targets = st.targets if isinstance(st, ast.Assign) else [st.target]
-            if all(isinstance(t, (ast.Name, ast.Tuple)) and all(isinstance(x, ast.Name) for x in (
-                    t.elts if isinstance(t, ast.Tuple) else [t])) for t in targets) and _pure_expr(st.value):
+            simple = all(isinstance(t, (ast.Name, ast.Tuple)) and all(isinstance(x, ast.Name) for x in (
+                t.elts if isinstance(t, ast.Tuple) else [t])) for t in targets)
+            ann_ok = not (annotations and isinstance(st, ast.AnnAssign)) or _pure_expr(st.annotation)
+            if simple and _pure_expr(st.value) and ann_ok:
                 continue
             out.append(st)
             continue
         if isinstance(st, ast.If) and _pure_expr(st.test):
-            out.extend(_import_effect_nodes(st.body))
-            out.extend(_import_effect_nodes(st.orelse))
+            out.extend(_import_effect_nodes(st.body, hooks=hooks, annotations=annotations))
+            out.extend(_import_effect_nodes(st.orelse, hooks=hooks, annotations=annotations))
             continue
         if isinstance(st, ast.Try):
-            out.extend(_import_effect_nodes(st.body))
+            out.extend(_import_effect_nodes(st.body, hooks=hooks, annotations=annotations))
             for hd in st.handlers:
-                out.extend(_import_effect_nodes(hd.body))
-            out.extend(_import_effect_nodes(st.orelse))
-            out.extend(_import_effect_nodes(st.finalbody))
+                out.extend(_import_effect_nodes(hd.body, hooks=hooks, annotations=annotations))
+            out.extend(_import_effect_nodes(st.orelse, hooks=hooks, annotations=annotations))
+            out.extend(_import_effect_nodes(st.finalbody, hooks=hooks, annotations=annotations))
             continue
         out.append(st)
     return out
@@ -1291,9 +1351,20 @@ class ProofSession:
 
         h = hashlib.blake2b(digest_size=12)
         root = self.root
-        for rel in sorted({n.split("::", 1)[0] for n in nids}):
+        mods = {n.split("::", 1)[0] for n in nids}
+        files = set(mods)
+        for rel in mods:  # the conftest.py and __init__.py pytest loads with each collected file
+            d = os.path.dirname(rel)
+            while True:
+                for name in ("conftest.py", "__init__.py"):
+                    files.add(os.path.join(d, name) if d else name)
+                if not d:
+                    break
+                d = os.path.dirname(d)
+        files |= _conftests_in_tree(root, list(mods))  # W1: a directory with no collected test file in it
+        for rel in sorted(files):
             path = os.path.join(root, rel)
-            if not rel.endswith(".py"):
+            if not rel.endswith(".py") or not os.path.exists(path):
                 continue
             try:
                 with open(path, "rb") as fh:
@@ -1301,7 +1372,8 @@ class ProofSession:
             except (OSError, SyntaxError, ValueError):
                 h.update(f"{rel}\0?\0".encode())
                 continue
-            eff = _import_effect_nodes(tree.body)
+            eff = _import_effect_nodes(tree.body, hooks=os.path.basename(rel) == "conftest.py",
+                                       annotations=_annotations_run(tree))
             if eff:
                 h.update(f"{rel}\0".encode())
                 for node in eff:
@@ -1458,26 +1530,17 @@ class ProofSession:
                     content[rel] = "?"
             return content[rel]
 
-        # The whole collected set, not the files at or before the test in collection order.
+        # The collection order (the serial one), not the process lists: the lists of a -n plan change with the
+        # recorded durations, and a digest over them would never match from one session to the next.
         #
-        # Review R-056 W2 (6 wrong results under `-n 2`, MEASURED): pytest imports EVERY collected test module
-        # before it runs any test, in the serial session and in EVERY xdist worker -- each worker collects the
-        # whole session. So the import-time code of a file that comes LATER in the collection order has already
-        # run in this test's process. This code used to digest the files at or before the test and called them
-        # "a superset: conservative"; under `-n` they are a SUBSET, so a new `conftest.py` or `__init__.py`, a new
-        # decorator, class base or annotation in a later file changed what ran before the victim and the cache
-        # reused it all the same. Serially the same gap was covered only by the blunt rule that reruns every
-        # earlier test of an edited file, not by this digest.
+        # What a file LATER in the order can do to this test is run its import-time code, in the serial session
+        # and in every xdist worker (each worker collects the whole session). That is review R-056 W2, and it is
+        # held by `_import_effects`, whose rules this block made default-deny -- not by this digest, which would
+        # have to carry every later file's whole content and would then invalidate the session on any edit of any
+        # test. So: content at or before the test, import-time effects for the rest.
         #
-        # One digest over the whole collected set, the same for every test of the session, is exact for both, and
-        # it does not depend on reading the later file's intent: whatever that code does, the file's bytes are in
-        # the key. It costs reuse -- any change to any collected file invalidates the session -- which is what
-        # precise per-test tracking (P-061) exists to give back.
-        #
-        # Per-file children (--det-isolate-scope=file): the process really is the file, so the old per-process
-        # lists stay.
-        whole_session = getattr(self, "iso_scope", "test") != "file"
-        if whole_session:
+        # Per-file children (--det-isolate-scope=file): the process is the file.
+        if getattr(self, "iso_scope", "test") != "file":
             order = list(getattr(self, "prefix_nids", None) or [n for lst in lists for n in lst])
             present = {n for lst in lists for n in lst}
             lists = [[n for n in order if n in present]]
@@ -1494,41 +1557,9 @@ class ProofSession:
                     return out
                 d = os.path.dirname(d)
 
-        def files_of(nids):
-            """Every distinct file the process imports for these tests, with the conftest and ``__init__`` files
-            pytest loads with each one, and every conftest the runner says it imported (W1: a directory with no
-            test file in it), in a fixed order."""
-            out = []
-            done = set()
-            for rel in sorted({n.split("::", 1)[0] for n in nids}):
-                for f in [rel, *loaded_with(rel)]:
-                    if f not in done:
-                        done.add(f)
-                        out.append(f)
-            try:
-                extra = set(self.loaded_conftest_files())
-            except Exception:
-                extra = set()
-            extra |= _conftests_in_tree(self.root, [n.split("::", 1)[0] for n in nids])
-            for f in sorted(extra):
-                if f not in done:
-                    done.add(f)
-                    out.append(f)
-            return out
-
         def compute():
             now = {}
             for lst in lists:
-                if whole_session:
-                    # one digest over the whole collected set, shared by every test of this session
-                    h = hashlib.blake2b(digest_size=12)
-                    for f in files_of(lst):
-                        # an absent file reads "?": one that appears changes the digest
-                        h.update(f"{f}\0{digest_of(f)}\0".encode())
-                    d = h.hexdigest()
-                    for n in lst:
-                        now[n] = d
-                    continue
                 h = hashlib.blake2b(digest_size=12)
                 done = set()
                 for n in lst:

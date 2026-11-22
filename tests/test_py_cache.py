@@ -411,31 +411,33 @@ def test_status_of_an_unlinked_temporary_file_is_not_a_refusal(pytester):
     assert "tests/test_p.py::test_size" in reused(c), c.get("not_cached_ids")
 
 
-def test_g0159_cache_epoch_is_the_virtual_day_and_the_real_clock_check_reports(pytester):
-    """Audit G-0159: under --det-cache (``--det-epoch=auto``) the epoch is today 00:00 UTC; the nightly
-    ``--det-cache-real-clock`` check runs every test on the real clock, records nothing, and reports (and fails on)
-    a test that passed on the virtual day and fails on the real clock."""
-    import datetime
+def test_w10_cache_epoch_is_uncached_dets_and_the_real_clock_check_reports(pytester):
+    """Review R-056 W10 (founder 2026-11-21): under --det-cache (``--det-epoch=auto``) the epoch is the one
+    uncached ``--det`` uses, so a date-dependent test cannot pass under ``--det`` and fail under the cache, or the
+    reverse. This supersedes audit G-0159 / DECISIONS 2026-11-19 ("virtual-day clock", today 00:00 UTC), which
+    this test asserted before: the promise that the cache gives the uncached result wins over the reuse the
+    virtual day bought. Outside a git checkout that epoch is 2025-01-01 (LIMITS C6b).
 
+    The nightly ``--det-cache-real-clock`` check is unchanged: it runs every test on the real clock, records
+    nothing, and reports (and fails on) a test that passed on the virtual clock and fails on the real one."""
     _probe(pytester, """
         import datetime
-        def test_today_is_the_virtual_day():
+        def test_today_is_the_det_epoch():
             now = datetime.datetime.now(datetime.timezone.utc)
             assert (now.hour, now.minute) == (0, 0)
-            assert now.date() == datetime.datetime.fromtimestamp(OUTSIDE, datetime.timezone.utc).date()
+            assert now.date() == datetime.date(2025, 1, 1)
         def test_plain():
             pass
-        """.replace("OUTSIDE", str(int(__import__("time").time()))))
+        """)
     for label in ("r1", "r2"):
         p, c, _ = run(pytester, label, "-rA", "tests")
         assert p.returncode == 0, p.stdout
-    assert "tests/test_p.py::test_today_is_the_virtual_day" in reused(c)
-    now = datetime.datetime.now(datetime.timezone.utc)
+    assert "tests/test_p.py::test_today_is_the_det_epoch" in reused(c)
     p, c, _ = run(pytester, "nightly", "-rA", "--det-cache-real-clock", "tests")
     assert reused(c) == set() and c.get("recorded") == 0, c
-    if (now.hour, now.minute) != (0, 0):
-        assert "REAL-CLOCK FINDINGS" in p.stdout and "test_today_is_the_virtual_day" in p.stdout, p.stdout
-        assert p.returncode != 0
+    # the real clock is never 2025-01-01, so the finding is reported every time this test runs
+    assert "REAL-CLOCK FINDINGS" in p.stdout and "test_today_is_the_det_epoch" in p.stdout, p.stdout
+    assert p.returncode != 0
 
 
 def test_g0510_numpy_random_imported_by_detpys_reseed_is_not_the_tests_entropy(pytester):
