@@ -64,7 +64,7 @@ def main():
     for name in repos:
         rr = [r for r in rows if r["repo"] == name]
         sp = specs.get(name, {})
-        ok = lambda L: [r["wall_s"] for r in L if r["exit"] != 124]
+        ok = lambda L: [r["wall_s"] for r in L if r["exit"] != 124 and not r.get("invalid")]
         get = lambda k, n=None: [r for r in rr if r["kind"] == k and (n is None or r["workers"] == n)]
         plain, serial, noise = get("plain"), get("serial"), get("verify_serial_noise")
         mp, ms = med(ok(plain)), med(ok(serial))
@@ -87,7 +87,9 @@ def main():
             all_ident = bool(ident) and all(ident)
             all_proven = bool(ver) and all(v["exit"] == 0 for v in ver)
             faster = bool(mp and mpar and mpar < mp)
-            if not tests:
+            if any(r.get("invalid") for r in plain):
+                state = "INVALID (plain run: " + next(r["invalid"] for r in plain if r.get("invalid")) + ")"
+            elif not tests:
                 state = "DID NOT RUN (no test in the parallel trace)"
             elif any(x is None for x in ident):
                 state = "OUTCOME COMPARISON UNKNOWN (plain ids cannot be matched: Vitest projects)"
