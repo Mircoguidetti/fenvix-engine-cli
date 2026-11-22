@@ -635,6 +635,48 @@ test('${n} binds the fixed port', async () => {
   });
 }
 
+// AC4(b) of the spec "Engine P0: no false green" (B4): the P1 shared-path fixture above in a NAMED Vitest project. Its
+// trace ids are `<file>@@main::...` and its lane labels `main|<file>`; on bfaf70b4 neither matched the hazard files
+// the re-run was given, so the re-run ran nothing and reported "0 failed of 0 test(s)" (MEASURED on ironcurtain: 246
+// tests dropped). Now the re-run reports the hazard files' tests, with a count > 0.
+if (RUNNERS.includes('vitest')) {
+  test('vitest named project: the one-lane re-run reports the hazard files\' tests, not 0 of 0', T, () => {
+    const body = (n) => `
+const LOG = path.join(process.cwd(), 'shared.log');
+const lines = () => { try { return fs.readFileSync(LOG, 'utf8').trim().split('\\n'); } catch { return []; } };
+test('${n} writes a contiguous block', () => {
+  fs.appendFileSync(LOG, '${n}-start\\n');
+  const sab = new Int32Array(new SharedArrayBuffer(4));
+  for (let i = 0; i < 60; i++) {
+    if (lines().some((l) => l.endsWith('-start') && !l.startsWith('${n}'))) break;
+    Atomics.wait(sab, 0, 0, 50);
+  }
+  fs.appendFileSync(LOG, '${n}-end\\n');
+  expect(lines().slice(-2)).toEqual(['${n}-start', '${n}-end']);
+});
+`;
+    const dir = fixture('vitest', 'p1-named-project', { x: body('X'), y: body('Y') }, {
+      vitest: { projects: [{ test: { name: 'main', include: ['tests/**/*.test.mjs'] } }] },
+    });
+    const files = ['tests/x.test.mjs', 'tests/y.test.mjs'];
+    // the lanes are forced as in the P1 tests above; a named project's plan keys are its lane labels
+    write(dir, { 'plan.json': JSON.stringify({ lanes: [[`main|${files[0]}`], [`main|${files[1]}`]] }) });
+    fs.rmSync(path.join(dir, 'shared.log'), { force: true });
+    const on = det('vitest', dir, ['--det-plan=plan.json']);
+    assert.match(on.stderr, /named by a cross-worker hazard run again in one lane/, show(on));
+    assert.ok(on.trace.tests.every((t) => t.nodeid.includes('@@main::')), `the ids are project-qualified: ${show(on)}`);
+    const m = /the one-lane re-run is what is reported for .*: (\d+) failed of (\d+) test\(s\)/.exec(on.stdout);
+    assert.ok(m, show(on));
+    assert.ok(Number(m[2]) > 0, `the re-run must report the hazard files' tests: ${m[0]}`);
+    assert.equal(Number(m[2]), 2, show(on));
+    assert.equal(Number(m[1]), 0, show(on));
+    const hr = on.trace.header.meta.hazard_rerun;
+    assert.deepEqual(hr.files, files, show(on));
+    assert.equal(hr.complete, true, show(on));
+    assert.equal(on.status, 0, show(on));
+  });
+}
+
 // -- other runner versions -------------------------------------------------------------------------------------------
 
 const VERSIONS = [

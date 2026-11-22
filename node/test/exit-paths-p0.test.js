@@ -1,0 +1,99 @@
+'use strict';
+// AC6 of the spec "Engine P0: no false green" (B1, B7): a suite with one failing test exits 1 through each of the
+// three exit paths of bin/detjs.js, prints exactly one `detjs: status:` line, and its trace header carries the
+// same counts (`meta.status`, failed=1):
+//   * normal path: `--det-workers=1` (not wrapped) with TZ/locale already pinned in the environment (no restart);
+//   * re-exec path: the same with TZ/LC_ALL/LANG/DETJS_PINNED cleared, so bin/detjs.js restarts itself to pin them;
+//   * wrapper path, with a hazard: two lanes forced with `--det-plan` (as test/parallel-p041.test.js does) over two
+//     files that both write one file; the wrapper re-runs both in one lane and writes the merged trace itself;
+//   * wrapper path, no hazard: the same lanes over files that share nothing; the pass-1 child's trace is final.
+// The exit codes already held on bfaf70b4 (they guard the refactor); the status line and field are new.
+const { test } = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const { spawnSync } = require('node:child_process');
+const { BIN, TMP, readTrace } = require('./helpers');
+
+const T = { timeout: 600000 };
+
+function cleanEnv(extra) {
+  const env = { ...process.env };
+  for (const k of ['CI', 'GITHUB_ACTIONS', 'DETJS', 'NODE_OPTIONS', 'NODE_TEST_CONTEXT', 'DETJS_SEED', 'DETJS_CACHE_DIR',
+    'DETJS_PINNED', 'DETJS_HAZARD_RERUN', 'DETJS_HAZARD_PASS', 'DETJS_EARLY', 'TZ', 'LC_ALL', 'LANG', 'LANGUAGE',
+    'JEST_WORKER_ID', 'VITEST_POOL_ID', 'VITEST_WORKER_ID']) delete env[k];
+  return { ...env, ...extra };
+}
+
+function project(name, files) {
+  const dir = path.join(TMP, 'exit-paths', name);
+  fs.rmSync(dir, { recursive: true, force: true });
+  fs.mkdirSync(path.join(dir, 'tests'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ name: `exit-paths-${name}`, private: true }));
+  fs.writeFileSync(path.join(dir, 'vitest.config.mjs'), "export default { test: { include: ['tests/**/*.test.mjs'] } };\n");
+  const head = "import { test, expect } from 'vitest'; import fs from 'node:fs'; import path from 'node:path';";
+  for (const [f, body] of Object.entries(files)) fs.writeFileSync(path.join(dir, 'tests', f), `${head}\n${body}\n`);
+  fs.writeFileSync(path.join(dir, 'plan.json'), JSON.stringify({ lanes: Object.keys(files).map((f) => [`tests/${f}`]) }));
+  return dir;
+}
+
+function run(dir, args, env) {
+  fs.rmSync(path.join(dir, '.detjs'), { recursive: true, force: true });
+  const r = spawnSync(process.execPath, [BIN, 'vitest', 'run', '--det', ...args], { cwd: dir, encoding: 'utf8', env: cleanEnv(env), timeout: 300000 });
+  let trace = null;
+  try { trace = readTrace(path.join(dir, '.detjs', 'trace.jsonl')); } catch { /* none */ }
+  return { ...r, trace, show: `status=${r.status} signal=${r.signal}\nstdout=${(r.stdout || '').slice(-2500)}\nstderr=${(r.stderr || '').slice(-2500)}` };
+}
+
+const PINNED = { TZ: 'UTC', LC_ALL: 'C.UTF-8', LANG: 'C.UTF-8' };
+const ONE_FAILS = {
+  'a.test.mjs': "test('fails', () => { expect(1).toBe(2); });",
+  'b.test.mjs': "test('passes', () => { expect(1).toBe(1); });",
+};
+
+function assertOneFailed(r, { passed }) {
+  assert.equal(r.status, 1, r.show);
+  const lines = `${r.stdout}\n${r.stderr}`.split('\n').filter((l) => l.startsWith('detjs: status:'));
+  assert.equal(lines.length, 1, `exactly one status line: ${JSON.stringify(lines)}\n${r.show}`);
+  assert.equal(lines[0], `detjs: status: failed=1 not_proven=0 passed=${passed} skipped=0`, r.show);
+  assert.ok(r.stderr.split('\n').includes(lines[0]), `the status line is on stderr\n${r.show}`);
+  assert.ok(r.trace, r.show);
+  assert.deepEqual(r.trace.header.meta.status, { failed: 1, not_proven: 0, passed, skipped: 0 }, r.show);
+}
+
+test('normal path: one failing test exits 1, one status line, status in the trace header', T, () => {
+  const dir = project('normal', ONE_FAILS);
+  const r = run(dir, ['--det-workers=1'], PINNED);
+  assert.doesNotMatch(r.stderr, /run again in one lane/, r.show);
+  assertOneFailed(r, { passed: 1 });
+});
+
+test('re-exec path: the same through the TZ/locale restart', T, () => {
+  const dir = project('reexec', {
+    ...ONE_FAILS,
+    // marker of the restart: the pinned TZ reaches the test although the environment had none
+    'c.test.mjs': "test('sees the pinned TZ', () => { fs.writeFileSync(path.join(process.cwd(), 'tz.txt'), String(process.env.TZ)); });",
+  });
+  const r = run(dir, ['--det-workers=1'], {});
+  assert.equal(fs.readFileSync(path.join(dir, 'tz.txt'), 'utf8'), 'UTC', r.show);
+  assertOneFailed(r, { passed: 2 });
+});
+
+test('wrapper path with a hazard: the wrapper merges, prints the one status line and exits 1', T, () => {
+  const dir = project('wrapper-hazard', {
+    'a.test.mjs': "test('fails', () => { fs.writeFileSync(path.join(process.cwd(), 'shared.txt'), 'a'); expect(1).toBe(2); });",
+    'b.test.mjs': "test('passes', () => { fs.writeFileSync(path.join(process.cwd(), 'shared.txt'), 'b'); expect(1).toBe(1); });",
+  });
+  const r = run(dir, ['--det-plan=plan.json'], PINNED);
+  assert.match(r.stderr, /run again in one lane/, r.show);
+  assert.ok(r.trace.header.meta.hazard_rerun && r.trace.header.meta.hazard_rerun.complete, r.show);
+  assertOneFailed(r, { passed: 1 });
+});
+
+test('wrapper path with no hazard: the pass-1 child writes the final trace and prints the one status line', T, () => {
+  const dir = project('wrapper-clean', ONE_FAILS);
+  const r = run(dir, ['--det-plan=plan.json'], PINNED);
+  assert.doesNotMatch(r.stderr, /run again in one lane/, r.show);
+  assert.match(r.stdout, /parallel execution in 2 lanes/, r.show);
+  assertOneFailed(r, { passed: 1 });
+});

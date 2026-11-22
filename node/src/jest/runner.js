@@ -378,6 +378,12 @@ async function detjsJestRunner(globalConfig, config, environment, runtime, testP
     throw e;
   } finally {
     endPending();
+    // B5 (spec "Engine P0: no false green"): tests the circus events never bracketed (a failing beforeAll skips them
+    // without a test_start/test_skip, a filter) are written as `skipped` before the part closes, cache on or off.
+    // The cache capture below adds them to its own list as before.
+    try {
+      controls.recordNeverStarted([...ids].filter(([t]) => t && t.type === 'test').map(([, id]) => id));
+    } catch (e) { process.stderr.write(`detjs: never-started tests of ${fileId} not recorded: ${e && e.message}\n`); }
     controls.closeFile();
     parallel.carriedAfter(label);
     parallel.leave(label, carried.length ? { carried } : {});

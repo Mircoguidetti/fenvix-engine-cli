@@ -185,9 +185,16 @@ async function main(runner, argv) {
   meta.files = [...new Set(records.map((x) => x.nodeid.split('::', 1)[0]))];
   const reusedTests = summaries.filter((x) => x.reused).flatMap((x) => x.g.ids);
   if (reusedTests.length) meta.reused_tests = reusedTests; else delete meta.reused_tests;
+  // B7 (spec "Engine P0: no false green"): this process writes the final trace, so it carries the counts and prints
+  // the one status line (the per-test sessions do not: src/session.js printsStatus); bin/detjs.js decides on them
+  const exitStatus = require('./exit-status');
+  const status = exitStatus.countStatus(records);
+  meta.status = status;
+  exitStatus.record(status);
   fs.mkdirSync(path.dirname(tracePath), { recursive: true });
   const res = native.mergeTraces(parts, tracePath, JSON.stringify(meta), order);
   process.stdout.write(`detjs: trace ${path.relative(root, tracePath)}: ${res.nTests} tests, order digest ${res.orderDigest}\n`);
+  process.stderr.write(`${exitStatus.statusLine(status)}\n`);
   if (det.some((a) => a.startsWith('--det-cache'))) {
     fs.mkdirSync(path.dirname(receiptsPath), { recursive: true });
     fs.writeFileSync(receiptsPath, rows.length ? `${rows.join('\n')}\n` : '');

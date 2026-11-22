@@ -159,7 +159,7 @@ if (RERUN.shouldWrap(process.argv[2], process.argv.slice(3))) {
   }, (err) => {
     const msg = err && err.message ? err.message : String(err);
     console.error(/^detjs: /.test(msg) && process.env.DETJS_DEBUG !== '1' ? msg : (err && err.stack ? err.stack : err));
-    process.exitCode = 2;
+    process.exitCode = require('../src/exit-status').runExit({ internalError: true });
   });
 } else if (needsEarly(process.argv.slice(2)) || PIN_NEEDS_RESTART) {
   const path = require('node:path');
@@ -173,12 +173,20 @@ if (RERUN.shouldWrap(process.argv[2], process.argv.slice(3))) {
   if (r.signal) process.kill(process.pid, r.signal);
   process.exitCode = r.status ?? 1;
 } else main(process.argv.slice(2)).then((code) => {
-  process.exitCode = code;
+  // B1 (spec "Engine P0: no false green"): the runner shell's code and the counts of the trace this process wrote
+  // (src/session.js finish, src/isolate.js), decided by src/exit-status.js, for a `--det` run of a runner (with no
+  // trace written the counts are 0 and the runner code decides). `verify` (0/1/3/2), repro and the other commands
+  // keep the code they decided.
+  const xs = require('../src/exit-status');
+  const argv = process.argv.slice(2);
+  const det = RUNNERS.includes(argv[0]) && (argv.includes('--det') || process.env.DETJS === '1' || process.env.DETJS === 'true') && !argv.includes('--no-det');
+  const st = xs.recordedStatus();
+  process.exitCode = det || st ? xs.runExit({ ...(st || {}), runnerCode: code }) : code;
 }, (err) => {
   // A user error the shell raised itself (message `detjs: ...`) is printed without the JavaScript stack;
   // DETJS_DEBUG=1 prints the stack of every error (audit G-2176).
   const msg = err && err.message ? err.message : String(err);
   const own = /^detjs: /.test(msg) && process.env.DETJS_DEBUG !== '1';
   console.error(own ? msg : (err && err.stack ? err.stack : err));
-  process.exitCode = 2;
+  process.exitCode = require('../src/exit-status').runExit({ internalError: true });
 });

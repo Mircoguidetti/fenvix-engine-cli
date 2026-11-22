@@ -7,6 +7,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const native = require('./native');
 const config = require('./config');
+const exitStatus = require('./exit-status');
 
 const VERSION = require('../package.json').version;
 
@@ -53,8 +54,9 @@ const HELP = `detjs options (all others are passed to the test runner):
                            on its own inputs only (docs/NODE-CACHE.md)
   --det-cache-receipts=P   receipts file (default <root>/.detjs/receipts.jsonl)
   --det-cache-summary=P    summary JSON (default <root>/.detjs/cache-summary.json)
-  --det-workers=N|N%|auto  run test files in N parallel lanes with a fixed plan (default: serial, or the
-                           runner's own --maxWorkers / -w / --fileParallelism when given on the command line)
+  --det-workers=N|N%|auto  run test files in N parallel lanes with a fixed plan (default: the machine's CPUs, or the
+                           runner's own --maxWorkers / -w / --fileParallelism when given on the command line;
+                           --det-workers=1 or the runner's own serial option for one lane)
   --det-plan=TRACE|JSON    replay the lane plan of an earlier parallel run (its trace's meta.parallel.plan)
 `;
 
@@ -433,6 +435,11 @@ function finish(run, opts, files, meta) {
   // the installed dependencies of the project (src/loaded.js, review R-055 V5)
   try { const d = require('./loaded').depsInput(run.dir); if (d && full.inputs) full.inputs.deps = d; } catch (e) { full.inputs_error = String(e && e.message); }
   const res = native.mergeTraces(all, run.tracePath, JSON.stringify(full), order);
+  // B7 (spec "Engine P0: no false green"): the counts of the trace, in its header and on one status line; the exit
+  // decision of this process (bin/detjs.js, src/exit-status.js runExit) uses them
+  const status = stampStatus(run.tracePath);
+  exitStatus.record(status);
+  if (printsStatus(full)) fs.writeSync(2, `${exitStatus.statusLine(status)}\n`); // sync: the runner may be exiting
   let reproLines = [];
   try { reproLines = require('./repro').afterMerge(run, opts, files, meta.runner); } catch (e) { reproLines = [`detjs: --det-outcomes not written: ${e && e.message}`]; }
   fs.rmSync(run.dir, { recursive: true, force: true });
@@ -461,6 +468,46 @@ function finish(run, opts, files, meta) {
   return { lines, result: res };
 }
 
+/**
+ * Count the merged trace's tests (exit-status.js countStatus; a single run has no NOT PROVEN test of its own, B3)
+ * and write the counts into its header as `meta.status` (appendix point 3: in `meta`, no change to the Rust Header).
+ * The header line is edited as text, not re-serialized, so no other field of it can change.
+ */
+function stampStatus(tracePath) {
+  let text;
+  try { text = fs.readFileSync(tracePath, 'utf8'); } catch { return exitStatus.countStatus([]); }
+  const recs = [];
+  for (const line of text.split('\n')) {
+    if (!line.startsWith('{"type":"test"')) continue;
+    try { const t = JSON.parse(line); recs.push({ nodeid: t.nodeid, outcome: t.outcome }); } catch { /* counted by none */ }
+  }
+  const status = exitStatus.countStatus(recs);
+  const nl = text.indexOf('\n');
+  const head = nl < 0 ? text : text.slice(0, nl);
+  const at = head.indexOf('"meta":{');
+  if (head.startsWith('{"type":"header"') && at >= 0) {
+    const i = at + '"meta":{'.length;
+    const field = `"status":${JSON.stringify(status)}${head[i] === '}' ? '' : ','}`;
+    fs.writeFileSync(tracePath, `${head.slice(0, i)}${field}${head.slice(i)}${nl < 0 ? '' : text.slice(nl)}`);
+  }
+  return status;
+}
+
+/**
+ * Whether this session prints the status line: only the process that writes the FINAL trace of the run does (B7).
+ * Not a pass of the hazard re-run wrapper whose trace the wrapper replaces (src/parallel-rerun.js: pass 2 always,
+ * pass 1 when it found a cross-worker hazard; with none, pass 1's trace is the final one -- appendix points 1, 2),
+ * and not a per-test session of --det-isolate (src/isolate.js merges and prints).
+ */
+function printsStatus(meta, env = process.env) {
+  if (env.DETJS_ISOLATE_CHILD === '1') return false;
+  if (env.DETJS_HAZARD_RERUN === '1' && env.DETJS_HAZARD_PASS === '2') return false;
+  if (env.DETJS_HAZARD_RERUN === '1' && env.DETJS_HAZARD_PASS === '1') {
+    return require('./parallel-rerun').hazardFiles({ meta }).length === 0;
+  }
+  return true;
+}
+
 // OS entropy Level 0 only observes: crypto.randomBytes & co. without --det-urandom, native key generation always
 const URANDOM_OPS = /^crypto\.(?:randomBytes|randomFillSync|randomFill|randomInt|pseudoRandomBytes)$/;
 /** Tests of the merged trace that drew real OS entropy: [{nodeid, ops}] (G-1426: the default is never silent). */
@@ -484,4 +531,4 @@ function realEntropyTests(tracePath, urandom) {
   return out;
 }
 
-module.exports = { realEntropyTests, parseArgs, prepare, header, finish, partIds, HELP, VERSION };
+module.exports = { realEntropyTests, parseArgs, prepare, header, finish, partIds, stampStatus, printsStatus, HELP, VERSION };

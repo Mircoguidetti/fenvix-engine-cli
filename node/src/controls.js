@@ -289,6 +289,7 @@ function openFile(fileId, project) {
   }
   STATE.fileId = fileId;
   STATE.testIndex = 0;
+  STATE.begun = new Set();
   if (c.controls.has('seeds')) seeds.seedFile(label);
   if (c.controls.has('net')) network.startFile(label);
   if (c.controls.has('time')) {
@@ -307,6 +308,25 @@ function closeFile() {
     STATE.recorder = null;
   }
   if (STATE.netMode === 'record') network.saveRecordings();
+}
+
+/**
+ * B5 (spec "Engine P0: no false green"): the tests of the open file that never reached the runner's per-test hook
+ * (skipped by a failing beforeAll, filtered) get a record with outcome `skipped`, so that every test the runner
+ * reports is in the trace whether the cache is on or not. `ids`: the file's test ids in declaration order. Called
+ * by the runner shells just before the file's part is closed (src/vitest/shell.js, src/jest/runner.js).
+ */
+function recordNeverStarted(ids) {
+  if (!STATE.recorder) return 0;
+  if (STATE.testId !== null) STATE.endTest('interrupted');
+  let n = 0;
+  for (const id of ids) {
+    if (STATE.begun.has(id)) continue;
+    STATE.beginTest(id);
+    STATE.endTest('skipped');
+    n++;
+  }
+  return n;
 }
 
 /** Part file name for a test file (the wrapper merges parts in execution order). */
@@ -349,6 +369,6 @@ function writeJson(file, obj) {
 }
 
 module.exports = {
-  cfg, installProcess, installRealm, openFile, closeFile, partName, uniqueIds, shuffleTree, writeJson,
+  cfg, installProcess, installRealm, openFile, closeFile, recordNeverStarted, partName, uniqueIds, shuffleTree, writeJson,
   installMainEnvRecord, projectSite, PATCHER, STATE,
 };

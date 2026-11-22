@@ -64,8 +64,10 @@ function verifyExit(summary = {}) {
 /**
  * The counts of the status line (B7) over test records ({outcome, nodeid}): failed = failed or error, passed =
  * passed, skipped = skipped or todo. `notProven`: the nodeids NOT PROVEN by this run (B3); they are counted there
- * only, not under their recorded outcome. Any other outcome (e.g. `interrupted`) is in none of the four counts, as
- * the spec defines them (B7); REPORT.md lists this as an open point.
+ * only, not under their recorded outcome. Any other outcome (`interrupted`, a test whose file ended while it ran,
+ * or one this code does not know) counts as failed: the spec names failed and error only (B7), and leaving the rest
+ * out of every count would let such a run end green where src/parallel-rerun.js always gave 1 (its `badFinal` was
+ * every outcome other than passed, skipped and todo). REPORT.md records this decision.
  */
 function countStatus(records, notProven = []) {
   const np = new Set(notProven);
@@ -75,7 +77,7 @@ function countStatus(records, notProven = []) {
     const o = r.outcome;
     if (o === 'passed') st.passed++;
     else if (o === 'skipped' || o === 'todo') st.skipped++;
-    else if (o === 'failed' || o === 'error') st.failed++;
+    else st.failed++;
   }
   st.not_proven = np.size;
   return st;

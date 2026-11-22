@@ -117,6 +117,7 @@ function makeRunner(Base, realm = globalThis) {
     __open(filepath, project) {
       const fileId = path.relative(this.__det.root, filepath).split(path.sep).join('/');
       if (this.__det.opened === fileId) return;
+      if (this.__det.opened !== null) this.__neverStarted(this.__det.opened);
       this.__det.opened = fileId;
       // a lane runs one file at a time, in plan order (waits for the lane's previous file); pool id = lane
       parallel.enter(project ? `${project}|${fileId}` : fileId, { runner: 'vitest' });
@@ -225,8 +226,22 @@ function makeRunner(Base, realm = globalThis) {
       return undefined;
     }
 
+    /**
+     * B5 (spec "Engine P0: no false green"): the tests of the open file that never reached onBeforeRunTask (a
+     * failing beforeAll, a filter) are written as `skipped` before its part closes, cache on or off.
+     */
+    __neverStarted(fileId) {
+      const ids = [];
+      for (const [task, id] of this.__det.ids) {
+        const f = task.type === 'test' ? this.__det.fileOf.get(task) : null;
+        if (f && fileIdOf(f, this.__det.root) === fileId) ids.push(id);
+      }
+      try { controls.recordNeverStarted(ids); } catch (e) { process.stderr.write(`detjs: never-started tests of ${fileId} not recorded: ${e && e.message}\n`); }
+    }
+
     async onAfterRunFiles(files) {
       if (this.__det.active) {
+        if (this.__det.opened !== null) this.__neverStarted(this.__det.opened);
         controls.closeFile();
         this.__det.opened = null;
         for (const f of files || []) {
