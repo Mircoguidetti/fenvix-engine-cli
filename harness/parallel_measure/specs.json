@@ -239,7 +239,8 @@
   "source": "claude/serial-scan harness/serial_scan/candidates.json",
   "install": "python3 -m venv; pip install -e '.[dev]' (as CI ci.yml:324; the candidates.json chain stops at the nonexistent '.[test]' extra, which pip accepts, and leaves rosclaw-know/pyseekdb/xdist out)",
   "ci_parallel": false,
-  "plan_verdict": true
+  "plan_verdict": false,
+  "why_outside": "Python candidate removed from the queue on 2026-11-22 (founder decision D14: Node only until 28 November); not measured"
  },
  "get-physics-done": {
   "repo": "https://github.com/psi-oss/get-physics-done",
@@ -266,6 +267,7 @@
   "source": "claude/serial-scan harness/serial_scan/candidates.json",
   "install": "python3 -m venv; pip install -e . ; pip install 'pytest>=9.0.2' 'pytest-asyncio>=1.3.0' 'pytest-xdist>=3.8.0' (the dev dependency-group; CI uses uv sync --dev)",
   "ci_parallel": false,
-  "plan_verdict": true
+  "plan_verdict": false,
+  "why_outside": "Python candidate removed from the queue on 2026-11-22 (founder decision D14: Node only until 28 November); not measured"
  }
 }
