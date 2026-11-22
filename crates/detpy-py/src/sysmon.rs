@@ -298,11 +298,30 @@ extern "C" {
     ) -> c_int;
 }
 
+/// Set once the interpreter has begun shutting down: from there the hook is inert.
+///
+/// `Py_FinalizeEx` keeps raising audit events while it tears the interpreter down, and by then the Python
+/// callable a slot points at can already have been freed -- the hook would call a dead object.
+/// MEASURED (CPython 3.12.3, this branch): every `pytest --det` run of a one-test project ended in SIGSEGV
+/// (exit 139) after the run had passed and the trace had been written; a native backtrace put the crash in
+/// `Py_FinalizeEx -> _core::sysmon::audit_hook -> PyObject_CallFunctionObjArgs`. That is the whole of the
+/// `attacks (py 3.12)` red in CI 44964230574, and on 3.12 it would have ended every customer run with a
+/// crash exit code after a green suite.
+static SHUTTING_DOWN: AtomicBool = AtomicBool::new(false);
+
+/// The event CPython raises while it removes the audit hooks: finalization has started, whether or not the
+/// `atexit` callback ran (`os._exit` skips both, and then nothing is torn down at all).
+const CLEAR_AUDIT_HOOKS: &[u8] = b"cpython._PySys_ClearAuditHooks";
+
 unsafe extern "C" fn audit_hook(event: *const c_char, args: *mut ffi::PyObject, _data: *mut c_void) -> c_int {
-    if event.is_null() {
+    if event.is_null() || SHUTTING_DOWN.load(Ordering::Acquire) {
         return 0;
     }
     let ev = CStr::from_ptr(event).to_bytes();
+    if ev == CLEAR_AUDIT_HOOKS {
+        SHUTTING_DOWN.store(true, Ordering::Release);
+        return 0;
+    }
     let mut py_ev: *mut ffi::PyObject = std::ptr::null_mut();
     let mut rc = 0;
     for slot in CURRENT.iter() {
@@ -366,8 +385,27 @@ pub fn set_audit_hook(callable: &Bound<'_, PyAny>, names: &Bound<'_, PyTuple>, s
             return Err(PyErr::take(callable.py())
                 .unwrap_or_else(|| PyTypeError::new_err("PySys_AddAuditHook failed")));
         }
+        // An audit hook cannot be removed, so the one way to stop it calling into a half-torn-down interpreter
+        // is to make it inert before the teardown begins. `atexit` callbacks run at the start of
+        // `Py_FinalizeEx`, before modules are cleared and before the hooks themselves are removed, which is
+        // early enough: whichever part of the engine installs a slot first, every slot goes quiet there.
+        let py = callable.py();
+        let f = py.import("detpy._core")?.getattr("audit_hooks_off")?;
+        py.import("atexit")?.call_method1("register", (f,))?;
     }
     Ok(())
+}
+
+/// Stop calling every audit slot's callable, for good. Registered with `atexit` the first time a slot is set.
+///
+/// The filters are leaked rather than freed, as they are when a slot is replaced: another thread may still be
+/// inside the hook reading one.
+#[pyfunction]
+pub fn audit_hooks_off() {
+    SHUTTING_DOWN.store(true, Ordering::Release);
+    for slot in CURRENT.iter() {
+        slot.store(std::ptr::null_mut(), Ordering::Release);
+    }
 }
 
 // ---------------------------------------------------------------------------

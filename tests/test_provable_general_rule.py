@@ -591,3 +591,50 @@ def test_what_an_ordinary_suite_does_is_provable(tmp_path):
         f"{v.returncode}\n{v.stdout}")
     assert "not proven: 0" in v.stdout, v.stdout
     assert "covered by Level 0: 6" in v.stdout, v.stdout
+
+
+def test_a_det_run_exits_cleanly_and_the_audit_hook_goes_quiet_at_shutdown(tmp_path):
+    """A `--det` run must end with exit code 0, not with a crash after a green suite.
+
+    MEASURED on CPython 3.12.3 before the fix: every `pytest --det` run of a ONE-test project ended in SIGSEGV
+    (exit 139 / -11). The suite passed, the trace was written, and then the process died; a native backtrace
+    named the cause exactly:
+
+        Py_FinalizeEx -> _core::sysmon::audit_hook -> PyObject_CallFunctionObjArgs
+
+    `Py_FinalizeEx` keeps raising audit events while it tears the interpreter down, and the sensor's Python
+    callable had already been freed by then. An audit hook cannot be removed once installed, so the hook is made
+    inert instead: an `atexit` callback (registered when the first slot is set) and the
+    `cpython._PySys_ClearAuditHooks` event both latch it off.
+
+    This was the `attacks (py 3.12)` red of CI 44964230574. What it would have been for a customer is worse than
+    a red job: a green suite followed by a crash exit code, which their CI reads as a failed run.
+    """
+    proj = _project(tmp_path, {"tests/test_x.py": "def test_x():\n    assert 1\n"})
+    for i in (1, 2):
+        t = tmp_path / f"exit{i}.jsonl"
+        r = _run(proj, t, _env())
+        assert r.returncode == 0, (
+            f"a --det run must exit 0; got {r.returncode} "
+            f"({'SIGSEGV' if r.returncode == -11 else 'signal'} after the suite passed)\n"
+            f"{r.stdout[-2000:]}{r.stderr[-2000:]}")
+        assert t.exists() and "1 passed" in r.stdout, r.stdout[-2000:]
+
+    # and the mechanism itself, in a process of its own because switching the hook off is irreversible
+    script = textwrap.dedent("""
+        import sys
+        from detpy import _core
+        seen = []
+        _core.set_audit_hook(lambda ev, args: seen.append(ev), ("open",), 3)
+        open(__file__).close()
+        assert seen, "the hook must be called before shutdown starts"
+        _core.audit_hooks_off()
+        before = len(seen)
+        open(__file__).close()
+        assert len(seen) == before, f"the hook was still called after audit_hooks_off: {seen[before:]}"
+        print("QUIET")
+    """)
+    s = tmp_path / "hook_off.py"
+    s.write_text(script)
+    r = subprocess.run([sys.executable, str(s)], capture_output=True, text=True, env=_env(), timeout=120)
+    assert r.returncode == 0 and "QUIET" in r.stdout, f"exit {r.returncode}\n{r.stdout}\n{r.stderr}"
