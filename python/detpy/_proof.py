@@ -1430,15 +1430,23 @@ class ProofSession:
         return out
 
     def outside_imports_save(self) -> None:
-        """One file per recording process (no two writers, so no merge race under ``-n``)."""
+        """One file per recording process (no two writers, so no merge race under ``-n``).
+
+        A failure is RECORDED, not swallowed: without the list the next session has nothing to compare and would
+        reuse on installed code it never looked at. The marker makes that session refuse instead (and it cost this
+        block a measured hour on 3.14, where the first version of this method raised and the whole check went
+        quietly missing).
+        """
         if self.role == "controller":
             return
+        who = getattr(self, "worker", None) or self.role
+        path = os.path.join(self.dir, f"{self.OUTSIDE_IMPORTS_GLOB}.{who}.json")
         try:
             files = _core.detpy_probe_call(self._outside_import_files)
-        except Exception:
+        except Exception as e:
+            self.engine_json_save(path, {"__error__": f"{type(e).__name__}: {e}"})
             return
-        who = getattr(self, "worker", None) or self.role
-        self.engine_json_save(os.path.join(self.dir, f"{self.OUTSIDE_IMPORTS_GLOB}.{who}.json"), files)
+        self.engine_json_save(path, files)
 
     def outside_imports_check(self, nids) -> None:
         """A reused result was recorded against the installed code that is on disk now; otherwise it is not reused.
@@ -1457,6 +1465,12 @@ class ProofSession:
             if isinstance(part, dict):
                 stored.update(part)
         if not stored:
+            return
+        bad_save = stored.pop("__error__", None)
+        if bad_save is not None:
+            for n in nids:
+                if self._is_hit(n):
+                    self._demote(n, f"code: the installed code this run imports could not be listed ({bad_save})")
             return
 
         def changed():
