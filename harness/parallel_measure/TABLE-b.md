@@ -18,7 +18,7 @@ Harness: `measure.py` / `table.py` at f4686992, unchanged.
 
 ## agentic-qe (MEASURED, replaces the UNKNOWN row above)
 
-Rows produced by  (shared harness c55bfd60, classify.py e0368ee1) from ; engine trunk claude/release-1 bfaf70b4; spec args  (coordinator option a). The engine ran 1 round (serial S1, parallel P1 w2/w4); plain serial and plain parallel ran 3 rounds. The w4 verify was killed (exit -9, traces about 1.2 GB each): no engine verdict for w4. Every engine run exited 0 although vitest reported failed tests (S1: 168 failed); plain runs exit 1.
+Rows produced by `table.py` (shared harness c55bfd60, classify.py e0368ee1) from `raw-b/agentic-qe/results.jsonl`; engine trunk claude/release-1 bfaf70b4; spec args `--bail=0` (coordinator option a). The engine ran 1 round (serial S1, parallel P1 w2/w4); plain serial and plain parallel ran 3 rounds. The w4 verify was killed (exit -9, traces about 1.2 GB each): no engine verdict for w4. Every engine run exited 0 although vitest reported failed tests (S1: 168 failed); plain runs exit 1.
 
 | repo | pinned commit | runner | CI mode (DECLARED) | in plan verdict | tests | plain serial s | runner's own parallel s (no engine) | `--det` serial s | workers | parallel with proof s | speedup vs plain serial | outcome map identical (per test id, every round) | engine verdict (per round) | causes named (max per round) | serial noise (S1 vs S2) | row state | engine state | NOISY runs | nproc / CPU | engine commit | boxes (classify.py) | counts (rule) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
