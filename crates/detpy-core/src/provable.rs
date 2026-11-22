@@ -941,6 +941,17 @@ pub fn account_node(module: &str, export: &str) -> Accounting {
             "threadId" | "isMainThread" | "isInternalThread" | "resourceLimits" | "SHARE_ENV" => {
                 Accounting::Controlled
             }
+            // Node's own ESM loader talks to its hooks thread with this, synchronously, on every `import()`
+            // that goes through a registered hook. What it carries is the module's resolution and its source,
+            // which the engine records as `inputs.code` / `inputs.deps` -- the same answer, for the same
+            // reason, as the `module._*` loader internals above.
+            // MEASURED, CI 44981148907 and locally on node 22: an AVA project whose test does a dynamic
+            // `import()` was NOT PROVEN with "api:worker_threads.receiveMessageOnPort", so no AVA suite could
+            // be cached (AVA registers a loader hook; the deprecation warning `module.register()` in the same
+            // log is that thread).
+            // A test that reads a message from a worker of its own is refused where that opens: `Worker`
+            // itself is Unaccounted (below), as are `parentPort`, `MessageChannel` and `postMessage`.
+            "receiveMessageOnPort" => Accounting::Input,
             _ => Accounting::Unaccounted,
         },
         "process" => match export {
@@ -1736,6 +1747,12 @@ mod tests {
         assert_eq!(account_node("v8", "getHeapStatistics"), Accounting::Unaccounted);
         // a value of this process turned into bytes and back is not a channel; the heap is
         assert_eq!(account_node("v8", "serialize"), Accounting::Pure);
+        // the loader's synchronous port read is the module's own source, which is a run input; a worker of the
+        // test's own is refused where it is created
+        assert_eq!(account_node("worker_threads", "receiveMessageOnPort"), Accounting::Input);
+        assert_eq!(account_node("worker_threads", "Worker"), Accounting::Unaccounted);
+        assert_eq!(account_node("worker_threads", "parentPort"), Accounting::Unaccounted);
+        assert_eq!(account_node("worker_threads", "MessageChannel"), Accounting::Unaccounted);
         assert_eq!(account_node("v8", "deserialize"), Accounting::Pure);
         assert_eq!(account_node("os", "somethingNodeAddsIn2027"), Accounting::Unaccounted);
         assert_eq!(account_node("a_module_that_does_not_exist", "x"), Accounting::Unaccounted);
