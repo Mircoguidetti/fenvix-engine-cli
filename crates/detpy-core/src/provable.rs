@@ -1017,6 +1017,17 @@ pub fn account_node(module: &str, export: &str) -> Accounting {
             | "constants" | "getSourceMapsSupport" | "setSourceMapsSupport" => Accounting::Input,
             _ => Accounting::Unaccounted,
         },
+        "v8" => match export {
+            // Turning a value this process already has into bytes and back. It reads nothing outside the
+            // process and pins nothing; what it serialises came from somewhere the engine accounts for
+            // already. Named because a runner uses it to pass values between a worker and the main process:
+            // MEASURED, CI 44981148907 `node (26, shard 2/4)`, "not accounted for: api:v8.deserialize" on
+            // every test of an AVA project, so nothing of that suite could be cached.
+            "serialize" | "deserialize" | "Serializer" | "Deserializer" | "DefaultSerializer"
+            | "DefaultDeserializer" => Accounting::Pure,
+            // the heap, the coverage tables, the flags: machine state with no event
+            _ => Accounting::Unaccounted,
+        },
         // the heap, another realm, the debugger, the tracer, a terminal, an interactive loop, a bundled
         // database, the test runner's own hooks and the async scheduling graph: no event covers any of them
         _ => Accounting::Unaccounted,
@@ -1723,6 +1734,9 @@ mod tests {
         assert_eq!(account_node("sqlite", "DatabaseSync"), Accounting::Unaccounted);
         assert_eq!(account_node("inspector", "open"), Accounting::Unaccounted);
         assert_eq!(account_node("v8", "getHeapStatistics"), Accounting::Unaccounted);
+        // a value of this process turned into bytes and back is not a channel; the heap is
+        assert_eq!(account_node("v8", "serialize"), Accounting::Pure);
+        assert_eq!(account_node("v8", "deserialize"), Accounting::Pure);
         assert_eq!(account_node("os", "somethingNodeAddsIn2027"), Accounting::Unaccounted);
         assert_eq!(account_node("a_module_that_does_not_exist", "x"), Accounting::Unaccounted);
         assert_eq!(account_node("fs", "watch"), Accounting::Unaccounted);
