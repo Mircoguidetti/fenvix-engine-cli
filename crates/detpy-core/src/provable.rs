@@ -286,7 +286,16 @@ pub fn account(module: &str, qualname: &str) -> Accounting {
         // the C tokenizer and the AST builder read source text they are handed, nothing else
         "_tokenize" => Accounting::Pure,
         "_ssl" => ssl_account(name),
-        "fcntl" | "termios" | "mmap" | "signal" | "_posixsubprocess" | "_multiprocessing" | "_curses" | "pwd"
+        // `_posixsubprocess.fork_exec` is how `subprocess` starts a child, which the engine follows (see the
+        // posix arm above); everything else of that module is not named, so it stays refused.
+        "_posixsubprocess" => {
+            if name == "fork_exec" {
+                Accounting::Recorded
+            } else {
+                Accounting::Unaccounted
+            }
+        }
+        "fcntl" | "termios" | "mmap" | "signal" | "_multiprocessing" | "_curses" | "pwd"
         | "grp" | "spwd" | "crypt" | "syslog" | "_uuid" | "_scproxy" | "msvcrt" | "winreg" | "nis" => {
             // every one of these reads state of the machine, the user database or another process, and none of
             // them has an event today. Named here so the report can say which, rather than "unknown module".
@@ -458,10 +467,21 @@ fn posix_account(qualname: &str, name: &str) -> Accounting {
         // runner reads it to lay out its own output
         "get_terminal_size" => Accounting::Controlled,
         "uname" | "confstr" | "sysconf" | "pathconf" | "fpathconf" => Accounting::Input,
-        // a child process: `uncontrolled.child`, which is already NOT PROVEN
-        "fork" | "forkpty" | "_exit" | "abort" | "system" | "popen" | "spawnv" | "spawnve" | "spawnvp"
-        | "spawnvpe" | "posix_spawn" | "posix_spawnp" | "execv" | "execve" | "execvp" | "execvpe" | "wait"
-        | "wait3" | "wait4" | "waitpid" | "waitid" | "kill" | "killpg" => Accounting::Unaccounted,
+        // Starting a child the engine FOLLOWS, and reaping it. The engine runs the child under its own
+        // observation and credits what it read, wrote and refused to the test that started it
+        // (`Capture::credit_child`), and a follow it cannot trust sets the `spawn` flag, which refuses the
+        // test by name ("subprocess") -- so the channel is decided by the predicate that actually knows,
+        // per child, and not by this name. The verifier is conservative regardless: Level 0 records
+        // `uncontrolled.child` for a child process, so a test that spawns one is never IDENTICAL.
+        // MEASURED on this branch: reporting these as gaps made every followed-child test uncacheable
+        // (tests/test_proofcache_follow.py: 14 failing against 10 before, and the 4 were exactly the ones
+        // that assert a followed child's reads ARE credited as inputs and the test is reused).
+        "system" | "popen" | "spawnv" | "spawnve" | "spawnvp" | "spawnvpe" | "posix_spawn" | "posix_spawnp"
+        | "wait" | "wait3" | "wait4" | "waitpid" | "waitid" => Accounting::Recorded,
+        // A bare `fork` with no exec is not a followed child, and `exec*` replaces this process: neither is
+        // covered by the argument above, so both stay refused, as do signals to another process.
+        "fork" | "forkpty" | "_exit" | "abort" | "execv" | "execve" | "execvp" | "execvpe" | "kill"
+        | "killpg" => Accounting::Unaccounted,
         // writes and pure path work: a write carries no information into the test
         "write" | "pwrite" | "writev" | "pwritev" | "close" | "closerange" | "fsync" | "fdatasync" | "ftruncate"
         | "truncate" | "lseek" | "dup" | "dup2" | "pipe" | "pipe2" | "mkdir" | "makedirs" | "rmdir" | "remove"
@@ -473,6 +493,13 @@ fn posix_account(qualname: &str, name: &str) -> Accounting {
         // here because the standard library registers these on import (`random`, `threading`, `logging`), which
         // put `api:posix.register_at_fork` on ordinary tests -- MEASURED on the smoke project (itsdangerous).
         "register_at_fork" => Accounting::Pure,
+        // The decoders of a wait status: they interpret an integer the caller already has (the one `waitpid`
+        // returned, which the arm above accounts for) and ask the system for nothing. `subprocess.run` calls
+        // them on every child, so leaving them unnamed refused every test that ran one -- MEASURED on this
+        // branch: `subprocess.run(["true"])` was NOT PROVEN with
+        // "api:posix.WIFSTOPPED, api:posix.waitstatus_to_exitcode" and nothing else.
+        "WIFEXITED" | "WEXITSTATUS" | "WIFSIGNALED" | "WTERMSIG" | "WIFSTOPPED" | "WSTOPSIG"
+        | "WIFCONTINUED" | "WCOREDUMP" | "waitstatus_to_exitcode" => Accounting::Pure,
         // whether a descriptor is a terminal, and the encoding that implies, differ between a terminal and a pipe
         // and between machines, and `--det` pins neither
         "isatty" | "device_encoding" | "ttyname" => Accounting::Unaccounted,

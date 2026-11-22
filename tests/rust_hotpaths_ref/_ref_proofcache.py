@@ -566,11 +566,10 @@ class Capture:
     def _note_unaccounted(self, key: str) -> None:
         """The rule found something it cannot account for in the running test: never store it.
 
-        The same two flags as python/detpy/_proof.py, so that the receipt names the child channel where the gap
-        is the act of starting a child and the generic rule otherwise.
+        The same flag as python/detpy/_proof.py.
         """
         try:
-            self.flag(self._cur(), "spawn" if key in _CHILD_GAPS else "unacc", key)
+            self.flag(self._cur(), "unacc", key)
         except Exception:
             pass
 
@@ -2804,9 +2803,6 @@ def _addr(args) -> str:
         return f"{a[0]}:{a[1]}" if isinstance(a, tuple) else str(a)
     except (IndexError, TypeError):
         return "?"
-
-
-from detpy._proof import _CHILD_GAPS  # the same set, not a copy: one list of the child-start callables
 
 
 def _uncacheable(flags: set, cfg) -> str | None:

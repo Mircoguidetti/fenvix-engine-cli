@@ -35,19 +35,6 @@ _AUDIT_EVENTS = ("exec", "open", "ctypes.dlopen", "sqlite3.connect", "os.listdir
                  "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn", "os.remove", "os.rename", "os.mkdir",
                  "os.rmdir", "os.truncate", "shutil.rmtree", "shutil.copyfile", "shutil.move", "os.symlink",
                  "os.link")
-#: Gaps of the general rule whose refusal belongs to the CHILD PROCESS channel, which has a name of its own.
-#: Every one of these callables only starts, replaces or reaps a child; the engine follows a child and credits
-#: its inputs, and a follow it cannot trust already flags "spawn". Reporting them as the generic rule replaced
-#: the named cause in the receipt a customer reads to find out why a test was rerun, which is the same mistake
-#: as checking the rule before the named flags (crates/detpy-core/src/record.rs::uncacheable).
-_CHILD_GAPS = frozenset(
-    f"api:{m}.{n}"
-    for m in ("posix", "os", "nt")
-    for n in ("fork", "forkpty", "_exit", "abort", "system", "popen", "spawnv", "spawnve", "spawnvp",
-              "spawnvpe", "posix_spawn", "posix_spawnp", "execv", "execve", "execvp", "execvpe", "wait",
-              "wait3", "wait4", "waitpid", "waitid", "kill", "killpg")
-) | {"api:_posixsubprocess.fork_exec"}
-
 _O_TMPFILE = getattr(os, "O_TMPFILE", 0)
 # options that never change a test's result (output, reporting, selection by path, detpy's own files)
 # detpy's own bookkeeping variables (re-exec, bytecode cache): set by detpy itself, never a test input
@@ -304,15 +291,13 @@ class Capture(_core.CaptureCore):
     def _note_unaccounted(self, key: str) -> None:
         """The general rule found something it cannot account for in the running test: never store it.
 
-        The test is refused either way. Which flag it is refused under decides what the customer READS in the
-        receipt, and a gap that is the act of starting a child process belongs to the child channel, which
-        already has a name and an instruction: "subprocess". MEASURED before this: `subprocess.run(["true"])`
-        under `--det-cache` was refused with "did something the engine cannot account for (NOT PROVEN: see the
-        trace's unaccounted list)", which sends the reader to a list to discover what every engine already
-        knew -- the test ran a child process. The refusal is unchanged; only its name is.
+        Starting a child is NOT one of these gaps any more: the accounting table answers for the names that
+        start a child the engine follows, because the follow itself is the accounting (and a follow it cannot
+        trust sets the `spawn` flag). Flagging them here refused every followed-child test instead, which is
+        reuse the product is sold on.
         """
         try:
-            self.flag(self._cur(), "spawn" if key in _CHILD_GAPS else "unacc", key)
+            self.flag(self._cur(), "unacc", key)
         except Exception:
             pass   # between contexts (nothing to flag): the test is refused by the verifier regardless
 
