@@ -231,10 +231,18 @@ function makeRunner(Base, realm = globalThis) {
      * failing beforeAll, a filter) are written as `skipped` before its part closes, cache on or off.
      */
     __neverStarted(fileId) {
+      // only tests still in the run: --det-order removes the others from the file's tree (reproCollected), and
+      // Vitest does not report them; a collection-only run (--det-collect) records nothing more
+      if (process.env.DETJS_COLLECT === '1') return;
       const ids = [];
+      const sets = new Map();
       for (const [task, id] of this.__det.ids) {
         const f = task.type === 'test' ? this.__det.fileOf.get(task) : null;
-        if (f && fileIdOf(f, this.__det.root) === fileId) ids.push(id);
+        if (!f || fileIdOf(f, this.__det.root) !== fileId) continue;
+        if (!sets.has(f)) { const c = this.__det.collected && this.__det.collected.get(f); sets.set(f, c ? new Set(c) : null); }
+        const inRun = sets.get(f);
+        if (inRun && !inRun.has(repro.wf(id))) continue;
+        ids.push(id);
       }
       try { controls.recordNeverStarted(ids); } catch (e) { process.stderr.write(`detjs: never-started tests of ${fileId} not recorded: ${e && e.message}\n`); }
     }

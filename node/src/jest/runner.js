@@ -381,8 +381,13 @@ async function detjsJestRunner(globalConfig, config, environment, runtime, testP
     // B5 (spec "Engine P0: no false green"): tests the circus events never bracketed (a failing beforeAll skips them
     // without a test_start/test_skip, a filter) are written as `skipped` before the part closes, cache on or off.
     // The cache capture below adds them to its own list as before.
+    // Only tests still in the run: --det-order removes the others from the tree (reproPlan), and they are not
+    // reported by Jest at all; a collection-only run (--det-collect) records nothing more.
     try {
-      controls.recordNeverStarted([...ids].filter(([t]) => t && t.type === 'test').map(([, id]) => id));
+      const inRun = new Set(collected);
+      if (process.env.DETJS_COLLECT !== '1') {
+        controls.recordNeverStarted([...ids].filter(([t, id]) => t && t.type === 'test' && inRun.has(repro.wf(id))).map(([, id]) => id));
+      }
     } catch (e) { process.stderr.write(`detjs: never-started tests of ${fileId} not recorded: ${e && e.message}\n`); }
     controls.closeFile();
     parallel.carriedAfter(label);
