@@ -54,7 +54,26 @@ def cpu_sample(dt=1.0):
     return round(100.0 * (1 - (i1 - i0) / max(t1 - t0, 1)), 1)
 
 
+def run_tmpdir(name):
+    """coordinator D18: one fixed temp directory per repository, emptied before every run. Short on purpose (Unix
+    socket paths are limited to 108 bytes; tests create sockets in the temp directory)."""
+    return f"/tmp/pm-{name}"
+
+
+def reset_tmpdir(path):
+    shutil.rmtree(path, ignore_errors=True)
+    os.makedirs(path, exist_ok=True)
+
+
+def tmp_env(env, path):
+    return {**env, "TMPDIR": path, "TMP": path, "TEMP": path}
+
+
 def run(cmd, cwd, env, log, timeout):
+    tmpdir = env.get("TMPDIR")
+    if tmpdir and tmpdir.startswith("/tmp/pm-"):
+        reset_tmpdir(tmpdir)
+    before = set(os.listdir("/tmp"))
     busy = cpu_sample()
     load = os.getloadavg()
     t0 = time.time()
@@ -67,8 +86,11 @@ def run(cmd, cwd, env, log, timeout):
     dt = time.time() - t0
     with open(log, "a") as f:
         f.write(f"\n$ (cd {cwd} && {' '.join(cmd)})  # exit {code}, {dt:.2f} s\n{out[-8000:]}\n")
+    new = sorted(set(os.listdir("/tmp")) - before - {os.path.basename(tmpdir or "")})
+    tmp_rec = {"tmpdir_reset": f"TMPDIR=TMP=TEMP={tmpdir}, emptied before the run"} if tmpdir else {}
+    tmp_rec["hardcoded_tmp"] = ("yes: " + ", ".join("/tmp/" + x for x in new[:20]) + (f" (+{len(new) - 20})" if len(new) > 20 else "")) if new else "no"
     return {"exit": code, "wall_s": round(dt, 2), "busy_before_pct": busy, "loadavg_before": [round(x, 2) for x in load],
-            "noisy": busy > 80.0}, out
+            "noisy": busy > 80.0, **tmp_rec}, out
 
 
 def trace_tests(path):
@@ -264,6 +286,7 @@ def main():
     results = os.path.join(os.path.abspath(o.out), "results.jsonl")
     env = {k: v for k, v in os.environ.items() if k not in VOLATILE}
     env.update({k: os.path.expandvars(v) for k, v in spec.get("env", {}).items()})
+    env = tmp_env(env, run_tmpdir(o.name))
     commit = engine_commit()
     runner = spec["runner"]
     args = spec.get("args", [])
