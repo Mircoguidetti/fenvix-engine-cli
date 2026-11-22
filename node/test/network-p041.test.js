@@ -514,7 +514,18 @@ for (const runner of RUNNERS) {
     assert.deepEqual({ node: got(dir, 'node'), better: got(dir, 'better') }, first, 'the same values in a second run');
     save(dir, 'run2.jsonl');
     const rep = verify(dir, 'run1.jsonl', 'run2.jsonl');
-    assert.equal(rep.summary.stable, rep.summary.tests, divergences(rep).join('\n'));
+    // `better-sqlite3` is a third-party COMPILED extension and no audited list names it, so the general rule
+    // refuses that one test and names the addon (founder decision 2026-11-21, route 1, docs/NATIVE-AUDITS.md).
+    // The two tests that use the BUILTIN `node:sqlite`, which the engine virtualises, must stay stable, and
+    // the refusal must name the addon -- a blanket refusal of the file would fail this.
+    // MEASURED: "covered by Level 0: 2  not proven: 1", the one being `better sqlite3`, named
+    // `native:.../better-sqlite3/prebuilds/linux-x64.node`.
+    const refused = (rep.tests || []).filter((t) => t.status !== 'stable');
+    assert.equal(rep.summary.stable, rep.summary.tests - refused.length, divergences(rep).join('\n'));
+    for (const t of refused) {
+      assert.match(String(t.nodeid), /better sqlite3/, `only the better-sqlite3 test may be refused: ${t.nodeid}`);
+      assert.match(JSON.stringify(t), /better-sqlite3/, `the refusal must name the addon: ${JSON.stringify(t)}`);
+    }
   });
 }
 

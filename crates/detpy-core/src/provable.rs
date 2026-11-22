@@ -982,6 +982,13 @@ pub fn account_node(module: &str, export: &str) -> Accounting {
             // `uncontrolled.io`. Emscripten's generated code -- PGlite, which the pilot's suite runs on --
             // asks for `constants`, and without this every test of such a suite was NOT PROVEN.
             "binding" => Accounting::Controlled,
+            // Loading a native addon. The addon's own path and digest are a run input, and whether its C code
+            // is reasoned about is decided by the native rule, which reports `native:<path>` for anything not
+            // on the audited list -- so the refusal is made there, by the predicate that knows which addon it
+            // was, and this name adds a second reason for the same thing. MEASURED: a better-sqlite3 test was
+            // refused twice over, "api:process.dlopen (and 1 more)" on one runner and the native rule on the
+            // other, for one act.
+            "dlopen" => Accounting::Recorded,
             // hands out a builtin module: what is in it is this table's own business, and what was loaded is
             // `inputs.code` / `inputs.deps`
             "getBuiltinModule" => Accounting::Input,
@@ -1001,7 +1008,9 @@ pub fn account_node(module: &str, export: &str) -> Accounting {
             "_send" | "_getActiveHandles" | "_getActiveRequests" | "_tickCallback" | "channel" | "connected"
             | "disconnect" | "send" => Accounting::Controlled,
             // the standard input, a native addon, the internal bindings, a diagnostic report: nothing covers them
-            "stdin" | "dlopen" | "binding" | "_linkedBinding" | "report" | "setSourceMapsEnabled"
+            // (`dlopen` and `binding` are answered by their own arms above, where the predicate that knows
+            // which addon or which binding it was makes the decision)
+            "stdin" | "_linkedBinding" | "report" | "setSourceMapsEnabled"
             | "sourceMapsEnabled" | "initgroups" | "setgroups" | "ref" | "unref" | "_debugProcess"
             | "_debugEnd" | "_rawDebug" | "reallyExit" | "_kill" | "_fatalException"
             | "_stopProfilerIdleNotifier" | "_startProfilerIdleNotifier" => Accounting::Unaccounted,
@@ -1789,7 +1798,10 @@ mod tests {
         assert_eq!(account_node("os", "somethingNodeAddsIn2027"), Accounting::Unaccounted);
         assert_eq!(account_node("a_module_that_does_not_exist", "x"), Accounting::Unaccounted);
         assert_eq!(account_node("fs", "watch"), Accounting::Unaccounted);
-        assert_eq!(account_node("process", "dlopen"), Accounting::Unaccounted);
+        // loading an addon is recorded (its path and digest are a run input) and the native rule decides
+        // whether its C code is reasoned about, so the refusal is made there and not by this name
+        assert_eq!(account_node("process", "dlopen"), Accounting::Recorded);
+        assert_eq!(account_node("process", "stdin"), Accounting::Unaccounted);
         assert_eq!(account_node("perf_hooks", "monitorEventLoopDelay"), Accounting::Unaccounted);
     }
 
