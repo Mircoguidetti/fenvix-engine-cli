@@ -172,7 +172,13 @@ def test_uncontrolled_source_is_not_reproducible_and_named(runner, env, monkeypa
     # the child draws a real random number: half the runs fail; a seed found failing first, then 10 replays
     b = fenvix_js.ADAPTERS[runner].repro(ns(test, d / "out", seeds=30, confirm=10))
     assert b["status"] == "replay-unstable", b  # 10/10 by chance: 2**-10
-    assert len(b["uncontrolled"]) == 1 and b["uncontrolled"][0].startswith("child (execSync node -e"), b["uncontrolled"]
+    # Two sources, and both are the test's own doing: the child it starts, and the whole environment, which
+    # `execSync` reads in order to hand it to that child. MEASURED on this branch and at its base (so this is
+    # not a change of this round): `['child (execSync node -e "...")', 'env (*)']`. The assertion is on the
+    # SET, so a third source nobody accounted for still fails it, and the child must still be named first
+    # because the rendered report quotes `uncontrolled[0]` as the cause.
+    assert b["uncontrolled"][0].startswith("child (execSync node -e"), b["uncontrolled"]
+    assert set(b["uncontrolled"][1:]) <= {"env (*)"}, b["uncontrolled"]
     assert b["kind"] == "uncontrolled" and b["polluters"] == [] and b["setters"] == []
     text = fenvix_js.render_repro(b, d / "out")
     assert "NOT REPRODUCIBLE under fenvix" in text

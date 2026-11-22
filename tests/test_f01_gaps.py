@@ -103,7 +103,19 @@ def test_loop():
         return t0, scheduled, loop.time(), time.monotonic()
     print("LOOP", asyncio.run(main()))
 ''')
-    v = twice(proj, "LOOP")
+    # An async test is NOT PROVEN on this trunk: what makes it unprovable is the ORDER the loop runs its
+    # callbacks in, which is Level 1 (row PY-07, reviewed on its own branch and not on this trunk), so
+    # `_asyncio`'s tasks, futures and handles are refused by name. That is the rule working, and it does not
+    # touch what this test is about: the loop's CLOCK. The assertions below are unchanged -- the printed values
+    # must be equal in both runs and the virtual clock must have advanced -- and the verdict is asserted too,
+    # because a run the engine cannot prove must never come out clean.
+    pa, ta = det(proj, "a")
+    pb, tb = det(proj, "b")
+    va, vb = values(pa, "LOOP"), values(pb, "LOOP")
+    assert va and va == vb, (pa.stdout[-3000:] + pa.stderr[-2000:], pb.stdout[-3000:])
+    out = refused(ta, tb)
+    assert "_asyncio" in out, out
+    v = va
     t0, scheduled, end, mono = eval(v[0])
     assert scheduled - t0 >= 0.05 and end - scheduled >= 0.03, v  # the sleeps advanced the loop's clock
     assert t0 < 2000  # the virtual monotonic base (1000 s), not the machine's uptime
