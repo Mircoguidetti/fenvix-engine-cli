@@ -1,0 +1,3340 @@
+{
+ "exam": "go-live acceptance exam (exam/PLAN.md)",
+ "run_id": "44996027924",
+ "base_run": null,
+ "rows_rerun_in_run_id": null,
+ "release_run_requested": "44995653567",
+ "artifacts_tested": [
+  {
+   "release_run": "44995653567",
+   "release_commit": "346661b8a119653b33f9ab39cd0edda212f63a33",
+   "head_branch": "claude/blocco-1-stima-9hqqtz",
+   "event": "workflow_dispatch",
+   "selected": "requested",
+   "install_ok": true,
+   "legs": [
+    "F-01@linux-x64/py3.13/node22 (exam run 44996027924)",
+    "F-02@linux-x64/py3.12/node22 (exam run 44996027924)",
+    "F-03@linux-x64/py3.13/node22 (exam run 44996027924)"
+   ]
+  }
+ ],
+ "installed": {
+  "44996027924": {
+   "ok": true,
+   "source": "ci-artifact",
+   "platform": "linux-x64",
+   "artifact": "engine-artifact",
+   "artifact_id": "14743033665",
+   "release_run": "44995653567",
+   "release_commit": "346661b8a119653b33f9ab39cd0edda212f63a33",
+   "head_branch": "claude/blocco-1-stima-9hqqtz",
+   "event": "workflow_dispatch",
+   "selected": "requested",
+   "engine_dir": "/home/runner/work/_temp/engine-unpacked/fenvix-engine-0.1.0-r208.346661b-linux-x86_64",
+   "wheel": "/home/runner/work/_temp/engine-unpacked/fenvix-engine-0.1.0-r208.346661b-linux-x86_64/wheels/fenvix-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl",
+   "version": "fenvix 0.1.0 (engine: detpy 0.1.0, trace encoding 2; Python 3.13.18);artifact fenvix-engine 0.1.0 build r208.346661b commit 346661b8a119653b33f9ab39cd0edda212f63a33 (linux-x86_64, glibc 2.28+);detjs 0.1.0;fenvix-go absent;fenvix-skip absent;fenvix-agent.jar absent;",
+   "sha256": {
+    "fenvix-engine-0.1.0-r208.346661b-linux-x86_64.tar.gz": "d2ee6e66f9b5767b171d8798735a1530b4a09c13aa3add551f12057f82ad3463",
+    "fenvix-engine-0.1.0-r208.346661b-linux-x86_64.tar.gz.sha256": "5c6dbc1381e80d99ddfd5750babb23a0403b17711b52a387e16ce9af7ad44fe6",
+    "install_test.py": "40e5ea27180043213c35eae921896b78bd1405a643651023d24f38e33d197750",
+    "fenvix-engine-0.1.0-r208.346661b-linux-x86_64/VERSION.json": "5315463e97b4b97f9abd66e43aae8f016667a15232dff3602367d38e6883bdf6"
+   }
+  }
+ },
+ "decisions": [
+  "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "MCP gaps belong to F-14 (remote MCP server), not examined here"
+ ],
+ "summary": {
+  "rows": 24,
+  "pass": 1,
+  "fail": 23,
+  "checks": 68,
+  "checks_passed": 66,
+  "gaps_in_scope": 207,
+  "gaps_closed": 65,
+  "gaps_out_of_scope": 410,
+  "gaps_unassignable": 7,
+  "gaps_other_row_F14": 15
+ },
+ "rows": {
+  "F-01": {
+   "status": "PASS",
+   "legs": {
+    "linux-x64/py3.13/node22": {
+     "job": "F-01 linux-x64 py3.13 node22",
+     "job_id": 137127184125,
+     "run_id": "44996027924",
+     "seconds": 180,
+     "install_ok": true,
+     "runner": {
+      "os": "Linux",
+      "arch": "X64",
+      "image": "ubuntu24",
+      "image_version": "20261116.133.1"
+     },
+     "artifact": {
+      "ok": true,
+      "release_run": "44995653567",
+      "release_commit": "346661b8a119653b33f9ab39cd0edda212f63a33",
+      "head_branch": "claude/blocco-1-stima-9hqqtz",
+      "event": "workflow_dispatch",
+      "selected": "requested",
+      "artifact": "engine-artifact",
+      "artifact_id": "14743033665"
+     }
+    }
+   },
+   "checks": [
+    {
+     "id": "F-01.clock.pinned.python",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "two pytest --det runs differing only in clock: the same value and verify identical",
+     "observed": "values [\"[1713302360.000001, '2024-04-16T21:19:20.000002']\", \"[1713302360.000001, '2024-04-16T21:19:20.000002']\"]; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-01.clock.pinned.node",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "two Vitest --det runs differing only in clock: the same value and verify identical",
+     "observed": "values ['[1735689600000,\"2025-01-01T00:00:00.000Z\",1000.003]', '[1735689600000,\"2025-01-01T00:00:00.000Z\",1000.003]']; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-01.random.pinned.python",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "two pytest --det runs differing only in random: the same value and verify identical",
+     "observed": "values [\"[0.4555560149625728, '9657458c-2fbe-4750-aa26-457457284959']\", \"[0.4555560149625728, '9657458c-2fbe-4750-aa26-457457284959']\"]; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-01.random.pinned.node",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "two Vitest --det runs differing only in random: the same value and verify identical",
+     "observed": "values ['[0.1114041450998674,\"260cd70f-5de8-4093-892a-274e5e7f069b\"]', '[0.1114041450998674,\"260cd70f-5de8-4093-892a-274e5e7f069b\"]']; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-01.env.pinned.python",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "two pytest --det runs differing only in env: verify says INPUT DIFFERS naming the variable (exit 3)",
+     "observed": "values [\"'a'\", \"'b'\"]; verify rc=3 summary={\"runs\": 2, \"tests\": 1, \"stable\": 0, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 0, \"input_differs\": 1, \"not_proven\": 0}; names EXAM_X: True",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-01.env.pinned.node",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "two Vitest --det runs differing only in env: verify says INPUT DIFFERS naming the variable (exit 3)",
+     "observed": "values ['\"a\"', '\"b\"']; verify rc=3 summary={\"runs\": 2, \"tests\": 1, \"stable\": 0, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 0, \"input_differs\": 1, \"not_proven\": 0}; names EXAM_X: True",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-01.tz.pinned.python",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "two pytest --det runs differing only in tz: the same value and verify identical",
+     "observed": "values [\"['2024-04-16T21:19:20.000001+00:00', '00 UTC']\", \"['2024-04-16T21:19:20.000001+00:00', '00 UTC']\"]; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-01.tz.pinned.node",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "two Vitest --det runs differing only in tz: the same value and verify identical",
+     "observed": "values ['[\"Thu Jan 01 1970 00:00:00 GMT+0000 (Coordinated Universal Time)\",0,\"UTC\"]', '[\"Thu Jan 01 1970 00:00:00 GMT+0000 (Coordinated Universal Time)\",0,\"UTC\"]']; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-01.locale.pinned.python",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "two pytest --det runs differing only in locale: the same value and verify identical",
+     "observed": "values [\"[('C', 'UTF-8'), '1234.5']\", \"[('C', 'UTF-8'), '1234.5']\"]; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-01.locale.pinned.node",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "two Vitest --det runs differing only in locale: the same value and verify identical",
+     "observed": "values ['[\"1,234.5\",\"en-US\"]', '[\"1,234.5\",\"en-US\"]']; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-01.files.pinned.python",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "two pytest --det runs differing only in files: the same value and verify identical",
+     "observed": "values [\"['a', 'b', 'c', 'm', 'z']\", \"['a', 'b', 'c', 'm', 'z']\"]; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-01.files.pinned.node",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "two Vitest --det runs differing only in files: the same value and verify identical",
+     "observed": "values ['[\"a\",\"b\",\"c\",\"m\",\"z\"]', '[\"a\",\"b\",\"c\",\"m\",\"z\"]']; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-01.network.pinned.python",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "two pytest --det runs differing only in network: the same value and verify identical",
+     "observed": "values [\"'gaierror'\", \"'gaierror'\"]; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-01.network.pinned.node",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "two Vitest --det runs differing only in network: the same value and verify identical",
+     "observed": "values ['\"ECONNREFUSED\"', '\"ECONNREFUSED\"']; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-01.hostname.pinned.python",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "two pytest --det runs differing only in hostname: the same value and verify identical",
+     "observed": "values [\"['localhost', 'localhost']\", \"['localhost', 'localhost']\"]; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-01.hostname.pinned.node",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "two Vitest --det runs differing only in hostname: the same value and verify identical",
+     "observed": "values ['\"localhost\"', '\"localhost\"']; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-01.cpu-count.pinned.python",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "two pytest --det runs differing only in cpu-count: the same value and verify identical",
+     "observed": "values ['2', '2']; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-01.cpu-count.pinned.node",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "two Vitest --det runs differing only in cpu-count: the same value and verify identical",
+     "observed": "values ['2', '2']; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-01.real-projects.luxon-tz",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "luxon under --det: TZ=America/New_York vs Asia/Kolkata equal and identical",
+     "observed": "outcomes NY vs Kolkata under --det equal: True (rc 1/1); verify rc=0 summary={\"runs\": 2, \"tests\": 1116, \"stable\": 1116, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1116, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-01.probe.c-wait",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "Python test measures time.monotonic() around select.select([],[],[],0.3) and a socket recv with settimeout(0.3) on an idle socket and asserts elapsed >= 0.25: under --det it finishes (no hang) and passes as in plain",
+     "observed": "det rc=0; 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22",
+     "gaps": [
+      "G-0082",
+      "G-0084"
+     ]
+    },
+    {
+     "id": "F-01.probe.cassette",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "Python (requests) and Node (fetch with keep-alive) tests record a cassette with --det-record; then (a) change the request path/headers, (b) run with --det-seed shuffling or a single test (-k/-t) of a keep-alive pair: replay must refuse or fail on the mismatch and serve each test its own recording; never pass with a stale response",
+     "observed": "python (requests): every step as expected [plain: a=passed b=passed; record: a=passed b=passed; single-b: a=none b=passed; seed: a=passed b=passed; path: a=failed b=passed; header: a=failed b=passed] || node (Vitest, fetch): every step as expected [plain: a=passed b=passed; record: a=passed b=passed; single-b: a=skipped b=passed; seed: a=passed b=passed; path: a=failed b=passed; header: a=failed b=passed]",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22",
+     "gaps": [
+      "G-0090",
+      "G-0091",
+      "G-0099",
+      "G-0129",
+      "G-0130",
+      "G-0166"
+     ]
+    },
+    {
+     "id": "F-01.probe.cassette-redact",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "Python and Node test send an Authorization: Bearer SECRET header while recording a cassette: the cassette file must not contain SECRET in clear or base64 (or a documented redaction option removes it)",
+     "observed": "python: record rc=0; cassette files ['cassette.json']; secret present in clear/base64: False; node: record {'exam secret': 'passed'}; request reached the server: True; cassette written: True; secret present in clear/base64: False",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22",
+     "gaps": [
+      "G-0131",
+      "G-0167"
+     ]
+    },
+    {
+     "id": "F-01.probe.cold-warm",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "Python test prints the iteration order of a set of plain objects and sorted id() deltas; run --det on a fresh checkout (cold rewrite cache) and again (warm): same output and verify identical",
+     "observed": "values ['[[2, 11, 3, 10, 13, 4, 12, 5, 14, 6, 19, 17, 15, 7, 16, 9, 18, 0, 8, 1], [272, 28960, 2112, 26816, 224]]', '[[2, 11, 3, 10, 13, 4, 12, 5, 14, 6, 19, 17, 15, 7, 16, 9, 18, 0, 8, 1], [272, 28960, 2112, 26816, 224]]']; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22",
+     "gaps": [
+      "G-0168"
+     ]
+    },
+    {
+     "id": "F-01.probe.fake-timers",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "Vitest test calls vi.useFakeTimers() and Jest test jest.useFakeTimers(), both print Date.now() without setSystemTime: two --det runs 2 s apart (different days if possible) print equal values",
+     "observed": "values ['1735689600000', '1735689600000']; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22",
+     "gaps": [
+      "G-0142"
+     ]
+    },
+    {
+     "id": "F-01.probe.http-mock",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "Vitest test (msw setupServer) and Jest test (nock) mocking fetch/http.get of https://api.example.com/user: plain pass; two --det runs pass (the closed network must not block a request the mock answers) and verify identical",
+     "observed": "1 files / 1 tests in plain; differing files 0 []",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22",
+     "gaps": [
+      "G-0034",
+      "G-0127"
+     ]
+    },
+    {
+     "id": "F-01.probe.mtime",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "Python and Node test write a file and assert abs(mtime - now) < 5 s (os.stat/fs.statSync vs time.time/Date.now): plain pass, --det pass",
+     "observed": "python: det rc=0; 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0; node: 1 files / 1 tests in plain; differing files 0 []",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22",
+     "gaps": [
+      "G-0085",
+      "G-0143"
+     ]
+    },
+    {
+     "id": "F-01.probe.node-clock-sources",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "Node test prints process.uptime(), performance.timeOrigin, performance.mark('m').startTime and require('perf_hooks').performance.now() (Vitest and Jest): two --det runs 2 s apart give equal values and verify identical, or verify reports divergence (never identical with different values)",
+     "observed": "values ['[1.000001,1735689600000,1000.002,1000.003,\"1000000004000\"]', '[1.000001,1735689600000,1000.002,1000.003,\"1000000004000\"]']; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22",
+     "gaps": [
+      "G-0135",
+      "G-0136",
+      "G-0137",
+      "G-0141"
+     ]
+    },
+    {
+     "id": "F-01.probe.node-vm",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "Node test evaluates `vm.runInNewContext('[Math.random(), Date.now()]')`: two --det runs 2 s apart print equal values, or verify reports divergence (never identical)",
+     "observed": "values ['[0.07243813105790464,1735689600000]', '[0.07243813105790464,1735689600000]']; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22",
+     "gaps": [
+      "G-0134"
+     ]
+    },
+    {
+     "id": "F-01.probe.replay-clients",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "record then replay offline: Python httpx.AsyncClient/aiohttp over HTTPS, a socket using sendmsg/recvmsg; Node http2 / undici h2 client; Bun fetch and Deno fetch: replay without network passes with the recorded responses (or --det-record refuses with a named reason)",
+     "observed": "httpx: record passed 'GET /httpx x-exam=hx'; offline replay passed 'GET /httpx x-exam=hx'; aiohttp: record passed 'GET /aiohttp x-exam=ah'; offline replay passed 'GET /aiohttp x-exam=ah'; sendmsg: record passed 'GET /sendmsg x-exam=sm'; offline replay passed 'GET /sendmsg x-exam=sm'; h2: record passed 'GET /h2 x-exam=h2'; offline replay passed 'GET /h2 x-exam=h2'; bun: --det-record refused ('not supported'): failed; deno: --det-record refused ('not supported'): failed",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22",
+     "gaps": [
+      "G-0165",
+      "G-0398",
+      "G-0409",
+      "G-0424",
+      "G-0425",
+      "G-0516"
+     ]
+    },
+    {
+     "id": "F-01.probe.service-host",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "GitHub Actions job with a `services: postgres` container reached by its hostname (and an /etc/hosts alias): Python and Node tests connect by name; plain pass, --det (with --det-allow-host=<name> if required) pass; outcomes equal plain",
+     "observed": "service at 172.18.0.2 (the job's services: postgres container) by names ['postgres', 'exam-pg']: python: plain ['passed']; --det: 2 engine / 2 plain outcomes; differing 2 ['tests/test_exam_pg.py::test_pg[exam-pg]', 'tests/test_exam_pg.py::test_pg[postgres]']; missing in engine 0 []; extra 0; with --det-allow-host=postgres --det-allow-host=exam-pg: 2 engine / 2 plain outcomes; differing 0 []; missing in engine 0 []; extra 0; node: plain {'pg postgres': 'passed', 'pg exam-pg': 'passed'}; --det {'pg postgres': 'failed', 'pg exam-pg': 'failed'}; with --det-allow-host=postgres --det-allow-host=exam-pg: {'pg postgres': 'passed', 'pg exam-pg': 'passed'}",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22",
+     "gaps": [
+      "G-0153",
+      "G-0154"
+     ]
+    },
+    {
+     "id": "F-01.probe.timeit",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "Python test calls timeit.Timer('pass').autorange(): under --det it finishes within 60 s and passes as in plain",
+     "observed": "det rc=0; 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22",
+     "gaps": [
+      "G-0081"
+     ]
+    },
+    {
+     "id": "F-01.probe.timer-consistency",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "Node test (a) races AbortSignal.timeout(300) against setTimeout(1000): abort wins under --det as in plain; (b) loops until performance.now() advances 2000 ms with a 5000 ms test timeout: passes under --det as in plain",
+     "observed": "1 files / 1 tests in plain; differing files 0 []",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22",
+     "gaps": [
+      "G-0138",
+      "G-0144"
+     ]
+    },
+    {
+     "id": "F-01.probe.udp",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "Python and Node test send a UDP datagram to an external address (socket.sendto / dgram.send): under --det the send is blocked or recorded as a network event; verify of a run with the network reachable vs not names the event (never silent identical)",
+     "observed": "under --det a UDP datagram to an external address: 'NetworkBlockedError' (expected blocked/recorded)",
+     "run_id": "44996027924",
+     "job": "F-01 linux-x64 py3.13 node22",
+     "gaps": [
+      "G-0128"
+     ]
+    }
+   ],
+   "failed": [],
+   "missing_legs": [],
+   "n_checks": 33,
+   "n_passed": 33,
+   "gaps": {
+    "total": 40,
+    "closed": 40,
+    "open": 0,
+    "no_check_ran": 0
+   }
+  },
+  "F-02": {
+   "status": "FAIL",
+   "legs": {
+    "linux-x64/py3.12/node22": {
+     "job": "F-02 linux-x64 py3.12 node22",
+     "job_id": 137127184107,
+     "run_id": "44996027924",
+     "seconds": 1976,
+     "install_ok": true,
+     "runner": {
+      "os": "Linux",
+      "arch": "X64",
+      "image": "ubuntu24",
+      "image_version": "20261116.376.1"
+     },
+     "artifact": {
+      "ok": true,
+      "release_run": "44995653567",
+      "release_commit": "346661b8a119653b33f9ab39cd0edda212f63a33",
+      "head_branch": "claude/blocco-1-stima-9hqqtz",
+      "event": "workflow_dispatch",
+      "selected": "requested",
+      "artifact": "engine-artifact",
+      "artifact_id": "14743033665"
+     }
+    }
+   },
+   "checks": [
+    {
+     "id": "F-02.cli",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "`fenvix repro|explore|replay --help` exit 0",
+     "observed": "`fenvix <cmd> --help` exit codes {'repro': 0, 'explore': 0, 'replay': 0}",
+     "run_id": "44996027924",
+     "job": "F-02 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-02.py-repro.idoft-accessify",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "`fenvix repro <test>` fails 10/10 with one fingerprint and prints a replay command",
+     "observed": "`fenvix repro` rc=0 replay command printed: ['fenvix pytest --det --det-seed=5 --det-order=.detpy/repro/test_implements_no_implementation_getter-8f379f06/order.txt --continue-on-collection-errors']; (evidence only: `python -m detpy repro` rc=0, replay printed: ['pytest --det --det-seed=5 --det-order=.detpy/repro/test_implements_no_implementation_getter-8f379f06/order.txt --continue-on-collection-errors'], tail:   first diverging event vs a passing run: order: before the test started: it ran after different tests in its process: [] vs [tests/disabling/test_disable.py::test_disabling_accessify] (first difference at position 0: <none> vs tests/disabling/test_disable.py::test_disabling_accessify) |   replay: p)",
+     "run_id": "44996027924",
+     "job": "F-02 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-02.py-replay.idoft-accessify",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "the printed replay command fails 10/10 with the same fingerprint",
+     "observed": "replay command printed by fenvix (`fenvix pytest --det --det-seed=5 --det-order=.detpy/repro/test_implements_no_implementation_getter-8f379f06/order.txt --continue-on-collection-errors`), run 10x through fenvix: 10/10 failed; verify of the 10 traces rc=0 (0 = one fingerprint)",
+     "run_id": "44996027924",
+     "job": "F-02 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-02.py-explore.idoft-accessify",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "`fenvix explore --budget 5` finds the target and writes a bundle",
+     "observed": "`fenvix explore --budget 5` rc=0; target named: True",
+     "run_id": "44996027924",
+     "job": "F-02 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-02.py-repro.idoft-mdutils",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "`fenvix repro <test>` fails 10/10 with one fingerprint and prints a replay command",
+     "observed": "`fenvix repro` rc=0 replay command printed: ['fenvix pytest --det --det-order=.detpy/repro/test_create_md_file-f87fe7e0/order.txt --continue-on-collection-errors']; (evidence only: `python -m detpy repro` rc=0, replay printed: ['pytest --det --det-order=.detpy/repro/test_create_md_file-f87fe7e0/order.txt --continue-on-collection-errors'], tail:   first diverging event vs a passing run: order: before the test started: it ran after different tests in its process: [] vs [tests/test_fileutils/test_fileutils.py::TestMarkdownFile::test_append_end] (first difference at position 0: <none> vs tests/test_fileutils/test_fileutils.py::TestMarkdownFile)",
+     "run_id": "44996027924",
+     "job": "F-02 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-02.py-replay.idoft-mdutils",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "the printed replay command fails 10/10 with the same fingerprint",
+     "observed": "replay command printed by fenvix (`fenvix pytest --det --det-order=.detpy/repro/test_create_md_file-f87fe7e0/order.txt --continue-on-collection-errors`), run 10x through fenvix: 10/10 failed; verify of the 10 traces rc=0 (0 = one fingerprint)",
+     "run_id": "44996027924",
+     "job": "F-02 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-02.py-explore.idoft-mdutils",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "`fenvix explore --budget 5` finds the target and writes a bundle",
+     "observed": "`fenvix explore --budget 5` rc=0; target named: True",
+     "run_id": "44996027924",
+     "job": "F-02 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-02.py-repro.idoft-krllint",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "`fenvix repro <test>` fails 10/10 with one fingerprint and prints a replay command",
+     "observed": "`fenvix repro` rc=0 replay command printed: ['fenvix pytest --det --det-seed=21 --det-order=.detpy/repro/test_rule_without_fix-7173b585/order.txt --continue-on-collection-errors']; (evidence only: `python -m detpy repro` rc=0, replay printed: ['pytest --det --det-seed=21 --det-order=.detpy/repro/test_rule_without_fix-7173b585/order.txt --continue-on-collection-errors'], tail:   first diverging event vs a passing run: order: before the test started: it ran after different tests in its process: [] vs [tests/test_lower_or_mixed_case_keyword.py::LowerOrMixedCaseKeywordTestCase::test_rule_without_fix] (first difference at position 0: <none> vs tests/test_lower_or_mixed_case_k)",
+     "run_id": "44996027924",
+     "job": "F-02 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-02.py-replay.idoft-krllint",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "the printed replay command fails 10/10 with the same fingerprint",
+     "observed": "replay command printed by fenvix (`fenvix pytest --det --det-seed=21 --det-order=.detpy/repro/test_rule_without_fix-7173b585/order.txt --continue-on-collection-errors`), run 10x through fenvix: 10/10 failed; verify of the 10 traces rc=0 (0 = one fingerprint)",
+     "run_id": "44996027924",
+     "job": "F-02 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-02.py-explore.idoft-krllint",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "`fenvix explore --budget 5` finds the target and writes a bundle",
+     "observed": "`fenvix explore --budget 5` rc=0; target named: True",
+     "run_id": "44996027924",
+     "job": "F-02 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-02.py-repro.idoft-py-autodoc",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "`fenvix repro <test>` fails 10/10 with one fingerprint and prints a replay command",
+     "observed": "`fenvix repro` rc=0 replay command printed: ['fenvix pytest --det --det-order=.detpy/repro/test_foo_bar-a082d284/order.txt --continue-on-collection-errors']; (evidence only: `python -m detpy repro` rc=0, replay printed: ['pytest --det --det-order=.detpy/repro/test_foo_bar-a082d284/order.txt --continue-on-collection-errors'], tail:   first diverging event vs a passing run: order: before the test started: it ran after different tests in its process: [tests/test_not_generate.py::TestAutodocNotGenerate::test_should_not_generate] vs [] (first difference at position 0: tests/test_not_generate.py::TestAutodocNotGenerate::test_should)",
+     "run_id": "44996027924",
+     "job": "F-02 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-02.py-replay.idoft-py-autodoc",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": false,
+     "expected": "the printed replay command fails 10/10 with the same fingerprint",
+     "observed": "replay command printed by fenvix (`fenvix pytest --det --det-order=.detpy/repro/test_foo_bar-a082d284/order.txt --continue-on-collection-errors`), run 10x through fenvix: 10/10 failed; verify of the 10 traces rc=1 (0 = one fingerprint)",
+     "run_id": "44996027924",
+     "job": "F-02 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-02.py-explore.idoft-py-autodoc",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "`fenvix explore --budget 5` finds the target and writes a bundle",
+     "observed": "`fenvix explore --budget 5` rc=0; target named: True",
+     "run_id": "44996027924",
+     "job": "F-02 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-02.node-repro",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "`fenvix repro` on a Vitest order-dependent test fails 10/10 and prints a replay command",
+     "observed": "`fenvix repro` on a Vitest test rc=0; `fenvix node repro` rc=0 (usage: fenvix repro [-h] [--seeds SEEDS] [--seed SEED] [--runner RUNNER])",
+     "run_id": "44996027924",
+     "job": "F-02 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-02.node-replay",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "a Node repro bundle replays 10/10 with one fingerprint through `fenvix replay`",
+     "observed": "`fenvix replay` rc=0; `fenvix node replay` rc=0: no Node bundle to replay exists because no Node repro writes one",
+     "run_id": "44996027924",
+     "job": "F-02 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-02.node-explore",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "`fenvix explore` runs on a Vitest project",
+     "observed": "rc=0: fenvix explore: 22 seeds in 121.31 s; 0 flaky failing tests (0 always failing, not flaky); 0 replay bundles; 0 distinct first diverging events, 0 distinct polluter sets",
+     "run_id": "44996027924",
+     "job": "F-02 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-02.probe.numpy-repro",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "order-dependent pair (polluter writes a shared dict) in a test module importing numpy: fenvix repro proves 10/10 with one fingerprint, names the polluter, and the reported first divergent event is not a numpy os.urandom import event",
+     "observed": "`fenvix repro` rc=0: vices and /proc/uptime virtual; other files read, devices and OS measurements recorded\",\n      \"runner\": \"pytest 9.2.0\",\n      \"runtime\": \"CPython 3.12.16 linux x86_64\",\n      \"seed\": \"0\",\n      \"shuffle\": \"no\",\n      \"tz\": \"UTC (pinned)\"\n    }\n  }\n}",
+     "run_id": "44996027924",
+     "job": "F-02 linux-x64 py3.12 node22",
+     "gaps": [
+      "G-0177",
+      "G-0178"
+     ]
+    }
+   ],
+   "failed": [
+    "F-02.py-replay.idoft-py-autodoc @ linux-x64/py3.12/node22"
+   ],
+   "missing_legs": [],
+   "n_checks": 17,
+   "n_passed": 16,
+   "gaps": {
+    "total": 16,
+    "closed": 15,
+    "open": 1,
+    "no_check_ran": 0
+   }
+  },
+  "F-03": {
+   "status": "FAIL",
+   "legs": {
+    "linux-x64/py3.13/node22": {
+     "job": "F-03 linux-x64 py3.13 node22",
+     "job_id": 137127184110,
+     "run_id": "44996027924",
+     "seconds": 142,
+     "install_ok": true,
+     "runner": {
+      "os": "Linux",
+      "arch": "X64",
+      "image": "ubuntu24",
+      "image_version": "20261116.133.1"
+     },
+     "artifact": {
+      "ok": true,
+      "release_run": "44995653567",
+      "release_commit": "346661b8a119653b33f9ab39cd0edda212f63a33",
+      "head_branch": "claude/blocco-1-stima-9hqqtz",
+      "event": "workflow_dispatch",
+      "selected": "requested",
+      "artifact": "engine-artifact",
+      "artifact_id": "14743033665"
+     }
+    }
+   },
+   "checks": [
+    {
+     "id": "F-03.identical",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "two identical --det runs: verify identical, exit 0",
+     "observed": "python: rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}; node: rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-03 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-03.tz.python",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "runs differing only in tz: divergent, first divergent event names tz",
+     "observed": "values equal ([\"['2024-04-16T21:19:20.000001+00:00', '00 UTC']\", \"['2024-04-16T21:19:20.000001+00:00', '00 UTC']\"]): the source is pinned, nothing to diverge; rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-03 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-03.node-tz",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "Node runs differing only in tz: divergent at the tz event",
+     "observed": "values equal (['[\"Thu Jan 01 1970 00:00:00 GMT+0000 (Coordinated Universal Time)\",0,\"UTC\"]', '[\"Thu Jan 01 1970 00:00:00 GMT+0000 (Coordinated Universal Time)\",0,\"UTC\"]']): pinned; rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-03 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-03.locale.python",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "runs differing only in locale: divergent, first divergent event names locale",
+     "observed": "values equal ([\"[('C', 'UTF-8'), '1234.5']\", \"[('C', 'UTF-8'), '1234.5']\"]): the source is pinned, nothing to diverge; rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-03 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-03.node-locale",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "Node runs differing only in locale: divergent at the locale event",
+     "observed": "values equal (['[\"1,234.5\",\"en-US\"]', '[\"1,234.5\",\"en-US\"]']): pinned; rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-03 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-03.env.python",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "runs differing only in env: divergent, first divergent event names env",
+     "observed": "values [\"'a'\", \"'b'\"]; verify rc=3 summary={\"runs\": 2, \"tests\": 1, \"stable\": 0, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 0, \"input_differs\": 1, \"not_proven\": 0}; first divergent events ['{\"run_a\": 0, \"run_b\": 1, \"index\": null, \"window\": null, \"event_a\": {\"t\": 0, \"s\": \"other\", \"o\": \"input.env:EXAM_X\", \"at\": \"<run>\", \"v\": \"9d10623dae4fc4b8\"}, \"event_b\": {\"t\": 0, \"s\": \"other\", \"o\": \"input.env:EXAM_X\", \"at\": \"<run>\", \"v\": \"2f060377962fe2b7\"}, \"reason\": \"env\", \"description\": \"input diffe']",
+     "run_id": "44996027924",
+     "job": "F-03 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-03.node-env",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "Node runs differing only in env: divergent at the env event",
+     "observed": "values ['\"a\"', '\"b\"']; verify rc=3 summary={\"runs\": 2, \"tests\": 1, \"stable\": 0, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 0, \"input_differs\": 1, \"not_proven\": 0}; first divergent events ['{\"run_a\": 0, \"run_b\": 1, \"index\": null, \"window\": null, \"event_a\": {\"t\": 0, \"s\": \"other\", \"o\": \"input.env:EXAM_X\", \"at\": \"<run>\", \"v\": \"8552488a8c9d74b0\"}, \"event_b\": {\"t\": 0, \"s\": \"other\", \"o\": \"input.env:EXAM_X\", \"at\": \"<run>\", \"v\": \"76fdbd87270467b8\"}, \"reason\": \"env\", \"description\": \"input diffe']",
+     "run_id": "44996027924",
+     "job": "F-03 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-03.child",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "a child whose output differs: divergent, first event is the child's",
+     "observed": "values ['a\\n', 'b\\n']; verify rc=1 summary={\"runs\": 2, \"tests\": 1, \"stable\": 0, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {\"child\": 1}, \"inputs_recorded\": true, \"identical\": 0, \"input_differs\": 0, \"not_proven\": 1}; first divergent ['{\"run_a\": 0, \"run_b\": 0, \"index\": 1, \"window\": null, \"event_a\": {\"t\": 0, \"s\": \"other\", \"o\": \"uncontrolled.child\", \"at\": \"tests/test_exam_vchild.py:4\", \"v\": \"sh\"}, \"event_b\": {\"t\": 0, \"s\": \"other\", \"o\": \"uncontrolled.child\", \"at\": \"tests/test_exam_vchild.py:4\", \"v\": \"sh\"}, \"reason\": \"child\", \"descrip']",
+     "run_id": "44996027924",
+     "job": "F-03 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-03.random",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "os.urandom (beyond L0) in two runs: divergent at the entropy event",
+     "observed": "values equal (controlled) ['7df8ecafebfb3e63', '7df8ecafebfb3e63']; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-03 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-03.thread",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "runs whose thread order differed are never 'identical'",
+     "observed": "one outcome over 6 runs (race not exercised); verify rc=1 (    every run: the test started a thread: thread scheduling (uncontrolled.thread @ tests/test_exam_vthread.py:14) is not controlled by this release, so identical fingerprints are no evidence of an ide)",
+     "run_id": "44996027924",
+     "job": "F-03 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-03.node-child",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "Node child output differs: divergent at the child event",
+     "observed": "values ['\"a\\\\n\"', '\"b\\\\n\"']; verify rc=1 summary={\"runs\": 2, \"tests\": 1, \"stable\": 0, \"diverged\": 1, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {\"other\": 1}, \"inputs_recorded\": true, \"identical\": 0, \"input_differs\": 0, \"not_proven\": 0}; first ['{\"run_a\": 0, \"run_b\": 1, \"index\": 174, \"window\": null, \"event_a\": {\"t\": 0, \"s\": \"other\", \"o\": \"child.result\", \"at\": \"test/exam-vchild.test.ts:5\", \"v\": \"0|81c4b7f7e0549f15|-\"}, \"event_b\": {\"t\": 0, \"s\": \"other\", \"o\": \"child.result\", \"at\": \"test/exam-vchild.test.ts:5\", \"v\": \"0|9d902f9864f3043d|-\"}, \"re']",
+     "run_id": "44996027924",
+     "job": "F-03 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-03.node-random",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "Node async crypto.randomFill/randomInt: controlled, or verify reports the entropy divergence",
+     "observed": "async crypto values differ ['[[191,169,196,120,179,57,80,223],690730]', '[[1,200,197,181,10,78,154,41],639300]']; verify must report divergence: rc=1 summary={\"runs\": 2, \"tests\": 1, \"stable\": 0, \"diverged\": 1, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {\"entropy\": 1}, \"inputs_recorded\": true, \"identical\": 0, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-03 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-03.node-thread",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "Node worker_threads randomness differs: never 'identical'",
+     "observed": "worker values equal (['0.4262463693963001', '0.4262463693963001']); verify rc=1 summary={\"runs\": 2, \"tests\": 1, \"stable\": 0, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {\"env\": 1}, \"inputs_recorded\": true, \"identical\": 0, \"input_differs\": 0, \"not_proven\": 1}",
+     "run_id": "44996027924",
+     "job": "F-03 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-03.probe.multi-project",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "Vitest workspace with two projects running the same file (jsdom and node env), one printing a project-dependent value: the trace keeps both parts (2x tests) and verify compares both; a divergence in either project is reported",
+     "observed": "plain {'exam project value': 'passed', 'exam project value #2': 'passed'}; identical runs: verify rc=0 summary={\"runs\": 2, \"tests\": 2, \"stable\": 2, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 2, \"input_differs\": 0, \"not_proven\": 0} (tests in the traces 2, expected 2: both parts); a divergence in the node project only: rc=1 summary={\"runs\": 2, \"tests\": 2, \"stable\": 1, \"diverged\": 1, \"missing\": 0, \"outcome_unstable\": 1, \"order_identical\": true, \"reasons\": {\"fs\": 1}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}; in the jsdom project only: rc=1 summary={\"runs\": 2, \"tests\": 2, \"stable\": 1, \"diverged\": 1, \"missing\": 0, \"outcome_unstable\": 1, \"order_identical\": true, \"reasons\": {\"fs\": 1}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0, \"not_proven\": 0}",
+     "run_id": "44996027924",
+     "job": "F-03 linux-x64 py3.13 node22",
+     "gaps": [
+      "G-0100"
+     ]
+    },
+    {
+     "id": "F-03.probe.node-sched",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "Node test starts 20 concurrent fs.readFile calls and two concurrent local HTTP requests (Promise.race) and records completion order; 20 --det runs: if the orders differ, fenvix verify reports divergence (never 'covered by Level 0' / identical)",
+     "observed": "10 completion orders over 10 runs; verify rc=1 (must not be 0)",
+     "run_id": "44996027924",
+     "job": "F-03 linux-x64 py3.13 node22",
+     "gaps": [
+      "G-0150",
+      "G-0151"
+     ]
+    },
+    {
+     "id": "F-03.probe.numpy",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": false,
+     "expected": "two identical --det runs of a test module importing numpy (and of an xdist -n 2 run): fenvix verify identical, no NOT-COVERED [entropy] on the first test of the process/worker",
+     "observed": "values ['0.12916905879044205', '0.12916905879044205']; verify rc=1 summary={\"runs\": 2, \"tests\": 1, \"stable\": 0, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {\"api\": 1}, \"inputs_recorded\": true, \"identical\": 0, \"input_differs\": 0, \"not_proven\": 1}",
+     "run_id": "44996027924",
+     "job": "F-03 linux-x64 py3.13 node22",
+     "gaps": [
+      "G-0179"
+     ]
+    },
+    {
+     "id": "F-03.probe.realm-failure",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "Node setup file makes globalThis.Date non-configurable before detjs installs its controls; a test prints Date.now(): the run must say on the console (not only in the trace header) that the time control is missing, and verify of two runs with different values must not say identical",
+     "observed": "Date frozen before detjs: values differ ['[1795330855278,\"2026-11-22T07:00:55.278Z\"]', '[1795330858167,\"2026-11-22T07:00:58.167Z\"]']; console names the missing time control: not replaceable: Date; verify rc=1 summary={\"runs\": 2, \"tests\": 1, \"stable\": 0, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {\"other\": 1}, \"inputs_recorded\": true, \"identical\": 0, \"input_differs\": 0, \"not_proven\": 1} (must not be identical)",
+     "run_id": "44996027924",
+     "job": "F-03 linux-x64 py3.13 node22",
+     "gaps": [
+      "G-0181"
+     ]
+    },
+    {
+     "id": "F-03.probe.zero-tests",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": true,
+     "expected": "Vitest browser-mode project (Chromium) with 2 tests: two --det traces; fenvix verify must not exit 0 'identical/covered' for traces that observed 0 of the tests that ran",
+     "observed": "plain ran 2 tests; verify rc=1, tests observed in the traces 0 (rc 0 only if both were observed)",
+     "run_id": "44996027924",
+     "job": "F-03 linux-x64 py3.13 node22",
+     "gaps": [
+      "G-0037"
+     ]
+    }
+   ],
+   "failed": [
+    "F-03.probe.numpy @ linux-x64/py3.13/node22"
+   ],
+   "missing_legs": [],
+   "n_checks": 18,
+   "n_passed": 17,
+   "gaps": {
+    "total": 11,
+    "closed": 10,
+    "open": 1,
+    "no_check_ran": 0
+   }
+  },
+  "F-05": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.12/node22",
+    "linux-x64/py3.14/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 25,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 25
+   }
+  },
+  "F-06": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22",
+    "linux-x64/py3.13/node26"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 6,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 6
+   }
+  },
+  "F-09": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 2,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 2
+   }
+  },
+  "F-18": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 1,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 1
+   }
+  },
+  "JS-01": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22",
+    "linux-x64/py3.13/node24",
+    "linux-x64/py3.13/node26"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 0,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 0
+   }
+  },
+  "JS-02": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22/jest29",
+    "linux-x64/py3.13/node22/jest30",
+    "linux-x64/py3.13/node22/vitest3",
+    "linux-x64/py3.13/node22/vitest4"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 13,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 13
+   }
+  },
+  "JS-03": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 12,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 12
+   }
+  },
+  "JS-04": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 27,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 27
+   }
+  },
+  "JS-05": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22",
+    "linux-x64/py3.13/node24"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 0,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 0
+   }
+  },
+  "JS-06": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 16,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 16
+   }
+  },
+  "JS-07": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22",
+    "linux-x64/py3.13/node26"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 0,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 0
+   }
+  },
+  "JS-08": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22/npm",
+    "linux-x64/py3.13/node22/pnpm",
+    "linux-x64/py3.13/node22/yarn-berry",
+    "linux-x64/py3.13/node22/yarn-classic"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 0,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 0
+   }
+  },
+  "JS-09": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22",
+    "linux-x64/py3.13/node26"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 1,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 1
+   }
+  },
+  "PY-01": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.12/node22",
+    "linux-x64/py3.13/node22",
+    "linux-x64/py3.14/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 0,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 0
+   }
+  },
+  "PY-02": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22/pytest8",
+    "linux-x64/py3.13/node22/pytest9"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 1,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 1
+   }
+  },
+  "PY-03": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.12/node22",
+    "linux-x64/py3.14/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 8,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 8
+   }
+  },
+  "PY-04": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.12/node22",
+    "linux-x64/py3.14/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 0,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 0
+   }
+  },
+  "PY-05": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.12/node22",
+    "linux-x64/py3.14/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 9,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 9
+   }
+  },
+  "PY-06": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.12/node22",
+    "linux-x64/py3.14/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 0,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 0
+   }
+  },
+  "PY-07": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.12/node22",
+    "linux-x64/py3.14/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 13,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 13
+   }
+  },
+  "PY-08": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.12/node22",
+    "linux-x64/py3.14/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 6,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 6
+   }
+  }
+ },
+ "gaps": {
+  "G-0004": {
+   "row": "F-05",
+   "check": "F-05.probe.blockbuster",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0006": {
+   "row": "F-05",
+   "check": "F-05.wrong-reuse",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0010": {
+   "row": "PY-03",
+   "check": "PY-03.<runner>.det2",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0014": {
+   "row": "F-05",
+   "check": "F-05.wrong-reuse",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0015": {
+   "row": "F-05",
+   "check": "F-05.wrong-reuse",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0016": {
+   "row": "F-05",
+   "check": "F-05.probe.startup-process",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0018": {
+   "row": "F-05",
+   "check": "F-05.probe.startup-process",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0019": {
+   "row": "F-05",
+   "check": "F-05.probe.startup-process",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0020": {
+   "row": "F-05",
+   "check": "F-05.probe.real-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0021": {
+   "row": "JS-06",
+   "check": "JS-06.probe.jsdom-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0022": {
+   "row": "JS-06",
+   "check": "JS-06.probe.timer-race",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0023": {
+   "row": "JS-06",
+   "check": "JS-06.probe.timer-race",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0024": {
+   "row": "JS-06",
+   "check": "JS-06.probe.global-shape",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0025": {
+   "row": "JS-06",
+   "check": "JS-06.probe.global-shape",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0026": {
+   "row": "JS-06",
+   "check": "JS-06.probe.jsdom-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0027": {
+   "row": "JS-06",
+   "check": "JS-06.probe.jsdom-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0028": {
+   "row": "JS-06",
+   "check": "JS-06.probe.jsdom-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0029": {
+   "row": "JS-06",
+   "check": "JS-06.probe.iframe-realm",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0030": {
+   "row": "JS-06",
+   "check": "JS-06.probe.subtle-key",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0031": {
+   "row": "JS-06",
+   "check": "JS-06.probe.timer-race",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0032": {
+   "row": "JS-06",
+   "check": "JS-06.tz-locale",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0033": {
+   "row": "JS-06",
+   "check": "JS-06.tz-locale",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0034": {
+   "row": "F-01",
+   "check": "F-01.probe.http-mock",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.http-mock @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0035": {
+   "row": "JS-04",
+   "check": "JS-04.probe.browser-tz",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0036": {
+   "row": "JS-02",
+   "check": "JS-02.probe.browser-mode",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0037": {
+   "row": "F-03",
+   "check": "F-03.probe.zero-tests",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-03.probe.zero-tests @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0038": {
+   "row": "JS-06",
+   "check": "JS-06.probe.jsdom-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0066": {
+   "row": "JS-03",
+   "check": "JS-03.<runner>.cache2",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0078": {
+   "row": "PY-08",
+   "check": "PY-08.probe.native-file",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0079": {
+   "row": "PY-08",
+   "check": "PY-08.probe.dlopen-lib",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0080": {
+   "row": "F-05",
+   "check": "F-05.probe.early-stat",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0081": {
+   "row": "F-01",
+   "check": "F-01.probe.timeit",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.timeit @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0082": {
+   "row": "F-01",
+   "check": "F-01.probe.c-wait",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.c-wait @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0083": {
+   "row": "PY-07",
+   "check": "PY-07.probe.lock-type",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0084": {
+   "row": "F-01",
+   "check": "F-01.probe.c-wait",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.c-wait @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0085": {
+   "row": "F-01",
+   "check": "F-01.probe.mtime",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.mtime @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0086": {
+   "row": "PY-08",
+   "check": "PY-08.ctypes-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0087": {
+   "row": "PY-08",
+   "check": "PY-08.child",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0088": {
+   "row": "PY-08",
+   "check": "PY-08.child",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0089": {
+   "row": "F-05",
+   "check": "F-05.probe.real-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0090": {
+   "row": "F-01",
+   "check": "F-01.probe.cassette",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.cassette @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0091": {
+   "row": "F-01",
+   "check": "F-01.probe.cassette",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.cassette @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0092": {
+   "row": "PY-02",
+   "check": "PY-02.probe.modifyitems",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0093": {
+   "row": "PY-07",
+   "check": "PY-07.probe.leaked-thread",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0094": {
+   "row": "F-05",
+   "check": "F-05.probe.real-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0095": {
+   "row": "JS-09",
+   "check": "JS-09.native",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0096": {
+   "row": "F-06",
+   "check": "F-06.probe.early-fs-ref",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0097": {
+   "row": "F-06",
+   "check": "F-06.probe.dir-listing",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0098": {
+   "row": "JS-02",
+   "check": "JS-02.probe.stack-depth",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0099": {
+   "row": "F-01",
+   "check": "F-01.probe.cassette",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.cassette @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0100": {
+   "row": "F-03",
+   "check": "F-03.probe.multi-project",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-03.probe.multi-project @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0101": {
+   "row": "F-05",
+   "check": "F-05.probe.blockbuster",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0102": {
+   "row": "PY-05",
+   "check": "PY-05.cache2",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0103": {
+   "row": "F-01",
+   "check": "F-01.files.pinned",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.files.pinned.node @ linux-x64/py3.13/node22",
+    "F-01.files.pinned.python @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0104": {
+   "row": "JS-03",
+   "check": "JS-03.probe.bun-deno-reuse",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0105": {
+   "row": "JS-03",
+   "check": "JS-03.probe.bun-deno-reuse",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0106": {
+   "row": "JS-03",
+   "check": "JS-03.probe.file-only-failure",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0107": {
+   "row": "JS-03",
+   "check": "JS-03.probe.bun-deno-reuse",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0108": {
+   "row": "JS-03",
+   "check": "JS-03.probe.file-only-failure",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0109": {
+   "row": "JS-03",
+   "check": "JS-03.<runner>.det2",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0110": {
+   "row": "PY-03",
+   "check": "PY-03.probe.django-file-cache",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0111": {
+   "row": "F-05",
+   "check": "F-05.probe.import-side-effect",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0112": {
+   "row": "PY-03",
+   "check": "PY-03.probe.ward-fixture",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0115": {
+   "row": "F-05",
+   "check": "F-05.wrong-reuse",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0120": {
+   "row": "F-06",
+   "check": "F-06.probe.virtual-day",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0121": {
+   "row": "F-06",
+   "check": "F-06.probe.virtual-day",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0122": {
+   "row": "F-06",
+   "check": "F-06.fake-timers",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0123": {
+   "row": "F-06",
+   "check": "F-06.disable-time",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0124": {
+   "row": "F-03",
+   "check": "F-03.node-child",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-03.node-child @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0125": {
+   "row": "F-03",
+   "check": "F-03.node-child",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-03.node-child @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0126": {
+   "row": "F-01",
+   "check": "F-01.env.pinned",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.env.pinned.node @ linux-x64/py3.13/node22",
+    "F-01.env.pinned.python @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0127": {
+   "row": "F-01",
+   "check": "F-01.probe.http-mock",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.http-mock @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0128": {
+   "row": "F-01",
+   "check": "F-01.probe.udp",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.udp @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0129": {
+   "row": "F-01",
+   "check": "F-01.probe.cassette",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.cassette @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0130": {
+   "row": "F-01",
+   "check": "F-01.probe.cassette",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.cassette @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0131": {
+   "row": "F-01",
+   "check": "F-01.probe.cassette-redact",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.cassette-redact @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0132": {
+   "row": "F-03",
+   "check": "F-03.node-random",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-03.node-random @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0133": {
+   "row": "F-03",
+   "check": "F-03.node-random",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-03.node-random @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0134": {
+   "row": "F-01",
+   "check": "F-01.probe.node-vm",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.node-vm @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0135": {
+   "row": "F-01",
+   "check": "F-01.probe.node-clock-sources",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.node-clock-sources @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0136": {
+   "row": "F-01",
+   "check": "F-01.probe.node-clock-sources",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.node-clock-sources @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0137": {
+   "row": "F-01",
+   "check": "F-01.probe.node-clock-sources",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.node-clock-sources @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0138": {
+   "row": "F-01",
+   "check": "F-01.probe.timer-consistency",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.timer-consistency @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0139": {
+   "row": "F-01",
+   "check": "F-01.tz.pinned",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.tz.pinned.node @ linux-x64/py3.13/node22",
+    "F-01.tz.pinned.python @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0140": {
+   "row": "F-01",
+   "check": "F-01.locale.pinned",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.locale.pinned.node @ linux-x64/py3.13/node22",
+    "F-01.locale.pinned.python @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0141": {
+   "row": "F-01",
+   "check": "F-01.probe.node-clock-sources",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.node-clock-sources @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0142": {
+   "row": "F-01",
+   "check": "F-01.probe.fake-timers",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.fake-timers @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0143": {
+   "row": "F-01",
+   "check": "F-01.probe.mtime",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.mtime @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0144": {
+   "row": "F-01",
+   "check": "F-01.probe.timer-consistency",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.timer-consistency @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0145": {
+   "row": "JS-03",
+   "check": "JS-03.<runner>.cache2",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0146": {
+   "row": "JS-03",
+   "check": "JS-03.<runner>.cache2",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0147": {
+   "row": "JS-03",
+   "check": "JS-03.<runner>.cache2",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0148": {
+   "row": "JS-03",
+   "check": "JS-03.<runner>.cache2",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0149": {
+   "row": "JS-03",
+   "check": "JS-03.<runner>.cache2",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0150": {
+   "row": "F-03",
+   "check": "F-03.probe.node-sched",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-03.probe.node-sched @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0151": {
+   "row": "F-03",
+   "check": "F-03.probe.node-sched",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-03.probe.node-sched @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0152": {
+   "row": "F-03",
+   "check": "F-03.node-thread",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-03.node-thread @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0153": {
+   "row": "F-01",
+   "check": "F-01.probe.service-host",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.service-host @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0154": {
+   "row": "F-01",
+   "check": "F-01.probe.service-host",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.service-host @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0159": {
+   "row": "F-05",
+   "check": "F-05.probe.real-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0160": {
+   "row": "F-05",
+   "check": "F-05.wrong-reuse",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0161": {
+   "row": "F-05",
+   "check": "F-05.wrong-reuse",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0162": {
+   "row": "F-05",
+   "check": "F-05.wrong-reuse",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0163": {
+   "row": "F-05",
+   "check": "F-05.wrong-reuse",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0164": {
+   "row": "F-05",
+   "check": "F-05.wrong-reuse",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0165": {
+   "row": "F-01",
+   "check": "F-01.probe.replay-clients",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.replay-clients @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0166": {
+   "row": "F-01",
+   "check": "F-01.probe.cassette",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.cassette @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0167": {
+   "row": "F-01",
+   "check": "F-01.probe.cassette-redact",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.cassette-redact @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0168": {
+   "row": "F-01",
+   "check": "F-01.probe.cold-warm",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-01.probe.cold-warm @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0169": {
+   "row": "PY-05",
+   "check": "PY-05.probe.isolate",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0171": {
+   "row": "PY-05",
+   "check": "PY-05.probe.isolate",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0172": {
+   "row": "PY-05",
+   "check": "PY-05.odpair",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0173": {
+   "row": "F-05",
+   "check": "F-05.order-dep",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0174": {
+   "row": "PY-05",
+   "check": "PY-05.probe.testrun-uid",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0175": {
+   "row": "PY-05",
+   "check": "PY-05.odpair",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0176": {
+   "row": "PY-05",
+   "check": "PY-05.odpair",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0177": {
+   "row": "F-02",
+   "check": "F-02.probe.numpy-repro",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-02.probe.numpy-repro @ linux-x64/py3.12/node22"
+   ]
+  },
+  "G-0178": {
+   "row": "F-02",
+   "check": "F-02.probe.numpy-repro",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-02.probe.numpy-repro @ linux-x64/py3.12/node22"
+   ]
+  },
+  "G-0179": {
+   "row": "F-03",
+   "check": "F-03.probe.numpy",
+   "status": "OPEN",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-03.probe.numpy @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0180": {
+   "row": "PY-07",
+   "check": "PY-07.verify-honest",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0181": {
+   "row": "F-03",
+   "check": "F-03.probe.realm-failure",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-03.probe.realm-failure @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0204": {
+   "row": "F-05",
+   "check": "F-05.probe.audit-rerun",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0208": {
+   "row": "PY-07",
+   "check": "PY-07.options",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0209": {
+   "row": "PY-07",
+   "check": "PY-07.probe-stable",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0210": {
+   "row": "PY-07",
+   "check": "PY-07.options",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0211": {
+   "row": "JS-04",
+   "check": "JS-04.browser-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0212": {
+   "row": "JS-04",
+   "check": "JS-04.shell",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0213": {
+   "row": "JS-04",
+   "check": "JS-04.probe.webserver",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0214": {
+   "row": "JS-04",
+   "check": "JS-04.browser-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0216": {
+   "row": "F-02",
+   "check": "F-02.py-explore",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-02.py-explore.idoft-accessify @ linux-x64/py3.12/node22",
+    "F-02.py-explore.idoft-krllint @ linux-x64/py3.12/node22",
+    "F-02.py-explore.idoft-mdutils @ linux-x64/py3.12/node22",
+    "F-02.py-explore.idoft-py-autodoc @ linux-x64/py3.12/node22"
+   ]
+  },
+  "G-0234": {
+   "row": "F-02",
+   "check": "F-02.cli",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-02.cli @ linux-x64/py3.12/node22"
+   ]
+  },
+  "G-0251": {
+   "row": "F-09",
+   "check": "F-09.artifact-identity",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0264": {
+   "row": "F-02",
+   "check": "F-02.py-replay",
+   "status": "OPEN",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-02.py-replay.idoft-accessify @ linux-x64/py3.12/node22",
+    "F-02.py-replay.idoft-krllint @ linux-x64/py3.12/node22",
+    "F-02.py-replay.idoft-mdutils @ linux-x64/py3.12/node22",
+    "F-02.py-replay.idoft-py-autodoc @ linux-x64/py3.12/node22"
+   ]
+  },
+  "G-0268": {
+   "row": "PY-08",
+   "check": "PY-08.child",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0269": {
+   "row": "PY-07",
+   "check": "PY-07.options",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0272": {
+   "row": "F-02",
+   "check": "F-02.cli",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-02.cli @ linux-x64/py3.12/node22"
+   ]
+  },
+  "G-0277": {
+   "row": "F-02",
+   "check": "F-02.node-repro",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-02.node-repro @ linux-x64/py3.12/node22"
+   ]
+  },
+  "G-0278": {
+   "row": "JS-06",
+   "check": "JS-06.<env>.cache2",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0279": {
+   "row": "JS-06",
+   "check": "JS-06.<env>.cache2",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0281": {
+   "row": "JS-04",
+   "check": "JS-04.browser-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0283": {
+   "row": "JS-04",
+   "check": "JS-04.shell",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0284": {
+   "row": "JS-04",
+   "check": "JS-04.browser-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0285": {
+   "row": "JS-04",
+   "check": "JS-04.shell",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0286": {
+   "row": "JS-04",
+   "check": "JS-04.probe.page-network",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0287": {
+   "row": "JS-04",
+   "check": "JS-04.det2",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0288": {
+   "row": "F-02",
+   "check": "F-02.node-replay",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-02.node-replay @ linux-x64/py3.12/node22"
+   ]
+  },
+  "G-0289": {
+   "row": "JS-04",
+   "check": "JS-04.probe.cache2",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0290": {
+   "row": "JS-04",
+   "check": "JS-04.probe.workers",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0292": {
+   "row": "JS-04",
+   "check": "JS-04.probe.webserver",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0295": {
+   "row": "JS-04",
+   "check": "JS-04.probe.page-apis",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0296": {
+   "row": "JS-04",
+   "check": "JS-04.probe.page-apis",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0297": {
+   "row": "JS-04",
+   "check": "JS-04.probe.page-apis",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0298": {
+   "row": "JS-04",
+   "check": "JS-04.probe.page-apis",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0299": {
+   "row": "JS-04",
+   "check": "JS-04.browser-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0300": {
+   "row": "JS-04",
+   "check": "JS-04.probe.page-apis",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0301": {
+   "row": "JS-04",
+   "check": "JS-04.probe.browser-version",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0302": {
+   "row": "JS-04",
+   "check": "JS-04.probe.page-apis",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0303": {
+   "row": "JS-04",
+   "check": "JS-04.probe.page-apis",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0304": {
+   "row": "JS-04",
+   "check": "JS-04.probe.page-network",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0308": {
+   "row": "JS-02",
+   "check": "JS-02.probe.browser-mode",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0309": {
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0310": {
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0311": {
+   "row": "F-02",
+   "check": "F-02.node-repro",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-02.node-repro @ linux-x64/py3.12/node22"
+   ]
+  },
+  "G-0312": {
+   "row": "F-02",
+   "check": "F-02.node-repro",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-02.node-repro @ linux-x64/py3.12/node22"
+   ]
+  },
+  "G-0313": {
+   "row": "F-02",
+   "check": "F-02.node-explore",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-02.node-explore @ linux-x64/py3.12/node22"
+   ]
+  },
+  "G-0318": {
+   "row": "F-18",
+   "check": "F-18.detect",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0382": {
+   "row": "JS-04",
+   "check": "JS-04.shell",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0384": {
+   "row": "PY-07",
+   "check": "PY-07.options",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0398": {
+   "row": "F-01",
+   "check": "F-01.probe.replay-clients",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-01.probe.replay-clients @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0399": {
+   "row": "PY-05",
+   "check": "PY-05.probe.tx-popen",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0401": {
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0402": {
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0403": {
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0404": {
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0406": {
+   "row": "JS-04",
+   "check": "JS-04.shell",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0407": {
+   "row": "JS-02",
+   "check": "JS-02.probe.browser-mode",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0408": {
+   "row": "JS-02",
+   "check": "JS-02.probe.jasmine2",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0409": {
+   "row": "F-01",
+   "check": "F-01.probe.replay-clients",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-01.probe.replay-clients @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0412": {
+   "row": "F-05",
+   "check": "F-05.probe.custom-reporter",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0413": {
+   "row": "F-09",
+   "check": "F-09.job-venv",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0420": {
+   "row": "F-02",
+   "check": "F-02.node-repro",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-02.node-repro @ linux-x64/py3.12/node22"
+   ]
+  },
+  "G-0424": {
+   "row": "F-01",
+   "check": "F-01.probe.replay-clients",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-01.probe.replay-clients @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0425": {
+   "row": "F-01",
+   "check": "F-01.probe.replay-clients",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-01.probe.replay-clients @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0438": {
+   "row": "F-02",
+   "check": "F-02.node-explore",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-02.node-explore @ linux-x64/py3.12/node22"
+   ]
+  },
+  "G-0447": {
+   "row": "F-02",
+   "check": "F-02.node-replay",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-02.node-replay @ linux-x64/py3.12/node22"
+   ]
+  },
+  "G-0448": {
+   "row": "F-02",
+   "check": "F-02.node-repro",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-02.node-repro @ linux-x64/py3.12/node22"
+   ]
+  },
+  "G-0449": {
+   "row": "F-02",
+   "check": "F-02.node-replay",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-02.node-replay @ linux-x64/py3.12/node22"
+   ]
+  },
+  "G-0453": {
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0455": {
+   "row": "JS-04",
+   "check": "JS-04.shell",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0461": {
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0509": {
+   "row": "PY-07",
+   "check": "PY-07.options",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0510": {
+   "row": "F-05",
+   "check": "F-05.probe.numpy",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0513": {
+   "row": "F-05",
+   "check": "F-05.dep-bump",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0514": {
+   "row": "F-01",
+   "check": "F-01.env.pinned",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-01.env.pinned.node @ linux-x64/py3.13/node22",
+    "F-01.env.pinned.python @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0515": {
+   "row": "F-01",
+   "check": "F-01.locale.pinned",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-01.locale.pinned.node @ linux-x64/py3.13/node22",
+    "F-01.locale.pinned.python @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0516": {
+   "row": "F-01",
+   "check": "F-01.probe.replay-clients",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-01.probe.replay-clients @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0517": {
+   "row": "PY-07",
+   "check": "PY-07.options",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0518": {
+   "row": "PY-07",
+   "check": "PY-07.probe-stable",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0519": {
+   "row": "F-01",
+   "check": "F-01.tz.pinned",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-01.tz.pinned.node @ linux-x64/py3.13/node22",
+    "F-01.tz.pinned.python @ linux-x64/py3.13/node22"
+   ]
+  },
+  "G-0530": {
+   "row": "PY-05",
+   "check": "PY-05.probe.xdist-old",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0532": {
+   "row": "PY-03",
+   "check": "PY-03.<runner>.repro",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0533": {
+   "row": "PY-07",
+   "check": "PY-07.probe.repro-sched",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0534": {
+   "row": "PY-03",
+   "check": "PY-03.<runner>.repro",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0536": {
+   "row": "PY-03",
+   "check": "PY-03.<runner>.repro",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0540": {
+   "row": "PY-03",
+   "check": "PY-03.<runner>.repro",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0542": {
+   "row": "PY-03",
+   "check": "PY-03.<runner>.repro",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0546": {
+   "row": "PY-07",
+   "check": "PY-07.options",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  }
+ },
+ "unassigned_gaps": {
+  "G-0205": "repository default branch / no main: repository hygiene, no engine behaviour to test (the exam installs from the release artifact or registries)",
+  "G-0242": "repository default branch / no main: repository hygiene, no engine behaviour to test (the exam installs from the release artifact or registries)",
+  "G-0252": "documentation gap of an in-scope feature (explore/quickstart/repro guide): no engine behaviour to test; the feature itself is checked by F-02 / PY-02",
+  "G-0259": "documentation gap of an in-scope feature (explore/quickstart/repro guide): no engine behaviour to test; the feature itself is checked by F-02 / PY-02",
+  "G-0260": "documentation gap of an in-scope feature (explore/quickstart/repro guide): no engine behaviour to test; the feature itself is checked by F-02 / PY-02",
+  "G-0273": "documentation gap of an in-scope feature (explore/quickstart/repro guide): no engine behaviour to test; the feature itself is checked by F-02 / PY-02",
+  "G-0561": "repository default branch / no main: repository hygiene, no engine behaviour to test (the exam installs from the release artifact or registries)"
+ },
+ "out_of_scope_gaps": {
+  "G-0001": "service/app, not an engine go-live row",
+  "G-0002": "service/app, not an engine go-live row",
+  "G-0003": "service/app, not an engine go-live row",
+  "G-0005": "shared cache across machines not in go-live scope",
+  "G-0007": "shared cache across machines not in go-live scope",
+  "G-0008": "shared cache across machines not in go-live scope",
+  "G-0009": "Go not in go-live scope",
+  "G-0011": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0012": "JVM not in go-live scope",
+  "G-0013": "JVM not in go-live scope",
+  "G-0017": "service/app, not an engine go-live row",
+  "G-0039": "Go not in go-live scope",
+  "G-0040": "Go not in go-live scope",
+  "G-0041": "Go not in go-live scope",
+  "G-0042": "Go not in go-live scope",
+  "G-0043": "Go not in go-live scope",
+  "G-0044": "Go not in go-live scope",
+  "G-0045": "Go not in go-live scope",
+  "G-0046": "Go not in go-live scope",
+  "G-0047": "Go not in go-live scope",
+  "G-0048": "Go not in go-live scope",
+  "G-0049": "Go not in go-live scope",
+  "G-0050": "JVM not in go-live scope",
+  "G-0051": "JVM not in go-live scope",
+  "G-0052": "JVM not in go-live scope",
+  "G-0053": "JVM not in go-live scope",
+  "G-0054": "JVM not in go-live scope",
+  "G-0055": "JVM not in go-live scope",
+  "G-0056": "JVM not in go-live scope",
+  "G-0057": "JVM not in go-live scope",
+  "G-0058": "JVM not in go-live scope",
+  "G-0059": "JVM not in go-live scope",
+  "G-0060": "JVM not in go-live scope",
+  "G-0061": "JVM not in go-live scope",
+  "G-0062": "JVM not in go-live scope",
+  "G-0063": "JVM not in go-live scope",
+  "G-0064": "JVM not in go-live scope",
+  "G-0065": "JVM not in go-live scope",
+  "G-0067": "Go not in go-live scope",
+  "G-0068": "JVM not in go-live scope",
+  "G-0069": "JVM not in go-live scope",
+  "G-0070": "JVM not in go-live scope",
+  "G-0071": "JVM not in go-live scope",
+  "G-0072": "JVM not in go-live scope",
+  "G-0073": "JVM not in go-live scope",
+  "G-0074": "JVM not in go-live scope",
+  "G-0075": "JVM not in go-live scope",
+  "G-0076": "JVM not in go-live scope",
+  "G-0077": "JVM not in go-live scope",
+  "G-0113": "Go not in go-live scope",
+  "G-0114": "Go not in go-live scope",
+  "G-0116": "shared cache across machines not in go-live scope",
+  "G-0117": "shared cache across machines not in go-live scope",
+  "G-0118": "shared cache across machines not in go-live scope",
+  "G-0119": "shared cache across machines not in go-live scope",
+  "G-0155": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0156": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0157": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0158": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0170": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0182": "service/app, not an engine go-live row",
+  "G-0183": "service/app, not an engine go-live row",
+  "G-0184": "service/app, not an engine go-live row",
+  "G-0185": "service/app, not an engine go-live row",
+  "G-0186": "service/app, not an engine go-live row",
+  "G-0187": "service/app, not an engine go-live row",
+  "G-0188": "service/app, not an engine go-live row",
+  "G-0189": "service/app, not an engine go-live row",
+  "G-0190": "service/app, not an engine go-live row",
+  "G-0191": "service/app, not an engine go-live row",
+  "G-0192": "service/app, not an engine go-live row",
+  "G-0193": "service/app, not an engine go-live row",
+  "G-0194": "service/app, not an engine go-live row",
+  "G-0195": "service/app, not an engine go-live row",
+  "G-0196": "service/app, not an engine go-live row",
+  "G-0197": "service/app, not an engine go-live row",
+  "G-0198": "service/app, not an engine go-live row",
+  "G-0199": "service/app, not an engine go-live row",
+  "G-0200": "service/app, not an engine go-live row",
+  "G-0201": "service/app, not an engine go-live row",
+  "G-0202": "service/app, not an engine go-live row",
+  "G-0203": "service/app, not an engine go-live row",
+  "G-0206": "service/app, not an engine go-live row",
+  "G-0207": "service/app, not an engine go-live row",
+  "G-0217": "service/app, not an engine go-live row",
+  "G-0218": "shared cache across machines not in go-live scope",
+  "G-0219": "shared cache across machines not in go-live scope",
+  "G-0220": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0221": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0222": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0223": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0224": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0225": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0226": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0227": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0228": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0229": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0230": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0231": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0232": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0233": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0236": "service/app, not an engine go-live row",
+  "G-0237": "service/app, not an engine go-live row",
+  "G-0238": "service/app, not an engine go-live row",
+  "G-0239": "service/app, not an engine go-live row",
+  "G-0240": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0241": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0243": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0244": "Go not in go-live scope",
+  "G-0245": "JVM/Go not in go-live scope",
+  "G-0246": "JVM/Go not in go-live scope",
+  "G-0247": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0248": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0249": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0250": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0253": "GitHub Action / MCP: service/app, not an engine go-live row",
+  "G-0254": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0255": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0256": "Windows not in go-live scope",
+  "G-0258": "hosted quickstart: service/app, not an engine go-live row",
+  "G-0261": "service/app, not an engine go-live row",
+  "G-0262": "service/app, not an engine go-live row",
+  "G-0263": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0265": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0266": "service/app, not an engine go-live row",
+  "G-0267": "service/app, not an engine go-live row",
+  "G-0270": "shared cache across machines not in go-live scope",
+  "G-0271": "shared cache across machines not in go-live scope",
+  "G-0274": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0275": "Cypress not in go-live scope",
+  "G-0276": "Cypress not in go-live scope",
+  "G-0280": "runner/browser tool not in go-live scope",
+  "G-0282": "runner/browser tool not in go-live scope",
+  "G-0291": "Firefox/WebKit Playwright projects not in go-live scope (Chromium is covered by JS-04)",
+  "G-0293": "Playwright component testing not in go-live scope (Playwright Test e2e only)",
+  "G-0294": "runner/browser tool not in go-live scope",
+  "G-0305": "runner/browser tool not in go-live scope",
+  "G-0306": "runner/browser tool not in go-live scope",
+  "G-0307": "runner/browser tool not in go-live scope",
+  "G-0314": "runner/browser tool not in go-live scope",
+  "G-0315": "runner/browser tool not in go-live scope",
+  "G-0316": "GitHub Action / service integration: service/app, not an engine go-live row",
+  "G-0317": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0319": "GitHub Action / service integration: service/app, not an engine go-live row",
+  "G-0320": "state between jobs / shared storage across machines not in go-live scope",
+  "G-0321": "GitHub Action / service integration: service/app, not an engine go-live row",
+  "G-0322": "GitHub Action / service integration: service/app, not an engine go-live row",
+  "G-0323": "GitHub Action / service integration: service/app, not an engine go-live row",
+  "G-0324": "GitHub Action / service integration: service/app, not an engine go-live row",
+  "G-0325": "Go not in go-live scope",
+  "G-0326": "Go not in go-live scope",
+  "G-0327": "Go not in go-live scope",
+  "G-0328": "Go not in go-live scope",
+  "G-0329": "Go not in go-live scope",
+  "G-0330": "Go not in go-live scope",
+  "G-0331": "Go not in go-live scope",
+  "G-0332": "Go not in go-live scope",
+  "G-0333": "Go not in go-live scope",
+  "G-0334": "Go not in go-live scope",
+  "G-0335": "Go not in go-live scope",
+  "G-0336": "Go not in go-live scope",
+  "G-0337": "Go not in go-live scope",
+  "G-0338": "JVM not in go-live scope",
+  "G-0339": "JVM not in go-live scope",
+  "G-0340": "JVM not in go-live scope",
+  "G-0341": "JVM not in go-live scope",
+  "G-0342": "JVM not in go-live scope",
+  "G-0343": "JVM not in go-live scope",
+  "G-0344": "JVM not in go-live scope",
+  "G-0345": "JVM not in go-live scope",
+  "G-0346": "JVM not in go-live scope",
+  "G-0347": "JVM not in go-live scope",
+  "G-0348": "JVM not in go-live scope",
+  "G-0349": "JVM not in go-live scope",
+  "G-0350": "JVM not in go-live scope",
+  "G-0351": "JVM not in go-live scope",
+  "G-0352": "JVM not in go-live scope",
+  "G-0353": "JVM not in go-live scope",
+  "G-0354": "JVM not in go-live scope",
+  "G-0355": "JVM not in go-live scope",
+  "G-0356": "JVM not in go-live scope",
+  "G-0357": "JVM not in go-live scope",
+  "G-0358": "JVM not in go-live scope",
+  "G-0359": "JVM not in go-live scope",
+  "G-0360": "JVM not in go-live scope",
+  "G-0361": "JVM not in go-live scope",
+  "G-0362": "JVM not in go-live scope",
+  "G-0363": "service/app, not an engine go-live row",
+  "G-0364": "service/app, not an engine go-live row",
+  "G-0365": "service/app, not an engine go-live row",
+  "G-0366": "service/app, not an engine go-live row",
+  "G-0367": "service/app, not an engine go-live row",
+  "G-0368": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0369": "service/app, not an engine go-live row",
+  "G-0370": "service/app, not an engine go-live row",
+  "G-0371": "service/app, not an engine go-live row",
+  "G-0372": "service/app, not an engine go-live row",
+  "G-0373": "service/app, not an engine go-live row",
+  "G-0374": "service/app, not an engine go-live row",
+  "G-0375": "service/app, not an engine go-live row",
+  "G-0376": "service/app, not an engine go-live row",
+  "G-0377": "service/app, not an engine go-live row",
+  "G-0378": "service/app, not an engine go-live row",
+  "G-0380": "service/app, not an engine go-live row",
+  "G-0381": "service/app, not an engine go-live row",
+  "G-0383": "Python runners not listed (behave, trial, green, stestr, robot, ...) not in go-live scope",
+  "G-0385": "L2 deterministic VM not in go-live scope",
+  "G-0386": "Vitest < 3 / Jest < 29 not in go-live scope",
+  "G-0387": "Go not in go-live scope",
+  "G-0388": "Go not in go-live scope",
+  "G-0389": "Go not in go-live scope",
+  "G-0390": "Go not in go-live scope",
+  "G-0391": "Go not in go-live scope",
+  "G-0392": "Go not in go-live scope",
+  "G-0393": "JVM not in go-live scope",
+  "G-0394": "JVM not in go-live scope",
+  "G-0395": "JVM not in go-live scope",
+  "G-0396": "JVM not in go-live scope",
+  "G-0397": "JVM not in go-live scope",
+  "G-0400": "PyPy not in go-live scope",
+  "G-0405": "Cypress not in go-live scope",
+  "G-0410": "Vitest < 3 / Jest < 29 not in go-live scope",
+  "G-0411": "forked-per-test suites (pytest-forked, ansible-test) not in go-live scope",
+  "G-0414": "Python <= 3.11 not in go-live scope",
+  "G-0415": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0416": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0418": "Go/JVM not in go-live scope",
+  "G-0419": "Go/JVM not in go-live scope",
+  "G-0421": "Windows not in go-live scope",
+  "G-0422": "job wrapper / runner image of the hosted service: service/app, not an engine go-live row",
+  "G-0423": "AVA <= 5 not in go-live scope",
+  "G-0426": "jasmine-browser-runner (browser Jasmine) not in go-live scope",
+  "G-0427": "nose2 multiprocess plugin (-N): multiprocessing not in go-live scope",
+  "G-0428": "tap <= 16 not in go-live scope",
+  "G-0436": "exact culprit is not a go-live row",
+  "G-0437": "dependency-update verdict for Node is not a go-live check (F-06 has none)",
+  "G-0439": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0440": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0441": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0442": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0443": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0444": "Windows not in go-live scope",
+  "G-0445": "Alpine/musl not in go-live scope",
+  "G-0446": "old glibc distributions not in go-live scope",
+  "G-0450": "AVA <= 5 not in go-live scope",
+  "G-0451": "runner not in go-live scope",
+  "G-0452": "runner not in go-live scope",
+  "G-0454": "runner not in go-live scope",
+  "G-0456": "runner not in go-live scope",
+  "G-0457": "runner not in go-live scope",
+  "G-0458": "tap <= 16 not in go-live scope",
+  "G-0459": "runner not in go-live scope",
+  "G-0460": "Vitest < 3 / Jest < 29 not in go-live scope",
+  "G-0462": "runner not in go-live scope",
+  "G-0463": "Node L1 not in go-live scope",
+  "G-0464": "Node L1 not in go-live scope",
+  "G-0465": "shared cache across machines not in go-live scope",
+  "G-0466": "job wrapper / runner image of the hosted service: service/app, not an engine go-live row",
+  "G-0467": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0468": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0469": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0470": "Python <= 3.11 not in go-live scope",
+  "G-0471": "Python <= 3.11 not in go-live scope",
+  "G-0472": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0473": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0474": "Go/JVM not in go-live scope",
+  "G-0475": "Go/JVM not in go-live scope",
+  "G-0476": "Go/JVM not in go-live scope",
+  "G-0477": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0478": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0479": "old glibc distributions not in go-live scope",
+  "G-0480": "old glibc distributions not in go-live scope",
+  "G-0481": "old glibc distributions not in go-live scope",
+  "G-0482": "Alpine/musl not in go-live scope",
+  "G-0483": "Alpine/musl not in go-live scope",
+  "G-0484": "Alpine/musl not in go-live scope",
+  "G-0485": "Alpine/musl not in go-live scope",
+  "G-0486": "Alpine/musl not in go-live scope",
+  "G-0487": "Alpine/musl not in go-live scope",
+  "G-0488": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0489": "old glibc distributions not in go-live scope",
+  "G-0490": "old glibc distributions not in go-live scope",
+  "G-0491": "old glibc distributions not in go-live scope",
+  "G-0492": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0493": "Go/JVM not in go-live scope",
+  "G-0494": "Go/JVM not in go-live scope",
+  "G-0495": "Go/JVM not in go-live scope",
+  "G-0496": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0497": "Go/JVM not in go-live scope",
+  "G-0498": "macOS Intel not in go-live scope",
+  "G-0499": "Windows not in go-live scope",
+  "G-0500": "Windows not in go-live scope",
+  "G-0501": "Windows not in go-live scope",
+  "G-0502": "Windows not in go-live scope",
+  "G-0503": "Windows not in go-live scope",
+  "G-0504": "Windows not in go-live scope",
+  "G-0505": "Windows not in go-live scope",
+  "G-0506": "Windows not in go-live scope",
+  "G-0507": "Windows not in go-live scope",
+  "G-0508": "Windows not in go-live scope",
+  "G-0511": "Python <= 3.11 not in go-live scope",
+  "G-0512": "exact culprit is not a go-live row",
+  "G-0520": "L2 deterministic VM not in go-live scope",
+  "G-0521": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0522": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0523": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0524": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0525": "Alpine/musl not in go-live scope",
+  "G-0526": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0527": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0528": "Windows not in go-live scope",
+  "G-0529": "pytest 7 not in go-live scope (pytest 8 and 9)",
+  "G-0531": "anyio trio backend not in go-live scope (asyncio only)",
+  "G-0535": "Python runner not in go-live scope",
+  "G-0537": "Python runner not in go-live scope",
+  "G-0538": "Python runner not in go-live scope",
+  "G-0539": "Python runner not in go-live scope",
+  "G-0541": "Python runner not in go-live scope",
+  "G-0543": "Python runner not in go-live scope",
+  "G-0544": "Python runner not in go-live scope",
+  "G-0545": "Python runner not in go-live scope",
+  "G-0547": "Python <= 3.11 not in go-live scope",
+  "G-0548": "Python <= 3.11 not in go-live scope",
+  "G-0549": "Python <= 3.11 not in go-live scope",
+  "G-0550": "Python <= 3.11 not in go-live scope",
+  "G-0551": "Python <= 3.11 not in go-live scope",
+  "G-0552": "Python <= 3.11 not in go-live scope",
+  "G-0553": "free-threaded CPython not in go-live scope",
+  "G-0554": "PyPy not in go-live scope",
+  "G-0555": "free-threaded CPython not in go-live scope",
+  "G-0556": "Python <= 3.11 not in go-live scope",
+  "G-0557": "free-threaded CPython not in go-live scope",
+  "G-0558": "Python <= 3.11 not in go-live scope",
+  "G-0559": "shared cache across machines not in go-live scope",
+  "G-0560": "shared cache across machines not in go-live scope",
+  "G-0562": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0563": "job wrapper / runner image of the hosted service: service/app, not an engine go-live row",
+  "G-0564": "job wrapper / runner image of the hosted service: service/app, not an engine go-live row",
+  "G-0565": "job wrapper / runner image of the hosted service: service/app, not an engine go-live row",
+  "G-0566": "job wrapper / runner image of the hosted service: service/app, not an engine go-live row",
+  "G-0567": "job wrapper / runner image of the hosted service: service/app, not an engine go-live row",
+  "G-0568": "service/app, not an engine go-live row",
+  "G-0570": "service/app, not an engine go-live row",
+  "G-0571": "service/app, not an engine go-live row",
+  "G-0572": "service/app, not an engine go-live row",
+  "G-0573": "service/app, not an engine go-live row",
+  "G-0574": "service/app, not an engine go-live row",
+  "G-0575": "service/app, not an engine go-live row",
+  "G-0576": "service/app, not an engine go-live row",
+  "G-0577": "service/app, not an engine go-live row",
+  "G-0578": "service/app, not an engine go-live row",
+  "G-0579": "service/app, not an engine go-live row",
+  "G-0580": "service/app, not an engine go-live row",
+  "G-0582": "service/app, not an engine go-live row",
+  "G-0583": "service/app, not an engine go-live row",
+  "G-0584": "service/app, not an engine go-live row",
+  "G-0585": "service/app, not an engine go-live row",
+  "G-0586": "service/app, not an engine go-live row",
+  "G-0587": "service/app, not an engine go-live row",
+  "G-0588": "service/app, not an engine go-live row",
+  "G-0589": "service/app, not an engine go-live row",
+  "G-0590": "service/app, not an engine go-live row",
+  "G-0591": "service/app, not an engine go-live row",
+  "G-0592": "service/app, not an engine go-live row",
+  "G-0593": "service/app, not an engine go-live row",
+  "G-0594": "service/app, not an engine go-live row",
+  "G-0595": "service/app, not an engine go-live row",
+  "G-0596": "service/app, not an engine go-live row",
+  "G-0597": "service/app, not an engine go-live row",
+  "G-0598": "service/app, not an engine go-live row",
+  "G-0599": "service/app, not an engine go-live row",
+  "G-0600": "service/app, not an engine go-live row",
+  "G-0601": "service/app, not an engine go-live row",
+  "G-0602": "service/app, not an engine go-live row",
+  "G-0603": "service/app, not an engine go-live row",
+  "G-0604": "service/app, not an engine go-live row",
+  "G-0605": "service/app, not an engine go-live row",
+  "G-0606": "service/app, not an engine go-live row",
+  "G-0607": "service/app, not an engine go-live row",
+  "G-0608": "service/app, not an engine go-live row",
+  "G-0609": "service/app, not an engine go-live row",
+  "G-0610": "service/app, not an engine go-live row",
+  "G-0611": "service/app, not an engine go-live row",
+  "G-0612": "service/app, not an engine go-live row",
+  "G-0613": "service/app, not an engine go-live row",
+  "G-0614": "service/app, not an engine go-live row",
+  "G-0615": "service/app, not an engine go-live row",
+  "G-0616": "service/app, not an engine go-live row",
+  "G-0617": "service/app, not an engine go-live row",
+  "G-0618": "service/app, not an engine go-live row",
+  "G-0619": "service/app, not an engine go-live row",
+  "G-0620": "service/app, not an engine go-live row",
+  "G-0621": "service/app, not an engine go-live row",
+  "G-0622": "service/app, not an engine go-live row",
+  "G-0623": "service/app, not an engine go-live row",
+  "G-0624": "service/app, not an engine go-live row",
+  "G-0625": "service/app, not an engine go-live row",
+  "G-0626": "service/app, not an engine go-live row",
+  "G-0627": "service/app, not an engine go-live row",
+  "G-0629": "service/app, not an engine go-live row",
+  "G-0630": "service/app, not an engine go-live row",
+  "G-0631": "service/app, not an engine go-live row",
+  "G-0632": "service/app, not an engine go-live row",
+  "G-0633": "service/app, not an engine go-live row",
+  "G-0634": "service/app, not an engine go-live row",
+  "G-0635": "shared cache across machines not in go-live scope",
+  "G-0636": "shared cache across machines not in go-live scope",
+  "G-0637": "state between jobs / shared storage across machines not in go-live scope",
+  "G-0638": "shared cache across machines not in go-live scope",
+  "G-0639": "state between jobs / shared storage across machines not in go-live scope"
+ },
+ "other_row_gaps": {
+  "G-0215": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0235": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0257": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0379": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0417": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0429": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0430": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0431": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0432": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0433": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0434": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0435": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0569": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0581": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0628": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  }
+ }
+}

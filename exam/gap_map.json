@@ -1,0 +1,4087 @@
+{
+ "generated_from": "gaps.jsonl of claude/gap-audit 37f7de22, G-* with severity WRONG-RESULT or BLOCKS-USE",
+ "gaps": {
+  "G-0001": {
+   "severity": "WRONG-RESULT",
+   "area": "Branches / App / reviewer test R-012b N1 fails on main",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0002": {
+   "severity": "WRONG-RESULT",
+   "area": "Branches / App / reviewer test R-012b N2 fails on main",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0003": {
+   "severity": "WRONG-RESULT",
+   "area": "Branches / App / reviewer test R-012b N3 fails on main",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0004": {
+   "severity": "WRONG-RESULT",
+   "area": "Branches / Engine / parallel-proof-3 round 4: patched os.path",
+   "row": "F-05",
+   "check": "F-05.probe.blockbuster",
+   "probe": "conftest installs a blockbuster-style hook that makes os.path.abspath/realpath raise inside a running asyncio loop; pytest-asyncio tests: plain pass, --det-cache pass with >= 1 test recorded"
+  },
+  "G-0005": {
+   "severity": "WRONG-RESULT",
+   "area": "Branches / Engine / reviewer test R-008b skipped",
+   "out_of_scope": "shared cache across machines not in go-live scope"
+  },
+  "G-0006": {
+   "severity": "WRONG-RESULT",
+   "area": "Branches / Engine / reviewer tests R-008 skipped",
+   "row": "F-05",
+   "check": "F-05.wrong-reuse"
+  },
+  "G-0007": {
+   "severity": "WRONG-RESULT",
+   "area": "Branches / Engine / shared cache tests skipped",
+   "out_of_scope": "shared cache across machines not in go-live scope"
+  },
+  "G-0008": {
+   "severity": "WRONG-RESULT",
+   "area": "Branches / Engine / shared cache token exposure",
+   "out_of_scope": "shared cache across machines not in go-live scope"
+  },
+  "G-0009": {
+   "severity": "WRONG-RESULT",
+   "area": "CI / go-nightly-real-clock.yml",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0010": {
+   "severity": "WRONG-RESULT",
+   "area": "CI / release-1.yml optional runners not installed",
+   "row": "PY-03",
+   "check": "PY-03.<runner>.det2"
+  },
+  "G-0011": {
+   "severity": "WRONG-RESULT",
+   "area": "Code marker / detpy runtime_id non-ELF",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "PY-08 PY-08.probe.dlopen-lib"
+  },
+  "G-0012": {
+   "severity": "WRONG-RESULT",
+   "area": "Code marker / jvm agent start failure",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0013": {
+   "severity": "WRONG-RESULT",
+   "area": "Code marker / jvm hook failures only printed",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0014": {
+   "severity": "WRONG-RESULT",
+   "area": "Disabled test / PYTHONWARNINGS xfail",
+   "row": "F-05",
+   "check": "F-05.wrong-reuse"
+  },
+  "G-0015": {
+   "severity": "WRONG-RESULT",
+   "area": "Disabled test / review R-008 e2e",
+   "row": "F-05",
+   "check": "F-05.wrong-reuse"
+  },
+  "G-0016": {
+   "severity": "WRONG-RESULT",
+   "area": "Disabled test / review R-008d start-up rule",
+   "row": "F-05",
+   "check": "F-05.probe.startup-process",
+   "probe": "conftest runs a start-up program at session start (e.g. `git describe` / a script writing a file) and puts its output in os.environ; a test asserts on it; change the program's output (new tag) between run 1 and run 2 of --det-cache: the test is not reused, outcome equals plain"
+  },
+  "G-0017": {
+   "severity": "WRONG-RESULT",
+   "area": "Disabled test / runner wrapper",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0018": {
+   "severity": "WRONG-RESULT",
+   "area": "Disabled test / start-up digest",
+   "row": "F-05",
+   "check": "F-05.probe.startup-process",
+   "probe": "conftest runs a start-up program at session start (e.g. `git describe` / a script writing a file) and puts its output in os.environ; a test asserts on it; change the program's output (new tag) between run 1 and run 2 of --det-cache: the test is not reused, outcome equals plain"
+  },
+  "G-0019": {
+   "severity": "WRONG-RESULT",
+   "area": "Disabled test / start-up spawn",
+   "row": "F-05",
+   "check": "F-05.probe.startup-process",
+   "probe": "conftest runs a start-up program at session start (e.g. `git describe` / a script writing a file) and puts its output in os.environ; a test asserts on it; change the program's output (new tag) between run 1 and run 2 of --det-cache: the test is not reused, outcome equals plain"
+  },
+  "G-0020": {
+   "severity": "WRONG-RESULT",
+   "area": "Engine CI",
+   "row": "F-05",
+   "check": "F-05.probe.real-clock",
+   "probe": "test passes only before a deadline D read through (a) datetime.now(), (b) sqlite `date('now')` with a user trace callback set, (c) C time() via ctypes; run 1 --det-cache before D; run 2 with the clock moved past D (libfaketime / next UTC day): not reused, outcome equals plain"
+  },
+  "G-0021": {
+   "severity": "WRONG-RESULT",
+   "area": "Front-end / happy-dom",
+   "row": "JS-06",
+   "check": "JS-06.probe.jsdom-clock",
+   "probe": "jsdom (Vitest and Jest) and happy-dom test prints new Event('x').timeStamp, document.lastModified, new File([],'f').lastModified, performance.timeOrigin, rAF callback timestamps (3 frames) and jsdom.window.eval('Date.now()+Math.random()'): two --det runs 2 s apart give equal values, or verify reports divergence (never identical)"
+  },
+  "G-0022": {
+   "severity": "WRONG-RESULT",
+   "area": "Front-end / happy-dom",
+   "row": "JS-06",
+   "check": "JS-06.probe.timer-race",
+   "probe": "jsdom (Jest) and happy-dom (Vitest) test races setTimeout(0) against a MessageChannel message and a resolved promise, recording the order: 10 --det runs give one order and verify identical, or verify reports the divergence at the port message"
+  },
+  "G-0023": {
+   "severity": "WRONG-RESULT",
+   "area": "Front-end / Jest+jsdom",
+   "row": "JS-06",
+   "check": "JS-06.probe.timer-race",
+   "probe": "jsdom (Jest) and happy-dom (Vitest) test races setTimeout(0) against a MessageChannel message and a resolved promise, recording the order: 10 --det runs give one order and verify identical, or verify reports the divergence at the port message"
+  },
+  "G-0024": {
+   "severity": "WRONG-RESULT",
+   "area": "Front-end / Jest+jsdom",
+   "row": "JS-06",
+   "check": "JS-06.probe.global-shape",
+   "probe": "Jest 29 jsdom test prints typeof setImmediate, typeof clearImmediate, typeof crypto.randomUUID: plain and --det print the same"
+  },
+  "G-0025": {
+   "severity": "WRONG-RESULT",
+   "area": "Front-end / Jest+jsdom",
+   "row": "JS-06",
+   "check": "JS-06.probe.global-shape",
+   "probe": "Jest 29 jsdom test prints typeof setImmediate, typeof clearImmediate, typeof crypto.randomUUID: plain and --det print the same"
+  },
+  "G-0026": {
+   "severity": "WRONG-RESULT",
+   "area": "Front-end / Jest+jsdom",
+   "row": "JS-06",
+   "check": "JS-06.probe.jsdom-clock",
+   "probe": "jsdom (Vitest and Jest) and happy-dom test prints new Event('x').timeStamp, document.lastModified, new File([],'f').lastModified, performance.timeOrigin, rAF callback timestamps (3 frames) and jsdom.window.eval('Date.now()+Math.random()'): two --det runs 2 s apart give equal values, or verify reports divergence (never identical)"
+  },
+  "G-0027": {
+   "severity": "WRONG-RESULT",
+   "area": "Front-end / Jest+jsdom",
+   "row": "JS-06",
+   "check": "JS-06.probe.jsdom-clock",
+   "probe": "jsdom (Vitest and Jest) and happy-dom test prints new Event('x').timeStamp, document.lastModified, new File([],'f').lastModified, performance.timeOrigin, rAF callback timestamps (3 frames) and jsdom.window.eval('Date.now()+Math.random()'): two --det runs 2 s apart give equal values, or verify reports divergence (never identical)"
+  },
+  "G-0028": {
+   "severity": "WRONG-RESULT",
+   "area": "Front-end / jsdom",
+   "row": "JS-06",
+   "check": "JS-06.probe.jsdom-clock",
+   "probe": "jsdom (Vitest and Jest) and happy-dom test prints new Event('x').timeStamp, document.lastModified, new File([],'f').lastModified, performance.timeOrigin, rAF callback timestamps (3 frames) and jsdom.window.eval('Date.now()+Math.random()'): two --det runs 2 s apart give equal values, or verify reports divergence (never identical)"
+  },
+  "G-0029": {
+   "severity": "WRONG-RESULT",
+   "area": "Front-end / jsdom",
+   "row": "JS-06",
+   "check": "JS-06.probe.iframe-realm",
+   "probe": "jsdom test creates an <iframe> and reads iframe.contentWindow.Date.now() and Math.random(): two --det runs equal, or verify reports divergence (never 'covered')"
+  },
+  "G-0030": {
+   "severity": "WRONG-RESULT",
+   "area": "Front-end / jsdom",
+   "row": "JS-06",
+   "check": "JS-06.probe.subtle-key",
+   "probe": "jsdom/happy-dom test exports a key from crypto.subtle.generateKey: two --det runs give equal bytes, or verify reports an entropy divergence"
+  },
+  "G-0031": {
+   "severity": "WRONG-RESULT",
+   "area": "Front-end / jsdom",
+   "row": "JS-06",
+   "check": "JS-06.probe.timer-race",
+   "probe": "jsdom (Jest) and happy-dom (Vitest) test races setTimeout(0) against a MessageChannel message and a resolved promise, recording the order: 10 --det runs give one order and verify identical, or verify reports the divergence at the port message"
+  },
+  "G-0032": {
+   "severity": "WRONG-RESULT",
+   "area": "Front-end / jsdom locale",
+   "row": "JS-06",
+   "check": "JS-06.tz-locale"
+  },
+  "G-0033": {
+   "severity": "WRONG-RESULT",
+   "area": "Front-end / jsdom timezone",
+   "row": "JS-06",
+   "check": "JS-06.tz-locale"
+  },
+  "G-0034": {
+   "severity": "WRONG-RESULT",
+   "area": "Front-end / msw",
+   "row": "F-01",
+   "check": "F-01.probe.http-mock",
+   "probe": "Vitest test (msw setupServer) and Jest test (nock) mocking fetch/http.get of https://api.example.com/user: plain pass; two --det runs pass (the closed network must not block a request the mock answers) and verify identical"
+  },
+  "G-0035": {
+   "severity": "WRONG-RESULT",
+   "area": "Front-end / real browser timezone",
+   "row": "JS-04",
+   "check": "JS-04.probe.browser-tz",
+   "probe": "Playwright spec prints page `new Date().toString()` and `Intl.DateTimeFormat().resolvedOptions()` under TZ=UTC/LANG=C vs TZ=Asia/Tokyo/LANG=de_DE.UTF-8: equal under --det"
+  },
+  "G-0036": {
+   "severity": "WRONG-RESULT",
+   "area": "Front-end / Vitest browser mode",
+   "row": "JS-02",
+   "check": "JS-02.probe.browser-mode",
+   "probe": "Vitest 3/4 browser-mode project (Chromium) test prints Date.now() and Math.random() and depends on --det-seed order: two --det runs give equal values and a traced test count equal to the tests run, or the engine refuses browser mode with a named reason (no 'Level 0 active' banner without control)"
+  },
+  "G-0037": {
+   "severity": "WRONG-RESULT",
+   "area": "Front-end / Vitest browser mode",
+   "row": "F-03",
+   "check": "F-03.probe.zero-tests",
+   "probe": "Vitest browser-mode project (Chromium) with 2 tests: two --det traces; fenvix verify must not exit 0 'identical/covered' for traces that observed 0 of the tests that ran"
+  },
+  "G-0038": {
+   "severity": "WRONG-RESULT",
+   "area": "Front-end / Vitest+jsdom",
+   "row": "JS-06",
+   "check": "JS-06.probe.jsdom-clock",
+   "probe": "jsdom (Vitest and Jest) and happy-dom test prints new Event('x').timeStamp, document.lastModified, new File([],'f').lastModified, performance.timeOrigin, rAF callback timestamps (3 frames) and jsdom.window.eval('Date.now()+Math.random()'): two --det runs 2 s apart give equal values, or verify reports divergence (never identical)"
+  },
+  "G-0039": {
+   "severity": "WRONG-RESULT",
+   "area": "Go / det epoch",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0040": {
+   "severity": "WRONG-RESULT",
+   "area": "Go / det ports",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0041": {
+   "severity": "WRONG-RESULT",
+   "area": "Go / fingerprints",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0042": {
+   "severity": "WRONG-RESULT",
+   "area": "Go / flag t.Parallel",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0043": {
+   "severity": "WRONG-RESULT",
+   "area": "Go / scheduling",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0044": {
+   "severity": "WRONG-RESULT",
+   "area": "Go / skip",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0045": {
+   "severity": "WRONG-RESULT",
+   "area": "Go / skip",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0046": {
+   "severity": "WRONG-RESULT",
+   "area": "Go / skip",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0047": {
+   "severity": "WRONG-RESULT",
+   "area": "Go / skip",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0048": {
+   "severity": "WRONG-RESULT",
+   "area": "Go / strace",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0049": {
+   "severity": "WRONG-RESULT",
+   "area": "Go / versions",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0050": {
+   "severity": "WRONG-RESULT",
+   "area": "JVM / det clock",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0051": {
+   "severity": "WRONG-RESULT",
+   "area": "JVM / det hash seeds / Set.of order",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0052": {
+   "severity": "WRONG-RESULT",
+   "area": "JVM / det randomness",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0053": {
+   "severity": "WRONG-RESULT",
+   "area": "JVM / det reflection order",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0054": {
+   "severity": "WRONG-RESULT",
+   "area": "JVM / det verifier",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0055": {
+   "severity": "WRONG-RESULT",
+   "area": "JVM / packaging",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0056": {
+   "severity": "WRONG-RESULT",
+   "area": "JVM / skip not applied",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0057": {
+   "severity": "WRONG-RESULT",
+   "area": "JVM / skip not applied",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0058": {
+   "severity": "WRONG-RESULT",
+   "area": "JVM / skip not applied",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0059": {
+   "severity": "WRONG-RESULT",
+   "area": "JVM / skip wrong reuse",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0060": {
+   "severity": "WRONG-RESULT",
+   "area": "JVM / skip wrong reuse",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0061": {
+   "severity": "WRONG-RESULT",
+   "area": "JVM / skip wrong reuse",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0062": {
+   "severity": "WRONG-RESULT",
+   "area": "JVM / skip wrong reuse",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0063": {
+   "severity": "WRONG-RESULT",
+   "area": "JVM / skip wrong reuse",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0064": {
+   "severity": "WRONG-RESULT",
+   "area": "JVM / skip wrong reuse",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0065": {
+   "severity": "WRONG-RESULT",
+   "area": "JVM / skip wrong reuse",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0066": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / ALL-RUNNERS.md process per file",
+   "row": "JS-03",
+   "check": "JS-03.<runner>.cache2"
+  },
+  "G-0067": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / GO.md t.Parallel no-op",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0068": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / JVM.md V20 (assertion status etc.)",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0069": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / JVM.md V20 (async writers)",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0070": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / JVM.md V20 (clinit race)",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0071": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / JVM.md V20 (extension stores)",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0072": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / JVM.md V20 (JDK caches)",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0073": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / JVM.md V20 (JDK-read system properties)",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0074": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / JVM.md V20 (JUL config)",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0075": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / JVM.md V20 (thread flags / ThreadLocals)",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0076": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / JVM.md V20 (type annotations)",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0077": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / JVM.md V20 (Unsafe/VarHandle)",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0078": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / LIMITS.md A1 (installed C code reads)",
+   "row": "PY-08",
+   "check": "PY-08.probe.native-file",
+   "probe": "test uses a C library reading a data file F outside the root (sqlite3 opening a db file, zlib with a dictionary file read in C, ctypes fopen); run 1 --det-cache pass; change F; run 2 not reused, fails like plain"
+  },
+  "G-0079": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / LIMITS.md A2",
+   "row": "PY-08",
+   "check": "PY-08.probe.dlopen-lib",
+   "probe": "test ctypes.CDLL-loads a small shared library built outside the root and asserts its return value; rebuild the library returning another value: run 2 not reused, fails like plain (Linux and macOS arm64)"
+  },
+  "G-0080": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / LIMITS.md A3",
+   "row": "F-05",
+   "check": "F-05.probe.early-stat",
+   "probe": "test module binds `_st = os.stat` as a default argument at import; a test asserts _st(P).st_size == N; change P's size: --det-cache run 2 does not reuse the test, outcome equals plain"
+  },
+  "G-0081": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / LIMITS.md C1c",
+   "row": "F-01",
+   "check": "F-01.probe.timeit",
+   "probe": "Python test calls timeit.Timer('pass').autorange(): under --det it finishes within 60 s and passes as in plain"
+  },
+  "G-0082": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / LIMITS.md C2f",
+   "row": "F-01",
+   "check": "F-01.probe.c-wait",
+   "probe": "Python test measures time.monotonic() around select.select([],[],[],0.3) and a socket recv with settimeout(0.3) on an idle socket and asserts elapsed >= 0.25: under --det it finishes (no hang) and passes as in plain"
+  },
+  "G-0083": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / LIMITS.md C4 (lock wrapper type)",
+   "row": "PY-07",
+   "check": "PY-07.probe.lock-type",
+   "probe": "test asserts isinstance(threading.Lock(), type(_thread.allocate_lock())) and that a C extension accepting a lock works with it: plain pass, --det pass"
+  },
+  "G-0084": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / LIMITS.md C4 (raw select)",
+   "row": "F-01",
+   "check": "F-01.probe.c-wait",
+   "probe": "Python test measures time.monotonic() around select.select([],[],[],0.3) and a socket recv with settimeout(0.3) on an idle socket and asserts elapsed >= 0.25: under --det it finishes (no hang) and passes as in plain"
+  },
+  "G-0085": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / LIMITS.md C7 (file timestamps)",
+   "row": "F-01",
+   "check": "F-01.probe.mtime",
+   "probe": "Python and Node test write a file and assert abs(mtime - now) < 5 s (os.stat/fs.statSync vs time.time/Date.now): plain pass, --det pass"
+  },
+  "G-0086": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / LIMITS.md K1",
+   "row": "PY-08",
+   "check": "PY-08.ctypes-clock"
+  },
+  "G-0087": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / LIMITS.md K2",
+   "row": "PY-08",
+   "check": "PY-08.child"
+  },
+  "G-0088": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / LIMITS.md K3",
+   "row": "PY-08",
+   "check": "PY-08.child"
+  },
+  "G-0089": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / LIMITS.md K4",
+   "row": "F-05",
+   "check": "F-05.probe.real-clock",
+   "probe": "test passes only before a deadline D read through (a) datetime.now(), (b) sqlite `date('now')` with a user trace callback set, (c) C time() via ctypes; run 1 --det-cache before D; run 2 with the clock moved past D (libfaketime / next UTC day): not reused, outcome equals plain"
+  },
+  "G-0090": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / LIMITS.md N3 (matching)",
+   "row": "F-01",
+   "check": "F-01.probe.cassette",
+   "probe": "Python (requests) and Node (fetch with keep-alive) tests record a cassette with --det-record; then (a) change the request path/headers, (b) run with --det-seed shuffling or a single test (-k/-t) of a keep-alive pair: replay must refuse or fail on the mismatch and serve each test its own recording; never pass with a stale response"
+  },
+  "G-0091": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / LIMITS.md N3 (mismatch not rejected)",
+   "row": "F-01",
+   "check": "F-01.probe.cassette",
+   "probe": "Python (requests) and Node (fetch with keep-alive) tests record a cassette with --det-record; then (a) change the request path/headers, (b) run with --det-seed shuffling or a single test (-k/-t) of a keep-alive pair: replay must refuse or fail on the mismatch and serve each test its own recording; never pass with a stale response"
+  },
+  "G-0092": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / LIMITS.md O2 (any other reorder undone)",
+   "row": "PY-02",
+   "check": "PY-02.probe.modifyitems",
+   "probe": "conftest pytest_collection_modifyitems moves tests marked slow last; a later test depends on that order: --det (and --det-seed) outcome equals plain, or the engine keeps the project's reorder"
+  },
+  "G-0093": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / LIMITS.md P2",
+   "row": "PY-07",
+   "check": "PY-07.probe.leaked-thread",
+   "probe": "test A starts a daemon thread that reads time/random 0.2 s later; test B is innocent: in two --det runs B's fingerprint is stable and verify does not name B as diverging"
+  },
+  "G-0094": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / LIMITS.md section 8 (max-age)",
+   "row": "F-05",
+   "check": "F-05.probe.real-clock",
+   "probe": "test passes only before a deadline D read through (a) datetime.now(), (b) sqlite `date('now')` with a user trace callback set, (c) C time() via ctypes; run 1 --det-cache before D; run 2 with the clock moved past D (libfaketime / next UTC day): not reused, outcome equals plain"
+  },
+  "G-0095": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / NODE-CACHE.md native reads",
+   "row": "JS-09",
+   "check": "JS-09.native"
+  },
+  "G-0096": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / NODE-CACHE.md process.binding / early fs refs",
+   "row": "F-06",
+   "check": "F-06.probe.early-fs-ref",
+   "probe": "Vitest/Jest setup file captures `const rf = require('fs').readFileSync` before tests; a test asserts rf(F); change F: --det-cache run 2 does not reuse the test, outcome equals plain"
+  },
+  "G-0097": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / NODE-CACHE.md Vite plugin listings",
+   "row": "F-06",
+   "check": "F-06.probe.dir-listing",
+   "probe": "Vitest project with a Vite plugin that generates a module from fs.readdirSync('routes/'); a test asserts the route count; add a route file: --det-cache run 2 reruns that test, outcome equals plain"
+  },
+  "G-0098": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / NODE.md J17",
+   "row": "JS-02",
+   "check": "JS-02.probe.stack-depth",
+   "probe": "Vitest and Jest test recursing to a depth that passes in plain (e.g. 90% of the measured plain limit) passes under --det"
+  },
+  "G-0099": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / NODE.md J7 (mismatch not rejected)",
+   "row": "F-01",
+   "check": "F-01.probe.cassette",
+   "probe": "Python (requests) and Node (fetch with keep-alive) tests record a cassette with --det-record; then (a) change the request path/headers, (b) run with --det-seed shuffling or a single test (-k/-t) of a keep-alive pair: replay must refuse or fail on the mismatch and serve each test its own recording; never pass with a stale response"
+  },
+  "G-0100": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / NODE.md J9",
+   "row": "F-03",
+   "check": "F-03.probe.multi-project",
+   "probe": "Vitest workspace with two projects running the same file (jsdom and node env), one printing a project-dependent value: the trace keeps both parts (2x tests) and verify compares both; a divergence in either project is reported"
+  },
+  "G-0101": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / PARALLEL-PROOF-DESIGN.md blockbuster",
+   "row": "F-05",
+   "check": "F-05.probe.blockbuster",
+   "probe": "conftest installs a blockbuster-style hook that makes os.path.abspath/realpath raise inside a running asyncio loop; pytest-asyncio tests: plain pass, --det-cache pass with >= 1 test recorded"
+  },
+  "G-0102": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / RELEASE-1.md open gate parallel proof",
+   "row": "PY-05",
+   "check": "PY-05.cache2"
+  },
+  "G-0103": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / runners/BUILD-node-a.md yargs",
+   "row": "F-01",
+   "check": "F-01.files.pinned"
+  },
+  "G-0104": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / runners/bun.md computed require in packages",
+   "row": "JS-03",
+   "check": "JS-03.probe.bun-deno-reuse",
+   "probe": "Bun and Deno: test result depends on (a) a module loaded by a computed specifier from a package, (b) Bun.file(F).lastModified read through an alias, (c) Bun.env via an alias; change the input: --det-cache run 2 not reused, outcome equals plain"
+  },
+  "G-0105": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / runners/bun.md lastModified / env alias",
+   "row": "JS-03",
+   "check": "JS-03.probe.bun-deno-reuse",
+   "probe": "Bun and Deno: test result depends on (a) a module loaded by a computed specifier from a package, (b) Bun.file(F).lastModified read through an alias, (c) Bun.env via an alias; change the input: --det-cache run 2 not reused, outcome equals plain"
+  },
+  "G-0106": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / runners/bun.md per-test outcome",
+   "row": "JS-03",
+   "check": "JS-03.probe.file-only-failure",
+   "probe": "Bun test with a failing afterEach / unmet expect.assertions(2) and Deno test leaking a resource (sanitizer failure): the trace's per-test outcome is failed, equal to the runner's own report"
+  },
+  "G-0107": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / runners/deno.md computed import from library",
+   "row": "JS-03",
+   "check": "JS-03.probe.bun-deno-reuse",
+   "probe": "Bun and Deno: test result depends on (a) a module loaded by a computed specifier from a package, (b) Bun.file(F).lastModified read through an alias, (c) Bun.env via an alias; change the input: --det-cache run 2 not reused, outcome equals plain"
+  },
+  "G-0108": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / runners/deno.md per-test outcome",
+   "row": "JS-03",
+   "check": "JS-03.probe.file-only-failure",
+   "probe": "Bun test with a failing afterEach / unmet expect.assertions(2) and Deno test leaking a resource (sanitizer failure): the trace's per-test outcome is failed, equal to the runner's own report"
+  },
+  "G-0109": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / runners/deno.md virtual-time outcome changes",
+   "row": "JS-03",
+   "check": "JS-03.<runner>.det2"
+  },
+  "G-0110": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / runners/django.md in-memory caches",
+   "row": "PY-03",
+   "check": "PY-03.probe.django-file-cache",
+   "probe": "Django (manage.py test and pytest-django) test reads a static file through staticfiles finders after an earlier test warmed the storage; change the file: --det-cache run 2 does not reuse it, outcome equals plain"
+  },
+  "G-0111": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / runners/unittest.md import-time state",
+   "row": "F-05",
+   "check": "F-05.probe.import-side-effect",
+   "probe": "add a new test module that patches a library at import time (e.g. sets json default separators); a test in another module depends on it; run 2 of --det-cache (pytest and unittest shell): the affected test is not reused, outcome equals plain"
+  },
+  "G-0112": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / runners/ward.md scoped fixture state",
+   "row": "PY-03",
+   "check": "PY-03.probe.ward-fixture",
+   "probe": "ward module-scoped fixture mutated by test A, test B asserts on it; edit A: --det-cache run 2 does not reuse B, outcome equals plain"
+  },
+  "G-0113": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / sessions go-l0 REPORT-3: quic-go hang",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0114": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / sessions release-1 REPORT: Go gate red",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0115": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / sessions release-1 REPORT: R-008 holes fail in a venv",
+   "row": "F-05",
+   "check": "F-05.wrong-reuse"
+  },
+  "G-0116": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / SHARED-CACHE.md dlopen by name",
+   "out_of_scope": "shared cache across machines not in go-live scope"
+  },
+  "G-0117": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / SHARED-CACHE.md forged entries",
+   "out_of_scope": "shared cache across machines not in go-live scope"
+  },
+  "G-0118": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / SHARED-CACHE.md hardware",
+   "out_of_scope": "shared cache across machines not in go-live scope"
+  },
+  "G-0119": {
+   "severity": "WRONG-RESULT",
+   "area": "Limits / SHARED-CACHE.md token in process memory",
+   "out_of_scope": "shared cache across machines not in go-live scope"
+  },
+  "G-0120": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / cache",
+   "row": "F-06",
+   "check": "F-06.probe.virtual-day",
+   "probe": "Node test asserts new Date() (virtual) is before a date D derived from today; run 1 --det-cache; run 2 on the next UTC day (libfaketime or a dated runner): the receipt's epoch changes and the test is not reused, outcome equals plain"
+  },
+  "G-0121": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / cache",
+   "row": "F-06",
+   "check": "F-06.probe.virtual-day",
+   "probe": "Node test asserts new Date() (virtual) is before a date D derived from today; run 1 --det-cache; run 2 on the next UTC day (libfaketime or a dated runner): the receipt's epoch changes and the test is not reused, outcome equals plain"
+  },
+  "G-0122": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / cache",
+   "row": "F-06",
+   "check": "F-06.fake-timers"
+  },
+  "G-0123": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / cache",
+   "row": "F-06",
+   "check": "F-06.disable-time"
+  },
+  "G-0124": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / child_process",
+   "row": "F-03",
+   "check": "F-03.node-child"
+  },
+  "G-0125": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / child_process",
+   "row": "F-03",
+   "check": "F-03.node-child"
+  },
+  "G-0126": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / det env",
+   "row": "F-01",
+   "check": "F-01.env.pinned"
+  },
+  "G-0127": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / det network",
+   "row": "F-01",
+   "check": "F-01.probe.http-mock",
+   "probe": "Vitest test (msw setupServer) and Jest test (nock) mocking fetch/http.get of https://api.example.com/user: plain pass; two --det runs pass (the closed network must not block a request the mock answers) and verify identical"
+  },
+  "G-0128": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / det network",
+   "row": "F-01",
+   "check": "F-01.probe.udp",
+   "probe": "Python and Node test send a UDP datagram to an external address (socket.sendto / dgram.send): under --det the send is blocked or recorded as a network event; verify of a run with the network reachable vs not names the event (never silent identical)"
+  },
+  "G-0129": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / det network",
+   "row": "F-01",
+   "check": "F-01.probe.cassette",
+   "probe": "Python (requests) and Node (fetch with keep-alive) tests record a cassette with --det-record; then (a) change the request path/headers, (b) run with --det-seed shuffling or a single test (-k/-t) of a keep-alive pair: replay must refuse or fail on the mismatch and serve each test its own recording; never pass with a stale response"
+  },
+  "G-0130": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / det network",
+   "row": "F-01",
+   "check": "F-01.probe.cassette",
+   "probe": "Python (requests) and Node (fetch with keep-alive) tests record a cassette with --det-record; then (a) change the request path/headers, (b) run with --det-seed shuffling or a single test (-k/-t) of a keep-alive pair: replay must refuse or fail on the mismatch and serve each test its own recording; never pass with a stale response"
+  },
+  "G-0131": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / det network",
+   "row": "F-01",
+   "check": "F-01.probe.cassette-redact",
+   "probe": "Python and Node test send an Authorization: Bearer SECRET header while recording a cassette: the cassette file must not contain SECRET in clear or base64 (or a documented redaction option removes it)"
+  },
+  "G-0132": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / det random",
+   "row": "F-03",
+   "check": "F-03.node-random"
+  },
+  "G-0133": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / det random",
+   "row": "F-03",
+   "check": "F-03.node-random"
+  },
+  "G-0134": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / det random",
+   "row": "F-01",
+   "check": "F-01.probe.node-vm",
+   "probe": "Node test evaluates `vm.runInNewContext('[Math.random(), Date.now()]')`: two --det runs 2 s apart print equal values, or verify reports divergence (never identical)"
+  },
+  "G-0135": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / det time",
+   "row": "F-01",
+   "check": "F-01.probe.node-clock-sources",
+   "probe": "Node test prints process.uptime(), performance.timeOrigin, performance.mark('m').startTime and require('perf_hooks').performance.now() (Vitest and Jest): two --det runs 2 s apart give equal values and verify identical, or verify reports divergence (never identical with different values)"
+  },
+  "G-0136": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / det time",
+   "row": "F-01",
+   "check": "F-01.probe.node-clock-sources",
+   "probe": "Node test prints process.uptime(), performance.timeOrigin, performance.mark('m').startTime and require('perf_hooks').performance.now() (Vitest and Jest): two --det runs 2 s apart give equal values and verify identical, or verify reports divergence (never identical with different values)"
+  },
+  "G-0137": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / det time",
+   "row": "F-01",
+   "check": "F-01.probe.node-clock-sources",
+   "probe": "Node test prints process.uptime(), performance.timeOrigin, performance.mark('m').startTime and require('perf_hooks').performance.now() (Vitest and Jest): two --det runs 2 s apart give equal values and verify identical, or verify reports divergence (never identical with different values)"
+  },
+  "G-0138": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / det time",
+   "row": "F-01",
+   "check": "F-01.probe.timer-consistency",
+   "probe": "Node test (a) races AbortSignal.timeout(300) against setTimeout(1000): abort wins under --det as in plain; (b) loops until performance.now() advances 2000 ms with a 5000 ms test timeout: passes under --det as in plain"
+  },
+  "G-0139": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / det time",
+   "row": "F-01",
+   "check": "F-01.tz.pinned"
+  },
+  "G-0140": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / det time",
+   "row": "F-01",
+   "check": "F-01.locale.pinned"
+  },
+  "G-0141": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / det time",
+   "row": "F-01",
+   "check": "F-01.probe.node-clock-sources",
+   "probe": "Node test prints process.uptime(), performance.timeOrigin, performance.mark('m').startTime and require('perf_hooks').performance.now() (Vitest and Jest): two --det runs 2 s apart give equal values and verify identical, or verify reports divergence (never identical with different values)"
+  },
+  "G-0142": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / det time",
+   "row": "F-01",
+   "check": "F-01.probe.fake-timers",
+   "probe": "Vitest test calls vi.useFakeTimers() and Jest test jest.useFakeTimers(), both print Date.now() without setSystemTime: two --det runs 2 s apart (different days if possible) print equal values"
+  },
+  "G-0143": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / det time",
+   "row": "F-01",
+   "check": "F-01.probe.mtime",
+   "probe": "Python and Node test write a file and assert abs(mtime - now) < 5 s (os.stat/fs.statSync vs time.time/Date.now): plain pass, --det pass"
+  },
+  "G-0144": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / det time",
+   "row": "F-01",
+   "check": "F-01.probe.timer-consistency",
+   "probe": "Node test (a) races AbortSignal.timeout(300) against setTimeout(1000): abort wins under --det as in plain; (b) loops until performance.now() advances 2000 ms with a 5000 ms test timeout: passes under --det as in plain"
+  },
+  "G-0145": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / runner Bun",
+   "row": "JS-03",
+   "check": "JS-03.<runner>.cache2"
+  },
+  "G-0146": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / runner Deno",
+   "row": "JS-03",
+   "check": "JS-03.<runner>.cache2"
+  },
+  "G-0147": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / runner Jasmine",
+   "row": "JS-03",
+   "check": "JS-03.<runner>.cache2"
+  },
+  "G-0148": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / runner Mocha",
+   "row": "JS-03",
+   "check": "JS-03.<runner>.cache2"
+  },
+  "G-0149": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / runner uvu",
+   "row": "JS-03",
+   "check": "JS-03.<runner>.cache2"
+  },
+  "G-0150": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / scheduling",
+   "row": "F-03",
+   "check": "F-03.probe.node-sched",
+   "probe": "Node test starts 20 concurrent fs.readFile calls and two concurrent local HTTP requests (Promise.race) and records completion order; 20 --det runs: if the orders differ, fenvix verify reports divergence (never 'covered by Level 0' / identical)"
+  },
+  "G-0151": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / scheduling",
+   "row": "F-03",
+   "check": "F-03.probe.node-sched",
+   "probe": "Node test starts 20 concurrent fs.readFile calls and two concurrent local HTTP requests (Promise.race) and records completion order; 20 --det runs: if the orders differ, fenvix verify reports divergence (never 'covered by Level 0' / identical)"
+  },
+  "G-0152": {
+   "severity": "WRONG-RESULT",
+   "area": "Node / workers",
+   "row": "F-03",
+   "check": "F-03.node-thread"
+  },
+  "G-0153": {
+   "severity": "WRONG-RESULT",
+   "area": "Platform / containers",
+   "row": "F-01",
+   "check": "F-01.probe.service-host",
+   "probe": "GitHub Actions job with a `services: postgres` container reached by its hostname (and an /etc/hosts alias): Python and Node tests connect by name; plain pass, --det (with --det-allow-host=<name> if required) pass; outcomes equal plain"
+  },
+  "G-0154": {
+   "severity": "WRONG-RESULT",
+   "area": "Platform / containers",
+   "row": "F-01",
+   "check": "F-01.probe.service-host",
+   "probe": "GitHub Actions job with a `services: postgres` container reached by its hostname (and an /etc/hosts alias): Python and Node tests connect by name; plain pass, --det (with --det-allow-host=<name> if required) pass; outcomes equal plain"
+  },
+  "G-0155": {
+   "severity": "WRONG-RESULT",
+   "area": "Platform / macOS arm64",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "PY-08 PY-08.probe.dlopen-lib"
+  },
+  "G-0156": {
+   "severity": "WRONG-RESULT",
+   "area": "Platform / macOS arm64",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "PY-08 PY-08.probe.dlopen-lib"
+  },
+  "G-0157": {
+   "severity": "WRONG-RESULT",
+   "area": "Platform / macOS arm64",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "JS-09 JS-09.native"
+  },
+  "G-0158": {
+   "severity": "WRONG-RESULT",
+   "area": "Platform / macOS arm64",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "PY-08 PY-08.probe.mac-children"
+  },
+  "G-0159": {
+   "severity": "WRONG-RESULT",
+   "area": "Python / cache",
+   "row": "F-05",
+   "check": "F-05.probe.real-clock",
+   "probe": "test passes only before a deadline D read through (a) datetime.now(), (b) sqlite `date('now')` with a user trace callback set, (c) C time() via ctypes; run 1 --det-cache before D; run 2 with the clock moved past D (libfaketime / next UTC day): not reused, outcome equals plain"
+  },
+  "G-0160": {
+   "severity": "WRONG-RESULT",
+   "area": "Python / cache",
+   "row": "F-05",
+   "check": "F-05.wrong-reuse"
+  },
+  "G-0161": {
+   "severity": "WRONG-RESULT",
+   "area": "Python / cache",
+   "row": "F-05",
+   "check": "F-05.wrong-reuse"
+  },
+  "G-0162": {
+   "severity": "WRONG-RESULT",
+   "area": "Python / cache",
+   "row": "F-05",
+   "check": "F-05.wrong-reuse"
+  },
+  "G-0163": {
+   "severity": "WRONG-RESULT",
+   "area": "Python / cache",
+   "row": "F-05",
+   "check": "F-05.wrong-reuse"
+  },
+  "G-0164": {
+   "severity": "WRONG-RESULT",
+   "area": "Python / cache / import path outside root",
+   "row": "F-05",
+   "check": "F-05.wrong-reuse"
+  },
+  "G-0165": {
+   "severity": "WRONG-RESULT",
+   "area": "Python / det network",
+   "row": "F-01",
+   "check": "F-01.probe.replay-clients",
+   "probe": "record then replay offline: Python httpx.AsyncClient/aiohttp over HTTPS, a socket using sendmsg/recvmsg; Node http2 / undici h2 client; Bun fetch and Deno fetch: replay without network passes with the recorded responses (or --det-record refuses with a named reason)"
+  },
+  "G-0166": {
+   "severity": "WRONG-RESULT",
+   "area": "Python / det network",
+   "row": "F-01",
+   "check": "F-01.probe.cassette",
+   "probe": "Python (requests) and Node (fetch with keep-alive) tests record a cassette with --det-record; then (a) change the request path/headers, (b) run with --det-seed shuffling or a single test (-k/-t) of a keep-alive pair: replay must refuse or fail on the mismatch and serve each test its own recording; never pass with a stale response"
+  },
+  "G-0167": {
+   "severity": "WRONG-RESULT",
+   "area": "Python / det network",
+   "row": "F-01",
+   "check": "F-01.probe.cassette-redact",
+   "probe": "Python and Node test send an Authorization: Bearer SECRET header while recording a cassette: the cassette file must not contain SECRET in clear or base64 (or a documented redaction option removes it)"
+  },
+  "G-0168": {
+   "severity": "WRONG-RESULT",
+   "area": "Python / first use",
+   "row": "F-01",
+   "check": "F-01.probe.cold-warm",
+   "probe": "Python test prints the iteration order of a set of plain objects and sorted id() deltas; run --det on a fresh checkout (cold rewrite cache) and again (warm): same output and verify identical"
+  },
+  "G-0169": {
+   "severity": "WRONG-RESULT",
+   "area": "Python / isolate",
+   "row": "PY-05",
+   "check": "PY-05.probe.isolate",
+   "probe": "odpair under `--det --det-isolate` (pytest 8.0 and 9): same verdict as serial --det, or the order dependence is reported as a finding; a unittest.TestCase test passes under --det-isolate on pytest 8.0"
+  },
+  "G-0170": {
+   "severity": "WRONG-RESULT",
+   "area": "Python / packaging",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.not-foreign"
+  },
+  "G-0171": {
+   "severity": "WRONG-RESULT",
+   "area": "Python / packaging",
+   "row": "PY-05",
+   "check": "PY-05.probe.isolate",
+   "probe": "odpair under `--det --det-isolate` (pytest 8.0 and 9): same verdict as serial --det, or the order dependence is reported as a finding; a unittest.TestCase test passes under --det-isolate on pytest 8.0"
+  },
+  "G-0172": {
+   "severity": "WRONG-RESULT",
+   "area": "Python / parallel",
+   "row": "PY-05",
+   "check": "PY-05.odpair"
+  },
+  "G-0173": {
+   "severity": "WRONG-RESULT",
+   "area": "Python / pytest cache (order-dependent tests)",
+   "row": "F-05",
+   "check": "F-05.order-dep"
+  },
+  "G-0174": {
+   "severity": "WRONG-RESULT",
+   "area": "Python / pytest-xdist",
+   "row": "PY-05",
+   "check": "PY-05.probe.testrun-uid",
+   "probe": "pytest-xdist installed, serial run: a test asserts on the testrun_uid fixture vs a stored value; two --det runs give the same uid, and --det-cache does not reuse a result that depended on a different uid"
+  },
+  "G-0175": {
+   "severity": "WRONG-RESULT",
+   "area": "Python / pytest-xdist",
+   "row": "PY-05",
+   "check": "PY-05.odpair"
+  },
+  "G-0176": {
+   "severity": "WRONG-RESULT",
+   "area": "Python / pytest-xdist",
+   "row": "PY-05",
+   "check": "PY-05.odpair"
+  },
+  "G-0177": {
+   "severity": "WRONG-RESULT",
+   "area": "Python / repro",
+   "row": "F-02",
+   "check": "F-02.probe.numpy-repro",
+   "probe": "order-dependent pair (polluter writes a shared dict) in a test module importing numpy: fenvix repro proves 10/10 with one fingerprint, names the polluter, and the reported first divergent event is not a numpy os.urandom import event"
+  },
+  "G-0178": {
+   "severity": "WRONG-RESULT",
+   "area": "Python / repro",
+   "row": "F-02",
+   "check": "F-02.probe.numpy-repro",
+   "probe": "order-dependent pair (polluter writes a shared dict) in a test module importing numpy: fenvix repro proves 10/10 with one fingerprint, names the polluter, and the reported first divergent event is not a numpy os.urandom import event"
+  },
+  "G-0179": {
+   "severity": "WRONG-RESULT",
+   "area": "Python / verifier",
+   "row": "F-03",
+   "check": "F-03.probe.numpy",
+   "probe": "two identical --det runs of a test module importing numpy (and of an xdist -n 2 run): fenvix verify identical, no NOT-COVERED [entropy] on the first test of the process/worker"
+  },
+  "G-0180": {
+   "severity": "WRONG-RESULT",
+   "area": "Python / verifier",
+   "row": "PY-07",
+   "check": "PY-07.verify-honest"
+  },
+  "G-0181": {
+   "severity": "WRONG-RESULT",
+   "area": "Refusal / Node: realm installation failed",
+   "row": "F-03",
+   "check": "F-03.probe.realm-failure",
+   "probe": "Node setup file makes globalThis.Date non-configurable before detjs installs its controls; a test prints Date.now(): the run must say on the console (not only in the trace header) that the time control is missing, and verify of two runs with different values must not say identical"
+  },
+  "G-0182": {
+   "severity": "WRONG-RESULT",
+   "area": "Service / Billing",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0183": {
+   "severity": "WRONG-RESULT",
+   "area": "Service / Billing",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0184": {
+   "severity": "WRONG-RESULT",
+   "area": "Service / Defect deduplication",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0185": {
+   "severity": "WRONG-RESULT",
+   "area": "Service / Infra",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0186": {
+   "severity": "WRONG-RESULT",
+   "area": "Service / Infra",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0187": {
+   "severity": "WRONG-RESULT",
+   "area": "Service / Infra",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0188": {
+   "severity": "WRONG-RESULT",
+   "area": "Service / Multi-language",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0189": {
+   "severity": "WRONG-RESULT",
+   "area": "Service / PR comment",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0190": {
+   "severity": "WRONG-RESULT",
+   "area": "Service / Runner orchestration",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0191": {
+   "severity": "WRONG-RESULT",
+   "area": "Service / Runner orchestration",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0192": {
+   "severity": "WRONG-RESULT",
+   "area": "Service / Security",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0193": {
+   "severity": "WRONG-RESULT",
+   "area": "Service / Security",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0194": {
+   "severity": "WRONG-RESULT",
+   "area": "Service / Supabase",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0195": {
+   "severity": "BLOCKS-USE",
+   "area": "App docs / dashboard texts",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0196": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / App / customer mode on phoenixNAP: control plane",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0197": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / App / customer mode on phoenixNAP: host side",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0198": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / App / customer mode on phoenixNAP: infra changes",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0199": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / App-engine / `fenvix defects pull` does not exist",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0200": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / App-engine / nothing sends nightly explorations",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0201": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / App-engine / nothing sends per-test results, receipts, defects or audit reruns",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0202": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / App-engine / summary contract names a prototype branch",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0203": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / App-engine / warm-up executor does not exist",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0204": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / Engine / cache audit reruns",
+   "row": "F-05",
+   "check": "F-05.probe.audit-rerun",
+   "probe": "`fenvix python --help` lists the cache audit option (--det-cache-audit); a cached run with the audit on reruns a seeded share of reusable tests fresh and reports 0 mismatches on an unchanged checkout and a mismatch after a hidden input change"
+  },
+  "G-0205": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / Engine / default branch",
+   "unassignable": "repository default branch / no main: repository hygiene, no engine behaviour to test (the exam installs from the release artifact or registries)"
+  },
+  "G-0206": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / Engine / fenvix-run Go and JVM",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0207": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / Engine / fenvix-run Node path",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0208": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / Engine / L1 asyncio",
+   "row": "PY-07",
+   "check": "PY-07.options"
+  },
+  "G-0209": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / Engine / L1 tests",
+   "row": "PY-07",
+   "check": "PY-07.probe-stable"
+  },
+  "G-0210": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / Engine / L1 threads",
+   "row": "PY-07",
+   "check": "PY-07.options"
+  },
+  "G-0211": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / Engine / L2 browser: Chromium patch",
+   "row": "JS-04",
+   "check": "JS-04.browser-clock"
+  },
+  "G-0212": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / Engine / L2 browser: detjs playwright",
+   "row": "JS-04",
+   "check": "JS-04.shell"
+  },
+  "G-0213": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / Engine / L2 browser: detjs serve",
+   "row": "JS-04",
+   "check": "JS-04.probe.webserver",
+   "probe": "Playwright config webServer starts a small Node server returning Date.now()/Math.random(); a spec asserts on the page showing it: two --det runs show equal values and verify identical"
+  },
+  "G-0214": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / Engine / L2 browser: lockstep core",
+   "row": "JS-04",
+   "check": "JS-04.browser-clock"
+  },
+  "G-0215": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / Engine / no GitHub Action, MCP server or publish workflow on any branch",
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)"
+  },
+  "G-0216": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / Engine / no nightly exploration workflow",
+   "row": "F-02",
+   "check": "F-02.py-explore"
+  },
+  "G-0217": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / Engine / runner bootstrap installs no Node engine",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0218": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / Engine / shared cache service client",
+   "out_of_scope": "shared cache across machines not in go-live scope"
+  },
+  "G-0219": {
+   "severity": "BLOCKS-USE",
+   "area": "Branches / Engine / shared cache via fenvix-run",
+   "out_of_scope": "shared cache across machines not in go-live scope"
+  },
+  "G-0220": {
+   "severity": "BLOCKS-USE",
+   "area": "CI / any (service)",
+   "out_of_scope": "CI other than GitHub Actions / hosted-service CI: not in go-live scope"
+  },
+  "G-0221": {
+   "severity": "BLOCKS-USE",
+   "area": "CI / AWS CodeBuild",
+   "out_of_scope": "CI other than GitHub Actions / hosted-service CI: not in go-live scope"
+  },
+  "G-0222": {
+   "severity": "BLOCKS-USE",
+   "area": "CI / Azure Pipelines",
+   "out_of_scope": "CI other than GitHub Actions / hosted-service CI: not in go-live scope"
+  },
+  "G-0223": {
+   "severity": "BLOCKS-USE",
+   "area": "CI / Bitbucket Pipelines",
+   "out_of_scope": "CI other than GitHub Actions / hosted-service CI: not in go-live scope"
+  },
+  "G-0224": {
+   "severity": "BLOCKS-USE",
+   "area": "CI / Buildkite",
+   "out_of_scope": "CI other than GitHub Actions / hosted-service CI: not in go-live scope"
+  },
+  "G-0225": {
+   "severity": "BLOCKS-USE",
+   "area": "CI / CircleCI",
+   "out_of_scope": "CI other than GitHub Actions / hosted-service CI: not in go-live scope"
+  },
+  "G-0226": {
+   "severity": "BLOCKS-USE",
+   "area": "CI / Drone / Woodpecker",
+   "out_of_scope": "CI other than GitHub Actions / hosted-service CI: not in go-live scope"
+  },
+  "G-0227": {
+   "severity": "BLOCKS-USE",
+   "area": "CI / GitLab CI",
+   "out_of_scope": "CI other than GitHub Actions / hosted-service CI: not in go-live scope"
+  },
+  "G-0228": {
+   "severity": "BLOCKS-USE",
+   "area": "CI / Google Cloud Build",
+   "out_of_scope": "CI other than GitHub Actions / hosted-service CI: not in go-live scope"
+  },
+  "G-0229": {
+   "severity": "BLOCKS-USE",
+   "area": "CI / Harness CI",
+   "out_of_scope": "CI other than GitHub Actions / hosted-service CI: not in go-live scope"
+  },
+  "G-0230": {
+   "severity": "BLOCKS-USE",
+   "area": "CI / Jenkins",
+   "out_of_scope": "CI other than GitHub Actions / hosted-service CI: not in go-live scope"
+  },
+  "G-0231": {
+   "severity": "BLOCKS-USE",
+   "area": "CI / Semaphore",
+   "out_of_scope": "CI other than GitHub Actions / hosted-service CI: not in go-live scope"
+  },
+  "G-0232": {
+   "severity": "BLOCKS-USE",
+   "area": "CI / TeamCity",
+   "out_of_scope": "CI other than GitHub Actions / hosted-service CI: not in go-live scope"
+  },
+  "G-0233": {
+   "severity": "BLOCKS-USE",
+   "area": "CI / Travis CI",
+   "out_of_scope": "CI other than GitHub Actions / hosted-service CI: not in go-live scope"
+  },
+  "G-0234": {
+   "severity": "BLOCKS-USE",
+   "area": "CLI",
+   "row": "F-02",
+   "check": "F-02.cli"
+  },
+  "G-0235": {
+   "severity": "BLOCKS-USE",
+   "area": "Code marker / app API keys page",
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "service/app, not an engine go-live row"
+  },
+  "G-0236": {
+   "severity": "BLOCKS-USE",
+   "area": "Code marker / app onboarding: non-Linux jobs",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0237": {
+   "severity": "BLOCKS-USE",
+   "area": "Code marker / app runner detection",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0238": {
+   "severity": "BLOCKS-USE",
+   "area": "Code marker / app runner image is pytest-only",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0239": {
+   "severity": "BLOCKS-USE",
+   "area": "Code marker / app warm-up executor",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0240": {
+   "severity": "BLOCKS-USE",
+   "area": "Code marker / detjs build platforms",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-node"
+  },
+  "G-0241": {
+   "severity": "BLOCKS-USE",
+   "area": "Distribution / all",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
+  },
+  "G-0242": {
+   "severity": "BLOCKS-USE",
+   "area": "Distribution / all",
+   "unassignable": "repository default branch / no main: repository hygiene, no engine behaviour to test (the exam installs from the release artifact or registries)"
+  },
+  "G-0243": {
+   "severity": "BLOCKS-USE",
+   "area": "Distribution / docs",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
+  },
+  "G-0244": {
+   "severity": "BLOCKS-USE",
+   "area": "Distribution / Go",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0245": {
+   "severity": "BLOCKS-USE",
+   "area": "Distribution / JVM",
+   "out_of_scope": "JVM/Go not in go-live scope"
+  },
+  "G-0246": {
+   "severity": "BLOCKS-USE",
+   "area": "Distribution / JVM",
+   "out_of_scope": "JVM/Go not in go-live scope"
+  },
+  "G-0247": {
+   "severity": "BLOCKS-USE",
+   "area": "Distribution / Node",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.npm"
+  },
+  "G-0248": {
+   "severity": "BLOCKS-USE",
+   "area": "Distribution / Python",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.not-foreign"
+  },
+  "G-0249": {
+   "severity": "BLOCKS-USE",
+   "area": "Distribution / Python",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
+  },
+  "G-0250": {
+   "severity": "BLOCKS-USE",
+   "area": "Distribution / Python wheel tag",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
+  },
+  "G-0251": {
+   "severity": "BLOCKS-USE",
+   "area": "Distribution / releases",
+   "row": "F-09",
+   "check": "F-09.artifact-identity"
+  },
+  "G-0252": {
+   "severity": "BLOCKS-USE",
+   "area": "Docs missing / exploration guide",
+   "unassignable": "documentation gap of an in-scope feature (explore/quickstart/repro guide): no engine behaviour to test; the feature itself is checked by F-02 / PY-02"
+  },
+  "G-0253": {
+   "severity": "BLOCKS-USE",
+   "area": "Docs missing / GitHub Action usage",
+   "out_of_scope": "GitHub Action / MCP: service/app, not an engine go-live row"
+  },
+  "G-0254": {
+   "severity": "BLOCKS-USE",
+   "area": "Docs missing / installation: Linux",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
+  },
+  "G-0255": {
+   "severity": "BLOCKS-USE",
+   "area": "Docs missing / installation: macOS",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-py"
+  },
+  "G-0256": {
+   "severity": "BLOCKS-USE",
+   "area": "Docs missing / installation: Windows",
+   "out_of_scope": "Windows not in go-live scope"
+  },
+  "G-0257": {
+   "severity": "BLOCKS-USE",
+   "area": "Docs missing / MCP server for agents",
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "GitHub Action / MCP: service/app, not an engine go-live row"
+  },
+  "G-0258": {
+   "severity": "BLOCKS-USE",
+   "area": "Docs missing / quickstart: hosted (runs-on: fenvix)",
+   "out_of_scope": "hosted quickstart: service/app, not an engine go-live row"
+  },
+  "G-0259": {
+   "severity": "BLOCKS-USE",
+   "area": "Docs missing / quickstart: Python pytest (free, local)",
+   "unassignable": "documentation gap of an in-scope feature (explore/quickstart/repro guide): no engine behaviour to test; the feature itself is checked by F-02 / PY-02"
+  },
+  "G-0260": {
+   "severity": "BLOCKS-USE",
+   "area": "Docs missing / repro guide (flaky test to reproducible defect)",
+   "unassignable": "documentation gap of an in-scope feature (explore/quickstart/repro guide): no engine behaviour to test; the feature itself is checked by F-02 / PY-02"
+  },
+  "G-0261": {
+   "severity": "BLOCKS-USE",
+   "area": "Docs site / commands.md",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0262": {
+   "severity": "BLOCKS-USE",
+   "area": "Docs site / draft in fenvix-landing content/",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0263": {
+   "severity": "BLOCKS-USE",
+   "area": "Docs site / draft in fenvix-landing content/commands.md",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
+  },
+  "G-0264": {
+   "severity": "BLOCKS-USE",
+   "area": "Docs site / draft in fenvix-landing content/quickstart.md",
+   "row": "F-02",
+   "check": "F-02.py-replay"
+  },
+  "G-0265": {
+   "severity": "BLOCKS-USE",
+   "area": "Docs site / draft in fenvix-landing content/quickstart.md",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
+  },
+  "G-0266": {
+   "severity": "BLOCKS-USE",
+   "area": "Docs site / quickstart.md",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0267": {
+   "severity": "BLOCKS-USE",
+   "area": "Docs site / whole site",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0268": {
+   "severity": "BLOCKS-USE",
+   "area": "Engine CI",
+   "row": "PY-08",
+   "check": "PY-08.child"
+  },
+  "G-0269": {
+   "severity": "BLOCKS-USE",
+   "area": "Engine docs / docs/RELEASE-1.md",
+   "row": "PY-07",
+   "check": "PY-07.options"
+  },
+  "G-0270": {
+   "severity": "BLOCKS-USE",
+   "area": "Engine docs / docs/SHARED-CACHE.md",
+   "out_of_scope": "shared cache across machines not in go-live scope"
+  },
+  "G-0271": {
+   "severity": "BLOCKS-USE",
+   "area": "Engine docs / docs/SHARED-CACHE.md",
+   "out_of_scope": "shared cache across machines not in go-live scope"
+  },
+  "G-0272": {
+   "severity": "BLOCKS-USE",
+   "area": "Engine docs / help text: fenvix",
+   "row": "F-02",
+   "check": "F-02.cli"
+  },
+  "G-0273": {
+   "severity": "BLOCKS-USE",
+   "area": "Engine docs / README.md",
+   "unassignable": "documentation gap of an in-scope feature (explore/quickstart/repro guide): no engine behaviour to test; the feature itself is checked by F-02 / PY-02"
+  },
+  "G-0274": {
+   "severity": "BLOCKS-USE",
+   "area": "Engine docs / README.md",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
+  },
+  "G-0275": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Cypress",
+   "out_of_scope": "Cypress not in go-live scope"
+  },
+  "G-0276": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Cypress",
+   "out_of_scope": "Cypress not in go-live scope"
+  },
+  "G-0277": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Jest+jsdom",
+   "row": "F-02",
+   "check": "F-02.node-repro"
+  },
+  "G-0278": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / jsdom (cache)",
+   "row": "JS-06",
+   "check": "JS-06.<env>.cache2"
+  },
+  "G-0279": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / jsdom (cache)",
+   "row": "JS-06",
+   "check": "JS-06.<env>.cache2"
+  },
+  "G-0280": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Karma",
+   "out_of_scope": "runner/browser tool not in go-live scope"
+  },
+  "G-0281": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / L2 browser lockstep",
+   "row": "JS-04",
+   "check": "JS-04.browser-clock"
+  },
+  "G-0282": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Nightwatch",
+   "out_of_scope": "runner/browser tool not in go-live scope"
+  },
+  "G-0283": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Playwright",
+   "row": "JS-04",
+   "check": "JS-04.shell"
+  },
+  "G-0284": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Playwright",
+   "row": "JS-04",
+   "check": "JS-04.browser-clock"
+  },
+  "G-0285": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Playwright",
+   "row": "JS-04",
+   "check": "JS-04.shell"
+  },
+  "G-0286": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Playwright",
+   "row": "JS-04",
+   "check": "JS-04.probe.page-network",
+   "probe": "Playwright spec whose page fetches an external URL and opens a WebSocket: --det runs with the network reachable vs blocked give the same outcome and verify identical (record/replay or blocked, never real)"
+  },
+  "G-0287": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Playwright",
+   "row": "JS-04",
+   "check": "JS-04.det2"
+  },
+  "G-0288": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Playwright",
+   "row": "F-02",
+   "check": "F-02.node-replay"
+  },
+  "G-0289": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Playwright",
+   "row": "JS-04",
+   "check": "JS-04.probe.cache2",
+   "probe": "CACHE2 on the Playwright project: the second run reuses with proof, or refuses with a named reason; reused outcomes equal plain"
+  },
+  "G-0290": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Playwright",
+   "row": "JS-04",
+   "check": "JS-04.probe.workers",
+   "probe": "`fenvix node playwright test --det --workers=2` twice: traces merge per worker, verify identical, outcomes equal plain"
+  },
+  "G-0291": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Playwright",
+   "out_of_scope": "Firefox/WebKit Playwright projects not in go-live scope (Chromium is covered by JS-04)"
+  },
+  "G-0292": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Playwright",
+   "row": "JS-04",
+   "check": "JS-04.probe.webserver",
+   "probe": "Playwright config webServer starts a small Node server returning Date.now()/Math.random(); a spec asserts on the page showing it: two --det runs show equal values and verify identical"
+  },
+  "G-0293": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Playwright component testing",
+   "out_of_scope": "Playwright component testing not in go-live scope (Playwright Test e2e only)"
+  },
+  "G-0294": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Puppeteer",
+   "out_of_scope": "runner/browser tool not in go-live scope"
+  },
+  "G-0295": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / real browser canvas",
+   "row": "JS-04",
+   "check": "JS-04.probe.page-apis",
+   "probe": "Playwright spec exercising rAF timestamps, IndexedDB transaction order, IntersectionObserver/ResizeObserver callbacks, a Web Worker reading Date.now/Math.random, canvas toDataURL hash, a service worker registration and an RTCPeerConnection offer: two --det runs give equal values and verify identical, or the engine names the uncontrolled source (never silent identical)"
+  },
+  "G-0296": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / real browser fonts",
+   "row": "JS-04",
+   "check": "JS-04.probe.page-apis",
+   "probe": "Playwright spec exercising rAF timestamps, IndexedDB transaction order, IntersectionObserver/ResizeObserver callbacks, a Web Worker reading Date.now/Math.random, canvas toDataURL hash, a service worker registration and an RTCPeerConnection offer: two --det runs give equal values and verify identical, or the engine names the uncontrolled source (never silent identical)"
+  },
+  "G-0297": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / real browser IndexedDB",
+   "row": "JS-04",
+   "check": "JS-04.probe.page-apis",
+   "probe": "Playwright spec exercising rAF timestamps, IndexedDB transaction order, IntersectionObserver/ResizeObserver callbacks, a Web Worker reading Date.now/Math.random, canvas toDataURL hash, a service worker registration and an RTCPeerConnection offer: two --det runs give equal values and verify identical, or the engine names the uncontrolled source (never silent identical)"
+  },
+  "G-0298": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / real browser IntersectionObserver",
+   "row": "JS-04",
+   "check": "JS-04.probe.page-apis",
+   "probe": "Playwright spec exercising rAF timestamps, IndexedDB transaction order, IntersectionObserver/ResizeObserver callbacks, a Web Worker reading Date.now/Math.random, canvas toDataURL hash, a service worker registration and an RTCPeerConnection offer: two --det runs give equal values and verify identical, or the engine names the uncontrolled source (never silent identical)"
+  },
+  "G-0299": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / real browser requestAnimationFrame",
+   "row": "JS-04",
+   "check": "JS-04.browser-clock"
+  },
+  "G-0300": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / real browser service workers",
+   "row": "JS-04",
+   "check": "JS-04.probe.page-apis",
+   "probe": "Playwright spec exercising rAF timestamps, IndexedDB transaction order, IntersectionObserver/ResizeObserver callbacks, a Web Worker reading Date.now/Math.random, canvas toDataURL hash, a service worker registration and an RTCPeerConnection offer: two --det runs give equal values and verify identical, or the engine names the uncontrolled source (never silent identical)"
+  },
+  "G-0301": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / real browser version",
+   "row": "JS-04",
+   "check": "JS-04.probe.browser-version",
+   "probe": "the trace header of a Playwright --det run names the Chromium version; verify of traces from two Chromium versions names the browser difference"
+  },
+  "G-0302": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / real browser Web Workers",
+   "row": "JS-04",
+   "check": "JS-04.probe.page-apis",
+   "probe": "Playwright spec exercising rAF timestamps, IndexedDB transaction order, IntersectionObserver/ResizeObserver callbacks, a Web Worker reading Date.now/Math.random, canvas toDataURL hash, a service worker registration and an RTCPeerConnection offer: two --det runs give equal values and verify identical, or the engine names the uncontrolled source (never silent identical)"
+  },
+  "G-0303": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / real browser WebRTC",
+   "row": "JS-04",
+   "check": "JS-04.probe.page-apis",
+   "probe": "Playwright spec exercising rAF timestamps, IndexedDB transaction order, IntersectionObserver/ResizeObserver callbacks, a Web Worker reading Date.now/Math.random, canvas toDataURL hash, a service worker registration and an RTCPeerConnection offer: two --det runs give equal values and verify identical, or the engine names the uncontrolled source (never silent identical)"
+  },
+  "G-0304": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / real browser WebSockets",
+   "row": "JS-04",
+   "check": "JS-04.probe.page-network",
+   "probe": "Playwright spec whose page fetches an external URL and opens a WebSocket: --det runs with the network reachable vs blocked give the same outcome and verify identical (record/replay or blocked, never real)"
+  },
+  "G-0305": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Selenium",
+   "out_of_scope": "runner/browser tool not in go-live scope"
+  },
+  "G-0306": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Storybook test runner",
+   "out_of_scope": "runner/browser tool not in go-live scope"
+  },
+  "G-0307": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / TestCafe",
+   "out_of_scope": "runner/browser tool not in go-live scope"
+  },
+  "G-0308": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Vitest browser mode",
+   "row": "JS-02",
+   "check": "JS-02.probe.browser-mode",
+   "probe": "Vitest 3/4 browser-mode project (Chromium) test prints Date.now() and Math.random() and depends on --det-seed order: two --det runs give equal values and a traced test count equal to the tests run, or the engine refuses browser mode with a named reason (no 'Level 0 active' banner without control)"
+  },
+  "G-0309": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Vitest browser mode",
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "probe": "Vitest with pool vmThreads, pool vmForks, isolate:false, browser mode, and Jest with a custom runner (jest-light-runner): under --det the realm values (Date.now, Math.random) are controlled or the engine refuses with a named reason; --det-cache reuses with proof or prints the refusal reason on the console; outcomes equal plain"
+  },
+  "G-0310": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Vitest vmThreads",
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "probe": "Vitest with pool vmThreads, pool vmForks, isolate:false, browser mode, and Jest with a custom runner (jest-light-runner): under --det the realm values (Date.now, Math.random) are controlled or the engine refuses with a named reason; --det-cache reuses with proof or prints the refusal reason on the console; outcomes equal plain"
+  },
+  "G-0311": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Vitest+happy-dom",
+   "row": "F-02",
+   "check": "F-02.node-repro"
+  },
+  "G-0312": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Vitest+jsdom",
+   "row": "F-02",
+   "check": "F-02.node-repro"
+  },
+  "G-0313": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Vitest+jsdom",
+   "row": "F-02",
+   "check": "F-02.node-explore"
+  },
+  "G-0314": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / Web Test Runner",
+   "out_of_scope": "runner/browser tool not in go-live scope"
+  },
+  "G-0315": {
+   "severity": "BLOCKS-USE",
+   "area": "Front-end / WebdriverIO",
+   "out_of_scope": "runner/browser tool not in go-live scope"
+  },
+  "G-0316": {
+   "severity": "BLOCKS-USE",
+   "area": "GitHub Action",
+   "out_of_scope": "GitHub Action / service integration: service/app, not an engine go-live row"
+  },
+  "G-0317": {
+   "severity": "BLOCKS-USE",
+   "area": "GitHub Action",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
+  },
+  "G-0318": {
+   "severity": "BLOCKS-USE",
+   "area": "GitHub Action",
+   "row": "F-18",
+   "check": "F-18.detect"
+  },
+  "G-0319": {
+   "severity": "BLOCKS-USE",
+   "area": "GitHub Action",
+   "out_of_scope": "GitHub Action / service integration: service/app, not an engine go-live row"
+  },
+  "G-0320": {
+   "severity": "BLOCKS-USE",
+   "area": "GitHub Action",
+   "out_of_scope": "state between jobs / shared storage across machines not in go-live scope"
+  },
+  "G-0321": {
+   "severity": "BLOCKS-USE",
+   "area": "GitHub Action",
+   "out_of_scope": "GitHub Action / service integration: service/app, not an engine go-live row"
+  },
+  "G-0322": {
+   "severity": "BLOCKS-USE",
+   "area": "GitHub Action",
+   "out_of_scope": "GitHub Action / service integration: service/app, not an engine go-live row"
+  },
+  "G-0323": {
+   "severity": "BLOCKS-USE",
+   "area": "GitHub Action",
+   "out_of_scope": "GitHub Action / service integration: service/app, not an engine go-live row"
+  },
+  "G-0324": {
+   "severity": "BLOCKS-USE",
+   "area": "GitHub Action",
+   "out_of_scope": "GitHub Action / service integration: service/app, not an engine go-live row"
+  },
+  "G-0325": {
+   "severity": "BLOCKS-USE",
+   "area": "Go / delivery",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0326": {
+   "severity": "BLOCKS-USE",
+   "area": "Go / det network record/replay",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0327": {
+   "severity": "BLOCKS-USE",
+   "area": "Go / flag -cover",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0328": {
+   "severity": "BLOCKS-USE",
+   "area": "Go / flag -coverprofile",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0329": {
+   "severity": "BLOCKS-USE",
+   "area": "Go / flag -exec",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0330": {
+   "severity": "BLOCKS-USE",
+   "area": "Go / L2",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0331": {
+   "severity": "BLOCKS-USE",
+   "area": "Go / nightly exploration",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0332": {
+   "severity": "BLOCKS-USE",
+   "area": "Go / platform",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0333": {
+   "severity": "BLOCKS-USE",
+   "area": "Go / platform",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0334": {
+   "severity": "BLOCKS-USE",
+   "area": "Go / platform",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0335": {
+   "severity": "BLOCKS-USE",
+   "area": "Go / repro",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0336": {
+   "severity": "BLOCKS-USE",
+   "area": "Go / shared cache",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0337": {
+   "severity": "BLOCKS-USE",
+   "area": "Go / strace",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0338": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / dependency-update verdict",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0339": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / det network",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0340": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / det scheduling threads",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0341": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / det scheduling threads",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0342": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / exact culprit",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0343": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / framework TestNG",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0344": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / levels",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0345": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / Maven",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0346": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / nightly exploration",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0347": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / packaging",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0348": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / packaging",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0349": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / packaging",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0350": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / replay command",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0351": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / repro",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0352": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / shared cache",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0353": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / skip not applied",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0354": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / skip not applied",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0355": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / skip not applied",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0356": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / skip not applied",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0357": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / skip not applied",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0358": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / skip not applied",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0359": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / verifier",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0360": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / verifier",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0361": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / versions",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0362": {
+   "severity": "BLOCKS-USE",
+   "area": "JVM / versions",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0363": {
+   "severity": "BLOCKS-USE",
+   "area": "Landing / all pages (docs links)",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0364": {
+   "severity": "BLOCKS-USE",
+   "area": "Landing / all pages (Get started / Log in)",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0365": {
+   "severity": "BLOCKS-USE",
+   "area": "Landing / all pages (install the GitHub App)",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0366": {
+   "severity": "BLOCKS-USE",
+   "area": "Landing / developers (public API: read runs, read defects)",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0367": {
+   "severity": "BLOCKS-USE",
+   "area": "Landing / developers (quickstart link)",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0368": {
+   "severity": "BLOCKS-USE",
+   "area": "Landing / developers / home (free CLI and pytest plugin: install)",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
+  },
+  "G-0369": {
+   "severity": "BLOCKS-USE",
+   "area": "Landing / flaky tests / developers (fenvix defects pull)",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0370": {
+   "severity": "BLOCKS-USE",
+   "area": "Landing / home (change one line)",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0371": {
+   "severity": "BLOCKS-USE",
+   "area": "Landing / home (Talk to us)",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0372": {
+   "severity": "BLOCKS-USE",
+   "area": "Landing / home / developers / integrations (API keys)",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0373": {
+   "severity": "BLOCKS-USE",
+   "area": "Landing / home / flaky tests (flaky becomes a defect, hosted)",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0374": {
+   "severity": "BLOCKS-USE",
+   "area": "Landing / home / pricing (nightly exploration on FENVIX machines)",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0375": {
+   "severity": "BLOCKS-USE",
+   "area": "Landing / home / skip with proof (defects and receipts in the dashboard)",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0376": {
+   "severity": "BLOCKS-USE",
+   "area": "Landing / integrations (CI systems other than GitHub Actions)",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0377": {
+   "severity": "BLOCKS-USE",
+   "area": "Landing / integrations (GitHub Action on any runner)",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0378": {
+   "severity": "BLOCKS-USE",
+   "area": "Landing / integrations / developers (Vitest and Jest on runs-on: fenvix)",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0379": {
+   "severity": "BLOCKS-USE",
+   "area": "Landing / integrations / use cases (MCP server)",
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "service/app, not an engine go-live row"
+  },
+  "G-0380": {
+   "severity": "BLOCKS-USE",
+   "area": "Landing / use cases (RL environments)",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0381": {
+   "severity": "BLOCKS-USE",
+   "area": "Landing / use cases / pricing (nightly exploration, languages)",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0382": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / ALL-RUNNERS.md missing Node runners",
+   "row": "JS-04",
+   "check": "JS-04.shell"
+  },
+  "G-0383": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / ALL-RUNNERS.md missing Python runners",
+   "out_of_scope": "Python runners not listed (behave, trial, green, stestr, robot, ...) not in go-live scope"
+  },
+  "G-0384": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / ARCHITECTURE.md L1",
+   "row": "PY-07",
+   "check": "PY-07.options"
+  },
+  "G-0385": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / ARCHITECTURE.md syscall backend",
+   "out_of_scope": "L2 deterministic VM not in go-live scope"
+  },
+  "G-0386": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / detjs Jest < 27",
+   "out_of_scope": "Vitest < 3 / Jest < 29 not in go-live scope"
+  },
+  "G-0387": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / GO.md Go < 1.22 and > 1.26",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0388": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / GO.md Linux only",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0389": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / GO.md no record/replay",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0390": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / GO.md skip: needs strace",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0391": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / GO.md skip: no shared cache",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0392": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / GO.md user -overlay / -exec",
+   "out_of_scope": "Go not in go-live scope"
+  },
+  "G-0393": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / JVM.md agent native lib Linux x86_64 only",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0394": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / JVM.md build tools",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0395": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / JVM.md no receipts",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0396": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / JVM.md no shared cache",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0397": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / JVM.md skip not applied",
+   "out_of_scope": "JVM not in go-live scope"
+  },
+  "G-0398": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / LIMITS.md N4 (asyncio TLS)",
+   "row": "F-01",
+   "check": "F-01.probe.replay-clients",
+   "probe": "record then replay offline: Python httpx.AsyncClient/aiohttp over HTTPS, a socket using sendmsg/recvmsg; Node http2 / undici h2 client; Bun fetch and Deno fetch: replay without network passes with the recorded responses (or --det-record refuses with a named reason)"
+  },
+  "G-0399": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / LIMITS.md O1 (remote --tx)",
+   "row": "PY-05",
+   "check": "PY-05.probe.tx-popen",
+   "probe": "`--det -d --tx 2*popen//chdir=<tmp> --rsyncdir .` twice: traces verify identical and outcomes equal serial, or the engine refuses with a named reason"
+  },
+  "G-0400": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / LIMITS.md S4",
+   "out_of_scope": "PyPy not in go-live scope"
+  },
+  "G-0401": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / NODE-CACHE.md browser mode",
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "probe": "Vitest with pool vmThreads, pool vmForks, isolate:false, browser mode, and Jest with a custom runner (jest-light-runner): under --det the realm values (Date.now, Math.random) are controlled or the engine refuses with a named reason; --det-cache reuses with proof or prints the refusal reason on the console; outcomes equal plain"
+  },
+  "G-0402": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / NODE-CACHE.md custom Jest runner",
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "probe": "Vitest with pool vmThreads, pool vmForks, isolate:false, browser mode, and Jest with a custom runner (jest-light-runner): under --det the realm values (Date.now, Math.random) are controlled or the engine refuses with a named reason; --det-cache reuses with proof or prints the refusal reason on the console; outcomes equal plain"
+  },
+  "G-0403": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / NODE-CACHE.md isolate:false",
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "probe": "Vitest with pool vmThreads, pool vmForks, isolate:false, browser mode, and Jest with a custom runner (jest-light-runner): under --det the realm values (Date.now, Math.random) are controlled or the engine refuses with a named reason; --det-cache reuses with proof or prints the refusal reason on the console; outcomes equal plain"
+  },
+  "G-0404": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / NODE-CACHE.md vmThreads",
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "probe": "Vitest with pool vmThreads, pool vmForks, isolate:false, browser mode, and Jest with a custom runner (jest-light-runner): under --det the realm values (Date.now, Math.random) are controlled or the engine refuses with a named reason; --det-cache reuses with proof or prints the refusal reason on the console; outcomes equal plain"
+  },
+  "G-0405": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / NODE.md J11 (Cypress)",
+   "out_of_scope": "Cypress not in go-live scope"
+  },
+  "G-0406": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / NODE.md J11 (Playwright Test)",
+   "row": "JS-04",
+   "check": "JS-04.shell"
+  },
+  "G-0407": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / NODE.md J2 (browser mode)",
+   "row": "JS-02",
+   "check": "JS-02.probe.browser-mode",
+   "probe": "Vitest 3/4 browser-mode project (Chromium) test prints Date.now() and Math.random() and depends on --det-seed order: two --det runs give equal values and a traced test count equal to the tests run, or the engine refuses browser mode with a named reason (no 'Level 0 active' banner without control)"
+  },
+  "G-0408": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / NODE.md J3 (jest-jasmine2)",
+   "row": "JS-02",
+   "check": "JS-02.probe.jasmine2",
+   "probe": "Jest 29 project with testRunner 'jest-jasmine2': DET2 gives per-test brackets (trace lists every test, per-test fingerprints) and --det-seed runs reproduce"
+  },
+  "G-0409": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / NODE.md J7 (no h2)",
+   "row": "F-01",
+   "check": "F-01.probe.replay-clients",
+   "probe": "record then replay offline: Python httpx.AsyncClient/aiohttp over HTTPS, a socket using sendmsg/recvmsg; Node http2 / undici h2 client; Bun fetch and Deno fetch: replay without network passes with the recorded responses (or --det-record refuses with a named reason)"
+  },
+  "G-0410": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / NODE.md versions",
+   "out_of_scope": "Vitest < 3 / Jest < 29 not in go-live scope"
+  },
+  "G-0411": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / PARALLEL-PROOF-DESIGN.md ansible-test forked",
+   "out_of_scope": "forked-per-test suites (pytest-forked, ansible-test) not in go-live scope"
+  },
+  "G-0412": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / PARALLEL-PROOF-DESIGN.md pydantic-ai empty store",
+   "row": "F-05",
+   "check": "F-05.probe.custom-reporter",
+   "probe": "conftest replaces pytest's terminal reporter: --det-cache still records entries, and the cache summary/warnings are still reachable (written to a file or printed) so a 0-entry store has a named reason"
+  },
+  "G-0413": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / RELEASE-1 install into system Python",
+   "row": "F-09",
+   "check": "F-09.job-venv"
+  },
+  "G-0414": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / RELEASE-1.md cache needs Python 3.12",
+   "out_of_scope": "Python <= 3.11 not in go-live scope"
+  },
+  "G-0415": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / RELEASE-1.md Linux arm64",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-py"
+  },
+  "G-0416": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / RELEASE-1.md macOS",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-py"
+  },
+  "G-0417": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / RELEASE-1.md no packaging",
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)"
+  },
+  "G-0418": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / RELEASE-1.md repro/explore Go",
+   "out_of_scope": "Go/JVM not in go-live scope"
+  },
+  "G-0419": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / RELEASE-1.md repro/explore JVM",
+   "out_of_scope": "Go/JVM not in go-live scope"
+  },
+  "G-0420": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / RELEASE-1.md repro/explore Node",
+   "row": "F-02",
+   "check": "F-02.node-repro"
+  },
+  "G-0421": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / RELEASE-1.md Windows",
+   "out_of_scope": "Windows not in go-live scope"
+  },
+  "G-0422": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / RUNNER-PROTOTYPE.md Python only",
+   "out_of_scope": "job wrapper / runner image of the hosted service: service/app, not an engine go-live row"
+  },
+  "G-0423": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / runners/ava.md versions",
+   "out_of_scope": "AVA <= 5 not in go-live scope"
+  },
+  "G-0424": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / runners/bun.md no record/replay",
+   "row": "F-01",
+   "check": "F-01.probe.replay-clients",
+   "probe": "record then replay offline: Python httpx.AsyncClient/aiohttp over HTTPS, a socket using sendmsg/recvmsg; Node http2 / undici h2 client; Bun fetch and Deno fetch: replay without network passes with the recorded responses (or --det-record refuses with a named reason)"
+  },
+  "G-0425": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / runners/deno.md no record/replay",
+   "row": "F-01",
+   "check": "F-01.probe.replay-clients",
+   "probe": "record then replay offline: Python httpx.AsyncClient/aiohttp over HTTPS, a socket using sendmsg/recvmsg; Node http2 / undici h2 client; Bun fetch and Deno fetch: replay without network passes with the recorded responses (or --det-record refuses with a named reason)"
+  },
+  "G-0426": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / runners/jasmine.md browser",
+   "out_of_scope": "jasmine-browser-runner (browser Jasmine) not in go-live scope"
+  },
+  "G-0427": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / runners/nose2.md -N refused",
+   "out_of_scope": "nose2 multiprocess plugin (-N): multiprocessing not in go-live scope"
+  },
+  "G-0428": {
+   "severity": "BLOCKS-USE",
+   "area": "Limits / runners/tap.md versions",
+   "out_of_scope": "tap <= 16 not in go-live scope"
+  },
+  "G-0429": {
+   "severity": "BLOCKS-USE",
+   "area": "MCP / agents",
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "service/app, not an engine go-live row"
+  },
+  "G-0430": {
+   "severity": "BLOCKS-USE",
+   "area": "MCP / agents",
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "service/app, not an engine go-live row"
+  },
+  "G-0431": {
+   "severity": "BLOCKS-USE",
+   "area": "MCP / agents",
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "service/app, not an engine go-live row"
+  },
+  "G-0432": {
+   "severity": "BLOCKS-USE",
+   "area": "MCP / agents",
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "F-02 F-02.node-repro"
+  },
+  "G-0433": {
+   "severity": "BLOCKS-USE",
+   "area": "MCP / agents",
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "F-02 F-02.node-explore"
+  },
+  "G-0434": {
+   "severity": "BLOCKS-USE",
+   "area": "MCP / agents",
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "service/app, not an engine go-live row"
+  },
+  "G-0435": {
+   "severity": "BLOCKS-USE",
+   "area": "MCP / agents",
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "service/app, not an engine go-live row"
+  },
+  "G-0436": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / culprit",
+   "out_of_scope": "exact culprit is not a go-live row"
+  },
+  "G-0437": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / dep verdict",
+   "out_of_scope": "dependency-update verdict for Node is not a go-live check (F-06 has none)"
+  },
+  "G-0438": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / explore",
+   "row": "F-02",
+   "check": "F-02.node-explore"
+  },
+  "G-0439": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / packaging",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.npm"
+  },
+  "G-0440": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / packaging",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.npm"
+  },
+  "G-0441": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / packaging",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.npm"
+  },
+  "G-0442": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / packaging",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-node"
+  },
+  "G-0443": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / packaging",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-node"
+  },
+  "G-0444": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / packaging",
+   "out_of_scope": "Windows not in go-live scope"
+  },
+  "G-0445": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / packaging",
+   "out_of_scope": "Alpine/musl not in go-live scope"
+  },
+  "G-0446": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / packaging",
+   "out_of_scope": "old glibc distributions not in go-live scope"
+  },
+  "G-0447": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / replay",
+   "row": "F-02",
+   "check": "F-02.node-replay"
+  },
+  "G-0448": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / repro",
+   "row": "F-02",
+   "check": "F-02.node-repro"
+  },
+  "G-0449": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / repro",
+   "row": "F-02",
+   "check": "F-02.node-replay"
+  },
+  "G-0450": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / runner AVA",
+   "out_of_scope": "AVA <= 5 not in go-live scope"
+  },
+  "G-0451": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / runner Cucumber.js",
+   "out_of_scope": "runner not in go-live scope"
+  },
+  "G-0452": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / runner Japa",
+   "out_of_scope": "runner not in go-live scope"
+  },
+  "G-0453": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / runner Jest",
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "probe": "Vitest with pool vmThreads, pool vmForks, isolate:false, browser mode, and Jest with a custom runner (jest-light-runner): under --det the realm values (Date.now, Math.random) are controlled or the engine refuses with a named reason; --det-cache reuses with proof or prints the refusal reason on the console; outcomes equal plain"
+  },
+  "G-0454": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / runner Lab",
+   "out_of_scope": "runner not in go-live scope"
+  },
+  "G-0455": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / runner Playwright Test",
+   "row": "JS-04",
+   "check": "JS-04.shell"
+  },
+  "G-0456": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / runner QUnit",
+   "out_of_scope": "runner not in go-live scope"
+  },
+  "G-0457": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / runner Stryker",
+   "out_of_scope": "runner not in go-live scope"
+  },
+  "G-0458": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / runner tap",
+   "out_of_scope": "tap <= 16 not in go-live scope"
+  },
+  "G-0459": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / runner tape",
+   "out_of_scope": "runner not in go-live scope"
+  },
+  "G-0460": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / runner Vitest",
+   "out_of_scope": "Vitest < 3 / Jest < 29 not in go-live scope"
+  },
+  "G-0461": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / runner Vitest",
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "probe": "Vitest with pool vmThreads, pool vmForks, isolate:false, browser mode, and Jest with a custom runner (jest-light-runner): under --det the realm values (Date.now, Math.random) are controlled or the engine refuses with a named reason; --det-cache reuses with proof or prints the refusal reason on the console; outcomes equal plain"
+  },
+  "G-0462": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / runner zora",
+   "out_of_scope": "runner not in go-live scope"
+  },
+  "G-0463": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / scheduling",
+   "out_of_scope": "Node L1 not in go-live scope"
+  },
+  "G-0464": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / scheduling",
+   "out_of_scope": "Node L1 not in go-live scope"
+  },
+  "G-0465": {
+   "severity": "BLOCKS-USE",
+   "area": "Node / shared cache",
+   "out_of_scope": "shared cache across machines not in go-live scope"
+  },
+  "G-0466": {
+   "severity": "BLOCKS-USE",
+   "area": "Pins / app runner image builds the engine from an anonymous clone",
+   "out_of_scope": "job wrapper / runner image of the hosted service: service/app, not an engine go-live row"
+  },
+  "G-0467": {
+   "severity": "BLOCKS-USE",
+   "area": "Pins / Cargo workspace targets",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-py"
+  },
+  "G-0468": {
+   "severity": "BLOCKS-USE",
+   "area": "Pins / detjs private package",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.npm"
+  },
+  "G-0469": {
+   "severity": "BLOCKS-USE",
+   "area": "Pins / detpy classifiers",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
+  },
+  "G-0470": {
+   "severity": "BLOCKS-USE",
+   "area": "Pins / detpy Python 3.10: pytest --det broken",
+   "out_of_scope": "Python <= 3.11 not in go-live scope"
+  },
+  "G-0471": {
+   "severity": "BLOCKS-USE",
+   "area": "Pins / detpy Python 3.9: python -m detpy broken",
+   "out_of_scope": "Python <= 3.11 not in go-live scope"
+  },
+  "G-0472": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Linux arm64",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-py"
+  },
+  "G-0473": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Linux arm64",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-node"
+  },
+  "G-0474": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Linux arm64",
+   "out_of_scope": "Go/JVM not in go-live scope"
+  },
+  "G-0475": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Linux arm64",
+   "out_of_scope": "Go/JVM not in go-live scope"
+  },
+  "G-0476": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Linux arm64",
+   "out_of_scope": "Go/JVM not in go-live scope"
+  },
+  "G-0477": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Linux arm64",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-py"
+  },
+  "G-0478": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Linux arm64 / install",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-node"
+  },
+  "G-0479": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Linux glibc",
+   "out_of_scope": "old glibc distributions not in go-live scope"
+  },
+  "G-0480": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Linux glibc / JVM",
+   "out_of_scope": "old glibc distributions not in go-live scope"
+  },
+  "G-0481": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Linux glibc / Node",
+   "out_of_scope": "old glibc distributions not in go-live scope"
+  },
+  "G-0482": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Linux musl (Alpine)",
+   "out_of_scope": "Alpine/musl not in go-live scope"
+  },
+  "G-0483": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Linux musl (Alpine)",
+   "out_of_scope": "Alpine/musl not in go-live scope"
+  },
+  "G-0484": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Linux musl (Alpine)",
+   "out_of_scope": "Alpine/musl not in go-live scope"
+  },
+  "G-0485": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Linux musl (Alpine)",
+   "out_of_scope": "Alpine/musl not in go-live scope"
+  },
+  "G-0486": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Linux musl (Alpine)",
+   "out_of_scope": "Alpine/musl not in go-live scope"
+  },
+  "G-0487": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Linux musl (Alpine) / Node",
+   "out_of_scope": "Alpine/musl not in go-live scope"
+  },
+  "G-0488": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Linux x86_64 glibc",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
+  },
+  "G-0489": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Linux x86_64 glibc",
+   "out_of_scope": "old glibc distributions not in go-live scope"
+  },
+  "G-0490": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Linux x86_64 glibc",
+   "out_of_scope": "old glibc distributions not in go-live scope"
+  },
+  "G-0491": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Linux x86_64 glibc",
+   "out_of_scope": "old glibc distributions not in go-live scope"
+  },
+  "G-0492": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / macOS arm64",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-py"
+  },
+  "G-0493": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / macOS arm64",
+   "out_of_scope": "Go/JVM not in go-live scope"
+  },
+  "G-0494": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / macOS arm64",
+   "out_of_scope": "Go/JVM not in go-live scope"
+  },
+  "G-0495": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / macOS arm64 / Go",
+   "out_of_scope": "Go/JVM not in go-live scope"
+  },
+  "G-0496": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / macOS arm64 / install",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-node"
+  },
+  "G-0497": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / macOS arm64 / JVM",
+   "out_of_scope": "Go/JVM not in go-live scope"
+  },
+  "G-0498": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / macOS Intel",
+   "out_of_scope": "macOS Intel not in go-live scope"
+  },
+  "G-0499": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Windows arm64",
+   "out_of_scope": "Windows not in go-live scope"
+  },
+  "G-0500": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Windows x86_64",
+   "out_of_scope": "Windows not in go-live scope"
+  },
+  "G-0501": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Windows x86_64",
+   "out_of_scope": "Windows not in go-live scope"
+  },
+  "G-0502": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Windows x86_64",
+   "out_of_scope": "Windows not in go-live scope"
+  },
+  "G-0503": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Windows x86_64",
+   "out_of_scope": "Windows not in go-live scope"
+  },
+  "G-0504": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Windows x86_64",
+   "out_of_scope": "Windows not in go-live scope"
+  },
+  "G-0505": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Windows x86_64 / CLI",
+   "out_of_scope": "Windows not in go-live scope"
+  },
+  "G-0506": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Windows x86_64 / Go",
+   "out_of_scope": "Windows not in go-live scope"
+  },
+  "G-0507": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Windows x86_64 / Node",
+   "out_of_scope": "Windows not in go-live scope"
+  },
+  "G-0508": {
+   "severity": "BLOCKS-USE",
+   "area": "Platform / Windows x86_64 / Python",
+   "out_of_scope": "Windows not in go-live scope"
+  },
+  "G-0509": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / asyncio",
+   "row": "PY-07",
+   "check": "PY-07.options"
+  },
+  "G-0510": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / cache",
+   "row": "F-05",
+   "check": "F-05.probe.numpy",
+   "probe": "test module importing numpy and using np.random under --det: --det-cache twice on an unchanged checkout reuses >= 1 test of that module"
+  },
+  "G-0511": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / cache / Python < 3.12",
+   "out_of_scope": "Python <= 3.11 not in go-live scope"
+  },
+  "G-0512": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / culprit",
+   "out_of_scope": "exact culprit is not a go-live row"
+  },
+  "G-0513": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / dep verdict",
+   "row": "F-05",
+   "check": "F-05.dep-bump"
+  },
+  "G-0514": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / det environment",
+   "row": "F-01",
+   "check": "F-01.env.pinned"
+  },
+  "G-0515": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / det locale",
+   "row": "F-01",
+   "check": "F-01.locale.pinned"
+  },
+  "G-0516": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / det network",
+   "row": "F-01",
+   "check": "F-01.probe.replay-clients",
+   "probe": "record then replay offline: Python httpx.AsyncClient/aiohttp over HTTPS, a socket using sendmsg/recvmsg; Node http2 / undici h2 client; Bun fetch and Deno fetch: replay without network passes with the recorded responses (or --det-record refuses with a named reason)"
+  },
+  "G-0517": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / det scheduling",
+   "row": "PY-07",
+   "check": "PY-07.options"
+  },
+  "G-0518": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / det scheduling",
+   "row": "PY-07",
+   "check": "PY-07.probe-stable"
+  },
+  "G-0519": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / det timezone",
+   "row": "F-01",
+   "check": "F-01.tz.pinned"
+  },
+  "G-0520": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / levels",
+   "out_of_scope": "L2 deterministic VM not in go-live scope"
+  },
+  "G-0521": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / packaging",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.not-foreign"
+  },
+  "G-0522": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / packaging",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
+  },
+  "G-0523": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / packaging",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
+  },
+  "G-0524": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / packaging",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
+  },
+  "G-0525": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / packaging",
+   "out_of_scope": "Alpine/musl not in go-live scope"
+  },
+  "G-0526": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / packaging",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-py"
+  },
+  "G-0527": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / packaging",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-py"
+  },
+  "G-0528": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / packaging",
+   "out_of_scope": "Windows not in go-live scope"
+  },
+  "G-0529": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / packaging",
+   "out_of_scope": "pytest 7 not in go-live scope (pytest 8 and 9)"
+  },
+  "G-0530": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / packaging",
+   "row": "PY-05",
+   "check": "PY-05.probe.xdist-old",
+   "probe": "with pytest-xdist 3.6 installed, `--det -n 2` runs or exits with a message naming the required xdist version (no INTERNALERROR)"
+  },
+  "G-0531": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / plugin anyio (trio backend)",
+   "out_of_scope": "anyio trio backend not in go-live scope (asyncio only)"
+  },
+  "G-0532": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / repro",
+   "row": "PY-03",
+   "check": "PY-03.<runner>.repro"
+  },
+  "G-0533": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / repro",
+   "row": "PY-07",
+   "check": "PY-07.probe.repro-sched",
+   "probe": "fenvix repro on the async_executor_race and thread_race probes (with L1 options): fails 10/10 with one fingerprint and prints a replay command; does not name an unrelated test as polluter"
+  },
+  "G-0534": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / runner django",
+   "row": "PY-03",
+   "check": "PY-03.<runner>.repro"
+  },
+  "G-0535": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / runner green",
+   "out_of_scope": "Python runner not in go-live scope"
+  },
+  "G-0536": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / runner nose2",
+   "row": "PY-03",
+   "check": "PY-03.<runner>.repro"
+  },
+  "G-0537": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / runner robotframework",
+   "out_of_scope": "Python runner not in go-live scope"
+  },
+  "G-0538": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / runner stestr",
+   "out_of_scope": "Python runner not in go-live scope"
+  },
+  "G-0539": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / runner twisted.trial",
+   "out_of_scope": "Python runner not in go-live scope"
+  },
+  "G-0540": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / runner unittest",
+   "row": "PY-03",
+   "check": "PY-03.<runner>.repro"
+  },
+  "G-0541": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / runner unittest-parallel",
+   "out_of_scope": "Python runner not in go-live scope"
+  },
+  "G-0542": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / runner zope.testrunner",
+   "row": "PY-03",
+   "check": "PY-03.<runner>.repro"
+  },
+  "G-0543": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / runners",
+   "out_of_scope": "Python runner not in go-live scope"
+  },
+  "G-0544": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / runners",
+   "out_of_scope": "Python runner not in go-live scope"
+  },
+  "G-0545": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / runners",
+   "out_of_scope": "Python runner not in go-live scope"
+  },
+  "G-0546": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / threads",
+   "row": "PY-07",
+   "check": "PY-07.options"
+  },
+  "G-0547": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / versions",
+   "out_of_scope": "Python <= 3.11 not in go-live scope"
+  },
+  "G-0548": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / versions",
+   "out_of_scope": "Python <= 3.11 not in go-live scope"
+  },
+  "G-0549": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / versions",
+   "out_of_scope": "Python <= 3.11 not in go-live scope"
+  },
+  "G-0550": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / versions",
+   "out_of_scope": "Python <= 3.11 not in go-live scope"
+  },
+  "G-0551": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / versions",
+   "out_of_scope": "Python <= 3.11 not in go-live scope"
+  },
+  "G-0552": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / versions",
+   "out_of_scope": "Python <= 3.11 not in go-live scope"
+  },
+  "G-0553": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / versions",
+   "out_of_scope": "free-threaded CPython not in go-live scope"
+  },
+  "G-0554": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / versions",
+   "out_of_scope": "PyPy not in go-live scope"
+  },
+  "G-0555": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / versions",
+   "out_of_scope": "free-threaded CPython not in go-live scope"
+  },
+  "G-0556": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / versions / 3.9",
+   "out_of_scope": "Python <= 3.11 not in go-live scope"
+  },
+  "G-0557": {
+   "severity": "BLOCKS-USE",
+   "area": "Python / versions / free-threaded",
+   "out_of_scope": "free-threaded CPython not in go-live scope"
+  },
+  "G-0558": {
+   "severity": "BLOCKS-USE",
+   "area": "Refusal / Python cache needs 3.12 (run)",
+   "out_of_scope": "Python <= 3.11 not in go-live scope"
+  },
+  "G-0559": {
+   "severity": "BLOCKS-USE",
+   "area": "Refusal / Python shared cache URL not wired",
+   "out_of_scope": "shared cache across machines not in go-live scope"
+  },
+  "G-0560": {
+   "severity": "BLOCKS-USE",
+   "area": "Refusal / runner fenvix-run --cache URL",
+   "out_of_scope": "shared cache across machines not in go-live scope"
+  },
+  "G-0561": {
+   "severity": "BLOCKS-USE",
+   "area": "Repository / engine default branch",
+   "unassignable": "repository default branch / no main: repository hygiene, no engine behaviour to test (the exam installs from the release artifact or registries)"
+  },
+  "G-0562": {
+   "severity": "BLOCKS-USE",
+   "area": "Runner vendors / ARM runners",
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-py"
+  },
+  "G-0563": {
+   "severity": "BLOCKS-USE",
+   "area": "Runner wrapper",
+   "out_of_scope": "job wrapper / runner image of the hosted service: service/app, not an engine go-live row"
+  },
+  "G-0564": {
+   "severity": "BLOCKS-USE",
+   "area": "Runner wrapper",
+   "out_of_scope": "job wrapper / runner image of the hosted service: service/app, not an engine go-live row"
+  },
+  "G-0565": {
+   "severity": "BLOCKS-USE",
+   "area": "Runner wrapper",
+   "out_of_scope": "job wrapper / runner image of the hosted service: service/app, not an engine go-live row"
+  },
+  "G-0566": {
+   "severity": "BLOCKS-USE",
+   "area": "Runner wrapper",
+   "out_of_scope": "job wrapper / runner image of the hosted service: service/app, not an engine go-live row"
+  },
+  "G-0567": {
+   "severity": "BLOCKS-USE",
+   "area": "Runner wrapper",
+   "out_of_scope": "job wrapper / runner image of the hosted service: service/app, not an engine go-live row"
+  },
+  "G-0568": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Any runner",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0569": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / API",
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "service/app, not an engine go-live row"
+  },
+  "G-0570": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Billing",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0571": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Billing",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0572": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Billing",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0573": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Billing",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0574": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Billing",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0575": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Billing",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0576": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Billing",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0577": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Billing",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0578": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Billing",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0579": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Billing",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0580": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Billing",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0581": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Dashboard / API keys",
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "service/app, not an engine go-live row"
+  },
+  "G-0582": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Dashboard / Billing / choose a plan",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0583": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Dashboard / Billing / payment",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0584": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Dashboard / Defect detail / replay bundle",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0585": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Dashboard / Defect detail / replay command",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0586": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Dashboard / Defects / languages",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0587": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Dashboard / Languages / JVM",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0588": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Dashboard / Languages / Node runners",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0589": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Dashboard / Languages / Python runners",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0590": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Dashboard / Onboarding / any CI and any runner",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0591": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Dashboard / Onboarding / other code hosts",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0592": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Deploy",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0593": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Engine contract",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0594": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Engine contract",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0595": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Engine contract",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0596": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Engine contract",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0597": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Exploration",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0598": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / GitHub App",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0599": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / GitHub App",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0600": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Infra",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0601": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Infra",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0602": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Infra",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0603": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Infra",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0604": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Infra",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0605": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Infra",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0606": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Infra",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0607": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Infra",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0608": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Infra",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0609": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Infra",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0610": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Infra",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0611": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Memory across runs",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0612": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Multi-language",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0613": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Multi-language",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0614": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Multi-language",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0615": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Multi-language",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0616": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Multi-language",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0617": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Onboarding",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0618": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Onboarding",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0619": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Other platforms",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0620": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Other platforms",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0621": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Other platforms",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0622": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Replay bundles",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0623": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Security",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0624": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Security",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0625": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Shared cache",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0626": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Supabase",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0627": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Supabase",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0628": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Supabase",
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "service/app, not an engine go-live row"
+  },
+  "G-0629": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Supabase",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0630": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Supabase",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0631": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Supabase",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0632": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Supabase",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0633": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Supabase",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0634": {
+   "severity": "BLOCKS-USE",
+   "area": "Service / Supabase",
+   "out_of_scope": "service/app, not an engine go-live row"
+  },
+  "G-0635": {
+   "severity": "BLOCKS-USE",
+   "area": "State between jobs / Go skip cache",
+   "out_of_scope": "shared cache across machines not in go-live scope"
+  },
+  "G-0636": {
+   "severity": "BLOCKS-USE",
+   "area": "State between jobs / JVM capture",
+   "out_of_scope": "shared cache across machines not in go-live scope"
+  },
+  "G-0637": {
+   "severity": "BLOCKS-USE",
+   "area": "State between jobs / replay bundles",
+   "out_of_scope": "state between jobs / shared storage across machines not in go-live scope"
+  },
+  "G-0638": {
+   "severity": "BLOCKS-USE",
+   "area": "State between jobs / shared cache service",
+   "out_of_scope": "shared cache across machines not in go-live scope"
+  },
+  "G-0639": {
+   "severity": "BLOCKS-USE",
+   "area": "State between jobs / traces",
+   "out_of_scope": "state between jobs / shared storage across machines not in go-live scope"
+  }
+ },
+ "probes": {
+  "F-01.probe.c-wait": {
+   "row": "F-01",
+   "spec": "Python test measures time.monotonic() around select.select([],[],[],0.3) and a socket recv with settimeout(0.3) on an idle socket and asserts elapsed >= 0.25: under --det it finishes (no hang) and passes as in plain",
+   "gaps": [
+    "G-0082",
+    "G-0084"
+   ]
+  },
+  "F-01.probe.cassette": {
+   "row": "F-01",
+   "spec": "Python (requests) and Node (fetch with keep-alive) tests record a cassette with --det-record; then (a) change the request path/headers, (b) run with --det-seed shuffling or a single test (-k/-t) of a keep-alive pair: replay must refuse or fail on the mismatch and serve each test its own recording; never pass with a stale response",
+   "gaps": [
+    "G-0090",
+    "G-0091",
+    "G-0099",
+    "G-0129",
+    "G-0130",
+    "G-0166"
+   ]
+  },
+  "F-01.probe.cassette-redact": {
+   "row": "F-01",
+   "spec": "Python and Node test send an Authorization: Bearer SECRET header while recording a cassette: the cassette file must not contain SECRET in clear or base64 (or a documented redaction option removes it)",
+   "gaps": [
+    "G-0131",
+    "G-0167"
+   ]
+  },
+  "F-01.probe.cold-warm": {
+   "row": "F-01",
+   "spec": "Python test prints the iteration order of a set of plain objects and sorted id() deltas; run --det on a fresh checkout (cold rewrite cache) and again (warm): same output and verify identical",
+   "gaps": [
+    "G-0168"
+   ]
+  },
+  "F-01.probe.fake-timers": {
+   "row": "F-01",
+   "spec": "Vitest test calls vi.useFakeTimers() and Jest test jest.useFakeTimers(), both print Date.now() without setSystemTime: two --det runs 2 s apart (different days if possible) print equal values",
+   "gaps": [
+    "G-0142"
+   ]
+  },
+  "F-01.probe.http-mock": {
+   "row": "F-01",
+   "spec": "Vitest test (msw setupServer) and Jest test (nock) mocking fetch/http.get of https://api.example.com/user: plain pass; two --det runs pass (the closed network must not block a request the mock answers) and verify identical",
+   "gaps": [
+    "G-0034",
+    "G-0127"
+   ]
+  },
+  "F-01.probe.mtime": {
+   "row": "F-01",
+   "spec": "Python and Node test write a file and assert abs(mtime - now) < 5 s (os.stat/fs.statSync vs time.time/Date.now): plain pass, --det pass",
+   "gaps": [
+    "G-0085",
+    "G-0143"
+   ]
+  },
+  "F-01.probe.node-clock-sources": {
+   "row": "F-01",
+   "spec": "Node test prints process.uptime(), performance.timeOrigin, performance.mark('m').startTime and require('perf_hooks').performance.now() (Vitest and Jest): two --det runs 2 s apart give equal values and verify identical, or verify reports divergence (never identical with different values)",
+   "gaps": [
+    "G-0135",
+    "G-0136",
+    "G-0137",
+    "G-0141"
+   ]
+  },
+  "F-01.probe.node-vm": {
+   "row": "F-01",
+   "spec": "Node test evaluates `vm.runInNewContext('[Math.random(), Date.now()]')`: two --det runs 2 s apart print equal values, or verify reports divergence (never identical)",
+   "gaps": [
+    "G-0134"
+   ]
+  },
+  "F-01.probe.replay-clients": {
+   "row": "F-01",
+   "spec": "record then replay offline: Python httpx.AsyncClient/aiohttp over HTTPS, a socket using sendmsg/recvmsg; Node http2 / undici h2 client; Bun fetch and Deno fetch: replay without network passes with the recorded responses (or --det-record refuses with a named reason)",
+   "gaps": [
+    "G-0165",
+    "G-0398",
+    "G-0409",
+    "G-0424",
+    "G-0425",
+    "G-0516"
+   ]
+  },
+  "F-01.probe.service-host": {
+   "row": "F-01",
+   "spec": "GitHub Actions job with a `services: postgres` container reached by its hostname (and an /etc/hosts alias): Python and Node tests connect by name; plain pass, --det (with --det-allow-host=<name> if required) pass; outcomes equal plain",
+   "gaps": [
+    "G-0153",
+    "G-0154"
+   ]
+  },
+  "F-01.probe.timeit": {
+   "row": "F-01",
+   "spec": "Python test calls timeit.Timer('pass').autorange(): under --det it finishes within 60 s and passes as in plain",
+   "gaps": [
+    "G-0081"
+   ]
+  },
+  "F-01.probe.timer-consistency": {
+   "row": "F-01",
+   "spec": "Node test (a) races AbortSignal.timeout(300) against setTimeout(1000): abort wins under --det as in plain; (b) loops until performance.now() advances 2000 ms with a 5000 ms test timeout: passes under --det as in plain",
+   "gaps": [
+    "G-0138",
+    "G-0144"
+   ]
+  },
+  "F-01.probe.udp": {
+   "row": "F-01",
+   "spec": "Python and Node test send a UDP datagram to an external address (socket.sendto / dgram.send): under --det the send is blocked or recorded as a network event; verify of a run with the network reachable vs not names the event (never silent identical)",
+   "gaps": [
+    "G-0128"
+   ]
+  },
+  "F-02.probe.numpy-repro": {
+   "row": "F-02",
+   "spec": "order-dependent pair (polluter writes a shared dict) in a test module importing numpy: fenvix repro proves 10/10 with one fingerprint, names the polluter, and the reported first divergent event is not a numpy os.urandom import event",
+   "gaps": [
+    "G-0177",
+    "G-0178"
+   ]
+  },
+  "F-03.probe.multi-project": {
+   "row": "F-03",
+   "spec": "Vitest workspace with two projects running the same file (jsdom and node env), one printing a project-dependent value: the trace keeps both parts (2x tests) and verify compares both; a divergence in either project is reported",
+   "gaps": [
+    "G-0100"
+   ]
+  },
+  "F-03.probe.node-sched": {
+   "row": "F-03",
+   "spec": "Node test starts 20 concurrent fs.readFile calls and two concurrent local HTTP requests (Promise.race) and records completion order; 20 --det runs: if the orders differ, fenvix verify reports divergence (never 'covered by Level 0' / identical)",
+   "gaps": [
+    "G-0150",
+    "G-0151"
+   ]
+  },
+  "F-03.probe.numpy": {
+   "row": "F-03",
+   "spec": "two identical --det runs of a test module importing numpy (and of an xdist -n 2 run): fenvix verify identical, no NOT-COVERED [entropy] on the first test of the process/worker",
+   "gaps": [
+    "G-0179"
+   ]
+  },
+  "F-03.probe.realm-failure": {
+   "row": "F-03",
+   "spec": "Node setup file makes globalThis.Date non-configurable before detjs installs its controls; a test prints Date.now(): the run must say on the console (not only in the trace header) that the time control is missing, and verify of two runs with different values must not say identical",
+   "gaps": [
+    "G-0181"
+   ]
+  },
+  "F-03.probe.zero-tests": {
+   "row": "F-03",
+   "spec": "Vitest browser-mode project (Chromium) with 2 tests: two --det traces; fenvix verify must not exit 0 'identical/covered' for traces that observed 0 of the tests that ran",
+   "gaps": [
+    "G-0037"
+   ]
+  },
+  "F-05.probe.audit-rerun": {
+   "row": "F-05",
+   "spec": "`fenvix python --help` lists the cache audit option (--det-cache-audit); a cached run with the audit on reruns a seeded share of reusable tests fresh and reports 0 mismatches on an unchanged checkout and a mismatch after a hidden input change",
+   "gaps": [
+    "G-0204"
+   ]
+  },
+  "F-05.probe.blockbuster": {
+   "row": "F-05",
+   "spec": "conftest installs a blockbuster-style hook that makes os.path.abspath/realpath raise inside a running asyncio loop; pytest-asyncio tests: plain pass, --det-cache pass with >= 1 test recorded",
+   "gaps": [
+    "G-0004",
+    "G-0101"
+   ]
+  },
+  "F-05.probe.custom-reporter": {
+   "row": "F-05",
+   "spec": "conftest replaces pytest's terminal reporter: --det-cache still records entries, and the cache summary/warnings are still reachable (written to a file or printed) so a 0-entry store has a named reason",
+   "gaps": [
+    "G-0412"
+   ]
+  },
+  "F-05.probe.early-stat": {
+   "row": "F-05",
+   "spec": "test module binds `_st = os.stat` as a default argument at import; a test asserts _st(P).st_size == N; change P's size: --det-cache run 2 does not reuse the test, outcome equals plain",
+   "gaps": [
+    "G-0080"
+   ]
+  },
+  "F-05.probe.import-side-effect": {
+   "row": "F-05",
+   "spec": "add a new test module that patches a library at import time (e.g. sets json default separators); a test in another module depends on it; run 2 of --det-cache (pytest and unittest shell): the affected test is not reused, outcome equals plain",
+   "gaps": [
+    "G-0111"
+   ]
+  },
+  "F-05.probe.numpy": {
+   "row": "F-05",
+   "spec": "test module importing numpy and using np.random under --det: --det-cache twice on an unchanged checkout reuses >= 1 test of that module",
+   "gaps": [
+    "G-0510"
+   ]
+  },
+  "F-05.probe.real-clock": {
+   "row": "F-05",
+   "spec": "test passes only before a deadline D read through (a) datetime.now(), (b) sqlite `date('now')` with a user trace callback set, (c) C time() via ctypes; run 1 --det-cache before D; run 2 with the clock moved past D (libfaketime / next UTC day): not reused, outcome equals plain",
+   "gaps": [
+    "G-0020",
+    "G-0089",
+    "G-0094",
+    "G-0159"
+   ]
+  },
+  "F-05.probe.startup-process": {
+   "row": "F-05",
+   "spec": "conftest runs a start-up program at session start (e.g. `git describe` / a script writing a file) and puts its output in os.environ; a test asserts on it; change the program's output (new tag) between run 1 and run 2 of --det-cache: the test is not reused, outcome equals plain",
+   "gaps": [
+    "G-0016",
+    "G-0018",
+    "G-0019"
+   ]
+  },
+  "F-06.probe.dir-listing": {
+   "row": "F-06",
+   "spec": "Vitest project with a Vite plugin that generates a module from fs.readdirSync('routes/'); a test asserts the route count; add a route file: --det-cache run 2 reruns that test, outcome equals plain",
+   "gaps": [
+    "G-0097"
+   ]
+  },
+  "F-06.probe.early-fs-ref": {
+   "row": "F-06",
+   "spec": "Vitest/Jest setup file captures `const rf = require('fs').readFileSync` before tests; a test asserts rf(F); change F: --det-cache run 2 does not reuse the test, outcome equals plain",
+   "gaps": [
+    "G-0096"
+   ]
+  },
+  "F-06.probe.virtual-day": {
+   "row": "F-06",
+   "spec": "Node test asserts new Date() (virtual) is before a date D derived from today; run 1 --det-cache; run 2 on the next UTC day (libfaketime or a dated runner): the receipt's epoch changes and the test is not reused, outcome equals plain",
+   "gaps": [
+    "G-0120",
+    "G-0121"
+   ]
+  },
+  "JS-02.probe.browser-mode": {
+   "row": "JS-02",
+   "spec": "Vitest 3/4 browser-mode project (Chromium) test prints Date.now() and Math.random() and depends on --det-seed order: two --det runs give equal values and a traced test count equal to the tests run, or the engine refuses browser mode with a named reason (no 'Level 0 active' banner without control)",
+   "gaps": [
+    "G-0036",
+    "G-0308",
+    "G-0407"
+   ]
+  },
+  "JS-02.probe.config-variants": {
+   "row": "JS-02",
+   "spec": "Vitest with pool vmThreads, pool vmForks, isolate:false, browser mode, and Jest with a custom runner (jest-light-runner): under --det the realm values (Date.now, Math.random) are controlled or the engine refuses with a named reason; --det-cache reuses with proof or prints the refusal reason on the console; outcomes equal plain",
+   "gaps": [
+    "G-0309",
+    "G-0310",
+    "G-0401",
+    "G-0402",
+    "G-0403",
+    "G-0404",
+    "G-0453",
+    "G-0461"
+   ]
+  },
+  "JS-02.probe.jasmine2": {
+   "row": "JS-02",
+   "spec": "Jest 29 project with testRunner 'jest-jasmine2': DET2 gives per-test brackets (trace lists every test, per-test fingerprints) and --det-seed runs reproduce",
+   "gaps": [
+    "G-0408"
+   ]
+  },
+  "JS-02.probe.stack-depth": {
+   "row": "JS-02",
+   "spec": "Vitest and Jest test recursing to a depth that passes in plain (e.g. 90% of the measured plain limit) passes under --det",
+   "gaps": [
+    "G-0098"
+   ]
+  },
+  "JS-03.probe.bun-deno-reuse": {
+   "row": "JS-03",
+   "spec": "Bun and Deno: test result depends on (a) a module loaded by a computed specifier from a package, (b) Bun.file(F).lastModified read through an alias, (c) Bun.env via an alias; change the input: --det-cache run 2 not reused, outcome equals plain",
+   "gaps": [
+    "G-0104",
+    "G-0105",
+    "G-0107"
+   ]
+  },
+  "JS-03.probe.file-only-failure": {
+   "row": "JS-03",
+   "spec": "Bun test with a failing afterEach / unmet expect.assertions(2) and Deno test leaking a resource (sanitizer failure): the trace's per-test outcome is failed, equal to the runner's own report",
+   "gaps": [
+    "G-0106",
+    "G-0108"
+   ]
+  },
+  "JS-04.probe.browser-tz": {
+   "row": "JS-04",
+   "spec": "Playwright spec prints page `new Date().toString()` and `Intl.DateTimeFormat().resolvedOptions()` under TZ=UTC/LANG=C vs TZ=Asia/Tokyo/LANG=de_DE.UTF-8: equal under --det",
+   "gaps": [
+    "G-0035"
+   ]
+  },
+  "JS-04.probe.browser-version": {
+   "row": "JS-04",
+   "spec": "the trace header of a Playwright --det run names the Chromium version; verify of traces from two Chromium versions names the browser difference",
+   "gaps": [
+    "G-0301"
+   ]
+  },
+  "JS-04.probe.cache2": {
+   "row": "JS-04",
+   "spec": "CACHE2 on the Playwright project: the second run reuses with proof, or refuses with a named reason; reused outcomes equal plain",
+   "gaps": [
+    "G-0289"
+   ]
+  },
+  "JS-04.probe.page-apis": {
+   "row": "JS-04",
+   "spec": "Playwright spec exercising rAF timestamps, IndexedDB transaction order, IntersectionObserver/ResizeObserver callbacks, a Web Worker reading Date.now/Math.random, canvas toDataURL hash, a service worker registration and an RTCPeerConnection offer: two --det runs give equal values and verify identical, or the engine names the uncontrolled source (never silent identical)",
+   "gaps": [
+    "G-0295",
+    "G-0296",
+    "G-0297",
+    "G-0298",
+    "G-0300",
+    "G-0302",
+    "G-0303"
+   ]
+  },
+  "JS-04.probe.page-network": {
+   "row": "JS-04",
+   "spec": "Playwright spec whose page fetches an external URL and opens a WebSocket: --det runs with the network reachable vs blocked give the same outcome and verify identical (record/replay or blocked, never real)",
+   "gaps": [
+    "G-0286",
+    "G-0304"
+   ]
+  },
+  "JS-04.probe.webserver": {
+   "row": "JS-04",
+   "spec": "Playwright config webServer starts a small Node server returning Date.now()/Math.random(); a spec asserts on the page showing it: two --det runs show equal values and verify identical",
+   "gaps": [
+    "G-0213",
+    "G-0292"
+   ]
+  },
+  "JS-04.probe.workers": {
+   "row": "JS-04",
+   "spec": "`fenvix node playwright test --det --workers=2` twice: traces merge per worker, verify identical, outcomes equal plain",
+   "gaps": [
+    "G-0290"
+   ]
+  },
+  "JS-06.probe.global-shape": {
+   "row": "JS-06",
+   "spec": "Jest 29 jsdom test prints typeof setImmediate, typeof clearImmediate, typeof crypto.randomUUID: plain and --det print the same",
+   "gaps": [
+    "G-0024",
+    "G-0025"
+   ]
+  },
+  "JS-06.probe.iframe-realm": {
+   "row": "JS-06",
+   "spec": "jsdom test creates an <iframe> and reads iframe.contentWindow.Date.now() and Math.random(): two --det runs equal, or verify reports divergence (never 'covered')",
+   "gaps": [
+    "G-0029"
+   ]
+  },
+  "JS-06.probe.jsdom-clock": {
+   "row": "JS-06",
+   "spec": "jsdom (Vitest and Jest) and happy-dom test prints new Event('x').timeStamp, document.lastModified, new File([],'f').lastModified, performance.timeOrigin, rAF callback timestamps (3 frames) and jsdom.window.eval('Date.now()+Math.random()'): two --det runs 2 s apart give equal values, or verify reports divergence (never identical)",
+   "gaps": [
+    "G-0021",
+    "G-0026",
+    "G-0027",
+    "G-0028",
+    "G-0038"
+   ]
+  },
+  "JS-06.probe.subtle-key": {
+   "row": "JS-06",
+   "spec": "jsdom/happy-dom test exports a key from crypto.subtle.generateKey: two --det runs give equal bytes, or verify reports an entropy divergence",
+   "gaps": [
+    "G-0030"
+   ]
+  },
+  "JS-06.probe.timer-race": {
+   "row": "JS-06",
+   "spec": "jsdom (Jest) and happy-dom (Vitest) test races setTimeout(0) against a MessageChannel message and a resolved promise, recording the order: 10 --det runs give one order and verify identical, or verify reports the divergence at the port message",
+   "gaps": [
+    "G-0022",
+    "G-0023",
+    "G-0031"
+   ]
+  },
+  "PY-02.probe.modifyitems": {
+   "row": "PY-02",
+   "spec": "conftest pytest_collection_modifyitems moves tests marked slow last; a later test depends on that order: --det (and --det-seed) outcome equals plain, or the engine keeps the project's reorder",
+   "gaps": [
+    "G-0092"
+   ]
+  },
+  "PY-03.probe.django-file-cache": {
+   "row": "PY-03",
+   "spec": "Django (manage.py test and pytest-django) test reads a static file through staticfiles finders after an earlier test warmed the storage; change the file: --det-cache run 2 does not reuse it, outcome equals plain",
+   "gaps": [
+    "G-0110"
+   ]
+  },
+  "PY-03.probe.ward-fixture": {
+   "row": "PY-03",
+   "spec": "ward module-scoped fixture mutated by test A, test B asserts on it; edit A: --det-cache run 2 does not reuse B, outcome equals plain",
+   "gaps": [
+    "G-0112"
+   ]
+  },
+  "PY-05.probe.isolate": {
+   "row": "PY-05",
+   "spec": "odpair under `--det --det-isolate` (pytest 8.0 and 9): same verdict as serial --det, or the order dependence is reported as a finding; a unittest.TestCase test passes under --det-isolate on pytest 8.0",
+   "gaps": [
+    "G-0169",
+    "G-0171"
+   ]
+  },
+  "PY-05.probe.testrun-uid": {
+   "row": "PY-05",
+   "spec": "pytest-xdist installed, serial run: a test asserts on the testrun_uid fixture vs a stored value; two --det runs give the same uid, and --det-cache does not reuse a result that depended on a different uid",
+   "gaps": [
+    "G-0174"
+   ]
+  },
+  "PY-05.probe.tx-popen": {
+   "row": "PY-05",
+   "spec": "`--det -d --tx 2*popen//chdir=<tmp> --rsyncdir .` twice: traces verify identical and outcomes equal serial, or the engine refuses with a named reason",
+   "gaps": [
+    "G-0399"
+   ]
+  },
+  "PY-05.probe.xdist-old": {
+   "row": "PY-05",
+   "spec": "with pytest-xdist 3.6 installed, `--det -n 2` runs or exits with a message naming the required xdist version (no INTERNALERROR)",
+   "gaps": [
+    "G-0530"
+   ]
+  },
+  "PY-07.probe.leaked-thread": {
+   "row": "PY-07",
+   "spec": "test A starts a daemon thread that reads time/random 0.2 s later; test B is innocent: in two --det runs B's fingerprint is stable and verify does not name B as diverging",
+   "gaps": [
+    "G-0093"
+   ]
+  },
+  "PY-07.probe.lock-type": {
+   "row": "PY-07",
+   "spec": "test asserts isinstance(threading.Lock(), type(_thread.allocate_lock())) and that a C extension accepting a lock works with it: plain pass, --det pass",
+   "gaps": [
+    "G-0083"
+   ]
+  },
+  "PY-07.probe.repro-sched": {
+   "row": "PY-07",
+   "spec": "fenvix repro on the async_executor_race and thread_race probes (with L1 options): fails 10/10 with one fingerprint and prints a replay command; does not name an unrelated test as polluter",
+   "gaps": [
+    "G-0533"
+   ]
+  },
+  "PY-08.probe.dlopen-lib": {
+   "row": "PY-08",
+   "spec": "test ctypes.CDLL-loads a small shared library built outside the root and asserts its return value; rebuild the library returning another value: run 2 not reused, fails like plain (Linux and macOS arm64)",
+   "gaps": [
+    "G-0079"
+   ]
+  },
+  "PY-08.probe.native-file": {
+   "row": "PY-08",
+   "spec": "test uses a C library reading a data file F outside the root (sqlite3 opening a db file, zlib with a dictionary file read in C, ctypes fopen); run 1 --det-cache pass; change F; run 2 not reused, fails like plain",
+   "gaps": [
+    "G-0078"
+   ]
+  }
+ },
+ "decisions": [
+  "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "MCP gaps belong to F-14 (remote MCP server), not examined here"
+ ]
+}

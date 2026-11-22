@@ -1,0 +1,200 @@
+# Go-live acceptance exam (exam/PLAN.md). One job per leg of exam/legs.json (row x platform x versions); the
+# aggregate job merges every leg into exam/results.json and commits it to claude/exam.
+# The engine is installed as our runner machines do: the versioned Linux x86_64 engine tarball (artifact engine-artifact) of
+# the release-1 CI, fetched with release/engine/fetch.sh and installed with its install.sh (exam/install.sh),
+# by default the newest claude/release-1 one; with input release_run, the artifact of that release-1.yml run (e.g. a PR head),
+# so a row is examined before its merge. results.json names the artifact (run, commit, branch) every leg tested.
+name: exam
+
+on:
+  push:
+    branches: [claude/exam]
+    paths: ["exam/**", ".github/workflows/exam.yml", "!exam/results.json"]
+  workflow_dispatch:
+    inputs:
+      rows:
+        description: "comma list of rows to run (empty = all)"
+        default: ""
+      release_run:
+        description: "release-1.yml run id whose engine-linux-x64 artifact to examine (any branch, e.g. a PR head run); empty = newest claude/release-1 artifact"
+        default: ""
+        required: false
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: exam-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  plan:
+    runs-on: ubuntu-24.04
+    outputs:
+      legs: ${{ steps.p.outputs.legs }}
+      base_run: ${{ steps.p.outputs.base_run }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /exam/
+            /.github/
+            /harness/block2_targets.json
+            /harness/flaky_candidates.json
+      - id: p
+        env: {ROWS: "${{ github.event.inputs.rows }}"}
+        run: |
+          # exam/rerun.json {"base_run": ID, "rows": [...]}: rerun only those rows; the aggregate takes every other
+          # row from the base run's artifacts
+          python3 -c "
+          import json, os
+          legs = json.load(open('exam/legs.json'))['legs']
+          want = [r for r in os.environ.get('ROWS', '').split(',') if r]
+          base = ''
+          if not want and os.path.exists('exam/rerun.json'):
+              rr = json.load(open('exam/rerun.json')); want = rr.get('rows', [])
+              base = ' '.join(str(x) for x in (rr.get('base_runs') or [rr.get('base_run')]) if x)
+          if want: legs = [l for l in legs if set(l['rows']) & set(want)]
+          print('legs=' + json.dumps(legs)); print('base_run=' + base)" >> "$GITHUB_OUTPUT"
+
+  leg:
+    needs: plan
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.runs_on }}
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      max-parallel: 40
+      matrix:
+        include: ${{ fromJSON(needs.plan.outputs.legs) }}
+    services:
+      # F-01.probe.service-host: a `services: postgres` container, reached by name (exam/probes.py puts its address in
+      # /etc/hosts as `postgres` and `exam-pg`); an empty image skips the service on the other legs (actions/runner:
+      # "will not be started because the container definition has an empty image")
+      postgres:
+        image: ${{ contains(join(matrix.rows, ','), 'F-01') && 'postgres:16' || '' }}
+        env: {POSTGRES_PASSWORD: exam}
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      EXAM_INSTALL: ci-artifact  # the only source (founder decision 2026-11-20)
+      EXAM_RELEASE_RUN: ${{ github.event.inputs.release_run }}  # empty = newest trunk artifact (exam/install.sh)
+      EXAM_PLATFORM: ${{ matrix.platform }}
+      EXAM_PYTHON: ${{ matrix.python }}
+      EXAM_NODE: ${{ matrix.node }}
+      EXAM_VARIANT: ${{ matrix.variant }}
+      EXAM_JOB_NAME: ${{ matrix.name }}
+      GH_TOKEN: ${{ github.token }}
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /exam/
+            /.github/
+            /harness/block2_targets.json
+            /harness/flaky_candidates.json
+
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ matrix.python }}", allow-prereleases: true}
+      - uses: actions/setup-node@v4
+        with: {node-version: "${{ matrix.node }}"}
+      # Bun and Deno: the JS-03 runners, and F-01.probe.replay-clients (Bun fetch, Deno fetch)
+      - if: contains(join(matrix.rows, ','), 'JS-03') || contains(join(matrix.rows, ','), 'F-01')
+        uses: oven-sh/setup-bun@v2
+      - if: contains(join(matrix.rows, ','), 'JS-03') || contains(join(matrix.rows, ','), 'F-01')
+        uses: denoland/setup-deno@v2
+        with: {deno-version: v2.x}
+      - name: machine prerequisites the install docs name (strace, locales)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq strace locales faketime > /dev/null
+          sudo locale-gen de_DE.UTF-8 C.UTF-8 > /dev/null || true
+          corepack enable || true
+      - name: leg env
+        run: |
+          python3 -c "import json,os; [print(f'{k}={v}') for k,v in json.loads(os.environ['E']).items()]" >> "$GITHUB_ENV"
+          echo "EXAM_PY_EXE=$(command -v python3)" >> "$GITHUB_ENV"
+          echo "EXAM_TMP=$RUNNER_TEMP" >> "$GITHUB_ENV"
+        env: {E: "${{ matrix.env_json }}"}
+      - name: install the engine (exam/install.sh)
+        env: {EXAM_OUT_DIR: "${{ runner.temp }}/exam-out", FENVIX_HOME: "${{ runner.temp }}/fenvix"}
+        run: bash exam/install.sh "${{ matrix.platform }}"
+      - name: run the exam rows
+        run: |
+          python3 exam/run.py --rows "${{ join(matrix.rows, ',') }}" --work "$RUNNER_TEMP/exam-work" \
+            --out "$RUNNER_TEMP/exam-out/result.json" 2>&1 | tee "$RUNNER_TEMP/exam-out/run.log" | grep -E "^(PASS|FAIL|##|[0-9]+/)"
+      - name: pack logs
+        if: always()
+        run: tar -czf "$RUNNER_TEMP/exam-out/logs.tgz" -C "$RUNNER_TEMP/exam-work" logs 2>/dev/null || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: exam-${{ strategy.job-index }}
+          path: ${{ runner.temp }}/exam-out/
+
+  aggregate:
+    needs: [plan, leg]
+    if: always()
+    runs-on: ubuntu-24.04
+    env: {GH_TOKEN: "${{ github.token }}"}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/exam
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /exam/
+            /.github/
+            /harness/block2_targets.json
+            /harness/flaky_candidates.json
+
+      - uses: actions/download-artifact@v4
+        with: {pattern: "exam-*", path: exam-out-all}
+      - name: base runs' artifacts (rerun mode; oldest first, later runs override earlier ones)
+        if: needs.plan.outputs.base_run != ''
+        run: |
+          i=0
+          for r in ${{ needs.plan.outputs.base_run }}; do
+            i=$((i+1)); gh run download "$r" -R "${{ github.repository }}" -p 'exam-[0-9]*' -D "exam-out-base/$(printf %02d $i)-$r"
+          done
+      - name: job ids
+        run: |
+          gh api --paginate "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs?per_page=100" \
+            --jq '.jobs[] | {(.name): .id}' | python3 -c "import sys,json; d={}; [d.update(json.loads(l)) for l in sys.stdin if l.strip()]; json.dump(d, open('jobs.json','w'))"
+      - name: aggregate
+        run: python3 exam/aggregate.py --in exam-out-all --legs exam/legs.json --gaps exam/gap_map.json --out exam/results.json --jobs jobs.json --base exam-out-base --base-run "${{ needs.plan.outputs.base_run }}" --release-run "${{ github.event.inputs.release_run }}"
+      - name: commit exam/results.json to claude/exam
+        if: github.ref == 'refs/heads/claude/exam'
+        run: |
+          git config user.name "exam-bot"; git config user.email "exam-bot@users.noreply.github.com"
+          git add exam/results.json
+          git commit -qm "exam: results.json from run ${{ github.run_id }}" || exit 0
+          for i in 1 2 3 4; do git pull -q --rebase origin claude/exam && git push -q origin HEAD:claude/exam && break; sleep $((i*5)); done
+      - uses: actions/upload-artifact@v4
+        with: {name: exam-results, path: exam/results.json}
+      - name: verdict (red when any check of the rows run failed)
+        env:
+          ROWS: ${{ github.event.inputs.rows }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          d = json.load(open("exam/results.json"))
+          want = [r.strip() for r in os.environ.get("ROWS", "").split(",") if r.strip()] or list(d["rows"])
+          bad = 0
+          lines = ["| row | passed | failed checks |", "|---|---|---|"]
+          for r in want:
+              c = d["rows"].get(r, {}).get("checks", [])
+              f = [x["id"] for x in c if not x.get("ok")]
+              bad += len(f) + (0 if c else 1)
+              lines.append(f"| {r} | {len(c)-len(f)}/{len(c)} | {', '.join(f) or '-'} |")
+          open(os.environ["GITHUB_STEP_SUMMARY"], "a").write("\n".join(lines) + "\n")
+          print("\n".join(lines))
+          raise SystemExit(1 if bad else 0)
+          PY
