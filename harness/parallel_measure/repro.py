@@ -41,6 +41,7 @@ def main():
     log = os.path.join(out, "repro.log")
     env = {k: v for k, v in os.environ.items() if k not in M.VOLATILE}
     env.update({k: os.path.expandvars(v) for k, v in spec.get("env", {}).items()})
+    env = M.tmp_env(env, M.run_tmpdir(o.name))
     runner, args = spec["runner"], spec.get("args", [])
     plans = []
     for k in range(1, o.runs + 1):
