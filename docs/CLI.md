@@ -76,9 +76,18 @@ temp and workspace paths, per-step files, CI tokens and session variables (`RUNN
 `python/detpy/_level0.py`, `node/src/volatile.js`) keep their values but are not compared. Add a project's own with
 `FENVIX_VOLATILE_ENV=NAME,PREFIX*` (a per-run output path, say).
 
-Exit codes: 0 every test identical; 3 the only differences are environment variables tests read (input differs);
-1 a test diverged or is missing, no test ran, or the traces do not record their run inputs; 2 a trace is missing or
-unreadable.
+Exit codes (`fenvix verify` and `detjs verify`: one rule, `python/detpy/fenvix.py` `verify_exit_code` and
+`node/src/exit-status.js` `verifyExit`, checked against each other by `node/test/fixtures/exit-cases.json`):
+
+| exit | `detjs verify --json` `status` | when |
+|---|---|---|
+| 0 | `identical` | every test identical |
+| 3 | `input_differs` | the only differences are environment variables tests read (input differs) |
+| 1 | `diverged` | a test diverged or is missing |
+| 1 | `not_proven` | a test is NOT PROVEN, no test ran, or the traces do not record their run inputs |
+| 2 | (no report) | a trace is missing or unreadable, fewer than two traces, a usage error |
+
+When several hold, `status` is the first of `diverged`, `not_proven`, `input_differs`, `identical`.
 
 ```
 fenvix verify: 2 runs, 5 tests
@@ -92,6 +101,21 @@ NOT-COVERED tests/test_x.py::test_env  [env] outcomes=passed,failed
 `--ignore-env NAME` (or `PREFIX*`) leaves out a variable you declare irrelevant; the report lists it. Traces without
 `inputs` (older engines, shells that do not record them yet) are reported as `run inputs: NOT RECORDED` and are never
 identical: same events give `verdict: NOT PROVEN` (exit 1), since the runs cannot be shown to have had the same inputs.
+
+## Exit codes of a deterministic run (`detjs <runner> --det`, `fenvix <node runner>`)
+
+One rule, `node/src/exit-status.js` `runExit`, on every path of `node/bin/detjs.js` (the normal path, the TZ/locale
+restart, and the cross-worker hazard re-run wrapper `node/src/parallel-rerun.js`). First match wins:
+
+| exit | when |
+|---|---|
+| 2 | a usage or internal error of detjs, or the runner shell returned 2 |
+| 1 | at least one test failed (outcome failed or error; an outcome other than passed, skipped or todo, such as interrupted, counts as failed), at least one test is NOT PROVEN (a hazard re-run that did not account for a file's first-pass tests), or the runner shell returned any other non-zero code |
+| 0 | otherwise |
+
+A signal that killed the runner is re-raised on detjs. The process that writes the run's final trace prints one line
+on stderr, `detjs: status: failed=N not_proven=M passed=K skipped=S`, and writes the same counts into the trace header
+as `meta.status` (`{"failed":N,"not_proven":M,"passed":K,"skipped":S}`; skipped counts skipped and todo).
 
 ## Flaky test to reproducible defect
 

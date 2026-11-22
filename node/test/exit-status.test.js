@@ -30,4 +30,7 @@ test('countStatus partitions records; NOT PROVEN tests are counted there only', 
   assert.deepEqual(xs.countStatus(recs), { failed: 2, not_proven: 0, passed: 2, skipped: 2 });
   assert.deepEqual(xs.countStatus(recs, ['f', 'b']), { failed: 1, not_proven: 2, passed: 1, skipped: 2 });
   assert.equal(xs.statusLine({ failed: 1, not_proven: 2, passed: 3, skipped: 4 }), 'detjs: status: failed=1 not_proven=2 passed=3 skipped=4');
+  // an outcome outside passed/skipped/todo (a test whose file ended while it ran) is never green: counted failed
+  assert.deepEqual(xs.countStatus([{ nodeid: 'i', outcome: 'interrupted' }]), { failed: 1, not_proven: 0, passed: 0, skipped: 0 });
+  assert.equal(xs.runExit(xs.countStatus([{ nodeid: 'i', outcome: 'interrupted' }])), 1);
 });
