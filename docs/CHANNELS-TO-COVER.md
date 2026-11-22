@@ -16,10 +16,9 @@ it did not — `threading.Lock` IS the class `_thread.lock`, so the sensor repor
 listed first for that reason: each one is a place where the table may be answering for the operation and not for
 the object.
 
-Generated on 2026-11-21 from the table at this branch's head.
+Generated on 2026-11-22 from the table at this branch's head. The count of types went from 69 to 68: `posix.DirEntry` left the list, because the table was answering for the entries `scandir` hands out with arms that could never match (a type's method needs the last TWO components of a qualified name). That one refusal was costing every test that walked a directory.
 
-types the table refuses: 69
-  posix.DirEntry
+types the table refuses: 68
   posix.error
   time.struct_time
   _io.BlockingIOError

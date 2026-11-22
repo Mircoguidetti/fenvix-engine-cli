@@ -382,13 +382,16 @@ fixed:
 
 ## 9. Still open
 
+Rewritten on 2026-11-22, at the end of the round that closed the four red jobs of CI 44964230574.
+
 | item | state |
 |---|---|
-| `F-02.py-explore.idoft-py-autodoc` | **blocked here, not by the engine.** The check needs the real project cloned with its dependencies installed, and this container's guardrail refuses to build a freshly cloned third-party project. The *class* is covered instead by a new regression test (`tests/test_fenvix_cli.py::test_explore_finds_the_target_when_another_module_does_not_import`), mirroring the one the previous round added for `fenvix repro`. The real check is decided by the CI exam. |
-| `test_capture_sessions_match_reference` | **fixed, with one pre-existing flake left.** See section 11. |
-| the full local suites and the CI matrix | the full `release-1` workflow is dispatched on this branch at depth `full`; local full-suite figures are not yet in this report. |
-| the reviewer round | not yet done. |
-| **a founder decision** | see below. |
+| `F-02.py-explore.idoft-py-autodoc` | **blocked by the container, not by the engine.** The check needs the real project cloned with its dependencies installed, and this container's guardrail refuses to build a freshly cloned third-party project. The class is covered by `tests/test_fenvix_cli.py::test_explore_finds_the_target_when_another_module_does_not_import`. The real check is decided by the CI exam. |
+| `test_capture_sessions_match_reference` | **green.** The two paths disagreed on cacheability and not on what they record: the round-1 reference loop is older than the general rule, so it reused a test that had run a subprocess. The reference's `_uncacheable` now has the rule as its last branch, with the same flag and the same words as `record.rs`. |
+| the full local suites | Python shard 2 of 4 on 3.13 (the red job's own file list): 226 passed, 7 skipped. Node shard 0 of 4: 176 passed. The attack suite, one entry point, 12 files: Python rc=0 AND Node rc=0. `cargo test -p detpy-core` 198/198. |
+| the CI matrix | dispatched on this branch at every head; the state at the time of writing is in the session report. |
+| the reviewer round | done: R-058, one round, its five false greens fixed in 80f58330 and f564df14. The closing rule allows no second reviewer on the same work. |
+| **the founder's decision on compiled extensions** | taken (2026-11-21, route 1) and applied by measurement: see section 12 and docs/NATIVE-AUDITS.md. |
 
 ## 11. The open engine test: what it actually was
 
@@ -417,36 +420,109 @@ recorded in `sessions/2026-11-19-parallel-proof/REPORT.md` ("session 5 counted 2
 while the walk ran on the same 4 cores; it passed 2 of 2 times alone afterwards"). It ran here with the Node suite
 on the same 4 cores at load average 3, and is to be re-run alone.
 
-## 9b. One existing test the decision in section 10 invalidates
+## 9b. The test the decision invalidated, and what it asserts now
 
-`tests/test_f01_gaps.py::test_numpy_imported_lazily_and_unseeded_generators` asserts that two `--det` runs of a
-numpy test verify IDENTICAL. Under the native-extension rule numpy is a third-party compiled extension nobody has
-audited, so the verdict is NOT PROVEN and that assertion fails.
+`tests/test_f01_gaps.py::test_numpy_imported_lazily_and_unseeded_generators` asserted that two `--det` runs of
+a numpy test verify IDENTICAL. Under the native-extension rule numpy is an unaudited third-party compiled
+extension, so the verdict is NOT PROVEN and that assertion could not hold.
 
-**I have not touched the test and I have not added numpy to `CONTROLLED_NATIVE`.** "The engine seeds numpy's
-generators" is not the same claim as "numpy's C code reads nothing the engine cannot see", and the second cannot
-be established here. This is the decision in section 10 showing up inside the engine's own suite rather than in
-the abstract; if it goes the way of option 1, numpy is the first extension to audit and this test goes green with
-it. Recorded here rather than worked around, as the rules for this block require.
+It now asserts what the decision says, and more than it did before: the seeding still works (the printed values
+are equal in both runs), the refusal NAMES numpy, and the test that does not touch numpy stays covered by
+Level 0 — a blanket refusal of the whole run would fail it. The new helper `refused()` is the counterpart of
+`identical()`: it asserts a NON-ZERO exit, because a clean exit on a run the engine cannot prove is the one
+failure this rule exists to prevent.
 
-Also still failing, and unrelated to the rule: `test_capture_sessions_match_reference` session 5 on
-`child_entropy_draws` (section 11 — the load-sensitive flake), and
-`test_review_r055_verifier.py::...[V14-rusage]`, whose precondition (two runs with different `ru_maxrss`) does not
-hold on this machine and which the previous round already recorded.
+## 10. The founder's decision on compiled extensions, and how it was applied
 
-## 10. For the founder to decide
+The rule refuses any test whose run loads a native extension that is not on an audited list, because a C
+extension's own reads are invisible to every in-process sensor. The founder decided on 2026-11-21 (route 1):
+*the commonly used compiled extensions are audited one by one by MEASURING what they actually ask the system
+for, and only those are listed, with the evidence. An unaudited compiled extension is NOT PROVEN. A hand audit
+is our promise, not a proof; only a syscall-level sensor makes it a proof.*
 
-The rule refuses any test that loads a native extension not on an audited list, because a C extension's own reads
-are invisible to every in-process sensor and to `strace`. Today `CONTROLLED_NATIVE` holds only the engine's own
-extension and the standard library's accelerators.
+Two had to be settled to close this block, and they came out differently, which is the point of measuring. The
+evidence, the method and the limits of each are in `docs/NATIVE-AUDITS.md`.
 
-**So a customer suite that uses numpy, pydantic-core, lxml, psycopg or any other compiled package will come out
-NOT PROVEN** until someone audits that extension and lists it. That is the honest consequence of the residual in
-section 5, and it is the single biggest thing standing between this rule and real customer suites.
+* **`@unrs/resolver-binding-*` (`unrs-resolver` 1.13.0): audited and listed.** `jest-resolve` depends on it, so
+  a jest 30 run loads it before the first test and **every test of every jest 30 suite was NOT PROVEN** —
+  MEASURED on a four-file project: `covered by Level 0: 0  not proven: 12`. Nothing could be proven, cached or
+  spread across cores. The measurement of the extension itself (`strace`, five specifiers resolved, counted
+  between two markers so Node's start-up is not credited to it): `statx 20, openat 7, read 6` and nothing
+  else — no `getdents64` (it never enumerates a directory, so no listing order can reach a test), no
+  `getrandom`, no clock, no socket, no `getpid`, no `uname`.
+* **numpy 2.5.5: measured, NOT listed.** Ordinary array work with a seeded generator:
+  `stat 52, openat 23, read 30, mmap 43, getdents64 2, getrandom 2`. The file reads are the lazy import of
+  `numpy.random`, which is a run input already. The two `getrandom` calls are not explained: the generator was
+  seeded, and a C-level `getrandom` is invisible to the engine's Python-level entropy control. "Most likely
+  OpenSSL" is not an attribution, so numpy stays unlisted — clearing it on this evidence would be a green on a
+  doubt.
 
-I am not softening it. The ways forward, for the founder to choose:
+What that costs, said plainly: a Python suite that imports numpy, pydantic-core, lxml or psycopg is NOT PROVEN
+today, and finishing numpy's audit is the next step on that list.
 
-1. audit the common extensions one at a time and list them;
-2. accept NOT PROVEN for compiled dependencies until the syscall backend exists;
-3. a narrower rule for extensions that only compute and never do I/O — which needs a way to establish that, and
-   the only sound one I can see is the syscall backend.
+The mechanism is `NODE_AUDITED_NATIVE` in the core — so the list is part of `surface_digest` and a trace
+written under a different list is refused — `provable_native_audited` over napi, and the `dlopen` hook in
+`node/src/provable.js` asking it. The engine's own addon is in the list too: it had been exempt only because it
+is loaded before the sensor starts, which is timing, not a reason.
+
+## 12. The round of 2026-11-22: the four red jobs, by cause
+
+The matrix of CI 44964230574 stopped on four jobs. They were four causes, not forty, and three of the four were
+the same shape as the `_thread.lock` red of the night before: an entry the table could answer for and did not.
+
+**The instrument came first.** The three fixes of the previous night were each found by a red CI job naming one
+callable (`_thread.lock`, `posix.register_at_fork`, `async_hooks.AsyncResource`) — three commits, three names,
+and no reason to think the fourth would not arrive the same way. So this round began with a probe: 37
+deliberately boring tests (read a file, walk a directory, write a log line, copy a file, open a sqlite
+database, run a subprocess, start a thread, await a coroutine), run twice under `--det` and verified. It found
+four refusals in half a minute, one of which CI had already hit and three of which it had not yet reached:
+
+| what an ordinary test did | what the engine answered |
+|---|---|
+| `os.walk` / `os.scandir` | `not accounted for: api:posix.DirEntry.is_dir` |
+| one `logging` line | `not accounted for: api:_asyncio.current_task` |
+| `shutil.copy` | `not accounted for: audit:shutil.copymode` |
+| CPython 3.14, anything | `not accounted for: api:_interpqueues._register_heap_types` |
+
+The first is the sharpest: **every arm of the table that named a type's method was dead code.** `account` hands
+the per-module tables the LAST component of a qualified name, so `DirEntry.is_dir` was compared against
+`is_dir` and never matched. The second is the widest: since 3.12 every `logging` record carries `taskName`,
+which calls `asyncio.current_task()`, so the commonest line in any codebase was unaccounted. MEASURED on the
+probe suite: 7 of 37 tests NOT PROVEN before, 4 after, and the 4 that remain are the refusals that are real —
+a thread, a child process, an environment variable the test reads, an event loop.
+
+**The 3.12 red was not an attack-suite problem: every `--det` run on 3.12 died.** MEASURED on 3.12.3, a project
+with one trivial test: the test passes, the trace is written, and the process exits 139 (SIGSEGV), three runs
+out of three, while the same project on 3.13 exits 0. A native backtrace named the cause —
+`Py_FinalizeEx -> _core::sysmon::audit_hook -> PyObject_CallFunctionObjArgs`: finalization goes on raising audit
+events while it tears the interpreter down, and the sensor's Python callable had already been freed. An audit
+hook cannot be removed once installed, so it is made inert instead, by an `atexit` callback registered when the
+first slot is set and by the `cpython._PySys_ClearAuditHooks` event. What a customer would have seen is worse
+than a red job: a green suite followed by a crash exit code.
+
+**The Node red was in the parallel run, and the timers were innocent.** Only the `timers N` tests differed
+between a parallel run and the serial one. MEASURED by diffing the two event chains: the parallel run had one
+event the serial run did not, `other/process.pid at <node>`. A Jest worker emits Node's `_channel` deprecation
+warning, and Node's warning PRINTER reads `process.pid` for its `(node:NNNN)` prefix; in a parallel run that
+lands while a test is awaiting a timer. So a test's fingerprint depended on whether Node happened to print a
+warning while it ran.
+
+The first fix for it was too wide — it dropped every event with no user frame — and **the attack suite caught it
+within one run**: `fs.promises.access: IDENTICAL although the test observed [true, false]`, and an outside file
+with different contents in the two runs called stable. An asynchronous observation completes with nothing but
+internal frames on the stack although the test asked for it at call time, so dropping those took real
+observations out of the fingerprint. The rule therefore lives where the evidence for it was: `src/facts.js`, the
+synchronous reads of this process's and this machine's state, where the frame that asked is on the stack at that
+moment. This is the clearest thing the round has to say about the closing rule itself: one entry point for every
+earlier reviewer's attack file is what turns a plausible fix into a measured one.
+
+**The Python red was five tests, and three of them were the table.** Once `_asyncio` and the `DirEntry` methods
+were accounted for, the reference capture and the current one wrote the same bytes again. Of the other two, one
+was the capture-equivalence session (section 9) and one was a defect of the test itself: a `get` whose default
+never fires because the key is present and null.
+
+**And one thing the rule had taken from the customer.** While fixing the equivalence session:
+`subprocess.run(["true"])` under `--det-cache` was refused with *"did something the engine cannot account for
+(NOT PROVEN: see the trace's unaccounted list)"* instead of *"subprocess"*. The refusal is right; the name was
+not, and the name is what the customer reads to find out why a test was rerun. The gaps that are the act of
+starting a child are now flagged under the child channel, so the receipt says "subprocess" again.
