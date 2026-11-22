@@ -62,7 +62,7 @@ def main():
         else:
             direct = ["npx", "--no-install", runner] + (["run"] if runner == "vitest" else []) + args
             if runner == "vitest":
-                rep = ["--reporter=default", "--reporter=json", f"--outputFile.json={f}", f"--reporter={M.IDS_REPORTER}"]
+                rep = ["--reporter=default", "--reporter=json", f"--outputFile.json={f}", "--reporter={rep}"]
                 extra = ["--maxWorkers=4", "--fileParallelism"] if mode == "par" else \
                     ["--no-file-parallelism", "--sequence.shuffle", f"--sequence.seed={seed}"]
             else:
@@ -71,12 +71,19 @@ def main():
             cmd = direct + extra + rep
         M.reset_tree(cwd)
         built = M.build_after_reset(cwd, spec.get("build"), env, log)
+        rep_path = M.place_reporter(cwd) if runner == "vitest" else None
         f_ids = f.replace(".raw.json", ".ids.json")
-        r, _ = M.run(cmd, cwd, {**env, "PM_IDS_OUT": f_ids}, log, o.timeout)
+        cmd = [c.replace("{rep}", rep_path) if rep_path else c for c in cmd]
+        r, text = M.run(cmd, cwd, {**env, "PM_IDS_OUT": f_ids}, log, o.timeout)
         oc = M.outcomes_file(f) if runner == "pytest" else (M.ids_outcomes(f_ids, cwd) if os.path.exists(f_ids) else M.runner_outcomes(f, cwd))
         oc = M.norm(oc)
-        with open(os.path.join(out, f"{name}.json"), "w") as g:
-            json.dump(oc, g)
+        bad = M.plain_invalid(runner, r, text, len(oc))
+        if bad:
+            r["invalid"] = bad
+            oc = {}  # no outcome data from an INVALID run
+        if not bad:  # an INVALID run leaves no outcome map for classify.py
+            with open(os.path.join(out, f"{name}.json"), "w") as g:
+                json.dump(oc, g)
         line = {"repo": o.name, "run": name, "cmd": " ".join(cmd), "cwd": cwd, "tests": len(oc),
                 "outcome_counts": M.counts(oc), "engine_commit": M.engine_commit(),
                 "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), **built, **r}

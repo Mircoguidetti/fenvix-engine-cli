@@ -135,6 +135,34 @@ def build_after_reset(cwd, build, env, log):
     return {"build": build, "build_exit": r.returncode, "build_s": dt}
 
 
+REPORTER_IN_REPO = os.path.join(".fenvix-harness", "vitest_ids_reporter.mjs")
+
+
+def place_reporter(cwd):
+    """coordinator (session B, sqlectron): some Vitest versions refuse a reporter file outside the project. After the
+    tree reset (and the optional build) the reporter is copied into the repository, under .fenvix-harness/ (removed by
+    the next reset); its absolute path is what the plain run passes."""
+    dst = os.path.join(cwd, REPORTER_IN_REPO)
+    os.makedirs(os.path.dirname(dst), exist_ok=True)
+    shutil.copyfile(IDS_REPORTER, dst)
+    return dst
+
+
+REPORTER_LOAD_ERROR = "Failed to load custom Reporter"
+
+
+def plain_invalid(runner, r, text, n_tests):
+    """Guard: a plain Vitest run that reports 0 tests, or exits with a reporter load error, is INVALID (no outcome
+    data is taken from it)."""
+    if runner != "vitest":
+        return None
+    if REPORTER_LOAD_ERROR in (text or ""):
+        return f"reporter load error ({REPORTER_LOAD_ERROR}), exit {r['exit']} after {r['wall_s']} s"
+    if not n_tests:
+        return f"0 tests reported, exit {r['exit']} after {r['wall_s']} s"
+    return None
+
+
 def reset_tree(cwd):
     """The working tree back to the pinned commit (coordinator fix 2), installed node_modules kept."""
     for d in (".detpy", ".detjs"):
@@ -260,7 +288,7 @@ def main():
                     else ["--json", "--outputFile={f}"])
         one = ["--no-file-parallelism"] if runner == "vitest" else ["--runInBand"]
         bare = None
-        ids_rep = [f"--reporter={IDS_REPORTER}"] if runner == "vitest" else []
+        ids_rep = [f"--reporter={os.path.join(cwd, REPORTER_IN_REPO)}"] if runner == "vitest" else []
         plain = lambda i: direct + one + spec.get("plain_extra", []) + [a.format(f=f"{out}/plain{i}.runner.json") for a in rep_json] + ids_rep
         plain_par = lambda i, n: direct + [f"--maxWorkers={n}"] + (["--fileParallelism"] if runner == "vitest" else [])
         base = ["node", DETJS, runner] + (["run"] if runner == "vitest" else []) + args
@@ -276,6 +304,8 @@ def main():
                 "cmd": " ".join(cmd), "cwd": cwd, "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), **r, **extra}
         with open(results, "a") as f:
             f.write(json.dumps(line) + "\n")
+        if kind == "plain":
+            plain_rows.append(line)
         print(json.dumps({k: line[k] for k in ("repo", "kind", "rep", "workers", "exit", "wall_s", "busy_before_pct")}),
               flush=True)
         return line
@@ -301,6 +331,7 @@ def main():
         return r, text
 
     last_build = {}
+    plain_rows = []
     TREE_RESET = ("git checkout -- . && git clean -fdxq -e node_modules (and the same in every submodule); "
                   "installed dependencies (node_modules, venvs outside the checkout) and the harness output kept")
 
@@ -310,6 +341,8 @@ def main():
         reset_tree(cwd)
         last_build.clear()
         last_build.update(build_after_reset(cwd, spec.get("build"), env, log))
+        if runner == "vitest":
+            place_reporter(cwd)
 
     for i in range(o.first_rep, o.first_rep + o.reps):
         if i == 1 and bare and "bare" not in skip:
@@ -321,8 +354,11 @@ def main():
         if "plain" not in skip:
             clean()
             cmd = plain(i)
-            r, _ = run(cmd, cwd, {**env, "PM_IDS_OUT": f"{out}/plain{i}.ids.json"}, log, o.timeout)
+            r, text = run(cmd, cwd, {**env, "PM_IDS_OUT": f"{out}/plain{i}.ids.json"}, log, o.timeout)
             oc = plain_oc(i)
+            bad = plain_invalid(runner, r, text, len(oc))
+            if bad:
+                r["invalid"] = bad
             record("plain", i, cmd, r, tests=len(oc) or None, outcome_counts=counts(norm(oc)) or None)
         if "plain_par" not in skip:
             # the runner's own parallel mode, no engine, timed for every repository (coordinator, 2026-11-22 memo)
@@ -364,7 +400,11 @@ def main():
             oc = compare_outcomes({k: v[0] for k, v in ta.items()}, {k: v[0] for k, v in tb.items()})
             extra = {"verdict": rep.get("verdict"), "summary": rep.get("summary"), "outcomes_trace_vs_trace": oc}
             if kind == "verify":
-                extra["outcomes_plain_vs_par"] = compare_outcomes(norm(plain_oc(i)), norm({k: v[0] for k, v in tb.items()}))
+                pl = [x for x in plain_rows if x["rep"] == i]
+                if pl and pl[-1].get("invalid"):
+                    extra["outcomes_plain_vs_par"] = {"identical": None, "unknown": "plain run INVALID: " + pl[-1]["invalid"]}
+                else:
+                    extra["outcomes_plain_vs_par"] = compare_outcomes(norm(plain_oc(i)), norm({k: v[0] for k, v in tb.items()}))
             record(kind, i, cmd, r, workers=n, **extra)
 
 
