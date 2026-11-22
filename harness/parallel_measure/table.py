@@ -89,13 +89,15 @@ def main():
             faster = bool(mp and mpar and mpar < mp)
             if not tests:
                 state = "DID NOT RUN (no test in the parallel trace)"
+            elif any(x is None for x in ident):
+                state = "OUTCOME COMPARISON UNKNOWN (plain ids cannot be matched: Vitest projects)"
             elif not all_ident:
                 state = "OUTCOME DIFFERS"
             elif all_proven:
                 state = "IDENTICAL AND FASTER" if faster else "IDENTICAL, NOT FASTER"
             else:
                 state = "OUTCOME IDENTICAL, VERDICT " + ("DIVERGED" if any("diverged" in x for x in verdicts) else "NOT PROVEN")
-            idtxt = "; ".join("yes" if x else "no" for x in ident)
+            idtxt = "; ".join("yes" if x else ("UNKNOWN" if x is None else "no") for x in ident)
             for v in ver:
                 oc = v.get("outcomes_plain_vs_par") or {}
                 if not oc.get("identical"):
