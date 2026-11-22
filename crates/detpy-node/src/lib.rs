@@ -308,6 +308,13 @@ pub fn provable_account(module: String, export: String) -> &'static str {
 
 /// How a Node builtin module is treated as a whole: `pure`, `enumerated` or `unknown`. An `unknown` module is
 /// one the table has no rule for, so reaching it at all is the gap.
+/// Whether a native addon's path is one of the audited ones (`detpy_core::provable::NODE_AUDITED_NATIVE`).
+/// Everything else is the declared residual and makes every test of the run NOT PROVEN.
+#[napi]
+pub fn provable_native_audited(path: String) -> bool {
+    detpy_core::provable::node_native_audited(&path)
+}
+
 #[napi]
 pub fn provable_module_policy(module: String) -> &'static str {
     detpy_core::provable::node_module_policy(&module)

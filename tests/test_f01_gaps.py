@@ -54,6 +54,20 @@ def identical(a: Path, b: Path) -> str:
     return p.stdout
 
 
+def refused(a: Path, b: Path) -> str:
+    """`fenvix verify` of two runs it must NOT call identical: it exits non-zero and says why.
+
+    The counterpart of `identical`, for the channels the engine refuses on purpose (an unaudited compiled
+    extension, a thread, a child process). A zero exit here would be a false green, which is the one thing the
+    rule exists to prevent.
+    """
+    p = subprocess.run([sys.executable, "-m", "detpy.fenvix", "verify", str(a), str(b)], capture_output=True,
+                       text=True, timeout=120)
+    assert p.returncode != 0, "two runs the engine cannot prove must not verify clean:\n" + p.stdout
+    assert "NOT PROVEN" in p.stdout, p.stdout
+    return p.stdout
+
+
 def twice(proj: Path, key: str, *args, env=None) -> list:
     pa, ta = det(proj, "a", *args, env=env)
     pb, tb = det(proj, "b", *args, env=env)
@@ -188,13 +202,28 @@ def test_lazy():
           np.random.Generator(np.random.PCG64()).random(), np.random.Generator(np.random.MT19937()).random(),
           isinstance(np.random.mtrand._rand, np.random.RandomState))
 ''')
-    v = twice(proj, "NP", env=_env(PYTHONPATH=libs))
-    assert v[0].endswith("True")
+    # The founder's compiled-extension decision of 2026-11-21 (route 1) applies here: numpy is a third-party
+    # compiled extension nobody has audited, so the test that imports it is NOT PROVEN, and `fenvix verify`
+    # exits non-zero. That is this test's subject now, and it is a stronger assertion than "identical" was:
+    # the seeding must still work (the printed values equal in both runs), the refusal must name numpy, and the
+    # test that does NOT touch numpy must stay covered by Level 0 -- a blanket refusal of the whole run would
+    # fail here. MEASURED (2026-11-22, numpy 2.5.5): "not accounted for: api:numpy._core._multiarray_umath.
+    # _make_extobj (and 21 more)"; the audit that would clear numpy is open, with its measurement in
+    # docs/NATIVE-AUDITS.md (2 `getrandom` calls during ordinary array work that could not be attributed, so
+    # under "never a green on a doubt" numpy stays unlisted).
+    pa, ta = det(proj, "a", env=_env(PYTHONPATH=libs))
+    pb, tb = det(proj, "b", env=_env(PYTHONPATH=libs))
+    va, vb = values(pa, "NP"), values(pb, "NP")
+    assert va and va == vb, (pa.stdout[-3000:] + pa.stderr[-2000:], pb.stdout[-3000:])
+    assert va[0].endswith("True")
+    out = refused(ta, tb)
+    assert "not proven: 1" in out and "covered by Level 0: 1" in out, out
+    assert "numpy" in out, out
     # numpy imported before the first test (conftest): no entropy event in the first test (G-0179)
     (proj / "tests" / "conftest.py").write_text("import numpy\n")
     pa, ta = det(proj, "c", env=_env(PYTHONPATH=libs))
     pb, tb = det(proj, "d", env=_env(PYTHONPATH=libs))
-    out = identical(ta, tb)
+    out = refused(ta, tb)
     assert "entropy" not in out, out
 
 

@@ -276,7 +276,13 @@ function install(patcher, notePut) {
   const realDlopen = process.dlopen;
   if (typeof realDlopen === 'function') {
     patcher.set(process, 'dlopen', function (module_, filename, ...rest) {
-      report('native', String(filename));   // no project-site filter: an addon is a gap whoever loaded it
+      // no project-site filter: an addon is a gap whoever loaded it -- unless it is one of the addons audited
+      // by measurement (the core's NODE_AUDITED_NATIVE, evidence in docs/NATIVE-AUDITS.md). The engine's own
+      // addon was exempt only by timing, and jest 30 loads its native resolver before the first test, which
+      // made every test of every jest 30 suite NOT PROVEN.
+      let audited = false;
+      try { audited = native.provableNativeAudited(String(filename)); } catch { audited = false; }
+      if (!audited) report('native', String(filename));
       return realDlopen.call(this, module_, filename, ...rest);
     });
   }

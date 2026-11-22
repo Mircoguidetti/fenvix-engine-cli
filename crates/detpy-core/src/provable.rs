@@ -705,6 +705,30 @@ const NODE_PURE_MODULES: &[&str] = &[
     "stream/web", "string_decoder", "url", "util", "util/types", "zlib",
 ];
 
+/// Native addons audited one by one by MEASURING what they ask the operating system for (founder decision,
+/// 2026-11-21, route 1). An addon that is not here is the declared residual: its C++ reads are invisible to
+/// every in-process sensor, so loading it makes every test of the run NOT PROVEN. Each entry is a marker that
+/// must appear in the path `process.dlopen` is given; the evidence for each is in docs/NATIVE-AUDITS.md, and a
+/// hand audit is OUR PROMISE, not a proof -- only a syscall-level sensor turns it into one.
+pub const NODE_AUDITED_NATIVE: &[&str] = &[
+    // The engine's own addon. It was escaping only by timing (loaded before the sensor starts), which is not a
+    // reason: it is named here so that an engine loaded later, or re-loaded in a worker, is still exempt.
+    "/libdetpy_node.so",
+    "/libdetpy_node.dylib",
+    "/detjs.linux-x64.node",
+    "/detjs.linux-arm64.node",
+    "/detjs.darwin-arm64.node",
+    // jest 30's module resolver (`jest-resolve` -> `unrs-resolver`), which is also vitest's. Without this
+    // entry NO test of a jest 30 suite can ever be proven, cached or spread across cores, because the runner
+    // loads it before the first test runs.
+    "/node_modules/@unrs/resolver-binding-",
+];
+
+/// Whether the addon at this path is one of the audited ones ([`NODE_AUDITED_NATIVE`]).
+pub fn node_native_audited(path: &str) -> bool {
+    NODE_AUDITED_NATIVE.iter().any(|m| path.contains(m))
+}
+
 /// Builtin modules that reach outside state: every export must be named below, and anything unnamed makes the
 /// test NOT PROVEN.
 const NODE_ENUMERATED_MODULES: &[&str] = &[
@@ -946,7 +970,7 @@ fn derive_surface_digest() -> String {
     let mut buf = Vec::new();
     buf.extend_from_slice(&SENSOR_CONTRACT.to_le_bytes());
     for part in [AUDITED_RUNTIMES, PURE_MODULES, INFRA_PREFIXES, CONTROLLED_NATIVE, NODE_PURE_MODULES,
-                 NODE_ENUMERATED_MODULES]
+                 NODE_ENUMERATED_MODULES, NODE_AUDITED_NATIVE]
     {
         buf.extend_from_slice(&(part.len() as u64).to_le_bytes());
         for s in part {
