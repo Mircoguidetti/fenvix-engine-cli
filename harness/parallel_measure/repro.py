@@ -62,15 +62,17 @@ def main():
         else:
             direct = ["npx", "--no-install", runner] + (["run"] if runner == "vitest" else []) + args
             if runner == "vitest":
-                rep = ["--reporter=default", "--reporter=json", f"--outputFile.json={f}"]
+                rep = ["--reporter=default", "--reporter=json", f"--outputFile.json={f}", f"--reporter={M.IDS_REPORTER}"]
                 extra = ["--maxWorkers=4", "--fileParallelism"] if mode == "par" else \
                     ["--no-file-parallelism", "--sequence.shuffle", f"--sequence.seed={seed}"]
             else:
                 rep = ["--json", f"--outputFile={f}"]
                 extra = ["--maxWorkers=4"] if mode == "par" else ["--runInBand", "--randomize", f"--seed={seed}"]
             cmd = direct + extra + rep
-        r, _ = M.run(cmd, cwd, env, log, o.timeout)
-        oc = M.outcomes_file(f) if runner == "pytest" else M.runner_outcomes(f, cwd)
+        M.reset_tree(cwd)
+        f_ids = f.replace(".raw.json", ".ids.json")
+        r, _ = M.run(cmd, cwd, {**env, "PM_IDS_OUT": f_ids}, log, o.timeout)
+        oc = M.outcomes_file(f) if runner == "pytest" else (M.ids_outcomes(f_ids, cwd) if os.path.exists(f_ids) else M.runner_outcomes(f, cwd))
         oc = M.norm(oc)
         with open(os.path.join(out, f"{name}.json"), "w") as g:
             json.dump(oc, g)

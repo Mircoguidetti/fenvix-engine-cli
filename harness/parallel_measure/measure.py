@@ -118,8 +118,39 @@ def norm(m):
     return {k: ("skipped" if v in ("pending", "todo", "disabled", "skip") else v) for k, v in m.items()}
 
 
+IDS_REPORTER = os.path.join(HERE, "vitest_ids_reporter.mjs")
+
+
+def reset_tree(cwd):
+    """The working tree back to the pinned commit (coordinator fix 2), installed node_modules kept."""
+    for d in (".detpy", ".detjs"):
+        shutil.rmtree(os.path.join(cwd, d), ignore_errors=True)
+    for c in (["git", "checkout", "-q", "--", "."], ["git", "clean", "-fdxq", "-e", "node_modules"],
+              ["git", "submodule", "foreach", "--recursive", "-q", "git checkout -q -- . && git clean -fdxq -e node_modules"]):
+        subprocess.run(c, cwd=cwd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
+def ids_outcomes(path, cwd):
+    """vitest_ids_reporter.mjs output -> test id exactly as detjs writes it (`<file>@@<project>::...` in a named
+    project, node/src/vitest/shell.js `qualified`) -> outcome; with the detjs `#n` suffix for duplicate names."""
+    j = json.load(open(path))
+    out = {}
+    for t in j.get("tests", []):
+        head = os.path.relpath(t["file"], cwd).replace(os.sep, "/") + (f"@@{t['project']}" if t.get("project") else "")
+        k = "::".join([head] + list(t.get("ancestors") or []) + [t["title"]])
+        n, base = 2, k
+        while k in out:
+            k, n = f"{base} #{n}", n + 1
+        out[k] = t.get("status")
+    return out
+
+
 def runner_outcomes(path, cwd):
-    """Vitest / Jest JSON report -> test id in detjs' form (relative file::ancestor::...::title) -> outcome."""
+    """Vitest / Jest JSON report -> test id in detjs' form (relative file::ancestor::...::title) -> outcome.
+    Vitest: the ids file of vitest_ids_reporter.mjs next to the report is preferred (it names the project)."""
+    ids = path.replace(".runner.json", ".ids.json")
+    if ids != path and os.path.exists(ids):
+        return ids_outcomes(ids, cwd)
     if not os.path.exists(path):
         return {}
     with open(path) as f:
@@ -138,6 +169,11 @@ def runner_outcomes(path, cwd):
 
 
 def compare_outcomes(a, b):
+    # coordinator fix 1: engine ids of a named Vitest project carry `@@<project>`; plain ids without a project name
+    # cannot be matched to them: the comparison is UNKNOWN, never guessed
+    if any("@@" in k.split("::", 1)[0] for k in b) and a and not any("@@" in k.split("::", 1)[0] for k in a):
+        return {"a": len(a), "b": len(b), "common": 0, "identical": None,
+                "unknown": "engine ids name Vitest projects (@@<project>), the plain report does not"}
     common = set(a) & set(b)
     diff = sorted(k for k in common if a[k] != b[k])
     return {"a": len(a), "b": len(b), "common": len(common), "only_a": sorted(set(a) - set(b))[:20],
@@ -171,6 +207,7 @@ def main():
     ap.add_argument("--spec", required=True)
     ap.add_argument("--name", required=True)
     ap.add_argument("--reps", type=int, default=3)
+    ap.add_argument("--first-rep", type=int, default=1, help="number of the first round (to run rounds in separate processes)")
     ap.add_argument("--workers", default=f"2,{os.cpu_count()}", help="comma list of parallel worker counts")
     ap.add_argument("--out", required=True)
     ap.add_argument("--timeout", type=int, default=3600)
@@ -209,7 +246,8 @@ def main():
                     else ["--json", "--outputFile={f}"])
         one = ["--no-file-parallelism"] if runner == "vitest" else ["--runInBand"]
         bare = None
-        plain = lambda i: direct + one + spec.get("plain_extra", []) + [a.format(f=f"{out}/plain{i}.runner.json") for a in rep_json]
+        ids_rep = [f"--reporter={IDS_REPORTER}"] if runner == "vitest" else []
+        plain = lambda i: direct + one + spec.get("plain_extra", []) + [a.format(f=f"{out}/plain{i}.runner.json") for a in rep_json] + ids_rep
         plain_par = lambda i, n: direct + [f"--maxWorkers={n}"] + (["--fileParallelism"] if runner == "vitest" else [])
         base = ["node", DETJS, runner] + (["run"] if runner == "vitest" else []) + args
         # --det-workers=1: on the trunk at 5a6463fd `--det` alone is parallel (node/src/parallel.js:62, G-1044)
@@ -220,7 +258,7 @@ def main():
     def record(kind, i, cmd, r, workers=1, **extra):
         line = {"repo": o.name, "commit": spec.get("commit"), "runner": runner, "kind": kind, "rep": i,
                 "workers": workers, "engine_commit": commit, "cpus": os.cpu_count(), "nproc": NPROC,
-                "cpu_model": CPU_MODEL, "ci_parallel": ci_parallel,
+                "cpu_model": CPU_MODEL, "ci_parallel": ci_parallel, "tree_reset": TREE_RESET,
                 "cmd": " ".join(cmd), "cwd": cwd, "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), **r, **extra}
         with open(results, "a") as f:
             f.write(json.dumps(line) + "\n")
@@ -233,8 +271,8 @@ def main():
         (kind, workers) has its own engine state (.detpy / .detjs: durations, sticky plan, bytecode cache); round 1
         starts cold, later rounds start from what the previous run of the same kind left (warm)."""
         warm = False
+        clean()
         for d in (".detpy", ".detjs"):
-            shutil.rmtree(os.path.join(cwd, d), ignore_errors=True)
             kept = os.path.join(out, f"state-{kind}-w{n}", d)
             if os.path.isdir(kept):
                 shutil.copytree(kept, os.path.join(cwd, d), symlinks=True)
@@ -248,11 +286,15 @@ def main():
                 shutil.copytree(os.path.join(cwd, d), kept, symlinks=True)
         return r, text
 
-    def clean():
-        for d in (".detpy", ".detjs"):
-            shutil.rmtree(os.path.join(cwd, d), ignore_errors=True)
+    TREE_RESET = ("git checkout -- . && git clean -fdxq -e node_modules (and the same in every submodule); "
+                  "installed dependencies (node_modules, venvs outside the checkout) and the harness output kept")
 
-    for i in range(1, o.reps + 1):
+    def clean():
+        """coordinator fix 2: before every plain, serial and parallel run the working tree is the pinned commit again
+        (files earlier runs left: tmp, data, caches, .detpy/.detjs). node_modules are kept (installed dependencies)."""
+        reset_tree(cwd)
+
+    for i in range(o.first_rep, o.first_rep + o.reps):
         if i == 1 and bare and "bare" not in skip:
             # once per Python repository: pytest with the engine's plugin not loaded (fix 5)
             clean()
@@ -262,11 +304,11 @@ def main():
         if "plain" not in skip:
             clean()
             cmd = plain(i)
-            r, _ = run(cmd, cwd, env, log, o.timeout)
+            r, _ = run(cmd, cwd, {**env, "PM_IDS_OUT": f"{out}/plain{i}.ids.json"}, log, o.timeout)
             oc = plain_oc(i)
             record("plain", i, cmd, r, tests=len(oc) or None, outcome_counts=counts(norm(oc)) or None)
-        if ci_parallel and "plain_par" not in skip:
-            # the repository's CI runs in parallel: its own parallel mode, no engine, as a second baseline (fix 1)
+        if "plain_par" not in skip:
+            # the runner's own parallel mode, no engine, timed for every repository (coordinator, 2026-11-22 memo)
             for n in wlist:
                 clean()
                 cmd = plain_par(i, n)

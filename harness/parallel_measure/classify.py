@@ -68,6 +68,21 @@ def plain_messages(d, cwd):
                 seen.add(k)
                 if a.get("failureMessages"):
                     msgs[k] += " " + " ".join(a["failureMessages"])[:2000]
+    for f in glob.glob(os.path.join(d, "plain*.ids.json")) + glob.glob(os.path.join(d, "repro", "*.ids.json")):
+        try:
+            j = json.load(open(f))
+        except (OSError, ValueError):
+            continue
+        seen = set()
+        for t in j.get("tests", []):
+            head = os.path.relpath(t["file"], cwd).replace(os.sep, "/") + (f"@@{t['project']}" if t.get("project") else "")
+            k = "::".join([head] + list(t.get("ancestors") or []) + [t["title"]])
+            n, base = 2, k
+            while k in seen:
+                k, n = f"{base} #{n}", n + 1
+            seen.add(k)
+            if t.get("errors"):
+                msgs[k] += " " + " ".join(t["errors"])[:2000]
     for f in glob.glob(os.path.join(d, "plain*.outcomes.json")):
         j = json.load(open(f))
         for k, v in (j.get("exceptions") or {}).items():
@@ -123,7 +138,7 @@ def load_plain(d, name, runner, cwd):
         oc = M.outcomes_file(f) if f.endswith(".outcomes.json") else M.runner_outcomes(f, cwd)
         runs[f"plain serial {i}"] = M.norm(oc)
     for f in sorted(glob.glob(os.path.join(d, "repro", "*.json"))):
-        if f.endswith(".raw.json"):
+        if f.endswith(".raw.json") or f.endswith(".ids.json"):
             continue
         runs["plain " + os.path.basename(f)[:-5]] = json.load(open(f))
     return runs
