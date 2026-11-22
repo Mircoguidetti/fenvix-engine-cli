@@ -3,7 +3,10 @@
 
 For one repository (a spec in specs.json), REPS rounds, each round run one after another on this machine:
 
-  plain   the suite as its own CI runs it, single worker (no --det; pytest: --det-outcomes only records outcomes)
+  bare      (Python, round 1) pytest with the engine plugin not loaded (-p no:detpy): the cost of --det-outcomes
+  plain     the suite single worker, no engine (pytest + --det-outcomes for the outcome map; Node: npx vitest/jest
+            directly, JSON reporter)
+  plain_par (repositories whose CI runs in parallel) the runner's own parallel mode with N workers, no engine
   serial  the engine, serial: `--det`, trace S_i (the reference the proof compares against)
   par     the engine, parallel: `--det -n N` (pytest) / `--det --det-workers=N` (detjs), trace P_i
   verify  `fenvix verify S_i P_i --json`: the engine's verdict on the parallel run against the serial one
@@ -125,7 +128,12 @@ def runner_outcomes(path, cwd):
     for tr in j.get("testResults", []):
         rel = os.path.relpath(tr["name"], cwd)
         for a in tr.get("assertionResults", []):
-            out["::".join([rel] + list(a.get("ancestorTitles") or []) + [a["title"]])] = a.get("status")
+            k = "::".join([rel] + list(a.get("ancestorTitles") or []) + [a["title"]])
+            # detjs names the second test with the same full name `<name> #2`, the third `#3`, ...
+            n, base = 2, k
+            while k in out:
+                k, n = f"{base} #{n}", n + 1
+            out[k] = a.get("status")
     return out
 
 
@@ -145,6 +153,19 @@ def counts(m):
     return c
 
 
+def summary_counts(text):
+    """pytest / vitest / jest final summary line -> {outcome: n} (for runs that write no per-test file)."""
+    import re
+    c = {}
+    for line in text.splitlines()[::-1]:
+        if re.search(r"\b(passed|failed)\b", line) and (" in " in line or "Tests" in line):
+            for n, w in re.findall(r"(\d+) (passed|failed|skipped|xfailed|xpassed|errors?|todo)", line):
+                c[w] = int(n)
+            if c:
+                return c
+    return c
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--spec", required=True)
@@ -153,7 +174,7 @@ def main():
     ap.add_argument("--workers", default=f"2,{os.cpu_count()}", help="comma list of parallel worker counts")
     ap.add_argument("--out", required=True)
     ap.add_argument("--timeout", type=int, default=3600)
-    ap.add_argument("--skip", default="", help="comma list of phases to skip (plain,serial,par)")
+    ap.add_argument("--skip", default="", help="comma list of phases to skip (bare,plain,plain_par,serial,par)")
     o = ap.parse_args()
     with open(o.spec) as f:
         spec = json.load(f)[o.name]
@@ -168,74 +189,102 @@ def main():
     runner = spec["runner"]
     args = spec.get("args", [])
     skip = set(filter(None, o.skip.split(",")))
-    fenvix = [os.path.expandvars(spec.get("python", sys.executable)), "-m", "detpy.fenvix"] if runner == "pytest" \
-        else [os.path.expandvars(spec["fenvix_python"]), "-m", "detpy.fenvix"]
+    wlist = [int(x) for x in str(o.workers).split(",") if x]
+    ci_parallel = bool(spec.get("ci_parallel"))
+    fenvix = [os.path.expandvars(spec.get("python") or spec["fenvix_python"]), "-m", "detpy.fenvix"]
 
     if runner == "pytest":
         py = os.path.expandvars(spec["python"])
         base = [py, "-m", "pytest"] + args
+        bare = lambda i: base + ["-p", "no:detpy"]
         plain = lambda i: base + [f"--det-outcomes={out}/plain{i}.outcomes.json"]
+        plain_par = lambda i, n: base + ["-p", "no:detpy", "-n", str(n)]
         serial = lambda i: base + ["--det", f"--det-trace={out}/S{i}.jsonl"]
         par = lambda i, n: base + ["--det", "-n", str(n), f"--det-trace={out}/P{i}w{n}.jsonl"]
+        plain_oc = lambda i: outcomes_file(f"{out}/plain{i}.outcomes.json")
     else:
-        base = ["node", DETJS, runner] + (["run"] if runner == "vitest" else []) + args
-        one = ["--no-file-parallelism"] if runner == "vitest" else ["--runInBand"]
+        # the runner itself, not through detjs (coordinator review, fix 2)
+        direct = ["npx", "--no-install", runner] + (["run"] if runner == "vitest" else []) + args
         rep_json = (["--reporter=default", "--reporter=json", "--outputFile.json={f}"] if runner == "vitest"
                     else ["--json", "--outputFile={f}"])
-        plain = lambda i: base + one + spec.get("plain_extra", []) + [a.format(f=f"{out}/plain{i}.runner.json") for a in rep_json]
+        one = ["--no-file-parallelism"] if runner == "vitest" else ["--runInBand"]
+        bare = None
+        plain = lambda i: direct + one + spec.get("plain_extra", []) + [a.format(f=f"{out}/plain{i}.runner.json") for a in rep_json]
+        plain_par = lambda i, n: direct + [f"--maxWorkers={n}"] + (["--fileParallelism"] if runner == "vitest" else [])
+        base = ["node", DETJS, runner] + (["run"] if runner == "vitest" else []) + args
         # --det-workers=1: on the trunk at 5a6463fd `--det` alone is parallel (node/src/parallel.js:62, G-1044)
         serial = lambda i: base + ["--det", "--det-workers=1", f"--det-trace={out}/S{i}.jsonl"]
         par = lambda i, n: base + ["--det", f"--det-workers={n}", f"--det-trace={out}/P{i}w{n}.jsonl"]
-
-    wlist = [int(x) for x in str(o.workers).split(",") if x]
-    plain_oc = lambda i: outcomes_file(f"{out}/plain{i}.outcomes.json") if runner == "pytest" \
-        else runner_outcomes(f"{out}/plain{i}.runner.json", cwd)
+        plain_oc = lambda i: runner_outcomes(f"{out}/plain{i}.runner.json", cwd)
 
     def record(kind, i, cmd, r, workers=1, **extra):
         line = {"repo": o.name, "commit": spec.get("commit"), "runner": runner, "kind": kind, "rep": i,
                 "workers": workers, "engine_commit": commit, "cpus": os.cpu_count(), "nproc": NPROC,
-                "cpu_model": CPU_MODEL,
+                "cpu_model": CPU_MODEL, "ci_parallel": ci_parallel,
                 "cmd": " ".join(cmd), "cwd": cwd, "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), **r, **extra}
         with open(results, "a") as f:
             f.write(json.dumps(line) + "\n")
-        print(json.dumps({k: line[k] for k in ("repo", "kind", "rep", "exit", "wall_s", "busy_before_pct")}), flush=True)
+        print(json.dumps({k: line[k] for k in ("repo", "kind", "rep", "workers", "exit", "wall_s", "busy_before_pct")}),
+              flush=True)
         return line
 
-    for i in range(1, o.reps + 1):
+    def engine_run(kind, n, cmd):
+        """Same starting-state rule for the serial and the parallel engine runs (coordinator review, fix 4): each
+        (kind, workers) has its own engine state (.detpy / .detjs: durations, sticky plan, bytecode cache); round 1
+        starts cold, later rounds start from what the previous run of the same kind left (warm)."""
+        warm = False
         for d in (".detpy", ".detjs"):
             shutil.rmtree(os.path.join(cwd, d), ignore_errors=True)
+            kept = os.path.join(out, f"state-{kind}-w{n}", d)
+            if os.path.isdir(kept):
+                shutil.copytree(kept, os.path.join(cwd, d), symlinks=True)
+                warm = True
+        r, text = run(cmd, cwd, env, log, o.timeout)
+        r["engine_state"] = "warm" if warm else "cold"
+        for d in (".detpy", ".detjs"):
+            kept = os.path.join(out, f"state-{kind}-w{n}", d)
+            shutil.rmtree(kept, ignore_errors=True)
+            if os.path.isdir(os.path.join(cwd, d)):
+                shutil.copytree(os.path.join(cwd, d), kept, symlinks=True)
+        return r, text
+
+    def clean():
+        for d in (".detpy", ".detjs"):
+            shutil.rmtree(os.path.join(cwd, d), ignore_errors=True)
+
+    for i in range(1, o.reps + 1):
+        if i == 1 and bare and "bare" not in skip:
+            # once per Python repository: pytest with the engine's plugin not loaded (fix 5)
+            clean()
+            cmd = bare(i)
+            r, text = run(cmd, cwd, env, log, o.timeout)
+            record("bare", i, cmd, r, outcome_counts=summary_counts(text))
         if "plain" not in skip:
+            clean()
             cmd = plain(i)
             r, _ = run(cmd, cwd, env, log, o.timeout)
             oc = plain_oc(i)
-            record("plain", i, cmd, r, tests=len(oc) or None, outcome_counts=counts(oc) or None)
+            record("plain", i, cmd, r, tests=len(oc) or None, outcome_counts=counts(norm(oc)) or None)
+        if ci_parallel and "plain_par" not in skip:
+            # the repository's CI runs in parallel: its own parallel mode, no engine, as a second baseline (fix 1)
+            for n in wlist:
+                clean()
+                cmd = plain_par(i, n)
+                r, text = run(cmd, cwd, env, log, o.timeout)
+                record("plain_par", i, cmd, r, workers=n, outcome_counts=summary_counts(text))
         if "serial" not in skip:
             cmd = serial(i)
-            r, _ = run(cmd, cwd, env, log, o.timeout)
+            r, _ = engine_run("serial", 1, cmd)
             _, t = trace_tests(f"{out}/S{i}.jsonl")
             record("serial", i, cmd, r, tests=len(t), outcome_counts=counts({k: v[0] for k, v in t.items()}))
         for n in ([] if "par" in skip else wlist):
-            # the engine's state per worker count (recorded durations, sticky plan): round 1 starts cold, later
-            # rounds start from what the previous parallel run with the same worker count left (warm)
-            warm = False
-            for d in (".detpy", ".detjs"):
-                shutil.rmtree(os.path.join(cwd, d), ignore_errors=True)
-                kept = os.path.join(out, f"state-w{n}", d)
-                if os.path.isdir(kept):
-                    shutil.copytree(kept, os.path.join(cwd, d))
-                    warm = True
             cmd = par(i, n)
-            r, _ = run(cmd, cwd, env, log, o.timeout)
-            r["engine_state"] = "warm" if warm else "cold"
-            for d in (".detpy", ".detjs"):
-                kept = os.path.join(out, f"state-w{n}", d)
-                shutil.rmtree(kept, ignore_errors=True)
-                if os.path.isdir(os.path.join(cwd, d)):
-                    shutil.copytree(os.path.join(cwd, d), kept)
+            r, _ = engine_run("par", n, cmd)
             h, t = trace_tests(f"{out}/P{i}w{n}.jsonl")
             seen = sorted({v[2] for v in t.values() if v[2]})
             record("par", i, cmd, r, workers=n, tests=len(t), outcome_counts=counts({k: v[0] for k, v in t.items()}),
                    workers_seen=seen)
+        clean()
         # the engine's verdict on this round's parallel runs against this round's serial run
         pairs = [("verify", f"{out}/S{i}.jsonl", f"{out}/P{i}w{n}.jsonl", n) for n in wlist]
         if i == 2:

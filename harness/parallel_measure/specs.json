@@ -13,7 +13,10 @@
    "-p",
    "no:cacheprovider"
   ],
-  "ci": "DECLARED pyproject.toml:358 test-default = pytest -n auto --doctest-modules --durations=10 --pyargs networkx"
+  "ci": "DECLARED pyproject.toml:358 test-default = pytest -n auto --doctest-modules --durations=10 --pyargs networkx",
+  "ci_parallel": true,
+  "plan_verdict": false,
+  "why_outside": "its own CI runs the suite in parallel (not serial on purpose): outside the plan's verdict"
  },
  "attrs": {
   "repo": "https://github.com/python-attrs/attrs",
@@ -27,7 +30,10 @@
    "no:cacheprovider"
   ],
   "ci": "DECLARED tox.ini:31 tests: pytest {posargs:-n auto} (addopts -ra --import-mode=importlib)",
-  "install": "pip install --no-deps -e . (shallow clone: version 0.1.dev50)"
+  "install": "pip install --no-deps -e . (shallow clone: version 0.1.dev50)",
+  "ci_parallel": true,
+  "plan_verdict": false,
+  "why_outside": "its own CI runs the suite in parallel (not serial on purpose): outside the plan's verdict"
  },
  "yaml": {
   "repo": "https://github.com/eemeli/yaml",
@@ -36,7 +42,10 @@
   "dir": "$PM_WORK/repos/yaml",
   "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
   "args": [],
-  "ci": "DECLARED package.json scripts.test = vitest run"
+  "ci": "DECLARED .github/workflows/nodejs.yml:25 npm test = vitest run (Vitest default: files in parallel)",
+  "ci_parallel": true,
+  "plan_verdict": false,
+  "why_outside": "its own CI runs the suite in parallel (not serial on purpose): outside the plan's verdict"
  },
  "nestjs-pino": {
   "repo": "https://github.com/iamolegga/nestjs-pino",
@@ -47,7 +56,9 @@
   "args": [],
   "ci": "DECLARED vitest.config.mts:24 fileParallelism: false; package.json test = vitest run",
   "source": "claude/serial-scan harness/serial_scan/candidates.json",
-  "install": "npm ci --ignore-scripts --no-audit --no-fund"
+  "install": "npm ci --ignore-scripts --no-audit --no-fund",
+  "ci_parallel": false,
+  "plan_verdict": true
  },
  "codex-multi-auth": {
   "repo": "https://github.com/ndycode/codex-multi-auth",
@@ -58,7 +69,9 @@
   "args": [],
   "ci": "DECLARED package.json test = vitest run --maxWorkers=1; vitest.config.ts:40-46 fileParallelism: false (fixed-port OAuth callback 1455 and shared-port suites)",
   "source": "claude/serial-scan harness/serial_scan/candidates.json",
-  "install": "npm ci --ignore-scripts --no-audit --no-fund"
+  "install": "npm ci --ignore-scripts --no-audit --no-fund",
+  "ci_parallel": false,
+  "plan_verdict": true
  },
  "agentsys": {
   "repo": "https://github.com/agent-sh/agentsys",
@@ -69,7 +82,9 @@
   "args": [],
   "ci": "DECLARED jest.config.js:52 maxWorkers: 1; package.json test = jest",
   "source": "claude/serial-scan harness/serial_scan/candidates.json",
-  "install": "npm ci --ignore-scripts --no-audit --no-fund"
+  "install": "npm ci --ignore-scripts --no-audit --no-fund",
+  "ci_parallel": false,
+  "plan_verdict": true
  },
  "react-confirm-alert": {
   "repo": "https://github.com/GA-MO/react-confirm-alert",
@@ -80,7 +95,10 @@
   "args": [],
   "ci": "DECLARED vitest.config.mts:30 fileParallelism: false; package.json test = vitest run",
   "source": "claude/serial-scan harness/serial_scan/candidates.json",
-  "install": "npm ci --ignore-scripts --no-audit --no-fund"
+  "install": "npm ci --ignore-scripts --no-audit --no-fund",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "excluded": "MEASURED (smoke, 1 round): its suite runs in Vitest browser mode (Playwright firefox/webkit, not installed here); detjs refuses browser mode for parallel (docs/NODE.md Parallel table). Not measured."
  },
  "ironcurtain": {
   "repo": "https://github.com/provos/ironcurtain",
@@ -91,7 +109,9 @@
   "args": [],
   "ci": "DECLARED package.json test = bash scripts/test.sh (root vitest run, then web-ui); vitest.config.ts:45 fileParallelism: false for a project; measured: root vitest run only",
   "source": "claude/serial-scan harness/serial_scan/candidates.json",
-  "install": "npm ci --ignore-scripts --no-audit --no-fund"
+  "install": "npm ci --ignore-scripts --no-audit --no-fund",
+  "ci_parallel": false,
+  "plan_verdict": true
  },
  "faker": {
   "repo": "https://github.com/joke2k/faker",
@@ -105,7 +125,10 @@
    "no:cacheprovider"
   ],
   "ci": "DECLARED tox.ini [testenv] commands: coverage run --source=faker -m pytest (no xdist: serial); measured: the first pytest command without coverage",
-  "install": "pip install engine wheel coverage freezegun pytest python-stdnum ukpostcodeparser validators sphinx Pillow xmltodict; pip install --no-deps -e ."
+  "install": "pip install engine wheel coverage freezegun pytest python-stdnum ukpostcodeparser validators sphinx Pillow xmltodict; pip install --no-deps -e .",
+  "ci_parallel": false,
+  "plan_verdict": false,
+  "why_outside": "serial CI, but chosen by this session, not a serial-scan candidate: outside the plan's verdict"
  },
  "mpmath": {
   "repo": "https://github.com/mpmath/mpmath",
@@ -119,6 +142,9 @@
    "no:cacheprovider"
   ],
   "ci": "DECLARED .github/workflows (coverage job) run: pytest (serial; testpaths mpmath docs, --doctest-modules)",
-  "install": "pip install engine wheel pytest numpy packaging pytest-timeout pexpect ipython hypothesis pytest-xdist; pip install --no-deps -e ."
+  "install": "pip install engine wheel pytest numpy packaging pytest-timeout pexpect ipython hypothesis pytest-xdist; pip install --no-deps -e .",
+  "ci_parallel": false,
+  "plan_verdict": false,
+  "why_outside": "serial CI, but chosen by this session, not a serial-scan candidate: outside the plan's verdict"
  }
 }
