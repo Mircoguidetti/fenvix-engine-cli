@@ -1,0 +1,194 @@
+{
+ "labels": [
+  "/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/out/agentic-qe/S1.jsonl",
+  "/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/out/agentic-qe/P1w2.jsonl"
+ ],
+ "order_digests": [
+  "018e7b6e7511ed0e26fd87da3cfdc083",
+  "018e7b6e7511ed0e26fd87da3cfdc083"
+ ],
+ "complete": [
+  true,
+  true
+ ],
+ "summary": {
+  "runs": 2,
+  "tests": 30488,
+  "stable": 0,
+  "diverged": 30488,
+  "missing": 0,
+  "outcome_unstable": 110,
+  "order_identical": true,
+  "reasons": {
+   "fs": 30488
+  },
+  "inputs_recorded": true,
+  "identical": 0,
+  "input_differs": 0,
+  "not_proven": 0
+ },
+ "input_differences_count": 509,
+ "input_differences_first20": [
+  {
+   "name": "file:<tmp>/",
+   "run_a": 0,
+   "run_b": 1,
+   "value_a": "stat:dir,stat:missing,stat:present",
+   "value_b": "stat:dir,stat:file size=1085440,stat:file size=1101824,stat:file size=1118208,stat:file size=1204224,stat:file size=753664,stat:file size=761856,stat:file size=786432,stat:missing,stat:present",
+   "reason": "fs"
+  },
+  {
+   "name": "file:<tmp>/.agentic-qe/memory.db",
+   "run_a": 0,
+   "run_b": 1,
+   "value_a": "stat:file size=1101824,stat:file size=1196032,stat:file size=16384,stat:file size=4096,stat:file size=4706304,stat:file size=49152,stat:file size=4947968,stat:file size=4952064,stat:file size=819200,stat:file size=843776,stat:file size=892928,stat:file size=950272,stat:missing,stat:present",
+   "value_b": "stat:file size=1101824,stat:file size=1196032,stat:file size=16384,stat:file size=4096,stat:file size=49152,stat:file size=4952064,stat:file size=819200,stat:file size=843776,stat:file size=892928,stat:file size=950272,stat:missing,stat:present",
+   "reason": "fs"
+  },
+  {
+   "name": "file:<tmp>/.agentic-qe/witness-keys/0732bfe3a4d771c8.key.pem",
+   "run_a": 0,
+   "run_b": 1,
+   "value_a": "stat:file size=119",
+   "value_b": null,
+   "reason": "fs"
+  },
+  {
+   "name": "file:<tmp>/.agentic-qe/witness-keys/0732bfe3a4d771c8.meta.json",
+   "run_a": 0,
+   "run_b": 1,
+   "value_a": "stat:file size=83",
+   "value_b": null,
+   "reason": "fs"
+  },
+  {
+   "name": "file:<tmp>/.agentic-qe/witness-keys/0732bfe3a4d771c8.pub.pem",
+   "run_a": 0,
+   "run_b": 1,
+   "value_a": "stat:file size=113",
+   "value_b": null,
+   "reason": "fs"
+  },
+  {
+   "name": "file:<tmp>/.agentic-qe/witness-keys/23ab82242b515d09.key.pem",
+   "run_a": 0,
+   "run_b": 1,
+   "value_a": "stat:file size=119",
+   "value_b": null,
+   "reason": "fs"
+  },
+  {
+   "name": "file:<tmp>/.agentic-qe/witness-keys/23ab82242b515d09.meta.json",
+   "run_a": 0,
+   "run_b": 1,
+   "value_a": "stat:file size=83",
+   "value_b": null,
+   "reason": "fs"
+  },
+  {
+   "name": "file:<tmp>/.agentic-qe/witness-keys/23ab82242b515d09.pub.pem",
+   "run_a": 0,
+   "run_b": 1,
+   "value_a": "stat:file size=113",
+   "value_b": null,
+   "reason": "fs"
+  },
+  {
+   "name": "file:<tmp>/.agentic-qe/witness-keys/417410560a1dc683.key.pem",
+   "run_a": 0,
+   "run_b": 1,
+   "value_a": null,
+   "value_b": "stat:file size=119",
+   "reason": "fs"
+  },
+  {
+   "name": "file:<tmp>/.agentic-qe/witness-keys/417410560a1dc683.meta.json",
+   "run_a": 0,
+   "run_b": 1,
+   "value_a": null,
+   "value_b": "stat:file size=83",
+   "reason": "fs"
+  },
+  {
+   "name": "file:<tmp>/.agentic-qe/witness-keys/417410560a1dc683.pub.pem",
+   "run_a": 0,
+   "run_b": 1,
+   "value_a": null,
+   "value_b": "stat:file size=113",
+   "reason": "fs"
+  },
+  {
+   "name": "file:<tmp>/.agentic-qe/witness-keys/497aa8da213c3fba.key.pem",
+   "run_a": 0,
+   "run_b": 1,
+   "value_a": null,
+   "value_b": "stat:file size=119",
+   "reason": "fs"
+  },
+  {
+   "name": "file:<tmp>/.agentic-qe/witness-keys/497aa8da213c3fba.meta.json",
+   "run_a": 0,
+   "run_b": 1,
+   "value_a": null,
+   "value_b": "stat:file size=83",
+   "reason": "fs"
+  },
+  {
+   "name": "file:<tmp>/.agentic-qe/witness-keys/497aa8da213c3fba.pub.pem",
+   "run_a": 0,
+   "run_b": 1,
+   "value_a": null,
+   "value_b": "stat:file size=113",
+   "reason": "fs"
+  },
+  {
+   "name": "file:<tmp>/.agentic-qe/witness-keys/56c86bd681bfccfa.key.pem",
+   "run_a": 0,
+   "run_b": 1,
+   "value_a": null,
+   "value_b": "stat:file size=119",
+   "reason": "fs"
+  },
+  {
+   "name": "file:<tmp>/.agentic-qe/witness-keys/56c86bd681bfccfa.meta.json",
+   "run_a": 0,
+   "run_b": 1,
+   "value_a": null,
+   "value_b": "stat:file size=83",
+   "reason": "fs"
+  },
+  {
+   "name": "file:<tmp>/.agentic-qe/witness-keys/56c86bd681bfccfa.pub.pem",
+   "run_a": 0,
+   "run_b": 1,
+   "value_a": null,
+   "value_b": "stat:file size=113",
+   "reason": "fs"
+  },
+  {
+   "name": "file:<tmp>/.agentic-qe/witness-keys/6381eb0d42eac3b9.key.pem",
+   "run_a": 0,
+   "run_b": 1,
+   "value_a": "stat:file size=119",
+   "value_b": null,
+   "reason": "fs"
+  },
+  {
+   "name": "file:<tmp>/.agentic-qe/witness-keys/6381eb0d42eac3b9.meta.json",
+   "run_a": 0,
+   "run_b": 1,
+   "value_a": "stat:file size=83",
+   "value_b": null,
+   "reason": "fs"
+  },
+  {
+   "name": "file:<tmp>/.agentic-qe/witness-keys/6381eb0d42eac3b9.pub.pem",
+   "run_a": 0,
+   "run_b": 1,
+   "value_a": "stat:file size=113",
+   "value_b": null,
+   "reason": "fs"
+  }
+ ],
+ "note": "summary of verify1w2.json (1.1 GB with per-test entries, not pushed): fenvix verify S1.jsonl P1w2.jsonl --json, engine bfaf70b4"
+}

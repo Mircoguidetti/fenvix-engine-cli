@@ -1,0 +1,1643 @@
+
+$ (cd /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe && npx --no-install vitest run --bail=0 --no-file-parallelism --reporter=default --reporter=json --outputFile.json=/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/out/agentic-qe/plain1.runner.json --reporter=/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs)  # exit 1, 1236.44 s
+c-flow/onnx-embeddings/adapter.test.ts:446:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[74/88]⎯
+
+ FAIL  tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts > ONNXEmbeddingsAdapter > MCP bridge methods > should bridge to MCP compare
+EmbeddingError: Failed to generate embedding: Transformer initialization previously failed: fetch failed
+ ❯ EmbeddingGenerator.generate src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:203:13
+    201|       return embedding;
+    202|     } catch (error) {
+    203|       throw new EmbeddingError(
+       |             ^
+    204|         EmbeddingErrorType.MODEL_LOAD_FAILED,
+    205|         `Failed to generate embedding: ${error instanceof Error ? erro…
+ ❯ EmbeddingGenerator.generateBatch src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:242:29
+ ❯ ONNXEmbeddingsAdapter.compareSimilarity src/integrations/agentic-flow/onnx-embeddings/adapter.ts:221:38
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:452:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[75/88]⎯
+
+ FAIL  tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts > ONNXEmbeddingsAdapter > error handling > should throw error on uninitialized usage
+AssertionError: promise rejected "EmbeddingError: Failed to generate embedd… { …(2) }" instead of resolving
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:60
+    464|
+    465|       // Should auto-initialize
+    466|       await expect(uninitAdapter.generateEmbedding('Test')).resolves.t…
+       |                                                            ^
+    467|     });
+    468|
+
+Caused by: EmbeddingError: Failed to generate embedding: Transformer initialization previously failed: fetch failed
+ ❯ EmbeddingGenerator.generate src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:203:13
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { details: { stack: 'Error: Transformer initialization previously failed: fetch failed
+    at initializeModel (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/learning/real-embeddings.ts:181:11)
+    at computeRealEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/learning/real-embeddings.ts:444:11)
+    at Object.generateEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:121:32)
+    at EmbeddingGenerator.generate (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:173:45)
+    at ONNXEmbeddingsAdapter.generateEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/adapter.ts:125:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:7
+    at async file:///tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20', message: 'Transformer initialization previously failed: fetch failed', constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[76/88]⎯
+
+ FAIL  tests/unit/coordination/handlers/coverage-runner.test.ts > #995 review B1 — process-tree timeout > kills the whole process group on timeout, including grandchildren
+AssertionError: grandchild survived the timeout: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/coordination/handlers/coverage-runner.test.ts:85:66
+     83|     const grandchild = Number(fs.readFileSync(pidFile, 'utf-8').trim()…
+     84|     expect(grandchild).toBeGreaterThan(0);
+     85|     expect(alive(grandchild), 'grandchild survived the timeout').toBe(…
+       |                                                                  ^
+     86|     expect(alive(result.pid!), 'runner survived the timeout').toBe(fal…
+     87|   }, 20000);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[77/88]⎯
+
+ FAIL  tests/unit/domains/code-intelligence/coordinator-hypergraph.test.ts > CodeIntelligenceCoordinator - Hypergraph Integration (GOAP Action 7) > Initialization > should handle hypergraph initialization failure gracefully
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/domains/code-intelligence/coordinator-hypergraph.test.ts:216:49
+    214|
+    215|       // Hypergraph should be disabled due to initialization failure
+    216|       expect(coordinator.isHypergraphEnabled()).toBe(false);
+       |                                                 ^
+    217|     });
+    218|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[78/88]⎯
+
+ FAIL  tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts > native listing resource ownership > terminates timed-out collection descendants and leaves no listing directory
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts:187:23
+    185|       const alive = () => { try { process.kill(pid, 0); return true; }…
+    186|       await new Promise(resolve => setTimeout(resolve, 100));
+    187|       expect(alive()).toBe(false);
+       |                       ^
+    188|       await new Promise(resolve => setTimeout(resolve, 4000));
+    189|       expect(existsSync(join(root, 'late-import-effect'))).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[79/88]⎯
+
+ FAIL  tests/unit/mcp/handlers/memory-handlers.test.ts > Memory Handlers > handleMemoryStore > should store simple string value
+AssertionError: expected { status: 'failed', error: { …(2) } } to deeply equal { status: 'indexed' }
+
+- Expected
++ Received
+
+  {
+-   "status": "indexed",
++   "error": {
++     "code": "VECTOR_INDEX_UNAVAILABLE",
++     "message": "Semantic vector indexing is unavailable for this entry. Configure AQE_EMBEDDER_ENDPOINT for the recommended remote backend. The compatible local @huggingface/transformers@4.2.0 dependency chain currently has unresolved HIGH advisories GHSA-xcpc-8h2w-3j85 and GHSA-f88m-g3jw-g9cj.",
++   },
++   "status": "failed",
+  }
+
+ ❯ tests/unit/mcp/handlers/memory-handlers.test.ts:73:40
+     71|       expect(result.data!.namespace).toBe('default');
+     72|       expect(result.data!.timestamp).toBeDefined();
+     73|       expect(result.data!.vectorIndex).toEqual({ status: 'indexed' });
+       |                                        ^
+     74|     });
+     75|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[80/88]⎯
+
+ FAIL  tests/unit/mcp/handlers/memory-handlers.test.ts > Memory Handlers > handleMemoryQuery > should report semantic search provenance
+AssertionError: expected 'pattern' to be 'semantic' // Object.is equality
+
+Expected: "semantic"
+Received: "pattern"
+
+ ❯ tests/unit/mcp/handlers/memory-handlers.test.ts:341:39
+    339|
+    340|       expect(result.success).toBe(true);
+    341|       expect(result.data!.searchType).toBe('semantic');
+       |                                       ^
+    342|       expect(result.data!.searchProvenance).toEqual({
+    343|         backend: 'in-memory',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[81/88]⎯
+
+
+ Test Files  29 failed | 1433 passed | 34 skipped (1496)
+      Tests  80 failed | 30391 passed | 294 skipped (30765)
+   Start at  16:49:30
+   Duration  1235.28s (tests 85%, import 12%, transform 2%, worker 1%)
+
+JSON report written to /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/out/agentic-qe/plain1.runner.json
+
+
+$ (cd /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe && npx --no-install vitest run --bail=0 --maxWorkers=2 --fileParallelism)  # exit 1, 634.14 s
+low/onnx-embeddings/adapter.test.ts:446:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[75/89]⎯
+
+ FAIL  tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts > ONNXEmbeddingsAdapter > MCP bridge methods > should bridge to MCP compare
+EmbeddingError: Failed to generate embedding: Transformer initialization previously failed: fetch failed
+ ❯ EmbeddingGenerator.generate src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:203:13
+    201|       return embedding;
+    202|     } catch (error) {
+    203|       throw new EmbeddingError(
+       |             ^
+    204|         EmbeddingErrorType.MODEL_LOAD_FAILED,
+    205|         `Failed to generate embedding: ${error instanceof Error ? erro…
+ ❯ EmbeddingGenerator.generateBatch src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:242:29
+ ❯ ONNXEmbeddingsAdapter.compareSimilarity src/integrations/agentic-flow/onnx-embeddings/adapter.ts:221:38
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:452:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[76/89]⎯
+
+ FAIL  tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts > ONNXEmbeddingsAdapter > error handling > should throw error on uninitialized usage
+AssertionError: promise rejected "EmbeddingError: Failed to generate embedd… { …(2) }" instead of resolving
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:60
+    464|
+    465|       // Should auto-initialize
+    466|       await expect(uninitAdapter.generateEmbedding('Test')).resolves.t…
+       |                                                            ^
+    467|     });
+    468|
+
+Caused by: EmbeddingError: Failed to generate embedding: Transformer initialization previously failed: fetch failed
+ ❯ EmbeddingGenerator.generate src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:203:13
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { details: { stack: 'Error: Transformer initialization previously failed: fetch failed
+    at initializeModel (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/learning/real-embeddings.ts:181:11)
+    at computeRealEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/learning/real-embeddings.ts:444:11)
+    at Object.generateEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:121:32)
+    at EmbeddingGenerator.generate (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:173:45)
+    at ONNXEmbeddingsAdapter.generateEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/adapter.ts:125:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:7
+    at async file:///tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20', message: 'Transformer initialization previously failed: fetch failed', constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[77/89]⎯
+
+ FAIL  tests/unit/coordination/handlers/coverage-runner.test.ts > #995 review B1 — process-tree timeout > kills the whole process group on timeout, including grandchildren
+AssertionError: grandchild survived the timeout: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/coordination/handlers/coverage-runner.test.ts:85:66
+     83|     const grandchild = Number(fs.readFileSync(pidFile, 'utf-8').trim()…
+     84|     expect(grandchild).toBeGreaterThan(0);
+     85|     expect(alive(grandchild), 'grandchild survived the timeout').toBe(…
+       |                                                                  ^
+     86|     expect(alive(result.pid!), 'runner survived the timeout').toBe(fal…
+     87|   }, 20000);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[78/89]⎯
+
+ FAIL  tests/unit/domains/code-intelligence/coordinator-hypergraph.test.ts > CodeIntelligenceCoordinator - Hypergraph Integration (GOAP Action 7) > Initialization > should handle hypergraph initialization failure gracefully
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/domains/code-intelligence/coordinator-hypergraph.test.ts:216:49
+    214|
+    215|       // Hypergraph should be disabled due to initialization failure
+    216|       expect(coordinator.isHypergraphEnabled()).toBe(false);
+       |                                                 ^
+    217|     });
+    218|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[79/89]⎯
+
+ FAIL  tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts > native listing resource ownership > terminates timed-out collection descendants and leaves no listing directory
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts:187:23
+    185|       const alive = () => { try { process.kill(pid, 0); return true; }…
+    186|       await new Promise(resolve => setTimeout(resolve, 100));
+    187|       expect(alive()).toBe(false);
+       |                       ^
+    188|       await new Promise(resolve => setTimeout(resolve, 4000));
+    189|       expect(existsSync(join(root, 'late-import-effect'))).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[80/89]⎯
+
+ FAIL  tests/unit/mcp/handlers/memory-handlers.test.ts > Memory Handlers > handleMemoryStore > should store simple string value
+AssertionError: expected { status: 'failed', error: { …(2) } } to deeply equal { status: 'indexed' }
+
+- Expected
++ Received
+
+  {
+-   "status": "indexed",
++   "error": {
++     "code": "VECTOR_INDEX_UNAVAILABLE",
++     "message": "Semantic vector indexing is unavailable for this entry. Configure AQE_EMBEDDER_ENDPOINT for the recommended remote backend. The compatible local @huggingface/transformers@4.2.0 dependency chain currently has unresolved HIGH advisories GHSA-xcpc-8h2w-3j85 and GHSA-f88m-g3jw-g9cj.",
++   },
++   "status": "failed",
+  }
+
+ ❯ tests/unit/mcp/handlers/memory-handlers.test.ts:73:40
+     71|       expect(result.data!.namespace).toBe('default');
+     72|       expect(result.data!.timestamp).toBeDefined();
+     73|       expect(result.data!.vectorIndex).toEqual({ status: 'indexed' });
+       |                                        ^
+     74|     });
+     75|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[81/89]⎯
+
+ FAIL  tests/unit/mcp/handlers/memory-handlers.test.ts > Memory Handlers > handleMemoryQuery > should report semantic search provenance
+AssertionError: expected 'pattern' to be 'semantic' // Object.is equality
+
+Expected: "semantic"
+Received: "pattern"
+
+ ❯ tests/unit/mcp/handlers/memory-handlers.test.ts:341:39
+    339|
+    340|       expect(result.success).toBe(true);
+    341|       expect(result.data!.searchType).toBe('semantic');
+       |                                       ^
+    342|       expect(result.data!.searchProvenance).toEqual({
+    343|         backend: 'in-memory',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[82/89]⎯
+
+
+ Test Files  30 failed | 1432 passed | 34 skipped (1496)
+      Tests  81 failed | 30390 passed | 294 skipped (30765)
+   Start at  17:10:08
+   Duration  627.47s (tests 85%, import 13%, transform 1%, worker 1%, setup 1%)
+
+JUNIT report written to /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/junit.xml
+
+
+$ (cd /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe && npx --no-install vitest run --bail=0 --maxWorkers=4 --fileParallelism)  # exit 1, 350.79 s
+ype.MODEL_LOAD_FAILED,
+    205|         `Failed to generate embedding: ${error instanceof Error ? erro…
+ ❯ ONNXEmbeddingsAdapter.generateAndStore src/integrations/agentic-flow/onnx-embeddings/adapter.ts:147:23
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:446:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[77/91]⎯
+
+ FAIL  tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts > ONNXEmbeddingsAdapter > MCP bridge methods > should bridge to MCP compare
+EmbeddingError: Failed to generate embedding: Transformer initialization previously failed: fetch failed
+ ❯ EmbeddingGenerator.generate src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:203:13
+    201|       return embedding;
+    202|     } catch (error) {
+    203|       throw new EmbeddingError(
+       |             ^
+    204|         EmbeddingErrorType.MODEL_LOAD_FAILED,
+    205|         `Failed to generate embedding: ${error instanceof Error ? erro…
+ ❯ EmbeddingGenerator.generateBatch src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:242:29
+ ❯ ONNXEmbeddingsAdapter.compareSimilarity src/integrations/agentic-flow/onnx-embeddings/adapter.ts:221:38
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:452:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[78/91]⎯
+
+ FAIL  tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts > ONNXEmbeddingsAdapter > error handling > should throw error on uninitialized usage
+AssertionError: promise rejected "EmbeddingError: Failed to generate embedd… { …(2) }" instead of resolving
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:60
+    464|
+    465|       // Should auto-initialize
+    466|       await expect(uninitAdapter.generateEmbedding('Test')).resolves.t…
+       |                                                            ^
+    467|     });
+    468|
+
+Caused by: EmbeddingError: Failed to generate embedding: Transformer initialization previously failed: fetch failed
+ ❯ EmbeddingGenerator.generate src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:203:13
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { details: { stack: 'Error: Transformer initialization previously failed: fetch failed
+    at initializeModel (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/learning/real-embeddings.ts:181:11)
+    at computeRealEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/learning/real-embeddings.ts:444:11)
+    at Object.generateEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:121:32)
+    at EmbeddingGenerator.generate (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:173:45)
+    at ONNXEmbeddingsAdapter.generateEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/adapter.ts:125:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:7
+    at async file:///tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20', message: 'Transformer initialization previously failed: fetch failed', constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[79/91]⎯
+
+ FAIL  tests/unit/domains/code-intelligence/coordinator-hypergraph.test.ts > CodeIntelligenceCoordinator - Hypergraph Integration (GOAP Action 7) > Initialization > should handle hypergraph initialization failure gracefully
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/domains/code-intelligence/coordinator-hypergraph.test.ts:216:49
+    214|
+    215|       // Hypergraph should be disabled due to initialization failure
+    216|       expect(coordinator.isHypergraphEnabled()).toBe(false);
+       |                                                 ^
+    217|     });
+    218|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[80/91]⎯
+
+ FAIL  tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts > native listing resource ownership > terminates timed-out collection descendants and leaves no listing directory
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts:187:23
+    185|       const alive = () => { try { process.kill(pid, 0); return true; }…
+    186|       await new Promise(resolve => setTimeout(resolve, 100));
+    187|       expect(alive()).toBe(false);
+       |                       ^
+    188|       await new Promise(resolve => setTimeout(resolve, 4000));
+    189|       expect(existsSync(join(root, 'late-import-effect'))).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[81/91]⎯
+
+ FAIL  tests/unit/integrations/ruvector/filter-adapter.test.ts > FilterAdapter > Performance > should handle deeply nested filters efficiently
+AssertionError: expected 7.947276000000002 to be less than 5
+ ❯ tests/unit/integrations/ruvector/filter-adapter.test.ts:588:23
+    586|       const elapsed = performance.now() - start;
+    587|
+    588|       expect(elapsed).toBeLessThan(5); // CI runners may be slower tha…
+       |                       ^
+    589|       expect(filtered.length).toBeGreaterThan(0);
+    590|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[82/91]⎯
+
+ FAIL  tests/unit/mcp/handlers/memory-handlers.test.ts > Memory Handlers > handleMemoryStore > should store simple string value
+AssertionError: expected { status: 'failed', error: { …(2) } } to deeply equal { status: 'indexed' }
+
+- Expected
++ Received
+
+  {
+-   "status": "indexed",
++   "error": {
++     "code": "VECTOR_INDEX_UNAVAILABLE",
++     "message": "Semantic vector indexing is unavailable for this entry. Configure AQE_EMBEDDER_ENDPOINT for the recommended remote backend. The compatible local @huggingface/transformers@4.2.0 dependency chain currently has unresolved HIGH advisories GHSA-xcpc-8h2w-3j85 and GHSA-f88m-g3jw-g9cj.",
++   },
++   "status": "failed",
+  }
+
+ ❯ tests/unit/mcp/handlers/memory-handlers.test.ts:73:40
+     71|       expect(result.data!.namespace).toBe('default');
+     72|       expect(result.data!.timestamp).toBeDefined();
+     73|       expect(result.data!.vectorIndex).toEqual({ status: 'indexed' });
+       |                                        ^
+     74|     });
+     75|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[83/91]⎯
+
+ FAIL  tests/unit/mcp/handlers/memory-handlers.test.ts > Memory Handlers > handleMemoryQuery > should report semantic search provenance
+AssertionError: expected 'pattern' to be 'semantic' // Object.is equality
+
+Expected: "semantic"
+Received: "pattern"
+
+ ❯ tests/unit/mcp/handlers/memory-handlers.test.ts:341:39
+    339|
+    340|       expect(result.success).toBe(true);
+    341|       expect(result.data!.searchType).toBe('semantic');
+       |                                       ^
+    342|       expect(result.data!.searchProvenance).toEqual({
+    343|         backend: 'in-memory',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[84/91]⎯
+
+
+ Test Files  30 failed | 1432 passed | 34 skipped (1496)
+      Tests  83 failed | 30388 passed | 294 skipped (30765)
+   Start at  17:20:43
+   Duration  344.39s (tests 82%, import 15%, transform 1%, setup 1%, worker 1%)
+
+JUNIT report written to /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/junit.xml
+
+
+$ (cd /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe && node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --bail=0 --det --det-workers=1 --det-trace=/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/out/agentic-qe/S1.jsonl)  # exit 0, 3251.52 s
+tus: 'indexed' });
+       |                                        ^
+     74|     });
+     75|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[147/176]⎯
+
+ FAIL  tests/unit/mcp/handlers/memory-handlers.test.ts[2m > [22mMemory Handlers[2m > [22mhandleMemoryQuery[2m > [22mshould report semantic search provenance
+AssertionError: expected 'pattern' to be 'semantic' // Object.is equality
+
+Expected: "semantic"
+Received: "pattern"
+
+ ❯ tests/unit/mcp/handlers/memory-handlers.test.ts:341:39
+    339|
+    340|       expect(result.success).toBe(true);
+    341|       expect(result.data!.searchType).toBe('semantic');
+       |                                       ^
+    342|       expect(result.data!.searchProvenance).toEqual({
+    343|         backend: 'in-memory',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[148/176]⎯
+
+ FAIL  tests/unit/mcp/handlers/memory-share-collisions.test.ts[2m > [22mknowledge sharing collision resistance (memory)[2m > [22mretains two different findings admitted in the same millisecond
+Error: Test timed out in 10000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/unit/mcp/handlers/memory-share-collisions.test.ts:49:3
+     47|     return values.map((value) => value!.content.finding).sort((a, b) =…
+     48|   }
+     49|   it('retains two different findings admitted in the same millisecond'…
+       |   ^
+     50|     await share(1);
+     51|     await share(2);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[149/176]⎯
+
+ FAIL  tests/unit/mcp/tools/quality-gate.test.ts[2m > [22mQualityGateTool diagnostics[2m > [22mshould_acceptRevisionBoundReachManifest_throughSharedMcpPath
+AssertionError: expected { success: true, data: { …(9) } } to match object { success: true, data: { …(2) } }
+(7 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -1,8 +1,8 @@
+  {
+    "data": {
+-     "coverageVerdict": "pass",
++     "coverageVerdict": "fail",
+      "verification": {
+        "kind": "verified",
+        "manifestId": "mcp-reach-v1",
+      },
+    },
+
+ ❯ tests/unit/mcp/tools/quality-gate.test.ts:63:20
+     61|     } as unknown as MCPToolContext);
+     62|
+     63|     expect(result).toMatchObject({
+       |                    ^
+     64|       success: true,
+     65|       data: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[150/176]⎯
+
+ FAIL  tests/unit/shared/io/confined-read-1161.test.ts[2m > [22mconfined reads (#1161)[2m > [22mnever returns outside content while the checked name is swapped for a symlink (race)
+Error: Test timed out in 20000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/unit/shared/io/confined-read-1161.test.ts:113:3
+    111|   });
+    112|
+    113|   it('never returns outside content while the checked name is swapped …
+       |   ^
+    114|     // A writer swaps src/ok.ts between the inside file and a symlink …
+    115|     // outside secret with atomic renames, as fast as it can. Every re…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[151/176]⎯
+
+ FAIL  tests/unit/shared/io/file-reader-project-root.test.ts[2m > [22mFileReader projectRoot containment[2m > [22mTOCTOU: concurrent symlink swaps (bounded race, #1021 round 2b)[2m > [22mnever reads outside when a directory component is swapped for a symlink
+Error: Test timed out in 15000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/unit/shared/io/file-reader-project-root.test.ts:181:5
+    179|     }, 15000);
+    180|
+    181|     it('never reads outside when a directory component is swapped for …
+       |     ^
+    182|       // realpath can see sub/ as a real in-root directory, then sub b…
+    183|       // symlink to an outside directory before the file is opened by …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[152/176]⎯
+
+ FAIL  tests/unit/shared/utils/binary-insert.test.ts[2m > [22mPerformance: binaryInsert vs Array.sort[2m > [22mshould be faster than sort for many insertions
+AssertionError: expected 0.0009999999999763531 to be less than 0.0009999999999763531
+ ❯ tests/unit/shared/utils/binary-insert.test.ts:275:24
+    273|     // Binary insert should be faster
+    274|     console.log(`Binary insert: ${binaryTime.toFixed(2)}ms, Sort: ${so…
+    275|     expect(binaryTime).toBeLessThan(sortTime);
+       |                        ^
+    276|
+    277|     // Both should produce same result
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[153/176]⎯
+
+ FAIL  tests/unit/strange-loop/infra-healing/coordination-lock.test.ts[2m > [22mCoordinationLock[2m > [22mgetActiveLocks()[2m > [22mexcludes expired locks
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/strange-loop/infra-healing/coordination-lock.test.ts:186:22
+    184|       vi.spyOn(Date, 'now').mockReturnValue(Date.now() + 100);
+    185|       const active = shortLock.getActiveLocks();
+    186|       expect(active).toHaveLength(1);
+       |                      ^
+    187|       expect(active[0].serviceName).toBe('redis');
+    188|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[154/176]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+Error: Phase aborted
+ ❯ PhaseScheduler.executePhaseWithRetry src/test-scheduling/phase-scheduler.ts:243:17
+    241|       } catch (error) {
+    242|         if (this.abortRequested) {
+    243|           throw new Error('Phase aborted');
+       |                 ^
+    244|         }
+    245|         this.config.onError?.(error as Error, phase);
+ ❯ PhaseScheduler.run src/test-scheduling/phase-scheduler.ts:115:24
+
+This error originated in "tests/integration/test-scheduling/vitest-executor-abort.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  63 failed | 1399 passed | 34 skipped (1496)
+      Tests  168 failed | 30303 passed | 294 skipped (30765)
+     Errors  1 error
+   Start at  17:26:35
+   Duration  3222.15s (tests 92%, import 5%, worker 3%)
+
+JUNIT report written to /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/junit.xml
+detjs: serial run: 1494 files, 3022.716 s of test-file time (MEASURED); with --det-workers=4 (this machine's CPUs) about 755.68 s (ESTIMATED: a plan over these durations, worker start-up not counted)
+detjs: trace ../../out/agentic-qe/S1.jsonl: 30488 tests, order digest 018e7b6e7511ed0e26fd87da3cfdc083
+213 test(s) failed under --det (seed 0, fixed order). Turn each into a reproducible defect (cause, seed, order, replay command):
+    fenvix repro 'tests/benchmarks/mincut-performance.test.ts::MinCut Performance Benchmarks::Health Monitor::should handle 1000 health checks per second' --runner=vitest
+    fenvix repro 'tests/benchmarks/mincut-performance.test.ts::MinCut Performance Benchmarks::Memory Usage::should handle batch vertex storage efficiently' --runner=vitest
+    fenvix repro 'tests/benchmarks/success-rate-benchmark.test.ts::ADR-051 Success Rate Benchmark::ONNX Embeddings::should benchmark embedding generation' --runner=vitest
+    fenvix repro 'tests/benchmarks/success-rate-benchmark.test.ts::ADR-051 Success Rate Benchmark::ONNX Embeddings::should benchmark similarity comparison' --runner=vitest
+    fenvix repro 'tests/benchmarks/success-rate-benchmark.test.ts::ADR-051 Success Rate Benchmark::ONNX Embeddings::should benchmark store and search' --runner=vitest
+    ... and 208 more
+  rerun the failing files with the same seeds and order: detjs vitest run --det tests/benchmarks/mincut-performance.test.ts tests/benchmarks/success-rate-benchmark.test.ts tests/integration/adr-040-agentic-flow-integration.test.ts tests/integration/cli/code-index-confinement.test.ts tests/integration/cli/codex-global-bin.test.ts (and 58 more files)
+  the same run again: detjs vitest run --det (with the same arguments)
+
+
+$ (cd /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe && node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --bail=0 --det --det-workers=2 --det-trace=/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/out/agentic-qe/P1w2.jsonl)  # exit 0, 2967.36 s
+r-body-deadline.test.ts died (process 19874)
+detjs: PLACEMENT tests/unit/coordination/handlers/coverage-scope-1154.test.ts: lane predecessor tests/unit/coordination/handlers/coverage-runner.test.ts died (process 20332)
+detjs: PLACEMENT tests/unit/domains/code-intelligence/text-relevance-1287.test.ts: lane predecessor tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts died (process 23612)
+detjs: PLACEMENT tests/unit/hooks/aqe-hook-symlink-writes.test.ts: lane predecessor tests/unit/hnsw-unification.test.ts died (process 27291)
+detjs: PLACEMENT tests/unit/hooks/brain-checkpoint-too-large.test.ts: lane predecessor tests/unit/hooks/brain-checkpoint-richness.test.ts died (process 27919)
+detjs: PLACEMENT tests/unit/integrations/ruvector/hopfield-memory.test.ts: lane predecessor tests/unit/integrations/ruvector/hnsw-health-monitor.test.ts died (process 29470)
+detjs: PLACEMENT tests/unit/kernel/unified-memory-proof-gate.test.ts: lane predecessor tests/unit/kernel/sync-writes-lock-wait-1274.test.ts died (process 30199)
+detjs: PLACEMENT tests/unit/learning/opd-remediation.test.ts: lane predecessor tests/unit/learning/mmr-scaling.test.ts died (process 30864)
+detjs: PLACEMENT tests/unit/learning/qe-flywheel.test.ts: lane predecessor tests/unit/learning/qe-flywheel-scorer.test.ts died (process 31476)
+detjs: PLACEMENT tests/unit/learning/real-embeddings-endpoint.test.ts: lane predecessor tests/unit/learning/qe-reasoning-bank.test.ts died (process 31408)
+detjs: PLACEMENT tests/unit/ollama-model-name-1229.test.ts: lane predecessor tests/unit/ollama-body-deadline.test.ts died (process 2597)
+detjs: PLACEMENT tests/unit/routing/routing-config.test.ts: no marker (the file did not run or its process died)
+detjs: PLACEMENT tests/unit/shared/git-analyzer-incomplete-1330.test.ts: lane predecessor tests/unit/shared/git-analyzer-async-1115.test.ts died (process 5662)
+detjs: CROSS-WORKER list-write docs/reports: tests/benchmarks/coherence-version-comparison.test.ts (lane 2) / tests/unit/coordination/task-executor.test.ts (lane 1); the next plan puts them in one lane
+detjs: CROSS-WORKER list-write docs/reports: tests/benchmarks/coherence-version-comparison.test.ts (lane 2) / tests/unit/domains/security-compliance/security-auditor.test.ts (lane 1); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-9050/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 1) / tests/integration/adr-040-agentic-flow-integration.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-9050/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 1) / tests/integration/coordination/code-intelligence-metrics-wiring.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-9050/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 1) / tests/integration/coordination/queen-tinydancer-wiring.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-9050/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 1) / tests/integration/domains/defect-intelligence-mincut.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-9050/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 1) / tests/integration/domains/defect-intelligence/consensus-integration.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-9050/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 1) / tests/integration/domains/defect-intelligence/mincut-integration.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-9050/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 1) / tests/integration/governance/ab-benchmarking.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-9050/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 1) / tests/integration/llm/failover.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-9050/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 1) / tests/integration/llm/multi-provider.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-9050/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 1) / tests/integration/llm/real-provider-integration.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-9050/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 1) / tests/integration/planning/goap-benchmarks.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-9050/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 1) / tests/integration/queen-domain-wiring.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-9050/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 1) / tests/integration/reasoning-bank-enhanced.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-9050/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 1) / tests/integration/test-generation/coordinator.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-9050/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 1) / tests/integration/token-tracking-e2e.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-9050/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 1) / tests/integrations/embeddings/embedding.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-9050/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 1) / tests/integrations/ruvector/attention-wrapper.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-9050/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 1) / tests/learning/coherence-integration.test.ts (lane 2); the next plan puts them in one lane
+detjs: parallel: 2999.233 s of test-file time ran in 2889.569 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+detjs: trace ../../out/agentic-qe/P1w2.jsonl: 30488 tests, order digest 018e7b6e7511ed0e26fd87da3cfdc083
+319 test(s) failed under --det (seed 0, fixed order). Turn each into a reproducible defect (cause, seed, order, replay command):
+    fenvix repro 'tests/benchmarks/mincut-performance.test.ts::MinCut Performance Benchmarks::Health Monitor::should handle 1000 health checks per second' --runner=vitest
+    fenvix repro 'tests/benchmarks/success-rate-benchmark.test.ts::ADR-051 Success Rate Benchmark::ONNX Embeddings::should benchmark embedding generation' --runner=vitest
+    fenvix repro 'tests/benchmarks/success-rate-benchmark.test.ts::ADR-051 Success Rate Benchmark::ONNX Embeddings::should benchmark similarity comparison' --runner=vitest
+    fenvix repro 'tests/benchmarks/success-rate-benchmark.test.ts::ADR-051 Success Rate Benchmark::ONNX Embeddings::should benchmark store and search' --runner=vitest
+    fenvix repro 'tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::SONA Integration Tests::should demonstrate pattern adaptation <0.05ms target' --runner=vitest
+    ... and 314 more
+  rerun the failing files with the same seeds and order: detjs vitest run --det tests/benchmarks/mincut-performance.test.ts tests/benchmarks/success-rate-benchmark.test.ts tests/integration/adr-040-agentic-flow-integration.test.ts tests/integration/bridge/bridge-end-to-end.test.ts tests/integration/cli/code-index-confinement.test.ts (and 88 more files)
+  the same run again: detjs vitest run --det (with the same arguments)
+
+
+$ (cd /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe && node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --bail=0 --det --det-workers=4 --det-trace=/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/out/agentic-qe/P1w4.jsonl)  # exit 0, 2449.55 s
+d (process 27290)
+detjs: PLACEMENT tests/integration/test-generation/coordinator.test.ts: lane predecessor tests/integration/sync/store-shapes-roundtrip-1384.test.ts died (process 27333)
+detjs: PLACEMENT tests/integration/validation/parallel-eval-runner.test.ts: lane predecessor tests/integration/tinydancer-full-integration.test.ts died (process 29628)
+detjs: PLACEMENT tests/integrations/agent-booster-wasm/wasm-integration.test.ts: lane predecessor tests/integration/validation/oracle-value-proof.test.ts died (process 27429)
+detjs: PLACEMENT tests/integrations/agentic-flow/agent-booster.test.ts: lane predecessor tests/integrations/agent-booster-wasm/wasm-integration.test.ts died (process 27747)
+detjs: PLACEMENT tests/plugins/sources/npm.test.ts: lane predecessor tests/plugins/security.test.ts died (process 30668)
+detjs: PLACEMENT tests/unit/adapters/ag-ui/state-delta-cache-capacity.test.ts: lane predecessor tests/unit/adapters/ag-ui/event-batcher.test.ts died (process 31437)
+detjs: PLACEMENT tests/unit/cli/commands/consolidation-cli-hook.test.ts: lane predecessor tests/unit/cli/commands/audit-chain-verify.test.ts died (process 31233)
+detjs: PLACEMENT tests/unit/coordination/handlers/coverage-scope-1154.test.ts: lane predecessor tests/unit/coordination/handlers/coverage-runner.test.ts died (process 2057)
+detjs: PLACEMENT tests/unit/domains/code-intelligence/text-relevance-1287.test.ts: lane predecessor tests/unit/domains/code-intelligence/test-counter-native-partitions.test.ts died (process 5377)
+detjs: PLACEMENT tests/unit/domains/contract-testing/contract-validator.test.ts: lane predecessor tests/unit/domains/code-intelligence/text-relevance-1287.test.ts died (process 5417)
+detjs: PLACEMENT tests/unit/domains/contract-testing/plugin.test.ts: lane predecessor tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts died (process 3047)
+detjs: CROSS-WORKER list-write docs/reports: tests/benchmarks/coherence-version-comparison.test.ts (lane 4) / tests/unit/coordination/task-executor.test.ts (lane 3); the next plan puts them in one lane
+detjs: CROSS-WORKER list-write docs/reports: tests/benchmarks/coherence-version-comparison.test.ts (lane 4) / tests/unit/domains/security-compliance/security-auditor.test.ts (lane 1); the next plan puts them in one lane
+detjs: CROSS-WORKER list-write docs/reports: tests/benchmarks/coherence-version-comparison.test.ts (lane 4) / tests/unit/mcp/tools/domain-tools.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-23140/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 3) / tests/integration/adr-040-agentic-flow-integration.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-23140/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 3) / tests/integration/coordination/code-intelligence-metrics-wiring.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-23140/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 3) / tests/integration/coordination/queen-tinydancer-wiring.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-23140/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 3) / tests/integration/domains/cross-domain-mincut-consensus.test.ts (lane 1); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-23140/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 3) / tests/integration/domains/defect-intelligence-consensus.test.ts (lane 1); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-23140/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 3) / tests/integration/domains/defect-intelligence-mincut.test.ts (lane 4); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-23140/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 3) / tests/integration/domains/defect-intelligence/consensus-integration.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-23140/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 3) / tests/integration/domains/defect-intelligence/mincut-integration.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-23140/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 3) / tests/integration/domains/quality-assessment-mincut.test.ts (lane 1); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-23140/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 3) / tests/integration/governance/ab-benchmarking.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-23140/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 3) / tests/integration/governance/governance-integration.test.ts (lane 1); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-23140/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 3) / tests/integration/governance/queen-integration.test.ts (lane 1); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-23140/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 3) / tests/integration/llm-router-wiring.test.ts (lane 1); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-23140/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 3) / tests/integration/llm/failover.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-23140/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 3) / tests/integration/llm/multi-provider.test.ts (lane 2); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-23140/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 3) / tests/integration/llm/real-provider-integration.test.ts (lane 4); the next plan puts them in one lane
+detjs: CROSS-WORKER read-write /tmp/aqe-vitest-23140/.agentic-qe: tests/benchmarks/rvf-pattern-store.test.ts (lane 3) / tests/integration/mcp/dream-cycle-tool.test.ts (lane 1); the next plan puts them in one lane
+detjs: parallel: 3035.414 s of test-file time ran in 2371.559 s across 4 lanes (MEASURED, first file start to last file end, worker start-up included)
+detjs: trace ../../out/agentic-qe/P1w4.jsonl: 30488 tests, order digest 018e7b6e7511ed0e26fd87da3cfdc083
+323 test(s) failed under --det (seed 0, fixed order). Turn each into a reproducible defect (cause, seed, order, replay command):
+    fenvix repro 'tests/benchmarks/mincut-performance.test.ts::MinCut Performance Benchmarks::Health Monitor::should handle 1000 health checks per second' --runner=vitest
+    fenvix repro 'tests/benchmarks/mincut-performance.test.ts::MinCut Performance Benchmarks::Memory Usage::should handle batch vertex storage efficiently' --runner=vitest
+    fenvix repro 'tests/benchmarks/mincut-performance.test.ts::MinCut Performance Benchmarks::Memory Usage::should handle batch edge storage efficiently' --runner=vitest
+    fenvix repro 'tests/benchmarks/success-rate-benchmark.test.ts::ADR-051 Success Rate Benchmark::ONNX Embeddings::should benchmark embedding generation' --runner=vitest
+    fenvix repro 'tests/benchmarks/success-rate-benchmark.test.ts::ADR-051 Success Rate Benchmark::ONNX Embeddings::should benchmark similarity comparison' --runner=vitest
+    ... and 318 more
+  rerun the failing files with the same seeds and order: detjs vitest run --det tests/benchmarks/mincut-performance.test.ts tests/benchmarks/success-rate-benchmark.test.ts tests/integration/adr-040-agentic-flow-integration.test.ts tests/integration/bridge/bridge-end-to-end.test.ts tests/integration/cli/code-index-confinement.test.ts (and 87 more files)
+  the same run again: detjs vitest run --det (with the same arguments)
+
+
+$ (cd /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe && /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/venv/networkx/bin/python -m detpy.fenvix verify /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/out/agentic-qe/S1.jsonl /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/out/agentic-qe/P1w2.jsonl --json)  # exit 1, 29.18 s
+ls/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-WIQkGO/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-Wmz24a/.claude/skills/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-Wmz24a/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-b88ghP/.claude/skills/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-b88ghP/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-haCh0s/.claude/skills/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-haCh0s/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-kBWiKq/.claude/skills/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-kBWiKq/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-nm72qx/.claude/skills/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-nm72qx/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-oZfaoL/.claude/skills/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-oZfaoL/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-qXQpfe/.claude/skills/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-qXQpfe/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-tSw9Rh/.claude/skills/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-tSw9Rh/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-tf40Te/.claude/skills/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-tf40Te/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-uVMlyO/.claude/skills/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-uVMlyO/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-z8nMNp/.claude/skills/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-z8nMNp/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/shutdown/before.json","run_a":0,"run_b":1,"value_a":"1555:308f46001abe34a4610d58da55dbb861,stat:file size=1555","value_b":"1555:db0cd89393f42e3c6562658832790dba,stat:file size=1555","reason":"fs"},{"name":"file:<tmp>/swept-2.db-wal","run_a":0,"run_b":1,"value_a":"stat:file size=0","value_b":"stat:file size=16512","reason":"fs"},{"name":"file:<tmp>/target/debug/.fingerprint/aqe-native-count-7361e4a84f17bce4/dep-lib-aqe_native_count","run_a":0,"run_b":1,"value_a":"stat:file size=30","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/.fingerprint/aqe-native-count-7361e4a84f17bce4/invoked.timestamp","run_a":0,"run_b":1,"value_a":"stat:file size=48","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/.fingerprint/aqe-native-count-7361e4a84f17bce4/lib-aqe_native_count","run_a":0,"run_b":1,"value_a":"stat:file size=16","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/.fingerprint/aqe-native-count-7361e4a84f17bce4/lib-aqe_native_count.json","run_a":0,"run_b":1,"value_a":"stat:file size=367","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/.fingerprint/aqe-native-count-dc451db92661394d/dep-test-lib-aqe_native_count","run_a":0,"run_b":1,"value_a":"stat:file size=30","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/.fingerprint/aqe-native-count-dc451db92661394d/invoked.timestamp","run_a":0,"run_b":1,"value_a":"stat:file size=48","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/.fingerprint/aqe-native-count-dc451db92661394d/test-lib-aqe_native_count","run_a":0,"run_b":1,"value_a":"stat:file size=16","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/.fingerprint/aqe-native-count-dc451db92661394d/test-lib-aqe_native_count.json","run_a":0,"run_b":1,"value_a":"stat:file size=372","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-17g01jaxi9rvz/s-hoelk18aee-122zqx9-do9rqj9to3atpet1w1wneqrtu","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-17g01jaxi9rvz/s-hoelk18aee-122zqx9.lock","run_a":0,"run_b":1,"value_a":"stat:file size=0","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-17g01jaxi9rvz/s-hoelk1cxl4-163kut1-8kv2l0z9qy5o5w99fzwdcaxma","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-17g01jaxi9rvz/s-hoelk1cxl4-163kut1.lock","run_a":0,"run_b":1,"value_a":"stat:file size=0","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-17g01jaxi9rvz/s-hoelk1fs5e-1dly0fp-6t6n2agoantsv07q41cua2pds","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-17g01jaxi9rvz/s-hoelk1fs5e-1dly0fp.lock","run_a":0,"run_b":1,"value_a":"stat:file size=0","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-3mphoapke1g1i/s-hoelk18auw-1rxesz5-33gip1idgqr1jg7j05wnm8b2l","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-3mphoapke1g1i/s-hoelk18auw-1rxesz5.lock","run_a":0,"run_b":1,"value_a":"stat:file size=0","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-3mphoapke1g1i/s-hoelk1cxgm-0z73d4i-16u9ex2cilxodnwl6bqb4mi0d","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-3mphoapke1g1i/s-hoelk1cxgm-0z73d4i.lock","run_a":0,"run_b":1,"value_a":"stat:file size=0","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-3mphoapke1g1i/s-hoelk1frny-07jxtuq-a3ppwo2h3okh11th1hogubkpv","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-3mphoapke1g1i/s-hoelk1frny-07jxtuq.lock","run_a":0,"run_b":1,"value_a":"stat:file size=0","value_b":null,"reason":"fs"},{"name":"file:<tmp>/unborn/.git/objects/cb/0ff5c3b541f646105198ee23ac0fc3d805023e","run_a":0,"run_b":1,"value_a":"stat:file size=27","value_b":null,"reason":"fs"}]}
+
+
+$ (cd /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe && /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/venv/networkx/bin/python -m detpy.fenvix verify /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/out/agentic-qe/S1.jsonl /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/out/agentic-qe/P1w2.jsonl --json)  # exit 1, 29.37 s
+ls/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-WIQkGO/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-Wmz24a/.claude/skills/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-Wmz24a/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-b88ghP/.claude/skills/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-b88ghP/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-haCh0s/.claude/skills/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-haCh0s/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-kBWiKq/.claude/skills/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-kBWiKq/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-nm72qx/.claude/skills/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-nm72qx/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-oZfaoL/.claude/skills/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-oZfaoL/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-qXQpfe/.claude/skills/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-qXQpfe/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-tSw9Rh/.claude/skills/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-tSw9Rh/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-tf40Te/.claude/skills/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-tf40Te/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-uVMlyO/.claude/skills/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-uVMlyO/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-z8nMNp/.claude/skills/security-watch/SKILL.md","run_a":0,"run_b":1,"value_a":"stat:file size=4141","value_b":null,"reason":"fs"},{"name":"file:<tmp>/security-watch-z8nMNp/.claude/skills/security-watch/scripts","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/shutdown/before.json","run_a":0,"run_b":1,"value_a":"1555:308f46001abe34a4610d58da55dbb861,stat:file size=1555","value_b":"1555:db0cd89393f42e3c6562658832790dba,stat:file size=1555","reason":"fs"},{"name":"file:<tmp>/swept-2.db-wal","run_a":0,"run_b":1,"value_a":"stat:file size=0","value_b":"stat:file size=16512","reason":"fs"},{"name":"file:<tmp>/target/debug/.fingerprint/aqe-native-count-7361e4a84f17bce4/dep-lib-aqe_native_count","run_a":0,"run_b":1,"value_a":"stat:file size=30","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/.fingerprint/aqe-native-count-7361e4a84f17bce4/invoked.timestamp","run_a":0,"run_b":1,"value_a":"stat:file size=48","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/.fingerprint/aqe-native-count-7361e4a84f17bce4/lib-aqe_native_count","run_a":0,"run_b":1,"value_a":"stat:file size=16","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/.fingerprint/aqe-native-count-7361e4a84f17bce4/lib-aqe_native_count.json","run_a":0,"run_b":1,"value_a":"stat:file size=367","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/.fingerprint/aqe-native-count-dc451db92661394d/dep-test-lib-aqe_native_count","run_a":0,"run_b":1,"value_a":"stat:file size=30","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/.fingerprint/aqe-native-count-dc451db92661394d/invoked.timestamp","run_a":0,"run_b":1,"value_a":"stat:file size=48","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/.fingerprint/aqe-native-count-dc451db92661394d/test-lib-aqe_native_count","run_a":0,"run_b":1,"value_a":"stat:file size=16","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/.fingerprint/aqe-native-count-dc451db92661394d/test-lib-aqe_native_count.json","run_a":0,"run_b":1,"value_a":"stat:file size=372","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-17g01jaxi9rvz/s-hoelk18aee-122zqx9-do9rqj9to3atpet1w1wneqrtu","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-17g01jaxi9rvz/s-hoelk18aee-122zqx9.lock","run_a":0,"run_b":1,"value_a":"stat:file size=0","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-17g01jaxi9rvz/s-hoelk1cxl4-163kut1-8kv2l0z9qy5o5w99fzwdcaxma","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-17g01jaxi9rvz/s-hoelk1cxl4-163kut1.lock","run_a":0,"run_b":1,"value_a":"stat:file size=0","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-17g01jaxi9rvz/s-hoelk1fs5e-1dly0fp-6t6n2agoantsv07q41cua2pds","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-17g01jaxi9rvz/s-hoelk1fs5e-1dly0fp.lock","run_a":0,"run_b":1,"value_a":"stat:file size=0","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-3mphoapke1g1i/s-hoelk18auw-1rxesz5-33gip1idgqr1jg7j05wnm8b2l","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-3mphoapke1g1i/s-hoelk18auw-1rxesz5.lock","run_a":0,"run_b":1,"value_a":"stat:file size=0","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-3mphoapke1g1i/s-hoelk1cxgm-0z73d4i-16u9ex2cilxodnwl6bqb4mi0d","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-3mphoapke1g1i/s-hoelk1cxgm-0z73d4i.lock","run_a":0,"run_b":1,"value_a":"stat:file size=0","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-3mphoapke1g1i/s-hoelk1frny-07jxtuq-a3ppwo2h3okh11th1hogubkpv","run_a":0,"run_b":1,"value_a":"stat:dir","value_b":null,"reason":"fs"},{"name":"file:<tmp>/target/debug/incremental/aqe_native_count-3mphoapke1g1i/s-hoelk1frny-07jxtuq.lock","run_a":0,"run_b":1,"value_a":"stat:file size=0","value_b":null,"reason":"fs"},{"name":"file:<tmp>/unborn/.git/objects/cb/0ff5c3b541f646105198ee23ac0fc3d805023e","run_a":0,"run_b":1,"value_a":"stat:file size=27","value_b":null,"reason":"fs"}]}
+
+
+$ (cd /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe && /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/venv/networkx/bin/python -m detpy.fenvix verify /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/out/agentic-qe/S1.jsonl /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/out/agentic-qe/P1w4.jsonl --json)  # exit -9, 19.92 s
+
+
+$ (cd /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe && npx --no-install vitest run --bail=0 --no-file-parallelism --reporter=default --reporter=json --outputFile.json=/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/out/agentic-qe/plain2.runner.json --reporter=/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs)  # exit 1, 1209.60 s
+c-flow/onnx-embeddings/adapter.test.ts:446:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[74/88]⎯
+
+ FAIL  tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts > ONNXEmbeddingsAdapter > MCP bridge methods > should bridge to MCP compare
+EmbeddingError: Failed to generate embedding: Transformer initialization previously failed: fetch failed
+ ❯ EmbeddingGenerator.generate src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:203:13
+    201|       return embedding;
+    202|     } catch (error) {
+    203|       throw new EmbeddingError(
+       |             ^
+    204|         EmbeddingErrorType.MODEL_LOAD_FAILED,
+    205|         `Failed to generate embedding: ${error instanceof Error ? erro…
+ ❯ EmbeddingGenerator.generateBatch src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:242:29
+ ❯ ONNXEmbeddingsAdapter.compareSimilarity src/integrations/agentic-flow/onnx-embeddings/adapter.ts:221:38
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:452:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[75/88]⎯
+
+ FAIL  tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts > ONNXEmbeddingsAdapter > error handling > should throw error on uninitialized usage
+AssertionError: promise rejected "EmbeddingError: Failed to generate embedd… { …(2) }" instead of resolving
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:60
+    464|
+    465|       // Should auto-initialize
+    466|       await expect(uninitAdapter.generateEmbedding('Test')).resolves.t…
+       |                                                            ^
+    467|     });
+    468|
+
+Caused by: EmbeddingError: Failed to generate embedding: Transformer initialization previously failed: fetch failed
+ ❯ EmbeddingGenerator.generate src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:203:13
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { details: { stack: 'Error: Transformer initialization previously failed: fetch failed
+    at initializeModel (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/learning/real-embeddings.ts:181:11)
+    at computeRealEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/learning/real-embeddings.ts:444:11)
+    at Object.generateEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:121:32)
+    at EmbeddingGenerator.generate (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:173:45)
+    at ONNXEmbeddingsAdapter.generateEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/adapter.ts:125:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:7
+    at async file:///tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20', message: 'Transformer initialization previously failed: fetch failed', constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[76/88]⎯
+
+ FAIL  tests/unit/coordination/handlers/coverage-runner.test.ts > #995 review B1 — process-tree timeout > kills the whole process group on timeout, including grandchildren
+AssertionError: grandchild survived the timeout: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/coordination/handlers/coverage-runner.test.ts:85:66
+     83|     const grandchild = Number(fs.readFileSync(pidFile, 'utf-8').trim()…
+     84|     expect(grandchild).toBeGreaterThan(0);
+     85|     expect(alive(grandchild), 'grandchild survived the timeout').toBe(…
+       |                                                                  ^
+     86|     expect(alive(result.pid!), 'runner survived the timeout').toBe(fal…
+     87|   }, 20000);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[77/88]⎯
+
+ FAIL  tests/unit/domains/code-intelligence/coordinator-hypergraph.test.ts > CodeIntelligenceCoordinator - Hypergraph Integration (GOAP Action 7) > Initialization > should handle hypergraph initialization failure gracefully
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/domains/code-intelligence/coordinator-hypergraph.test.ts:216:49
+    214|
+    215|       // Hypergraph should be disabled due to initialization failure
+    216|       expect(coordinator.isHypergraphEnabled()).toBe(false);
+       |                                                 ^
+    217|     });
+    218|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[78/88]⎯
+
+ FAIL  tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts > native listing resource ownership > terminates timed-out collection descendants and leaves no listing directory
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts:187:23
+    185|       const alive = () => { try { process.kill(pid, 0); return true; }…
+    186|       await new Promise(resolve => setTimeout(resolve, 100));
+    187|       expect(alive()).toBe(false);
+       |                       ^
+    188|       await new Promise(resolve => setTimeout(resolve, 4000));
+    189|       expect(existsSync(join(root, 'late-import-effect'))).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[79/88]⎯
+
+ FAIL  tests/unit/mcp/handlers/memory-handlers.test.ts > Memory Handlers > handleMemoryStore > should store simple string value
+AssertionError: expected { status: 'failed', error: { …(2) } } to deeply equal { status: 'indexed' }
+
+- Expected
++ Received
+
+  {
+-   "status": "indexed",
++   "error": {
++     "code": "VECTOR_INDEX_UNAVAILABLE",
++     "message": "Semantic vector indexing is unavailable for this entry. Configure AQE_EMBEDDER_ENDPOINT for the recommended remote backend. The compatible local @huggingface/transformers@4.2.0 dependency chain currently has unresolved HIGH advisories GHSA-xcpc-8h2w-3j85 and GHSA-f88m-g3jw-g9cj.",
++   },
++   "status": "failed",
+  }
+
+ ❯ tests/unit/mcp/handlers/memory-handlers.test.ts:73:40
+     71|       expect(result.data!.namespace).toBe('default');
+     72|       expect(result.data!.timestamp).toBeDefined();
+     73|       expect(result.data!.vectorIndex).toEqual({ status: 'indexed' });
+       |                                        ^
+     74|     });
+     75|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[80/88]⎯
+
+ FAIL  tests/unit/mcp/handlers/memory-handlers.test.ts > Memory Handlers > handleMemoryQuery > should report semantic search provenance
+AssertionError: expected 'pattern' to be 'semantic' // Object.is equality
+
+Expected: "semantic"
+Received: "pattern"
+
+ ❯ tests/unit/mcp/handlers/memory-handlers.test.ts:341:39
+    339|
+    340|       expect(result.success).toBe(true);
+    341|       expect(result.data!.searchType).toBe('semantic');
+       |                                       ^
+    342|       expect(result.data!.searchProvenance).toEqual({
+    343|         backend: 'in-memory',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[81/88]⎯
+
+
+ Test Files  29 failed | 1433 passed | 34 skipped (1496)
+      Tests  80 failed | 30391 passed | 294 skipped (30765)
+   Start at  19:53:34
+   Duration  1208.09s (tests 85%, import 12%, transform 1%, worker 1%)
+
+JSON report written to /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/out/agentic-qe/plain2.runner.json
+
+
+$ (cd /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe && npx --no-install vitest run --bail=0 --maxWorkers=2 --fileParallelism)  # exit 1, 630.19 s
+low/onnx-embeddings/adapter.test.ts:446:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[74/88]⎯
+
+ FAIL  tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts > ONNXEmbeddingsAdapter > MCP bridge methods > should bridge to MCP compare
+EmbeddingError: Failed to generate embedding: Transformer initialization previously failed: fetch failed
+ ❯ EmbeddingGenerator.generate src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:203:13
+    201|       return embedding;
+    202|     } catch (error) {
+    203|       throw new EmbeddingError(
+       |             ^
+    204|         EmbeddingErrorType.MODEL_LOAD_FAILED,
+    205|         `Failed to generate embedding: ${error instanceof Error ? erro…
+ ❯ EmbeddingGenerator.generateBatch src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:242:29
+ ❯ ONNXEmbeddingsAdapter.compareSimilarity src/integrations/agentic-flow/onnx-embeddings/adapter.ts:221:38
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:452:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[75/88]⎯
+
+ FAIL  tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts > ONNXEmbeddingsAdapter > error handling > should throw error on uninitialized usage
+AssertionError: promise rejected "EmbeddingError: Failed to generate embedd… { …(2) }" instead of resolving
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:60
+    464|
+    465|       // Should auto-initialize
+    466|       await expect(uninitAdapter.generateEmbedding('Test')).resolves.t…
+       |                                                            ^
+    467|     });
+    468|
+
+Caused by: EmbeddingError: Failed to generate embedding: Transformer initialization previously failed: fetch failed
+ ❯ EmbeddingGenerator.generate src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:203:13
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { details: { stack: 'Error: Transformer initialization previously failed: fetch failed
+    at initializeModel (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/learning/real-embeddings.ts:181:11)
+    at computeRealEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/learning/real-embeddings.ts:444:11)
+    at Object.generateEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:121:32)
+    at EmbeddingGenerator.generate (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:173:45)
+    at ONNXEmbeddingsAdapter.generateEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/adapter.ts:125:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:7
+    at async file:///tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20', message: 'Transformer initialization previously failed: fetch failed', constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[76/88]⎯
+
+ FAIL  tests/unit/coordination/handlers/coverage-runner.test.ts > #995 review B1 — process-tree timeout > kills the whole process group on timeout, including grandchildren
+AssertionError: grandchild survived the timeout: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/coordination/handlers/coverage-runner.test.ts:85:66
+     83|     const grandchild = Number(fs.readFileSync(pidFile, 'utf-8').trim()…
+     84|     expect(grandchild).toBeGreaterThan(0);
+     85|     expect(alive(grandchild), 'grandchild survived the timeout').toBe(…
+       |                                                                  ^
+     86|     expect(alive(result.pid!), 'runner survived the timeout').toBe(fal…
+     87|   }, 20000);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[77/88]⎯
+
+ FAIL  tests/unit/domains/code-intelligence/coordinator-hypergraph.test.ts > CodeIntelligenceCoordinator - Hypergraph Integration (GOAP Action 7) > Initialization > should handle hypergraph initialization failure gracefully
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/domains/code-intelligence/coordinator-hypergraph.test.ts:216:49
+    214|
+    215|       // Hypergraph should be disabled due to initialization failure
+    216|       expect(coordinator.isHypergraphEnabled()).toBe(false);
+       |                                                 ^
+    217|     });
+    218|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[78/88]⎯
+
+ FAIL  tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts > native listing resource ownership > terminates timed-out collection descendants and leaves no listing directory
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts:187:23
+    185|       const alive = () => { try { process.kill(pid, 0); return true; }…
+    186|       await new Promise(resolve => setTimeout(resolve, 100));
+    187|       expect(alive()).toBe(false);
+       |                       ^
+    188|       await new Promise(resolve => setTimeout(resolve, 4000));
+    189|       expect(existsSync(join(root, 'late-import-effect'))).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[79/88]⎯
+
+ FAIL  tests/unit/mcp/handlers/memory-handlers.test.ts > Memory Handlers > handleMemoryStore > should store simple string value
+AssertionError: expected { status: 'failed', error: { …(2) } } to deeply equal { status: 'indexed' }
+
+- Expected
++ Received
+
+  {
+-   "status": "indexed",
++   "error": {
++     "code": "VECTOR_INDEX_UNAVAILABLE",
++     "message": "Semantic vector indexing is unavailable for this entry. Configure AQE_EMBEDDER_ENDPOINT for the recommended remote backend. The compatible local @huggingface/transformers@4.2.0 dependency chain currently has unresolved HIGH advisories GHSA-xcpc-8h2w-3j85 and GHSA-f88m-g3jw-g9cj.",
++   },
++   "status": "failed",
+  }
+
+ ❯ tests/unit/mcp/handlers/memory-handlers.test.ts:73:40
+     71|       expect(result.data!.namespace).toBe('default');
+     72|       expect(result.data!.timestamp).toBeDefined();
+     73|       expect(result.data!.vectorIndex).toEqual({ status: 'indexed' });
+       |                                        ^
+     74|     });
+     75|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[80/88]⎯
+
+ FAIL  tests/unit/mcp/handlers/memory-handlers.test.ts > Memory Handlers > handleMemoryQuery > should report semantic search provenance
+AssertionError: expected 'pattern' to be 'semantic' // Object.is equality
+
+Expected: "semantic"
+Received: "pattern"
+
+ ❯ tests/unit/mcp/handlers/memory-handlers.test.ts:341:39
+    339|
+    340|       expect(result.success).toBe(true);
+    341|       expect(result.data!.searchType).toBe('semantic');
+       |                                       ^
+    342|       expect(result.data!.searchProvenance).toEqual({
+    343|         backend: 'in-memory',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[81/88]⎯
+
+
+ Test Files  29 failed | 1433 passed | 34 skipped (1496)
+      Tests  80 failed | 30391 passed | 294 skipped (30765)
+   Start at  20:13:44
+   Duration  623.67s (tests 85%, import 13%, transform 1%, worker 1%, setup 1%)
+
+JUNIT report written to /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/junit.xml
+
+
+$ (cd /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe && npx --no-install vitest run --bail=0 --maxWorkers=4 --fileParallelism)  # exit 1, 342.87 s
+
+    204|         EmbeddingErrorType.MODEL_LOAD_FAILED,
+    205|         `Failed to generate embedding: ${error instanceof Error ? erro…
+ ❯ EmbeddingGenerator.generateBatch src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:242:29
+ ❯ ONNXEmbeddingsAdapter.compareSimilarity src/integrations/agentic-flow/onnx-embeddings/adapter.ts:221:38
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:452:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[77/91]⎯
+
+ FAIL  tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts > ONNXEmbeddingsAdapter > error handling > should throw error on uninitialized usage
+AssertionError: promise rejected "EmbeddingError: Failed to generate embedd… { …(2) }" instead of resolving
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:60
+    464|
+    465|       // Should auto-initialize
+    466|       await expect(uninitAdapter.generateEmbedding('Test')).resolves.t…
+       |                                                            ^
+    467|     });
+    468|
+
+Caused by: EmbeddingError: Failed to generate embedding: Transformer initialization previously failed: fetch failed
+ ❯ EmbeddingGenerator.generate src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:203:13
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { details: { stack: 'Error: Transformer initialization previously failed: fetch failed
+    at initializeModel (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/learning/real-embeddings.ts:181:11)
+    at computeRealEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/learning/real-embeddings.ts:444:11)
+    at Object.generateEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:121:32)
+    at EmbeddingGenerator.generate (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:173:45)
+    at ONNXEmbeddingsAdapter.generateEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/adapter.ts:125:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:7
+    at async file:///tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20', message: 'Transformer initialization previously failed: fetch failed', constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[78/91]⎯
+
+ FAIL  tests/unit/coordination/handlers/coverage-runner.test.ts > #995 review B1 — process-tree timeout > kills the whole process group on timeout, including grandchildren
+AssertionError: grandchild survived the timeout: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/coordination/handlers/coverage-runner.test.ts:85:66
+     83|     const grandchild = Number(fs.readFileSync(pidFile, 'utf-8').trim()…
+     84|     expect(grandchild).toBeGreaterThan(0);
+     85|     expect(alive(grandchild), 'grandchild survived the timeout').toBe(…
+       |                                                                  ^
+     86|     expect(alive(result.pid!), 'runner survived the timeout').toBe(fal…
+     87|   }, 20000);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[79/91]⎯
+
+ FAIL  tests/unit/domains/code-intelligence/coordinator-hypergraph.test.ts > CodeIntelligenceCoordinator - Hypergraph Integration (GOAP Action 7) > Initialization > should handle hypergraph initialization failure gracefully
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/domains/code-intelligence/coordinator-hypergraph.test.ts:216:49
+    214|
+    215|       // Hypergraph should be disabled due to initialization failure
+    216|       expect(coordinator.isHypergraphEnabled()).toBe(false);
+       |                                                 ^
+    217|     });
+    218|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[80/91]⎯
+
+ FAIL  tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts > native listing resource ownership > terminates timed-out collection descendants and leaves no listing directory
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts:187:23
+    185|       const alive = () => { try { process.kill(pid, 0); return true; }…
+    186|       await new Promise(resolve => setTimeout(resolve, 100));
+    187|       expect(alive()).toBe(false);
+       |                       ^
+    188|       await new Promise(resolve => setTimeout(resolve, 4000));
+    189|       expect(existsSync(join(root, 'late-import-effect'))).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[81/91]⎯
+
+ FAIL  tests/unit/integrations/ruvector/filter-adapter.test.ts > FilterAdapter > Performance > should handle deeply nested filters efficiently
+AssertionError: expected 7.1263259999999775 to be less than 5
+ ❯ tests/unit/integrations/ruvector/filter-adapter.test.ts:588:23
+    586|       const elapsed = performance.now() - start;
+    587|
+    588|       expect(elapsed).toBeLessThan(5); // CI runners may be slower tha…
+       |                       ^
+    589|       expect(filtered.length).toBeGreaterThan(0);
+    590|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[82/91]⎯
+
+ FAIL  tests/unit/mcp/handlers/memory-handlers.test.ts > Memory Handlers > handleMemoryStore > should store simple string value
+AssertionError: expected { status: 'failed', error: { …(2) } } to deeply equal { status: 'indexed' }
+
+- Expected
++ Received
+
+  {
+-   "status": "indexed",
++   "error": {
++     "code": "VECTOR_INDEX_UNAVAILABLE",
++     "message": "Semantic vector indexing is unavailable for this entry. Configure AQE_EMBEDDER_ENDPOINT for the recommended remote backend. The compatible local @huggingface/transformers@4.2.0 dependency chain currently has unresolved HIGH advisories GHSA-xcpc-8h2w-3j85 and GHSA-f88m-g3jw-g9cj.",
++   },
++   "status": "failed",
+  }
+
+ ❯ tests/unit/mcp/handlers/memory-handlers.test.ts:73:40
+     71|       expect(result.data!.namespace).toBe('default');
+     72|       expect(result.data!.timestamp).toBeDefined();
+     73|       expect(result.data!.vectorIndex).toEqual({ status: 'indexed' });
+       |                                        ^
+     74|     });
+     75|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[83/91]⎯
+
+ FAIL  tests/unit/mcp/handlers/memory-handlers.test.ts > Memory Handlers > handleMemoryQuery > should report semantic search provenance
+AssertionError: expected 'pattern' to be 'semantic' // Object.is equality
+
+Expected: "semantic"
+Received: "pattern"
+
+ ❯ tests/unit/mcp/handlers/memory-handlers.test.ts:341:39
+    339|
+    340|       expect(result.success).toBe(true);
+    341|       expect(result.data!.searchType).toBe('semantic');
+       |                                       ^
+    342|       expect(result.data!.searchProvenance).toEqual({
+    343|         backend: 'in-memory',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[84/91]⎯
+
+
+ Test Files  30 failed | 1432 passed | 34 skipped (1496)
+      Tests  83 failed | 30388 passed | 294 skipped (30765)
+   Start at  20:24:16
+   Duration  336.38s (tests 82%, import 15%, transform 1%, setup 1%, worker 1%)
+
+JUNIT report written to /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/junit.xml
+
+
+$ (cd /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe && npx --no-install vitest run --bail=0 --no-file-parallelism --reporter=default --reporter=json --outputFile.json=/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/out/agentic-qe/plain3.runner.json --reporter=/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs)  # exit 1, 1199.63 s
+c-flow/onnx-embeddings/adapter.test.ts:446:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[74/88]⎯
+
+ FAIL  tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts > ONNXEmbeddingsAdapter > MCP bridge methods > should bridge to MCP compare
+EmbeddingError: Failed to generate embedding: Transformer initialization previously failed: fetch failed
+ ❯ EmbeddingGenerator.generate src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:203:13
+    201|       return embedding;
+    202|     } catch (error) {
+    203|       throw new EmbeddingError(
+       |             ^
+    204|         EmbeddingErrorType.MODEL_LOAD_FAILED,
+    205|         `Failed to generate embedding: ${error instanceof Error ? erro…
+ ❯ EmbeddingGenerator.generateBatch src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:242:29
+ ❯ ONNXEmbeddingsAdapter.compareSimilarity src/integrations/agentic-flow/onnx-embeddings/adapter.ts:221:38
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:452:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[75/88]⎯
+
+ FAIL  tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts > ONNXEmbeddingsAdapter > error handling > should throw error on uninitialized usage
+AssertionError: promise rejected "EmbeddingError: Failed to generate embedd… { …(2) }" instead of resolving
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:60
+    464|
+    465|       // Should auto-initialize
+    466|       await expect(uninitAdapter.generateEmbedding('Test')).resolves.t…
+       |                                                            ^
+    467|     });
+    468|
+
+Caused by: EmbeddingError: Failed to generate embedding: Transformer initialization previously failed: fetch failed
+ ❯ EmbeddingGenerator.generate src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:203:13
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { details: { stack: 'Error: Transformer initialization previously failed: fetch failed
+    at initializeModel (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/learning/real-embeddings.ts:181:11)
+    at computeRealEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/learning/real-embeddings.ts:444:11)
+    at Object.generateEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:121:32)
+    at EmbeddingGenerator.generate (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:173:45)
+    at ONNXEmbeddingsAdapter.generateEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/adapter.ts:125:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:7
+    at async file:///tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20', message: 'Transformer initialization previously failed: fetch failed', constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[76/88]⎯
+
+ FAIL  tests/unit/coordination/handlers/coverage-runner.test.ts > #995 review B1 — process-tree timeout > kills the whole process group on timeout, including grandchildren
+AssertionError: grandchild survived the timeout: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/coordination/handlers/coverage-runner.test.ts:85:66
+     83|     const grandchild = Number(fs.readFileSync(pidFile, 'utf-8').trim()…
+     84|     expect(grandchild).toBeGreaterThan(0);
+     85|     expect(alive(grandchild), 'grandchild survived the timeout').toBe(…
+       |                                                                  ^
+     86|     expect(alive(result.pid!), 'runner survived the timeout').toBe(fal…
+     87|   }, 20000);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[77/88]⎯
+
+ FAIL  tests/unit/domains/code-intelligence/coordinator-hypergraph.test.ts > CodeIntelligenceCoordinator - Hypergraph Integration (GOAP Action 7) > Initialization > should handle hypergraph initialization failure gracefully
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/domains/code-intelligence/coordinator-hypergraph.test.ts:216:49
+    214|
+    215|       // Hypergraph should be disabled due to initialization failure
+    216|       expect(coordinator.isHypergraphEnabled()).toBe(false);
+       |                                                 ^
+    217|     });
+    218|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[78/88]⎯
+
+ FAIL  tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts > native listing resource ownership > terminates timed-out collection descendants and leaves no listing directory
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts:187:23
+    185|       const alive = () => { try { process.kill(pid, 0); return true; }…
+    186|       await new Promise(resolve => setTimeout(resolve, 100));
+    187|       expect(alive()).toBe(false);
+       |                       ^
+    188|       await new Promise(resolve => setTimeout(resolve, 4000));
+    189|       expect(existsSync(join(root, 'late-import-effect'))).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[79/88]⎯
+
+ FAIL  tests/unit/mcp/handlers/memory-handlers.test.ts > Memory Handlers > handleMemoryStore > should store simple string value
+AssertionError: expected { status: 'failed', error: { …(2) } } to deeply equal { status: 'indexed' }
+
+- Expected
++ Received
+
+  {
+-   "status": "indexed",
++   "error": {
++     "code": "VECTOR_INDEX_UNAVAILABLE",
++     "message": "Semantic vector indexing is unavailable for this entry. Configure AQE_EMBEDDER_ENDPOINT for the recommended remote backend. The compatible local @huggingface/transformers@4.2.0 dependency chain currently has unresolved HIGH advisories GHSA-xcpc-8h2w-3j85 and GHSA-f88m-g3jw-g9cj.",
++   },
++   "status": "failed",
+  }
+
+ ❯ tests/unit/mcp/handlers/memory-handlers.test.ts:73:40
+     71|       expect(result.data!.namespace).toBe('default');
+     72|       expect(result.data!.timestamp).toBeDefined();
+     73|       expect(result.data!.vectorIndex).toEqual({ status: 'indexed' });
+       |                                        ^
+     74|     });
+     75|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[80/88]⎯
+
+ FAIL  tests/unit/mcp/handlers/memory-handlers.test.ts > Memory Handlers > handleMemoryQuery > should report semantic search provenance
+AssertionError: expected 'pattern' to be 'semantic' // Object.is equality
+
+Expected: "semantic"
+Received: "pattern"
+
+ ❯ tests/unit/mcp/handlers/memory-handlers.test.ts:341:39
+    339|
+    340|       expect(result.success).toBe(true);
+    341|       expect(result.data!.searchType).toBe('semantic');
+       |                                       ^
+    342|       expect(result.data!.searchProvenance).toEqual({
+    343|         backend: 'in-memory',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[81/88]⎯
+
+
+ Test Files  29 failed | 1433 passed | 34 skipped (1496)
+      Tests  80 failed | 30391 passed | 294 skipped (30765)
+   Start at  20:30:00
+   Duration  1198.62s (tests 85%, import 12%, transform 1%, worker 1%)
+
+JSON report written to /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/out/agentic-qe/plain3.runner.json
+
+
+$ (cd /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe && npx --no-install vitest run --bail=0 --maxWorkers=2 --fileParallelism)  # exit 1, 611.26 s
+low/onnx-embeddings/adapter.test.ts:446:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[74/88]⎯
+
+ FAIL  tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts > ONNXEmbeddingsAdapter > MCP bridge methods > should bridge to MCP compare
+EmbeddingError: Failed to generate embedding: Transformer initialization previously failed: fetch failed
+ ❯ EmbeddingGenerator.generate src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:203:13
+    201|       return embedding;
+    202|     } catch (error) {
+    203|       throw new EmbeddingError(
+       |             ^
+    204|         EmbeddingErrorType.MODEL_LOAD_FAILED,
+    205|         `Failed to generate embedding: ${error instanceof Error ? erro…
+ ❯ EmbeddingGenerator.generateBatch src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:242:29
+ ❯ ONNXEmbeddingsAdapter.compareSimilarity src/integrations/agentic-flow/onnx-embeddings/adapter.ts:221:38
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:452:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[75/88]⎯
+
+ FAIL  tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts > ONNXEmbeddingsAdapter > error handling > should throw error on uninitialized usage
+AssertionError: promise rejected "EmbeddingError: Failed to generate embedd… { …(2) }" instead of resolving
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:60
+    464|
+    465|       // Should auto-initialize
+    466|       await expect(uninitAdapter.generateEmbedding('Test')).resolves.t…
+       |                                                            ^
+    467|     });
+    468|
+
+Caused by: EmbeddingError: Failed to generate embedding: Transformer initialization previously failed: fetch failed
+ ❯ EmbeddingGenerator.generate src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:203:13
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { details: { stack: 'Error: Transformer initialization previously failed: fetch failed
+    at initializeModel (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/learning/real-embeddings.ts:181:11)
+    at computeRealEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/learning/real-embeddings.ts:444:11)
+    at Object.generateEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:121:32)
+    at EmbeddingGenerator.generate (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:173:45)
+    at ONNXEmbeddingsAdapter.generateEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/adapter.ts:125:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:7
+    at async file:///tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20', message: 'Transformer initialization previously failed: fetch failed', constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[76/88]⎯
+
+ FAIL  tests/unit/coordination/handlers/coverage-runner.test.ts > #995 review B1 — process-tree timeout > kills the whole process group on timeout, including grandchildren
+AssertionError: grandchild survived the timeout: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/coordination/handlers/coverage-runner.test.ts:85:66
+     83|     const grandchild = Number(fs.readFileSync(pidFile, 'utf-8').trim()…
+     84|     expect(grandchild).toBeGreaterThan(0);
+     85|     expect(alive(grandchild), 'grandchild survived the timeout').toBe(…
+       |                                                                  ^
+     86|     expect(alive(result.pid!), 'runner survived the timeout').toBe(fal…
+     87|   }, 20000);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[77/88]⎯
+
+ FAIL  tests/unit/domains/code-intelligence/coordinator-hypergraph.test.ts > CodeIntelligenceCoordinator - Hypergraph Integration (GOAP Action 7) > Initialization > should handle hypergraph initialization failure gracefully
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/domains/code-intelligence/coordinator-hypergraph.test.ts:216:49
+    214|
+    215|       // Hypergraph should be disabled due to initialization failure
+    216|       expect(coordinator.isHypergraphEnabled()).toBe(false);
+       |                                                 ^
+    217|     });
+    218|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[78/88]⎯
+
+ FAIL  tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts > native listing resource ownership > terminates timed-out collection descendants and leaves no listing directory
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts:187:23
+    185|       const alive = () => { try { process.kill(pid, 0); return true; }…
+    186|       await new Promise(resolve => setTimeout(resolve, 100));
+    187|       expect(alive()).toBe(false);
+       |                       ^
+    188|       await new Promise(resolve => setTimeout(resolve, 4000));
+    189|       expect(existsSync(join(root, 'late-import-effect'))).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[79/88]⎯
+
+ FAIL  tests/unit/mcp/handlers/memory-handlers.test.ts > Memory Handlers > handleMemoryStore > should store simple string value
+AssertionError: expected { status: 'failed', error: { …(2) } } to deeply equal { status: 'indexed' }
+
+- Expected
++ Received
+
+  {
+-   "status": "indexed",
++   "error": {
++     "code": "VECTOR_INDEX_UNAVAILABLE",
++     "message": "Semantic vector indexing is unavailable for this entry. Configure AQE_EMBEDDER_ENDPOINT for the recommended remote backend. The compatible local @huggingface/transformers@4.2.0 dependency chain currently has unresolved HIGH advisories GHSA-xcpc-8h2w-3j85 and GHSA-f88m-g3jw-g9cj.",
++   },
++   "status": "failed",
+  }
+
+ ❯ tests/unit/mcp/handlers/memory-handlers.test.ts:73:40
+     71|       expect(result.data!.namespace).toBe('default');
+     72|       expect(result.data!.timestamp).toBeDefined();
+     73|       expect(result.data!.vectorIndex).toEqual({ status: 'indexed' });
+       |                                        ^
+     74|     });
+     75|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[80/88]⎯
+
+ FAIL  tests/unit/mcp/handlers/memory-handlers.test.ts > Memory Handlers > handleMemoryQuery > should report semantic search provenance
+AssertionError: expected 'pattern' to be 'semantic' // Object.is equality
+
+Expected: "semantic"
+Received: "pattern"
+
+ ❯ tests/unit/mcp/handlers/memory-handlers.test.ts:341:39
+    339|
+    340|       expect(result.success).toBe(true);
+    341|       expect(result.data!.searchType).toBe('semantic');
+       |                                       ^
+    342|       expect(result.data!.searchProvenance).toEqual({
+    343|         backend: 'in-memory',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[81/88]⎯
+
+
+ Test Files  29 failed | 1433 passed | 34 skipped (1496)
+      Tests  80 failed | 30391 passed | 294 skipped (30765)
+   Start at  20:50:01
+   Duration  604.98s (tests 85%, import 13%, transform 1%, worker 1%, setup 1%)
+
+JUNIT report written to /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/junit.xml
+
+
+$ (cd /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe && npx --no-install vitest run --bail=0 --maxWorkers=4 --fileParallelism)  # exit 1, 346.25 s
+^
+    204|         EmbeddingErrorType.MODEL_LOAD_FAILED,
+    205|         `Failed to generate embedding: ${error instanceof Error ? erro…
+ ❯ EmbeddingGenerator.generateBatch src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:242:29
+ ❯ ONNXEmbeddingsAdapter.compareSimilarity src/integrations/agentic-flow/onnx-embeddings/adapter.ts:221:38
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:452:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[77/91]⎯
+
+ FAIL  tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts > ONNXEmbeddingsAdapter > error handling > should throw error on uninitialized usage
+AssertionError: promise rejected "EmbeddingError: Failed to generate embedd… { …(2) }" instead of resolving
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:60
+    464|
+    465|       // Should auto-initialize
+    466|       await expect(uninitAdapter.generateEmbedding('Test')).resolves.t…
+       |                                                            ^
+    467|     });
+    468|
+
+Caused by: EmbeddingError: Failed to generate embedding: Transformer initialization previously failed: fetch failed
+ ❯ EmbeddingGenerator.generate src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:203:13
+ ❯ tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { details: { stack: 'Error: Transformer initialization previously failed: fetch failed
+    at initializeModel (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/learning/real-embeddings.ts:181:11)
+    at computeRealEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/learning/real-embeddings.ts:444:11)
+    at Object.generateEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:121:32)
+    at EmbeddingGenerator.generate (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/embedding-generator.ts:173:45)
+    at ONNXEmbeddingsAdapter.generateEmbedding (/tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/src/integrations/agentic-flow/onnx-embeddings/adapter.ts:125:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/tests/integrations/agentic-flow/onnx-embeddings/adapter.test.ts:466:7
+    at async file:///tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20', message: 'Transformer initialization previously failed: fetch failed', constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[78/91]⎯
+
+ FAIL  tests/unit/coordination/handlers/coverage-runner.test.ts > #995 review B1 — process-tree timeout > kills the whole process group on timeout, including grandchildren
+AssertionError: grandchild survived the timeout: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/coordination/handlers/coverage-runner.test.ts:85:66
+     83|     const grandchild = Number(fs.readFileSync(pidFile, 'utf-8').trim()…
+     84|     expect(grandchild).toBeGreaterThan(0);
+     85|     expect(alive(grandchild), 'grandchild survived the timeout').toBe(…
+       |                                                                  ^
+     86|     expect(alive(result.pid!), 'runner survived the timeout').toBe(fal…
+     87|   }, 20000);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[79/91]⎯
+
+ FAIL  tests/unit/domains/code-intelligence/coordinator-hypergraph.test.ts > CodeIntelligenceCoordinator - Hypergraph Integration (GOAP Action 7) > Initialization > should handle hypergraph initialization failure gracefully
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/domains/code-intelligence/coordinator-hypergraph.test.ts:216:49
+    214|
+    215|       // Hypergraph should be disabled due to initialization failure
+    216|       expect(coordinator.isHypergraphEnabled()).toBe(false);
+       |                                                 ^
+    217|     });
+    218|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[80/91]⎯
+
+ FAIL  tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts > native listing resource ownership > terminates timed-out collection descendants and leaves no listing directory
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts:187:23
+    185|       const alive = () => { try { process.kill(pid, 0); return true; }…
+    186|       await new Promise(resolve => setTimeout(resolve, 100));
+    187|       expect(alive()).toBe(false);
+       |                       ^
+    188|       await new Promise(resolve => setTimeout(resolve, 4000));
+    189|       expect(existsSync(join(root, 'late-import-effect'))).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[81/91]⎯
+
+ FAIL  tests/unit/integrations/ruvector/filter-adapter.test.ts > FilterAdapter > Performance > should handle deeply nested filters efficiently
+AssertionError: expected 6.056654000000009 to be less than 5
+ ❯ tests/unit/integrations/ruvector/filter-adapter.test.ts:588:23
+    586|       const elapsed = performance.now() - start;
+    587|
+    588|       expect(elapsed).toBeLessThan(5); // CI runners may be slower tha…
+       |                       ^
+    589|       expect(filtered.length).toBeGreaterThan(0);
+    590|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[82/91]⎯
+
+ FAIL  tests/unit/mcp/handlers/memory-handlers.test.ts > Memory Handlers > handleMemoryStore > should store simple string value
+AssertionError: expected { status: 'failed', error: { …(2) } } to deeply equal { status: 'indexed' }
+
+- Expected
++ Received
+
+  {
+-   "status": "indexed",
++   "error": {
++     "code": "VECTOR_INDEX_UNAVAILABLE",
++     "message": "Semantic vector indexing is unavailable for this entry. Configure AQE_EMBEDDER_ENDPOINT for the recommended remote backend. The compatible local @huggingface/transformers@4.2.0 dependency chain currently has unresolved HIGH advisories GHSA-xcpc-8h2w-3j85 and GHSA-f88m-g3jw-g9cj.",
++   },
++   "status": "failed",
+  }
+
+ ❯ tests/unit/mcp/handlers/memory-handlers.test.ts:73:40
+     71|       expect(result.data!.namespace).toBe('default');
+     72|       expect(result.data!.timestamp).toBeDefined();
+     73|       expect(result.data!.vectorIndex).toEqual({ status: 'indexed' });
+       |                                        ^
+     74|     });
+     75|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[83/91]⎯
+
+ FAIL  tests/unit/mcp/handlers/memory-handlers.test.ts > Memory Handlers > handleMemoryQuery > should report semantic search provenance
+AssertionError: expected 'pattern' to be 'semantic' // Object.is equality
+
+Expected: "semantic"
+Received: "pattern"
+
+ ❯ tests/unit/mcp/handlers/memory-handlers.test.ts:341:39
+    339|
+    340|       expect(result.success).toBe(true);
+    341|       expect(result.data!.searchType).toBe('semantic');
+       |                                       ^
+    342|       expect(result.data!.searchProvenance).toEqual({
+    343|         backend: 'in-memory',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[84/91]⎯
+
+
+ Test Files  30 failed | 1432 passed | 34 skipped (1496)
+      Tests  83 failed | 30388 passed | 294 skipped (30765)
+   Start at  21:00:13
+   Duration  340.13s (tests 82%, import 15%, transform 1%, setup 1%, worker 1%)
+
+JUNIT report written to /tmp/claude-0/-home-user-fenvix-engine-cli/fef2493c-bcac-5114-a0a4-a890d3fa4862/scratchpad/pm/repos/agentic-qe/junit.xml
+
