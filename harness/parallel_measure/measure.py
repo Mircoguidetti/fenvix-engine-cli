@@ -121,6 +121,20 @@ def norm(m):
 IDS_REPORTER = os.path.join(HERE, "vitest_ids_reporter.mjs")
 
 
+def build_after_reset(cwd, build, env, log):
+    """coordinator D16: the spec's optional `build` command (shell), run after every tree reset, outside the timed
+    region. Returns what goes into the row: {"build": cmd, "build_exit": code, "build_s": seconds} or {}."""
+    if not build:
+        return {}
+    t0 = time.time()
+    r = subprocess.run(build, shell=True, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
+                       errors="replace")
+    dt = round(time.time() - t0, 2)
+    with open(log, "a") as f:
+        f.write(f"\n# build after reset: (cd {cwd} && {build})  # exit {r.returncode}, {dt} s (not timed)\n{r.stdout[-3000:]}\n")
+    return {"build": build, "build_exit": r.returncode, "build_s": dt}
+
+
 def reset_tree(cwd):
     """The working tree back to the pinned commit (coordinator fix 2), installed node_modules kept."""
     for d in (".detpy", ".detjs"):
@@ -258,7 +272,7 @@ def main():
     def record(kind, i, cmd, r, workers=1, **extra):
         line = {"repo": o.name, "commit": spec.get("commit"), "runner": runner, "kind": kind, "rep": i,
                 "workers": workers, "engine_commit": commit, "cpus": os.cpu_count(), "nproc": NPROC,
-                "cpu_model": CPU_MODEL, "ci_parallel": ci_parallel, "tree_reset": TREE_RESET,
+                "cpu_model": CPU_MODEL, "ci_parallel": ci_parallel, "tree_reset": TREE_RESET, **last_build,
                 "cmd": " ".join(cmd), "cwd": cwd, "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), **r, **extra}
         with open(results, "a") as f:
             f.write(json.dumps(line) + "\n")
@@ -286,6 +300,7 @@ def main():
                 shutil.copytree(os.path.join(cwd, d), kept, symlinks=True)
         return r, text
 
+    last_build = {}
     TREE_RESET = ("git checkout -- . && git clean -fdxq -e node_modules (and the same in every submodule); "
                   "installed dependencies (node_modules, venvs outside the checkout) and the harness output kept")
 
@@ -293,6 +308,8 @@ def main():
         """coordinator fix 2: before every plain, serial and parallel run the working tree is the pinned commit again
         (files earlier runs left: tmp, data, caches, .detpy/.detjs). node_modules are kept (installed dependencies)."""
         reset_tree(cwd)
+        last_build.clear()
+        last_build.update(build_after_reset(cwd, spec.get("build"), env, log))
 
     for i in range(o.first_rep, o.first_rep + o.reps):
         if i == 1 and bare and "bare" not in skip:

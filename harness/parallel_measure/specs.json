@@ -220,7 +220,8 @@
   "source": "claude/serial-scan harness/serial_scan/candidates.json (its collect/run 'cd e2e && vitest' finds no tests: the config's include is relative to the repo root, so this spec runs from the root with --config)",
   "install": "npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts && npx -y pnpm@11.28.5 build (the e2e suite runs the built CLI); without Verdaccio (package.json test:e2e:no-verdaccio): all 107 e2e tests pass without it",
   "ci_parallel": false,
-  "plan_verdict": true
+  "plan_verdict": true,
+  "build": "npx -y pnpm@11.28.5 build"
  },
  "rosclaw": {
   "repo": "https://github.com/ros-claw/rosclaw",
