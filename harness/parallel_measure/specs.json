@@ -197,15 +197,18 @@
   "runner": "vitest",
   "dir": "$PM_WORK/repos/agentic-qe",
   "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
-  "args": [],
+  "args": [
+   "--bail=0"
+  ],
   "ci": "DECLARED package.json test = vitest run (NODE_OPTIONS --max-old-space-size=1024 --expose-gc); vitest.config.ts:58 fileParallelism: false",
   "ci_parallel": false,
   "plan_verdict": true,
   "source": "claude/serial-scan harness/serial_scan/candidates.json",
-  "install": "npm ci --ignore-scripts --no-audit --no-fund",
+  "install": "npm ci --ignore-scripts --no-audit --no-fund, then npm rebuild better-sqlite3 hnswlib-node argon2 sharp (native bindings; MEASURED: missing bindings otherwise)",
   "env": {
    "NODE_OPTIONS_NOTE": "CI sets NODE_OPTIONS; the harness drops NODE_OPTIONS (detjs uses it)"
-  }
+  },
+  "measurement_choice": "--bail=0 on every run (plain, plain_par, engine, repro), coordinator 2026-11-22 option (a): vitest.config.ts:63 bail: process.env.CI ? 5 : 3 truncates runs (MEASURED: 21 of 1496 files); CI stays unset"
  },
  "smart-second-brain": {
   "repo": "https://github.com/s2b-dev/smart-second-brain",
