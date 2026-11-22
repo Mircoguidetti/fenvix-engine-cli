@@ -580,7 +580,7 @@ def F_06(ctx: Ctx):
         return fam.js_cache2(ctx, d, runner, args, "f06-noedit", min_share=0.9)
     ctx.run_check("F-06.no-edit", ">= 90% reused on an unchanged checkout", noedit)
 
-    def deadline_probe(body, opts, gid):
+    def deadline_probe(body, opts, gid, ref="plain"):
         def fn():
             d = rows_js._ufo(ctx)
             now = int(time.time() * 1000)
@@ -594,13 +594,19 @@ def F_06(ctx: Ctx):
             shutil.rmtree(d / ".detjs", ignore_errors=True)
             rc2, out2, j2 = fam.js_run(ctx, d, "vitest", rel, f"{gid}-2", True, f"--det {opts} --det-cache={cache}", env={"EXAM_DEADLINE": str(now + 4000)})
             o2, n = fam._receipt_outcomes(d, j2)
-            _, _, plain = fam.js_run(ctx, d, "vitest", rel, f"{gid}-plain", False, env={"EXAM_DEADLINE": str(now + 4000)})
+            if ref == "det":
+                shutil.rmtree(d / ".detjs", ignore_errors=True)
+                _, _, refj = fam.js_run(ctx, d, "vitest", rel, f"{gid}-det-nocache", True, f"--det {opts}", env={"EXAM_DEADLINE": str(now + 4000)})
+                ref_desc = "--det without cache"
+            else:
+                _, _, refj = fam.js_run(ctx, d, "vitest", rel, f"{gid}-plain", False, env={"EXAM_DEADLINE": str(now + 4000)})
+                ref_desc = "plain"
             (d / rel).unlink(missing_ok=True)
-            ok, desc = fam.js_cmp({"files": o2}, plain)
-            return ok, f"deadline passed between runs; run 2 reused {n}; vs plain: {desc}"
+            ok, desc = fam.js_cmp({"files": o2}, refj)
+            return ok, f"deadline passed between runs; run 2 reused {n}; vs {ref_desc}: {desc}"
         return fn
     ctx.run_check("F-06.fake-timers", "a test reading the real clock through fake timers is not reused after the deadline",
-                  deadline_probe(FAKE_TIMERS, "", "fake-timers"), gaps=["G-0122", "G-0142"])
+                  deadline_probe(FAKE_TIMERS, "", "fake-timers", ref="det"), gaps=["G-0122", "G-0142"])
     ctx.run_check("F-06.disable-time", "with --det-disable=time a real-clock test is not reused after the deadline",
                   deadline_probe(DISABLE_TIME, "--det-disable=time", "disable-time"), gaps=["G-0123"])
 
@@ -621,9 +627,10 @@ def F_06(ctx: Ctx):
         ctx.sh("cpu-1", f"fenvix node vitest run --det --det-cache={cache} test/exam-cpu.test.ts", cwd=d)
         shutil.rmtree(d / ".detjs", ignore_errors=True)
         rc2, out2 = ctx.sh("cpu-2", f"taskset -c 0 fenvix node vitest run --det --det-cache={cache} test/exam-cpu.test.ts", cwd=d)
-        rcp, outp = ctx.sh("cpu-plain", "taskset -c 0 npx vitest run test/exam-cpu.test.ts", cwd=d)
+        shutil.rmtree(d / ".detjs", ignore_errors=True)
+        rcp, outp = ctx.sh("cpu-det-nocache", "taskset -c 0 fenvix node vitest run --det test/exam-cpu.test.ts", cwd=d)
         (d / "test/exam-cpu.test.ts").unlink(missing_ok=True)
-        return (rc2 != 0) == (rcp != 0), f"one CPU in run 2: engine rc={rc2}, plain rc={rcp}"
+        return (rc2 != 0) == (rcp != 0), f"one CPU in run 2: engine rc={rc2}, --det without cache rc={rcp}"
     ctx.run_check("F-06.wrong-reuse.cpu-count", "a test depending on the CPU count is not reused when it changes", host_reuse)
 
 
