@@ -63,6 +63,18 @@ class State {
         if (site === '<node>') { const amb = AMBIENT.getStore(); if (amb !== undefined) site = amb; }
       }
       if (site === null) return; // runner infrastructure
+      // No user frame at all, and no ambient site either: the operation was performed entirely by the
+      // runtime's own internals, so no code of the test or of its dependencies asked for the value and
+      // nothing can hand it to the test. This is the same question, with the same answer, as the general
+      // rule's sensor asks in src/provable.js ("whose call is it": `null` or `<node>` is not the test's) --
+      // one rule, applied here too, where the event path was still crediting the test for it.
+      // MEASURED: a Jest worker emits Node's `_channel` deprecation warning, and Node's warning PRINTER reads
+      // `process.pid` to put it in its prefix. In a parallel run that lands while a test is awaiting a timer,
+      // so the test got an extra `other/process.pid` event with site `<node>` and its parallel fingerprint
+      // stopped matching its serial one -- 2 of 4 files, reproducibly (the `jest: parallel lanes` and
+      // `node (24, shard 0/4)` reds of CI 44964230574). A test that reads `process.pid` itself has a frame of
+      // its own and is recorded exactly as before.
+      if (site === '<node>') return;
     }
     if (this.onEvent !== null) this.onEvent(source, value);
     this.buffer.push(source + FS + op + FS + site + FS + value);

@@ -2811,6 +2811,15 @@ def _uncacheable(flags: set, cfg) -> str | None:
         return "reads a file's modification, change or access time (not an input the cache keys)"
     if "cdll" in flags:
         return "calls a C library through ctypes (its file, clock and environment reads are not observed)"
+    # The general rule, AFTER the named flags and never instead of one, which is what
+    # crates/detpy-core/src/record.rs::uncacheable does with the same flag and the same words. The reference
+    # loop is older than the rule, so without this branch the two paths disagreed on cacheability and not on
+    # what they RECORD, which is what this comparison is for: MEASURED on the equivalence session,
+    # reference recorded 18 tests and the current path 14, the four being `test_spawn` (refused by the rule)
+    # and the three tests that ran after it in the same process and carried its refusal. The reference was the
+    # side that was wrong -- it reused a test that had run a subprocess.
+    if "unacc" in flags:
+        return "did something the engine cannot account for (NOT PROVEN: see the trace's unaccounted list)"
     return None
 
 
