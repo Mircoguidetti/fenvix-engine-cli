@@ -17,6 +17,7 @@ const fs = require('node:fs');
 const nodeCrypto = require('node:crypto');
 const path = require('node:path');
 const { STATE } = require('./state');
+const sites = require('./sites');
 const native = require('./native');
 
 const dig = (v) => native.digest(Buffer.from(typeof v === 'string' ? v : JSON.stringify(v) || String(v))).slice(0, 12);
@@ -52,6 +53,29 @@ function recQuietSafe(op, v, source) {
   try { rec(op, v, source); } finally { STATE.quietDepth = depth; }
 }
 
+/**
+ * True when a user frame -- the project's own code or a package under `<deps>/` -- is on the stack right now.
+ *
+ * `process.pid` and `process.ppid` are plain properties, so they are read synchronously at the reader's own site:
+ * a test that reads them, directly or through a dependency, always has a frame here (unlike a `time` event fired
+ * from a timer, which has none: audit G-1481, and why this filter is not applied to the facts in general).
+ * `sites.resolve()` answers null for the runner's own machinery and the engine's and '<node>' when no user frame
+ * is in reach at all, which is the same line src/provable.js' `watchedSite` draws.
+ *
+ * MEASURED (jest 29.7.0, --maxWorkers=2 on node/test/parallel-p041.test.js' iso fixture): inside a worker Node's
+ * own machinery reads `process.pid` while a test is running, at `<node>`, and the read was becoming an event of
+ * whichever test happened to be in flight. Nothing in the test or its packages asked for it, so the test's
+ * fingerprint differed between the serial run and the lanes -- and between one parallel run and the next, since
+ * which test is in flight when the runtime asks is a matter of timing. That is the engine's own claim (same
+ * fingerprints serial and parallel) broken by the engine's own bookkeeping.
+ */
+function byUserCode() {
+  const c = STATE.config;
+  if (!c || !c.sites) return true;   // sites are not being resolved: do not lose a real read
+  const site = STATE.quiet(() => sites.resolve());
+  return site !== null && site !== '<node>';
+}
+
 const OS_FACTS = ['hostname', 'userInfo', 'homedir', 'tmpdir', 'networkInterfaces', 'availableParallelism', 'totalmem',
   'freemem', 'loadavg', 'uptime', 'release', 'version', 'machine', 'getPriority', 'type', 'arch', 'endianness'];
 
@@ -79,7 +103,7 @@ function installProcessFacts(patcher, proc) {
     try {
       Object.defineProperty(proc, n, {
         configurable: true, enumerable: d.enumerable,
-        get() { if (STATE.testId !== null && STATE.quietDepth === 0) recQuietSafe(`process.${n}`, value); return value; },
+        get() { if (STATE.testId !== null && STATE.quietDepth === 0 && byUserCode()) recQuietSafe(`process.${n}`, value); return value; },
         set(v) { Object.defineProperty(proc, n, { value: v, writable: true, configurable: true, enumerable: d.enumerable }); },
       });
     } catch { /* keep */ }
