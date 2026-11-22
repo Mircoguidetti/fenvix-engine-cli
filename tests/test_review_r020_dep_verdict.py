@@ -89,10 +89,16 @@ def walk(pytester):
             o = {t["nodeid"]: t["outcome"] for t in o}
         return {k: (v["outcome"] if isinstance(v, dict) else v) for k, v in o.items()}
 
-    def go(bump):
+    def go(bump, recorded=True):
+        """`recorded=False`: the project loads something the general rule refuses, so nothing is recorded and
+        the wrong reuse this walk looks for cannot happen at all. The caller then says so, and says what the
+        engine refused -- the premise is not dropped, it moves to the caller."""
         cache = f"--det-cache={pytester.path / '.cachedir'}"
         r0, d0 = run(cache, "--det-cache-dists")
-        assert (d0.get("cache") or {}).get("recorded", 1), r0.stdout.str()
+        if recorded:
+            assert (d0.get("cache") or {}).get("recorded", 1), r0.stdout.str()
+        else:
+            assert not (d0.get("cache") or {}).get("recorded", 1), r0.stdout.str()
         bump()
         r1, d1 = run(cache, "--det-cache-dists")
         r2, d2 = run()  # fresh: no cache
