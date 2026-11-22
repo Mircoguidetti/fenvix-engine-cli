@@ -1,0 +1,36 @@
+{"runner": "jest", "kind": "flag", "query": "\"--runInBand\" filename:package.json", "page": 1, "total_count": 325120, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:09:32Z"}
+{"runner": "jest", "kind": "flag", "query": "runInBand path:.github/workflows", "page": 1, "total_count": 7072, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:09:41Z"}
+{"runner": "jest", "kind": "flag", "query": "maxWorkers 1 filename:jest.config.js", "page": 1, "total_count": 24160, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:09:50Z"}
+{"runner": "jest", "kind": "flag", "query": "maxWorkers 1 filename:jest.config.ts", "page": 1, "total_count": 14112, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:09:58Z"}
+{"runner": "jest", "kind": "flag+word", "query": "runInBand flaky", "page": 1, "total_count": 4488, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:10:08Z"}
+{"runner": "jest", "kind": "flag+word", "query": "runInBand database", "page": 1, "total_count": 56064, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:10:19Z"}
+{"runner": "jest", "kind": "flag+word", "query": "runInBand \"shared\"", "page": 1, "total_count": 45760, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:10:30Z"}
+{"runner": "jest", "kind": "flag+word", "query": "runInBand port", "page": 1, "total_count": 375808, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:10:39Z"}
+{"runner": "jest", "kind": "flag+word", "query": "maxWorkers 1 race", "page": 1, "total_count": 62336, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:10:50Z"}
+{"runner": "vitest", "kind": "flag", "query": "singleFork true filename:vitest.config.ts", "page": 1, "total_count": 3048, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:10:58Z"}
+{"runner": "vitest", "kind": "flag", "query": "singleThread true filename:vitest.config.ts", "page": 1, "total_count": 1626, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:11:11Z"}
+{"runner": "vitest", "kind": "flag", "query": "fileParallelism false filename:vitest.config.ts", "page": 1, "total_count": 31872, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:11:20Z"}
+{"runner": "vitest", "kind": "flag", "query": "fileParallelism false filename:vitest.config.mts", "page": 1, "total_count": 3116, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:11:28Z"}
+{"runner": "vitest", "kind": "flag+word", "query": "singleFork database", "page": 1, "total_count": 3672, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:11:36Z"}
+{"runner": "vitest", "kind": "flag+word", "query": "fileParallelism false database", "page": 1, "total_count": 21728, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:11:45Z"}
+{"runner": "vitest", "kind": "flag+word", "query": "singleFork flaky", "page": 1, "total_count": 2384, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:11:54Z"}
+{"runner": "node:test", "kind": "flag", "query": "\"--test-concurrency=1\"", "page": 1, "total_count": 58368, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:12:03Z"}
+{"runner": "pytest", "kind": "flag", "query": "\"-p no:xdist\"", "page": 1, "total_count": 6800, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:12:12Z"}
+{"runner": "pytest", "kind": "flag", "query": "\"-p no:xdist\" path:.github/workflows", "page": 1, "total_count": 209, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:12:20Z"}
+{"runner": "pytest", "kind": "flag", "query": "\"-n 0\" pytest path:.github/workflows", "page": 1, "total_count": 805, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:12:28Z"}
+{"runner": "pytest", "kind": "flag+word", "query": "\"no:xdist\" database", "page": 1, "total_count": 985, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:12:36Z"}
+{"runner": "pytest", "kind": "flag+word", "query": "\"no:xdist\" flaky", "page": 1, "total_count": 513, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:12:44Z"}
+{"runner": "go", "kind": "flag", "query": "\"go test\" \"-p 1\" filename:Makefile", "page": 1, "total_count": 3064, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:12:52Z"}
+{"runner": "go", "kind": "flag", "query": "\"go test\" \"-p 1\" path:.github/workflows", "page": 1, "total_count": 3888, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:13:01Z"}
+{"runner": "go", "kind": "flag", "query": "\"go test\" \"-parallel 1\"", "page": 1, "total_count": 4352, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:13:11Z"}
+{"runner": "go", "kind": "flag+word", "query": "\"go test\" \"-p 1\" database", "page": 1, "total_count": 15056, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:13:21Z"}
+{"runner": "go", "kind": "flag+word", "query": "\"go test\" \"-p 1\" race", "page": 1, "total_count": 17280, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:13:29Z"}
+{"runner": "cargo", "kind": "flag", "query": "\"--test-threads=1\" path:.github/workflows", "page": 1, "total_count": 8688, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:13:38Z"}
+{"runner": "cargo", "kind": "flag", "query": "\"--test-threads=1\" filename:Makefile", "page": 1, "total_count": 1542, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:13:46Z"}
+{"runner": "cargo", "kind": "flag+word", "query": "\"--test-threads=1\" database", "page": 1, "total_count": 23488, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:13:54Z"}
+{"runner": "cargo", "kind": "flag+word", "query": "\"--test-threads=1\" shared", "page": 1, "total_count": 55872, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:14:03Z"}
+{"runner": "ava", "kind": "flag", "query": "\"ava --serial\" filename:package.json", "page": 1, "total_count": 822, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:14:11Z"}
+{"runner": "tap", "kind": "flag", "query": "\"tap\" \"--jobs=1\" filename:package.json", "page": 1, "total_count": 113, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:14:19Z"}
+{"runner": "mocha", "kind": "flag", "query": "\"mocha\" \"--jobs 1\"", "page": 1, "total_count": 139, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:14:27Z"}
+{"runner": "playwright", "kind": "flag", "query": "workers 1 filename:playwright.config.ts", "page": 1, "total_count": 155392, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:14:36Z"}
+{"runner": "playwright", "kind": "flag+word", "query": "workers 1 filename:playwright.config.ts database", "page": 1, "total_count": 13408, "incomplete_results": false, "items": 100, "at": "2026-11-22T12:14:44Z"}

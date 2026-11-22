@@ -1,0 +1,987 @@
+{
+ "SynkraAI/aiox-core": {
+  "kind": "none",
+  "note": "step name names the test, not why it runs in band"
+ },
+ "stencila/encoda": {
+  "kind": "stated",
+  "category": "resource",
+  "note": "memory issues when parallel (hedged with '?')",
+  "file": ".github/workflows/ci.yml",
+  "line": 29,
+  "quote_check": "      #   - Run in band because appears to run more smoothly (avoids memory issues when running in parallel?)"
+ },
+ "BlitzWallet/BlitzWallet": {
+  "kind": "none",
+  "note": "blame commit is an unrelated squash; no reason"
+ },
+ "sohaibt/product-mode": {
+  "kind": "none",
+  "note": "CONTRIBUTING repeats the command without a reason"
+ },
+ "shenjianan97/persistent-agent-runtime": {
+  "kind": "none",
+  "note": "blame commit unrelated"
+ },
+ "nhsuk/nhsuk-frontend": {
+  "kind": "stated",
+  "category": "resource",
+  "note": "CPU usage",
+  "file": "jest.config.js",
+  "line": 35,
+  "quote_check": "  // Reduce CPU usage during project test runs"
+ },
+ "agent-sh/agentsys": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "race conditions on shared filesystem state",
+  "file": "jest.config.js",
+  "line": 50,
+  "quote_check": "  // Run tests sequentially - parallel workers cause race conditions on shared"
+ },
+ "carlrannaberg/claudekit": {
+  "kind": "stated",
+  "file": "vitest.config.ts",
+  "line": 64,
+  "category": "breakage",
+  "note": "single fork prevents orphaned workers (process hangs, see CHANGELOG)",
+  "quote_check": "      singleFork: true,  // All tests run in ONE child process (prevents orphaned workers)"
+ },
+ "CAPHTECH/kiri": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "lock file conflicts",
+  "file": "vitest.config.ts",
+  "line": 8,
+  "quote_check": "    // Force sequential test execution to avoid lock file conflicts"
+ },
+ "prisma/prisma-examples": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "commit that last touched the line: tests race on the same port range",
+  "file": "commit fcda24a0d44d9a8f0469654468613c128423940e",
+  "line": 23,
+  "quote_check": "tests still race on the same default port range."
+ },
+ "ChrisChen667788/wind-comic": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "parallel workers trigger 'database is locked'",
+  "file": "vitest.config.ts",
+  "line": 33,
+  "quote_check": "    // 并行 worker 会触发 \"database is locked\". 强制单 fork 串行运行测试文件."
+ },
+ "county-of-simcoe-gis/SimcoeCountyWebViewer": {
+  "kind": "none",
+  "note": "README hits unrelated"
+ },
+ "lerna-lite/lerna-lite": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "avoid conflicts",
+  "file": "e2e/vitest.config.ts",
+  "line": 5,
+  "quote_check": "    // E2E tests should run sequentially to avoid conflicts"
+ },
+ "orneryd/Mimir": {
+  "kind": "implied",
+  "note": "'Pool configuration for test isolation' describes the pool, not why it is serial",
+  "file": "vitest.config.ts",
+  "line": 16,
+  "quote_check": "    // Pool configuration for test isolation"
+ },
+ "Othmane-Khadri/YALC-the-GTM-operating-system": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "shared SQLite file, SQLITE_BUSY",
+  "file": "vitest.config.ts",
+  "line": 11,
+  "quote_check": "  // sporadic SQLITE_BUSY. Force single-worker execution for correctness."
+ },
+ "biggora/device-uuid": {
+  "kind": "none",
+  "note": "README hits unrelated"
+ },
+ "freedomofpress/securedrop-client": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "isolated server instances conflict",
+  "file": "app/vitest.config.ts",
+  "line": 71,
+  "quote_check": "          // Run test files sequentially to ensure isolated server instances don't conflict"
+ },
+ "ailinone/collective-intelligence": {
+  "kind": "implied",
+  "note": "comments restate 'sequential' and describe the pool's isolation",
+  "file": "api/vitest.config.ts",
+  "line": 62,
+  "quote_check": "    pool: 'forks',  // Use forks pool instead of threads for better isolation"
+ },
+ "freshtechbro/Vibe-Coder-MCP": {
+  "kind": "stated",
+  "file": "vitest.config.ts",
+  "line": 112,
+  "category": "breakage",
+  "note": "'for stability'",
+  "quote_check": "          singleFork: true, // Use single fork for stability"
+ },
+ "volarjs/volar.js": {
+  "kind": "none",
+  "note": "CHANGELOG hit unrelated"
+ },
+ "inkeep/agents": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "filesystem/process conflicts",
+  "file": "packages/create-agents/vitest.config.ts",
+  "line": 14,
+  "quote_check": "    // E2E tests need sequential execution to avoid filesystem/process conflicts"
+ },
+ "cardog-ai/corgi": {
+  "kind": "none",
+  "note": "README hits unrelated"
+ },
+ "n8design/htwoo": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "resource conflicts",
+  "file": "htwoo-core/vitest.config.ts",
+  "line": 22,
+  "quote_check": "    // Allow tests to run sequentially to avoid resource conflicts"
+ },
+ "s2b-dev/smart-second-brain": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "mock leakage between files",
+  "file": "vitest.config.ts",
+  "line": 33,
+  "quote_check": "\t\t// Isolate each test file to prevent mock leakage"
+ },
+ "proffesor-for-testing/agentic-qe": {
+  "kind": "stated",
+  "category": "resource",
+  "note": "OOM prevention",
+  "file": "vitest.config.ts",
+  "line": 53,
+  "quote_check": "    // OOM Prevention (Issue #294):"
+ },
+ "Kong/kongponents": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "Firefox races keyboard/focus input",
+  "file": "vitest.config.ts",
+  "line": 105,
+  "quote_check": "               * Firefox specifically (not Chromium/WebKit) races real keyboard/focus input"
+ },
+ "nuxt/scripts": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "commit: isolate e2e fixture processes",
+  "file": "commit 37259229e42f2eec95ccc56919753684416adc2f",
+  "line": 1,
+  "quote_check": "ci: isolate e2e fixture processes"
+ },
+ "provos/ironcurtain": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "commit: removes the trigger for the macOS teardown flake",
+  "file": "commit c2f51accd07dc2a4034ad959ddb5588e949fec72",
+  "line": 3,
+  "quote_check": "Removes the trigger for the macOS teardown flake (#363) instead of"
+ },
+ "nestjs/schematics": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "schematic runs share the collection loaded from disk",
+  "file": "vitest.config.ts",
+  "line": 11,
+  "quote_check": "    // Schematic runs share the collection loaded from disk; keep them in one"
+ },
+ "ndycode/codex-multi-auth": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "fixed-port OAuth callback",
+  "file": "vitest.config.ts",
+  "line": 42,
+  "quote_check": "    // (maxWorkers=1), which the fixed-port OAuth callback (1455) and other"
+ },
+ "replit/ruspty": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "commit: data race bug",
+  "file": "commit db9ac0a5f05894b9e3547ab7145ed0e33a8b5a54",
+  "line": 4,
+  "quote_check": "but did not eliminate it completely. we still see the data race bug very"
+ },
+ "mxfng/drumhaus": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "test-isolation flake",
+  "file": "vitest.config.ts",
+  "line": 54,
+  "quote_check": "          // master-bus Gain wiring (a test-isolation flake, not an engine"
+ },
+ "electron/forge": {
+  "kind": "none",
+  "note": "CHANGELOG hits unrelated"
+ },
+ "sqlectron/sqlectron": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "two test files share state",
+  "file": "vitest.config.mts",
+  "line": 11,
+  "quote_check": "    // test/browser/config.test.ts and test/browser/servers.test.ts share the"
+ },
+ "nteract/semiotic": {
+  "kind": "none",
+  "note": "CHANGELOG hits unrelated"
+ },
+ "jesec/flood": {
+  "kind": "none",
+  "note": "CHANGELOG hit unrelated"
+ },
+ "xiCO2k/laravel-vue-i18n": {
+  "kind": "none",
+  "note": "README hits unrelated"
+ },
+ "microsoft/griffel": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "concurrent yarn installs contend on the shared Yarn cache",
+  "file": "e2e/stylelint/vitest.config.mts",
+  "line": 20,
+  "quote_check": "    // Concurrent `yarn install`s contend on the shared Yarn cache. Keep the strictly sequential"
+ },
+ "argos-ci/argos": {
+  "kind": "none",
+  "note": "README hit unrelated"
+ },
+ "iamolegga/nestjs-pino": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "shared pino singletons race",
+  "file": "vitest.config.mts",
+  "line": 23,
+  "quote_check": "    // parallel makes the shared pino singletons race."
+ },
+ "GA-MO/react-confirm-alert": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "parallel files share one page",
+  "file": "vitest.config.mts",
+  "line": 27,
+  "quote_check": "    // One test file at a time. Parallel files share one page: the real keyboard, the mouse and"
+ },
+ "typesense/firestore-typesense-search": {
+  "kind": "none",
+  "note": "README hit unrelated"
+ },
+ "iamolegga/nestjs-roles": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "race for ports",
+  "file": "vitest.config.mts",
+  "line": 23,
+  "quote_check": "    // them race for ports."
+ },
+ "Rei-x/discord-speech-recognition": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "share the same two bots",
+  "file": "vitest.config.mts",
+  "line": 7,
+  "quote_check": "    // Integration tests share the same two bots, so they can't run at the same time"
+ },
+ "ethersphere/swarm-desktop": {
+  "kind": "none",
+  "note": "commit hit unrelated"
+ },
+ "ZimengXiong/ExcaliDash": {
+  "kind": "none",
+  "note": "commit hit unrelated"
+ },
+ "desci-labs/nodes": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "database side effects cause failures in parallel",
+  "file": "desci-server/vitest.config.ts",
+  "line": 23,
+  "quote_check": "        // Run tests sequentially. Required, as we throw side effects on the database which cause failures when running in parallel."
+ },
+ "beevibe-ai/beevibe": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "shared test database",
+  "file": "packages/core/vitest.config.ts",
+  "line": 11,
+  "quote_check": "    // Integration tests share the beevibe_test database and run serially to avoid"
+ },
+ "agentlang-ai/agentlang": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "SQLite database lock issues",
+  "file": "vitest.config.ts",
+  "line": 27,
+  "quote_check": "    // Run tests sequentially to prevent SQLite database lock issues"
+ },
+ "incubrain/foundry": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "race on @nuxt/content's SQLite database",
+  "file": "playground/vitest.e2e.config.ts",
+  "line": 16,
+  "quote_check": "    // against the same `rootDir`, and two of those alive at once race on"
+ },
+ "chdb-io/chdb-node": {
+  "kind": "none",
+  "note": "commit hit unrelated"
+ },
+ "iversonianGremling/SampleSolution": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "database conflicts",
+  "file": "backend/vitest.config.ts",
+  "line": 11,
+  "quote_check": "    // Run tests sequentially to avoid database conflicts"
+ },
+ "alakajam-team/alakajam": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "specs share a single sqlite database",
+  "file": "vitest.config.ts",
+  "line": 27,
+  "quote_check": "    // Specs share a single sqlite database"
+ },
+ "ndbroadbent/neat": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "test isolation issues (shared in-memory SQLite)",
+  "file": "vite.config.ts",
+  "line": 9,
+  "quote_check": "\t\t// Disable parallel execution between files to prevent test isolation issues"
+ },
+ "mirvasaarijarvi-lab/minnowbook": {
+  "kind": "implied",
+  "note": "flag is in scripts/ci/rerun-flaky.mjs: a flaky-test rerun script that does not say why the rerun is serial"
+ },
+ "johnlindquist/chromancer": {
+  "kind": "none",
+  "note": "README hit unrelated"
+ },
+ "alas-poor-ophelia/windrose-md": {
+  "kind": "none",
+  "note": "comment explains config equivalence, not why"
+ },
+ "kesslerio/attio-mcp-server": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "API rate limiting and data consistency (external rate limit counted as breakage)",
+  "file": "configs/vitest/vitest.config.e2e.ts",
+  "line": 34,
+  "quote_check": "        maxForks: 1, // Single fork for API rate limiting and data consistency"
+ },
+ "benedict2310/Scientific-Papers-MCP": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "rate limiting (external rate limit counted as breakage)",
+  "file": "vitest.config.ts",
+  "line": 45,
+  "quote_check": "    // Sequential execution for integration tests to avoid rate limiting"
+ },
+ "caidish/KlayoutClaw": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "race for the same MCP socket",
+  "file": "agent/vitest.e2e.config.ts",
+  "line": 11,
+  "quote_check": "    // subprocesses race for the same KLayout MCP socket; single-fork keeps"
+ },
+ "vcon-dev/vcon-mcp": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "avoid conflicts",
+  "file": "vitest.config.e2e.ts",
+  "line": 12,
+  "quote_check": "    // Run tests sequentially to avoid conflicts"
+ },
+ "sdsrss/code-graph-mcp": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "shared on-disk cache state, flakes under parallelism",
+  "file": "Makefile",
+  "line": 63,
+  "quote_check": "# --test-concurrency=1: cg-answer + find-binary share on-disk resolution cache"
+ },
+ "kobotoolbox/kpi": {
+  "kind": "not_serial",
+  "note": "conftest.py:176 mentions `-p no:xdist` in a docstring; not an executed flag"
+ },
+ "vortico/flama": {
+  "kind": "none",
+  "note": "performance script; commit says 'speed up', no reason for serial"
+ },
+ "ros-claw/rosclaw": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "resource-sensitive suite: wall-clock timing and embedded engine",
+  "file": ".github/workflows/ci.yml",
+  "line": 341,
+  "quote_check": "      - name: Run resource-sensitive suite (serial — wall-clock and embedded engine)"
+ },
+ "ypollak2/llm-router": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "timing-sensitive tests (event-loop lag, short timeouts) kept out of the parallel job",
+  "file": "CHANGELOG.md",
+  "line": 1044,
+  "quote_check": "  event-loop lag, short real timeouts, sleep ordering). 129 test functions in 54 files carry it; the parallel `test` job runs"
+ },
+ "proteustoolkit/proteus": {
+  "kind": "stated",
+  "category": "other",
+  "note": "deliberate canary that runs the suite serially to detect order/isolation regressions; not to avoid breakage",
+  "file": ".github/workflows/pytest-ways.yml",
+  "line": 30,
+  "quote_check": "          # one process, file order: no worker isolation at all"
+ },
+ "starsimhub/starsim": {
+  "kind": "stated",
+  "category": "breakage",
+  "note": "timing in parallel with other tests is unreliable",
+  "file": ".github/workflows/benchmarks.yml",
+  "line": 49,
+  "quote_check": "      - name: Run the performance guard # Alone, since timing in parallel with other tests is unreliable; against the baselines for ci-linux-x86_64 in tests/perf_guard.yaml, which a first run prints to add"
+ },
+ "shapiromatron/hawc": {
+  "kind": "none",
+  "note": "blame commit adds xdist for speed; nothing says why integration stays serial"
+ },
+ "expatfile/next-runtime-env": {
+  "kind": "none",
+  "note": "step name only"
+ },
+ "cezaraugusto/mklicense": {
+  "kind": "stated",
+  "file": "vitest.config.ts",
+  "line": 7,
+  "quote_check": "    // Avoid Node.js 23 + tinypool recursion by using process forks",
+  "category": "breakage",
+  "note": "avoid Node 23 + tinypool recursion (runner breaks under the default pool)"
+ },
+ "PostHog/posthog-js": {
+  "kind": "none",
+  "note": "CONTRIBUTING hit unrelated"
+ },
+ "ruvnet/QuDAG": {
+  "kind": "none",
+  "note": "comment is about crate features"
+ },
+ "withastro/prettier-plugin-astro": {
+  "kind": "none",
+  "note": "README hit unrelated"
+ },
+ "readmeio/fetch-har": {
+  "kind": "stated",
+  "file": "vitest.config.mts",
+  "line": 6,
+  "quote_check": "    // run together overrun that and the extras come back as 429s. test/setup.ts",
+  "category": "breakage",
+  "note": "httpbin rate limit: parallel files get 429s (external rate limit counted as breakage)"
+ },
+ "awslabs/unified-kg-rag-on-aws": {
+  "kind": "stated",
+  "file": ".github/workflows/hypothesis-explore.yml",
+  "line": 49,
+  "quote_check": "        # The `perf` tests assert how run time grows with input size. Shared",
+  "category": "breakage",
+  "note": "perf tests assert run-time growth; shared runner timing"
+ },
+ "et-do/myelin": {
+  "kind": "none",
+  "note": "doc restates 'runs serially' for a benchmark without saying why"
+ },
+ "google/cybernetic-agent-governance-engine": {
+  "kind": "not_serial",
+  "note": "flag is on a pytest --collect-only invocation, not a test run"
+ },
+ "langflow-ai/langflow": {
+  "kind": "none",
+  "note": "blame commit unrelated"
+ },
+ "marin-community/marin": {
+  "kind": "none",
+  "note": "step name and blame commit do not say why"
+ },
+ "DanielH2018/server": {
+  "kind": "stated",
+  "file": "commit cf125ccd35c276f38427fbcd509125db44e2ce23",
+  "line": 16,
+  "quote_check": "`-n 0` keeps the image pulls on one process. The step needs Docker, so the",
+  "category": "other",
+  "note": "commit: -n 0 keeps the Docker image pulls on one process"
+ },
+ "litestar-org/litestar": {
+  "kind": "none",
+  "note": "benchmark job; nothing says why -n 0"
+ },
+ "polyipseity/obsidian-terminal": {
+  "kind": "none",
+  "note": "blame commit unrelated"
+ },
+ "psi-oss/get-physics-done": {
+  "kind": "stated",
+  "file": "CONTRIBUTING.md",
+  "line": 71,
+  "quote_check": "Focused single-file and small targeted checks use `-n 0` so they do not pay xdist startup cost from the global default. `uv run pytest tests/ -q` is the fast local full checked-in suite. GitHub Actions runs the same suite as category-named shards resolved by `tests/ci_sharding.py`; each shard runs `uv run pytest -q --durations=20 --durations-min=1.0 \"${PYTEST_TARGETS[@]}\"` with a 180 second per-shard budget.",
+  "category": "resource",
+  "note": "avoid xdist startup cost for small targeted runs"
+ },
+ "microsoft/conductor": {
+  "kind": "none",
+  "note": "README/commit lines are about other commands"
+ },
+ "vyperlang/titanoboa": {
+  "kind": "stated",
+  "file": ".github/workflows/integration.yaml",
+  "line": 58,
+  "quote_check": "        # disable xdist, otherwise they can contend for tx nonce",
+  "category": "breakage",
+  "note": "workers contend for tx nonce"
+ },
+ "dlt-hub/dlt": {
+  "kind": "none",
+  "note": "blame commit title only"
+ },
+ "gabriel-dahan/vadermap": {
+  "kind": "none",
+  "note": "comment belongs to the parallel target, not the serial line"
+ },
+ "zzstoatzz/plyr.fm": {
+  "kind": "implied",
+  "note": "comment says the serial path is not what CI runs; does not say why it is serial",
+  "file": "backend/justfile",
+  "line": 29,
+  "quote_check": "# NOT what CI runs: the serial path skips the template database, the advisory"
+ },
+ "devdanzin/laruche": {
+  "kind": "stated",
+  "file": "README.md",
+  "line": 389,
+  "quote_check": "  add `-p no:xdist` to the test command. Parallel workers mask JIT crashes.",
+  "category": "other",
+  "note": "parallel workers mask JIT crashes (serial to detect crashes, not to avoid breakage)"
+ },
+ "apoapsis138/armarius": {
+  "kind": "not_serial",
+  "note": "flag is inside a message string in tools/story_check.py, not an executed command"
+ },
+ "fink/fink-distributions": {
+  "kind": "implied",
+  "note": "flaky-test comments sit next to the flag but do not say why xdist is off",
+  "file": "10.9-libcxx/stable/main/finkinfo/libs/pythonmods/pexpect-py.info",
+  "line": 56,
+  "quote_check": "\t\t# test_spawn_uses_env: flaky see #510"
+ },
+ "mikelane/pytest-gremlins": {
+  "kind": "not_serial",
+  "note": "flag is in a docstring of plugin.py"
+ },
+ "netlify/gotrue": {
+  "kind": "stated",
+  "file": "CONTRIBUTING.md",
+  "line": 69,
+  "quote_check": "Tests run sequentially (`-p 1`) to avoid database conflicts. All tests use the `hack/test.env` configuration, which points to the `gotrue_test` database with table names prefixed by `test_`.",
+  "category": "breakage",
+  "note": "sequential to avoid database conflicts"
+ },
+ "digitalocean/firebolt": {
+  "kind": "stated",
+  "file": "commit 85a4fa075666714e9f070d644ba4253160b9c6cf",
+  "line": 33,
+  "quote_check": "* Try without parallel execution to avoid cross test race at int test time",
+  "category": "breakage",
+  "note": "commit: avoid cross test race"
+ },
+ "heedy/heedy": {
+  "kind": "none",
+  "note": "README hit is a docker port flag"
+ },
+ "ConduitIO/conduit": {
+  "kind": "stated",
+  "file": "commit 067beb990d9956c28c969a0c39eb17d36257e693",
+  "line": 1,
+  "quote_check": "ci(test): run memory-heavy test packages serially to stop runner OOM kills (#3224)",
+  "category": "resource",
+  "note": "commit: stop runner OOM kills"
+ },
+ "signalfx/splunk-otel-collector": {
+  "kind": "stated",
+  "file": "Makefile",
+  "line": 25,
+  "quote_check": "# Currently integration tests are flakey when run in parallel due to internal metric and config server conflicts",
+  "category": "breakage",
+  "note": "flakey in parallel: metric and config server conflicts"
+ },
+ "orneryd/NornicDB": {
+  "kind": "stated",
+  "file": "Makefile",
+  "line": 837,
+  "quote_check": "\t# so Cypher, storage and server do not compete for the same memory budget.",
+  "category": "resource",
+  "note": "do not compete for the same memory budget"
+ },
+ "netobserv/flowlogs-pipeline": {
+  "kind": "implied",
+  "note": "nearby comment explains the missing -race flag, not -p 1",
+  "file": "Makefile",
+  "line": 175,
+  "quote_check": "\t# tests may rely on non-thread safe libs such as go-ipfix => no -race flag"
+ },
+ "RedHatInsights/quickstarts": {
+  "kind": "stated",
+  "file": "docs/testing-guidelines.md",
+  "line": 53,
+  "quote_check": "**Important**: Use `-p 1` (or `make test-pg`) when running against PostgreSQL. By default `go test ./...` runs packages in parallel, which causes race conditions on the shared test database (concurrent `TRUNCATE`/`INSERT` across packages). The `-p 1` flag serialises package execution.",
+  "category": "breakage",
+  "note": "race conditions on the shared test database"
+ },
+ "alibaba/MongoShake": {
+  "kind": "none",
+  "note": "step name and blame commit do not say why"
+ },
+ "peer-calls/peer-calls": {
+  "kind": "stated",
+  "file": "commit 40e0b6a918613210e760c6f6c1c47788d4551a57",
+  "line": 5,
+  "quote_check": "Add go test -p 1 flag to fix issues with goroutne leak check. But it",
+  "category": "breakage",
+  "note": "commit: -p 1 fixes goroutine leak check issues"
+ },
+ "MAX-API-Next/MAX-API": {
+  "kind": "stated",
+  "file": ".github/workflows/ci.yml",
+  "line": 54,
+  "quote_check": "        # package budget on shared runners. Bound package concurrency as well.",
+  "category": "resource",
+  "note": "package budget on shared runners"
+ },
+ "padovanl/portop": {
+  "kind": "none",
+  "note": "blame commit about annotations"
+ },
+ "elazarl/goproxy": {
+  "kind": "implied",
+  "note": "nearby comment explains -count=2, not -p 1",
+  "file": ".github/workflows/go.yml",
+  "line": 32,
+  "quote_check": "        # -count=2 ensures that test fixtures cleanup after themselves"
+ },
+ "metavert-io/lastsaas": {
+  "kind": "stated",
+  "file": "commit b80e6597d5846c48a9e215882a6e8a7efabd7e7d",
+  "line": 1,
+  "quote_check": "Run test packages serially (-p 1) to avoid shared DB races",
+  "category": "breakage",
+  "note": "commit: shared DB races"
+ },
+ "colonyos/colonies": {
+  "kind": "none",
+  "note": "step name only"
+ },
+ "go-freebsd/pf": {
+  "kind": "stated",
+  "file": ".github/workflows/ci.yml",
+  "line": 67,
+  "quote_check": "              # The tests change the packet filter rules of the VM: they need",
+  "category": "breakage",
+  "note": "tests change the VM's packet filter rules"
+ },
+ "drakkan/sftpgo": {
+  "kind": "none",
+  "note": "step name only"
+ },
+ "storj/storj": {
+  "kind": "none",
+  "note": "blame commit about CI stage ordering"
+ },
+ "erpc/erpc": {
+  "kind": "none",
+  "note": "matched line is a command, not a comment"
+ },
+ "brexhq/CrabTrap": {
+  "kind": "none",
+  "note": "docs mention a PostgreSQL service but do not say why -p 1"
+ },
+ "autopus-ai/autopus-adk": {
+  "kind": "stated",
+  "file": "Makefile",
+  "line": 63,
+  "quote_check": "# pass with the same -race assertions in isolation, not under competing launches.",
+  "category": "breakage",
+  "note": "pass in isolation, not under competing launches"
+ },
+ "qxcnm/Codex-Manager": {
+  "kind": "none",
+  "note": "step name and blame commit do not say why"
+ },
+ "filecoin-project/rust-fil-proofs": {
+  "kind": "none",
+  "note": "'isolated' is a feature name"
+ },
+ "amethyst/distill": {
+  "kind": "implied",
+  "note": "TODO about tests failing on macOS CI does not say why single-threaded",
+  "file": ".github/workflows/ci.yml",
+  "line": 45,
+  "quote_check": "      #TODO: macOS has tests are failing in github CI, but are not reproducing elsewhere"
+ },
+ "knurling-rs/flip-link": {
+  "kind": "none",
+  "note": "README hit unrelated"
+ },
+ "samwhosung/benilla": {
+  "kind": "stated",
+  "file": ".github/workflows/ci.yml",
+  "line": 89,
+  "quote_check": "      - name: name the test a crash took down",
+  "category": "other",
+  "note": "single thread so a crash names the test (diagnosability)"
+ },
+ "keystone-engine/keystone": {
+  "kind": "stated",
+  "file": "bindings/rust/Makefile",
+  "line": 21,
+  "quote_check": "# \tMake sure to only use one test thread as keystone isn't thread-safe",
+  "category": "breakage",
+  "note": "keystone isn't thread-safe"
+ },
+ "simeg/eureka": {
+  "kind": "stated",
+  "file": "commit fd021628261cc3e470b3277339fc14c5fd383f86",
+  "line": 3,
+  "quote_check": "Because the ConfigManager tests uses an env variable they collide with",
+  "category": "breakage",
+  "note": "commit: tests using an env variable collide"
+ },
+ "glommer/pgmicro": {
+  "kind": "stated",
+  "file": "commit 6c7abc5caa6cc07ce6547e10154fd1f129620ed4",
+  "line": 1,
+  "quote_check": "Serialize compat tests to prevent file locking failures",
+  "category": "breakage",
+  "note": "commit: prevent file locking failures"
+ },
+ "sysid/bkmr": {
+  "kind": "none",
+  "note": "TESTING.md repeats the command"
+ },
+ "concourse/concourse": {
+  "kind": "none",
+  "note": "CONTRIBUTING hit unrelated"
+ },
+ "gajus/roarr": {
+  "kind": "none",
+  "note": "README hit is 'serialize'"
+ },
+ "Hubs-Foundation/Spoke": {
+  "kind": "none",
+  "note": "docs hits are 'serialize'"
+ },
+ "gajus/liqe": {
+  "kind": "none",
+  "note": "README hits are 'serializer'"
+ },
+ "brettz9/integrity-matters": {
+  "kind": "none",
+  "note": "doc/commit hits unrelated to the serial flag"
+ },
+ "AtlasFoundation/XREngine": {
+  "kind": "none",
+  "note": "doc/commit hits unrelated to the serial flag"
+ },
+ "K-MkrOps/Atlas": {
+  "kind": "none",
+  "note": "doc/commit hits unrelated to the serial flag"
+ },
+ "514-labs/moosestack": {
+  "kind": "none",
+  "note": "doc/commit hits unrelated to the serial flag"
+ },
+ "ongamse/ethereal_engine": {
+  "kind": "none",
+  "note": "doc/commit hits unrelated to the serial flag"
+ },
+ "Benjamintomlin90/Minikube": {
+  "kind": "none",
+  "note": "doc/commit hits unrelated to the serial flag"
+ },
+ "Dipak-G-Dev/ReactDeveloper": {
+  "kind": "none",
+  "note": "doc/commit hits unrelated to the serial flag"
+ },
+ "Benjamintomlin90/XREngine": {
+  "kind": "none",
+  "note": "doc/commit hits unrelated to the serial flag"
+ },
+ "emberyio/pawcity-client": {
+  "kind": "none",
+  "note": "doc/commit hits unrelated to the serial flag"
+ },
+ "cryptobuks/xrengine-dev": {
+  "kind": "none",
+  "note": "doc/commit hits unrelated to the serial flag"
+ },
+ "Polynomial-Protocol/fx-contracts": {
+  "kind": "none",
+  "note": "doc/commit hits unrelated to the serial flag"
+ },
+ "esmnext/esmx": {
+  "kind": "none",
+  "note": "doc/commit hits unrelated to the serial flag"
+ },
+ "shumaiOne/shumai": {
+  "kind": "none",
+  "note": "doc/commit hits unrelated to the serial flag"
+ },
+ "CarlosCommits/stackray": {
+  "kind": "none",
+  "note": "doc/commit hits unrelated to the serial flag"
+ },
+ "hyperwallet/node-sdk": {
+  "kind": "stated",
+  "file": "commit eccf40b9e46b9a09278148a716fea68f1bc4a08f",
+  "line": 5,
+  "quote_check": "* LI-116181 fix JavaScript heap out of memory",
+  "category": "resource",
+  "note": "commit: fix JavaScript heap out of memory"
+ },
+ "tahowallet/extension": {
+  "kind": "stated",
+  "file": "playwright.config.ts",
+  "line": 33,
+  "quote_check": "   * Opt out of parallel tests since we interact with real APIs during testing",
+  "category": "breakage",
+  "note": "tests interact with real APIs"
+ },
+ "portel-dev/photon": {
+  "kind": "stated",
+  "file": "playwright.config.ts",
+  "line": 12,
+  "quote_check": "  workers: 1, // Single worker to avoid port conflicts",
+  "category": "breakage",
+  "note": "avoid port conflicts"
+ },
+ "eilinwis/playwright-chat-lab": {
+  "kind": "stated",
+  "file": "playwright.config.ts",
+  "line": 22,
+  "quote_check": "  /* One worker on CI so a failure's output isn't interleaved with three",
+  "category": "other",
+  "note": "one worker on CI so failure output is not interleaved (readability)"
+ },
+ "gajus/teemux": {
+  "kind": "stated",
+  "file": "playwright.config.ts",
+  "line": 15,
+  "quote_check": "  workers: 1, // Single worker to avoid port conflicts",
+  "category": "breakage",
+  "note": "avoid port conflicts"
+ },
+ "lyestarzalt/x-dispatch": {
+  "kind": "stated",
+  "file": "playwright.config.ts",
+  "line": 16,
+  "quote_check": "  // Electron tests can't run in parallel — they all spawn the same",
+  "category": "breakage",
+  "note": "Electron tests share the same executable and binary cache"
+ },
+ "dtbaker/ucm": {
+  "kind": "stated",
+  "file": "playwright.config.ts",
+  "line": 48,
+  "quote_check": "  // Both failures are the shared fixtures being used from two places at once, and",
+  "category": "breakage",
+  "note": "shared fixtures used from two places at once"
+ },
+ "powerlive-io/JoiAsk": {
+  "kind": "stated",
+  "file": "playwright.config.ts",
+  "line": 7,
+  "quote_check": "  // Tests modify shared site settings; keep the disposable database serial.",
+  "category": "breakage",
+  "note": "tests modify shared site settings"
+ },
+ "cmnord/jep": {
+  "kind": "stated",
+  "file": "playwright.config.ts",
+  "line": 16,
+  "quote_check": "  // The suite shares an account and database; serialize it without file filters.",
+  "category": "breakage",
+  "note": "suite shares an account and database"
+ },
+ "IamRamgarhia/All-In-One-Free-SEO-Tool": {
+  "kind": "stated",
+  "file": "playwright.config.ts",
+  "line": 20,
+  "quote_check": "  // specs would fight over the same rows and the same write lock.",
+  "category": "breakage",
+  "note": "parallel specs fight over rows and the write lock"
+ },
+ "jordanlambrecht/tracker-tracker": {
+  "kind": "stated",
+  "file": "playwright.config.ts",
+  "line": 25,
+  "quote_check": "  // One database, one worker: the serial tracker flow shares a row.",
+  "category": "breakage",
+  "note": "serial flow shares a database row"
+ },
+ "txstate-etc/featured-search-results": {
+  "kind": "stated",
+  "file": "playwright.config.ts",
+  "line": 19,
+  "quote_check": "  // Tests share seeded database state, so keep them on one worker.",
+  "category": "breakage",
+  "note": "tests share seeded database state"
+ },
+ "krushit1307/CampusConnect": {
+  "kind": "stated",
+  "file": "playwright.config.ts",
+  "line": 22,
+  "quote_check": "  /* Opt out of parallel tests on CI to prevent database connection exhaustion */",
+  "category": "breakage",
+  "note": "prevent database connection exhaustion (shared service limit counted as breakage)"
+ },
+ "humanlogs/humanlogs.app": {
+  "kind": "stated",
+  "file": "playwright.config.ts",
+  "line": 21,
+  "quote_check": "  // The suite shares one app + one database; parallel workers would race on the",
+  "category": "breakage",
+  "note": "parallel workers would race on the shared app and database"
+ },
+ "HomuraCatMadoka/CUpedia": {
+  "kind": "stated",
+  "file": "playwright.config.ts",
+  "line": 63,
+  "quote_check": "  // jobs/databases instead of racing shared fixtures in one process.",
+  "category": "breakage",
+  "note": "racing shared fixtures in one process"
+ },
+ "chrisinajar/proofofcombat": {
+  "kind": "stated",
+  "file": "playwright.config.ts",
+  "line": 13,
+  "quote_check": "  workers: 1, // We need this to be 1 because we're using a single database",
+  "category": "breakage",
+  "note": "single database"
+ },
+ "Doritozz05/Visus": {
+  "kind": "stated",
+  "file": "playwright.config.ts",
+  "line": 10,
+  "quote_check": "  workers: 1, // Single worker to avoid database races in IndexedDB",
+  "category": "breakage",
+  "note": "database races in IndexedDB"
+ }
+}
