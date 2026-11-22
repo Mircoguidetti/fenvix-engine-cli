@@ -269,7 +269,7 @@ pub fn account(module: &str, qualname: &str) -> Accounting {
         "_socket" | "socket" => socket_account(name),
         "_thread" | "threading" => thread_account(name),
         "_random" | "random" => random_account(name),
-        "select" | "_selectors" | "selectors" => Accounting::Unaccounted, // I/O readiness: uncontrolled.io
+        "select" | "_selectors" | "selectors" => select_account(qualname, name),
         "_sqlite3" | "sqlite3" => sqlite_account(name),
         "sys" => sys_account(name),
         "gc" => gc_account(name),
@@ -512,6 +512,31 @@ fn posix_account(qualname: &str, name: &str) -> Accounting {
         "uname_result" | "stat_result" | "statvfs_result" | "terminal_size" | "times_result"
         | "waitid_result" | "sched_param" => Accounting::Input,
         // extended attributes, resource limits, scheduling, the user database, terminal size: no event today
+        _ => Accounting::Unaccounted,
+    }
+}
+
+/// `select` and `selectors`: readiness, which is timing.
+///
+/// The ANSWER -- which descriptors are ready now -- is `uncontrolled.io` and stays refused. What is named here
+/// is the object's own lifecycle: creating a poller and registering or unregistering a descriptor with it reads
+/// nothing outside the process and returns nothing about the outside world. They are named because the standard
+/// library's `subprocess` creates a poller for every child whose output is captured, so a test doing
+/// `subprocess.run(..., capture_output=True)` was refused for having constructed one.
+/// MEASURED on this branch, a test that captures a child's output: the refused names were exactly
+/// `api:select.poll`, `api:select.poll.register` and `api:select.poll.unregister` -- the lifecycle, never the
+/// wait. The wait itself (`poll.poll`, `select.select`, `epoll.poll`, `EpollSelector.select`, ...) is not named
+/// here, so a test that waits for readiness is still NOT PROVEN.
+fn select_account(qualname: &str, name: &str) -> Accounting {
+    // `poll` is the name of BOTH the poller type and its wait (`select.poll` against `select.poll.poll`), and
+    // `account` compares the last component only, so this one has to look at the owner: a bare name is the
+    // type, an owned name is a method of it. Getting that wrong either way would be a false green.
+    let owned = qualname.contains('.');
+    match (owned, name) {
+        (false, "poll" | "devpoll" | "epoll" | "kqueue") => Accounting::Pure,
+        (true, "register" | "unregister" | "modify" | "close" | "fileno" | "closed" | "get_map" | "__init__"
+            | "__new__" | "__enter__" | "__exit__") => Accounting::Pure,
+        // the readiness answer: `poll.poll`, `select.select`, `epoll.poll`, a selector's `select`, ...
         _ => Accounting::Unaccounted,
     }
 }
@@ -1350,6 +1375,22 @@ pub fn judge_record(
 
 #[cfg(test)]
 mod tests {
+
+    /// `poll` names both the poller type and its wait. Constructing a poller reads nothing; waiting for
+    /// readiness is timing. The table compares the last component of a qualified name, so this pair is the
+    /// place where that is not enough, and a mistake either way is a false green or a refused ordinary test.
+    #[test]
+    fn a_poller_may_be_built_but_its_readiness_answer_is_never_accounted() {
+        assert_eq!(account("select", "poll"), Accounting::Pure);
+        assert_eq!(account("select", "epoll"), Accounting::Pure);
+        assert_eq!(account("select", "poll.register"), Accounting::Pure);
+        assert_eq!(account("select", "poll.unregister"), Accounting::Pure);
+        // the wait, under every spelling
+        assert_eq!(account("select", "poll.poll"), Accounting::Unaccounted);
+        assert_eq!(account("select", "epoll.poll"), Accounting::Unaccounted);
+        assert_eq!(account("select", "select"), Accounting::Unaccounted);
+        assert_eq!(account("selectors", "EpollSelector.select"), Accounting::Unaccounted);
+    }
 
     /// A method of a C type is named `Type.method`, and the table compares the LAST component of a qualified
     /// name. Every arm that named a type was therefore dead code, and `os.walk` paid for it: MEASURED on this
