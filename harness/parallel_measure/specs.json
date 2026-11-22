@@ -269,5 +269,18 @@
   "ci_parallel": false,
   "plan_verdict": false,
   "why_outside": "Python candidate removed from the queue on 2026-11-22 (founder decision D14: Node only until 28 November); not measured"
+ },
+ "yalc": {
+  "repo": "https://github.com/Othmane-Khadri/YALC-the-GTM-operating-system",
+  "commit": "5686d1f2f526346133f78eef3349fc5a655757b4",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/YALC-the-GTM-operating-system",
+  "fenvix_python": "$PM_WORK/venv/engine/bin/python",
+  "args": [],
+  "ci": "DECLARED vitest.config.ts:7-16 pool forks, forks.singleFork: true, fileParallelism: false (shared SQLite file gtm-os.db, libsql single-writer lock: 'running files in parallel workers causes sporadic SQLITE_BUSY'); .github/workflows/ci.yml:22 pnpm test = vitest run",
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts; (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace). The candidates.json pnpm@9 (= CI ci.yml:15 version 9) fails here: 'packages field missing or empty' in pnpm-workspace.yaml. vitest.globalSetup.ts spawns `pnpm exec drizzle-kit push`: pnpm 10.28.0 on PATH",
+  "ci_parallel": false,
+  "plan_verdict": true
  }
 }
