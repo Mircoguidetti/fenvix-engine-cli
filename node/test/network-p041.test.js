@@ -514,7 +514,17 @@ for (const runner of RUNNERS) {
     assert.deepEqual({ node: got(dir, 'node'), better: got(dir, 'better') }, first, 'the same values in a second run');
     save(dir, 'run2.jsonl');
     const rep = verify(dir, 'run1.jsonl', 'run2.jsonl');
-    assert.equal(rep.summary.stable, rep.summary.tests, divergences(rep).join('\n'));
+    // Nothing diverged: every value this gap is about is the same in both runs (asserted above, and here by the
+    // verifier). What is NOT claimed is `better-sqlite3`: it is a native addon, so the general rule refuses to
+    // call its test IDENTICAL -- it loads prebuilds/*.node (vitest's leg reports the process.dlopen behind it as
+    // well), and whatever a native addon reads, no wrapper sees. That is row JS-09 working, not a regression, so
+    // this test states it instead of asking for a green the rule cannot honestly give.
+    assert.equal(divergences(rep).length, 0, divergences(rep).join('\n'));
+    assert.equal(rep.summary.diverged, 0, JSON.stringify(rep.summary));
+    const notProven = rep.tests.filter((t) => t.status === 'not-proven').map((t) => t.nodeid);
+    const native = first.better === 'absent' ? [] : [rep.tests.map((t) => t.nodeid).find((id) => /better sqlite3/.test(id))];
+    assert.deepEqual(notProven, native, `only the native-addon test is NOT PROVEN: ${JSON.stringify(rep.summary)}`);
+    assert.equal(rep.summary.stable, rep.summary.tests - native.length, JSON.stringify(rep.summary));
   });
 }
 
