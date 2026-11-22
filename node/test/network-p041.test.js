@@ -524,6 +524,16 @@ for (const runner of RUNNERS) {
     const notProven = rep.tests.filter((t) => t.status === 'not-proven').map((t) => t.nodeid);
     const native = first.better === 'absent' ? [] : [rep.tests.map((t) => t.nodeid).find((id) => /better sqlite3/.test(id))];
     assert.deepEqual(notProven, native, `only the native-addon test is NOT PROVEN: ${JSON.stringify(rep.summary)}`);
+    // and it is NOT PROVEN for the load this exemption is about, not for anything else: without this the test
+    // lets that one node id off for ANY cause (reviewer finding 1). `native` names the addon file itself
+    // (jest's leg); vitest's leg names the `process.dlopen` behind the same load first and calls it `api`.
+    // A different cause -- a table entry gone missing, `process.binding`, `wasi.WASI` -- fails here.
+    for (const id of native) {
+      const t = rep.tests.find((x) => x.nodeid === id);
+      const d = (t && t.divergence) || {};
+      assert.match(String(d.reason), /^(native|api)$/, `${id}: NOT PROVEN for ${JSON.stringify(d)}`);
+      assert.match(String(d.description), /better.sqlite3|process\.dlopen/, `${id}: NOT PROVEN for ${JSON.stringify(d)}`);
+    }
     assert.equal(rep.summary.stable, rep.summary.tests - native.length, JSON.stringify(rep.summary));
   });
 }

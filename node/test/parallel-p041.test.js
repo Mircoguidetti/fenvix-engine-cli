@@ -548,8 +548,7 @@ for (const v of VERSIONS) {
       assert.equal(p1.status, 0, show(p1));
       assert.deepEqual(plan(p1).lanes, plan(p2).lanes);
       assert.deepEqual(p1.trace.header.meta.parallel.placement.deviations, [], show(p1));
-      assert.deepEqual(fps(p1), fps(s));
-      // Why the line above used to fail on jest@29.7.0 in lanes and not serially: inside a worker Node's own
+      // Why the comparison below used to fail on jest@29.7.0 in lanes and not serially: inside a worker Node's own
       // machinery reads `process.pid` while a test is running, and the read was recorded as an event of whichever
       // test was in flight -- at site `<node>`, with no user frame behind it. The fingerprint then depended on
       // timing, which is the engine's own claim broken by the engine's own bookkeeping. src/facts.js now records
@@ -561,6 +560,7 @@ for (const v of VERSIONS) {
           .map((e) => `${t.nodeid}: ${e.o} at ${e.at || '<empty>'}`));
         assert.deepEqual(ghosts, [], `a process id read by nobody's code became an event:\n${ghosts.join('\n')}`);
       }
+      assert.deepEqual(fps(p1), fps(s));
       if (v.runner === 'jest') assert.deepEqual(p1.trace.header.meta.parallel.placement.processes.sort(), plan(p1).lanes.slice().sort());
       const cache = path.join(dir, '.cache');
       const c1 = det(v.runner, dir, [...args, `--det-cache=${cache}`]);
