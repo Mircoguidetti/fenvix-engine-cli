@@ -58,9 +58,9 @@ def test_key_dump_does_not_change_the_cache(pytester, run_cache):
     run_cache(f"--det-cache-keys={pytester.path / 'k1.json'}")
     # the dump path is not configuration: a run with another path (or none) reuses the passing test
     r, reused, _ = run_cache(f"--det-cache-keys={pytester.path / 'k2.json'}")
-    assert reused == ids("test_f")
+    assert reused == set()  # review R-050 P2 (b): it runs before a test that may consume its state (never cached, failed or new) (test_g_fails carries test_f)
     r, reused, _ = run_cache()
-    assert reused == ids("test_f")
+    assert reused == set()  # review R-050 P2 (b): it runs before a later test that may consume its state (never cached or failed)
 
 
 def test_key_dump_records_startup_python_variables(pytester, run_cache, monkeypatch):
@@ -72,9 +72,8 @@ def test_key_dump_records_startup_python_variables(pytester, run_cache, monkeypa
     assert "PYTHONWARNINGS" in d["interpreter"]["env"]
 
 
-@pytest.mark.xfail(strict=True, reason="validation finding (exact culprit, 2026-11-18): PYTHONWARNINGS and the other "
-                   "interpreter start-up settings are read by C, not through os.environ, and are in neither the "
-                   "configuration nor the runtime digest, so a pass recorded without them is reused with them")
+# validation finding (exact culprit, 2026-11-18), fixed by py-cache F-05: the process environment (PYTHONWARNINGS
+# among it) and sys.warnoptions are part of every key (_proof.process_identity)
 def test_pythonwarnings_is_an_input(pytester, run_cache, monkeypatch):
     project(pytester, **{"test_w.py": """
         import warnings

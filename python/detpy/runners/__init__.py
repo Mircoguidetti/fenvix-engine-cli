@@ -72,6 +72,13 @@ def main(name: str, argv: list[str]) -> int:
     known = {f for flags, _ in OPTIONS for f in flags}
     head = argv[:argv.index("--")] if "--" in argv else argv
     bad = [a for a in head if a.startswith("--det") and a.split("=", 1)[0] not in known]
+    from .driver import _PYTEST_ONLY
+
+    only = [a.split("=", 1)[0] for a in bad if a.split("=", 1)[0] in _PYTEST_ONLY]
+    if only:  # audit G-1539: say that it is a pytest option, not that it is unknown
+        print(f"fenvix {name}: error: {only[0]} is a pytest option of detpy (pytest --det {only[0]}); the {name} "
+              f"runner shell does not support it", file=sys.stderr)
+        return 4
     if bad:
         import difflib
 

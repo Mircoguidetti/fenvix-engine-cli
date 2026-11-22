@@ -276,7 +276,13 @@ for (const runner of RUNNERS) {
         'pre.cjs': 'globalThis.__preloadedAt = Date.now();\n', 'v.txt': '1',
       });
       const env = { NODE_OPTIONS: `--require ${path.join(dir, 'pre.cjs')}` };
-      refusalIsSound(runner, dir, fileOf(runner, 'a'), /a preload module read the clock or OS entropy before Level 0/, { 'v.txt': '2' }, { env });
+      // Both runners give the per-file reason here. A Jest run that is asked for lanes by name refuses the WHOLE
+      // project instead ("NODE_OPTIONS preloads run in Jest workers before the capture", in the summary's
+      // `misses`), because the preload then runs in every worker before the capture -- strictly stronger, and
+      // measured as limit P5 in docs/LIMITS.md. That is not this run: since Jest keeps the proof by default
+      // (node/src/jest/cli.js) a defaulted `--det` run has one lane, so the per-file detection applies.
+      refusalIsSound(runner, dir, fileOf(runner, 'a'),
+        /a preload module read the clock or OS entropy before Level 0/, { 'v.txt': '2' }, { env });
     });
 
     test('G-1585 loader: an off-thread loader (module.register in an --import preload) makes the tests never reused, and no longer breaks the run', T, () => {

@@ -20,6 +20,7 @@
 pub mod backend;
 pub mod cache;
 pub mod cassette;
+pub mod datachunks;
 pub mod deps;
 pub mod distfiles;
 pub mod event;

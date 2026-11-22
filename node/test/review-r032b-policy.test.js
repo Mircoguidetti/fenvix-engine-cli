@@ -11,6 +11,15 @@ const path = require('node:path');
 const native = require('../src/native');
 const legacy = require('./legacy-proof-policy');
 
+// A valid sensor declaration for this build and the controls the accounting rests on, exactly as the sibling
+// equivalence test (test/policy-equivalence.test.js) and a real `--det` run write them. Since F-06 routed every
+// Node reuse decision through provable::judge, a capture that declares no sensor is refused before any name is
+// looked at ("the run declared no sensor"), so without these the comparison below says nothing about the policy:
+// it only says that the legacy mirror never had the rule. The intended divergence is asserted separately, in the
+// last test of this file.
+const PROVABLE = JSON.parse(native.provableHeader('node-surface/1', 'node22'));
+const CONTROLS = ['time', 'seeds', 'fs', 'net', 'timers', 'order', 'isolation'];
+
 fs.mkdirSync(path.join(__dirname, '.tmp'), { recursive: true });
 const TMP = fs.mkdtempSync(path.join(__dirname, '.tmp', 'r032b-policy-'));
 
@@ -61,7 +70,7 @@ function input(seed) {
       outcome: pick(['passed', 'skipped', 'todo', 'failed', 'cancelled', 'error', '']),
       ...(r() < 0.5 ? { fingerprint: pick(['fp', '', 'é']) } : {}), ...(r() < 0.5 ? { duration: pick([0, r(), 1e-9, 12345.6789]) } : {}),
     }));
-    captures.push({ label: pick(labels), fileId, ...(r() < 0.4 ? { project: pick(['p1', 'p@@2', 'p::3', '']) } : {}),
+    captures.push({ provable: PROVABLE, label: pick(labels), fileId, ...(r() < 0.4 ? { project: pick(['p1', 'p@@2', 'p::3', '']) } : {}),
       duration: pick([0, r(), 0.0005, 0.0015, 2.0005]), ok: r() < 0.6,
       notes: r() < 0.3 ? [pick(['process.env not replaceable: x', 'other note'])] : [], tests, items });
   }
@@ -82,6 +91,7 @@ function input(seed) {
     global: Array.from({ length: Math.floor(r() * 8) }, item), spec_keys: ['a.txt', 'f.test.js', 'é/ü.txt'], captures, cur_env: curEnv,
     urandom: r() < 0.5, epoch_ms: pick([null, 0, 1700000000000]), run_id: `run${seed}`, runtime: 'RT', startup: pick(['', 'S']),
     config_for: { '': 'C0', p1: 'C1', 'p@@2': 'C2' }, uncacheable_projects: r() < 0.2 ? [pick(['p1', ''])] : [], verify: r() < 0.6, hits,
+    controls: CONTROLS,
   };
 }
 
@@ -102,4 +112,20 @@ test('adversarial seeded inputs: Rust policy equals the JavaScript one (3000 inp
     if (what.length) diffs.push(`seed ${seed}: ${what.join(',')}`);
   }
   assert.deepEqual(diffs.slice(0, 30), [], `${diffs.length} differing inputs`);
+});
+
+// The one place where the two policies are MEANT to disagree, so that the equivalence above cannot hide it.
+// Before F-06 the legacy mirror decided reuse from the recorded items alone; now every Node reuse decision goes
+// through provable::judge, which asks first whether anything was watching at all. A capture with no sensor
+// declaration is therefore refused by the Rust policy and was accepted by the legacy one. This is the rule
+// working, not a regression: default-deny when nothing shows what the test did.
+test('a capture that declares no sensor: the Rust policy refuses it, the legacy mirror did not', () => {
+  const inp = JSON.parse(JSON.stringify(input(7)));
+  for (const c of inp.captures) delete c.provable;
+  delete inp.controls;
+  const { js, rs } = both(inp, null);
+  assert.ok(js.recorded > 0, 'the legacy mirror recorded at least one test from this capture');
+  assert.equal(rs.recorded, 0, 'the Rust policy records nothing when no sensor was declared');
+  assert.ok(rs.not_cached.length > 0, 'and it says so per test');
+  for (const [, reason] of rs.not_cached) assert.match(reason, /declared no sensor/);
 });

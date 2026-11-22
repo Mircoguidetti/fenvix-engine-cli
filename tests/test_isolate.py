@@ -20,8 +20,9 @@ from test_carried_library_memo import LIBS, ORDER_LIB, _order_project, _project 
 
 def _run(pytester, n, *args):
     out = pytester.path / f"o{n}.json"
-    r = pytester.runpytest_subprocess("--det", "--det-isolate", f"--det-outcomes={out}", "-p", "no:cacheprovider",
-                                      *args)
+    # a child per test (--det-isolate forks one per test file by default since the py-cache exam round)
+    r = pytester.runpytest_subprocess("--det", "--det-isolate", "--det-isolate-scope=test", f"--det-outcomes={out}",
+                                      "-p", "no:cacheprovider", *args)
     d = json.loads(out.read_text()) if out.exists() else {}
     o = {k: (v["outcome"] if isinstance(v, dict) else v) for k, v in (d.get("outcomes") or {}).items()}
     return r, o, set((d.get("cache") or {}).get("reused_ids", ())), d

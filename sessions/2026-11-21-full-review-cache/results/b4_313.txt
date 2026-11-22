@@ -1,0 +1,61 @@
+OK    F1 os.open + os.read content [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.016s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.016s, record 0.015s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    F1 os.open + os.read content [n2] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.0s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=0/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 1', 'reused 1 result(s) with proof, ran 1, recorded 0 (check 0.041s, record 0.005s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    F2 posix.open + posix.read content [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.03s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.036s, record 0.008s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    F2 posix.open + posix.read content [n2] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=0/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 1', 'reused 1 result(s) with proof, ran 1, recorded 0 (check 0.049s, record 0.004s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+WRONG F3 OpenSSL load_verify_locations on a context [serial] (vs plain: DIFFERS)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.027s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 2 result(s) with proof, ran 0, recorded 0 (check 0.031s, record 0.015s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+WRONG F3 OpenSSL load_verify_locations on a context [n2] (vs plain: DIFFERS)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.002s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=0/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 2', 'reused 2 result(s) with proof, ran 0, recorded 0 (check 0.053s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    F5 helper module runs a child process at import that reads a file [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.001s, record 0.033s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.037s, record 0.019s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    F5 helper module runs a child process at import that reads a file [n2] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan 37fa72da2444950f78ef696db8106d87: 2 workers (ran/planned gw0=0/1, gw1=1/1), planned makespan 0.1s (LPT 0.1s); reused by the controller: 1', 'reused 1 result(s) with proof, ran 1, recorded 0 (check 0.038s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    F6 conftest runs a child process at import that reads a file [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.026s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.029s, record 0.025s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    F6 conftest runs a child process at import that reads a file [n2] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.015s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    F7 sqlite3 database content [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.022s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.015s, record 0.015s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    F7 sqlite3 database content [n2] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=0/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 1', 'reused 1 result(s) with proof, ran 1, recorded 0 (check 0.018s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+== 10 OK, 2 WRONG: ['F3 OpenSSL load_verify_locations on a context[serial]', 'F3 OpenSSL load_verify_locations on a context[n2]']

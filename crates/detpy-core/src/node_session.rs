@@ -71,6 +71,64 @@ pub fn uncacheable(flags: &[(String, String)], outcome: &str) -> Option<String> 
     flags.iter().find_map(|(f, detail)| uncacheable_flag(f).map(|d| format!("{d}: {detail}")))
 }
 
+/// The founder's rule for the Node cache: a result may be stored (and so reused) only when
+/// [`crate::provable::judge`] calls the test provable. The cache must not have a reuse rule of its own, so this is
+/// the only place the Node policy decides provability, and it decides it by calling the one predicate.
+///
+/// `provable` is the `meta.provable` the process that ran the file declared (`None` = none, which judge() answers
+/// NOT PROVEN for every test). `unaccounted` and `marks` are that test's own findings. Returns the reason the
+/// result is not cached, or None when it may be.
+fn not_provable(
+    provable: Option<&Value>,
+    controls: &[String],
+    unaccounted: &[String],
+    marks: &[String],
+    outside: &[String],
+) -> Option<(String, String)> {
+    let get = |k: &str| provable.and_then(|h| h.get(k)).and_then(|v| v.as_str());
+    let att = crate::provable::Attestation {
+        sensor: get("sensor"),
+        contract: provable.and_then(|h| h.get("contract")).and_then(|v| v.as_u64()).map(|v| v as u32),
+        surface: get("surface"),
+        runtime: get("runtime"),
+        controls,
+        unaccounted,
+        marks,
+        outside,
+    };
+    match crate::provable::judge(&att) {
+        crate::provable::Verdict::Provable => None,
+        crate::provable::Verdict::NotProven { kind, detail } => Some((kind, detail)),
+    }
+}
+
+/// The reason a result is not cached, or None when it may be: the one predicate decides *whether*, this decides
+/// only which of two true descriptions to print.
+///
+/// The order follows [`crate::provable::judge`]'s own reasoning about clause order. A missing or mismatched sensor
+/// ("sensor", "runtime") is the most fundamental gap and comes first. Otherwise the channel rule below is
+/// preferred when it names the gap, because "network connection" tells the reader more than "not accounted for:
+/// api:net._normalizeArgs"; the sensor's own finding answers when no channel rule names it (the case this wiring
+/// exists for). Either way the verdict is the predicate's: if it says NOT PROVEN, nothing is stored.
+fn why_not_cached(
+    provable: Option<&Value>,
+    controls: &[String],
+    unaccounted: &[String],
+    flags: &[(String, String)],
+    outcome: &str,
+) -> Option<String> {
+    let judged = not_provable(provable, controls, unaccounted, &[], &[]);
+    if let Some((kind, detail)) = &judged {
+        if kind == "sensor" || kind == "runtime" || kind == "config" {
+            return Some(format!("{kind}: {detail}"));
+        }
+    }
+    if let Some(w) = uncacheable(flags, outcome) {
+        return Some(w);
+    }
+    judged.map(|(kind, detail)| format!("{kind}: {detail}"))
+}
+
 /// A test as a capture reports it.
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct CapturedTest {
@@ -83,6 +141,10 @@ pub struct CapturedTest {
     pub fingerprint: Option<String>,
     #[serde(default)]
     pub duration: Option<f64>,
+    /// What the general sensor saw and could not place, as `kind:name` (`api:v8.getHeapStatistics`). Handed to
+    /// [`crate::provable::judge`]; the cache has no say of its own over these.
+    #[serde(default)]
+    pub unaccounted: Vec<String>,
 }
 
 /// The capture of one test file (one process or realm of a runner shell).
@@ -103,6 +165,13 @@ pub struct Capture {
     pub tests: Vec<CapturedTest>,
     #[serde(default)]
     pub items: Vec<Vec<Value>>,
+    /// `meta.provable` of the process that ran this file (src/provable.js `header`): sensor, contract, surface,
+    /// runtime. `None` = that process declared no sensor, which makes every test of the file NOT PROVEN.
+    #[serde(default)]
+    pub provable: Option<Value>,
+    /// Why there is no declaration, for the report.
+    #[serde(default)]
+    pub provable_absent: Option<String>,
 }
 
 /// Everything [`record_session`] needs from the JavaScript session.
@@ -114,6 +183,10 @@ pub struct RecordInput {
     /// Test files known to the runner (`specKeys`): infrastructure's reads of them are not global inputs.
     #[serde(default)]
     pub spec_keys: Vec<String>,
+    /// `meta.controls`: the `--det` controls this run had on. [`crate::provable::judge`] refuses a run missing
+    /// any control the accounting rests on, so a disabled control stores nothing (audit G-0123).
+    #[serde(default)]
+    pub controls: Vec<String>,
     #[serde(default)]
     pub captures: Vec<Capture>,
     /// The environment at session start (own string values only).
@@ -419,6 +492,7 @@ fn observed(snap: &Snapshot, outcome: &str, report: Value, fingerprint: String, 
         hooks: vec![],
         units: vec![],
         startup: input.startup.clone(),
+        needs: None,
     }
 }
 
@@ -523,7 +597,9 @@ pub fn record_session(store: &mut Store, input: &RecordInput) -> RecordOutput {
             let nid = test_key(&t.id, &proj);
             ids.push(Value::String(t.id.clone()));
             let o = snaps[i].as_ref().expect("snapshot");
-            let why = uncacheable(&o.flags, &t.outcome);
+            // the one predicate first: a channel the sensor could not place refuses reuse whatever the
+            // channel list below says (crates/detpy-core/src/provable.rs judge)
+            let why = why_not_cached(c.provable.as_ref(), &input.controls, &t.unaccounted, &o.flags, &t.outcome);
             verify_one(&mut out, &nid, &t.outcome);
             if let Some(w) = why {
                 store.remove(&nid);
@@ -540,7 +616,16 @@ pub fn record_session(store: &mut Store, input: &RecordInput) -> RecordOutput {
         let o = obs.at(&c.items, c.items.len(), &mut ctx, store);
         let outcome = if c.ok { "passed" } else { "failed" };
         verify_one(&mut out, &mid, outcome);
-        if let Some(w) = uncacheable(&o.flags, outcome) {
+        // the file's entry lets the whole file be skipped, so it answers for every test in it
+        let file_unaccounted: Vec<String> = {
+            let mut v: Vec<String> = c.tests.iter().flat_map(|t| t.unaccounted.iter().cloned()).collect();
+            v.sort();
+            v.dedup();
+            v
+        };
+        let file_why =
+            why_not_cached(c.provable.as_ref(), &input.controls, &file_unaccounted, &o.flags, outcome);
+        if let Some(w) = file_why {
             store.remove(&mid);
             nc.set(&mid, &w);
             continue;
@@ -622,22 +707,32 @@ mod tests {
         let d = tempfile::tempdir().unwrap();
         let mut store = Store::load(d.path());
         let j = |v: Value| -> Vec<Value> { v.as_array().unwrap().clone() };
+        // a well-formed Node sensor declaration and every control it rests on, so `judge` passes the clean writer
+        // and the refusal below is the cross-file read, the thing this test is about
+        let header = serde_json::json!({
+            "sensor": "node-surface/1", "contract": crate::provable::SENSOR_CONTRACT,
+            "surface": crate::provable::surface_digest(), "runtime": "node22",
+        });
+        let controls: Vec<String> =
+            crate::provable::required_controls("node-surface/1").iter().map(|s| s.to_string()).collect();
         let input = RecordInput {
             captures: vec![
                 Capture {
+                    provable: Some(header.clone()),
                     label: "w".into(), file_id: "w.test.js".into(), ok: true,
                     tests: vec![CapturedTest { id: "w.test.js::w".into(), upto: 1, outcome: "passed".into(), ..Default::default() }],
                     items: vec![j(serde_json::json!(["write", "out.txt"]))],
                     ..Default::default()
                 },
                 Capture {
+                    provable: Some(header.clone()),
                     label: "r".into(), file_id: "r.test.js".into(), ok: true,
                     tests: vec![CapturedTest { id: "r.test.js::r".into(), upto: 2, outcome: "passed".into(), ..Default::default() }],
                     items: vec![j(serde_json::json!(["data", "out.txt", "f:1"])), j(serde_json::json!(["flag", "entropy", "crypto"]))],
                     ..Default::default()
                 },
             ],
-            run_id: "R".into(), runtime: "T".into(), urandom: true,
+            run_id: "R".into(), runtime: "T".into(), urandom: true, controls,
             ..Default::default()
         };
         let out = record_session(&mut store, &input);

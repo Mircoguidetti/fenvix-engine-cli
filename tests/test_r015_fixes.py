@@ -49,4 +49,4 @@ def test_code_changed_during_the_session_refuses_only_the_tests_that_ran_it(pyte
     r = pytester.runpytest_subprocess("--det", f"--det-cache={cache}", f"--det-outcomes={out}", "-p",
                                       "no:cacheprovider")
     r.assert_outcomes(passed=2, failed=1)
-    assert json.loads(out.read_text())["cache"]["reused_ids"] == ["test_1a.py::test_a"]
+    assert json.loads(out.read_text())["cache"]["reused_ids"] == []  # review R-050 P2 (b): it runs before a test that may consume its state (never cached, failed or new) (test_b reaches pathlib: every earlier test)

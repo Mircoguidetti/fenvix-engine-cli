@@ -1,16 +1,15 @@
-test schedule::tests::r023_f4_chunks_do_not_move_when_tests_are_added_or_removed ... ok
-test schedule::tests::same_input_same_plan ... ok
+test schedule::tests::permutation_of_the_input_never_changes_the_assignment ... ok
 test shared::tests::order_is_the_log_order_not_the_recorded_clock ... ok
-test shared::tests::roundtrip_through_a_directory ... ok
+test shared::tests::partial_uploads_and_corrupt_documents_are_rejected ... ok
 test trace::borrowed_line_tests::borrowed_test_line_is_byte_identical ... ok
+test shared::tests::roundtrip_through_a_directory ... ok
 test trace::merge_tests::merge_sorts_by_serial_order_and_marks_workers ... ok
 test trace::merge_tests::serial_trace_lines_have_no_worker_fields ... ok
-test trace::tests::order_digest_is_order_sensitive ... ok
 test trace::merge_tests::a_dead_worker_leaves_missing_tests ... ok
+test trace::tests::order_digest_is_order_sensitive ... ok
 test trace::tests::rejects_garbage ... ok
 test trace::tests::partial_trace_is_readable ... ok
 test verify::tests::beyond_trace_uses_checkpoints ... ok
-test trace::tests::roundtrip ... ok
 test verify::tests::extra_event_blamed_over_end_summary ... ok
 test verify::tests::extra_event_divergence ... ok
 test verify::tests::identical_runs_are_stable ... ok
@@ -20,10 +19,11 @@ test verify::tests::placement_divergence_names_the_lost_predecessors ... ok
 test verify::tests::thread_divergence ... ok
 test verify::tests::three_runs_compare_against_first_differing ... ok
 test verify::tests::value_divergence_is_located_exactly ... ok
-test shared::tests::partial_uploads_and_corrupt_documents_are_rejected ... ok
+test trace::tests::roundtrip ... ok
+test schedule::tests::same_input_same_plan ... ok
 test shared::tests::concurrent_writers_lose_nothing ... ok
 
-test result: ok. 113 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+test result: ok. 113 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
 
      Running unittests src/lib.rs (target/release/deps/_core-91cfd55b29869533)
 

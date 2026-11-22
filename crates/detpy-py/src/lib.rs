@@ -475,6 +475,8 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(proofcache::listing_digest, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::stat_kind, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::size_kind, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::time_digest, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::fields_digest, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::lstat_kind, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::importable_dep, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::importable_name_dep, m)?)?;

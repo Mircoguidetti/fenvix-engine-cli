@@ -16,6 +16,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
+const os = require('node:os');
 const { BIN, TMP, readTrace } = require('./helpers');
 
 const T = { timeout: 900000 };
@@ -139,10 +140,21 @@ for (const runner of RUNNERS) {
     let serial;
     before(() => {
       dir = fixture(runner, 'iso', isolatedSuite());
-      serial = det(runner, dir);
+      // One lane is the serial baseline every test below compares against. It is asked for explicitly:
+      // since row JS-07 (gap G-1044) `--det` is PARALLEL by default, so the default no longer means serial.
+      serial = det(runner, dir, ['--det-workers=1']);
       assert.equal(serial.status, 0, show(serial));
-      assert.equal(plan(serial), undefined, 'serial by default');
+      assert.equal(plan(serial), undefined, 'one lane runs serially');
       assert.equal(serial.trace.header.meta.serial, true);
+      // the new default: no worker option at all is parallel, on a machine with more than one CPU
+      const def = det(runner, dir);
+      assert.equal(def.status, 0, show(def));
+      if (os.availableParallelism() > 1) {
+        assert.ok(plan(def), `parallel by default (G-1044): ${show(def)}`);
+        assert.equal(plan(def).workers, os.availableParallelism());
+        assert.match(def.stdout, /detjs: parallel execution in \d+ lanes with a fixed plan \(default \(this machine's CPUs\)\)/);
+        assert.match(def.stderr, /detjs: parallel: \d+ lanes, plan [0-9a-f]+/);
+      }
     });
 
     test('the plan is identical across runs, recorded in the trace and replayed from it; lanes overlap in time', T, () => {
@@ -253,6 +265,115 @@ for (const runner of RUNNERS) {
       assert.deepEqual(plan(r3).together, [[`tests/a_writer${ext}`, `tests/b_reader${ext}`]]);
     });
 
+    // P1 (docs/LIMITS.md section 10): a placement must never decide an outcome. Both tests below first prove the
+    // disease is real by running with the wrapper switched off (DETJS_HAZARD_RERUN=1, which is how each of the two
+    // passes tells itself apart -- src/parallel-rerun.js), then prove the engine now reports the one-lane re-run.
+    // One test per conflict class the hazard detector has: a shared path, and a fixed port.
+    //
+    // Each fixture makes the two files really overlap with a blocking wait (`Atomics.wait`): under `--det` timers
+    // are virtual, so a `setTimeout` would return at once and the two files would not be in flight together.
+    test('P1 shared path: a first run in lanes reports the one-lane re-run, not the placement failure', T, () => {
+      // the fixture of node/test/controls.test.js "isolation: parallel workers interleave": two files appending to
+      // one log, each asserting that its own two lines are the last two. Serially both pass; in two lanes they
+      // interleave and fail. Here each file waits for the other's start line, so the interleaving is not a race.
+      const body = (n) => `
+const LOG = path.join(process.cwd(), 'shared.log');
+const lines = () => { try { return fs.readFileSync(LOG, 'utf8').trim().split('\\n'); } catch { return []; } };
+test('${n} writes a contiguous block', () => {
+  fs.appendFileSync(LOG, '${n}-start\\n');
+  const sab = new Int32Array(new SharedArrayBuffer(4));
+  for (let i = 0; i < 60; i++) {
+    if (lines().some((l) => l.endsWith('-start') && !l.startsWith('${n}'))) break;
+    Atomics.wait(sab, 0, 0, 50);
+  }
+  fs.appendFileSync(LOG, '${n}-end\\n');
+  expect(lines().slice(-2)).toEqual(['${n}-start', '${n}-end']);
+});
+`;
+      const dir = fixture(runner, 'p1-shared', { x: body('X'), y: body('Y') });
+      const log = path.join(dir, 'shared.log');
+      const ext = EXT[runner];
+      const files = [`tests/x${ext}`, `tests/y${ext}`];
+      // The lanes are forced with an explicit plan, as the cross-worker test above does. Without it the second run
+      // of the pair cannot reproduce the conflict at all: the first run learns the together-edge and every later
+      // plan puts the two files in one lane (docs/LIMITS.md P2, a together-edge never expires), so the test would
+      // pass for the wrong reason. `--det-plan` is also what the re-run must ignore, which this exercises:
+      // src/parallel-rerun.js strips it, or the re-run would be put straight back into two lanes.
+      write(dir, { 'plan.json': JSON.stringify({ lanes: [[files[0]], [files[1]]] }) });
+
+      // 1. the disease: with the re-run switched off, the lanes turn a suite that passes serially red
+      fs.rmSync(log, { force: true });
+      const off = det(runner, dir, ['--det-plan=plan.json'], { env: { DETJS_HAZARD_RERUN: '1' } });
+      assert.notEqual(off.status, 0, show(off));
+      assert.match(off.stderr, /CROSS-WORKER read-write .*shared\.log/, show(off));
+      const failedOff = off.trace.tests.filter((t) => t.outcome !== 'passed').map((t) => t.nodeid);
+      assert.ok(failedOff.length > 0, `the placement must have failed a test: ${show(off)}`);
+
+      // 2. the fix: the files the hazard names run again in one lane and that is what is reported
+      fs.rmSync(log, { force: true });
+      const on = det(runner, dir, ['--det-plan=plan.json']);
+      assert.equal(on.status, 0, show(on));
+      assert.match(on.stderr, /named by a cross-worker hazard run again in one lane/, show(on));
+      assert.deepEqual(on.trace.tests.filter((t) => t.outcome !== 'passed').map((t) => t.nodeid), [], show(on));
+      const hr = on.trace.header.meta.hazard_rerun;
+      assert.ok(hr, `the trace must record the re-run: ${show(on)}`);
+      assert.deepEqual(hr.files.slice().sort(), files.slice().sort(), show(on));
+      assert.equal(hr.complete, true, show(on));
+      assert.equal(hr.reported, 'one-lane re-run', show(on));
+      assert.deepEqual(hr.unaccounted, [], show(on));
+      assert.ok(hr.first_run_failed.length > 0, `the re-run must say what the lanes had failed: ${show(on)}`);
+    });
+
+    test('P1 fixed port: the same, and a real failure of an affected file is still reported', T, () => {
+      // two files binding one fixed port (45321). Nothing but the port is shared, so the hazard is a port hazard
+      // and not a path one. The holder keeps the port for real, so a file starting in the other lane within that
+      // window really collides with EADDRINUSE.
+      const body = (n, extra = '') => `
+const net = require('node:net');
+test('${n} binds the fixed port', async () => {
+  const srv = net.createServer();
+  const bound = await new Promise((res) => {
+    srv.once('error', (e) => res(e.code || 'ERR'));
+    srv.listen(45321, '127.0.0.1', () => res('ok'));
+  });
+  if (bound === 'ok') Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 2500);
+  await new Promise((res) => srv.close(() => res()));
+  expect(bound).toBe('ok');${extra}
+});
+`;
+      // Vitest's ESM head has no `require`; the port fixture needs one for node:net
+      const head = runner === 'vitest' ? "import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);\n" : '';
+      const dir = fixture(runner, 'p1-port', { x: head + body('X'), y: head + body('Y') });
+      const ext = EXT[runner];
+      const lanes = (d) => write(d, { 'plan.json': JSON.stringify({ lanes: [[`tests/x${EXT[runner]}`], [`tests/y${EXT[runner]}`]] }) });
+      lanes(dir); // forced, for the reason given in the test above (docs/LIMITS.md P2)
+
+      // 1. the disease
+      const off = det(runner, dir, ['--det-plan=plan.json'], { env: { DETJS_HAZARD_RERUN: '1' } });
+      assert.notEqual(off.status, 0, show(off));
+      assert.match(off.stderr, /CROSS-WORKER port 45321/, show(off));
+
+      // 2. the fix
+      const on = det(runner, dir, ['--det-plan=plan.json']);
+      assert.equal(on.status, 0, show(on));
+      assert.match(on.stderr, /named by a cross-worker hazard run again in one lane/, show(on));
+      assert.deepEqual(on.trace.tests.filter((t) => t.outcome !== 'passed').map((t) => t.nodeid), [], show(on));
+      assert.equal(on.trace.header.meta.hazard_rerun.complete, true, show(on));
+
+      // 3. the re-run must never whitewash a defect: the same conflict, with a real failure in one of the files.
+      // The placement failure goes, the defect stays, and the run is still red.
+      const dir2 = fixture(runner, 'p1-port-real', {
+        x: head + body('X', "\n  expect(1).toBe(2); // a real defect, nothing to do with placement"),
+        y: head + body('Y'),
+      });
+      lanes(dir2);
+      const real = det(runner, dir2, ['--det-plan=plan.json']);
+      assert.notEqual(real.status, 0, show(real));
+      assert.match(real.stderr, /named by a cross-worker hazard run again in one lane/, show(real));
+      const bad = real.trace.tests.filter((t) => t.outcome !== 'passed').map((t) => t.nodeid);
+      assert.deepEqual(bad, [`tests/x${ext}::X binds the fixed port`], show(real));
+    });
+
     test('a read of the worker or pool id: never reused from a parallel run; keyed as the serial value (1) serially', T, () => {
       const v = runner === 'vitest' ? 'VITEST_POOL_ID' : 'JEST_WORKER_ID';
       const dir = fixture(runner, 'wid', {
@@ -272,15 +393,16 @@ for (const runner of RUNNERS) {
       assert.ok(!reusedFiles(r2).includes(a), show(r2));
       assert.ok(reusedFiles(r2).includes(`tests/d${EXT[runner]}`), show(r2));
       // serially every test sees 1: the read is keyed with that value, and the entry is reused
-      const s1 = det(runner, dir, [`--det-cache=${cache}`]);
+      // (one lane asked for explicitly: `--det` itself is parallel by default since G-1044)
+      const s1 = det(runner, dir, ['--det-workers=1', `--det-cache=${cache}`]);
       assert.equal(s1.status, 0, show(s1));
       assert.ok(!notCached(s1)[a], show(s1));
-      const s2 = det(runner, dir, [`--det-cache=${cache}`]);
+      const s2 = det(runner, dir, ['--det-workers=1', `--det-cache=${cache}`]);
       assert.ok(reusedFiles(s2).includes(a), show(s2));
       if (runner === 'vitest') {
         // VITEST_WORKER_ID counts the files before it, serially too: never reused
         write(dir, { [`tests/e${EXT[runner]}`]: `${HEAD[runner]}\ntest('wid', () => { expect(Number(process.env.VITEST_WORKER_ID)).toBeGreaterThan(0); });\n` });
-        const s3 = det(runner, dir, [`--det-cache=${cache}`]);
+        const s3 = det(runner, dir, ['--det-workers=1', `--det-cache=${cache}`]);
         assert.match(notCached(s3)[`tests/e${EXT[runner]}`] || '', /VITEST_WORKER_ID/, show(s3));
       }
     });
@@ -295,7 +417,7 @@ for (const runner of RUNNERS) {
         });
         write(dir, { 'plan.json': JSON.stringify({ lanes: [['tests/a_leaker.test.js', 'tests/b_victim.test.js'], ['tests/c_other.test.js', 'tests/d_other.test.js']] }) });
         const cache = path.join(dir, '.cache');
-        for (const args of [['--det-plan=plan.json'], []]) {
+        for (const args of [['--det-plan=plan.json'], ['--det-workers=1']]) {
           fs.rmSync(cache, { recursive: true, force: true });
           const r = det(runner, dir, [...args, `--det-cache=${cache}`]);
           assert.equal(r.status, 0, show(r));
@@ -303,7 +425,8 @@ for (const runner of RUNNERS) {
           const carried = r.trace.header.meta.parallel.carried.map((c) => c.file).sort();
           assert.match(notCached(r)['tests/b_victim.test.js'] || '', /left process-wide state changed/, show(r));
           // in parallel, the other lane's process never saw the change; serially (in band) every later file did
-          if (args.length) {
+          // (both arg lists are non-empty now, so the branch tests for the replayed plan itself)
+          if (args.some((a) => a.startsWith('--det-plan'))) {
             assert.deepEqual(carried, ['tests/b_victim.test.js']);
             assert.ok(!notCached(r)['tests/d_other.test.js'], show(r));
           } else {
@@ -324,8 +447,8 @@ for (const runner of RUNNERS) {
           c: "test('origin', () => { const o = window.performance.timeOrigin; expect(o).toBe(performance.timeOrigin); require('node:fs').writeFileSync(require('node:path').join(process.cwd(), 'origin.txt'), String(o)); });",
         }, { jest: { testEnvironment: 'jsdom' } });
         const origins = [];
-        for (const args of [[], ['-w', '2']]) {
-          const cache = path.join(dir, `.cache${args.length}`);
+        for (const args of [['--det-workers=1'], ['-w', '2']]) {
+          const cache = path.join(dir, `.cache${args.join('')}`);
           fs.rmSync(path.join(dir, 'origin.txt'), { force: true });
           const r1 = det(runner, dir, [...args, `--det-cache=${cache}`]);
           assert.equal(r1.status, 0, show(r1));
@@ -361,7 +484,7 @@ for (const runner of RUNNERS) {
 
     test('the cost of serial is shown: test-file time and an estimate for --det-workers', T, () => {
       const dir = fixture(runner, 'cost', isolatedSuite(3));
-      const s = det(runner, dir);
+      const s = det(runner, dir, ['--det-workers=1']);  // the serial cost message: one lane, asked for explicitly
       assert.match(s.stdout, /--det-workers=N/);
       assert.match(s.stderr, /detjs: serial run: 3 files, [\d.]+ s of test-file time \(MEASURED\); with --det-workers=\d+ \(this machine's CPUs\) about [\d.]+ s \(ESTIMATED/);
       assert.equal(s.trace.header.meta.parallel.timing.files, 3);
@@ -548,6 +671,18 @@ for (const v of VERSIONS) {
       assert.equal(p1.status, 0, show(p1));
       assert.deepEqual(plan(p1).lanes, plan(p2).lanes);
       assert.deepEqual(p1.trace.header.meta.parallel.placement.deviations, [], show(p1));
+      // Why the comparison below used to fail on jest@29.7.0 in lanes and not serially: inside a worker Node's own
+      // machinery reads `process.pid` while a test is running, and the read was recorded as an event of whichever
+      // test was in flight -- at site `<node>`, with no user frame behind it. The fingerprint then depended on
+      // timing, which is the engine's own claim broken by the engine's own bookkeeping. src/facts.js now records
+      // pid/ppid only when a user frame asked. Guarded directly, in both runs, so a future change cannot bring
+      // the channel back with the fingerprints happening to match.
+      for (const r of [s, p1, p2]) {
+        const ghosts = r.trace.tests.flatMap((t) => (t.events || [])
+          .filter((e) => /^process\.p?pid$/.test(e.o) && (e.at === '<node>' || e.at === ''))
+          .map((e) => `${t.nodeid}: ${e.o} at ${e.at || '<empty>'}`));
+        assert.deepEqual(ghosts, [], `a process id read by nobody's code became an event:\n${ghosts.join('\n')}`);
+      }
       assert.deepEqual(fps(p1), fps(s));
       if (v.runner === 'jest') assert.deepEqual(p1.trace.header.meta.parallel.placement.processes.sort(), plan(p1).lanes.slice().sort());
       const cache = path.join(dir, '.cache');

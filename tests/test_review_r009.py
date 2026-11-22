@@ -213,7 +213,7 @@ def test_git_head_read_is_an_input(pytester, run_cache):
     _, reused, data = run_cache()
     # fix round (R-009 F4): git reads the real clock when it starts (gettimeofday, the offset of trace2's clock), so
     # a git child is refused with that reason instead of reused; before the fix this line expected it reused
-    assert "test_m.py::test_in_process" in reused
+    assert "test_m.py::test_in_process" not in reused  # review R-050 P2 (b): it runs before a test that may consume its state (never cached, failed or new)
     assert "test_m.py::test_child" in reused or \
         "reads the real clock" in data["cache"]["not_cached_where"]["test_m.py::test_child"]
     # a new commit: only HEAD's ref under .git/ changes; a fresh run of both tests fails

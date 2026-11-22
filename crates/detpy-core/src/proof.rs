@@ -33,7 +33,8 @@ use std::fs;
 use std::io::{self, Read};
 use std::path::{Path, PathBuf};
 
-pub const STORE_VERSION: u32 = 1;
+/// Version 2 (py-cache item 4): entries list the addresses of their data chunks, written once in `Store::chunks`.
+pub const STORE_VERSION: u32 = 2;
 
 /// A shared string: the data dependencies of every test of a session repeat the same global reads (paths and
 /// digests), stored once in memory (serialized as plain strings).
@@ -84,12 +85,12 @@ pub struct Entry {
     pub runtime: String,
     pub epoch: Option<i64>,
     /// (variable, value digest or "-" when unset); "*" = the whole environment.
-    pub env: Vec<(String, String)>,
+    pub env: crate::datachunks::Data,
     /// (absolute path, dependency): "f:<digest>", "missing", "d:<digest>", "s:<kind>", and the kinds of
     /// [`crate::deps`] ("m:", "V:" (one stat field), "r:", "e:", "w:" (recursive listing), "u:" (recursive listing,
     /// links not followed), "c:"), "k:"/"K:" (link), "p:", "g:" (Node capture); a probe of a path (key
     /// [`probe_key`], first character [`PROBE`]): "missing", "s:<kind>", "m:<digest>", "n:<digest>" ([`probe_now`]).
-    pub data: Vec<(Str, Str)>,
+    pub data: crate::datachunks::Data,
     /// Set ids (see [`Store::sets`]) of code files whose whole content, skeleton
     /// or hook surface is a dependency.
     pub content: u32,
@@ -119,6 +120,12 @@ pub struct Entry {
     /// predecessors. Not part of the key.
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub preds: String,
+    /// Review R-023c E7: the earlier tests of its process whose in-process state the test may have consumed when it
+    /// was recorded (the tests of its carried set); `None`: every earlier context (it reached the library node, or a
+    /// context that runs only with its tests). A test that runs needs these to run before it, as in a fresh run.
+    /// Not part of the key.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub needs: Option<Vec<String>>,
     /// Digest of what the processes started at start-up gave back (argv, cwd, exit code, output); empty when
     /// none was started. An input of every test of the session.
     #[serde(default, skip_serializing_if = "String::is_empty")]
@@ -207,6 +214,20 @@ pub struct Store {
     /// a serial session gives it (not the race of two processes).
     #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
     pub edges: BTreeSet<(String, String)>,
+    /// Review R-050 P2: the needs ([`Entry::needs`]) of tests that ran and have no entry (failed, or not
+    /// cacheable): the earlier tests they may have consumed in-process state from. A test with neither an entry nor
+    /// a row here (new) needs every earlier test.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub loose_needs: BTreeMap<String, Option<Vec<String>>>,
+    /// The data chunks of every entry, by address (written by [`Store::save`]; resolved and emptied on load).
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub chunks: BTreeMap<String, crate::datachunks::Chunk>,
+    /// Groups of chunk addresses entries list (after `tests` and `chunks`: filled while the entries are written).
+    #[serde(default, skip_serializing_if = "crate::datachunks::Groups::is_empty")]
+    pub groups: crate::datachunks::Groups,
+    /// One copy of each distinct chunk in memory.
+    #[serde(skip)]
+    interner: crate::datachunks::Interner,
     #[serde(skip)]
     file_ix: HashMap<(String, String), u32>,
     #[serde(skip)]
@@ -231,6 +252,8 @@ pub struct Observed {
     pub hooks: Vec<u32>,
     pub units: Vec<(u32, u32)>,
     pub fixtures: Vec<String>,
+    /// [`Entry::needs`].
+    pub needs: Option<Vec<String>>,
     /// Digest of the outputs of processes a Node shell started at start-up (empty for Python shells).
     pub startup: String,
 }
@@ -382,6 +405,57 @@ pub const TREE_SUFFIX: &str = "/\u{1}tree";
 pub const IMPORTABLE_ENDINGS: [&str; 5] = [".py", ".pyc", ".pyw", ".so", ".pyd"];
 /// Key suffix of an "i:" dependency (the directory is the key without it).
 pub const IMPORTABLE_SUFFIX: &str = "/\u{1}importable";
+
+/// Suffix of a path's time dependency key ("y:", round 4): `<path>\u{1}mtime`, beside the path's own dependency.
+pub const TIME_SUFFIX: &str = "\u{1}mtime";
+
+/// A file's modification and change times (round 4: a test that reads st_mtime/st_ctime depends on them; keyed, not
+/// refused): "<mtime>.<ns>,<ctime>.<ns>", or "missing".
+pub fn time_digest(path: &Path) -> String {
+    time_digest_of(path, true)
+}
+
+/// [`time_digest`] of the path itself when `follow` is false (`os.lstat`: a symlink's own times).
+pub fn time_digest_of(path: &Path, follow: bool) -> String {
+    use std::os::unix::fs::MetadataExt;
+    match if follow { fs::metadata(path) } else { fs::symlink_metadata(path) } {
+        Ok(m) => format!("{}.{:09},{}.{:09}", m.mtime(), m.mtime_nsec(), m.ctime(), m.ctime_nsec()),
+        Err(_) => "missing".into(),
+    }
+}
+
+/// Suffix of the key of a symlink's own times (`os.lstat(p).st_mtime`; value "y:L<times>").
+pub const LTIME_SUFFIX: &str = "\u{1}lmtime";
+/// Suffixes of a path's status-fields dependency ("x:", review R-023c E4): `<path>\u{1}stat` (`os.stat`, value
+/// "x:<digest>") and `<path>\u{1}lstat` (`os.lstat`, value "x:L<digest>").
+pub const FIELDS_SUFFIX: &str = "\u{1}stat";
+pub const LFIELDS_SUFFIX: &str = "\u{1}lstat";
+
+/// The status fields of a path other than its times (review R-023c E4: a test that reads st_mode, st_uid, st_ino,
+/// st_nlink, ... or asks os.access for a permission depends on them): mode, owner, group, inode, device, links,
+/// device number, size and blocks, or "missing".
+pub fn fields_digest(path: &Path, follow: bool) -> String {
+    use std::os::unix::fs::MetadataExt;
+    match if follow { fs::metadata(path) } else { fs::symlink_metadata(path) } {
+        Ok(m) => digest_bytes(
+            format!(
+                "{:o}:{}:{}:{}:{}:{}:{}:{}:{}",
+                m.mode(),
+                m.uid(),
+                m.gid(),
+                m.ino(),
+                m.dev(),
+                m.nlink(),
+                m.rdev(),
+                m.size(),
+                m.blocks()
+            )
+            .as_bytes(),
+        )
+        .short(),
+        Err(_) => "missing".into(),
+    }
+}
 
 fn ident(s: &str) -> bool {
     let mut cs = s.chars();
@@ -724,6 +798,14 @@ pub fn data_now(path: &Path, recorded: &str) -> String {
         format!("s:{}", stat_kind(path))
     } else if recorded.starts_with("z:") {
         format!("z:{}", size_kind(path))
+    } else if recorded.starts_with("y:L") {
+        format!("y:L{}", time_digest_of(path, false))
+    } else if recorded.starts_with("y:") {
+        format!("y:{}", time_digest(path))
+    } else if recorded.starts_with("x:L") {
+        format!("x:L{}", fields_digest(path, false))
+    } else if recorded.starts_with("x:") {
+        format!("x:{}", fields_digest(path, true))
     } else if recorded.starts_with("l:") {
         format!("l:{}", lstat_kind(path))
     } else if recorded.starts_with("i:") {
@@ -930,8 +1012,27 @@ impl Store {
             .and_then(|b| serde_json::from_slice::<Store>(&b).ok())
             .filter(|s| s.version == STORE_VERSION)
             .unwrap_or_else(Store::new);
+        s.resolve_chunks();
         s.reindex();
         s
+    }
+
+    /// After a load: entries' chunk addresses to the chunks (one shared copy each); an entry whose chunk is missing
+    /// (a torn file) is dropped.
+    pub fn resolve_chunks(&mut self) {
+        let table: HashMap<String, crate::datachunks::Chunk> = std::mem::take(&mut self.chunks).into_iter().collect();
+        let mut bad = Vec::new();
+        for (nid, e) in self.tests.iter_mut() {
+            if !e.data.resolve_grouped(&table, &self.groups.0) || !e.env.resolve_grouped(&table, &self.groups.0) {
+                bad.push(nid.clone());
+            }
+        }
+        for nid in bad {
+            self.tests.remove(&nid);
+        }
+        // the resolved chunks are the table's own `Arc`s: already one per distinct content (no second pass)
+        self.interner = crate::datachunks::Interner::from_table(table);
+        self.groups = crate::datachunks::Groups::default();
     }
 
     fn reindex(&mut self) {
@@ -980,6 +1081,7 @@ impl Store {
 
     /// Record (replace) the entry of `nodeid`; returns its key.
     pub fn record(&mut self, nodeid: &str, mut o: Observed) -> String {
+        self.loose_needs.remove(nodeid);
         o.env.sort();
         o.env.dedup();
         o.data.sort();
@@ -999,8 +1101,8 @@ impl Store {
             config: o.config,
             runtime: o.runtime,
             epoch: o.epoch,
-            env: o.env,
-            data: o.data,
+            env: o.env.into_iter().map(|(k, v)| (Str::from(k), Str::from(v))).collect(),
+            data: o.data.into(),
             content,
             skeleton,
             hooks,
@@ -1015,16 +1117,34 @@ impl Store {
             serial_fp: None,
             serial_noise: false,
             preds: String::new(),
+            needs: o.needs,
             startup: o.startup,
         };
         e.key = self.key_of(nodeid, &e);
         let k = e.key.clone();
+        e.data.share(&mut self.interner);
+        e.env.share(&mut self.interner);
         self.tests.insert(nodeid.to_string(), e);
         k
     }
 
     pub fn remove(&mut self, nodeid: &str) -> bool {
         self.tests.remove(nodeid).is_some()
+    }
+
+    /// Remove the entry of a test that ran and is not stored, keeping its needs (`loose_needs`).
+    pub fn remove_keeping_needs(&mut self, nodeid: &str, needs: Option<Vec<String>>) {
+        self.tests.remove(nodeid);
+        self.loose_needs.insert(nodeid.to_string(), needs);
+    }
+
+    /// Review R-050 P2: the earlier tests a test may consume in-process state from: its entry's needs, else the
+    /// needs it had when it last ran without an entry, else (never ran) every earlier test (`None`).
+    pub fn needs_of(&self, nodeid: &str) -> Option<Vec<String>> {
+        match self.tests.get(nodeid) {
+            Some(e) => e.needs.clone(),
+            None => self.loose_needs.get(nodeid).cloned().unwrap_or(None),
+        }
     }
 
     /// The receipt digest of an entry: every recorded input at the level it is
@@ -1180,6 +1300,14 @@ impl Store {
         };
         let mut smap: BTreeMap<u32, u32> = BTreeMap::new();
         for nid in touched {
+            match self.loose_needs.get(nid) {
+                Some(n) if !self.tests.contains_key(nid) => {
+                    disk.loose_needs.insert(nid.clone(), n.clone());
+                }
+                _ => {
+                    disk.loose_needs.remove(nid);
+                }
+            }
             match self.tests.get(nid) {
                 None => {
                     disk.tests.remove(nid);
@@ -1210,6 +1338,8 @@ impl Store {
                     for c in e.units.chunks_mut(2) {
                         c[0] = remap_file(c[0], disk);
                     }
+                    e.data.share(&mut disk.interner);
+                    e.env.share(&mut disk.interner);
                     disk.tests.insert(nid.clone(), e);
                 }
             }
@@ -1247,7 +1377,19 @@ impl Store {
         fs::create_dir_all(dir)?;
         let path = Self::path_in(dir);
         let tmp = path.with_extension(format!("tmp{}", std::process::id()));
-        fs::write(&tmp, serde_json::to_vec(self).map_err(io::Error::other)?)?;
+        // each chunk once, entries by address (py-cache item 4)
+        let bytes = crate::datachunks::by_address(|| {
+            let mut chunks = BTreeMap::new();
+            for e in self.tests.values() {
+                for c in e.data.chunks().iter().chain(e.env.chunks()) {
+                    chunks.entry(crate::datachunks::address_of(c)).or_insert_with(|| c.clone());
+                }
+            }
+            self.chunks = chunks;
+            serde_json::to_vec(&*self)
+        });
+        self.chunks.clear();
+        fs::write(&tmp, bytes.map_err(io::Error::other)?)?;
         fs::rename(tmp, path)
     }
 }
@@ -1279,25 +1421,73 @@ pub struct Shard {
 
 impl Shard {
     pub fn load(path: &Path) -> io::Result<Shard> {
-        let s: Shard = serde_json::from_slice(&fs::read(path)?).map_err(io::Error::other)?;
+        let mut s: Shard = serde_json::from_slice(&fs::read(path)?).map_err(io::Error::other)?;
         if s.format != SHARD_FORMAT || s.version != SHARD_VERSION {
             return Err(io::Error::other(format!("not a detpy cache shard: {}", path.display())));
         }
+        s.store.resolve_chunks();
         Ok(s)
     }
 
-    pub fn save(&self, path: &Path) -> io::Result<()> {
+    /// Fold another shard of the same session into this one (py-cache: a process that forks one child per test file
+    /// keeps one shard, not one per child: each child's shard repeated the facts of the files every test carries,
+    /// 648 shards and 1.4 GB on esphome). The cross-worker rule loses nothing: writers are compared by context name
+    /// over the union of every shard's writers (`writer_union`), not by shard.
+    pub fn absorb(&mut self, other: Shard) {
+        let touched: BTreeSet<String> = other.touched.iter().cloned().collect();
+        other.store.merge_into(&mut self.store, &touched);
+        for (k, v) in other.store.written {
+            self.store.written.entry(k).or_default().extend(v);
+        }
+        for t in other.touched {
+            if !self.touched.contains(&t) {
+                self.touched.push(t);
+            }
+        }
+        self.fixtures.extend(other.fixtures);
+        for (k, v) in other.written {
+            let e = self.written.entry(k).or_default();
+            for w in v {
+                if !e.contains(&w) {
+                    e.push(w);
+                }
+            }
+        }
+        self.reads.extend(other.reads);
+    }
+
+    /// Written like a store: each data chunk once, entries by address (py-cache item 4: on esphome a worker's 220
+    /// entries carried ~4,400 pairs each, written in full; the four shards reached 1.7 GB and the controller, reading
+    /// them at the end of the session, ran a 16 GB runner out of memory).
+    pub fn save(&mut self, path: &Path) -> io::Result<()> {
         if let Some(d) = path.parent() {
             fs::create_dir_all(d)?;
         }
         let tmp = path.with_extension(format!("tmp{}", std::process::id()));
-        fs::write(&tmp, serde_json::to_vec(self).map_err(io::Error::other)?)?;
+        let bytes = crate::datachunks::by_address(|| {
+            let mut chunks = BTreeMap::new();
+            for e in self.store.tests.values() {
+                for c in e.data.chunks().iter().chain(e.env.chunks()) {
+                    chunks.entry(crate::datachunks::address_of(c)).or_insert_with(|| c.clone());
+                }
+            }
+            self.store.chunks = chunks;
+            serde_json::to_vec(&*self)
+        });
+        self.store.chunks.clear();
+        fs::write(&tmp, bytes.map_err(io::Error::other)?)?;
         fs::rename(tmp, path)
     }
 }
 
 fn parent_key(key: &str) -> Option<&str> {
-    key.rfind('/').map(|i| if i == 0 { "/" } else { &key[..i] })
+    match key.rfind('/') {
+        Some(0) => Some("/"),
+        Some(i) => Some(&key[..i]),
+        // a top-level path of the project: its parent is the root, keyed "." (the capture's key of the root)
+        None if !key.is_empty() && key != "." && !key.starts_with('\u{1}') => Some("."),
+        None => None,
+    }
 }
 
 /// A writer context that is not the test's own code: another test, or a wider-scoped fixture the test does not use.
@@ -1315,7 +1505,7 @@ fn foreign(w: &str, own: &str, fixtures: &[String]) -> bool {
 pub fn foreign_write(
     nodeid: &str,
     fixtures: &[String],
-    data: &[(Str, Str)],
+    data: &crate::datachunks::Data,
     written: &BTreeMap<String, BTreeSet<String>>,
     dirs: &BTreeMap<String, BTreeSet<String>>,
 ) -> Option<(String, String)> {
@@ -1715,6 +1905,13 @@ pub struct Checker {
     pub defer_worker: bool,
     /// nodeid -> recorded digest of `PYTEST_XDIST_WORKER`, for the reusable results that read it (`defer_worker`).
     pub worker_reads: HashMap<String, String>,
+    /// Data chunks already proven unchanged this session, by allocation (entries share chunks: esphome's store
+    /// references 4.6 M, 3,420 distinct; checking every pair of every entry took the controller 13.5 s). The
+    /// `Arc` is kept, so an allocation is never reused by another chunk while it is here.
+    ok_chunks: HashMap<usize, crate::datachunks::Chunk>,
+    /// Per (file index, unit index) of the store: the unit is the current one (its file unchanged, or the unit's
+    /// digest still in the current facts). An entry lists ~900 units on esphome, mostly the same for every test.
+    unit_ok: FxMap<(u32, u32), u8>,
 }
 
 /// Outcomes whose results may be reused: never a failure.
@@ -1736,6 +1933,8 @@ impl Checker {
             parallel: false,
             defer_worker: false,
             worker_reads: HashMap::new(),
+            ok_chunks: HashMap::new(),
+            unit_ok: FxMap::default(),
         }
     }
 
@@ -1837,6 +2036,8 @@ impl Checker {
                 't' => path.strip_suffix(KINDS_SUFFIX).unwrap_or(path),
                 'T' => path.strip_suffix(TREE_SUFFIX).unwrap_or(path),
                 'i' => path.strip_suffix(IMPORTABLE_SUFFIX).unwrap_or(path),
+                'y' => path.strip_suffix(TIME_SUFFIX).or_else(|| path.strip_suffix(LTIME_SUFFIX)).unwrap_or(path),
+                'x' => path.strip_suffix(FIELDS_SUFFIX).or_else(|| path.strip_suffix(LFIELDS_SUFFIX)).unwrap_or(path),
                 'j' => path.strip_suffix(IMPORTABLE_NAME_SUFFIX).unwrap_or(path),
                 _ => path,
             };
@@ -1922,8 +2123,9 @@ impl Checker {
             });
         }
         for (k, v) in &e.env {
+            let (k, v): (&str, &str) = (k, v);
             if k == "PYTEST_XDIST_WORKER" && self.defer_worker {
-                self.worker_reads.insert(nodeid.to_string(), v.clone());
+                self.worker_reads.insert(nodeid.to_string(), v.to_string());
                 continue;
             }
             let now: &str = if k == "*" {
@@ -1934,7 +2136,7 @@ impl Checker {
             } else {
                 if !self.env_now.contains_key(k) {
                     let d = env_value_digest(self.cur.env.get(k).map(|s| s.as_str()));
-                    self.env_now.insert(k.clone(), d);
+                    self.env_now.insert(k.to_string(), d);
                 }
                 &self.env_now[k]
             };
@@ -1942,10 +2144,17 @@ impl Checker {
                 return Err(Miss { kind: "env", detail: format!("environment variable {k}") });
             }
         }
-        for (p, dep) in &e.data {
-            if self.data(p, dep) != &**dep {
-                return Err(Miss { kind: "data", detail: format!("{p} ({})", dep.split(':').next().unwrap_or("")) });
+        for c in e.data.chunks() {
+            let key = std::sync::Arc::as_ptr(c) as *const (Str, Str) as usize;
+            if self.ok_chunks.contains_key(&key) {
+                continue;
             }
+            for (p, dep) in c.iter() {
+                if self.data(p, dep) != &**dep {
+                    return Err(Miss { kind: "data", detail: format!("{p} ({})", dep.split(':').next().unwrap_or("")) });
+                }
+            }
+            self.ok_chunks.insert(key, c.clone());
         }
         let mut proven = std::collections::BTreeSet::new();
         // whole-content, skeleton and hook dependencies: per set, memoised (sets are shared across entries)
@@ -1962,19 +2171,33 @@ impl Checker {
         for c in e.units.chunks(2) {
             let Some(f) = store.files.get(c[0] as usize) else { continue };
             let Some(u) = f.units.get(c[1] as usize) else { continue };
+            // 0: changed, 1: file unchanged, 2: file changed, unit unchanged (proven)
+            match self.unit_ok.get(&(c[0], c[1])) {
+                Some(0) => return Err(Miss { kind: "code", detail: format!("{}::{}", f.path, u.q) }),
+                Some(1) => continue,
+                Some(_) => {
+                    proven.insert(f.path.clone());
+                    continue;
+                }
+                None => {}
+            }
             if self.content_is(&f.path, &f.content) {
+                self.unit_ok.insert((c[0], c[1]), 1);
                 continue;
             }
             let path = f.path.clone();
             let ok =
                 self.now_facts(store, &path).map(|n| n.units.iter().any(|x| x.q == u.q && x.d == u.d)).unwrap_or(false);
+            self.unit_ok.insert((c[0], c[1]), if ok { 2 } else { 0 });
             if !ok {
                 return Err(Miss { kind: "code", detail: format!("{path}::{}", u.q) });
             }
             proven.insert(path);
         }
         Ok(Receipt {
-            key: store.key_of_with(nodeid, e, &mut self.key_parts),
+            // the key recorded with the entry (`Store::record`: key_of over the same parts); recomputing it hashed every
+            // pair of every reusable entry (esphome: ~5 GB per decision, most of the controller's 6 s)
+            key: if e.key.is_empty() { store.key_of_with(nodeid, e, &mut self.key_parts) } else { e.key.clone() },
             run: e.run.clone(),
             outcome: e.outcome.clone(),
             fingerprint: e.fingerprint.clone(),
@@ -2437,6 +2660,36 @@ mod tests {
     }
 
     #[test]
+    fn shard_is_written_by_chunk_and_loads_the_same_entries() {
+        // py-cache: shards were written pair by pair (esphome: 1.7 GB for one session, a runner out of memory)
+        let d = tempfile::tempdir().unwrap();
+        let common: Vec<(String, String)> = (0..3000).map(|i| (format!("lib/m{i}.py"), format!("f:{i}"))).collect();
+        let mut entries: Vec<(String, Vec<(String, String)>)> = Vec::new();
+        for t in 0..40 {
+            let mut v = common.clone();
+            v.push((format!("own{t}.txt"), format!("f:own{t}")));
+            entries.push((format!("t.py::t{t}"), v));
+        }
+        let refs: Vec<Vec<(&str, &str)>> =
+            entries.iter().map(|(_, v)| v.iter().map(|(a, b)| (a.as_str(), b.as_str())).collect()).collect();
+        let es: Vec<(&str, &[(&str, &str)])> =
+            entries.iter().zip(&refs).map(|((n, _), r)| (n.as_str(), r.as_slice())).collect();
+        let mut s = shard("gw0", &es, &[]);
+        let plain = serde_json::to_vec(&s).unwrap().len();
+        let path = d.path().join("s.gw0.json");
+        s.save(&path).unwrap();
+        let size = fs::metadata(&path).unwrap().len() as usize;
+        assert!(size * 5 < plain, "{size} vs {plain}");
+        let back = Shard::load(&path).unwrap();
+        assert_eq!(back.store.tests.len(), 40);
+        for (nid, e) in &s.store.tests {
+            assert_eq!(back.store.tests[nid].data, e.data, "{nid}");
+            assert_eq!(back.store.tests[nid].env, e.env, "{nid}");
+        }
+        assert!(back.store.chunks.is_empty());
+    }
+
+    #[test]
     fn cross_worker_write_drops_the_reader() {
         let d = tempfile::tempdir().unwrap();
         // test_a (worker 0) writes /tmp/x; test_b (worker 1) reads it: b is not cached; c reads only its own file
@@ -2461,11 +2714,23 @@ mod tests {
         written.insert("/tmp/imp".to_string(), BTreeSet::from(["i".to_string(), "c|t.py".to_string(), "s".to_string()]));
         let dirs = BTreeMap::new();
         let data = |k: &str| vec![(Str::from(k), Str::from("f:1"))];
-        assert_eq!(foreign_write("t.py::a", &[], &data("/tmp/own"), &written, &dirs), None);
-        assert_eq!(foreign_write("t.py::a", &["f|session||db".into()], &data("/tmp/fx"), &written, &dirs), None);
-        assert!(foreign_write("t.py::a", &[], &data("/tmp/fx"), &written, &dirs).is_some());
-        assert_eq!(foreign_write("t.py::a", &[], &data("/tmp/imp"), &written, &dirs), None);
-        assert!(foreign_write("t.py::b", &[], &data("/tmp/own"), &written, &dirs).is_some());
+        assert_eq!(foreign_write("t.py::a", &[], &data("/tmp/own").into(), &written, &dirs), None);
+        assert_eq!(foreign_write("t.py::a", &["f|session||db".into()], &data("/tmp/fx").into(), &written, &dirs), None);
+        assert!(foreign_write("t.py::a", &[], &data("/tmp/fx").into(), &written, &dirs).is_some());
+        assert_eq!(foreign_write("t.py::a", &[], &data("/tmp/imp").into(), &written, &dirs), None);
+        assert!(foreign_write("t.py::b", &[], &data("/tmp/own").into(), &written, &dirs).is_some());
+    }
+
+    #[test]
+    fn listing_of_the_project_root_another_test_wrote_into() {
+        // py-cache (moto): rb.tmp written and removed at the root by one test while another listed the root
+        let shards = vec![shard("gw0", &[], &[("rb.tmp", &["t|t.py::w"])])];
+        let (written, dirs) = writer_union(&shards);
+        let listing = vec![(Str::from("."), Str::from("d:abc"))];
+        assert!(foreign_write("t.py::r", &[], &listing.into(), &written, &dirs).is_some());
+        assert_eq!(parent_key("rb.tmp"), Some("."));
+        assert_eq!(parent_key("pkg/x.py"), Some("pkg"));
+        assert_eq!(parent_key("."), None);
     }
 
     #[test]
@@ -2473,9 +2738,9 @@ mod tests {
         let shards = vec![shard("gw0", &[], &[("/tmp/d/new", &["t|t.py::w"])])];
         let (written, dirs) = writer_union(&shards);
         let listing = vec![(Str::from("/tmp/d"), Str::from("d:abc"))];
-        assert!(foreign_write("t.py::r", &[], &listing, &written, &dirs).is_some());
+        assert!(foreign_write("t.py::r", &[], &listing.clone().into(), &written, &dirs).is_some());
         let file = vec![(Str::from("/tmp/d"), Str::from("missing"))];
-        assert!(foreign_write("t.py::r", &[], &file, &written, &dirs).is_none());
+        assert!(foreign_write("t.py::r", &[], &file.clone().into(), &written, &dirs).is_none());
     }
 
     #[test]
@@ -2548,7 +2813,12 @@ mod tests {
     #[test]
     fn r023_f3_worker_reads_are_checked_against_this_runs_plan() {
         let (_d, mut s, cur) = setup();
-        s.tests.get_mut("t::a").unwrap().env.push(("PYTEST_XDIST_WORKER".into(), env_value_digest(Some("gw0"))));
+        {
+            let e = s.tests.get_mut("t::a").unwrap();
+            let mut env = e.env.to_vec();
+            env.push(("PYTEST_XDIST_WORKER".into(), env_value_digest(Some("gw0")).into()));
+            e.env = env.into();
+        }
         let mut c = Checker::new(cur);
         c.parallel = true;
         c.defer_worker = true;

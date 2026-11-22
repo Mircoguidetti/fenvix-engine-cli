@@ -3,6 +3,7 @@ zope.testrunner, plus its own: layer set-up reading a file, a fully reused layer
 
 from __future__ import annotations
 
+import json
 import sys
 import textwrap
 
@@ -117,7 +118,14 @@ def test_layer_setup_read_is_an_input_and_a_reused_layer_is_not_set_up(tmp_path)
     write(root, {"layer.txt": "2\n"})
     r = zt(root, env=env)
     assert r.outcomes["src/pkg/tests/test_z.py::LT::test_layer"] == "failed", r
-    assert r.reused == {"src/pkg/tests/test_z.py::U::test_unit"}, r
+    assert r.outcomes["src/pkg/tests/test_z.py::U::test_unit"] == "passed", r
+    # review R-023c E7 (serial): test_layer's needs are every earlier test (its layer set-up is a carried context that
+    # runs only with tests), so U::test_unit runs before it as in a fresh run; a conservative miss (coordinator,
+    # 2026-11-21: a known reuse limit of zope layer set-up contexts)
+    assert r.reused == set(), r
+    rows = [json.loads(x) for x in (root.parent / "p-cache" / "receipts.jsonl").read_text().splitlines() if x.strip()]
+    why = [x["why"] for x in rows if x["nodeid"] == "src/pkg/tests/test_z.py::U::test_unit"][-1]
+    assert why == "placement: a predecessor of src/pkg/tests/test_z.py::LT::test_layer, which runs in this session", why
 
 
 def test_test_suite_function_reads_are_inputs(tmp_path):

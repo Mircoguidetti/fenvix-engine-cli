@@ -20,7 +20,9 @@ def _data(data):
 
 
 def canon(path: str) -> dict:
-    s = json.load(open(path))
+    from detpy._proof import load_store
+
+    s = load_store(path)
     files, sets = s["files"], s["sets"]
 
     def fset(i):

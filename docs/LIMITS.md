@@ -140,3 +140,89 @@ written limit on 2026-11-22, as he did for F-05/PY-05 on 2026-11-21.
 
 **When it goes away:** with a sensor that sees under Python and Node, briefed in
 `fenvix-brain-cli prompts/P-066-compiled-extensions-sensor.md`. Until then this limit stands.
+
+## 10. Cache with proof (`--det-cache`): one process, as the user runs the suite; speed
+
+Under `--det-cache` the tests run in the session's process(es), as plain `pytest` (or `pytest -n`) runs them
+(coordinator decision 2026-11-21, review R-050 P2): the reported outcome of every test is that run's. A test is keyed
+on the earlier tests of its process whose state it may have consumed (its carried set). A test with no stored result
+(failed, or never cacheable: it starts a process, reads file times, ...) keeps the carried set it had when it last
+ran, and those tests run before it whenever it runs; a new test runs after every earlier test of its process. Cost:
+a failing or never-cacheable test reruns the tests of its carried set, every earlier test of the process when it
+reached a library; the reuse share this costs on moto and litellm is UNKNOWN until measured.
+A test whose test file, or the test file of any earlier test of its process, changed since its result was recorded
+is not reused, and every earlier test of its process runs before it (review R-052: its stored needs were computed
+from the old code). Cost: an edit to a test file reruns every later test of its process (worker), and their
+predecessors.
+
+**Written reuse limit (founder decision 2026-11-21: the Python cache closes with it).** A test that fails, or whose
+test file (or a conftest.py / __init__.py loaded with it) changed, runs every time; when its carried set reached a
+library (most real tests do), every earlier test of its process (worker) runs before it, because it may read state any
+of them left in memory and that state is not tracked per test. Sound (0 wrong reuse), less reuse. MEASURED, exam run
+44925123655 on 2b67ac0, attrs 25.3.0 (where 2 tests fail in the exam's checkout, positions 1,073-1,074 of 1,330):
+unchanged rerun reused 256 of 1,322 passing serially and 0 under -n 2; itsdangerous, one test file edited: 0 of 298
+reused. The same attrs suite with every test passing: 1,330 of 1,330 reused, serial and -n 2 (MEASURED locally).
+Lifting it needs per-test tracking of the state each test changes (a separate session).
+
+`--det-isolate` (one child per test file, or per test) is an explicit choice: no in-process state crosses files.
+
+* **Outcomes under `--det-isolate` of tests that depend on earlier files.** A test that works only after another
+  file's tests have left state in memory (moto 96f50b1a: `TestS3FileHandleClosuresUsingMocks.setUp` builds a boto3
+  client outside the mock and needs the credentials or session an earlier file left behind) can fail in its file's
+  own process. fenvix detects it and reports it. When a test fails in its file's process and the store has no
+  in-process result to compare with, fenvix replays it in one process after the earlier tests of the session (or the
+  worker). If it passes there, the run reports the pass, the user's normal outcome, and a `PLACEMENT FINDING` naming
+  the earlier files. A test whose outcome differs from a stored in-process result is reported the same way. A test
+  that passes only in its own process (an earlier file breaks it in one process) is reported as passed under
+  `--det-isolate` unless an in-process result is stored: the isolation the user asked for. The replay reruns every
+  earlier test once per failing file, and only for failures: moto `tests/test_s3/` with 5 failures that also fail
+  without the isolation took 118 s against 45 s (MEASURED, 4 CPUs). `DETPY_PLACEMENT_REPLAY=0` turns the replay off;
+  `DETPY_PLACEMENT_REPLAY_S` bounds it (default 900 s; past it the failure stands). Under `-n`, the replay runs the
+  earlier tests of the same worker, as plain `pytest -n` does.
+* **Speed numbers below were MEASURED with the earlier per-file default** (one child per test file, before
+  2026-11-21); with the in-process default they are UNKNOWN until remeasured.
+* **Speed when most tests miss** (founder decision 2026-11-21). On commits that change code most tests depend on, a
+  cached `-n 4` run is slower than the uncached one, with no wrong result: moto 96f50b1a, 10 commits, 6 of them
+  changing moto core: 755 s cached against 648 s uncached at `-n 4` (MEASURED, CI). Each file's process reloads the
+  libraries' caches (botocore's service models) and the cache records every test. Unchanged reruns and the serial
+  walk are faster cached: 24.8 s against 67.3 s, and 1,577 s against 1,702 s.
+* **No reuse where every test resolves a name.** A name resolution is a network input, so a suite whose setup
+  resolves `localhost` in every test (litellm's pytest-socket `socket_allow_hosts`) reuses nothing and pays the
+  per-file cost: 220-240 s against 48 s at `-n 4` (MEASURED, litellm 17e6ea8c `tests/unit/llms/vertex_ai`).
+
+## 10. Parallel lanes (`--det-workers=N`, and the default since G-1044): cross-file state on a first run
+
+Since row JS-07 (gap G-1044) a `--det` run of the JavaScript runners uses this machine's CPUs as lanes unless the
+user asks for something else. The guarantee the lanes are meant to keep is that a parallel run observes exactly what
+a serial run observed: measured on real suites it holds (ufo 471 tests under the Vitest `threads` and `forks` pools,
+luxon 1116 under Jest workers, simple-statistics 277 under node:test all verify `IDENTICAL` against their serial
+run, 0 hazards, 0 not proven).
+
+Since the P1 fix below it also holds on the **first** parallel run of files that share state the engine has not
+seen yet: a run that reports a cross-worker hazard re-runs the files that hazard names in one lane and reports the
+re-run's outcomes, so a placement can no longer decide an outcome. `docs/PARALLEL-PROOF-DESIGN.md` (design P6)
+specifies preventing the conflict *a priori* from recorded footprints, which the Python/xdist path does and the
+Node path still does not: the Node path detects the conflict after the fact and then pays for a second, safe run
+of the files involved. P6's acceptance criterion ("0 new failures caused by the split") is met; its mechanism is
+not the designed one. The limits below are the Node shell's.
+
+| # | limit | found | mitigation |
+|---|---|---|---|
+| P1 (closed) | **A first parallel run of two files that share a path or a fixed port reported failures a serial run did not.** The lanes are planned before anything is known about what the files touch; the conflict is found only after the run, from the recorded footprints, and reported as `CROSS-WORKER <kind> <path>: <file> (lane i) / <file> (lane j); the next plan puts them in one lane`. The placement is corrected for the *next* run, so the first run's outcome has already been reported. Reproduced twice, in both conflict classes: `node/test/controls.test.js` "isolation: parallel workers interleave" (two files sharing `shared.log`: both pass serially, both fail in lanes), and two files binding one fixed port (2 passed serially; in 2 lanes one fails with `EADDRINUSE`, then passes on every later run once the edge is learnt). The signature is run 1 red, runs 2 and later green - the retry-flakiness the engine exists to remove. Detection itself is sound: the hazard names the exact path or port and the exact pair of files, which is why that test and `controls.test.js` "order: files run in sorted order" ask for `--det-workers=1` explicitly. Design P6 lists "0 new failures caused by the split" as an acceptance criterion, so this is a gap against the design, not an accepted cost. | Block 3 (row JS-07) | **Closed** (`node/src/parallel-rerun.js`). When a run reports cross-worker hazards, the files those hazards name are run again in ONE lane (`--det-workers=1`) and the re-run's outcomes are the ones reported, in the exit status and in the merged trace; `meta.hazard_rerun` records the files, the hazards, whether the re-run accounted for every affected test, and what the first run had failed. MEASURED on both conflict classes, Vitest and Jest, Node 22.23.5: shared path, wrapper off `1 failed / 1 passed` rc=1 -> on `2 passed` rc=0; fixed port 45321, wrapper off `EADDRINUSE` rc=1 -> on `2 passed` rc=0. A genuine defect in an affected file is still reported (rc=1, that test still `failed`), and a run with no hazard pays nothing: no second pass, no `hazard_rerun` key. Default-deny: if the re-run's trace cannot be read, or an affected test leaves no record in it, the first run's status stands and the reason is printed. What it costs the customer: the affected files are run twice, so a suite with cross-file state pays those files' time again. |
+| P2 | **A together-edge never expires.** Once two files are seen touching one path from two lanes, `state.together` in `.detjs/plan-state.json` keeps them in a single lane for every later run (`node/src/parallel.js`, the entry is written and never removed). The parallelism of a project therefore only decreases, and does not recover after the suite is fixed. Measured: the JS-07.kept probe reports 2 concurrent files on a fresh plan state and 1 on every run after it in the same project directory. (The exam check itself is unaffected: `lib.Ctx.clone()` removes the project directory once per `run.py` process, and `.detjs/plan-state.json` with it.) A second measured consequence, found while writing the P1 tests: once the edge is learnt, the conflict can no longer be reproduced in that project directory at all, because every later plan puts the pair in one lane. The first version of both P1 tests passed for the wrong reason because of it, and they now force the lanes with `--det-plan`. So the edge does not only cost parallelism over time: it also hides the very conflict it was learnt from, which is why a regression test for a hazard must never rely on the planner. | Block 3 (row JS-07) | Delete `.detjs/plan-state.json` (or `DETJS_PLAN_STATE`) to forget the edges; `--det-plan=TRACE\|JSON` replays a chosen plan. |
+| P4 | **A sharded `node:test` run cannot yet be verified against the unsharded one.** node:test runs every test file in its own process (`isolation=process`), but the verifier still treats a serial trace as one undivided sequence: `Predecessors` in `crates/detpy-core/src/verify.rs` keys every test of a serial run under one empty worker id, so a test's predecessors are all the tests earlier in the whole run, not the earlier tests of its own file. Comparing a shard against the full run therefore reports an `order` divergence for every test whose file moved, although no test ran differently. MEASURED (exam run 44958011775, simple-statistics, 277 tests, both legs linux-x64/py3.13 node22 and node26): shard 1/2 against the full run gives `diverged: 151, missing: 125` with `reasons {"missing": 125, "order": 151}`, and the two shards together cover the serial run exactly (`serial passed=277, shards passed=277`). The same suite under `--test-concurrency=4` in ONE run verifies `IDENTICAL` 277/277 against serial, so what is missing is the scoping of the comparison, not the determinism of the run. What it costs the customer: node:test shards are run and proven **within** a shard, not across the split -- a sharded CI job still gets a deterministic, verified run, but the engine will not certify that shard 1 plus shard 2 equals the unsharded suite. The shell side is in place: the trace header now declares `meta.isolation_unit: "per-file"` whenever node:test ran with its own `isolation=process`, which is the fact the verifier needs; scoping `Predecessors` by that unit is a change to the comparison itself and belongs to the verifier's owner. Not set under `--test-isolation=none` (every file shares the driver process, so the claim would be false), and not set for Vitest or Jest (a fresh worker per file looks like the same guarantee, but it is not measured here). | Block 3 (row JS-07) | None today. `--test-concurrency=N` instead of `--test-shard=i/N` gives a single run that verifies identical to serial. |
+| P5 | **In lanes, a Jest project with a `NODE_OPTIONS` preload is not cached at all.** A preload named in `NODE_OPTIONS` runs in every Jest worker *before* the capture starts, so what it reads is not observed; rather than reuse a result whose inputs it cannot see, the engine refuses the whole project (`node/src/jest/cli.js`, reason `NODE_OPTIONS preloads run in Jest workers before the capture`, recorded in the run summary's `misses`). Serially the refusal is per file and names the finer cause (`a preload module read the clock or OS entropy before Level 0`). MEASURED (`node/test/cache-p041.test.js`, G-1586, jest 30.5.2): with lanes, `misses` holds the project reason and `not_cached_detail` is empty; nothing of the project is reused on a second run, and a change the preload makes visible still fails the cached run exactly as a fresh one. So this costs **reuse, not correctness** -- the coarser refusal is strictly stronger than the per-file one. It is **not** the default experience: since Jest keeps the proof by default (P6 below) a defaulted `--det` run has one lane and the finer per-file refusal applies, so only a user who asks Jest for lanes by name meets this. | Block 3 (row JS-07) | Let Jest default to one lane (the current default), which restores per-file caching. |
+| P6 | **Jest runs in one lane by default, because lanes cost the proof.** Jest 30 resolves modules with a native addon (`@unrs/resolver`), and in a worker it is loaded *outside any test*, so the general rule -- correctly, default-deny -- marks every test of the run NOT PROVEN (`meta.not_proven_outside_tests` holds exactly that one entry). Nothing is wrongly reused and nothing is wrongly called identical: what is lost is the proof itself, and the cache's reuse with it. MEASURED (jest 30.5.2, a suite of 8 files / 48 tests, two runs per configuration, `fenvix verify` on the pair): the serial default verifies `IDENTICAL` with `covered by Level 0: 48 of 48` in 1313 / 1364 ms; `-w 4` gives `NOT PROVEN: 48 of 48`, `covered by Level 0: 0`, in 1584 ms -- on that suite the lanes are not even faster, because worker start-up dominates eight small files on four cores. On a larger suite the lanes do win (luxon under Jest: 1.6x at 8 lanes, MEASURED). So the engine refuses the lanes only when the lane count came from the default, and says so; a user who names them (`--det-workers=N`, `-w N`, `--maxWorkers=N`) gets them, and loses the proof for that run. Vitest and node:test are unaffected and stay parallel by default (both verify IDENTICAL at 1 and at 4 lanes, MEASURED). | Block 3 (row JS-07) | `--det-workers=N` or `-w N` to take the lanes and give up the proof for that run. The proper fix, which gives Jest lanes **and** the proof, is auditing `@unrs/resolver` by what it asks the system for (founder, 2026-11-21, route 1) rather than whitelisting it on a look. |
+| P3 | **In lanes, a Jest `globalSetup` that runs a child process is never reused from the cache.** The entry is recorded with a worker's start-up digest and checked against the main process's, which is empty, so the keys cannot match (`startupDigest()` in `node/src/cache/proof.js`, compared at `crates/detpy-core/src/proof.rs` `startup`). The miss is reported honestly ("a process started at start-up gave back a different output or exit code") and nothing is wrongly reused, so this costs reuse, not correctness. Predates G-1044 (reproduces on the previous commit with an explicit `--det-workers=4`); the default made it the default experience. | Block 3 (row JS-07) | `--det-workers=1` for such a suite until the two digests are computed in the same process. |
+
+### Measured by row JS-07, owned elsewhere
+
+These are recorded here with their measurement because row JS-07 measured them; none is the Node parallel path's to
+fix, and each names its owner.
+
+| # | what | owner |
+|---|---|---|
+| X1 | **The `seeds` control is about 8 s of the ~13 s of engine overhead on luxon** -- half the run. MEASURED (luxon 3.5.0 under Jest, this container, 4 cores, whole-command wall clock, controls disabled one at a time): with `seeds` disabled 7.60 s / 7.73 s against about 15 s with it; disabling `net` changes nothing (15.38 s / 15.15 s). `node/src/seeds.js` calls `require('./concur').sync()` on every intercepted draw (`mathRandom`, `nonce`, ...). It is the single biggest lever on whether "faster tests" is true for Jest suites, which is why it is written down rather than left in a report. | Level 0 (`node/src/seeds.js`), not the parallel path. |
+| X2 | **Parallel costs more CPU than it saves in latency.** MEASURED (luxon under Jest, this container): serial 14.44 s; at 8 lanes the run does **4.1x the CPU work** of the serial run to finish **1.6x sooner** (59.66 s of core time against 14.44 s). Across three runners parallel gives 1.6x-2.2x on 4 cores. "Finishes sooner" is supported by the data; "and costs less" is supported only if we price wall clock, not core-seconds. | The founder (pricing); the coordinator is carrying it. |
+| X3 | **`--det` pins UTC and `C.UTF-8` although `--det-help` declares the environment's value as the default.** DECLARED by the help text: `--det-tz=ZONE\|keep   time zone of the run (default: TZ when set, else UTC; recorded)`, and the same shape for `--det-locale`. MEASURED: with `TZ=Asia/Tokyo` in the environment, a `--det` run records `tz: "UTC TZ=UTC"` and `pinned: "tz=UTC;locale=C.UTF-8"`. The code agrees with the behaviour and not with the help: `pinned()` in `node/bin/detjs.js` defaults to the literal `'UTC'` and never reads `process.env.TZ`. Pinning is the right behaviour for a deterministic run (and `--det-tz=keep` opts out); the help text is what is wrong. | The time control's owner. |
+

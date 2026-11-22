@@ -141,7 +141,8 @@ def test_many_existence_checks_in_one_directory_are_one_dependency(pytester, run
     (ex / "3.txt").write_text("changed")
     r, reused, _ = run_cache_plain()
     assert reused == {"test_ex.py::test_count"}, r.stdout.str()
-    entry = json.load(open(pytester.path / ".plaincache" / "proof-cache.json"))["tests"]["test_ex.py::test_count"]
+    from detpy._proof import load_store
+    entry = load_store(str(pytester.path / ".plaincache" / "proof-cache.json"))["tests"]["test_ex.py::test_count"]
     assert sum(1 for p, d in entry["data"] if d.startswith("s:") and p.startswith("ex/")) < 32, entry["data"]
     (ex / "55.txt").write_text("x")
     r, reused, _ = run_cache_plain()

@@ -520,12 +520,27 @@ for (const runner of RUNNERS) {
     // the refusal must name the addon -- a blanket refusal of the file would fail this.
     // MEASURED: "covered by Level 0: 2  not proven: 1", the one being `better sqlite3`, named
     // `native:.../better-sqlite3/prebuilds/linux-x64.node`.
-    const refused = (rep.tests || []).filter((t) => t.status !== 'stable');
-    assert.equal(rep.summary.stable, rep.summary.tests - refused.length, divergences(rep).join('\n'));
-    for (const t of refused) {
-      assert.match(String(t.nodeid), /better sqlite3/, `only the better-sqlite3 test may be refused: ${t.nodeid}`);
-      assert.match(JSON.stringify(t), /better-sqlite3/, `the refusal must name the addon: ${JSON.stringify(t)}`);
+    // Nothing diverged: every value this gap is about is the same in both runs (asserted above, and here by the
+    // verifier). What is NOT claimed is `better-sqlite3`: it is a native addon, so the general rule refuses to
+    // call its test IDENTICAL -- it loads prebuilds/*.node (vitest's leg reports the process.dlopen behind it as
+    // well), and whatever a native addon reads, no wrapper sees. That is row JS-09 working, not a regression, so
+    // this test states it instead of asking for a green the rule cannot honestly give.
+    assert.equal(divergences(rep).length, 0, divergences(rep).join('\n'));
+    assert.equal(rep.summary.diverged, 0, JSON.stringify(rep.summary));
+    const notProven = rep.tests.filter((t) => t.status === 'not-proven').map((t) => t.nodeid);
+    const native = first.better === 'absent' ? [] : [rep.tests.map((t) => t.nodeid).find((id) => /better sqlite3/.test(id))];
+    assert.deepEqual(notProven, native, `only the native-addon test is NOT PROVEN: ${JSON.stringify(rep.summary)}`);
+    // and it is NOT PROVEN for the load this exemption is about, not for anything else: without this the test
+    // lets that one node id off for ANY cause (reviewer finding 1). `native` names the addon file itself
+    // (jest's leg); vitest's leg names the `process.dlopen` behind the same load first and calls it `api`.
+    // A different cause -- a table entry gone missing, `process.binding`, `wasi.WASI` -- fails here.
+    for (const id of native) {
+      const t = rep.tests.find((x) => x.nodeid === id);
+      const d = (t && t.divergence) || {};
+      assert.match(String(d.reason), /^(native|api)$/, `${id}: NOT PROVEN for ${JSON.stringify(d)}`);
+      assert.match(String(d.description), /better.sqlite3|process\.dlopen/, `${id}: NOT PROVEN for ${JSON.stringify(d)}`);
     }
+    assert.equal(rep.summary.stable, rep.summary.tests - native.length, JSON.stringify(rep.summary));
   });
 }
 

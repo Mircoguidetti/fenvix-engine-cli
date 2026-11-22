@@ -15,11 +15,13 @@ from detpy import _core, _state
 from _ref_pc_helpers import _GLOBAL_CTX, _ctx_file, _encodable, _final, _module_of, _uncacheable  # (were in detpy.proofcache)
 
 
-_INFRA_TOP = {"pytest", "_pytest", "pluggy", "xdist", "execnet", "detpy", "iniconfig", "__future__"}
+_INFRA_TOP = {"__future__"}  # review R-023c E5
 
 
 _DYNAMIC_MARKERS = ("__import__", "importlib", "setattr", "getattr", "delattr", "sys.modules", "builtins", "globals(",
-                    "vars(", "exec(", "eval(", "mock", "monkeypatch", "os.environ", "putenv")
+                    "vars(", "exec(", "eval(", "mock", "monkeypatch", "os.environ", "putenv", "request",
+                    "pytestconfig", "config", "cache", "stash", "tmp_path_factory", "tmpdir_factory",
+                    "doctest_namespace", "record_testsuite_property", "worker_id", "testrun_uid")
 
 
 def _dynamic_access(path):
@@ -272,7 +274,8 @@ def record_reference(self, store) -> None:
         # parallel-proof round 3, carried-set rule: only earlier contexts connected to the test through shared
         # executed repository files (closure), plus earlier contexts that ran no repository code
         sel = set()
-        if any(reaches_lib(c) for c in own_ctxs):
+        reaches_all = any(reaches_lib(c) for c in own_ctxs)
+        if reaches_all:
             sel = {(k, c) for k, c in carry_order if k < tpos and c not in own_ctxs}
         else:
             reach = set()
@@ -309,6 +312,19 @@ def record_reference(self, store) -> None:
             for k, c in no_code + lib_ctxs:
                 if k < tpos and c not in own_ctxs:
                     sel.add((k, c))
+        # review R-023c E7: the earlier tests whose state the test may have consumed (Entry::needs)
+        needs = None
+        if not reaches_all:
+            v = []
+            for _k, c in sorted(sel):
+                n = names_of[c]
+                if n.startswith("t|"):
+                    v.append(n[2:])
+                elif not (n.startswith("c|") or n == "i" or n.startswith("i|") or n == ""):
+                    v = None
+                    break
+            if v is not None and len(v) <= 64:
+                needs = sorted(set(v))
         if sel != last_sel:
             c_data, c_env, c_flags, c_units, c_content, c_ctxs = {}, set(), set(), set(), set(), []
             for _k, c in sorted(sel):
@@ -413,7 +429,10 @@ def record_reference(self, store) -> None:
             self._not_cached(nid, "real clock")
             continue
         env_deps = []
+        whole = "*" in env
         for name in sorted(n for n in env if _encodable(n)):
+            if whole and name == "_":
+                continue  # py-cache: part of the whole-environment read (ENV_ALL_EXCLUDED)
             if name == "*":
                 env_deps.append(("*", _core.env_all_digest(dict(cap.env0))))
             else:
@@ -422,7 +441,7 @@ def record_reference(self, store) -> None:
         store.record(nid, outcome, json.dumps(report), self.fingerprints.get(nid, ""), self.dur.get(nid, 0.0),
                      self.run_id, self.config_digest, self.runtime_digest, epoch, env_deps,
                      _compact(data, base, cap.root_sep.rstrip("/")), sorted(content),
-                     sorted(skeleton), sorted(hooks), sorted(units))
+                     sorted(skeleton), sorted(hooks), sorted(units), needs)
         self.recorded += 1
     store.save()
 
