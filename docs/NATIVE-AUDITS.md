@@ -70,6 +70,34 @@ The Python side's list is `CONTROLLED_NATIVE` in `crates/detpy-core/src/provable
 extension and the standard library's accelerators. No third-party extension is listed, so a suite that imports
 numpy, pydantic-core, lxml or psycopg comes out NOT PROVEN. That is the honest consequence of the residual.
 
+### `markupsafe._speedups` (Jinja2's HTML escaper) — audited
+
+Why it matters: Django and Flask pull in Jinja2, so without this entry **every test of every Django or Jinja2
+suite is NOT PROVEN** — MEASURED on this branch: the Django/nose2/ward/zope runner suites had 87 failures
+locally and 58 in CI 44995653567, and every trace said `native:markupsafe._speedups`.
+
+Measurement (2026-11-22, this container, CPython 3.13.18): its whole surface is ONE function,
+`_escape_inner`, which takes a string and returns it with `<`, `>`, `&`, `"` and `'` replaced. 200 calls under
+`strace -f` over the same syscall set as above, counted between two markers:
+
+```
+brk 9
+```
+
+and nothing else: no `openat`, no `stat`, no `getrandom`, no clock, no socket, no `getpid`, no `getdents64`.
+The nine `brk` calls are the allocator growing the heap for the returned strings. A pure function of its
+argument, and the measurement says so.
+
+Limit: measured on the version in this container, on `linux-x86_64`. A different build is a different binary.
+
+### `tomli` compiled with mypyc (ward, zope) — NOT listed, and not listable as it stands
+
+ward's config parser is `tomli` compiled with mypyc, which refuses every ward and zope test:
+`native:tomli`, `native:tomli._parser`, `native:tomli._re` and `native:c787785866c7b801238d__mypyc`. That last
+name is a **build hash**, so it cannot be put on a list of names at all — a list keyed by module name is the
+wrong instrument for mypyc output. Ward and zope are after-launch runners (founder, 2026-11-21), so this is
+recorded and left: whoever takes it on needs a rule for mypyc-compiled packages, not an entry.
+
 ### `_time_machine` (the `time-machine` pytest plugin's extension) — the engine's own integration
 
 Why it matters: **merely having `time-machine` installed made every test of every suite NOT PROVEN** — MEASURED
