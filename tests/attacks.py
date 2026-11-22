@@ -49,6 +49,8 @@ PYTHON_ATTACKS: dict[str, str] = {
     "tests/test_review_r053_pycache.py": "review R-053: conftest/__init__ prefix, real CPU and host name, posix.urandom",
     "tests/test_review_r056_pycache.py":
         "review R-056's 11 families of wrong reuse and wrong outcome in the Python cache (W1-W11)",
+    "tests/test_block2_pycache_attacks.py":
+        "Block 2's attacks on its own rules: the pytest-name exception, and the reuse an edited test body keeps",
 }
 
 #: The Node attack files. Each is run by ``node --test``.

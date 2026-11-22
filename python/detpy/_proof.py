@@ -1068,7 +1068,40 @@ def _conftests_in_tree(root: str, rels) -> set:
     return {f for f in out if os.path.exists(os.path.join(root, f))}
 
 
-def _applied_is_benign(e) -> bool:
+def _pytest_is_pytest(tree) -> bool:
+    """Whether the name ``pytest`` in this module really is the pytest package.
+
+    The one exception in `_applied_is_benign` keys on the name, so a module that binds that name to something
+    else would get its decorators waved through: ``import helper as pytest`` and then ``@pytest.poison``. The
+    exception is therefore off unless the module imports pytest plainly and binds the name nowhere else. Found by
+    attacking this block's own rule before the reviewer did.
+    """
+    plain = False
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for a in node.names:
+                if a.asname == "pytest" and a.name != "pytest":
+                    return False
+                if a.name == "pytest" and a.asname in (None, "pytest"):
+                    plain = True
+        elif isinstance(node, ast.ImportFrom):
+            for a in node.names:
+                if (a.asname or a.name) == "pytest":
+                    return False
+        elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            if node.name == "pytest":
+                return False
+        elif isinstance(node, ast.Assign):
+            for t in node.targets:
+                if isinstance(t, ast.Name) and t.id == "pytest":
+                    return False
+        elif isinstance(node, (ast.AnnAssign, ast.AugAssign)):
+            if isinstance(node.target, ast.Name) and node.target.id == "pytest":
+                return False
+    return plain
+
+
+def _applied_is_benign(e, pytest_ok=True) -> bool:
     """An expression that is APPLIED, not merely evaluated: a decorator, a class base, a class keyword.
 
     Review R-056 W2: this is where the digest leaked. ``_pure_expr`` answers whether EVALUATING an expression
@@ -1083,6 +1116,8 @@ def _applied_is_benign(e) -> bool:
     """
     if e is None or isinstance(e, ast.Constant):
         return True
+    if not pytest_ok:
+        return False
     f = e
     while isinstance(f, (ast.Attribute, ast.Call)):
         f = f.value if isinstance(f, ast.Attribute) else f.func
@@ -1112,7 +1147,7 @@ def _annotations_of(st) -> list:
     return [x for x in out if x is not None]
 
 
-def _import_effect_nodes(body, hooks=False, annotations=True) -> list:
+def _import_effect_nodes(body, hooks=False, annotations=True, pytest_ok=True) -> list:
     """The top-level statements of a module (and of its class bodies, which run at import too) that may do more
     than define names: anything but imports, ``def``/``class`` whose decorators, defaults, class bases, class
     keywords and annotations are all benign, docstrings, assignments of pure expressions to names, and
@@ -1142,13 +1177,13 @@ def _import_effect_nodes(body, hooks=False, annotations=True) -> list:
             evaluated = [*a.defaults, *a.kw_defaults]
             if annotations:
                 evaluated.extend(_annotations_of(st))
-            out.extend(d for d in applied if not _applied_is_benign(d))
+            out.extend(d for d in applied if not _applied_is_benign(d, pytest_ok))
             out.extend(d for d in evaluated if d is not None and not _pure_expr(d))
             continue
         if isinstance(st, ast.ClassDef):
             applied = [*st.decorator_list, *st.bases, *[k.value for k in st.keywords]]
-            out.extend(d for d in applied if not _applied_is_benign(d))
-            out.extend(_import_effect_nodes(st.body, hooks=False, annotations=annotations))
+            out.extend(d for d in applied if not _applied_is_benign(d, pytest_ok))
+            out.extend(_import_effect_nodes(st.body, hooks=False, annotations=annotations, pytest_ok=pytest_ok))
             continue
         if isinstance(st, (ast.Assign, ast.AnnAssign)):
             targets = st.targets if isinstance(st, ast.Assign) else [st.target]
@@ -1160,15 +1195,15 @@ def _import_effect_nodes(body, hooks=False, annotations=True) -> list:
             out.append(st)
             continue
         if isinstance(st, ast.If) and _pure_expr(st.test):
-            out.extend(_import_effect_nodes(st.body, hooks=hooks, annotations=annotations))
-            out.extend(_import_effect_nodes(st.orelse, hooks=hooks, annotations=annotations))
+            out.extend(_import_effect_nodes(st.body, hooks=hooks, annotations=annotations, pytest_ok=pytest_ok))
+            out.extend(_import_effect_nodes(st.orelse, hooks=hooks, annotations=annotations, pytest_ok=pytest_ok))
             continue
         if isinstance(st, ast.Try):
-            out.extend(_import_effect_nodes(st.body, hooks=hooks, annotations=annotations))
+            out.extend(_import_effect_nodes(st.body, hooks=hooks, annotations=annotations, pytest_ok=pytest_ok))
             for hd in st.handlers:
-                out.extend(_import_effect_nodes(hd.body, hooks=hooks, annotations=annotations))
-            out.extend(_import_effect_nodes(st.orelse, hooks=hooks, annotations=annotations))
-            out.extend(_import_effect_nodes(st.finalbody, hooks=hooks, annotations=annotations))
+                out.extend(_import_effect_nodes(hd.body, hooks=hooks, annotations=annotations, pytest_ok=pytest_ok))
+            out.extend(_import_effect_nodes(st.orelse, hooks=hooks, annotations=annotations, pytest_ok=pytest_ok))
+            out.extend(_import_effect_nodes(st.finalbody, hooks=hooks, annotations=annotations, pytest_ok=pytest_ok))
             continue
         out.append(st)
     return out
@@ -1373,7 +1408,7 @@ class ProofSession:
                 h.update(f"{rel}\0?\0".encode())
                 continue
             eff = _import_effect_nodes(tree.body, hooks=os.path.basename(rel) == "conftest.py",
-                                       annotations=_annotations_run(tree))
+                                       annotations=_annotations_run(tree), pytest_ok=_pytest_is_pytest(tree))
             if eff:
                 h.update(f"{rel}\0".encode())
                 for node in eff:
