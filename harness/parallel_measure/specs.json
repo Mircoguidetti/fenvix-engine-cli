@@ -171,7 +171,7 @@
   "ci_parallel": false,
   "plan_verdict": true,
   "source": "claude/serial-scan harness/serial_scan/candidates.json",
-  "install": "npm ci --ignore-scripts --no-audit --no-fund"
+  "install": "npm install --ignore-scripts --no-audit --no-fund (no lockfile in the repository)"
  },
  "sqlectron": {
   "repo": "https://github.com/sqlectron/sqlectron",
@@ -188,7 +188,7 @@
   "ci_parallel": false,
   "plan_verdict": true,
   "source": "claude/serial-scan harness/serial_scan/candidates.json",
-  "install": "npm ci --ignore-scripts --no-audit --no-fund"
+  "install": "npm install --ignore-scripts --no-audit --no-fund (MEASURED: `npm ci --ignore-scripts` with npm 10.9.9 fails EUSAGE 'Missing: type-fest@4.41.0 from lock file'; npm install rewrote package-lock.json)"
  },
  "agentic-qe": {
   "repo": "https://github.com/proffesor-for-testing/agentic-qe",
@@ -205,5 +205,18 @@
   "env": {
    "NODE_OPTIONS_NOTE": "CI sets NODE_OPTIONS; the harness drops NODE_OPTIONS (detjs uses it)"
   }
+ },
+ "smart-second-brain": {
+  "repo": "https://github.com/s2b-dev/smart-second-brain",
+  "commit": "93fb0ffe5b815c355bf063891858ec8ae676c579",
+  "runner": "vitest",
+  "dir": "$PM_WORK/repos/smart-second-brain",
+  "fenvix_python": "$PM_WORK/venv/networkx/bin/python",
+  "args": [],
+  "ci": "DECLARED .github/workflows/ci.yml:48 bun run test = vitest run; vitest.config.ts:34 fileParallelism: false",
+  "ci_parallel": false,
+  "plan_verdict": true,
+  "source": "claude/serial-scan harness/serial_scan/candidates.json",
+  "install": "bun install --frozen-lockfile --ignore-scripts (MEASURED: `npm install --ignore-scripts` fails ERESOLVE vite@7 vs @sveltejs/vite-plugin-svelte@5 peer vite@^6; CI uses bun)"
  }
 }
