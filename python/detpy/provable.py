@@ -57,6 +57,23 @@ _mon = getattr(sys, "monitoring", None)
 #: does not know, so this string and the contract version travel together.
 SENSOR = "py-monitoring/1"
 
+#: Frames between a sensor callback and the frame that caused the operation, for ``_sites.resolve``.
+#:
+#: MEASURED, not guessed: from inside the ``sys.monitoring`` callback, ``resolve(0)`` and ``resolve(1)`` answer
+#: None (the callback's own frame is the engine's) and ``resolve(2)`` answers the frame making the monitored
+#: call. Getting this wrong by one silenced the sensor completely -- every gap looked like infrastructure -- which
+#: is why it is a named constant with the measurement next to it.
+_CALLER = 2
+
+#: Set by the cache with proof (``_proof.Capture.start``) to be called with every gap this sensor finds, so that
+#: the test is never stored and never reused. Without it the cache could reuse a result the rule refuses, and
+#: "reused" would be as false a claim as "identical" (founder, 2026-11-21: whatever the cache cannot observe with
+#: certainty forces a rerun). It is what sets the ``unacc`` flag that ``record.rs``'s ``uncacheable`` refuses on.
+ON_GAP = None
+
+#: The modules whose entries rest on the engine's observer at ``open`` (see :func:`_refresh_standard_streams`).
+_IO_MODULES = ("_io", "io")
+
 #: Audit events the engine has a rule for. Every one of them is already covered by a channel rule (a file read is
 #: an ``fs.read`` event, a child process is ``uncontrolled.child``, an import is an ``inputs.code`` / ``deps``
 #: entry), so seeing them adds nothing. Anything else the audit hook reports is a gap: the hook is asked for
@@ -119,8 +136,8 @@ class Sensor:
     test is running), and the Rust core decides what that means.
     """
 
-    __slots__ = ("tool", "active", "_verdicts", "_keep", "_seen", "outside", "_native_ok", "_native_seen",
-                 "_reason", "_transparent_memo", "_infra_memo", "_seen_for", "_native_bad")
+    __slots__ = ("tool", "active", "_verdicts", "_seen", "outside", "_native_ok", "_native_seen",
+                 "_reason", "_transparent_memo", "_seen_for", "_native_bad", "_stdin_ids")
 
     def __init__(self) -> None:
         self.tool: int | None = None
@@ -129,11 +146,6 @@ class Sensor:
         # call: the table is a pure function, so its answer can be remembered for the life of the process.
         self._verdicts: dict = {}
         self._transparent_memo: dict = {}   # module name -> its code is Python
-        self._infra_memo: dict = {}          # caller file -> it is the runner's own machinery
-        # every callable this sensor has classified, kept alive on purpose. Without the reference, CPython could
-        # free the object and hand its address to a different callable, and a cache keyed on identity would then
-        # answer for the wrong one.
-        self._keep: list = []
         self._seen: set = set()          # gaps already reported for the test named by _seen_for
         self._seen_for: str | None = None
         self._native_bad: list = []      # unaudited extensions found, reported again for every later test
@@ -141,6 +153,7 @@ class Sensor:
         self._native_ok: frozenset = frozenset()
         self._native_seen: set = set()
         self._reason: str | None = None  # why there is no sensor, when there is none
+        self._stdin_ids: set = set()     # the standard input streams: see _refresh_standard_streams
 
     # -- the ledger ----------------------------------------------------------------------------------
     def _report(self, kind: str, name: str, site: str = "<sensor>") -> None:
@@ -159,10 +172,46 @@ class Sensor:
             return
         self._seen.add(key)
         _state.record_at("other", f"unaccounted.{kind}", site, name)
+        if ON_GAP is not None:
+            try:
+                ON_GAP(key)
+            except Exception:
+                pass   # the cache's bookkeeping must not take the test down
+
+    # -- the streams that have no `open` behind them ---------------------------------------------------
+    def _refresh_standard_streams(self) -> None:
+        """The identities of the standard input streams, for :meth:`_on_call`.
+
+        The `_io` entry of the accounting table answers `Recorded` because the engine's observer at ``open``
+        already recorded the path and the digest of what was read, so the stream methods that hand those bytes to
+        the test add nothing the verifier does not already compare. A stream that is not a file has no such
+        ``open`` behind it: standard input goes through the SAME `_io` methods with nothing recorded, which R-058
+        confirmed is a false IDENTICAL -- two runs fed different bytes on stdin compared equal on every field.
+
+        The table cannot tell the two apart, because it answers for a name and not for a stream. The sensor can:
+        it holds the stream objects. Collected once per test rather than once per session, because a runner
+        replaces ``sys.stdin`` (pytest's capture plugin puts its own object there) and may do it per test.
+        """
+        ids = set()
+        for attr in ("stdin", "__stdin__"):
+            st = getattr(sys, attr, None)
+            buf = getattr(st, "buffer", None)
+            for obj in (st, buf, getattr(buf, "raw", None)):
+                if obj is not None:
+                    ids.add(id(obj))
+        self._stdin_ids = ids
 
     def start_test(self) -> None:
         self._seen = set()
         self._seen_for = _state.STATE.nodeid
+        self._refresh_standard_streams()
+        # No sensor means nothing in this run can be shown identical, so nothing in it may be stored for reuse
+        # either: a later run that reused one of these results would have no ground to call it provable.
+        if not self.active and ON_GAP is not None:
+            try:
+                ON_GAP(f"sensor:{self._reason or 'the sensor is not running'}")
+            except Exception:
+                pass
 
     # -- sensor 1: every call crossing out of Python ---------------------------------------------------
     def _transparent(self, mod: str) -> bool:
@@ -202,17 +251,6 @@ class Sensor:
             f = getattr(c, "__func__", None)  # a bound Python method, a classmethod
             if f is not None and getattr(f, "__code__", None) is not None:
                 return None
-            # 2. A call the test runner makes for its own bookkeeping is not something the test observed: the
-            #    runner's identity and version are run inputs, and nothing writes its environment during a run
-            #    (Rule E of the PROVABLE measurement). Only the runner itself and the engine count as
-            #    infrastructure here -- a library in site-packages is user code and is watched like any other.
-            fn = code.co_filename
-            infra = self._infra_memo.get(fn)
-            if infra is None:
-                infra = _sites._classify(fn)[0] == _sites._INFRA
-                self._infra_memo[fn] = infra
-            if infra:
-                return None
             mod = getattr(c, "__module__", None)
             qual = getattr(c, "__qualname__", None) or getattr(c, "__name__", None)
             if mod is None or qual is None:
@@ -234,14 +272,42 @@ class Sensor:
                     t = type(c)
                     mod, qual = mod or getattr(t, "__module__", None), getattr(t, "__qualname__", "?")
             k = (mod or "", qual or "?")
+            if k[0] in _IO_MODULES and self._stdin_ids:
+                # A call on a standard input stream, which the `_io` entry's claim does not cover: there is no
+                # `fs.read` event behind it, so nothing records what the test read. Asked only for `_io`, so a
+                # test reading ordinary files pays one set lookup and nothing else.
+                # For a method of a C type the callable is the method DESCRIPTOR (`_io.TextIOWrapper.readline`)
+                # and the instance arrives as `arg0`; only a bound builtin method carries `__self__`. Both forms
+                # reach here, so both are asked.
+                strm = getattr(c, "__self__", None)
+                if strm is None:
+                    strm = arg0
+                if strm is not None and id(strm) in self._stdin_ids:
+                    if _sites.resolve(_CALLER) is not None:
+                        self._report("io", "standard input")
+                    return None
             ok = self._verdicts.get(k)
             if ok is None:
                 # a Python-level callable is not a boundary crossing at all; everything else must be in the table
                 ok = self._transparent(k[0]) or _core.provable_account(k[0], k[1]) != "unaccounted"
+                # keyed by the name, not by the object's identity: a bound builtin method is a fresh object on
+                # every attribute access, so an identity cache would need a reference to each one -- and holding
+                # `fh.read` would hold the open file, and `sock.recv` the socket, for the whole session.
                 self._verdicts[k] = ok
-                self._keep.append(c)
             if not ok:
-                self._report("api", f"{k[0]}.{k[1]}", _site(code, offset))
+                # Only now, when a gap is about to be reported, is it worth asking whose call this is. A call the
+                # runner makes for its own bookkeeping is not something the test observed (Rule E), and finding
+                # that out means walking past the standard library: pytest's tmp_path machinery reaches
+                # pwd.getpwuid through getpass.getuser(), so the immediate caller is the standard library and
+                # only the frame above it says whose call it really is. `_sites.resolve` is the walk every other
+                # observer in the engine uses, and it answers None for infrastructure.
+                #
+                # The verdict cache above still says "unaccounted", so the same callable reached from a test is
+                # reported as it should be: what is suppressed here is the report, not the classification.
+                site = _sites.resolve(_CALLER)
+                if site is None:
+                    return None
+                self._report("api", f"{k[0]}.{k[1]}", site or _site(code, offset))
         except Exception:
             # a sensor that raises would take the test down with it. A sensor that cannot classify must not
             # answer "accounted": it says so, and the test is NOT PROVEN.
@@ -253,7 +319,14 @@ class Sensor:
 
     # -- sensor 2: the audit hook, for what calls do not show -----------------------------------------
     def _on_audit(self, event, args) -> None:
-        if event in _AUDIT_KNOWN:
+        # CPython raises `name/N` for the argument-list variants of one event (`glob.glob/2`, `ctypes.dlsym/handle`
+        # and so on): the same operation, so the rule is the same and the suffix is dropped before the lookup.
+        base = event.rsplit("/", 1)[0] if "/" in event else event
+        if event in _AUDIT_KNOWN or base in _AUDIT_KNOWN:
+            return
+        # the same question as for a call: whose operation is this? The runner's own bookkeeping is not something
+        # the test observed (Rule E), and only the frame above the standard library says so.
+        if _sites.resolve(_CALLER) is None:
             return
         self._report("audit", event)
 
@@ -326,6 +399,7 @@ class Sensor:
         # slot 1: the cache with proof keeps slot 0 for its own event list. () = every event reaches us,
         # because an event this sensor has no rule for is itself the gap it looks for.
         _core.set_audit_hook(self._on_audit, (), 1)
+        self._refresh_standard_streams()
         self.active = True
         return True
 

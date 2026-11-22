@@ -132,11 +132,6 @@ function report(kind, name, atWatchedSite) {
   if (STATE.onLevel0Gap) { try { STATE.onLevel0Gap(`not accounted for: ${key}`); } catch { /* best effort */ } }
 }
 
-function startTest() {
-  seen = new Set();
-  seenFor = STATE.testId;
-}
-
 /**
  * Wrap `real` so that calling or constructing it marks the running test, and nothing else about it changes.
  *
@@ -331,4 +326,7 @@ function header() {
   try { return JSON.parse(native.provableHeader(SENSOR, runtimeKey())); } catch { return null; }
 }
 
-module.exports = { install, startTest, header, runtimeKey, declare, SENSOR, get reason() { return reason; } };
+// No startTest hook: `report` keys its set by STATE.testId, so the set resets itself at the first gap of each
+// test and there is nothing for the session to remember to call. An exported hook nobody calls is how the
+// per-test set came to be never cleared in the first place.
+module.exports = { install, header, runtimeKey, declare, SENSOR, get reason() { return reason; } };

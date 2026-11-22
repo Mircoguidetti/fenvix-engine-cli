@@ -278,6 +278,9 @@ pub fn account(module: &str, qualname: &str) -> Accounting {
             import_account(name)
         }
         "_warnings" | "atexit" | "_tracemalloc" | "faulthandler" => Accounting::Pure,
+        // the locale is pinned by `--det-locale` and is a run input the verifier compares, so what these answer
+        // is the same in every run of a comparison
+        "_locale" | "locale" => Accounting::Input,
         // the C tokenizer and the AST builder read source text they are handed, nothing else
         "_tokenize" => Accounting::Pure,
         "_ssl" => ssl_account(name),
@@ -302,8 +305,8 @@ fn module_policy(module: &str, top: &str) -> ModulePolicy {
         "builtins", "posix", "os", "nt", "time", "_io", "io", "_socket", "socket", "_thread", "threading",
         "_random", "random", "select", "_selectors", "selectors", "_sqlite3", "sqlite3", "sys", "gc", "resource",
         "_imp", "_frozen_importlib", "_frozen_importlib_external", "importlib", "marshal", "zipimport",
-        "_warnings", "atexit", "_tracemalloc", "faulthandler", "_tokenize", "_ssl", "fcntl", "termios", "mmap",
-        "signal",
+        "_warnings", "atexit", "_tracemalloc", "faulthandler", "_tokenize", "_locale", "locale", "_ssl", "fcntl",
+        "termios", "mmap", "signal",
         "_posixsubprocess", "_multiprocessing", "_curses", "pwd", "grp", "spwd", "crypt", "syslog", "_uuid",
         "_scproxy", "msvcrt", "winreg", "nis",
     ];
@@ -385,6 +388,11 @@ fn posix_account(name: &str) -> Accounting {
         | "unlink" | "rename" | "replace" | "link" | "symlink" | "chmod" | "chown" | "lchown" | "fchmod"
         | "fchown" | "utime" | "mkfifo" | "mknod" | "set_inheritable"
         | "get_inheritable" | "set_blocking" | "get_blocking" | "fspath" | "strerror" => Accounting::Pure,
+        // Registering a callback for fork reads nothing and returns nothing: it only has an effect if the process
+        // forks, and `fork` itself is Unaccounted above, so the channel is refused where it actually opens. Named
+        // here because the standard library registers these on import (`random`, `threading`, `logging`), which
+        // put `api:posix.register_at_fork` on ordinary tests -- MEASURED on the smoke project (itsdangerous).
+        "register_at_fork" => Accounting::Pure,
         // whether a descriptor is a terminal, and the encoding that implies, differ between a terminal and a pipe
         // and between machines, and `--det` pins neither
         "isatty" | "device_encoding" | "ttyname" => Accounting::Unaccounted,
@@ -476,11 +484,34 @@ fn thread_account(name: &str) -> Accounting {
         "start_new_thread" | "start_joinable_thread" | "start" | "_set_sentinel" | "interrupt_main" => {
             Accounting::Unaccounted
         }
-        // locks and thread-local storage carry no outside information; the identifier is pinned
+        // locks and thread-local storage carry no outside information; the identifier is pinned.
+        //
+        // `lock` and `_ThreadHandle` are the TYPES, and they are here because CPython's `threading.Lock` IS the
+        // class `_thread.lock` (MEASURED on 3.13: `threading.Lock is <class '_thread.lock'>`), so a test writing
+        // the most ordinary `threading.Lock()` calls the type itself and the sensor reports the type's qualified
+        // name. Only the methods were listed, so constructing a lock was unaccounted and every test that took one
+        // came out NOT PROVEN -- MEASURED on the smoke project (CI 44959416348: "not accounted for:
+        // api:_thread.lock" on every test of itsdangerous). Creating a lock reads nothing from outside the
+        // process: what a lock can make non-deterministic is the ORDER of threads, which is a different claim and
+        // is refused by its own mark (`start_new_thread` above is Unaccounted, so a test that starts a thread is
+        // NOT PROVEN whatever it does with locks).
         "allocate_lock" | "RLock" | "LockType" | "acquire" | "release" | "locked" | "__enter__" | "__exit__"
-        | "get_ident" | "get_native_id" | "stack_size" | "_count" | "_local" | "TIMEOUT_MAX" | "daemon_threads_allowed" => {
-            Accounting::Controlled
-        }
+        | "get_ident" | "get_native_id" | "stack_size" | "_count" | "_local" | "TIMEOUT_MAX"
+        | "daemon_threads_allowed" => Accounting::Controlled,
+        // The lock TYPE itself, because `threading.Lock` IS `_thread.lock` in CPython (MEASURED on 3.13:
+        // `threading.Lock is <class '_thread.lock'>`), so the most ordinary `threading.Lock()` calls the type and
+        // the sensor reports the type's name, not a method's. Only the methods were listed, so creating a lock
+        // was unaccounted and every test that took one came out NOT PROVEN -- MEASURED on the smoke project (CI
+        // 44959416348: "not accounted for: api:_thread.lock" on every test of itsdangerous).
+        //
+        // `Pure` and not `Controlled`, because no control pins anything here: allocating a lock is a function of
+        // what is already in the process and reads nothing from outside it. What a lock can make
+        // non-deterministic is the ORDER of threads, which is a different claim and is refused by its own name:
+        // `start_new_thread` and `start_joinable_thread` are Unaccounted above, so a test that starts a thread is
+        // NOT PROVEN whatever it then does with locks. `_ThreadHandle` is deliberately NOT listed: its `is_done`
+        // reports whether another thread has finished, which is timing, and a handle can reach a test from a
+        // thread the runner started.
+        "lock" => Accounting::Pure,
         _ => Accounting::Unaccounted,
     }
 }
@@ -638,6 +669,30 @@ pub fn account_node(module: &str, export: &str) -> Accounting {
         return Accounting::Unaccounted;
     }
     match m {
+        // Context propagation across an async boundary. The module was in the enumerated list with NOT ONE export
+        // named, which means default-deny answered for all of them -- correct by construction and very expensive:
+        // Node's own stream internals construct an `AsyncResource`, so every test that read a file through
+        // `fs.createReadStream` was NOT PROVEN and was never cached. MEASURED on this branch before this arm
+        // (node/test/cache.test.js, "content read, read-write open, stream, listing, existence and link target
+        // are inputs"): "a Level 0 control could not be installed: not accounted for: api:async_hooks.AsyncResource",
+        // one file re-running instead of being reused, on both the Vitest and the Jest leg. `node:test` itself
+        // reaches it through `Test.runInAsyncScope`.
+        //
+        // What these do is carry the CALLER's context into a callback or a continuation: they move a value that is
+        // already in this process from one place in it to another. They read nothing outside the process and they
+        // pin nothing, which is `Pure`.
+        //
+        // What stays refused, and why, because this is the line that matters here: `createHook` observes every
+        // async resource the runtime creates, and `executionAsyncId` / `triggerAsyncId` /
+        // `executionAsyncResource` hand the test the ids the runtime assigned. Those are the engine's own
+        // scheduling, which no run input pins and no event records, so a test that asks for one is NOT PROVEN.
+        "async_hooks" => match export {
+            "AsyncResource" | "AsyncLocalStorage" | "asyncWrapProviders" | "runInAsyncScope" | "emitDestroy"
+            | "bind" | "snapshot" | "run" | "exit" | "enterWith" | "getStore" | "disable" | "enable" => {
+                Accounting::Pure
+            }
+            _ => Accounting::Unaccounted,
+        },
         "os" => match export {
             // the engine's `facts.js` records what these answered, and `--det` pins the volatile ones
             "hostname" | "userInfo" | "homedir" | "tmpdir" | "networkInterfaces" | "availableParallelism"
@@ -917,12 +972,32 @@ pub fn required_controls(sensor: &str) -> &'static [&'static str] {
         // env: environment reads, the host name, the CPU count, the terminal size. os: the stat observer, the
         // pinned process id and working directory. tz / locale: pinned. hashseed: `builtins.hash`.
         &["time", "seeds", "fs", "net", "env", "os", "tz", "locale", "hashseed"]
-    } else if sensor.starts_with("node-") {
+    } else if sensor.starts_with("node-") || sensor == SENSOR_CACHE_REUSE {
+        // `cache-reuse/1` runs no test of its own, but the entries it serves were keyed under the controls of
+        // the session that recorded them, so a run that switched one off is not the run those entries stand for.
         &["time", "seeds", "fs", "net", "timers"]
     } else {
-        // a sensor the core does not know: clause 1 of `judge` has already refused it
-        &[]
+        // A sensor the core has no rule for. `judge` refuses it by name in clause 1, and this branch is written
+        // to fail CLOSED all the same: R-058 #4 was exactly a permissive fallback whose safety argument was a
+        // comment about a check that did not exist. Asking for every control both shells rest on means that if
+        // this list is ever reached, the answer is a refusal and not a free pass.
+        &["time", "seeds", "fs", "net", "env", "os", "tz", "locale", "hashseed", "timers"]
     }
+}
+
+/// The sensor a Node run declares when every test came from the cache, so no process watched anything
+/// (`node/src/session.js`, `provableField`).
+pub const SENSOR_CACHE_REUSE: &str = "cache-reuse/1";
+
+/// Does this core have a rule for this sensor?
+///
+/// The accounting table is written against a known set of shells: `account`/`account_node` answer for the
+/// callables THOSE shells can report, and [`required_controls`] names the controls THOSE shells' `Controlled`
+/// answers rest on. A name outside the set is a shell this core knows nothing about, so nothing it reports can be
+/// read as evidence -- the answer is NOT PROVEN, which is what `docs/` and `prompts/COMMON-BLOCKS.md` have always
+/// declared and what R-058 #4 found was not true in the code.
+pub fn sensor_known(sensor: &str) -> bool {
+    sensor.starts_with("py-") || sensor.starts_with("node-") || sensor == SENSOR_CACHE_REUSE
 }
 
 /// What one shell reports about one test, and what the run as a whole declared about its sensor.
@@ -989,6 +1064,15 @@ pub fn judge(att: &Attestation<'_>) -> Verdict {
             "the run declared no sensor: nothing shows what the test did, so it cannot be shown identical".into(),
         );
     };
+    if !sensor_known(sensor) {
+        return not_proven(
+            "sensor",
+            format!(
+                "sensor {sensor} is not one this core has a rule for: the accounting table was not written \
+                 against it, so what it reports cannot be read as evidence"
+            ),
+        );
+    }
     match att.contract {
         Some(SENSOR_CONTRACT) => {}
         Some(other) => {
@@ -1070,6 +1154,43 @@ pub fn judge_record(
     controls: &[String],
     outside: &[String],
 ) -> Verdict {
+    // The two evidence clauses. They come before the attestation, because a verdict can only rest on evidence
+    // the record actually holds, and both of these are a record that holds none. R-058 #1 and #2.
+    //
+    // An empty fingerprint is what every shell writes when it has NO evidence about a test: a test that never
+    // reached the runner's hooks, a test an isolate lost, a reused test whose receipt held none
+    // (`node/src/vitest/shell.js`, `node/src/jest/runner.js`, `node/src/isolate.js`,
+    // `node/src/cache/trace-reused.js`). Two of those compare equal -- `"" == ""` -- and the verifier used to
+    // call that an identical execution. It is two absences agreeing.
+    if record.fingerprint.is_empty() {
+        return not_proven(
+            "evidence",
+            "the run recorded no fingerprint for this test: there is nothing to compare, so it cannot be shown \
+             identical"
+                .into(),
+        );
+    }
+    // The record's fingerprint must be the fingerprint OF the record's own events. Nothing in the trace format
+    // signs a record, `concat_traces` copies records verbatim out of parts it did not produce, and the verifier
+    // reached `diff_records` only when the stored strings DIFFERED -- so when they agreed the events were never
+    // read, and a record whose fingerprint does not belong to its events was reported as "observed the same
+    // events". Only a complete record can be checked this way: a truncated one does not hold every event it
+    // chained. `fingerprint_of` carried the doc comment "used by the verifier to validate traces" and had no
+    // caller; this is that caller.
+    if !record.truncated {
+        let recomputed = crate::fingerprint::fingerprint_of(&record.events);
+        if recomputed != record.fingerprint {
+            return not_proven(
+                "trace",
+                format!(
+                    "the record's fingerprint does not match its own events ({} event(s) recomputing to \
+                     {recomputed}, stored as {}): this trace does not describe its own run",
+                    record.events.len(),
+                    record.fingerprint
+                ),
+            );
+        }
+    }
     let get = |k: &str| header.and_then(|h| h.get(k)).and_then(|v| v.as_str());
     let unaccounted = record.unaccounted.clone();
     let att = Attestation {
@@ -1187,7 +1308,30 @@ mod tests {
         // Node pins the host name and the CPU count unconditionally, so it needs no `env` control for them
         assert!(!required_controls("node-surface/1").contains(&"env"));
         assert!(required_controls("node-surface/1").contains(&"timers"));
-        assert!(required_controls("something-else/9").is_empty());
+        // R-058 #4: this assertion used to read `is_empty()`, which is what made clause 3 fail OPEN for a
+        // sensor the core has no rule for -- the bug and its test agreed with each other. A name outside the
+        // known set is refused by `judge` on the name alone, and the list it would have iterated asks for
+        // every control both shells rest on, so even reaching it is a refusal.
+        assert!(!sensor_known("something-else/9"));
+        assert!(!required_controls("something-else/9").is_empty());
+        assert!(sensor_known("py-monitoring/1") && sensor_known("node-surface/1"));
+        assert!(sensor_known(SENSOR_CACHE_REUSE));
+    }
+
+    #[test]
+    fn a_sensor_this_core_has_no_rule_for_is_not_proven() {
+        // The whole of R-058 #4, at the predicate: a run whose header is otherwise perfect -- this core's
+        // contract, this core's table, an audited runtime, every control on -- is still NOT PROVEN when the
+        // sensor is one the accounting table was not written against.
+        let s = surface_digest();
+        let c = all_controls();
+        for sensor in ["cache-reuse/2", "totally-made-up/9", "x", "py", "node", "deno-whatever/1"] {
+            let a = Attestation { sensor: Some(sensor), ..good(&[], &[], &s, &c) };
+            match judge(&a) {
+                Verdict::NotProven { kind, .. } => assert_eq!(kind, "sensor", "sensor {sensor}"),
+                v => panic!("sensor {sensor}: expected NotProven, got {v:?}"),
+            }
+        }
     }
 
     #[test]

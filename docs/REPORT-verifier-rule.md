@@ -202,20 +202,25 @@ dataclasses, collections, itertools, hashlib, base64, urllib, decimal, csv, temp
 functools, struct, zlib, pickle, math, random, enum, heapq, uuid, typing, file I/O), two `--det` runs compared with
 `fenvix verify`:
 
-| | before the table was filled in | after |
-|---|---|---|
-| IDENTICAL | 0 of 24 | **22 of 24** |
-| NOT PROVEN | 24 of 24 | **2 of 24** |
+| | before the table was filled in | mid-way | final |
+|---|---|---|---|
+| IDENTICAL | 0 of 24 | 22 of 24 | **23 of 24** |
+| NOT PROVEN | 24 of 24 | 2 of 24 | **1 of 24** |
 
-Both remaining refusals are **genuine**, and neither is noise:
+The one remaining refusal is **not the general rule's**: it is the pre-existing `uncontrolled.env` rule firing on a
+variable `unittest.mock.patch.dict` sets during the run and the test then reads. On this suite the general rule's
+own cost is **0 of 24**, and no test carries an unaccounted entry at all.
 
-* `pwd.getpwuid` — the user-database read behind `posixpath.expanduser`. The home directory genuinely differs
-  between machines, and **nobody had enumerated this channel**. The rule found it on its own. It is on the list in
-  section 8.
-* a variable set during the run and read by the test (the pre-existing `uncontrolled.env` rule).
+**A correction to an earlier figure in this report's own history, because it changes the conclusion.** The mid-way
+column counted `pwd.getpwuid` as a channel the rule had found in a test, and that was wrong: the caller was
+pytest's own `tmp_path` machinery, reached through `getpass.getuser()`, not the test. Once the sensor walked to the
+real caller (section 7b) it disappeared. `pwd.getpwuid` is still a channel the table does not account for, and a
+*test* that calls it is still NOT PROVEN — it stays on the list in section 8 for that reason — but it was never
+evidence of the rule's cost, and the share it inflated was an artifact of the sensor, not of the rule.
 
-So the general rule costs about **4%** of tests on this suite — not a large share. The figure from the engine's own
-full suite and the CI matrix is pending (section 9).
+The honest summary of the cost, then: almost all of the over-refusal seen during this night's work was the sensor
+misattributing the runner's own work to the test. The rule itself refuses very little on ordinary library code.
+The figure that matters for real customer suites is the native-extension decision in section 10, not this one.
 
 ### What the sensor costs in time
 
@@ -288,6 +293,74 @@ real finding against my own change — a thread test reported reason `api` inste
 order let the generic sensor hit outrank the specific channel mark. No verdict was wrong (both are NOT PROVEN) but
 the report was worse, and the F-03 exam check requires that wording. Fixed by the clause order of section 2.
 
+## 7b. What the reviewer round and CI found, and why it mattered
+
+A reviewer round over the whole range found nine defects, six of them false greens. The pattern was one thing:
+**the rule is default-deny in the core, but several of the paths feeding it were not**, so the guarantee leaked
+back into IDENTICAL. Those are the blocking class, so they are fixed here rather than recorded.
+
+| defect | why it was a false green |
+|---|---|
+| the Node sensor's per-test set was never cleared (`startTest` exported, never wired) | a gap was reported for the **first test of a worker only**; every later test came out clean. MEASURED: a file with two tests that each call `v8.getHeapStatistics` now marks both. |
+| the Python `check_native` set was process-wide | an unaudited extension marked only the first test, although the module stays loaded for all of them — contradicting that method's own docstring |
+| the cache-only declaration rested on `admit_record`, which nothing called | a fully-cached run declared a sensor on a premise that was never true. Made true: a gap now goes through `STATE.onLevel0Gap`, and a process without a sensor stores nothing. |
+| `judge` never looked at the run's controls | every `Controlled` answer is a promise kept by a control `--det-disable` can switch off. New `required_controls(sensor)` refuses before a single name is looked at. |
+| the Node report filter dropped gaps under `node_modules` | a gap a test reached through an ordinary dependency was invisible |
+| lazy arming hooked `module._load`, which is CJS only | a builtin reached by ESM `import` was never armed. MEASURED: ESM default and named imports of `node:v8` are both caught now. |
+
+Then CI found two things this container could not have:
+
+1. **The native-extension rule was by name, and had to be by path.** On the hosted CPython 3.13 the standard
+   library's extension modules are separate shared objects; in this container they are built into the interpreter
+   binary. **MEASURED** (CI run 44950993706): `native:_asyncio (and 13 more)` on a test that only adds up a range.
+   A list of names refused almost every test there and nothing here. The shells now decide by where the extension
+   lives, using the engine's own `_sites` classification: the interpreter's own extensions are part of the
+   interpreter (pinned by `runtime`), the engine's and the runner's are the declared controlled set, and anything
+   else must be on the audited list. MEASURED that it still bites: `numpy/_multiarray_umath`, `lxml/etree` and a
+   project's own `.so` all classify as user code and are still refused.
+2. **The sensor was charging the test for the runner's own calls**, because it looked at one frame where every
+   other observer in the engine walks. pytest's `tmp_path` machinery reaches `pwd.getpwuid` through
+   `getpass.getuser()`, so the immediate caller is the standard library and only the frame above it says whose
+   call it is. The sensor now uses `_sites.resolve()` — and asks only when a gap is about to be reported, so the
+   walk is off the hot path. **MEASURED**: `tests/test_controls_f01.py` plus `tests/test_fingerprint.py` go from
+   9 failures to 19/19. `test_controls_f01` is the F-01 row's own evidence, so this was the cluster that mattered.
+
+Both of those are worth stating plainly: the general rule's cost is not where it first appeared to be. Almost all
+of the early over-refusal was the sensor misattributing the runner's work to the test, not the rule refusing real
+channels.
+
+### The defect that mattered most, and what caught it
+
+Fixing the over-attribution above, I made the Python sensor ask whose call it is through `_sites.resolve(depth)`.
+That was right. The depth was not: `resolve` counts from its own frame, so from inside a `sys.monitoring` callback
+the frame making the call is at depth **2**, and I passed **1**.
+
+With 1 the sensor saw its own frame, which is the engine's, concluded "infrastructure", and reported **nothing**.
+The general rule was dead — and every suite went green, which is the worst way for this to fail: a rule whose
+whole purpose is to refuse would have shipped refusing nothing, and nothing in the channel-specific tests could
+have noticed, because they each test a channel that has its own rule.
+
+What caught it was `test_a_channel_derived_from_the_engines_own_table_is_not_proven` — the test whose entire job
+is to notice this, because it asks the engine which callable it cannot account for, calls that one, and asserts
+the engine says so. That is the argument for writing the general test the way this block was asked to, rather
+than adding more channel tests. **MEASURED** from inside the callback: `resolve(0)` and `resolve(1)` answer
+`None`, `resolve(2)` answers the frame making the call. The depth is now a named constant with that measurement
+beside it, and the fix is confirmed from both sides: the derived channel is reported again **and** pytest's own
+`pwd.getpwuid` call is still suppressed.
+
+### "Reused" is the same claim as "identical"
+
+A reviewer found that `record.rs`'s `uncacheable()` had an `unacc` clause that nothing ever set, so the Python
+cache could store and later reuse a result the rule refuses. That is the blocking class too — the founder's rule
+covers `reused` as well as `identical`, and the decision quoted to the parallel measurement session says
+whatever the cache cannot observe with certainty forces a rerun.
+
+The sensor now calls a hook the cache installs (`provable.ON_GAP` → `Capture._note_unaccounted` → flag `unacc`),
+which is the clause that was dead; a run with no sensor flags every test the same way, so nothing from it is
+stored either. The Node side reaches the same refusal through `STATE.onLevel0Gap`, the engine's existing signal.
+`test_the_cache_never_reuses_a_test_the_rule_refuses` covers it, with the channel derived from the table so the
+test names none.
+
 ## 8. Channels to cover later
 
 Per the judging rule, a channel where the engine answers NOT PROVEN is not a defect. These are recorded, not
@@ -295,7 +368,7 @@ fixed:
 
 | channel | where | why it is NOT PROVEN today |
 |---|---|---|
-| `pwd.getpwuid`, `grp.getgrgid` | Python | the user database behind `expanduser`/`getpass`; the home directory differs between machines and no event carries it |
+| `pwd.getpwuid`, `grp.getgrgid` | Python | the user database behind `expanduser`/`getpass`; the home directory differs between machines and no event carries it. A test that calls one is NOT PROVEN; the runner's own call through `getpass.getuser()` is not charged to it (Rule E). |
 | `os.getxattr`, `os.listxattr`, `os.setxattr` | Python | extended attributes have no event |
 | `sys.settrace`, `sys.setprofile`, `sys._current_frames` of other threads | Python | process state the engine makes no claim about |
 | `gc.get_objects`, `gc.get_referrers` | Python | they hand out the heap: object identity and allocation order leak through them |
@@ -343,6 +416,23 @@ keys, terminal output). Session 5 differs on `child_entropy_draws`, 3 against 2 
 recorded in `sessions/2026-11-19-parallel-proof/REPORT.md` ("session 5 counted 2 instead of 3 child entropy draws
 while the walk ran on the same 4 cores; it passed 2 of 2 times alone afterwards"). It ran here with the Node suite
 on the same 4 cores at load average 3, and is to be re-run alone.
+
+## 9b. One existing test the decision in section 10 invalidates
+
+`tests/test_f01_gaps.py::test_numpy_imported_lazily_and_unseeded_generators` asserts that two `--det` runs of a
+numpy test verify IDENTICAL. Under the native-extension rule numpy is a third-party compiled extension nobody has
+audited, so the verdict is NOT PROVEN and that assertion fails.
+
+**I have not touched the test and I have not added numpy to `CONTROLLED_NATIVE`.** "The engine seeds numpy's
+generators" is not the same claim as "numpy's C code reads nothing the engine cannot see", and the second cannot
+be established here. This is the decision in section 10 showing up inside the engine's own suite rather than in
+the abstract; if it goes the way of option 1, numpy is the first extension to audit and this test goes green with
+it. Recorded here rather than worked around, as the rules for this block require.
+
+Also still failing, and unrelated to the rule: `test_capture_sessions_match_reference` session 5 on
+`child_entropy_draws` (section 11 — the load-sensitive flake), and
+`test_review_r055_verifier.py::...[V14-rusage]`, whose precondition (two runs with different `ru_maxrss`) does not
+hold on this machine and which the previous round already recorded.
 
 ## 10. For the founder to decide
 

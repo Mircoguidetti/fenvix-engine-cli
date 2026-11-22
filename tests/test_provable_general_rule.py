@@ -24,6 +24,7 @@ The four shapes, weakest to strongest:
 
 from __future__ import annotations
 
+import json
 import os
 import random
 import shutil
@@ -336,3 +337,167 @@ def test_the_invented_native_channel_is_refused_even_when_nothing_differs(tmp_pa
     assert v.returncode == 1, f"expected NOT PROVEN (exit 1), got {v.returncode}\n{v.stdout}"
     assert "NOT PROVEN" in v.stdout, v.stdout
     assert name in v.stdout, v.stdout
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# 5. The cache must not reuse what the rule refuses
+# ---------------------------------------------------------------------------------------------------------------
+
+def test_the_cache_never_reuses_a_test_the_rule_refuses(tmp_path):
+    """A result the rule will not call identical must not come back as "reused" either.
+
+    "Reused" is as much a claim about the engine's certainty as "identical" is, and the founder's rule covers
+    both: whatever the cache cannot observe with certainty forces a rerun. The channel here is derived from the
+    engine's own table, as in :func:`test_a_channel_derived_from_the_engines_own_table_is_not_proven`, so this
+    test names none either.
+    """
+    mod, name = _an_unaccounted_stdlib_callable()
+    proj = _project(tmp_path, {"tests/test_x.py": f"""
+        import {mod}
+
+        def test_clean():
+            assert sum(range(10)) == 45
+
+        def test_reaches_what_the_engine_cannot_account_for(tmp_path):
+            p = tmp_path / "f"
+            p.write_bytes(b"x")
+            try:
+                {mod}.{name}(str(p))
+            except Exception:
+                pass
+    """})
+    cache = tmp_path / "cache"
+    out = tmp_path / "o.json"
+    for i in (1, 2):
+        r = subprocess.run(
+            [PY, "-m", "pytest", "-q", "-p", "no:cacheprovider", "-p", "no:randomly", "--det",
+             f"--det-cache={cache}", f"--det-outcomes={out}", "tests"],
+            cwd=proj, env=_env(), capture_output=True, text=True, timeout=900)
+        assert out.exists(), r.stdout[-3000:] + r.stderr[-3000:]
+        data = json.loads(out.read_text())
+        cache_part = data.get("cache") or {}
+        reused = set(cache_part.get("reused_ids") or [])
+        if i == 2:
+            # the clean test may be reused; the one that reached an unaccounted callable must not be
+            bad = [t for t in reused if "cannot_account_for" in t]
+            assert not bad, f"the cache reused a test the rule refuses: {bad}\n{json.dumps(cache_part)[:1500]}"
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# 5. A stream with no `open` behind it: standard input (R-058 #5)
+# ---------------------------------------------------------------------------------------------------------------
+
+def test_a_test_that_reads_standard_input_is_not_identical(tmp_path):
+    """Two runs fed DIFFERENT bytes on standard input must not be reported identical.
+
+    The `_io` entry of the accounting table answers `Recorded` because the engine's observer at ``open`` already
+    recorded the path and the digest of what was read, so the stream methods that hand those bytes to the test add
+    nothing the verifier does not already compare. The entry's own doc comment stated the weakness and stopped
+    short of the consequence; R-058 #5 measured it: a stream that is NOT a file has no ``open`` behind it, so a
+    test reading ``sys.stdin`` went through the same methods with nothing recorded, left nothing in the
+    attestation, and two runs given different input came out IDENTICAL.
+
+    The fix is not a different answer in the table -- the table answers for a NAME, and the name is the same for a
+    file and for standard input. It is in the sensor, which holds the stream object: see
+    ``python/detpy/provable.py``, ``_refresh_standard_streams``.
+
+    ``-s`` is needed because pytest's capture plugin otherwise replaces ``sys.stdin`` with an object that raises
+    on read -- which is itself safe, and is why this gap was never seen on an ordinary run.
+    """
+    proj = _project(tmp_path, {"tests/test_x.py": """
+        import sys
+
+        def test_reads_stdin():
+            line = sys.stdin.readline()
+            assert isinstance(line, str)
+    """})
+
+    def run(trace: Path, fed: str) -> subprocess.CompletedProcess:
+        return subprocess.run(
+            [PY, "-m", "pytest", "-q", "-s", "-p", "no:cacheprovider", "-p", "no:randomly", "--det",
+             f"--det-trace={trace}", "tests"],
+            cwd=proj, env=_env(), input=fed, capture_output=True, text=True, timeout=900)
+
+    traces = []
+    for i, fed in ((1, "alpha\n"), (2, "beta\n")):
+        t = tmp_path / f"stdin{i}.jsonl"
+        r = run(t, fed)
+        assert t.exists(), r.stdout[-3000:] + r.stderr[-3000:]
+        assert "1 passed" in r.stdout, r.stdout[-3000:]
+        traces.append(t)
+
+    v = _verify(proj, traces)
+    assert v.returncode != 0, (
+        "two runs fed different bytes on standard input were reported identical; the verifier said:\n" + v.stdout)
+    assert "IDENTICAL" not in v.stdout, v.stdout
+    assert "NOT PROVEN" in v.stdout, v.stdout
+    assert "stdin" in v.stdout or "standard input" in v.stdout, (
+        "the refusal must name standard input, not a symptom of it:\n" + v.stdout)
+
+    # The control leg: the same project without the stdin read IS identical, so the refusal above is the read and
+    # not the `-s` flag or the feeding of input.
+    pure = _project(tmp_path / "pure", {"tests/test_x.py": """
+        def test_pure():
+            assert sum(range(10)) == 45
+    """})
+    traces = []
+    for i, fed in ((1, "alpha\n"), (2, "beta\n")):
+        t = tmp_path / f"pure{i}.jsonl"
+        r = subprocess.run(
+            [PY, "-m", "pytest", "-q", "-s", "-p", "no:cacheprovider", "-p", "no:randomly", "--det",
+             f"--det-trace={t}", "tests"],
+            cwd=pure, env=_env(), input=fed, capture_output=True, text=True, timeout=900)
+        assert t.exists(), r.stdout[-3000:] + r.stderr[-3000:]
+        traces.append(t)
+    v = _verify(pure, traces)
+    assert v.returncode == 0, f"the control leg must be IDENTICAL, got {v.returncode}\n{v.stdout}"
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# 6. The other side of the rule: what it must NOT refuse
+# ---------------------------------------------------------------------------------------------------------------
+
+def test_an_ordinary_lock_does_not_make_a_test_not_proven(tmp_path):
+    """A test that takes a `threading.Lock` is still IDENTICAL.
+
+    The rule's cost is the product: a test the engine refuses is a test the customer cannot skip and cannot spread
+    across cores. This is the cheapest and commonest way to pay that cost for nothing, and it was real --
+    MEASURED, CI 44959416348 on itsdangerous: "not accounted for: api:_thread.lock" on every test of the suite,
+    because `threading.Lock` IS the class `_thread.lock` in CPython, so `threading.Lock()` calls the TYPE and the
+    accounting table listed only the methods.
+
+    What must still be refused is the order of threads, not the lock: `test_a_channel_derived_from_the_engines_own_table_is_not_proven`
+    and the `_thread.start_new_thread` entry cover that, and this test does not weaken them -- it starts no thread.
+    """
+    assert _core.provable_account("_thread", "lock") != "unaccounted", (
+        "threading.Lock is the class _thread.lock: if the table does not account for the type, every test that "
+        "takes a lock is NOT PROVEN")
+
+    proj = _project(tmp_path, {"tests/test_x.py": """
+        import threading
+
+        LOCK = threading.Lock()
+
+        def test_with_a_lock():
+            with LOCK:
+                total = sum(range(100))
+            assert total == 4950
+            assert not LOCK.locked()
+
+        def test_lock_made_inside_the_test():
+            l = threading.Lock()
+            assert l.acquire(blocking=False)
+            l.release()
+    """})
+    traces = []
+    for i in (1, 2):
+        t = tmp_path / f"lock{i}.jsonl"
+        r = _run(proj, t, _env())
+        assert t.exists(), r.stdout[-3000:] + r.stderr[-3000:]
+        assert "2 passed" in r.stdout, r.stdout[-3000:]
+        traces.append(t)
+    v = _verify(proj, traces)
+    assert v.returncode == 0, (
+        f"two identical runs of a test that only takes a lock must be IDENTICAL, got {v.returncode}\n{v.stdout}")
+    assert "not proven: 0" in v.stdout, v.stdout
+    assert "covered by Level 0: 2" in v.stdout, v.stdout
