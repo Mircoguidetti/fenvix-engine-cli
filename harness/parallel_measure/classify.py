@@ -36,6 +36,8 @@ import re
 import measure as M
 
 
+VERIFY_STATUSES = {"stable", "diverged", "missing", "input-differs", "not-proven"}
+
 ENV_PATTERNS = [
     (r"EAFNOSUPPORT|address family not supported|::1", "no IPv6 loopback (::1) in this container"),
     (r"EADDRNOTAVAIL", "address not available in this container"),
@@ -163,7 +165,10 @@ def main():
     for f in sorted(glob.glob(os.path.join(d, "verify*.json"))):
         rep = json.load(open(f))
         for t in rep.get("tests", []):
-            if t.get("status") in (None, "identical"):
+            # statuses of `fenvix verify --json` (crates/detpy-core/src/verify.rs `enum Status`, kebab-case):
+            # "stable" is the identical verdict (summary `identical` = `stable`)
+            assert t.get("status") in VERIFY_STATUSES, f"unknown verify status {t.get('status')!r} in {f}"
+            if t["status"] == "stable":
                 continue
             dv = t.get("divergence") or {}
             verdicts[t["nodeid"]].append({"verify": os.path.basename(f), "status": t["status"], "reason": dv.get("reason"),
