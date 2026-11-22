@@ -215,10 +215,23 @@ def main():
             _, t = trace_tests(f"{out}/S{i}.jsonl")
             record("serial", i, cmd, r, tests=len(t), outcome_counts=counts({k: v[0] for k, v in t.items()}))
         for n in ([] if "par" in skip else wlist):
+            # the engine's state per worker count (recorded durations, sticky plan): round 1 starts cold, later
+            # rounds start from what the previous parallel run with the same worker count left (warm)
+            warm = False
             for d in (".detpy", ".detjs"):
                 shutil.rmtree(os.path.join(cwd, d), ignore_errors=True)
+                kept = os.path.join(out, f"state-w{n}", d)
+                if os.path.isdir(kept):
+                    shutil.copytree(kept, os.path.join(cwd, d))
+                    warm = True
             cmd = par(i, n)
             r, _ = run(cmd, cwd, env, log, o.timeout)
+            r["engine_state"] = "warm" if warm else "cold"
+            for d in (".detpy", ".detjs"):
+                kept = os.path.join(out, f"state-w{n}", d)
+                shutil.rmtree(kept, ignore_errors=True)
+                if os.path.isdir(os.path.join(cwd, d)):
+                    shutil.copytree(os.path.join(cwd, d), kept)
             h, t = trace_tests(f"{out}/P{i}w{n}.jsonl")
             seen = sorted({v[2] for v in t.values() if v[2]})
             record("par", i, cmd, r, workers=n, tests=len(t), outcome_counts=counts({k: v[0] for k, v in t.items()}),
