@@ -1,0 +1,22 @@
+== bare
+1 failed, 10220 passed, 85 skipped, 741 xfailed in 146.43s (0:02:26)
+EXIT 1 WALL 151.738700118
+== plain
+1 failed, 10220 passed, 85 skipped, 741 xfailed in 136.12s (0:02:16)
+EXIT 1 WALL 139.726741157
+== S1 pyspy
+py-spy> Wrote raw flamegraph data to '$PM/out/networkx/S1.pyspy.txt'. Samples: 33647 Errors: 239
+py-spy> You can use the flamegraph.pl script from https://github.com/brendangregg/flamegraph to generate a SVG
+EXIT 0 WALL 682.720615167
+== S2
+FAILED networkx/drawing/tests/test_pylab.py::test_edge_label_label_pos[-0.1]
+1 failed, 10220 passed, 85 skipped, 741 xfailed in 559.30s (0:09:19)
+EXIT 1 WALL 564.434464251
+== verify
+verify exit 1
+ALLDONE
+nosensor EXIT 1 WALL 151.626133131
+FAILED networkx/drawing/tests/test_pylab.py::test_edge_label_label_pos[-0.1]
+1 failed, 10220 passed, 85 skipped, 741 xfailed in 147.08s (0:02:27)
+
+[exited with code 0]

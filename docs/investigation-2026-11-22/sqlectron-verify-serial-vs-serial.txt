@@ -1,0 +1,25 @@
+summary {"runs": 2, "tests": 42, "stable": 0, "diverged": 5, "missing": 0, "outcome_unstable": 0, "order_identical": true, "reasons": {"entropy": 5, "io": 8, "native": 29}, "inputs_recorded": true, "identical": 0, "input_differs": 0, "not_proven": 37}
+
+[29] status=not-proven reason=native op=None at=
+   e.g. test/browser/utils.test.ts::utils::.getConfigPath::use of SQLECTRON_HOME::should get config from process.env.SQLECTRON_HOME
+   A: null
+   B: null
+    outside any test the run read sources that are not controlled (native:$PM/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are 
+
+[8] status=not-proven reason=io op=uncontrolled.io at=src/browser/core/utils/index.ts:47
+   e.g. test/browser/servers.test.ts::servers::.getAll::should load servers from file
+   A: {"t": 0, "s": "other", "o": "uncontrolled.io", "at": "src/browser/core/utils/index.ts:47", "v": "concurrent I/O"}
+   B: {"t": 0, "s": "other", "o": "uncontrolled.io", "at": "src/browser/core/utils/index.ts:47", "v": "concurrent I/O"}
+    the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ src/browser/core/utils/index.ts:47) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)
+
+[4] status=diverged reason=entropy op=crypto.randomBytes at=src/browser/core/crypto.ts:16
+   e.g. test/browser/servers.test.ts::servers::.add::should add new server with ssh
+   A: {"t": 0, "s": "entropy", "o": "crypto.randomBytes", "at": "src/browser/core/crypto.ts:16", "v": "16:6a6c1529a14730f285f87950517c2ae9"}
+   B: {"t": 0, "s": "entropy", "o": "crypto.randomBytes", "at": "src/browser/core/crypto.ts:16", "v": "16:6322e62b30ddee17dcad3fb57181543a"}
+    event #11: crypto.randomBytes @ src/browser/core/crypto.ts:16 returned different values: "16:6a6c1529a14730f285f87950517c2ae9" vs "16:6322e62b30ddee17dcad3fb57181543a"
+
+[1] status=diverged reason=entropy op=crypto.randomFillSync at=<deps>/uuid/dist/rng.js:18
+   e.g. test/browser/servers.test.ts::servers::.add::should add new server
+   A: {"t": 0, "s": "entropy", "o": "crypto.randomFillSync", "at": "<deps>/uuid/dist/rng.js:18", "v": "256:f809cb0082415083e468463c54b60fdc"}
+   B: {"t": 0, "s": "entropy", "o": "crypto.randomFillSync", "at": "<deps>/uuid/dist/rng.js:18", "v": "256:36813d5ef58b88f1dc7b836c78276ac0"}
+    event #11: crypto.randomFillSync @ <deps>/uuid/dist/rng.js:18 returned different values: "256:f809cb0082415083e468463c54b60fdc" vs "256:36813d5ef58b88f1dc7b836c78276ac0"

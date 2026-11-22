@@ -1,0 +1,91 @@
+summary {"runs": 2, "tests": 764, "stable": 507, "diverged": 25, "missing": 0, "outcome_unstable": 0, "order_identical": true, "reasons": {"api": 1, "child": 2, "env": 1, "fs": 16, "io": 228, "other": 9}, "inputs_recorded": true, "identical": 507, "input_differs": 0, "not_proven": 232}
+
+[115] status=not-proven reason=io op=uncontrolled.io at=tests/utils/test-helpers.ts:16
+   e.g. tests/commands/doctor.test.ts::doctor command::successful validation::should pass validation with complete setup
+   A: {"t": 0, "s": "other", "o": "uncontrolled.io", "at": "tests/utils/test-helpers.ts:16", "v": "concurrent I/O"}
+   B: {"t": 0, "s": "other", "o": "uncontrolled.io", "at": "tests/utils/test-helpers.ts:16", "v": "concurrent I/O"}
+    the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ tests/utils/test-helpers.ts:16) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)
+
+[48] status=not-proven reason=io op=uncontrolled.io at=tests/lib/project-detection.test.ts:34
+   e.g. tests/lib/project-detection.test.ts::Project Detection System::resolveProjectPath::should resolve current directory when no path provided
+   A: {"t": 0, "s": "other", "o": "uncontrolled.io", "at": "tests/lib/project-detection.test.ts:34", "v": "concurrent I/O"}
+   B: {"t": 0, "s": "other", "o": "uncontrolled.io", "at": "tests/lib/project-detection.test.ts:34", "v": "concurrent I/O"}
+    the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ tests/lib/project-detection.test.ts:34) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)
+
+[25] status=not-proven reason=io op=uncontrolled.io at=tests/config.test.ts:22
+   e.g. tests/config.test.ts::Config utilities::configExists::should return false when config does not exist
+   A: {"t": 0, "s": "other", "o": "uncontrolled.io", "at": "tests/config.test.ts:22", "v": "concurrent I/O"}
+   B: {"t": 0, "s": "other", "o": "uncontrolled.io", "at": "tests/config.test.ts:22", "v": "concurrent I/O"}
+    the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ tests/config.test.ts:22) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)
+
+[22] status=not-proven reason=io op=uncontrolled.io at=tests/lib/components.test.ts:26
+   e.g. tests/lib/components.test.ts::Component Discovery System::Component Parsing::should parse command files with frontmatter correctly
+   A: {"t": 0, "s": "other", "o": "uncontrolled.io", "at": "tests/lib/components.test.ts:26", "v": "concurrent I/O"}
+   B: {"t": 0, "s": "other", "o": "uncontrolled.io", "at": "tests/lib/components.test.ts:26", "v": "concurrent I/O"}
+    the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ tests/lib/components.test.ts:26) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)
+
+[17] status=not-proven reason=io op=uncontrolled.io at=<deps>/graceful-fs/graceful-fs.js:138
+   e.g. tests/commands/list.test.ts::list command::listAgents::should display agent names from frontmatter, not filenames
+   A: {"t": 0, "s": "other", "o": "uncontrolled.io", "at": "<deps>/graceful-fs/graceful-fs.js:138", "v": "concurrent I/O"}
+   B: {"t": 0, "s": "other", "o": "uncontrolled.io", "at": "<deps>/graceful-fs/graceful-fs.js:138", "v": "concurrent I/O"}
+    the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ <deps>/graceful-fs/graceful-fs.js:138) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)
+
+[12] status=diverged reason=fs op=fs.stat at=<node>
+   e.g. tests/commands/doctor.test.ts::doctor command::validation failures::should fail when settings.json contains invalid JSON
+   A: {"t": 0, "s": "fs", "o": "fs.stat", "at": "<node>", "v": "<tmp>/.claude/settings.json|file size=16"}
+   B: {"t": 0, "s": "fs", "o": "fs.stat", "at": "<node>", "v": "<tmp>/.claude/hooks|dir"}
+    event #24: fs.stat @ <node> returned different values: "<tmp>/.claude/settings.json|file size=16" vs "<tmp>/.claude/hooks|dir"
+
+[5] status=diverged reason=other op=child.exit at=cli/lib/project-detection.ts:653
+   e.g. tests/integration/workflow.test.ts::CLI workflow integration::complete initialization workflow::should handle force reinitialize workflow
+   A: {"t": 0, "s": "other", "o": "child.exit", "at": "cli/lib/project-detection.ts:653", "v": "0|"}
+   B: {"t": 0, "s": "fs", "o": "fs.stat", "at": "<node>", "v": "<tmp>/vite.config.js|missing"}
+    event #83: [other] child.exit @ cli/lib/project-detection.ts:653 = 0|  <>  [fs] fs.stat @ <node> = <tmp>/vite.config.js|missing
+
+[3] status=diverged reason=fs op=fs.readdir at=<node>
+   e.g. tests/unit/loaders/agent-loader.test.ts::AgentLoader::constructor::should initialize successfully when agent directories exist
+   A: {"t": 0, "s": "fs", "o": "fs.readdir", "at": "<node>", "v": "<tmp>/.claude|1|585b68e4297a2ffdb75478bbee3a1ff2"}
+   B: {"t": 0, "s": "fs", "o": "fs.readdir", "at": "<node>", "v": "<tmp>/src|1|585b68e4297a2ffdb75478bbee3a1ff2"}
+    event #10: fs.readdir @ <node> returned different values: "<tmp>/.claude|1|585b68e4297a2ffdb75478bbee3a1ff2" vs "<tmp>/src|1|585b68e4297a2ffdb75478bbee3a1ff2"
+
+[2] status=diverged reason=other op=process.pid at=<deps>/signal-exit/index.js:15
+   e.g. tests/integration/setup-embedded-hooks.test.ts::Setup Command - Embedded Hooks Integration::Installation types::should handle user-only installation
+   A: {"t": 0, "s": "other", "o": "process.pid", "at": "<deps>/signal-exit/index.js:15", "v": "6d61e3dadb16"}
+   B: {"t": 0, "s": "other", "o": "process.pid", "at": "<deps>/signal-exit/index.js:15", "v": "8421099d8209"}
+    event #523: process.pid @ <deps>/signal-exit/index.js:15 returned different values: "6d61e3dadb16" vs "8421099d8209"
+
+[2] status=diverged reason=other op=io.complete at=cli/lib/filesystem.ts:315
+   e.g. tests/lib/project-detection.test.ts::Project Detection System::detectProjectContext::should detect comprehensive project information
+   A: {"t": 0, "s": "other", "o": "io.complete", "at": "cli/lib/filesystem.ts:315", "v": "fs.access#28"}
+   B: {"t": 0, "s": "other", "o": "child.exit", "at": "cli/lib/project-detection.ts:653", "v": "0|"}
+    event #45: [other] io.complete @ cli/lib/filesystem.ts:315 = fs.access#28  <>  [other] child.exit @ cli/lib/project-detection.ts:653 = 0|
+
+[2] status=not-proven reason=child op=uncontrolled.child at=cli/hooks/utils.ts:93
+   e.g. tests/unit/self-review.test.ts::SelfReviewHook::performance optimization (base hook level)::should NOT call subagent detection on regular Stop events
+   A: {"t": 0, "s": "other", "o": "uncontrolled.child", "at": "cli/hooks/utils.ts:93", "v": "execFile git rev-parse --show-toplevel"}
+   B: {"t": 0, "s": "other", "o": "uncontrolled.child", "at": "cli/hooks/utils.ts:93", "v": "execFile git rev-parse --show-toplevel"}
+    the test started a child process: what the child does (uncontrolled.child @ cli/hooks/utils.ts:93) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: child)
+
+[1] status=not-proven reason=env op=uncontrolled.env at=tests/colors.test.ts:18
+   e.g. tests/colors.test.ts::Colors utility::Environment detection::should enable colors by default in TTY
+   A: {"t": 0, "s": "other", "o": "uncontrolled.env", "at": "tests/colors.test.ts:18", "v": "*"}
+   B: {"t": 0, "s": "other", "o": "uncontrolled.env", "at": "tests/colors.test.ts:18", "v": "*"}
+    the test read a CI-volatile or proxy environment variable: its value (uncontrolled.env @ tests/colors.test.ts:18) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: env)
+
+[1] status=not-proven reason=api op=None at=
+   e.g. tests/config/vitest-configs.test.ts::Vitest Configuration Validation::Main Configuration::should load main vitest config without errors
+   A: null
+   B: null
+    the test called something the engine cannot account for: not accounted for: api:tty.isatty (and 1 more). Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun
+
+[1] status=not-proven reason=io op=uncontrolled.io at=tests/hooks/integration.test.ts:124
+   e.g. tests/hooks/integration.test.ts::Hook Integration Tests::Configuration Loading::should load and respect hook configuration
+   A: {"t": 0, "s": "other", "o": "uncontrolled.io", "at": "tests/hooks/integration.test.ts:124", "v": "concurrent I/O"}
+   B: {"t": 0, "s": "other", "o": "uncontrolled.io", "at": "tests/hooks/integration.test.ts:124", "v": "concurrent I/O"}
+    the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ tests/hooks/integration.test.ts:124) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: child, io)
+
+[1] status=diverged reason=fs op=fs.stat.mtimeMs at=cli/lib/filesystem.ts:330
+   e.g. tests/lib/components.test.ts::Component Discovery System::Caching::should invalidate cache when forced
+   A: {"t": 0, "s": "fs", "o": "fs.stat.mtimeMs", "at": "cli/lib/filesystem.ts:330", "v": "+0.00390625"}
+   B: {"t": 0, "s": "fs", "o": "fs.stat.mtimeMs", "at": "cli/lib/filesystem.ts:330", "v": "+0"}
+    event #32: fs.stat.mtimeMs @ cli/lib/filesystem.ts:330 returned different values: "+0.00390625" vs "+0"

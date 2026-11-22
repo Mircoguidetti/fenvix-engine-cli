@@ -1,0 +1,70 @@
+samples 33647
+-- self
+  46.2% detpy:provable.py
+  36.5% stdlib/other
+   3.7% pytest
+   2.7% detpy:_core.abi3.so)
+   1.7% native:_multiarray_umath.cpython-312-x86_64-lin
+   1.4% detpy:osstate.py
+   1.3% native:0x7ffff7c98e31 (libc.so.6)
+   0.8% native:fstatat64 (libc.so.6)
+   0.4% native:pathlib.py
+   0.4% native:getpid (libc.so.6)
+   0.3% native:0x7ffff7c2a1ca (libc.so.6)
+   0.2% native:0x7ffff7d9bc62 (libc.so.6)
+   0.2% detpy:seeds.py
+   0.1% native:dup2 (libc.so.6)
+   0.1% native:0x7ffff7da16c4 (libc.so.6)
+   0.1% native:artist.py
+   0.1% native:write (libc.so.6)
+   0.1% native:<frozen importlib._bootstrap_external>
+-- inclusive (any frame on stack)
+  99.7% stdlib/other
+  98.4% pytest
+  97.9% native:0x7ffff7c2a1ca (libc.so.6)
+  51.2% detpy:provable.py
+   5.8% detpy:_core.abi3.so)
+   3.9% detpy:plugin.py
+   3.7% detpy:osstate.py
+   3.2% detpy:_level0.py
+   2.2% native:_multiarray_umath.cpython-312-x86_64-lin
+   1.5% native:_util.py
+   1.5% native:contextlib.py
+   1.3% detpy:clock.py
+   1.3% native:0x7ffff7c98e31 (libc.so.6)
+   1.3% native:pathlib.py
+   1.3% native:0x7ffff7c9cb64 (libc.so.6)
+   1.3% native:0x7ffff7d29e8c (libc.so.6)
+   1.3% native:0x7ffff7ca5078 (libc.so.6)
+   1.2% native:__init__.py
+-- inclusive detpy functions
+  49.6% Sensor._on_call @detpy:provable.py
+   4.8% _RNvNtCsgkdXurbAfJv_5__core6sysmon10audit_hook @detpy:_core.abi3.so)
+   3.2% _DetSession.pytest_runtest_protocol @detpy:plugin.py
+   2.9% level0_end @detpy:plugin.py
+   2.8% end_test @detpy:_level0.py
+   2.5% _stat_observed.<locals>.wrapper @detpy:osstate.py
+   2.2% Sensor.check_native @detpy:provable.py
+   2.1% Sensor._on_audit @detpy:provable.py
+   1.3% _note_stat @detpy:osstate.py
+   1.2% _audit @detpy:osstate.py
+   1.2% Sensor._report @detpy:provable.py
+   1.2% _stat_of.<locals>.stat @detpy:fstime.py
+   1.1% _TimedLock.__enter__ @detpy:clock.py
+   0.6% record_at @detpy:_state.py
+   0.4% _cache_rewritten_tests.<locals>.exec_module @detpy:plugin.py
+   0.4% end_test @detpy:seeds.py
+   0.3% level0_begin @detpy:plugin.py
+   0.3% _excluded @detpy:osstate.py
+   0.3% begin_test @detpy:_level0.py
+   0.2% _RNvNtCsgkdXurbAfJv_5__core5clock33___pyfunction_clock_condition_wait @detpy:_core.abi3.so)
+   0.2% _condition_wait @detpy:clock.py
+   0.2% start_test @detpy:seeds.py
+   0.1% _make.<locals>._Observed.__getitem__ @detpy:envobs.py
+   0.1% _note_value @detpy:envobs.py
+   0.1% _Outcomes.pytest_runtest_logreport @detpy:plugin.py
+   0.1% _RNvMs1_NtCsk3JLub4s4Lv_10detpy_core11fingerprintNtB5_13Fingerprinter4push @detpy:_core.abi3.so)
+   0.1% _RNvMs_NtNtNtCsgczF5crJ4sT_3std2io8buffered9bufwriterINtB4_9BufWriterNtNtBa_2fs4FileE9flush_bufCsk3JLub4s4Lv_10detpy_core.llvm.11885348702532535000 @detpy:_core.abi3.so)
+   0.1% _RNvMs6_CsgkdXurbAfJv_5__coreNtB5_8Recorder6record @detpy:_core.abi3.so)
+   0.1% _plugin_site @detpy:osstate.py
+   0.1% resolve @detpy:_sites.py

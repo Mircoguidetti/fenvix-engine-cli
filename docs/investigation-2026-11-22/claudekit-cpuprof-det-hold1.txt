@@ -1,0 +1,42 @@
+total 7.71 s
+  2.183 s  28.3%  (idle)
+  1.099 s  14.3%  deps:vite-node
+  0.912 s  11.8%  node-internal
+  0.638 s   8.3%  deps:vitest
+  0.566 s   7.3%  deps:@vitest
+  0.523 s   6.8%  native/(no url)
+  0.314 s   4.1%  engine:sites.js
+  0.314 s   4.1%  (garbage collector)
+  0.197 s   2.6%  project
+  0.147 s   1.9%  deps:tinyspy
+  0.145 s   1.9%  engine:deadline.js
+  0.091 s   1.2%  engine:ioorder.js
+  0.062 s   0.8%  engine:outside.js
+  0.057 s   0.7%  (program)
+  0.056 s   0.7%  engine:state.js
+  0.050 s   0.6%  deps:chai
+  0.038 s   0.5%  engine:fstime.js
+  0.037 s   0.5%  engine:clock.js
+  0.028 s   0.4%  deps:pathe
+  0.023 s   0.3%  engine:seeds.js
+  0.020 s   0.3%  deps:vite
+  0.020 s   0.3%  deps:zod
+  0.018 s   0.2%  engine:vitest/shell.js
+  0.015 s   0.2%  engine:controls.js
+  0.015 s   0.2%  deps:string-width
+  0.013 s   0.2%  engine:cache/capture.js
+  0.012 s   0.2%  deps:react-reconciler
+  0.008 s   0.1%  engine:facts.js
+  0.008 s   0.1%  engine:provable.js
+  0.007 s   0.1%  deps:yoga-layout
+  0.007 s   0.1%  deps:tinycolor2
+  0.007 s   0.1%  deps:picomatch
+  0.006 s   0.1%  deps:ink
+  0.006 s   0.1%  deps:js-yaml
+  0.005 s   0.1%  deps:@alcalzone
+  0.004 s   0.1%  deps:chalk
+  0.004 s   0.1%  deps:esprima
+  0.003 s   0.0%  engine:concur.js
+  0.003 s   0.0%  engine:sqlvirt.js
+  0.003 s   0.0%  deps:es-toolkit
+ENGINE TOTAL 0.854 s

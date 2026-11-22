@@ -1,0 +1,19 @@
+summary {"runs": 2, "tests": 11039, "stable": 0, "diverged": 0, "missing": 0, "outcome_unstable": 0, "order_identical": true, "reasons": {"api": 999, "native": 10039, "thread": 1}, "inputs_recorded": true, "identical": 0, "input_differs": 0, "not_proven": 11039}
+
+[10039] status=not-proven reason=native op=None at=
+   e.g. networkx/algorithms/approximation/__init__.py::networkx.algorithms.approximation
+   A: null
+   B: null
+    the test loaded a native extension whose own C code the engine has not reasoned about: not accounted for: native:PIL._imaging (and 62 more). Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun
+
+[999] status=not-proven reason=api op=None at=
+   e.g. networkx/algorithms/approximation/density.py::networkx.algorithms.approximation.density.densest_subgraph
+   A: null
+   B: null
+    the test called something the engine cannot account for: not accounted for: api:.clip (and 63 more). Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun
+
+[1] status=not-proven reason=thread op=uncontrolled.thread at=networkx/utils/tests/test_decorators.py:531
+   e.g. networkx/utils/tests/test_decorators.py::TestArgmap::test_lazy_compile_thread_safety
+   A: {"t": 0, "s": "other", "o": "uncontrolled.thread", "at": "networkx/utils/tests/test_decorators.py:531", "v": "TestArgmap.test_lazy_compile_thread_safety.<locals>.worker"}
+   B: {"t": 0, "s": "other", "o": "uncontrolled.thread", "at": "networkx/utils/tests/test_decorators.py:531", "v": "TestArgmap.test_lazy_compile_thread_safety.<locals>.worker"}
+    the test started a thread: thread scheduling (uncontrolled.thread @ networkx/utils/tests/test_decorators.py:531) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: thread)
