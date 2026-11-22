@@ -561,6 +561,20 @@ class ProofCachePlugin(ProofSession):
         self._n_conftests = n
         return list(getattr(pm, "_conftest_plugins", ()))
 
+    def loaded_conftest_files(self) -> list:
+        """Every conftest module pytest has imported, as a path relative to the root (review R-056 W1)."""
+        import os
+
+        out = []
+        for mod in getattr(self.config.pluginmanager, "_conftest_plugins", ()):
+            f = getattr(mod, "__file__", None)
+            if f:
+                try:
+                    out.append(os.path.relpath(f, self.root))
+                except ValueError:  # another drive: keep the absolute path, it is still a stable key
+                    out.append(f)
+        return out
+
     def _reuse(self, item, nextitem, receipt) -> None:
         from _pytest.reports import TestReport
         from _pytest.runner import CallInfo

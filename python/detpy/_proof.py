@@ -1028,6 +1028,46 @@ def _pure_expr(e) -> bool:
     return False
 
 
+#: Directories a collection walk never enters, so the conftest walk does not either.
+_WALK_SKIP = {".git", ".hg", ".svn", "__pycache__", "node_modules", ".venv", "venv", ".tox", ".nox", ".mypy_cache",
+              ".pytest_cache", ".ruff_cache", "site-packages", ".eggs", "build", "dist", ".detpy"}
+
+
+def _conftests_in_tree(root: str, rels) -> set:
+    """Every ``conftest.py`` under the directory that holds the collected files, relative to ``root``.
+
+    Review R-056 W1, the `-n` half: pytest imports the ``conftest.py`` of every directory it walks, and under
+    ``-n`` the controller decides what to reuse BEFORE any worker has collected, so the runner's own list of
+    imported conftests (``loaded_conftest_files``) is still empty there. The directories of the collected files
+    never reach a directory that holds no test file, which is exactly what the finding changes. A walk of the
+    collected files' common directory does, and it needs no cooperation from the runner.
+
+    It is a superset of what pytest imports when the session was given narrower arguments: a conftest in the key
+    that pytest did not import can only cost reuse when it changes, never a wrong reuse.
+    """
+    dirs = {os.path.dirname(r) for r in rels if r}
+    if not dirs:
+        return set()
+    try:
+        base = os.path.commonpath(list(dirs)) if len(dirs) > 1 else next(iter(dirs))
+    except ValueError:
+        base = ""
+    out = set()
+    start = os.path.join(root, base) if base else root
+    for dirpath, dirnames, filenames in os.walk(start):
+        dirnames[:] = [d for d in dirnames if d not in _WALK_SKIP and not d.startswith(".")]
+        if "conftest.py" in filenames:
+            out.add(os.path.relpath(os.path.join(dirpath, "conftest.py"), root))
+    # the root conftest, above the common directory
+    d = base
+    while True:
+        out.add(os.path.join(d, "conftest.py") if d else "conftest.py")
+        if not d:
+            break
+        d = os.path.dirname(d)
+    return {f for f in out if os.path.exists(os.path.join(root, f))}
+
+
 def _import_effect_nodes(body) -> list:
     """The top-level statements of a module (and of its class bodies, which run at import too) that may do more
     than define names: anything but imports, ``def``/``class`` with pure decorators and defaults, docstrings,
@@ -1331,11 +1371,26 @@ class ProofSession:
                     content[rel] = "?"
             return content[rel]
 
-        # the collection order (the serial one), not the process lists: the lists of a -n plan change with the
-        # recorded durations, and a digest over them would never match from one session to the next. Every file
-        # before the test in that order covers every file before it in its process (a superset: conservative).
-        # Per-file children (--det-isolate-scope=file): the process is the file.
-        if getattr(self, "iso_scope", "test") != "file":
+        # The whole collected set, not the files at or before the test in collection order.
+        #
+        # Review R-056 W2 (6 wrong results under `-n 2`, MEASURED): pytest imports EVERY collected test module
+        # before it runs any test, in the serial session and in EVERY xdist worker -- each worker collects the
+        # whole session. So the import-time code of a file that comes LATER in the collection order has already
+        # run in this test's process. This code used to digest the files at or before the test and called them
+        # "a superset: conservative"; under `-n` they are a SUBSET, so a new `conftest.py` or `__init__.py`, a new
+        # decorator, class base or annotation in a later file changed what ran before the victim and the cache
+        # reused it all the same. Serially the same gap was covered only by the blunt rule that reruns every
+        # earlier test of an edited file, not by this digest.
+        #
+        # One digest over the whole collected set, the same for every test of the session, is exact for both, and
+        # it does not depend on reading the later file's intent: whatever that code does, the file's bytes are in
+        # the key. It costs reuse -- any change to any collected file invalidates the session -- which is what
+        # precise per-test tracking (P-061) exists to give back.
+        #
+        # Per-file children (--det-isolate-scope=file): the process really is the file, so the old per-process
+        # lists stay.
+        whole_session = getattr(self, "iso_scope", "test") != "file"
+        if whole_session:
             order = list(getattr(self, "prefix_nids", None) or [n for lst in lists for n in lst])
             present = {n for lst in lists for n in lst}
             lists = [[n for n in order if n in present]]
@@ -1352,9 +1407,41 @@ class ProofSession:
                     return out
                 d = os.path.dirname(d)
 
+        def files_of(nids):
+            """Every distinct file the process imports for these tests, with the conftest and ``__init__`` files
+            pytest loads with each one, and every conftest the runner says it imported (W1: a directory with no
+            test file in it), in a fixed order."""
+            out = []
+            done = set()
+            for rel in sorted({n.split("::", 1)[0] for n in nids}):
+                for f in [rel, *loaded_with(rel)]:
+                    if f not in done:
+                        done.add(f)
+                        out.append(f)
+            try:
+                extra = set(self.loaded_conftest_files())
+            except Exception:
+                extra = set()
+            extra |= _conftests_in_tree(self.root, [n.split("::", 1)[0] for n in nids])
+            for f in sorted(extra):
+                if f not in done:
+                    done.add(f)
+                    out.append(f)
+            return out
+
         def compute():
             now = {}
             for lst in lists:
+                if whole_session:
+                    # one digest over the whole collected set, shared by every test of this session
+                    h = hashlib.blake2b(digest_size=12)
+                    for f in files_of(lst):
+                        # an absent file reads "?": one that appears changes the digest
+                        h.update(f"{f}\0{digest_of(f)}\0".encode())
+                    d = h.hexdigest()
+                    for n in lst:
+                        now[n] = d
+                    continue
                 h = hashlib.blake2b(digest_size=12)
                 done = set()
                 for n in lst:
@@ -1362,7 +1449,6 @@ class ProofSession:
                     for f in [rel, *loaded_with(rel)]:
                         if f not in done:
                             done.add(f)
-                            # an absent file reads "?": one that appears changes the digest
                             h.update(f"{f}\0{digest_of(f)}\0".encode())
                     now[n] = h.copy().hexdigest()
             return now
@@ -1538,6 +1624,16 @@ class ProofSession:
 
     def _conftests(self):
         return ()
+
+    def loaded_conftest_files(self) -> list:
+        """The ``conftest.py`` files the runner has actually imported, relative to the root.
+
+        Review R-056 W1: pytest imports the ``conftest.py`` of EVERY directory it walks during collection, including
+        a directory that holds no test file at all (``tests/c/conftest.py`` next to a data file). Its import-time
+        code runs before every test of the process, and walking the directories of the COLLECTED files never finds
+        it. The runner's own list of imported conftest modules is the exact answer, so the shell overrides this.
+        """
+        return []
 
     # -- end of session ------------------------------------------------------------
     def finish(self, fingerprints: dict) -> None:
