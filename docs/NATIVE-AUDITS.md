@@ -49,6 +49,16 @@ Limits of this audit, written down rather than implied:
 * it covers version 1.13.0 on `linux-x64-gnu`. A different version or platform binding is a different binary;
 * it is a measurement of the syscalls this extension makes while resolving, not a proof about its code.
 
+### `node:wasi` (not an addon, but the same question)
+
+`node:wasi` is a builtin, so it is the accounting table's business and not this file's, but the judgement is of
+the same kind and belongs next to these. The engine replaces `random_get` and `clock_time_get` on every WASI
+instance's import object and records both (`node/src/wasi.js`). What it does NOT observe is a filesystem given
+to the instance through `preopens`: those imports go straight to the real one. So the class answers
+`Controlled` and each filesystem import marks the running test `uncontrolled.io` at its own call -- per thing,
+not per feature: a module that only draws entropy and reads the clock is provable, one that opens a file is
+not.
+
 ### The engine's own addon (`detjs.<platform>-<arch>.node`, `libdetpy_node.so`)
 
 It is the engine. It was exempt only because it is loaded before the sensor starts, which is timing and not a
@@ -59,6 +69,23 @@ reason, so it is named in the list: an engine loaded later, or re-loaded in a wo
 The Python side's list is `CONTROLLED_NATIVE` in `crates/detpy-core/src/provable.rs`: the engine's own
 extension and the standard library's accelerators. No third-party extension is listed, so a suite that imports
 numpy, pydantic-core, lxml or psycopg comes out NOT PROVEN. That is the honest consequence of the residual.
+
+### `_time_machine` (the `time-machine` pytest plugin's extension) — the engine's own integration
+
+Why it matters: **merely having `time-machine` installed made every test of every suite NOT PROVEN** — MEASURED
+on this branch, a one-test project in a venv with time-machine: `unaccounted = ["native:_time_machine"]`. And
+the import is the ENGINE's, not the test's: `python/detpy/clock.py` reads an active travel through
+`clock_time_machine_ns` so that `time_machine.travel` is honoured under `--det` instead of being silently
+ignored, and while a travel is active the virtual clock returns its destination (a ticking travel advances with
+the VIRTUAL counter). So the load is the engine's own act, which Rule E puts outside what the test observed,
+and what the extension answers is pinned by the engine's control --
+`tests/test_clock.py::test_time_machine_travel_is_honoured` asserts exactly that.
+
+The measurement, and what it does NOT prove: travelling and reading `time`, `monotonic` and `localtime` inside
+the travel, then `time` after leaving it, made **zero syscalls** under `strace`. That is not evidence that the
+extension never reads the real clock, because a clock read goes through the vDSO and never appears in a trace.
+The entry rests on the engine's control over what it returns, not on that measurement, and this paragraph is
+here so that nobody later mistakes the one for the other.
 
 ### numpy 2.5.5 — MEASURED, NOT cleared
 

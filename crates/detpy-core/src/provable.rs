@@ -204,6 +204,19 @@ const INFRA_PREFIXES: &[&str] = &[
 pub const CONTROLLED_NATIVE: &[&str] = &[
     // the engine's own extension and the accelerators of the pure modules above
     "detpy._core",
+    // `time-machine`'s extension, which the ENGINE itself imports: `python/detpy/clock.py` reads an active
+    // travel through `clock_time_machine_ns` so that a travel is honoured under `--det` instead of being
+    // ignored, and while a travel is active the virtual clock returns its destination (a ticking travel
+    // advances with the VIRTUAL counter). So the load is the engine's own act (Rule E) and what the extension
+    // answers is pinned by the engine's control, which tests/test_clock.py::test_time_machine_travel_is_honoured
+    // asserts. Without this entry, merely HAVING time-machine installed made every test of every suite NOT
+    // PROVEN -- MEASURED on this branch, a one-test project in a venv with time-machine:
+    // `unaccounted` = ["native:_time_machine"], and the engine, not the test, is what imported it.
+    // Measured as well, and honestly incomplete: travelling and reading `time`, `monotonic` and `localtime`
+    // inside the travel, then `time` after it, made ZERO syscalls under `strace` -- which does not prove it
+    // never reads the real clock, because a clock read goes through the vDSO and never appears in a trace.
+    // What the claim rests on is the engine's control over what it returns, not on that measurement.
+    "_time_machine",
     "_abc",
     "_bisect",
     "_blake2",
@@ -1026,6 +1039,19 @@ pub fn account_node(module: &str, export: &str) -> Accounting {
             | "SourceMap" | "Module" | "register" | "registerHooks" | "wrap" | "getCompileCacheDir"
             | "enableCompileCache" | "flushCompileCache" | "stripTypeScriptTypes" | "findPackageJSON"
             | "constants" | "getSourceMapsSupport" | "setSourceMapsSupport" => Accounting::Input,
+            _ => Accounting::Unaccounted,
+        },
+        "wasi" => match export {
+            // The engine replaces `random_get` and `clock_time_get` on every instance's import object and
+            // records both (src/wasi.js), under the `seeds` and `time` controls that `required_controls`
+            // already demands of a Node run. What it does NOT observe is a filesystem given through
+            // `preopens`, so each import that reaches one marks the running test `uncontrolled.io` at its own
+            // call: a module that only draws entropy and reads the clock is provable, one that opens a file
+            // is not.
+            // MEASURED on this branch (and at its base, where both runner legs failed): a WASI test was NOT
+            // PROVEN with "api:wasi.WASI" although every value it read was virtual and recorded -- the class
+            // itself was the only thing left unaccounted (test/network-p041.test.js, audit gap G-1429).
+            "WASI" => Accounting::Controlled,
             _ => Accounting::Unaccounted,
         },
         "v8" => match export {
