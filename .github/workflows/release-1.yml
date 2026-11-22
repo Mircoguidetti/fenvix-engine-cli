@@ -95,7 +95,7 @@ jobs:
       # A red job means there is a bug, and the rest of the matrix is then spent learning nothing (founder,
       # 2026-11-21): every matrix in this gate workflow stops at the first red. This workflow is a gate, not a
       # measurement -- a long measurement run keeps fail-fast: false so a later push does not throw away hours.
-      fail-fast: false
+      fail-fast: true
       matrix:
         python: ${{ fromJSON((github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.depth != 'light')) && '["3.12", "3.13", "3.14"]' || '["3.13"]') }}
         # 4 machines per version, test files split by size (release/shard.py); each shard is still serial inside
@@ -169,7 +169,7 @@ jobs:
       # A red job means there is a bug, and the rest of the matrix is then spent learning nothing (founder,
       # 2026-11-21): every matrix in this gate workflow stops at the first red. This workflow is a gate, not a
       # measurement -- a long measurement run keeps fail-fast: false so a later push does not throw away hours.
-      fail-fast: false
+      fail-fast: true
       matrix:
         python: ${{ fromJSON((github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.depth != 'light')) && '["3.12", "3.13", "3.14"]' || '["3.13"]') }}
         node: ${{ fromJSON((github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.depth != 'light')) && '["22", "24", "26"]' || '["24"]') }}
@@ -206,7 +206,7 @@ jobs:
       # A red job means there is a bug, and the rest of the matrix is then spent learning nothing (founder,
       # 2026-11-21): every matrix in this gate workflow stops at the first red. This workflow is a gate, not a
       # measurement -- a long measurement run keeps fail-fast: false so a later push does not throw away hours.
-      fail-fast: false
+      fail-fast: true
       matrix:
         node: ${{ fromJSON((github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.depth != 'light')) && '["22", "24", "26"]' || '["24"]') }}
         shard: [0, 1, 2, 3]
@@ -244,7 +244,7 @@ jobs:
       # A red job means there is a bug, and the rest of the matrix is then spent learning nothing (founder,
       # 2026-11-21): every matrix in this gate workflow stops at the first red. This workflow is a gate, not a
       # measurement -- a long measurement run keeps fail-fast: false so a later push does not throw away hours.
-      fail-fast: false
+      fail-fast: true
       matrix:
         lang: [python, node]
     steps:
@@ -282,7 +282,7 @@ jobs:
       # A red job means there is a bug, and the rest of the matrix is then spent learning nothing (founder,
       # 2026-11-21): every matrix in this gate workflow stops at the first red. This workflow is a gate, not a
       # measurement -- a long measurement run keeps fail-fast: false so a later push does not throw away hours.
-      fail-fast: false
+      fail-fast: true
       matrix:
         include:
           - {name: "glibc 2.28, CPython 3.12, pytest 8.1, Node 22", image: "quay.io/pypa/manylinux_2_28_x86_64", python: "/opt/python/cp312-cp312/bin/python3.12", node: "22", mode: "--pytest pytest==8.1.*"}
