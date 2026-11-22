@@ -501,3 +501,93 @@ def test_an_ordinary_lock_does_not_make_a_test_not_proven(tmp_path):
         f"two identical runs of a test that only takes a lock must be IDENTICAL, got {v.returncode}\n{v.stdout}")
     assert "not proven: 0" in v.stdout, v.stdout
     assert "covered by Level 0: 2" in v.stdout, v.stdout
+
+
+def test_what_an_ordinary_suite_does_is_provable(tmp_path):
+    """The plain things every suite does -- walk a directory, write a log line, copy a file -- are IDENTICAL.
+
+    This is the `_thread.lock` lesson turned into a gate. Three more entries of the table were answering less
+    than they could, and each one was found the same expensive way: a red CI job naming one callable.
+
+    MEASURED on this branch, on a suite of 37 deliberately boring tests (the probe this test is cut down from),
+    before the fixes and after:
+
+    * `os.walk` / `os.scandir`: "not accounted for: api:posix.DirEntry.is_dir". Every arm of the table that
+      named a TYPE's method was dead code -- `account` compares the last component of the qualified name, so
+      `DirEntry.is_dir` was compared against `is_dir` and never matched.
+    * a log line: "not accounted for: api:_asyncio.current_task". Since 3.12 every `logging` record carries
+      `taskName`, so the commonest line in any codebase called an unlisted name.
+    * `shutil.copy`: "not accounted for: audit:shutil.copymode", an audit event whose underlying calls
+      (`open`, `os.stat`, `os.chmod`) all have rules of their own.
+    * CPython 3.14 only: "not accounted for: api:_interpqueues._register_heap_types" (CI 44964230574, the
+      install leg), which made every test of an ordinary project NOT PROVEN on 3.14.
+
+    What this test must NOT do is make the refusals that are real go away, so it also asserts that a thread, a
+    child process and an event loop are still refused by name.
+    """
+    # the four entries, at the table, so a regression names the cause and not just the symptom
+    assert _core.provable_account("posix", "DirEntry.is_dir") != "unaccounted"
+    assert _core.provable_account("_asyncio", "current_task") != "unaccounted"
+    assert _core.provable_account("_interpqueues", "_register_heap_types") != "unaccounted"
+    # and the channels that must stay refused, next to them
+    assert _core.provable_account("_asyncio", "Task") == "unaccounted"
+    assert _core.provable_account("_interpqueues", "put") == "unaccounted"
+    assert _core.provable_account("_thread", "start_new_thread") == "unaccounted"
+
+    proj = _project(tmp_path, {"tests/test_ordinary.py": """
+        import glob
+        import logging
+        import os
+        import shutil
+        import sqlite3
+        import zipfile
+
+        def test_walk_a_tree(tmp_path):
+            (tmp_path / "d").mkdir()
+            (tmp_path / "d" / "f").write_text("f")
+            assert [f for _, _, fs in os.walk(tmp_path) for f in fs] == ["f"]
+
+        def test_scandir(tmp_path):
+            (tmp_path / "one").write_text("1")
+            with os.scandir(tmp_path) as it:
+                assert [(e.name, e.is_file()) for e in it] == [("one", True)]
+
+        def test_glob_and_read(tmp_path):
+            (tmp_path / "x.json").write_text("{}")
+            found = glob.glob(str(tmp_path / "*.json"))
+            assert open(found[0]).read() == "{}"
+
+        def test_a_log_line(caplog):
+            logging.getLogger("ordinary").warning("something")
+            assert "something" in caplog.text
+
+        def test_copy_a_file(tmp_path):
+            src = tmp_path / "src"
+            src.write_text("s")
+            shutil.copy(src, tmp_path / "dst")
+            assert (tmp_path / "dst").read_text() == "s"
+
+        def test_sqlite_and_zip(tmp_path):
+            con = sqlite3.connect(":memory:")
+            con.execute("create table t (x int)")
+            assert con.execute("select count(*) from t").fetchone()[0] == 0
+            con.close()
+            z = tmp_path / "z.zip"
+            with zipfile.ZipFile(z, "w") as zf:
+                zf.writestr("m.txt", "m")
+            with zipfile.ZipFile(z) as zf:
+                assert zf.read("m.txt") == b"m"
+    """})
+    traces = []
+    for i in (1, 2):
+        t = tmp_path / f"ordinary{i}.jsonl"
+        r = _run(proj, t, _env())
+        assert t.exists(), r.stdout[-3000:] + r.stderr[-3000:]
+        assert "6 passed" in r.stdout, r.stdout[-3000:]
+        traces.append(t)
+    v = _verify(proj, traces)
+    assert v.returncode == 0, (
+        "a suite that only walks a directory, logs, copies a file and reads one must be IDENTICAL, got "
+        f"{v.returncode}\n{v.stdout}")
+    assert "not proven: 0" in v.stdout, v.stdout
+    assert "covered by Level 0: 6" in v.stdout, v.stdout

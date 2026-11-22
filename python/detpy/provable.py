@@ -98,6 +98,15 @@ _AUDIT_KNOWN = frozenset({
     "os.putenv", "os.unsetenv", "os.getxattr", "os.setxattr", "os.listxattr", "os.removexattr",
     "os.remove", "os.rename", "os.mkdir", "os.rmdir", "os.truncate", "os.link", "os.symlink", "os.chmod",
     "os.chown", "os.utime", "os.add_dll_directory",
+    # `shutil` raises an audit event of its own for each of these, and every one of them is built out of calls
+    # that already have a rule: the reads are `open` (an `fs.read` event), the metadata is `os.stat`
+    # (`fs.stat`), the writes and the permission bits are `os.chmod` / `os.utime`, which carry nothing INTO the
+    # test. Seeing the shutil event as well adds nothing, and not naming it made the commonest line of a
+    # fixture -- copying a file into a temporary directory -- NOT PROVEN.
+    # MEASURED (this branch, 37 ordinary tests under `--det`): before, `test_shutil_copy` was NOT PROVEN with
+    # "not accounted for: audit:shutil.copymode"; after, it is covered by Level 0.
+    "shutil.copyfile", "shutil.copymode", "shutil.copystat", "shutil.copytree", "shutil.move",
+    "shutil.rmtree",
     "shutil.rmtree", "shutil.copyfile", "shutil.move", "shutil.unpack_archive", "shutil.make_archive",
     "glob.glob", "pathlib.Path.glob", "tempfile.mkstemp", "tempfile.mkdtemp",
     "socket.connect", "socket.bind", "socket.sendto", "socket.sendmsg", "socket.getaddrinfo",

@@ -263,7 +263,7 @@ pub fn account(module: &str, qualname: &str) -> Accounting {
     let name = qualname.rsplit('.').next().unwrap_or(qualname);
     match top {
         "builtins" => builtins_account(qualname, name),
-        "posix" | "os" | "nt" => posix_account(name),
+        "posix" | "os" | "nt" => posix_account(qualname, name),
         "time" => time_account(name),
         "_io" | "io" => io_account(name),
         "_socket" | "socket" => socket_account(name),
@@ -278,6 +278,8 @@ pub fn account(module: &str, qualname: &str) -> Accounting {
             import_account(name)
         }
         "_warnings" | "atexit" | "_tracemalloc" | "faulthandler" => Accounting::Pure,
+        "_asyncio" => asyncio_account(name),
+        "_interpreters" | "_interpqueues" | "_interpchannels" => subinterpreter_account(name),
         // the locale is pinned by `--det-locale` and is a run input the verifier compares, so what these answer
         // is the same in every run of a comparison
         "_locale" | "locale" => Accounting::Input,
@@ -305,6 +307,7 @@ fn module_policy(module: &str, top: &str) -> ModulePolicy {
         "builtins", "posix", "os", "nt", "time", "_io", "io", "_socket", "socket", "_thread", "threading",
         "_random", "random", "select", "_selectors", "selectors", "_sqlite3", "sqlite3", "sys", "gc", "resource",
         "_imp", "_frozen_importlib", "_frozen_importlib_external", "importlib", "marshal", "zipimport",
+        "_asyncio", "_interpreters", "_interpqueues", "_interpchannels",
         "_warnings", "atexit", "_tracemalloc", "faulthandler", "_tokenize", "_locale", "locale", "_ssl", "fcntl",
         "termios", "mmap", "signal",
         "_posixsubprocess", "_multiprocessing", "_curses", "pwd", "grp", "spwd", "crypt", "syslog", "_uuid",
@@ -356,14 +359,91 @@ fn builtins_account(qualname: &str, name: &str) -> Accounting {
     }
 }
 
-fn posix_account(name: &str) -> Accounting {
+/// The C accelerator of `asyncio`.
+///
+/// What makes an async test unprovable is the ORDER in which the loop runs its callbacks, and that order is
+/// Level 1 work which is not on this trunk. So every task, future, handle and loop operation stays
+/// `Unaccounted` and an async test is NOT PROVEN, which is the honest answer today.
+///
+/// Two names are not that. `current_task` and the running-loop accessors only REPORT what this process is
+/// already doing: outside a loop they answer `None` in every run, and inside one the test has already called
+/// something refused above, so nothing is opened by naming them. They are named because the standard library
+/// calls them on ordinary, entirely synchronous tests: since 3.12 every `logging` record carries `taskName`,
+/// which calls `asyncio.current_task()`.
+/// MEASURED (this branch, 37 ordinary tests under `--det`): before, a test whose only act was
+/// `logging.getLogger(...).warning(...)` was NOT PROVEN with "not accounted for: api:_asyncio.current_task";
+/// after, it is covered by Level 0, and the test that calls `asyncio.run` is still NOT PROVEN.
+fn asyncio_account(name: &str) -> Accounting {
+    match name {
+        "current_task" | "_get_running_loop" | "_set_running_loop" | "get_running_loop" | "get_event_loop" => {
+            Accounting::Pure
+        }
+        // tasks, futures, callback handles, the event loop itself: scheduling, which nothing here controls
+        _ => Accounting::Unaccounted,
+    }
+}
+
+/// Subinterpreters and the queues and channels between them (3.13+: `_interpreters`, `_interpqueues`,
+/// `_interpchannels`).
+///
+/// Data crossing from another interpreter is as uncontrolled as data crossing from a child process, so every
+/// operation stays `Unaccounted`. Registering the Python type objects with the C module is not an operation on
+/// the channel: it hands the module types it is given, reads nothing and returns nothing, and the standard
+/// library does it on import.
+/// MEASURED (CI 44964230574, job `install (Debian, CPython 3.14, Node 26)`): on CPython 3.14 the install leg's
+/// check `py_det_traces_identical` failed with "not accounted for: api:_interpqueues._register_heap_types",
+/// so on 3.14 every test of an ordinary project came out NOT PROVEN.
+fn subinterpreter_account(name: &str) -> Accounting {
+    match name {
+        "_register_heap_types" | "_register_queue_type" | "_register_channel_type" => Accounting::Pure,
+        _ => Accounting::Unaccounted,
+    }
+}
+
+/// The methods of a C type, named `Type.method` by the sensor.
+///
+/// `account` compares the last component of a qualified name, which is what identifies an operation
+/// (`stat`, `connect`, `random`). A method of a type needs the last TWO: `is_dir` on its own says nothing,
+/// `DirEntry.is_dir` says the entry a recorded `scandir` handed out. Returns `None` when the name is not one
+/// of them, so the caller falls through to its own table.
+fn type_method_account(qualname: &str) -> Option<Accounting> {
+    let mut parts = qualname.rsplitn(3, '.');
+    let last = parts.next()?;
+    let owner = parts.next()?;
+    match (owner, last) {
+        // the entries `scandir` hands out: part of the recorded enumeration, and their metadata is `fs.stat`
+        (
+            "DirEntry",
+            "is_dir" | "is_file" | "is_symlink" | "is_junction" | "stat" | "inode" | "__fspath__" | "__init__",
+        ) => Some(Accounting::Recorded),
+        ("ScandirIterator", "__next__" | "__iter__" | "close" | "__enter__" | "__exit__") => {
+            Some(Accounting::Recorded)
+        }
+        _ => None,
+    }
+}
+
+fn posix_account(qualname: &str, name: &str) -> Accounting {
+    // The sensor names a method of a C type `Type.method`, and `account` hands the per-module tables the LAST
+    // component only. So every arm below that named a type was dead code: `DirEntry.is_dir` was compared against
+    // `is_dir` and never matched, which made `os.walk` and `os.scandir` NOT PROVEN on any suite that enumerates a
+    // directory -- the `_thread.lock` shape again, an entry that exists and never answers.
+    // MEASURED (this branch, 37 ordinary tests under `--det`): before, `test_walk_a_tree` was NOT PROVEN with
+    // "not accounted for: api:posix.DirEntry.is_dir"; after, it is covered by Level 0.
+    // The entries `scandir` hands out are part of the recorded enumeration and their metadata is an `fs.stat`
+    // event, which is why the answer is `Recorded` and not `Pure`.
+    if let Some(answer) = type_method_account(qualname) {
+        return answer;
+    }
     match name {
         // file metadata: an `fs.stat` event (`<path>|<type>`, with size and mtime when the call returns them)
         "stat" | "lstat" | "fstat" | "fstatat" | "access" | "readlink" | "statvfs" | "fstatvfs" => {
             Accounting::Recorded
         }
-        // directory enumeration: the order is normalised and recorded
-        "listdir" | "scandir" => Accounting::Recorded,
+        // directory enumeration: the order is normalised and recorded. The two types it hands back are named
+        // here for the same reason `_thread.lock` is: the sensor reports a TYPE when the type itself is called,
+        // and these two are constructed as part of the enumeration that is already recorded.
+        "listdir" | "scandir" | "DirEntry" | "ScandirIterator" => Accounting::Recorded,
         // opening and reading a file
         "open" | "read" | "pread" | "preadv" | "readv" | "sendfile" | "copy_file_range" | "splice" => {
             Accounting::Recorded
@@ -401,10 +481,6 @@ fn posix_account(name: &str) -> Accounting {
         // string work on paths, no call to the operating system at all
         "_path_normpath" | "_path_splitroot_ex" | "_path_isabs" | "_path_join" | "_path_split"
         | "_path_splitext" | "_path_islink" => Accounting::Pure,
-        // the entries `scandir` hands out: part of the recorded enumeration, and their metadata is `fs.stat`
-        "DirEntry.is_dir" | "DirEntry.is_file" | "DirEntry.is_symlink" | "DirEntry.is_junction"
-        | "DirEntry.stat" | "DirEntry.inode" | "DirEntry.__fspath__" | "ScandirIterator.__next__"
-        | "ScandirIterator.close" => Accounting::Recorded,
         // the result tuple types of `uname` and `stat`: carriers, pinned with the input they come from
         "uname_result" | "stat_result" | "statvfs_result" | "terminal_size" | "times_result"
         | "waitid_result" | "sched_param" => Accounting::Input,
@@ -1208,6 +1284,54 @@ pub fn judge_record(
 
 #[cfg(test)]
 mod tests {
+
+    /// A method of a C type is named `Type.method`, and the table compares the LAST component of a qualified
+    /// name. Every arm that named a type was therefore dead code, and `os.walk` paid for it: MEASURED on this
+    /// branch, a test that walked a directory was NOT PROVEN with "api:posix.DirEntry.is_dir".
+    #[test]
+    fn a_method_of_a_c_type_is_found_by_its_owner_and_not_by_its_last_component() {
+        assert_eq!(account("posix", "DirEntry.is_dir"), Accounting::Recorded);
+        assert_eq!(account("posix", "DirEntry.is_file"), Accounting::Recorded);
+        assert_eq!(account("posix", "DirEntry.inode"), Accounting::Recorded);
+        assert_eq!(account("posix", "ScandirIterator.__next__"), Accounting::Recorded);
+        // the types themselves, the `_thread.lock` shape
+        assert_eq!(account("posix", "DirEntry"), Accounting::Recorded);
+        assert_eq!(account("posix", "ScandirIterator"), Accounting::Recorded);
+        // a method the type table does not name is refused
+        assert_eq!(account("posix", "DirEntry.invented"), Accounting::Unaccounted);
+        // What the owner table does NOT do is take over the fallback: a `Type.method` whose owner it does not
+        // know is still answered by the operation's own name, which is how `TextIOWrapper.readline`,
+        // `socket.connect` and `Random.random` have always been answered. Inside an ENUMERATED stdlib module
+        // every type is one the sensor itself reports, so this is sound there; it is written down here, and in
+        // docs/CHANNELS-TO-COVER.md, because it would NOT be sound if a module outside that set were ever
+        // enumerated (an unknown module is `Unaccounted` as a whole, which is what keeps it sound today).
+        assert_eq!(account("posix", "SomeOtherType.read"), Accounting::Recorded);
+        assert_eq!(account("_io", "TextIOWrapper.readline"), Accounting::Recorded);
+    }
+
+    /// `logging` calls `asyncio.current_task()` for every record since 3.12, so an entirely synchronous test
+    /// that writes one log line was NOT PROVEN. Reporting which task is running is not scheduling; running the
+    /// loop is, and that stays refused.
+    #[test]
+    fn asking_which_task_is_running_is_not_the_same_as_scheduling_one() {
+        assert_eq!(account("_asyncio", "current_task"), Accounting::Pure);
+        assert_eq!(account("_asyncio", "_get_running_loop"), Accounting::Pure);
+        assert_eq!(account("_asyncio", "Task"), Accounting::Unaccounted);
+        assert_eq!(account("_asyncio", "Task.__step"), Accounting::Unaccounted);
+        assert_eq!(account("_asyncio", "Future"), Accounting::Unaccounted);
+    }
+
+    /// CPython 3.14's standard library registers the subinterpreter queue types on import. Registration hands
+    /// the C module types it is given; a queue between interpreters carries data from outside and stays refused.
+    /// MEASURED: CI 44964230574, the install leg on 3.14, "api:_interpqueues._register_heap_types" on every test.
+    #[test]
+    fn registering_the_subinterpreter_queue_types_is_not_using_a_queue() {
+        assert_eq!(account("_interpqueues", "_register_heap_types"), Accounting::Pure);
+        assert_eq!(account("_interpqueues", "put"), Accounting::Unaccounted);
+        assert_eq!(account("_interpqueues", "get"), Accounting::Unaccounted);
+        assert_eq!(account("_interpreters", "create"), Accounting::Unaccounted);
+        assert_eq!(account("_interpchannels", "recv"), Accounting::Unaccounted);
+    }
     use super::*;
 
     fn all_controls() -> Vec<String> {
