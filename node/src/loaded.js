@@ -1,16 +1,16 @@
 'use strict';
 // The installed dependencies of the project (review R-055 V5, docs/VERIFY-CONTRACT.md `inputs.deps`): every file under
 // <root>/node_modules (packages, scoped packages, nested node_modules, generated code such as .prisma; not the tools'
-// own output: .bin, .cache, .detjs, .vite, .vite-temp), by relative path and content digest. It does not depend on
-// which tests ran (a cached or parallel run has the same input as a full serial one). Every file is hashed on every
-// run: size and mtime prove nothing (npm extracts every file with the same 1985 mtime).
+// own output: .bin, .cache, .detjs, .vite, .vite-temp, .vitest, .vitest-cache), by relative path and content digest.
+// It does not depend on which tests ran (a cached or parallel run has the same input as a full serial one). Every file
+// is hashed on every run: size and mtime prove nothing (npm extracts every file with the same 1985 mtime).
 // Not covered: packages outside <root>/node_modules (a monorepo's hoisted parent directory, a global install),
 // listed in docs/VERIFY-INPUTS.md.
 const fs = require('node:fs');
 const path = require('node:path');
 const native = require('./native');
 
-const TOOL_OUTPUT = new Set(['.bin', '.cache', '.detjs', '.vite', '.vite-temp']);
+const TOOL_OUTPUT = new Set(['.bin', '.cache', '.detjs', '.vite', '.vite-temp', '.vitest', '.vitest-cache']);
 
 function walk(dir, rel, out) {
   let ents;
