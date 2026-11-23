@@ -1,0 +1,3603 @@
+{
+ "summary": {
+  "repo": "agentlang",
+  "not_identical_tests": 18,
+  "boxes": {
+   "OURS": 18
+  },
+  "by_box_reason_serialnoise": [
+   [
+    "OURS",
+    "io",
+    true,
+    12
+   ],
+   [
+    "OURS",
+    "entropy",
+    true,
+    4
+   ],
+   [
+    "OURS",
+    "fs",
+    true,
+    2
+   ]
+  ],
+  "plain_runs": [
+   "plain par4-1",
+   "plain par4-2",
+   "plain serial 1",
+   "plain serial 2",
+   "plain serial 3",
+   "plain shuffle-1",
+   "plain shuffle-2"
+  ],
+  "engine_runs": [
+   "engine P1w2",
+   "engine P1w4",
+   "engine P2w2",
+   "engine P2w4",
+   "engine P3w2",
+   "engine P3w4",
+   "engine S1",
+   "engine S2",
+   "engine S3"
+  ],
+  "rule": {
+   "zero_OURS_UNDECIDED_ENV": false,
+   "THEIRS_all_reproduced": true,
+   "THEIRS_reported_equal_or_named": true,
+   "THEIRS_reported_bad": []
+  }
+ },
+ "tests": {
+  "example/knowledge/test/resolver.test.ts::createCloudFileOp::action=create-remote calls config/create with parsed providerConfig": {
+   "box": "OURS",
+   "why": "outcome ['passed'] in every run; engine refused: io",
+   "reason": "io",
+   "status": "not-proven",
+   "also_serial_vs_serial": true,
+   "plain": {
+    "plain serial 1": "passed",
+    "plain serial 2": "passed",
+    "plain serial 3": "passed",
+    "plain par4-1": "passed",
+    "plain par4-2": "passed",
+    "plain shuffle-1": "passed",
+    "plain shuffle-2": "passed"
+   },
+   "engine": {
+    "engine P1w2": "passed",
+    "engine P1w4": "passed",
+    "engine P2w2": "passed",
+    "engine P2w4": "passed",
+    "engine P3w2": "passed",
+    "engine P3w4": "passed",
+    "engine S1": "passed",
+    "engine S2": "passed",
+    "engine S3": "passed"
+   },
+   "verdicts": [
+    {
+     "verify": "verify1w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify1w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify_serial_noise2w1.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    }
+   ]
+  },
+  "example/knowledge/test/resolver.test.ts::createCloudFileOp::action=delete-remote calls config/delete": {
+   "box": "OURS",
+   "why": "outcome ['passed'] in every run; engine refused: io",
+   "reason": "io",
+   "status": "not-proven",
+   "also_serial_vs_serial": true,
+   "plain": {
+    "plain serial 1": "passed",
+    "plain serial 2": "passed",
+    "plain serial 3": "passed",
+    "plain par4-1": "passed",
+    "plain par4-2": "passed",
+    "plain shuffle-1": "passed",
+    "plain shuffle-2": "passed"
+   },
+   "engine": {
+    "engine P1w2": "passed",
+    "engine P1w4": "passed",
+    "engine P2w2": "passed",
+    "engine P2w4": "passed",
+    "engine P3w2": "passed",
+    "engine P3w4": "passed",
+    "engine S1": "passed",
+    "engine S2": "passed",
+    "engine S3": "passed"
+   },
+   "verdicts": [
+    {
+     "verify": "verify1w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify1w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify_serial_noise2w1.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    }
+   ]
+  },
+  "example/knowledge/test/resolver.test.ts::createCloudFileOp::action=copyfile calls operations/copyfile with stagingDir as dstFs": {
+   "box": "OURS",
+   "why": "outcome ['passed'] in every run; engine refused: io",
+   "reason": "io",
+   "status": "not-proven",
+   "also_serial_vs_serial": true,
+   "plain": {
+    "plain serial 1": "passed",
+    "plain serial 2": "passed",
+    "plain serial 3": "passed",
+    "plain par4-1": "passed",
+    "plain par4-2": "passed",
+    "plain shuffle-1": "passed",
+    "plain shuffle-2": "passed"
+   },
+   "engine": {
+    "engine P1w2": "passed",
+    "engine P1w4": "passed",
+    "engine P2w2": "passed",
+    "engine P2w4": "passed",
+    "engine P3w2": "passed",
+    "engine P3w4": "passed",
+    "engine S1": "passed",
+    "engine S2": "passed",
+    "engine S3": "passed"
+   },
+   "verdicts": [
+    {
+     "verify": "verify1w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify1w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify_serial_noise2w1.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    }
+   ]
+  },
+  "example/knowledge/test/resolver.test.ts::createCloudFileOp::action=sync success sets attributes and creates staging directory": {
+   "box": "OURS",
+   "why": "outcome ['passed'] in every run; engine refused: io",
+   "reason": "io",
+   "status": "not-proven",
+   "also_serial_vs_serial": true,
+   "plain": {
+    "plain serial 1": "passed",
+    "plain serial 2": "passed",
+    "plain serial 3": "passed",
+    "plain par4-1": "passed",
+    "plain par4-2": "passed",
+    "plain shuffle-1": "passed",
+    "plain shuffle-2": "passed"
+   },
+   "engine": {
+    "engine P1w2": "passed",
+    "engine P1w4": "passed",
+    "engine P2w2": "passed",
+    "engine P2w4": "passed",
+    "engine P3w2": "passed",
+    "engine P3w4": "passed",
+    "engine S1": "passed",
+    "engine S2": "passed",
+    "engine S3": "passed"
+   },
+   "verdicts": [
+    {
+     "verify": "verify1w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify1w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify_serial_noise2w1.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    }
+   ]
+  },
+  "example/knowledge/test/resolver.test.ts::createCloudFileOp::action=sync failure catches error and sets failure attributes without throwing": {
+   "box": "OURS",
+   "why": "outcome ['passed'] in every run; engine refused: io",
+   "reason": "io",
+   "status": "not-proven",
+   "also_serial_vs_serial": true,
+   "plain": {
+    "plain serial 1": "passed",
+    "plain serial 2": "passed",
+    "plain serial 3": "passed",
+    "plain par4-1": "passed",
+    "plain par4-2": "passed",
+    "plain shuffle-1": "passed",
+    "plain shuffle-2": "passed"
+   },
+   "engine": {
+    "engine P1w2": "passed",
+    "engine P1w4": "passed",
+    "engine P2w2": "passed",
+    "engine P2w4": "passed",
+    "engine P3w2": "passed",
+    "engine P3w4": "passed",
+    "engine S1": "passed",
+    "engine S2": "passed",
+    "engine S3": "passed"
+   },
+   "verdicts": [
+    {
+     "verify": "verify1w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify1w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify_serial_noise2w1.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    }
+   ]
+  },
+  "example/knowledge/test/resolver.test.ts::createCloudFileOp::unknown action throws": {
+   "box": "OURS",
+   "why": "outcome ['passed'] in every run; engine refused: io",
+   "reason": "io",
+   "status": "not-proven",
+   "also_serial_vs_serial": true,
+   "plain": {
+    "plain serial 1": "passed",
+    "plain serial 2": "passed",
+    "plain serial 3": "passed",
+    "plain par4-1": "passed",
+    "plain par4-2": "passed",
+    "plain shuffle-1": "passed",
+    "plain shuffle-2": "passed"
+   },
+   "engine": {
+    "engine P1w2": "passed",
+    "engine P1w4": "passed",
+    "engine P2w2": "passed",
+    "engine P2w4": "passed",
+    "engine P3w2": "passed",
+    "engine P3w4": "passed",
+    "engine S1": "passed",
+    "engine S2": "passed",
+    "engine S3": "passed"
+   },
+   "verdicts": [
+    {
+     "verify": "verify1w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify1w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify_serial_noise2w1.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:195) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:195",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    }
+   ]
+  },
+  "example/knowledge/test/resolver.test.ts::scanStagingFiles::missing staging dir returns empty array": {
+   "box": "OURS",
+   "why": "outcome ['passed'] in every run; engine refused: io",
+   "reason": "io",
+   "status": "not-proven",
+   "also_serial_vs_serial": true,
+   "plain": {
+    "plain serial 1": "passed",
+    "plain serial 2": "passed",
+    "plain serial 3": "passed",
+    "plain par4-1": "passed",
+    "plain par4-2": "passed",
+    "plain shuffle-1": "passed",
+    "plain shuffle-2": "passed"
+   },
+   "engine": {
+    "engine P1w2": "passed",
+    "engine P1w4": "passed",
+    "engine P2w2": "passed",
+    "engine P2w4": "passed",
+    "engine P3w2": "passed",
+    "engine P3w4": "passed",
+    "engine S1": "passed",
+    "engine S2": "passed",
+    "engine S3": "passed"
+   },
+   "verdicts": [
+    {
+     "verify": "verify1w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:325) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify1w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:325) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:325) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:325) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:325) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:325) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify_serial_noise2w1.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:325) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    }
+   ]
+  },
+  "example/knowledge/test/resolver.test.ts::scanStagingFiles::walks nested directory tree with correct metadata": {
+   "box": "OURS",
+   "why": "outcome ['passed'] in every run; engine refused: io",
+   "reason": "io",
+   "status": "not-proven",
+   "also_serial_vs_serial": true,
+   "plain": {
+    "plain serial 1": "passed",
+    "plain serial 2": "passed",
+    "plain serial 3": "passed",
+    "plain par4-1": "passed",
+    "plain par4-2": "passed",
+    "plain shuffle-1": "passed",
+    "plain shuffle-2": "passed"
+   },
+   "engine": {
+    "engine P1w2": "passed",
+    "engine P1w4": "passed",
+    "engine P2w2": "passed",
+    "engine P2w4": "passed",
+    "engine P3w2": "passed",
+    "engine P3w4": "passed",
+    "engine S1": "passed",
+    "engine S2": "passed",
+    "engine S3": "passed"
+   },
+   "verdicts": [
+    {
+     "verify": "verify1w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:325) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify1w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:325) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:325) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:325) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:325) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:325) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify_serial_noise2w1.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:325) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    }
+   ]
+  },
+  "example/knowledge/test/resolver.test.ts::scanStagingFiles::filePath filter returns only matching file": {
+   "box": "OURS",
+   "why": "outcome ['passed'] in every run; engine refused: io",
+   "reason": "io",
+   "status": "not-proven",
+   "also_serial_vs_serial": true,
+   "plain": {
+    "plain serial 1": "passed",
+    "plain serial 2": "passed",
+    "plain serial 3": "passed",
+    "plain par4-1": "passed",
+    "plain par4-2": "passed",
+    "plain shuffle-1": "passed",
+    "plain shuffle-2": "passed"
+   },
+   "engine": {
+    "engine P1w2": "passed",
+    "engine P1w4": "passed",
+    "engine P2w2": "passed",
+    "engine P2w4": "passed",
+    "engine P3w2": "passed",
+    "engine P3w4": "passed",
+    "engine S1": "passed",
+    "engine S2": "passed",
+    "engine S3": "passed"
+   },
+   "verdicts": [
+    {
+     "verify": "verify1w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:325) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify1w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:325) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:325) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:325) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:325) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:325) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify_serial_noise2w1.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:325) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:325",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    }
+   ]
+  },
+  "example/knowledge/test/resolver.test.ts::storeVersion::copies file from staging to versioned store and sets storagePath": {
+   "box": "OURS",
+   "why": "outcome ['passed'] in every run; engine refused: io",
+   "reason": "io",
+   "status": "not-proven",
+   "also_serial_vs_serial": true,
+   "plain": {
+    "plain serial 1": "passed",
+    "plain serial 2": "passed",
+    "plain serial 3": "passed",
+    "plain par4-1": "passed",
+    "plain par4-2": "passed",
+    "plain shuffle-1": "passed",
+    "plain shuffle-2": "passed"
+   },
+   "engine": {
+    "engine P1w2": "passed",
+    "engine P1w4": "passed",
+    "engine P2w2": "passed",
+    "engine P2w4": "passed",
+    "engine P3w2": "passed",
+    "engine P3w4": "passed",
+    "engine S1": "passed",
+    "engine S2": "passed",
+    "engine S3": "passed"
+   },
+   "verdicts": [
+    {
+     "verify": "verify1w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:391) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify1w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:391) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:391) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w4.json",
+     "status": "diverged",
+     "reason": "fs",
+     "description": "event #22: fs.readdir @ <node> returned different values: \"<tmp>/staging/myremote|1|c2824b75614d9c2bb4c0b7f983ac0753\" vs \"<tmp>/store/myremote|1|c2824b75614d9c2bb4c0b7f983ac0753\"",
+     "event_a": {
+      "t": 0,
+      "s": "fs",
+      "o": "fs.readdir",
+      "at": "<node>",
+      "v": "<tmp>/staging/myremote|1|c2824b75614d9c2bb4c0b7f983ac0753"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "fs",
+      "o": "fs.readdir",
+      "at": "<node>",
+      "v": "<tmp>/store/myremote|1|c2824b75614d9c2bb4c0b7f983ac0753"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:391) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:391) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify_serial_noise2w1.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:391) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    }
+   ]
+  },
+  "example/knowledge/test/resolver.test.ts::storeVersion::sets contentHash as MD5 hex digest": {
+   "box": "OURS",
+   "why": "outcome ['passed'] in every run; engine refused: fs",
+   "reason": "fs",
+   "status": "diverged",
+   "also_serial_vs_serial": true,
+   "plain": {
+    "plain serial 1": "passed",
+    "plain serial 2": "passed",
+    "plain serial 3": "passed",
+    "plain par4-1": "passed",
+    "plain par4-2": "passed",
+    "plain shuffle-1": "passed",
+    "plain shuffle-2": "passed"
+   },
+   "engine": {
+    "engine P1w2": "passed",
+    "engine P1w4": "passed",
+    "engine P2w2": "passed",
+    "engine P2w4": "passed",
+    "engine P3w2": "passed",
+    "engine P3w4": "passed",
+    "engine S1": "passed",
+    "engine S2": "passed",
+    "engine S3": "passed"
+   },
+   "verdicts": [
+    {
+     "verify": "verify1w2.json",
+     "status": "diverged",
+     "reason": "fs",
+     "description": "event #20: fs.readdir @ <node> returned different values: \"<tmp>/staging/hashtest|1|620bdaf3f5ac74862d1a2ea466ab58c9\" vs \"<tmp>/store/hashtest|1|620bdaf3f5ac74862d1a2ea466ab58c9\"",
+     "event_a": {
+      "t": 0,
+      "s": "fs",
+      "o": "fs.readdir",
+      "at": "<node>",
+      "v": "<tmp>/staging/hashtest|1|620bdaf3f5ac74862d1a2ea466ab58c9"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "fs",
+      "o": "fs.readdir",
+      "at": "<node>",
+      "v": "<tmp>/store/hashtest|1|620bdaf3f5ac74862d1a2ea466ab58c9"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify1w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:391) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:391) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:391) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:391) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:391) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify_serial_noise2w1.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:391) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    }
+   ]
+  },
+  "example/knowledge/test/resolver.test.ts::storeVersion::sanitizes colons in timestamp for filesystem path": {
+   "box": "OURS",
+   "why": "outcome ['passed'] in every run; engine refused: fs",
+   "reason": "fs",
+   "status": "diverged",
+   "also_serial_vs_serial": true,
+   "plain": {
+    "plain serial 1": "passed",
+    "plain serial 2": "passed",
+    "plain serial 3": "passed",
+    "plain par4-1": "passed",
+    "plain par4-2": "passed",
+    "plain shuffle-1": "passed",
+    "plain shuffle-2": "passed"
+   },
+   "engine": {
+    "engine P1w2": "passed",
+    "engine P1w4": "passed",
+    "engine P2w2": "passed",
+    "engine P2w4": "passed",
+    "engine P3w2": "passed",
+    "engine P3w4": "passed",
+    "engine S1": "passed",
+    "engine S2": "passed",
+    "engine S3": "passed"
+   },
+   "verdicts": [
+    {
+     "verify": "verify1w2.json",
+     "status": "diverged",
+     "reason": "fs",
+     "description": "event #14: fs.stat @ <node> returned different values: \"<tmp>/staging|dir\" vs \"<tmp>/store|dir\"",
+     "event_a": {
+      "t": 0,
+      "s": "fs",
+      "o": "fs.stat",
+      "at": "<node>",
+      "v": "<tmp>/staging|dir"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "fs",
+      "o": "fs.stat",
+      "at": "<node>",
+      "v": "<tmp>/store|dir"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify1w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:391) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:391) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:391) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:391) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:391) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify_serial_noise2w1.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:391) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:391",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    }
+   ]
+  },
+  "example/knowledge/test/resolver.test.ts::createCloudFileOp \u2014 OAuth token refresh before sync::refreshes token via getAccessToken for OAuth remotes before sync": {
+   "box": "OURS",
+   "why": "outcome ['passed'] in every run; engine refused: io",
+   "reason": "io",
+   "status": "not-proven",
+   "also_serial_vs_serial": true,
+   "plain": {
+    "plain serial 1": "passed",
+    "plain serial 2": "passed",
+    "plain serial 3": "passed",
+    "plain par4-1": "passed",
+    "plain par4-2": "passed",
+    "plain shuffle-1": "passed",
+    "plain shuffle-2": "passed"
+   },
+   "engine": {
+    "engine P1w2": "passed",
+    "engine P1w4": "passed",
+    "engine P2w2": "passed",
+    "engine P2w4": "passed",
+    "engine P3w2": "passed",
+    "engine P3w4": "passed",
+    "engine S1": "passed",
+    "engine S2": "passed",
+    "engine S3": "passed"
+   },
+   "verdicts": [
+    {
+     "verify": "verify1w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:470) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify1w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:470) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:470) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:470) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:470) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:470) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify_serial_noise2w1.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:470) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    }
+   ]
+  },
+  "example/knowledge/test/resolver.test.ts::createCloudFileOp \u2014 OAuth token refresh before sync::does not refresh token for non-OAuth remotes": {
+   "box": "OURS",
+   "why": "outcome ['passed'] in every run; engine refused: io",
+   "reason": "io",
+   "status": "not-proven",
+   "also_serial_vs_serial": true,
+   "plain": {
+    "plain serial 1": "passed",
+    "plain serial 2": "passed",
+    "plain serial 3": "passed",
+    "plain par4-1": "passed",
+    "plain par4-2": "passed",
+    "plain shuffle-1": "passed",
+    "plain shuffle-2": "passed"
+   },
+   "engine": {
+    "engine P1w2": "passed",
+    "engine P1w4": "passed",
+    "engine P2w2": "passed",
+    "engine P2w4": "passed",
+    "engine P3w2": "passed",
+    "engine P3w4": "passed",
+    "engine S1": "passed",
+    "engine S2": "passed",
+    "engine S3": "passed"
+   },
+   "verdicts": [
+    {
+     "verify": "verify1w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:470) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify1w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:470) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:470) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:470) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w2.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:470) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w4.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:470) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify_serial_noise2w1.json",
+     "status": "not-proven",
+     "reason": "io",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ example/knowledge/test/resolver.test.ts:470) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "uncontrolled.io",
+      "at": "example/knowledge/test/resolver.test.ts:470",
+      "v": "concurrent I/O"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    }
+   ]
+  },
+  "test/runtime/database-sqljs.test.ts::SQL.js Database Tests::should use sqljs database when configured": {
+   "box": "OURS",
+   "why": "outcome ['passed'] in every run; engine refused: entropy",
+   "reason": "entropy",
+   "status": "diverged",
+   "also_serial_vs_serial": true,
+   "plain": {
+    "plain serial 1": "passed",
+    "plain serial 2": "passed",
+    "plain serial 3": "passed",
+    "plain par4-1": "passed",
+    "plain par4-2": "passed",
+    "plain shuffle-1": "passed",
+    "plain shuffle-2": "passed"
+   },
+   "engine": {
+    "engine P1w2": "passed",
+    "engine P1w4": "passed",
+    "engine P2w2": "passed",
+    "engine P2w4": "passed",
+    "engine P3w2": "passed",
+    "engine P3w4": "passed",
+    "engine S1": "passed",
+    "engine S2": "passed",
+    "engine S3": "passed"
+   },
+   "verdicts": [
+    {
+     "verify": "verify1w2.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #58: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:7dc339190a0bee2778b867060834d603\" vs \"1024:aac488ca96c834ae590fd15a9efedefa\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:7dc339190a0bee2778b867060834d603"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:aac488ca96c834ae590fd15a9efedefa"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify1w4.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #58: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:7dc339190a0bee2778b867060834d603\" vs \"1024:a47a67b197ec4749082c4912963663ce\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:7dc339190a0bee2778b867060834d603"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:a47a67b197ec4749082c4912963663ce"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w2.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #58: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:f4253b059f114700c1697c41d8975753\" vs \"1024:21ab3e289283f10e00031119ce87f516\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:f4253b059f114700c1697c41d8975753"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:21ab3e289283f10e00031119ce87f516"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w4.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #58: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:f4253b059f114700c1697c41d8975753\" vs \"1024:1da93b2cdf98d27e03b19d4f8d23d6a4\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:f4253b059f114700c1697c41d8975753"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:1da93b2cdf98d27e03b19d4f8d23d6a4"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w2.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #58: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:9d802cfcd8f47acefa6d252bf056089b\" vs \"1024:9e6d13a55f7d651d9b91e64459d70df0\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:9d802cfcd8f47acefa6d252bf056089b"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:9e6d13a55f7d651d9b91e64459d70df0"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w4.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #58: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:9d802cfcd8f47acefa6d252bf056089b\" vs \"1024:16db4cb6ed9e9527f71abe032bd6cb37\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:9d802cfcd8f47acefa6d252bf056089b"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:16db4cb6ed9e9527f71abe032bd6cb37"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify_serial_noise2w1.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #58: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:7dc339190a0bee2778b867060834d603\" vs \"1024:f4253b059f114700c1697c41d8975753\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:7dc339190a0bee2778b867060834d603"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:f4253b059f114700c1697c41d8975753"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    }
+   ]
+  },
+  "test/runtime/error-messages.test.ts::custom error messages (errorMessage system entity)::resolveEntityErrorMessage uses per-entity override when enabled": {
+   "box": "OURS",
+   "why": "outcome ['passed'] in every run; engine refused: entropy",
+   "reason": "entropy",
+   "status": "diverged",
+   "also_serial_vs_serial": true,
+   "plain": {
+    "plain serial 1": "passed",
+    "plain serial 2": "passed",
+    "plain serial 3": "passed",
+    "plain par4-1": "passed",
+    "plain par4-2": "passed",
+    "plain shuffle-1": "passed",
+    "plain shuffle-2": "passed"
+   },
+   "engine": {
+    "engine P1w2": "passed",
+    "engine P1w4": "passed",
+    "engine P2w2": "passed",
+    "engine P2w4": "passed",
+    "engine P3w2": "passed",
+    "engine P3w4": "passed",
+    "engine S1": "passed",
+    "engine S2": "passed",
+    "engine S3": "passed"
+   },
+   "verdicts": [
+    {
+     "verify": "verify1w2.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #57: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:2a014286b16751aa7abbc388cff255f6\" vs \"1024:1f0cea4ec5abd123cdb35b3521feae87\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:2a014286b16751aa7abbc388cff255f6"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:1f0cea4ec5abd123cdb35b3521feae87"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify1w4.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #57: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:2a014286b16751aa7abbc388cff255f6\" vs \"1024:f25c9c7a6433584229f7499893a91dba\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:2a014286b16751aa7abbc388cff255f6"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:f25c9c7a6433584229f7499893a91dba"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w2.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #57: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:55f989381443d70ce9850341f5a38c51\" vs \"1024:0c981312a28685dbe5a209709d40a1ba\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:55f989381443d70ce9850341f5a38c51"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:0c981312a28685dbe5a209709d40a1ba"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w4.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #57: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:55f989381443d70ce9850341f5a38c51\" vs \"1024:8cf85ee8c09881ee9cb334356e447a21\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:55f989381443d70ce9850341f5a38c51"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:8cf85ee8c09881ee9cb334356e447a21"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w2.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #57: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:f5d5e3c546e6fa85a80d00fe7ae715d6\" vs \"1024:b5c5135fe623125550437f27c6e20f68\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:f5d5e3c546e6fa85a80d00fe7ae715d6"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:b5c5135fe623125550437f27c6e20f68"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w4.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #57: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:f5d5e3c546e6fa85a80d00fe7ae715d6\" vs \"1024:7ffbc20a2847e8b52ad28ccdf303f2ec\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:f5d5e3c546e6fa85a80d00fe7ae715d6"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:7ffbc20a2847e8b52ad28ccdf303f2ec"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify_serial_noise2w1.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #57: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:2a014286b16751aa7abbc388cff255f6\" vs \"1024:55f989381443d70ce9850341f5a38c51\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:2a014286b16751aa7abbc388cff255f6"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:55f989381443d70ce9850341f5a38c51"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    }
+   ]
+  },
+  "test/runtime/migration-validation.test.ts::Migration validation tests::no schema diff after sync in dev/test mode": {
+   "box": "OURS",
+   "why": "outcome ['passed'] in every run; engine refused: entropy",
+   "reason": "entropy",
+   "status": "diverged",
+   "also_serial_vs_serial": true,
+   "plain": {
+    "plain serial 1": "passed",
+    "plain serial 2": "passed",
+    "plain serial 3": "passed",
+    "plain par4-1": "passed",
+    "plain par4-2": "passed",
+    "plain shuffle-1": "passed",
+    "plain shuffle-2": "passed"
+   },
+   "engine": {
+    "engine P1w2": "passed",
+    "engine P1w4": "passed",
+    "engine P2w2": "passed",
+    "engine P2w4": "passed",
+    "engine P3w2": "passed",
+    "engine P3w4": "passed",
+    "engine S1": "passed",
+    "engine S2": "passed",
+    "engine S3": "passed"
+   },
+   "verdicts": [
+    {
+     "verify": "verify1w2.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #58: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:0298a12439663ed316442d71c215dd7c\" vs \"1024:211b6ea9b02487944d825520d0857242\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:0298a12439663ed316442d71c215dd7c"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:211b6ea9b02487944d825520d0857242"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify1w4.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #58: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:0298a12439663ed316442d71c215dd7c\" vs \"1024:c3880c3664fadb75134e32e656d37569\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:0298a12439663ed316442d71c215dd7c"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:c3880c3664fadb75134e32e656d37569"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w2.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #58: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:5cbce2321b24ed8ec9da687bc75dd2aa\" vs \"1024:afb96143c4c4c5aa6e20116a8d3a2212\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:5cbce2321b24ed8ec9da687bc75dd2aa"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:afb96143c4c4c5aa6e20116a8d3a2212"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w4.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #58: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:5cbce2321b24ed8ec9da687bc75dd2aa\" vs \"1024:400b533bd7dd14c91633c1c14b1d223f\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:5cbce2321b24ed8ec9da687bc75dd2aa"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:400b533bd7dd14c91633c1c14b1d223f"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w2.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #58: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:bc23eb58e71f8ca55b0430636e738dc5\" vs \"1024:aec6143071049b5e06aedaddd5cf43c2\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:bc23eb58e71f8ca55b0430636e738dc5"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:aec6143071049b5e06aedaddd5cf43c2"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w4.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #58: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:bc23eb58e71f8ca55b0430636e738dc5\" vs \"1024:329d888f307d749856b0e294a86189bb\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:bc23eb58e71f8ca55b0430636e738dc5"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:329d888f307d749856b0e294a86189bb"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify_serial_noise2w1.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #58: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:0298a12439663ed316442d71c215dd7c\" vs \"1024:5cbce2321b24ed8ec9da687bc75dd2aa\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:0298a12439663ed316442d71c215dd7c"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:5cbce2321b24ed8ec9da687bc75dd2aa"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    }
+   ]
+  },
+  "test/runtime/relationships.test.ts::Self-referencing relationship tests::Org hierarchy with mixed relationships::self-ref one-to-many alongside contains and between relationships": {
+   "box": "OURS",
+   "why": "outcome ['passed'] in every run; engine refused: entropy",
+   "reason": "entropy",
+   "status": "diverged",
+   "also_serial_vs_serial": true,
+   "plain": {
+    "plain serial 1": "passed",
+    "plain serial 2": "passed",
+    "plain serial 3": "passed",
+    "plain par4-1": "passed",
+    "plain par4-2": "passed",
+    "plain shuffle-1": "passed",
+    "plain shuffle-2": "passed"
+   },
+   "engine": {
+    "engine P1w2": "passed",
+    "engine P1w4": "passed",
+    "engine P2w2": "passed",
+    "engine P2w4": "passed",
+    "engine P3w2": "passed",
+    "engine P3w4": "passed",
+    "engine S1": "passed",
+    "engine S2": "passed",
+    "engine S3": "passed"
+   },
+   "verdicts": [
+    {
+     "verify": "verify1w2.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #58: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:4d09933c370826b353fd68331b5c64b0\" vs \"1024:cef43aa3e7f464e4fc0b0e1c14d8ffcd\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:4d09933c370826b353fd68331b5c64b0"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:cef43aa3e7f464e4fc0b0e1c14d8ffcd"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify1w4.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #58: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:4d09933c370826b353fd68331b5c64b0\" vs \"1024:9074c9702273ef7cecee79ff6ab909e1\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:4d09933c370826b353fd68331b5c64b0"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:9074c9702273ef7cecee79ff6ab909e1"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w2.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #58: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:d1a8b26a0504f5b76374bd35b776e04e\" vs \"1024:23b076438b9405c30d8587e018b86345\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:d1a8b26a0504f5b76374bd35b776e04e"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:23b076438b9405c30d8587e018b86345"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify2w4.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #58: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:d1a8b26a0504f5b76374bd35b776e04e\" vs \"1024:d48a21e2e9e69b8637eaffbf86c48535\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:d1a8b26a0504f5b76374bd35b776e04e"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:d48a21e2e9e69b8637eaffbf86c48535"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w2.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #58: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:140f18c60258a6bd8e5512658dc499d0\" vs \"1024:5dd9a1a655de542ecbea22589a90efa5\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:140f18c60258a6bd8e5512658dc499d0"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:5dd9a1a655de542ecbea22589a90efa5"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify3w4.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #58: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:140f18c60258a6bd8e5512658dc499d0\" vs \"1024:fa9c27fbf14e50dcac85125c062d1817\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:140f18c60258a6bd8e5512658dc499d0"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:fa9c27fbf14e50dcac85125c062d1817"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "verify": "verify_serial_noise2w1.json",
+     "status": "diverged",
+     "reason": "entropy",
+     "description": "event #58: crypto.randomFillSync @ <deps>/sql.js/dist/sql-wasm.js:104 returned different values: \"1024:4d09933c370826b353fd68331b5c64b0\" vs \"1024:d1a8b26a0504f5b76374bd35b776e04e\"",
+     "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:4d09933c370826b353fd68331b5c64b0"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "crypto.randomFillSync",
+      "at": "<deps>/sql.js/dist/sql-wasm.js:104",
+      "v": "1024:d1a8b26a0504f5b76374bd35b776e04e"
+     },
+     "outcomes": [
+      "passed",
+      "passed"
+     ]
+    }
+   ]
+  }
+ }
+}
