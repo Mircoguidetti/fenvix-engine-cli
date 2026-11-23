@@ -1,0 +1,953 @@
+bringing up nodes...
+bringing up nodes...
+
+....s...s........................s..........ss.........s...ss........... [  7%]
+........................................................................ [ 14%]
+........................................................................ [ 21%]
+........................................................................ [ 29%]
+.........s.................................................sss.......... [ 36%]
+.....................F........................................s.....F..F [ 43%]
+.............s.........................F.F...F................F......... [ 50%]
+................F......ssssss........................................... [ 58%]
+................................................................F..F..ss [ 65%]
+ss...............................................................F...... [ 72%]
+....................ss.................................................. [ 79%]
+FF.....................................................s...s.....s...... [ 87%]
+.........................ssssss.sss..s.................................. [ 94%]
+........................................................                 [100%]
+=================================== FAILURES ===================================
+______________________ test_level0_traces_match_reference ______________________
+[gw2] linux -- Python 3.12.3 /tmp/pm-hv/venv/engine/bin/python
+
+pytester = <Pytester PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw2/test_level0_traces_match_reference0')>
+ref_env = None
+
+    def test_level0_traces_match_reference(pytester, ref_env):
+        _write(pytester.path, PROJECT)
+        traces, vals = {}, {}
+        for i, mode in enumerate(("ref", "new", "ref", "new")):
+            t = pytester.path / f"trace-{mode}-{i}.jsonl"
+            r = _run(pytester, mode, f"--det-trace={t}")
+            # the header's precompile duration is the only wall-clock value in a trace
+            traces.setdefault(mode, []).append(re.sub(rb'"precompile_s":[0-9.]+,', b"", t.read_bytes()))
+            vals.setdefault(mode, []).append(_vals(r))
+        # each path reproduces itself, and the two paths write the same bytes (a difference names its first line)
+        for mode in ("ref", "new"):
+            a, b = (t.decode().splitlines() for t in traces[mode])
+            first = next((i for i, (x, y) in enumerate(zip(a, b)) if x != y), None)
+>           assert first is None and len(a) == len(b), (mode, first, len(a), len(b),
+                                                         a[first] if first is not None else None,
+                                                         b[first] if first is not None else None)
+E           AssertionError: ('ref', 5, 12, 12, '{"type":"test","nodeid":"test_clock.py::test_threads","index":4,"outcome":"passed","fingerprint":"..."outcome","o":"outcome","at":"","v":"passed"}],"uncontrolled":["thread"],"unaccounted":["api:_thread._set_sentinel"]}')
+E           assert (5 is None)
+
+/home/user/fenvix-engine-cli/tests/test_level0_rust.py:217: AssertionError
+----------------------------- Captured stdout call -----------------------------
+running: /tmp/pm-hv/venv/engine/bin/python -mpytest -p no:benchmark --basetemp=/tmp/pytest-of-root/pytest-0/popen-gw2/test_level0_traces_match_reference0/runpytest-0 --det --det-urandom -p no:cacheprovider -s -p _l0ref --det-trace=/tmp/pytest-of-root/pytest-0/popen-gw2/test_level0_traces_match_reference0/trace-ref-0.jsonl
+     in: /tmp/pytest-of-root/pytest-0/popen-gw2/test_level0_traces_match_reference0
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0
+rootdir: /tmp/pytest-of-root/pytest-0/popen-gw2/test_level0_traces_match_reference0
+plugins: xdist-3.8.0, fenvix-0.1.0
+detpy 0.1.0: Level 0 active; controls=bytecode,env,fs,hashseed,locale,net,order,os,seeds,time,tz; order fixed (collection order)
+detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual
+collected 10 items
+
+test_clock.py VAL (1735689600.000003, 1735689600000004000, 1000.000006, 1000000007000, 1000.000008, 1000000009000) (1735689600.00001, 1735689600000014000, 1000.000023, 1000000039000, 1000.000055, 1000000071000) 1000.000002 1000.000003
+.VAL 0.0005009999999856518 [9.999999974752427e-07, 1.9999999949504854e-06, 2.999999992425728e-06, 3.999999989900971e-06, 4.9999999873762135e-06]
+.VAL 2025-01-01 00:00:00.000001 2025-01-01 00:00:00.000002+00:00 time.struct_time(tm_year=2025, tm_mon=1, tm_mday=1, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=2, tm_yday=1, tm_isdst=0) time.struct_time(tm_year=2025, tm_mon=1, tm_mday=1, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=2, tm_yday=1, tm_isdst=0) Wed Jan  1 00:00:00 2025 2025 Wed Jan  1 00:00:00 2025
+VAL 1000.000603 1735689600000010000
+.VAL 0.030001000000083877
+.VAL [(0, 1000.030608), (0, 1000.030609), (0, 1000.03061), (1, 1000.030611), (1, 1000.030612), (1, 1000.030613), (2, 1000.030614), (2, 1000.030615), (2, 1000.030617)]
+.VAL (1000.030623, 1000.040629)
+.VAL [1735689600.000001]
+.VAL [3, 1, 2] [1735689600.000004, 1735689600.000005]
+.
+test_other.py VAL [1000040682000, 1000040683000, 1000040684000, 1000040685000, 1000040686000] d4fa8bb6-588d-4406-b3af-fdc4f0d38df4
+.F
+
+=================================== FAILURES ===================================
+_________________________________ test_failing _________________________________
+
+    def test_failing():
+        t = time.time()
+>       assert t < 0
+E       assert 1735689600.000001 < 0
+
+test_other.py:18: AssertionError
+=============================== detpy (Level 0) ================================
+trace: /tmp/pytest-of-root/pytest-0/popen-gw2/test_level0_traces_match_reference0/trace-ref-0.jsonl  order digest: fd115f4cfbecc36f7b39198af8435795  seed: 0
+1 test(s) failed under --det (seed 0, fixed order). Turn each into a reproducible defect (cause, seed, order, replay command):
+    fenvix repro test_other.py::test_failing
+  the same run again: pytest --det (with the same arguments)
+=========================== short test summary info ============================
+FAILED test_other.py::test_failing - assert 1735689600.000001 < 0
+========================= 1 failed, 9 passed in 0.22s ==========================
+running: /tmp/pm-hv/venv/engine/bin/python -mpytest -p no:benchmark --basetemp=/tmp/pytest-of-root/pytest-0/popen-gw2/test_level0_traces_match_reference0/runpytest-1 --det --det-urandom -p no:cacheprovider -s -p _l0ref --det-trace=/tmp/pytest-of-root/pytest-0/popen-gw2/test_level0_traces_match_reference0/trace-new-1.jsonl
+     in: /tmp/pytest-of-root/pytest-0/popen-gw2/test_level0_traces_match_reference0
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0
+rootdir: /tmp/pytest-of-root/pytest-0/popen-gw2/test_level0_traces_match_reference0
+plugins: xdist-3.8.0, fenvix-0.1.0
+detpy 0.1.0: Level 0 active; controls=bytecode,env,fs,hashseed,locale,net,order,os,seeds,time,tz; order fixed (collection order)
+detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual
+collected 10 items
+
+test_clock.py VAL (1735689600.000003, 1735689600000004000, 1000.000006, 1000000007000, 1000.000008, 1000000009000) (1735689600.00001, 1735689600000014000, 1000.000023, 1000000039000, 1000.000055, 1000000071000) 1000.000002 1000.000003
+.VAL 0.0005009999999856518 [9.999999974752427e-07, 1.9999999949504854e-06, 2.999999992425728e-06, 3.999999989900971e-06, 4.9999999873762135e-06]
+.VAL 2025-01-01 00:00:00.000001 2025-01-01 00:00:00.000002+00:00 time.struct_time(tm_year=2025, tm_mon=1, tm_mday=1, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=2, tm_yday=1, tm_isdst=0) time.struct_time(tm_year=2025, tm_mon=1, tm_mday=1, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=2, tm_yday=1, tm_isdst=0) Wed Jan  1 00:00:00 2025 2025 Wed Jan  1 00:00:00 2025
+VAL 1000.000603 1735689600000010000
+.VAL 0.030001000000083877
+.VAL [(0, 1000.030608), (0, 1000.030609), (0, 1000.03061), (1, 1000.030611), (1, 1000.030612), (1, 1000.030613), (2, 1000.030614), (2, 1000.030615), (2, 1000.030617)]
+.VAL (1000.030623, 1000.040629)
+.VAL [1735689600.000001]
+.VAL [3, 1, 2] [1735689600.000004, 1735689600.000005]
+.
+test_other.py VAL [1000040682000, 1000040683000, 1000040684000, 1000040685000, 1000040686000] d4fa8bb6-588d-4406-b3af-fdc4f0d38df4
+.F
+
+=================================== FAILURES ===================================
+_________________________________ test_failing _________________________________
+
+    def test_failing():
+        t = time.time()
+>       assert t < 0
+E       assert 1735689600.000001 < 0
+
+test_other.py:18: AssertionError
+=============================== detpy (Level 0) ================================
+trace: /tmp/pytest-of-root/pytest-0/popen-gw2/test_level0_traces_match_reference0/trace-new-1.jsonl  order digest: fd115f4cfbecc36f7b39198af8435795  seed: 0
+1 test(s) failed under --det (seed 0, fixed order). Turn each into a reproducible defect (cause, seed, order, replay command):
+    fenvix repro test_other.py::test_failing
+  the same run again: pytest --det (with the same arguments)
+=========================== short test summary info ============================
+FAILED test_other.py::test_failing - assert 1735689600.000001 < 0
+========================= 1 failed, 9 passed in 0.19s ==========================
+running: /tmp/pm-hv/venv/engine/bin/python -mpytest -p no:benchmark --basetemp=/tmp/pytest-of-root/pytest-0/popen-gw2/test_level0_traces_match_reference0/runpytest-2 --det --det-urandom -p no:cacheprovider -s -p _l0ref --det-trace=/tmp/pytest-of-root/pytest-0/popen-gw2/test_level0_traces_match_reference0/trace-ref-2.jsonl
+     in: /tmp/pytest-of-root/pytest-0/popen-gw2/test_level0_traces_match_reference0
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0
+rootdir: /tmp/pytest-of-root/pytest-0/popen-gw2/test_level0_traces_match_reference0
+plugins: xdist-3.8.0, fenvix-0.1.0
+detpy 0.1.0: Level 0 active; controls=bytecode,env,fs,hashseed,locale,net,order,os,seeds,time,tz; order fixed (collection order)
+detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual
+collected 10 items
+
+test_clock.py VAL (1735689600.000003, 1735689600000004000, 1000.000006, 1000000007000, 1000.000008, 1000000009000) (1735689600.00001, 1735689600000014000, 1000.000023, 1000000039000, 1000.000055, 1000000071000) 1000.000002 1000.000003
+.VAL 0.0005009999999856518 [9.999999974752427e-07, 1.9999999949504854e-06, 2.999999992425728e-06, 3.999999989900971e-06, 4.9999999873762135e-06]
+.VAL 2025-01-01 00:00:00.000001 2025-01-01 00:00:00.000002+00:00 time.struct_time(tm_year=2025, tm_mon=1, tm_mday=1, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=2, tm_yday=1, tm_isdst=0) time.struct_time(tm_year=2025, tm_mon=1, tm_mday=1, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=2, tm_yday=1, tm_isdst=0) Wed Jan  1 00:00:00 2025 2025 Wed Jan  1 00:00:00 2025
+VAL 1000.000603 1735689600000010000
+.VAL 0.030001000000083877
+.VAL [(0, 1000.030608), (0, 1000.030609), (0, 1000.03061), (1, 1000.030611), (1, 1000.030612), (1, 1000.030613), (2, 1000.030614), (2, 1000.030615), (2, 1000.030617)]
+.VAL (1000.030623, 1000.040629)
+.VAL [1735689600.000001]
+.VAL [3, 1, 2] [1735689600.000004, 1735689600.000005]
+.
+test_other.py VAL [1000040682000, 1000040683000, 1000040684000, 1000040685000, 1000040686000] d4fa8bb6-588d-4406-b3af-fdc4f0d38df4
+.F
+
+=================================== FAILURES ===================================
+_________________________________ test_failing _________________________________
+
+    def test_failing():
+        t = time.time()
+>       assert t < 0
+E       assert 1735689600.000001 < 0
+
+test_other.py:18: AssertionError
+=============================== detpy (Level 0) ================================
+trace: /tmp/pytest-of-root/pytest-0/popen-gw2/test_level0_traces_match_reference0/trace-ref-2.jsonl  order digest: fd115f4cfbecc36f7b39198af8435795  seed: 0
+1 test(s) failed under --det (seed 0, fixed order). Turn each into a reproducible defect (cause, seed, order, replay command):
+    fenvix repro test_other.py::test_failing
+  the same run again: pytest --det (with the same arguments)
+=========================== short test summary info ============================
+FAILED test_other.py::test_failing - assert 1735689600.000001 < 0
+========================= 1 failed, 9 passed in 0.21s ==========================
+running: /tmp/pm-hv/venv/engine/bin/python -mpytest -p no:benchmark --basetemp=/tmp/pytest-of-root/pytest-0/popen-gw2/test_level0_traces_match_reference0/runpytest-3 --det --det-urandom -p no:cacheprovider -s -p _l0ref --det-trace=/tmp/pytest-of-root/pytest-0/popen-gw2/test_level0_traces_match_reference0/trace-new-3.jsonl
+     in: /tmp/pytest-of-root/pytest-0/popen-gw2/test_level0_traces_match_reference0
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0
+rootdir: /tmp/pytest-of-root/pytest-0/popen-gw2/test_level0_traces_match_reference0
+plugins: xdist-3.8.0, fenvix-0.1.0
+detpy 0.1.0: Level 0 active; controls=bytecode,env,fs,hashseed,locale,net,order,os,seeds,time,tz; order fixed (collection order)
+detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual
+collected 10 items
+
+test_clock.py VAL (1735689600.000003, 1735689600000004000, 1000.000006, 1000000007000, 1000.000008, 1000000009000) (1735689600.00001, 1735689600000014000, 1000.000023, 1000000039000, 1000.000055, 1000000071000) 1000.000002 1000.000003
+.VAL 0.0005009999999856518 [9.999999974752427e-07, 1.9999999949504854e-06, 2.999999992425728e-06, 3.999999989900971e-06, 4.9999999873762135e-06]
+.VAL 2025-01-01 00:00:00.000001 2025-01-01 00:00:00.000002+00:00 time.struct_time(tm_year=2025, tm_mon=1, tm_mday=1, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=2, tm_yday=1, tm_isdst=0) time.struct_time(tm_year=2025, tm_mon=1, tm_mday=1, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=2, tm_yday=1, tm_isdst=0) Wed Jan  1 00:00:00 2025 2025 Wed Jan  1 00:00:00 2025
+VAL 1000.000603 1735689600000010000
+.VAL 0.030001000000083877
+.VAL [(0, 1000.030608), (0, 1000.030609), (0, 1000.03061), (1, 1000.030611), (1, 1000.030612), (1, 1000.030613), (2, 1000.030614), (2, 1000.030615), (2, 1000.030617)]
+.VAL (1000.030623, 1000.040629)
+.VAL [1735689600.000001]
+.VAL [3, 1, 2] [1735689600.000004, 1735689600.000005]
+.
+test_other.py VAL [1000040682000, 1000040683000, 1000040684000, 1000040685000, 1000040686000] d4fa8bb6-588d-4406-b3af-fdc4f0d38df4
+.F
+
+=================================== FAILURES ===================================
+_________________________________ test_failing _________________________________
+
+    def test_failing():
+        t = time.time()
+>       assert t < 0
+E       assert 1735689600.000001 < 0
+
+test_other.py:18: AssertionError
+=============================== detpy (Level 0) ================================
+trace: /tmp/pytest-of-root/pytest-0/popen-gw2/test_level0_traces_match_reference0/trace-new-3.jsonl  order digest: fd115f4cfbecc36f7b39198af8435795  seed: 0
+1 test(s) failed under --det (seed 0, fixed order). Turn each into a reproducible defect (cause, seed, order, replay command):
+    fenvix repro test_other.py::test_failing
+  the same run again: pytest --det (with the same arguments)
+=========================== short test summary info ============================
+FAILED test_other.py::test_failing - assert 1735689600.000001 < 0
+========================= 1 failed, 9 passed in 0.21s ==========================
+_ test_gate_runs_on_pull_requests_and_trunk_only_and_cancels_only_superseded_pr_runs _
+[gw1] linux -- Python 3.12.3 /tmp/pm-hv/venv/engine/bin/python
+
+    def test_gate_runs_on_pull_requests_and_trunk_only_and_cancels_only_superseded_pr_runs():
+        """CI rule of 2026-11-20 (founder decision): a light gate on pull requests into the trunk and on merges (Python
+        3.13, Node 24, build, smoke; newest PR head only), the full matrix (3.12/3.13/3.14, 22/24/26, install tests,
+        publication) by hand and nightly, nothing on session-branch pushes, no Go/JVM/macOS/arm64 in the gate."""
+        wfdir = os.path.join(ROOT, ".github", "workflows")
+        text = open(os.path.join(wfdir, "release-1.yml")).read()
+        on = text[text.index("\non:\n"):text.index("\nconcurrency:")]
+        assert re.search(r"push:\n    branches: \[claude/release-1\]", on)
+        assert re.search(r"pull_request:\n    branches: \[claude/release-1\]", on)
+        assert "workflow_dispatch:" in on and "schedule:" in on
+        assert "group: release-1-${{ github.event_name }}-${{ github.ref }}" in text
+        assert "cancel-in-progress: ${{ github.event_name == 'pull_request' }}" in text
+        full = "github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.depth != 'light')"
+        assert f"""({full}) && '["3.12", "3.13", "3.14"]' || '["3.13"]'""" in text
+        assert f"""({full}) && '["22", "24", "26"]' || '["24"]'""" in text
+        assert "lang: [python, node]" in text
+        for job in ("\n  go:", "\n  jvm:", "other-os", "macos", "ubuntu-24.04-arm", "setup-go", "setup-java"):
+            assert job not in text, job
+        # no other workflow starts on a push (session branches run nothing; long measurements are started by hand)
+        for f in os.listdir(wfdir):
+            if f != "release-1.yml":
+                w = open(os.path.join(wfdir, f)).read()
+>               assert not re.search(r"(?m)^  push:", w), f
+E               AssertionError: parallel-node.yml
+E               assert not <re.Match object; span=(1292, 1299), match='  push:'>
+E                +  where <re.Match object; span=(1292, 1299), match='  push:'> = <function search at 0x7ff20b900b80>('(?m)^  push:', 'name: parallel-node\n\n# Parallel with proof for the JavaScript runners (row JS-07), across Node versions.\n#\n# What...me: parallel-node-${{ matrix.node }}\n          path: ${{ runner.temp }}/proof*\n          if-no-files-found: ignore\n')
+E                +    where <function search at 0x7ff20b900b80> = re.search
+
+tests/test_packaging.py:357: AssertionError
+__________________ test_merged_fingerprints_equal_serial_ones __________________
+[gw1] linux -- Python 3.12.3 /tmp/pm-hv/venv/engine/bin/python
+
+pytester = <Pytester PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw1/test_merged_fingerprints_equal_serial_ones0')>
+
+    def test_merged_fingerprints_equal_serial_ones(pytester):
+        write(pytester, **SUITE)
+>       run(pytester, "tests", trace="serial.jsonl").assert_outcomes(passed=N_SUITE)
+E       AssertionError: assert {'passed': 15...rors': 0, ...} == {'passed': 16...rors': 0, ...}
+E         
+E         Omitting 4 identical items, use -vv to show
+E         Differing items:
+E         {'passed': 15} != {'passed': 16}
+E         {'failed': 1} != {'failed': 0}
+E         Use -v to get more diff
+
+/home/user/fenvix-engine-cli/tests/test_parallel_proof.py:95: AssertionError
+----------------------------- Captured stdout call -----------------------------
+running: /tmp/pm-hv/venv/engine/bin/python -mpytest -p no:benchmark --basetemp=/tmp/pytest-of-root/pytest-0/popen-gw1/test_merged_fingerprints_equal_serial_ones0/runpytest-0 --det --det-trace=/tmp/pytest-of-root/pytest-0/popen-gw1/test_merged_fingerprints_equal_serial_ones0/serial.jsonl -p no:cacheprovider -p no:randomly tests
+     in: /tmp/pytest-of-root/pytest-0/popen-gw1/test_merged_fingerprints_equal_serial_ones0
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0
+rootdir: /tmp/pytest-of-root/pytest-0/popen-gw1/test_merged_fingerprints_equal_serial_ones0
+plugins: xdist-3.8.0, fenvix-0.1.0
+detpy 0.1.0: Level 0 active; controls=bytecode,env,fs,hashseed,locale,net,order,os,seeds,time,tz; order fixed (collection order)
+detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual
+collected 16 items
+
+tests/test_a.py ...                                                      [ 18%]
+tests/test_b.py ........                                                 [ 68%]
+tests/test_c.py ..F                                                      [ 87%]
+tests/test_d.py ..                                                       [100%]
+
+=================================== FAILURES ===================================
+_________________________________ test_worker __________________________________
+
+worker_id = 'master', testrun_uid = 'a52cb0e7208500c9025889ca8dd7d855'
+
+    def test_worker(worker_id, testrun_uid):
+>       assert os.environ.get("PYTEST_XDIST_WORKER", "master") == worker_id
+E       AssertionError: assert 'gw1' == 'master'
+E         
+E         - master
+E         + gw1
+
+tests/test_c.py:8: AssertionError
+=============================== warnings summary ===============================
+tests/test_c.py::test_worker
+  /tmp/pm-hv/venv/engine/lib/python3.12/site-packages/_pytest/fixtures.py:1392: PytestRemovedIn10Warning: Session-scoped fixtures defined as instance methods are deprecated.
+  Instance attributes set in the 'testrun_uid' fixture will NOT be visible to test methods,
+  as each test gets a new instance while the fixture runs only once per class.
+  Use a @classmethod decorator below @pytest.fixture and set attributes on cls instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#class-scoped-fixture-as-instance-method
+    fixturefunc = resolve_fixture_function(fixturedef, request)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=============================== detpy (Level 0) ================================
+trace: /tmp/pytest-of-root/pytest-0/popen-gw1/test_merged_fingerprints_equal_serial_ones0/serial.jsonl  order digest: 9b79ef97066964c89a99b27cb70c1a4b  seed: 0
+1 test(s) failed under --det (seed 0, fixed order). Turn each into a reproducible defect (cause, seed, order, replay command):
+    fenvix repro tests/test_c.py::test_worker
+  the same run again: pytest --det (with the same arguments)
+=========================== short test summary info ============================
+FAILED tests/test_c.py::test_worker - AssertionError: assert 'gw1' == 'master'
+=================== 1 failed, 15 passed, 1 warning in 0.20s ====================
+____________________ test_serial_run_is_unchanged_without_n ____________________
+[gw1] linux -- Python 3.12.3 /tmp/pm-hv/venv/engine/bin/python
+
+pytester = <Pytester PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw1/test_serial_run_is_unchanged_without_n0')>
+
+    def test_serial_run_is_unchanged_without_n(pytester):
+        write(pytester, **SUITE)
+>       run(pytester, "tests").assert_outcomes(passed=N_SUITE)
+E       AssertionError: assert {'passed': 15...rors': 0, ...} == {'passed': 16...rors': 0, ...}
+E         
+E         Omitting 4 identical items, use -vv to show
+E         Differing items:
+E         {'passed': 15} != {'passed': 16}
+E         {'failed': 1} != {'failed': 0}
+E         Use -v to get more diff
+
+/home/user/fenvix-engine-cli/tests/test_parallel_proof.py:244: AssertionError
+----------------------------- Captured stdout call -----------------------------
+running: /tmp/pm-hv/venv/engine/bin/python -mpytest -p no:benchmark --basetemp=/tmp/pytest-of-root/pytest-0/popen-gw1/test_serial_run_is_unchanged_without_n0/runpytest-0 --det --det-trace=/tmp/pytest-of-root/pytest-0/popen-gw1/test_serial_run_is_unchanged_without_n0/trace.jsonl -p no:cacheprovider -p no:randomly tests
+     in: /tmp/pytest-of-root/pytest-0/popen-gw1/test_serial_run_is_unchanged_without_n0
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0
+rootdir: /tmp/pytest-of-root/pytest-0/popen-gw1/test_serial_run_is_unchanged_without_n0
+plugins: xdist-3.8.0, fenvix-0.1.0
+detpy 0.1.0: Level 0 active; controls=bytecode,env,fs,hashseed,locale,net,order,os,seeds,time,tz; order fixed (collection order)
+detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual
+collected 16 items
+
+tests/test_a.py ...                                                      [ 18%]
+tests/test_b.py ........                                                 [ 68%]
+tests/test_c.py ..F                                                      [ 87%]
+tests/test_d.py ..                                                       [100%]
+
+=================================== FAILURES ===================================
+_________________________________ test_worker __________________________________
+
+worker_id = 'master', testrun_uid = 'a52cb0e7208500c9025889ca8dd7d855'
+
+    def test_worker(worker_id, testrun_uid):
+>       assert os.environ.get("PYTEST_XDIST_WORKER", "master") == worker_id
+E       AssertionError: assert 'gw1' == 'master'
+E         
+E         - master
+E         + gw1
+
+tests/test_c.py:8: AssertionError
+=============================== warnings summary ===============================
+tests/test_c.py::test_worker
+  /tmp/pm-hv/venv/engine/lib/python3.12/site-packages/_pytest/fixtures.py:1392: PytestRemovedIn10Warning: Session-scoped fixtures defined as instance methods are deprecated.
+  Instance attributes set in the 'testrun_uid' fixture will NOT be visible to test methods,
+  as each test gets a new instance while the fixture runs only once per class.
+  Use a @classmethod decorator below @pytest.fixture and set attributes on cls instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#class-scoped-fixture-as-instance-method
+    fixturefunc = resolve_fixture_function(fixturedef, request)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=============================== detpy (Level 0) ================================
+trace: /tmp/pytest-of-root/pytest-0/popen-gw1/test_serial_run_is_unchanged_without_n0/trace.jsonl  order digest: 9b79ef97066964c89a99b27cb70c1a4b  seed: 0
+1 test(s) failed under --det (seed 0, fixed order). Turn each into a reproducible defect (cause, seed, order, replay command):
+    fenvix repro tests/test_c.py::test_worker
+  the same run again: pytest --det (with the same arguments)
+=========================== short test summary info ============================
+FAILED tests/test_c.py::test_worker - AssertionError: assert 'gw1' == 'master'
+=================== 1 failed, 15 passed, 1 warning in 0.23s ====================
+______ test_the_virtual_clocks_own_probe_of_threads_is_not_the_tests_read ______
+[gw2] linux -- Python 3.12.3 /tmp/pm-hv/venv/engine/bin/python
+
+pytester = <Pytester PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw2/test_the_virtual_clocks_own_probe_of_threads_is_not_the_tests_read0')>
+
+    def test_the_virtual_clocks_own_probe_of_threads_is_not_the_tests_read(pytester):
+        """detpy's clock lists /proc/self/task on a sleep (no other thread alive) to see whether a child process may need
+        real time; that probe was recorded as the test reading its process's state, refusing every test that slept
+        (moto: 128 of 292 with the tests after them)."""
+        _probe(pytester, """
+            import threading, time
+            def test_sleeps():
+                t = threading.Thread(target=lambda: None)
+                t.start()
+                t.join()
+                time.sleep(0.05)
+            """)
+        nid = "tests/test_p.py::test_sleeps"
+        run(pytester, "r1", "tests")
+        _, c, _ = run(pytester, "r2", "tests")
+>       assert nid in reused(c), (c.get("not_cached_detail"), c.get("miss_reasons"))
+E       AssertionError: ({"did something the engine cannot account for (NOT PROVEN: see the trace's unaccounted list): did something the engine cannot account for (NOT PROVEN: see the trace's unaccounted list)": 1}, {'new': 1})
+E       assert 'tests/test_p.py::test_sleeps' in set()
+E        +  where set() = reused({'reused': 0, 'verified': 0, 'ran': 1, 'recorded': 0, ...})
+
+/home/user/fenvix-engine-cli/tests/test_py_cache.py:209: AssertionError
+__________ test_serial_and_parallel_sessions_take_the_same_decisions ___________
+[gw1] linux -- Python 3.12.3 /tmp/pm-hv/venv/engine/bin/python
+
+pytester = <Pytester PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw1/test_serial_and_parallel_sessions_take_the_same_decisions0')>
+
+    @needs_cache
+    def test_serial_and_parallel_sessions_take_the_same_decisions(pytester):
+        write(pytester, **SUITE)
+        r, c, _ = cache_run(pytester, 0, "cold", "tests")
+>       r.assert_outcomes(passed=N_SUITE)
+E       AssertionError: assert {'passed': 15...rors': 0, ...} == {'passed': 16...rors': 0, ...}
+E         
+E         Omitting 4 identical items, use -vv to show
+E         Differing items:
+E         {'passed': 15} != {'passed': 16}
+E         {'failed': 1} != {'failed': 0}
+E         Use -v to get more diff
+
+/home/user/fenvix-engine-cli/tests/test_parallel_proof.py:334: AssertionError
+----------------------------- Captured stdout call -----------------------------
+running: /tmp/pm-hv/venv/engine/bin/python -mpytest -p no:benchmark --basetemp=/tmp/pytest-of-root/pytest-0/popen-gw1/test_serial_and_parallel_sessions_take_the_same_decisions0/runpytest-0 --det --det-cache=/tmp/pytest-of-root/pytest-0/popen-gw1/test_serial_and_parallel_sessions_take_the_same_decisions0/.c --det-cache-receipts=/tmp/pytest-of-root/pytest-0/popen-gw1/test_serial_and_parallel_sessions_take_the_same_decisions0/rc-cold.jsonl --det-outcomes=/tmp/pytest-of-root/pytest-0/popen-gw1/test_serial_and_parallel_sessions_take_the_same_decisions0/out-cold.json --det-trace=/tmp/pytest-of-root/pytest-0/popen-gw1/test_serial_and_parallel_sessions_take_the_same_decisions0/t-cold.jsonl -p no:cacheprovider -p no:randomly tests
+     in: /tmp/pytest-of-root/pytest-0/popen-gw1/test_serial_and_parallel_sessions_take_the_same_decisions0
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0
+rootdir: /tmp/pytest-of-root/pytest-0/popen-gw1/test_serial_and_parallel_sessions_take_the_same_decisions0
+plugins: xdist-3.8.0, fenvix-0.1.0
+detpy 0.1.0: Level 0 active; controls=bytecode,env,fs,hashseed,locale,net,order,os,seeds,time,tz; order fixed (collection order)
+detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual
+collected 16 items
+
+tests/test_a.py ...                                                      [ 18%]
+tests/test_b.py ........                                                 [ 68%]
+tests/test_c.py ..F                                                      [ 87%]
+tests/test_d.py ..                                                       [100%]
+
+=================================== FAILURES ===================================
+_________________________________ test_worker __________________________________
+
+worker_id = 'master', testrun_uid = 'a52cb0e7208500c9025889ca8dd7d855'
+
+    def test_worker(worker_id, testrun_uid):
+>       assert os.environ.get("PYTEST_XDIST_WORKER", "master") == worker_id
+E       AssertionError: assert 'gw1' == 'master'
+E         
+E         - master
+E         + gw1
+
+tests/test_c.py:8: AssertionError
+=============================== warnings summary ===============================
+tests/test_c.py::test_worker
+  /tmp/pm-hv/venv/engine/lib/python3.12/site-packages/_pytest/fixtures.py:1392: PytestRemovedIn10Warning: Session-scoped fixtures defined as instance methods are deprecated.
+  Instance attributes set in the 'testrun_uid' fixture will NOT be visible to test methods,
+  as each test gets a new instance while the fixture runs only once per class.
+  Use a @classmethod decorator below @pytest.fixture and set attributes on cls instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#class-scoped-fixture-as-instance-method
+    fixturefunc = resolve_fixture_function(fixturedef, request)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=============================== detpy (Level 0) ================================
+trace: /tmp/pytest-of-root/pytest-0/popen-gw1/test_serial_and_parallel_sessions_take_the_same_decisions0/t-cold.jsonl  order digest: 9b79ef97066964c89a99b27cb70c1a4b  seed: 0
+1 test(s) failed under --det (seed 0, fixed order). Turn each into a reproducible defect (cause, seed, order, replay command):
+    fenvix repro tests/test_c.py::test_worker
+  the same run again: pytest --det (with the same arguments)
+============================ detpy cache with proof ============================
+reused 0 result(s) with proof, ran 16, recorded 15 (check 0.004s, record 0.341s); config 0ebc348e44f60ac557bce3661e28ce17, runtime 49ab2e71f0a5ecdf7392269d3ffb69a4
+not reused: new 16
+not cacheable: outcome 1
+receipts: /tmp/pytest-of-root/pytest-0/popen-gw1/test_serial_and_parallel_sessions_take_the_same_decisions0/rc-cold.jsonl
+=========================== short test summary info ============================
+FAILED tests/test_c.py::test_worker - AssertionError: assert 'gw1' == 'master'
+=================== 1 failed, 15 passed, 1 warning in 1.45s ====================
+_ test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable __
+[gw1] linux -- Python 3.12.3 /tmp/pm-hv/venv/engine/bin/python
+
+pytester = <Pytester PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0')>
+
+    @needs_cache
+    def test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable(pytester):
+        """Review R-023 F1 (design 2.5): until the parallel-vs-serial proof (P5), a result recorded by a worker is not
+        offered to a serial session (miss "placement"); the serial session records serial entries, which both modes
+        reuse."""
+        write(pytester, **SUITE)
+        r, c, _ = cache_run(pytester, 2, "cold", "tests")
+        r.assert_outcomes(passed=N_SUITE)
+        assert c["recorded"] == N_SUITE and c["ran"] == N_SUITE
+        _, w1, rc1 = cache_run(pytester, 2, "w1", "tests")
+        _, w2, rc2 = cache_run(pytester, 2, "w2", "tests")
+        assert len(w1["reused_ids"]) == N_SUITE
+        assert receipts(rc1) == receipts(rc2)
+        _, ser, _ = cache_run(pytester, 0, "serial", "tests")
+        assert ser["reused_ids"] == []
+        assert ser["miss_reasons"] == {"placement": N_SUITE}
+        _, ser2, _ = cache_run(pytester, 0, "serial2", "tests")
+>       assert len(ser2["reused_ids"]) == N_SUITE
+E       AssertionError: assert 2 == 16
+E        +  where 2 = len(['tests/test_d.py::test_g2', 'tests/test_d.py::test_g3'])
+
+/home/user/fenvix-engine-cli/tests/test_parallel_proof.py:365: AssertionError
+----------------------------- Captured stdout call -----------------------------
+running: /tmp/pm-hv/venv/engine/bin/python -mpytest -p no:benchmark --basetemp=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/runpytest-0 --det --det-cache=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/.c --det-cache-receipts=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/rc-cold.jsonl --det-outcomes=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/out-cold.json --det-trace=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/t-cold.jsonl -p no:cacheprovider -p no:randomly -n 2 tests
+     in: /tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0
+rootdir: /tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0
+plugins: xdist-3.8.0, fenvix-0.1.0
+detpy 0.1.0: Level 0 active; controls=bytecode,env,fs,hashseed,locale,net,order,os,seeds,time,tz; order fixed (collection order)
+detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual
+detpy: pytest-xdist under a fixed plan (--dist=loadfile) (no --dist asked: a file's tests stay together, in the serial order); testrun_uid fef3670f9ad59f72b076bd311bcb6420
+created: 2/2 workers
+2 workers [16 items]
+
+................
+=============================== detpy (Level 0) ================================
+trace: /tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/t-cold.jsonl  order digest: 9b79ef97066964c89a99b27cb70c1a4b  seed: 0
+plan 12efc39bd3b3128aa6ab383ed249148f: 2 workers (ran/planned gw0=8/8, gw1=8/8), planned makespan 8.0s (LPT 8.0s); reused by the controller: 0
+merged trace: 16 tests from 2 worker traces
+============================ detpy cache with proof ============================
+reused 0 result(s) with proof, ran 16, recorded 16 (check 0.005s, record 0.001s); config 42d80e6c92f1913fd7864a7d69f06122, runtime 49ab2e71f0a5ecdf7392269d3ffb69a4
+not reused: new 16
+receipts: /tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/rc-cold.jsonl
+parallel: decided once in the controller; 16 entries merged from the workers' shards, 0 dropped by the cross-worker write rule, 0 reused results dropped (inputs written by this session), 0 together edge(s) noted for the next plans
+parallel vs serial (P5): 0 entr(ies) proven equal to the serial result (reusable by serial sessions), 0 diverged (not stored: the serial entry stays), 16 unproven (no stable serial fingerprint under their key)
+============================== 16 passed in 2.12s ==============================
+running: /tmp/pm-hv/venv/engine/bin/python -mpytest -p no:benchmark --basetemp=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/runpytest-1 --det --det-cache=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/.c --det-cache-receipts=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/rc-w1.jsonl --det-outcomes=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/out-w1.json --det-trace=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/t-w1.jsonl -p no:cacheprovider -p no:randomly -n 2 tests
+     in: /tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0
+rootdir: /tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0
+plugins: xdist-3.8.0, fenvix-0.1.0
+detpy 0.1.0: Level 0 active; controls=bytecode,env,fs,hashseed,locale,net,order,os,seeds,time,tz; order fixed (collection order)
+detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual
+detpy: pytest-xdist under a fixed plan (--dist=loadfile) (no --dist asked: a file's tests stay together, in the serial order); testrun_uid fef3670f9ad59f72b076bd311bcb6420
+created: 2/2 workers
+2 workers [16 items]
+
+................                                                         [100%]
+=============================== detpy (Level 0) ================================
+trace: /tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/t-w1.jsonl  order digest: 9b79ef97066964c89a99b27cb70c1a4b  seed: 0
+plan 12efc39bd3b3128aa6ab383ed249148f: 2 workers (ran/planned gw0=0/8, gw1=0/8), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 16
+merged trace: 0 tests from 2 worker traces
+============================ detpy cache with proof ============================
+reused 16 result(s) with proof, ran 0, recorded 0 (check 0.035s, record 0.001s); config 42d80e6c92f1913fd7864a7d69f06122, runtime 49ab2e71f0a5ecdf7392269d3ffb69a4
+receipts: /tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/rc-w1.jsonl
+parallel: decided once in the controller; 0 entries merged from the workers' shards, 0 dropped by the cross-worker write rule, 0 reused results dropped (inputs written by this session), 0 together edge(s) noted for the next plans
+parallel vs serial (P5): 0 entr(ies) proven equal to the serial result (reusable by serial sessions), 0 diverged (not stored: the serial entry stays), 0 unproven (no stable serial fingerprint under their key)
+============================== 16 passed in 2.17s ==============================
+running: /tmp/pm-hv/venv/engine/bin/python -mpytest -p no:benchmark --basetemp=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/runpytest-2 --det --det-cache=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/.c --det-cache-receipts=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/rc-w2.jsonl --det-outcomes=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/out-w2.json --det-trace=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/t-w2.jsonl -p no:cacheprovider -p no:randomly -n 2 tests
+     in: /tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0
+rootdir: /tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0
+plugins: xdist-3.8.0, fenvix-0.1.0
+detpy 0.1.0: Level 0 active; controls=bytecode,env,fs,hashseed,locale,net,order,os,seeds,time,tz; order fixed (collection order)
+detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual
+detpy: pytest-xdist under a fixed plan (--dist=loadfile) (no --dist asked: a file's tests stay together, in the serial order); testrun_uid fef3670f9ad59f72b076bd311bcb6420
+created: 2/2 workers
+2 workers [16 items]
+
+................                                                         [100%]
+=============================== detpy (Level 0) ================================
+trace: /tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/t-w2.jsonl  order digest: 9b79ef97066964c89a99b27cb70c1a4b  seed: 0
+plan 12efc39bd3b3128aa6ab383ed249148f: 2 workers (ran/planned gw0=0/8, gw1=0/8), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 16
+merged trace: 0 tests from 2 worker traces
+============================ detpy cache with proof ============================
+reused 16 result(s) with proof, ran 0, recorded 0 (check 0.013s, record 0.008s); config 42d80e6c92f1913fd7864a7d69f06122, runtime 49ab2e71f0a5ecdf7392269d3ffb69a4
+receipts: /tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/rc-w2.jsonl
+parallel: decided once in the controller; 0 entries merged from the workers' shards, 0 dropped by the cross-worker write rule, 0 reused results dropped (inputs written by this session), 0 together edge(s) noted for the next plans
+parallel vs serial (P5): 0 entr(ies) proven equal to the serial result (reusable by serial sessions), 0 diverged (not stored: the serial entry stays), 0 unproven (no stable serial fingerprint under their key)
+============================== 16 passed in 2.04s ==============================
+running: /tmp/pm-hv/venv/engine/bin/python -mpytest -p no:benchmark --basetemp=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/runpytest-3 --det --det-cache=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/.c --det-cache-receipts=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/rc-serial.jsonl --det-outcomes=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/out-serial.json --det-trace=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/t-serial.jsonl -p no:cacheprovider -p no:randomly tests
+     in: /tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0
+rootdir: /tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0
+plugins: xdist-3.8.0, fenvix-0.1.0
+detpy 0.1.0: Level 0 active; controls=bytecode,env,fs,hashseed,locale,net,order,os,seeds,time,tz; order fixed (collection order)
+detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual
+collected 16 items
+
+tests/test_a.py ...                                                      [ 18%]
+tests/test_b.py ........                                                 [ 68%]
+tests/test_c.py ..F                                                      [ 87%]
+tests/test_d.py ..                                                       [100%]
+
+=================================== FAILURES ===================================
+_________________________________ test_worker __________________________________
+
+worker_id = 'master', testrun_uid = 'a52cb0e7208500c9025889ca8dd7d855'
+
+    def test_worker(worker_id, testrun_uid):
+>       assert os.environ.get("PYTEST_XDIST_WORKER", "master") == worker_id
+E       AssertionError: assert 'gw1' == 'master'
+E         
+E         - master
+E         + gw1
+
+tests/test_c.py:8: AssertionError
+=============================== warnings summary ===============================
+tests/test_c.py::test_worker
+  /tmp/pm-hv/venv/engine/lib/python3.12/site-packages/_pytest/fixtures.py:1392: PytestRemovedIn10Warning: Session-scoped fixtures defined as instance methods are deprecated.
+  Instance attributes set in the 'testrun_uid' fixture will NOT be visible to test methods,
+  as each test gets a new instance while the fixture runs only once per class.
+  Use a @classmethod decorator below @pytest.fixture and set attributes on cls instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#class-scoped-fixture-as-instance-method
+    fixturefunc = resolve_fixture_function(fixturedef, request)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=============================== detpy (Level 0) ================================
+trace: /tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/t-serial.jsonl  order digest: 9b79ef97066964c89a99b27cb70c1a4b  seed: 0
+1 test(s) failed under --det (seed 0, fixed order). Turn each into a reproducible defect (cause, seed, order, replay command):
+    fenvix repro tests/test_c.py::test_worker
+  the same run again: pytest --det (with the same arguments)
+============================ detpy cache with proof ============================
+reused 0 result(s) with proof, ran 16, recorded 15 (check 0.005s, record 0.301s); config 42d80e6c92f1913fd7864a7d69f06122, runtime 49ab2e71f0a5ecdf7392269d3ffb69a4
+not reused: placement 16
+not cacheable: outcome 1
+receipts: /tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/rc-serial.jsonl
+=========================== short test summary info ============================
+FAILED tests/test_c.py::test_worker - AssertionError: assert 'gw1' == 'master'
+=================== 1 failed, 15 passed, 1 warning in 1.47s ====================
+running: /tmp/pm-hv/venv/engine/bin/python -mpytest -p no:benchmark --basetemp=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/runpytest-4 --det --det-cache=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/.c --det-cache-receipts=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/rc-serial2.jsonl --det-outcomes=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/out-serial2.json --det-trace=/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/t-serial2.jsonl -p no:cacheprovider -p no:randomly tests
+     in: /tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0
+rootdir: /tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0
+plugins: xdist-3.8.0, fenvix-0.1.0
+detpy 0.1.0: Level 0 active; controls=bytecode,env,fs,hashseed,locale,net,order,os,seeds,time,tz; order fixed (collection order)
+detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual
+collected 16 items
+
+tests/test_a.py ...                                                      [ 18%]
+tests/test_b.py ........                                                 [ 68%]
+tests/test_c.py ..F                                                      [ 87%]
+tests/test_d.py ..                                                       [100%]
+
+=================================== FAILURES ===================================
+_________________________________ test_worker __________________________________
+
+worker_id = 'master', testrun_uid = 'a52cb0e7208500c9025889ca8dd7d855'
+
+    def test_worker(worker_id, testrun_uid):
+>       assert os.environ.get("PYTEST_XDIST_WORKER", "master") == worker_id
+E       AssertionError: assert 'gw1' == 'master'
+E         
+E         - master
+E         + gw1
+
+tests/test_c.py:8: AssertionError
+=============================== warnings summary ===============================
+tests/test_c.py::test_worker
+  /tmp/pm-hv/venv/engine/lib/python3.12/site-packages/_pytest/fixtures.py:1392: PytestRemovedIn10Warning: Session-scoped fixtures defined as instance methods are deprecated.
+  Instance attributes set in the 'testrun_uid' fixture will NOT be visible to test methods,
+  as each test gets a new instance while the fixture runs only once per class.
+  Use a @classmethod decorator below @pytest.fixture and set attributes on cls instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#class-scoped-fixture-as-instance-method
+    fixturefunc = resolve_fixture_function(fixturedef, request)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=============================== detpy (Level 0) ================================
+trace: /tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/t-serial2.jsonl  order digest: 9b79ef97066964c89a99b27cb70c1a4b  seed: 0
+1 test(s) failed under --det (seed 0, fixed order). Turn each into a reproducible defect (cause, seed, order, replay command):
+    fenvix repro tests/test_c.py::test_worker
+  the same run again: pytest --det (with the same arguments)
+============================ detpy cache with proof ============================
+reused 2 result(s) with proof, ran 14, recorded 13 (check 0.053s, record 0.29s); config 42d80e6c92f1913fd7864a7d69f06122, runtime 49ab2e71f0a5ecdf7392269d3ffb69a4
+not reused: new 1, placement 13
+not cacheable: outcome 1
+receipts: /tmp/pytest-of-root/pytest-0/popen-gw1/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/rc-serial2.jsonl
+=========================== short test summary info ============================
+FAILED tests/test_c.py::test_worker - AssertionError: assert 'gw1' == 'master'
+=================== 1 failed, 15 passed, 1 warning in 1.32s ====================
+__ test_g2214_a_test_that_crashes_its_worker_is_a_record_of_the_merged_trace ___
+[gw0] linux -- Python 3.12.3 /tmp/pm-hv/venv/engine/bin/python
+
+pytester = <Pytester PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw0/test_g2214_a_test_that_crashes_its_worker_is_a_record_of_the_merged_trace0')>
+
+    def test_g2214_a_test_that_crashes_its_worker_is_a_record_of_the_merged_trace(pytester):
+        """Audit G-2214: the crashed test is in the merged trace (outcome "crashed"), so verify compares it."""
+        pytest.importorskip("xdist")
+        write(pytester, **{"tests/conftest.py": "", "tests/test_c.py": """
+            import os
+            def test_crash():
+                os._exit(17)
+            def test_ok():
+                pass
+            """})
+        for i in (1, 2):
+            run(pytester, f"c{i}", "-n", "2", f"--det-trace={pytester.path / f't{i}.jsonl'}", "tests", cache=False)
+        recs = [json.loads(x) for x in (pytester.path / "t1.jsonl").read_text().splitlines() if x.strip()]
+        crash = [r for r in recs if r.get("type") == "test" and r["nodeid"] == "tests/test_c.py::test_crash"]
+        assert crash and crash[0]["outcome"] == "crashed", recs
+        p = subprocess.run([sys.executable, "-m", "detpy", "verify", "t1.jsonl", "t2.jsonl"], cwd=pytester.path,
+                           capture_output=True, text=True)
+>       assert "covered by Level 0: 2" in p.stdout, p.stdout
+E       AssertionError: detpy verify: 2 runs, 2 tests
+E           run 0: t1.jsonl
+E           run 1: t2.jsonl
+E         verdict: NOT PROVEN: 2 of 2 tests used a source this release does not control (named below); no test is shown to differ
+E         run inputs: identical in every run
+E         order: identical in every run
+E         covered by Level 0: 0  not covered: 0  missing: 0  input differs: 0  not proven: 2  outcome-unstable: 0
+E         reasons: other=1 sensor=1
+E         NOT-PROVEN tests/test_c.py::test_ok  [sensor] outcomes=passed,passed
+E             every run: this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun
+E         NOT-PROVEN tests/test_c.py::test_crash  [other] outcomes=crashed,crashed
+E             every run: the test called something the engine cannot account for: the record's fingerprint does not match its own events (1 event(s) recomputing to 12c12c17a5eb0a7cd985bd16fbe1e637, stored as 204fe6d0af2e45ae140bff212b4e9dc1): this trace does not describe its own run. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun
+E         
+E       assert 'covered by Level 0: 2' in 'detpy verify: 2 runs, 2 tests\n  run 0: t1.jsonl\n  run 1: t2.jsonl\nverdict: NOT PROVEN: 2 of 2 tests used a source ...ical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun\n'
+E        +  where 'detpy verify: 2 runs, 2 tests\n  run 0: t1.jsonl\n  run 1: t2.jsonl\nverdict: NOT PROVEN: 2 of 2 tests used a source ...ical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun\n' = CompletedProcess(args=['/tmp/pm-hv/venv/engine/bin/python', '-m', 'detpy', 'verify', 't1.jsonl', 't2.jsonl'], returnco...rints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun\n", stderr='').stdout
+
+/home/user/fenvix-engine-cli/tests/test_py_cache.py:635: AssertionError
+___________ test_hole_module_on_an_import_path_outside_site_and_root ___________
+[gw2] linux -- Python 3.12.3 /tmp/pm-hv/venv/engine/bin/python
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw2/test_hole_module_on_an_import_0')
+root = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw2/test_hole_module_on_an_import_0/project')
+
+    def test_hole_module_on_an_import_path_outside_site_and_root(tmp_path, root):
+        """PYTHONPATH (or a .pth line) naming a directory outside the project and the site directories, at the same
+        absolute path on both machines: `sys_path` keeps the path, nothing keys the modules in it, and the import
+        system's reads are never per-test inputs."""
+        py = venv(tmp_path / "m")
+        ext = tmp_path / "shared-libs"
+        ext.mkdir()
+        env = {"PYTHONPATH": f"{Path(__file__).resolve().parents[1] / 'python'}:{ext}"}
+        (ext / "helper.py").write_text("VALUE = 1\n")
+>       a = identity(py, root, env)
+            ^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_review_r008.py:100: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+python = '/tmp/pytest-of-root/pytest-0/popen-gw2/test_hole_module_on_an_import_0/m/bin/python'
+root = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw2/test_hole_module_on_an_import_0/project')
+env_extra = {'PYTHONPATH': '/home/user/fenvix-engine-cli/python:/tmp/pytest-of-root/pytest-0/popen-gw2/test_hole_module_on_an_import_0/shared-libs'}
+
+    def identity(python: str, root: Path, env_extra: dict | None = None) -> dict:
+        env = {"PATH": "/usr/bin:/bin", "PYTHONPATH": DETPY_PARENT, "FENVIX_RUNTIME_MEMO": "off", "LANG": "C.UTF-8",
+               "HOME": str(root)}
+        env.update(env_extra or {})
+        code = ("import json, sys; from detpy import runtime_id; d = runtime_id.describe(sys.argv[1]); "
+                "m = [l.split()[-1] for l in open('/proc/self/maps') if 'libc.so' in l or 'libc-' in l]; "
+                "d['details']['mapped_libc'] = sorted(set(m)); print(json.dumps(d))")
+        r = subprocess.run([python, "-c", code, str(root)], cwd=root, env=env, capture_output=True, text=True,
+                           timeout=300)
+>       assert r.returncode == 0, r.stderr[-2000:]
+E       AssertionError: Traceback (most recent call last):
+E           File "<string>", line 1, in <module>
+E           File "/home/user/fenvix-engine-cli/python/detpy/__init__.py", line 15, in <module>
+E             from .network import NetworkBlockedError  # noqa: E402
+E             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/home/user/fenvix-engine-cli/python/detpy/network.py", line 36, in <module>
+E             from . import _core, _state
+E           File "/home/user/fenvix-engine-cli/python/detpy/_state.py", line 9, in <module>
+E             from . import _core, _sites
+E           File "/home/user/fenvix-engine-cli/python/detpy/_sites.py", line 21, in <module>
+E             from . import _core
+E         ImportError: cannot import name '_core' from partially initialized module 'detpy' (most likely due to a circular import) (/home/user/fenvix-engine-cli/python/detpy/__init__.py)
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/tmp/pytest-of-root/pytest-0/popen-gw2/test_hole_module_on_an_import_0/m/bin/python', '-c', "i...zed module \'detpy\' (most likely due to a circular import) (/home/user/fenvix-engine-cli/python/detpy/__init__.py)\n').returncode
+
+tests/test_runtime_id.py:41: AssertionError
+__________________ test_hole_cpu_count_visible_to_the_process __________________
+[gw2] linux -- Python 3.12.3 /tmp/pm-hv/venv/engine/bin/python
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw2/test_hole_cpu_count_visible_to0')
+root = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw2/test_hole_cpu_count_visible_to0/project')
+
+    def test_hole_cpu_count_visible_to_the_process(tmp_path, root):
+        """os.process_cpu_count() / len(os.sched_getaffinity(0)) (pool sizes, chunking, xdist-style splitting in a
+        test) differ between machines; nothing records them per test and the identity does not include them. The hosted
+        rehearsal itself ran machine 1 and machine 2 on different CPUs (AMD EPYC vs Intel Xeon) with equal identities."""
+        if not shutil.which("taskset") or (os.cpu_count() or 1) < 2:
+            pytest.skip("needs taskset and 2+ CPUs")
+        py = venv(tmp_path / "m")
+        code = "import os; print(len(os.sched_getaffinity(0)))"
+        assert run(py, code) != subprocess.run(["taskset", "-c", "0", py, "-c", code], capture_output=True,
+                                               text=True).stdout.strip()
+        env = {"PATH": "/usr/bin:/bin", "PYTHONPATH": str(Path(__file__).resolve().parents[1] / "python"),
+               "FENVIX_RUNTIME_MEMO": "off", "LANG": "C.UTF-8", "HOME": str(root)}
+        get = "import sys; from detpy import runtime_id; print(runtime_id.describe(sys.argv[1])['digest'])"
+        one = subprocess.run(["taskset", "-c", "0", py, "-c", get, str(root)], env=env, capture_output=True, text=True)
+        allc = subprocess.run([py, "-c", get, str(root)], env=env, capture_output=True, text=True)
+>       assert one.returncode == 0 and allc.returncode == 0, one.stderr + allc.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "<string>", line 1, in <module>
+E           File "/home/user/fenvix-engine-cli/python/detpy/__init__.py", line 15, in <module>
+E             from .network import NetworkBlockedError  # noqa: E402
+E             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/home/user/fenvix-engine-cli/python/detpy/network.py", line 36, in <module>
+E             from . import _core, _state
+E           File "/home/user/fenvix-engine-cli/python/detpy/_state.py", line 9, in <module>
+E             from . import _core, _sites
+E           File "/home/user/fenvix-engine-cli/python/detpy/_sites.py", line 21, in <module>
+E             from . import _core
+E         ImportError: cannot import name '_core' from partially initialized module 'detpy' (most likely due to a circular import) (/home/user/fenvix-engine-cli/python/detpy/__init__.py)
+E         Traceback (most recent call last):
+E           File "<string>", line 1, in <module>
+E           File "/home/user/fenvix-engine-cli/python/detpy/__init__.py", line 15, in <module>
+E             from .network import NetworkBlockedError  # noqa: E402
+E             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/home/user/fenvix-engine-cli/python/detpy/network.py", line 36, in <module>
+E             from . import _core, _state
+E           File "/home/user/fenvix-engine-cli/python/detpy/_state.py", line 9, in <module>
+E             from . import _core, _sites
+E           File "/home/user/fenvix-engine-cli/python/detpy/_sites.py", line 21, in <module>
+E             from . import _core
+E         ImportError: cannot import name '_core' from partially initialized module 'detpy' (most likely due to a circular import) (/home/user/fenvix-engine-cli/python/detpy/__init__.py)
+E         
+E       assert (1 == 0)
+E        +  where 1 = CompletedProcess(args=['taskset', '-c', '0', '/tmp/pytest-of-root/pytest-0/popen-gw2/test_hole_cpu_count_visible_to0/m...zed module \'detpy\' (most likely due to a circular import) (/home/user/fenvix-engine-cli/python/detpy/__init__.py)\n').returncode
+
+tests/test_review_r008.py:158: AssertionError
+___________ test_d3_a_job_venv_gets_the_engine_from_the_runner_image ___________
+[gw1] linux -- Python 3.12.3 /tmp/pm-hv/venv/engine/bin/python
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw1/test_d3_a_job_venv_gets_the_en0')
+
+    def test_d3_a_job_venv_gets_the_engine_from_the_runner_image(tmp_path):
+        """D3: the image's `fenvix` (release/fenvix -> $FENVIX_HOME/bin/fenvix) used from a job's own venv that has its
+        test tools (pytest) but not the engine: `fenvix python --det` must run the job's tests under the engine."""
+        import importlib.util
+    
+        venv = tmp_path / "venv"
+        subprocess.run([sys.executable, "-m", "venv", "--without-pip", str(venv)], check=True)
+        vpy = str(venv / "bin" / "python")
+        site = subprocess.check_output([vpy, "-c", "import sysconfig; print(sysconfig.get_paths()['purelib'])"],
+                                       text=True).strip()
+        # the job's own test tools: pytest and its dependencies, and nothing of the engine
+        tools = tmp_path / "tools"
+        tools.mkdir()
+        for mod in ("pytest", "_pytest", "pluggy", "iniconfig", "packaging", "pygments", "py"):
+            spec = importlib.util.find_spec(mod)
+            if spec is None or not spec.origin:
+                continue
+            src = os.path.dirname(spec.origin) if spec.submodule_search_locations else spec.origin
+            os.symlink(src, tools / os.path.basename(src))
+        with open(os.path.join(site, "job_tools.pth"), "w") as fh:
+            fh.write(str(tools) + "\n")
+        env = {k: v for k, v in os.environ.items() if k not in ("PYTEST_ADDOPTS", "PYTHONPATH", "PYTHONHOME")}
+        env.update(PATH=f"{venv / 'bin'}:{env.get('PATH', '')}", VIRTUAL_ENV=str(venv))
+        pre = subprocess.run([vpy, "-c", "import pytest; import detpy"], capture_output=True, text=True, env=env)
+        assert "No module named 'detpy'" in pre.stderr, f"precondition: the job venv has pytest, not the engine: {pre}"
+        proj = tmp_path / "proj"
+        proj.mkdir()
+        (proj / "test_a.py").write_text("def test_a():\n    assert 1\n")
+        image_fenvix = shutil.which("python3", path=env["PATH"]) and os.path.join(ROOT, "release", "fenvix")
+        r = subprocess.run([image_fenvix, "python", "-q", "-p", "no:cacheprovider", "--det", "test_a.py"], cwd=proj,
+                           capture_output=True, text=True, env=env, timeout=300)
+>       assert r.returncode == 0 and "1 passed" in r.stdout and "detpy" in r.stdout, (
+            f"`fenvix python --det` from a job venv (exit {r.returncode}):\n{r.stdout[-800:]}{r.stderr[-800:]}")
+E       AssertionError: `fenvix python --det` from a job venv (exit 127):
+E         fenvix: the engine is not installed for /tmp/pytest-of-root/pytest-0/popen-gw1/test_d3_a_job_venv_gets_the_en0/venv/bin/python3 (No module named 'detpy'), and the runner image has none in $FENVIX_HOME/python
+E         
+E       assert (127 == 0)
+E        +  where 127 = CompletedProcess(args=['/home/user/fenvix-engine-cli/release/fenvix', 'python', '-q', '-p', 'no:cacheprovider', '--det..._venv_gets_the_en0/venv/bin/python3 (No module named 'detpy'), and the runner image has none in $FENVIX_HOME/python\n").returncode
+
+tests/test_review_p1_packages_d123.py:117: AssertionError
+_________ test_run_dependent_id_is_reproduced_by_its_stable_id[vitest] _________
+[gw3] linux -- Python 3.12.3 /tmp/pm-hv/venv/engine/bin/python
+
+runner = 'vitest', env = None
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f037b541e50>
+
+    @pytest.mark.parametrize("runner", ["vitest", "jest"])
+    def test_run_dependent_id_is_reproduced_by_its_stable_id(runner, env, monkeypatch):
+        """Node Block 1 (yup): a name built from `new Date()` gives a different id in every plain run, so the id a plain
+        run reported is never collected again. Under --det the clock is virtual and the test has one id in every run:
+        repro matches the reported id to it with the run-dependent values masked, and says so."""
+        d = make_project(runner, "stamped")
+        ext = SUITE[runner]["ext"]
+        (d / "tests" / f"c{ext}").write_text(SUITE[runner]["head"] + STAMPED_FILE)
+        monkeypatch.chdir(d)
+        a = fenvix_js.ADAPTERS[runner]
+        r = fenvix_js.DetjsRunner(cwd=d, workdir=d / "w", runner=runner)
+        ids = [t for t in r.collect() if t.startswith(f"tests/c{ext}::stamped ")]
+        assert len(ids) == 1 and ids == [t for t in r.collect("3") if t.startswith(f"tests/c{ext}::stamped ")], ids
+        plain_id = f"tests/c{ext}::stamped 2026-11-17T13:21:49.978Z"  # as a plain run at that moment named it
+        assert plain_id != ids[0]
+>       b = a.repro(ns(plain_id, d / "out"))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/home/user/fenvix-engine-cli/tests/test_fenvix_js.py:313: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/pm-hv/venv/engine/lib/python3.12/site-packages/detpy/fenvix_js.py:370: in repro
+    b = _repro.reproduce(runner, test, collected=collected, seeds=ns.seeds, confirm=ns.confirm,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+runner = DetjsRunner(cwd=PosixPath('/home/user/fenvix-engine-cli/node/test/.tmp/pytest-fenvix-js/vitest/stamped'), workdir=Posi...: 10, 'seconds': 0.999, 'exit': 1}], runner='vitest', detjs=['node', '/home/user/fenvix-engine-cli/node/bin/detjs.js'])
+target = 'tests/c.test.mjs::stamped 2026-11-23T18:17:35.000Z'
+collected = ['tests/a.test.mjs::victim', 'tests/a.test.mjs::f1', 'tests/a.test.mjs::g::f2', 'tests/a.test.mjs::g::polluter', 'tests/a.test.mjs::g::f3', 'tests/a.test.mjs::f4', ...]
+seeds = 10, known_fail = None, known_pass = None, confirm = 10, max_runs = 200
+out_dir = PosixPath('/home/user/fenvix-engine-cli/node/test/.tmp/pytest-fenvix-js/vitest/stamped/out')
+command_args = None
+
+    def reproduce(runner: Runner, target: str, *, collected: list | None = None, seeds: int = 50,
+                  known_fail: str | None = None, known_pass: list | None = None, confirm: int = 10,
+                  max_runs: int = 400, out_dir: Path | None = None, command_args: list | None = None) -> dict:
+        """Search, minimise, bundle and prove one failing test. Returns the bundle dict
+        (``status`` = reproduced | not-found | not-minimised | replay-unstable)."""
+>       result, fail_trace, pass_trace = _core.repro_reproduce(runner, target, collected, seeds, known_fail, known_pass,
+                                                               confirm, max_runs)
+E       ValueError: 'tests/c.test.mjs::stamped 2026-11-23T18:17:35.000Z' is not in list
+
+/tmp/pm-hv/venv/engine/lib/python3.12/site-packages/detpy/repro.py:317: ValueError
+__________ test_run_dependent_id_is_reproduced_by_its_stable_id[jest] __________
+[gw3] linux -- Python 3.12.3 /tmp/pm-hv/venv/engine/bin/python
+
+runner = 'jest', env = None
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f037b5654c0>
+
+    @pytest.mark.parametrize("runner", ["vitest", "jest"])
+    def test_run_dependent_id_is_reproduced_by_its_stable_id(runner, env, monkeypatch):
+        """Node Block 1 (yup): a name built from `new Date()` gives a different id in every plain run, so the id a plain
+        run reported is never collected again. Under --det the clock is virtual and the test has one id in every run:
+        repro matches the reported id to it with the run-dependent values masked, and says so."""
+        d = make_project(runner, "stamped")
+        ext = SUITE[runner]["ext"]
+        (d / "tests" / f"c{ext}").write_text(SUITE[runner]["head"] + STAMPED_FILE)
+        monkeypatch.chdir(d)
+        a = fenvix_js.ADAPTERS[runner]
+        r = fenvix_js.DetjsRunner(cwd=d, workdir=d / "w", runner=runner)
+        ids = [t for t in r.collect() if t.startswith(f"tests/c{ext}::stamped ")]
+>       assert len(ids) == 1 and ids == [t for t in r.collect("3") if t.startswith(f"tests/c{ext}::stamped ")], ids
+E       AssertionError: ['tests/c.test.js::stamped 2026-11-23T18:17:38.000Z']
+E       assert (1 == 1 and ['tests/c.tes...8:17:38.000Z'] == ['tests/c.tes...8:17:40.000Z']
+E        +  where 1 = len(['tests/c.test.js::stamped 2026-11-23T18:17:38.000Z'])
+E         
+E         At index 0 diff: 'tests/c.test.js::stamped 2026-11-23T18:17:38.000Z' != 'tests/c.test.js::stamped 2026-11-23T18:17:40.000Z'
+E         Use -v to get more diff)
+
+/home/user/fenvix-engine-cli/tests/test_fenvix_js.py:310: AssertionError
+=============================== warnings summary ===============================
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+  /usr/lib/python3.12/importlib/metadata/__init__.py:467: DeprecationWarning: Implicit None on return values is deprecated and will raise KeyErrors.
+    return self.metadata['Version']
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_level0_rust.py::test_level0_traces_match_reference - Assert...
+FAILED tests/test_packaging.py::test_gate_runs_on_pull_requests_and_trunk_only_and_cancels_only_superseded_pr_runs
+FAILED tests/test_parallel_proof.py::test_merged_fingerprints_equal_serial_ones
+FAILED tests/test_parallel_proof.py::test_serial_run_is_unchanged_without_n
+FAILED tests/test_py_cache.py::test_the_virtual_clocks_own_probe_of_threads_is_not_the_tests_read
+FAILED tests/test_parallel_proof.py::test_serial_and_parallel_sessions_take_the_same_decisions
+FAILED tests/test_parallel_proof.py::test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable
+FAILED tests/test_py_cache.py::test_g2214_a_test_that_crashes_its_worker_is_a_record_of_the_merged_trace
+FAILED tests/test_review_r008.py::test_hole_module_on_an_import_path_outside_site_and_root
+FAILED tests/test_review_r008.py::test_hole_cpu_count_visible_to_the_process
+FAILED tests/test_review_p1_packages_d123.py::test_d3_a_job_venv_gets_the_engine_from_the_runner_image
+FAILED tests/test_fenvix_js.py::test_run_dependent_id_is_reproduced_by_its_stable_id[vitest]
+FAILED tests/test_fenvix_js.py::test_run_dependent_id_is_reproduced_by_its_stable_id[jest]
+13 failed, 940 passed, 39 skipped, 4 warnings in 877.17s (0:14:37)
+
+real	14m38.307s
+user	50m37.595s
+sys	4m13.297s
+exit 1
