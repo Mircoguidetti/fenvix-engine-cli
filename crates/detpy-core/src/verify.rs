@@ -8,8 +8,9 @@
 
 use crate::event::{Event, Source};
 use crate::fingerprint::{TestRecord, UNCONTROLLED_PREFIX};
+use crate::record_source::{FileTrace, MemTrace, RecordSource, SlimRecord};
 use crate::provable::{self, Verdict};
-use crate::trace::{order_digest, read_trace, Trace, TraceError};
+use crate::trace::{order_digest, Footer, Header, Trace, TraceError};
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
@@ -321,7 +322,11 @@ pub const INPUTS_KEY: &str = "inputs";
 /// `inputs`, or an empty one: R-051 R1, an empty object is no record of the inputs). An input named after an older
 /// spelling is read under its current name (`urandom` is `entropy`, R-051 R2).
 pub fn run_inputs(t: &Trace) -> Option<BTreeMap<String, String>> {
-    let obj = t.header.meta.get(INPUTS_KEY)?.as_object()?;
+    run_inputs_of(&t.header, t.footer.as_ref())
+}
+
+fn run_inputs_of(header: &Header, footer: Option<&Footer>) -> Option<BTreeMap<String, String>> {
+    let obj = header.meta.get(INPUTS_KEY)?.as_object()?;
     if obj.is_empty() {
         return None;
     }
@@ -331,7 +336,7 @@ pub fn run_inputs(t: &Trace) -> Option<BTreeMap<String, String>> {
     };
     let mut m: BTreeMap<String, String> = obj.iter().map(one).collect();
     // what the run read after the header was written, outside any test (the footer, R-055 V12): its inputs too
-    if let Some(late) = late(t).and_then(|l| l.get(INPUTS_KEY)).and_then(|v| v.as_object()) {
+    if let Some(late) = late(footer).and_then(|l| l.get(INPUTS_KEY)).and_then(|v| v.as_object()) {
         m.extend(late.iter().map(one));
     }
     Some(m)
@@ -339,14 +344,18 @@ pub fn run_inputs(t: &Trace) -> Option<BTreeMap<String, String>> {
 
 /// The trace footer's `late` object: the header fields of docs/VERIFY-CONTRACT.md section 1 a shell could only know
 /// after the header was written (Python: reads at session end, R-055 V12). Same names as in the header.
-fn late(t: &Trace) -> Option<&serde_json::Value> {
-    t.footer.as_ref().and_then(|f| f.late.as_ref())
+fn late(footer: Option<&Footer>) -> Option<&serde_json::Value> {
+    footer.and_then(|f| f.late.as_ref())
 }
 
 /// The entries of a contract array field (`files_read_outside_tests`, `env_read_outside_tests`,
 /// `not_proven_outside_tests`): the header's, then the footer's `late` ones.
-fn meta_array<'a>(t: &'a Trace, key: &str) -> impl Iterator<Item = &'a serde_json::Value> {
-    [t.header.meta.get(key), late(t).and_then(|l| l.get(key))]
+fn meta_array<'a>(
+    header: &'a Header,
+    footer: Option<&'a Footer>,
+    key: &str,
+) -> impl Iterator<Item = &'a serde_json::Value> {
+    [header.meta.get(key), late(footer).and_then(|l| l.get(key))]
         .into_iter()
         .flatten()
         .filter_map(|v| v.as_array())
@@ -371,12 +380,13 @@ const RANDOM_HASHSEED: &str = "<random>";
 
 /// The run inputs of a trace for comparison: `meta.inputs` plus one `file:<path>` input per file read outside any
 /// test (`meta.files_read_outside_tests`, its digests joined in order). None when the trace records no inputs.
-fn compared_inputs(t: &Trace) -> Option<BTreeMap<String, String>> {
-    let mut m = run_inputs(t)?;
-    let has = |t: &Trace| t.header.meta.get("files_read_outside_tests").is_some() || late(t).is_some_and(|l| l.get("files_read_outside_tests").is_some());
-    if has(t) {
+fn compared_inputs(header: &Header, footer: Option<&Footer>) -> Option<BTreeMap<String, String>> {
+    let mut m = run_inputs_of(header, footer)?;
+    let has = header.meta.get("files_read_outside_tests").is_some()
+        || late(footer).is_some_and(|l| l.get("files_read_outside_tests").is_some());
+    if has {
         let mut by: BTreeMap<String, Vec<String>> = BTreeMap::new();
-        for f in meta_array(t, "files_read_outside_tests") {
+        for f in meta_array(header, footer, "files_read_outside_tests") {
             let (Some(p), Some(d)) = (f.get("path").and_then(|v| v.as_str()), f.get("digest").and_then(|v| v.as_str())) else { continue };
             by.entry(p.to_string()).or_default().push(d.to_string());
         }
@@ -533,7 +543,7 @@ fn outside_not_proven(entries: &[String]) -> Divergence {
 /// process, a volatile variable, something read outside the tests), so the messages the reports and the exam
 /// depend on do not change. Only the classes the general rule adds get a new sentence.
 fn not_proven_divergence(
-    r: &TestRecord,
+    r: &SlimRecord,
     run: usize,
     kind: &str,
     detail: &str,
@@ -572,11 +582,11 @@ fn not_proven_divergence(
     }
 }
 
-fn uncontrolled_divergence(r: &TestRecord, run: usize) -> Option<Divergence> {
+fn uncontrolled_divergence(r: &SlimRecord, run: usize) -> Option<Divergence> {
     r.uncontrolled.first()?;
     // the first one the test used (event order), else (past the stored events) the first by name
-    let pos = r.events.iter().position(|e| e.op.starts_with(UNCONTROLLED_PREFIX));
-    let ev = pos.map(|i| r.events[i].clone());
+    let pos = r.first_uncontrolled.as_ref().map(|(i, _)| *i);
+    let ev = r.first_uncontrolled.as_ref().map(|(_, e)| e.clone());
     let kind = ev
         .as_ref()
         .and_then(|e| e.op.strip_prefix(UNCONTROLLED_PREFIX))
@@ -619,10 +629,11 @@ struct Predecessors<'a> {
 }
 
 impl<'a> Predecessors<'a> {
-    fn of(t: &'a Trace) -> Self {
-        let parallel = t.tests.iter().any(|r| r.worker.is_some());
+    fn of<S: RecordSource>(t: &'a S) -> Self {
+        let recs = || (0..t.len()).map(|i| t.slim(i));
+        let parallel = recs().any(|r| r.worker.is_some());
         let mut lists: BTreeMap<&str, Vec<(u64, &str)>> = BTreeMap::new();
-        for (pos, r) in t.tests.iter().enumerate() {
+        for (pos, r) in recs().enumerate() {
             let w = r.worker.as_deref().unwrap_or("");
             // serial: the executed order is the order of the trace lines
             let at = if parallel { r.worker_index.unwrap_or(r.index) } else { pos as u64 };
@@ -804,29 +815,32 @@ fn describe(i: u64, a: Option<&Event>, b: Option<&Event>) -> String {
 
 /// Verify a set of traces of the same suite.
 pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
+    let sources: Vec<MemTrace> = traces.iter().map(MemTrace::new).collect();
+    verify_sources(&sources, labels).expect("an in-memory record always loads")
+}
+
+/// [`verify`] over any [`RecordSource`]: the slim records decide every verdict; the two full records of a test are
+/// loaded (and dropped) only where the events are compared one by one (`diff_records`). Nothing holds more than two
+/// full records at a time.
+pub fn verify_sources<S: RecordSource>(traces: &[S], labels: &[String]) -> std::io::Result<Report> {
     let n = traces.len();
-    let mut all_ids: BTreeSet<&str> = BTreeSet::new();
-    let indexes: Vec<BTreeMap<&str, &TestRecord>> = traces
-        .iter()
-        .map(|t| {
-            let m: BTreeMap<&str, &TestRecord> = t.tests.iter().map(|r| (r.nodeid.as_str(), r)).collect();
-            all_ids.extend(m.keys().copied());
-            m
-        })
-        .collect();
+    // nodeid -> position of its record (the last one, for a duplicated id)
+    let indexes: Vec<BTreeMap<&str, usize>> =
+        traces.iter().map(|t| (0..t.len()).map(|i| (t.slim(i).nodeid.as_str(), i)).collect()).collect();
 
     let preds: Vec<Predecessors> = traces.iter().map(Predecessors::of).collect();
-    let inputs: Vec<Option<BTreeMap<String, String>>> = traces.iter().map(compared_inputs).collect();
+    let inputs: Vec<Option<BTreeMap<String, String>>> =
+        traces.iter().map(|t| compared_inputs(t.header(), t.footer())).collect();
     // what each run declared about its wide sensor (`meta.provable`): the general rule needs it per run, because
     // a run without one cannot have any of its tests reported identical
     let provable_meta: Vec<Option<serde_json::Value>> =
-        traces.iter().map(|t| t.header.meta.get("provable").cloned()).collect();
+        traces.iter().map(|t| t.header().meta.get("provable").cloned()).collect();
     // the `--det` controls each run had on: the general rule's `Controlled` answers rest on them, so a run
     // missing one cannot have any of its tests reported identical (crate::provable::required_controls)
     let run_controls: Vec<Vec<String>> = traces
         .iter()
         .map(|t| {
-            t.header
+            t.header()
                 .meta
                 .get("controls")
                 .and_then(|v| v.as_array())
@@ -841,7 +855,8 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
     let mut ordered: Vec<&str> = Vec::new();
     let mut seen = BTreeSet::new();
     for t in traces {
-        for r in &t.tests {
+        for i in 0..t.len() {
+            let r = t.slim(i);
             if seen.insert(r.nodeid.as_str()) {
                 ordered.push(r.nodeid.as_str());
             }
@@ -855,12 +870,12 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
     let mut env_read_anywhere: BTreeSet<String> = BTreeSet::new();
     // a shell that does not record environment reads (meta.env_reads_recorded is not true: the Node shell, a
     // Python run without the env control) cannot say which test read a variable: every test counts as reading it
-    let reads_recorded = traces.iter().all(|t| t.header.meta.get("env_reads_recorded").and_then(|v| v.as_bool()) == Some(true));
+    let reads_recorded = traces.iter().all(|t| t.header().meta.get("env_reads_recorded").and_then(|v| v.as_bool()) == Some(true));
     // variables read outside any test (module scope, hooks, a dependency at import): no test's event, read by every
     // test as far as anyone can tell (R-054 N1, N2); "*": the environment was enumerated there
     let outside: BTreeSet<String> = traces
         .iter()
-        .flat_map(|t| meta_array(t, "env_read_outside_tests"))
+        .flat_map(|t| meta_array(t.header(), t.footer(), "env_read_outside_tests"))
         .filter_map(|v| v.as_str().map(str::to_string))
         .collect();
     // uncontrolled reads outside any test (a CI-volatile or proxy variable at module scope, ...): every test is
@@ -868,7 +883,7 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
     let not_proven_outside: Vec<String> = {
         let s: BTreeSet<String> = traces
             .iter()
-            .flat_map(|t| meta_array(t, "not_proven_outside_tests"))
+            .flat_map(|t| meta_array(t.header(), t.footer(), "not_proven_outside_tests"))
             .filter_map(|v| v.as_str().map(str::to_string))
             .collect();
         s.into_iter().collect()
@@ -876,7 +891,9 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
     let mut summary = Summary { runs: n, inputs_recorded: n > 0 && inputs.iter().all(|i| i.is_some()), ..Default::default() };
     let mut tests = Vec::with_capacity(ordered.len());
     for id in ordered {
-        let recs: Vec<Option<&TestRecord>> = indexes.iter().map(|m| m.get(id).copied()).collect();
+        let at: Vec<Option<usize>> = indexes.iter().map(|m| m.get(id).copied()).collect();
+        let recs: Vec<Option<&SlimRecord>> =
+            at.iter().zip(traces).map(|(i, t)| i.map(|i| t.slim(i))).collect();
         let fingerprints: Vec<Option<String>> = recs.iter().map(|r| r.map(|r| r.fingerprint.clone())).collect();
         let outcomes: Vec<Option<String>> = recs.iter().map(|r| r.map(|r| r.outcome.clone())).collect();
         let distinct: BTreeSet<&str> = recs.iter().flatten().map(|r| r.fingerprint.as_str()).collect();
@@ -918,7 +935,7 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
                 .iter()
                 .enumerate()
                 .filter_map(|(i, r)| r.map(|r| (i, r)))
-                .find_map(|(i, r)| match provable::judge_record(
+                .find_map(|(i, r)| match provable::judge_slim(
                     r,
                     provable_meta[i].as_ref(),
                     &run_controls[i],
@@ -936,7 +953,12 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
         } else {
             let a = recs[0].unwrap();
             let j = recs.iter().position(|r| r.unwrap().fingerprint != a.fingerprint).unwrap();
-            let mut d = diff_records(a, recs[j].unwrap(), 0, j);
+            // the only place the events of a record are compared one by one: the two records are loaded here and
+            // dropped at the end of this block
+            let full_a = traces[0].full(at[0].unwrap())?;
+            let full_b = traces[j].full(at[j].unwrap())?;
+            let mut d = diff_records(&full_a, &full_b, 0, j);
+            drop((full_a, full_b));
             if let Some(d) = d.as_mut() {
                 placement(d, id, &preds[0], &preds[j]);
                 // same observed events, different outcome, and the test used an uncontrolled source: that source
@@ -1001,18 +1023,21 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
     }
     summary.tests = tests.len();
     summary.identical = summary.stable;
-    let order_digests: Vec<String> = traces.iter().map(|t| order_digest(&t.executed_order())).collect();
+    let order_digests: Vec<String> = traces
+        .iter()
+        .map(|t| order_digest(&(0..t.len()).map(|i| t.slim(i).nodeid.as_str()).collect::<Vec<&str>>()))
+        .collect();
     summary.order_identical = order_digests.windows(2).all(|w| w[0] == w[1]);
-    Report {
+    Ok(Report {
         labels: labels.to_vec(),
         order_digests,
-        complete: traces.iter().map(|t| t.is_complete()).collect(),
+        complete: traces.iter().map(|t| t.footer().is_some()).collect(),
         summary,
         tests,
         env_not_read: env_diffs.iter().filter(|d| !env_read_anywhere.contains(&d.name)).map(|d| d.name.clone()).collect(),
         input_differences,
         ignored_inputs: Vec::new(),
-    }
+    })
 }
 
 /// The environment variables a test read in any run (`env.get` / `env.has` events: `NAME=...`), or all of them
@@ -1023,22 +1048,16 @@ struct EnvReads {
     site: Option<String>,
 }
 
-fn env_reads(recs: &[Option<&TestRecord>]) -> EnvReads {
+fn env_reads(recs: &[Option<&SlimRecord>]) -> EnvReads {
     let mut r = EnvReads { names: BTreeSet::new(), all: false, site: None };
+    // per record, its stored events in order (record_source::SlimRecord::of): the first site of the first record
+    // that has one, as the event-by-event walk over the records in run order gave
     for rec in recs.iter().flatten() {
-        for e in &rec.events {
-            match e.op.as_str() {
-                "env.get" | "env.has" => {
-                    let name = e.value.split_once('=').map(|(n, _)| n).unwrap_or(e.value.as_str());
-                    r.names.insert(name.to_string());
-                    r.site.get_or_insert_with(|| e.site.clone());
-                }
-                "env.list" => {
-                    r.all = true;
-                    r.site.get_or_insert_with(|| e.site.clone());
-                }
-                _ => {}
-            }
+        let e = &rec.env_reads;
+        r.names.extend(e.names.iter().cloned());
+        r.all |= e.list;
+        if r.site.is_none() {
+            r.site.clone_from(&e.site);
         }
     }
     r
@@ -1066,14 +1085,11 @@ fn input_differs(hit: &[&InputDifference], read: &EnvReads) -> Divergence {
 
 /// `verify_paths` with run inputs the user declared irrelevant removed before the comparison: `ignore_env` holds
 /// environment variable names, or prefixes ending in `*`. The report lists what was ignored.
+///
+/// Bounded memory (P0 big trace): the traces are read through [`FileTrace`], one slim record per test; whole records
+/// are loaded two at a time where the verifier compares events.
 pub fn verify_paths_ignoring<P: AsRef<Path>>(paths: &[P], ignore_env: &[String]) -> Result<Report, TraceError> {
-    let mut traces = Vec::new();
-    let mut labels = Vec::new();
-    for p in paths {
-        traces.push(read_trace(p.as_ref())?);
-        labels.push(p.as_ref().display().to_string());
-    }
-    check_compatible(&traces, &labels)?;
+    let (mut traces, labels) = open_paths(paths)?;
     let matches = |var: &str| {
         ignore_env.iter().any(|g| match g.strip_suffix('*') {
             Some(prefix) => var.starts_with(prefix),
@@ -1091,32 +1107,41 @@ pub fn verify_paths_ignoring<P: AsRef<Path>>(paths: &[P], ignore_env: &[String])
             }
         }
     }
-    let mut r = verify(&traces, &labels);
+    let mut r = verify_sources(&traces, &labels)?;
     r.ignored_inputs = ignored.into_iter().collect();
     Ok(r)
 }
 
 pub fn verify_paths<P: AsRef<Path>>(paths: &[P]) -> Result<Report, TraceError> {
+    let (traces, labels) = open_paths(paths)?;
+    Ok(verify_sources(&traces, &labels)?)
+}
+
+fn open_paths<P: AsRef<Path>>(paths: &[P]) -> Result<(Vec<FileTrace>, Vec<String>), TraceError> {
     let mut traces = Vec::new();
     let mut labels = Vec::new();
     for p in paths {
-        traces.push(read_trace(p.as_ref())?);
+        traces.push(FileTrace::open(p.as_ref())?);
         labels.push(p.as_ref().display().to_string());
     }
-    check_compatible(&traces, &labels)?;
-    Ok(verify(&traces, &labels))
+    check_headers(&traces.iter().map(|t| &t.header).collect::<Vec<_>>(), &labels)?;
+    Ok((traces, labels))
 }
 
 /// Traces with different event encodings are never compared: their
 /// fingerprints differ by construction, which is not a divergence.
 pub fn check_compatible(traces: &[Trace], labels: &[String]) -> Result<(), TraceError> {
-    let Some(first) = traces.first() else { return Ok(()) };
-    let base = first.header.encoding;
-    for (t, l) in traces.iter().zip(labels).skip(1) {
-        if t.header.encoding != base {
+    check_headers(&traces.iter().map(|t| &t.header).collect::<Vec<_>>(), labels)
+}
+
+fn check_headers(headers: &[&Header], labels: &[String]) -> Result<(), TraceError> {
+    let Some(first) = headers.first() else { return Ok(()) };
+    let base = first.encoding;
+    for (t, l) in headers.iter().zip(labels).skip(1) {
+        if t.encoding != base {
             return Err(TraceError::Incompatible(format!(
                 "{} uses event encoding {} but {} uses {}; re-run both with the same detpy version",
-                labels[0], base, l, t.header.encoding
+                labels[0], base, l, t.encoding
             )));
         }
     }
