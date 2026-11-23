@@ -1,0 +1,24 @@
+$ gh auth status
+github.com
+  X Failed to log in to github.com using token (GH_TOKEN)
+  - Active account: true
+  - The token in GH_TOKEN is invalid.
+[exit 1]
+
+$ gh api rate_limit --jq .resources.core
+{"limit":15000,"remaining":14997,"reset":1795462004,"used":3}
+[exit 0]
+
+$ gh api -X GET search/issues -f q='is:pr is:merged author:app/copilot-swe-agent' -f per_page=1 --jq '{total_count, incomplete_results, first: .items[0].html_url}'
+{"first":"https://github.com/makr-code/ThemisDB/pull/8375","incomplete_results":false,"total_count":1541356}
+[exit 0]
+
+$ gh api repos/sarveshgupte/Docketra/pulls/1307
+{"message":"GitHub access to this repository is not enabled for this session. Use add_repo to request access. If add_repo answers that read access is already available and you need GitHub API or write access, call add_repo again with access:\"push\" to attach the repository with credentials.","documentation_url":"https://docs.anthropic.com/en/docs/claude-code/github-actions"}gh: GitHub access to this repository is not enabled for this session. Use add_repo to request access. If add_repo answers that read access is already available and you need GitHub API or write access, call add_repo again with access:"push" to attach the repository with credentials. (HTTP 403)
+[exit 1]
+
+$ gh api graphql -f query='{viewer{login}}'
+{"message":"GitHub GraphQL is not available from Claude Code sessions; use the REST API (gh api repos/{owner}/{repo}/...). To open a pull request, where this session may: push the branch, then gh api repos/\u003cowner\u003e/\u003crepo\u003e/pulls -f title='\u003ctitle\u003e' -f head='\u003cbranch\u003e' -f base='\u003cbase branch\u003e' -f body='\u003ctext\u003e' (a draft: add -F draft=true). For review threads, auto-merge, and draft/ready-for-review use the CCR routes on api.github.com: GET /repos/{owner}/{repo}/pulls/{n}/ccr/review_threads, POST /repos/{owner}/{repo}/pulls/{n}/ccr/comments/{comment_id}/resolve (or /unresolve), PUT or DELETE /repos/{owner}/{repo}/pulls/{n}/ccr/auto_merge, POST /repos/{owner}/{repo}/pulls/{n}/ccr/ready_for_review, POST /repos/{owner}/{repo}/pulls/{n}/ccr/convert_to_draft.","documentation_url":"https://docs.anthropic.com/en/docs/claude-code/github-actions"}gh: GitHub GraphQL is not available from Claude Code sessions; use the REST API (gh api repos/{owner}/{repo}/...). To open a pull request, where this session may: push the branch, then gh api repos/<owner>/<repo>/pulls -f title='<title>' -f head='<branch>' -f base='<base branch>' -f body='<text>' (a draft: add -F draft=true). For review threads, auto-merge, and draft/ready-for-review use the CCR routes on api.github.com: GET /repos/{owner}/{repo}/pulls/{n}/ccr/review_threads, POST /repos/{owner}/{repo}/pulls/{n}/ccr/comments/{comment_id}/resolve (or /unresolve), PUT or DELETE /repos/{owner}/{repo}/pulls/{n}/ccr/auto_merge, POST /repos/{owner}/{repo}/pulls/{n}/ccr/ready_for_review, POST /repos/{owner}/{repo}/pulls/{n}/ccr/convert_to_draft. (HTTP 403)
+[exit 1]
+
+Mon Nov 23 18:34:21 UTC 2026

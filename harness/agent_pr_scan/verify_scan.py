@@ -152,6 +152,9 @@ def compute() -> dict:
         k[f"c1_{tag}_strong_lo"], k[f"c1_{tag}_strong_hi"] = wilson(len(conf_s), len(den))
         k[f"c1_{tag}_rate_all"] = pct(conf, len(pr))
         k[f"c1_{tag}_borderline"] = sum(1 for r in flagged if hc.get(r["url"], {}).get("borderline"))
+        k[f"c1_{tag}_flagged"] = len(flagged)
+        k[f"c1_{tag}_not_conf"] = len(flagged) - conf
+        k[f"c1_{tag}_conf_plus_borderline"] = conf + k[f"c1_{tag}_borderline"]
         k[f"c1_{tag}_testonly_strong_signals"] = sum(r["strong_signals_test_only_pr"] for r in den)
         k[f"c1_{tag}_snapshot_prs"] = sum(r["snapshot_files_changed"] > 0 for r in den)
         k[f"c1_{tag}_test_touching"] = sum(r["n_test_files_changed"] > 0 for r in den)
@@ -205,6 +208,29 @@ def compute() -> dict:
     k["c3_repos"] = len({r["repo"].lower() for r in c3})
     k["c3_named_file_only"] = sum(all(i["tests"] == ["<file>"] for i in r["identity"]) for r in named)
     k["unreadable_total"] = len(rd("unreadable.jsonl"))
+
+    def ucls(e: str) -> str:
+        if "already on the default branch" in e:
+            return "head_on_default"
+        if "no landing commit found and no merge-base" in e:
+            return "no_merge_base"
+        if "timeout" in e:
+            return "timeout"
+        if "couldn't find remote ref" in e:
+            return "no_pull_ref"
+        return "other"
+    for cnt in ("count1", "count3"):
+        rows_u = [u for u in rd("unreadable.jsonl") if u.get("count") == cnt]
+        for c in ("head_on_default", "no_merge_base", "timeout", "no_pull_ref", "other"):
+            k[f"unread_{cnt}_{c}"] = sum(ucls(u["error"]) == c for u in rows_u)
+        k[f"unread_{cnt}"] = len(rows_u)
+    # ---- preflight (preflight.txt holds the commands and their raw output) ----
+    pf = (HERE / "preflight.txt").read_text() if (HERE / "preflight.txt").exists() else ""
+    m = re.search(r'"limit":(\d+)', pf)
+    k["pf_core_limit"] = int(m.group(1)) if m else -1
+    m = re.search(r'"total_count":(\d+)', pf)
+    k["pf_search_total"] = int(m.group(1)) if m else -1
+    k["pf_http_403"] = pf.count("(HTTP 403)")
     return k
 
 

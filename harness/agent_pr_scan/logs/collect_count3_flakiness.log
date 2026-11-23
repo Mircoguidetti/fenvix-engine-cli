@@ -1,0 +1,12 @@
+flakiness 2025-11-01..2025-11-30 total=219 read=219
+retry 0 'is:pr is:merged is:public flakiness in:title merged:2025-12-01..2025-12-31' p2: gh: You have exceeded a secondary rate limit. Please wait a few minutes before you try again. For more on scraping GitHub and how it may affect your rights, please review our Terms of Service (https://docs.github.com/en/site-policy/github-terms/github-terms-of-service) If you reach out to GitHub Sup
+retry 1 'is:pr is:merged is:public flakiness in:title merged:2025-12-01..2025-12-31' p2: gh: You have exceeded a secondary rate limit. Please wait a few minutes before you try again. For more on scraping GitHub and how it may affect your rights, please review our Terms of Service (https://docs.github.com/en/site-policy/github-terms/github-terms-of-service) If you reach out to GitHub Sup
+flakiness 2025-12-01..2025-12-31 total=236 read=200
+flakiness 2026-01-01..2026-01-31 total=297 read=200
+flakiness 2026-02-01..2026-02-28 total=443 read=200
+flakiness 2026-03-01..2026-03-31 total=506 read=200
+flakiness 2026-04-01..2026-04-30 total=522 read=200
+flakiness 2026-05-01..2026-05-31 total=480 read=200
+flakiness 2026-06-01..2026-06-30 total=642 read=200
+flakiness 2026-07-01..2026-07-31 total=718 read=200
+flakiness 2026-08-01..2026-08-15 total=299 read=200

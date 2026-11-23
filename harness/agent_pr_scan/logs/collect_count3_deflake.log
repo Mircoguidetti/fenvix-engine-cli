@@ -1,0 +1,12 @@
+deflake 2025-11-01..2025-11-30 total=130 read=130
+deflake 2025-12-01..2025-12-31 total=119 read=119
+retry 0 'is:pr is:merged is:public deflake in:title merged:2026-01-01..2026-01-31' p1: gh: You have exceeded a secondary rate limit. Please wait a few minutes before you try again. For more on scraping GitHub and how it may affect your rights, please review our Terms of Service (https://docs.github.com/en/site-policy/github-terms/github-terms-of-service) If you reach out to GitHub Sup
+retry 1 'is:pr is:merged is:public deflake in:title merged:2026-01-01..2026-01-31' p1: gh: You have exceeded a secondary rate limit. Please wait a few minutes before you try again. For more on scraping GitHub and how it may affect your rights, please review our Terms of Service (https://docs.github.com/en/site-policy/github-terms/github-terms-of-service) If you reach out to GitHub Sup
+deflake 2026-01-01..2026-01-31 total=125 read=125
+deflake 2026-02-01..2026-02-28 total=159 read=159
+deflake 2026-03-01..2026-03-31 total=280 read=200
+deflake 2026-04-01..2026-04-30 total=252 read=200
+deflake 2026-05-01..2026-05-31 total=336 read=200
+deflake 2026-06-01..2026-06-30 total=519 read=200
+deflake 2026-07-01..2026-07-31 total=889 read=200
+deflake 2026-08-01..2026-08-15 total=345 read=200
