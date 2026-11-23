@@ -260,7 +260,7 @@ Per-test causes (every test identical on the trunk and not on the branch; `proof
   two tests that fail on the trunk engine locally (`--det-order`, "a file another test file wrote"; the new test files
   move them from shard 0 to shard 3). `smoke (node)` was new: `det_traces_identical` failed with `run input clock
   differs` (two runs, two host epochs); fixed with the opt-out on the smoke's two runs (757ae01; locally the same two
-  runs verify `277` identical, exit 0). CI_RESULT_PLACEHOLDER
+  runs verify `277` identical, exit 0). Second LIGHT run 45276046330 (757ae016): failing jobs `attacks`, `python (3.13, shard 3/4)`, `node (24, shard 3/4)` (3, as the trunk's 3); `smoke (node)` and `smoke (python)` pass; `attacks`: `=== attacks: python rc=1, node rc=0 ===` (every Node attack passes, 60/60 in the verify-inputs file; the Python engine is unchanged); other shards cancelled by the matrix's fail-fast in both runs. No new failing job against the trunk's run on the same engine.
 
 ## 6. Not done, risks, next decisions
 
