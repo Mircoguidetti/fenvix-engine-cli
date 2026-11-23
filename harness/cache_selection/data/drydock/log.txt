@@ -7,3 +7,438 @@
 2026-11-23T19:48:10Z FULL RUN pr-index 5 PR #1570 base ea102a9820827dab69e268de1d4593956d41965d
 2026-11-23T19:48:11Z   $ git checkout -q -f --detach ea102a9820827dab69e268de1d4593956d41965d && git clean -fdxq -e node_modules  -> exit 0 in 0.3s
 2026-11-23T19:48:14Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 3.7s
+2026-11-23T19:48:26Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 11.8s
+2026-11-23T19:56:57Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/drydock/full-05.json  -> exit 0 in 511.1s
+2026-11-23T19:56:58Z   full run 5: ok exit 0 511.1s {'passed': 20125, 'skipped': 1}
+2026-11-23T19:56:58Z FULL RUN pr-index 10 PR #1662 base 9a0ca8aeaa8cc11133edd1a7882b38b1f5b4e551
+2026-11-23T19:56:58Z   $ git checkout -q -f --detach 9a0ca8aeaa8cc11133edd1a7882b38b1f5b4e551 && git clean -fdxq -e node_modules  -> exit 0 in 0.4s
+2026-11-23T19:57:01Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 3.5s
+2026-11-23T19:57:10Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 8.4s
+2026-11-23T20:06:04Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/drydock/full-10.json  -> exit 0 in 534.4s
+2026-11-23T20:06:05Z   full run 10: ok exit 0 534.4s {'passed': 21506, 'skipped': 1}
+2026-11-23T20:06:05Z STATE PR #1520 (code) state 1/5 12248346e4 base 955a772ade
+2026-11-23T20:06:05Z   $ git checkout -q -f --detach 12248346e4f1a4c0d4214d33c0e79f0c5a0982a5 && git clean -fdxq -e node_modules  -> exit 0 in 0.4s
+2026-11-23T20:06:09Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 3.7s
+2026-11-23T20:06:19Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 10.4s
+2026-11-23T20:06:20Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:06:21Z   $ npx --no-install vitest list  --changed 955a772adec8376bc769801aa1109f1a1924bafb --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:06:21Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:06:21Z STATE PR #1531 (code) state 1/5 e57a679f6c base 06b3d2e2e0
+2026-11-23T20:06:21Z   $ git checkout -q -f --detach e57a679f6ce8502c701de93b3ed94167d3db880a && git clean -fdxq -e node_modules  -> exit 0 in 0.2s
+2026-11-23T20:06:22Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T20:06:35Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 13.4s
+2026-11-23T20:06:36Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:06:36Z   $ npx --no-install vitest list  --changed 06b3d2e2e00675bc74d8a59f3c78f8c2473d8103 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.7s
+2026-11-23T20:06:36Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:06:36Z STATE PR #1550 (code) state 1/5 870bbd8cf8 base c98208d091
+2026-11-23T20:06:37Z   $ git checkout -q -f --detach 870bbd8cf831837959e059f94fd7c93d78e5a5d3 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:06:37Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.6s
+2026-11-23T20:06:51Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.1s
+2026-11-23T20:06:52Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.7s
+2026-11-23T20:07:03Z   $ npx --no-install vitest list  --changed c98208d091e3abf58400f1bfd306240c2501a633 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 11.0s
+2026-11-23T20:09:01Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/drydock/excl-1550-870bbd8c.json agent/PortwingDockerBridge.test.ts agent/agent-warnings.test.ts agent/components/Agent.test.ts agent/controller-docker-transport.test.ts agent/ed25519-signer.test.ts agent/edge-key-rotation.test.ts agent/manager.test.ts agent/standard-key-rotation-client.test.ts agent/standard-key-rotation  -> exit 0 in 118.1s
+2026-11-23T20:09:01Z   -> ok share=0.1572 sel=279 excl=312 failures=[]
+2026-11-23T20:09:01Z STATE PR #1556 (code) state 1/5 3046abaf4d base fbfc42c596
+2026-11-23T20:09:01Z   $ git checkout -q -f --detach 3046abaf4d50d03965dd4b6fde31ddbffb68a5dc && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:09:05Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 3.8s
+2026-11-23T20:09:19Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 13.9s
+2026-11-23T20:09:20Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:09:20Z   $ npx --no-install vitest list  --changed fbfc42c5961d8914421e9c0c4ddf6131ce7965b5 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:09:20Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:09:20Z STATE PR #1566 (code) state 1/5 ba23d2b332 base b582290588
+2026-11-23T20:09:21Z   $ git checkout -q -f --detach ba23d2b332386a626621ee87fc79b8d902ae31e6 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:09:21Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:09:36Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.8s
+2026-11-23T20:09:37Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:09:38Z   $ npx --no-install vitest list  --changed b5822905885efcff0316c589407a554386227371 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.6s
+2026-11-23T20:09:38Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:09:38Z STATE PR #1570 (code) state 1/5 eba494bf4a base ea102a9820
+2026-11-23T20:09:38Z   $ git checkout -q -f --detach eba494bf4a73d8148c64c61b6d01547bad6c9260 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:09:38Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.6s
+2026-11-23T20:09:53Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.6s
+2026-11-23T20:09:53Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:10:05Z   $ npx --no-install vitest list  --changed ea102a9820827dab69e268de1d4593956d41965d --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 11.3s
+2026-11-23T20:12:04Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/drydock/excl-1570-eba494bf.json agent/PortwingDockerBridge.test.ts agent/agent-warnings.test.ts agent/components/Agent.test.ts agent/controller-docker-transport.test.ts agent/ed25519-signer.test.ts agent/manager.test.ts agent/standard-key-rotation-client.test.ts agent/standard-key-rotation.test.ts api/api-key-audit.test.  -> exit 0 in 119.6s
+2026-11-23T20:12:04Z   -> ok share=0.1083 sel=238 excl=353 failures=[]
+2026-11-23T20:12:04Z STATE PR #1594 (code) state 1/5 660c1749fc base 808411a972
+2026-11-23T20:12:05Z   $ git checkout -q -f --detach 660c1749fc6eaa3780e918675f0af0f33aa0e58f && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:12:08Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 3.6s
+2026-11-23T20:12:17Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 8.6s
+2026-11-23T20:12:17Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:12:18Z   $ npx --no-install vitest list  --changed 808411a97209fffb9b2be04a98cde1265f7759ca --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.7s
+2026-11-23T20:12:18Z   -> ok share=0.0 sel=593 excl=0 failures=[]
+2026-11-23T20:12:18Z STATE PR #1644 (code) state 1/5 5463bdac3d base ff11b8d596
+2026-11-23T20:12:18Z   $ git checkout -q -f --detach 5463bdac3d660c161c579f5d57e89b1dff804c35 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:12:19Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:12:32Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 13.5s
+2026-11-23T20:12:33Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:12:44Z   $ npx --no-install vitest list  --changed ff11b8d59699ceb0ab54aabdbdd2362123ea9988 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 11.5s
+2026-11-23T20:15:03Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/drydock/excl-1644-5463bdac.json agent/PortwingDockerBridge.test.ts agent/agent-warnings.test.ts agent/components/Agent.test.ts agent/controller-docker-transport.test.ts agent/ed25519-signer.test.ts agent/edge-key-rotation.test.ts agent/manager.test.ts agent/standard-key-rotation-client.test.ts agent/standard-key-rotation  -> exit 0 in 138.9s
+2026-11-23T20:15:03Z   -> ok share=0.1736 sel=248 excl=347 failures=[]
+2026-11-23T20:15:03Z STATE PR #1647 (code) state 1/5 37ec08a529 base 55ebc008e6
+2026-11-23T20:15:03Z   $ git checkout -q -f --detach 37ec08a529de470b76760402deacc21cb58dd407 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:15:07Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 3.8s
+2026-11-23T20:15:22Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.8s
+2026-11-23T20:15:23Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:15:35Z   $ npx --no-install vitest list  --changed 55ebc008e67ca4d0f04038177a3ce1aa4bc79350 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 12.1s
+2026-11-23T20:24:05Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/drydock/excl-1647-37ec08a5.json agent/AgentClient-key-rotation.test.ts agent/AgentClient.container-reconcile.test.ts agent/AgentClient.inventory.test.ts agent/AgentClient.test.ts agent/EdgeAgentAdapter.test.ts agent/PortwingDockerBridge.test.ts agent/agent-ingest.group-policy.test.ts agent/agent-inventory.test.ts agent/a  -> exit 0 in 509.9s
+2026-11-23T20:24:05Z   -> ok share=0.9996 sel=1 excl=594 failures=[]
+2026-11-23T20:24:05Z STATE PR #1660 (code) state 1/5 efabee80e1 base 51ca7ab3d5
+2026-11-23T20:24:05Z   $ git checkout -q -f --detach efabee80e14c388f3d246a5701b85a3302b26d50 && git clean -fdxq -e node_modules  -> exit 0 in 0.3s
+2026-11-23T20:24:09Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 3.5s
+2026-11-23T20:24:18Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 9.2s
+2026-11-23T20:24:19Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:24:20Z   $ npx --no-install vitest list  --changed 51ca7ab3d5178e179d472a2f7b77c340de17084b --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.7s
+2026-11-23T20:24:20Z   -> ok share=0.0 sel=652 excl=0 failures=[]
+2026-11-23T20:24:20Z STATE PR #1662 (code) state 1/5 bdcbfcb4a6 base 9a0ca8aeaa
+2026-11-23T20:24:20Z   $ git checkout -q -f --detach bdcbfcb4a68eb05f6754f93dc43527c3e05d2505 && git clean -fdxq -e node_modules  -> exit 0 in 0.2s
+2026-11-23T20:24:21Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:24:34Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 13.7s
+2026-11-23T20:24:35Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.7s
+2026-11-23T20:24:47Z   $ npx --no-install vitest list  --changed 9a0ca8aeaa8cc11133edd1a7882b38b1f5b4e551 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 11.8s
+2026-11-23T20:34:00Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/drydock/excl-1662-bdcbfcb4.json agent/AgentClient-key-rotation.test.ts agent/AgentClient.container-reconcile.test.ts agent/AgentClient.inventory.test.ts agent/AgentClient.test.ts agent/EdgeAgentAdapter.test.ts agent/PortwingDockerBridge.test.ts agent/agent-ingest.group-policy.test.ts agent/agent-inventory.test.ts agent/a  -> exit 0 in 552.9s
+2026-11-23T20:34:00Z   -> ok share=0.9995 sel=1 excl=651 failures=[]
+2026-11-23T20:34:00Z STATE PR #1661 (code) state 1/5 43320a4ee7 base e0f0daabc9
+2026-11-23T20:34:00Z   $ git checkout -q -f --detach 43320a4ee714e68e61fc9a53f29140704d37f4fc && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:34:04Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 3.9s
+2026-11-23T20:34:12Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 7.8s
+2026-11-23T20:34:13Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.7s
+2026-11-23T20:34:14Z   $ npx --no-install vitest list  --changed e0f0daabc93d1dacb897a4042b37461b06ccde60 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:34:14Z   -> ok share=0.0 sel=652 excl=0 failures=[]
+2026-11-23T20:34:14Z STATE PR #1520 (code) state 2/5 4f9233a162 base 955a772ade
+2026-11-23T20:34:14Z   $ git checkout -q -f --detach 4f9233a162f3333801ccc7aa4e17b9420dd54c42 && git clean -fdxq -e node_modules  -> exit 0 in 0.4s
+2026-11-23T20:34:15Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:34:23Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 8.8s
+2026-11-23T20:34:24Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:34:25Z   $ npx --no-install vitest list  --changed 955a772adec8376bc769801aa1109f1a1924bafb --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:34:25Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:34:25Z STATE PR #1531 (code) state 2/5 1a2917d657 base 06b3d2e2e0
+2026-11-23T20:34:25Z   $ git checkout -q -f --detach 1a2917d6572445594f53ac12800ffc756dc0125d && git clean -fdxq -e node_modules  -> exit 0 in 0.2s
+2026-11-23T20:34:26Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.6s
+2026-11-23T20:34:39Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 13.3s
+2026-11-23T20:34:40Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:34:41Z   $ npx --no-install vitest list  --changed 06b3d2e2e00675bc74d8a59f3c78f8c2473d8103 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.7s
+2026-11-23T20:34:41Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:34:41Z STATE PR #1550 (code) state 2/5 3ac05d4dbd base c98208d091
+2026-11-23T20:34:41Z   $ git checkout -q -f --detach 3ac05d4dbde02b76b3299d3348044ca1e3bfe761 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:34:41Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:34:56Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.8s
+2026-11-23T20:34:57Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:34:58Z   $ npx --no-install vitest list  --changed c98208d091e3abf58400f1bfd306240c2501a633 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.9s
+2026-11-23T20:34:58Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:34:58Z STATE PR #1556 (code) state 2/5 2848feab66 base fbfc42c596
+2026-11-23T20:34:58Z   $ git checkout -q -f --detach 2848feab66c18691c0573d178686276fa59fe2a9 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:34:59Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:35:13Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.4s
+2026-11-23T20:35:14Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.7s
+2026-11-23T20:35:15Z   $ npx --no-install vitest list  --changed fbfc42c5961d8914421e9c0c4ddf6131ce7965b5 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:35:15Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:35:15Z STATE PR #1566 (code) state 2/5 3819ea2a53 base b582290588
+2026-11-23T20:35:15Z   $ git checkout -q -f --detach 3819ea2a53e1d12b4cd837992d0c9388714ddd47 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:35:16Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:35:30Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.5s
+2026-11-23T20:35:31Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.7s
+2026-11-23T20:35:32Z   $ npx --no-install vitest list  --changed b5822905885efcff0316c589407a554386227371 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:35:32Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:35:32Z STATE PR #1570 (code) state 2/5 8bf398db08 base ea102a9820
+2026-11-23T20:35:32Z   $ git checkout -q -f --detach 8bf398db089ccb5bd7b204e8ca76cdab508af87f && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:35:33Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:35:47Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.4s
+2026-11-23T20:35:48Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.7s
+2026-11-23T20:35:49Z   $ npx --no-install vitest list  --changed ea102a9820827dab69e268de1d4593956d41965d --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:35:49Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:35:49Z STATE PR #1594 (code) state 2/5 8d8c92786e base 808411a972
+2026-11-23T20:35:49Z   $ git checkout -q -f --detach 8d8c92786e78e1690224b2adf6b58520969bca35 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:35:50Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:36:04Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 13.9s
+2026-11-23T20:36:04Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.7s
+2026-11-23T20:36:05Z   $ npx --no-install vitest list  --changed 808411a97209fffb9b2be04a98cde1265f7759ca --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:36:05Z   -> ok share=0.0 sel=593 excl=0 failures=[]
+2026-11-23T20:36:05Z STATE PR #1644 (code) state 2/5 c6bb50881f base ff11b8d596
+2026-11-23T20:36:05Z   $ git checkout -q -f --detach c6bb50881f72d3d8fa223e706cfa9db67e267723 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:36:06Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:36:21Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.5s
+2026-11-23T20:36:22Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:36:22Z   $ npx --no-install vitest list  --changed ff11b8d59699ceb0ab54aabdbdd2362123ea9988 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:36:22Z   -> ok share=0.0 sel=595 excl=0 failures=[]
+2026-11-23T20:36:22Z STATE PR #1647 (code) state 2/5 bb1996a635 base 55ebc008e6
+2026-11-23T20:36:22Z   $ git checkout -q -f --detach bb1996a635ebf9ca8b735b2479d9123e87947333 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:36:23Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:36:38Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.7s
+2026-11-23T20:36:39Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:36:40Z   $ npx --no-install vitest list  --changed 55ebc008e67ca4d0f04038177a3ce1aa4bc79350 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.9s
+2026-11-23T20:36:40Z   -> ok share=0.0 sel=595 excl=0 failures=[]
+2026-11-23T20:36:40Z STATE PR #1660 (code) state 2/5 3e9925e63f base 51ca7ab3d5
+2026-11-23T20:36:40Z   $ git checkout -q -f --detach 3e9925e63f2bbbdb8cc0f12e6f745670fb986986 && git clean -fdxq -e node_modules  -> exit 0 in 0.4s
+2026-11-23T20:36:41Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T20:36:56Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.8s
+2026-11-23T20:36:57Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:36:57Z   $ npx --no-install vitest list  --changed 51ca7ab3d5178e179d472a2f7b77c340de17084b --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:36:57Z   -> ok share=0.0 sel=652 excl=0 failures=[]
+2026-11-23T20:36:57Z STATE PR #1662 (code) state 2/5 bbc4cba937 base 9a0ca8aeaa
+2026-11-23T20:36:58Z   $ git checkout -q -f --detach bbc4cba937257ed9a029024f8dc5f849ed94efe3 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:36:58Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:37:13Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.4s
+2026-11-23T20:37:14Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:37:14Z   $ npx --no-install vitest list  --changed 9a0ca8aeaa8cc11133edd1a7882b38b1f5b4e551 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:37:14Z   -> ok share=0.0 sel=652 excl=0 failures=[]
+2026-11-23T20:37:14Z STATE PR #1661 (code) state 2/5 3e9925e63f base e0f0daabc9
+2026-11-23T20:37:14Z   $ git checkout -q -f --detach 3e9925e63f2bbbdb8cc0f12e6f745670fb986986 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:37:15Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.6s
+2026-11-23T20:37:29Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.3s
+2026-11-23T20:37:30Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:37:31Z   $ npx --no-install vitest list  --changed e0f0daabc93d1dacb897a4042b37461b06ccde60 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.9s
+2026-11-23T20:37:31Z   -> ok share=0.0 sel=652 excl=0 failures=[]
+2026-11-23T20:37:31Z STATE PR #1520 (code) state 3/5 7430da05f8 base 955a772ade
+2026-11-23T20:37:32Z   $ git checkout -q -f --detach 7430da05f844fd4640f313711cdd152fca96c14a && git clean -fdxq -e node_modules  -> exit 0 in 0.5s
+2026-11-23T20:37:32Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:37:47Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.4s
+2026-11-23T20:37:47Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:37:48Z   $ npx --no-install vitest list  --changed 955a772adec8376bc769801aa1109f1a1924bafb --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:37:48Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:37:48Z STATE PR #1531 (code) state 3/5 20fbea8c30 base 06b3d2e2e0
+2026-11-23T20:37:48Z   $ git checkout -q -f --detach 20fbea8c306dd15fc0995e5659e1721263bc24c8 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:37:49Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:38:04Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 15.2s
+2026-11-23T20:38:05Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.7s
+2026-11-23T20:38:06Z   $ npx --no-install vitest list  --changed 06b3d2e2e00675bc74d8a59f3c78f8c2473d8103 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:38:06Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:38:06Z STATE PR #1550 (code) state 3/5 aa4c01b9b4 base c98208d091
+2026-11-23T20:38:06Z   $ git checkout -q -f --detach aa4c01b9b4e4a5d306bb5c3ecb191e8ab26fdd60 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:38:07Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:38:21Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.7s
+2026-11-23T20:38:22Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:38:23Z   $ npx --no-install vitest list  --changed c98208d091e3abf58400f1bfd306240c2501a633 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:38:23Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:38:23Z STATE PR #1556 (code) state 3/5 1adfe248d5 base fbfc42c596
+2026-11-23T20:38:23Z   $ git checkout -q -f --detach 1adfe248d5fd850b79675ef93911e3cca4c1576e && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:38:24Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:38:40Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 15.8s
+2026-11-23T20:38:41Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.7s
+2026-11-23T20:38:41Z   $ npx --no-install vitest list  --changed fbfc42c5961d8914421e9c0c4ddf6131ce7965b5 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:38:41Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:38:41Z STATE PR #1566 (code) state 3/5 f8c1122545 base b582290588
+2026-11-23T20:38:42Z   $ git checkout -q -f --detach f8c112254518e83187202910c8cf2b22c82b8a4e && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:38:42Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:38:57Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.9s
+2026-11-23T20:38:58Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.7s
+2026-11-23T20:38:59Z   $ npx --no-install vitest list  --changed b5822905885efcff0316c589407a554386227371 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:38:59Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:38:59Z STATE PR #1570 (code) state 3/5 56eceb5c27 base ea102a9820
+2026-11-23T20:38:59Z   $ git checkout -q -f --detach 56eceb5c27efeb043b21f0df217295c88e891fef && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:39:00Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:39:15Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.9s
+2026-11-23T20:39:15Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:39:16Z   $ npx --no-install vitest list  --changed ea102a9820827dab69e268de1d4593956d41965d --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:39:16Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:39:16Z STATE PR #1594 (code) state 3/5 062716c2dd base 808411a972
+2026-11-23T20:39:16Z   $ git checkout -q -f --detach 062716c2dd5cfb01cab871e23678c616f4e5d605 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:39:17Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:39:32Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 15.0s
+2026-11-23T20:39:33Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.7s
+2026-11-23T20:39:34Z   $ npx --no-install vitest list  --changed 808411a97209fffb9b2be04a98cde1265f7759ca --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:39:34Z   -> ok share=0.0 sel=593 excl=0 failures=[]
+2026-11-23T20:39:34Z STATE PR #1644 (code) state 3/5 7d6fbe81b0 base ff11b8d596
+2026-11-23T20:39:34Z   $ git checkout -q -f --detach 7d6fbe81b0e0ad1212d1dfc37c0ca3588dddf5d1 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:39:35Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.6s
+2026-11-23T20:39:50Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 15.4s
+2026-11-23T20:39:51Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:39:51Z   $ npx --no-install vitest list  --changed ff11b8d59699ceb0ab54aabdbdd2362123ea9988 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:39:52Z   -> ok share=0.0 sel=595 excl=0 failures=[]
+2026-11-23T20:39:52Z STATE PR #1647 (code) state 3/5 c6bb50881f base 55ebc008e6
+2026-11-23T20:39:52Z   $ git checkout -q -f --detach c6bb50881f72d3d8fa223e706cfa9db67e267723 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:39:52Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:40:06Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.2s
+2026-11-23T20:40:07Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:40:08Z   $ npx --no-install vitest list  --changed 55ebc008e67ca4d0f04038177a3ce1aa4bc79350 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.9s
+2026-11-23T20:40:08Z   -> ok share=0.0 sel=595 excl=0 failures=[]
+2026-11-23T20:40:08Z STATE PR #1660 (code) state 3/5 38f65a0df9 base 51ca7ab3d5
+2026-11-23T20:40:08Z   $ git checkout -q -f --detach 38f65a0df987a0d6dc041954944691abf515f56a && git clean -fdxq -e node_modules  -> exit 0 in 0.3s
+2026-11-23T20:40:09Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:40:24Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.7s
+2026-11-23T20:40:25Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:40:26Z   $ npx --no-install vitest list  --changed 51ca7ab3d5178e179d472a2f7b77c340de17084b --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:40:26Z   -> ok share=0.0 sel=652 excl=0 failures=[]
+2026-11-23T20:40:26Z STATE PR #1662 (code) state 3/5 3e9925e63f base 9a0ca8aeaa
+2026-11-23T20:40:26Z   $ git checkout -q -f --detach 3e9925e63f2bbbdb8cc0f12e6f745670fb986986 && git clean -fdxq -e node_modules  -> exit 0 in 0.2s
+2026-11-23T20:40:27Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:40:37Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 10.2s
+2026-11-23T20:40:38Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.7s
+2026-11-23T20:40:39Z   $ npx --no-install vitest list  --changed 9a0ca8aeaa8cc11133edd1a7882b38b1f5b4e551 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:40:39Z   -> ok share=0.0 sel=652 excl=0 failures=[]
+2026-11-23T20:40:39Z STATE PR #1661 (code) state 3/5 38f65a0df9 base e0f0daabc9
+2026-11-23T20:40:39Z   $ git checkout -q -f --detach 38f65a0df987a0d6dc041954944691abf515f56a && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:40:40Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T20:40:54Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.5s
+2026-11-23T20:40:55Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:40:56Z   $ npx --no-install vitest list  --changed e0f0daabc93d1dacb897a4042b37461b06ccde60 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:40:56Z   -> ok share=0.0 sel=652 excl=0 failures=[]
+2026-11-23T20:40:56Z STATE PR #1520 (code) state 4/5 05bbdab1fe base 955a772ade
+2026-11-23T20:40:56Z   $ git checkout -q -f --detach 05bbdab1fe67a6ae2b1461c3af463e9cadf54f27 && git clean -fdxq -e node_modules  -> exit 0 in 0.4s
+2026-11-23T20:40:57Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:41:12Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.9s
+2026-11-23T20:41:13Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.8s
+2026-11-23T20:41:14Z   $ npx --no-install vitest list  --changed 955a772adec8376bc769801aa1109f1a1924bafb --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:41:14Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:41:14Z STATE PR #1531 (code) state 4/5 4a953be260 base 06b3d2e2e0
+2026-11-23T20:41:14Z   $ git checkout -q -f --detach 4a953be260b7aecc92e11010662e82792481d863 && git clean -fdxq -e node_modules  -> exit 0 in 0.2s
+2026-11-23T20:41:15Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T20:41:29Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.6s
+2026-11-23T20:41:30Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:41:31Z   $ npx --no-install vitest list  --changed 06b3d2e2e00675bc74d8a59f3c78f8c2473d8103 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:41:31Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:41:31Z STATE PR #1550 (code) state 4/5 d507f6aa22 base c98208d091
+2026-11-23T20:41:31Z   $ git checkout -q -f --detach d507f6aa22f142c12f0455c24d7c80daecc73654 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:41:32Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:41:47Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.8s
+2026-11-23T20:41:47Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:41:48Z   $ npx --no-install vitest list  --changed c98208d091e3abf58400f1bfd306240c2501a633 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:41:48Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:41:48Z STATE PR #1556 (code) state 4/5 c210b9c926 base fbfc42c596
+2026-11-23T20:41:48Z   $ git checkout -q -f --detach c210b9c92681f0db8add1e37f393ef7ab57abe37 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:41:49Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:42:04Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 15.1s
+2026-11-23T20:42:05Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:42:06Z   $ npx --no-install vitest list  --changed fbfc42c5961d8914421e9c0c4ddf6131ce7965b5 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:42:06Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:42:06Z STATE PR #1566 (code) state 4/5 635961afb7 base b582290588
+2026-11-23T20:42:06Z   $ git checkout -q -f --detach 635961afb76664856a947924b9977926feaf6474 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:42:07Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.6s
+2026-11-23T20:42:21Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.0s
+2026-11-23T20:42:21Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.7s
+2026-11-23T20:42:22Z   $ npx --no-install vitest list  --changed b5822905885efcff0316c589407a554386227371 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:42:22Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:42:22Z STATE PR #1570 (code) state 4/5 27f1be5e5e base ea102a9820
+2026-11-23T20:42:22Z   $ git checkout -q -f --detach 27f1be5e5e5429e510fa4453d3179b406bc71a7c && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:42:23Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:42:38Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.6s
+2026-11-23T20:42:38Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:42:39Z   $ npx --no-install vitest list  --changed ea102a9820827dab69e268de1d4593956d41965d --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.7s
+2026-11-23T20:42:39Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:42:39Z STATE PR #1594 (code) state 4/5 3c8fb4d060 base 808411a972
+2026-11-23T20:42:39Z   $ git checkout -q -f --detach 3c8fb4d060c4dedc5789fdd7dcfe69d3a44b5542 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:42:40Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:42:55Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.7s
+2026-11-23T20:42:56Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:42:56Z   $ npx --no-install vitest list  --changed 808411a97209fffb9b2be04a98cde1265f7759ca --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:42:56Z   -> ok share=0.0 sel=593 excl=0 failures=[]
+2026-11-23T20:42:56Z STATE PR #1644 (code) state 4/5 22e066c77e base ff11b8d596
+2026-11-23T20:42:56Z   $ git checkout -q -f --detach 22e066c77e4116110c6b2fb4efff141a3d5d7f09 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:42:57Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:43:12Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.7s
+2026-11-23T20:43:13Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:43:14Z   $ npx --no-install vitest list  --changed ff11b8d59699ceb0ab54aabdbdd2362123ea9988 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:43:14Z   -> ok share=0.0 sel=595 excl=0 failures=[]
+2026-11-23T20:43:14Z STATE PR #1647 (code) state 4/5 7d6fbe81b0 base 55ebc008e6
+2026-11-23T20:43:14Z   $ git checkout -q -f --detach 7d6fbe81b0e0ad1212d1dfc37c0ca3588dddf5d1 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:43:14Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:43:29Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.8s
+2026-11-23T20:43:30Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:43:31Z   $ npx --no-install vitest list  --changed 55ebc008e67ca4d0f04038177a3ce1aa4bc79350 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:43:31Z   -> ok share=0.0 sel=595 excl=0 failures=[]
+2026-11-23T20:43:31Z STATE PR #1660 (code) state 4/5 f89b829266 base 51ca7ab3d5
+2026-11-23T20:43:31Z   $ git checkout -q -f --detach f89b829266dac57c8c7707de4c2caade711d0ecb && git clean -fdxq -e node_modules  -> exit 0 in 0.2s
+2026-11-23T20:43:32Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:43:47Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.7s
+2026-11-23T20:43:47Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.7s
+2026-11-23T20:43:48Z   $ npx --no-install vitest list  --changed 51ca7ab3d5178e179d472a2f7b77c340de17084b --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:43:48Z   -> ok share=0.0 sel=652 excl=0 failures=[]
+2026-11-23T20:43:48Z STATE PR #1662 (code) state 4/5 38f65a0df9 base 9a0ca8aeaa
+2026-11-23T20:43:48Z   $ git checkout -q -f --detach 38f65a0df987a0d6dc041954944691abf515f56a && git clean -fdxq -e node_modules  -> exit 0 in 0.2s
+2026-11-23T20:43:49Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:44:04Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.9s
+2026-11-23T20:44:05Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:44:06Z   $ npx --no-install vitest list  --changed 9a0ca8aeaa8cc11133edd1a7882b38b1f5b4e551 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:44:06Z   -> ok share=0.0 sel=652 excl=0 failures=[]
+2026-11-23T20:44:06Z STATE PR #1661 (code) state 4/5 f89b829266 base e0f0daabc9
+2026-11-23T20:44:06Z   $ git checkout -q -f --detach f89b829266dac57c8c7707de4c2caade711d0ecb && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:44:06Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.6s
+2026-11-23T20:44:21Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.8s
+2026-11-23T20:44:22Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.7s
+2026-11-23T20:44:23Z   $ npx --no-install vitest list  --changed e0f0daabc93d1dacb897a4042b37461b06ccde60 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:44:23Z   -> ok share=0.0 sel=652 excl=0 failures=[]
+2026-11-23T20:44:23Z STATE PR #1520 (code) state 5/5 66076a0efc base 955a772ade
+2026-11-23T20:44:23Z   $ git checkout -q -f --detach 66076a0efc27808639b5043afea4eaa478588495 && git clean -fdxq -e node_modules  -> exit 0 in 0.5s
+2026-11-23T20:44:24Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:44:39Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.8s
+2026-11-23T20:44:40Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:44:41Z   $ npx --no-install vitest list  --changed 955a772adec8376bc769801aa1109f1a1924bafb --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:44:41Z   -> ok share=0.0 sel=590 excl=0 failures=[]
+2026-11-23T20:44:41Z STATE PR #1531 (code) state 5/5 a4e58c8cc2 base 06b3d2e2e0
+2026-11-23T20:44:41Z   $ git checkout -q -f --detach a4e58c8cc2a7c099efeaa661dda54b1927757519 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:44:41Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.6s
+2026-11-23T20:44:56Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 15.0s
+2026-11-23T20:44:57Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:44:58Z   $ npx --no-install vitest list  --changed 06b3d2e2e00675bc74d8a59f3c78f8c2473d8103 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:44:58Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:44:58Z STATE PR #1550 (code) state 5/5 8630cc2b85 base c98208d091
+2026-11-23T20:44:58Z   $ git checkout -q -f --detach 8630cc2b85d96c87335579a5b52c4432d433276a && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:44:59Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:45:14Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 15.5s
+2026-11-23T20:45:15Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.7s
+2026-11-23T20:45:16Z   $ npx --no-install vitest list  --changed c98208d091e3abf58400f1bfd306240c2501a633 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:45:16Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:45:16Z STATE PR #1556 (code) state 5/5 5b23bcd7ec base fbfc42c596
+2026-11-23T20:45:16Z   $ git checkout -q -f --detach 5b23bcd7ecdfd44e71a549a657d3efd9b0e98b7a && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:45:17Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T20:45:32Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 15.5s
+2026-11-23T20:45:33Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.7s
+2026-11-23T20:45:34Z   $ npx --no-install vitest list  --changed fbfc42c5961d8914421e9c0c4ddf6131ce7965b5 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:45:34Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:45:34Z STATE PR #1566 (code) state 5/5 cb5964f7dc base b582290588
+2026-11-23T20:45:34Z   $ git checkout -q -f --detach cb5964f7dc761d119996ae560cb712c7f52ccf45 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:45:35Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:45:50Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.7s
+2026-11-23T20:45:50Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.7s
+2026-11-23T20:45:51Z   $ npx --no-install vitest list  --changed b5822905885efcff0316c589407a554386227371 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:45:51Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:45:51Z STATE PR #1570 (code) state 5/5 3819ea2a53 base ea102a9820
+2026-11-23T20:45:51Z   $ git checkout -q -f --detach 3819ea2a53e1d12b4cd837992d0c9388714ddd47 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:45:52Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:46:07Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.7s
+2026-11-23T20:46:08Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:46:08Z   $ npx --no-install vitest list  --changed ea102a9820827dab69e268de1d4593956d41965d --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:46:08Z   -> ok share=0.0 sel=591 excl=0 failures=[]
+2026-11-23T20:46:08Z STATE PR #1594 (code) state 5/5 f5476b7317 base 808411a972
+2026-11-23T20:46:09Z   $ git checkout -q -f --detach f5476b73179db976e73512ca42c01d67fb0631b5 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:46:09Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:46:23Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 13.9s
+2026-11-23T20:46:24Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.7s
+2026-11-23T20:46:25Z   $ npx --no-install vitest list  --changed 808411a97209fffb9b2be04a98cde1265f7759ca --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:46:25Z   -> ok share=0.0 sel=593 excl=0 failures=[]
+2026-11-23T20:46:25Z STATE PR #1644 (code) state 5/5 8289164ebb base ff11b8d596
+2026-11-23T20:46:25Z   $ git checkout -q -f --detach 8289164ebb208a4e109de61f6d2301a9cb63baca && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:46:26Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:46:40Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.3s
+2026-11-23T20:46:41Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.8s
+2026-11-23T20:46:42Z   $ npx --no-install vitest list  --changed ff11b8d59699ceb0ab54aabdbdd2362123ea9988 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 1.0s
+2026-11-23T20:46:42Z   -> ok share=0.0 sel=595 excl=0 failures=[]
+2026-11-23T20:46:42Z STATE PR #1647 (code) state 5/5 22e066c77e base 55ebc008e6
+2026-11-23T20:46:42Z   $ git checkout -q -f --detach 22e066c77e4116110c6b2fb4efff141a3d5d7f09 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:46:43Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:46:54Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 11.5s
+2026-11-23T20:46:55Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:46:56Z   $ npx --no-install vitest list  --changed 55ebc008e67ca4d0f04038177a3ce1aa4bc79350 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:46:56Z   -> ok share=0.0 sel=595 excl=0 failures=[]
+2026-11-23T20:46:56Z STATE PR #1660 (code) state 5/5 877a020d39 base 51ca7ab3d5
+2026-11-23T20:46:56Z   $ git checkout -q -f --detach 877a020d3963111a75d78d8b7cdc97e3a5380e08 && git clean -fdxq -e node_modules  -> exit 0 in 0.2s
+2026-11-23T20:46:57Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:47:11Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.6s
+2026-11-23T20:47:12Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:47:13Z   $ npx --no-install vitest list  --changed 51ca7ab3d5178e179d472a2f7b77c340de17084b --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:47:13Z   -> ok share=0.0 sel=652 excl=0 failures=[]
+2026-11-23T20:47:13Z STATE PR #1662 (code) state 5/5 f89b829266 base 9a0ca8aeaa
+2026-11-23T20:47:13Z   $ git checkout -q -f --detach f89b829266dac57c8c7707de4c2caade711d0ecb && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:47:14Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:47:28Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.4s
+2026-11-23T20:47:29Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.7s
+2026-11-23T20:47:30Z   $ npx --no-install vitest list  --changed 9a0ca8aeaa8cc11133edd1a7882b38b1f5b4e551 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:47:30Z   -> ok share=0.0 sel=652 excl=0 failures=[]
+2026-11-23T20:47:30Z STATE PR #1661 (code) state 5/5 877a020d39 base e0f0daabc9
+2026-11-23T20:47:30Z   $ git checkout -q -f --detach 877a020d3963111a75d78d8b7cdc97e3a5380e08 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:47:31Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:47:45Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 14.6s
+2026-11-23T20:47:46Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/drydock/list-all.json  -> exit 0 in 0.7s
+2026-11-23T20:47:47Z   $ npx --no-install vitest list  --changed e0f0daabc93d1dacb897a4042b37461b06ccde60 --filesOnly --json=/home/user/work/tmp/drydock/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T20:47:47Z   -> ok share=0.0 sel=652 excl=0 failures=[]
+2026-11-23T20:47:47Z DONE rounds 5

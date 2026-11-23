@@ -12,7 +12,7 @@ from collections import Counter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ORDER = ['codex-multi-auth', 'ironcurtain', 'yalc', 'nestjs-pino', 'agentsys', 'lerna-lite', 'drydock', 'agentlang', 'alakajam']
-ENV_RE = re.compile(r'No native build was found|EAFNOSUPPORT|ECONNREFUSED|EADDRNOTAVAIL|ENETUNREACH|EAI_AGAIN|ENOTFOUND|getaddrinfo|EHOSTUNREACH|'
+ENV_RE = re.compile(r'No native build was found|Could not locate the bindings file|EAFNOSUPPORT|ECONNREFUSED|EADDRNOTAVAIL|ENETUNREACH|EAI_AGAIN|ENOTFOUND|getaddrinfo|EHOSTUNREACH|'
                     r"Executable doesn't exist|browserType\.launch|Cannot connect to the Docker|docker: not found")
 
 

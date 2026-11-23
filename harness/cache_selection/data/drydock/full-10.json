@@ -1,0 +1,2627 @@
+{
+ "repo": "drydock",
+ "pr_index": 10,
+ "pr": 1662,
+ "commit": "9a0ca8aeaa8cc11133edd1a7882b38b1f5b4e551",
+ "install": "fresh install, all node_modules removed first (8s)",
+ "cmd": "npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/drydock/full-10.json",
+ "cwd": "/home/user/work/repos/drydock/app",
+ "exit": 0,
+ "wall_s": 534.4,
+ "status": "ok",
+ "outcome_counts": {
+  "passed": 21506,
+  "skipped": 1
+ },
+ "files": {
+  "agent/AgentClient-key-rotation.test.ts": {
+   "ms": 169.88818359375,
+   "status": "passed"
+  },
+  "agent/AgentClient.container-reconcile.test.ts": {
+   "ms": 251.006591796875,
+   "status": "passed"
+  },
+  "agent/AgentClient.inventory.test.ts": {
+   "ms": 572.8369140625,
+   "status": "passed"
+  },
+  "agent/AgentClient.test.ts": {
+   "ms": 1227.930419921875,
+   "status": "passed"
+  },
+  "agent/EdgeAgentAdapter.test.ts": {
+   "ms": 1295.888427734375,
+   "status": "passed"
+  },
+  "agent/PortwingDockerBridge.test.ts": {
+   "ms": 182.853271484375,
+   "status": "passed"
+  },
+  "agent/agent-ingest.group-policy.test.ts": {
+   "ms": 99.4287109375,
+   "status": "passed"
+  },
+  "agent/agent-inventory.test.ts": {
+   "ms": 1049.833984375,
+   "status": "passed"
+  },
+  "agent/agent-version-alerts.test.ts": {
+   "ms": 15.505126953125,
+   "status": "passed"
+  },
+  "agent/agent-warnings.test.ts": {
+   "ms": 4.70166015625,
+   "status": "passed"
+  },
+  "agent/api/container.test.ts": {
+   "ms": 19.42724609375,
+   "status": "passed"
+  },
+  "agent/api/event.test.ts": {
+   "ms": 102.55810546875,
+   "status": "passed"
+  },
+  "agent/api/index.test.ts": {
+   "ms": 43.283447265625,
+   "status": "passed"
+  },
+  "agent/api/trigger.test.ts": {
+   "ms": 26.501953125,
+   "status": "passed"
+  },
+  "agent/api/watcher.inventory.test.ts": {
+   "ms": 15.429931640625,
+   "status": "passed"
+  },
+  "agent/api/watcher.test.ts": {
+   "ms": 31.33837890625,
+   "status": "passed"
+  },
+  "agent/components/Agent.test.ts": {
+   "ms": 34.51171875,
+   "status": "passed"
+  },
+  "agent/components/AgentTrigger.test.ts": {
+   "ms": 24.5966796875,
+   "status": "passed"
+  },
+  "agent/components/AgentWatcher.test.ts": {
+   "ms": 20.641357421875,
+   "status": "passed"
+  },
+  "agent/container-state-alert-relay.test.ts": {
+   "ms": 21.239501953125,
+   "status": "passed"
+  },
+  "agent/controller-docker-transport.test.ts": {
+   "ms": 2.138916015625,
+   "status": "passed"
+  },
+  "agent/ed25519-signer.test.ts": {
+   "ms": 36.699951171875,
+   "status": "passed"
+  },
+  "agent/edge-key-rotation.test.ts": {
+   "ms": 302.39892578125,
+   "status": "passed"
+  },
+  "agent/edge-registration-ownership.test.ts": {
+   "ms": 285.880615234375,
+   "status": "passed"
+  },
+  "agent/index.test.ts": {
+   "ms": 10.537353515625,
+   "status": "passed"
+  },
+  "agent/manager.test.ts": {
+   "ms": 9.65966796875,
+   "status": "passed"
+  },
+  "agent/portwing-container-events.test.ts": {
+   "ms": 14.28662109375,
+   "status": "passed"
+  },
+  "agent/portwing-event-digest.test.ts": {
+   "ms": 2797.398193359375,
+   "status": "passed"
+  },
+  "agent/standard-key-rotation-client.test.ts": {
+   "ms": 45.656005859375,
+   "status": "passed"
+  },
+  "agent/standard-key-rotation.test.ts": {
+   "ms": 141.74609375,
+   "status": "passed"
+  },
+  "api/agent.test.ts": {
+   "ms": 64.82421875,
+   "status": "passed"
+  },
+  "api/anonymous-csrf.integration.test.ts": {
+   "ms": 27.1923828125,
+   "status": "passed"
+  },
+  "api/api-key-audit.test.ts": {
+   "ms": 19.209228515625,
+   "status": "passed"
+  },
+  "api/api-key-auth.test.ts": {
+   "ms": 276.790771484375,
+   "status": "passed"
+  },
+  "api/api-key-credential.test.ts": {
+   "ms": 3.175048828125,
+   "status": "passed"
+  },
+  "api/api-key-enforcement.integration.test.ts": {
+   "ms": 607.810546875,
+   "status": "passed"
+  },
+  "api/api-key-review.test.ts": {
+   "ms": 8.203369140625,
+   "status": "passed"
+  },
+  "api/api-keys.test.ts": {
+   "ms": 676.3671875,
+   "status": "passed"
+  },
+  "api/api.test.ts": {
+   "ms": 2078.005126953125,
+   "status": "passed"
+  },
+  "api/app.test.ts": {
+   "ms": 6.529052734375,
+   "status": "passed"
+  },
+  "api/approvals.test.ts": {
+   "ms": 281.1015625,
+   "status": "passed"
+  },
+  "api/approvals.update-parity.test.ts": {
+   "ms": 16.615234375,
+   "status": "passed"
+  },
+  "api/audit-actor.test.ts": {
+   "ms": 57.435791015625,
+   "status": "passed"
+  },
+  "api/audit-events.test.ts": {
+   "ms": 7.703369140625,
+   "status": "passed"
+  },
+  "api/audit.test.ts": {
+   "ms": 31.83642578125,
+   "status": "passed"
+  },
+  "api/auth-audit.test.ts": {
+   "ms": 5.52099609375,
+   "status": "passed"
+  },
+  "api/auth-lockout.test.ts": {
+   "ms": 128.361572265625,
+   "status": "passed"
+  },
+  "api/auth-remember-me.test.ts": {
+   "ms": 11.47509765625,
+   "status": "passed"
+  },
+  "api/auth-session-persistence.integration.test.ts": {
+   "ms": 586.75048828125,
+   "status": "passed"
+  },
+  "api/auth-session.test.ts": {
+   "ms": 795.9501953125,
+   "status": "passed"
+  },
+  "api/auth-strategies.test.ts": {
+   "ms": 16.281494140625,
+   "status": "passed"
+  },
+  "api/auth.test.ts": {
+   "ms": 320.045654296875,
+   "status": "passed"
+  },
+  "api/authentication.test.ts": {
+   "ms": 2.69873046875,
+   "status": "passed"
+  },
+  "api/authenticator-chain.test.ts": {
+   "ms": 13.2705078125,
+   "status": "passed"
+  },
+  "api/backup.test.ts": {
+   "ms": 94.068115234375,
+   "status": "passed"
+  },
+  "api/cleanup.test.ts": {
+   "ms": 8.490234375,
+   "status": "passed"
+  },
+  "api/compat/wudcard.test.ts": {
+   "ms": 68.110595703125,
+   "status": "passed"
+  },
+  "api/component.test.ts": {
+   "ms": 26.384521484375,
+   "status": "passed"
+  },
+  "api/config-actions.integration.test.ts": {
+   "ms": 473.635498046875,
+   "status": "passed"
+  },
+  "api/config-digest.integration.test.ts": {
+   "ms": 445.544677734375,
+   "status": "passed"
+  },
+  "api/config-section-write.integration.test.ts": {
+   "ms": 623.471923828125,
+   "status": "passed"
+  },
+  "api/config-validate.integration.test.ts": {
+   "ms": 212.36865234375,
+   "status": "passed"
+  },
+  "api/config-validate.test.ts": {
+   "ms": 861.373291015625,
+   "status": "passed"
+  },
+  "api/config.test.ts": {
+   "ms": 209.492919921875,
+   "status": "passed"
+  },
+  "api/container-actions.test.ts": {
+   "ms": 183.011474609375,
+   "status": "passed"
+  },
+  "api/container-dependencies.test.ts": {
+   "ms": 80.025146484375,
+   "status": "passed"
+  },
+  "api/container.test.ts": {
+   "ms": 317.285888671875,
+   "status": "passed"
+  },
+  "api/container/bulk-security.test.ts": {
+   "ms": 2808.52490234375,
+   "status": "passed"
+  },
+  "api/container/container-projection.test.ts": {
+   "ms": 6.445068359375,
+   "status": "passed"
+  },
+  "api/container/crud.summary.test.ts": {
+   "ms": 5.179931640625,
+   "status": "passed"
+  },
+  "api/container/crud.test.ts": {
+   "ms": 257.279296875,
+   "status": "passed"
+  },
+  "api/container/filters.test.ts": {
+   "ms": 23.25830078125,
+   "status": "passed"
+  },
+  "api/container/handlers/common.test.ts": {
+   "ms": 2.220458984375,
+   "status": "passed"
+  },
+  "api/container/handlers/effective-policy.dispatch.test.ts": {
+   "ms": 466.688232421875,
+   "status": "passed"
+  },
+  "api/container/handlers/effective-policy.test.ts": {
+   "ms": 368.707763671875,
+   "status": "passed"
+  },
+  "api/container/handlers/intermediate-release-notes.test.ts": {
+   "ms": 11.1025390625,
+   "status": "passed"
+  },
+  "api/container/handlers/list.test.ts": {
+   "ms": 57.773193359375,
+   "status": "passed"
+  },
+  "api/container/handlers/release-notes.test.ts": {
+   "ms": 5.844482421875,
+   "status": "passed"
+  },
+  "api/container/log-stream.test.ts": {
+   "ms": 676.385498046875,
+   "status": "passed"
+  },
+  "api/container/logs.test.ts": {
+   "ms": 406.615478515625,
+   "status": "passed"
+  },
+  "api/container/maturity-filter.test.ts": {
+   "ms": 2.338623046875,
+   "status": "passed"
+  },
+  "api/container/query-values.test.ts": {
+   "ms": 3.2802734375,
+   "status": "passed"
+  },
+  "api/container/request-helpers.test.ts": {
+   "ms": 4.13525390625,
+   "status": "passed"
+  },
+  "api/container/security-overview.test.ts": {
+   "ms": 3.35595703125,
+   "status": "passed"
+  },
+  "api/container/security.test.ts": {
+   "ms": 246.115478515625,
+   "status": "passed"
+  },
+  "api/container/shared.test.ts": {
+   "ms": 12.13623046875,
+   "status": "passed"
+  },
+  "api/container/stats.test.ts": {
+   "ms": 111.8828125,
+   "status": "passed"
+  },
+  "api/container/triggers.test.ts": {
+   "ms": 80.380615234375,
+   "status": "passed"
+  },
+  "api/container/update-age.test.ts": {
+   "ms": 7.314453125,
+   "status": "passed"
+  },
+  "api/container/update-policy.test.ts": {
+   "ms": 81.95556640625,
+   "status": "passed"
+  },
+  "api/container/watched-kind-filter.test.ts": {
+   "ms": 2.66259765625,
+   "status": "passed"
+  },
+  "api/csrf.test.ts": {
+   "ms": 31.18994140625,
+   "status": "passed"
+  },
+  "api/debug.test.ts": {
+   "ms": 11.6669921875,
+   "status": "passed"
+  },
+  "api/dependency-groups.test.ts": {
+   "ms": 90.710205078125,
+   "status": "passed"
+  },
+  "api/destructive-confirmation.test.ts": {
+   "ms": 6.45703125,
+   "status": "passed"
+  },
+  "api/docker-trigger.test.ts": {
+   "ms": 7.222412109375,
+   "status": "passed"
+  },
+  "api/error-response-consistency.test.ts": {
+   "ms": 2.4814453125,
+   "status": "passed"
+  },
+  "api/error-response.test.ts": {
+   "ms": 6.561767578125,
+   "status": "passed"
+  },
+  "api/group-policy.test.ts": {
+   "ms": 1607.823486328125,
+   "status": "passed"
+  },
+  "api/group.test.ts": {
+   "ms": 18.688720703125,
+   "status": "passed"
+  },
+  "api/header-value.test.ts": {
+   "ms": 2.26220703125,
+   "status": "passed"
+  },
+  "api/health.test.ts": {
+   "ms": 56.46337890625,
+   "status": "passed"
+  },
+  "api/helpers.test.ts": {
+   "ms": 8.623046875,
+   "status": "passed"
+  },
+  "api/icons.test.ts": {
+   "ms": 416.76318359375,
+   "status": "passed"
+  },
+  "api/icons/fetch.test.ts": {
+   "ms": 122.4365234375,
+   "status": "passed"
+  },
+  "api/icons/providers.test.ts": {
+   "ms": 2.47998046875,
+   "status": "passed"
+  },
+  "api/icons/response.test.ts": {
+   "ms": 9.73779296875,
+   "status": "passed"
+  },
+  "api/icons/route.test.ts": {
+   "ms": 4.368896484375,
+   "status": "passed"
+  },
+  "api/icons/settings.test.ts": {
+   "ms": 10.768310546875,
+   "status": "passed"
+  },
+  "api/icons/storage.test.ts": {
+   "ms": 10.453125,
+   "status": "passed"
+  },
+  "api/icons/svg.test.ts": {
+   "ms": 18.33056640625,
+   "status": "passed"
+  },
+  "api/icons/validation.test.ts": {
+   "ms": 5.442626953125,
+   "status": "passed"
+  },
+  "api/images.test.ts": {
+   "ms": 72.422119140625,
+   "status": "passed"
+  },
+  "api/images/hosts.test.ts": {
+   "ms": 15.23046875,
+   "status": "passed"
+  },
+  "api/images/inventory.test.ts": {
+   "ms": 18.156005859375,
+   "status": "passed"
+  },
+  "api/index.test.ts": {
+   "ms": 631.823486328125,
+   "status": "passed"
+  },
+  "api/internal-self-update.test.ts": {
+   "ms": 41.95849609375,
+   "status": "passed"
+  },
+  "api/json-content-type.test.ts": {
+   "ms": 16.3671875,
+   "status": "passed"
+  },
+  "api/label-override.test.ts": {
+   "ms": 1768.578857421875,
+   "status": "passed"
+  },
+  "api/label-override/references.test.ts": {
+   "ms": 134.263671875,
+   "status": "passed"
+  },
+  "api/label-override/validation.test.ts": {
+   "ms": 36.4384765625,
+   "status": "passed"
+  },
+  "api/legacy-alias-diagnostics.test.ts": {
+   "ms": 8.370849609375,
+   "status": "passed"
+  },
+  "api/log-stream-constants.test.ts": {
+   "ms": 1.537353515625,
+   "status": "passed"
+  },
+  "api/log-stream.test.ts": {
+   "ms": 462.805419921875,
+   "status": "passed"
+  },
+  "api/log.test.ts": {
+   "ms": 21.66357421875,
+   "status": "passed"
+  },
+  "api/notification-outbox.test.ts": {
+   "ms": 17.492919921875,
+   "status": "passed"
+  },
+  "api/notification-silence.test.ts": {
+   "ms": 47.5703125,
+   "status": "passed"
+  },
+  "api/notification.test.ts": {
+   "ms": 33.07470703125,
+   "status": "passed"
+  },
+  "api/openapi-contract.test.ts": {
+   "ms": 284.419921875,
+   "status": "passed"
+  },
+  "api/openapi-scopes.test.ts": {
+   "ms": 1112.330078125,
+   "status": "passed"
+  },
+  "api/openapi.test.ts": {
+   "ms": 45.515869140625,
+   "status": "passed"
+  },
+  "api/openapi/common.test.ts": {
+   "ms": 22.29296875,
+   "status": "passed"
+  },
+  "api/openapi/paths/api-keys.test.ts": {
+   "ms": 9.14111328125,
+   "status": "passed"
+  },
+  "api/openapi/paths/category-triggers.test.ts": {
+   "ms": 4.785888671875,
+   "status": "passed"
+  },
+  "api/openapi/paths/cleanup.test.ts": {
+   "ms": 2.40087890625,
+   "status": "passed"
+  },
+  "api/openapi/paths/component-read.test.ts": {
+   "ms": 3.4658203125,
+   "status": "passed"
+  },
+  "api/openapi/paths/config.test.ts": {
+   "ms": 9.302734375,
+   "status": "passed"
+  },
+  "api/openapi/paths/containers.test.ts": {
+   "ms": 9.410888671875,
+   "status": "passed"
+  },
+  "api/openapi/paths/group-policies.test.ts": {
+   "ms": 5.390380859375,
+   "status": "passed"
+  },
+  "api/openapi/paths/images.test.ts": {
+   "ms": 6.235595703125,
+   "status": "passed"
+  },
+  "api/openapi/paths/index.test.ts": {
+   "ms": 9.20703125,
+   "status": "passed"
+  },
+  "api/openapi/paths/label-overrides.test.ts": {
+   "ms": 4.45361328125,
+   "status": "passed"
+  },
+  "api/openapi/paths/notification-silences.test.ts": {
+   "ms": 2.849609375,
+   "status": "passed"
+  },
+  "api/openapi/paths/portwing.test.ts": {
+   "ms": 8.1875,
+   "status": "passed"
+  },
+  "api/openapi/paths/stats.test.ts": {
+   "ms": 3.27587890625,
+   "status": "passed"
+  },
+  "api/openapi/paths/totp-factor.test.ts": {
+   "ms": 4.17333984375,
+   "status": "passed"
+  },
+  "api/openapi/paths/triggers.test.ts": {
+   "ms": 3.460205078125,
+   "status": "passed"
+  },
+  "api/openapi/schemas.test.ts": {
+   "ms": 11.30078125,
+   "status": "passed"
+  },
+  "api/openapi/watcher-inventory.test.ts": {
+   "ms": 3.35302734375,
+   "status": "passed"
+  },
+  "api/operation.test.ts": {
+   "ms": 9.896728515625,
+   "status": "passed"
+  },
+  "api/outer-api-rate-limit-key.test.ts": {
+   "ms": 8.19970703125,
+   "status": "passed"
+  },
+  "api/pagination-links.test.ts": {
+   "ms": 4.46923828125,
+   "status": "passed"
+  },
+  "api/portwing-ws.test.ts": {
+   "ms": 1556.892333984375,
+   "status": "passed"
+  },
+  "api/portwing.test.ts": {
+   "ms": 27.530029296875,
+   "status": "passed"
+  },
+  "api/preferences.test.ts": {
+   "ms": 75.4990234375,
+   "status": "passed"
+  },
+  "api/preview-errors.test.ts": {
+   "ms": 11.875244140625,
+   "status": "passed"
+  },
+  "api/preview.test.ts": {
+   "ms": 20.543212890625,
+   "status": "passed"
+  },
+  "api/principal.test.ts": {
+   "ms": 5.125244140625,
+   "status": "passed"
+  },
+  "api/prometheus.test.ts": {
+   "ms": 13.27978515625,
+   "status": "passed"
+  },
+  "api/rate-limit-key.test.ts": {
+   "ms": 13.160400390625,
+   "status": "passed"
+  },
+  "api/recovery-assurance.test.ts": {
+   "ms": 7.3125,
+   "status": "passed"
+  },
+  "api/registry.test.ts": {
+   "ms": 2.567138671875,
+   "status": "passed"
+  },
+  "api/route-scope-completeness.test.ts": {
+   "ms": 3.546875,
+   "status": "passed"
+  },
+  "api/route-scopes.test.ts": {
+   "ms": 21.3916015625,
+   "status": "passed"
+  },
+  "api/self-update.test.ts": {
+   "ms": 11.493896484375,
+   "status": "passed"
+  },
+  "api/server.test.ts": {
+   "ms": 15.62353515625,
+   "status": "passed"
+  },
+  "api/session-principal.test.ts": {
+   "ms": 21.36328125,
+   "status": "passed"
+  },
+  "api/session-store.test.ts": {
+   "ms": 391.16162109375,
+   "status": "passed"
+  },
+  "api/session-streams.test.ts": {
+   "ms": 157.33154296875,
+   "status": "passed"
+  },
+  "api/session-user.test.ts": {
+   "ms": 16.423828125,
+   "status": "passed"
+  },
+  "api/session-v2.integration.test.ts": {
+   "ms": 1574.09716796875,
+   "status": "passed"
+  },
+  "api/settings.test.ts": {
+   "ms": 56.743408203125,
+   "status": "passed"
+  },
+  "api/sse-active-client-registry.test.ts": {
+   "ms": 6.571533203125,
+   "status": "passed"
+  },
+  "api/sse-container-enrichment.test.ts": {
+   "ms": 14.22509765625,
+   "status": "passed"
+  },
+  "api/sse-event-buffer.test.ts": {
+   "ms": 14.171142578125,
+   "status": "passed"
+  },
+  "api/sse-self-update-ack-protocol.test.ts": {
+   "ms": 14.130615234375,
+   "status": "passed"
+  },
+  "api/sse.lifecycle-events.test.ts": {
+   "ms": 80.812744140625,
+   "status": "passed"
+  },
+  "api/sse.test.ts": {
+   "ms": 340.43359375,
+   "status": "passed"
+  },
+  "api/stats.test.ts": {
+   "ms": 6.864501953125,
+   "status": "passed"
+  },
+  "api/store.test.ts": {
+   "ms": 6.8857421875,
+   "status": "passed"
+  },
+  "api/totp-challenge.test.ts": {
+   "ms": 947.773193359375,
+   "status": "passed"
+  },
+  "api/totp-crypto.test.ts": {
+   "ms": 59.1328125,
+   "status": "passed"
+  },
+  "api/totp-factor-management.integration.test.ts": {
+   "ms": 15279.58251953125,
+   "status": "passed"
+  },
+  "api/totp-factor.test.ts": {
+   "ms": 21.923095703125,
+   "status": "passed"
+  },
+  "api/totp-identity.test.ts": {
+   "ms": 9.7802734375,
+   "status": "passed"
+  },
+  "api/totp-lockout-defaults.integration.test.ts": {
+   "ms": 3441.4873046875,
+   "status": "passed"
+  },
+  "api/totp-login-challenge.integration.test.ts": {
+   "ms": 4001.034423828125,
+   "status": "passed"
+  },
+  "api/totp-management.test.ts": {
+   "ms": 107.3115234375,
+   "status": "passed"
+  },
+  "api/totp-offline-audit.test.ts": {
+   "ms": 68.125732421875,
+   "status": "passed"
+  },
+  "api/totp-offline-cli.test.ts": {
+   "ms": 1419.1005859375,
+   "status": "passed"
+  },
+  "api/totp-offline-drill.integration.test.ts": {
+   "ms": 1473.763671875,
+   "status": "passed"
+  },
+  "api/totp-offline.test.ts": {
+   "ms": 1366.6162109375,
+   "status": "passed"
+  },
+  "api/totp-orphans.test.ts": {
+   "ms": 133.914794921875,
+   "status": "passed"
+  },
+  "api/totp-provisioning.test.ts": {
+   "ms": 3.71630859375,
+   "status": "passed"
+  },
+  "api/totp-session.test.ts": {
+   "ms": 14.61181640625,
+   "status": "passed"
+  },
+  "api/trigger-routes-alias.test.ts": {
+   "ms": 7.838134765625,
+   "status": "passed"
+  },
+  "api/trigger-routes.test.ts": {
+   "ms": 9.35791015625,
+   "status": "passed"
+  },
+  "api/trigger-skips.test.ts": {
+   "ms": 9.154296875,
+   "status": "passed"
+  },
+  "api/trigger.test.ts": {
+   "ms": 73.745361328125,
+   "status": "passed"
+  },
+  "api/ui.test.ts": {
+   "ms": 7.285400390625,
+   "status": "passed"
+  },
+  "api/update-operations.test.ts": {
+   "ms": 12.379150390625,
+   "status": "passed"
+  },
+  "api/watcher.inventory.test.ts": {
+   "ms": 34.892333984375,
+   "status": "passed"
+  },
+  "api/watcher.test.ts": {
+   "ms": 24.550537109375,
+   "status": "passed"
+  },
+  "api/webhook-auth.integration.test.ts": {
+   "ms": 70.989990234375,
+   "status": "passed"
+  },
+  "api/webhook.test.ts": {
+   "ms": 123.892333984375,
+   "status": "passed"
+  },
+  "api/webhooks.test.ts": {
+   "ms": 4.616943359375,
+   "status": "passed"
+  },
+  "api/webhooks/parsers/acr.test.ts": {
+   "ms": 3.189697265625,
+   "status": "passed"
+  },
+  "api/webhooks/parsers/docker-hub.test.ts": {
+   "ms": 3.226806640625,
+   "status": "passed"
+  },
+  "api/webhooks/parsers/ecr.test.ts": {
+   "ms": 3.21044921875,
+   "status": "passed"
+  },
+  "api/webhooks/parsers/ghcr.test.ts": {
+   "ms": 5.25146484375,
+   "status": "passed"
+  },
+  "api/webhooks/parsers/harbor.test.ts": {
+   "ms": 5.431640625,
+   "status": "passed"
+  },
+  "api/webhooks/parsers/index.test.ts": {
+   "ms": 3.2119140625,
+   "status": "passed"
+  },
+  "api/webhooks/parsers/quay.test.ts": {
+   "ms": 3.27197265625,
+   "status": "passed"
+  },
+  "api/webhooks/parsers/shared.test.ts": {
+   "ms": 4.28564453125,
+   "status": "passed"
+  },
+  "api/webhooks/payload-bounds.test.ts": {
+   "ms": 138.1044921875,
+   "status": "passed"
+  },
+  "api/webhooks/registry-auth.test.ts": {
+   "ms": 8.29931640625,
+   "status": "passed"
+  },
+  "api/webhooks/registry-dispatch.test.ts": {
+   "ms": 33.46533203125,
+   "status": "passed"
+  },
+  "api/webhooks/registry.e2e.test.ts": {
+   "ms": 130.693115234375,
+   "status": "passed"
+  },
+  "api/webhooks/registry.test.ts": {
+   "ms": 20.615478515625,
+   "status": "passed"
+  },
+  "api/webhooks/signature.test.ts": {
+   "ms": 4.208984375,
+   "status": "passed"
+  },
+  "api/ws-upgrade-utils.session.test.ts": {
+   "ms": 14.7041015625,
+   "status": "passed"
+  },
+  "api/ws-upgrade-utils.test.ts": {
+   "ms": 43.190185546875,
+   "status": "passed"
+  },
+  "approvals/reconcile.test.ts": {
+   "ms": 573.757080078125,
+   "status": "passed"
+  },
+  "authentications/providers/Authentication.test.ts": {
+   "ms": 10.827880859375,
+   "status": "passed"
+  },
+  "authentications/providers/anonymous/Anonymous.test.ts": {
+   "ms": 10.51171875,
+   "status": "passed"
+  },
+  "authentications/providers/basic/Basic.test.ts": {
+   "ms": 12871.52099609375,
+   "status": "passed"
+  },
+  "authentications/providers/basic/basic-authorization.test.ts": {
+   "ms": 6.134033203125,
+   "status": "passed"
+  },
+  "authentications/providers/oidc/Oidc.test.ts": {
+   "ms": 6741.610595703125,
+   "status": "passed"
+  },
+  "authentications/providers/oidc/access-policy.test.ts": {
+   "ms": 8.212890625,
+   "status": "passed"
+  },
+  "authentications/providers/oidc/bearer-binding.test.ts": {
+   "ms": 56.30078125,
+   "status": "passed"
+  },
+  "banner/index.test.ts": {
+   "ms": 6.085693359375,
+   "status": "passed"
+  },
+  "cleanup/config.test.ts": {
+   "ms": 13.93798828125,
+   "status": "passed"
+  },
+  "cleanup/engine.test.ts": {
+   "ms": 22.56640625,
+   "status": "passed"
+  },
+  "cleanup/protection.test.ts": {
+   "ms": 3.884765625,
+   "status": "passed"
+  },
+  "cleanup/run.test.ts": {
+   "ms": 24.879638671875,
+   "status": "passed"
+  },
+  "cleanup/scheduler.test.ts": {
+   "ms": 9.288818359375,
+   "status": "passed"
+  },
+  "cli/scan.test.ts": {
+   "ms": 19.817138671875,
+   "status": "passed"
+  },
+  "compatibility/curl-healthcheck.test.ts": {
+   "ms": 18.184814453125,
+   "status": "passed"
+  },
+  "configuration/config-cli.test.ts": {
+   "ms": 860.9248046875,
+   "status": "passed"
+  },
+  "configuration/digest-default.test.ts": {
+   "ms": 15.819580078125,
+   "status": "passed"
+  },
+  "configuration/dockerfile-defaults.test.ts": {
+   "ms": 145.921142578125,
+   "status": "passed"
+  },
+  "configuration/file/candidate.test.ts": {
+   "ms": 45.821533203125,
+   "status": "passed"
+  },
+  "configuration/file/diff.test.ts": {
+   "ms": 9.14697265625,
+   "status": "passed"
+  },
+  "configuration/file/editor-actions-reload.integration.test.ts": {
+   "ms": 333.790283203125,
+   "status": "passed"
+  },
+  "configuration/file/editor-actions.test.ts": {
+   "ms": 1097.714111328125,
+   "status": "passed"
+  },
+  "configuration/file/editor-trigger-field.test.ts": {
+   "ms": 23.879638671875,
+   "status": "passed"
+  },
+  "configuration/file/editor-triggers.test.ts": {
+   "ms": 1019.491455078125,
+   "status": "passed"
+  },
+  "configuration/file/editor.test.ts": {
+   "ms": 1093.953857421875,
+   "status": "passed"
+  },
+  "configuration/file/example.test.ts": {
+   "ms": 810.3359375,
+   "status": "passed"
+  },
+  "configuration/file/flatten.test.ts": {
+   "ms": 11.120361328125,
+   "status": "passed"
+  },
+  "configuration/file/interpolate.test.ts": {
+   "ms": 9.3837890625,
+   "status": "passed"
+  },
+  "configuration/file/layer.test.ts": {
+   "ms": 4.1806640625,
+   "status": "passed"
+  },
+  "configuration/file/loader.test.ts": {
+   "ms": 87.85986328125,
+   "status": "passed"
+  },
+  "configuration/file/reload.test.ts": {
+   "ms": 714.932861328125,
+   "status": "passed"
+  },
+  "configuration/file/secret-precedence.test.ts": {
+   "ms": 1115.75048828125,
+   "status": "passed"
+  },
+  "configuration/file/sources.test.ts": {
+   "ms": 8.158935546875,
+   "status": "passed"
+  },
+  "configuration/file/validate.test.ts": {
+   "ms": 1013.807861328125,
+   "status": "passed"
+  },
+  "configuration/file/watch.test.ts": {
+   "ms": 19.058349609375,
+   "status": "passed"
+  },
+  "configuration/file/write.test.ts": {
+   "ms": 870.44677734375,
+   "status": "passed"
+  },
+  "configuration/index.fuzz.test.ts": {
+   "ms": 24.134765625,
+   "status": "passed"
+  },
+  "configuration/index.test.ts": {
+   "ms": 1417.96240234375,
+   "status": "passed"
+  },
+  "configuration/migrate-cli.test.ts": {
+   "ms": 91.755126953125,
+   "status": "passed"
+  },
+  "configuration/runtime-defaults.test.ts": {
+   "ms": 2.346435546875,
+   "status": "passed"
+  },
+  "configuration/security-scanner-config.test.ts": {
+   "ms": 42.428466796875,
+   "status": "passed"
+  },
+  "configuration/version-identity.test.ts": {
+   "ms": 6.206787109375,
+   "status": "passed"
+  },
+  "debug/dump.test.ts": {
+   "ms": 55.802978515625,
+   "status": "passed"
+  },
+  "debug/redact.test.ts": {
+   "ms": 17.204345703125,
+   "status": "passed"
+  },
+  "dependencies/compose-dependency-resolver.test.ts": {
+   "ms": 14.830322265625,
+   "status": "passed"
+  },
+  "dependencies/dependency-graph.test.ts": {
+   "ms": 57.364990234375,
+   "status": "passed"
+  },
+  "event/audit-subscriptions.test.ts": {
+   "ms": 278.53955078125,
+   "status": "passed"
+  },
+  "event/index.audit.test.ts": {
+   "ms": 277.873779296875,
+   "status": "passed"
+  },
+  "event/index.test.ts": {
+   "ms": 231.96875,
+   "status": "passed"
+  },
+  "healthcheck.binary.test.ts": {
+   "ms": 112.224609375,
+   "status": "passed"
+  },
+  "index.test.ts": {
+   "ms": 49.69189453125,
+   "status": "passed"
+  },
+  "log/buffer-stream-unit.test.ts": {
+   "ms": 30.37646484375,
+   "status": "passed"
+  },
+  "log/buffer-stream.test.ts": {
+   "ms": 42.828857421875,
+   "status": "passed"
+  },
+  "log/buffer.test.ts": {
+   "ms": 21.654541015625,
+   "status": "passed"
+  },
+  "log/display-timestamp.test.ts": {
+   "ms": 2.9033203125,
+   "status": "passed"
+  },
+  "log/index.debug-level.test.ts": {
+   "ms": 31.759033203125,
+   "status": "passed"
+  },
+  "log/index.format.test.ts": {
+   "ms": 27.577880859375,
+   "status": "passed"
+  },
+  "log/index.test.ts": {
+   "ms": 3.365478515625,
+   "status": "passed"
+  },
+  "log/sanitize.test.ts": {
+   "ms": 3.209228515625,
+   "status": "passed"
+  },
+  "log/warn.test.ts": {
+   "ms": 8.18896484375,
+   "status": "passed"
+  },
+  "main.test.ts": {
+   "ms": 143.491943359375,
+   "status": "passed"
+  },
+  "maturity/gate-watch.test.ts": {
+   "ms": 7.673828125,
+   "status": "passed"
+  },
+  "maturity/restart-expiry.test.ts": {
+   "ms": 45.488037109375,
+   "status": "passed"
+  },
+  "maturity/scheduler.test.ts": {
+   "ms": 62.162841796875,
+   "status": "passed"
+  },
+  "model/action-policy-matrix.test.ts": {
+   "ms": 19.2333984375,
+   "status": "passed"
+  },
+  "model/action-policy.test.ts": {
+   "ms": 286.217041015625,
+   "status": "passed"
+  },
+  "model/approval.test.ts": {
+   "ms": 32.44140625,
+   "status": "passed"
+  },
+  "model/container-group.test.ts": {
+   "ms": 4.179931640625,
+   "status": "passed"
+  },
+  "model/container-update-operation.test.ts": {
+   "ms": 6.171142578125,
+   "status": "passed"
+  },
+  "model/container.fast-lane.test.ts": {
+   "ms": 16.73876953125,
+   "status": "passed"
+  },
+  "model/container.fuzz.test.ts": {
+   "ms": 82.186767578125,
+   "status": "passed"
+  },
+  "model/container.test.ts": {
+   "ms": 94.411376953125,
+   "status": "passed"
+  },
+  "model/effective-policy.test.ts": {
+   "ms": 12.201171875,
+   "status": "passed"
+  },
+  "model/group-policy.test.ts": {
+   "ms": 26.33251953125,
+   "status": "passed"
+  },
+  "model/label-owned.test.ts": {
+   "ms": 421.235595703125,
+   "status": "passed"
+  },
+  "model/maturity-policy.test.ts": {
+   "ms": 14.268310546875,
+   "status": "passed"
+  },
+  "model/separate-update-types.test.ts": {
+   "ms": 17.387451171875,
+   "status": "passed"
+  },
+  "model/skip-scope.test.ts": {
+   "ms": 16.712646484375,
+   "status": "passed"
+  },
+  "model/update-eligibility.fast-lane.test.ts": {
+   "ms": 23.275390625,
+   "status": "passed"
+  },
+  "model/update-eligibility.test.ts": {
+   "ms": 50.178466796875,
+   "status": "passed"
+  },
+  "model/update-policy.test.ts": {
+   "ms": 5.3837890625,
+   "status": "passed"
+  },
+  "model/watcher-maintenance-window.test.ts": {
+   "ms": 4.208251953125,
+   "status": "passed"
+  },
+  "notifications/outbox-worker.test.ts": {
+   "ms": 38.592041015625,
+   "status": "passed"
+  },
+  "notifications/quiet-hours.test.ts": {
+   "ms": 22.3515625,
+   "status": "passed"
+  },
+  "notifications/suppression.test.ts": {
+   "ms": 44.392822265625,
+   "status": "passed"
+  },
+  "notifications/trigger-policy.test.ts": {
+   "ms": 5.16015625,
+   "status": "passed"
+  },
+  "prometheus/audit.test.ts": {
+   "ms": 4.287109375,
+   "status": "passed"
+  },
+  "prometheus/auth.test.ts": {
+   "ms": 9.3125,
+   "status": "passed"
+  },
+  "prometheus/compatibility.test.ts": {
+   "ms": 18.4951171875,
+   "status": "passed"
+  },
+  "prometheus/container-actions.test.ts": {
+   "ms": 7.420654296875,
+   "status": "passed"
+  },
+  "prometheus/container.test.ts": {
+   "ms": 17.770751953125,
+   "status": "passed"
+  },
+  "prometheus/exposition.test.ts": {
+   "ms": 12.284912109375,
+   "status": "passed"
+  },
+  "prometheus/index.test.ts": {
+   "ms": 5.469970703125,
+   "status": "passed"
+  },
+  "prometheus/registry.test.ts": {
+   "ms": 6.0869140625,
+   "status": "passed"
+  },
+  "prometheus/rollback.test.ts": {
+   "ms": 3.00634765625,
+   "status": "passed"
+  },
+  "prometheus/trigger.test.ts": {
+   "ms": 3.99365234375,
+   "status": "passed"
+  },
+  "prometheus/watcher.test.ts": {
+   "ms": 4.258544921875,
+   "status": "passed"
+  },
+  "prometheus/webhook.test.ts": {
+   "ms": 5.11181640625,
+   "status": "passed"
+  },
+  "registries/BaseRegistry.test.ts": {
+   "ms": 103.231689453125,
+   "status": "passed"
+  },
+  "registries/Registry.test.ts": {
+   "ms": 108.522705078125,
+   "status": "passed"
+  },
+  "registries/configuration.test.ts": {
+   "ms": 1.470703125,
+   "status": "passed"
+  },
+  "registries/ghcr-token-fallback.test.ts": {
+   "ms": 5.337646484375,
+   "status": "passed"
+  },
+  "registries/http-retry.test.ts": {
+   "ms": 42.517578125,
+   "status": "passed"
+  },
+  "registries/image-reference.test.ts": {
+   "ms": 7.2001953125,
+   "status": "passed"
+  },
+  "registries/providers/acr/Acr.test.ts": {
+   "ms": 15.189453125,
+   "status": "passed"
+  },
+  "registries/providers/alicr/Alicr.test.ts": {
+   "ms": 9.02197265625,
+   "status": "passed"
+  },
+  "registries/providers/artifactory/Artifactory.test.ts": {
+   "ms": 17.37255859375,
+   "status": "passed"
+  },
+  "registries/providers/codeberg/Codeberg.test.ts": {
+   "ms": 8.835205078125,
+   "status": "passed"
+  },
+  "registries/providers/custom/Custom.test.ts": {
+   "ms": 32.16552734375,
+   "status": "passed"
+  },
+  "registries/providers/dhi/Dhi.test.ts": {
+   "ms": 44.2470703125,
+   "status": "passed"
+  },
+  "registries/providers/docr/Docr.test.ts": {
+   "ms": 16.1484375,
+   "status": "passed"
+  },
+  "registries/providers/ecr/Ecr.test.ts": {
+   "ms": 41.903564453125,
+   "status": "passed"
+  },
+  "registries/providers/forgejo/Forgejo.test.ts": {
+   "ms": 27.169677734375,
+   "status": "passed"
+  },
+  "registries/providers/gar/Gar.test.ts": {
+   "ms": 413.07861328125,
+   "status": "passed"
+  },
+  "registries/providers/gcr/Gcr.test.ts": {
+   "ms": 24.173828125,
+   "status": "passed"
+  },
+  "registries/providers/ghcr/Ghcr.test.ts": {
+   "ms": 81.795654296875,
+   "status": "passed"
+  },
+  "registries/providers/gitea/Gitea.test.ts": {
+   "ms": 24.276611328125,
+   "status": "passed"
+  },
+  "registries/providers/gitlab/Gitlab.test.ts": {
+   "ms": 428.78173828125,
+   "status": "passed"
+  },
+  "registries/providers/harbor/Harbor.test.ts": {
+   "ms": 25.499755859375,
+   "status": "passed"
+  },
+  "registries/providers/hub/Hub.test.ts": {
+   "ms": 235.270263671875,
+   "status": "passed"
+  },
+  "registries/providers/ibmcr/Ibmcr.test.ts": {
+   "ms": 8.7451171875,
+   "status": "passed"
+  },
+  "registries/providers/lscr/Lscr.test.ts": {
+   "ms": 18.216796875,
+   "status": "passed"
+  },
+  "registries/providers/mau/Mau.test.ts": {
+   "ms": 211.446044921875,
+   "status": "passed"
+  },
+  "registries/providers/nexus/Nexus.test.ts": {
+   "ms": 15.414306640625,
+   "status": "passed"
+  },
+  "registries/providers/ocir/Ocir.test.ts": {
+   "ms": 13.5302734375,
+   "status": "passed"
+  },
+  "registries/providers/quay/Quay.test.ts": {
+   "ms": 28.229248046875,
+   "status": "passed"
+  },
+  "registries/providers/shared/SelfHostedBasic.test.ts": {
+   "ms": 35.12451171875,
+   "status": "passed"
+  },
+  "registries/providers/shared/basicAuthConfigurationSchema.test.ts": {
+   "ms": 15.52978515625,
+   "status": "passed"
+  },
+  "registries/providers/shared/basicAuthProviderErrorPaths.test.ts": {
+   "ms": 27.337646484375,
+   "status": "passed"
+  },
+  "registries/providers/shared/selfHostedBasicConfigurationSchema.test.ts": {
+   "ms": 37.62548828125,
+   "status": "passed"
+  },
+  "registries/providers/shared/tokenAuthConfigurationSchema.test.ts": {
+   "ms": 35.17236328125,
+   "status": "passed"
+  },
+  "registries/providers/trueforge/Trueforge.test.ts": {
+   "ms": 11.16552734375,
+   "status": "passed"
+  },
+  "registries/token-bucket.test.ts": {
+   "ms": 14.168701171875,
+   "status": "passed"
+  },
+  "registries/www-authenticate.test.ts": {
+   "ms": 5.08642578125,
+   "status": "passed"
+  },
+  "registry/Component.fuzz.test.ts": {
+   "ms": 23.984619140625,
+   "status": "passed"
+  },
+  "registry/Component.test.ts": {
+   "ms": 20.206298828125,
+   "status": "passed"
+  },
+  "registry/component-resolution.test.ts": {
+   "ms": 18.257568359375,
+   "status": "passed"
+  },
+  "registry/index.container-reconcile.test.ts": {
+   "ms": 22.9384765625,
+   "status": "passed"
+  },
+  "registry/index.test.ts": {
+   "ms": 1807.37548828125,
+   "status": "passed"
+  },
+  "registry/provider-tests.test.ts": {
+   "ms": 3.6025390625,
+   "status": "passed"
+  },
+  "registry/reconcile.test.ts": {
+   "ms": 5.375732421875,
+   "status": "passed"
+  },
+  "registry/trigger-config-redaction.test.ts": {
+   "ms": 2.294921875,
+   "status": "passed"
+  },
+  "registry/trigger-shared-config.test.ts": {
+   "ms": 5.210205078125,
+   "status": "passed"
+  },
+  "registry/watcher-provider.test.ts": {
+   "ms": 4.3037109375,
+   "status": "passed"
+  },
+  "release-notes/index.test.ts": {
+   "ms": 89.375244140625,
+   "status": "passed"
+  },
+  "release-notes/providers/GithubProvider.test.ts": {
+   "ms": 50.359130859375,
+   "status": "passed"
+  },
+  "renovate-config.test.ts": {
+   "ms": 1.908203125,
+   "status": "passed"
+  },
+  "runtime/child-process-env.test.ts": {
+   "ms": 4.409423828125,
+   "status": "passed"
+  },
+  "runtime/observation-mode.test.ts": {
+   "ms": 1.759521484375,
+   "status": "passed"
+  },
+  "runtime/paths.test.ts": {
+   "ms": 15.6552734375,
+   "status": "passed"
+  },
+  "security/assets.test.ts": {
+   "ms": 282.826171875,
+   "status": "passed"
+  },
+  "security/auth.test.ts": {
+   "ms": 6.55078125,
+   "status": "passed"
+  },
+  "security/backend-resolution.test.ts": {
+   "ms": 29.74560546875,
+   "status": "passed"
+  },
+  "security/backends/docker.test.ts": {
+   "ms": 341.61865234375,
+   "status": "passed"
+  },
+  "security/digest.test.ts": {
+   "ms": 4.069580078125,
+   "status": "passed"
+  },
+  "security/fast-lane-candidates.test.ts": {
+   "ms": 17.783447265625,
+   "status": "passed"
+  },
+  "security/fast-lane.test.ts": {
+   "ms": 11.131103515625,
+   "status": "passed"
+  },
+  "security/picomatch-lockfile.test.ts": {
+   "ms": 5.160888671875,
+   "status": "passed"
+  },
+  "security/providers/grype.test.ts": {
+   "ms": 199.544677734375,
+   "status": "passed"
+  },
+  "security/runtime.test.ts": {
+   "ms": 71.215087890625,
+   "status": "passed"
+  },
+  "security/sbom-migration.test.ts": {
+   "ms": 68.452880859375,
+   "status": "passed"
+  },
+  "security/sbom-storage.test.ts": {
+   "ms": 263.0361328125,
+   "status": "passed"
+  },
+  "security/scan-state.test.ts": {
+   "ms": 6.458251953125,
+   "status": "passed"
+  },
+  "security/scan.test.ts": {
+   "ms": 1159.0419921875,
+   "status": "passed"
+  },
+  "security/scanner-runtime.test.ts": {
+   "ms": 29.609375,
+   "status": "passed"
+  },
+  "security/scheduler.test.ts": {
+   "ms": 1165.801513671875,
+   "status": "passed"
+  },
+  "security/trivy-warmup.test.ts": {
+   "ms": 15.4091796875,
+   "status": "passed"
+  },
+  "security/yaml-lockfile.test.ts": {
+   "ms": 5.984130859375,
+   "status": "passed"
+  },
+  "stats/aggregator.test.ts": {
+   "ms": 41.754150390625,
+   "status": "passed"
+  },
+  "stats/calculation.test.ts": {
+   "ms": 4.323974609375,
+   "status": "passed"
+  },
+  "stats/collector.test.ts": {
+   "ms": 77.750732421875,
+   "status": "passed"
+  },
+  "stats/config.test.ts": {
+   "ms": 2.241455078125,
+   "status": "passed"
+  },
+  "stats/ring-buffer.test.ts": {
+   "ms": 5.5361328125,
+   "status": "passed"
+  },
+  "store/agent-key-rotation.test.ts": {
+   "ms": 212.399169921875,
+   "status": "passed"
+  },
+  "store/agent-keys.test.ts": {
+   "ms": 215.505126953125,
+   "status": "passed"
+  },
+  "store/api-key.test.ts": {
+   "ms": 693.54150390625,
+   "status": "passed"
+  },
+  "store/app.test.ts": {
+   "ms": 92.30517578125,
+   "status": "passed"
+  },
+  "store/approval.test.ts": {
+   "ms": 587.398193359375,
+   "status": "passed"
+  },
+  "store/audit.test.ts": {
+   "ms": 323.501220703125,
+   "status": "passed"
+  },
+  "store/backup.test.ts": {
+   "ms": 372.207763671875,
+   "status": "passed"
+  },
+  "store/container.group-policy.test.ts": {
+   "ms": 587.090087890625,
+   "status": "passed"
+  },
+  "store/container.label-overrides.test.ts": {
+   "ms": 665.630126953125,
+   "status": "passed"
+  },
+  "store/container.test.ts": {
+   "ms": 5613.2490234375,
+   "status": "passed"
+  },
+  "store/db/driver.test.ts": {
+   "ms": 194.8251953125,
+   "status": "passed"
+  },
+  "store/db/import.test.ts": {
+   "ms": 421.170166015625,
+   "status": "passed"
+  },
+  "store/db/importers/agent-keys.test.ts": {
+   "ms": 48.665283203125,
+   "status": "passed"
+  },
+  "store/db/importers/api-keys.test.ts": {
+   "ms": 59.861083984375,
+   "status": "passed"
+  },
+  "store/db/importers/app.test.ts": {
+   "ms": 39.415771484375,
+   "status": "passed"
+  },
+  "store/db/importers/approvals.test.ts": {
+   "ms": 148.6767578125,
+   "status": "passed"
+  },
+  "store/db/importers/audit.test.ts": {
+   "ms": 54.635498046875,
+   "status": "passed"
+  },
+  "store/db/importers/backups.test.ts": {
+   "ms": 60.278564453125,
+   "status": "passed"
+  },
+  "store/db/importers/containers.test.ts": {
+   "ms": 84.340087890625,
+   "status": "passed"
+  },
+  "store/db/importers/name-bindings.test.ts": {
+   "ms": 40.88525390625,
+   "status": "passed"
+  },
+  "store/db/importers/notification-history.test.ts": {
+   "ms": 50.379150390625,
+   "status": "passed"
+  },
+  "store/db/importers/notification-outbox.test.ts": {
+   "ms": 61.4853515625,
+   "status": "passed"
+  },
+  "store/db/importers/notification-rules.test.ts": {
+   "ms": 78.613525390625,
+   "status": "passed"
+  },
+  "store/db/importers/secrets.test.ts": {
+   "ms": 45.444091796875,
+   "status": "passed"
+  },
+  "store/db/importers/sessions.test.ts": {
+   "ms": 74.662841796875,
+   "status": "passed"
+  },
+  "store/db/importers/settings.test.ts": {
+   "ms": 40.8486328125,
+   "status": "passed"
+  },
+  "store/db/importers/ui-preferences.test.ts": {
+   "ms": 52.660400390625,
+   "status": "passed"
+  },
+  "store/db/importers/update-lifecycle-cache.test.ts": {
+   "ms": 219.00146484375,
+   "status": "passed"
+  },
+  "store/db/importers/update-operations.test.ts": {
+   "ms": 58.593017578125,
+   "status": "passed"
+  },
+  "store/db/importers/update-policy-retention-cache.test.ts": {
+   "ms": 122.2939453125,
+   "status": "passed"
+  },
+  "store/db/loki-json.test.ts": {
+   "ms": 15.177001953125,
+   "status": "passed"
+  },
+  "store/db/migrations.test.ts": {
+   "ms": 210.66015625,
+   "status": "passed"
+  },
+  "store/db/pre-migration.test.ts": {
+   "ms": 182.627685546875,
+   "status": "passed"
+  },
+  "store/db/schema.test.ts": {
+   "ms": 77.062744140625,
+   "status": "passed"
+  },
+  "store/group-policy.test.ts": {
+   "ms": 321.15771484375,
+   "status": "passed"
+  },
+  "store/index.first-start-import.test.ts": {
+   "ms": 361.384521484375,
+   "status": "passed"
+  },
+  "store/index.migration-safety.test.ts": {
+   "ms": 327.579833984375,
+   "status": "passed"
+  },
+  "store/index.startup-repair.test.ts": {
+   "ms": 330.545654296875,
+   "status": "passed"
+  },
+  "store/index.test.ts": {
+   "ms": 1352.323486328125,
+   "status": "passed"
+  },
+  "store/label-override.test.ts": {
+   "ms": 243.080810546875,
+   "status": "passed"
+  },
+  "store/migrate.test.ts": {
+   "ms": 30.31689453125,
+   "status": "passed"
+  },
+  "store/mqtt-hass.test.ts": {
+   "ms": 139.8720703125,
+   "status": "passed"
+  },
+  "store/name-bindings.test.ts": {
+   "ms": 105.6650390625,
+   "status": "passed"
+  },
+  "store/notification-history.test.ts": {
+   "ms": 166.327880859375,
+   "status": "passed"
+  },
+  "store/notification-outbox.test.ts": {
+   "ms": 273.50244140625,
+   "status": "passed"
+  },
+  "store/notification-silence.test.ts": {
+   "ms": 114.86328125,
+   "status": "passed"
+  },
+  "store/notification.test.ts": {
+   "ms": 321.607421875,
+   "status": "passed"
+  },
+  "store/secrets.test.ts": {
+   "ms": 73.47705078125,
+   "status": "passed"
+  },
+  "store/session-store-file.test.ts": {
+   "ms": 575.545654296875,
+   "status": "passed"
+  },
+  "store/session.test.ts": {
+   "ms": 170.80908203125,
+   "status": "passed"
+  },
+  "store/settings.test.ts": {
+   "ms": 129.57373046875,
+   "status": "passed"
+  },
+  "store/totp.test.ts": {
+   "ms": 1063.702392578125,
+   "status": "passed"
+  },
+  "store/ui-preferences.test.ts": {
+   "ms": 54.8662109375,
+   "status": "passed"
+  },
+  "store/update-lifecycle-cache.test.ts": {
+   "ms": 152.53955078125,
+   "status": "passed"
+  },
+  "store/update-operation-batch.test.ts": {
+   "ms": 198.284423828125,
+   "status": "passed"
+  },
+  "store/update-operation.lifecycle-events.test.ts": {
+   "ms": 267.883056640625,
+   "status": "passed"
+  },
+  "store/update-operation.test.ts": {
+   "ms": 2628.808837890625,
+   "status": "passed"
+  },
+  "store/update-policy-retention-cache.test.ts": {
+   "ms": 237.074951171875,
+   "status": "passed"
+  },
+  "tag/family.test.ts": {
+   "ms": 5.2041015625,
+   "status": "passed"
+  },
+  "tag/filter-regex.test.ts": {
+   "ms": 19.2900390625,
+   "status": "passed"
+  },
+  "tag/index.fuzz.test.ts": {
+   "ms": 30.69677734375,
+   "status": "passed"
+  },
+  "tag/index.test.ts": {
+   "ms": 126.768310546875,
+   "status": "passed"
+  },
+  "tag/precision.test.ts": {
+   "ms": 15.198486328125,
+   "status": "passed"
+  },
+  "tag/release-maturity.test.ts": {
+   "ms": 5.167724609375,
+   "status": "passed"
+  },
+  "tag/running-version.test.ts": {
+   "ms": 20.131591796875,
+   "status": "passed"
+  },
+  "tag/suggest.test.ts": {
+   "ms": 26.211669921875,
+   "status": "passed"
+  },
+  "tag/update-candidates.test.ts": {
+   "ms": 10.18896484375,
+   "status": "passed"
+  },
+  "test/helpers.test.ts": {
+   "ms": 11.44921875,
+   "status": "passed"
+  },
+  "triggers/hooks/HookRunner.test.ts": {
+   "ms": 345.4326171875,
+   "status": "passed"
+  },
+  "triggers/hooks/hook-flags.test.ts": {
+   "ms": 3.177734375,
+   "status": "passed"
+  },
+  "triggers/hooks/hook-labels.test.ts": {
+   "ms": 3.104736328125,
+   "status": "passed"
+  },
+  "triggers/notification-skips.test.ts": {
+   "ms": 12.4599609375,
+   "status": "passed"
+  },
+  "triggers/providers/Trigger.group-policy-live.test.ts": {
+   "ms": 111.26123046875,
+   "status": "passed"
+  },
+  "triggers/providers/Trigger.group-policy.test.ts": {
+   "ms": 50.383056640625,
+   "status": "passed"
+  },
+  "triggers/providers/Trigger.skip-reasons.test.ts": {
+   "ms": 157.8671875,
+   "status": "passed"
+  },
+  "triggers/providers/Trigger.test.ts": {
+   "ms": 955.84619140625,
+   "status": "passed"
+  },
+  "triggers/providers/apprise/Apprise.test.ts": {
+   "ms": 46.250244140625,
+   "status": "passed"
+  },
+  "triggers/providers/ci-rebuild-shared.test.ts": {
+   "ms": 14.696044921875,
+   "status": "passed"
+  },
+  "triggers/providers/command/Command.test.ts": {
+   "ms": 118.3828125,
+   "status": "passed"
+  },
+  "triggers/providers/discord/Discord.test.ts": {
+   "ms": 31.186279296875,
+   "status": "passed"
+  },
+  "triggers/providers/docker/ContainerRuntimeConfigManager.test.ts": {
+   "ms": 35.544677734375,
+   "status": "passed"
+  },
+  "triggers/providers/docker/ContainerUpdateExecutor.test.ts": {
+   "ms": 155.372802734375,
+   "status": "passed"
+  },
+  "triggers/providers/docker/Docker.configuration-container-ops.test.ts": {
+   "ms": 85.5224609375,
+   "status": "passed"
+  },
+  "triggers/providers/docker/Docker.lifecycle-rollback.test.ts": {
+   "ms": 48190.61767578125,
+   "status": "passed"
+  },
+  "triggers/providers/docker/Docker.pull-pacing.test.ts": {
+   "ms": 21.899169921875,
+   "status": "passed"
+  },
+  "triggers/providers/docker/Docker.pulled-image-identity.test.ts": {
+   "ms": 6094.086181640625,
+   "status": "passed"
+  },
+  "triggers/providers/docker/Docker.self-identity-safety.test.ts": {
+   "ms": 6059.0029296875,
+   "status": "passed"
+  },
+  "triggers/providers/docker/Docker.self-update-compose-sync.test.ts": {
+   "ms": 2096.735595703125,
+   "status": "passed"
+  },
+  "triggers/providers/docker/Docker.test.ts": {
+   "ms": 66775.69262695312,
+   "status": "passed"
+  },
+  "triggers/providers/docker/Docker.trigger-prune-progress.test.ts": {
+   "ms": 14166.346435546875,
+   "status": "passed"
+  },
+  "triggers/providers/docker/ExtractedComponents.test.ts": {
+   "ms": 5.921875,
+   "status": "passed"
+  },
+  "triggers/providers/docker/HealthMonitor.rollback-safety.test.ts": {
+   "ms": 35.442138671875,
+   "status": "passed"
+  },
+  "triggers/providers/docker/HealthMonitor.test.ts": {
+   "ms": 75.256103515625,
+   "status": "passed"
+  },
+  "triggers/providers/docker/HookExecutor.test.ts": {
+   "ms": 32.32177734375,
+   "status": "passed"
+  },
+  "triggers/providers/docker/RegistryResolver.test.ts": {
+   "ms": 12.840576171875,
+   "status": "passed"
+  },
+  "triggers/providers/docker/RollbackMonitor.test.ts": {
+   "ms": 18.679443359375,
+   "status": "passed"
+  },
+  "triggers/providers/docker/SecurityGate.test.ts": {
+   "ms": 55.432861328125,
+   "status": "passed"
+  },
+  "triggers/providers/docker/SelfContainerIdentity.test.ts": {
+   "ms": 8.227783203125,
+   "status": "passed"
+  },
+  "triggers/providers/docker/SelfUpdateOrchestrator.test.ts": {
+   "ms": 43.203369140625,
+   "status": "passed"
+  },
+  "triggers/providers/docker/SelfUpdateTransitionShared.test.ts": {
+   "ms": 164.76806640625,
+   "status": "passed"
+  },
+  "triggers/providers/docker/SharedNamespaceDependents.test.ts": {
+   "ms": 13.94775390625,
+   "status": "passed"
+  },
+  "triggers/providers/docker/TriggerPipelineError.test.ts": {
+   "ms": 3.4033203125,
+   "status": "passed"
+  },
+  "triggers/providers/docker/UpdateLifecycleExecutor.test.ts": {
+   "ms": 42.861083984375,
+   "status": "passed"
+  },
+  "triggers/providers/docker/compose-file-sync.test.ts": {
+   "ms": 20.52490234375,
+   "status": "passed"
+  },
+  "triggers/providers/docker/created-container-candidate.test.ts": {
+   "ms": 14.281005859375,
+   "status": "passed"
+  },
+  "triggers/providers/docker/dependency-constructor.test.ts": {
+   "ms": 2.54833984375,
+   "status": "passed"
+  },
+  "triggers/providers/docker/fast-lane-guard.test.ts": {
+   "ms": 8.31787109375,
+   "status": "passed"
+  },
+  "triggers/providers/docker/pull-pacing.test.ts": {
+   "ms": 27.24072265625,
+   "status": "passed"
+  },
+  "triggers/providers/docker/rollback-cascade-guard.test.ts": {
+   "ms": 3.237548828125,
+   "status": "passed"
+  },
+  "triggers/providers/docker/rollback-monitor-registry.test.ts": {
+   "ms": 3.430419921875,
+   "status": "passed"
+  },
+  "triggers/providers/docker/rollback-operation.test.ts": {
+   "ms": 6.439453125,
+   "status": "passed"
+  },
+  "triggers/providers/docker/rollback-state.test.ts": {
+   "ms": 8.34619140625,
+   "status": "passed"
+  },
+  "triggers/providers/docker/self-update-availability.test.ts": {
+   "ms": 11.465087890625,
+   "status": "passed"
+  },
+  "triggers/providers/docker/self-update-controller-entrypoint.test.ts": {
+   "ms": 439.050048828125,
+   "status": "passed"
+  },
+  "triggers/providers/docker/self-update-controller.test.ts": {
+   "ms": 78.281494140625,
+   "status": "passed"
+  },
+  "triggers/providers/docker/self-update-finalize-entrypoint.test.ts": {
+   "ms": 249.548095703125,
+   "status": "passed"
+  },
+  "triggers/providers/docker/self-update-helper-completion.test.ts": {
+   "ms": 5.916748046875,
+   "status": "passed"
+  },
+  "triggers/providers/docker/self-update-operation.test.ts": {
+   "ms": 13.221923828125,
+   "status": "passed"
+  },
+  "triggers/providers/docker/self-update-sse-flow.test.ts": {
+   "ms": 19.7333984375,
+   "status": "passed"
+  },
+  "triggers/providers/docker/update-runtime-context.test.ts": {
+   "ms": 4.30322265625,
+   "status": "passed"
+  },
+  "triggers/providers/dockercompose/ComposeFileLockManager.test.ts": {
+   "ms": 12.6318359375,
+   "status": "passed"
+  },
+  "triggers/providers/dockercompose/ComposeFileParser.test.ts": {
+   "ms": 19.544677734375,
+   "status": "passed"
+  },
+  "triggers/providers/dockercompose/ComposeIncludes.test.ts": {
+   "ms": 17.255126953125,
+   "status": "passed"
+  },
+  "triggers/providers/dockercompose/ComposeMacIntent.test.ts": {
+   "ms": 6.423583984375,
+   "status": "passed"
+  },
+  "triggers/providers/dockercompose/ComposePathBindMounts.test.ts": {
+   "ms": 6.189453125,
+   "status": "passed"
+  },
+  "triggers/providers/dockercompose/Dockercompose.comments-and-pruning.test.ts": {
+   "ms": 55.56591796875,
+   "status": "passed"
+  },
+  "triggers/providers/dockercompose/Dockercompose.compose-exec-and-hooks.test.ts": {
+   "ms": 319.68994140625,
+   "status": "passed"
+  },
+  "triggers/providers/dockercompose/Dockercompose.compose-resolution-and-init.test.ts": {
+   "ms": 55.509765625,
+   "status": "passed"
+  },
+  "triggers/providers/dockercompose/Dockercompose.file-ops-and-trigger-batch.test.ts": {
+   "ms": 107.685546875,
+   "status": "passed"
+  },
+  "triggers/providers/dockercompose/Dockercompose.map-and-process-compose.test.ts": {
+   "ms": 568.3955078125,
+   "status": "passed"
+  },
+  "triggers/providers/dockercompose/Dockercompose.restore-operations.test.ts": {
+   "ms": 216.969970703125,
+   "status": "passed"
+  },
+  "triggers/providers/dockercompose/Dockercompose.test.ts": {
+   "ms": 974.116943359375,
+   "status": "passed"
+  },
+  "triggers/providers/dockercompose/Dockercompose.update-lifecycle-core.test.ts": {
+   "ms": 95.154296875,
+   "status": "passed"
+  },
+  "triggers/providers/dockercompose/Dockercompose.update-lifecycle-extended.test.ts": {
+   "ms": 193.7275390625,
+   "status": "passed"
+  },
+  "triggers/providers/dockercompose/PostStartExecutor.test.ts": {
+   "ms": 25.345703125,
+   "status": "passed"
+  },
+  "triggers/providers/exec-stream.test.ts": {
+   "ms": 4.322265625,
+   "status": "passed"
+  },
+  "triggers/providers/githubdispatch/Githubdispatch.test.ts": {
+   "ms": 36.215087890625,
+   "status": "passed"
+  },
+  "triggers/providers/gitlabpipeline/Gitlabpipeline.test.ts": {
+   "ms": 42.254638671875,
+   "status": "passed"
+  },
+  "triggers/providers/googlechat/Googlechat.test.ts": {
+   "ms": 41.212646484375,
+   "status": "passed"
+  },
+  "triggers/providers/gotify/Gotify.test.ts": {
+   "ms": 48.33203125,
+   "status": "passed"
+  },
+  "triggers/providers/http/Http.test.ts": {
+   "ms": 113.206298828125,
+   "status": "passed"
+  },
+  "triggers/providers/ifttt/Ifttt.test.ts": {
+   "ms": 48.13623046875,
+   "status": "passed"
+  },
+  "triggers/providers/kafka/Kafka.test.ts": {
+   "ms": 32.60107421875,
+   "status": "passed"
+  },
+  "triggers/providers/matrix/Matrix.test.ts": {
+   "ms": 40.718505859375,
+   "status": "passed"
+  },
+  "triggers/providers/mattermost/Mattermost.test.ts": {
+   "ms": 34.398681640625,
+   "status": "passed"
+  },
+  "triggers/providers/mock/Mock.test.ts": {
+   "ms": 34.615234375,
+   "status": "passed"
+  },
+  "triggers/providers/mqtt/Hass.buttons.test.ts": {
+   "ms": 50.589111328125,
+   "status": "passed"
+  },
+  "triggers/providers/mqtt/Hass.test.ts": {
+   "ms": 186.8427734375,
+   "status": "passed"
+  },
+  "triggers/providers/mqtt/Mqtt.test.ts": {
+   "ms": 117.7177734375,
+   "status": "passed"
+  },
+  "triggers/providers/mqtt/filter.test.ts": {
+   "ms": 10.283447265625,
+   "status": "passed"
+  },
+  "triggers/providers/mqtt/hass-command-rate-limiter.test.ts": {
+   "ms": 87.29345703125,
+   "status": "passed"
+  },
+  "triggers/providers/mqtt/hass-commands.test.ts": {
+   "ms": 9.66259765625,
+   "status": "passed"
+  },
+  "triggers/providers/mqtt/hass-progress.test.ts": {
+   "ms": 6.167236328125,
+   "status": "passed"
+  },
+  "triggers/providers/mqtt/naming.test.ts": {
+   "ms": 9.302978515625,
+   "status": "passed"
+  },
+  "triggers/providers/mqtt/topics.test.ts": {
+   "ms": 1.314208984375,
+   "status": "passed"
+  },
+  "triggers/providers/ntfy/Ntfy.test.ts": {
+   "ms": 52.96337890625,
+   "status": "passed"
+  },
+  "triggers/providers/portainer/Portainer.test.ts": {
+   "ms": 2243.518798828125,
+   "status": "passed"
+  },
+  "triggers/providers/pushover/Pushover.test.ts": {
+   "ms": 202.275390625,
+   "status": "passed"
+  },
+  "triggers/providers/rocketchat/Rocketchat.test.ts": {
+   "ms": 36.147216796875,
+   "status": "passed"
+  },
+  "triggers/providers/slack/Slack.test.ts": {
+   "ms": 26.87744140625,
+   "status": "passed"
+  },
+  "triggers/providers/smtp/Smtp.test.ts": {
+   "ms": 74.697998046875,
+   "status": "passed"
+  },
+  "triggers/providers/teams/Teams.test.ts": {
+   "ms": 32.27099609375,
+   "status": "passed"
+  },
+  "triggers/providers/telegram/Telegram.test.ts": {
+   "ms": 30.282958984375,
+   "status": "passed"
+  },
+  "triggers/providers/trigger-batch-dispatcher.test.ts": {
+   "ms": 13.174072265625,
+   "status": "passed"
+  },
+  "triggers/providers/trigger-current-container.test.ts": {
+   "ms": 6.13720703125,
+   "status": "passed"
+  },
+  "triggers/providers/trigger-deduplicator.test.ts": {
+   "ms": 4.312744140625,
+   "status": "passed"
+  },
+  "triggers/providers/trigger-digest-buffer.test.ts": {
+   "ms": 6.4638671875,
+   "status": "passed"
+  },
+  "triggers/providers/trigger-expression-parser.test.ts": {
+   "ms": 15.190673828125,
+   "status": "passed"
+  },
+  "triggers/providers/trigger-reference-matching.test.ts": {
+   "ms": 10.35693359375,
+   "status": "passed"
+  },
+  "triggers/providers/trigger-threshold.test.ts": {
+   "ms": 4.10888671875,
+   "status": "passed"
+  },
+  "triggers/trigger-category.test.ts": {
+   "ms": 4.119873046875,
+   "status": "passed"
+  },
+  "updates/action-concurrency.test.ts": {
+   "ms": 5.236572265625,
+   "status": "passed"
+  },
+  "updates/dependency-order-persistence.integration.test.ts": {
+   "ms": 41.001708984375,
+   "status": "passed"
+  },
+  "updates/dependency-restart.test.ts": {
+   "ms": 9.313232421875,
+   "status": "passed"
+  },
+  "updates/duplicate-op-classification.test.ts": {
+   "ms": 10.158935546875,
+   "status": "passed"
+  },
+  "updates/fleet-update-concurrency.integration.test.ts": {
+   "ms": 501.28515625,
+   "status": "passed"
+  },
+  "updates/health-gate-heartbeat.test.ts": {
+   "ms": 27.746337890625,
+   "status": "passed"
+  },
+  "updates/lock-primitives.test.ts": {
+   "ms": 20.211181640625,
+   "status": "passed"
+  },
+  "updates/post-start-liveness.test.ts": {
+   "ms": 26.310302734375,
+   "status": "passed"
+  },
+  "updates/recovery-lock-cancel.integration.test.ts": {
+   "ms": 108.23046875,
+   "status": "passed"
+  },
+  "updates/recovery.test.ts": {
+   "ms": 22.48828125,
+   "status": "passed"
+  },
+  "updates/request-update.test.ts": {
+   "ms": 451.01513671875,
+   "status": "passed"
+  },
+  "updates/update-locks.test.ts": {
+   "ms": 268.116455078125,
+   "status": "passed"
+  },
+  "util/auth-redaction.test.ts": {
+   "ms": 4.30712890625,
+   "status": "passed"
+  },
+  "util/container-summary.test.ts": {
+   "ms": 9.314208984375,
+   "status": "passed"
+  },
+  "util/crypto.test.ts": {
+   "ms": 1.85888671875,
+   "status": "passed"
+  },
+  "util/error.test.ts": {
+   "ms": 6.171142578125,
+   "status": "passed"
+  },
+  "util/parse.test.ts": {
+   "ms": 6.063720703125,
+   "status": "passed"
+  },
+  "util/session-limit.test.ts": {
+   "ms": 106.6015625,
+   "status": "passed"
+  },
+  "util/sleep.test.ts": {
+   "ms": 6.370849609375,
+   "status": "passed"
+  },
+  "util/string-array.test.ts": {
+   "ms": 10.579345703125,
+   "status": "passed"
+  },
+  "util/uuid.test.ts": {
+   "ms": 25.71142578125,
+   "status": "passed"
+  },
+  "vitest.config.test.ts": {
+   "ms": 3.037841796875,
+   "status": "passed"
+  },
+  "vitest.coverage-provider.test.ts": {
+   "ms": 1478.487548828125,
+   "status": "passed"
+  },
+  "watchers/Watcher.test.ts": {
+   "ms": 11.12548828125,
+   "status": "passed"
+  },
+  "watchers/controller-local-container-ids.test.ts": {
+   "ms": 15.29736328125,
+   "status": "passed"
+  },
+  "watchers/inventory-refresh.test.ts": {
+   "ms": 10.12060546875,
+   "status": "passed"
+  },
+  "watchers/manual-watch.test.ts": {
+   "ms": 4.355224609375,
+   "status": "passed"
+  },
+  "watchers/providers/docker/Docker.containers.additional-coverage-core.test.ts": {
+   "ms": 172.4853515625,
+   "status": "passed"
+  },
+  "watchers/providers/docker/Docker.containers.additional-coverage-helpers.test.ts": {
+   "ms": 142.204833984375,
+   "status": "passed"
+  },
+  "watchers/providers/docker/Docker.containers.details.test.ts": {
+   "ms": 551.41943359375,
+   "status": "passed"
+  },
+  "watchers/providers/docker/Docker.containers.discovery-settle.test.ts": {
+   "ms": 120.05517578125,
+   "status": "passed"
+  },
+  "watchers/providers/docker/Docker.containers.labels-version-finding.test.ts": {
+   "ms": 231.1943359375,
+   "status": "passed"
+  },
+  "watchers/providers/docker/Docker.containers.processing-retrieval.test.ts": {
+   "ms": 163.720458984375,
+   "status": "passed"
+  },
+  "watchers/providers/docker/Docker.containers.reporting-utility-coverage.test.ts": {
+   "ms": 24.312255859375,
+   "status": "passed"
+  },
+  "watchers/providers/docker/Docker.containers.test.ts": {
+   "ms": 1066.27783203125,
+   "status": "passed"
+  },
+  "watchers/providers/docker/Docker.events.test.ts": {
+   "ms": 342.810546875,
+   "status": "passed"
+  },
+  "watchers/providers/docker/Docker.fast-resync-old-row.test.ts": {
+   "ms": 56.794677734375,
+   "status": "passed"
+  },
+  "watchers/providers/docker/Docker.find-new-version.line-skip.test.ts": {
+   "ms": 11.700927734375,
+   "status": "passed"
+  },
+  "watchers/providers/docker/Docker.fuzz.test.ts": {
+   "ms": 67.678955078125,
+   "status": "passed"
+  },
+  "watchers/providers/docker/Docker.inventory.test.ts": {
+   "ms": 1041.52392578125,
+   "status": "passed"
+  },
+  "watchers/providers/docker/Docker.structure.test.ts": {
+   "ms": 1.751220703125,
+   "status": "passed"
+  },
+  "watchers/providers/docker/Docker.test.ts": {
+   "ms": 608.85791015625,
+   "status": "passed"
+  },
+  "watchers/providers/docker/Docker.watch.test.ts": {
+   "ms": 746.6220703125,
+   "status": "passed"
+  },
+  "watchers/providers/docker/agent-owned-discovery.test.ts": {
+   "ms": 54.600830078125,
+   "status": "passed"
+  },
+  "watchers/providers/docker/container-event-update.test.ts": {
+   "ms": 24.2802734375,
+   "status": "passed"
+  },
+  "watchers/providers/docker/container-filter.test.ts": {
+   "ms": 18.02294921875,
+   "status": "passed"
+  },
+  "watchers/providers/docker/container-init-coverage.test.ts": {
+   "ms": 29.331787109375,
+   "status": "passed"
+  },
+  "watchers/providers/docker/container-init-observation-mode.test.ts": {
+   "ms": 6.16259765625,
+   "status": "passed"
+  },
+  "watchers/providers/docker/container-init-offline-reconcile.test.ts": {
+   "ms": 56.207275390625,
+   "status": "passed"
+  },
+  "watchers/providers/docker/container-init-pending-discovery.test.ts": {
+   "ms": 18.333984375,
+   "status": "passed"
+  },
+  "watchers/providers/docker/container-processing-release-notes-budget.test.ts": {
+   "ms": 54.75146484375,
+   "status": "passed"
+  },
+  "watchers/providers/docker/container-processing-renamed-predecessor.test.ts": {
+   "ms": 151.58740234375,
+   "status": "passed"
+  },
+  "watchers/providers/docker/container-processing.test.ts": {
+   "ms": 26.218994140625,
+   "status": "passed"
+  },
+  "watchers/providers/docker/container-state-alerts.test.ts": {
+   "ms": 29.006591796875,
+   "status": "passed"
+  },
+  "watchers/providers/docker/curl-healthcheck-warning.test.ts": {
+   "ms": 2.55126953125,
+   "status": "passed"
+  },
+  "watchers/providers/docker/depends-on-resolution.test.ts": {
+   "ms": 11.364501953125,
+   "status": "passed"
+  },
+  "watchers/providers/docker/digest-cache-lifecycle.test.ts": {
+   "ms": 10.451416015625,
+   "status": "passed"
+  },
+  "watchers/providers/docker/disable-socket-redirects.test.ts": {
+   "ms": 4.44384765625,
+   "status": "passed"
+  },
+  "watchers/providers/docker/docker-cron-watch.test.ts": {
+   "ms": 62.252685546875,
+   "status": "passed"
+  },
+  "watchers/providers/docker/docker-event-orchestration.test.ts": {
+   "ms": 143.72265625,
+   "status": "passed"
+  },
+  "watchers/providers/docker/docker-events.test.ts": {
+   "ms": 19.7587890625,
+   "status": "passed"
+  },
+  "watchers/providers/docker/docker-helpers.test.ts": {
+   "ms": 17.082275390625,
+   "status": "passed"
+  },
+  "watchers/providers/docker/docker-image-details-orchestration.test.ts": {
+   "ms": 91.694091796875,
+   "status": "passed"
+  },
+  "watchers/providers/docker/docker-image-origin.test.ts": {
+   "ms": 7.3720703125,
+   "status": "passed"
+  },
+  "watchers/providers/docker/docker-remote-auth.test.ts": {
+   "ms": 320.5869140625,
+   "status": "passed"
+  },
+  "watchers/providers/docker/docker-socket-resolution.test.ts": {
+   "ms": 16.762451171875,
+   "status": "passed"
+  },
+  "watchers/providers/docker/fallback-logger.test.ts": {
+   "ms": 12.264404296875,
+   "status": "passed"
+  },
+  "watchers/providers/docker/image-comparison.test.ts": {
+   "ms": 119.83447265625,
+   "status": "passed"
+  },
+  "watchers/providers/docker/maintenance.test.ts": {
+   "ms": 38.030517578125,
+   "status": "passed"
+  },
+  "watchers/providers/docker/oidc.test.ts": {
+   "ms": 9.281982421875,
+   "status": "passed"
+  },
+  "watchers/providers/docker/podman-detection.test.ts": {
+   "ms": 11.71875,
+   "status": "passed"
+  },
+  "watchers/providers/docker/podman-redirect-guard.integration.test.ts": {
+   "ms": 35.73388671875,
+   "status": "passed"
+  },
+  "watchers/providers/docker/recent-events.test.ts": {
+   "ms": 11.4755859375,
+   "status": "passed"
+  },
+  "watchers/providers/docker/registry-lookalike-routing.test.ts": {
+   "ms": 12.30517578125,
+   "status": "passed"
+  },
+  "watchers/providers/docker/release-notes-enrichment.test.ts": {
+   "ms": 9.32763671875,
+   "status": "passed"
+  },
+  "watchers/providers/docker/runtime-details.test.ts": {
+   "ms": 12.335205078125,
+   "status": "passed"
+  },
+  "watchers/providers/docker/socket-version-probe.test.ts": {
+   "ms": 34.68896484375,
+   "status": "passed"
+  },
+  "watchers/providers/docker/tag-candidates.test.ts": {
+   "ms": 204.32763671875,
+   "status": "passed"
+  },
+  "watchers/providers/docker/trigger-label-resolution.test.ts": {
+   "ms": 10.06494140625,
+   "status": "passed"
+  },
+  "watchers/providers/docker/update-policy.test.ts": {
+   "ms": 12.193603515625,
+   "status": "passed"
+  },
+  "watchers/providers/docker/watch-concurrency.test.ts": {
+   "ms": 7.399658203125,
+   "status": "passed"
+  },
+  "watchers/providers/file/File.test.ts": {
+   "ms": 531.55712890625,
+   "status": "passed"
+  },
+  "watchers/providers/file/file-container.test.ts": {
+   "ms": 15.674072265625,
+   "status": "passed"
+  },
+  "watchers/providers/file/file-entries.test.ts": {
+   "ms": 34.8046875,
+   "status": "passed"
+  },
+  "watchers/registry-webhook-fresh.test.ts": {
+   "ms": 3.736328125,
+   "status": "passed"
+  }
+ },
+ "failed_tests": []
+}

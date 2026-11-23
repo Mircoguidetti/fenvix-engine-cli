@@ -1,0 +1,32 @@
+2026-11-23T20:47:54Z FULL RUN pr-index 0 PR #626 base 56689891c6bf4edf2e1f6fef78abe6cb4e4d777d
+2026-11-23T20:47:54Z   $ git checkout -q -f --detach 56689891c6bf4edf2e1f6fef78abe6cb4e4d777d && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T20:47:54Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T20:48:02Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 8.1s
+2026-11-23T20:48:43Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/agentlang/full-00.json  -> exit 1 in 41.5s
+2026-11-23T20:48:43Z   full run 0: ok exit 1 41.5s {'skipped': 42, 'failed': 163, 'passed': 80}
+2026-11-23T20:48:43Z FULL RUN pr-index 5 PR #632 base d79b4bd8335b3d00e53d21252e16ed08c8788526
+2026-11-23T20:48:43Z   $ git checkout -q -f --detach d79b4bd8335b3d00e53d21252e16ed08c8788526 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:48:44Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:48:45Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 1 in 0.9s
+2026-11-23T20:48:45Z   full run 5: UNKNOWN exit None Nones None
+2026-11-23T20:48:45Z FULL RUN pr-index 10 PR #637 base 4203438cd5e28db3b4a8c43c6b1b7d5e923b3f2d
+2026-11-23T20:48:45Z   $ git checkout -q -f --detach 4203438cd5e28db3b4a8c43c6b1b7d5e923b3f2d && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:48:45Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T20:48:46Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 1 in 0.9s
+2026-11-23T20:48:46Z   full run 10: UNKNOWN exit None Nones None
+2026-11-23T20:48:46Z FULL RUN pr-index 15 PR #644 base 115c9fc992811a5f21949f4612bf5b80fc7e7050
+2026-11-23T20:48:46Z   $ git checkout -q -f --detach 115c9fc992811a5f21949f4612bf5b80fc7e7050 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:48:46Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T20:48:49Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 3.4s
+2026-11-23T20:49:38Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/agentlang/full-15.json  -> exit 1 in 48.9s
+2026-11-23T20:49:38Z   full run 15: ok exit 1 48.9s {'skipped': 42, 'failed': 187, 'passed': 177}
+2026-11-23T20:49:38Z FULL RUN pr-index 20 PR #650 base 19121f415e42e0b0fbf66afb3667ca9fcff1133c
+2026-11-23T20:49:38Z   $ git checkout -q -f --detach 19121f415e42e0b0fbf66afb3667ca9fcff1133c && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:49:39Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.0s
+2026-11-23T20:49:43Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 3.6s
+2026-11-23T20:50:37Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/agentlang/full-20.json  -> exit 1 in 54.0s
+2026-11-23T20:50:37Z   full run 20: ok exit 1 54.0s {'skipped': 42, 'failed': 192, 'passed': 184}
+2026-11-23T20:50:37Z FULL RUN pr-index 25 PR #655 base 0a2554a60ffc8af2fa805c3cf69d26adccfc5ec9
+2026-11-23T20:50:37Z   $ git checkout -q -f --detach 0a2554a60ffc8af2fa805c3cf69d26adccfc5ec9 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:50:38Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.0s
+2026-11-23T20:50:42Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 4.1s
