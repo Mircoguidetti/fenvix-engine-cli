@@ -182,3 +182,11 @@
 2026-11-23T13:18:08Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 2.4s
 2026-11-23T13:18:08Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-all.json  -> exit 0 in 0.4s
 2026-11-23T13:18:15Z   $ npx --no-install vitest list  --changed 12d050ed5ddc7c9c3b54dc1b97b150436d73541f --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-sel.json  -> exit 0 in 6.5s
+2026-11-23T13:20:40Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/excl-739-0e883f16.json test/account-access.test.ts test/account-check-helpers.test.ts test/account-check-types.test.ts test/account-clear-entry.test.ts test/account-clear.test.ts test/account-manager-cache-entry.test.ts test/account-manager-cache.test.ts test/account-persistence.test.ts test/account-pool  -> exit 0 in 145.8s
+2026-11-23T13:20:40Z   -> ok share=0.4668 sel=178 excl=257 failures=[]
+2026-11-23T13:20:40Z STATE PR #740 (code) state 1/5 76616ff8a6 base ceb4172ded
+2026-11-23T13:20:40Z   $ git checkout -q -f --detach 76616ff8a6b9117bd96e6084a556b81589cfe67f && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T13:20:41Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.0s
+2026-11-23T13:20:44Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 2.3s
+2026-11-23T13:20:44Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-all.json  -> exit 0 in 0.5s
+2026-11-23T13:20:51Z   $ npx --no-install vitest list  --changed ceb4172deda0613d3a2492a5f4f43e60d3698e0a --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-sel.json  -> exit 0 in 6.7s
