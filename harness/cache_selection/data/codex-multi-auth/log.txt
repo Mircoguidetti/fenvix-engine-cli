@@ -111,3 +111,4 @@
 2026-11-23T12:48:00Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
 2026-11-23T12:48:02Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 2.0s
 2026-11-23T12:49:30Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/codex-bin-wrapper.test.ts  -> exit 0 in 87.9s
+2026-11-23T12:50:57Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/codex-bin-wrapper.test.ts  -> exit 0 in 87.5s
