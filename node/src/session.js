@@ -245,21 +245,22 @@ function header(run, opts, extra) {
 /** Ids of the tests recorded in a part, in execution order. */
 function partNotes(file) {
   try {
-    const first = fs.readFileSync(file, 'utf8').split('\n', 1)[0];
+    const first = require('./trace-lines').firstLine(file);
     return (JSON.parse(first).meta || {}).notes || [];
   } catch {
     return [];
   }
 }
 
+/** Ids of the tests recorded in a part, in execution order. Streams the part (src/trace-lines.js); a part that
+ * cannot be read throws (the caller fails closed: src/session.js finish). A line that is not JSON is skipped (a
+ * truncated last line, as before). */
 function partIds(file) {
   const ids = [];
-  let text;
-  try { text = fs.readFileSync(file, 'utf8'); } catch { return ids; }
-  for (const line of text.split('\n')) {
-    if (!line.startsWith('{"type":"test"')) continue;
+  require('./trace-lines').forEachLine(file, (line) => {
+    if (!line.startsWith('{"type":"test"')) return;
     try { ids.push(JSON.parse(line).nodeid); } catch { /* truncated last line */ }
-  }
+  });
   return ids;
 }
 
@@ -389,7 +390,11 @@ function finish(run, opts, files, meta) {
   const known = new Set(parts);
   const extra = fs.readdirSync(path.join(run.dir, 'parts')).map((p) => path.join(run.dir, 'parts', p)).filter((p) => !known.has(p)).sort();
   const all = [...parts, ...extra];
-  const order = all.flatMap(partIds);
+  // P0 big trace: a part whose ids cannot be read leaves the order incomplete: the run's status is unknown (exit 2)
+  const order = [];
+  for (const p of all) {
+    try { order.push(...partIds(p)); } catch (e) { exitStatus.recordUnknown(`trace part ${p} could not be read: ${e && e.message}`); }
+  }
   const full = {
     ...meta,
     runtime: 'node',
@@ -435,23 +440,32 @@ function finish(run, opts, files, meta) {
   // the installed dependencies of the project (src/loaded.js, review R-055 V5)
   try { const d = require('./loaded').depsInput(run.dir); if (d && full.inputs) full.inputs.deps = d; } catch (e) { full.inputs_error = String(e && e.message); }
   const res = native.mergeTraces(all, run.tracePath, JSON.stringify(full), order);
+  // P0 big trace: a worker part the merge could not read is missing from the trace with its tests (and their
+  // failures): the run's status is unknown, exit 2, never green
+  if (res.skipped.length) exitStatus.recordUnknown(`unreadable trace parts, their tests are not counted: ${res.skipped.join('; ')}`);
   // B7 (spec "Engine P0: no false green"): the counts of the trace, in its header and on one status line; the exit
-  // decision of this process (bin/detjs.js, src/exit-status.js runExit) uses them
-  const status = stampStatus(run.tracePath);
-  if (status) {
+  // decision of this process (bin/detjs.js, src/exit-status.js runExit) uses them. A trace that cannot be read back
+  // or stamped is a run whose status is unknown: exit 2 (P0 big trace; before, the runner's code decided, and a 1.2
+  // GB trace with failed tests ended 0)
+  let status = null;
+  try {
+    status = stampStatus(run.tracePath);
+    if (!status) exitStatus.recordUnknown(`the trace ${run.tracePath} could not be read back`);
+  } catch (e) {
+    exitStatus.recordUnknown(`the trace ${run.tracePath} could not be read back or stamped: ${e && e.message}`);
+  }
+  if (status && !res.skipped.length && !exitStatus.recordedStatus()?.internalError) {
     exitStatus.record(status);
     // sync: the runner may be exiting; a stderr that cannot take the line (closed, full) must not abort the finish
     if (printsStatus(full)) { try { fs.writeSync(2, `${exitStatus.statusLine(status)}\n`); } catch { /* not printed */ } }
-  } else {
-    // no counts are invented for a trace that cannot be read: the exit decision rests on the runner's code
-    try { fs.writeSync(2, `detjs: status: not written (the trace ${run.tracePath} could not be read back)\n`); } catch { /* not printed */ }
   }
   let reproLines = [];
   try { reproLines = require('./repro').afterMerge(run, opts, files, meta.runner); } catch (e) { reproLines = [`detjs: --det-outcomes not written: ${e && e.message}`]; }
   fs.rmSync(run.dir, { recursive: true, force: true });
   const lines = [`detjs: trace ${path.relative(process.cwd(), run.tracePath) || run.tracePath}: ${res.nTests} tests, order digest ${res.orderDigest}`];
   if (res.skipped.length) lines.push(`detjs: unreadable trace parts: ${res.skipped.join('; ')}`);
-  const ent = realEntropyTests(run.tracePath, run.cfg.urandom);
+  let ent = [];
+  try { ent = realEntropyTests(run.tracePath, run.cfg.urandom); } catch (e) { lines.push(`detjs: the entropy check could not read the trace: ${e && e.message}`); }
   if (ent.length) {
     lines.push(`detjs: ${ent.length} test(s) used real OS entropy, observed but not controlled (${[...new Set(ent.flatMap((e) => e.ops))].sort().join(', ')}): their results can differ between runs${run.cfg.urandom ? ' (native key generation)' : '; --det-urandom makes crypto.randomBytes & co. deterministic (not for tests of cryptography)'}, e.g. ${ent[0].nodeid}`);
   }
@@ -478,20 +492,31 @@ function finish(run, opts, files, meta) {
  * Count the merged trace's tests (exit-status.js countStatus; a single run has no NOT PROVEN test of its own, B3)
  * and write the counts into its header as `meta.status` (appendix point 3: in `meta`, no change to the Rust Header).
  * The header line is edited as text, not re-serialized, so no other field of it can change; the new trace is
- * written beside the old one and renamed over it, so a crash never leaves a truncated trace. Returns null when the
- * trace cannot be read (no counts are invented); a test line that cannot be parsed counts as failed.
+ * written beside the old one and renamed over it, so a crash never leaves a truncated trace. A test line that
+ * cannot be parsed counts as failed.
+ *
+ * P0 big trace: the trace is streamed (src/trace-lines.js; a 1.2 GB trace does not fit in one JavaScript string),
+ * and the body after the header line is copied byte for byte. A trace that cannot be read gives null; a stamp that
+ * cannot be written or renamed THROWS. Either way the caller records the run's status as unknown (exit 2).
  */
 function stampStatus(tracePath) {
-  let text;
-  try { text = fs.readFileSync(tracePath, 'utf8'); } catch { return null; }
+  const { forEachLine, copyRange } = require('./trace-lines');
   const recs = [];
-  for (const line of text.split('\n')) {
-    if (!line.startsWith('{"type":"test"')) continue;
-    try { const t = JSON.parse(line); recs.push({ nodeid: t.nodeid, outcome: t.outcome }); } catch { recs.push({ nodeid: `<unreadable line ${recs.length}>`, outcome: 'unreadable' }); }
+  let head = null;
+  let headLen = 0;
+  try {
+    forEachLine(tracePath, (line, i, off, len) => {
+      if (i === 0) { head = line; headLen = len; }
+      if (!line.startsWith('{"type":"test"')) return;
+      try { const t = JSON.parse(line); recs.push({ nodeid: t.nodeid, outcome: t.outcome }); } catch { recs.push({ nodeid: `<unreadable line ${recs.length}>`, outcome: 'unreadable' }); }
+    });
+  } catch {
+    // no counts are invented for a trace that cannot be read (absent, a read error, a line over the limit): null,
+    // and the caller records the run's status as unknown (exit 2)
+    return null;
   }
   const status = exitStatus.countStatus(recs);
-  const nl = text.indexOf('\n');
-  const head = nl < 0 ? text : text.slice(0, nl);
+  if (head === null) head = '';
   const at = head.indexOf('"meta":{');
   if (head.startsWith('{"type":"header"') && at >= 0) {
     const i = at + '"meta":{'.length;
@@ -499,6 +524,9 @@ function stampStatus(tracePath) {
     // beside the real file (a --det-trace that is a symbolic link stays one), with its mode
     let real = tracePath;
     try { real = fs.realpathSync(tracePath); } catch { /* as given */ }
+    const size = fs.statSync(real).size;
+    // the raw header line ends with "\r" when the file's lines do: kept
+    const cr = Buffer.byteLength(head, 'utf8') < headLen ? '\r' : '';
     // created exclusively (never through a file or link already at that name) and set up through its descriptor
     const tmp = `${real}.status-${process.pid}-${Date.now().toString(36)}`;
     let fd = null;
@@ -506,7 +534,9 @@ function stampStatus(tracePath) {
       let mode = 0o644;
       try { mode = fs.statSync(real).mode & 0o7777; } catch { /* default */ }
       fd = fs.openSync(tmp, 'wx', mode);
-      fs.writeSync(fd, `${head.slice(0, i)}${field}${head.slice(i)}${nl < 0 ? '' : text.slice(nl)}`);
+      // a trace of one line without "\n" stays one line without "\n"
+      fs.writeSync(fd, `${head.slice(0, i)}${field}${head.slice(i)}${cr}${size > headLen ? '\n' : ''}`);
+      if (size > headLen + 1) copyRange(real, headLen + 1, fd);
       fs.fchmodSync(fd, mode);
       fs.closeSync(fd);
       fd = null;
@@ -514,7 +544,7 @@ function stampStatus(tracePath) {
     } catch (e) {
       if (fd !== null) { try { fs.closeSync(fd); } catch { /* closed */ } }
       if (e && e.code !== 'EEXIST') { try { fs.rmSync(tmp, { force: true }); } catch { /* best effort */ } }
-      process.stderr.write(`detjs: meta.status not written into ${tracePath}: ${e && e.message}\n`);
+      throw new Error(`meta.status not written into ${tracePath}: ${e && e.message}`);
     }
   }
   return status;
@@ -540,12 +570,11 @@ const URANDOM_OPS = /^crypto\.(?:randomBytes|randomFillSync|randomFill|randomInt
 /** Tests of the merged trace that drew real OS entropy: [{nodeid, ops}] (G-1426: the default is never silent). */
 function realEntropyTests(tracePath, urandom) {
   const out = [];
-  let text;
-  try { text = fs.readFileSync(tracePath, 'utf8'); } catch { return out; }
-  for (const line of text.split('\n')) {
-    if (!line.startsWith('{"type":"test"') || !line.includes('"entropy"')) continue;
+  // streamed (P0 big trace); a read error is thrown to the caller, which prints it
+  require('./trace-lines').forEachLine(tracePath, (line) => {
+    if (!line.startsWith('{"type":"test"') || !line.includes('"entropy"')) return;
     let t;
-    try { t = JSON.parse(line); } catch { continue; }
+    try { t = JSON.parse(line); } catch { return; }
     const ops = new Set();
     for (const e of t.events || []) {
       if (e.s !== 'entropy') continue;
@@ -554,7 +583,7 @@ function realEntropyTests(tracePath, urandom) {
     }
     if (!ops.size && t.counts && t.counts.entropy && !urandom && !(t.events || []).length) ops.add('entropy');
     if (ops.size) out.push({ nodeid: t.nodeid, ops: [...ops] });
-  }
+  });
   return out;
 }
 
