@@ -124,6 +124,27 @@ function statValue(st) {
   CAPTURE.busy++;
   try { return `${t} size=${st.size}`; } catch { return t; } finally { CAPTURE.busy--; }
 }
+// P1 E (docs/DESIGN-P1.md section E): a call made by Node's own recursive removal (`fs.rm` / `fs.promises.rm` with
+// `recursive`, node:internal/fs/rimraf) is a step of that call, not an observation of the test: the test sees only its
+// result. Its lstat / readdir steps run concurrently and are not ordered by src/ioorder.js (they are part of the rm
+// operation), so recording them recorded the thread pool's completion order. Decided at the call, from the stack.
+const STRUCTURED_STACK = (_e, cs) => cs;
+function rmStep() {
+  const E = Error;
+  const pp = E.prepareStackTrace;
+  const lim = E.stackTraceLimit;
+  const h = {};
+  E.prepareStackTrace = STRUCTURED_STACK;
+  E.stackTraceLimit = 12;
+  try { E.captureStackTrace(h, rmStep); /* eslint-disable-next-line no-unused-expressions */ h.stack; } finally { E.prepareStackTrace = pp; E.stackTraceLimit = lim; }
+  for (const cs of Array.isArray(h.stack) ? h.stack : []) {
+    const f = (cs.getFileName && cs.getFileName()) || '';
+    if (!f || f.startsWith(sites.SHELL_DIR)) continue;
+    return f === 'node:internal/fs/rimraf' || f === 'internal/fs/rimraf';
+  }
+  return false;
+}
+
 function onStat(p, value) {
   if (typeof p === 'number') return;
   const where = outsidePath(p);
@@ -183,7 +204,7 @@ function installProcess(patcher) {
   for (const n of ['stat', 'lstat', 'access']) {
     w(fs, n, (real) => function stat(p, ...a) {
       const cb = a[a.length - 1];
-      if (typeof cb === 'function' && STATE.quietDepth === 0 && typeof p !== 'number') {
+      if (typeof cb === 'function' && STATE.quietDepth === 0 && typeof p !== 'number' && !rmStep()) {
         const id = STATE.testId;
         a[a.length - 1] = function done(e, st) {
           if (STATE.testId === id) onStat(p, e ? 'missing' : n === 'access' ? 'present' : statValue(st));
@@ -193,7 +214,7 @@ function installProcess(patcher) {
       return real.call(this, p, ...a);
     });
     w(fs.promises, n, (real) => async function stat(p, ...a) {
-      const watch = STATE.quietDepth === 0 && typeof p !== 'number';
+      const watch = STATE.quietDepth === 0 && typeof p !== 'number' && !rmStep();
       const id = STATE.testId;
       let r;
       try { r = await real.call(this, p, ...a); } catch (e) { if (watch && STATE.testId === id) onStat(p, 'missing'); throw e; }
@@ -266,4 +287,4 @@ function installProcess(patcher) {
   });
 }
 
-module.exports = { installProcess, outsidePath, ENV_LOADED };
+module.exports = { installProcess, outsidePath, ENV_LOADED, rmStep };

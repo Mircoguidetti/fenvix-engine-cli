@@ -10,6 +10,9 @@
 // fails_when=a batch of concurrent calls is recorded out of start order, or a stat answer that differs between two runs
 //   (a file's size) is no longer seen by verify;
 // no_claim=a completion released by the 200 ms hold (`io.release`) is in real order and stays NOT PROVEN.
+// Second case (added after the per-item measurement showed the rest on claudekit): the lstat / readdir steps of Node's
+// own recursive removal (fs.rm / fs.promises.rm, node:internal/fs/rimraf) are steps of that call, not observations
+// of the test, and are not ordered; they were recorded in completion order. They are no longer recorded.
 // Red on the trunk (e7338950): in 5 of 5 probe runs, 2 to 6 of the 12 batches were recorded out of order.
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
@@ -89,4 +92,28 @@ test('P1 E: a file whose size differs between two runs is never called stable', 
   });
   const rep = JSON.parse(native.verify(traces));
   assert.equal(rep.summary.stable, 0, JSON.stringify(rep.tests));
+});
+
+test('P1 E: the internal steps of a recursive fs.rm are not recorded (only what the test itself observes)', T, () => {
+  const body = `import { test } from 'node:test'; import fs from 'node:fs'; import path from 'node:path';
+test('t', async () => {
+  for (const k of ['p', 'c']) {
+    const d = path.join(process.env.P1E_DIR, 'tree-' + k);
+    for (let i = 0; i < 16; i++) { fs.mkdirSync(path.join(d, 'd' + i), { recursive: true }); for (let j = 0; j < 8; j++) fs.writeFileSync(path.join(d, 'd' + i, 'f' + j), 'x'); }
+    if (k === 'p') await fs.promises.rm(d, { recursive: true });
+    else await new Promise((r, e) => fs.rm(d, { recursive: true }, (x) => (x ? e(x) : r())));
+  }
+  await fs.promises.stat(process.env.P1E_DIR);
+});
+`;
+  const dir = fixture('p1e', 'rm', { 'tests/a.test.mjs': body });
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'p1e-rm-'));
+  const r = crun('node-test', dir, [], { cache: false, env: { P1E_DIR: d } });
+  assert.equal(r.status, 0, show(r));
+  const l = fs.readFileSync(path.join(dir, '.detjs', 'trace.jsonl'), 'utf8').split('\n').find((x) => x.startsWith('{"type":"test"'));
+  const ev = JSON.parse(l).events || [];
+  // the root's one stat (fs.rm validating its target, sequential) stays; the concurrent steps inside the tree go
+  const inTree = ev.filter((e) => /^fs\.(stat|readdir|promises\.readdir)$/.test(e.o) && /tree-[pc]\//.test(e.v));
+  assert.deepEqual(inTree.map((e) => `${e.o} ${e.v}`), [], 'the removal\'s own steps are not events');
+  assert.ok(ev.some((e) => e.o === 'fs.stat'), 'the test\'s own stat is still an event');
 });
