@@ -20,3 +20,502 @@
 2026-11-23T16:12:57Z   $ git checkout -q -f --detach 9a04f2bc3a4f58ac3133443134b82d699c70fbee && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
 2026-11-23T16:12:57Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.3s
 2026-11-23T16:13:03Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 5.7s
+2026-11-23T16:14:43Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/yalc/full-15.json  -> exit 1 in 100.6s
+2026-11-23T16:14:43Z   full run 15: ok exit 1 100.6s {'passed': 1473, 'failed': 3, 'skipped': 8}
+2026-11-23T16:14:43Z STATE PR #2 (code) state 1/5 c73ffdaa21 base c418d874cc
+2026-11-23T16:14:44Z   $ git checkout -q -f --detach c73ffdaa21d0e2d912ffba27641ddeb297011442 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T16:14:44Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T16:14:46Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 1.9s
+2026-11-23T16:14:46Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.5s
+2026-11-23T16:14:47Z   $ npx --no-install vitest list  --changed c418d874ccae482986a850559f8cc07b296547a9 --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 0.6s
+2026-11-23T16:14:47Z   -> ok share=0.0 sel=27 excl=0 failures=[]
+2026-11-23T16:14:47Z STATE PR #3 (code) state 1/1 390a97f3c8 base 0b1d7eed77
+2026-11-23T16:14:47Z   $ git checkout -q -f --detach 390a97f3c8b9192dc06dc7b1ba4424938970139f && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:14:47Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T16:14:49Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 1.9s
+2026-11-23T16:14:50Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.6s
+2026-11-23T16:14:51Z   $ npx --no-install vitest list  --changed 0b1d7eed77cc9b6aaafa285bbf1f877a69e9887f --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 0.6s
+2026-11-23T16:14:51Z   -> ok share=0.0 sel=27 excl=0 failures=[]
+2026-11-23T16:14:51Z STATE PR #4 (code) state 1/1 b4c07304af base 72ce612f58
+2026-11-23T16:14:51Z   $ git checkout -q -f --detach b4c07304af7b020a1325e52bde8ab255ed1b8531 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:14:51Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T16:14:53Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 2.3s
+2026-11-23T16:14:54Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.5s
+2026-11-23T16:14:55Z   $ npx --no-install vitest list  --changed 72ce612f588cdebb0113319c28a7a537e27962ae --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 1.4s
+2026-11-23T16:15:11Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/excl-4-b4c07304.json src/__tests__/error-boundary.test.ts src/__tests__/outbound-rules.test.ts src/__tests__/providers.test.ts src/__tests__/qualification.test.ts src/lib/campaign/__tests__/blocklist.test.ts src/lib/campaign/__tests__/schedule.test.ts src/lib/campaign/__tests__/significance.test.ts src/lib/campaign/  -> exit 0 in 15.6s
+2026-11-23T16:15:11Z   -> ok share=1.0 sel=0 excl=27 failures=[]
+2026-11-23T16:15:11Z STATE PR #5 (code) state 1/1 a4b64085f6 base 72ce612f58
+2026-11-23T16:15:11Z   $ git checkout -q -f --detach a4b64085f60fb9e30122db4f094e0fd52bdcff41 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:15:11Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T16:15:13Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 2.1s
+2026-11-23T16:15:14Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.6s
+2026-11-23T16:15:14Z   $ npx --no-install vitest list  --changed 72ce612f588cdebb0113319c28a7a537e27962ae --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 0.5s
+2026-11-23T16:15:14Z   -> ok share=0.0 sel=27 excl=0 failures=[]
+2026-11-23T16:15:14Z STATE PR #8 (code) state 1/1 2a3f9b217e base 72ce612f58
+2026-11-23T16:15:14Z   $ git checkout -q -f --detach 2a3f9b217e9953d56ffae9d1ffc740d20ce8e84f && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:15:14Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.3s
+2026-11-23T16:15:17Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 2.4s
+2026-11-23T16:15:17Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.5s
+2026-11-23T16:15:19Z   $ npx --no-install vitest list  --changed 72ce612f588cdebb0113319c28a7a537e27962ae --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 1.5s
+2026-11-23T16:15:33Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/excl-8-2a3f9b21.json src/__tests__/error-boundary.test.ts src/__tests__/outbound-rules.test.ts src/__tests__/providers.test.ts src/__tests__/qualification.test.ts src/lib/campaign/__tests__/blocklist.test.ts src/lib/campaign/__tests__/schedule.test.ts src/lib/campaign/__tests__/significance.test.ts src/lib/campaign/  -> exit 1 in 13.9s
+2026-11-23T16:15:34Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/campaign/__tests__/blocklist.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:15:35Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/campaign/__tests__/blocklist.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:15:37Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/campaign/__tests__/blocklist.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:15:38Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/campaign/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.7s
+2026-11-23T16:15:40Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/campaign/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.6s
+2026-11-23T16:15:42Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/campaign/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.6s
+2026-11-23T16:15:43Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/intelligence/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:15:44Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/intelligence/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:15:45Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/intelligence/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:15:47Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.4s
+2026-11-23T16:15:48Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:15:49Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:15:50Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:15:52Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:15:53Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:15:54Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:15:56Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.4s
+2026-11-23T16:15:57Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:15:58Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:15:59Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.4s
+2026-11-23T16:16:01Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:16:01Z   $ git checkout -q -f --detach 72ce612f588cdebb0113319c28a7a537e27962ae && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:16:01Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.3s
+2026-11-23T16:16:03Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 2.2s
+2026-11-23T16:16:04Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/campaign/__tests__/blocklist.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:16:06Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/campaign/__tests__/blocklist.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:16:07Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/campaign/__tests__/blocklist.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:16:09Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/campaign/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.8s
+2026-11-23T16:16:10Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/campaign/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.6s
+2026-11-23T16:16:12Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/campaign/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.7s
+2026-11-23T16:16:13Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/intelligence/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:16:15Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/intelligence/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:16:16Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/intelligence/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:16:17Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:16:18Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:16:20Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:16:21Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:16:22Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:16:23Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:16:24Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:16:26Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:16:27Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:16:28Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:16:29Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:16:31Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.1s
+2026-11-23T16:16:31Z   -> ok share=1.0 sel=0 excl=27 failures=[('src/lib/campaign/__tests__/blocklist.test.ts > campaign blocklist — hasReplied b', 'PREEXISTING'), ('src/lib/campaign/__tests__/blocklist.test.ts > campaign blocklist — hasReplied b', 'PREEXISTING'), ('src/lib/campaign/__tests__/blocklist.test.ts > campaign blocklist — hasReplied b', 'PREEXISTING'), ('src/lib/campaign/__tests__/blocklist.test.ts > campaign blocklist — hasReplied d', 'PREEXISTING'), ('src/lib/campaign/__tests__/blocklist.test.ts > campaign blocklist — hasReplied d', 'PREEXISTING'), ('src/lib/campaign/__tests__/tenant-isolation.test.ts > Campaign module tenant iso', 'PREEXISTING'), ('src/lib/campaign/__tests__/tenant-isolation.test.ts > Campaign module tenant iso', 'PREEXISTING'), ('src/lib/campaign/__tests__/tenant-isolation.test.ts > Campaign module tenant iso', 'PREEXISTING'), ('src/lib/campaign/__tests__/tenant-isolation.test.ts > Campaign module tenant iso', 'PREEXISTING'), ('src/lib/campaign/__tests__/tenant-isolation.test.ts > Campaign module tenant iso', 'PREEXISTING'), ('src/lib/intelligence/__tests__/tenant-isolation.test.ts > A5 regression — campai', 'PREEXISTING'), ('src/lib/intelligence/__tests__/tenant-isolation.test.ts > A5 regression — campai', 'PREEXISTING'), ('src/lib/memory/__tests__/dream.test.ts > dream pass — offline mode runs cleanly ', 'PREEXISTING'), ('src/lib/memory/__tests__/dream.test.ts > dream pass — offline mode promotes hypo', 'PREEXISTING'), ('src/lib/memory/__tests__/dream.test.ts > dream pass — offline mode flags nodes l', 'PREEXISTING'), ('src/lib/memory/__tests__/dream.test.ts > dream pass — offline mode is idempotent', 'PREEXISTING'), ('src/lib/memory/__tests__/graph.test.ts > graph walker BFS visits nodes reachable', 'PREEXISTING'), ('src/lib/memory/__tests__/graph.test.ts > graph walker relation filter narrows th', 'PREEXISTING'), ('src/lib/memory/__tests__/graph.test.ts > graph walker getCanonicalHead walks sup', 'PREEXISTING'), ('src/lib/memory/__tests__/retrieve.test.ts > retrieve — integration (keyword-only', 'PREEXISTING'), ('src/lib/memory/__tests__/retrieve.test.ts > retrieve — integration (keyword-only', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore upsertNodeBySourceHash is i', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore tenants cannot see each oth', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore entity upsert resolves by a', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore edges are scoped to tenant ', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore replaceIndex writes and rea', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore throws on missing tenantId', 'PREEXISTING')]
+2026-11-23T16:16:31Z STATE PR #9 (code) state 1/1 326ed90db3 base 72ce612f58
+2026-11-23T16:16:31Z   $ git checkout -q -f --detach 326ed90db3555e62f41f03aa5466d96be6002135 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:16:31Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.3s
+2026-11-23T16:16:33Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 2.3s
+2026-11-23T16:16:34Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.5s
+2026-11-23T16:16:35Z   $ npx --no-install vitest list  --changed 72ce612f588cdebb0113319c28a7a537e27962ae --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 1.3s
+2026-11-23T16:16:46Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/excl-9-326ed90d.json src/__tests__/error-boundary.test.ts src/__tests__/outbound-rules.test.ts src/__tests__/providers.test.ts src/__tests__/qualification.test.ts src/lib/campaign/__tests__/schedule.test.ts src/lib/campaign/__tests__/significance.test.ts src/lib/crm/__tests__/crm-adapter.test.ts src/lib/dedup/__test  -> exit 1 in 11.4s
+2026-11-23T16:16:48Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:16:49Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:16:50Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.4s
+2026-11-23T16:16:52Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:16:53Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.4s
+2026-11-23T16:16:54Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.4s
+2026-11-23T16:16:56Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:16:57Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:16:58Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:17:00Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:17:01Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:17:02Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:17:02Z   $ git checkout -q -f --detach 72ce612f588cdebb0113319c28a7a537e27962ae && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:17:02Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.3s
+2026-11-23T16:17:05Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 2.3s
+2026-11-23T16:17:06Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.4s
+2026-11-23T16:17:07Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:17:09Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.4s
+2026-11-23T16:17:10Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:17:11Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:17:13Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:17:14Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:17:15Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.5s
+2026-11-23T16:17:17Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.4s
+2026-11-23T16:17:18Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:17:19Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:17:20Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:17:20Z   -> ok share=0.7623 sel=5 excl=22 failures=[('src/lib/memory/__tests__/dream.test.ts > dream pass — offline mode runs cleanly ', 'PREEXISTING'), ('src/lib/memory/__tests__/dream.test.ts > dream pass — offline mode promotes hypo', 'PREEXISTING'), ('src/lib/memory/__tests__/dream.test.ts > dream pass — offline mode flags nodes l', 'PREEXISTING'), ('src/lib/memory/__tests__/dream.test.ts > dream pass — offline mode is idempotent', 'PREEXISTING'), ('src/lib/memory/__tests__/graph.test.ts > graph walker BFS visits nodes reachable', 'PREEXISTING'), ('src/lib/memory/__tests__/graph.test.ts > graph walker relation filter narrows th', 'PREEXISTING'), ('src/lib/memory/__tests__/graph.test.ts > graph walker getCanonicalHead walks sup', 'PREEXISTING'), ('src/lib/memory/__tests__/retrieve.test.ts > retrieve — integration (keyword-only', 'PREEXISTING'), ('src/lib/memory/__tests__/retrieve.test.ts > retrieve — integration (keyword-only', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore upsertNodeBySourceHash is i', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore tenants cannot see each oth', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore entity upsert resolves by a', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore edges are scoped to tenant ', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore replaceIndex writes and rea', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore throws on missing tenantId', 'PREEXISTING')]
+2026-11-23T16:17:20Z STATE PR #7 (code) state 1/1 9a680746f7 base 72ce612f58
+2026-11-23T16:17:20Z   $ git checkout -q -f --detach 9a680746f7a1d8040b1692d3dfd1d3582fa55573 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:17:21Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.3s
+2026-11-23T16:17:23Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 2.7s
+2026-11-23T16:17:24Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.5s
+2026-11-23T16:17:25Z   $ npx --no-install vitest list  --changed 72ce612f588cdebb0113319c28a7a537e27962ae --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 1.2s
+2026-11-23T16:17:35Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/excl-7-9a680746.json src/__tests__/error-boundary.test.ts src/__tests__/outbound-rules.test.ts src/__tests__/qualification.test.ts src/lib/campaign/__tests__/schedule.test.ts src/lib/campaign/__tests__/significance.test.ts src/lib/crm/__tests__/crm-adapter.test.ts src/lib/dedup/__tests__/engine.test.ts src/lib/expor  -> exit 1 in 10.4s
+2026-11-23T16:17:37Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:17:38Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:17:39Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:17:40Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:17:42Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:17:43Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:17:44Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:17:45Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:17:47Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.4s
+2026-11-23T16:17:48Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:17:50Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.4s
+2026-11-23T16:17:51Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.4s
+2026-11-23T16:17:51Z   $ git checkout -q -f --detach 72ce612f588cdebb0113319c28a7a537e27962ae && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:17:51Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.3s
+2026-11-23T16:17:54Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 2.3s
+2026-11-23T16:17:55Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.4s
+2026-11-23T16:17:57Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.6s
+2026-11-23T16:17:58Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.4s
+2026-11-23T16:17:59Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:18:01Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.4s
+2026-11-23T16:18:02Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.4s
+2026-11-23T16:18:03Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.4s
+2026-11-23T16:18:05Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.5s
+2026-11-23T16:18:06Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:18:08Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.4s
+2026-11-23T16:18:09Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:18:10Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:18:10Z   -> ok share=0.7588 sel=7 excl=20 failures=[('src/lib/memory/__tests__/dream.test.ts > dream pass — offline mode runs cleanly ', 'PREEXISTING'), ('src/lib/memory/__tests__/dream.test.ts > dream pass — offline mode promotes hypo', 'PREEXISTING'), ('src/lib/memory/__tests__/dream.test.ts > dream pass — offline mode flags nodes l', 'PREEXISTING'), ('src/lib/memory/__tests__/dream.test.ts > dream pass — offline mode is idempotent', 'PREEXISTING'), ('src/lib/memory/__tests__/graph.test.ts > graph walker BFS visits nodes reachable', 'PREEXISTING'), ('src/lib/memory/__tests__/graph.test.ts > graph walker relation filter narrows th', 'PREEXISTING'), ('src/lib/memory/__tests__/graph.test.ts > graph walker getCanonicalHead walks sup', 'PREEXISTING'), ('src/lib/memory/__tests__/retrieve.test.ts > retrieve — integration (keyword-only', 'PREEXISTING'), ('src/lib/memory/__tests__/retrieve.test.ts > retrieve — integration (keyword-only', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore upsertNodeBySourceHash is i', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore tenants cannot see each oth', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore entity upsert resolves by a', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore edges are scoped to tenant ', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore replaceIndex writes and rea', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore throws on missing tenantId', 'PREEXISTING')]
+2026-11-23T16:18:10Z STATE PR #10 (code) state 1/1 ec4ee6cd72 base 72ce612f58
+2026-11-23T16:18:10Z   $ git checkout -q -f --detach ec4ee6cd721cff2efaffa885f077ad6f8720bd04 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:18:11Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.3s
+2026-11-23T16:18:13Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 2.7s
+2026-11-23T16:18:14Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.5s
+2026-11-23T16:18:15Z   $ npx --no-install vitest list  --changed 72ce612f588cdebb0113319c28a7a537e27962ae --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 1.4s
+2026-11-23T16:18:30Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/excl-10-ec4ee6cd.json src/__tests__/error-boundary.test.ts src/__tests__/outbound-rules.test.ts src/__tests__/providers.test.ts src/__tests__/qualification.test.ts src/lib/campaign/__tests__/blocklist.test.ts src/lib/campaign/__tests__/schedule.test.ts src/lib/campaign/__tests__/significance.test.ts src/lib/campaign  -> exit 1 in 14.5s
+2026-11-23T16:18:31Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/campaign/__tests__/blocklist.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:18:32Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/campaign/__tests__/blocklist.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:18:33Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/campaign/__tests__/blocklist.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:18:35Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/campaign/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.8s
+2026-11-23T16:18:37Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/campaign/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.6s
+2026-11-23T16:18:38Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/campaign/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.6s
+2026-11-23T16:18:40Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/intelligence/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:18:41Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/intelligence/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:18:42Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/intelligence/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:18:43Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:18:45Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:18:46Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:18:47Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:18:48Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:18:50Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:18:51Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:18:52Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:18:53Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:18:55Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:18:56Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:18:57Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:18:57Z   $ git checkout -q -f --detach 72ce612f588cdebb0113319c28a7a537e27962ae && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:18:57Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.3s
+2026-11-23T16:18:59Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 1.7s
+2026-11-23T16:19:00Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/campaign/__tests__/blocklist.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:19:01Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/campaign/__tests__/blocklist.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:19:03Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/campaign/__tests__/blocklist.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:19:04Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/campaign/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.7s
+2026-11-23T16:19:06Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/campaign/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.7s
+2026-11-23T16:19:08Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/campaign/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.6s
+2026-11-23T16:19:09Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/intelligence/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.1s
+2026-11-23T16:19:10Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/intelligence/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:19:11Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/intelligence/__tests__/tenant-isolation.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:19:13Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:19:14Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:19:15Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/dream.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:19:16Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.1s
+2026-11-23T16:19:17Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:19:19Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/graph.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:19:20Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:19:21Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:19:23Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/retrieve.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:19:24Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:19:25Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:19:26Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/memory/__tests__/store.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:19:26Z   -> ok share=1.0 sel=0 excl=27 failures=[('src/lib/campaign/__tests__/blocklist.test.ts > campaign blocklist — hasReplied b', 'PREEXISTING'), ('src/lib/campaign/__tests__/blocklist.test.ts > campaign blocklist — hasReplied b', 'PREEXISTING'), ('src/lib/campaign/__tests__/blocklist.test.ts > campaign blocklist — hasReplied b', 'PREEXISTING'), ('src/lib/campaign/__tests__/blocklist.test.ts > campaign blocklist — hasReplied d', 'PREEXISTING'), ('src/lib/campaign/__tests__/blocklist.test.ts > campaign blocklist — hasReplied d', 'PREEXISTING'), ('src/lib/campaign/__tests__/tenant-isolation.test.ts > Campaign module tenant iso', 'PREEXISTING'), ('src/lib/campaign/__tests__/tenant-isolation.test.ts > Campaign module tenant iso', 'PREEXISTING'), ('src/lib/campaign/__tests__/tenant-isolation.test.ts > Campaign module tenant iso', 'PREEXISTING'), ('src/lib/campaign/__tests__/tenant-isolation.test.ts > Campaign module tenant iso', 'PREEXISTING'), ('src/lib/campaign/__tests__/tenant-isolation.test.ts > Campaign module tenant iso', 'PREEXISTING'), ('src/lib/intelligence/__tests__/tenant-isolation.test.ts > A5 regression — campai', 'PREEXISTING'), ('src/lib/intelligence/__tests__/tenant-isolation.test.ts > A5 regression — campai', 'PREEXISTING'), ('src/lib/memory/__tests__/dream.test.ts > dream pass — offline mode runs cleanly ', 'PREEXISTING'), ('src/lib/memory/__tests__/dream.test.ts > dream pass — offline mode promotes hypo', 'PREEXISTING'), ('src/lib/memory/__tests__/dream.test.ts > dream pass — offline mode flags nodes l', 'PREEXISTING'), ('src/lib/memory/__tests__/dream.test.ts > dream pass — offline mode is idempotent', 'PREEXISTING'), ('src/lib/memory/__tests__/graph.test.ts > graph walker BFS visits nodes reachable', 'PREEXISTING'), ('src/lib/memory/__tests__/graph.test.ts > graph walker relation filter narrows th', 'PREEXISTING'), ('src/lib/memory/__tests__/graph.test.ts > graph walker getCanonicalHead walks sup', 'PREEXISTING'), ('src/lib/memory/__tests__/retrieve.test.ts > retrieve — integration (keyword-only', 'PREEXISTING'), ('src/lib/memory/__tests__/retrieve.test.ts > retrieve — integration (keyword-only', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore upsertNodeBySourceHash is i', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore tenants cannot see each oth', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore entity upsert resolves by a', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore edges are scoped to tenant ', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore replaceIndex writes and rea', 'PREEXISTING'), ('src/lib/memory/__tests__/store.test.ts > MemoryStore throws on missing tenantId', 'PREEXISTING')]
+2026-11-23T16:19:26Z STATE PR #11 (code) state 1/1 3adfdd0d81 base ceb65739c4
+2026-11-23T16:19:26Z   $ git checkout -q -f --detach 3adfdd0d81e6ddac6b1807f713aec4564d1d8739 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:19:26Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.3s
+2026-11-23T16:19:28Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 2.0s
+2026-11-23T16:19:29Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.5s
+2026-11-23T16:19:29Z   $ npx --no-install vitest list  --changed ceb65739c4fd3244f5e259c74218a1c835d4b28c --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 0.5s
+2026-11-23T16:19:29Z   -> ok share=0.0 sel=27 excl=0 failures=[]
+2026-11-23T16:19:29Z STATE PR #12 (code) state 1/1 ad51e7821e base e2d88fe1b0
+2026-11-23T16:19:29Z   $ git checkout -q -f --detach ad51e7821e56a6d3d787d2dcdcad78ff0e0c76b1 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:19:30Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T16:19:32Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 2.2s
+2026-11-23T16:19:32Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.5s
+2026-11-23T16:19:34Z   $ npx --no-install vitest list  --changed e2d88fe1b01feee02722b0a632964530bf2f7c85 --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 1.2s
+2026-11-23T16:19:49Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/excl-12-ad51e782.json src/__tests__/error-boundary.test.ts src/__tests__/outbound-rules.test.ts src/__tests__/providers.test.ts src/__tests__/qualification.test.ts src/lib/campaign/__tests__/blocklist.test.ts src/lib/campaign/__tests__/schedule.test.ts src/lib/campaign/__tests__/significance.test.ts src/lib/campaign  -> exit 0 in 15.0s
+2026-11-23T16:19:49Z   -> ok share=1.0 sel=0 excl=27 failures=[]
+2026-11-23T16:19:49Z STATE PR #13 (code) state 1/1 d538c518d7 base c5c9063b06
+2026-11-23T16:19:49Z   $ git checkout -q -f --detach d538c518d749e03ef68f2a310025b9d2137cd70a && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:19:49Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T16:19:52Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 2.6s
+2026-11-23T16:19:52Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.5s
+2026-11-23T16:19:53Z   $ npx --no-install vitest list  --changed c5c9063b066d19d1c00a6cfd7bb58a0d373ce1c8 --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 1.2s
+2026-11-23T16:20:10Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/excl-13-d538c518.json src/__tests__/error-boundary.test.ts src/__tests__/onboarding-modes.test.ts src/__tests__/outbound-rules.test.ts src/__tests__/providers.test.ts src/__tests__/qualification.test.ts src/lib/campaign/__tests__/blocklist.test.ts src/lib/campaign/__tests__/schedule.test.ts src/lib/campaign/__tests_  -> exit 0 in 16.5s
+2026-11-23T16:20:10Z   -> ok share=1.0 sel=0 excl=30 failures=[]
+2026-11-23T16:20:10Z STATE PR #17 (code) state 1/5 adfb08525e base 5cac181639
+2026-11-23T16:20:10Z   $ git checkout -q -f --detach adfb08525e542cb3cbfe93b796ec32db51d3ba8c && git clean -fdxq -e node_modules  -> exit 0 in 0.2s
+2026-11-23T16:20:10Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.4s
+2026-11-23T16:20:15Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 4.3s
+2026-11-23T16:20:15Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.6s
+2026-11-23T16:20:16Z   $ npx --no-install vitest list  --changed 5cac1816391b00325b3aa0ca8718c35258d5d603 --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 0.6s
+2026-11-23T16:20:16Z   -> ok share=0.0 sel=164 excl=0 failures=[]
+2026-11-23T16:20:16Z STATE PR #18 (code) state 1/5 6f8cc53fdd base 13d316dac4
+2026-11-23T16:20:16Z   $ git checkout -q -f --detach 6f8cc53fdd82c787b47c0f282ac7b9812b684fd4 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:20:16Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.4s
+2026-11-23T16:20:20Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 4.1s
+2026-11-23T16:20:21Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.5s
+2026-11-23T16:20:23Z   $ npx --no-install vitest list  --changed 13d316dac455e431e793d1e82ce4556211901c5b --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 2.4s
+2026-11-23T16:21:09Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/excl-18-6f8cc53f.json scripts/__tests__/bench-skill-runtime.test.mjs src/__tests__/answer-linkedin-comments-skill.test.ts src/__tests__/archetype-pref.test.ts src/__tests__/asset-rendering-playwright.test.ts src/__tests__/auto-commit-threshold.test.ts src/__tests__/auto-extract.test.ts src/__tests__/build-routine-sk  -> exit 1 in 45.3s
+2026-11-23T16:21:11Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:21:13Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:21:16Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:21:16Z   $ git checkout -q -f --detach 13d316dac455e431e793d1e82ce4556211901c5b && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:21:17Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.6s
+2026-11-23T16:21:20Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 3.4s
+2026-11-23T16:21:22Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:21:25Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.5s
+2026-11-23T16:21:27Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.5s
+2026-11-23T16:21:27Z   -> ok share=0.813 sel=62 excl=103 failures=[('src/__tests__/capability-adapters.test.ts > icp-company-search adapters crustdat', 'PREEXISTING')]
+2026-11-23T16:21:27Z STATE PR #19 (code) state 1/5 cf427c64b7 base 860de6f973
+2026-11-23T16:21:27Z   $ git checkout -q -f --detach cf427c64b7c99f7f7f75e69ee6cf2c33689d2309 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:21:28Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T16:21:32Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 3.6s
+2026-11-23T16:21:32Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.6s
+2026-11-23T16:21:35Z   $ npx --no-install vitest list  --changed 860de6f97387cf4a59a54f4ec6ca65ece43a2e8a --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 2.7s
+2026-11-23T16:23:14Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/excl-19-cf427c64.json scripts/__tests__/bench-skill-runtime.test.mjs src/__tests__/answer-linkedin-comments-skill.test.ts src/__tests__/archetype-competitor-audience-mining.test.ts src/__tests__/archetype-content-calendar-builder.test.ts src/__tests__/archetype-lead-magnet-builder.test.ts src/__tests__/archetype-out  -> exit 1 in 98.9s
+2026-11-23T16:23:16Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:23:18Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:23:20Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:23:23Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:23:25Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:23:27Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:23:30Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:23:32Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:23:34Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:23:34Z   $ git checkout -q -f --detach 860de6f97387cf4a59a54f4ec6ca65ece43a2e8a && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:23:35Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T16:23:38Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 3.5s
+2026-11-23T16:23:40Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:23:43Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:23:45Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:23:47Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:23:49Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:23:52Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:23:54Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:23:56Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:23:59Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:23:59Z   -> ok share=1.0 sel=0 excl=165 failures=[('src/__tests__/capability-adapters.test.ts > icp-company-search adapters crustdat', 'PREEXISTING'), ('src/lib/qualification/__tests__/backward-compat.test.ts > Backward compat — C8 f', 'PREEXISTING'), ('src/lib/qualification/__tests__/backward-compat.test.ts > Backward compat — C8 f', 'PREEXISTING'), ('src/lib/qualification/__tests__/c8-acceptance.test.ts > <file>', 'PREEXISTING')]
+2026-11-23T16:23:59Z STATE PR #21 (code) state 1/1 e01373bd33 base 9a04f2bc3a
+2026-11-23T16:23:59Z   $ git checkout -q -f --detach e01373bd3353f7d4f813df2f585cf65ca58da710 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:23:59Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.4s
+2026-11-23T16:24:03Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 3.6s
+2026-11-23T16:24:03Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.6s
+2026-11-23T16:24:06Z   $ npx --no-install vitest list  --changed 9a04f2bc3a4f58ac3133443134b82d699c70fbee --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 2.7s
+2026-11-23T16:25:45Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/excl-21-e01373bd.json scripts/__tests__/bench-skill-runtime.test.mjs src/__tests__/answer-linkedin-comments-skill.test.ts src/__tests__/archetype-competitor-audience-mining.test.ts src/__tests__/archetype-content-calendar-builder.test.ts src/__tests__/archetype-lead-magnet-builder.test.ts src/__tests__/archetype-out  -> exit 1 in 99.4s
+2026-11-23T16:25:48Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:25:50Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:25:52Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:25:55Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:25:57Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:25:59Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:26:01Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:26:04Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:26:06Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:26:06Z   $ git checkout -q -f --detach 9a04f2bc3a4f58ac3133443134b82d699c70fbee && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:26:07Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.4s
+2026-11-23T16:26:10Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 3.4s
+2026-11-23T16:26:12Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:26:15Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:26:17Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:26:19Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:26:22Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:26:24Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:26:26Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:26:29Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:26:31Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:26:31Z   -> ok share=1.0 sel=0 excl=165 failures=[('src/__tests__/capability-adapters.test.ts > icp-company-search adapters crustdat', 'PREEXISTING'), ('src/lib/qualification/__tests__/backward-compat.test.ts > Backward compat — C8 f', 'PREEXISTING'), ('src/lib/qualification/__tests__/backward-compat.test.ts > Backward compat — C8 f', 'PREEXISTING'), ('src/lib/qualification/__tests__/c8-acceptance.test.ts > <file>', 'PREEXISTING')]
+2026-11-23T16:26:31Z STATE PR #20 (code) state 1/1 305f3d2d52 base 9a04f2bc3a
+2026-11-23T16:26:31Z   $ git checkout -q -f --detach 305f3d2d52643b2bb2d42eb716dd14a80c6557e1 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:26:31Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T16:26:35Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 3.3s
+2026-11-23T16:26:35Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.5s
+2026-11-23T16:26:38Z   $ npx --no-install vitest list  --changed 9a04f2bc3a4f58ac3133443134b82d699c70fbee --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 2.6s
+2026-11-23T16:28:16Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/excl-20-305f3d2d.json scripts/__tests__/bench-skill-runtime.test.mjs src/__tests__/answer-linkedin-comments-skill.test.ts src/__tests__/archetype-competitor-audience-mining.test.ts src/__tests__/archetype-content-calendar-builder.test.ts src/__tests__/archetype-lead-magnet-builder.test.ts src/__tests__/archetype-out  -> exit 1 in 98.3s
+2026-11-23T16:28:18Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:28:20Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:28:23Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:28:25Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:28:27Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:28:30Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:28:32Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:28:34Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:28:37Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:28:37Z   $ git checkout -q -f --detach 9a04f2bc3a4f58ac3133443134b82d699c70fbee && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:28:37Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T16:28:41Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 3.3s
+2026-11-23T16:28:43Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:28:45Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:28:47Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:28:50Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.5s
+2026-11-23T16:28:52Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:28:54Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:28:56Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:28:59Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:29:01Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:29:01Z   -> ok share=1.0 sel=0 excl=165 failures=[('src/__tests__/capability-adapters.test.ts > icp-company-search adapters crustdat', 'PREEXISTING'), ('src/lib/qualification/__tests__/backward-compat.test.ts > Backward compat — C8 f', 'PREEXISTING'), ('src/lib/qualification/__tests__/backward-compat.test.ts > Backward compat — C8 f', 'PREEXISTING'), ('src/lib/qualification/__tests__/c8-acceptance.test.ts > <file>', 'PREEXISTING')]
+2026-11-23T16:29:01Z STATE PR #22 (code) state 1/2 3170eed55b base dd36fac78f
+2026-11-23T16:29:01Z   $ git checkout -q -f --detach 3170eed55b30151bf9deb5aef82c595f784f786b && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:29:02Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.4s
+2026-11-23T16:29:05Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 3.6s
+2026-11-23T16:29:06Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.5s
+2026-11-23T16:29:08Z   $ npx --no-install vitest list  --changed dd36fac78fd1241b2b8a8cd67e313c3339c13e22 --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 2.5s
+2026-11-23T16:30:44Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/excl-22-3170eed5.json scripts/__tests__/bench-skill-runtime.test.mjs src/__tests__/answer-linkedin-comments-skill.test.ts src/__tests__/archetype-competitor-audience-mining.test.ts src/__tests__/archetype-content-calendar-builder.test.ts src/__tests__/archetype-lead-magnet-builder.test.ts src/__tests__/archetype-out  -> exit 1 in 95.4s
+2026-11-23T16:30:46Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:30:48Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:30:50Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:30:53Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:30:55Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:30:57Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:30:59Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:31:02Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:31:04Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:31:04Z   $ git checkout -q -f --detach dd36fac78fd1241b2b8a8cd67e313c3339c13e22 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:31:04Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T16:31:08Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 3.4s
+2026-11-23T16:31:10Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:31:12Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:31:14Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:31:17Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:31:19Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:31:21Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:31:23Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:31:25Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:31:28Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:31:28Z   -> ok share=1.0 sel=0 excl=165 failures=[('src/__tests__/capability-adapters.test.ts > icp-company-search adapters crustdat', 'PREEXISTING'), ('src/lib/qualification/__tests__/backward-compat.test.ts > Backward compat — C8 f', 'PREEXISTING'), ('src/lib/qualification/__tests__/backward-compat.test.ts > Backward compat — C8 f', 'PREEXISTING'), ('src/lib/qualification/__tests__/c8-acceptance.test.ts > <file>', 'PREEXISTING')]
+2026-11-23T16:31:28Z STATE PR #23 (code) state 1/5 9aee7e3cc2 base ec0e7093c1
+2026-11-23T16:31:28Z   $ git checkout -q -f --detach 9aee7e3cc2e6ab9ff5f8762ed3d5421cc6a81b2b && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:31:28Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.4s
+2026-11-23T16:31:32Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 3.7s
+2026-11-23T16:31:32Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.5s
+2026-11-23T16:31:33Z   $ npx --no-install vitest list  --changed ec0e7093c1c3c861d46b37ccebf2fe40f1ed2ce9 --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 0.5s
+2026-11-23T16:31:33Z   -> ok share=0.0 sel=165 excl=0 failures=[]
+2026-11-23T16:31:33Z STATE PR #27 (code) state 1/1 393df7a4ec base ffc6e372d6
+2026-11-23T16:31:33Z   $ git checkout -q -f --detach 393df7a4ec3f2582f75a08aa32b50f362408161c && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:31:33Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.4s
+2026-11-23T16:31:37Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 3.8s
+2026-11-23T16:31:38Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.6s
+2026-11-23T16:31:38Z   $ npx --no-install vitest list  --changed ffc6e372d68270f26478160d11c5999df982f37b --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 0.5s
+2026-11-23T16:31:38Z   -> ok share=0.0 sel=166 excl=0 failures=[]
+2026-11-23T16:31:38Z STATE PR #2 (code) state 2/5 c7e5e1b6f8 base c418d874cc
+2026-11-23T16:31:38Z   $ git checkout -q -f --detach c7e5e1b6f80c93d436bbf69527ab35e5fa0608d0 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T16:31:39Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.3s
+2026-11-23T16:31:40Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 2.0s
+2026-11-23T16:31:41Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.5s
+2026-11-23T16:31:42Z   $ npx --no-install vitest list  --changed c418d874ccae482986a850559f8cc07b296547a9 --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 0.5s
+2026-11-23T16:31:42Z   -> ok share=0.0 sel=27 excl=0 failures=[]
+2026-11-23T16:31:42Z STATE PR #17 (code) state 2/5 b1c313b977 base 5cac181639
+2026-11-23T16:31:42Z   $ git checkout -q -f --detach b1c313b977c722c3e8407f65090a379815846d10 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T16:31:42Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T16:31:46Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 3.9s
+2026-11-23T16:31:46Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.5s
+2026-11-23T16:31:49Z   $ npx --no-install vitest list  --changed 5cac1816391b00325b3aa0ca8718c35258d5d603 --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 2.3s
+2026-11-23T16:32:27Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/excl-17-b1c313b9.json scripts/__tests__/bench-skill-runtime.test.mjs src/__tests__/answer-linkedin-comments-skill.test.ts src/__tests__/archetype-pref.test.ts src/__tests__/asset-rendering-playwright.test.ts src/__tests__/auto-commit-threshold.test.ts src/__tests__/auto-extract.test.ts src/__tests__/build-routine-sk  -> exit 0 in 38.5s
+2026-11-23T16:32:27Z   -> ok share=0.8113 sel=75 excl=89 failures=[]
+2026-11-23T16:32:27Z STATE PR #18 (code) state 2/5 2bd19bd4fb base 13d316dac4
+2026-11-23T16:32:27Z   $ git checkout -q -f --detach 2bd19bd4fb8f87a878aee4a42e1b92bcae78a046 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:32:28Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.4s
+2026-11-23T16:32:31Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 3.7s
+2026-11-23T16:32:32Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.6s
+2026-11-23T16:32:34Z   $ npx --no-install vitest list  --changed 13d316dac455e431e793d1e82ce4556211901c5b --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 2.5s
+2026-11-23T16:33:19Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/excl-18-2bd19bd4.json scripts/__tests__/bench-skill-runtime.test.mjs src/__tests__/answer-linkedin-comments-skill.test.ts src/__tests__/archetype-pref.test.ts src/__tests__/asset-rendering-playwright.test.ts src/__tests__/auto-commit-threshold.test.ts src/__tests__/auto-extract.test.ts src/__tests__/build-routine-sk  -> exit 1 in 44.9s
+2026-11-23T16:33:21Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:33:24Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:33:26Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:33:26Z   $ git checkout -q -f --detach 13d316dac455e431e793d1e82ce4556211901c5b && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:33:26Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.4s
+2026-11-23T16:33:30Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 3.4s
+2026-11-23T16:33:32Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:33:34Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:33:37Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:33:37Z   -> ok share=0.813 sel=62 excl=103 failures=[('src/__tests__/capability-adapters.test.ts > icp-company-search adapters crustdat', 'PREEXISTING')]
+2026-11-23T16:33:37Z STATE PR #19 (code) state 2/5 cb87b136e2 base 860de6f973
+2026-11-23T16:33:37Z   $ git checkout -q -f --detach cb87b136e286bf5da76b9c1206b26fc3102120d3 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:33:37Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.4s
+2026-11-23T16:33:41Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 4.4s
+2026-11-23T16:33:42Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.6s
+2026-11-23T16:33:45Z   $ npx --no-install vitest list  --changed 860de6f97387cf4a59a54f4ec6ca65ece43a2e8a --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 2.5s
+2026-11-23T16:35:24Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/excl-19-cb87b136.json scripts/__tests__/bench-skill-runtime.test.mjs src/__tests__/answer-linkedin-comments-skill.test.ts src/__tests__/archetype-competitor-audience-mining.test.ts src/__tests__/archetype-content-calendar-builder.test.ts src/__tests__/archetype-lead-magnet-builder.test.ts src/__tests__/archetype-out  -> exit 1 in 99.4s
+2026-11-23T16:35:26Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:35:29Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:35:31Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:35:33Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:35:36Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:35:38Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.5s
+2026-11-23T16:35:41Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:35:43Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:35:45Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:35:45Z   $ git checkout -q -f --detach 860de6f97387cf4a59a54f4ec6ca65ece43a2e8a && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:35:46Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T16:35:49Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 3.3s
+2026-11-23T16:35:51Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:35:54Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:35:56Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:35:58Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:36:01Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:36:03Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:36:05Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:36:08Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:36:10Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.2s
+2026-11-23T16:36:10Z   -> ok share=1.0 sel=0 excl=165 failures=[('src/__tests__/capability-adapters.test.ts > icp-company-search adapters crustdat', 'PREEXISTING'), ('src/lib/qualification/__tests__/backward-compat.test.ts > Backward compat — C8 f', 'PREEXISTING'), ('src/lib/qualification/__tests__/backward-compat.test.ts > Backward compat — C8 f', 'PREEXISTING'), ('src/lib/qualification/__tests__/c8-acceptance.test.ts > <file>', 'PREEXISTING')]
+2026-11-23T16:36:10Z STATE PR #22 (code) state 2/2 c8b5dbe0c4 base dd36fac78f
+2026-11-23T16:36:10Z   $ git checkout -q -f --detach c8b5dbe0c4a7c76391ab4fe5811beb10c381c43f && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:36:10Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.4s
+2026-11-23T16:36:13Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 3.3s
+2026-11-23T16:36:14Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.5s
+2026-11-23T16:36:17Z   $ npx --no-install vitest list  --changed dd36fac78fd1241b2b8a8cd67e313c3339c13e22 --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 2.6s
+2026-11-23T16:37:59Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/excl-22-c8b5dbe0.json scripts/__tests__/bench-skill-runtime.test.mjs src/__tests__/answer-linkedin-comments-skill.test.ts src/__tests__/archetype-competitor-audience-mining.test.ts src/__tests__/archetype-content-calendar-builder.test.ts src/__tests__/archetype-lead-magnet-builder.test.ts src/__tests__/archetype-out  -> exit 1 in 102.1s
+2026-11-23T16:38:01Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.5s
+2026-11-23T16:38:04Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:38:06Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:38:08Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:38:11Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:38:13Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:38:16Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.5s
+2026-11-23T16:38:18Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:38:20Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-state.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:38:20Z   $ git checkout -q -f --detach dd36fac78fd1241b2b8a8cd67e313c3339c13e22 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:38:21Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.6s
+2026-11-23T16:38:24Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 3.4s
+2026-11-23T16:38:27Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:38:29Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:38:31Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/__tests__/capability-adapters.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:38:34Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.5s
+2026-11-23T16:38:36Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:38:39Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/backward-compat.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:38:41Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:38:43Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.3s
+2026-11-23T16:38:46Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/yalc/rerun-base.json src/lib/qualification/__tests__/c8-acceptance.test.ts  -> exit 1 in 2.4s
+2026-11-23T16:38:46Z   -> ok share=1.0 sel=0 excl=165 failures=[('src/__tests__/capability-adapters.test.ts > icp-company-search adapters crustdat', 'PREEXISTING'), ('src/lib/qualification/__tests__/backward-compat.test.ts > Backward compat — C8 f', 'PREEXISTING'), ('src/lib/qualification/__tests__/backward-compat.test.ts > Backward compat — C8 f', 'PREEXISTING'), ('src/lib/qualification/__tests__/c8-acceptance.test.ts > <file>', 'PREEXISTING')]
+2026-11-23T16:38:46Z STATE PR #23 (code) state 2/5 f5cc88130d base ec0e7093c1
+2026-11-23T16:38:46Z   $ git checkout -q -f --detach f5cc88130d4e2aaa9073338c3cd71a198aa5ae73 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:38:46Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.4s
+2026-11-23T16:38:50Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 3.8s
+2026-11-23T16:38:51Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.5s
+2026-11-23T16:38:51Z   $ npx --no-install vitest list  --changed ec0e7093c1c3c861d46b37ccebf2fe40f1ed2ce9 --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 0.6s
+2026-11-23T16:38:51Z   -> ok share=0.0 sel=165 excl=0 failures=[]
+2026-11-23T16:38:51Z STATE PR #2 (code) state 3/5 99658cb7f3 base c418d874cc
+2026-11-23T16:38:51Z   $ git checkout -q -f --detach 99658cb7f3eb87fcf35bad96205af11e6af4ca88 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T16:38:52Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.4s
+2026-11-23T16:38:54Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 2.0s
+2026-11-23T16:38:54Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.5s
+2026-11-23T16:38:55Z   $ npx --no-install vitest list  --changed c418d874ccae482986a850559f8cc07b296547a9 --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 0.5s
+2026-11-23T16:38:55Z   -> ok share=0.0 sel=27 excl=0 failures=[]
+2026-11-23T16:38:55Z STATE PR #17 (code) state 3/5 8ce1f331c2 base 5cac181639
+2026-11-23T16:38:55Z   $ git checkout -q -f --detach 8ce1f331c28e5a0ebcf76fd393a19af413ebbcde && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T16:38:55Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T16:38:56Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 1 in 0.9s
+2026-11-23T16:38:56Z   -> UNKNOWN: INSTALL_FAILED: * 1 dependencies were added: playwright@^1.49.0 share=None sel=0 excl=0 failures=[]
+2026-11-23T16:38:56Z STATE PR #18 (code) state 3/5 d179d862b1 base 13d316dac4
+2026-11-23T16:38:56Z   $ git checkout -q -f --detach d179d862b1595ec4683eff87cffd801cd6d5f07c && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:38:56Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T16:39:00Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 3.9s
+2026-11-23T16:39:00Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/yalc/list-all.json  -> exit 0 in 0.5s
+2026-11-23T16:39:03Z   $ npx --no-install vitest list  --changed 13d316dac455e431e793d1e82ce4556211901c5b --filesOnly --json=/home/user/work/tmp/yalc/list-sel.json  -> exit 0 in 2.6s

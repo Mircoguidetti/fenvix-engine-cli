@@ -1,0 +1,352 @@
+{
+ "repos": {
+  "codex-multi-auth": {
+   "prs_kept": 30,
+   "code_prs": 29,
+   "dependency_prs": 1,
+   "states_planned": 109,
+   "states_done": 34,
+   "states_ok": 34,
+   "states_unknown": 0,
+   "unknown_reasons": {},
+   "final_states_measured": {
+    "code": 29,
+    "dependency": 1
+   },
+   "median_share_all": 0.6857,
+   "median_share_code": 0.6875,
+   "median_share_code_note": null,
+   "median_share_dependency": 0.0,
+   "failure_classes": {
+    "ENV": 52,
+    "PREEXISTING": 28,
+    "FLAKY": 2
+   },
+   "selection_miss": {},
+   "selection_miss_prs": {
+    "code": [],
+    "dependency": []
+   },
+   "excluded_minutes_run": 85.56,
+   "files_unknown_minutes": 102,
+   "failures_not_classified": 0,
+   "skips_tests_in_ci": false,
+   "ci_skip_tool": "none found",
+   "e1": {
+    "env_in_test": 0,
+    "env_run_level": 0,
+    "fs_all": 8658,
+    "fs_of_which_run_input_before_test": 8658,
+    "io_read": 0,
+    "io_race_concurrent": 0,
+    "io_not_read_not_race": 0,
+    "tests_total": 8660,
+    "not_counted": {
+     "missing": 2
+    },
+    "source": "harness/parallel_measure/data/verify-codex-multi-auth-round2-w4.json.gz"
+   }
+  },
+  "ironcurtain": {
+   "prs_kept": 30,
+   "code_prs": 13,
+   "dependency_prs": 17,
+   "states_planned": 51,
+   "states_done": 51,
+   "states_ok": 51,
+   "states_unknown": 0,
+   "unknown_reasons": {},
+   "final_states_measured": {
+    "code": 13,
+    "dependency": 17
+   },
+   "median_share_all": 1.0,
+   "median_share_code": 0.6338,
+   "median_share_code_note": null,
+   "median_share_dependency": 1.0,
+   "failure_classes": {
+    "ENV": 132,
+    "PREEXISTING": 90,
+    "FLAKY": 1
+   },
+   "selection_miss": {},
+   "selection_miss_prs": {
+    "code": [],
+    "dependency": []
+   },
+   "excluded_minutes_run": 78.76,
+   "files_unknown_minutes": 117,
+   "failures_not_classified": 0,
+   "skips_tests_in_ci": false,
+   "ci_skip_tool": "none found",
+   "e1": {
+    "env_in_test": 0,
+    "env_run_level": 0,
+    "fs_all": 6667,
+    "fs_of_which_run_input_before_test": 6667,
+    "io_read": 0,
+    "io_race_concurrent": 0,
+    "io_not_read_not_race": 0,
+    "tests_total": 6913,
+    "not_counted": {
+     "missing": 246
+    },
+    "source": "harness/parallel_measure/data/verify-ironcurtain-round2-w4.json.gz"
+   }
+  },
+  "yalc": {
+   "prs_kept": 19,
+   "code_prs": 19,
+   "dependency_prs": 0,
+   "states_planned": 40,
+   "states_done": 27,
+   "states_ok": 26,
+   "states_unknown": 1,
+   "unknown_reasons": {
+    "UNKNOWN: INSTALL_FAILED: * 1 dependencies were added: playwright@^1.49.0": 1
+   },
+   "final_states_measured": {
+    "code": 19,
+    "dependency": 0
+   },
+   "median_share_all": 0.813,
+   "median_share_code": 0.813,
+   "median_share_code_note": null,
+   "median_share_dependency": null,
+   "failure_classes": {
+    "PREEXISTING": 110
+   },
+   "selection_miss": {},
+   "selection_miss_prs": {
+    "code": [],
+    "dependency": []
+   },
+   "excluded_minutes_run": 3.32,
+   "files_unknown_minutes": 1028,
+   "failures_not_classified": 0,
+   "skips_tests_in_ci": false,
+   "ci_skip_tool": "none found",
+   "e1": null
+  },
+  "nestjs-pino": {
+   "prs_kept": 30,
+   "code_prs": 2,
+   "dependency_prs": 28,
+   "states_planned": 30,
+   "states_done": 0,
+   "states_ok": 0,
+   "states_unknown": 0,
+   "unknown_reasons": {},
+   "final_states_measured": {
+    "code": 0,
+    "dependency": 0
+   },
+   "median_share_all": null,
+   "median_share_code": null,
+   "median_share_code_note": "UNKNOWN: 0 code PRs measured (<5)",
+   "median_share_dependency": null,
+   "failure_classes": {},
+   "selection_miss": {},
+   "selection_miss_prs": {
+    "code": [],
+    "dependency": []
+   },
+   "excluded_minutes_run": 0,
+   "files_unknown_minutes": 0,
+   "failures_not_classified": 0,
+   "skips_tests_in_ci": false,
+   "ci_skip_tool": "none found",
+   "e1": {
+    "env_in_test": 1,
+    "env_run_level": 0,
+    "fs_all": 2,
+    "fs_of_which_run_input_before_test": 0,
+    "io_read": 0,
+    "io_race_concurrent": 0,
+    "io_not_read_not_race": 8,
+    "tests_total": 269,
+    "not_counted": {
+     "other": 35
+    },
+    "source": "harness/parallel_measure/data/verify-nestjs-pino-round2-w4.json.gz"
+   }
+  },
+  "agentsys": {
+   "prs_kept": 30,
+   "code_prs": 30,
+   "dependency_prs": 0,
+   "states_planned": 57,
+   "states_done": 0,
+   "states_ok": 0,
+   "states_unknown": 0,
+   "unknown_reasons": {},
+   "final_states_measured": {
+    "code": 0,
+    "dependency": 0
+   },
+   "median_share_all": null,
+   "median_share_code": null,
+   "median_share_code_note": "UNKNOWN: 0 code PRs measured (<5)",
+   "median_share_dependency": null,
+   "failure_classes": {},
+   "selection_miss": {},
+   "selection_miss_prs": {
+    "code": [],
+    "dependency": []
+   },
+   "excluded_minutes_run": 0,
+   "files_unknown_minutes": 0,
+   "failures_not_classified": 0,
+   "skips_tests_in_ci": false,
+   "ci_skip_tool": "none found",
+   "e1": {
+    "env_in_test": 129,
+    "env_run_level": 1536,
+    "fs_all": 18,
+    "fs_of_which_run_input_before_test": 0,
+    "io_read": 0,
+    "io_race_concurrent": 1,
+    "io_not_read_not_race": 0,
+    "tests_total": 2224,
+    "not_counted": {
+     "entropy": 99,
+     "other": 362,
+     "beyond-trace": 1,
+     "child": 78
+    },
+    "source": "harness/parallel_measure/data/verify-agentsys-round2-w4.json.gz"
+   }
+  },
+  "lerna-lite": {
+   "prs_kept": 30,
+   "code_prs": 19,
+   "dependency_prs": 11,
+   "states_planned": 42,
+   "states_done": 0,
+   "states_ok": 0,
+   "states_unknown": 0,
+   "unknown_reasons": {},
+   "final_states_measured": {
+    "code": 0,
+    "dependency": 0
+   },
+   "median_share_all": null,
+   "median_share_code": null,
+   "median_share_code_note": "UNKNOWN: 0 code PRs measured (<5)",
+   "median_share_dependency": null,
+   "failure_classes": {},
+   "selection_miss": {},
+   "selection_miss_prs": {
+    "code": [],
+    "dependency": []
+   },
+   "excluded_minutes_run": 0,
+   "files_unknown_minutes": 0,
+   "failures_not_classified": 0,
+   "skips_tests_in_ci": false,
+   "ci_skip_tool": "none found",
+   "e1": null
+  },
+  "drydock": {
+   "prs_kept": 12,
+   "code_prs": 12,
+   "dependency_prs": 0,
+   "states_planned": 60,
+   "states_done": 0,
+   "states_ok": 0,
+   "states_unknown": 0,
+   "unknown_reasons": {},
+   "final_states_measured": {
+    "code": 0,
+    "dependency": 0
+   },
+   "median_share_all": null,
+   "median_share_code": null,
+   "median_share_code_note": "UNKNOWN: 0 code PRs measured (<5)",
+   "median_share_dependency": null,
+   "failure_classes": {},
+   "selection_miss": {},
+   "selection_miss_prs": {
+    "code": [],
+    "dependency": []
+   },
+   "excluded_minutes_run": 0,
+   "files_unknown_minutes": 0,
+   "failures_not_classified": 0,
+   "skips_tests_in_ci": false,
+   "ci_skip_tool": "none found",
+   "e1": null
+  },
+  "agentlang": {
+   "prs_kept": 30,
+   "code_prs": 30,
+   "dependency_prs": 0,
+   "states_planned": 55,
+   "states_done": 0,
+   "states_ok": 0,
+   "states_unknown": 0,
+   "unknown_reasons": {},
+   "final_states_measured": {
+    "code": 0,
+    "dependency": 0
+   },
+   "median_share_all": null,
+   "median_share_code": null,
+   "median_share_code_note": "UNKNOWN: 0 code PRs measured (<5)",
+   "median_share_dependency": null,
+   "failure_classes": {},
+   "selection_miss": {},
+   "selection_miss_prs": {
+    "code": [],
+    "dependency": []
+   },
+   "excluded_minutes_run": 0,
+   "files_unknown_minutes": 0,
+   "failures_not_classified": 0,
+   "skips_tests_in_ci": false,
+   "ci_skip_tool": "none found",
+   "e1": null
+  },
+  "alakajam": {
+   "prs_kept": 30,
+   "code_prs": 28,
+   "dependency_prs": 2,
+   "states_planned": 63,
+   "states_done": 0,
+   "states_ok": 0,
+   "states_unknown": 0,
+   "unknown_reasons": {},
+   "final_states_measured": {
+    "code": 0,
+    "dependency": 0
+   },
+   "median_share_all": null,
+   "median_share_code": null,
+   "median_share_code_note": "UNKNOWN: 0 code PRs measured (<5)",
+   "median_share_dependency": null,
+   "failure_classes": {},
+   "selection_miss": {},
+   "selection_miss_prs": {
+    "code": [],
+    "dependency": []
+   },
+   "excluded_minutes_run": 0,
+   "files_unknown_minutes": 0,
+   "failures_not_classified": 0,
+   "skips_tests_in_ci": false,
+   "ci_skip_tool": "none found",
+   "e1": null
+  }
+ },
+ "kill_line": {
+  "repos_code_median_below_30pct": [],
+  "repos_with_code_median_measured": [
+   "codex-multi-auth",
+   "ironcurtain",
+   "yalc"
+  ],
+  "repos_already_skipping_in_ci": [],
+  "selection_miss_total_code": 0,
+  "selection_miss_total_dependency": 0
+ }
+}

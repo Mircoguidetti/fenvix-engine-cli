@@ -1,0 +1,684 @@
+{
+ "repo": "yalc",
+ "pr_index": 15,
+ "pr": 20,
+ "commit": "9a04f2bc3a4f58ac3133443134b82d699c70fbee",
+ "install": "fresh install, all node_modules removed first (6s)",
+ "cmd": "npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/yalc/full-15.json",
+ "cwd": "/home/user/work/repos/yalc/",
+ "exit": 1,
+ "wall_s": 100.6,
+ "status": "ok",
+ "outcome_counts": {
+  "passed": 1473,
+  "failed": 3,
+  "skipped": 8
+ },
+ "files": {
+  "scripts/__tests__/bench-skill-runtime.test.mjs": {
+   "ms": 36.706787109375,
+   "status": "passed"
+  },
+  "src/__tests__/answer-linkedin-comments-skill.test.ts": {
+   "ms": 3.7734375,
+   "status": "passed"
+  },
+  "src/__tests__/archetype-competitor-audience-mining.test.ts": {
+   "ms": 881.7470703125,
+   "status": "passed"
+  },
+  "src/__tests__/archetype-content-calendar-builder.test.ts": {
+   "ms": 875.448974609375,
+   "status": "passed"
+  },
+  "src/__tests__/archetype-lead-magnet-builder.test.ts": {
+   "ms": 926.331787109375,
+   "status": "passed"
+  },
+  "src/__tests__/archetype-outreach-campaign-builder.test.ts": {
+   "ms": 749.47802734375,
+   "status": "passed"
+  },
+  "src/__tests__/archetype-pref.test.ts": {
+   "ms": 12.10595703125,
+   "status": "passed"
+  },
+  "src/__tests__/asset-rendering-playwright.test.ts": {
+   "ms": 6.251708984375,
+   "status": "passed"
+  },
+  "src/__tests__/auto-commit-threshold.test.ts": {
+   "ms": 30.1669921875,
+   "status": "passed"
+  },
+  "src/__tests__/auto-extract.test.ts": {
+   "ms": 8.26025390625,
+   "status": "passed"
+  },
+  "src/__tests__/backward-compat-0-8.test.ts": {
+   "ms": 178.40966796875,
+   "status": "passed"
+  },
+  "src/__tests__/brain-api.test.ts": {
+   "ms": 561.0859375,
+   "status": "passed"
+  },
+  "src/__tests__/brain-section-edit.test.ts": {
+   "ms": 584.44140625,
+   "status": "passed"
+  },
+  "src/__tests__/build-routine-skill.test.ts": {
+   "ms": 4.11376953125,
+   "status": "passed"
+  },
+  "src/__tests__/capability-adapters-c-additions.test.ts": {
+   "ms": 513.87451171875,
+   "status": "passed"
+  },
+  "src/__tests__/capability-adapters-f-additions.test.ts": {
+   "ms": 497.997314453125,
+   "status": "passed"
+  },
+  "src/__tests__/capability-adapters.test.ts": {
+   "ms": 422.867431640625,
+   "status": "passed"
+  },
+  "src/__tests__/capability-registry.test.ts": {
+   "ms": 969.706298828125,
+   "status": "passed"
+  },
+  "src/__tests__/commit-meta-persistence.test.ts": {
+   "ms": 477.9150390625,
+   "status": "passed"
+  },
+  "src/__tests__/connect-provider-cli.test.ts": {
+   "ms": 1858.2470703125,
+   "status": "passed"
+  },
+  "src/__tests__/connect-provider-knowledge.test.ts": {
+   "ms": 28.121826171875,
+   "status": "passed"
+  },
+  "src/__tests__/context-schema-icp-additions.test.ts": {
+   "ms": 89.865966796875,
+   "status": "passed"
+  },
+  "src/__tests__/cron-conversion.test.ts": {
+   "ms": 22.388671875,
+   "status": "passed"
+  },
+  "src/__tests__/dashboard-api.test.ts": {
+   "ms": 603.252197265625,
+   "status": "passed"
+  },
+  "src/__tests__/dashboard-cli-archetype.test.ts": {
+   "ms": 12.899169921875,
+   "status": "passed"
+  },
+  "src/__tests__/dashboard-cli.test.ts": {
+   "ms": 24.065185546875,
+   "status": "passed"
+  },
+  "src/__tests__/doctor-confidence.test.ts": {
+   "ms": 990.1953125,
+   "status": "passed"
+  },
+  "src/__tests__/doctor-keys-handoff.test.ts": {
+   "ms": 912.091064453125,
+   "status": "passed"
+  },
+  "src/__tests__/enrich-with-signals-skill.test.ts": {
+   "ms": 3.527587890625,
+   "status": "passed"
+  },
+  "src/__tests__/env-template.test.ts": {
+   "ms": 25.19970703125,
+   "status": "passed"
+  },
+  "src/__tests__/error-boundary.test.ts": {
+   "ms": 9.474365234375,
+   "status": "passed"
+  },
+  "src/__tests__/find-lookalikes-skill.test.ts": {
+   "ms": 7.3779296875,
+   "status": "passed"
+  },
+  "src/__tests__/flag-capture-rich-profile.test.ts": {
+   "ms": 103.823486328125,
+   "status": "passed"
+  },
+  "src/__tests__/framework-cli-open.test.ts": {
+   "ms": 3.85693359375,
+   "status": "passed"
+  },
+  "src/__tests__/framework-loader.test.ts": {
+   "ms": 29.23583984375,
+   "status": "passed"
+  },
+  "src/__tests__/framework-mode.test.ts": {
+   "ms": 43.837646484375,
+   "status": "passed"
+  },
+  "src/__tests__/framework-output.test.ts": {
+   "ms": 6.5576171875,
+   "status": "passed"
+  },
+  "src/__tests__/framework-recommend.test.ts": {
+   "ms": 5.135498046875,
+   "status": "passed"
+  },
+  "src/__tests__/framework-registry.test.ts": {
+   "ms": 15.435791015625,
+   "status": "passed"
+  },
+  "src/__tests__/framework-resume.test.ts": {
+   "ms": 835.642578125,
+   "status": "passed"
+  },
+  "src/__tests__/framework-runner.test.ts": {
+   "ms": 846.230712890625,
+   "status": "passed"
+  },
+  "src/__tests__/gate-diff-view.test.ts": {
+   "ms": 12.309326171875,
+   "status": "passed"
+  },
+  "src/__tests__/gate-timeouts.test.ts": {
+   "ms": 37.232177734375,
+   "status": "passed"
+  },
+  "src/__tests__/gates-api.test.ts": {
+   "ms": 1141.665283203125,
+   "status": "passed"
+  },
+  "src/__tests__/gold-fixtures.test.ts": {
+   "ms": 370.63427734375,
+   "status": "passed"
+  },
+  "src/__tests__/human-gate-engine.test.ts": {
+   "ms": 952.305419921875,
+   "status": "passed"
+  },
+  "src/__tests__/import-leads-skill.test.ts": {
+   "ms": 3.521728515625,
+   "status": "passed"
+  },
+  "src/__tests__/index-builder.test.ts": {
+   "ms": 10.82080078125,
+   "status": "passed"
+  },
+  "src/__tests__/keys-api.test.ts": {
+   "ms": 1088.557373046875,
+   "status": "passed"
+  },
+  "src/__tests__/keys-connect-cli.test.ts": {
+   "ms": 2160.5634765625,
+   "status": "passed"
+  },
+  "src/__tests__/keys-no-leak.test.ts": {
+   "ms": 991.247314453125,
+   "status": "passed"
+  },
+  "src/__tests__/keys-save-api.test.ts": {
+   "ms": 1257.219970703125,
+   "status": "passed"
+  },
+  "src/__tests__/launch-linkedin-campaign-skill.test.ts": {
+   "ms": 4.1083984375,
+   "status": "passed"
+  },
+  "src/__tests__/lint-skill-triggers.test.ts": {
+   "ms": 297.81201171875,
+   "status": "passed"
+  },
+  "src/__tests__/list-adapters-skill.test.ts": {
+   "ms": 2.6982421875,
+   "status": "passed"
+  },
+  "src/__tests__/migrate.test.ts": {
+   "ms": 29.138671875,
+   "status": "passed"
+  },
+  "src/__tests__/new-skills-frontmatter.test.ts": {
+   "ms": 97.851806640625,
+   "status": "passed"
+  },
+  "src/__tests__/notion-reviews.test.ts": {
+   "ms": 77.552001953125,
+   "status": "passed"
+  },
+  "src/__tests__/onboarding-extraction-fixes.test.ts": {
+   "ms": 12.3681640625,
+   "status": "passed"
+  },
+  "src/__tests__/onboarding-modes.test.ts": {
+   "ms": 500.253662109375,
+   "status": "passed"
+  },
+  "src/__tests__/outbound-hypothesis-setup.test.ts": {
+   "ms": 204.1396484375,
+   "status": "passed"
+  },
+  "src/__tests__/outbound-rules.test.ts": {
+   "ms": 9.708984375,
+   "status": "passed"
+  },
+  "src/__tests__/output-schema-validation.test.ts": {
+   "ms": 932.170166015625,
+   "status": "passed"
+  },
+  "src/__tests__/personalize-message-skill.test.ts": {
+   "ms": 2.909423828125,
+   "status": "passed"
+  },
+  "src/__tests__/phase1-fixes.test.ts": {
+   "ms": 977.99072265625,
+   "status": "passed"
+  },
+  "src/__tests__/phase2-fixes.test.ts": {
+   "ms": 427.163330078125,
+   "status": "passed"
+  },
+  "src/__tests__/predictleads-enrichment.test.ts": {
+   "ms": 5.22900390625,
+   "status": "passed"
+  },
+  "src/__tests__/predictleads-storage.test.ts": {
+   "ms": 1130.897216796875,
+   "status": "passed"
+  },
+  "src/__tests__/predictleads.test.ts": {
+   "ms": 2036.55419921875,
+   "status": "passed"
+  },
+  "src/__tests__/preview-confidence.test.ts": {
+   "ms": 75.109375,
+   "status": "passed"
+  },
+  "src/__tests__/preview-sections.test.ts": {
+   "ms": 47.75439453125,
+   "status": "passed"
+  },
+  "src/__tests__/preview.test.ts": {
+   "ms": 44.08740234375,
+   "status": "passed"
+  },
+  "src/__tests__/provider-builder-skill.test.ts": {
+   "ms": 7.389892578125,
+   "status": "passed"
+  },
+  "src/__tests__/providers.test.ts": {
+   "ms": 14.177734375,
+   "status": "passed"
+  },
+  "src/__tests__/qualification.test.ts": {
+   "ms": 8.271240234375,
+   "status": "passed"
+  },
+  "src/__tests__/qualify-leads-skill.test.ts": {
+   "ms": 6.101318359375,
+   "status": "passed"
+  },
+  "src/__tests__/regenerate-low-confidence.test.ts": {
+   "ms": 104.081787109375,
+   "status": "passed"
+  },
+  "src/__tests__/research-prospect-skill.test.ts": {
+   "ms": 4.924072265625,
+   "status": "passed"
+  },
+  "src/__tests__/retired-frameworks.test.ts": {
+   "ms": 116.341796875,
+   "status": "passed"
+  },
+  "src/__tests__/retired-reddit-skills.test.ts": {
+   "ms": 3.392333984375,
+   "status": "passed"
+  },
+  "src/__tests__/routine-cli.test.ts": {
+   "ms": 55.95556640625,
+   "status": "passed"
+  },
+  "src/__tests__/routine-e2e.test.ts": {
+   "ms": 41.552734375,
+   "status": "passed"
+  },
+  "src/__tests__/routine-generator.test.ts": {
+   "ms": 54.842041015625,
+   "status": "passed"
+  },
+  "src/__tests__/routine-installer.test.ts": {
+   "ms": 21.96044921875,
+   "status": "passed"
+  },
+  "src/__tests__/run-competitive-intel-skill.test.ts": {
+   "ms": 4.6748046875,
+   "status": "passed"
+  },
+  "src/__tests__/run-doctor-skill.test.ts": {
+   "ms": 21.54931640625,
+   "status": "passed"
+  },
+  "src/__tests__/scrape-cache.test.ts": {
+   "ms": 30.9248046875,
+   "status": "passed"
+  },
+  "src/__tests__/scrape-post-engagers-skill.test.ts": {
+   "ms": 6.466064453125,
+   "status": "passed"
+  },
+  "src/__tests__/send-cold-email-skill.test.ts": {
+   "ms": 2.841552734375,
+   "status": "passed"
+  },
+  "src/__tests__/sentinel-versioning.test.ts": {
+   "ms": 15.4775390625,
+   "status": "passed"
+  },
+  "src/__tests__/server-spa-mount.test.ts": {
+   "ms": 39.56494140625,
+   "status": "passed"
+  },
+  "src/__tests__/setup-api.test.ts": {
+   "ms": 564.298828125,
+   "status": "passed"
+  },
+  "src/__tests__/setup-cli-open.test.ts": {
+   "ms": 509.782470703125,
+   "status": "passed"
+  },
+  "src/__tests__/show-routine-skill.test.ts": {
+   "ms": 3.63916015625,
+   "status": "passed"
+  },
+  "src/__tests__/skill-aliases.test.ts": {
+   "ms": 7.11669921875,
+   "status": "passed"
+  },
+  "src/__tests__/skill-bug-fixes.test.ts": {
+   "ms": 73.644287109375,
+   "status": "passed"
+  },
+  "src/__tests__/skill-capability-runtime.test.ts": {
+   "ms": 815.353271484375,
+   "status": "passed"
+  },
+  "src/__tests__/skill-migration.test.ts": {
+   "ms": 682.716796875,
+   "status": "passed"
+  },
+  "src/__tests__/skills-api.test.ts": {
+   "ms": 911.74462890625,
+   "status": "passed"
+  },
+  "src/__tests__/skills-create-llm.test.ts": {
+   "ms": 56.4091796875,
+   "status": "passed"
+  },
+  "src/__tests__/sse-stream.test.ts": {
+   "ms": 510.62451171875,
+   "status": "passed"
+  },
+  "src/__tests__/start-spa-default.test.ts": {
+   "ms": 13.3818359375,
+   "status": "passed"
+  },
+  "src/__tests__/suggest-reply-action-fix.test.ts": {
+   "ms": 31.7265625,
+   "status": "passed"
+  },
+  "src/__tests__/today-api.test.ts": {
+   "ms": 581.969482421875,
+   "status": "passed"
+  },
+  "src/__tests__/today-trigger.test.ts": {
+   "ms": 564.990478515625,
+   "status": "passed"
+  },
+  "src/__tests__/track-campaigns-skill.test.ts": {
+   "ms": 2.670166015625,
+   "status": "passed"
+  },
+  "src/__tests__/visualize-brand-fidelity.test.ts": {
+   "ms": 1117.77294921875,
+   "status": "passed"
+  },
+  "src/__tests__/visualize-route.test.ts": {
+   "ms": 1144.14892578125,
+   "status": "passed"
+  },
+  "src/__tests__/visualize-skill.test.ts": {
+   "ms": 1083.773681640625,
+   "status": "passed"
+  },
+  "src/__tests__/web-bundle-build.test.ts": {
+   "ms": 9.480224609375,
+   "status": "passed"
+  },
+  "src/__tests__/web-fetcher-retry.test.ts": {
+   "ms": 5.16064453125,
+   "status": "passed"
+  },
+  "src/cli/commands/__tests__/gates-list.test.ts": {
+   "ms": 39.297607421875,
+   "status": "passed"
+  },
+  "src/cli/commands/__tests__/notify-test.test.ts": {
+   "ms": 19.1962890625,
+   "status": "passed"
+  },
+  "src/cli/commands/__tests__/provider-install.test.ts": {
+   "ms": 583.414306640625,
+   "status": "passed"
+  },
+  "src/lib/cache/__tests__/cached-fetch.test.ts": {
+   "ms": 132.526611328125,
+   "status": "passed"
+  },
+  "src/lib/campaign/__tests__/blocklist.test.ts": {
+   "ms": 41.9052734375,
+   "status": "passed"
+  },
+  "src/lib/campaign/__tests__/schedule.test.ts": {
+   "ms": 18.244873046875,
+   "status": "passed"
+  },
+  "src/lib/campaign/__tests__/significance.test.ts": {
+   "ms": 4.21826171875,
+   "status": "passed"
+  },
+  "src/lib/campaign/__tests__/tenant-isolation.test.ts": {
+   "ms": 179.078125,
+   "status": "passed"
+  },
+  "src/lib/context/__tests__/onboarding.test.ts": {
+   "ms": 50.81396484375,
+   "status": "passed"
+  },
+  "src/lib/crm/__tests__/crm-adapter.test.ts": {
+   "ms": 195.98974609375,
+   "status": "passed"
+  },
+  "src/lib/dedup/__tests__/engine.test.ts": {
+   "ms": 8.4482421875,
+   "status": "passed"
+  },
+  "src/lib/env/__tests__/claude-code.test.ts": {
+   "ms": 4.382080078125,
+   "status": "passed"
+  },
+  "src/lib/export/__tests__/export.test.ts": {
+   "ms": 4038.595947265625,
+   "status": "passed"
+  },
+  "src/lib/intelligence/__tests__/confidence.test.ts": {
+   "ms": 3.3203125,
+   "status": "passed"
+  },
+  "src/lib/intelligence/__tests__/tenant-isolation.test.ts": {
+   "ms": 31.297119140625,
+   "status": "passed"
+  },
+  "src/lib/memory/__tests__/chunker.test.ts": {
+   "ms": 15.488525390625,
+   "status": "passed"
+  },
+  "src/lib/memory/__tests__/dream.test.ts": {
+   "ms": 44.273193359375,
+   "status": "passed"
+  },
+  "src/lib/memory/__tests__/embeddings.test.ts": {
+   "ms": 7.622802734375,
+   "status": "passed"
+  },
+  "src/lib/memory/__tests__/graph.test.ts": {
+   "ms": 40.74853515625,
+   "status": "passed"
+  },
+  "src/lib/memory/__tests__/retrieve.test.ts": {
+   "ms": 29.60400390625,
+   "status": "passed"
+  },
+  "src/lib/memory/__tests__/store.test.ts": {
+   "ms": 37.67626953125,
+   "status": "passed"
+  },
+  "src/lib/notifications/__tests__/desktop.test.ts": {
+   "ms": 3.762939453125,
+   "status": "passed"
+  },
+  "src/lib/notifications/__tests__/index.test.ts": {
+   "ms": 28.977294921875,
+   "status": "passed"
+  },
+  "src/lib/notifications/__tests__/runner-hook.test.ts": {
+   "ms": 51.824951171875,
+   "status": "passed"
+  },
+  "src/lib/notifications/__tests__/slack.test.ts": {
+   "ms": 24.355712890625,
+   "status": "passed"
+  },
+  "src/lib/orchestrator/__tests__/chain.test.ts": {
+   "ms": 1008.738525390625,
+   "status": "passed"
+  },
+  "src/lib/outbound/__tests__/validator.test.ts": {
+   "ms": 7.07568359375,
+   "status": "passed"
+  },
+  "src/lib/providers/__tests__/mcp-loader.test.ts": {
+   "ms": 18.381591796875,
+   "status": "passed"
+  },
+  "src/lib/providers/builtin/__tests__/crustdata-provider.test.ts": {
+   "ms": 10.587890625,
+   "status": "passed"
+  },
+  "src/lib/providers/builtin/__tests__/unipile-provider.test.ts": {
+   "ms": 9.31787109375,
+   "status": "passed"
+  },
+  "src/lib/providers/declarative/__tests__/bundled-adapters.test.ts": {
+   "ms": 39.307861328125,
+   "status": "passed"
+  },
+  "src/lib/providers/declarative/__tests__/compiler.test.ts": {
+   "ms": 32.482421875,
+   "status": "passed"
+  },
+  "src/lib/providers/declarative/__tests__/loader.test.ts": {
+   "ms": 15.606201171875,
+   "status": "passed"
+  },
+  "src/lib/providers/declarative/__tests__/registry-integration.test.ts": {
+   "ms": 435.68701171875,
+   "status": "passed"
+  },
+  "src/lib/providers/declarative/__tests__/smoke.test.ts": {
+   "ms": 32.124267578125,
+   "status": "passed"
+  },
+  "src/lib/qualification/__tests__/backward-compat.test.ts": {
+   "ms": 10.66015625,
+   "status": "failed"
+  },
+  "src/lib/qualification/__tests__/c8-acceptance.test.ts": {
+   "ms": 0,
+   "status": "failed"
+  },
+  "src/lib/qualification/__tests__/drift.test.ts": {
+   "ms": 6.54345703125,
+   "status": "passed"
+  },
+  "src/lib/qualification/__tests__/icp-gate.test.ts": {
+   "ms": 10.489990234375,
+   "status": "passed"
+  },
+  "src/lib/qualification/__tests__/icp-source.test.ts": {
+   "ms": 31.261962890625,
+   "status": "passed"
+  },
+  "src/lib/scraping/__tests__/research-agent.test.ts": {
+   "ms": 11.716796875,
+   "status": "passed"
+  },
+  "src/lib/signals/__tests__/engine.test.ts": {
+   "ms": 51.78759765625,
+   "status": "passed"
+  },
+  "src/lib/skills/__tests__/markdown-loader.test.ts": {
+   "ms": 29.224365234375,
+   "status": "passed"
+  },
+  "src/lib/tenant/__tests__/resolver.test.ts": {
+   "ms": 9.865234375,
+   "status": "passed"
+  },
+  "web/src/__tests__/brain-section-edit.test.tsx": {
+   "ms": 13.2646484375,
+   "status": "passed"
+  },
+  "web/src/__tests__/brand-tokens.test.ts": {
+   "ms": 6.701416015625,
+   "status": "passed"
+  },
+  "web/src/__tests__/dashboard-route.test.tsx": {
+   "ms": 14.364501953125,
+   "status": "passed"
+  },
+  "web/src/__tests__/gate-diff-view.test.tsx": {
+   "ms": 10.1181640625,
+   "status": "passed"
+  },
+  "web/src/__tests__/keys-connect-path-route.test.tsx": {
+   "ms": 7.154052734375,
+   "status": "passed"
+  },
+  "web/src/__tests__/keys-connect-route.test.tsx": {
+   "ms": 13.153076171875,
+   "status": "passed"
+  },
+  "web/src/__tests__/setup-review.test.tsx": {
+   "ms": 23.86767578125,
+   "status": "passed"
+  },
+  "web/src/__tests__/skills-form.test.tsx": {
+   "ms": 14.279052734375,
+   "status": "passed"
+  },
+  "web/src/__tests__/sse-client.test.ts": {
+   "ms": 5.383544921875,
+   "status": "passed"
+  },
+  "web/src/__tests__/today-trigger.test.tsx": {
+   "ms": 14.67626953125,
+   "status": "passed"
+  }
+ },
+ "failed_tests": [
+  "src/lib/qualification/__tests__/backward-compat.test.ts > Backward compat \u2014 C8 fixture is well-formed (test-data invariant) every fixture lead has the required shape",
+  "src/lib/qualification/__tests__/backward-compat.test.ts > Backward compat \u2014 C8 fixture is well-formed (test-data invariant) parses the JSON fixture and finds the expected named leads",
+  "src/lib/qualification/__tests__/c8-acceptance.test.ts > <file>"
+ ]
+}
