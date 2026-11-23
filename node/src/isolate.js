@@ -138,7 +138,13 @@ async function main(runner, argv) {
   const records = [];
   const rows = [];
   const summaries = [];
-  let failed = false;
+  // the collection run itself failed (Jest: a file that fails to load has no test to collect, and every per-test
+  // session of the others passes): the run is red, whatever the per-test sessions say (gstack /review, pass 3)
+  let failed = Boolean(col && col.status !== 0 && col.status !== null);
+  if (failed) {
+    process.stderr.write(col.stderr || '');
+    process.stderr.write(`detjs ${runner} --det-isolate: the collection run failed (exit ${col.status}); the run is reported failed\n`);
+  }
   let header = null;
   groups.forEach((g, i) => {
     const tr = path.join(work, `t-${i}.jsonl`);

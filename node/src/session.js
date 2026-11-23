@@ -501,10 +501,14 @@ function fileFailures(dir, meta, runFiles = null) {
       // leaves its tests with no record of their own, so the trace shows them `skipped` -- B5 -- while the runner
       // reports them failed; the side data has them as `error`)
       const states = Object.values((s && s.states) || {});
-      if (s && (s.file_error || states.some((o) => o === 'error' || o === 'failed'))) files.push(s.file);
+      if (s && (s.file_error || s.file_red || states.some((o) => o === 'error' || o === 'failed'))) files.push(s.file);
     } catch { /* unreadable side data: not known */ return { known: false, files: [...new Set(files)].sort(), unhandled: 0 }; }
   }
   let known = FILE_ERRORS_KNOWN.has(runner);
+  // a check that can fail the run outside any file (coverage thresholds) or keep files from running (bail): its red
+  // cannot be placed in a file, so nothing about where the red is is known (unknown when the shell could not say)
+  const rl = meta && meta.run_level_checks;
+  if (!Array.isArray(rl) || rl.length) known = false;
   if (runner === 'vitest') {
     const mf = meta && meta.runner_failed_files;
     if (Array.isArray(mf)) files.push(...mf); else known = false;

@@ -4,7 +4,7 @@
 // On bfaf70b4 the function did not exist (the decision was inline in main()) and `fileOf` kept `<file>@@<project>`.
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { accountRerun, fileOf, hazardFiles, labelFile, wrapperRunnerCode, firstRedInHazardFiles } = require('../src/parallel-rerun');
+const { accountRerun, fileOf, hazardFiles, labelFile, wrapperRunnerCode, firstRedInHazardFiles, rerunArgs } = require('../src/parallel-rerun');
 
 const rec = (nodeid, outcome = 'passed') => ({ nodeid, outcome });
 
@@ -91,4 +91,11 @@ test('firstRedInHazardFiles: only a red that is all inside the hazard files, as 
   // a shell that cannot report file failures (node-test), or an older trace: not proven, the code stays
   assert.equal(firstRedInHazardFiles({ meta: { file_failures: { known: false, files: [], unhandled: 0 } } }, recs, files), false);
   assert.equal(firstRedInHazardFiles({ meta: {} }, recs, files), false);
+});
+
+// /review pass 3: the second pass runs exactly the hazard files -- the user's own file selectors are not inherited
+test('rerunArgs drops the runners\' file selectors (shard, changed, related, only-failures)', () => {
+  assert.deepEqual(rerunArgs(['run', '--shard=1/2', '--det', '--changed', 'HEAD~1', '--bail=1', '-t', 'x']), ['run', '--det', '--bail=1', '-t', 'x']);
+  assert.deepEqual(rerunArgs(['--shard', '2/3', '-o', '--onlyFailures', '--findRelatedTests', '--det']), ['--det']);
+  assert.deepEqual(rerunArgs(['--changedSince', 'main', '--related', 'src/a.js', '--lastCommit', '--det-trace', 't.jsonl', '--det']), ['--det']);
 });

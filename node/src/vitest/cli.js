@@ -185,7 +185,10 @@ async function main(argv) {
       // the main process's own verdict per file (a failed file: a test, a hook at any level, collection) and the
       // errors outside any test file (Vitest's unhandled errors): src/session.js fileFailures. Unknown (null) when
       // the Vitest instance is not there to ask.
-      runner_failed_files: vitestFailedFiles(ctxRef, root),
+      runner_failed_files: vitestFailedFiles(ctxRef, root, executed),
+      // a check that can fail the run outside any file (coverage thresholds) or that stops files from running
+      // (bail): the hazard re-run cannot re-examine it, so the first pass's red is never cleared (fileFailures)
+      run_level_checks: vitestRunLevelChecks(ctxRef),
       unhandled_errors: ctxRef && ctxRef.state && ctxRef.state.errorsSet ? ctxRef.state.errorsSet.size : null,
     });
     for (const l of lines) fs.writeSync(1, `${l}\n`); // sync: the runner may be exiting
@@ -322,12 +325,34 @@ async function main(argv) {
   return process.exitCode ?? 0;
 }
 
-/** The test files Vitest's main process marked failed (`file.result.state === 'fail'`), as file ids; null if unknown. */
-function vitestFailedFiles(ctx, root) {
+/**
+ * The test files Vitest's main process marked failed (`file.result.state === 'fail'`), as file ids. null (unknown)
+ * unless the run is complete: not cancelled, every file in a final state, and every executed file present -- a file
+ * a bail or a crash kept from running has no verdict, and its silence must not read as a pass.
+ */
+const FINAL = new Set(['pass', 'fail', 'skip', 'todo']);
+function vitestFailedFiles(ctx, root, executed) {
   try {
-    if (!ctx || !ctx.state || typeof ctx.state.getFiles !== 'function') return null;
-    return ctx.state.getFiles().filter((f) => f.result && f.result.state === 'fail')
-      .map((f) => path.relative(root, f.filepath).split(path.sep).join('/')).sort();
+    if (!ctx || !ctx.state || typeof ctx.state.getFiles !== 'function' || ctx.isCancelling) return null;
+    const files = ctx.state.getFiles();
+    if (files.some((f) => !f.result || !FINAL.has(f.result.state))) return null;
+    const idOf = (f) => path.relative(root, f.filepath).split(path.sep).join('/');
+    const seen = new Set(files.map(idOf));
+    if ((executed || []).some((e) => e && e.fileId && !seen.has(e.fileId))) return null;
+    return files.filter((f) => f.result.state === 'fail').map(idOf).sort();
+  } catch { return null; }
+}
+
+/** Run-level checks of a Vitest run (coverage, bail) by name; null when the instance cannot be asked. */
+function vitestRunLevelChecks(ctx) {
+  try {
+    if (!ctx || !ctx.config) return null;
+    const out = [];
+    const projects = ctx.projects || [];
+    const cfgs = [ctx.config, ...projects.map((pr) => pr.config || (pr.getConfig && pr.getConfig())).filter(Boolean)];
+    if (cfgs.some((c) => c.coverage && c.coverage.enabled)) out.push('coverage');
+    if (cfgs.some((c) => Number(c.bail) > 0)) out.push('bail');
+    return out;
   } catch { return null; }
 }
 

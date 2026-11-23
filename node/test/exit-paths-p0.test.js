@@ -192,3 +192,19 @@ test('jest --forceExit: the counts still decide the exit code and the line is pr
   assert.equal(r.status, 1, show);
   assert.equal(`${r.stdout}\n${r.stderr}`.split('\n').filter((l) => l.startsWith('detjs: status:')).length, 1, show);
 });
+
+// /review pass 3: Jest --det-isolate ignored a collection run that failed when other files had tests to collect
+test('jest --det-isolate: a file that fails to load keeps the run red', T, () => {
+  const dir = path.join(TMP, 'exit-paths', 'jest-isolate-load');
+  fs.rmSync(dir, { recursive: true, force: true });
+  fs.mkdirSync(path.join(dir, 'tests'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ name: 'exit-paths-jest-isolate', private: true }));
+  fs.writeFileSync(path.join(dir, 'jest.config.js'), "module.exports = { testMatch: ['**/tests/**/*.test.js'], testEnvironment: 'node' };\n");
+  fs.writeFileSync(path.join(dir, 'tests', 'a.test.js'), "test('passes', () => {});\n");
+  fs.writeFileSync(path.join(dir, 'tests', 'b.test.js'), "throw new Error('this file fails to load');\n");
+  const r = spawnSync(process.execPath, [BIN, 'jest', `--cacheDirectory=${path.join(dir, '.jc')}`, '--det', '--det-isolate'],
+    { cwd: dir, encoding: 'utf8', env: cleanEnv(PINNED), timeout: 300000 });
+  const show = `status=${r.status}\nstdout=${(r.stdout || '').slice(-1500)}\nstderr=${(r.stderr || '').slice(-2000)}`;
+  assert.equal(r.status, 1, show);
+  assert.match(r.stderr, /the collection run failed/, show);
+});

@@ -51,6 +51,11 @@ const OWN = /^--det-(trace|compare|order|outcomes|workers|plan|cache|cache-verif
 // of those, the ones whose value is a separate argument (session.js `takes`)
 const OWN_VALUE = new Set(['--det-trace', '--det-compare', '--det-order', '--det-outcomes', '--det-workers',
   '--det-plan', '--det-cache', '--det-cache-receipts', '--det-cache-summary', '--det-cache-max-age']);
+// The runners' own file selectors: the second pass runs exactly the hazard files it is given. A shard, a changed-
+// files or related-files filter could drop one of them -- and a hazard file that failed to load in the first pass
+// has no test record to miss, so its absence would go unnoticed (gstack /review, pass 3).
+const SELECT = /^(--shard|--changed|--changedSince|--related|--findRelatedTests|--onlyChanged|-o|--lastCommit|--onlyFailures|-f|--watchAll)(=|$)/;
+const SELECT_VALUE = new Set(['--shard', '--changed', '--changedSince', '--related']);
 
 const PASSED = new Set(['passed', 'skipped', 'todo']);
 
@@ -183,6 +188,7 @@ function rerunArgs(argv) {
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (OWN.test(a)) { if (OWN_VALUE.has(a)) i++; continue; }
+    if (SELECT.test(a)) { if (SELECT_VALUE.has(a) && i + 1 < argv.length && !String(argv[i + 1]).startsWith('-')) i++; continue; }
     out.push(a);
   }
   return out;

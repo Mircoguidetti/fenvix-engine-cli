@@ -197,6 +197,7 @@ async function main(argv) {
     if (customRunners.size) require('./custom-runner').report(files);
     const { lines } = session.finish(run, opts, files, {
       runner: 'jest', runner_version: jest.pkg.version, isolation, serial: !par.plan, projects, cli_args: rest, parallel: par.result.meta,
+      run_level_checks: jestRunLevelChecks(shown, rest),
     });
     for (const l of lines) fs.writeSync(1, `${l}\n`); // sync: the runner may be exiting
   };
@@ -357,6 +358,16 @@ async function deferDecision(cliReq, pc) {
     }
     pc.deferredDecision = true;
   } catch { pc.deferredDecision = false; }
+}
+
+/** Run-level checks of a Jest run (coverage, bail) by name, from --showConfig and the arguments; null if unknown. */
+function jestRunLevelChecks(shown, rest) {
+  const g = shown && shown.globalConfig;
+  if (!g) return null;
+  const out = [];
+  if (g.collectCoverage || rest.some((a) => a === '--coverage' || a.startsWith('--coverage=') && !/=false$/.test(a) || a === '--collectCoverage')) out.push('coverage');
+  if (Number(g.bail) > 0 || rest.some((a) => a === '--bail' || a.startsWith('--bail='))) out.push('bail');
+  return out;
 }
 
 const VOLATILE_GLOBAL = new Set(['json', 'outputFile', 'reporters', 'testPathPatterns', 'testPathPattern', 'nonFlagArgs', 'onlyChanged',
