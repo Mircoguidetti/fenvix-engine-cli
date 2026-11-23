@@ -373,9 +373,13 @@ function runLines(dir, sub) {
 function filesReadOutside(dir) {
   const out = [];
   for (const l of runLines(dir, 'filesout')) {
-    try { const e = JSON.parse(l); if (e && typeof e.path === 'string' && typeof e.digest === 'string') out.push({ path: e.path, digest: e.digest }); } catch { /* torn line */ }
+    try {
+      const e = JSON.parse(l);
+      if (e && typeof e.path === 'string' && typeof e.digest === 'string') out.push(typeof e.file === 'string' ? { path: e.path, digest: e.digest, file: e.file } : { path: e.path, digest: e.digest });
+    } catch { /* torn line */ }
   }
-  return out.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : a.digest < b.digest ? -1 : a.digest > b.digest ? 1 : 0));
+  const cmp = (x, y) => (x < y ? -1 : x > y ? 1 : 0);
+  return out.sort((a, b) => cmp(a.path, b.path) || cmp(a.digest, b.digest) || cmp(a.file || '', b.file || ''));
 }
 
 /** Merge the parts of the run into the final trace. `files`: [{fileId, part}] in execution order. */
@@ -413,6 +417,9 @@ function finish(run, opts, files, meta) {
     env_read_outside_tests: envReadOutside(run.dir),
     // review R-055 (docs/VERIFY-CONTRACT.md): files read and uncontrolled variables read while no test ran
     files_read_outside_tests: filesReadOutside(run.dir),
+    // P1 B1: "file" when the runner isolates test files from one another (no module state, globals or environment
+    // carried from one file to the next): an entry carrying `file` is then compared for that file's tests only
+    files_outside_scope: meta && meta.files_outside_scope === 'file' ? 'file' : 'run',
     not_proven_outside_tests: [...runLines(run.dir, 'npout')].sort(),
     // The general rule (crates/detpy-core/src/provable.rs): what this run watched. The verifier reports a test
     // IDENTICAL only when the run declared a sensor it knows, so leaving this out is not a cosmetic omission --

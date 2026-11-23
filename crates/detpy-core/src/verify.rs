@@ -371,12 +371,16 @@ const RANDOM_HASHSEED: &str = "<random>";
 
 /// The run inputs of a trace for comparison: `meta.inputs` plus one `file:<path>` input per file read outside any
 /// test (`meta.files_read_outside_tests`, its digests joined in order). None when the trace records no inputs.
-fn compared_inputs(t: &Trace) -> Option<BTreeMap<String, String>> {
+/// `scoped`: entries that carry the test file they were read for (`file`) are left out (P1 B1: [`scoped_inputs`]).
+fn compared_inputs(t: &Trace, scoped: bool) -> Option<BTreeMap<String, String>> {
     let mut m = run_inputs(t)?;
     let has = |t: &Trace| t.header.meta.get("files_read_outside_tests").is_some() || late(t).is_some_and(|l| l.get("files_read_outside_tests").is_some());
     if has(t) {
         let mut by: BTreeMap<String, Vec<String>> = BTreeMap::new();
         for f in meta_array(t, "files_read_outside_tests") {
+            if scoped && f.get("file").and_then(|v| v.as_str()).is_some() {
+                continue;
+            }
             let (Some(p), Some(d)) = (f.get("path").and_then(|v| v.as_str()), f.get("digest").and_then(|v| v.as_str())) else { continue };
             by.entry(p.to_string()).or_default().push(d.to_string());
         }
@@ -388,6 +392,64 @@ fn compared_inputs(t: &Trace) -> Option<BTreeMap<String, String>> {
         m.insert("files_read_outside_tests".into(), "recorded".into());
     }
     Some(m)
+}
+
+/// Whether the files read outside any test are compared per test file (P1 B1, docs/VERIFY-CONTRACT.md section 1):
+/// every run declares `files_outside_scope: "file"` (its runner isolates test files from one another, so what one
+/// file's module scope or hooks read can reach that file's tests only).
+fn files_scoped(traces: &[Trace]) -> bool {
+    !traces.is_empty()
+        && traces.iter().all(|t| t.header.meta.get("files_outside_scope").and_then(|v| v.as_str()) == Some("file"))
+}
+
+/// P1 B1: the entries of `files_read_outside_tests` that carry the test file they were read for, as `file:<path>`
+/// inputs per test file (the file path, without a Vitest project).
+fn scoped_inputs(t: &Trace) -> BTreeMap<String, BTreeMap<String, String>> {
+    let mut by: BTreeMap<String, BTreeMap<String, Vec<String>>> = BTreeMap::new();
+    for f in meta_array(t, "files_read_outside_tests") {
+        let (Some(p), Some(d), Some(file)) = (
+            f.get("path").and_then(|v| v.as_str()),
+            f.get("digest").and_then(|v| v.as_str()),
+            f.get("file").and_then(|v| v.as_str()),
+        ) else {
+            continue;
+        };
+        by.entry(file.to_string()).or_default().entry(format!("{FILE_INPUT_PREFIX}{p}")).or_default().push(d.to_string());
+    }
+    by.into_iter()
+        .map(|(file, m)| {
+            let m = m
+                .into_iter()
+                .map(|(k, mut ds)| {
+                    ds.sort();
+                    ds.dedup();
+                    (k, ds.join(","))
+                })
+                .collect();
+            (file, m)
+        })
+        .collect()
+}
+
+/// The test file of a test id: before the first `::`, without a Vitest project (`@@<name>`).
+fn test_file(id: &str) -> &str {
+    let head = id.split("::").next().unwrap_or(id);
+    head.split("@@").next().unwrap_or(head)
+}
+
+/// P1 B1: the test's own file read something outside any test that differs between run 0 and another run.
+fn scoped_divergence(id: &str, scoped: &[BTreeMap<String, BTreeMap<String, String>>]) -> Option<Divergence> {
+    let empty = BTreeMap::new();
+    let file = test_file(id);
+    let base = scoped.first()?.get(file).unwrap_or(&empty);
+    (1..scoped.len()).find_map(|j| {
+        let diffs = diff_inputs(Some(base), Some(scoped[j].get(file).unwrap_or(&empty)), 0, j);
+        (!diffs.is_empty()).then(|| {
+            let mut d = input_divergence(&diffs);
+            d.description = format!("{} (read outside any test by the test's own file {file})", d.description);
+            d
+        })
+    })
 }
 
 /// Differing inputs between two runs (empty when equal, or when neither run recorded inputs).
@@ -867,7 +929,10 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
         .collect();
 
     let preds: Vec<Predecessors> = traces.iter().map(Predecessors::of).collect();
-    let inputs: Vec<Option<BTreeMap<String, String>>> = traces.iter().map(compared_inputs).collect();
+    let scoped = files_scoped(traces);
+    let inputs: Vec<Option<BTreeMap<String, String>>> = traces.iter().map(|t| compared_inputs(t, scoped)).collect();
+    let scoped_files: Vec<BTreeMap<String, BTreeMap<String, String>>> =
+        if scoped { traces.iter().map(scoped_inputs).collect() } else { Vec::new() };
     // what each run declared about its wide sensor (`meta.provable`): the general rule needs it per run, because
     // a run without one cannot have any of its tests reported identical
     let provable_meta: Vec<Option<serde_json::Value>> =
@@ -950,6 +1015,9 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
             let mut all = other_diffs.clone();
             all.extend(env_diffs.iter().cloned());
             (Status::Diverged, Some(input_divergence(&all)))
+        } else if let Some(d) = scoped_divergence(id, &scoped_files) {
+            // P1 B1: what the test's own file read outside any test differs
+            (Status::Diverged, Some(d))
         } else if let Some(d) = (1..n).find_map(|j| order_divergence(id, &preds[0], &preds[j], 0, j)) {
             (Status::Diverged, Some(d))
         } else if distinct.len() <= 1 {
@@ -1867,6 +1935,49 @@ mod tests {
         let r = verify(&[mk(), mk()], &[]);
         assert_eq!(r.tests[0].status, Status::NotProven);
         assert!(r.tests[0].divergence.as_ref().unwrap().description.contains("env:HTTPS_PROXY"));
+    }
+
+    /// P1 B1 (docs/DESIGN-P1.md section B). protects=a file read outside any test by one test file's module scope or
+    /// hooks diverges that file's tests only, when every run's runner isolates files; fails_when=another file's test
+    /// diverges for it, the reading file's test is stable although the bytes differ, or an unscoped entry, a run
+    /// without `files_outside_scope: "file"` or a missing entry stops diverging every test; no_claim=the shells decide
+    /// isolation (`files_outside_scope`), not exercised here.
+    #[test]
+    fn p1_b1_file_read_outside_tests_scoped_to_its_test_file() {
+        let mk = |entries: serde_json::Value, scope: &str| {
+            let t = with_inputs(
+                trace(vec![rec("a.test.js::a1", &[t("1")], "passed", 10), rec("b.test.js::b1", &[t("2")], "passed", 10), rec("c.test.mjs@@web::c1", &[t("3")], "passed", 10)]),
+                &BASE,
+            );
+            meta_extra(meta_extra(t, "files_read_outside_tests", entries), "files_outside_scope", serde_json::json!(scope))
+        };
+        let e = |d: &str, file: Option<&str>| match file {
+            Some(f) => serde_json::json!([{"path": "<tmp>/x", "digest": d, "file": f}]),
+            None => serde_json::json!([{"path": "<tmp>/x", "digest": d}]),
+        };
+        let st = |r: &Report| r.tests.iter().map(|t| (t.nodeid.clone(), t.status)).collect::<Vec<_>>();
+        // scoped: only a's test diverges
+        let r = verify(&[mk(e("1:aa", Some("a.test.js")), "file"), mk(e("1:bb", Some("a.test.js")), "file")], &[]);
+        assert_eq!(st(&r), vec![("a.test.js::a1".into(), Status::Diverged), ("b.test.js::b1".into(), Status::Stable), ("c.test.mjs@@web::c1".into(), Status::Stable)]);
+        assert!(r.tests[0].divergence.as_ref().unwrap().description.contains("file:<tmp>/x"));
+        // a Vitest project's test is matched by its file
+        let r = verify(&[mk(e("1:aa", Some("c.test.mjs")), "file"), mk(e("1:bb", Some("c.test.mjs")), "file")], &[]);
+        assert_eq!(r.tests[2].status, Status::Diverged);
+        assert_eq!((r.tests[0].status, r.tests[1].status), (Status::Stable, Status::Stable));
+        // read in one run only: the file's tests diverge
+        let r = verify(&[mk(e("1:aa", Some("a.test.js")), "file"), mk(serde_json::json!([]), "file")], &[]);
+        assert_eq!((r.tests[0].status, r.tests[1].status), (Status::Diverged, Status::Stable));
+        // equal: nothing differs
+        let r = verify(&[mk(e("1:aa", Some("a.test.js")), "file"), mk(e("1:aa", Some("a.test.js")), "file")], &[]);
+        assert_eq!(r.summary.stable, 3);
+        // an entry without a file (main process, globalSetup): every test, as before
+        let r = verify(&[mk(e("1:aa", None), "file"), mk(e("1:bb", None), "file")], &[]);
+        assert_eq!(r.summary.diverged, 3);
+        // a run whose runner does not isolate files: every test, as before
+        let r = verify(&[mk(e("1:aa", Some("a.test.js")), "run"), mk(e("1:bb", Some("a.test.js")), "file")], &[]);
+        assert_eq!(r.summary.diverged, 3);
+        let r = verify(&[mk(e("1:aa", Some("a.test.js")), "run"), mk(e("1:bb", Some("a.test.js")), "run")], &[]);
+        assert_eq!(r.summary.diverged, 3);
     }
 
     /// P1 A1 (docs/DESIGN-P1.md section A). protects=an uncontrolled variable read outside any test with the same

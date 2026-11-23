@@ -1,19 +1,19 @@
 'use strict';
-// P1 B (docs/DESIGN-P1.md section B): a file read or stat'ed while no test runs (module scope, beforeAll) went into the
-// header as a run input (`files_read_outside_tests`), and a difference made EVERY test of the run diverge: a file the
-// run itself had just written (a sandbox HOME, a temp directory a hook creates), and a read in one test file's hook
-// that only that file's tests can observe.
-//   B2: a read outside any test of a file this process wrote itself with the bytes it wrote (or a stat of what it
-//       created) is no input: those bytes are the process's own output.
-//   B1: under a runner that isolates test files from one another (Jest; Vitest unless isolate: false), an entry read
-//       while a test file is open is scoped to that file: a difference diverges that file's tests only.
+// P1 B1 (docs/DESIGN-P1.md section B): a file read or stat'ed while no test runs (module scope, beforeAll) went into
+// the header as a run input (`files_read_outside_tests`), and a difference made EVERY test of the run diverge. Under a
+// runner that isolates test files from one another (Jest; Vitest with a fresh worker per file), an entry read while a
+// test file is open is scoped to that file: a difference diverges that file's tests only.
+// (B2 of the design -- dropping a read of the process's own write -- is not implemented: the bytes written can come
+// from a source nothing records outside a test, and then dropping the read would hide a real difference. The first
+// case below is that situation: the file's tests must still diverge.)
 //
-// protects=a file the run wrote and read back outside any test no longer diverges the run; a differing read in one
-//   file's hook no longer diverges the other files' tests;
+// protects=a differing read in one file's module scope or hook no longer diverges the other files' tests;
 // fails_when=a test of another file diverges because of such a read, or a test of the file whose hook read bytes that
-//   really differ between the runs is called stable;
-// no_claim=runners without per-file isolation (Vitest isolate: false, node:test, mocha, ...) keep the run-wide rule.
-// Red on the trunk (e7338950): every test of both files diverges in both cases.
+//   really differ between the runs (a file it wrote itself from /proc, or a file outside the project) is called
+//   stable;
+// no_claim=runners without per-file isolation (Vitest isolate: false or one shared fork, node:test, mocha, ...) keep
+//   the run-wide rule.
+// Red on the trunk (e7338950): the other file's tests diverge too.
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -32,7 +32,7 @@ const verify = (traces) => JSON.parse(native.verify(traces));
 const status = (rep, suffix) => rep.tests.find((t) => t.nodeid.endsWith(suffix));
 
 for (const runner of RUNNERS) {
-  test(`P1 B2 ${runner}: a file the hook wrote and read back is no input (serial = parallel, all stable)`, T, () => {
+  test(`P1 B1 ${runner}: a file the hook wrote from /proc and read back differs: that file's tests diverge, the other file's stay stable`, T, () => {
     const dir = project(runner, 'p1b-own', {
       a: `let V;
 ${hook(runner)}(() => {
@@ -52,8 +52,9 @@ test('a2', () => { expect(1).toBe(1); });`,
     const p = run(runner, dir, ['--det', '--det-workers=2']);
     assert.equal(p.status, 0, p.stdout + p.stderr);
     const rep = verify([ts, keep(p, dir, 1)]);
-    const bad = rep.tests.filter((t) => t.status !== 'stable').map((t) => `${t.nodeid}: ${t.status}: ${t.divergence && t.divergence.description}`);
-    assert.deepEqual(bad, []);
+    for (const id of ['a1', 'a2']) assert.notEqual(status(rep, id).status, 'stable', `${id}: its file read bytes that differ between the runs`);
+    const b1 = status(rep, 'b1');
+    assert.equal(b1.status, 'stable', `b1 never read the file: ${JSON.stringify(b1.divergence)}`);
   });
 
   // B1 and acceptance 2: the bytes really differ between the runs

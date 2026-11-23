@@ -311,6 +311,9 @@ function openFile(fileId, project) {
     STATE.recorder = null;
   }
   STATE.fileId = fileId;
+  // the test file whose code runs outside its tests now (module scope, hooks): reads made there are scoped to it
+  // (P1 B1, src/outside.js noteFile)
+  STATE.fileScope = fileId;
   STATE.testIndex = 0;
   STATE.begun = new Set();
   if (c.controls.has('seeds')) seeds.seedFile(label);
@@ -326,6 +329,7 @@ function openFile(fileId, project) {
 
 function closeFile() {
   if (STATE.testId !== null) STATE.endTest('interrupted');
+  STATE.fileScope = null;
   require('./facts').endFile();
   // (Timers left pending by a test were released to real time when it ended.)
   if (STATE.recorder) {

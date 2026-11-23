@@ -197,6 +197,9 @@ async function main(argv) {
     if (customRunners.size) require('./custom-runner').report(files);
     const { lines } = session.finish(run, opts, files, {
       runner: 'jest', runner_version: jest.pkg.version, isolation, serial: !par.plan, projects, cli_args: rest, parallel: par.result.meta,
+      // P1 B1: Jest gives every test file its own module registry, global and process.env copy; a custom runner
+      // places the files itself (src/jest/custom-runner.js: they share one process)
+      files_outside_scope: customRunners.size ? 'run' : 'file',
     });
     for (const l of lines) fs.writeSync(1, `${l}\n`); // sync: the runner may be exiting
   };

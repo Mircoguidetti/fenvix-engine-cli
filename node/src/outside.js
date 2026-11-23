@@ -82,15 +82,19 @@ function byProjectOutside(where, stat = false) {
   // configuration lookup and the runner's transform cache run while transforming, in some runs only
   return !stat && site.startsWith('<deps>/') && typeof where === 'string' && !where.startsWith('<') && LOADING.test(stack);
 }
+// P1 B1 (docs/DESIGN-P1.md section B): an entry read while a test file is open (its module scope, its hooks, the
+// runner's per-file setup files) carries that file; when the run's runner isolates test files from one another
+// (header `files_outside_scope: "file"`, set by the shell), verify compares it for that file's tests only.
 function noteFile(where, digest) {
-  const key = `${where}\u0000${digest}`;
+  const file = STATE.fileScope || null;
+  const key = `${where}\u0000${digest}\u0000${file || ''}`;
   if (filesSeen.has(key)) return;
   filesSeen.add(key);
   STATE.quietDepth++;
   try {
     const dir = path.join(STATE.config.dir, 'filesout');
     fs.mkdirSync(dir, { recursive: true });
-    fs.appendFileSync(path.join(dir, `${process.pid}.txt`), `${JSON.stringify({ path: where, digest })}\n`);
+    fs.appendFileSync(path.join(dir, `${process.pid}.txt`), `${JSON.stringify(file ? { path: where, digest, file } : { path: where, digest })}\n`);
   } catch { /* the run directory is gone (the run ended) */ } finally { STATE.quietDepth--; }
 }
 /** A read of `where` (bytes `data`): an event of the test, or an entry of the run when no test runs. */
