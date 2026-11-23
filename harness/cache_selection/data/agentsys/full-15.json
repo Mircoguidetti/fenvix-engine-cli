@@ -1,0 +1,390 @@
+{
+ "repo": "agentsys",
+ "pr_index": 15,
+ "pr": 430,
+ "commit": "b9b6180048a4b363ba62b492607ef117c1566e2c",
+ "install": "fresh install, all node_modules removed first (4s)",
+ "cmd": "npx --no-install jest  --runInBand --json --outputFile=/home/user/work/tmp/agentsys/full-15.json",
+ "cwd": "/home/user/work/repos/agentsys/",
+ "exit": 1,
+ "wall_s": 34.8,
+ "status": "ok",
+ "outcome_counts": {
+  "passed": 3669,
+  "failed": 1,
+  "pending": 40
+ },
+ "files": {
+  "__tests__/atomic-write.test.js": {
+   "ms": 303,
+   "status": "failed"
+  },
+  "__tests__/auto-suppression.test.js": {
+   "ms": 74,
+   "status": "passed"
+  },
+  "__tests__/bump-version.test.js": {
+   "ms": 40,
+   "status": "passed"
+  },
+  "__tests__/cache-manager.test.js": {
+   "ms": 586,
+   "status": "passed"
+  },
+  "__tests__/claude-executable.test.js": {
+   "ms": 37,
+   "status": "passed"
+  },
+  "__tests__/cli-args.test.js": {
+   "ms": 79,
+   "status": "passed"
+  },
+  "__tests__/cli-enhancers.test.js": {
+   "ms": 994,
+   "status": "passed"
+  },
+  "__tests__/cli-subcommands.test.js": {
+   "ms": 123,
+   "status": "passed"
+  },
+  "__tests__/collectors-extended.test.js": {
+   "ms": 727,
+   "status": "passed"
+  },
+  "__tests__/collectors-github-contract.test.js": {
+   "ms": 21,
+   "status": "passed"
+  },
+  "__tests__/collectors.test.js": {
+   "ms": 81,
+   "status": "passed"
+  },
+  "__tests__/command-parser.test.js": {
+   "ms": 53,
+   "status": "passed"
+  },
+  "__tests__/config.test.js": {
+   "ms": 36,
+   "status": "focused"
+  },
+  "__tests__/context-optimizer.test.js": {
+   "ms": 92,
+   "status": "passed"
+  },
+  "__tests__/cross-file-analyzer-comprehensive.test.js": {
+   "ms": 74,
+   "status": "passed"
+  },
+  "__tests__/cross-platform.test.js": {
+   "ms": 121,
+   "status": "passed"
+  },
+  "__tests__/deprecation.test.js": {
+   "ms": 22,
+   "status": "passed"
+  },
+  "__tests__/detect-platform.test.js": {
+   "ms": 151,
+   "status": "passed"
+  },
+  "__tests__/detection-configs.test.js": {
+   "ms": 55,
+   "status": "passed"
+  },
+  "__tests__/dev-cli.test.js": {
+   "ms": 1913,
+   "status": "passed"
+  },
+  "__tests__/dev-install.test.js": {
+   "ms": 127,
+   "status": "passed"
+  },
+  "__tests__/discovery.test.js": {
+   "ms": 71,
+   "status": "passed"
+  },
+  "__tests__/docs-analyzer.test.js": {
+   "ms": 75,
+   "status": "passed"
+  },
+  "__tests__/docs-patterns.test.js": {
+   "ms": 14617,
+   "status": "passed"
+  },
+  "__tests__/drift-detect-collectors.test.js": {
+   "ms": 1659,
+   "status": "passed"
+  },
+  "__tests__/enhance-analyzers.test.js": {
+   "ms": 303,
+   "status": "passed"
+  },
+  "__tests__/enhance-hooks-skills-analyzer.test.js": {
+   "ms": 40,
+   "status": "passed"
+  },
+  "__tests__/enhance-pattern-benchmarks.test.js": {
+   "ms": 44,
+   "status": "passed"
+  },
+  "__tests__/fetch-plugin-pins.test.js": {
+   "ms": 2399,
+   "status": "focused"
+  },
+  "__tests__/gen-adapters.test.js": {
+   "ms": 82,
+   "status": "passed"
+  },
+  "__tests__/generate-docs.test.js": {
+   "ms": 70,
+   "status": "passed"
+  },
+  "__tests__/marketplace-standalone-contract.test.js": {
+   "ms": 32,
+   "status": "passed"
+  },
+  "__tests__/opencode-compatibility.test.js": {
+   "ms": 44,
+   "status": "passed"
+  },
+  "__tests__/perf-argument-parser.test.js": {
+   "ms": 15,
+   "status": "passed"
+  },
+  "__tests__/perf-baseline-store.test.js": {
+   "ms": 90,
+   "status": "passed"
+  },
+  "__tests__/perf-baseline.test.js": {
+   "ms": 29,
+   "status": "passed"
+  },
+  "__tests__/perf-benchmark-runner.test.js": {
+   "ms": 83,
+   "status": "passed"
+  },
+  "__tests__/perf-breaking-point-runner.test.js": {
+   "ms": 118,
+   "status": "passed"
+  },
+  "__tests__/perf-checkpoint-extended.test.js": {
+   "ms": 80,
+   "status": "passed"
+  },
+  "__tests__/perf-checkpoint.test.js": {
+   "ms": 14,
+   "status": "passed"
+  },
+  "__tests__/perf-code-paths.test.js": {
+   "ms": 15,
+   "status": "passed"
+  },
+  "__tests__/perf-consolidation.test.js": {
+   "ms": 27,
+   "status": "passed"
+  },
+  "__tests__/perf-constraint-runner.test.js": {
+   "ms": 85,
+   "status": "passed"
+  },
+  "__tests__/perf-investigation-state-conflict.test.js": {
+   "ms": 193,
+   "status": "passed"
+  },
+  "__tests__/perf-investigation-state.test.js": {
+   "ms": 207,
+   "status": "passed"
+  },
+  "__tests__/perf-log-helpers.test.js": {
+   "ms": 19,
+   "status": "passed"
+  },
+  "__tests__/perf-optimization-runner.test.js": {
+   "ms": 115,
+   "status": "passed"
+  },
+  "__tests__/perf-profilers.test.js": {
+   "ms": 29,
+   "status": "passed"
+  },
+  "__tests__/perf-profiling-runner.test.js": {
+   "ms": 47,
+   "status": "passed"
+  },
+  "__tests__/perf-schemas-extended.test.js": {
+   "ms": 39,
+   "status": "passed"
+  },
+  "__tests__/perf-schemas.test.js": {
+   "ms": 28,
+   "status": "passed"
+  },
+  "__tests__/perf-state.test.js": {
+   "ms": 44,
+   "status": "passed"
+  },
+  "__tests__/pin-marketplace.test.js": {
+   "ms": 35,
+   "status": "passed"
+  },
+  "__tests__/pipeline.test.js": {
+   "ms": 248,
+   "status": "passed"
+  },
+  "__tests__/platform-adapter-install.test.js": {
+   "ms": 655,
+   "status": "passed"
+  },
+  "__tests__/preflight.test.js": {
+   "ms": 883,
+   "status": "passed"
+  },
+  "__tests__/prompt-analyzer-comprehensive.test.js": {
+   "ms": 113,
+   "status": "passed"
+  },
+  "__tests__/repo-consistency-site-catalog.test.js": {
+   "ms": 187,
+   "status": "passed"
+  },
+  "__tests__/repo-consistency-test-count.test.js": {
+   "ms": 36,
+   "status": "passed"
+  },
+  "__tests__/repo-intel-queries.test.js": {
+   "ms": 87,
+   "status": "passed"
+  },
+  "__tests__/repo-map-installer.test.js": {
+   "ms": 31,
+   "status": "passed"
+  },
+  "__tests__/repo-map-updater.test.js": {
+   "ms": 126,
+   "status": "passed"
+  },
+  "__tests__/repo-map.test.js": {
+   "ms": 25,
+   "status": "passed"
+  },
+  "__tests__/review-patterns.test.js": {
+   "ms": 155,
+   "status": "passed"
+  },
+  "__tests__/scaffold.test.js": {
+   "ms": 319,
+   "status": "passed"
+  },
+  "__tests__/script-failure-hooks.test.js": {
+   "ms": 392,
+   "status": "passed"
+  },
+  "__tests__/shell-escape.test.js": {
+   "ms": 85,
+   "status": "passed"
+  },
+  "__tests__/slop-analyzers.test.js": {
+   "ms": 185,
+   "status": "passed"
+  },
+  "__tests__/slop-patterns.test.js": {
+   "ms": 244,
+   "status": "focused"
+  },
+  "__tests__/source-cache.test.js": {
+   "ms": 136,
+   "status": "passed"
+  },
+  "__tests__/sources.test.js": {
+   "ms": 200,
+   "status": "passed"
+  },
+  "__tests__/stamp-version.test.js": {
+   "ms": 197,
+   "status": "passed"
+  },
+  "__tests__/state-dir.test.js": {
+   "ms": 78,
+   "status": "passed"
+  },
+  "__tests__/suppression.test.js": {
+   "ms": 81,
+   "status": "passed"
+  },
+  "__tests__/utils.test.js": {
+   "ms": 19,
+   "status": "passed"
+  },
+  "__tests__/validation-scripts.test.js": {
+   "ms": 49,
+   "status": "focused"
+  },
+  "__tests__/validator.test.js": {
+   "ms": 257,
+   "status": "passed"
+  },
+  "__tests__/verify-tools.test.js": {
+   "ms": 110,
+   "status": "passed"
+  },
+  "__tests__/workflow-state-conflict.test.js": {
+   "ms": 266,
+   "status": "passed"
+  },
+  "__tests__/workflow-state.test.js": {
+   "ms": 217,
+   "status": "passed"
+  },
+  "tests/collectors/collectors.test.js": {
+   "ms": 1086,
+   "status": "passed"
+  },
+  "tests/enhance/agent-analyzer.test.js": {
+   "ms": 80,
+   "status": "passed"
+  },
+  "tests/enhance/cross-file-analyzer.test.js": {
+   "ms": 107,
+   "status": "passed"
+  },
+  "tests/enhance/fixer.test.js": {
+   "ms": 108,
+   "status": "passed"
+  },
+  "tests/enhance/orchestrator-reporter.test.js": {
+   "ms": 43,
+   "status": "passed"
+  },
+  "tests/enhance/plugin-analyzer.test.js": {
+   "ms": 50,
+   "status": "passed"
+  },
+  "tests/enhance/projectmemory-analyzer.test.js": {
+   "ms": 73,
+   "status": "passed"
+  },
+  "tests/enhance/prompt-analyzer.test.js": {
+   "ms": 165,
+   "status": "passed"
+  },
+  "tests/enhance/suppression.test.js": {
+   "ms": 33,
+   "status": "passed"
+  },
+  "tests/lib-package.test.js": {
+   "ms": 43,
+   "status": "passed"
+  },
+  "tests/sources/custom-handler.test.js": {
+   "ms": 58,
+   "status": "passed"
+  },
+  "tests/sources/policy-questions.test.js": {
+   "ms": 84,
+   "status": "passed"
+  }
+ },
+ "failed_tests": [
+  "__tests__/atomic-write.test.js > atomic-write permission errors throws on read-only directory"
+ ]
+}
