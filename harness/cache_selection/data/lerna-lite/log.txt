@@ -356,3 +356,17 @@
 2026-11-23T23:32:51Z   $ npx -y pnpm@11.28.5 build  -> exit 0 in 3.3s
 2026-11-23T23:32:51Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --filesOnly --json=/home/user/work/tmp/lerna-lite/list-all.json  -> exit 0 in 0.5s
 2026-11-23T23:32:52Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --changed fe5d28f712e62b677c7626dac9deba32af674ba2 --filesOnly --json=/home/user/work/tmp/lerna-lite/list-sel.json  -> exit 0 in 0.7s
+2026-11-23T23:42:50Z   $ npx --no-install vitest run --config ./e2e/vitest.config.ts --reporter=json --outputFile=/home/user/work/tmp/lerna-lite/excl-1449-9f77bddf.json e2e/changed/changed.spec.ts e2e/diff/diff.spec.ts e2e/exec/exec.spec.ts e2e/list/list.spec.ts e2e/publish/publish-dry-run.spec.ts e2e/publish/publish-npmrc-auth.spec.ts e2e/publish/publish-verdaccio.spec.ts e2e/run/run.spec.ts e2e/version/version.spec.ts e  -> exit 0 in 598.4s
+2026-11-23T23:42:50Z   -> ok share=0.9953 sel=1 excl=11 failures=[]
+2026-11-23T23:42:50Z STATE PR #1453 (code) state 2/2 f351d51892 base 989e099ef3
+2026-11-23T23:42:50Z   $ git checkout -q -f --detach f351d518922e3b0493f823ca7a2b14a1d38793f8 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T23:42:51Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T23:42:54Z   $ npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts  -> exit 0 in 3.2s
+2026-11-23T23:42:57Z   $ npx -y pnpm@11.28.5 build  -> exit 0 in 3.3s
+2026-11-23T23:42:58Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --filesOnly --json=/home/user/work/tmp/lerna-lite/list-all.json  -> exit 0 in 0.5s
+2026-11-23T23:42:58Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --changed 989e099ef3351b69bc829a2c4e578d3b08133b0b --filesOnly --json=/home/user/work/tmp/lerna-lite/list-sel.json  -> exit 0 in 0.7s
+2026-11-23T23:44:32Z NOTE: container restarted at ~23:43Z; state in progress lost and discarded; lane resumed from rows.jsonl (8 h cap still counted from 17:56Z)
+2026-11-23T23:44:34Z STATE PR #1453 (code) state 2/2 f351d51892 base 989e099ef3
+2026-11-23T23:44:38Z   $ git checkout -q -f --detach f351d518922e3b0493f823ca7a2b14a1d38793f8 && git clean -fdxq -e node_modules  -> exit 0 in 3.7s
+2026-11-23T23:44:45Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 6.9s
+2026-11-23T23:44:54Z   $ npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts  -> exit 0 in 9.1s
