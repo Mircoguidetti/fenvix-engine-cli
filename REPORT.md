@@ -134,6 +134,11 @@ Fail-fast cancels the rest of a matrix, so the two runs do not cover the same te
 - **attacks.** Fails on both runs. Not compared line by line: ESTIMATED same cause, since the attack suites run
   the same Python and Node failures listed above.
 
+The trunk moved while this work ran: `claude/release-1` is 0071cbb, which adds only files under `harness/` (the
+parallel_measure harness: docs, data, a script and a Vitest reporter). No suite collects or runs them, and the
+workflow does not reference `harness/`. So the comparison against bfaf70b4 holds for the merge; the merge leaves
+`harness/` unchanged (checked with `git diff --name-only`).
+
 No test was skipped, deselected or quarantined. The only expectation changes are the D5 gate edits listed above.
 
 ## Acceptance criteria
