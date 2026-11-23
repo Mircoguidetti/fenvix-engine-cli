@@ -23,8 +23,21 @@ const { STATE } = require('./state');
 const sites = require('./sites');
 const sched = require('./sched');
 const concur = require('./concur');
+const { AsyncLocalStorage } = require('node:async_hooks');
 
 const HOLD_MAX_MS = 200;
+// The tracked operation whose own work is running (P1 F, docs/DESIGN-P1.md): its synchronous call and every
+// continuation of what that call started (Node's callback writeFile calling fs.open, then fs.write / fs.close from
+// their callbacks; detjs' own mkdtemp awaiting fs.promises.mkdir; graceful-fs's global fs.close wrapper called from
+// inside writeFile). An operation begun there is a step of that operation, not an operation of the test: tracking it
+// made one awaited call look like concurrent I/O (`uncontrolled.io`, NOT PROVEN) and queued a step behind its own
+// parent until the hold released it (`io.release`). The test's own callback and promise settlement are delivered
+// outside it (`PARENT.exit`), so the test's next operation is tracked again.
+const PARENT = new AsyncLocalStorage();
+function insideOperation() {
+  const p = PARENT.getStore();
+  return p !== undefined && !p.done && p.test === STATE.testId;
+}
 let clock = null; // src/clock.js (set at installation)
 let REAL_SET_IMMEDIATE = setImmediate;
 let REAL_SET_TIMEOUT = setTimeout;
@@ -107,7 +120,9 @@ function nodeInternal() {
   for (const cs of Array.isArray(h.stack) ? h.stack : []) {
     const f = (cs.getFileName && cs.getFileName()) || '';
     if (!f || f.startsWith(SRC_DIR)) continue;
-    return f.startsWith('node:internal/fs/') || f.startsWith('internal/fs/');
+    // node:fs itself (lib/fs.js: callback writeFile calls the exported fs.open / fs.write / fs.close) is part of the
+    // operation that called into it, like node:internal/fs/
+    return f === 'node:fs' || f.startsWith('node:internal/fs/') || f.startsWith('internal/fs/');
   }
   return false;
 }
@@ -115,7 +130,7 @@ function nodeInternal() {
 /** A new operation of the running test (null when outside tests or started by the runner). */
 function begin(kind) {
   if (STATE.testId === null || STATE.quietDepth > 0) return null;
-  if (nodeInternal()) return null;
+  if (insideOperation() || nodeInternal()) return null;
   let site = '';
   if (STATE.config && STATE.config.sites) {
     site = STATE.quiet(() => sites.resolve());
@@ -208,10 +223,10 @@ function wrapCallback(name, real) {
     const op = begin(`fs.${name}`);
     if (op === null) return real.apply(this, a);
     const cb = a[i];
-    a[i] = function (...r) { const self = this; complete(op, () => cb.apply(self, r)); };
+    a[i] = function (...r) { const self = this; complete(op, () => PARENT.exit(() => cb.apply(self, r))); };
     track(op);
     try {
-      return real.apply(this, a);
+      return PARENT.run(op, () => real.apply(this, a));
     } catch (e) {
       const j = undelivered.indexOf(op);
       if (j >= 0) undelivered.splice(j, 1);
@@ -227,11 +242,11 @@ function wrapPromise(name, real) {
   return function (...a) {
     const op = begin(`fs.${name}`);
     let p;
-    try { p = real.apply(this, a); } catch (e) { end(op); throw e; }
+    try { p = op === null ? real.apply(this, a) : PARENT.run(op, () => real.apply(this, a)); } catch (e) { end(op); throw e; }
     if (op === null || !p || typeof p.then !== 'function') { end(op); return p; }
     track(op);
     return new Promise((resolve, reject) => {
-      p.then((v) => complete(op, () => resolve(v)), (e) => complete(op, () => reject(e)));
+      p.then((v) => complete(op, () => PARENT.exit(() => resolve(v))), (e) => complete(op, () => PARENT.exit(() => reject(e))));
     });
   };
 }
