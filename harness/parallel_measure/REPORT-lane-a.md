@@ -1,4 +1,4 @@
-NOT DONE — step 4 (second merge into claude/release-1) pending; steps 1-3 done (AC1-AC5 evidence below)
+DONE — steps 1-4 done: harness merged (0071cbb9) and Lane A data merged into claude/release-1 (step 4, commit "Merge Lane A results"); AC1-AC5 below; one admitted repo (alakajam) carries a caveat for the coordinator
 
 # Lane A report: one harness on the trunk, the missing raw rows, three more candidates
 
@@ -30,6 +30,17 @@ in this session):
   items open, below).
 - CI (release-1.yml LIGHT): branch run 45132460278 (82e4da68) failing jobs = attacks, python 3.13 shard 3/4, node 24
   shard 1/4; trunk run 45041985747 (bfaf70b4) failing jobs = the same three. No new red. MEASURED (GitHub Actions).
+
+**Step 4 — DONE.** `git merge --no-ff` of `claude/harness-trunk` into `claude/release-1` (message "Merge Lane A
+results ..."), after the branch merged the trunk f67be4a3. Gate: `python3 -m py_compile harness/parallel_measure/*.py`
+passes; the four scripts are still byte-identical to 20f7752d; only `harness/parallel_measure/` differs from the trunk.
+CI (release-1.yml LIGHT): branch run 45256530561 (98cb6877 = trunk f67be4a3 + this branch) failing jobs = attacks,
+python 3.13 shard 3/4, node 24 shard 0/4; trunk run 45186293624 (f67be4a3) failing jobs = the same three; the others
+pass or are cancelled by fail-fast on both. No new red (MEASURED, GitHub Actions). gstack /review: 6 specialists
+(testing, maintainability, security, performance, simplification, state-machines) + red team + 2 adversarial passes;
+fixed: one CRITICAL (alakajam's THEIRS 138 presented as flakiness) and every INFORMATIONAL wording/provenance finding;
+the second adversarial pass verified the fixes and found nothing blocking; open: the hardcoded_tmp undercount
+(INVESTIGATE, below). Not converged (2 edit cycles; no zero-edit pass), as for step 1.
 
 **AC2 — DONE.** `data/lane-a/results.jsonl` holds, for agentic-qe and lerna-lite, 3 rounds of `plain`, `plain_par`
 (2, 4), `serial` and `par` (2, 4), plus `verify` rows; `repro.jsonl` and `<repo>/classification.json` beside it.
