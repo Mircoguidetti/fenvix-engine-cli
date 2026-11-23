@@ -6,6 +6,7 @@ fenvix-run's outcomes; of these, the ones fenvix-run then classed flaky (passed 
 
     python3 harness/det_host_values/customer.py <find dir> <customer dir>   (<customer dir>/<engine>/<repo>/summary.json)
 """
+import gzip
 import json
 import os
 import sys
@@ -36,10 +37,10 @@ def main(find_dir, cdir):
         pp = plain_passed(find_dir, repo)
         for eng in ("trunk", "branch"):
             sp = os.path.join(cdir, eng, repo, "summary.json")
-            if not os.path.exists(sp):
+            if not os.path.exists(sp) and not os.path.exists(sp + ".gz"):
                 print(f"| {repo} | {eng} | (not measured) | | | | | |")
                 continue
-            s = json.load(open(sp))
+            s = json.load(open(sp)) if os.path.exists(sp) else json.load(gzip.open(sp + ".gz", "rt"))
             meta = json.load(open(os.path.join(cdir, eng, repo, "run.json")))
             oc = s.get("outcomes", {})
             failed = sorted(k for k, v in oc.items() if v in ("failed", "error") and k in pp)
