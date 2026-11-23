@@ -1,0 +1,1126 @@
+{
+ "labels": [
+  "/tmp/pm-p1/p1-afterF/sqlectron/S1.jsonl",
+  "/tmp/pm-p1/p1-afterF/sqlectron/P1w4.jsonl"
+ ],
+ "order_digests": [
+  "7730ae274d4180fd10c2ef0b9c9ff570",
+  "7730ae274d4180fd10c2ef0b9c9ff570"
+ ],
+ "complete": [
+  true,
+  true
+ ],
+ "summary": {
+  "runs": 2,
+  "tests": 43,
+  "stable": 0,
+  "diverged": 5,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {
+   "entropy": 5,
+   "native": 38
+  },
+  "inputs_recorded": true,
+  "identical": 0,
+  "input_differs": 0,
+  "not_proven": 38
+ },
+ "tests": [
+  {
+   "nodeid": "test/browser/config.test.ts::config::.prepare::should include id for those servers without it",
+   "status": "not-proven",
+   "fingerprints": [
+    "7da9d348f925fc34710fa028aae1e77a",
+    "7da9d348f925fc34710fa028aae1e77a"
+   ],
+   "outcomes": [
+    "skipped",
+    "skipped"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/servers.test.ts::servers::.getAll::should load servers from file",
+   "status": "not-proven",
+   "fingerprints": [
+    "0cb9f389cced4a55e935233f98b6a1e7",
+    "0cb9f389cced4a55e935233f98b6a1e7"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/servers.test.ts::servers::.add::should add new server",
+   "status": "diverged",
+   "fingerprints": [
+    "5e81460d1893c2ed30a165358aec0394",
+    "355ddd10d204a11df0efd2e3b58b9ee4"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 2,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 3,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "crypto.randomFillSync",
+     "at": "<deps>/uuid/dist/rng.js:18",
+     "v": "256:302dfcfc9fba7b800f12bc2250bace1d"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "entropy",
+     "o": "crypto.randomFillSync",
+     "at": "<deps>/uuid/dist/rng.js:18",
+     "v": "256:3adb4a309929297751fca80bab43ce08"
+    },
+    "reason": "entropy",
+    "description": "event #3: crypto.randomFillSync @ <deps>/uuid/dist/rng.js:18 returned different values: \"256:302dfcfc9fba7b800f12bc2250bace1d\" vs \"256:3adb4a309929297751fca80bab43ce08\""
+   }
+  },
+  {
+   "nodeid": "test/browser/servers.test.ts::servers::.add::should add new server with ssh",
+   "status": "diverged",
+   "fingerprints": [
+    "9081cfff382cff6e0960441754bbc2ac",
+    "d0681b0262c671a27ed4a9ea390dda97"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 2,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 3,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "crypto.randomBytes",
+     "at": "src/browser/core/crypto.ts:16",
+     "v": "16:6a734c77b4f980b846d6873b8a26d517"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "entropy",
+     "o": "crypto.randomBytes",
+     "at": "src/browser/core/crypto.ts:16",
+     "v": "16:15bb3416220dab12962ae65550bead07"
+    },
+    "reason": "entropy",
+    "description": "event #3: crypto.randomBytes @ src/browser/core/crypto.ts:16 returned different values: \"16:6a734c77b4f980b846d6873b8a26d517\" vs \"16:15bb3416220dab12962ae65550bead07\""
+   }
+  },
+  {
+   "nodeid": "test/browser/servers.test.ts::servers::.update::should update existing server",
+   "status": "diverged",
+   "fingerprints": [
+    "3aaec5fc13694dd7a5a79cf9c569aa4c",
+    "2756cf75c591e0dec4701d2f6f170679"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 2,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 3,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "crypto.randomBytes",
+     "at": "src/browser/core/crypto.ts:16",
+     "v": "16:05867e0e04e9d13b419362af24d86f93"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "entropy",
+     "o": "crypto.randomBytes",
+     "at": "src/browser/core/crypto.ts:16",
+     "v": "16:4b6f66cacad484fcddb5d51eb45d598a"
+    },
+    "reason": "entropy",
+    "description": "event #3: crypto.randomBytes @ src/browser/core/crypto.ts:16 returned different values: \"16:05867e0e04e9d13b419362af24d86f93\" vs \"16:4b6f66cacad484fcddb5d51eb45d598a\""
+   }
+  },
+  {
+   "nodeid": "test/browser/servers.test.ts::servers::should not update password when password is already encrypted",
+   "status": "not-proven",
+   "fingerprints": [
+    "b47e29b9ebdd3f9cf98e9d7d6328e058",
+    "b47e29b9ebdd3f9cf98e9d7d6328e058"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/servers.test.ts::servers::.addOrUpdate::given is a new server::should add the new server",
+   "status": "diverged",
+   "fingerprints": [
+    "00fb5be9277c75cee863a9846cb96bf6",
+    "6b24d2de71ad0cde58d2e708a29ab86e"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 2,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 3,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "crypto.randomBytes",
+     "at": "src/browser/core/crypto.ts:16",
+     "v": "16:aac916e3abfcd51103b2d0129295265c"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "entropy",
+     "o": "crypto.randomBytes",
+     "at": "src/browser/core/crypto.ts:16",
+     "v": "16:1b650917649b475948425462862ee50d"
+    },
+    "reason": "entropy",
+    "description": "event #3: crypto.randomBytes @ src/browser/core/crypto.ts:16 returned different values: \"16:aac916e3abfcd51103b2d0129295265c\" vs \"16:1b650917649b475948425462862ee50d\""
+   }
+  },
+  {
+   "nodeid": "test/browser/servers.test.ts::servers::.addOrUpdate::given is an existing server::should update this existing server",
+   "status": "diverged",
+   "fingerprints": [
+    "7fd4f5ee20927ac491ca2dd9af738623",
+    "3ff0ec26788e421e251d5d5d9e357aa9"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 2,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 3,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "crypto.randomBytes",
+     "at": "src/browser/core/crypto.ts:16",
+     "v": "16:343af6d065d3614fbfb599e676f01d66"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "entropy",
+     "o": "crypto.randomBytes",
+     "at": "src/browser/core/crypto.ts:16",
+     "v": "16:392985c8e7bc9f3db30132a3830e9742"
+    },
+    "reason": "entropy",
+    "description": "event #3: crypto.randomBytes @ src/browser/core/crypto.ts:16 returned different values: \"16:343af6d065d3614fbfb599e676f01d66\" vs \"16:392985c8e7bc9f3db30132a3830e9742\""
+   }
+  },
+  {
+   "nodeid": "test/browser/servers.test.ts::servers::.remove::should remove an existing server",
+   "status": "not-proven",
+   "fingerprints": [
+    "7fda837f96491e69b553a646fd42b560",
+    "7fda837f96491e69b553a646fd42b560"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/servers.test.ts::servers::.decryptSecrets::should decrypt new style password",
+   "status": "not-proven",
+   "fingerprints": [
+    "b49dab66988f9d8d0208170de8f52b8f",
+    "b49dab66988f9d8d0208170de8f52b8f"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/servers.test.ts::servers::.decryptSecrets::should decrypt new style password for ssh",
+   "status": "not-proven",
+   "fingerprints": [
+    "b49dab66988f9d8d0208170de8f52b8f",
+    "b49dab66988f9d8d0208170de8f52b8f"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/servers.test.ts::servers::.decryptSecrets::should throw when trying to decrypt old style password",
+   "status": "not-proven",
+   "fingerprints": [
+    "b49dab66988f9d8d0208170de8f52b8f",
+    "b49dab66988f9d8d0208170de8f52b8f"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/servers.test.ts::servers::.decryptSecrets::should throw when trying to decrypt old style password for ssh",
+   "status": "not-proven",
+   "fingerprints": [
+    "b49dab66988f9d8d0208170de8f52b8f",
+    "b49dab66988f9d8d0208170de8f52b8f"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/servers.test.ts::servers::.decryptSecrets::should do nothing for unencrypted server",
+   "status": "not-proven",
+   "fingerprints": [
+    "b49dab66988f9d8d0208170de8f52b8f",
+    "b49dab66988f9d8d0208170de8f52b8f"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/utils.test.ts::utils::.getConfigPath::use of SQLECTRON_HOME::should get config from process.env.SQLECTRON_HOME",
+   "status": "not-proven",
+   "fingerprints": [
+    "c6d0ae4118d5c1a555608b989cf36092",
+    "c6d0ae4118d5c1a555608b989cf36092"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/validators/server.test.ts::validators/server::validate::should validate server 0",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/validators/server.test.ts::validators/server::validate::should validate server 1",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/validators/server.test.ts::validators/server::validate::should validate server 2",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/validators/server.test.ts::validators/server::validate::should validate server 3",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/validators/server.test.ts::validators/server::validate::should validate server 4",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/validators/server.test.ts::validators/server::validate::should validate client mysql",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/validators/server.test.ts::validators/server::validate::should validate client postgresql",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/validators/server.test.ts::validators/server::validate::should validate client sqlserver",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/validators/server.test.ts::validators/server::validate::should validate client sqlite",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/validators/server.test.ts::validators/server::validate::should validate client cassandra",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/validators/server.test.ts::validators/server::validate::should not validate invalid client",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/validators/server.test.ts::validators/server::validateUniqueId::should throw when serverId is undefined",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/validators/server.test.ts::validators/server::validateUniqueId::should throw when serverId is null",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/validators/server.test.ts::validators/server::validateUniqueId::should validate when serverId is not found",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/browser/validators/server.test.ts::validators/server::validateUniqueId::should fail when serverId is found",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/common/utils/string.test.ts::titlize::should convert test to Test",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/common/utils/string.test.ts::titlize::should convert TEST to Test",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/common/utils/string.test.ts::titlize::should convert Test to Test",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/renderer/components/checkbox.test.tsx::<Checkbox />::should have input with name and label elements",
+   "status": "not-proven",
+   "fingerprints": [
+    "de3eb0587958a4b444903a6b6efd5101",
+    "de3eb0587958a4b444903a6b6efd5101"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/renderer/components/checkbox.test.tsx::<Checkbox />::should be checked",
+   "status": "not-proven",
+   "fingerprints": [
+    "774be8f9040d2601920f89d68134c124",
+    "774be8f9040d2601920f89d68134c124"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/renderer/components/checkbox.test.tsx::<Checkbox />::should be unchecked",
+   "status": "not-proven",
+   "fingerprints": [
+    "774be8f9040d2601920f89d68134c124",
+    "774be8f9040d2601920f89d68134c124"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/renderer/components/checkbox.test.tsx::<Checkbox />::should trigger onChecked for checked event",
+   "status": "not-proven",
+   "fingerprints": [
+    "31efea673c958c322c7b2a1600cfcf41",
+    "31efea673c958c322c7b2a1600cfcf41"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/renderer/components/checkbox.test.tsx::<Checkbox />::should trigger onUnchecked for unchecked event",
+   "status": "not-proven",
+   "fingerprints": [
+    "06a4e5feda4262df7c83f4da43811eac",
+    "06a4e5feda4262df7c83f4da43811eac"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/renderer/utils/regexp.test.ts::escapeRegExpString::should escape regexp string: a",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/renderer/utils/regexp.test.ts::escapeRegExpString::should escape regexp string: [",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/renderer/utils/regexp.test.ts::escapeRegExpString::should escape regexp string: ]",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/renderer/utils/regexp.test.ts::escapeRegExpString::should escape regexp string: (",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  },
+  {
+   "nodeid": "test/renderer/utils/regexp.test.ts::escapeRegExpString::should escape regexp string: )",
+   "status": "not-proven",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": null,
+    "window": null,
+    "event_a": null,
+    "event_b": null,
+    "reason": "native",
+    "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution"
+   }
+  }
+ ],
+ "input_differences": []
+}
