@@ -256,11 +256,47 @@ advice was not applied.
 
 ## CI (merge rule: no new failing job versus the trunk)
 
-Pending: LIGHT run of release-1.yml dispatched on head 962acfb (workflow_dispatch, depth light); trunk baseline is run 45165824244 (head e733895): failing attacks, node (24, shard 0/4), python (3.13, shard 0/4); node shard 3/4 cancelled by fail-fast.
+Branch: release-1.yml LIGHT, run **45177168265** (workflow_dispatch on claude/node-runner, head 962acfb).
+Trunk: LIGHT run **45165824244** (push, head e733895 = this branch's base).
+
+| job | trunk 45165824244 | branch 45177168265 |
+|---|---|---|
+| build | success | success |
+| smoke (python), smoke (node) | success, success | success, success |
+| attacks (py 3.13, node 24) | failure | failure |
+| node (24, shard 0/4) | failure | failure |
+| node (24, shard 1/4), (2/4), (3/4) | success, success, cancelled | cancelled, success, cancelled |
+| python (3.13, shard 0/4) | **failure**: `test_packaging.py::test_gate_runs_on_pull_requests_and_trunk_only_and_cancels_only_superseded_pr_runs` (parallel-node.yml has a `push:` trigger), and 2 in `test_py_cache.py` | cancelled (fail-fast) |
+| python (3.13, shard 1/4), (2/4) | success, success | success, cancelled |
+| python (3.13, shard 3/4) | success | **failure**: the same `test_packaging.py::test_gate_runs_...` (`AssertionError: parallel-node.yml`); `1 failed, 164 passed, 4 skipped` |
+
+- **Job level: no new failing test.** 3 failing jobs on each side. The one that moved is the trunk's own
+  `test_packaging` failure: `release/shard.py` splits by size, and adding `tests/test_runner_node.py` to the shared
+  list moved `test_packaging.py` from shard 0 to shard 3. `python3 release/shard.py 4 <i> ... --only shared` places
+  it in shard 0 on the trunk and shard 3 on the branch. This branch does not touch `.github/workflows/`.
+- **Not shown by CI:** `tests/test_runner_node.py` falls in branch shard 0/4. Fail-fast cancelled that shard at
+  12:59:56, after 11 min, when shard 3/4 failed. Its log artifact `python-3.13-s0` is 189 bytes (the pytest output
+  goes through `tee | tail` and was cut off).
+  - So CI gives no result for the new shared test.
+  - Whether ubuntu-latest's `node` is >= 22 in the Python job is not known. The test fails, never skips, without
+    Node 22 and detjs. It uses `dist/detjs.linux-x64.node` via DETJS_NATIVE.
+  - Locally (bootstrap-installed detjs, Node 22.23.5): 47 passed.
+- Run 45175492965 (head ebaa2e7, before the review fixes) was cancelled by me after the fixes; its results are not used.
 
 ## Merge rule
 
-Pending the CI comparison. Tests pass and the gstack /review has no unresolved highest-severity finding (one kept by spec, see above).
+**Engine not merged into `claude/release-1`. App not merged into `main`.**
+- Tests pass (local) and the gstack /review has no unresolved highest-severity finding (one kept because the spec
+  requires it; it needs a founder decision, see above). The job-level CI comparison shows no new failing job.
+- But CI never completed the new shared test, so "no new failing test" cannot be shown. Merging it into the gate
+  could add a red test to shard 0/4.
+- And with the App unpushable, merging the engine would not let `engineCliCommit` move either.
+- To merge, one of:
+  - (a) a CI run in which python shard 0/4 completes (fail-fast stops it while the trunk's
+    `test_packaging` / `test_py_cache` failures exist);
+  - (b) the founder accepts the local evidence.
+  Then: merge `claude/node-runner` (head 962acfb) into `claude/release-1`, set `engineCliCommit` to that merge
+  commit, push and merge the App.
 
 ## To unblock
 
