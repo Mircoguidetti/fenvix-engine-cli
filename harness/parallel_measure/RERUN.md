@@ -67,3 +67,31 @@ the JSON reporter); the runner's own parallel mode with N workers, no engine (`-
 (`detjs ... --det --det-workers=1`); `--det` parallel at 2 and 4 workers; `fenvix verify S_i P_i --json` per worker
 count; in round 2 `fenvix verify S_1 S_2` (serial noise). Engine state: per (kind, workers), round 1 cold, later
 rounds start from what the previous run of the same kind left.
+
+## 4. Lane A (agentic-qe, lerna-lite, step 3 candidates) — branch `claude/harness-trunk`
+
+Harness: this directory at `claude/harness-trunk` commit ef5b0b20 (the single copy; measure.py / repro.py /
+classify.py / table.py byte-identical to `claude/parallel-measure` 20f7752d). Engine: trunk `claude/release-1`
+bfaf70b4 (`engine_commit` in every row), built as in section 1 (`cd node && npm run build`; `maturin build --release`
+into a Python 3.12 venv `$PM_WORK/venv/engine`, also reachable as `$PM_WORK/venv/networkx`, the `fenvix_python` of the
+Node specs). `PM_WORK=/tmp/pm`. Repositories fetched at the `commit` of their spec and installed with its `install`
+line (agentic-qe: `npm ci --ignore-scripts --no-audit --no-fund && npm rebuild better-sqlite3 hnswlib-node argon2
+sharp`; lerna-lite: `npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts && npx -y pnpm@11.28.5 build`).
+
+```bash
+cd harness/parallel_measure
+for r in agentic-qe lerna-lite; do
+  for n in 1 2 3; do   # one round per process
+    python3 measure.py --spec specs.json --name $r --reps 1 --first-rep $n --workers 2,4 --timeout 14400 --out $PM_WORK/lane-a
+  done
+  python3 repro.py --spec specs.json --name $r --out $PM_WORK/lane-a --runs 2 --seeds 1,2 --timeout 14400
+  python3 classify.py --out $PM_WORK/lane-a --name $r --bugs bugs
+done
+# step 3, per candidate: plain only first, then (admitted) the loop above
+python3 measure.py --spec specs.json --name <r> --reps 3 --workers 2,4 --skip serial,par --out $PM_WORK/lane-a-screen
+python3 table.py data/lane-a/results.jsonl specs.json     # the "Lane A rows" of TABLE.md
+```
+
+`--timeout 14400` (default 3600): the first agentic-qe `--det` serial run was killed by the 3600 s timeout (exit 124,
+no trace; kept in `data/lane-a/interrupted/`); the completed one took 4145.98 s. Rounds interrupted by a container
+restart were moved to `data/lane-a/interrupted/` and re-run from their start.
