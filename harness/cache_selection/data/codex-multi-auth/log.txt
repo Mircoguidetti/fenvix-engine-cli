@@ -30,3 +30,6 @@
 2026-11-23T12:14:20Z   full run 25: ok exit 1 372.8s {'passed': 8560, 'failed': 6, 'skipped': 12}
 2026-11-23T12:14:20Z STATE PR #726 (code) state 1/5 f1c7c76bda base 328343b23d
 2026-11-23T12:14:20Z   $ git checkout -q -f --detach f1c7c76bda55dee0fd70c5c481e0a869892134dd && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T12:14:24Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.5s
+2026-11-23T12:14:24Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-all.json  -> exit 0 in 0.5s
+2026-11-23T12:14:29Z   $ npx --no-install vitest list  --changed 328343b23d45da17a2478fd49cb15238787e4f7f --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-sel.json  -> exit 0 in 5.0s
