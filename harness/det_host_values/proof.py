@@ -10,6 +10,7 @@ branch's verdict and reason.
 
     python3 harness/det_host_values/proof.py <dir>
 """
+import gzip
 import json
 import os
 import sys
@@ -32,6 +33,8 @@ def load(d, repo, eng):
         vp = os.path.join(d, repo, eng, repo, f"verify{par['rep']}w{par['workers']}.json")
         if os.path.exists(vp):
             rep = json.load(open(vp))
+        elif os.path.exists(vp + ".gz"):
+            rep = json.load(gzip.open(vp + ".gz", "rt"))
     return {"par": par, "ser": ser, "ver": ver, "rep": rep}
 
 

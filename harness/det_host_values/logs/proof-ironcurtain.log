@@ -1,0 +1,12 @@
+== ironcurtain trunk f67be4a31f1a9cf4d4e048ab8b5ec2d58b8e0055 2026-11-23T21:06:09Z
+{"repo": "ironcurtain", "kind": "plain", "rep": 1, "workers": 1, "exit": 1, "wall_s": 210.38, "busy_before_pct": 0.0}
+{"repo": "ironcurtain", "kind": "serial", "rep": 1, "workers": 1, "exit": 1, "wall_s": 225.89, "busy_before_pct": 0.0}
+{"repo": "ironcurtain", "kind": "par", "rep": 1, "workers": 4, "exit": 1, "wall_s": 175.38, "busy_before_pct": 0.2}
+{"repo": "ironcurtain", "kind": "verify", "rep": 1, "workers": 4, "exit": 1, "wall_s": 1.25, "busy_before_pct": 0.0}
+exit 0 2026-11-23T21:16:27Z
+== ironcurtain branch 702bf4890c4b2827db4250e9872f31562bb76012 2026-11-23T21:16:27Z
+{"repo": "ironcurtain", "kind": "plain", "rep": 1, "workers": 1, "exit": 1, "wall_s": 212.36, "busy_before_pct": 0.2}
+{"repo": "ironcurtain", "kind": "serial", "rep": 1, "workers": 1, "exit": 1, "wall_s": 233.14, "busy_before_pct": 0.0}
+{"repo": "ironcurtain", "kind": "par", "rep": 1, "workers": 4, "exit": 1, "wall_s": 110.59, "busy_before_pct": 0.0}
+{"repo": "ironcurtain", "kind": "verify", "rep": 1, "workers": 4, "exit": 1, "wall_s": 1.33, "busy_before_pct": 0.2}
+exit 0 2026-11-23T21:25:50Z
