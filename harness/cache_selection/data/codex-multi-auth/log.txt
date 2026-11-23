@@ -112,3 +112,11 @@
 2026-11-23T12:48:02Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 2.0s
 2026-11-23T12:49:30Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/codex-bin-wrapper.test.ts  -> exit 0 in 87.9s
 2026-11-23T12:50:57Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/codex-bin-wrapper.test.ts  -> exit 0 in 87.5s
+2026-11-23T12:52:28Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/codex-bin-wrapper.test.ts  -> exit 1 in 90.6s
+2026-11-23T12:52:28Z   -> ok share=0.7501 sel=65 excl=356 failures=[('test/codex-bin-wrapper.test.ts > codex bin wrapper stress: metadata stays bounde', 'PREEXISTING')]
+2026-11-23T12:52:28Z STATE PR #732 (code) state 1/5 6c8ea1e4c7 base cedbec027c
+2026-11-23T12:52:28Z   $ git checkout -q -f --detach 6c8ea1e4c7fac09f8749844ad4947fb7c948cb71 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T12:52:29Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.0s
+2026-11-23T12:52:32Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.4s
+2026-11-23T12:52:33Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-all.json  -> exit 0 in 0.5s
+2026-11-23T12:52:39Z   $ npx --no-install vitest list  --changed cedbec027cb2ec3f645fcbeb55cd40cccf0479ee --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-sel.json  -> exit 0 in 6.3s

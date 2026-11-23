@@ -42,3 +42,6 @@
 2026-11-23T12:51:13Z STATE PR #489 (dependency) state 1/1 30dbf00b6b base f1fc25426b
 2026-11-23T12:51:13Z   $ git checkout -q -f --detach 30dbf00b6b28114736fc060dfc2ca2301a6eef50 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
 2026-11-23T12:51:18Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 4.8s
+2026-11-23T12:51:35Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 16.7s
+2026-11-23T12:51:36Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/ironcurtain/list-all.json  -> exit 0 in 0.5s
+2026-11-23T12:51:41Z   $ npx --no-install vitest list  --changed f1fc25426b7e60ba420e19a4532bcf305da52bf3 --filesOnly --json=/home/user/work/tmp/ironcurtain/list-sel.json  -> exit 0 in 5.7s
