@@ -1,0 +1,37 @@
+2026-11-23T17:40:53Z INSTALL react-confirm-alert: (cd /tmp/pm/repos/react-confirm-alert && npm ci --ignore-scripts --no-audit --no-fund) exit 0, 5 s
+2026-11-23T17:41:16Z SCREEN react-confirm-alert exit 0
+2026-11-23T17:41:16Z VERDICT react-confirm-alert: UNKNOWN plain=[] par={2: 1.5, 4: 1.55} bad=['plain r1 w1: 0 tests reported, exit 1 after 1.38 s', 'plain r2 w1: 0 tests reported, exit 1 after 1.49 s', 'plain r3 w1: 0 tests reported, exit 1 after 1.45 s']
+2026-11-23T17:41:42Z INSTALL claudekit: (cd /tmp/pm/repos/claudekit && npm install --ignore-scripts --no-audit --no-fund) exit 0, 26 s
+2026-11-23T17:42:49Z SCREEN claudekit exit 0
+2026-11-23T17:42:49Z VERDICT claudekit: REJECT plain median 6.57 s, best plain_par median 6.27 s (w2), ratio 1.05x; par medians {2: 6.27, 4: 6.5}; invalid []
+2026-11-23T17:43:13Z INSTALL sqlectron: (cd /tmp/pm/repos/sqlectron && npm install --ignore-scripts --no-audit --no-fund) exit 0, 24 s
+2026-11-23T17:43:58Z SCREEN sqlectron exit 0
+2026-11-23T17:43:58Z VERDICT sqlectron: REJECT plain median 5.41 s, best plain_par median 2.85 s (w4), ratio 1.90x; par medians {2: 3.53, 4: 2.85}; invalid []
+2026-11-23T17:44:03Z INSTALL smart-second-brain: (cd /tmp/pm/repos/smart-second-brain && /root/.bun/bin/bun install --frozen-lockfile --ignore-scripts) exit 0, 5 s
+2026-11-23T17:59:01Z SCREEN smart-second-brain exit 0
+2026-11-23T17:59:01Z VERDICT smart-second-brain: ADMIT plain median 155.32 s, best plain_par median 57.66 s (w4), ratio 2.69x; par medians {2: 85.08, 4: 57.66}; invalid []
+2026-11-23T18:38:56Z FULL smart-second-brain done
+2026-11-23T18:38:56Z SKIP beevibe: no install command scripted (needs manual setup)
+2026-11-23T18:39:04Z INSTALL agentlang: (cd /tmp/pm/repos/agentlang && npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts) exit 0, 8 s
+2026-11-23T18:45:02Z SCREEN agentlang exit 0
+2026-11-23T18:45:02Z VERDICT agentlang: ADMIT plain median 58.49 s, best plain_par median 22.69 s (w4), ratio 2.58x; par medians {2: 32.77, 4: 22.69}; invalid []
+2026-11-23T19:04:16Z FULL agentlang done
+2026-11-23T19:04:28Z INSTALL alakajam: (cd /tmp/pm/repos/alakajam && npm ci --ignore-scripts --no-audit --no-fund) exit 0, 12 s
+2026-11-23T19:06:00Z SCREEN alakajam exit 0
+2026-11-23T19:06:00Z VERDICT alakajam: ADMIT plain median 14.07 s, best plain_par median 5.41 s (w4), ratio 2.60x; par medians {2: 7.67, 4: 5.41}; invalid []
+2026-11-23T19:12:07Z FULL alakajam done
+2026-11-23T19:12:07Z STEP3DONE admitted=3
+2026-11-23T19:13:05Z WITHDRAWN agentlang, alakajam: native sqlite bindings not built by the spec install (--ignore-scripts): agentlang 195/439 tests failed (better-sqlite3), alakajam 15/27 files failed to load (sqlite3); rows moved to lane-a/interrupted/
+2026-11-23T19:13:37Z INSTALL agentlang: (cd /tmp/pm/repos/agentlang && npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts && npx -y pnpm@10.28.2 rebuild better-sqlite3) exit 0, 7 s
+2026-11-23T19:20:59Z SCREEN agentlang exit 0
+2026-11-23T19:20:59Z VERDICT agentlang: ADMIT plain median 73.65 s, best plain_par median 29.60 s (w4), ratio 2.49x; par medians {2: 40.85, 4: 29.6}; invalid []
+2026-11-23T19:45:16Z FULL agentlang done
+2026-11-23T19:45:29Z INSTALL alakajam: (cd /tmp/pm/repos/alakajam && npm ci --ignore-scripts --no-audit --no-fund && npm rebuild sqlite3) exit 0, 13 s
+2026-11-23T19:48:13Z SCREEN alakajam exit 0
+2026-11-23T19:48:13Z VERDICT alakajam: ADMIT plain median 29.68 s, best plain_par median 8.86 s (w4), ratio 3.35x; par medians {2: 12.68, 4: 8.86}; invalid []
+2026-11-23T20:02:11Z FULL alakajam done
+2026-11-23T20:02:11Z STEP3DONE admitted=3
+2026-11-23T20:03:40Z INSTALL beevibe: apt-get install postgresql-16-pgvector; initdb -U beevibe --auth=trust (port 5433, user postgres); CREATE DATABASE beevibe, beevibe_test; (cd $PM_WORK/repos/beevibe && npx -y pnpm@9.12.0 install --frozen-lockfile --ignore-scripts && pnpm run migrate up && pnpm run migrate:test up) with DATABASE_URL(_TEST) exported: all exit 0
+2026-11-23T20:08:18Z VERDICT beevibe: REJECT plain median 26.87 s, best plain_par median 27.40 s (w4), ratio 0.98x; par medians {2: 27.88, 4: 27.4} (screened after step 3 had admitted 3, to keep the specs.json order: beevibe precedes agentlang); 7 of 885 tests fail in every run (live API keys absent: ENV)
+2026-11-23T20:15:51Z WITHDRAWN sqlectron screening: sqlite3 native binding not built (3 of 7 test files failed to load); rows moved to lane-a/interrupted/; rebuilt with npm rebuild sqlite3
+2026-11-23T20:17:04Z VERDICT sqlectron (re-screened after npm rebuild sqlite3): REJECT plain median 6.25 s, best plain_par median 3.49 s (w4), ratio 1.79x; par medians {2: 4.11, 4: 3.49}; 42 passed / 1 skipped in every run
