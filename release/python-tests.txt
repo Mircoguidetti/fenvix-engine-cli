@@ -1,0 +1,124 @@
+# Classification of the Python test files of tests/ (every file release/shard.py selects), for the CI gate
+# .github/workflows/release-1.yml. Valid until 2026-12-22, then reviewed.
+#
+# Rule (spec "CI until 22 December", founder decision 2026-11-22): until 22 December the work is Node only.
+#   shared          the test exercises code Node uses: verify / `fenvix verify` (the Rust verifier), detpy.fenvix_js,
+#                   packaging or the wheel, the shared exit fixture (tests/test_exit_status_contract.py), the attack
+#                   registry, or the Rust core through the Python bindings (detpy._core). When in doubt: shared.
+#   python-product  everything else (the pytest plugin's own behaviour, runner integrations, Python-only controls).
+# LIGHT runs of release-1.yml (every push and pull request) run only `shared`; FULL runs (nightly, by hand) run all.
+# Every selected file appears exactly once; tests/test_python_tests_classified.py checks it.
+# Format: one `<label> <path>` per line; lines starting with `#` and blank lines are comments.
+
+shared tests/review_r032/test_review_r032_python.py
+shared tests/review_r032b/test_review_r032b_python.py
+shared tests/test_attack_suite.py
+shared tests/test_block2_pycache_attacks.py
+shared tests/test_capture_rust.py
+shared tests/test_clock.py
+shared tests/test_clock_rust.py
+shared tests/test_controls_f01.py
+shared tests/test_core_bindings.py
+shared tests/test_exit_status_contract.py
+shared tests/test_f01_gaps.py
+shared tests/test_fenvix_cli.py
+shared tests/test_fenvix_js.py
+shared tests/test_fingerprint.py
+shared tests/test_follow_rust.py
+shared tests/test_harness_parallel_proof.py
+shared tests/test_identity_rust.py
+shared tests/test_isolate.py
+shared tests/test_level0_rust.py
+shared tests/test_level0_seeds_fsorder_rust.py
+shared tests/test_network_gaps.py
+shared tests/test_network_rust.py
+shared tests/test_packaging.py
+shared tests/test_parallel_proof.py
+shared tests/test_precompile_rust.py
+shared tests/test_provable_general_rule.py
+shared tests/test_python_tests_classified.py
+shared tests/test_r017b_fixes.py
+shared tests/test_reexec_rust.py
+shared tests/test_repro_rust.py
+shared tests/test_review_p1_findings.py
+shared tests/test_review_p1_packages_d123.py
+shared tests/test_review_p1_packages_d4.py
+shared tests/test_review_p1_python_leaks.py
+shared tests/test_review_r008.py
+shared tests/test_review_r020_dep_verdict.py
+shared tests/test_review_r020b_dep_verdict.py
+shared tests/test_review_r023.py
+shared tests/test_review_r023b.py
+shared tests/test_review_r050_verifier.py
+shared tests/test_review_r051_verifier.py
+shared tests/test_review_r054_verifier.py
+shared tests/test_review_r055_verifier.py
+shared tests/test_runtime_id.py
+shared tests/test_rust_hotpaths.py
+shared tests/test_session_rust.py
+shared tests/test_shared_cache.py
+shared tests/test_sqlcap_rust.py
+shared tests/test_verifier_truth.py
+shared tests/test_verify_inputs_attacks.py
+
+python-product tests/test_absent_inputs_r019c.py
+python-product tests/test_carried_library_memo.py
+python-product tests/test_culprit_keys.py
+python-product tests/test_dep_verdict_distid.py
+python-product tests/test_dep_verdict_r020_fixes.py
+python-product tests/test_dep_verdict_r020b_fixes.py
+python-product tests/test_det_stale_bytecode.py
+python-product tests/test_django_order.py
+python-product tests/test_django_pytest_cache.py
+python-product tests/test_epoch.py
+python-product tests/test_fsorder.py
+python-product tests/test_harness_timing_report.py
+python-product tests/test_network.py
+python-product tests/test_nonbinding.py
+python-product tests/test_nonbinding_generic.py
+python-product tests/test_order.py
+python-product tests/test_parallel_proof_r023_fixes.py
+python-product tests/test_parallel_proof_round3.py
+python-product tests/test_precompile_stamp.py
+python-product tests/test_proofcache.py
+python-product tests/test_proofcache_follow.py
+python-product tests/test_proofcache_import_lookups.py
+python-product tests/test_py_cache.py
+python-product tests/test_r015_fixes.py
+python-product tests/test_r015b_fixes.py
+python-product tests/test_r023c_fixes.py
+python-product tests/test_r032b_engine.py
+python-product tests/test_repro.py
+python-product tests/test_review_b1_randomly_options.py
+python-product tests/test_review_b4_p005_rule.py
+python-product tests/test_review_lock_type.py
+python-product tests/test_review_plugin_options.py
+python-product tests/test_review_r008b.py
+python-product tests/test_review_r008d.py
+python-product tests/test_review_r009.py
+python-product tests/test_review_r009b.py
+python-product tests/test_review_r015.py
+python-product tests/test_review_r015b.py
+python-product tests/test_review_r017.py
+python-product tests/test_review_r017b.py
+python-product tests/test_review_r023c.py
+python-product tests/test_review_r052_pycache.py
+python-product tests/test_review_r053_pycache.py
+python-product tests/test_review_r056_pycache.py
+python-product tests/test_review_t1_extra.py
+python-product tests/test_rewrite_cache.py
+python-product tests/test_rewrite_cache_own_format.py
+python-product tests/test_round4_capture.py
+python-product tests/test_runner_wrapper.py
+python-product tests/test_runners_django.py
+python-product tests/test_runners_doctest.py
+python-product tests/test_runners_nose2.py
+python-product tests/test_runners_unittest.py
+python-product tests/test_runners_ward.py
+python-product tests/test_runners_ward_support.py
+python-product tests/test_runners_zope.py
+python-product tests/test_seeds.py
+python-product tests/test_sqlite_virtual.py
+python-product tests/test_startup_digest.py
+python-product tests/test_startup_spawn.py
+python-product tests/test_timed_lock_enter.py
