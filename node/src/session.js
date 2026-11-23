@@ -431,6 +431,10 @@ function finish(run, opts, files, meta) {
     tz: (() => { try { return `${Intl.DateTimeFormat().resolvedOptions().timeZone} TZ=${process.env.TZ === undefined ? '<unset>' : process.env.TZ}`; } catch { return '?'; } })(),
     locale: (() => { try { return `${Intl.DateTimeFormat().resolvedOptions().locale} LC_ALL=${process.env.LC_ALL || ''} LANG=${process.env.LANG || ''} LANGUAGE=${process.env.LANGUAGE || ''}`; } catch { return '?'; } })(),
   };
+  // Failures of the run that are not test records (a file that failed to load, an afterAll error, an unhandled
+  // error): the hazard re-run wrapper may clear the first pass's red only when all of it is inside the files it
+  // re-runs (src/parallel-rerun.js wrapperRunnerCode). Known for the shells that write a file error per file.
+  full.file_failures = fileFailures(run.dir, meta);
   try { full.inputs = runInputs(run, meta); } catch (e) { full.inputs_error = String(e && e.message); }
   // the installed dependencies of the project (src/loaded.js, review R-055 V5)
   try { const d = require('./loaded').depsInput(run.dir); if (d && full.inputs) full.inputs.deps = d; } catch (e) { full.inputs_error = String(e && e.message); }
@@ -438,8 +442,13 @@ function finish(run, opts, files, meta) {
   // B7 (spec "Engine P0: no false green"): the counts of the trace, in its header and on one status line; the exit
   // decision of this process (bin/detjs.js, src/exit-status.js runExit) uses them
   const status = stampStatus(run.tracePath);
-  exitStatus.record(status);
-  if (printsStatus(full)) fs.writeSync(2, `${exitStatus.statusLine(status)}\n`); // sync: the runner may be exiting
+  if (status) {
+    exitStatus.record(status);
+    if (printsStatus(full)) fs.writeSync(2, `${exitStatus.statusLine(status)}\n`); // sync: the runner may be exiting
+  } else {
+    // no counts are invented for a trace that cannot be read: the exit decision rests on the runner's code
+    fs.writeSync(2, `detjs: status: not written (the trace ${run.tracePath} could not be read back)\n`);
+  }
   let reproLines = [];
   try { reproLines = require('./repro').afterMerge(run, opts, files, meta.runner); } catch (e) { reproLines = [`detjs: --det-outcomes not written: ${e && e.message}`]; }
   fs.rmSync(run.dir, { recursive: true, force: true });
@@ -469,17 +478,41 @@ function finish(run, opts, files, meta) {
 }
 
 /**
+ * The run's failures outside the test records, from the per-file repro side data (src/repro.js writeSide) and the
+ * shell's own count of errors outside any file (`meta.unhandled_errors`): {known, files, unhandled}. `known` is true
+ * only for the shells whose side data carries the file's own error (Vitest, Jest); for the others the wrapper cannot
+ * tell a test failure from a file failure and keeps the first pass's code.
+ */
+const FILE_ERRORS_KNOWN = new Set(['vitest', 'jest']);
+function fileFailures(dir, meta) {
+  const runner = String((meta && meta.runner) || '');
+  const files = [];
+  let names = [];
+  try { names = fs.readdirSync(path.join(dir, 'side')).filter((n) => n.endsWith('.json')).sort(); } catch { /* none */ }
+  for (const n of names) {
+    try {
+      const s = JSON.parse(fs.readFileSync(path.join(dir, 'side', n), 'utf8'));
+      if (s && s.file_error) files.push(s.file);
+    } catch { /* unreadable side data: not known */ return { known: false, files: [...new Set(files)].sort(), unhandled: 0 }; }
+  }
+  const unhandled = Number((meta && meta.unhandled_errors) || 0);
+  return { known: FILE_ERRORS_KNOWN.has(runner), files: [...new Set(files)].sort(), unhandled };
+}
+
+/**
  * Count the merged trace's tests (exit-status.js countStatus; a single run has no NOT PROVEN test of its own, B3)
  * and write the counts into its header as `meta.status` (appendix point 3: in `meta`, no change to the Rust Header).
- * The header line is edited as text, not re-serialized, so no other field of it can change.
+ * The header line is edited as text, not re-serialized, so no other field of it can change; the new trace is
+ * written beside the old one and renamed over it, so a crash never leaves a truncated trace. Returns null when the
+ * trace cannot be read (no counts are invented); a test line that cannot be parsed counts as failed.
  */
 function stampStatus(tracePath) {
   let text;
-  try { text = fs.readFileSync(tracePath, 'utf8'); } catch { return exitStatus.countStatus([]); }
+  try { text = fs.readFileSync(tracePath, 'utf8'); } catch { return null; }
   const recs = [];
   for (const line of text.split('\n')) {
     if (!line.startsWith('{"type":"test"')) continue;
-    try { const t = JSON.parse(line); recs.push({ nodeid: t.nodeid, outcome: t.outcome }); } catch { /* counted by none */ }
+    try { const t = JSON.parse(line); recs.push({ nodeid: t.nodeid, outcome: t.outcome }); } catch { recs.push({ nodeid: `<unreadable line ${recs.length}>`, outcome: 'unreadable' }); }
   }
   const status = exitStatus.countStatus(recs);
   const nl = text.indexOf('\n');
@@ -488,7 +521,14 @@ function stampStatus(tracePath) {
   if (head.startsWith('{"type":"header"') && at >= 0) {
     const i = at + '"meta":{'.length;
     const field = `"status":${JSON.stringify(status)}${head[i] === '}' ? '' : ','}`;
-    fs.writeFileSync(tracePath, `${head.slice(0, i)}${field}${head.slice(i)}${nl < 0 ? '' : text.slice(nl)}`);
+    const tmp = `${tracePath}.status-${process.pid}`;
+    try {
+      fs.writeFileSync(tmp, `${head.slice(0, i)}${field}${head.slice(i)}${nl < 0 ? '' : text.slice(nl)}`);
+      fs.renameSync(tmp, tracePath);
+    } catch (e) {
+      try { fs.rmSync(tmp, { force: true }); } catch { /* best effort */ }
+      process.stderr.write(`detjs: meta.status not written into ${tracePath}: ${e && e.message}\n`);
+    }
   }
   return status;
 }

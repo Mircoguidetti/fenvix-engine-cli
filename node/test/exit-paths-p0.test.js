@@ -97,3 +97,65 @@ test('wrapper path with no hazard: the pass-1 child writes the final trace and p
   assert.match(r.stdout, /parallel execution in 2 lanes/, r.show);
   assertOneFailed(r, { passed: 1 });
 });
+
+// /review (2026-11-23), CONFIRMED by a live probe on bfaf70b4 and on this branch before the fix: a hazard failure the
+// one-lane re-run clears, plus a third file that fails to load (no test record), exited 0 although Vitest reported
+// the file FAIL. Pass 1's red must stand when part of it is outside the re-run files.
+test('wrapper path: a file that fails to load outside the hazard files keeps the run red', T, () => {
+  const body = (n) => `
+const LOG = path.join(process.cwd(), 'shared.log');
+const lines = () => { try { return fs.readFileSync(LOG, 'utf8').trim().split('\\n'); } catch { return []; } };
+test('${n} writes a contiguous block', () => {
+  fs.appendFileSync(LOG, '${n}-start\\n');
+  const sab = new Int32Array(new SharedArrayBuffer(4));
+  for (let i = 0; i < 60; i++) {
+    if (lines().some((l) => l.endsWith('-start') && !l.startsWith('${n}'))) break;
+    Atomics.wait(sab, 0, 0, 50);
+  }
+  fs.appendFileSync(LOG, '${n}-end\\n');
+  expect(lines().slice(-2)).toEqual(['${n}-start', '${n}-end']);
+});`;
+  const dir = project('wrapper-load-failure', {
+    'x.test.mjs': body('X'),
+    'y.test.mjs': body('Y'),
+    'z.test.mjs': "throw new Error('this file fails to load');\ntest('never runs', () => {});",
+  });
+  fs.rmSync(path.join(dir, 'shared.log'), { force: true });
+  const r = run(dir, ['--det-plan=plan.json'], PINNED);
+  assert.match(r.stderr, /run again in one lane/, r.show);
+  assert.deepEqual(r.trace.header.meta.file_failures.files, ['tests/z.test.mjs'], r.show);
+  assert.equal(r.status, 1, r.show);
+  assert.equal(`${r.stdout}\n${r.stderr}`.split('\n').filter((l) => l.startsWith('detjs: status:')).length, 1, r.show);
+});
+
+test('--det-isolate: the parent prints the one status line and carries the counts', T, () => {
+  const dir = project('isolate', ONE_FAILS);
+  const r = run(dir, ['--det-isolate'], PINNED);
+  assertOneFailed(r, { passed: 1 });
+});
+
+test('mocha: two failing tests exit 1, not 2 (2 is reserved for detjs usage and internal errors)', T, () => {
+  const dir = path.join(TMP, 'exit-paths', 'mocha-two');
+  fs.rmSync(dir, { recursive: true, force: true });
+  fs.mkdirSync(path.join(dir, 't'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ name: 'exit-paths-mocha', private: true }));
+  fs.writeFileSync(path.join(dir, 't', 'a.test.js'), "const assert = require('node:assert');\nit('a', () => assert.equal(1, 2));\nit('b', () => assert.equal(1, 2));\nit('c', () => {});\n");
+  const r = spawnSync(process.execPath, [BIN, 'mocha', '--det', 't/a.test.js'], { cwd: dir, encoding: 'utf8', env: cleanEnv(PINNED), timeout: 300000 });
+  const show = `status=${r.status}\nstderr=${(r.stderr || '').slice(-2000)}`;
+  assert.equal(r.status, 1, show);
+  assert.match(r.stderr, /^detjs: status: failed=2 not_proven=0 passed=1 skipped=0$/m, show);
+});
+
+test('jest --forceExit: the counts still decide the exit code and the line is printed once', T, () => {
+  const dir = path.join(TMP, 'exit-paths', 'jest-force-exit');
+  fs.rmSync(dir, { recursive: true, force: true });
+  fs.mkdirSync(path.join(dir, 'tests'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ name: 'exit-paths-jest', private: true }));
+  fs.writeFileSync(path.join(dir, 'jest.config.js'), "module.exports = { testMatch: ['**/tests/**/*.test.js'], testEnvironment: 'node' };\n");
+  fs.writeFileSync(path.join(dir, 'tests', 'a.test.js'), "test('fails', () => { expect(1).toBe(2); });\ntest('passes', () => {});\n");
+  const r = spawnSync(process.execPath, [BIN, 'jest', `--cacheDirectory=${path.join(dir, '.jc')}`, '--forceExit', '--det', '--det-workers=1'],
+    { cwd: dir, encoding: 'utf8', env: cleanEnv(PINNED), timeout: 300000 });
+  const show = `status=${r.status}\nstderr=${(r.stderr || '').slice(-2000)}`;
+  assert.equal(r.status, 1, show);
+  assert.equal(`${r.stdout}\n${r.stderr}`.split('\n').filter((l) => l.startsWith('detjs: status:')).length, 1, show);
+});

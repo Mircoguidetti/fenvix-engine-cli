@@ -89,8 +89,18 @@ function statusLine(st) {
 
 // The status of the trace this process wrote (session.finish), read by the process's own exit decision
 // (bin/detjs.js normal path). One process writes at most one final trace.
+//
+// It also applies the rule to process.exitCode at once: a runner that ends the process itself (Jest --forceExit,
+// process.exit in a runner) makes session.finish run in an 'exit' listener and never returns to bin/detjs.js, and
+// Node exits with the exitCode an 'exit' listener leaves. The normal path decides again on the shell's return.
 let recorded = null;
-function record(st) { recorded = st ? { ...st } : null; }
+function record(st) {
+  recorded = st ? { ...st } : null;
+  if (recorded) {
+    const cur = process.exitCode === undefined || process.exitCode === null ? 0 : Number(process.exitCode);
+    process.exitCode = runExit({ ...recorded, runnerCode: Number.isFinite(cur) ? cur : 1 });
+  }
+}
 function recordedStatus() { return recorded; }
 
 module.exports = { runExit, verifyExit, verifyStatus, countStatus, statusLine, record, recordedStatus };

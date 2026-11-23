@@ -22,9 +22,11 @@
 // not even that, because bin/detjs.js already re-executes itself to pin TZ and the locale. The second pass is paid
 // only when a hazard is found, and only for the files it names.
 //
-// Default-deny: the re-run clears a red only when it can account for every affected test. If its trace cannot be
-// read, or an affected test left no record in it, the first run's status stands and the reason is printed. A
-// re-run that cannot prove the files are clean must never turn a red into a green.
+// Default-deny: the re-run clears a red only when it can account for every affected test, and only a red that is
+// all inside the files it re-ran (firstRedInHazardFiles). If its trace cannot be read, or an affected test left no
+// record in it, the first run's records stay in the trace and every unaccounted test is NOT PROVEN, so the run
+// exits 1 (src/exit-status.js runExit); the reason is printed. A re-run that cannot prove the files are clean must
+// never turn a red into a green.
 const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
@@ -134,17 +136,40 @@ function accountRerun(firstTests, rerunTests, files) {
 }
 
 /**
- * The runner code of the wrapper's final decision (exit-status.js `runExit`, appendix point 8): a pass's code
- * counts when it is not explained by test outcomes -- pass 1's when it had no failed test (or was 2: a detjs or
- * runner error), pass 2's always (its failed tests are in the reported records when the re-run is complete, and the
- * run is NOT PROVEN when it is not), and 1 when the re-run left no trace at all.
+ * Whether ALL of the first pass's red is inside the hazard files, so that the one-lane re-run of those files can
+ * clear it. Pure. `header`: the first pass's trace header; `records`: its test records; `files`: the hazard files.
+ * True only when (a) every failed record is a test of a hazard file, (b) the shell recorded its failures outside
+ * the test records (`meta.file_failures`, src/session.js fileFailures: known for Vitest and Jest) and every one of
+ * them is a hazard file, and (c) there was no error outside any file. Otherwise a failure outside the re-run --
+ * a file that failed to load, an afterAll error, an unhandled error, or one the shell cannot report -- would be
+ * cleared by a re-run that never looked at it: the false green /review found (exit 0 with a file in FAIL).
  */
-function wrapperRunnerCode(status1, status2, firstFailed, rerunTraced) {
+function firstRedInHazardFiles(header, records, files) {
+  const set = new Set(files);
+  if ((records || []).some((r) => !PASSED.has(r.outcome) && !set.has(fileOf(r.nodeid)))) return false;
+  const ff = header && header.meta && header.meta.file_failures;
+  if (!ff || ff.known !== true || Number(ff.unhandled || 0) > 0) return false;
+  return (ff.files || []).every((f) => set.has(labelFile(f)));
+}
+
+/**
+ * The runner code of the wrapper's final decision (exit-status.js `runExit`, appendix point 8): a pass's code
+ * counts when it is not explained by what the re-run re-examined -- pass 1's unless all of its red is inside the
+ * hazard files (firstRedInHazardFiles), pass 2's always (its failed tests are in the reported records when the
+ * re-run is complete, and the run is NOT PROVEN when it is not), 2 when either pass returned 2 (a detjs or runner
+ * error), and 1 when the re-run left no trace at all.
+ */
+function wrapperRunnerCode(status1, status2, firstRedExplained, rerunTraced) {
   if (status1 === 2 || status2 === 2) return 2;
-  if (status1 !== 0 && firstFailed === 0) return status1;
+  if (status1 !== 0 && !firstRedExplained) return status1;
   if (status2 !== 0) return status2;
   if (!rerunTraced) return 1;
   return 0;
+}
+
+/** The identity of the trace file (null when absent): a trace pass 1 did not write must never be read as its own. */
+function traceStamp(p) {
+  try { const s = fs.statSync(p, { bigint: true }); return `${s.ino}:${s.size}:${s.mtimeNs}`; } catch { return null; }
 }
 
 /** The first pass's arguments, less the ones the second pass must not inherit. */
@@ -171,11 +196,15 @@ async function main(cmd, argv) {
   const env2 = { ...childEnv, DETJS_HAZARD_PASS: '2' };
 
   // ---- pass 1: the run exactly as it is today, straight to the user's terminal and the user's files ----
+  const before = traceStamp(tracePath);
   const p1 = spawnSync(process.execPath, [...process.execArgv, BIN, cmd, ...argv], { cwd: root, env: env1, stdio: 'inherit' });
   if (p1.signal) return { signal: p1.signal };
   const status1 = p1.status ?? 1;
 
-  const t1 = readTrace(tracePath);
+  // a trace pass 1 did not write (it stopped before writing one, and an earlier run's is still there) is not read:
+  // its hazards and failures are another run's, and clearing pass 1's red with them would be a false green
+  const after = traceStamp(tracePath);
+  const t1 = after !== null && after !== before ? readTrace(tracePath) : null;
   const affected = t1 ? hazardFiles(t1.header) : [];
   if (!affected.length) return { status: status1 }; // the ordinary case: nothing re-run, nothing changed
 
@@ -254,7 +283,7 @@ async function main(cmd, argv) {
   } else {
     records = t1.tests;
     process.stderr.write(`detjs: parallel: the one-lane re-run could not account for ${t2 ? `${unaccounted.length} test(s) of the affected files` : 'its own trace'}`
-      + `; the first run's result stands and nothing was cleared${t2 && unaccounted.length ? ` (first: ${unaccounted[0]})` : ''}\n`);
+      + `; the first run's records stay, nothing was cleared, and its unaccounted tests are NOT PROVEN${t2 && unaccounted.length ? ` (first: ${unaccounted[0]})` : ''}\n`);
   }
   for (const { file, cause } of acc.notProvenFiles) {
     process.stderr.write(`detjs: parallel: NOT PROVEN ${file}: the one-lane re-run did not account for its tests (${cause})\n`);
@@ -301,7 +330,8 @@ async function main(cmd, argv) {
 
   // The status (B1, src/exit-status.js). A green is only ever given when the re-run accounted for everything: an
   // unaccounted test is NOT PROVEN, which is exit 1.
-  return { status: exitStatus.runExit({ ...status, runnerCode: wrapperRunnerCode(status1, status2, bad1.length, Boolean(t2)) }) };
+  const explained = firstRedInHazardFiles(t1.header, t1.tests, affected);
+  return { status: exitStatus.runExit({ ...status, runnerCode: wrapperRunnerCode(status1, status2, explained, Boolean(t2)) }) };
 }
 
-module.exports = { main, shouldWrap, hazardFiles, rerunArgs, fileOf, labelFile, accountRerun, wrapperRunnerCode };
+module.exports = { main, shouldWrap, hazardFiles, rerunArgs, fileOf, labelFile, accountRerun, wrapperRunnerCode, firstRedInHazardFiles };

@@ -34,3 +34,22 @@ test('countStatus partitions records; NOT PROVEN tests are counted there only', 
   assert.deepEqual(xs.countStatus([{ nodeid: 'i', outcome: 'interrupted' }]), { failed: 1, not_proven: 0, passed: 0, skipped: 0 });
   assert.equal(xs.runExit(xs.countStatus([{ nodeid: 'i', outcome: 'interrupted' }])), 1);
 });
+
+test('record() applies the rule to process.exitCode at once (a runner that ends the process itself)', () => {
+  const saved = process.exitCode;
+  try {
+    process.exitCode = 0;
+    xs.record({ failed: 1, not_proven: 0, passed: 0, skipped: 0 });
+    assert.equal(process.exitCode, 1);
+    process.exitCode = 2;
+    xs.record({ failed: 0, not_proven: 0, passed: 1, skipped: 0 });
+    assert.equal(process.exitCode, 2);
+    process.exitCode = undefined;
+    xs.record({ failed: 0, not_proven: 0, passed: 1, skipped: 0 });
+    assert.equal(process.exitCode, 0);
+    assert.deepEqual(xs.recordedStatus(), { failed: 0, not_proven: 0, passed: 1, skipped: 0 });
+  } finally {
+    process.exitCode = saved;
+    xs.record(null);
+  }
+});

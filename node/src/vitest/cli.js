@@ -182,6 +182,8 @@ async function main(argv) {
     const { lines } = session.finish(run, opts, executed, {
       runner: 'vitest', runner_version: pkg.version, isolation, serial: !par.plan,
       pool: info.pool, isolate: info.isolate, projects: info.projects, cli_args: args, parallel: par.result.meta,
+      // errors outside any test file (Vitest's unhandled errors): src/session.js fileFailures
+      unhandled_errors: (ctxRef && ctxRef.state && ctxRef.state.errorsSet && ctxRef.state.errorsSet.size) || 0,
     });
     for (const l of lines) fs.writeSync(1, `${l}\n`); // sync: the runner may be exiting
   };
