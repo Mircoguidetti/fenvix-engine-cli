@@ -19,6 +19,8 @@ const HEAD = "import { test, expect, describe, mock, beforeAll, afterAll } from 
 const tf = (name, body) => ({ [`tests/${name}.test.ts`]: `${HEAD}\n${body}\n` });
 const F = (name) => `tests/${name}.test.ts`;
 
+// the Level 0 control tests check the 2025 epoch and the closed network: opt-out of the host-values defaults
+// (spec 2026-11-23) on their runs
 describe('bun: Level 0 controls', { skip: SKIP }, () => {
   const files = {
     ...tf('clock', [
@@ -43,9 +45,9 @@ describe('bun: Level 0 controls', { skip: SKIP }, () => {
 
   test('two --det runs give identical fingerprints; the controls are active inside bun test', T, () => {
     const dir = H.fixture(RT, 'controls', files);
-    const a = H.crun(RT, dir, { cache: false });
+    const a = H.crun(RT, dir, { cache: false, args: ['--det-epoch=fixed', '--det-net=closed'] });
     assert.equal(a.status, 0, H.show(a));
-    const b = H.crun(RT, dir, { cache: false });
+    const b = H.crun(RT, dir, { cache: false, args: ['--det-epoch=fixed', '--det-net=closed'] });
     assert.equal(b.status, 0, H.show(b));
     const fa = H.fingerprints(a);
     assert.ok(Object.keys(fa).length >= 13, `all tests traced\n${JSON.stringify(fa)}`);
@@ -56,9 +58,9 @@ describe('bun: Level 0 controls', { skip: SKIP }, () => {
   test('seeded shuffle: same seed same order, another seed another order (files and tests)', T, () => {
     const dir = H.fixture(RT, 'shuffle', { ...files, 'tests/random.test.ts': null }); // its golden values depend on the seed
     const order = (r) => r.trace.header.order;
-    const s1 = H.crun(RT, dir, { cache: false, seed: 1 });
-    const s1b = H.crun(RT, dir, { cache: false, seed: 1 });
-    const s2 = H.crun(RT, dir, { cache: false, seed: 2 });
+    const s1 = H.crun(RT, dir, { cache: false, seed: 1, args: ['--det-epoch=fixed', '--det-net=closed'] });
+    const s1b = H.crun(RT, dir, { cache: false, seed: 1, args: ['--det-epoch=fixed', '--det-net=closed'] });
+    const s2 = H.crun(RT, dir, { cache: false, seed: 2, args: ['--det-epoch=fixed', '--det-net=closed'] });
     for (const r of [s1, s1b, s2]) assert.equal(r.status, 0, H.show(r));
     assert.deepEqual(order(s1b), order(s1));
     assert.deepEqual(H.fingerprints(s1b), H.fingerprints(s1));
@@ -68,7 +70,7 @@ describe('bun: Level 0 controls', { skip: SKIP }, () => {
     const inOrder1 = order(s1).filter((x) => x.startsWith('tests/order.test.ts'));
     const inOrder2 = order(s2).filter((x) => x.startsWith('tests/order.test.ts'));
     assert.ok(files1.join() !== files2.join() || inOrder1.join() !== inOrder2.join(), 'a different seed changes the order');
-    const fixed = H.crun(RT, dir, { cache: false });
+    const fixed = H.crun(RT, dir, { cache: false, args: ['--det-epoch=fixed', '--det-net=closed'] });
     assert.deepEqual(fixed.trace.header.order.filter((x) => x.startsWith('tests/order.test.ts')).map((x) => x.split('::')[1]), ['a', 'b', 'c', 'd', 'e', 'f']);
   });
 

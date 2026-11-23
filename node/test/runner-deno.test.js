@@ -19,6 +19,8 @@ const HEAD = [
 const tf = (name, body) => ({ [`tests/${name}_test.ts`]: `${HEAD}\n${body}\n` });
 const F = (name) => `tests/${name}_test.ts`;
 
+// the Level 0 control tests check the 2025 epoch and the closed network: opt-out of the host-values defaults
+// (spec 2026-11-23) on their runs
 describe('deno: Level 0 controls', { skip: SKIP }, () => {
   const files = {
     ...tf('clock', [
@@ -43,9 +45,9 @@ describe('deno: Level 0 controls', { skip: SKIP }, () => {
 
   test('two --det runs give identical fingerprints; the controls are active inside deno test', T, () => {
     const dir = H.fixture(RT, 'controls', files);
-    const a = H.crun(RT, dir, { cache: false });
+    const a = H.crun(RT, dir, { cache: false, args: ['--det-epoch=fixed', '--det-net=closed'] });
     assert.equal(a.status, 0, H.show(a));
-    const b = H.crun(RT, dir, { cache: false });
+    const b = H.crun(RT, dir, { cache: false, args: ['--det-epoch=fixed', '--det-net=closed'] });
     assert.equal(b.status, 0, H.show(b));
     const fa = H.fingerprints(a);
     assert.ok(Object.keys(fa).length >= 16, `all tests traced\n${JSON.stringify(fa)}`);
@@ -56,14 +58,14 @@ describe('deno: Level 0 controls', { skip: SKIP }, () => {
   test('seeded shuffle: same seed same order, another seed another order', T, () => {
     const dir = H.fixture(RT, 'shuffle', { ...files, 'tests/random_test.ts': null });
     const order = (r) => r.trace.header.order;
-    const s1 = H.crun(RT, dir, { cache: false, seed: 1 });
-    const s1b = H.crun(RT, dir, { cache: false, seed: 1 });
-    const s2 = H.crun(RT, dir, { cache: false, seed: 2 });
+    const s1 = H.crun(RT, dir, { cache: false, seed: 1, args: ['--det-epoch=fixed', '--det-net=closed'] });
+    const s1b = H.crun(RT, dir, { cache: false, seed: 1, args: ['--det-epoch=fixed', '--det-net=closed'] });
+    const s2 = H.crun(RT, dir, { cache: false, seed: 2, args: ['--det-epoch=fixed', '--det-net=closed'] });
     for (const r of [s1, s1b, s2]) assert.equal(r.status, 0, H.show(r));
     assert.deepEqual(order(s1b), order(s1));
     assert.deepEqual(H.fingerprints(s1b), H.fingerprints(s1));
     assert.notDeepEqual(order(s2), order(s1));
-    const fixed = H.crun(RT, dir, { cache: false });
+    const fixed = H.crun(RT, dir, { cache: false, args: ['--det-epoch=fixed', '--det-net=closed'] });
     assert.deepEqual(fixed.trace.header.order.filter((x) => x.startsWith('tests/order_test.ts')).map((x) => x.split('::')[1]), ['a', 'b', 'c', 'd', 'e', 'f']);
   });
 

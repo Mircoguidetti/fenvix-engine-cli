@@ -10,3 +10,12 @@ test/parallel-p041.test.js (through its det helper): every --det run without the
 test/projects.test.js 'vitest projects running the same file...': runWith + --det-epoch=fixed (verifies separate runs)
 test/review-p1-verifier.test.js 'F-01: --det pins the time zone and the locale': both runs + --det-tz=UTC --det-locale=C.UTF-8
 test/review-r032b.test.js C-intl, C-timeorigin (node-test, mocha, bun, deno): every run of the attack + --det-epoch=fixed (the fresh no-cache run must read the same virtual clock as the cached run)
+test/runner-b-cases.js control case 'two --det runs give identical fingerprints; clock, seeds and closed network active in tests' (tap, ava, jasmine, uvu): both runs + --det-epoch=fixed --det-net=closed
+test/runner-bun.test.js 'two --det runs give identical fingerprints...' and 'seeded shuffle...': every run + --det-epoch=fixed --det-net=closed (fixture checks the 2025 epoch and the closed network)
+test/runner-deno.test.js the same two tests: every run + --det-epoch=fixed --det-net=closed
+test/runner-mocha.test.js 'Level 0 inside the tests: virtual clock at the epoch, seeded randomness, closed network': the --det runs + --det-epoch=fixed --det-net=closed
+test/runner-node-test.test.js 'Level 0 inside the test processes: virtual clock at the epoch, ...': the --det runs + --det-epoch=fixed --det-net=closed
+# pre-existing (fail identically on the trunk engine /tmp/fenvix-trunk, f67be4a3), not changed:
+#   test/repro-p041.test.js '--det-order: exactly the listed tests ...' (vitest)
+#   test/runner-bun.test.js 'two --det runs give identical fingerprints; the controls are active inside bun test'
+#   test/runner-node-test.test.js 'a file another test file wrote: not cacheable'
