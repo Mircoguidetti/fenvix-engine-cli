@@ -21,3 +21,6 @@ test/runner-node-test.test.js 'Level 0 inside the test processes: virtual clock 
 #   test/runner-node-test.test.js 'a file another test file wrote: not cacheable'
 test/runners-p041.test.js (through its run helper): every --det run + --det-net=closed; runs without the cache also + --det-epoch=fixed (the tests compare with EPOCH = 2025-01-01)
 test/time-p041.test.js (through its run helper): every run without the cache + --det-epoch=fixed (values against the 2025-01-01 epoch, separate-run comparisons)
+test/verifier-inputs.test.js (file-level crun wrapper): every --det run without the cache + --det-epoch=fixed (verifies separate runs)
+test/verifier-inputs.test.js 'CI-volatile variables are never inputs': both runs + --det-net=closed (with the open network the *_PROXY variables are inputs, by the spec)
+test/verifier-inputs.test.js 'by default the time zone and the locale are pinned...': both runs + --det-tz=UTC --det-locale=C.UTF-8
