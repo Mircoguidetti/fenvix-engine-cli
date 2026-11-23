@@ -1851,6 +1851,11 @@ function installNet(cap) {
     } else if ((isLocalName || (isLocalName = require('../network').isLocalName))(target.host) || allow.has(String(target.host).toLowerCase())) {
       cap.flag('connect', `${target.host}:${target.port}`);
     }
+    else if (process.env.DETJS_NET_MODE === 'open') {
+      // --det-net=open: a live external host; what it answers is not an input the cache can key, so the test is never
+      // reused
+      cap.flag('connect', `${target.host}:${target.port} (external host, open network)`);
+    }
     // other hosts: Level 0's closed network blocks or replays them (replay keeps the test cacheable)
   });
   const dgram = require('node:dgram');

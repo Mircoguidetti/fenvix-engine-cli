@@ -6,7 +6,9 @@
 const CONTROLS = ['order', 'seeds', 'time', 'timers', 'fs', 'net', 'isolation'];
 const DEFAULT_EPOCH = '2025-01-01T00:00:00Z';
 
+// `--det-epoch=fixed`: the epoch of the earlier default (a run that must see the same wall clock every time)
 function parseEpoch(text) {
+  if (text === 'fixed') text = DEFAULT_EPOCH;
   const ms = Date.parse(text);
   if (Number.isNaN(ms)) throw new Error(`detjs: --det-epoch: cannot parse ${JSON.stringify(text)}`);
   return BigInt(ms) * 1000000n;
@@ -26,6 +28,22 @@ function controls(disable) {
   return CONTROLS.filter((c) => !off.has(c));
 }
 
+let WARNED_EPOCH = false;
+
+/**
+ * The run's epoch. A detjs session picks it once (src/session.js resolveEpoch) and exports DETJS_EPOCH to every
+ * process of the run; a process started without a session (src/register.js, the Playwright reporter) has none and
+ * keeps the fixed epoch, which it says once.
+ */
+function envEpoch(env, active) {
+  if (env.DETJS_EPOCH) return env.DETJS_EPOCH;
+  if (active && !WARNED_EPOCH) {
+    WARNED_EPOCH = true;
+    try { process.stderr.write('detjs: no DETJS_EPOCH, using 2025-01-01\n'); } catch { /* not printed */ }
+  }
+  return DEFAULT_EPOCH;
+}
+
 /** Configuration from the environment (workers). */
 function fromEnv(env = process.env) {
   const active = env.DETJS === '1' || env.DETJS === 'true';
@@ -36,7 +54,7 @@ function fromEnv(env = process.env) {
     orderSeed: BigInt(int(env.DETJS_ORDER_SEED === undefined || env.DETJS_ORDER_SEED === '' ? env.DETJS_SEED : env.DETJS_ORDER_SEED, 0)),
     shuffle: env.DETJS_SHUFFLE === '1',
     controls: new Set(controls(env.DETJS_DISABLE)),
-    epochNs: parseEpoch(env.DETJS_EPOCH || DEFAULT_EPOCH),
+    epochNs: parseEpoch(envEpoch(env, active)),
     tickNs: int(env.DETJS_TICK, 1000),
     tickAdapt: int(env.DETJS_TICK_ADAPT, 1000),
     timerBudget: int(env.DETJS_TIMER_BUDGET, 100000),

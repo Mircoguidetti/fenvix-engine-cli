@@ -7,6 +7,21 @@ All notable changes of the fenvix engine. One version for every component (`rele
 
 ## [Unreleased]
 
+### Changed
+- Node `--det` uses the machine's values by default (spec 2026-11-23), so it stops failing tests that pass without
+  it; each old default stays one flag away:
+  - clock: the epoch is the machine's time when the run starts (rounded down to the second), picked once and shared
+    by every process and session of the run (parallel lanes, the one-lane re-run, `--det-isolate`, the repro
+    driver); `--det-cache` keeps the virtual day; `--det-compare`/`--det-plan=TRACE` take that trace's epoch; the
+    trace header has `meta.epoch` (ISO) beside `meta.epoch_ns`. Opt-out: `--det-epoch=fixed` (2025-01-01).
+    Certificates a test makes now validate (`certificate has expired` before).
+  - time zone and locale: kept from the machine and recorded. Opt-out: `--det-tz=UTC --det-locale=C.UTF-8`.
+  - network: new `--det-net=open|closed`, default `open`: external hosts are reached live, recorded as `allowed`
+    events with their bytes in the fingerprint, never reused by the cache, `*_PROXY` variables are run inputs.
+    Opt-out: `--det-net=closed`. `--det-record` and an existing cassette keep recording / replaying.
+  - timers: unchanged (virtual; the runner timeouts stay virtual, G-0144). `--det-timers=real` as before.
+  - `selfcert.generate(commonName, { notBefore, notAfter })` takes an optional validity.
+
 ## [0.1.0]
 
 First versioned engine artifact.

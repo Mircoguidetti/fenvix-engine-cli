@@ -1,6 +1,9 @@
 'use strict';
-// Closed network with optional record/replay, and the bytes of every connection in the fingerprint.
+// Open or closed network with optional record/replay, and the bytes of every connection in the fingerprint.
 //
+// * `--det-net=open` (the default since 2026-11-23): external hosts are reached live like `--det-allow-host` hosts
+//   (a `net.connect`/`tls.connect` event `<host>:<port> allowed`, the bytes digested); the cache never reuses a test
+//   that reached one (src/cache/capture.js). The rules below are those of `--det-net=closed`.
 // * Connections (`net.Socket#connect`, hence `net.connect`, `http`, `https`, `http2`, `tls.connect`, global `fetch`
 //   and `undici`) and DNS lookups (`dns.lookup`, `dns.resolve*`, `dns.promises.*`) towards non-local hosts fail with
 //   `NetworkBlockedError` (code ECONNREFUSED; ENOTFOUND for DNS). Loopback, Unix sockets and hosts given with
@@ -111,7 +114,7 @@ function cassetteAges(file, maxAgeDays = 0, now = real.Date.now()) {
 
 class Policy {
   constructor(cfg) {
-    this.mode = cfg.netMode; // block | record | replay
+    this.mode = cfg.netMode; // open | block | record | replay
     this.allow = new Set(cfg.allowHosts);
     this.proxies = proxyEndpoints();
     this.cassettePath = cfg.cassette;
@@ -166,6 +169,8 @@ class Policy {
   }
 
   external(host, port) {
+    // --det-net=open: every host is reached like a --det-allow-host host (live, `allowed`, bytes in the fingerprint)
+    if (this.mode === 'open') return false;
     if (this.proxies.has(`${String(host).toLowerCase()}:${port}`)) return true;
     if (isLocalName(host)) return false;
     return !this.allow.has(this.hostname(host).toLowerCase());
@@ -875,7 +880,7 @@ function dnsCheck(host) {
   if (POLICY === null || host === null || host === undefined) return undefined;
   const h = String(host);
   if (isLocalName(h) || net.isIP(h) || POLICY.allow.has(h.toLowerCase().replace(/\.$/, ''))) return undefined;
-  if (POLICY.mode === 'record') return undefined;
+  if (POLICY.mode === 'record' || POLICY.mode === 'open') return undefined;
   if (POLICY.mode === 'replay' && POLICY.hasRecording(h)) {
     STATE.record('net', 'dns.lookup', `${h} replay`);
     return POLICY.fakeIp(h);
@@ -919,12 +924,12 @@ function guardResolve(obj, name, promises) {
   if (typeof orig !== 'function') return null;
   if (promises) {
     return async function (hostname, ...rest) {
-      if (POLICY && POLICY.mode !== 'record') dnsCheckNoFake(hostname);
+      if (POLICY && POLICY.mode !== 'record' && POLICY.mode !== 'open') dnsCheckNoFake(hostname);
       return orig.call(this, hostname, ...rest);
     };
   }
   return function (hostname, ...rest) {
-    if (POLICY && POLICY.mode !== 'record') {
+    if (POLICY && POLICY.mode !== 'record' && POLICY.mode !== 'open') {
       try {
         dnsCheckNoFake(hostname);
       } catch (err) {
@@ -942,7 +947,7 @@ function guardReverse(obj, name, promises) {
   const orig = obj[name];
   if (typeof orig !== 'function') return null;
   const check = (ip) => {
-    if (POLICY === null || POLICY.mode === 'record') return null;
+    if (POLICY === null || POLICY.mode === 'record' || POLICY.mode === 'open') return null;
     const h = String(ip);
     if (isLocalName(h) || POLICY.allow.has(h.toLowerCase())) return null;
     STATE.record('net', `dns.${name}`, `${h} blocked`);
