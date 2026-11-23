@@ -25,6 +25,7 @@ Usage:
   control_arm.py verdict --name REPO      verdict rows into results.jsonl
   control_arm.py pairs   --name REPO      minimal pair search, rows into pairs.jsonl
   control_arm.py all     --name REPO      the three in order
+  control_arm.py loadfail --name REPO     test files that did not load, from the recorded raw reports (no run)
 """
 from __future__ import annotations
 
@@ -65,25 +66,11 @@ SERIAL_TIMEOUT = 7200
 MAX_VICTIMS = 10
 PAIR_BUDGET_RUNS = 30
 PAIR_BUDGET_S = 3 * 3600
+CONFIRM_RUNS = 3
 
-# Session B review R3: ECONNREFUSED to a local service this container does not run. Applied here only while
-# classify.ENV_PATTERNS has no ECONNREFUSED pattern of its own (step 4 adds it there once Lane A has merged).
-LOCAL_ECONNREFUSED = (r"ECONNREFUSED\s+(?:127\.\d{1,3}\.\d{1,3}\.\d{1,3}|localhost)\b",
-                      "connection refused by a local service this container does not run")
-
-
-def classify_has_econnrefused():
-    return any("ECONNREFUSED" in p for p, _ in C.ENV_PATTERNS)
-
-
-def env_cause(msg):
-    """classify.env_cause() first; the local ECONNREFUSED pattern only while classify.py lacks one."""
-    c = C.env_cause(msg)
-    if c:
-        return c
-    if msg and not classify_has_econnrefused() and re.search(LOCAL_ECONNREFUSED[0], msg):
-        return LOCAL_ECONNREFUSED[1] + " (control_arm local pattern)"
-    return None
+# ENV causes: classify.ENV_PATTERNS (the local ECONNREFUSED pattern of session B review R3 is there since step 4; until
+# then control_arm applied the same pattern locally).
+env_cause = C.env_cause
 
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -286,6 +273,21 @@ def read_report(runner, raw, ids, cwd):
     return M.norm(oc), msgs, times
 
 
+def load_failures(raw):
+    """test files the runner reports as failed with no test in them (the file did not load): {file: first message line},
+    or None without a usable report. Their tests are in no outcome map, so in no verdict."""
+    try:
+        j = json.load(open(raw))
+    except (OSError, ValueError):
+        return None
+    out = {}
+    for tr in j.get("testResults", []):
+        if tr.get("status") == "failed" and not tr.get("assertionResults"):
+            lines = [x.strip() for x in (tr.get("message") or "").splitlines() if x.strip()]
+            out[tr["name"]] = lines[0][:300] if lines else ""
+    return out
+
+
 def overlapping_pairs(times):
     """number of (file, file) pairs whose [start, end] intervals overlap: 0 means the run ran its files serially."""
     iv = sorted(tuple(v) for v in times.values())
@@ -318,6 +320,7 @@ def do_run(repo, name, kind, seed, timeout):
         env_add["PM_IDS_OUT"] = ids
     (r, text), = run_procs([(cmd, {**repo.env, **env_add})], repo.cwd, timeout, repo.log)
     oc, msgs, times = read_report(repo.runner, raw, ids, repo.cwd)
+    lf = load_failures(raw)
     bad = M.plain_invalid(repo.runner, r, text, len(oc or {}))
     crashed = (not r["timed_out"]) and (oc is None or bool(bad) or r["exit"] not in (0, 1))
     if bad:
@@ -328,10 +331,25 @@ def do_run(repo, name, kind, seed, timeout):
            "tests": len(oc) if oc is not None else 0, "timed_out": r["timed_out"], "timeout_s": timeout,
            "crashed": crashed, "crash_reason": (bad or ("no usable report" if oc is None else f"exit {r['exit']}"))
            if crashed else None, "files": len(times), "overlapping_file_pairs": overlapping_pairs(times),
-           "outcome_counts": M.counts(oc or {}), "nproc": M.NPROC, "cpu_model": M.CPU_MODEL,
+           "outcome_counts": M.counts(oc or {}),
+           "load_failed_files": len(lf) if lf is not None else None, "nproc": M.NPROC, "cpu_model": M.CPU_MODEL,
            "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), **built}
-    data = {"row": row, "outcomes": oc, "messages": msgs, "file_times": times}
+    data = {"row": row, "outcomes": oc, "messages": msgs, "file_times": times, "load_failures": lf}
     return row, data
+
+
+def cmd_loadfail(name):
+    """Adds load_failures to recorded runs from their raw report (the path in the run's own command); no run is made."""
+    for rn, _, _ in run_names():
+        f = os.path.join(DATA, name, f"{rn}.json")
+        d = json.load(open(f))
+        m = re.search(r"--outputFile(?:\.json)?=(\S+)", d["row"]["cmd"])
+        lf = load_failures(m.group(1)) if m else None
+        d["load_failures"] = lf
+        d["row"]["load_failed_files"] = len(lf) if lf is not None else None
+        with open(f, "w") as g:
+            json.dump(d, g)
+        print(json.dumps({"repo": name, "run": rn, "load_failed_files": d["row"]["load_failed_files"]}), flush=True)
 
 
 def serial_median(rows):
@@ -483,6 +501,10 @@ class Budget(Exception):
     pass
 
 
+class TrialFailed(Exception):
+    """a trial reported no outcome for the victim (timeout, crash, no report): it is no evidence either way"""
+
+
 class PairSearch:
     """trial(mode, polluters, victim_file) -> True when the victim's outcome differs from its serial outcome
     (mode 'serial': polluters + victim in one process, given order; 'concurrent': victim process and polluter process
@@ -501,6 +523,8 @@ class PairSearch:
         self.spent += 1
         hit, rec = self.trial(mode, list(polluters), victim)
         self.log.append({"mode": mode, "step": step, "polluters": list(polluters), "triggered": hit, **(rec or {})})
+        if hit is None:
+            raise TrialFailed()
         return hit
 
     def triggers(self, mode, half, victim, step):
@@ -526,11 +550,11 @@ class PairSearch:
         return cands[0] if cands else None
 
     def confirm(self, mode, polluter, victim):
-        if self.budget_runs - self.spent < 6:
+        if self.budget_runs - self.spent < 2 * CONFIRM_RUNS:
             raise Budget()
-        with_p = sum(bool(self._try(mode, [polluter], victim, "confirm-pair")) for _ in range(3))
-        alone = sum(bool(self._try(mode, [], victim, "confirm-alone")) for _ in range(3))
-        return {"pair_fail": with_p, "pair_runs": 3, "alone_fail": alone, "alone_runs": 3,
+        with_p = sum(bool(self._try(mode, [polluter], victim, "confirm-pair")) for _ in range(CONFIRM_RUNS))
+        alone = sum(bool(self._try(mode, [], victim, "confirm-alone")) for _ in range(CONFIRM_RUNS))
+        return {"pair_fail": with_p, "pair_runs": CONFIRM_RUNS, "alone_fail": alone, "alone_runs": CONFIRM_RUNS,
                 "confirmed": with_p >= 2 and alone == 0}
 
     def search(self, cands, victim):
@@ -554,7 +578,10 @@ class PairSearch:
                                  else "no minimal pair (not confirmed)")
         except Budget:
             res["result"] = "pair not found (budget)"
+        except TrialFailed:
+            res["result"] = "no minimal pair (trial failed)"
         res["runs_spent"] = self.spent
+        res["reproduced_in_trials"] = sum(1 for x in self.log if x["triggered"])
         return res
 
 
@@ -584,7 +611,7 @@ class RealTrial:
     def _cmd(self, files, raw, rep, tmp, wrapper, gi=0, concurrent=False):
         r = self.repo
         if r.runner == "jest":
-            return direct("jest", self.args) + ["--runInBand", f"--testSequencer={JEST_SEQ}",
+            return direct("jest", self.args) + (["--config", self.cfg] if self.cfg else []) + ["--runInBand", f"--testSequencer={JEST_SEQ}",
                                                  f"--cacheDirectory={tmp}/jest", "--json", f"--outputFile={raw}",
                                                  "--runTestsByPath"] + files
         return direct("vitest", self.args) + ["--config", wrapper, "--no-file-parallelism", "--maxWorkers=1",
@@ -617,10 +644,10 @@ class RealTrial:
         raw, ids, _ = meta[0]
         oc, msgs, _ = read_report(r.runner, raw, ids, r.cwd)
         got = (oc or {}).get(self.victim_id)
-        hit = got is not None and got != self.serial_outcome
+        hit = None if got is None else got != self.serial_outcome
         rec = {"cmds": [m[2] for m in meta], "exits": [x[0]["exit"] for x in res],
                "wall_s": max(x[0]["wall_s"] for x in res), "timed_out": any(x[0]["timed_out"] for x in res),
-               "victim_outcome": got, "prep": "tree reset, build, caches cleared, fresh TMPDIR; vitest: wrapper "
+               "victim_outcome": got, "build": built, "prep": "tree reset, build, caches cleared, fresh TMPDIR; vitest: wrapper "
                ".fenvix-harness/vitest.control.config.mjs written by control_arm.write_vitest_wrapper" if r.runner == "vitest"
                else "tree reset, build, fresh TMPDIR (jest cache in it)"}
         return hit, rec
@@ -691,10 +718,12 @@ def write_jsonl(p, rows):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("what", choices=["runs", "verdict", "pairs", "all"])
+    ap.add_argument("what", choices=["runs", "verdict", "pairs", "all", "loadfail"])
     ap.add_argument("--name", required=True)
     ap.add_argument("--out")
     o = ap.parse_args()
+    if o.what == "loadfail":
+        cmd_loadfail(o.name)
     if o.what in ("runs", "all"):
         cmd_runs(o.name, o.out)
     if o.what in ("verdict", "all"):

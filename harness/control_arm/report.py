@@ -50,17 +50,20 @@ def per_repo(name, rows, pairs):
         "und_serial": c.get("UNDECIDED/serial-disagree", 0),
         "und_run": c.get("UNDECIDED/run-failed-or-short", 0),
         "und_seen_div": sum(1 for v in vs if v["verdict"] == "UNDECIDED" and v.get("diverging_runs")),
+        "div_one_run": sum(1 for v in vs if v["verdict"] == "DIVERGES" and len(v.get("diverging_runs") or []) == 1),
+        "load_failed": sorted({r.get("load_failed_files") for r in runs}, key=lambda x: (x is None, x)),
         "ENV": c.get("ENV", 0),
         "timed_out": [r["run"] for r in runs if r["timed_out"]],
         "crashed": [r["run"] for r in runs if r["crashed"]],
         "short": [f"{r['run']}(-{r['missing_vs_serial']})" for r in runs if r.get("short")],
-        "invalid": [r["run"] for r in par if r.get("valid") == "INVALID"],
         "invalid_serial": [r["run"] for r in par if r.get("valid") == "INVALID" and not r["timed_out"] and not r["crashed"]],
         "effective": f"{'yes' if len(valid) == len(par) else 'no' if not valid else 'partly'} ({len(valid)}/{len(par)} valid)",
         "pairs_found": sum(1 for p in pr if p["result"] == "pair found"),
         "pairs_not_found": sum(1 for p in pr if p["result"].startswith("no minimal pair")),
         "pairs_budget": sum(1 for p in pr if p["result"] == "pair not found (budget)"),
         "victims": len(pr),
+        "victims_order": sum(1 for p in pr if p.get("label") == "order"),
+        "reproduced": sum(1 for p in pr if any(t.get("triggered") for t in p.get("trials") or [])),
         "serial_median": statistics.median(ser) if ser else None,
         "par_median": statistics.median(pw) if pw else None,
         "par_median_valid": statistics.median([r["wall_s"] for r in valid]) if valid else None,
@@ -76,15 +79,17 @@ def render(status, notes, rows, pairs):
             "failure messages, per-file start/end of every run). Code: `control_arm.py`, tests `test_control_arm.py`.", ""]
     reps = [(n, per_repo(n, rows, pairs)) for n in CA.REPOS]
     out += ["## Verdicts per repository", "",
-            "| repository | tests (serial) | IDENTICAL | DIVERGES (order / parallel) | DIVERGES-order-only | UNDECIDED "
-            "(insufficient parallel / S1≠S2 / run failed or short) | ENV |",
-            "|---|---|---|---|---|---|---|"]
+            "| repository | tests (serial) | IDENTICAL | DIVERGES (order / parallel) | of which in 1 parallel run only | "
+            "DIVERGES-order-only | UNDECIDED (insufficient parallel / S1≠S2 / run failed or short) | ENV | test files that "
+            "did not load (per run; their tests are in no column) |",
+            "|---|---|---|---|---|---|---|---|---|"]
     for n, r in reps:
         if not r:
-            out.append(f"| {n} | not run (see notes) | | | | | |")
+            out.append(f"| {n} | not run (see notes) | | | | | | | |")
             continue
         out.append(f"| {n} | {r['tests']} | {r['IDENTICAL']} | {r['DIVERGES']} ({r['div_order']} / {r['div_parallel']}) | "
-                   f"{r['order_only']} | {r['UNDECIDED']} ({r['und_insufficient']} / {r['und_serial']} / {r['und_run']}) | {r['ENV']} |")
+                   f"{r['div_one_run']} | {r['order_only']} | {r['UNDECIDED']} ({r['und_insufficient']} / {r['und_serial']} / "
+                   f"{r['und_run']}) | {r['ENV']} | {' / '.join(fmt(x) for x in r['load_failed'])} |")
     out += ["", "## Runs and parallelism", "",
             "| repository | timed out | crashed | short (tests missing vs serial) | INVALID (serial in disguise) | "
             "parallel mode effective | UNDECIDED with a divergence seen |", "|---|---|---|---|---|---|---|"]
@@ -93,12 +98,14 @@ def render(status, notes, rows, pairs):
             out.append(f"| {n} | {', '.join(r['timed_out']) or 0} | {', '.join(r['crashed']) or 0} | "
                        f"{', '.join(r['short']) or 0} | {', '.join(r['invalid_serial']) or 0} | {r['effective']} | {r['und_seen_div']} |")
     out += ["", "## Minimal pairs and wall time", "",
-            "| repository | victims searched | pairs found | not found | over budget | serial median (s) | "
-            "parallel run median (s, completed / valid) | 9 runs (s) | pair search (s) | total (s) |",
-            "|---|---|---|---|---|---|---|---|---|---|"]
+            "| repository | victims searched (of which label order) | divergence reproduced in any trial | pairs found | "
+            "not found | over budget | serial median (s) | parallel run median (s, completed / valid) | 9 runs (s) | "
+            "pair search (s) | total (s) |",
+            "|---|---|---|---|---|---|---|---|---|---|---|"]
     for n, r in reps:
         if r:
-            out.append(f"| {n} | {r['victims'] if r['searched'] else 'not run'} | {r['pairs_found']} | {r['pairs_not_found']} | "
+            out.append(f"| {n} | {(str(r['victims']) + ' (' + str(r['victims_order']) + ')') if r['searched'] else 'not run'} | "
+                       f"{r['reproduced']} | {r['pairs_found']} | {r['pairs_not_found']} | "
                        f"{r['pairs_budget']} | {fmt(r['serial_median'])} | {fmt(r['par_median'])} / {fmt(r['par_median_valid'])} | "
                        f"{r['nine']} | {r['pair_s']} | {r['total']} |")
     if notes:

@@ -225,3 +225,25 @@ def test_budget():
     f = Fake(modes=("concurrent",))
     res = CA.PairSearch(f, budget_runs=8).search(FILES, VICTIM)
     assert res["result"] == "pair not found (budget)" and res["runs_spent"] <= 8
+
+
+def test_trial_without_victim_outcome_is_not_evidence():
+    def broken(mode, polluters, victim):
+        return None, {"victim_outcome": None, "timed_out": True}
+    res = CA.PairSearch(broken).search(FILES, VICTIM)
+    assert res["result"] == "no minimal pair (trial failed)" and res["runs_spent"] == 1
+
+
+def test_reproduced_in_trials_counts_triggering_trials():
+    assert CA.PairSearch(Fake()).search(FILES, VICTIM)["reproduced_in_trials"] >= 3
+    assert CA.PairSearch(Fake(needs=["f1.test.ts", "f8.test.ts"])).search(FILES, VICTIM)["reproduced_in_trials"] == 0
+
+
+def test_load_failures(tmp_path):
+    raw = tmp_path / "r.json"
+    raw.write_text(json.dumps({"testResults": [
+        {"name": "/r/a.test.ts", "status": "failed", "assertionResults": [], "message": "\n Error: Could not locate the bindings file\n more"},
+        {"name": "/r/b.test.ts", "status": "failed", "assertionResults": [{"title": "t", "status": "failed"}]},
+        {"name": "/r/c.test.ts", "status": "passed", "assertionResults": []}]}))
+    assert CA.load_failures(str(raw)) == {"/r/a.test.ts": "Error: Could not locate the bindings file"}
+    assert CA.load_failures(str(tmp_path / "missing.json")) is None
