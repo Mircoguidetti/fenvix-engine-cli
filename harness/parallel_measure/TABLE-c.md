@@ -56,7 +56,7 @@ Admitted by the idea rule ((a) own parallel without the engine >= 2x faster than
 
 Not admitted: lerna-lite ((a) 2.13x, THEIRS 0), kodus-ai ((a) 1.81x; THEIRS 2), beevibe ((a) 1.23x, THEIRS 0), neat ((a) 1.99x, THEIRS 0).
 
-Stopped / not measured: instar stopped by the coordinator (D1 = A) after its first plain serial run (2597.64 s, 7923 tests, 315 failed): "stopped: ENV-dominated (313 of 315 failures name this container: missing network interface, ssh-keygen)" (251 'actual-private-interface-required-for-real-resolver-test', 62 'spawnSync ssh-keygen ENOENT'); its one raw row is in results-c.jsonl, no table row. open-knowledge: not measured (stopped by coordinator); one trial plain run 2090.50 s. kiri, n8design/htwoo, cypress, uswds-wc: not measured (queue stopped). Excluded before measuring: see "Excluded" below.
+Stopped / not measured: instar stopped by the coordinator (D1 = A) after its first plain serial run (2597.64 s, 7923 tests, 315 failed): "stopped: ENV-dominated (313 of 315 failures name this container: missing network interface, ssh-keygen)" (251 'actual-private-interface-required-for-real-resolver-test', 62 'spawnSync ssh-keygen ENOENT'); its one raw row is in results-c.jsonl and appears as a partial table row (plain serial only, no engine runs). open-knowledge: not measured (stopped by coordinator); one trial plain run 2090.50 s. kiri, n8design/htwoo, cypress, uswds-wc: not measured (queue stopped). Excluded before measuring: see "Excluded" below.
 
 Engine findings:
 * neat: in round 2 at 4 workers the engine's parallel run reported 3 src/routes/page.test.ts tests FAILED that pass in every plain and engine-serial run; the lanes share the SQLite file ./data/neat.db (verify marks them diverged).
