@@ -99,8 +99,18 @@ CPUs. Exit-code tables for runs (B1) and verify (B2, with the `--json` status wo
     runner-node-test 51/1, parallel-p041 35 pass/0 fail/3 cancelled; on bfaf70b4: repro-p041 20/1, runner-bun 40/1,
     runner-node-test 51/1, parallel-p041 33/1/3 cancelled. No test fails here that passes on bfaf70b4.
   - All 37 tests of the new files pass after the fix (MEASURED).
-- `python -m pytest tests/`: PYTEST_RESULT
-- `release-1.yml` on this branch: CI_RESULT
+- `python -m pytest tests/` (serial, as CI): 16 failed, 1349 passed, 80 skipped (MEASURED, 1:52 h). The same 16
+  fail on bfaf70b4 (MEASURED: bfaf70b4 worktree, same 16 ids, `16 failed`): `test_packaging` (the workflow gate
+  test), `test_py_cache` (2), `test_r023c_fixes` (1), `test_review_r056_pycache` (12). No Python or Rust code
+  changed in this branch; the only Python change is the new `tests/test_exit_status_contract.py` (passes).
+- `release-1.yml` on this branch, workflow_dispatch depth light, run 45083642120 on 508dda9: **failure**
+  (DECLARED by the GitHub Actions API). build, smoke (python), smoke (node), python (3.13, shard 2/4): success;
+  attacks, python (3.13, shard 3/4), node (24, shard 1/4): failure; the rest cancelled by fail-fast. The same three
+  jobs failed on the trunk at bfaf70b4 (run 45041985747; there also python shard 0/4). The node shard 1/4 failure
+  is the same assertion with the same values on both runs (`repro-p041.test.js` "--det-order: exactly the listed
+  tests", job logs 137397969624 vs 137269021593). attacks and python 3/4 logs not compared line by line: their
+  equality to the trunk's is ESTIMATED from the local Python comparison above.
+  (The run was started by me with workflow_dispatch: pushes to session branches run nothing and no PR was opened.)
 
 ## Where each change is hooked, and why
 
