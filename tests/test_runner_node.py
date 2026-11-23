@@ -294,7 +294,9 @@ if a[:1] == ["verify"]:
     print(json.dumps({"status": "diverged", "summary": {"tests": 1, "diverged": 1}, "tests": rows})); sys.exit(1)
 opt = {x.split("=", 1)[0]: x.split("=", 1)[1] for x in a if x.startswith("--det-") and "=" in x}
 outcome = "failed" if mode == "failed-exit-0" else "passed"
-if mode != "no-outcomes":
+if mode == "zero-tests":
+    json.dump({"order": [], "outcomes": {}}, open(opt["--det-outcomes"], "w"))
+elif mode != "no-outcomes":
     json.dump({"order": ["a.test.js::t"], "outcomes": {"a.test.js::t": outcome}}, open(opt["--det-outcomes"], "w"))
 st = {"failed": int(outcome == "failed"), "not_proven": 0, "passed": int(outcome == "passed"), "skipped": 0}
 with open(opt["--det-trace"], "w") as fh:
@@ -314,7 +316,7 @@ def stub(tmp_path):
     return (str(p), {}), proj
 
 
-@pytest.mark.parametrize("mode", ["failed-exit-0", "no-outcomes"])
+@pytest.mark.parametrize("mode", ["failed-exit-0", "no-outcomes", "zero-tests"])
 def test_detjs_exit_0_without_proof_is_red(stub, tmp_path, mode):
     """Never green without proof: detjs returning 0 with a failed test, or without its outcomes, gives exit 1."""
     detjs, proj = stub
@@ -343,10 +345,11 @@ def test_verify_counts_a_wrong_reuse_and_keeps_detjs_exit(stub, tmp_path):
 
 def test_wrapper_owned_args_are_not_passed_to_detjs(stub, tmp_path):
     detjs, proj = stub
-    code, s, md, log = job(tmp_path, proj, "j", detjs, "--", "--det-cache=/other", "--det-trace=/x", "--reporter=dot")
+    code, s, md, log = job(tmp_path, proj, "j", detjs, "--", "--det-cache=/other", "--det-trace", "/x",
+                           "--det-cache-verify", "--reporter=dot")
     assert code == 0, log
-    assert s["runner_args"] == ["run", "--reporter=dot"], s["runner_args"]
-    assert "ignored (the wrapper sets them): --det-cache=/other --det-trace=/x" in log
+    assert s["runner_args"] == ["run", "--det-cache-verify", "--reporter=dot"], s["runner_args"]
+    assert "ignored (the wrapper sets them): --det-cache=/other --det-trace /x" in log
 
 
 def test_bad_detjs_command_is_exit_2(tmp_path):
@@ -354,7 +357,7 @@ def test_bad_detjs_command_is_exit_2(tmp_path):
     proj.mkdir()
     (proj / "package.json").write_text(json.dumps({"devDependencies": {"jest": "1"}}))
     code, s, md, log = job(tmp_path, proj, "j", ("/nonexistent/detjs", {}))
-    assert code == 2 and "detjs not found" in log, log
+    assert code == 2 and "detjs not found: '/nonexistent/detjs'" in log, log
     (proj / "package.json").write_text("[]")
     code, s, md, log = job(tmp_path, proj, "j2", ("/nonexistent/detjs", {}))
     assert code == 2 and "is not a JSON object" in log, log
@@ -363,6 +366,8 @@ def test_bad_detjs_command_is_exit_2(tmp_path):
 @pytest.mark.parametrize("extra,kept", [
     (["run", "a.js", "--config", "c.ts"], ["--config", "c.ts"]),
     (["--det-cache=/x", "-r", "m", "--det-trace=/t", "--det-outcomes=/o"], ["-r", "m"]),
+    (["--det-cache", "/x", "--det-cache-verify", "--det-cache-max-age=1", "--det-trace", "/t"],
+     ["--det-cache-verify", "--det-cache-max-age=1"]),
     (["--reporter=dot", "src/"], ["--reporter=dot"]),
 ])
 def test_keep_runner_args(extra, kept):

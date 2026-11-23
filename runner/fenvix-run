@@ -645,13 +645,11 @@ def _keep_runner_args(extra: list[str]) -> list[str]:
     """Runner arguments of the whole-suite run that also apply to a single-test re-run: options only (positional
     arguments select files, the re-run selects its own). Vitest's subcommand is set by single_test_args."""
     out, skip_next = [], False
-    for x in extra:
+    for x in split_wrapper_owned(extra)[0]:
         if skip_next:
             out.append(x)
             skip_next = False
         elif x.startswith("-"):
-            if x.startswith(_WRAPPER_OWNED):
-                continue
             out.append(x)
             if "=" not in x and x in ("--config", "-c", "--project", "--root", "--require", "-r", "--import"):
                 skip_next = True
@@ -660,7 +658,23 @@ def _keep_runner_args(extra: list[str]) -> list[str]:
 
 # detjs options the wrapper sets itself (cache, receipts, summaries, outcomes, trace): a job's own value would point a
 # fresh verify run at the cache or move the files the summary is built from, so they are dropped from runner args
-_WRAPPER_OWNED = ("--det-cache", "--det-outcomes", "--det-trace")
+# (exact names only: --det-cache-verify, --det-cache-max-age, --det-cache-real-clock tighten the proof and stay)
+_WRAPPER_OWNED = ("--det-cache", "--det-cache-receipts", "--det-cache-summary", "--det-outcomes", "--det-trace")
+
+
+def split_wrapper_owned(extra: list[str]) -> tuple[list[str], list[str]]:
+    """(kept, dropped): every wrapper-owned option, as ``--opt=value`` or ``--opt value``, goes to dropped."""
+    kept, dropped, i = [], [], 0
+    while i < len(extra):
+        x = extra[i]
+        if x.split("=", 1)[0] in _WRAPPER_OWNED:
+            take = 1 if "=" in x or i + 1 >= len(extra) else 2
+            dropped += extra[i:i + take]
+            i += take
+            continue
+        kept.append(x)
+        i += 1
+    return kept, dropped
 
 
 def _runner_args(runner: str, extra: list[str]) -> list[str]:
@@ -685,7 +699,9 @@ def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
         log(f"runner {runner} (from {project / 'package.json'})")
     detjs = find_detjs(a.detjs)
     if not detjs:
-        log("error: detjs not found: not on PATH, no $FENVIX_DETJS, no $FENVIX_HOME/bin/detjs "
+        given = a.detjs or os.environ.get("FENVIX_DETJS")
+        log(f"error: detjs not found: {given!r} (--detjs / $FENVIX_DETJS) is not a command" if given else
+            "error: detjs not found: not on PATH, no $FENVIX_DETJS, no $FENVIX_HOME/bin/detjs "
             "(runner/bootstrap.sh install builds and installs it)")
         return 2
     out = Path(a.out or (Path(os.environ.get("RUNNER_TEMP", project)) / "fenvix")).resolve()
@@ -703,10 +719,10 @@ def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
     for p in (receipts, csum_p, outcomes_p, trace_p):
         p.unlink(missing_ok=True)
     env = without_client_env(dict(os.environ))
-    dropped = [x for x in extra if x.startswith(_WRAPPER_OWNED)]
+    kept, dropped = split_wrapper_owned(extra)
     if dropped:
         log("ignored (the wrapper sets them): " + " ".join(shlex.quote(x) for x in dropped))
-    runner_args = _runner_args(runner, [x for x in extra if not x.startswith(_WRAPPER_OWNED)])
+    runner_args = _runner_args(runner, kept)
     args = ["--det", f"--det-cache={cache}", f"--det-cache-receipts={receipts}", f"--det-cache-summary={csum_p}",
             f"--det-outcomes={outcomes_p}", f"--det-trace={trace_p}", *runner_args]
     log(f"project {project} @ {git_head(project)[:12]}; runner {runner}; cache {cache} "
@@ -717,13 +733,17 @@ def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
         res = json.loads(outcomes_p.read_text())
     except (OSError, ValueError):
         res = {}
-    outcomes: dict[str, str] = res.get("outcomes", {})
     try:
         cs = json.loads(csum_p.read_text())
     except (OSError, ValueError):
         cs = {}
     meta = trace_header(trace_p)
     status = meta.get("status") or {}
+    if not isinstance(res, dict) or not isinstance(res.get("outcomes", {}), dict) or not isinstance(status, dict) \
+            or not isinstance(cs, dict):
+        log(f"error: unreadable detjs output ({outcomes_p}, {trace_p} or {csum_p}): exit 2")
+        return 2
+    outcomes: dict[str, str] = res.get("outcomes", {})
     rec = read_receipts(receipts)
     # per-test rows (`file::test`) count the tests; file rows (and a shared-process unit) carry the recorded time
     reused_tests = [r for r in rec if r.get("reused") and r.get("kind") != "file" and "::" in r.get("nodeid", "")]
@@ -739,8 +759,9 @@ def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
     if code == 0 and (failed or int(status.get("failed") or 0) or int(status.get("not_proven") or 0)):
         log(f"detjs returned 0 with failed or NOT PROVEN tests (status {status}): exit 1")
         code = 1  # never green on a failure (spec "never lower the red")
-    elif code == 0 and (not res or not status):
-        missing = [n for n, ok in ((str(outcomes_p), bool(res)), (f"status in {trace_p}", bool(status))) if not ok]
+    elif code == 0 and (not outcomes or not status):
+        missing = [n for n, ok in ((f"test outcome in {outcomes_p}", bool(outcomes)), (f"status in {trace_p}", bool(status)))
+                   if not ok]
         log(f"detjs returned 0 but wrote no {' and no '.join(missing)}: nothing proves the run green: exit 1")
         code = 1
 
@@ -853,7 +874,7 @@ def cmd_verify_node(a: argparse.Namespace, s: dict) -> int:
         p.unlink(missing_ok=True)
     ep = [f"--det-epoch={epoch_iso(s['epoch_ns'])}"] if s.get("epoch_ns") else []
     env = without_client_env(dict(os.environ))
-    args = [x for x in s.get("runner_args", []) if not x.startswith(_WRAPPER_OWNED)]
+    args = split_wrapper_owned(list(s.get("runner_args", [])))[0]
     run_detjs(detjs, runner, ["--det", *ep, f"--det-trace={t2}", f"--det-outcomes={o2}", *args], project, env)
     cmd = [*detjs, "verify", str(t1), str(t2), "--json"]
     log("$ " + " ".join(shlex.quote(c) for c in cmd))
