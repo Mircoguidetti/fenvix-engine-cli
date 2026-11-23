@@ -1,0 +1,25 @@
+ egress proxy::returns one canonical allowed redirect without following it, then charges the next client request separately`
+- `test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::rejects a cross-ecosystem redirect without contacting its target`
+- `test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::rejects a unknown route redirect without contacting its target`
+- `test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::rejects a query-bearing route redirect without contacting its target`
+- `test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::rejects a credential authority redirect without contacting its target`
+- `test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::canonicalizes a relative same-route redirect and never consumes a second upstream slot`
+- `test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::dials only the selected screened literal and refreshes identities before connect and before bytes`
+- `test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::stops an active response stream, drains every socket/lease, and removes its owned inode`
+- `test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::aborts an idle upstream through its owning client well before the absolute deadline`
+- `test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::enforces exact per-request byte and absolute time ceilings`
+- `test/docker/registry-egress-proxy.test.ts@@main::registry-egress over a real fixed-parent transport (nested mode)::refuses a derived redirect that resolves to a non-public address, and never asks the parent for it`
+- `test/domain-utils.test.ts@@main::resolveDefaultGitRemote::returns the origin SSH URL via fallback when no tracking branch`
+- `test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps timed-out retention single-flight until its late lease cleanup settles`
+- `test/llm-metrics-query-safety.test.ts@@main::LLM statistics query output safety::yields to the event loop between expensive aggregation operations`
+- `test/llm-metrics-query-safety.test.ts@@main::LLM statistics query output safety::rejects grouped summaries with high-cardinality maximum-length identifiers`
+
+<details><summary>Why the other tests ran</summary>
+
+Not reused (an input changed or no entry yet): new 397.
+
+Not cacheable (the test touched something the engine cannot prove): touched-a-path-or-port-another-test-file 1260, subprocess 370, network-connection 358, os-entropy 297, reads-proc-sys-or-dev 239, a-level-0-control-could-not-be-installed 209, outcome-failed 147, os-randomness-drawn-in-native-crypto 139, worker-thread 26, watches-the-file-system 14, reads-file-system-statistics 13, capture-not-written 1.
+
+</details>
+
+[fenvix] tests 7033, reused with proof 0, ran 7033, saved 0.0 s of test time, failed 69, flaky 0, not proven 39; exit 1
