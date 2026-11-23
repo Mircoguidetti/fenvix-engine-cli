@@ -41,6 +41,8 @@ def main(argv):
     if len(argv) < 3 or argv[0] != "select":
         sys.exit(__doc__)
     label, known = argv[1], labels(argv[2])
+    if label not in LABELS:
+        sys.exit(f"python_tests.py: unknown label {label!r} (expected one of {', '.join(LABELS)})")
     for t in argv[3:]:
         if t.split("::")[0] not in known:
             sys.exit(f"python_tests.py: {t} is not classified in {argv[2]}")

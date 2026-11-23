@@ -21,13 +21,17 @@ n, k, root = int(args[0]), int(args[1]), pathlib.Path(args[2])
 files = sorted({p for g in args[3:] for p in root.glob(g) if p.is_file()})
 if only:
     sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-    from python_tests import labels
+    from python_tests import LABELS, labels
 
+    if only[0] not in LABELS:
+        sys.exit(f"shard.py: unknown label {only[0]!r} (expected one of {', '.join(LABELS)})")
     known = labels(only[1])
     missing = [str(p) for p in files if p.as_posix() not in known]
     if missing:
         sys.exit(f"shard.py: not classified in {only[1]}: {', '.join(missing)}")
     files = [p for p in files if known[p.as_posix()] == only[0]]
+    if not files:  # every shard would be empty: a LIGHT run must never pass green with no test
+        sys.exit(f"shard.py: no selected file is labelled {only[0]!r} in {only[1]}")
 loads = [0] * n
 owner = {}
 for p in sorted(files, key=lambda p: (-p.stat().st_size, str(p))):

@@ -129,11 +129,26 @@ jobs:
         run: |
           pip install pytest pytest-xdist && pip install --no-deps dist/fenvix-*.whl
           cp "$(python -c 'import detpy._core as c; print(c.__file__)')" python/detpy/
-      # the targets of the shard-0 extra suites below: all of them on FULL; on LIGHT (until 2026-12-22) only those whose
+      - name: Python suites and reviewer test files
+        # the gate of claude/parallel-proof-3 REPORT-3 and claude/all-runners-2 REPORT-2: serial, one deselected
+        # pre-existing failure (R-017 H2 reads a results file no engine change touches).
+        # LIGHT (until 2026-12-22): only the files labelled `shared` in release/python-tests.txt.
+        run: |
+          only=""; [ "$FULL" = true ] || only="--only shared release/python-tests.txt"
+          files=$(python3 release/shard.py 4 ${{ matrix.shard }} tests 'test_*.py' '**/test_*.py' '*_test.py' '**/*_test.py' $only)
+          # LIGHT: a shard can hold no shared file (shard.py fails if all four would be empty); pytest with no file would run all
+          if [ -z "$files" ] && [ "$FULL" != true ]; then echo "shard ${{ matrix.shard }}/4: 0 files"; exit 0; fi
+          echo "shard ${{ matrix.shard }}/4: $(echo "$files" | wc -l) files"
+          python -m pytest -q -p no:randomly --junitxml=py-${{ matrix.python }}-s${{ matrix.shard }}.xml $files \
+            --deselect tests/test_review_r017.py::test_h2_report_says_ci_never_sees_tmp_name_exhaustion_but_p8_does \
+            -rfE 2>&1 | tee py-${{ matrix.python }}-s${{ matrix.shard }}.log | tail -60; rc=${PIPESTATUS[0]}
+          echo "== failures"; grep -E "^(FAILED|ERROR) " py-${{ matrix.python }}-s${{ matrix.shard }}.log || true
+          exit $rc
+      # the targets of the shard-0 extra suites that follow: all of them on FULL; on LIGHT (until 2026-12-22) only those whose
       # file is labelled `shared` in release/python-tests.txt -- a step with none left is skipped
       - name: shard-0 extra suites to run (LIGHT, until 2026-12-22, only shared files)
         id: extra
-        if: matrix.shard == 0
+        if: matrix.shard == 0 && (success() || failure())  # independent of the main suites' result
         run: |
           sel() { if [ "$FULL" = true ]; then echo "$*"; else python3 release/python_tests.py select shared release/python-tests.txt "$@"; fi; }
           runners=$(sel tests/test_runners_django.py tests/test_runners_nose2.py \
@@ -144,20 +159,6 @@ jobs:
             tests/review_r032/test_review_r032_python.py::test_p12_hypothesis_profile_env \
             tests/test_runners_unittest.py::test_hypothesis_is_seeded_per_test_and_has_no_database)
           printf 'runners=%s\nnumpy=%s\nhyp=%s\n' "$runners" "$numpy" "$hyp" | tee -a "$GITHUB_OUTPUT"
-      - name: Python suites and reviewer test files
-        # the gate of claude/parallel-proof-3 REPORT-3 and claude/all-runners-2 REPORT-2: serial, one deselected
-        # pre-existing failure (R-017 H2 reads a results file no engine change touches).
-        # LIGHT (until 2026-12-22): only the files labelled `shared` in release/python-tests.txt.
-        run: |
-          only=""; [ "$FULL" = true ] || only="--only shared release/python-tests.txt"
-          files=$(python3 release/shard.py 4 ${{ matrix.shard }} tests 'test_*.py' '**/test_*.py' '*_test.py' '**/*_test.py' $only)
-          if [ -z "$files" ]; then echo "shard ${{ matrix.shard }}/4: 0 files"; exit 0; fi  # pytest with no file would run all
-          echo "shard ${{ matrix.shard }}/4: $(echo "$files" | wc -l) files"
-          python -m pytest -q -p no:randomly --junitxml=py-${{ matrix.python }}-s${{ matrix.shard }}.xml $files \
-            --deselect tests/test_review_r017.py::test_h2_report_says_ci_never_sees_tmp_name_exhaustion_but_p8_does \
-            -rfE 2>&1 | tee py-${{ matrix.python }}-s${{ matrix.shard }}.log | tail -60; rc=${PIPESTATUS[0]}
-          echo "== failures"; grep -E "^(FAILED|ERROR) " py-${{ matrix.python }}-s${{ matrix.shard }}.log || true
-          exit $rc
       - name: runner suites with their runners installed (audit G-0010; own environment, so that pytest-django does not load into the main suites)
         if: matrix.shard == 0 && (success() || failure()) && steps.extra.outputs.runners != ''  # independent of the main suites' result; once per version
         run: |
