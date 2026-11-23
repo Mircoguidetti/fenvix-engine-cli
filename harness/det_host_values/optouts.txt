@@ -8,3 +8,4 @@ test/node-p041.test.js (through its run helper): every --det run + --det-net=clo
 test/node-p041.test.js 'G-0139 G-0140 time zone and locale pinned and recorded' (vitest, jest): the three pinned cases + --det-tz=UTC --det-locale=C.UTF-8
 test/parallel-p041.test.js (through its det helper): every --det run without the cache + --det-epoch=fixed (compares separate serial and parallel runs)
 test/projects.test.js 'vitest projects running the same file...': runWith + --det-epoch=fixed (verifies separate runs)
+test/review-p1-verifier.test.js 'F-01: --det pins the time zone and the locale': both runs + --det-tz=UTC --det-locale=C.UTF-8

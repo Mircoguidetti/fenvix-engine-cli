@@ -112,8 +112,10 @@ test('F-01: --det pins the time zone and the locale (same result whatever the ma
       + "test('local hour of the epoch', () => { assert.equal(new Date(0).getHours(), 0); });\n"
       + "test('number format', () => { assert.equal((1234.5).toLocaleString(), '1,234.5'); });\n",
   });
-  const a = crun('node-test', dir, [], { cache: false, env: { TZ: 'UTC', LANG: 'C.UTF-8', LC_ALL: 'C.UTF-8' } });
-  const b = crun('node-test', dir, [], { cache: false, env: { TZ: 'Asia/Tokyo', LANG: 'de_DE.UTF-8', LC_ALL: 'de_DE.UTF-8' } });
+  // the pin is asked for: opt-out of the keep default (spec 2026-11-23)
+  const det = ['--det', '--det-tz=UTC', '--det-locale=C.UTF-8'];
+  const a = crun('node-test', dir, [], { cache: false, det, env: { TZ: 'UTC', LANG: 'C.UTF-8', LC_ALL: 'C.UTF-8' } });
+  const b = crun('node-test', dir, [], { cache: false, det, env: { TZ: 'Asia/Tokyo', LANG: 'de_DE.UTF-8', LC_ALL: 'de_DE.UTF-8' } });
   assert.equal(a.status, 0, show(a));
   assert.equal(b.status, a.status, `under TZ=Asia/Tokyo LANG=de_DE the --det run ${b.status === 0 ? 'passes' : 'fails'}:\n${show(b)}`);
 });
