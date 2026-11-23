@@ -64,7 +64,11 @@ function cleanEnv(extra = {}) {
 function run(runner, dir, args = [], { cache = false, det = ['--det'], env = {}, timeout = 300000 } = {}) {
   fs.rmSync(path.join(dir, '.detjs', 'cache-summary.json'), { force: true });
   const c = cache ? [`--det-cache=${path.join(dir, '.cache')}`] : [];
-  const r = spawnSync(process.execPath, [BIN, runner, ...det, ...c, ...args], { cwd: dir, encoding: 'utf8', env: cleanEnv(env), timeout });
+  // opt-out of the host-values defaults (spec 2026-11-23): these tests check the 2025-01-01 epoch (EPOCH) and the
+  // closed network; a run with the cache keeps its virtual day, a test that names its own value keeps it
+  const has = (p) => det.some((x) => x.startsWith(p)) || args.some((x) => String(x).startsWith(p));
+  const optOut = det.includes('--det') ? [...(cache || has('--det-epoch') ? [] : ['--det-epoch=fixed']), ...(has('--det-net') ? [] : ['--det-net=closed'])] : [];
+  const r = spawnSync(process.execPath, [BIN, runner, ...det, ...optOut, ...c, ...args], { cwd: dir, encoding: 'utf8', env: cleanEnv(env), timeout });
   let summary = null;
   try { summary = JSON.parse(fs.readFileSync(path.join(dir, '.detjs', 'cache-summary.json'), 'utf8')); } catch { /* none */ }
   return { status: r.status, signal: r.signal, error: r.error, summary, stdout: r.stdout || '', stderr: r.stderr || '' };
