@@ -483,7 +483,10 @@ test('${n} block', () => {
     // the fix
     fs.rmSync(log, { force: true });
     const on = crun(R, dir, ['--det-plan=plan.json'], { cache: false });
-    assert.equal(on.status, 0, show(on));
+    // the trace reports the one-lane re-run; the exit code is never lowered below the first run's (founder decision
+    // 2026-11-23, default-deny: src/parallel-rerun.js wrapperRunnerCode). Before that decision this expected exit 0.
+    assert.equal(on.status, 1, show(on));
+    assert.match(on.stderr, /the one-lane re-run of the hazard files passed, but the first run's exit code 1 stands/, show(on));
     assert.match(on.stderr, /named by a cross-worker hazard run again in one lane/, show(on));
     const t = trace(dir);
     assert.deepEqual(t.order.slice().sort(), [`${F('x')}::X block`, `${F('y')}::Y block`], show(on));

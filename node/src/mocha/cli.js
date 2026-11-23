@@ -195,7 +195,9 @@ async function main(argv) {
     runner: 'mocha', runner_version: mocha.pkg.version, isolation: iso, serial: true, cli_args: rest, files_planned: keyed.map((k) => k.fileId),
   });
   for (const l of lines) process.stdout.write(`${l}\n`);
-  return status;
+  // Mocha's own command line exits with its number of failures (2 failing tests: 2), and 2 is what detjs reserves for
+  // its own usage and internal errors (src/exit-status.js runExit): any failure of the Mocha run is 1.
+  return status === 0 ? 0 : 1;
 }
 
 module.exports = { main, mochaConfigParts };

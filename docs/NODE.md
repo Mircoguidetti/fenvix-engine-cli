@@ -227,10 +227,13 @@ the runner's test and hook timeouts are runner deadlines on the virtual timers (
 
 ## Parallel (`--det-workers`)
 
-Default: serial, as before. A run is parallel when it is asked for: `--det-workers=N|N%|auto`, or the runner's own
-worker option on the command line (Vitest `--maxWorkers=N`, `--fileParallelism`; Jest `--maxWorkers=N`, `-w N`).
-`--det-workers=1`, Jest `--runInBand`/`-i` and Vitest `--no-file-parallelism` keep it serial; a `maxWorkers` in a
-configuration file does not ask for parallel. `--det-plan=TRACE|JSON` replays the lanes of an earlier run (implies
+Default: the machine's CPUs (`os.availableParallelism()`; `node/src/parallel.js` `resolveWorkers`, rule 4). The
+lane count is, in precedence order, `--det-workers=N|N%|auto`; a serial request of the runner's own
+(`--det-workers=1`, Jest `--runInBand`/`-i`, Vitest `--no-file-parallelism`, `-w 1`), which keeps the run in one lane;
+the runner's own worker option on the command line (Vitest `--maxWorkers=N`, `--fileParallelism`; Jest
+`--maxWorkers=N`, `-w N`); otherwise the machine's CPUs. A `maxWorkers` in a configuration file is not read as a
+request. A configuration where placement could decide what a test observes (a shared worker, browser mode, the vm
+pools, `isolate=false`, network recording, ...) is still refused and runs in one lane, and says so. `--det-plan=TRACE|JSON` replays the lanes of an earlier run (implies
 their number of workers). Code: `node/src/parallel.js`.
 
 **The plan.** After the order and the cache decision (main process, the runner's sequencer), the files that run are

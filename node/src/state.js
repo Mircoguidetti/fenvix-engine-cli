@@ -30,6 +30,7 @@ class State {
     this.notes = [];
     this.onEvent = null; // set by the cache capture (src/cache/capture.js)
     this.onRealClock = null; // set by the cache capture: a read of a clock Level 0 does not virtualize
+    this.begun = new Set(); // ids of the tests of the current file that have a record (B5, controls.recordNeverStarted)
   }
 
   /** The running test: with concurrent tests running, the test whose asynchronous work is running (src/concur.js). */
@@ -106,6 +107,7 @@ class State {
     this.flush();
     // the id as the core gets every string: well-formed, injectively (src/wire.js)
     if (this.recorder) this.recorder.beginTest(wire(id), this.testIndex);
+    this.begun.add(id);
     this.testIndex++;
     this.testId = id;
     for (const f of this.onTestStart) f(id);
@@ -116,6 +118,7 @@ class State {
    * start, but its events stay in its own buffer.
    */
   initConcurrent(id) {
+    this.begun.add(id);
     this._testId = id;
     this.buffer = [];
     this.deferred = true;
