@@ -1,241 +1,315 @@
-DONE
+BLOCKED
+Customers call fenvix-run explicitly; no hook catches the test step (app `infra/github-app/lib/runner/files/fenvix-job-started:4` only touches a marker; the onboarding setup PR changes only the job's `runs-on`, `github-app/src/onboarding/workflow.ts:4-8`). So after onboarding, a Node customer's `npm test` runs on our machine WITHOUT the engine unless their workflow calls `fenvix-run node` itself.
 
-# REPORT: CI until 22 December, Python tests shared with Node on every push, the rest nightly; workflow index
+# Node customers on our machines: vitest, jest, node:test, mocha through `fenvix-run node` (spec 2026-11-23)
 
-Branch `claude/ci-python-shared`, started from `claude/release-1` @ 81f838c6 (Lane B merged). Spec: "CI until 22 December"
-(gstack /spec revision 2, approved by the founder 2026-11-22). This file replaces the trunk's previous REPORT.md (Lane B,
-still readable in history at 81f838c6).
+Why BLOCKED: neither branch is merged.
+- The engine merge is withheld: CI never completed the new shared test (see "CI" and "Merge rule").
+- So `engineCliCommit` has no engine merge commit to point at, and the App merge waits for it.
 
-## What changed
+Update 2026-11-23, after the report: the founder attached fenvix-app with push access. The App branch
+`claude/node-runner` (47b5308) is now pushed. Earlier, `add_repo` had been refused twice and `git push` answered 403.
 
-- `release/python-tests.txt` (new): every Python test file `release/shard.py` selects under `tests/`, one line each,
-  labelled `shared` or `python-product`; header states the rule and "valid until 2026-12-22, then reviewed".
-- `release/shard.py`: optional `--only LABEL LIST-FILE` (filters before the size split). Without it the output is unchanged.
-  With it: unknown label, unclassified file, or no file with the label -> exit 1 (a LIGHT run can never go green on zero files).
-- `release/python_tests.py` (new): the list parser shared by `shard.py --only`, the workflow (`select`), and the test.
-- `tests/test_python_tests_classified.py` (new, `shared`): the classification guard plus tests of `--only` and `select`.
-- `.github/workflows/release-1.yml`: job-level `env.FULL` in the `python` job, the same expression as its version matrix
-  (a test checks the two are identical); LIGHT main step passes `--only shared release/python-tests.txt`; a new
-  shard-0 step computes the extra-suite targets (all on FULL, `shared` only on LIGHT) and each extra step is skipped
-  when it has none; the R-001 step runs on FULL only; header comment updated (C5). No other job changed.
-- `.github/workflows/README.md` (new): the gate section and 30 rows, one per other workflow.
+## Changes to tests, CI steps or thresholds (listed first, rule 3)
+
+- CI CHANGE (0598ac6): `.github/workflows/release-1.yml`, job `python`: added `actions/setup-node@v4` with
+  `{node-version: "24"}` before the test step (same form as the node jobs). Reason: the shared test
+  `tests/test_runner_node.py` runs detjs, which needs Node >= 22, and the python job had no setup-node. Founder decision
+  D1 = A, 2026-11-23. No step, matrix, threshold or selection was removed or relaxed.
+
+- NEW `tests/test_runner_node.py` (engine), added to `release/python-tests.txt` as `shared`. No existing test is
+  changed, skipped or weakened. The CI workflow is not changed.
+- App `supabase/tests/run-local.sh` (`npm run test:rls`): migrates the new `0018` twice (like 0014-0017) and runs a
+  NEW check, `supabase/tests/runners-check.sql`. Nothing is removed.
+- App unit tests: new cases in `github-app/tests/unit/{workflow,detect,results}.test.ts`. Existing cases are unchanged.
+  In `workflow.test.ts`, one existing `it(...)` title changed from "knows vitest, jest, go test and npm test" to
+  "knows vitest, jest, node --test, mocha, go test and npm test", and its case list gained 7 rows.
+- AC2 wording deviation in the new test, stated here and not hidden: the verifier never says NOT PROVEN for the
+  entropy fixture. It says DIVERGED with reason `entropy`. See AC2.
+
+## Commits
+
+- engine `claude/node-runner`: 7efa219 (wrapper, bootstrap, tests), ebaa2e7 (reason keys for the App),
+  d287443 + 962acfb (gstack /review fixes). Head **962acfb**. Not merged: see "Merge rule".
+- app `claude/node-runner`: **47b5308**, pushed. `engineCliCommit` is not changed yet: it waits for the engine merge commit.
+
+## What was built
+
+Engine (only `runner/`, `tests/test_runner_node.py`, `tests/fixtures/runner-node/`, `release/python-tests.txt`):
+- `runner/bootstrap.sh`: in development mode, checks `node` >= 22 on PATH before the wheel build. It fails with "node
+  not found on PATH: Node 22 or newer is needed ..." or "node v20.18.0 on PATH (...) is too old: detjs needs Node 22
+  or newer". It builds detjs with `node node/scripts/build.js` and installs bin/, src/, package.json and the addon
+  (the engine artifact's layout) into `$FENVIX_HOME/detjs`, symlinked as `$FENVIX_HOME/bin/detjs`, which is on the
+  job PATH (`.env`). **The pinned-artifact mode (`FENVIX_ENGINE_URL`) is unchanged and installs no detjs: Node jobs
+  need the development mode** (out of scope).
+- `runner/fenvix-run node --project DIR [--runner vitest|jest|node-test|mocha] [--key] [--out] [--cache] [--detjs] -- <runner args>`:
+  - The runner comes from package.json (devDependencies vitest/jest/mocha; `scripts.test` running `node --test`).
+    None found or more than one: exit 2, naming what was found.
+  - Runs `detjs <runner> --det --det-cache=$FENVIX_CACHE_ROOT/<key>-node<major>`, plus receipts, cache summary,
+    outcomes and trace into `--out`.
+  - Writes `summary.json` and the step summary.
+  - Re-runs each failure alone without the cache, and never lowers the exit code.
+- `fenvix-run verify --summary S` on a Node summary: a fresh run without the cache at the cache run's epoch, with
+  `--det-trace`. Then `detjs verify T1 T2 --json`, mapped to `verify_status` / `verify_exit` / `verify_counts` in
+  summary.json and to `verify.json`. Exit = detjs verify's code (0/1/3; 3 is said in the step summary).
+- Python path unchanged (AC4).
+
+Single-test re-run commands, exactly as recorded by the tests:
+| runner | command |
+|---|---|
+| vitest | `detjs vitest --det --det-epoch=2026-11-23T00:00:00Z run fail.test.js -t '^fails on demand$'` |
+| jest | `detjs jest --det --det-epoch=2026-11-23T00:00:00Z fail.test.js -t '^fails on demand$'` |
+| node:test | `detjs node-test --det --det-epoch=2026-11-23T00:00:00Z --test-name-pattern '^fails on demand$' fail.test.js` |
+| mocha | `detjs mocha --det --det-epoch=2026-11-23T00:00:00Z fail.test.js --grep '^fail fails on demand$'` |
+In each case the test failed again alone, so it was not reported flaky, and the exit code stayed 1.
+
+App (commit 47b5308, branch claude/node-runner): `install.sh` installs Node 22.23.5 as root before bootstrap, from the official
+`node-v22.23.5-linux-x64.tar.gz`. The sha256 `c541181...a1a1` is pinned in the script AND must appear in the
+release's `SHASUMS256.txt`. Also in that commit:
+- migration `0018_node_test_mocha_runners.sql`;
+- `TestRunner`/`RUNNERS`/`LANGUAGE_OF` in `detect.ts`, and `workflow.ts`;
+- the OpenAPI enum, with `src/api/schema.d.ts` (`npm run api:generate`) and `github-app/src/api/openapi.gen.ts`
+  (`node src/api/gen-openapi.ts`) regenerated;
+- onboarding detects `node --test` and `mocha` (`npx vitest` and `npx jest` were already matched by `\bvitest\b` /
+  `\bjest\b`; now tested);
+- `summary.ts` drops `runner_args` before storing, as it drops `pytest_args`: a Node field mapping;
+- 4 Node fixtures.
+`src/data/types.ts` re-exports `TestRunner` from the generated schema, so it follows the regeneration without an edit.
 
 ## Acceptance criteria
 
-### AC1: classification file, counts (MEASURED)
-```
-$ grep -c "^shared " release/python-tests.txt; grep -c "^python-product " release/python-tests.txt
-52
-59
-$ for k in 0 1 2 3; do python3 release/shard.py 4 $k tests 'test_*.py' '**/test_*.py' '*_test.py' '**/*_test.py'; done | wc -l
-111
-```
-52 + 59 = 111 = every selected file, each once (checked by the test below). 111 = 109 at bfaf70b4 + `tests/test_exit_status_contract.py`
-(Lane B) + `tests/test_python_tests_classified.py` (this change).
+The environment for every command below:
+- this container, prepared by `FENVIX_HOME=$S/fhome runner/bootstrap.sh install` → exit 0 (1m23s; "node: v22.23.5",
+  "engine: detjs fenvix 0.1.0 -> $S/fhome/bin/detjs"; run again after the review fixes → exit 0);
+- then `export FENVIX_HOME=$S/fhome PATH=$S/fhome/bin:$PATH` with `FENVIX_DETJS` unset, so the tests use the
+  installed detjs;
+- `$S` is the session scratchpad.
 
-Method (spec): `shared` = every file matched by
-`git grep -l -E 'detpy\._core|_core\.|detpy\.fenvix|fenvix_js|attacks|wheel|exit-cases' -- tests/` (45 files), plus
-`tests/test_clock.py` (spec), the new guard test, and files read by hand and found to exercise code Node uses:
-`tests/test_repro_rust.py` (`from detpy import _core`), `tests/test_fingerprint.py` (`python -m detpy verify` = `_core.verify_with`,
-the verifier `detjs verify` calls natively), `tests/test_shared_cache.py` (`detpy.cache_service`, the service `node/src/cache/remote.js`
-talks to), `tests/test_py_cache.py` (`python -m detpy verify`, line 633) and `tests/test_parallel_proof_round3.py`
-(`from detpy import _core`, Rust shared store). The last two were moved to `shared` after the /review adversarial pass.
-Runner-suite files (django, nose2, ward, zope) are `python-product`; `test_clock_rust.py`, `test_level0_seeds_fsorder_rust.py`,
-`test_clock.py` are `shared`, as the spec requires.
+**AC1: met (wrong reuse 0 for all four).** `python3 -m pytest -q -p no:randomly tests/test_runner_node.py` →
+`47 passed in 24.84s` (head 962acfb).
 
-### AC2: the classification test passes, and fails when it should (MEASURED, local, Python 3.13.18, pytest 9.1.1)
-```
-$ python3 -m pytest -q -p no:randomly tests/test_python_tests_classified.py
-8 passed in 0.40s
-```
-One line removed (`python-product tests/test_epoch.py`), then restored:
-```
-E       AssertionError: selected by release/shard.py but not in release/python-tests.txt: ['tests/test_epoch.py']
-FAILED tests/test_python_tests_classified.py::test_every_selected_file_is_classified
-1 failed, 7 passed in 0.39s
-```
-Empty `tests/test_tmp_unclassified.py` added, then deleted:
-```
-E       AssertionError: selected by release/shard.py but not in release/python-tests.txt: ['tests/test_tmp_unclassified.py']
-FAILED tests/test_python_tests_classified.py::test_every_selected_file_is_classified
-1 failed, 7 passed in 0.45s
-```
-Both reverted; `git status` clean afterwards. The test gets the selected files by running `release/shard.py` for all
-4 shards without `--only`, with the root and globs read from the workflow's own `shard.py` command (no copied globs).
+| runner | cold (exit, tests, reused) | warm (exit, reused with receipt) | `fenvix-run verify` (exit, status, wrong) |
+|---|---|---|---|
+| vitest | 0, 5, 0 | 0, 5 of 5 | **1**, diverged, wrong 0: `entropy.test.js::reads OS entropy` (skipped, reused) diverged "beyond-trace" |
+| jest | 0, 5, 0 | 0, 5 of 5 | 0, identical, wrong 0 |
+| node:test | 0, 4, 0 | 0, 4 of 4 | **1**, diverged, wrong 0: `fail.test.js::fails on demand`, `pass.test.js::sorts` diverged "beyond-trace" |
+| mocha | 0, 5, 0 | 0, 5 of 5 | 0, identical, wrong 0 |
 
-### AC3: shard.py without --only is unchanged (MEASURED)
-```
-$ diff <(git show 81f838c:release/shard.py | python3 - 4 0 tests GLOBS) <(python3 release/shard.py 4 0 tests GLOBS); echo rc=$?
-rc=0
-$ diff <(git show 81f838c:release/shard.py | python3 - 4 1 tests GLOBS) <(python3 release/shard.py 4 1 tests GLOBS); echo rc=$?
-rc=0
-$ diff <(git show 81f838c:release/shard.py | python3 - 4 2 tests GLOBS) <(python3 release/shard.py 4 2 tests GLOBS); echo rc=$?
-rc=0
-$ diff <(git show 81f838c:release/shard.py | python3 - 4 3 tests GLOBS) <(python3 release/shard.py 4 3 tests GLOBS); echo rc=$?
-rc=0
-```
-(GLOBS = `'test_*.py' '**/test_*.py' '*_test.py' '**/*_test.py'`; empty diff, rc=0, for k = 0..3.)
+The test asserts `wrong_reuse == 0`, and that every reused test is a row of the verify report
+(`reused_checked == reused`, so the check is not vacuous). It does not assert verify exit 0. For vitest and node:test,
+`fenvix-run verify` is red on a plain green suite, because of engine findings E-1 and E-2 below. **A Node customer
+running the verify step on vitest or node:test would see it fail today.**
 
-### AC4: two workflow_dispatch runs of release-1.yml on this branch (MEASURED, head 7ada7e8)
-Both runs on commit 7ada7e8, the commit before this REPORT.md (which changes no file the workflow reads).
-The two runs went one after the other: the workflow's concurrency group allows one running and one pending run per ref,
-so queueing a second dispatch cancels the pending one. Earlier runs 45155642421/45155646998 (d70e99a),
-45156125063/45156130191 (d8dc5d1), 45156454337 (cancelled by concurrency) were superseded by review fixes.
+**AC2: met for exit codes. The NOT PROVEN wording is not met as written.**
+- `FENVIX_FIXTURE_FAIL=1` → exit **1**, the test in `failed` (all four).
+- Neither variable → exit **0**, `status failed=0 not_proven=0` (all four).
+- No runner in package.json → exit **2** ("no test runner found in .../package.json: none of vitest, jest, mocha in
+  devDependencies and no `node --test` in scripts.test ..."). Two runners → exit 2 ("more than one test runner found
+  ...: vitest, jest").
+- `FENVIX_FIXTURE_ENTROPY=1`, plain run: exit **0**, prints `detjs: status: failed=0 not_proven=0 passed=5
+  skipped=0`, and the test passes (all four). **A test that reads real OS entropy is green on a single run.**
+- `FENVIX_FIXTURE_ENTROPY=1`, then `fenvix-run verify`: exit **1** (all four). The entropy test is named
+  **DIVERGED, reason `entropy`**, not NOT PROVEN.
+  - `crates/detpy-core/src/verify.rs` gives NotProven only when the runs' fingerprints agree. Real entropy makes them
+    differ.
+  - The test therefore asserts exit 1, the test named as NOT PROVEN or as DIVERGED(entropy), and status
+    `not_proven|diverged`.
+  - Whether the verifier should call this NOT PROVEN is an engine decision (out of scope: `crates/` not touched).
 
-**LIGHT: run 45156487688** (depth `light`), python job env `FULL: false`:
-| python (3.13, shard k/4) | line | result |
+**AC3: met.**
+- Each Node fixture loads, and `stackFromSummary` gives `{language: "node", testRunner}` with vitest, jest,
+  `node:test` and mocha respectively (`github-app/tests/unit/detect.test.ts`).
+- `cd github-app && npm run test:unit` → `tests 151, pass 151, fail 0`; `npx tsc --noEmit` → no output, exit 0.
+- Root: `npm run typecheck` → exit 0 ("api: src/api/schema.d.ts matches openapi/fenvix-api.yaml"); `npm run
+  test:unit` → `tests 73, pass 73`.
+- `infra/github-app`: `npm test` → `tests 142, pass 142` (shellcheck is not installed here, so install.sh got
+  `bash -n` only).
+- Migration: Docker is installed, but `test:rls` only needs a scratch database, so it was run for real against a
+  throwaway Postgres 16 (`initdb` in /tmp, port 55432):
+  `TEST_DATABASE_URL=postgresql://postgres@localhost:55432/fenvix_scratch npm run test:rls` → API, CI, CI EXPLORE,
+  GH, WARM RLS OK and `RUNNERS CHECK OK`, "done: ...".
+- Without 0018 (0001-0017 only), `runners-check.sql` fails: `ERROR: ci_projects.test_runner: runner list is CHECK
+  ((test_runner = ANY (ARRAY['pytest'::text, 'vitest'::text, 'jest'::text, 'go test'::text])))`. That also shows the
+  constraint name `ci_projects_test_runner_check` is the one the migration replaces.
+- install.sh's `install_node`, extracted to a scratch prefix:
+  - pinned hash → `node-v22.23.5-linux-x64.tar.gz: OK`, exit 0, `v22.23.5`; run again → "already in", exit 0;
+  - wrong hash → `ERROR: SHASUMS256.txt of v22.23.5 does not list sha256 0000... for node-v22.23.5-linux-x64.tar.gz`,
+    exit 1, nothing extracted.
+
+**AC4: met (Python path unchanged).**
+- `$S/pyvenv/bin/python -m pytest -q -p no:randomly tests/test_runner_wrapper.py` (venv with the bootstrap-built
+  wheel) → `1 passed, 1 skipped`, on the branch AND on the trunk e733895 (worktree). The skip is the file's existing
+  `_STARTUP_RULE_NOT_PORTED` marker.
+- `tests/test_python_tests_classified.py` → passes.
+- `runner/local-demo.sh` (pygments, `FENVIX_HOME=$S/fhome`):
+  - branch: job 1 exit 0, job 2 exit 0, verify exit 0, rc 0 (4m03s);
+  - trunk e733895: the same, exit 0 / 0 / 0, rc 0;
+  - both: "tests 5313, reused with proof 0" then "tests 5314, reused with proof 0". Reuse 0 on job 2 is the same
+    before and after, so it was not introduced here.
+- `git diff e733895 -- runner/fenvix-run` removes only:
+  - the `write_step_summary` signature (new `runner_label="pytest"` default);
+  - the "Test time spent" line (now None-safe; always a number on the Python path);
+  - the "(pytest)" label line;
+  - `--project default="."`, which stays "." for the Python run and Python verify.
+
+**AC5: not done (blocked).**
+- The engine head contains both commits: `git merge-base --is-ancestor 81f838c6 HEAD` → exit 0, and the same for
+  `75816a73` → exit 0.
+- `engineCliCommit` was not set: there is no engine merge commit yet (see "Merge rule"), and the App cannot be pushed.
+
+## Summary fields with no Node source (written as null)
+
+- `test_seconds_run`: null only when detjs writes no `ran_files`. The source is cache-summary.json
+  `ran_files[*].duration` per file: the trace has no per-test duration (the spec said "trace durations").
+  `test_seconds_saved` = receipts' `duration` of reused file/unit rows.
+- `not_proven`, `status`: null when the trace header has no status (the run is then exit 1, see the review fixes).
+- `engine_version`: null if `detjs --version` fails.
+- `runtime.parts` / `runtime.runner_version`: null when detjs wrote no cache summary or trace header.
+- `cache_check_seconds` / `cache_record_seconds` / `epoch_ns`: null when absent from the cache summary.
+- `shared_cache`: always null (`fenvix-run node` supports a local cache only; a URL is exit 2).
+- `reused_from_shared_cache`: 0 (no shared cache).
+- Renamed or new: `runner_args` (for `pytest_args`); `language`, `test_runner`, `engine: "detjs"`, `trace_file`,
+  `cache_summary_file`, `reused_files`, `reruns`, `reason_texts`, `detjs_args`; after verify: `verify_status`,
+  `verify_exit`, `verify_counts`.
+- `not_cached` / `not_reused_reasons` keys are detjs reason texts turned into slugs ("os-entropy",
+  "outcome-failed"), because the App refuses keys outside `[A-Za-z0-9_.:-]{1,40}`. The full text is in
+  `reason_texts`.
+
+## E4: Node summaries rendered by the App (render.ts / summary.ts)
+
+Fixtures: `github-app/tests/fixtures/runner/node-*.summary.json`, from real `fenvix-run node` runs. Paths were
+rewritten to `/home/fenvix/...`. Each scenario is rendered in `results.test.ts`.
+
+Findings:
+- **Wrong render 1** (not a field mapping, so not fixed): the check-run text says "Engine: detpy 0.1.0" for every
+  Node summary (`render.ts` hard-codes "detpy").
+- **Wrong render 2** (not a field mapping, so not fixed): a verify failure renders ✅. The App has no verify fields,
+  and `conclusionOf` returns success when the summary's exit is 0, even if GitHub's job conclusion is failure.
+- **Fixed, a Node field mapping:** before ebaa2e7 the App REFUSED the node:test and mocha summaries ("summary.not_cached
+  has an unexpected key"), so nothing rendered. Keys are now slugs.
+
+vitest, warm, 5 reused:
+```
+### ✅ fenvix · 5 of 5 tests skipped with proof · under 0.1 min (0.3 s) saved · no failures
+| Tests | **5** | Tests run | 0 | Skipped with proof | **5** ([receipts](...)) | Minutes saved | **under 0.1 min (0.3 s)** (100.0% of test time) | Failures | 0 | Flaky, reproducible | 0 |
+check run text: "Test time: run under 0.1 min (0.0 s), skipped with proof under 0.1 min (0.3 s). Engine: detpy 0.1.0."
+```
+jest, cold, "0 reused":
+```
+### ✅ fenvix · 0 of 5 tests skipped with proof · under 0.1 min (0.0 s) saved · no failures
+| Tests | **5** | Tests run | 5 | Skipped with proof | **0** (...) | Minutes saved | under 0.1 min (0.0 s) (0.0%) | Failures | 0 | Flaky | 0 |
+check run text: "Why the other tests ran (an input changed, or no entry yet): new 3. ... Engine: detpy 0.1.0."
+```
+node:test, failed run (warm cache, FAIL=1):
+```
+### ❌ fenvix · 3 of 4 tests skipped with proof · under 0.1 min (0.0 s) saved · 1 failed
+| Tests | **4** | Tests run | 1 | Skipped with proof | **3** | Minutes saved | under 0.1 min (0.0 s) (57.8% of test time) | Failures | 1 | Flaky | 0 |
+### Failures
+- `fail.test.js::fails on demand`
+check run text: "Why the other tests ran: env 1. Not cacheable: outcome-failed 2. ... Engine: detpy 0.1.0."
+```
+mocha, verify failure (ENTROPY=1; run exit 0; verify_status diverged, verify_exit 1):
+```
+### ✅ fenvix · 0 of 5 tests skipped with proof · under 0.1 min (0.0 s) saved · no failures      <- WRONG: verify failed
+| Tests | **5** | Tests run | 5 | Skipped with proof | **0** | ... | Failures | 0 | Flaky | 0 |
+check run text: "Why the other tests ran: new 1. Not cacheable: os-entropy 6. ... Engine: detpy 0.1.0."
+```
+The full renders, with links, are in `$S/e4-renders.md`.
+
+## Engine findings (in `node/src` / `crates/`, which this task may not touch; reported only)
+
+- **E-1 vitest:** a reused **skipped** test is stored with an empty fingerprint, while a fresh run gives one. So
+  `detjs verify` says "diverged (beyond-trace)" with the same outcome, and verify exits 1 on a green suite. Cold vs
+  fresh: identical.
+- **E-2 node:test:**
+  - A skipped test (`{ skip: ... }`) is missing from the trace and from the outcomes. The suite reports 4 tests, not 5.
+  - With `--det-cache`, fs events from `<node>` (readdir of `<tmp>/rd-...`) are attributed to the last test of each
+    file, so a cache run never matches a run without the cache (verify "diverged: fs").
+- **E-3 mocha:** any glob spec (in `.mocharc.json` `spec`, or `'*.test.js'` on the command line) means NOTHING is
+  reused ("not cached: reads a clock Level 0 does not virtualize: fs.stat atimeMs"). Explicit file lists reuse. The
+  fixture lists its files explicitly, but most customer mocha setups use globs.
+- **E-4 verifier:** real OS entropy is DIVERGED(entropy), never NOT PROVEN (see AC2). A plain run that reads entropy
+  exits 0.
+- **E-5 npm 10.9.9:** `npm install` of vitest 5.1.0 fails with "Cannot read properties of null (reading 'edgesOut')"
+  (peer dependencies). The vitest fixture uses `.npmrc legacy-peer-deps=true` and pins `vite` 8.3.8 explicitly.
+  Customers on npm 10 may hit this outside fenvix.
+
+## gstack /review (merge rule)
+
+`/review` of `claude/node-runner` vs `claude/release-1`:
+- specialists testing, maintainability, security, performance and simplification, plus the red team and the Claude
+  adversarial pass;
+- Codex not installed, so outside coverage was unavailable;
+- 2 fix cycles, converged.
+
+Highest-severity findings:
+- red team CRITICAL: "green without proof when outcomes or trace status are missing". **Fixed** (d287443/962acfb,
+  tested with a stub detjs).
+- red team CRITICAL / adversarial High: "bootstrap install now dies without Node 22 on Python-only hosts".
+  **Kept**: the spec requires bootstrap to fail without node >= 22. Founder decision D2 = A, 2026-11-23: keep
+  bootstrap failing without Node >= 22.
+- re-review High: the first fix's prefix match dropped `--det-cache-verify` / `--det-cache-max-age` /
+  `--det-cache-real-clock`, and left `--det-trace FILE`'s value as a runner positional. **Fixed** (exact names,
+  value form; tested).
+- Final re-review of 962acfb: no material findings.
+
+Unresolved, low: malformed numeric values in detjs output give a traceback, which is exit 1, never green. A suite
+whose tests are all skipped exits 0 (as pytest does). The flaky re-run drops values of options given as
+`--opt value` unless known (fails safe: reported as failure, not flaky). Unchanged on both points: simplification
+advice was not applied.
+
+## CI (merge rule: no new failing job versus the trunk)
+
+Branch: release-1.yml LIGHT, run **45177168265** (workflow_dispatch on claude/node-runner, head 962acfb).
+Trunk: LIGHT run **45165824244** (push, head e733895 = this branch's base).
+
+| job | trunk 45165824244 | branch 45177168265 |
 |---|---|---|
-| 0 | `shard 0/4: 13 files` | failure: 3 failed, 210 passed, 15 skipped (failures listed under AC "merge rule") |
-| 1 | `shard 1/4: 13 files` | cancelled by fail-fast after shard 0 failed |
-| 2 | `shard 2/4: 13 files` | cancelled by fail-fast after shard 0 failed |
-| 3 | `shard 3/4: 13 files` | success: 145 passed, 4 skipped |
+| build | success | success |
+| smoke (python), smoke (node) | success, success | success, success |
+| attacks (py 3.13, node 24) | failure | failure |
+| node (24, shard 0/4) | failure | failure |
+| node (24, shard 1/4), (2/4), (3/4) | success, success, cancelled | cancelled, success, cancelled |
+| python (3.13, shard 0/4) | **failure**: `test_packaging.py::test_gate_runs_on_pull_requests_and_trunk_only_and_cancels_only_superseded_pr_runs` (parallel-node.yml has a `push:` trigger), and 2 in `test_py_cache.py` | cancelled (fail-fast) |
+| python (3.13, shard 1/4), (2/4) | success, success | success, cancelled |
+| python (3.13, shard 3/4) | success | **failure**: the same `test_packaging.py::test_gate_runs_...` (`AssertionError: parallel-node.yml`); `1 failed, 164 passed, 4 skipped` |
 
-13 + 13 + 13 + 13 = 52 = the number of `shared` files. Shard 0 extra steps:
-- selection step printed `runners=` (empty), `numpy=tests/test_clock.py::test_time_machine_travel_is_honoured tests/test_clock_rust.py tests/test_level0_seeds_fsorder_rust.py`,
-  `hyp=tests/test_clock.py::test_real_pytest_benchmark tests/review_r032/test_review_r032_python.py::test_p12_hypothesis_profile_env`
-- runner suites step: **skipped**; R-001 step: **skipped**
-- numpy step: ran its 3 `shared` targets (all of them are shared): `30 passed in 60.73s`
-- hypothesis step: ran its 2 `shared` targets (`tests/test_runners_unittest.py::...` is python-product, left out): `2 passed in 11.37s`
-- `install` and `publish-engine`: skipped (LIGHT, as before).
+- **Job level: no new failing test.** 3 failing jobs on each side. The one that moved is the trunk's own
+  `test_packaging` failure: `release/shard.py` splits by size, and adding `tests/test_runner_node.py` to the shared
+  list moved `test_packaging.py` from shard 0 to shard 3. `python3 release/shard.py 4 <i> ... --only shared` places
+  it in shard 0 on the trunk and shard 3 on the branch. This branch does not touch `.github/workflows/`.
+- **Not shown by CI:** `tests/test_runner_node.py` falls in branch shard 0/4. Fail-fast cancelled that shard at
+  12:59:56, after 11 min, when shard 3/4 failed. Its log artifact `python-3.13-s0` is 189 bytes (the pytest output
+  goes through `tee | tail` and was cut off).
+  - So CI gives no result for the new shared test.
+  - Whether ubuntu-latest's `node` is >= 22 in the Python job is not known. The test fails, never skips, without
+    Node 22 and detjs. It uses `dist/detjs.linux-x64.node` via DETJS_NATIVE.
+  - Locally (bootstrap-installed detjs, Node 22.23.5): 47 passed.
+- Run 45175492965 (head ebaa2e7, before the review fixes) was cancelled by me after the fixes; its results are not used.
 
-**FULL: run 45156460246** (depth `full`), python job env `FULL: true`:
-- Jobs: 41, the same 41 job names as the trunk's last FULL run 45019748065 (`diff` of the sorted name lists: empty),
-  `publish-engine` skipped on both (it runs only on the trunk). Every python shard-0 job has every step of the trunk's
-  (main suites, runner suites, numpy, hypothesis, R-001) plus the new selection step.
-- python 3.13 shard lines: `shard 0/4: 28 files`, `shard 1/4: 27 files`, `shard 2/4: 28 files`, `shard 3/4: 28 files`
-  -> 111 = all selected files. The selection step printed the full target lists (all runner, numpy and hypothesis targets).
-- Conclusions: failure, like the trunk's FULL runs; fail-fast cancelled many jobs (as in 45019748065). Failing: attacks
-  (py 3.12, node 26), node (22, shard 0/4), python (3.13, shard 3/4: 14 failed, the same 14 tests as the trunk's
-  LIGHT python 3.13 shard 3/4 in run 45154789017), python 3.13 shard 0/4 main step (2 `test_py_cache.py` failures,
-  pre-existing, see below).
+## Merge rule
 
-### AC5: workflow index
-`.github/workflows/README.md`: the gate section (release-1.yml, LIGHT on push/pull_request, FULL nightly and by hand,
-`publish-engine` on FULL only) and 30 rows (`grep -c '^| \`' .github/workflows/README.md` -> 30), one per other `.yml`,
-with file, one-sentence purpose, trigger as written in its `on:` block, and "in the 22 Dec plan". `parallel-node.yml`'s
-row states that its push trigger names `claude/parallel-node`, already merged (5a6463f). `fenvix-demo-jobs.yml` is listed with
-its callers (`fenvix-demo.yml`, `fenvix-demo-hosted.yml`).
+**Engine not merged into `claude/release-1`. App not merged into `main`.**
+- Tests pass (local) and the gstack /review has no unresolved highest-severity finding (one kept because the spec
+  requires it; it needs a founder decision, see above). The job-level CI comparison shows no new failing job.
+- But CI never completed the new shared test, so "no new failing test" cannot be shown. Merging it into the gate
+  could add a red test to shard 0/4.
+- And with the App unpushable, merging the engine would not let `engineCliCommit` move either.
+- To merge, one of:
+  - (a) a CI run in which python shard 0/4 completes (fail-fast stops it while the trunk's
+    `test_packaging` / `test_py_cache` failures exist);
+  - (b) the founder accepts the local evidence.
+  Then: merge `claude/node-runner` (head 962acfb) into `claude/release-1`, set `engineCliCommit` to that merge
+  commit, push and merge the App.
 
-### AC6: no workflow deleted; diff limited to the allowed paths (MEASURED)
-```
-$ git diff --stat 81f838c..HEAD
- .github/workflows/README.md           |  55 +++++++++++++++
- .github/workflows/release-1.yml       |  56 +++++++++++----
- REPORT.md                             | 583 ++++++++----------- (replaces Lane B's report)
- release/python-tests.txt              | 124 ++++++++++++++++++++++++++++++++++
- release/python_tests.py               |  53 +++++++++++++++
- release/shard.py                      |  30 +++++++-
- tests/test_python_tests_classified.py | 116 +++++++++++++++++++++++++++++++
-```
-No change under `node/`, `python/detpy/`, `crates/`, `harness/`, and no other workflow file.
+## To unblock
 
-## Merge rule (red trunk, founder 2026-11-23)
+1. Done: push access to fenvix-app was granted, and the App branch is pushed (47b5308).
+2. Engine merge: needs a CI run in which python shard 0/4 completes, or the founder's OK on the local evidence.
+   After the engine merge, set `infra/github-app/cdk.json` `engineCliCommit` to the engine merge commit. Run
+   `git merge-base --is-ancestor 81f838c6 <merge>` and `... 75816a73 <merge>` (both exit 0 on head 962acfb). Then
+   merge the App into `main` after its own CI.
+3. Decide E-1/E-2/E-4 (engine): until then, `fenvix-run verify` is red on green vitest and node:test suites.
 
-LIGHT on the branch vs LIGHT on the trunk (same depth, same Python/Node versions):
-
-| | trunk run 45154789017 (push, 81f838c) | branch run 45156487688 (light, 7ada7e8) |
-|---|---|---|
-| failing jobs | `attacks (py 3.13, node 24)`, `node (24, shard 0/4)`, `python (3.13, shard 3/4)` | `attacks (py 3.13, node 24)`, `node (24, shard 0/4)`, `python (3.13, shard 0/4)` |
-| count | 3 | 3 |
-
-The python job index differs because LIGHT splits a different file set (52 files instead of 111), so shard k holds
-other files. At test level, every failing Python test of the branch run also fails on the trunk:
-- `tests/test_packaging.py::test_gate_runs_on_pull_requests_and_trunk_only_and_cancels_only_superseded_pr_runs`
-  (`AssertionError: parallel-node.yml`): fails in the trunk run's python (3.13, shard 3/4) (MEASURED, its log) and
-  locally on 81f838c (MEASURED: `python3 -m pytest -q tests/test_packaging.py::test_gate_runs...` -> 1 failed, on both commits).
-- `tests/test_py_cache.py::test_the_virtual_clocks_own_probe_of_threads_is_not_the_tests_read` and
-  `tests/test_py_cache.py::test_g2214_a_test_that_crashes_its_worker_is_a_record_of_the_merged_trace`: on the trunk run
-  this file was in python (3.13, shard 0/4), cancelled by fail-fast before pytest reported. MEASURED locally with a
-  wheel built from this tree (`maturin build --release`, engine code identical on both commits:
-  `git diff --stat 81f838c..HEAD -- crates python node tests/test_py_cache.py tests/conftest.py` is empty):
-  `2 failed` on a worktree of 81f838c and `2 failed` on this branch. They also fail in the branch FULL run.
-The 13 other tests failing in the trunk's python job are `python-product` (`test_r023c_fixes.py`, `test_review_r056_pycache.py`)
-and now run on FULL only, where they still fail (branch FULL run, python 3.13 shard 3/4).
-Conclusion: failing jobs on the branch (3) <= on the trunk (3), with no new failing test. The rule holds.
-
-## gstack /review
-
-Run on the branch (5 specialists: testing, maintainability, security, performance, simplification; adversarial pass;
-adversarial re-review of the fixes). No unresolved highest-severity finding. Fixed:
-- unknown `--only`/`select` label or an empty `shared` selection gave a green LIGHT run with 0 tests -> now exit 1;
-- the empty-shard early exit applied to FULL too -> LIGHT only;
-- a failing selection step would have skipped shard 0's main suites -> the step now runs after them;
-- the FULL expression is copied from the matrix -> a test asserts they are identical;
-- no tests for `--only`/`select` -> added; the guard test uses the CI parser and also rejects listed-but-unselected files;
-- two files mislabelled `python-product` -> `shared` (see AC1).
-Gate edits: 7 listed, 4 read, 0 findings. Record logged with `completed: true`, `converged: false`, `cycles: 2`.
-
-## python-product files, one reason each (59)
-
-| File | Reason it is `python-product` |
-|---|---|
-| `tests/test_absent_inputs_r019c.py` | R-019c: absent inputs of the pytest cache with proof (`--det-cache`), serial and `-n`; Python plugin behaviour. |
-| `tests/test_carried_library_memo.py` | Parallel-proof round 3: carried-set rule for state memoised by a third-party Python library under pytest `--det-cache`. |
-| `tests/test_culprit_keys.py` | `--det-cache-keys`, a pytest-plugin option (culprit-finder prototype). |
-| `tests/test_dep_verdict_distid.py` | `--det-cache-dists` / `detpy.distid`: Python distribution identity for the dependency verdict (Python only). |
-| `tests/test_dep_verdict_r020_fixes.py` | Dependency-update verdict fixes (R-020) in the pytest plugin. |
-| `tests/test_dep_verdict_r020b_fixes.py` | Dependency-update verdict fixes (R-020b) in the pytest plugin. |
-| `tests/test_det_stale_bytecode.py` | R-019b N5: pytest `--det` replay runs the checked-out source, not stale Python bytecode. |
-| `tests/test_django_order.py` | pytest-django test groups under `--det` (runner integration; runner-suite step). |
-| `tests/test_django_pytest_cache.py` | Django under pytest `--det-cache` (runner integration; runner-suite step). |
-| `tests/test_epoch.py` | Python virtual wall clock starts at the HEAD commit time (Python-only control). |
-| `tests/test_fsorder.py` | Python normalised filesystem order control (`detpy.fsorder`) through the plugin; no direct `_core` call. |
-| `tests/test_harness_timing_report.py` | Timing report of the Python measurement harness (R-001 recheck); no engine code Node uses. |
-| `tests/test_network.py` | Python closed-network control and record/replay (`detpy.network`). |
-| `tests/test_nonbinding.py` | Python builtins replaced by detpy keep their (non-)binding as class attributes (Python-only control). |
-| `tests/test_nonbinding_generic.py` | Same property over the Python patcher's undo log (R-003 E4). |
-| `tests/test_order.py` | pytest test order and `--det-seed` shuffle (plugin behaviour). |
-| `tests/test_parallel_proof_r023_fixes.py` | R-023 fixes of parallel with proof for pytest-xdist. |
-| `tests/test_precompile_stamp.py` | `--det` Python bytecode precompile of library directories (`detpy.reexec`). |
-| `tests/test_proofcache.py` | pytest cache with proof (`--det-cache`); its verify is `--det-cache-verify` (re-run and compare), not `fenvix verify`. |
-| `tests/test_proofcache_follow.py` | pytest cache with proof: following child processes of Python tests. |
-| `tests/test_proofcache_import_lookups.py` | Python negative import lookups in the pytest cache key. |
-| `tests/test_r015_fixes.py` | R-015 fixes: Python code file changed during a pytest `--det-cache` session. |
-| `tests/test_r015b_fixes.py` | R-015b fixes of the pytest cache with proof. |
-| `tests/test_r023c_fixes.py` | R-023c fixes of the pytest parallel-proof rules. |
-| `tests/test_r032b_engine.py` | R-032b F1-F3 on the pytest plugin. |
-| `tests/test_repro.py` | `detpy repro` search and minimisation for pytest suites (Python product); the Rust decisions have their own `shared` file, `tests/test_repro_rust.py`. |
-| `tests/test_review_b1_randomly_options.py` | Options of a blocked pytest plugin (pytest-randomly) registered in the child. |
-| `tests/test_review_b4_p005_rule.py` | P-005 rule for pytest-xdist baselines (Python classification rule). |
-| `tests/test_review_lock_type.py` | R-001: Python `threading.Lock` type under `--det` (Python-only control). |
-| `tests/test_review_plugin_options.py` | R-001: pytest plugin options (`-p no:randomly`). |
-| `tests/test_review_r008b.py` | R-008b: Python site directories and import paths in the pytest cache key. |
-| `tests/test_review_r008d.py` | R-008d: subprocess started at pytest start-up. |
-| `tests/test_review_r009.py` | R-009: child processes and cache epoch of the pytest cache with proof. |
-| `tests/test_review_r009b.py` | R-009b: wrong-reuse holes of the pytest cache with proof. |
-| `tests/test_review_r015.py` | R-015: pytest results recorded under code that did not produce them; reaches Rust only through the pytest plugin, never `detpy._core` directly. |
-| `tests/test_review_r015b.py` | R-015b: same family (followed children, symlinked modules, doctest files) in the pytest plugin. |
-| `tests/test_review_r017.py` | R-017: pytest assertion-rewrite pycs and temporary names under `--det`. |
-| `tests/test_review_r017b.py` | R-017b: pytest assertion rewriting patched by a plugin under `--det-cache`. |
-| `tests/test_review_r023c.py` | R-023c: adversarial tests of the pytest parallel-proof rules. |
-| `tests/test_review_r052_pycache.py` | R-052: Python per-file cache, stale needs after a code change. |
-| `tests/test_review_r053_pycache.py` | R-053: Python per-file cache wrong results. |
-| `tests/test_review_r056_pycache.py` | R-056: channels through which a cached pytest outcome differs from an uncached one. |
-| `tests/test_review_t1_extra.py` | R-003 T1: Python builtins as class attributes under `--det`. |
-| `tests/test_rewrite_cache.py` | pytest assertion-rewritten modules in the deterministic bytecode cache. |
-| `tests/test_rewrite_cache_own_format.py` | Same, detpy's own format for pytest < 9.2. |
-| `tests/test_round4_capture.py` | Python input capture under tools that patch `os.path`. |
-| `tests/test_runner_wrapper.py` | `runner/fenvix-run`, the Python CI wrapper; its `verify` re-runs pytest and compares outcomes (`cmd_verify`), not the trace verifier; Node does not use it. |
-| `tests/test_runners_django.py` | `python -m detpy django` runner integration (runner-suite step). |
-| `tests/test_runners_doctest.py` | `python -m detpy doctest` runner integration. |
-| `tests/test_runners_nose2.py` | `python -m detpy nose2` runner integration (runner-suite step). |
-| `tests/test_runners_unittest.py` | `python -m detpy unittest` runner integration. |
-| `tests/test_runners_ward.py` | `python -m detpy ward` runner integration (runner-suite step). |
-| `tests/test_runners_ward_support.py` | `python -m detpy ward` when ward cannot run (runner integration). |
-| `tests/test_runners_zope.py` | `python -m detpy zope-testrunner` runner integration (runner-suite step). |
-| `tests/test_seeds.py` | Python seeds for `random`, numpy and `PYTHONHASHSEED` (Python-only control); the Rust side is in the `shared` file `tests/test_level0_seeds_fsorder_rust.py`. |
-| `tests/test_sqlite_virtual.py` | Python SQLite date/time and random functions under Level 0 (`crates/detpy-py`, the Python-only crate). |
-| `tests/test_startup_digest.py` | R-008d FIX 7: pytest start-up process digest. |
-| `tests/test_startup_spawn.py` | Process started while pytest starts is not a test input. |
-| `tests/test_timed_lock_enter.py` | Python `detpy.clock._TimedLock` (pydantic-ai flaky verdict); Python-only control. |
-
-## Left open
-
-- The end date 2026-12-22 is written in comments and the list header only; nothing fails or warns after it
-  (review finding, INFORMATIONAL). The founder decides at the review whether to extend, end or enforce it.
-- Labels are per file: a `python-product` file is skipped on LIGHT as a whole. Five files were added to `shared` by
-  reading them; the rest follow the spec's grep plus one reason each above.
-- LIGHT and FULL split files into shards differently, so an order/site-packages interaction between files of one shard
-  could show on one depth only (review finding, INFORMATIONAL).
-- Pre-existing trunk failures seen in these runs (not changed here): `test_packaging.py` (parallel-node.yml push trigger),
-  two `test_py_cache.py` verify tests, the `test_review_r056_pycache.py`/`test_r023c_fixes.py` group, attacks, node 24 shard 0.
+Not checked: the AWS image (nothing deployed), real customer repositories, shellcheck on install.sh, and
+`release/engine/install.sh` / the pinned-artifact mode for Node.
