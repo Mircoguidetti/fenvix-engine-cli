@@ -32,3 +32,9 @@ fetch claudekit carlrannaberg/claudekit f22a4f9030520394bf1a517b46ad7585badf5130
 fetch sqlectron sqlectron/sqlectron b0f5e24015bca7974fbce6ab5e4ada69d51b48b3
 (cd sqlectron && npm install --ignore-scripts --no-audit --no-fund)
 echo SETUP-DONE
+
+# DEVIATION (run after the measure loop, 2026-11-23): sqlectron's spec install line (--ignore-scripts) leaves sqlite3
+# without its native binding, so 3 of its 7 test files fail to load (14 tests instead of the 42 of the earlier
+# engine rows). The sqlectron rows under harness/p1/data/before/sqlectron-rebuilt/ were measured after this step;
+# the verbatim ones (14 tests) are kept under harness/p1/data/before/sqlectron/.
+# (cd "$PM_WORK/repos/sqlectron" && npm rebuild sqlite3)

@@ -32,6 +32,7 @@ from __future__ import annotations
 
 import argparse
 import collections
+import gzip
 import json
 import os
 import re
@@ -43,21 +44,37 @@ E_OPS = re.compile(r"^fs\.(?:stat|readdir\w*|promises\.readdir)$")
 F_OPS = {"uncontrolled.io", "io.release"}
 
 
+def opn(path):
+    """A file or its committed gzip copy (harness/p1/data/: files over 1 MB are gzipped)."""
+    if not os.path.exists(path) and os.path.exists(path + ".gz"):
+        return gzip.open(path + ".gz", "rt")
+    return open(path)
+
+
+def exists(path):
+    return os.path.exists(path) or os.path.exists(path + ".gz")
+
+
 def load(path):
-    with open(path) as f:
+    with opn(path) as f:
         return json.load(f)
 
 
 def header(path):
-    with open(path) as f:
+    """The trace header: the trace (OUT from measure.py) or its committed first line (<name>.header.json)."""
+    if not exists(path):
+        path = path[: -len(".jsonl")] + ".header.json"
+    with opn(path) as f:
         h = json.loads(f.readline())
     return h.get("meta", h)
 
 
 def trace_events(path, ids):
-    """nodeid -> events, for the tests in `ids` only (traces are large)."""
+    """nodeid -> events, for the tests in `ids` only (traces are large; not committed: E needs OUT)."""
     out = {}
-    with open(path) as f:
+    if not exists(path):
+        return out
+    with opn(path) as f:
         for line in f:
             if not line.startswith('{"type":"test"'):
                 continue
@@ -132,14 +149,20 @@ def main():
     ap.add_argument("--json")
     ap.add_argument("--e-dir")
     ap.add_argument("--round", type=int, default=1)
+    ap.add_argument("--pair", choices=["par", "serial"], default="par",
+                    help="par: verify<round>w4.json (S<round> vs P<round>w4, the default); serial: "
+                         "verify_serial_noise2w1.json (S1 vs S2: what a run-level difference hides in the other pair)")
     o = ap.parse_args()
     base = os.path.join(o.out, o.repo)
-    vpath = os.path.join(base, f"verify{o.round}w4.json")
+    vpath = os.path.join(base, f"verify{o.round}w4.json" if o.pair == "par" else "verify_serial_noise2w1.json")
     v = load(vpath)
     npath = os.path.join(base, "verify_serial_noise2w1.json")
-    noise = load(npath) if os.path.exists(npath) else None
-    noisy = {t["nodeid"] for t in (noise or {}).get("tests", []) if t["status"] not in IDENTICAL}
+    noise = load(npath) if exists(npath) and o.pair == "par" else None
+    noise_tests = {t["nodeid"]: t for t in (noise or {}).get("tests", []) if t["status"] not in IDENTICAL}
+    noisy = set(noise_tests)
     s_path, p_path = os.path.join(base, f"S{o.round}.jsonl"), os.path.join(base, f"P{o.round}w4.jsonl")
+    if o.pair == "serial":
+        s_path, p_path = os.path.join(base, "S1.jsonl"), os.path.join(base, "S2.jsonl")
     hs, hp = header(s_path), header(p_path)
     outside_env = set(hs.get("env_read_outside_tests") or []) | set(hp.get("env_read_outside_tests") or [])
 
@@ -153,6 +176,12 @@ def main():
             e_cand.add(t["nodeid"])
     s_ev = trace_events(s_path, e_cand) if e_cand else {}
     p_ev = trace_events(p_path, e_cand) if e_cand else {}
+    committed = os.path.join(base, "E", "events.json")
+    if e_cand and not exists(s_path) and os.path.exists(committed) and o.pair == "par":
+        # the committed data: the fs.stat / fs.readdir* events of each E test, both traces (written by --e-dir)
+        ev = load(committed)
+        s_ev = {k: v["serial"] for k, v in ev.items()}
+        p_ev = {k: v["parallel"] for k, v in ev.items()}
 
     def e_sel(evs):
         return sorted((e.get("o"), e.get("at"), e.get("v")) for e in evs if E_OPS.match(e.get("o", "")))
@@ -178,6 +207,8 @@ def main():
     f_detail = collections.Counter()
     run_level = 0
     a_star = 0
+    noise_hidden = collections.Counter()
+    noise_hidden_reason = collections.Counter()
     run_level_first = collections.Counter()
     examples = collections.defaultdict(list)
     for t in bad:
@@ -193,6 +224,15 @@ def main():
             c = "noise" if t["nodeid"] in noisy else "other"
             if c == "other":
                 other[d.get("reason", t["status"])] += 1
+            else:
+                # the serial-vs-serial verdict of a noise test may itself be an A-F false alarm (A or B make every
+                # test of both pairs not identical): then it is no evidence of noise; counted apart, with the reason
+                # the S1-vs-P1 verdict gives
+                nc = classify(noise_tests[t["nodeid"]], outside_env, {})
+                nc = "A" if nc == "A*" else nc
+                if nc:
+                    noise_hidden[nc] += 1
+                    noise_hidden_reason[d.get("reason", t["status"])] += 1
         counts[c] += 1
         status_of[c][t["status"]] += 1
         if t["nodeid"] in noisy:
@@ -207,11 +247,16 @@ def main():
             examples[c].append({"nodeid": t["nodeid"], "status": t["status"], "reason": d.get("reason"),
                                 "op": ev.get("o"), "at": ev.get("at"), "description": (d.get("description") or "")[:300]})
 
-    rows = [json.loads(l) for l in open(os.path.join(o.out, "results.jsonl")) if l.strip()]
+    rpath = os.path.join(o.out, "results.jsonl")
+    if not os.path.exists(rpath):
+        rpath = os.path.join(base, "results.jsonl")  # the committed copy: the repository's rows only
+    rows = [json.loads(l) for l in open(rpath) if l.strip()]
     rows = [r for r in rows if r.get("repo") == o.repo]
-    vrow = next((r for r in rows if r.get("kind") == "verify" and r.get("rep") == o.round and r.get("workers") == 4), {})
+    vrow = next((r for r in rows if (r.get("kind"), r.get("rep"), r.get("workers")) ==
+                 (("verify", o.round, 4) if o.pair == "par" else ("verify_serial_noise", 2, 1))), {})
     res = {
         "repo": o.repo,
+        "pair": o.pair,
         "engine_commit": sorted({r.get("engine_commit") for r in rows if r.get("engine_commit")}),
         "verify_cmd": vrow.get("cmd"),
         "verify_file": os.path.relpath(vpath, o.out),
@@ -229,6 +274,8 @@ def main():
         "input_differences": [x.get("name") for x in v.get("input_differences", [])],
         "noise_pair_not_identical": len(noisy) if noise else None,
         "other_by_reason": dict(other.most_common()),
+        "noise_whose_serial_pair_verdict_is_A_F": dict(noise_hidden),
+        "noise_whose_serial_pair_verdict_is_A_F_by_reason": dict(noise_hidden_reason.most_common()),
         "F_detail": dict(f_detail.most_common()),
         "B_abs_top20": abs_paths.most_common(20),
         "env_read_outside_tests": len(outside_env),
