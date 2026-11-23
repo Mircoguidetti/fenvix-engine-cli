@@ -338,6 +338,75 @@ fn verify_with(paths: Vec<PathBuf>, ignore_env: Vec<String>, show_stable: bool) 
     Ok((json, v::render_text(&report, show_stable)))
 }
 
+/// A `std::io::Write` that hands what it is given to a Python file object (`sys.stdout`) in chunks of about 1 MiB,
+/// cut at UTF-8 character boundaries, so a large report is never held whole as a string on either side.
+struct PyChunkWriter<'py> {
+    out: Bound<'py, PyAny>,
+    buf: Vec<u8>,
+}
+
+impl PyChunkWriter<'_> {
+    fn send(&mut self, all: bool) -> std::io::Result<()> {
+        let valid = match std::str::from_utf8(&self.buf) {
+            Ok(_) => self.buf.len(),
+            Err(e) => e.valid_up_to(),
+        };
+        let n = if all { self.buf.len() } else { valid };
+        if n == 0 {
+            return Ok(());
+        }
+        let text = String::from_utf8_lossy(&self.buf[..n]).into_owned();
+        self.out.call_method1("write", (text,)).map_err(std::io::Error::other)?;
+        self.buf.drain(..n);
+        Ok(())
+    }
+}
+
+impl std::io::Write for PyChunkWriter<'_> {
+    fn write(&mut self, data: &[u8]) -> std::io::Result<usize> {
+        self.buf.extend_from_slice(data);
+        if self.buf.len() >= 1 << 20 {
+            self.send(false)?;
+        }
+        Ok(data.len())
+    }
+    fn flush(&mut self) -> std::io::Result<()> {
+        self.send(true)
+    }
+}
+
+/// `fenvix verify` / `detpy verify` in bounded memory (P0 big trace): the report is written to `out` (a Python file
+/// object) as it is serialized -- the JSON report plus a newline with `as_json`, else the text rendering with its
+/// first `detpy verify` replaced by `prog` -- and only the report's `summary` is returned (JSON), for the exit code.
+/// The bytes written are those `verify_with` returned; a report of 1.2 GB (agentic-qe: 30765 tests, each naming 537
+/// differing inputs) is no longer held as one Rust string, one Python string and one parsed Python object at once.
+#[pyfunction]
+#[pyo3(signature = (paths, ignore_env, show_stable, as_json, out, prog))]
+fn verify_write(
+    paths: Vec<PathBuf>,
+    ignore_env: Vec<String>,
+    show_stable: bool,
+    as_json: bool,
+    out: Bound<'_, PyAny>,
+    prog: String,
+) -> PyResult<String> {
+    use std::io::Write;
+    let report = v::verify_paths_ignoring(&paths, &ignore_env).map_err(trace_err)?;
+    let summary = serde_json::to_string(&report.summary).map_err(|e| PyRuntimeError::new_err(e.to_string()))?;
+    let io = |e: std::io::Error| PyRuntimeError::new_err(e.to_string());
+    let mut w = PyChunkWriter { out, buf: Vec::with_capacity(1 << 20) };
+    if as_json {
+        serde_json::to_writer(&mut w, &report).map_err(|e| PyRuntimeError::new_err(e.to_string()))?;
+        w.write_all(b"\n").map_err(io)?;
+    } else {
+        let text = v::render_text(&report, show_stable);
+        drop(report);
+        w.write_all(text.replacen("detpy verify", &prog, 1).as_bytes()).map_err(io)?;
+    }
+    w.flush().map_err(io)?;
+    Ok(summary)
+}
+
 /// Verify traces and render a human-readable report.
 #[pyfunction]
 #[pyo3(signature = (paths, show_stable = false))]
@@ -445,6 +514,7 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(verify, m)?)?;
     m.add_function(wrap_pyfunction!(verify_text, m)?)?;
     m.add_function(wrap_pyfunction!(verify_with, m)?)?;
+    m.add_function(wrap_pyfunction!(verify_write, m)?)?;
     m.add_function(wrap_pyfunction!(net_redact, m)?)?;
     m.add_function(wrap_pyfunction!(derive_seed, m)?)?;
     m.add_function(wrap_pyfunction!(shuffle_order, m)?)?;

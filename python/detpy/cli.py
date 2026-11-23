@@ -116,13 +116,13 @@ def main(argv: list[str] | None = None) -> int:
     if missing:
         print(f"detpy verify: trace not found: {', '.join(missing)}", file=sys.stderr)
         return 2
+    # written as it is serialized, only the summary comes back (P0 big trace, as python/detpy/fenvix.py cmd_verify)
     try:
-        report_json, text = _core.verify_with(args.traces, args.ignore_env, args.show_stable)
+        s = json.loads(_core.verify_write(args.traces, args.ignore_env, args.show_stable, args.json, sys.stdout,
+                                          "detpy verify"))
     except Exception as e:  # unreadable or incompatible traces: one line, no traceback
         print(f"detpy verify: {e}", file=sys.stderr)
         return 2
-    print(report_json if args.json else text, end="\n" if args.json else "")
-    s = json.loads(report_json)["summary"]
     # an empty run (collection failed) verifies nothing (G-1538); 3: input differs only (design A)
     from .fenvix import verify_exit_code
 
