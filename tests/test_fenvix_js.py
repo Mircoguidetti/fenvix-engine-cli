@@ -304,6 +304,10 @@ def test_run_dependent_id_is_reproduced_by_its_stable_id(runner, env, monkeypatc
     ext = SUITE[runner]["ext"]
     (d / "tests" / f"c{ext}").write_text(SUITE[runner]["head"] + STAMPED_FILE)
     monkeypatch.chdir(d)
+    # opt-out of the host epoch (spec 2026-11-23, det-host-values): the test compares ids across two separate
+    # sessions (its own collect, the adapter's repro), which share the fixed epoch only when it is set for both
+    monkeypatch.setenv("DETJS_EPOCH", "2025-01-01T00:00:00Z")
+    monkeypatch.setenv("DETJS_EPOCH_RUN", "1")
     a = fenvix_js.ADAPTERS[runner]
     r = fenvix_js.DetjsRunner(cwd=d, workdir=d / "w", runner=runner)
     ids = [t for t in r.collect() if t.startswith(f"tests/c{ext}::stamped ")]

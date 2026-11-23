@@ -106,10 +106,18 @@ class DetjsRunner(_repro.Runner):
 
     runner: str = "vitest"
     detjs: list | None = None
+    epoch: str | None = None
 
     def __post_init__(self):
         if self.detjs is None:
             self.detjs = detjs_command() or ["detjs"]
+        # One epoch for every detjs run of this repro session (spec "--det uses the machine's values by default",
+        # 2026-11-23: a detjs run started on its own picks the machine's time): the epoch of the run this driver
+        # belongs to (bin/detjs.js repro exports it), else the machine's time now, rounded down to the second.
+        if self.epoch is None:
+            env = self.env if isinstance(getattr(self, "env", None), dict) else os.environ
+            inherited = env.get("DETJS_EPOCH") if env.get("DETJS_EPOCH_RUN") == "1" else None
+            self.epoch = inherited or time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
     @property
     def runner_args(self) -> list:
@@ -118,6 +126,8 @@ class DetjsRunner(_repro.Runner):
     def _cmd(self, config: str, extra: list) -> list:
         extra = ["--det-collect" if a == "--collect-only" else a for a in extra]
         cmd = [*self.detjs, self.runner, *SUBCOMMAND.get(self.runner, []), "--det", *extra]
+        if self.epoch and not any(str(a).startswith("--det-epoch") for a in [*extra, *self.pytest_args]):
+            cmd.append(f"--det-epoch={self.epoch}")
         if config != _repro.FIXED:
             cmd.append(f"--det-seed={int(config)}")
         return [*cmd, *self.pytest_args]
