@@ -2,26 +2,41 @@ BLOCKED
 
 # REPORT — Engine P0: no false green (branch `claude/p0-no-false-green`, from `claude/release-1` @ bfaf70b4)
 
-## Why BLOCKED (three independent reasons)
+## Why BLOCKED
 
-1. **Merge step BLOCKED: the gstack `/review` skill is not installed.** `ls ~/.claude/skills/gstack/review/SKILL.md`
-   -> `No such file or directory` (MEASURED). As the coordinator instructed, nothing was merged into
-   `claude/release-1`; the branch is pushed.
-2. **AC5 (Jest half) BLOCKED: the contract conflicts with Jest 30.** AC5 asks that a Jest file with a failing
-   `beforeAll` and two tests leaves both in the trace as `skipped`. Jest 30 (circus) does not keep those tests
-   from the per-test hook: it dispatches `test_start`/`test_done` for each and fails it with the hook's error.
-   MEASURED on bfaf70b4 (`detjs jest --det` on the AC5 fixture): the trace already has both tests, outcome
-   `failed`; on this branch the same. B5 covers only tests that *never reached* the per-test hook, and rewriting a
-   failure Jest reported as `skipped` would turn a red test into a non-failure — against the product promise. Not
-   reinterpreted: `node/test/trace-skipped.test.js` checks for Jest what B5 guarantees (both tests in the trace,
-   the runner's own outcome), with the conflict written in the test. The founder decides whether AC5's Jest
-   expectation should read "in the trace" or something else. (I also searched for a Jest case that DOES leave tests
-   out of the trace — filtered `test.concurrent`, `-t`: none, on bfaf70b4 or here, MEASURED.)
-3. **AC8 is not met and cannot be met by this branch alone: the trunk itself is red.** `release-1.yml` on
-   `claude/release-1` @ bfaf70b4 (run 45041985747, push): jobs `attacks`, `python (3.13, shard 0/4)`,
-   `python (3.13, shard 3/4)`, `node (24, shard 1/4)` failed (DECLARED by the GitHub Actions API,
-   `list_workflow_jobs`). Locally, the 4 Node test files that fail on this branch fail identically on bfaf70b4
-   (below). CI on this branch: see AC8.
+1. **The gstack `/review` skill is not installed, so the review and the merge did not run.** `ls
+   ~/.claude/skills/gstack/review/SKILL.md` -> `No such file or directory` (MEASURED). The coordinator's message of
+   2026-11-23 gave an install command (clone `garrytan/gstack` into `~/.claude/skills/gstack`, install bun, run its
+   `./setup`); in this container that command was **denied by the session's permission system** and was not run
+   or worked around. Nothing was merged into `claude/release-1`; the branch is pushed. To unblock: install gstack in
+   a session where that is permitted (or pre-install it in the environment) and run `/review` on this branch.
+2. **Merge rule for a red trunk (coordinator, 2026-11-23): its condition holds, the merge still waits for (1).**
+   The tests that fail on this branch are the same as those that fail on bfaf70b4 — not more — in every suite:
+   see "Failing tests: branch vs trunk" below. Because the new rule reached this session as a message from another
+   session rather than from the user, and a merge pushes to the trunk, I also leave the merge itself to a session
+   that can run `/review` and has that rule confirmed.
+
+AC5, Jest half: **resolved** by the founder's decision relayed by the coordinator (2026-11-23): for Jest the
+criterion is "both tests are in the trace with the outcome Jest reports (`failed`)"; Vitest stays `skipped`. That
+is what `node/test/trace-skipped.test.js` checks (pass). Background: Jest 30 (circus) dispatches
+`test_start`/`test_done` for each test of a failing `beforeAll` and fails it with the hook's error, so the trace had
+both, as `failed`, already on bfaf70b4 (MEASURED); writing `skipped` over a reported failure would turn red into
+not-red.
+
+## Failing tests: branch vs trunk (the merge rule's proof)
+
+| suite | command | this branch (6ae93a4 / 508dda9) | bfaf70b4 |
+|---|---|---|---|
+| Rust | `cargo test -p detpy-core -p detpy-node` | 0 failed (204 passed) | (CI build job green on both) |
+| Node, local | `cd node && node --test --test-concurrency=1 test/<file>.test.js` per failing file (full suite first, then the failing files on both trees) | `repro-p041` "--det-order: exactly the listed tests..." (vitest); `runner-bun` "two --det runs give identical fingerprints..."; `runner-node-test` "a file another test file wrote: not cacheable"; `parallel-p041` "jest: parallel lanes" before hook (+3 cancelled) | the same four, plus `parallel-p041` "jest: placement effects" |
+| Python, local | `python -m pytest tests/ -q -p no:cacheprovider`; then the failing ids on a bfaf70b4 worktree | 16: `test_packaging::test_gate_runs_on_pull_requests_and_trunk_only_and_cancels_only_superseded_pr_runs`; `test_py_cache::test_the_virtual_clocks_own_probe_of_threads_is_not_the_tests_read`, `::test_g2214_a_test_that_crashes_its_worker_is_a_record_of_the_merged_trace`; `test_r023c_fixes::test_e2_shutil_copy2_into_a_temporary_directory_stays_reusable`; `test_review_r056_pycache`: `test_w3_file_size_read_through_posix` (4 params), `test_w3_file_existence_read_through_posix_access` (2), `test_w3_file_mtime_read_through_posix_stat`, `test_w4_pwd_read_through_posix_environ`, `test_w5_kernel_release` (2), `test_w8_c_seeded_random_is_controlled_or_refused`, `test_w11_object_addresses_match_uncached_det` | the same 16 (`16 failed`) |
+| release-1.yml | run 45083642120 (branch) vs run 45041985747 (trunk) | failed jobs: attacks, python 3/4, node 1/4 (rest cancelled by fail-fast) | failed jobs: attacks, python 0/4, python 3/4, node 1/4 |
+
+The node 1/4 job fails on the same assertion with the same values in both runs (logs of jobs 137397969624 and
+137269021593). The attacks and python 3/4 job logs were not compared line by line; that they fail for the same
+reasons is ESTIMATED from the local runs above, where the Python failures are identical. Fail-fast cancels the
+rest of each matrix, so CI cannot show tests behind the first red job; the full local runs cover those. No test
+was skipped, weakened or quarantined.
 
 ## Acceptance criteria
 
@@ -67,7 +82,8 @@ Finding: the defect had a second half the spec did not list — the hazard sides
 so the re-run was also handed nonexistent paths (`<root>/main|tests/x.test.mjs`). Both are normalised to the file.
 
 **AC5 — `node/test/trace-skipped.test.js`.** Vitest: bfaf70b4 → trace has 0 tests (MEASURED); branch → both
-`skipped`, pass. Jest: BLOCKED, see above (test checks both tests present, outcome `failed`).
+`skipped`, pass. Jest (criterion as decided by the founder, 2026-11-23): both tests in the trace with Jest's own
+outcome `failed` — pass (true on bfaf70b4 too, MEASURED).
 
 **AC6 — `node/test/exit-paths-p0.test.js`.** One failing test through: normal path (`--det-workers=1`, TZ/locale
 pre-pinned), re-exec path (env cleared; marker: the test sees `TZ=UTC`), wrapper with a hazard (two files write one
@@ -190,9 +206,8 @@ counts partition the records.
 
 ## Open
 
-- AC5 Jest expectation (founder decision, above).
 - AC8: trunk red before this work; the pre-existing local failures above.
-- The merge (gstack `/review` missing).
+- The gstack `/review` and the merge (gstack could not be installed here, above).
 - `vitest`'s fallback `process.on('exit', finalize)` (runner exits without returning): the trace and the line are
   written, but the exit code is whatever the runner set, because `main()` never returns to `runExit`. Not changed.
 - The hazard re-run drops `--det-order` (pre-existing, `repro-p041`), so a `--det-order` run with a hazard re-runs

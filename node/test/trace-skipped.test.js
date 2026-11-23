@@ -53,8 +53,8 @@ for (const runner of ['vitest', 'jest']) {
     // test_start/test_done for each and fails it with the hook's error, so the trace has both, as `failed`, on
     // bfaf70b4 already (MEASURED). AC5 asks `skipped` for Jest too; writing `skipped` over a failure Jest reported
     // would turn a red test into a non-failure, which B5 (only tests that never reached the hook) does not cover.
-    // That conflict is reported BLOCKED in REPORT.md and not reinterpreted here: this case checks what B5 does
-    // guarantee for Jest -- both tests are in the trace -- and that the outcome is the runner's own.
+    // Founder decision (2026-11-23, relayed by the coordinator): for Jest the criterion is "both tests are in the
+    // trace with the outcome Jest reports (failed)"; Vitest stays `skipped`.
     const want = runner === 'vitest' ? 'skipped' : 'failed';
     assert.deepEqual(got, { [`${file}::suite::first`]: want, [`${file}::suite::second`]: want }, show);
   });
