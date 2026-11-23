@@ -270,3 +270,187 @@
 2026-11-23T13:48:49Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 2.8s
 2026-11-23T13:48:50Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-all.json  -> exit 0 in 0.5s
 2026-11-23T13:48:57Z   $ npx --no-install vitest list  --changed cce85fbe458162b4094eec16ed003597c7a5777d --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-sel.json  -> exit 0 in 7.1s
+2026-11-23T13:52:19Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/excl-751-6a293dcd.json test/account-access.test.ts test/account-check-helpers.test.ts test/account-check-types.test.ts test/account-clear-entry.test.ts test/account-clear.test.ts test/account-manager-cache-entry.test.ts test/account-manager-cache.test.ts test/account-model-catalog.test.ts test/account-pe  -> exit 1 in 201.8s
+2026-11-23T13:52:20Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/local-bridge.test.ts  -> exit 1 in 1.2s
+2026-11-23T13:52:21Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/local-bridge.test.ts  -> exit 1 in 1.2s
+2026-11-23T13:52:22Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/local-bridge.test.ts  -> exit 1 in 1.2s
+2026-11-23T13:52:22Z   $ git checkout -q -f --detach cce85fbe458162b4094eec16ed003597c7a5777d && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T13:52:24Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.5s
+2026-11-23T13:52:27Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 2.9s
+2026-11-23T13:52:28Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/local-bridge.test.ts  -> exit 1 in 1.2s
+2026-11-23T13:52:29Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/local-bridge.test.ts  -> exit 1 in 1.2s
+2026-11-23T13:52:30Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/local-bridge.test.ts  -> exit 1 in 1.1s
+2026-11-23T13:52:30Z   -> ok share=0.5493 sel=175 excl=272 failures=[('test/local-bridge.test.ts > local bridge binds and emits a parseable baseUrl for', 'ENV'), ('test/local-bridge.test.ts > local bridge binds and emits a parseable baseUrl for', 'ENV')]
+2026-11-23T13:52:30Z STATE PR #749 (code) state 1/5 4f4b7a2030 base 16dff0e9cf
+2026-11-23T13:52:30Z   $ git checkout -q -f --detach 4f4b7a2030bbb725be8b0740799e18d991735c29 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T13:52:31Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T13:52:34Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.6s
+2026-11-23T13:52:35Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-all.json  -> exit 0 in 0.6s
+2026-11-23T13:52:42Z   $ npx --no-install vitest list  --changed 16dff0e9cf16c41eaaade94d5f3886cd6e6fd250 --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-sel.json  -> exit 0 in 7.3s
+2026-11-23T13:56:46Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/excl-749-4f4b7a20.json test/account-access.test.ts test/account-check-helpers.test.ts test/account-check-types.test.ts test/account-clear-entry.test.ts test/account-clear.test.ts test/account-manager-cache-entry.test.ts test/account-manager-cache.test.ts test/account-persistence.test.ts test/account-poli  -> exit 0 in 243.6s
+2026-11-23T13:56:46Z   -> ok share=0.65 sel=91 excl=363 failures=[]
+2026-11-23T13:56:46Z STATE PR #755 (code) state 1/5 42b612d5ba base 6714f2444c
+2026-11-23T13:56:46Z   $ git checkout -q -f --detach 42b612d5ba0c1bdb4822f049f3f246ef97b9dc5c && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T13:56:47Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.0s
+2026-11-23T13:56:50Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.3s
+2026-11-23T13:56:50Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-all.json  -> exit 0 in 0.5s
+2026-11-23T13:56:57Z   $ npx --no-install vitest list  --changed 6714f2444c285a7f1bf2a138fd719fb48ec2c347 --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-sel.json  -> exit 0 in 6.8s
+2026-11-23T13:59:48Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/excl-755-42b612d5.json test/account-access.test.ts test/account-check-helpers.test.ts test/account-check-types.test.ts test/account-clear-entry.test.ts test/account-clear.test.ts test/account-manager-cache-entry.test.ts test/account-manager-cache.test.ts test/account-model-catalog.test.ts test/account-pe  -> exit 0 in 170.3s
+2026-11-23T13:59:48Z   -> ok share=0.3289 sel=72 excl=383 failures=[]
+2026-11-23T13:59:48Z STATE PR #757 (code) state 1/1 2b7f5776fe base 6714f2444c
+2026-11-23T13:59:48Z   $ git checkout -q -f --detach 2b7f5776fe291aa445df9f235922964cd6ac83cc && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T13:59:49Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.1s
+2026-11-23T13:59:51Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 2.3s
+2026-11-23T13:59:52Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-all.json  -> exit 0 in 0.5s
+2026-11-23T13:59:59Z   $ npx --no-install vitest list  --changed 6714f2444c285a7f1bf2a138fd719fb48ec2c347 --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-sel.json  -> exit 0 in 7.3s
+2026-11-23T14:06:08Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/excl-757-2b7f5776.json test/account-access.test.ts test/account-check-helpers.test.ts test/account-check-types.test.ts test/account-clear-entry.test.ts test/account-clear.test.ts test/account-manager-cache-entry.test.ts test/account-manager-cache.test.ts test/account-model-catalog.test.ts test/account-pe  -> exit 1 in 369.0s
+2026-11-23T14:06:09Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/local-bridge.test.ts  -> exit 1 in 1.0s
+2026-11-23T14:06:10Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/local-bridge.test.ts  -> exit 1 in 1.1s
+2026-11-23T14:06:11Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/local-bridge.test.ts  -> exit 1 in 1.0s
+2026-11-23T14:06:37Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/runtime-rotation-proxy.test.ts  -> exit 1 in 26.1s
+2026-11-23T14:07:03Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/runtime-rotation-proxy.test.ts  -> exit 1 in 26.4s
+2026-11-23T14:07:30Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/runtime-rotation-proxy.test.ts  -> exit 1 in 26.4s
+2026-11-23T14:07:30Z   $ git checkout -q -f --detach 6714f2444c285a7f1bf2a138fd719fb48ec2c347 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T14:07:31Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.0s
+2026-11-23T14:07:33Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 2.6s
+2026-11-23T14:07:35Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/local-bridge.test.ts  -> exit 1 in 1.1s
+2026-11-23T14:07:36Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/local-bridge.test.ts  -> exit 1 in 1.1s
+2026-11-23T14:07:37Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/local-bridge.test.ts  -> exit 1 in 1.1s
+2026-11-23T14:08:04Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/runtime-rotation-proxy.test.ts  -> exit 1 in 26.7s
+2026-11-23T14:08:30Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/runtime-rotation-proxy.test.ts  -> exit 1 in 26.8s
+2026-11-23T14:08:58Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/runtime-rotation-proxy.test.ts  -> exit 1 in 27.3s
+2026-11-23T14:08:58Z   -> ok share=0.9921 sel=1 excl=453 failures=[('test/local-bridge.test.ts > local bridge binds and emits a parseable baseUrl for', 'ENV'), ('test/local-bridge.test.ts > local bridge binds and emits a parseable baseUrl for', 'ENV'), ('test/runtime-rotation-proxy.test.ts > runtime rotation proxy normalizes IPv6 loo', 'ENV'), ('test/runtime-rotation-proxy.test.ts > runtime rotation proxy normalizes IPv6 loo', 'ENV')]
+2026-11-23T14:08:58Z STATE PR #758 (dependency) state 1/1 04f1cf6b21 base 1007941ef7
+2026-11-23T14:08:58Z   $ git checkout -q -f --detach 04f1cf6b21c3b51f2c02fb873ff1795be8dd7ec8 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T14:08:59Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.1s
+2026-11-23T14:09:03Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.8s
+2026-11-23T14:09:03Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-all.json  -> exit 0 in 0.6s
+2026-11-23T14:09:04Z   $ npx --no-install vitest list  --changed 1007941ef7b1682cc2bfd87a870eff1ef405d8b6 --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-sel.json  -> exit 0 in 0.5s
+2026-11-23T14:09:04Z   -> ok share=0.0 sel=455 excl=0 failures=[]
+2026-11-23T14:09:04Z STATE PR #759 (code) state 1/5 63e0a85708 base 04d20463a8
+2026-11-23T14:09:04Z   $ git checkout -q -f --detach 63e0a85708d48233994adcc0b21cfb2dc56b7a46 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T14:09:04Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T14:09:08Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.1s
+2026-11-23T14:09:09Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-all.json  -> exit 0 in 0.5s
+2026-11-23T14:09:17Z   $ npx --no-install vitest list  --changed 04d20463a84b5a2679fc34d318cf6be4cf630b73 --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-sel.json  -> exit 0 in 8.6s
+2026-11-23T14:13:47Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/excl-759-63e0a857.json test/account-access.test.ts test/account-check-helpers.test.ts test/account-check-types.test.ts test/account-clear-entry.test.ts test/account-clear.test.ts test/account-manager-cache-entry.test.ts test/account-manager-cache.test.ts test/account-model-catalog.test.ts test/account-pe  -> exit 1 in 270.2s
+2026-11-23T14:15:19Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/codex-bin-wrapper.test.ts  -> exit 1 in 91.2s
+2026-11-23T14:16:52Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/codex-bin-wrapper.test.ts  -> exit 1 in 93.4s
+2026-11-23T14:18:23Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/codex-bin-wrapper.test.ts  -> exit 1 in 91.2s
+2026-11-23T14:18:23Z   $ git checkout -q -f --detach 04d20463a84b5a2679fc34d318cf6be4cf630b73 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T14:18:25Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.2s
+2026-11-23T14:18:27Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 2.4s
+2026-11-23T14:19:58Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/codex-bin-wrapper.test.ts  -> exit 1 in 90.9s
+2026-11-23T14:21:29Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/codex-bin-wrapper.test.ts  -> exit 1 in 91.5s
+2026-11-23T14:23:00Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/codex-bin-wrapper.test.ts  -> exit 1 in 91.0s
+2026-11-23T14:23:00Z   -> ok share=0.7031 sel=68 excl=388 failures=[('test/codex-bin-wrapper.test.ts > codex bin wrapper keeps a sideband URL the user', 'PREEXISTING'), ('test/codex-bin-wrapper.test.ts > codex bin wrapper replaces a sideband line an e', 'PREEXISTING')]
+2026-11-23T14:23:00Z STATE PR #761 (code) state 1/1 891aea4580 base 1235bbf67b
+2026-11-23T14:23:00Z   $ git checkout -q -f --detach 891aea458077ad01fb071f0fa2a12ec6a1d53d40 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T14:23:01Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.1s
+2026-11-23T14:23:05Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.7s
+2026-11-23T14:23:06Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-all.json  -> exit 0 in 0.5s
+2026-11-23T14:23:14Z   $ npx --no-install vitest list  --changed 1235bbf67b0c6c31dbed20e436c1715c4dfbfc7e --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-sel.json  -> exit 0 in 8.2s
+2026-11-23T14:29:28Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/excl-761-891aea45.json test/account-access.test.ts test/account-check-helpers.test.ts test/account-check-types.test.ts test/account-clear-entry.test.ts test/account-clear.test.ts test/account-manager-cache-entry.test.ts test/account-manager-cache.test.ts test/account-model-catalog.test.ts test/account-pe  -> exit 1 in 373.8s
+2026-11-23T14:31:01Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/codex-bin-wrapper.test.ts  -> exit 1 in 92.9s
+2026-11-23T14:32:34Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/codex-bin-wrapper.test.ts  -> exit 1 in 93.5s
+2026-11-23T14:34:07Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/codex-bin-wrapper.test.ts  -> exit 1 in 93.2s
+2026-11-23T14:34:08Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/local-bridge.test.ts  -> exit 1 in 0.9s
+2026-11-23T14:34:09Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/local-bridge.test.ts  -> exit 1 in 1.0s
+2026-11-23T14:34:10Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/local-bridge.test.ts  -> exit 1 in 1.0s
+2026-11-23T14:34:36Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/runtime-rotation-proxy.test.ts  -> exit 1 in 26.1s
+2026-11-23T14:35:03Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/runtime-rotation-proxy.test.ts  -> exit 1 in 26.7s
+2026-11-23T14:35:30Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/runtime-rotation-proxy.test.ts  -> exit 1 in 26.6s
+2026-11-23T14:35:30Z   $ git checkout -q -f --detach 1235bbf67b0c6c31dbed20e436c1715c4dfbfc7e && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T14:35:31Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.5s
+2026-11-23T14:35:34Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 2.8s
+2026-11-23T14:37:08Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/codex-bin-wrapper.test.ts  -> exit 1 in 94.5s
+2026-11-23T14:38:41Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/codex-bin-wrapper.test.ts  -> exit 1 in 92.4s
+2026-11-23T14:40:13Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/codex-bin-wrapper.test.ts  -> exit 1 in 92.6s
+2026-11-23T14:40:15Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/local-bridge.test.ts  -> exit 1 in 1.2s
+2026-11-23T14:40:16Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/local-bridge.test.ts  -> exit 1 in 0.9s
+2026-11-23T14:40:16Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/local-bridge.test.ts  -> exit 1 in 0.9s
+2026-11-23T14:40:45Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/runtime-rotation-proxy.test.ts  -> exit 1 in 28.2s
+2026-11-23T14:41:11Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/runtime-rotation-proxy.test.ts  -> exit 1 in 26.4s
+2026-11-23T14:41:37Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/runtime-rotation-proxy.test.ts  -> exit 1 in 25.6s
+2026-11-23T14:41:37Z   -> ok share=1.0 sel=0 excl=456 failures=[('test/codex-bin-wrapper.test.ts > codex bin wrapper keeps a sideband URL the user', 'PREEXISTING'), ('test/codex-bin-wrapper.test.ts > codex bin wrapper replaces a sideband line an e', 'PREEXISTING'), ('test/local-bridge.test.ts > local bridge binds and emits a parseable baseUrl for', 'ENV'), ('test/local-bridge.test.ts > local bridge binds and emits a parseable baseUrl for', 'ENV'), ('test/runtime-rotation-proxy.test.ts > runtime rotation proxy normalizes IPv6 loo', 'ENV'), ('test/runtime-rotation-proxy.test.ts > runtime rotation proxy normalizes IPv6 loo', 'ENV')]
+2026-11-23T14:41:37Z STATE PR #760 (code) state 1/5 78076d6073 base 1235bbf67b
+2026-11-23T14:41:37Z   $ git checkout -q -f --detach 78076d60736e6504fd854f3f279b365ea9165494 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T14:41:38Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.2s
+2026-11-23T14:41:41Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.0s
+2026-11-23T14:41:41Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-all.json  -> exit 0 in 0.5s
+2026-11-23T14:41:49Z   $ npx --no-install vitest list  --changed 1235bbf67b0c6c31dbed20e436c1715c4dfbfc7e --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-sel.json  -> exit 0 in 8.1s
+2026-11-23T14:46:18Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/excl-760-78076d60.json test/account-access.test.ts test/account-check-helpers.test.ts test/account-check-types.test.ts test/account-clear-entry.test.ts test/account-clear.test.ts test/account-manager-cache-entry.test.ts test/account-manager-cache.test.ts test/account-model-catalog.test.ts test/account-pe  -> exit 1 in 268.1s
+2026-11-23T14:47:53Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/codex-bin-wrapper.test.ts  -> exit 1 in 95.0s
+2026-11-23T14:49:26Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/codex-bin-wrapper.test.ts  -> exit 1 in 93.7s
+2026-11-23T14:51:03Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/codex-bin-wrapper.test.ts  -> exit 1 in 96.5s
+2026-11-23T14:51:04Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/local-bridge.test.ts  -> exit 1 in 1.2s
+2026-11-23T14:51:05Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/local-bridge.test.ts  -> exit 1 in 1.1s
+2026-11-23T14:51:06Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/local-bridge.test.ts  -> exit 1 in 1.0s
+2026-11-23T14:51:06Z   $ git checkout -q -f --detach 1235bbf67b0c6c31dbed20e436c1715c4dfbfc7e && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T14:51:07Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.1s
+2026-11-23T14:51:10Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 2.9s
+2026-11-23T14:52:45Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/codex-bin-wrapper.test.ts  -> exit 1 in 95.0s
+2026-11-23T14:54:18Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/codex-bin-wrapper.test.ts  -> exit 1 in 92.7s
+2026-11-23T14:55:53Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/codex-bin-wrapper.test.ts  -> exit 1 in 94.7s
+2026-11-23T14:55:54Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/local-bridge.test.ts  -> exit 1 in 1.3s
+2026-11-23T14:55:55Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/local-bridge.test.ts  -> exit 1 in 1.1s
+2026-11-23T14:55:56Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/local-bridge.test.ts  -> exit 1 in 1.0s
+2026-11-23T14:55:56Z   -> ok share=0.7014 sel=102 excl=356 failures=[('test/codex-bin-wrapper.test.ts > codex bin wrapper keeps a sideband URL the user', 'PREEXISTING'), ('test/codex-bin-wrapper.test.ts > codex bin wrapper replaces a sideband line an e', 'PREEXISTING'), ('test/local-bridge.test.ts > local bridge binds and emits a parseable baseUrl for', 'ENV'), ('test/local-bridge.test.ts > local bridge binds and emits a parseable baseUrl for', 'ENV')]
+2026-11-23T14:55:56Z STATE PR #762 (code) state 1/4 b0ed7c57ba base 51f3bfa02b
+2026-11-23T14:55:56Z   $ git checkout -q -f --detach b0ed7c57ba2f38f45d046829c7de35d2a196f084 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T14:55:57Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.3s
+2026-11-23T14:56:01Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.2s
+2026-11-23T14:56:02Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-all.json  -> exit 0 in 0.6s
+2026-11-23T14:56:11Z   $ npx --no-install vitest list  --changed 51f3bfa02b65e8a21eb6c66f4d5a1ccb350a8389 --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-sel.json  -> exit 0 in 8.7s
+2026-11-23T15:00:43Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/excl-762-b0ed7c57.json test/account-access.test.ts test/account-check-helpers.test.ts test/account-check-types.test.ts test/account-clear-entry.test.ts test/account-clear.test.ts test/account-manager-cache-entry.test.ts test/account-manager-cache.test.ts test/account-model-catalog.test.ts test/account-pe  -> exit 1 in 272.5s
+2026-11-23T15:02:17Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/codex-bin-wrapper.test.ts  -> exit 1 in 94.0s
+2026-11-23T15:03:53Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/codex-bin-wrapper.test.ts  -> exit 1 in 95.4s
+2026-11-23T15:05:28Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/codex-bin-wrapper.test.ts  -> exit 1 in 95.4s
+2026-11-23T15:05:29Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/documentation.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:05:30Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/documentation.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:05:31Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/documentation.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:05:33Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/local-bridge.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:05:34Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/local-bridge.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:05:35Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/local-bridge.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:05:35Z   $ git checkout -q -f --detach 51f3bfa02b65e8a21eb6c66f4d5a1ccb350a8389 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T15:05:36Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.1s
+2026-11-23T15:05:38Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 2.6s
+2026-11-23T15:07:14Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/codex-bin-wrapper.test.ts  -> exit 1 in 96.0s
+2026-11-23T15:08:49Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/codex-bin-wrapper.test.ts  -> exit 1 in 94.2s
+2026-11-23T15:10:22Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/codex-bin-wrapper.test.ts  -> exit 1 in 93.7s
+2026-11-23T15:10:24Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/documentation.test.ts  -> exit 1 in 1.4s
+2026-11-23T15:10:25Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/documentation.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:10:26Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/documentation.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:10:27Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/local-bridge.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:10:28Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/local-bridge.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:10:29Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/local-bridge.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:10:29Z   -> ok share=0.7158 sel=87 excl=371 failures=[('test/codex-bin-wrapper.test.ts > codex bin wrapper keeps a sideband URL the user', 'PREEXISTING'), ('test/codex-bin-wrapper.test.ts > codex bin wrapper replaces a sideband line an e', 'PREEXISTING'), ('test/codex-bin-wrapper.test.ts > codex bin wrapper scopes `resume --last` to ses', 'FLAKY'), ('test/documentation.test.ts > Documentation Integrity has all required user docs ', 'PREEXISTING'), ('test/documentation.test.ts > Documentation Integrity docs portal and root README', 'PREEXISTING'), ('test/documentation.test.ts > Documentation Integrity uses scoped package only in', 'PREEXISTING'), ('test/documentation.test.ts > Documentation Integrity does not include opencode w', 'PREEXISTING'), ('test/documentation.test.ts > Documentation Integrity keeps compatibility command', 'PREEXISTING'), ('test/documentation.test.ts > Documentation Integrity has valid internal links in', 'PREEXISTING'), ('test/local-bridge.test.ts > local bridge binds and emits a parseable baseUrl for', 'ENV'), ('test/local-bridge.test.ts > local bridge binds and emits a parseable baseUrl for', 'ENV')]
+2026-11-23T15:10:29Z STATE PR #765 (code) state 1/1 64011a88d7 base dd7e3ed441
+2026-11-23T15:10:29Z   $ git checkout -q -f --detach 64011a88d7f3efb2e2b4f060caee2cce50785885 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T15:10:30Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.1s
+2026-11-23T15:10:34Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.8s
+2026-11-23T15:10:35Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-all.json  -> exit 0 in 0.5s
+2026-11-23T15:10:43Z   $ npx --no-install vitest list  --changed dd7e3ed4411c46205226164a1febccecbff89510 --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-sel.json  -> exit 0 in 8.5s
+2026-11-23T15:15:24Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/excl-765-64011a88.json test/account-access.test.ts test/account-check-helpers.test.ts test/account-check-types.test.ts test/account-clear-entry.test.ts test/account-clear.test.ts test/account-manager-cache-entry.test.ts test/account-manager-cache.test.ts test/account-model-catalog.test.ts test/account-pe  -> exit 1 in 280.9s
+2026-11-23T15:15:25Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/local-bridge.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:15:26Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/local-bridge.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:15:27Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/local-bridge.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:16:00Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/runtime-rotation-proxy.test.ts  -> exit 1 in 33.0s
+2026-11-23T15:16:33Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/runtime-rotation-proxy.test.ts  -> exit 1 in 32.5s
+2026-11-23T15:17:06Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/runtime-rotation-proxy.test.ts  -> exit 1 in 32.6s
+2026-11-23T15:17:06Z   $ git checkout -q -f --detach dd7e3ed4411c46205226164a1febccecbff89510 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T15:17:07Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.1s
+2026-11-23T15:17:09Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 2.3s
+2026-11-23T15:17:10Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/local-bridge.test.ts  -> exit 1 in 1.4s
+2026-11-23T15:17:11Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/local-bridge.test.ts  -> exit 1 in 0.9s
+2026-11-23T15:17:12Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/local-bridge.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:17:48Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/runtime-rotation-proxy.test.ts  -> exit 1 in 35.5s
+2026-11-23T15:18:21Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/runtime-rotation-proxy.test.ts  -> exit 1 in 33.0s
+2026-11-23T15:18:54Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-base.json test/runtime-rotation-proxy.test.ts  -> exit 1 in 33.4s
+2026-11-23T15:18:54Z   -> ok share=0.6839 sel=5 excl=453 failures=[('test/local-bridge.test.ts > local bridge binds and emits a parseable baseUrl for', 'ENV'), ('test/local-bridge.test.ts > local bridge binds and emits a parseable baseUrl for', 'ENV'), ('test/runtime-rotation-proxy.test.ts > runtime rotation proxy normalizes IPv6 loo', 'ENV'), ('test/runtime-rotation-proxy.test.ts > runtime rotation proxy normalizes IPv6 loo', 'ENV')]
+2026-11-23T15:18:54Z STATE PR #766 (code) state 1/2 0bdfdf0205 base dd7e3ed441
+2026-11-23T15:18:54Z   $ git checkout -q -f --detach 0bdfdf020512f548f42542d98d61d103b6accc6c && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T15:18:55Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.2s
+2026-11-23T15:18:59Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.8s
+2026-11-23T15:19:00Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-all.json  -> exit 0 in 0.6s
+2026-11-23T15:19:08Z   $ npx --no-install vitest list  --changed dd7e3ed4411c46205226164a1febccecbff89510 --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-sel.json  -> exit 0 in 8.5s
