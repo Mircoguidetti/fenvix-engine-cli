@@ -1,0 +1,3 @@
+2026-11-23T11:39:42Z FULL RUN pr-index 0 PR #726 base 328343b23d45da17a2478fd49cb15238787e4f7f
+2026-11-23T11:39:42Z   $ git checkout -q -f --detach 328343b23d45da17a2478fd49cb15238787e4f7f && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T11:39:46Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.2s
