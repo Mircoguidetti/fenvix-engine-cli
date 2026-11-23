@@ -128,12 +128,15 @@ def test_env_checked_first():
 
 
 def test_parallelism_check_marks_serial_run_invalid():
-    rows = [{"kind": "S", "timed_out": False, "crashed": False, "overlapping_file_pairs": 0, "_ids": {"a", "b"}},
-            {"kind": "P", "timed_out": False, "crashed": False, "overlapping_file_pairs": 0, "_ids": {"a", "b"}},
-            {"kind": "P", "timed_out": False, "crashed": False, "overlapping_file_pairs": 3, "_ids": {"a"}}]
+    rows = [{"kind": "S", "tests": 2, "timed_out": False, "crashed": False, "overlapping_file_pairs": 0, "_ids": {"a", "b"}},
+            {"kind": "P", "tests": 2, "timed_out": False, "crashed": False, "overlapping_file_pairs": 0, "_ids": {"a", "b"}},
+            {"kind": "P", "tests": 1, "timed_out": False, "crashed": False, "overlapping_file_pairs": 3, "_ids": {"a"}},
+            {"kind": "P", "tests": 2, "timed_out": False, "crashed": False, "overlapping_file_pairs": 3, "_ids": {"a", "c"}}]
     CA.finish_rows(rows)
     assert rows[1]["valid"] == "INVALID" and "ran serially" in rows[1]["invalid_reason"]
     assert rows[2]["valid"] == "valid" and rows[2]["short"] and rows[2]["missing_vs_serial"] == 1
+    # same count, a renamed id: not short (the renamed test is UNDECIDED in verdicts(), the run is not short)
+    assert not rows[3]["short"] and rows[3]["missing_vs_serial"] == 1
 
 
 def test_overlap_count():

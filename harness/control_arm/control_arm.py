@@ -348,7 +348,10 @@ def finish_rows(rows):
     for r in rows:
         ids = r.get("_ids")
         r["missing_vs_serial"] = (len(s_ids - ids) if ids is not None else len(s_ids)) if s_ids is not None else None
-        r["short"] = bool(r["missing_vs_serial"])
+        # short = fewer tests than serial (Lane D rule 1); missing_vs_serial (ids of S1 or S2 absent here) is kept as
+        # information: tests whose names change per run make it non-zero without the run being short
+        s_n = [x["tests"] for x in rows if x["kind"] == "S" and not x["timed_out"] and not x["crashed"]]
+        r["short"] = bool(s_n) and not r["timed_out"] and not r["crashed"] and r["tests"] < min(s_n)
         if r["kind"] == "P":
             ok = not r["timed_out"] and not r["crashed"] and r["overlapping_file_pairs"] > 0
             r["valid"] = "valid" if ok else "INVALID"
