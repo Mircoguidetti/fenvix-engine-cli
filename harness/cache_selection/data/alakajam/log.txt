@@ -6,3 +6,42 @@
 2026-11-23T21:02:23Z FULL RUN pr-index 5 PR #384 base 9220b173f26f7a40a7074b7d22a186941dfd3bad
 2026-11-23T21:02:23Z   $ git checkout -q -f --detach 9220b173f26f7a40a7074b7d22a186941dfd3bad && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
 2026-11-23T21:02:23Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T21:02:49Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 26.5s
+2026-11-23T21:02:50Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/alakajam/full-05.json  -> exit 1 in 1.1s
+2026-11-23T21:02:50Z   full run 5: UNKNOWN exit 1 1.1s None
+2026-11-23T21:02:50Z FULL RUN pr-index 10 PR #473 base 0999bac565571bea6b212674cd00a6e3ecb49541
+2026-11-23T21:02:50Z   $ git checkout -q -f --detach 0999bac565571bea6b212674cd00a6e3ecb49541 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:02:51Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.6s
+2026-11-23T21:03:33Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 42.4s
+2026-11-23T21:03:34Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/alakajam/full-10.json  -> exit 1 in 1.2s
+2026-11-23T21:03:34Z   full run 10: UNKNOWN exit 1 1.2s None
+2026-11-23T21:03:34Z FULL RUN pr-index 15 PR #616 base 328aaff741cff55d5338a65a01cad8112a15b681
+2026-11-23T21:03:34Z   $ git checkout -q -f --detach 328aaff741cff55d5338a65a01cad8112a15b681 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:03:36Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.2s
+2026-11-23T21:04:20Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 44.4s
+2026-11-23T21:04:21Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/alakajam/full-15.json  -> exit 1 in 1.3s
+2026-11-23T21:04:21Z   full run 15: UNKNOWN exit 1 1.3s None
+2026-11-23T21:04:21Z FULL RUN pr-index 20 PR #662 base 801d1244fdbfdada94d0d8be410a05f8f9a2cd17
+2026-11-23T21:04:21Z   $ git checkout -q -f --detach 801d1244fdbfdada94d0d8be410a05f8f9a2cd17 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:04:23Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.0s
+2026-11-23T21:05:00Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 36.5s
+2026-11-23T21:05:01Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/alakajam/full-20.json  -> exit 1 in 1.4s
+2026-11-23T21:05:01Z   full run 20: UNKNOWN exit 1 1.4s None
+2026-11-23T21:05:01Z FULL RUN pr-index 25 PR #677 base 2bce719cca6e83593f8a367c2b5f9640692983d8
+2026-11-23T21:05:01Z   $ git checkout -q -f --detach 2bce719cca6e83593f8a367c2b5f9640692983d8 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:05:04Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.3s
+2026-11-23T21:05:38Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 33.9s
+2026-11-23T21:05:39Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/alakajam/full-25.json  -> exit 1 in 1.2s
+2026-11-23T21:05:39Z   full run 25: UNKNOWN exit 1 1.2s None
+2026-11-23T21:05:39Z STATE PR #179 (code) state 1/1 4d1a24c4fd base 57b6d06f34
+2026-11-23T21:05:39Z   $ git checkout -q -f --detach 4d1a24c4fda68274690f3766cf5738cbcc0d2da7 && git clean -fdxq -e node_modules  -> exit 0 in 0.2s
+2026-11-23T21:05:41Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.1s
+2026-11-23T21:05:44Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 1 in 3.4s
+2026-11-23T21:05:44Z   -> UNKNOWN: INSTALL_FAILED: npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_05_41_551Z-debug-0.log share=None sel=0 excl=0 failures=[]
+2026-11-23T21:05:44Z STATE PR #185 (code) state 1/1 768c79ddc9 base a61ae2f2ff
+2026-11-23T21:05:44Z   $ git checkout -q -f --detach 768c79ddc94eff93226b9a3bb57817b04070ecfc && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:05:44Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T21:06:08Z NOTE: 28 of 30 kept PRs have mocha at base (vitest adopted only before PRs 689, 691); vitest list/run fails there -> UNKNOWN. Lane restarted after manual stop to inspect.
+2026-11-23T21:06:08Z STATE PR #185 (code) state 1/1 768c79ddc9 base a61ae2f2ff
+2026-11-23T21:06:08Z   $ git checkout -q -f --detach 768c79ddc94eff93226b9a3bb57817b04070ecfc && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:06:08Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s

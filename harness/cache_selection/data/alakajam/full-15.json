@@ -1,0 +1,13 @@
+{
+ "repo": "alakajam",
+ "pr_index": 15,
+ "pr": 616,
+ "commit": "328aaff741cff55d5338a65a01cad8112a15b681",
+ "install": "fresh install, all node_modules removed first (44s)",
+ "cmd": "npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/alakajam/full-15.json",
+ "cwd": "/home/user/work/repos/alakajam/",
+ "exit": 1,
+ "wall_s": 1.3,
+ "status": "UNKNOWN",
+ "reason": "no JSON report: npm error npx canceled due to missing packages and no YES option: [\"vitest@5.1.1\"]\nnpm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_04_20_572Z-debug-0.log\n"
+}
