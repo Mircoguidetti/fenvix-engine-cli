@@ -46,7 +46,8 @@ test('vitest projects running the same file: both parts are in the trace and eac
   const runWith = (name, one, two) => {
     fs.writeFileSync(path.join(flags, 'one'), one);
     fs.writeFileSync(path.join(flags, 'two'), two);
-    const r = run('vitest', dir, ['--det']);
+    // opt-out of the host epoch (spec 2026-11-23): separate runs are verified against each other
+    const r = run('vitest', dir, ['--det', '--det-epoch=fixed']);
     const dst = path.join(dir, `${name}.jsonl`);
     fs.copyFileSync(r.tracePath, dst);
     return [r, dst];
