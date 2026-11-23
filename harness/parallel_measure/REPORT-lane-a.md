@@ -7,7 +7,8 @@ Branch `claude/harness-trunk`. Spec: gstack /spec revision 2 (2026-11-22). Machi
 built from this checkout before it merged the later trunk; rows taken after the step 1 merge record `engine_commit`
 0071cbb9, whose engine sources (`crates python node/src node/bin Cargo.* pyproject.toml`) equal bfaf70b4. (For step 4
 this branch merged the trunk f67be4a3, whose engine differs: a rerun of these rows needs RERUN.md section 1's
-engine_commit checkout.) Harness: `harness/parallel_measure/` of
+engine_commit checkout. Exception: the 9 sqlectron re-screen rows (plain only, no engine involved) were taken after
+that merge and record `engine_commit` f67be4a3.) Harness: `harness/parallel_measure/` of
 this branch (measure.py, repro.py, classify.py, table.py byte-identical to `claude/parallel-measure` 20f7752d),
 commits ef5b0b20 (rounds of agentic-qe 1-2) to 0071cbb9 (all later rows); only docs and specs.json changed between
 them. Commands: `RERUN.md` section 4. Labels: MEASURED (command in the row's `cmd`, file named), DECLARED (source
@@ -67,14 +68,16 @@ under --det" for that run while its trace records 273 failed; every engine run s
 | alakajam | 29.75 | 12.74 / 9.62 | 3.09x | 67.20 | 49.75 / 54.19 | 138 / 77 / 2 / 0 |
 
 All MEASURED (rows' `cmd`). Caveats (MEASURED, data/lane-a/results.jsonl and classification.json):
-- alakajam: in its own parallel mode 8-9 of 27 test files fail (sqlite contention) and 130-143 of 221 tests do not
+- alakajam: in its own parallel mode 8-9 of 27 test files fail (sqlite contention; file counts from the runs' output,
+  runs.log, not committed) and 130-143 of 221 tests do not
   run, while plain serial passes 217 / skips 4: its own-parallel time covers less work, so 3.09x overstates the gain.
   Its THEIRS 138 is mostly not flakiness: 136 of the 138 differ between plain runs only because they are "skipped"
   (not run) in the own-parallel repro runs; 115 of those fail in all 9 engine runs although they pass in every plain
   serial run (every `--det` run fails 118-120 tests). Only 2 THEIRS tests are reproduced plain failures (shuffled
   runs). It passes the spec's ratio rule as written; whether it counts is the coordinator's call.
 - agentlang: plain serial passes 439 of 439; its own parallel mode fails 0-55 tests per run (w2: 18, 55, 46; w4: 0,
-  39, 0; all 439 run), so the w4 median mixes clean and failing runs. Every `--det` run fails 2 tests that pass plain
+  39, 0; all 439 run), so the w4 median mixes clean and failing runs. Its 38 THEIRS are mostly about order: 23 fail
+  only in the shuffled serial repro runs (15 and 22 failures), 15 only in a plain parallel repro run. Every `--det` run fails 2 tests that pass plain
   (UNDECIDED 2).
 - smart-second-brain: 1 test fails in every plain run, ENV (`shippedPromptHistory.test.ts` needs git release tags;
   the checkout is a depth-1 fetch; classify boxes it OURS, its ENV patterns do not match). Every `--det` run fails 8:
@@ -127,18 +130,27 @@ output of `data/lane-a/results.jsonl`, whose rows carry their command.
   their start; completed rounds were never lost. The first round-3 attempt (08:52-09:08) was killed during its first
   run (plain, ~1400 s) and wrote no row; the round-1 attempt's rows are in `interrupted/`.
 - `classify_memo.py`: classify.py's `reported()` re-reads every trace per THEIRS test (> 50 min on agentic-qe's 1.2 GB
-  traces); the wrapper caches `measure.trace_tests` (pure) and calls classify.main() unchanged: 91 s instead of > 50 min. Same output MEASURED on lerna-lite: classify.py and
-  classify_memo.py on copies of the same inputs give byte-identical classification.json and bugs/lerna-lite.md.
+  traces); the wrapper caches `measure.trace_tests` (pure) and calls classify.main() unchanged: 91 s instead of > 50 min. Same output MEASURED on lerna-lite (0 THEIRS) and on
+  agentlang (38 THEIRS, so `reported()` runs): classify.py and classify_memo.py on copies of the same inputs give
+  byte-identical classification.json and bugs/<repo>.md (agentlang: 41.1 s vs 0.9 s).
 - agentic-qe `fenvix verify` was OOM-killed (exit -9, ~13.7 GB RSS on 1.2 GB traces) in 4 of 6 runs and in the serial
   noise check: those verdicts are UNKNOWN (an engine memory limit, reported for the engine sessions). The 2 completed
   ones (round 2/3, w2) say 0 of 30488 identical (all `fs` divergences).
 - agentic-qe `classification.json` is 2.3 GB: the committed file keeps the summary and the THEIRS/UNDECIDED tests.
 - `verify_serial_noise2w1.json` of agentic-qe was deleted by a driver line of mine (its row stays; that run had been
   OOM-killed, no verdict lost).
+- Timing outliers, unexplained (medians unaffected): lerna-lite round 1 `par` w2 1147.55 s / w4 927.19 s vs ~611 s
+  in rounds 2-3 (its round-1 serial is normal), agentic-qe round 1 `par` w2 3903.84 s vs 2305.09 / 2593.66 s. Both are
+  the cold first engine run of that kind (state per kind and worker count).
 - My own load during measurement: a gzip of the 2.3 GB file ran during the first minute of lerna-lite round-1
   `plain` (616.70 s vs 618.31 / 617.64 s in rounds 2-3: no visible effect; `busy_before_pct` 25.1 recorded).
-- agentic-qe writes outside TMPDIR in 7 of 25 rows (`hardcoded_tmp`: /tmp/rvf-native-test-rb-integration-*.rvf.lock;
-  2 more rows list /tmp/claude-code-*.pid, this session's own files), and 80-84 tests fail in every measure.py plain
+- agentic-qe writes outside TMPDIR: `hardcoded_tmp` lists /tmp/rvf-native-test-rb-integration-*.rvf.lock in all 9
+  plain / plain_par rows (2 of them also /tmp/claude-code-*.pid, this session's own files). The field undercounts
+  (INVESTIGATE): measure.py lists only entries new in /tmp, so files that persist from an earlier run are never listed
+  again. The first, interrupted plain row lists 10 paths (/tmp/agentic-qe-test*, /tmp/bench-branches, ...), and the
+  interrupted `--det` serial row lists /tmp/rvf-native-test-rb-integration-1735689600000.rvf.lock (the engine's fixed
+  clock, 2025-01-01), which later engine rows cannot list because it already exists: leftover /tmp state carries
+  across plain and engine runs and may relate to agentic-qe's `fs` divergences, and 80-84 tests fail in every measure.py plain
   run (79-131 in the repro runs) (the sampled message: "Transformer initialization previously failed: fetch failed", no model download here): ENV-type, not hidden; classify found ENV 0 because the
   message does not match its ENV_PATTERNS.
 
