@@ -1,1 +1,3 @@
 test/cache.test.js 'runtime: by default TZ is pinned to UTC' (vitest, jest): + --det-tz=UTC --det-locale=C.UTF-8 (checks the pinned zone)
+test/controls.test.js goldenCheck (seeds, time, timers; vitest, jest): default detArgs + --det-epoch=fixed (verifies two separate runs, diverged === 0)
+test/controls.test.js 'net: closed by default, record then replay' (vitest, jest): the blocked run + --det-net=closed
