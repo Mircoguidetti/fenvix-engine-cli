@@ -10,3 +10,12 @@
 2026-11-23T12:27:44Z   full run 5: ok exit 1 241.0s {'failed': 8, 'passed': 7266, 'skipped': 142, 'todo': 1}
 2026-11-23T12:27:44Z FULL RUN pr-index 10 PR #496 base d51a3467cbda6a2e94cf04e885e8ae1abdd0f6be
 2026-11-23T12:27:44Z   $ git checkout -q -f --detach d51a3467cbda6a2e94cf04e885e8ae1abdd0f6be && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T12:31:08Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/full-10.json  -> exit 1 in 204.7s
+2026-11-23T12:31:08Z   full run 10: ok exit 1 204.7s {'failed': 80, 'passed': 6458, 'skipped': 112}
+2026-11-23T12:31:08Z FULL RUN pr-index 15 PR #536 base 060a6078ce2eb96ea5c943003afbf9f1653443e8
+2026-11-23T12:31:08Z   $ git checkout -q -f --detach 060a6078ce2eb96ea5c943003afbf9f1653443e8 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T12:34:22Z DISCARDED full-10 (install reused; 80 failures from missing packages/memory-mcp-server/dist): harness switched to a fresh install at every checkout
+2026-11-23T12:34:25Z FULL RUN pr-index 10 PR #496 base d51a3467cbda6a2e94cf04e885e8ae1abdd0f6be
+2026-11-23T12:34:25Z   $ git checkout -q -f --detach d51a3467cbda6a2e94cf04e885e8ae1abdd0f6be && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T12:34:31Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 5.6s
+2026-11-23T12:34:43Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 12.1s

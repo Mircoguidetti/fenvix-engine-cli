@@ -65,16 +65,15 @@ class Ctx:
         listing = self.git('ls-tree', '-r', sha)
         mk = hashlib.sha1('\n'.join(l for l in listing.splitlines() if MANIFEST_RE.search(l.split('\t')[1])).encode()).hexdigest()
         note = None
-        if mk != self.installed_key:
+        if True:  # always a fresh install: tests can modify node_modules (ironcurtain full run 10, 2026-11-23)
+            self.sh('find . -name node_modules -type d -prune -exec rm -rf {} +', cwd=self.clone, timeout=1800)
             rc, so, se, dt = self.sh(self.c['install'], cwd=self.clone, timeout=3600)
             if rc != 0:
                 self.installed_key = None
                 err = [l for l in (se + so).splitlines() if l.strip()]
                 return 'INSTALL_FAILED: ' + (err[-1] if err else f'exit {rc}')[:300]
             self.installed_key = mk
-            note = f'installed ({dt:.0f}s)'
-        else:
-            note = 'install reused: identical package manifests and lockfiles (key %s)' % mk[:12]
+            note = f'fresh install, all node_modules removed first ({dt:.0f}s)'
         if self.c.get('build'):
             rc, so, se, dt = self.sh(self.c['build'], cwd=self.clone, timeout=3600)
             if rc != 0:
