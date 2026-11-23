@@ -1,0 +1,23 @@
+TAP version 13
+# Subtest: the deadline hook answers the TaskDeadline start-time read under both initializer frame names
+ok 1 - the deadline hook answers the TaskDeadline start-time read under both initializer frame names
+  ---
+  duration_ms: 52.222278
+  type: 'test'
+  ...
+# Subtest: without a Vitest runner frame the hook leaves the clock real (returns undefined)
+ok 2 - without a Vitest runner frame the hook leaves the clock real (returns undefined)
+  ---
+  duration_ms: 38.449225
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 144.199915
+exit 0
