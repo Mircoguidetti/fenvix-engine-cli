@@ -30,3 +30,9 @@
 2026-11-23T12:42:56Z FULL RUN pr-index 20 PR #503 base d51a3467cbda6a2e94cf04e885e8ae1abdd0f6be
 2026-11-23T12:42:56Z   $ git checkout -q -f --detach d51a3467cbda6a2e94cf04e885e8ae1abdd0f6be && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
 2026-11-23T12:43:00Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 4.6s
+2026-11-23T12:43:19Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 18.4s
+2026-11-23T12:47:04Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/full-20.json  -> exit 1 in 225.1s
+2026-11-23T12:47:04Z   full run 20: ok exit 1 225.1s {'failed': 8, 'passed': 7208, 'skipped': 142, 'todo': 1}
+2026-11-23T12:47:04Z FULL RUN pr-index 25 PR #535 base 060a6078ce2eb96ea5c943003afbf9f1653443e8
+2026-11-23T12:47:04Z   $ git checkout -q -f --detach 060a6078ce2eb96ea5c943003afbf9f1653443e8 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T12:47:09Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 4.6s

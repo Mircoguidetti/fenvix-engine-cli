@@ -103,3 +103,6 @@
 2026-11-23T12:39:23Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.2s
 2026-11-23T12:39:24Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-all.json  -> exit 0 in 0.5s
 2026-11-23T12:39:31Z   $ npx --no-install vitest list  --changed cedbec027cb2ec3f645fcbeb55cd40cccf0479ee --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-sel.json  -> exit 0 in 6.5s
+2026-11-23T12:43:33Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/excl-731-5debbd41.json test/account-access.test.ts test/account-check-helpers.test.ts test/account-check-types.test.ts test/account-clear-entry.test.ts test/account-clear.test.ts test/account-manager-cache-entry.test.ts test/account-manager-cache.test.ts test/account-model-catalog.test.ts test/account-pe  -> exit 1 in 242.9s
+2026-11-23T12:45:02Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/codex-bin-wrapper.test.ts  -> exit 0 in 88.6s
+2026-11-23T12:46:30Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/rerun-state.json test/codex-bin-wrapper.test.ts  -> exit 0 in 88.0s
