@@ -255,3 +255,21 @@ def test_detect_node_runner(tmp_path, pkg, expected):
 def test_single_test_command(runner, nodeid, expected):
     assert _load_wrapper().single_test_args(runner, nodeid) == expected
 
+
+
+@pytest.mark.parametrize("text,key", [
+    ("new", "new"),
+    ("outcome failed", "outcome-failed"),
+    ("os entropy (not controlled; use --det-urandom)", "os-entropy"),
+    ("reads a clock Level 0 does not virtualize", "reads-a-clock-level-0-does-not"),
+    ("x" * 50, "x" * 40),
+])
+def test_reason_keys_fit_the_app(text, key):
+    """not_cached / not_reused_reasons keys: short tags the App accepts (github-app/src/results/summary.ts counts():
+    ``^[A-Za-z0-9_.:-]{1,40}$``); the detjs text is kept in reason_texts."""
+    w = _load_wrapper()
+    assert w.reason_key(text) == key
+    texts: dict = {}
+    counts = w.reason_counts({text: 2}, texts)
+    assert counts == {key: 2} and texts == {key: text}
+    assert re.fullmatch(r"[A-Za-z0-9_.:-]{1,40}", key)

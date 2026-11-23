@@ -583,6 +583,29 @@ def split_nodeid(nodeid: str) -> tuple[str, list[str]]:
     return head.split("@@", 1)[0], (rest.split("::") if rest else [])
 
 
+def reason_key(text: str) -> str:
+    """A count key like the Python path's (``new``, ``code``, ``outcome``) from a detjs reason text: lower case, the
+    parenthetical dropped, words joined by ``-``, at most 40 characters cut at a word (the App accepts
+    ``[A-Za-z0-9_.:-]{1,40}``). The text itself is kept in the summary's ``reason_texts``."""
+    words = re.sub(r"[^a-z0-9_.:]+", " ", text.split("(", 1)[0].lower()).split()
+    out = ""
+    for w in words:
+        nxt = f"{out}-{w}" if out else w
+        if len(nxt) > 40:
+            break
+        out = nxt
+    return out or (words[0][:40] if words else "other")
+
+
+def reason_counts(counts: dict, texts: dict) -> dict:
+    out: dict[str, int] = {}
+    for k, v in (counts or {}).items():
+        key = reason_key(str(k))
+        texts[key] = str(k)
+        out[key] = out.get(key, 0) + int(v)
+    return out
+
+
 def outcome_id(receipt_id: str, outcomes: dict) -> str | None:
     """The --det-outcomes id of a receipt's test: the same id, or (a shared-process unit such as mocha's,
     ``file@@process::describe::test``; a Vitest project, ``file@@project::test``) the id without the unit."""
@@ -742,6 +765,7 @@ def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
         pass
 
     tests = len(outcomes)
+    reason_texts: dict[str, str] = {}
     reused_outcomes = {}
     for r in reused_tests:
         nid = outcome_id(r["nodeid"], outcomes)
@@ -765,8 +789,9 @@ def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
                    "minimise": f"detjs repro {shlex.quote(n)}"} for n, c in flaky],
         "reruns": reruns,
         "outcome_counts": {k: sum(1 for o in outcomes.values() if o == k) for k in sorted(set(outcomes.values()))},
-        "not_cached": cs.get("not_cached", {}) if cs else {},
-        "not_reused_reasons": cs.get("miss_reasons", {}) if cs else {},
+        "not_cached": reason_counts(cs.get("not_cached", {}), reason_texts),
+        "not_reused_reasons": reason_counts(cs.get("miss_reasons", {}), reason_texts),
+        "reason_texts": reason_texts,
         "cache_check_seconds": cs.get("check_seconds"), "cache_record_seconds": cs.get("record_seconds"),
         "epoch_ns": epoch_ns,
         "receipts": str(receipts), "outcomes_file": str(outcomes_p), "trace_file": str(trace_p),
