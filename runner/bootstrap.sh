@@ -124,7 +124,8 @@ build_detjs() {
   check_node
   log "engine: building detjs from $ENGINE_SRC (node node/scripts/build.js)"
   (cd "$ENGINE_SRC" && node node/scripts/build.js >&2) || die "detjs not built"
-  local addon="$ENGINE_SRC/node/detjs.linux-x64.node"
+  # node/scripts/build.js names the addon after the platform (detjs.<platform>-<arch>.node)
+  local addon="$ENGINE_SRC/node/detjs.$(node -p 'process.platform + "-" + process.arch').node"
   [ -f "$addon" ] || die "detjs native core not built ($addon missing)"
   # the same layout as the engine artifact (release/engine/assemble.sh): bin, src, package.json and the addon
   local dst="$FENVIX_HOME/detjs"

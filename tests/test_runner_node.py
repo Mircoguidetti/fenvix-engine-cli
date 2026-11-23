@@ -5,7 +5,8 @@ packages are installed with `npm ci`, and it is run through the wrapper as a job
 
 * cold job, then warm job: the warm job reuses tests with a receipt each; `fenvix-run verify` finds no wrong reuse;
 * FENVIX_FIXTURE_FAIL=1: exit 1, the test named in `failed` (re-run alone: fails again, so not flaky);
-* FENVIX_FIXTURE_ENTROPY=1: `fenvix-run verify` exits 1 and names the entropy test NOT PROVEN;
+* FENVIX_FIXTURE_ENTROPY=1: `fenvix-run verify` exits 1 and names the entropy test (NOT PROVEN, or DIVERGED with
+  reason entropy: the verifier's verdict for real entropy);
 * a package.json naming no runner (or two): exit 2.
 
 What it needs: Node 22 or newer and detjs, as `runner/bootstrap.sh install` leaves them on a machine: `detjs` from
@@ -106,9 +107,11 @@ def job(tmp: Path, proj: Path, name: str, detjs: tuple[str, dict], *wrapper_args
          "FENVIX_CACHE_ROOT": str(cache_root or (tmp / "machine-cache")), "TMPDIR": str(tmp),
          "FENVIX_DETJS": detjs[0], **detjs[1], **(env or {})}
     verify = wrapper_args[:1] == ("verify",)
+    own, runner_args = (list(wrapper_args), []) if "--" not in wrapper_args else \
+        (list(wrapper_args[:wrapper_args.index("--")]), list(wrapper_args[wrapper_args.index("--"):]))
     argv = [sys.executable, str(WRAPPER), *wrapper_args] if verify else \
-        [sys.executable, str(WRAPPER), "node", *wrapper_args, "--project", str(proj), "--out", str(out),
-         "--key", f"fixture/{proj.name}"]
+        [sys.executable, str(WRAPPER), "node", *own, "--project", str(proj), "--out", str(out),
+         "--key", f"fixture/{proj.name}", *runner_args]
     r = subprocess.run(argv, env=e, capture_output=True, text=True, timeout=900)
     target = (Path(wrapper_args[wrapper_args.index("--summary") + 1]).parent / "verify.json") if verify \
         else out / "summary.json"
@@ -158,6 +161,8 @@ def test_cold_then_warm_reuses_with_receipts_and_verify_finds_no_wrong_reuse(pro
                    "not_proven": v.get("not_proven"), "diverged_tests": v.get("diverged_tests")}})
     assert v.get("verify_status") is not None, log3
     assert v["wrong_reuse"] == 0 and v["wrong"] == [], (v, log3)
+    # the check is not vacuous: every reused test is a row of the verify report (same ids)
+    assert v["reused_checked"] == v["reused"] == s2["reused_with_proof"], v
     assert code3 in (0, 1, 3), log3
     # the verify exit is detjs verify's: 0 only when its status is identical
     assert (code3 == 0) == (v["verify_status"] == "identical"), (code3, v)
@@ -273,3 +278,92 @@ def test_reason_keys_fit_the_app(text, key):
     counts = w.reason_counts({text: 2}, texts)
     assert counts == {key: 2} and texts == {key: text}
     assert re.fullmatch(r"[A-Za-z0-9_.:-]{1,40}", key)
+
+
+STUB = r"""#!/usr/bin/env python3
+# A stand-in detjs for the wrapper's guard branches (tests/test_runner_node.py). Behaviour from $STUB_MODE.
+import json, os, sys
+a = sys.argv[1:]
+if a[:1] == ["--version"]:
+    print("fenvix 0.0.0-stub"); sys.exit(0)
+mode = os.environ.get("STUB_MODE", "")
+if a[:1] == ["verify"]:
+    if mode == "verify-junk":
+        print("not json"); sys.exit(1)
+    rows = [{"nodeid": "a.test.js::t", "status": "diverged", "outcomes": ["passed", "failed"]}]
+    print(json.dumps({"status": "diverged", "summary": {"tests": 1, "diverged": 1}, "tests": rows})); sys.exit(1)
+opt = {x.split("=", 1)[0]: x.split("=", 1)[1] for x in a if x.startswith("--det-") and "=" in x}
+outcome = "failed" if mode == "failed-exit-0" else "passed"
+if mode != "no-outcomes":
+    json.dump({"order": ["a.test.js::t"], "outcomes": {"a.test.js::t": outcome}}, open(opt["--det-outcomes"], "w"))
+st = {"failed": int(outcome == "failed"), "not_proven": 0, "passed": int(outcome == "passed"), "skipped": 0}
+with open(opt["--det-trace"], "w") as fh:
+    fh.write(json.dumps({"type": "header", "meta": {"status": st, "epoch_ns": "1795392000000000000"}}) + "\n")
+sys.exit(0)
+"""
+
+
+@pytest.fixture
+def stub(tmp_path):
+    p = tmp_path / "detjs-stub"
+    p.write_text(STUB)
+    p.chmod(0o755)
+    proj = tmp_path / "proj"
+    proj.mkdir()
+    (proj / "package.json").write_text(json.dumps({"devDependencies": {"vitest": "5.1.0"}}))
+    return (str(p), {}), proj
+
+
+@pytest.mark.parametrize("mode", ["failed-exit-0", "no-outcomes"])
+def test_detjs_exit_0_without_proof_is_red(stub, tmp_path, mode):
+    """Never green without proof: detjs returning 0 with a failed test, or without its outcomes, gives exit 1."""
+    detjs, proj = stub
+    code, s, md, log = job(tmp_path, proj, "j", detjs, "--no-rerun", env={"STUB_MODE": mode})
+    assert code == 1, log
+    assert s["exit"] == 1
+
+
+def test_verify_counts_a_wrong_reuse_and_keeps_detjs_exit(stub, tmp_path):
+    detjs, proj = stub
+    out = tmp_path / "j"
+    out.mkdir()
+    (out / "trace.jsonl").write_text("{}\n")
+    summary = {"language": "node", "test_runner": "vitest", "project": str(proj), "trace_file": str(out / "trace.jsonl"),
+               "epoch_ns": 1795392000000000000, "runner_args": ["run", "--det-cache=/elsewhere"],
+               "reused_outcomes": {"a.test.js::t": "passed"}}
+    (out / "summary.json").write_text(json.dumps(summary))
+    code, v, md, log = job(tmp_path, proj, "v", detjs, "verify", "--summary", str(out / "summary.json"))
+    assert code == 1 and v["wrong_reuse"] == 1 and v["wrong"] == ["a.test.js::t"] and v["reused_checked"] == 1, log
+    fresh = [x for x in log.splitlines() if "--det-trace=" in x and "trace-fresh" in x]
+    assert fresh and "--det-cache=/elsewhere" not in fresh[0], log  # never passed to the fresh run
+    code, v, md, log = job(tmp_path, proj, "v2", detjs, "verify", "--summary", str(out / "summary.json"),
+                           env={"STUB_MODE": "verify-junk"})
+    assert code == 1 and v["verify_status"] is None, log
+
+
+def test_wrapper_owned_args_are_not_passed_to_detjs(stub, tmp_path):
+    detjs, proj = stub
+    code, s, md, log = job(tmp_path, proj, "j", detjs, "--", "--det-cache=/other", "--det-trace=/x", "--reporter=dot")
+    assert code == 0, log
+    assert s["runner_args"] == ["run", "--reporter=dot"], s["runner_args"]
+    assert "ignored (the wrapper sets them): --det-cache=/other --det-trace=/x" in log
+
+
+def test_bad_detjs_command_is_exit_2(tmp_path):
+    proj = tmp_path / "p"
+    proj.mkdir()
+    (proj / "package.json").write_text(json.dumps({"devDependencies": {"jest": "1"}}))
+    code, s, md, log = job(tmp_path, proj, "j", ("/nonexistent/detjs", {}))
+    assert code == 2 and "detjs not found" in log, log
+    (proj / "package.json").write_text("[]")
+    code, s, md, log = job(tmp_path, proj, "j2", ("/nonexistent/detjs", {}))
+    assert code == 2 and "is not a JSON object" in log, log
+
+
+@pytest.mark.parametrize("extra,kept", [
+    (["run", "a.js", "--config", "c.ts"], ["--config", "c.ts"]),
+    (["--det-cache=/x", "-r", "m", "--det-trace=/t", "--det-outcomes=/o"], ["-r", "m"]),
+    (["--reporter=dot", "src/"], ["--reporter=dot"]),
+])
+def test_keep_runner_args(extra, kept):
+    assert _load_wrapper()._keep_runner_args(extra) == kept

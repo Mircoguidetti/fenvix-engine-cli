@@ -494,7 +494,6 @@ def cmd_verify(a: argparse.Namespace, extra: list[str]) -> int:
 # Node: `fenvix-run node` runs vitest, jest, node:test or mocha inside detjs (the engine's Node shell) with the cache.
 NODE_RUNNERS = ("vitest", "jest", "node-test", "mocha")
 TEST_RUNNER_NAME = {"vitest": "vitest", "jest": "jest", "node-test": "node:test", "mocha": "mocha"}
-_STATUS_KEYS = ("failed", "not_proven", "passed", "skipped")
 
 
 def detect_node_runner(project: Path) -> tuple[str | None, str]:
@@ -507,6 +506,8 @@ def detect_node_runner(project: Path) -> tuple[str | None, str]:
         return None, f"no package.json in {project}"
     except ValueError as e:
         return None, f"{pj} is not valid JSON ({e})"
+    if not isinstance(data, dict):
+        return None, f"{pj} is not a JSON object"
     dev = data.get("devDependencies") or {}
     found = [r for r in ("vitest", "jest", "mocha") if isinstance(dev, dict) and r in dev]
     script = ((data.get("scripts") or {}).get("test") or "") if isinstance(data.get("scripts"), dict) else ""
@@ -524,7 +525,8 @@ def find_detjs(given: str | None) -> list[str] | None:
     """The detjs command: --detjs, $FENVIX_DETJS, `detjs` on PATH, else $FENVIX_HOME/bin/detjs."""
     for c in (given, os.environ.get("FENVIX_DETJS")):
         if c:
-            return shlex.split(c)
+            cmd = shlex.split(c)
+            return cmd if cmd and shutil.which(cmd[0]) else None
     w = shutil.which("detjs")
     if w:
         return [w]
@@ -544,7 +546,10 @@ def node_major() -> str:
 
 
 def detjs_version(detjs: list[str]) -> str | None:
-    r = subprocess.run([*detjs, "--version"], capture_output=True, text=True)
+    try:
+        r = subprocess.run([*detjs, "--version"], capture_output=True, text=True)
+    except OSError:
+        return None
     m = re.search(r"(\d+\.\d+\.\d+\S*)", r.stdout)
     return m.group(1) if r.returncode == 0 and m else None
 
@@ -553,7 +558,11 @@ def run_detjs(detjs: list[str], runner: str, args: list[str], project: Path, env
     cmd = [*detjs, runner, *args]
     log("$ " + " ".join(shlex.quote(c) for c in cmd))
     t0 = time.monotonic()
-    code = subprocess.run(cmd, cwd=project, env=env).returncode
+    try:
+        code = subprocess.run(cmd, cwd=project, env=env).returncode
+    except OSError as e:
+        log(f"error: cannot start detjs: {e}")
+        code = 2
     return code, time.monotonic() - t0
 
 
@@ -601,7 +610,7 @@ def reason_counts(counts: dict, texts: dict) -> dict:
     out: dict[str, int] = {}
     for k, v in (counts or {}).items():
         key = reason_key(str(k))
-        texts[key] = str(k)
+        texts[key] = str(k) if key not in texts or texts[key] == str(k) else f"{texts[key]} | {k}"
         out[key] = out.get(key, 0) + int(v)
     return out
 
@@ -632,7 +641,7 @@ def single_test_args(runner: str, nodeid: str) -> list[str]:
     return [f, "--grep", "^" + _regex_escape(full) + "$"]
 
 
-def _keep_runner_args(runner: str, extra: list[str]) -> list[str]:
+def _keep_runner_args(extra: list[str]) -> list[str]:
     """Runner arguments of the whole-suite run that also apply to a single-test re-run: options only (positional
     arguments select files, the re-run selects its own). Vitest's subcommand is set by single_test_args."""
     out, skip_next = [], False
@@ -641,12 +650,17 @@ def _keep_runner_args(runner: str, extra: list[str]) -> list[str]:
             out.append(x)
             skip_next = False
         elif x.startswith("-"):
-            if x.startswith("--det-cache"):
+            if x.startswith(_WRAPPER_OWNED):
                 continue
             out.append(x)
             if "=" not in x and x in ("--config", "-c", "--project", "--root", "--require", "-r", "--import"):
                 skip_next = True
     return out
+
+
+# detjs options the wrapper sets itself (cache, receipts, summaries, outcomes, trace): a job's own value would point a
+# fresh verify run at the cache or move the files the summary is built from, so they are dropped from runner args
+_WRAPPER_OWNED = ("--det-cache", "--det-outcomes", "--det-trace")
 
 
 def _runner_args(runner: str, extra: list[str]) -> list[str]:
@@ -689,7 +703,10 @@ def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
     for p in (receipts, csum_p, outcomes_p, trace_p):
         p.unlink(missing_ok=True)
     env = without_client_env(dict(os.environ))
-    runner_args = _runner_args(runner, extra)
+    dropped = [x for x in extra if x.startswith(_WRAPPER_OWNED)]
+    if dropped:
+        log("ignored (the wrapper sets them): " + " ".join(shlex.quote(x) for x in dropped))
+    runner_args = _runner_args(runner, [x for x in extra if not x.startswith(_WRAPPER_OWNED)])
     args = ["--det", f"--det-cache={cache}", f"--det-cache-receipts={receipts}", f"--det-cache-summary={csum_p}",
             f"--det-outcomes={outcomes_p}", f"--det-trace={trace_p}", *runner_args]
     log(f"project {project} @ {git_head(project)[:12]}; runner {runner}; cache {cache} "
@@ -722,6 +739,10 @@ def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
     if code == 0 and (failed or int(status.get("failed") or 0) or int(status.get("not_proven") or 0)):
         log(f"detjs returned 0 with failed or NOT PROVEN tests (status {status}): exit 1")
         code = 1  # never green on a failure (spec "never lower the red")
+    elif code == 0 and (not res or not status):
+        missing = [n for n, ok in ((str(outcomes_p), bool(res)), (f"status in {trace_p}", bool(status))) if not ok]
+        log(f"detjs returned 0 but wrote no {' and no '.join(missing)}: nothing proves the run green: exit 1")
+        code = 1
 
     # Failures: once more, alone, without the cache, at the run's epoch. Passes alone -> flaky. The exit code stays.
     epoch_ns = int(meta["epoch_ns"]) if meta.get("epoch_ns") else (int(cs["epoch_ms"]) * 1_000_000 if cs.get("epoch_ms") else None)
@@ -729,7 +750,7 @@ def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
     flaky, real, reruns = [], list(failed), []
     if failed and not a.no_rerun:
         real = []
-        keep = _keep_runner_args(runner, extra)
+        keep = _keep_runner_args(extra)
         for i, nid in enumerate(failed[: a.max_reruns]):
             again_p = out / f"outcomes-rerun-{i}.json"
             again_p.unlink(missing_ok=True)
@@ -818,7 +839,10 @@ def cmd_verify_node(a: argparse.Namespace, s: dict) -> int:
     a divergence or NOT PROVEN; 3 only the inputs differ; 2 usage or unreadable trace)."""
     project = Path(a.project or s["project"]).resolve()
     out = Path(a.out or Path(a.summary).parent).resolve()
-    runner = {v: k for k, v in TEST_RUNNER_NAME.items()}[s["test_runner"]]
+    runner = {v: k for k, v in TEST_RUNNER_NAME.items()}.get(s.get("test_runner"))
+    if not runner or not s.get("trace_file"):
+        log(f"error: {a.summary} is not a fenvix-run node summary (test_runner {s.get('test_runner')!r})")
+        return 2
     detjs = find_detjs(getattr(a, "detjs", None))
     if not detjs:
         log("error: detjs not found (runner/bootstrap.sh install)")
@@ -829,11 +853,14 @@ def cmd_verify_node(a: argparse.Namespace, s: dict) -> int:
         p.unlink(missing_ok=True)
     ep = [f"--det-epoch={epoch_iso(s['epoch_ns'])}"] if s.get("epoch_ns") else []
     env = without_client_env(dict(os.environ))
-    run_detjs(detjs, runner, ["--det", *ep, f"--det-trace={t2}", f"--det-outcomes={o2}", *s["runner_args"]],
-              project, env)
+    args = [x for x in s.get("runner_args", []) if not x.startswith(_WRAPPER_OWNED)]
+    run_detjs(detjs, runner, ["--det", *ep, f"--det-trace={t2}", f"--det-outcomes={o2}", *args], project, env)
     cmd = [*detjs, "verify", str(t1), str(t2), "--json"]
     log("$ " + " ".join(shlex.quote(c) for c in cmd))
-    r = subprocess.run(cmd, capture_output=True, text=True)
+    try:
+        r = subprocess.run(cmd, capture_output=True, text=True)
+    except OSError as e:
+        r = subprocess.CompletedProcess(cmd, 2, "", f"cannot start detjs verify: {e}\n")
     sys.stderr.write(r.stderr)
     try:
         rep = json.loads(r.stdout)
@@ -851,6 +878,7 @@ def cmd_verify_node(a: argparse.Namespace, s: dict) -> int:
              "tests": sm.get("tests"), "identical": sm.get("identical"), "diverged": sm.get("diverged"),
              "missing": sm.get("missing"), "not_proven": sm.get("not_proven"),
              "input_differs": sm.get("input_differs"), "reused": len(reused),
+             "reused_checked": sum(1 for t in rows if t.get("nodeid") in reused),
              "wrong_reuse": len(wrong), "wrong": wrong,
              "not_proven_tests": [t["nodeid"] for t in rows if t.get("status") == "not_proven"],
              "diverged_tests": [{"nodeid": t["nodeid"], "reused": t["nodeid"] in reused,
@@ -873,13 +901,13 @@ def cmd_verify_node(a: argparse.Namespace, s: dict) -> int:
                 f"and `detjs verify` compared the two traces: status **{v['verify_status']}**. Of **{v['tests']}** "
                 f"tests, {v['identical']} identical, {v['not_proven']} NOT PROVEN, {v['diverged']} diverged, "
                 f"{v['missing']} missing; of **{len(reused)}** results reused with proof, **wrong: {v['wrong_reuse']}**.\n")
-        if v["wrong"]:
-            text += "\nWrong reuses:\n" + "".join(f"- `{n}`\n" for n in v["wrong"])
-        if v["not_proven_tests"]:
-            text += "\nNOT PROVEN:\n" + "".join(f"- `{n}`\n" for n in v["not_proven_tests"])
-        if v["diverged_tests"]:
-            text += "\nDiverged:\n" + "".join(f"- `{d['nodeid']}` ({d['reason']}; outcomes {d['outcomes']}"
-                                              f"{', reused' if d['reused'] else ''})\n" for d in v["diverged_tests"])
+        def listed(head: str, items: list[str]) -> str:  # at most 50 per list; verify.json has them all
+            more = f"- and {len(items) - 50} more (verify.json)\n" if len(items) > 50 else ""
+            return f"\n{head}:\n" + "".join(f"- {x}\n" for x in items[:50]) + more if items else ""
+        text += listed("Wrong reuses", [f"`{n}`" for n in v["wrong"]])
+        text += listed("NOT PROVEN", [f"`{n}`" for n in v["not_proven_tests"]])
+        text += listed("Diverged", [f"`{d['nodeid']}` ({d['reason']}; outcomes {d['outcomes']}"
+                                    f"{', reused' if d['reused'] else ''})" for d in v["diverged_tests"]])
         if r.returncode == 3:
             text += ("\nExit 3: the two runs' inputs differ (environment, settings): the traces are not comparable, "
                      "so nothing is proven or refuted by this check.\n")
