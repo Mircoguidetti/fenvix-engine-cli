@@ -5,7 +5,8 @@ This directory is the single copy of the parallel measurement harness. The three
 historical; do not measure from them.
 
 - `measure.py`, `repro.py`, `classify.py`, `table.py`, `vitest_ids_reporter.mjs`: byte-identical to
-  `claude/parallel-measure` @ 20f7752d (it includes the D18 temp-dir fix).
+  `claude/parallel-measure` @ 20f7752d (it includes the D18 temp-dir fix; the nestjs-pino and agentsys rows of
+  `results.jsonl` predate it).
 - `specs.json`: the 14 specs of the reference; `agentic-qe`, `sqlectron`, `claudekit` from -b (each carries a
   measured reason); `smart-second-brain` from -b; the 12 specs added by -c; `wind-comic` stays the reference entry.
 - `results.jsonl`, `data/`, `TABLE.md`, `REPORT.md`, `RERUN.md`, `bugs/*.md`: the reference's.

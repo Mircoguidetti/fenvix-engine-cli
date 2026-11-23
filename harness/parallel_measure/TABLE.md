@@ -10,7 +10,7 @@ command of each run is the `cmd` field of its line in `results.jsonl`.
 * Machine: this session's container, `nproc` 4, Intel(R) Xeon(R) Processor @ 2.10GHz, nothing else running. No
   run started above 80 % CPU (NOISY column: 0 everywhere).
 * Before every run: the working tree reset to the pinned commit (`git checkout -- . && git clean -fdx -e
-  node_modules`) and a fresh, empty `TMPDIR=/tmp/pm-<repo>` (fields `tree_reset`, `tmpdir_reset`, `hardcoded_tmp`).
+  node_modules`) and a fresh, empty `TMPDIR=/tmp/pm-<repo>` (fields `tree_reset`, `tmpdir_reset`, `hardcoded_tmp`). Not for the nestjs-pino and agentsys rows: they were measured before D18 (no `tmpdir_reset` / `hardcoded_tmp` fields; RERUN.md section 1). This line is hand-added: keep it when regenerating..
 * Engine state: round 1 cold, rounds 2-3 warm (each kind and worker count keeps its own `.detjs`).
 * "In plan verdict": a serial-scan candidate whose CI runs serially (coordinator rule). Node only (founder D14).
 * "idea verdict" (founder's rule, recomputed from the same runs, no new run): yes when (a) the runner's own parallel

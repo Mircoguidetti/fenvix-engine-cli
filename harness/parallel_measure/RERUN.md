@@ -8,13 +8,18 @@ Intel(R) Xeon(R) Processor @ 2.10GHz (also recorded per row).
 
 ```bash
 git clone https://github.com/mircoguidetti/fenvix-engine-cli && cd fenvix-engine-cli
-git checkout bfaf70b4                       # trunk of the final set (each row: engine_commit; earlier sets 5a6463fd)
+git checkout claude/release-1   # the single harness copy (on claude/harness-trunk until that branch is merged)
+# Engine: build it at the engine_commit of the rows you rerun (bfaf70b4 for results.jsonl, 5a6463fd for the earlier
+# sets). If `git diff <engine_commit> -- crates python node/src node/bin Cargo.toml Cargo.lock pyproject.toml` (the
+# check measure.py makes) is not empty, build from a worktree at that commit instead:
+#   git worktree add ../engine-<engine_commit> <engine_commit> && cd ../engine-<engine_commit>
 python3 -m venv /tmp/pm/venv/py && /tmp/pm/venv/py/bin/pip install maturin
 (cd node && npm run build)                  # Node addon: node/detjs.linux-x64.node
 /tmp/pm/venv/py/bin/maturin build --release -o /tmp/pm/wheels
-# the harness is harness/parallel_measure/ of this checkout (the single copy, README.md); the rows of
-# results.jsonl were measured from claude/parallel-measure 20f7752d, whose measure.py/repro.py/classify.py/table.py
-# are byte-identical to it (only specs.json grew); do not check that branch out over the single copy
+# results.jsonl: the ironcurtain and codex-multi-auth rows were measured with this measure.py (D18 temp dir). The 50
+# nestjs-pino and agentsys rows were measured before D18 (18c5da5d) and have neither tmpdir_reset nor hardcoded_tmp:
+# no per-repository TMPDIR was set for them, so REPORT.md's "fresh empty TMPDIR" does not apply to them and this
+# measure.py does not reproduce their exact conditions (their tmpdir-related divergences may differ under D18).
 export PM_WORK=/tmp/pm
 ```
 
@@ -75,19 +80,24 @@ rounds start from what the previous run of the same kind left.
 Status: in progress; `data/lane-a/`, the TABLE.md "Lane A rows" and `REPORT-lane-a.md` are added when the Lane A
 measurements are complete (until then the paths below name where they will be).
 
-Harness: this directory at `claude/harness-trunk` commit ef5b0b20 (the single copy; measure.py / repro.py /
-classify.py / table.py byte-identical to `claude/parallel-measure` 20f7752d). Engine: trunk `claude/release-1`
-bfaf70b4 (`engine_commit` in every row), built as in section 1 (`cd node && npm run build`; `maturin build --release`
-into a Python 3.12 venv `$PM_WORK/venv/engine`, also reachable as `$PM_WORK/venv/networkx`, the `fenvix_python` of the
-Node specs). `PM_WORK=/tmp/pm`:
+Harness: this directory on `claude/harness-trunk`; the exact harness commit of the Lane A rows is recorded in
+`REPORT-lane-a.md` (measure.py / repro.py / classify.py / table.py byte-identical to `claude/parallel-measure` 20f7752d
+throughout). Engine: trunk `claude/release-1` bfaf70b4 (`engine_commit` in every row), built as in section 1 into a
+Python 3.12 venv of its own. Use a work directory of its own, not section 2's (its `venv/networkx` is the networkx test
+interpreter):
 
 ```bash
-python3.12 -m venv $PM_WORK/venv/engine && $PM_WORK/venv/engine/bin/pip install maturin
-$PM_WORK/venv/engine/bin/maturin build --release -o $PM_WORK/wheels && $PM_WORK/venv/engine/bin/pip install $PM_WORK/wheels/*.whl
-ln -sfn $PM_WORK/venv/engine $PM_WORK/venv/networkx   # one engine venv under both fenvix_python names of specs.json
+export PM_WORK=/tmp/pm-lane-a            # not /tmp/pm of sections 1-3
+test ! -e "$PM_WORK/venv/networkx" || echo "STOP: $PM_WORK/venv/networkx exists; pick another PM_WORK"
+python3.12 -m venv "$PM_WORK/venv/engine"
+"$PM_WORK/venv/engine/bin/pip" install maturin
+"$PM_WORK/venv/engine/bin/maturin" build --release -o "$PM_WORK/wheels"     # from the engine checkout
+"$PM_WORK/venv/engine/bin/pip" install --force-reinstall "$PM_WORK"/wheels/fenvix-*.whl
+ln -s "$PM_WORK/venv/engine" "$PM_WORK/venv/networkx"   # the fenvix_python name most Node specs use
 ```
 
- Repositories fetched at the `commit` of their spec and installed with its `install`
+(The recorded Lane A rows used `PM_WORK=/tmp/pm`, which held no section 2 venv.)
+Repositories fetched at the `commit` of their spec and installed with its `install`
 line (agentic-qe: `npm ci --ignore-scripts --no-audit --no-fund && npm rebuild better-sqlite3 hnswlib-node argon2
 sharp`; lerna-lite: `npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts && npx -y pnpm@11.28.5 build`).
 
