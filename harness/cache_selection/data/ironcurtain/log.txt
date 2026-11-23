@@ -6,3 +6,7 @@
 2026-11-23T12:23:25Z FULL RUN pr-index 5 PR #529 base 4732bd737b149b30de1738cb8d30ca207dd744e9
 2026-11-23T12:23:25Z   $ git checkout -q -f --detach 4732bd737b149b30de1738cb8d30ca207dd744e9 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
 2026-11-23T12:23:42Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 17.2s
+2026-11-23T12:27:43Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/full-05.json  -> exit 1 in 241.0s
+2026-11-23T12:27:44Z   full run 5: ok exit 1 241.0s {'failed': 8, 'passed': 7266, 'skipped': 142, 'todo': 1}
+2026-11-23T12:27:44Z FULL RUN pr-index 10 PR #496 base d51a3467cbda6a2e94cf04e885e8ae1abdd0f6be
+2026-11-23T12:27:44Z   $ git checkout -q -f --detach d51a3467cbda6a2e94cf04e885e8ae1abdd0f6be && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
