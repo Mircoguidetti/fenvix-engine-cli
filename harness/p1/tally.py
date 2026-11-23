@@ -176,7 +176,8 @@ def main():
             e_cand.add(t["nodeid"])
     s_ev = trace_events(s_path, e_cand) if e_cand else {}
     p_ev = trace_events(p_path, e_cand) if e_cand else {}
-    committed = os.path.join(base, "E", "events.json")
+    e_name = "events.json" if o.round == 1 else f"events-round{o.round}.json"
+    committed = os.path.join(base, "E", e_name)
     if e_cand and not exists(s_path) and os.path.exists(committed) and o.pair == "par":
         # the committed data: the fs.stat / fs.readdir* events of each E test, both traces (written by --e-dir)
         ev = load(committed)
@@ -283,7 +284,7 @@ def main():
     }
     if o.e_dir and e_events:
         os.makedirs(o.e_dir, exist_ok=True)
-        with open(os.path.join(o.e_dir, "events.json"), "w") as f:
+        with open(os.path.join(o.e_dir, e_name), "w") as f:
             json.dump(e_events, f, indent=1, sort_keys=True)
     if o.json:
         allr = load(o.json) if os.path.exists(o.json) else {}
