@@ -1,0 +1,22 @@
+2026-11-23T16:57:15Z FULL RUN pr-index 0 PR #3187 base 899d070d11e75acf94471de3fe3b8bf052e026ea
+2026-11-23T16:57:15Z   $ git checkout -q -f --detach 899d070d11e75acf94471de3fe3b8bf052e026ea && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:57:15Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T16:57:19Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.0s
+2026-11-23T16:57:38Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/nestjs-pino/full-00.json  -> exit 0 in 18.8s
+2026-11-23T16:57:38Z   full run 0: ok exit 0 18.8s {'passed': 259}
+2026-11-23T16:57:38Z FULL RUN pr-index 5 PR #3197 base 142b78f2894bc292879f53272f0d9066cc408cc9
+2026-11-23T16:57:38Z   $ git checkout -q -f --detach 142b78f2894bc292879f53272f0d9066cc408cc9 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:57:38Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T16:57:42Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.1s
+2026-11-23T16:58:02Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/nestjs-pino/full-05.json  -> exit 0 in 19.3s
+2026-11-23T16:58:02Z   full run 5: ok exit 0 19.3s {'passed': 259}
+2026-11-23T16:58:02Z FULL RUN pr-index 10 PR #3204 base c5440610014d74dc2026de7bbe39b707177e92ab
+2026-11-23T16:58:02Z   $ git checkout -q -f --detach c5440610014d74dc2026de7bbe39b707177e92ab && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:58:02Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.3s
+2026-11-23T16:58:08Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 5.7s
+2026-11-23T16:58:27Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/nestjs-pino/full-10.json  -> exit 0 in 19.6s
+2026-11-23T16:58:27Z   full run 10: ok exit 0 19.6s {'passed': 259}
+2026-11-23T16:58:27Z FULL RUN pr-index 15 PR #3213 base 6a1b7a4e8f86ebc9c41a76937ab9673466ca4dd0
+2026-11-23T16:58:27Z   $ git checkout -q -f --detach 6a1b7a4e8f86ebc9c41a76937ab9673466ca4dd0 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:58:28Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.3s
+2026-11-23T16:58:34Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 6.7s

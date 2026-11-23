@@ -1,0 +1,114 @@
+{
+ "repo": "nestjs-pino",
+ "pr_index": 10,
+ "pr": 3204,
+ "commit": "c5440610014d74dc2026de7bbe39b707177e92ab",
+ "install": "fresh install, all node_modules removed first (6s)",
+ "cmd": "npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/nestjs-pino/full-10.json",
+ "cwd": "/home/user/work/repos/nestjs-pino/",
+ "exit": 0,
+ "wall_s": 19.6,
+ "status": "ok",
+ "outcome_counts": {
+  "passed": 259
+ },
+ "files": {
+  "__tests__/assign.spec.ts": {
+   "ms": 191.46826171875,
+   "status": "passed"
+  },
+  "__tests__/direct-calls.spec.ts": {
+   "ms": 32.432373046875,
+   "status": "passed"
+  },
+  "__tests__/errors.spec.ts": {
+   "ms": 311.579833984375,
+   "status": "passed"
+  },
+  "__tests__/extending.spec.ts": {
+   "ms": 175.18017578125,
+   "status": "passed"
+  },
+  "__tests__/get-logger-token.spec.ts": {
+   "ms": 144.143310546875,
+   "status": "passed"
+  },
+  "__tests__/global-prefix.spec.ts": {
+   "ms": 280.6318359375,
+   "status": "passed"
+  },
+  "__tests__/levels.spec.ts": {
+   "ms": 371.956298828125,
+   "status": "passed"
+  },
+  "__tests__/logger-error-interceptor-unit.spec.ts": {
+   "ms": 11.337890625,
+   "status": "passed"
+  },
+  "__tests__/logger-error-interceptor.spec.ts": {
+   "ms": 159.84423828125,
+   "status": "passed"
+  },
+  "__tests__/logger-instance.spec.ts": {
+   "ms": 146.34326171875,
+   "status": "passed"
+  },
+  "__tests__/microservice-unit.spec.ts": {
+   "ms": 37.287109375,
+   "status": "passed"
+  },
+  "__tests__/microservice.spec.ts": {
+   "ms": 589.76611328125,
+   "status": "passed"
+  },
+  "__tests__/module.spec.ts": {
+   "ms": 276.453369140625,
+   "status": "passed"
+  },
+  "__tests__/native-logger-comparison.spec.ts": {
+   "ms": 475.94677734375,
+   "status": "passed"
+  },
+  "__tests__/native-logger.spec.ts": {
+   "ms": 368.399169921875,
+   "status": "passed"
+  },
+  "__tests__/no-context.spec.ts": {
+   "ms": 196.855712890625,
+   "status": "passed"
+  },
+  "__tests__/rename-context.spec.ts": {
+   "ms": 197.664794921875,
+   "status": "passed"
+  },
+  "__tests__/response-headers.spec.ts": {
+   "ms": 175.2509765625,
+   "status": "passed"
+  },
+  "__tests__/root-logger.spec.ts": {
+   "ms": 86.89697265625,
+   "status": "passed"
+  },
+  "__tests__/routing.spec.ts": {
+   "ms": 207.37109375,
+   "status": "passed"
+  },
+  "__tests__/run-in-context.spec.ts": {
+   "ms": 239.38232421875,
+   "status": "passed"
+  },
+  "__tests__/runtime-update.spec.ts": {
+   "ms": 188.443603515625,
+   "status": "passed"
+  },
+  "__tests__/types.spec.ts": {
+   "ms": 23.916015625,
+   "status": "passed"
+  },
+  "__tests__/use-existing.spec.ts": {
+   "ms": 216.09033203125,
+   "status": "passed"
+  }
+ },
+ "failed_tests": []
+}
