@@ -16,3 +16,20 @@
 2026-11-23T18:45:02Z SCREEN agentlang exit 0
 2026-11-23T18:45:02Z VERDICT agentlang: ADMIT plain median 58.49 s, best plain_par median 22.69 s (w4), ratio 2.58x; par medians {2: 32.77, 4: 22.69}; invalid []
 2026-11-23T19:04:16Z FULL agentlang done
+2026-11-23T19:04:28Z INSTALL alakajam: (cd /tmp/pm/repos/alakajam && npm ci --ignore-scripts --no-audit --no-fund) exit 0, 12 s
+2026-11-23T19:06:00Z SCREEN alakajam exit 0
+2026-11-23T19:06:00Z VERDICT alakajam: ADMIT plain median 14.07 s, best plain_par median 5.41 s (w4), ratio 2.60x; par medians {2: 7.67, 4: 5.41}; invalid []
+2026-11-23T19:12:07Z FULL alakajam done
+2026-11-23T19:12:07Z STEP3DONE admitted=3
+2026-11-23T19:13:05Z WITHDRAWN agentlang, alakajam: native sqlite bindings not built by the spec install (--ignore-scripts): agentlang 195/439 tests failed (better-sqlite3), alakajam 15/27 files failed to load (sqlite3); rows moved to lane-a/interrupted/
+2026-11-23T19:13:37Z INSTALL agentlang: (cd /tmp/pm/repos/agentlang && npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts && npx -y pnpm@10.28.2 rebuild better-sqlite3) exit 0, 7 s
+2026-11-23T19:20:59Z SCREEN agentlang exit 0
+2026-11-23T19:20:59Z VERDICT agentlang: ADMIT plain median 73.65 s, best plain_par median 29.60 s (w4), ratio 2.49x; par medians {2: 40.85, 4: 29.6}; invalid []
+2026-11-23T19:45:16Z FULL agentlang done
+2026-11-23T19:45:29Z INSTALL alakajam: (cd /tmp/pm/repos/alakajam && npm ci --ignore-scripts --no-audit --no-fund && npm rebuild sqlite3) exit 0, 13 s
+2026-11-23T19:48:13Z SCREEN alakajam exit 0
+2026-11-23T19:48:13Z VERDICT alakajam: ADMIT plain median 29.68 s, best plain_par median 8.86 s (w4), ratio 3.35x; par medians {2: 12.68, 4: 8.86}; invalid []
+2026-11-23T20:02:11Z FULL alakajam done
+2026-11-23T20:02:11Z STEP3DONE admitted=3
+2026-11-23T20:03:40Z INSTALL beevibe: apt-get install postgresql-16-pgvector; initdb -U beevibe --auth=trust (port 5433, user postgres); CREATE DATABASE beevibe, beevibe_test; (cd $PM_WORK/repos/beevibe && npx -y pnpm@9.12.0 install --frozen-lockfile --ignore-scripts && pnpm run migrate up && pnpm run migrate:test up) with DATABASE_URL(_TEST) exported: all exit 0
+2026-11-23T20:08:18Z VERDICT beevibe: REJECT plain median 26.87 s, best plain_par median 27.40 s (w4), ratio 0.98x; par medians {2: 27.88, 4: 27.4} (screened after step 3 had admitted 3, to keep the specs.json order: beevibe precedes agentlang); 7 of 885 tests fail in every run (live API keys absent: ENV)

@@ -81,8 +81,7 @@ rounds start from what the previous run of the same kind left.
 
 ## 4. Lane A (agentic-qe, lerna-lite, step 3 candidates) — branch `claude/harness-trunk`
 
-Status: in progress; `data/lane-a/`, the TABLE.md "Lane A rows" and `REPORT-lane-a.md` are added when the Lane A
-measurements are complete (until then the paths below name where they will be).
+Status: complete (2026-11-23); results in `data/lane-a/`, the TABLE.md "Lane A rows" and `REPORT-lane-a.md`.
 
 Harness: this directory on `claude/harness-trunk`; the exact harness commit of the Lane A rows is recorded in
 `REPORT-lane-a.md` (measure.py / repro.py / classify.py / table.py byte-identical to `claude/parallel-measure` 20f7752d
@@ -113,7 +112,7 @@ for r in agentic-qe lerna-lite; do
     python3 measure.py --spec specs.json --name $r --reps 1 --first-rep $n --workers 2,4 --timeout 14400 --out $PM_WORK/lane-a
   done
   python3 repro.py --spec specs.json --name $r --out $PM_WORK/lane-a --runs 2 --seeds 1,2 --timeout 14400
-  python3 classify.py --out $PM_WORK/lane-a --name $r --bugs bugs
+  python3 classify_memo.py --out $PM_WORK/lane-a --name $r --bugs bugs   # classify.py with trace_tests cached (same output)
 done
 # step 3, per candidate: plain only first, then (admitted) the loop above
 python3 measure.py --spec specs.json --name <r> --reps 3 --workers 2,4 --skip serial,par --out $PM_WORK/lane-a-screen

@@ -20,8 +20,8 @@ historical; do not measure from them.
   hand-written status page from before its measurements (superseded by `results-b-preD13.jsonl` and `bugs/*.md` of
   -b); `TABLE-c.md` was assembled by -c's `mktable_c.sh` (table.py twice, `idea_verdict_c.py`, `TABLE-c.notes.md`)
   at 1b1f6f0a; those two scripts stay on that branch.
-- `data/lane-a/` (pending until the Lane A measurements are complete): agentic-qe, lerna-lite and the step 3
-  candidates; report `REPORT-lane-a.md`.
+- `data/lane-a/`: agentic-qe, lerna-lite and the step 3 candidates (rows, repro, classification, screening, interrupted
+  rows); report `REPORT-lane-a.md`. `classify_memo.py`: classify.py with `measure.trace_tests` cached (same output).
 
 Rule: every measurement records in `RERUN.md` (or the report it names) the commit of this harness (on the trunk, or on
 `claude/harness-trunk` until it is merged) it was taken with, next to the engine commit `measure.py` records per row.

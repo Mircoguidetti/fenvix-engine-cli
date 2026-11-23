@@ -332,7 +332,7 @@
    "NODE_ENV": "test"
   },
   "ci": "DECLARED vitest.config.ts:27-35 pool forks singleFork + fileParallelism: false ('Run tests sequentially to prevent SQLite database lock issues'); .github/workflows/ci.yml:62 NODE_ENV=test npm test (= vitest run)",
-  "install": "npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts (packageManager pnpm@10.28.2; CI uses npm ci on package-lock.json); Langium generated files are committed"
+  "install": "npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts && npx -y pnpm@10.28.2 rebuild better-sqlite3 (MEASURED 2026-11-23: without the rebuild 195 of 439 tests fail, 'Could not locate the bindings file' for better-sqlite3); packageManager pnpm@10.28.2; CI uses npm ci on package-lock.json; Langium generated files are committed"
  },
  "alakajam": {
   "fenvix_python": "$PM_WORK/venv/engine/bin/python",
@@ -345,7 +345,7 @@
   "dir": "$PM_WORK/repos/alakajam",
   "args": [],
   "ci": "DECLARED vitest.config.ts:28 fileParallelism: false ('Specs share a single sqlite database'); .github/workflows CI npm run test:unit:ci (= vitest run)",
-  "install": "npm ci --ignore-scripts --no-audit --no-fund"
+  "install": "npm ci --ignore-scripts --no-audit --no-fund && npm rebuild sqlite3 (MEASURED 2026-11-23: without the rebuild 15 of 27 test files fail to load, 'Could not locate the bindings file' for sqlite3)"
  },
  "neat": {
   "fenvix_python": "$PM_WORK/venv/engine/bin/python",
