@@ -3,11 +3,12 @@ Customers call fenvix-run explicitly; no hook catches the test step (app `infra/
 
 # Node customers on our machines: vitest, jest, node:test, mocha through `fenvix-run node` (spec 2026-11-23)
 
-Why BLOCKED: the App half (fenvix-app) is done and tested in this session's container, but it **cannot be pushed**.
-`add_repo` for Mircoguidetti/fenvix-app was refused at session start ("denied by the Claude Code auto mode
-classifier"), and `git push` answers `403: Mircoguidetti/fenvix-app is not in this session's authorized repository
-set`. Without the App on a branch, there is no App merge. And `engineCliCommit` cannot be set to an engine merge
-commit in a pushed App commit. The App commit `47b5308` exists only in this container; the unblock is listed at the end.
+Why BLOCKED: neither branch is merged.
+- The engine merge is withheld: CI never completed the new shared test (see "CI" and "Merge rule").
+- So `engineCliCommit` has no engine merge commit to point at, and the App merge waits for it.
+
+Update 2026-11-23, after the report: the founder attached fenvix-app with push access. The App branch
+`claude/node-runner` (47b5308) is now pushed. Earlier, `add_repo` had been refused twice and `git push` answered 403.
 
 ## Changes to tests, CI steps or thresholds (listed first, rule 3)
 
@@ -25,9 +26,7 @@ commit in a pushed App commit. The App commit `47b5308` exists only in this cont
 
 - engine `claude/node-runner`: 7efa219 (wrapper, bootstrap, tests), ebaa2e7 (reason keys for the App),
   d287443 + 962acfb (gstack /review fixes). Head **962acfb**. Not merged: see "Merge rule".
-- app `claude/node-runner`: **47b5308**, local only (push refused, see above). Bundle and patch in this container:
-  `/tmp/claude-0/-home-user-fenvix-engine-cli/71076f27-c6bd-5533-a071-de9dd6d22a67/scratchpad/fenvix-app-node-runner.bundle`
-  and `.../scratchpad/app-patch/0001-*.patch`. They are lost when the container is reclaimed.
+- app `claude/node-runner`: **47b5308**, pushed. `engineCliCommit` is not changed yet: it waits for the engine merge commit.
 
 ## What was built
 
@@ -59,7 +58,7 @@ Single-test re-run commands, exactly as recorded by the tests:
 | mocha | `detjs mocha --det --det-epoch=2026-11-23T00:00:00Z fail.test.js --grep '^fail fails on demand$'` |
 In each case the test failed again alone, so it was not reported flaky, and the exit code stayed 1.
 
-App (local commit 47b5308): `install.sh` installs Node 22.23.5 as root before bootstrap, from the official
+App (commit 47b5308, branch claude/node-runner): `install.sh` installs Node 22.23.5 as root before bootstrap, from the official
 `node-v22.23.5-linux-x64.tar.gz`. The sha256 `c541181...a1a1` is pinned in the script AND must appear in the
 release's `SHASUMS256.txt`. Also in that commit:
 - migration `0018_node_test_mocha_runners.sql`;
@@ -300,9 +299,9 @@ Trunk: LIGHT run **45165824244** (push, head e733895 = this branch's base).
 
 ## To unblock
 
-1. Give this session (or the next) push access to Mircoguidetti/fenvix-app: allow `add_repo` for it, or add it to the
-   session's sources. Then push the App commit 47b5308 (bundle above) to `claude/node-runner`.
-2. After the engine merge, set `infra/github-app/cdk.json` `engineCliCommit` to the engine merge commit. Run
+1. Done: push access to fenvix-app was granted, and the App branch is pushed (47b5308).
+2. Engine merge: needs a CI run in which python shard 0/4 completes, or the founder's OK on the local evidence.
+   After the engine merge, set `infra/github-app/cdk.json` `engineCliCommit` to the engine merge commit. Run
    `git merge-base --is-ancestor 81f838c6 <merge>` and `... 75816a73 <merge>` (both exit 0 on head 962acfb). Then
    merge the App into `main` after its own CI.
 3. Decide E-1/E-2/E-4 (engine): until then, `fenvix-run verify` is red on green vitest and node:test suites.
