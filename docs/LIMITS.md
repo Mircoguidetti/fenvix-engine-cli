@@ -199,11 +199,12 @@ luxon 1116 under Jest workers, simple-statistics 277 under node:test all verify 
 run, 0 hazards, 0 not proven).
 
 Since the P1 fix below it also holds on the **first** parallel run of files that share state the engine has not
-seen yet: a run that reports a cross-worker hazard re-runs the files that hazard names in one lane and reports the
-re-run's outcomes, so a placement can no longer decide an outcome. `docs/PARALLEL-PROOF-DESIGN.md` (design P6)
+seen yet, for the trace: a run that reports a cross-worker hazard re-runs the files that hazard names in one lane and
+its trace reports the re-run's outcomes. The exit code is never lowered below the first run's (founder decision
+2026-11-23), so a placement can still make a first run exit red -- a false red, never a false green. `docs/PARALLEL-PROOF-DESIGN.md` (design P6)
 specifies preventing the conflict *a priori* from recorded footprints, which the Python/xdist path does and the
 Node path still does not: the Node path detects the conflict after the fact and then pays for a second, safe run
-of the files involved. P6's acceptance criterion ("0 new failures caused by the split") is met; its mechanism is
+of the files involved. P6's acceptance criterion ("0 new failures caused by the split") is met by the trace, not by the exit code; its mechanism is
 not the designed one. The limits below are the Node shell's.
 
 | # | limit | found | mitigation |

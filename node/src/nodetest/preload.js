@@ -41,8 +41,13 @@ if (role === 'file' || role === 'shared') {
   let cur = null; // {ctx, name, done}
   let onBegin = null;
   const skippedCtx = new WeakSet();
+  // tests declared todo (`test.todo(...)`, `{ todo: true }`: facade.js markTodo): node --test reports them todo and
+  // does not fail the run when they throw, so their outcome is `todo` whatever their body did (a failing todo test
+  // recorded `failed` turned a green node:test run red: gstack /review, 2026-11-23)
+  const todoCtx = new WeakSet();
 
   const outcomeOf = (ctx) => {
+    if (todoCtx.has(ctx)) return 'todo';
     if (skippedCtx.has(ctx)) return 'skipped';
     let passed;
     try { passed = ctx.passed; } catch { passed = false; }
@@ -119,6 +124,7 @@ if (role === 'file' || role === 'shared') {
           fileKey: () => fp.fileId || '',
           rootOpen: () => rootOpen,
           holdRoot: (call) => held.push(call),
+          markTodo: (ctx) => { if (ctx && typeof ctx === 'object') todoCtx.add(ctx); },
         });
       }
       return facadeObj;

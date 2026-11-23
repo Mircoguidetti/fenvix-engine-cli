@@ -176,7 +176,9 @@ test('mocha: two failing tests exit 1, not 2 (2 is reserved for detjs usage and 
   assert.match(r.stderr, /^detjs: status: failed=2 not_proven=0 passed=1 skipped=0$/m, show);
 });
 
-test('jest --forceExit: the counts still decide the exit code and the line is printed once', T, () => {
+// (Jest's own code is already 1 for a failing test here: this guards the exit path and the single status line; the
+// rule that the counts raise process.exitCode inside an 'exit' listener is unit-tested in exit-status.test.js)
+test('jest --forceExit: a failing test exits 1 and the status line is printed once', T, () => {
   const dir = path.join(TMP, 'exit-paths', 'jest-force-exit');
   fs.rmSync(dir, { recursive: true, force: true });
   fs.mkdirSync(path.join(dir, 'tests'), { recursive: true });
@@ -204,4 +206,35 @@ test('jest --det-isolate: a file that fails to load keeps the run red', T, () =>
   const show = `status=${r.status}\nstdout=${(r.stdout || '').slice(-1500)}\nstderr=${(r.stderr || '').slice(-2000)}`;
   assert.equal(r.status, 1, show);
   assert.match(r.stderr, /the collection run failed/, show);
+});
+
+// /review (2026-11-23): Jest --det-isolate filtered by a name it had rebuilt wrongly ("#42" taken for a duplicate
+// suffix): the filter matched nothing, the failing test was skipped, and the run exited 0
+test('jest --det-isolate: a failing test whose name ends in "#42" is run and keeps the run red', T, () => {
+  const dir = path.join(TMP, 'exit-paths', 'jest-isolate-name');
+  fs.rmSync(dir, { recursive: true, force: true });
+  fs.mkdirSync(path.join(dir, 'tests'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ name: 'exit-paths-jest-isolate-name', private: true }));
+  fs.writeFileSync(path.join(dir, 'jest.config.js'), "module.exports = { testMatch: ['**/tests/**/*.test.js'], testEnvironment: 'node' };\n");
+  fs.writeFileSync(path.join(dir, 'tests', 'a.test.js'), "test('regression for issue #42', () => { expect(1).toBe(2); });\ntest('Parser::parse works', () => {});\n");
+  const r = spawnSync(process.execPath, [BIN, 'jest', `--cacheDirectory=${path.join(dir, '.jc')}`, '--det', '--det-isolate'],
+    { cwd: dir, encoding: 'utf8', env: cleanEnv(PINNED), timeout: 300000 });
+  const show = `status=${r.status}\nstdout=${(r.stdout || '').slice(-1500)}\nstderr=${(r.stderr || '').slice(-2000)}`;
+  assert.equal(r.status, 1, show);
+  const trace = readTrace(path.join(dir, '.detjs', 'trace.jsonl'));
+  const got = Object.fromEntries(trace.tests.map((t) => [t.nodeid, t.outcome]));
+  assert.deepEqual(got, { 'tests/a.test.js::regression for issue #42': 'failed', 'tests/a.test.js::Parser::parse works': 'passed' }, show);
+});
+
+// /review (2026-11-23): node --test passes a run whose todo tests throw; under --det they were recorded `failed`
+test('node-test: todo tests that throw are recorded todo and do not turn the run red', T, () => {
+  const dir = path.join(TMP, 'exit-paths', 'node-test-todo');
+  fs.rmSync(dir, { recursive: true, force: true });
+  fs.mkdirSync(path.join(dir, 't'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ name: 'exit-paths-node-todo', private: true }));
+  fs.writeFileSync(path.join(dir, 't', 'a.test.js'), "const test = require('node:test');\nconst assert = require('node:assert');\ntest('ok', () => {});\ntest.todo('known bug', () => { assert.equal(1, 2); });\ntest('declared todo', { todo: true }, () => { assert.equal(1, 2); });\n");
+  const r = spawnSync(process.execPath, [BIN, 'node-test', '--det', 't/a.test.js'], { cwd: dir, encoding: 'utf8', env: cleanEnv(PINNED), timeout: 300000 });
+  const show = `status=${r.status}\nstderr=${(r.stderr || '').slice(-2000)}`;
+  assert.equal(r.status, 0, show);
+  assert.match(r.stderr, /^detjs: status: failed=0 not_proven=0 passed=1 skipped=2$/m, show);
 });

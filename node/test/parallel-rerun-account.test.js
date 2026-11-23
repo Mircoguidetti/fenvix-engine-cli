@@ -75,3 +75,24 @@ test('rerunArgs drops the runners\' file selectors (shard, changed, related, onl
   assert.deepEqual(rerunArgs(['--shard', '2/3', '-o', '--onlyFailures', '--findRelatedTests', '--det']), ['--det']);
   assert.deepEqual(rerunArgs(['--changedSince', 'main', '--related', 'src/a.js', '--lastCommit', '--det-trace', 't.jsonl', '--det']), ['--det']);
 });
+
+// /review (2026-11-23): a record detjs wrote for a test that never started in the re-run (B5) is not a re-run of it
+test('accountRerun: a never-started record in the re-run does not account for the test', () => {
+  const first = [rec('a.test.js::1'), rec('a.test.js::2')];
+  const never = { nodeid: 'a.test.js::2', outcome: 'skipped', events: [{ s: 'sched', o: 'sched.never_started', v: '' }] };
+  const r = accountRerun(first, [rec('a.test.js::1'), never], ['a.test.js']);
+  assert.equal(r.complete, false);
+  assert.deepEqual(r.notProven, ['a.test.js::2']);
+});
+
+// /review (2026-11-23): Jest --det-isolate's per-test filter, built from the detjs id
+test('isolate namePattern: " #n" stripped only for a real duplicate, "::" inside a name matched', () => {
+  const { namePattern } = require('../src/isolate');
+  const ids = new Set(['f::regression for issue #42', 'f::d::x', 'f::d::x #2', 'f::Parser::parse throws']);
+  const m = (id, name) => new RegExp(`^${namePattern(id, ids)}$`).test(name);
+  assert.equal(m('f::regression for issue #42', 'regression for issue #42'), true);
+  assert.equal(m('f::regression for issue #42', 'regression for issue'), false);
+  assert.equal(m('f::d::x #2', 'd x'), true); // the duplicate runs under its shared name
+  assert.equal(m('f::Parser::parse throws', 'Parser::parse throws'), true); // a test named with '::'
+  assert.equal(m('f::Parser::parse throws', 'Parser parse throws'), true); // or a describe 'Parser'
+});

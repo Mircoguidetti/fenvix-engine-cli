@@ -154,7 +154,8 @@ if (PIN && !PIN_NEEDS_RESTART) process.env.DETJS_PINNED = process.env.DETJS_PINN
 const RERUN = require('../src/parallel-rerun');
 if (RERUN.shouldWrap(process.argv[2], process.argv.slice(3))) {
   RERUN.main(process.argv[2], process.argv.slice(3)).then((r) => {
-    if (r.signal) { process.kill(process.pid, r.signal); return; }
+    // red even if the signal does not end this process (one Node ignores): a killed child is never a green run
+    if (r.signal) { process.exitCode = 1; process.kill(process.pid, r.signal); return; }
     process.exitCode = r.status;
   }, (err) => {
     const msg = err && err.message ? err.message : String(err);

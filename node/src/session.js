@@ -440,10 +440,11 @@ function finish(run, opts, files, meta) {
   const status = stampStatus(run.tracePath);
   if (status) {
     exitStatus.record(status);
-    if (printsStatus(full)) fs.writeSync(2, `${exitStatus.statusLine(status)}\n`); // sync: the runner may be exiting
+    // sync: the runner may be exiting; a stderr that cannot take the line (closed, full) must not abort the finish
+    if (printsStatus(full)) { try { fs.writeSync(2, `${exitStatus.statusLine(status)}\n`); } catch { /* not printed */ } }
   } else {
     // no counts are invented for a trace that cannot be read: the exit decision rests on the runner's code
-    fs.writeSync(2, `detjs: status: not written (the trace ${run.tracePath} could not be read back)\n`);
+    try { fs.writeSync(2, `detjs: status: not written (the trace ${run.tracePath} could not be read back)\n`); } catch { /* not printed */ }
   }
   let reproLines = [];
   try { reproLines = require('./repro').afterMerge(run, opts, files, meta.runner); } catch (e) { reproLines = [`detjs: --det-outcomes not written: ${e && e.message}`]; }
@@ -498,15 +499,21 @@ function stampStatus(tracePath) {
     // beside the real file (a --det-trace that is a symbolic link stays one), with its mode
     let real = tracePath;
     try { real = fs.realpathSync(tracePath); } catch { /* as given */ }
-    const tmp = `${real}.status-${process.pid}`;
+    // created exclusively (never through a file or link already at that name) and set up through its descriptor
+    const tmp = `${real}.status-${process.pid}-${Date.now().toString(36)}`;
+    let fd = null;
     try {
-      let mode = null;
+      let mode = 0o644;
       try { mode = fs.statSync(real).mode & 0o7777; } catch { /* default */ }
-      fs.writeFileSync(tmp, `${head.slice(0, i)}${field}${head.slice(i)}${nl < 0 ? '' : text.slice(nl)}`, mode === null ? undefined : { mode });
-      if (mode !== null) fs.chmodSync(tmp, mode);
+      fd = fs.openSync(tmp, 'wx', mode);
+      fs.writeSync(fd, `${head.slice(0, i)}${field}${head.slice(i)}${nl < 0 ? '' : text.slice(nl)}`);
+      fs.fchmodSync(fd, mode);
+      fs.closeSync(fd);
+      fd = null;
       fs.renameSync(tmp, real);
     } catch (e) {
-      try { fs.rmSync(tmp, { force: true }); } catch { /* best effort */ }
+      if (fd !== null) { try { fs.closeSync(fd); } catch { /* closed */ } }
+      if (e && e.code !== 'EEXIST') { try { fs.rmSync(tmp, { force: true }); } catch { /* best effort */ } }
       process.stderr.write(`detjs: meta.status not written into ${tracePath}: ${e && e.message}\n`);
     }
   }

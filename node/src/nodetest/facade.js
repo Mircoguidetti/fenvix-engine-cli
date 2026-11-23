@@ -157,6 +157,13 @@ function makeFacade(real, st) {
           return r;
         }, fn);
       }
+      // a test declared todo: its context is marked when it runs, so the preload records it `todo` (as node --test
+      // reports it) even when its body throws
+      const todo = !isSuite && st.markTodo && (realFn === real.todo || (parts.options && parts.options.todo));
+      if (todo && parts.fn) {
+        const fn = parts.fn;
+        parts.fn = keepLength(function detjsTodo(t, ...a) { st.markTodo(t); return fn.call(this, t, ...a); }, fn);
+      }
       const call = () => {
         if (planned && !isSuite) {
           const id = idOf(`${parentKey}::${name}`);

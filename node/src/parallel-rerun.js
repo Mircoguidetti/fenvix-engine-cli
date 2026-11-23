@@ -54,7 +54,7 @@ const OWN_VALUE = new Set(['--det-trace', '--det-compare', '--det-order', '--det
 // The runners' own file selectors: the second pass runs exactly the hazard files it is given. A shard, a changed-
 // files or related-files filter could drop one of them -- and a hazard file that failed to load in the first pass
 // has no test record to miss, so its absence would go unnoticed (gstack /review, pass 3).
-const SELECT = /^(--shard|--changed|--changedSince|--related|--findRelatedTests|--onlyChanged|-o|--lastCommit|--onlyFailures|-f|--watchAll)(=|$)/;
+const SELECT = /^(--shard|--changed|--changedSince|--related|--findRelatedTests|--onlyChanged|-o|--lastCommit|--onlyFailures|-f|--watchAll|--watch)(=|$)/;
 const SELECT_VALUE = new Set(['--shard', '--changed', '--changedSince', '--related']);
 
 const PASSED = new Set(['passed', 'skipped', 'todo']);
@@ -124,7 +124,9 @@ function hazardFiles(header) {
 function accountRerun(firstTests, rerunTests, files) {
   const set = new Set(files);
   const want = (firstTests || []).filter((r) => set.has(fileOf(r.nodeid))).map((r) => r.nodeid);
-  const got = new Set((rerunTests || []).map((r) => r.nodeid));
+  // a record detjs wrote for a test that never started (B5, controls.recordNeverStarted) is not a re-run of it
+  const ran = (r) => !((r.events || []).some((e) => e && e.o === 'sched.never_started'));
+  const got = new Set((rerunTests || []).filter(ran).map((r) => r.nodeid));
   const unaccounted = want.filter((id) => !got.has(id));
   const complete = Array.isArray(rerunTests) && unaccounted.length === 0;
   const notProvenFiles = [];
