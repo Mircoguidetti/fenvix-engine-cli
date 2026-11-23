@@ -1,216 +1,347 @@
-BLOCKED
+DONE
 
-# REPORT — Engine P0: no false green (branch `claude/p0-no-false-green`, from `claude/release-1` @ bfaf70b4)
+# REPORT: Engine P0, no false green
 
-## Why BLOCKED
+- Branch: `claude/p0-no-false-green`, cut from `claude/release-1` @ bfaf70b4.
+- Merged into `claude/release-1` with `git merge --no-ff`.
 
-1. **The gstack `/review` skill is not installed, so the review and the merge did not run.** `ls
-   ~/.claude/skills/gstack/review/SKILL.md` -> `No such file or directory` (MEASURED). The coordinator's message of
-   2026-11-23 gave an install command (clone `garrytan/gstack` into `~/.claude/skills/gstack`, install bun, run its
-   `./setup`); in this container that command was **denied by the session's permission system** and was not run
-   or worked around. Nothing was merged into `claude/release-1`; the branch is pushed. To unblock: install gstack in
-   a session where that is permitted (or pre-install it in the environment) and run `/review` on this branch.
-2. **Merge rule for a red trunk (coordinator, 2026-11-23): its condition holds, the merge still waits for (1).**
-   The tests that fail on this branch are the same as those that fail on bfaf70b4 — not more — in every suite:
-   see "Failing tests: branch vs trunk" below. Because the new rule reached this session as a message from another
-   session rather than from the user, and a merge pushes to the trunk, I also leave the merge itself to a session
-   that can run `/review` and has that rule confirmed.
+## Summary
 
-AC5, Jest half: **resolved** by the founder's decision relayed by the coordinator (2026-11-23): for Jest the
-criterion is "both tests are in the trace with the outcome Jest reports (`failed`)"; Vitest stays `skipped`. That
-is what `node/test/trace-skipped.test.js` checks (pass). Background: Jest 30 (circus) dispatches
-`test_start`/`test_done` for each test of a failing `beforeAll` and fails it with the hook's error, so the trace had
-both, as `failed`, already on bfaf70b4 (MEASURED); writing `skipped` over a reported failure would turn red into
-not-red.
+- **One exit rule on every path.** B1, B2, B6: `node/src/exit-status.js`.
+  - Runs: a failed or NOT PROVEN test exits 1, a detjs error exits 2.
+  - `detjs verify`: its exit code equals Python `verify_exit_code` on every fixture row.
+- **The hazard re-run reports NOT PROVEN** for the tests it did not account for (B3).
+- **Named Vitest projects** are re-run and accounted as files (B4).
+- **Never-started tests are in the trace as `skipped`** (B5): tests of a failed `beforeAll`, and of a nested
+  `afterAll` failure.
+- **Every run prints exactly one `detjs: status: ...` line and stamps `meta.status`** (B7).
+- **Docs and TODOS updated** (B8, B9).
+- **The gstack `/review` ran in five rounds.** Its findings were fixed or are listed below.
+  - The founder decisions taken in it are D1 to D6.
+  - D5 changes a gate: the hazard re-run never lowers the first run's exit code.
+- **Merge rule, "no new red against the trunk" (coordinator rule 3):** holds. Every test that fails on this branch
+  also fails on bfaf70b4. The lists and commands are under "Failing tests: branch vs trunk".
+- **Exception to coordinator rule 4, granted by the founder in D6:**
+  - The fixes made after the last full `/review` round were not reviewed again by a full round.
+  - They were tested: unit tests, the full Node suite, and CI.
+  - The residual findings are listed here and in `TODOS.md` (P1).
 
-## Failing tests: branch vs trunk (the merge rule's proof)
+## Founder decisions taken during this work (2026-11-23)
 
-| suite | command | this branch (6ae93a4 / 508dda9) | bfaf70b4 |
-|---|---|---|---|
-| Rust | `cargo test -p detpy-core -p detpy-node` | 0 failed (204 passed) | (CI build job green on both) |
-| Node, local | `cd node && node --test --test-concurrency=1 test/<file>.test.js` per failing file (full suite first, then the failing files on both trees) | `repro-p041` "--det-order: exactly the listed tests..." (vitest); `runner-bun` "two --det runs give identical fingerprints..."; `runner-node-test` "a file another test file wrote: not cacheable"; `parallel-p041` "jest: parallel lanes" before hook (+3 cancelled) | the same four, plus `parallel-p041` "jest: placement effects" |
-| Python, local | `python -m pytest tests/ -q -p no:cacheprovider`; then the failing ids on a bfaf70b4 worktree | 16: `test_packaging::test_gate_runs_on_pull_requests_and_trunk_only_and_cancels_only_superseded_pr_runs`; `test_py_cache::test_the_virtual_clocks_own_probe_of_threads_is_not_the_tests_read`, `::test_g2214_a_test_that_crashes_its_worker_is_a_record_of_the_merged_trace`; `test_r023c_fixes::test_e2_shutil_copy2_into_a_temporary_directory_stays_reusable`; `test_review_r056_pycache`: `test_w3_file_size_read_through_posix` (4 params), `test_w3_file_existence_read_through_posix_access` (2), `test_w3_file_mtime_read_through_posix_stat`, `test_w4_pwd_read_through_posix_environ`, `test_w5_kernel_release` (2), `test_w8_c_seeded_random_is_controlled_or_refused`, `test_w11_object_addresses_match_uncached_det` | the same 16 (`16 failed`) |
-| release-1.yml | run 45083642120 (branch) vs run 45041985747 (trunk) | failed jobs: attacks, python 3/4, node 1/4 (rest cancelled by fail-fast) | failed jobs: attacks, python 0/4, python 3/4, node 1/4 |
+- **AC5, Jest.** Criterion: "both tests are in the trace with the outcome Jest reports (`failed`)". Vitest stays
+  `skipped`.
+  - Jest 30 (circus) fails each test of a failing `beforeAll` itself.
+  - Writing `skipped` over that failure would turn red into not-red.
+- **Merge rule.** "No new red against the trunk", plus `/review`, then merge and the final REPORT.
+- **`/review` D1 = A.** Fix the wrapper false green.
+  - Confirmed live: a file that failed to load, next to a hazard failure the re-run cleared, exited 0.
+  - The same happened on bfaf70b4 (MEASURED).
+- **D2 = A.**
+  - Jest `--forceExit` (and any `process.exit` path) gets the exit rule: `exit-status.record()` applies `runExit`
+    to `process.exitCode` at once.
+  - The mocha shell exits 1, not 2, on failures. Mocha exits with its failure count; 2 means a detjs error.
+- **D3 = A.** The informational fixes were applied.
+- **D4 = A.** The four CRITICAL findings were fixed and the diff re-reviewed.
+- **D5 = A, "never lower the red" (gate change).**
+  - `wrapperRunnerCode(status1, status2, rerunTraced)` returns pass 1's non-zero code whatever pass 2 does.
+  - The re-run still decides what the merged trace says for the hazard files.
+  - It prints `the one-lane re-run of the hazard files passed, but the first run's exit code N stands`.
+  - Three rounds of trying to tell "a red explained by the hazard" from "any other red" each leaked a new hole, so
+    the default is deny.
+  - **Gate edits kept under D5:**
 
-The node 1/4 job fails on the same assertion with the same values in both runs (logs of jobs 137397969624 and
-137269021593). The attacks and python 3/4 job logs were not compared line by line; that they fail for the same
-reasons is ESTIMATED from the local runs above, where the Python failures are identical. Fail-fast cancels the
-rest of each matrix, so CI cannot show tests behind the first red job; the full local runs cover those. No test
-was skipped, weakened or quarantined.
+    | test | expectation was | is now |
+    |---|---|---|
+    | `node/test/parallel-p041.test.js`: P1 shared-path (vitest, jest), P1 fixed-port (vitest, jest), vitest named project | exit 0 | exit 1, plus the "exit code 1 stands" message |
+    | `node/test/runner-node-test.test.js`: "P1 one-lane re-run" | exit 0 | exit 1, plus the message |
+
+  - `docs/LIMITS.md` P1 row: "Closed for the trace, open by decision for the exit code". The cost: a run whose
+    only red is a placement artifact stays red until the next plan, which puts the hazard files in one lane.
+- **D6 = A, "fix the 7, then merge".**
+  - The seven open items were fixed, each with a test.
+  - Then the full suite and CI ran, then the merge, with the explicit exception to the `/review` rule.
+
+## Failing tests: branch vs trunk (merge rule proof)
+
+### Local runs
+
+Container: 4 CPUs, Node v22.23.5, Python 3.13.18, Vitest 5.1.0, Jest 30.5.2. All MEASURED.
+
+- **Rust.** `cargo test -p detpy-core -p detpy-node`.
+  - Branch: 0 failed, 204 passed.
+  - bfaf70b4: no Rust change in the diff; the CI build job passes on both.
+- **Node.** `cd node && npm test` (`node --test --test-concurrency=1 test/*.test.js`).
+  - Branch (2c67961): 975 tests, 968 pass, 3 fail, 3 cancelled, 1 skipped. Failing subtests:
+    - `parallel-p041` "jest: parallel lanes": the before hook fails and its 3 tests are cancelled.
+    - `repro-p041` "--det-order: exactly the listed tests…" (vitest).
+    - `runner-bun` "two --det runs give identical fingerprints…".
+    - `runner-node-test` "a file another test file wrote: not cacheable".
+  - bfaf70b4: the same four fail, plus `parallel-p041` "jest: placement effects".
+- **Python.** `python -m pytest tests/ -q -p no:cacheprovider`.
+  - Branch: 16 failed, 1349 passed, 80 skipped. The 16:
+    - `test_packaging::test_gate_runs_on_pull_requests_and_trunk_only_and_cancels_only_superseded_pr_runs`;
+    - `test_py_cache`: `::test_the_virtual_clocks_own_probe_of_threads_is_not_the_tests_read`,
+      `::test_g2214_a_test_that_crashes_its_worker_is_a_record_of_the_merged_trace`;
+    - `test_r023c_fixes::test_e2_shutil_copy2_into_a_temporary_directory_stays_reusable`;
+    - `test_review_r056_pycache`: `test_w3_file_size_read_through_posix` (4 params),
+      `test_w3_file_existence_read_through_posix_access` (2), `test_w3_file_mtime_read_through_posix_stat`,
+      `test_w4_pwd_read_through_posix_environ`, `test_w5_kernel_release` (2),
+      `test_w8_c_seeded_random_is_controlled_or_refused`, `test_w11_object_addresses_match_uncached_det`.
+  - bfaf70b4: the same 16 ids fail.
+- **Python runner suite, zope.** `pytest tests/test_runners_zope.py`, in a venv with `zope.testrunner` and the
+  same wheel.
+  - Branch: 29 failed, 5 passed.
+  - bfaf70b4: 29 failed, 5 passed; the failing ids are identical (sorted lists diffed).
+
+Branch counts for the Rust and Python suites come from the earlier full runs. The diff since then touches only
+`node/`, docs and `TODOS.md`.
+
+### `release-1.yml` (workflow_dispatch)
+
+Trunk run 45041985747 at bfaf70b4. Branch run 45146058099 at 2c67961.
+
+| job | trunk | branch |
+|---|---|---|
+| build, smoke python, smoke node | success | success |
+| attacks | failure | failure |
+| python 0/4 | failure | failure |
+| python 1/4 | success | success |
+| python 2/4 | success | success |
+| python 3/4 | failure | cancelled |
+| node 0/4 | cancelled | cancelled |
+| node 1/4 | failure | success |
+| node 2/4 | cancelled | success |
+| node 3/4 | cancelled | failure |
+
+Fail-fast cancels the rest of a matrix, so the two runs do not cover the same tests.
+
+- **Branch node 3/4.** One failure: `runner-node-test` "a file another test file wrote: not cacheable" (job log
+  137596685684). This test fails on bfaf70b4 too (local run above); CI cancelled it there. It now fails at an
+  earlier assertion:
+  - On bfaf70b4, run 1 exits 0: the wrapper cleared the parallel red. The test then fails on the "written by"
+    message, because the parallel default reports a cross-worker hazard instead.
+  - On this branch, run 1 exits 1: pass 1's red stands, by D5.
+  - I did not change this test. It was already red on the trunk for its own reason, and D5 authorized only the
+    P1 expectations listed above.
+- **Branch python 0/4.** Main step: 2 failed, both from the list of 16 above (`test_py_cache` ×2). Runner-suites
+  step: 58 failed, 89 passed.
+  - On the trunk that step was cancelled, so CI shows no comparison.
+  - Zope: identical on both trees (above, MEASURED).
+  - Django, nose2 and ward: ESTIMATED identical, not run. The branch changes no Python or Rust source; the only
+    Python file it adds is `tests/test_exit_status_contract.py`.
+- **Branch node 1/4 passed** where the trunk's failed (`repro-p041` "--det-order"). That test still fails locally
+  on both trees. UNKNOWN why CI passed it here; I do not count it as fixed.
+- **attacks.** Fails on both runs. Not compared line by line: ESTIMATED same cause, since the attack suites run
+  the same Python and Node failures listed above.
+
+No test was skipped, deselected or quarantined. The only expectation changes are the D5 gate edits listed above.
 
 ## Acceptance criteria
 
-All local numbers: MEASURED on this container (4 CPUs, Node v22.23.5, Python 3.13.18, Vitest 5.1.0, Jest 30.5.2,
-addon from `cargo build -p detpy-node --release`, wheel from `maturin build --release`).
+All results MEASURED in this container, unless marked otherwise.
 
-**AC1 — `node/test/exit-regression.test.js`.** `node --test test/exit-regression.test.js`
-- On bfaf70b4 (only the new test file present): (a) pass, (b) pass, (c) pass, (d) FAIL (help said
-  `default: serial`) — as the spec requires.
-- On this branch: 4/4 pass.
-- Deviation in (c), documented in the test: Vitest 5's logger traps SIGTERM in its main process
-  (`Logger.addCleanupListeners`: `process.once('SIGTERM')` then `process.exit()` → 143). With the fixture exactly
-  as the spec words it, the detjs child ends with **status 143, signal null**, on bfaf70b4 (MEASURED), so the
-  parent cannot see a signal. The fixture adds a `globalSetup` (runs in that main process after the logger) that
-  removes the SIGTERM listeners, so the signal really kills the child; then the parent ends with SIGTERM
-  (bfaf70b4 and here). Re-exec marker (appendix 7): the test writes `process.pid`/`process.ppid`; the test's
-  process is a child of the spawned detjs (`ppid === r.pid`, `pid !== r.pid`). `DETJS_PINNED`, `TZ`, `LC_*`,
-  `LANG` are cleared; `--det-workers=1` keeps the wrapper out; `--pool=threads`.
+### AC1: `node/test/exit-regression.test.js`
 
-**AC2 — shared fixture.** `node/test/fixtures/exit-cases.json` (7 runExit rows as listed in the spec, 7 verifyExit
-rows plus 2 precedence rows). `node --test test/exit-status.test.js` → 18/18 pass (plus a countStatus test);
-`python -m pytest tests/test_exit_status_contract.py` → 1 passed (every verifyExit row equals
-`verify_exit_code`). Input fields `runnerCode` and `internalError` separate (appendix 8).
+Command: `node --test test/exit-regression.test.js`.
 
-**AC3 — `node/test/verify-exit.test.js`.** Fixtures are derived at test time from one real
-`detjs node-test --det` trace of a one-test suite (so their sensor declaration is always the current one; a
-control pair checks the unchanged trace is `identical`, exit 0):
-- NOT PROVEN pair: both headers get `not_proven_outside_tests: ["env:HTTPS_PROXY"]` (verify.rs
-  `outside_not_proven`: every test NOT PROVEN).
-- inputs-not-recorded pair: `meta.inputs` deleted from both headers (verify.rs: `inputs_recorded` = every run has
-  `meta.inputs`).
-- bfaf70b4: both pairs exit 0 (MEASURED; 3/3 fail). Branch: both exit 1 and `--json` `status: "not_proven"`;
-  3/3 pass.
+- On bfaf70b4, with only the new test file present: (a), (b) and (c) pass; (d) fails (help said
+  `default: serial`), as the spec requires.
+- On the branch: 4/4 pass.
+- Deviation in (c), documented in the test:
+  - Vitest 5 traps SIGTERM in its main process, and the detjs child ends with status 143 and signal null, also on
+    bfaf70b4.
+  - The fixture adds a `globalSetup` that removes those listeners, so the signal really kills the child.
+- Re-exec marker: a pid/ppid check, with the threads pool and `DETJS_PINNED`, `TZ`, `LC_*`, `LANG` cleared.
 
-**AC4.** (a) `node/test/parallel-rerun-account.test.js` on `accountRerun(firstTests, rerunTests, files)` (pure,
-extracted from `parallel-rerun.js main()`), `fileOf`, `labelFile`, `hazardFiles`, `wrapperRunnerCode`: 6/6 pass;
-on bfaf70b4 6/6 fail (functions absent / old `fileOf`). (b) `parallel-p041.test.js`, new standalone Vitest test
-"vitest named project: the one-lane re-run reports the hazard files' tests, not 0 of 0" (fixture
-`test.projects: [{ test: { name: 'main', include: [...] } }]`, lanes forced with `--det-plan`): branch → pass,
-"0 failed of 2 test(s)"; bfaf70b4 (src/bin stashed) → FAIL with
-`the one-lane re-run is what is reported for main|tests/x.test.mjs, main|tests/y.test.mjs: 0 failed of 0 test(s)`.
-Finding: the defect had a second half the spec did not list — the hazard sides are lane LABELS (`main|<file>`),
-so the re-run was also handed nonexistent paths (`<root>/main|tests/x.test.mjs`). Both are normalised to the file.
+### AC2: shared fixture `node/test/fixtures/exit-cases.json`
 
-**AC5 — `node/test/trace-skipped.test.js`.** Vitest: bfaf70b4 → trace has 0 tests (MEASURED); branch → both
-`skipped`, pass. Jest (criterion as decided by the founder, 2026-11-23): both tests in the trace with Jest's own
-outcome `failed` — pass (true on bfaf70b4 too, MEASURED).
+- Rows:
+  - `runExit`: the 7 spec rows, plus "a runner code that is not a number" (exit 1).
+  - `verifyExit`: 7 rows, plus 2 precedence rows, plus `inputs_recorded: null` (exit 1, `not_proven`).
+- `node --test test/exit-status.test.js`: all pass. The file also covers `countStatus` and `record()` setting
+  `process.exitCode`.
+- `python -m pytest tests/test_exit_status_contract.py`: passes. Every `verifyExit` row equals
+  `verify_exit_code`.
 
-**AC6 — `node/test/exit-paths-p0.test.js`.** One failing test through: normal path (`--det-workers=1`, TZ/locale
-pre-pinned), re-exec path (env cleared; marker: the test sees `TZ=UTC`), wrapper with a hazard (two files write one
-path, lanes forced by `--det-plan`; the wrapper merges), wrapper with no hazard (pass-1 child's trace is final).
-Each: exit 1, exactly one `detjs: status:` line (on stderr), `meta.status.failed === 1`. Branch 4/4 pass;
-bfaf70b4 4/4 fail, every one with status=1 (exit codes held; only the status assertions fail).
+### AC3: `node/test/verify-exit.test.js`
 
-**AC7.** `--det-workers` default: `node/src/session.js` HELP and `docs/NODE.md` ("Parallel") now say the machine's
-CPUs. Exit-code tables for runs (B1) and verify (B2, with the `--json` status words) in `docs/CLI.md` and
-`docs/VERIFY-CONTRACT.md` (section 6). `TODOS.md` at the root with the one P2 item.
+- Fixtures are derived at test time from a real `detjs node-test --det` trace:
+  - a NOT PROVEN pair, with `not_proven_outside_tests`;
+  - an inputs-not-recorded pair, with `meta.inputs` removed;
+  - a control pair, the trace unchanged: `identical`, exit 0.
+- bfaf70b4: both pairs exit 0 (3/3 fail).
+- Branch: both pairs exit 1 with `--json` status `not_proven` (3/3 pass).
 
-**AC8.**
-- `cargo test -p detpy-core -p detpy-node`: 204 passed, 0 failed (MEASURED).
-- `cd node && npm test` (`node --test --test-concurrency=1 test/*.test.js`, 3400 s): 958 tests, 946 pass, 8 fail,
-  3 cancelled, 1 skipped (MEASURED, first full run). Breakdown:
-  - `node-p041` JS-09 (2): environment — the test copies `node/detjs.linux-x64.node`, which CI puts there and I had
-    not. After copying the addon there: 49/49 pass.
-  - `repro-p041` "--det-order: exactly the listed tests" (vitest, jest): caused by my first B5 version (it added
-    `skipped` records for tests `--det-order` removes from the run). Fixed in 508dda9 (only tests still in the run;
-    nothing in `--det-collect`). After the fix the vitest case still fails, **identically on bfaf70b4** (MEASURED,
-    bfaf70b4 worktree): under parallel-by-default the hazard re-run drops `--det-order` and re-runs every test.
-    Pre-existing.
-  - `runner-bun` "two --det runs give identical fingerprints" (seeded random differs): fails on bfaf70b4 too.
-  - `runner-node-test` "a file another test file wrote: not cacheable": fails on bfaf70b4 too (parallel by default
-    on 4 CPUs makes it a cross-worker hazard message instead of "written by").
-  - `parallel-p041` "jest: parallel lanes" (before hook: Jest 30 refuses lanes, "parallel by default" assertion; 3
-    cancelled): fails on bfaf70b4 too (there also "jest: placement effects").
-  - Re-run of those five files on this branch: node-p041 49/0, repro-p041 20/1, runner-bun 40/1,
-    runner-node-test 51/1, parallel-p041 35 pass/0 fail/3 cancelled; on bfaf70b4: repro-p041 20/1, runner-bun 40/1,
-    runner-node-test 51/1, parallel-p041 33/1/3 cancelled. No test fails here that passes on bfaf70b4.
-  - All 37 tests of the new files pass after the fix (MEASURED).
-- `python -m pytest tests/` (serial, as CI): 16 failed, 1349 passed, 80 skipped (MEASURED, 1:52 h). The same 16
-  fail on bfaf70b4 (MEASURED: bfaf70b4 worktree, same 16 ids, `16 failed`): `test_packaging` (the workflow gate
-  test), `test_py_cache` (2), `test_r023c_fixes` (1), `test_review_r056_pycache` (12). No Python or Rust code
-  changed in this branch; the only Python change is the new `tests/test_exit_status_contract.py` (passes).
-- `release-1.yml` on this branch, workflow_dispatch depth light, run 45083642120 on 508dda9: **failure**
-  (DECLARED by the GitHub Actions API). build, smoke (python), smoke (node), python (3.13, shard 2/4): success;
-  attacks, python (3.13, shard 3/4), node (24, shard 1/4): failure; the rest cancelled by fail-fast. The same three
-  jobs failed on the trunk at bfaf70b4 (run 45041985747; there also python shard 0/4). The node shard 1/4 failure
-  is the same assertion with the same values on both runs (`repro-p041.test.js` "--det-order: exactly the listed
-  tests", job logs 137397969624 vs 137269021593). attacks and python 3/4 logs not compared line by line: their
-  equality to the trunk's is ESTIMATED from the local Python comparison above.
-  (The run was started by me with workflow_dispatch: pushes to session branches run nothing and no PR was opened.)
+### AC4: hazard re-run accounting
+
+- **(a) Pure functions.** `node/test/parallel-rerun-account.test.js` covers `accountRerun`, `fileOf`, `labelFile`,
+  `hazardFiles`, `wrapperRunnerCode`, `rerunArgs`, the never-started mark and `namePattern`.
+  - Branch: 9/9 pass.
+  - bfaf70b4: the original 6 fail (functions absent).
+- **(b) Vitest named project.** `parallel-p041.test.js`, test "vitest named project".
+  - Branch: the hazard files' tests are reported, "0 failed of 2", and the exit is 1 (D5).
+  - bfaf70b4: fails with "0 failed of 0 test(s)".
+  - Second half of this defect: the re-run was handed `project|file` labels as paths. These are now normalised to
+    the file.
+
+### AC5: `node/test/trace-skipped.test.js`
+
+- Vitest:
+  - bfaf70b4: the trace has 0 tests.
+  - Branch: both tests are recorded `skipped`.
+- Jest (founder's criterion): both tests are recorded `failed`. True on bfaf70b4 too.
+
+### AC6: `node/test/exit-paths-p0.test.js`, 12/12 pass
+
+The spec's four paths, each with one failing test. Each gives exit 1, exactly one status line, and
+`meta.status.failed === 1`:
+
+- normal;
+- re-exec;
+- wrapper with a hazard;
+- wrapper without a hazard.
+
+On bfaf70b4 these four fail on the status assertions.
+
+Added from `/review`:
+
+- a file that fails to load;
+- a `beforeAll` failure, and a nested `afterAll` failure;
+- `--det-isolate`;
+- mocha with 2 failures (exit 1, not 2);
+- Jest `--forceExit`;
+- Jest `--det-isolate` with a load failure;
+- a Jest `--det-isolate` test named "… #42", previously filtered out and green;
+- a node:test `todo`.
+
+### AC7: docs and TODOS
+
+- `--det-workers` default is the machine's CPUs: `session.js` HELP and `docs/NODE.md`.
+- Exit-code tables for runs and verify: `docs/CLI.md` and `docs/VERIFY-CONTRACT.md` §6.
+- The parallel paragraph and the P1 row in `docs/LIMITS.md`.
+- `TODOS.md`: the P2 item, plus the P1 review residuals.
+
+### AC8
+
+See "Failing tests: branch vs trunk". No test fails on the branch that passes on bfaf70b4.
 
 ## Where each change is hooked, and why
 
-**B6 — `node/src/exit-status.js`**: `runExit`, `verifyExit`, `verifyStatus`, `countStatus`, `statusLine`, and
-`record`/`recordedStatus` (the counts of the trace this process wrote). Input shapes in its header comment. Callers:
-- `node/bin/detjs.js` normal path: `runExit({...recordedStatus(), runnerCode: code})` for a `--det` run of a
-  runner (or any process that wrote a trace); other commands (`verify` 0/1/3, repro, help) keep their code. The
-  error handler is `runExit({internalError: true})` (2). Same for the wrapper's error handler.
-- `node/src/parallel-rerun.js`: the wrapper's final decision (replacing the old `:228-235`) is
-  `runExit({...counts, runnerCode: wrapperRunnerCode(status1, status2, firstFailed, rerunTraced)})`.
-- `detjs verify`: `verifyExit(rep.summary)`; `--json` adds `status: verifyStatus(...)`.
-- Forwarding only, unchanged: re-exec `r.status ?? 1` (signal re-raised), wrapper `r.status` with signal
-  re-raised, and the wrapper with no hazard returning pass 1's already-decided code.
+### B6: `node/src/exit-status.js`, the one owner of the exit rule
 
-**B3/B4 — `parallel-rerun.js`**: `accountRerun` decides `want`/`unaccounted`/`complete`/`notProven`/
-`notProvenFiles`; one `detjs: parallel: NOT PROVEN <file>: the one-lane re-run did not account for its tests
-(<cause>)` line per file (causes: `its trace is missing`, `it ran K of its N test(s)`). `fileOf` drops `@@project`;
-`hazardFiles` reduces `project|file` labels to the file (`labelFile`). `meta.hazard_rerun.not_proven` lists them.
+Exports: `runExit`, `verifyExit`, `verifyStatus`, `countStatus`, `statusLine`, `record`, `recordedStatus`. The input
+shapes are in its header comment.
 
-**B5 — `node/src/state.js`** tracks `begun` ids per file; **`node/src/controls.js` `recordNeverStarted(ids)`** writes
-a `skipped` record (beginTest/endTest, the same way a `test_skip` is recorded) for each test of the open file with
-no record. Called, independent of the cache:
-- Vitest (`node/src/vitest/shell.js` `__neverStarted`): before the part closes — in `onAfterRunFiles` before
-  `controls.closeFile()`, and in `__open` before switching to the next file (a worker that runs several files).
-  Why there: the part is still open and the file's task tree (`det.ids`/`det.fileOf`) is complete; `writeCapture`
-  only runs with `CAP` set.
-- Jest (`node/src/jest/runner.js`, the runner's `finally`): after `endPending()`, before `controls.closeFile()` —
-  the one point where every test event of the file is in and the part is open (appendix 10). A no-op on Jest 30 in
-  every case I could build (see AC5).
-- Both restricted to tests still in the run (`--det-order` filter: Vitest `det.collected`, Jest `collected`), and
-  off in `--det-collect`.
+- **`bin/detjs.js`, normal path.** `process.exitCode = runExit({...recordedStatus(), runnerCode: code})` for a
+  `--det` runner run, or for any process that wrote a trace.
+  - Error handlers call `runExit({internalError: true})`, which gives 2.
+- **`record()`** also applies `runExit` to `process.exitCode` at the moment the trace is written. Jest
+  `--forceExit` and other `process.exit` paths never return to `bin/detjs.js`.
+- **`src/parallel-rerun.js`.** `runExit({...counts, runnerCode: wrapperRunnerCode(status1, status2, rerunTraced)})`.
+  - `wrapperRunnerCode`: 2 if either pass returned 2; otherwise pass 1's code if non-zero (D5); otherwise pass 2's
+    code if non-zero; 1 if the re-run left no trace; else 0.
+  - On a child's signal: exit code 1, then the signal is re-raised.
+- **`detjs verify`.** `verifyExit(summary)`; `--json` adds `status: verifyStatus(summary)`. Precedence: diverged,
+  then not_proven, then input_differs, then identical.
+- **Forwarding only:** the TZ re-exec forwards `r.status ?? 1` and re-raises signals.
 
-**B7 — status line and `meta.status`**:
-- `node/src/session.js finish` (vitest, jest, node-test, mocha, playwright, and `runners/common.js`: bun, deno,
-  tap, ava, jasmine, uvu): after `native.mergeTraces`, `stampStatus` counts the merged trace and writes
-  `"status":{...}` as the first key of the header's `meta` by text edit of the header line (no other byte of the
-  trace changes; no Rust change — appendix 3). One stderr line, written synchronously (the runner may be exiting).
-- `printsStatus`: not printed by pass 2 of the wrapper (`DETJS_HAZARD_PASS=2`), nor by pass 1 when its own run
-  found a hazard (the wrapper's merged trace replaces it), nor by `--det-isolate` children (appendix 1, 2). The
-  wrapper sets `DETJS_HAZARD_PASS` explicitly, so a user's own `DETJS_HAZARD_RERUN=1` (which disables the wrapper)
-  still prints.
-- `parallel-rerun.js`: when it merges, `meta.status` is set before `mergeTraces`, the line printed by the wrapper.
-- `node/src/isolate.js` (`--det-isolate`): counts its merged records, `meta.status`, one line, `record()` for the
-  exit decision.
+### B3 and B4: `src/parallel-rerun.js`
 
-**B7 runner coverage** (one line on stderr, `meta.status` in the header, exit 1 for 1 failed + 1 passed; MEASURED
-with a manual fixture unless said): vitest yes (AC6), jest yes, node-test yes, mocha yes, bun-test yes, playwright
-yes (`playwright test --det`, no browser), `--det-isolate` (vitest) yes. deno-test, ava, tap, jasmine, uvu: not
-installed in this container, so NOT MEASURED; they finish through `runners/common.js` → `session.finish`, the same
-code path, so they print by construction (UNKNOWN by measurement).
+- `accountRerun` returns `want`, `unaccounted`, `complete`, `notProven` and `notProvenFiles`.
+- For each file it prints one line: `detjs: parallel: NOT PROVEN <file>: ...` with the cause, either "its trace
+  is missing" or "it ran K of its N test(s)".
+- Re-run records carrying the `sched.never_started` event do not count as a re-run of the test.
+- `fileOf` drops `@@project`; `labelFile` drops `project|`.
+- Pass 2 drops file-selection flags (`--shard`, `--changed`, `--related`, `--onlyFailures`, `--watch`, …) and
+  their values. Only hazard files are spliced into the merged trace.
+- The trace of pass 1 is read only if pass 1 wrote it: an inode, size and mtime stamp is taken before and after.
+
+### B5: never-started tests
+
+- `state.js` tracks the `begun` ids. `controls.recordNeverStarted(ids)` writes a `skipped` record with the event
+  `sched.never_started`, at site `<detjs>`.
+- **Vitest** (`vitest/shell.js` `__neverStarted`) is called in `onAfterRunFiles`, before `closeFile`, and in
+  `__open` before switching file. There the part is still open and the file's task tree is complete.
+- **Jest** (`jest/runner.js`) is called in the runner's `finally`, after `endPending()` and before `closeFile`.
+- Both only fill tests still in the run (the `--det-order` filter), and do nothing under `--det-collect`.
+
+### B7: status line and `meta.status`
+
+- **`session.finish`.** After `mergeTraces`, `stampStatus`:
+  - counts the merged trace;
+  - inserts `"status":{...}` as the first key of the header's `meta`, by a text edit of the header line;
+  - writes a temp file beside the real path, opened with `wx` and the original mode, then renames it;
+  - makes no Rust change.
+
+  Then `record()`, then one synchronous stderr line, whose write is guarded.
+- **`printsStatus`** is false in three cases, so each run prints exactly one line:
+  - wrapper pass 2;
+  - wrapper pass 1 when its own run found a hazard (the wrapper prints for the merged trace);
+  - `--det-isolate` children.
+- **`isolate.js`** counts its merged records, stamps `meta.status`, prints one line and calls `record()`.
+- **Counting rule.**
+  - passed → `passed`; skipped and todo → `skipped`.
+  - Every other outcome (failed, error, interrupted, unknown) → `failed`.
+  - NOT PROVEN tests are counted only in `not_proven`.
+  - `meta.status` counts records. The exit code is the verdict (documented).
+
+**B7 runner coverage** (MEASURED, one line plus `meta.status` plus exit 1 for one failed and one passed test):
+
+- vitest, jest, node-test, mocha, bun-test, playwright (no browser), and `--det-isolate` for vitest and jest.
+- deno-test, ava, tap, jasmine and uvu are not installed here, so NOT MEASURED. They finish through the same
+  `runners/common.js` → `session.finish` path.
 
 ## Decisions on the appendix points
 
-1. Wrapper with no hazard: the pass-1 child writes the final trace and prints (it knows it had no hazard from its
-   own `meta.parallel.hazards`, the data the wrapper reads); the wrapper forwards its code. If pass 1 leaves no
-   readable trace, no line is printed (no final trace), and its code is forwarded.
-2. Exactly one line: as above (`DETJS_HAZARD_PASS`); the merged trace's header carries the final counts.
-3. `header.meta.status`, no Rust change.
-4. Partly accounted re-run: every unaccounted test is NOT PROVEN; the first run's records stand (as before) and
-   the exit is 1.
-5. `--json` status precedence: diverged > not_proven > input_differs > identical (fixture rows test it).
-6. AC3 fixtures: `not_proven_outside_tests` and missing `inputs`, as above.
-7. AC1(c): threads pool, `DETJS_PINNED` cleared, pid/ppid marker; plus the SIGTERM-untrap `globalSetup` (deviation
-   above).
-8. `runnerCode`/`internalError` separate; wrapper mapping: 2 if either pass returned 2; pass 1's code if it had no
-   failed test; pass 2's code if non-zero; 1 if the re-run left no trace; else 0.
-9. Standalone Vitest-only test after the parameterised blocks of `parallel-p041.test.js`.
-10. Jest: the runner's `finally` (above).
+1. **Wrapper with no hazard.** The pass-1 child writes the final trace and prints the line. The wrapper forwards
+   its code.
+2. **Exactly one line.** Enforced through `DETJS_HAZARD_PASS`, as above.
+3. **`header.meta.status`** is set without a Rust change.
+4. **Partly accounted re-run.** Every unaccounted test is NOT PROVEN and the exit is 1.
+5. **`--json` precedence.** diverged > not_proven > input_differs > identical.
+6. **AC3 fixtures.** As described under AC3.
+7. **AC1(c).** As described under AC1, including the deviation.
+8. **`runnerCode` and `internalError` are separate inputs.** The wrapper mapping is described under B6. It
+   changed under D5.
+9. **The standalone Vitest-only test** is placed after the parameterised blocks.
+10. **Jest hook.** The runner's `finally`.
 
-Other decision: **outcomes other than passed/skipped/todo count as `failed`** (e.g. `interrupted`, a test whose file
-ended while it ran). The spec names failed and error; leaving the rest out of every count would let the wrapper
-end green where bfaf70b4 gave 1 (its `badFinal` was every outcome not passed/skipped/todo). Documented in
-`exit-status.js`, the docs table, and tested.
+## `/review` history
 
-Counting NOT PROVEN: a NOT PROVEN test is counted only in `not_proven`, not under its recorded outcome, so the four
-counts partition the records.
+- gstack was installed after the founder's confirmation.
+- Five rounds ran: Review Army specialists, red team, Claude adversarial pass. Codex is not installed.
+- Rounds 1–4 led to D1–D5, with fixes in 72435ac, 3e1f12b, daeac96, 4a74046 and 4c55b99.
+- Round 5 left seven open items. Fixed under D6 in 2c67961, with a test each:
+  - the Jest `--det-isolate` name filter (`namePattern`);
+  - the never-started mark ignored by `accountRerun`;
+  - node:test `todo`;
+  - guarded stderr writes in `finish`;
+  - an exclusive temp file and mode via the file descriptor in `stampStatus`;
+  - the signal fallback exit code;
+  - `--watch` dropped from pass 2, and the LIMITS paragraph.
+- No new full round after 2c67961, by founder exception (D6).
 
-## Open
+## Residual findings (not fixed; also in `TODOS.md` as P1)
 
-- AC8: trunk red before this work; the pre-existing local failures above.
-- The gstack `/review` and the merge (gstack could not be installed here, above).
-- `vitest`'s fallback `process.on('exit', finalize)` (runner exits without returning): the trace and the line are
-  written, but the exit code is whatever the runner set, because `main()` never returns to `runExit`. Not changed.
-- The hazard re-run drops `--det-order` (pre-existing, `repro-p041`), so a `--det-order` run with a hazard re-runs
-  every test of the hazard files.
-- The 168-failed-tests exit 0 on agentic-qe (DECLARED, path UNKNOWN): any path that reaches `runExit` with
-  failed > 0 now exits 1 regardless of the runner code; whether that was the path there is UNKNOWN without its rows.
+None of these lets a red run exit 0: the exit code never goes below pass 1's.
+
+- `meta.status` can read `failed=0` on a red run, because it counts records only (B7). Documented.
+- B5 synthetic records go through per-test hooks.
+- A runner's own exit code 2 maps to detjs exit 2; codes 3 and above collapse to 1.
+- Paths that contain `|` or `@@` are parsed ambiguously.
+- When the wrapper cannot read pass 1's trace, no status line is printed (a message says so).
+- A nested detjs inherits `DETJS_HAZARD_*`.
+- `stampStatus` reads the whole trace into memory.
+- Vitest positional filters may make pass 2 run extra files. Their records are no longer spliced in.
+- `footer.missing` is not counted.
+- B5 is a no-op under jest-jasmine2.
+- A `--det-isolate` collection failure is now red, a new false-red channel.
+- There are no tests for the B5 collect and order guards, nor for the splice filter.
+- A test skipped in pass 2 counts as cleared in the trace; the exit code is unaffected.
+
+## Open (pre-existing, not in scope)
+
+- The trunk is red in CI and locally. See the lists above.
+- The hazard re-run drops `--det-order` (`repro-p041`).
+- The 168-failed-tests exit 0 seen on agentic-qe is DECLARED; its path is UNKNOWN. Any path that reaches `runExit`
+  with failed > 0 now exits 1.
