@@ -106,7 +106,9 @@ describe('(c) network policy: open by default, closed on request', () => {
 });
 
 describe('(d) the cache with an open network', () => {
-  test('a test that reached an external host is never reused; the reason is in its receipt', T, () => {
+  // The reason is in the run's cache summary (`not_cached_detail`, the engine's place for why a file was not stored);
+  // the receipts (written by the Rust core) carry the reuse decision of every file.
+  test('a test that reached an external host is never reused; the reason is in the cache summary, the receipt says re-run', T, () => {
     const dir = fixture('host-values', 'cache-open', {
       ...tf('net', [EXTERNAL, "test('external host', async () => { assert.match((await external('api.external.example')).body, /hello/); });"].join('\n')),
       ...tf('plain', "test('pure', () => { assert.equal(1 + 1, 2); });"),
@@ -119,9 +121,13 @@ describe('(d) the cache with an open network', () => {
     const reused = ((r2.summary && r2.summary.reused_files_list) || []).map((f) => f.split('@@')[0]);
     assert.ok(reused.includes('tests/plain.test.mjs'), `the file without network use is reused\n${show(r2)}`);
     assert.ok(!reused.includes('tests/net.test.mjs'), `WRONG REUSE of the file that used the live network\n${show(r2)}`);
-    const receipts = fs.readFileSync(path.join(dir, '.detjs', 'receipts.jsonl'), 'utf8');
-    const mine = receipts.split('\n').filter((l) => l.includes('net.test.mjs'));
-    assert.ok(mine.some((l) => /api\.external\.example/.test(l) && /open network/.test(l)), `the receipt names the external host\n${mine.join('\n')}`);
+    for (const [n, r] of [['run 1', r1], ['run 2', r2]]) {
+      const why = (r.summary && r.summary.not_cached_detail && r.summary.not_cached_detail['tests/net.test.mjs']) || '';
+      assert.match(why, /api\.external\.example:\d+ \(external host, open network\)/, `${n}: the reason names the external host\n${show(r)}`);
+    }
+    const receipts = fs.readFileSync(path.join(dir, '.detjs', 'receipts.jsonl'), 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l));
+    const mine = receipts.find((x) => x.nodeid === 'tests/net.test.mjs');
+    assert.ok(mine && mine.reused === false, `run 2's receipt: re-run\n${JSON.stringify(receipts)}`);
   });
 
   test('the *_PROXY variables are run inputs while the network is open (the default)', T, () => {
