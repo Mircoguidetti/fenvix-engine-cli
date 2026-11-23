@@ -172,6 +172,9 @@ def check_run(row, out_repo, blocks, plain_row, verify_row, phase):
     if verify_row is not None:
         res["verify_verdict"] = verify_row.get("verdict")
         res["verify_exit"] = verify_row.get("exit")
+        sm = verify_row.get("summary") or {}
+        res["verify_summary"] = {k: sm.get(k) for k in ("tests", "identical", "stable", "diverged", "missing",
+                                                         "outcome_unstable", "not_proven") if k in sm}
     elif kind == "par":
         res["verify_verdict"], res["verify_exit"] = None, None
     exists = os.path.exists(trace)
