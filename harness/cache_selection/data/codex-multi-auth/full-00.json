@@ -1,0 +1,1705 @@
+{
+ "repo": "codex-multi-auth",
+ "pr_index": 0,
+ "pr": 726,
+ "commit": "328343b23d45da17a2478fd49cb15238787e4f7f",
+ "install": "installed (4s)",
+ "cmd": "npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/full-00.json",
+ "cwd": "/home/user/work/repos/codex-multi-auth/",
+ "exit": 1,
+ "wall_s": 334.1,
+ "status": "ok",
+ "outcome_counts": {
+  "passed": 7279,
+  "skipped": 12,
+  "failed": 4
+ },
+ "files": {
+  "test/account-access.test.ts": {
+   "ms": 36.523193359375,
+   "status": "passed"
+  },
+  "test/account-check-helpers.test.ts": {
+   "ms": 4.277587890625,
+   "status": "passed"
+  },
+  "test/account-check-types.test.ts": {
+   "ms": 1.753173828125,
+   "status": "passed"
+  },
+  "test/account-clear-entry.test.ts": {
+   "ms": 7.00732421875,
+   "status": "passed"
+  },
+  "test/account-clear.test.ts": {
+   "ms": 21.446533203125,
+   "status": "passed"
+  },
+  "test/account-manager-cache-entry.test.ts": {
+   "ms": 4.484130859375,
+   "status": "passed"
+  },
+  "test/account-manager-cache.test.ts": {
+   "ms": 6.44091796875,
+   "status": "passed"
+  },
+  "test/account-model-catalog.test.ts": {
+   "ms": 67.464599609375,
+   "status": "passed"
+  },
+  "test/account-persistence.test.ts": {
+   "ms": 3.52490234375,
+   "status": "passed"
+  },
+  "test/account-policy.test.ts": {
+   "ms": 249.198974609375,
+   "status": "passed"
+  },
+  "test/account-pool.test.ts": {
+   "ms": 4.703857421875,
+   "status": "passed"
+  },
+  "test/account-port.test.ts": {
+   "ms": 6.67236328125,
+   "status": "passed"
+  },
+  "test/account-rate-limits.test.ts": {
+   "ms": 9.30322265625,
+   "status": "passed"
+  },
+  "test/account-reset-target.test.ts": {
+   "ms": 101.970458984375,
+   "status": "passed"
+  },
+  "test/account-save-entry.test.ts": {
+   "ms": 4.171630859375,
+   "status": "passed"
+  },
+  "test/account-save.test.ts": {
+   "ms": 5.902587890625,
+   "status": "passed"
+  },
+  "test/account-select-event.test.ts": {
+   "ms": 5.64404296875,
+   "status": "passed"
+  },
+  "test/account-selection.test.ts": {
+   "ms": 5.3974609375,
+   "status": "passed"
+  },
+  "test/account-snapshot.test.ts": {
+   "ms": 10.290283203125,
+   "status": "passed"
+  },
+  "test/account-status.test.ts": {
+   "ms": 4.284912109375,
+   "status": "passed"
+  },
+  "test/account-storage-scope-entry.test.ts": {
+   "ms": 5.04150390625,
+   "status": "passed"
+  },
+  "test/accounts-edge.test.ts": {
+   "ms": 389.37890625,
+   "status": "passed"
+  },
+  "test/accounts-load-from-disk.test.ts": {
+   "ms": 17.7138671875,
+   "status": "passed"
+  },
+  "test/accounts-routing-mutex.test.ts": {
+   "ms": 8.730712890625,
+   "status": "passed"
+  },
+  "test/accounts-workspace-baseline.test.ts": {
+   "ms": 2.533203125,
+   "status": "passed"
+  },
+  "test/accounts.test.ts": {
+   "ms": 125.910888671875,
+   "status": "passed"
+  },
+  "test/active-account-sync.test.ts": {
+   "ms": 154.289306640625,
+   "status": "passed"
+  },
+  "test/affinity-generation.test.ts": {
+   "ms": 3.375244140625,
+   "status": "passed"
+  },
+  "test/ansi.test.ts": {
+   "ms": 2.333740234375,
+   "status": "passed"
+  },
+  "test/api-login-menu.test.ts": {
+   "ms": 14.369384765625,
+   "status": "passed"
+  },
+  "test/api-model-capabilities.test.ts": {
+   "ms": 129.637939453125,
+   "status": "passed"
+  },
+  "test/api-model-runtime.test.ts": {
+   "ms": 208.92822265625,
+   "status": "passed"
+  },
+  "test/api-route-store.test.ts": {
+   "ms": 270.127685546875,
+   "status": "passed"
+  },
+  "test/app-bind-io-retry.test.ts": {
+   "ms": 1265.0302734375,
+   "status": "passed"
+  },
+  "test/app-bind.test.ts": {
+   "ms": 5137.201171875,
+   "status": "passed"
+  },
+  "test/app-helper-selection.test.ts": {
+   "ms": 21.060791015625,
+   "status": "passed"
+  },
+  "test/audit-dev-allowlist.test.ts": {
+   "ms": 4.756591796875,
+   "status": "passed"
+  },
+  "test/audit-phase1-regression.test.ts": {
+   "ms": 42.31005859375,
+   "status": "passed"
+  },
+  "test/audit.test.ts": {
+   "ms": 44.646484375,
+   "status": "passed"
+  },
+  "test/auth-logging.test.ts": {
+   "ms": 21.051025390625,
+   "status": "passed"
+  },
+  "test/auth-menu-builder.test.ts": {
+   "ms": 25.365966796875,
+   "status": "passed"
+  },
+  "test/auth-menu-hotkeys.test.ts": {
+   "ms": 232.96044921875,
+   "status": "passed"
+  },
+  "test/auth-menu-quota-bar.test.ts": {
+   "ms": 98.149169921875,
+   "status": "passed"
+  },
+  "test/auth-rate-limit.test.ts": {
+   "ms": 11.2685546875,
+   "status": "passed"
+  },
+  "test/auth.test.ts": {
+   "ms": 339.376708984375,
+   "status": "passed"
+  },
+  "test/automatic-account-checks.test.ts": {
+   "ms": 201.228271484375,
+   "status": "passed"
+  },
+  "test/automatic-subscription-checks.test.ts": {
+   "ms": 235.349609375,
+   "status": "passed"
+  },
+  "test/backend-category-entry.test.ts": {
+   "ms": 3.6845703125,
+   "status": "passed"
+  },
+  "test/backend-category-helpers.test.ts": {
+   "ms": 3.42138671875,
+   "status": "passed"
+  },
+  "test/backend-category-prompt.test.ts": {
+   "ms": 3.3701171875,
+   "status": "passed"
+  },
+  "test/backend-settings-controller.test.ts": {
+   "ms": 4.576904296875,
+   "status": "passed"
+  },
+  "test/backend-settings-entry.test.ts": {
+   "ms": 2.33935546875,
+   "status": "passed"
+  },
+  "test/backend-settings-helpers.test.ts": {
+   "ms": 6.36083984375,
+   "status": "passed"
+  },
+  "test/backend-settings-prompt.test.ts": {
+   "ms": 4.520263671875,
+   "status": "passed"
+  },
+  "test/backup-metadata-builder.test.ts": {
+   "ms": 3.575927734375,
+   "status": "passed"
+  },
+  "test/backup-metadata.test.ts": {
+   "ms": 3.386474609375,
+   "status": "passed"
+  },
+  "test/backup-paths.test.ts": {
+   "ms": 3.7587890625,
+   "status": "passed"
+  },
+  "test/backup-restore.test.ts": {
+   "ms": 4.501220703125,
+   "status": "passed"
+  },
+  "test/bench-format-render.test.ts": {
+   "ms": 2.4658203125,
+   "status": "passed"
+  },
+  "test/benchmark-render-dashboard-script.test.ts": {
+   "ms": 192.6396484375,
+   "status": "passed"
+  },
+  "test/benchmark-runtime-path-script.test.ts": {
+   "ms": 48.75927734375,
+   "status": "passed"
+  },
+  "test/browser-oauth-flow.test.ts": {
+   "ms": 4.50634765625,
+   "status": "passed"
+  },
+  "test/browser.test.ts": {
+   "ms": 14.2431640625,
+   "status": "passed"
+  },
+  "test/budget-guard.test.ts": {
+   "ms": 71.6103515625,
+   "status": "passed"
+  },
+  "test/callback-guidance.test.ts": {
+   "ms": 5.463623046875,
+   "status": "passed"
+  },
+  "test/capability-boost.test.ts": {
+   "ms": 3.727783203125,
+   "status": "passed"
+  },
+  "test/capability-policy.test.ts": {
+   "ms": 14.336181640625,
+   "status": "passed"
+  },
+  "test/chaos/fault-injection.test.ts": {
+   "ms": 78.440185546875,
+   "status": "passed"
+  },
+  "test/chaos/fs-faults.test.ts": {
+   "ms": 1255.372314453125,
+   "status": "passed"
+  },
+  "test/chaos/net-faults.test.ts": {
+   "ms": 1340.567626953125,
+   "status": "passed"
+  },
+  "test/check-pack-budget.test.ts": {
+   "ms": 8.03662109375,
+   "status": "passed"
+  },
+  "test/check-progress.test.ts": {
+   "ms": 6.5654296875,
+   "status": "passed"
+  },
+  "test/ci-workflows.test.ts": {
+   "ms": 7.658203125,
+   "status": "passed"
+  },
+  "test/circuit-breaker.test.ts": {
+   "ms": 14.786865234375,
+   "status": "passed"
+  },
+  "test/cli-auth-menu.test.ts": {
+   "ms": 251.08203125,
+   "status": "passed"
+  },
+  "test/cli-output-contracts.test.ts": {
+   "ms": 707.556396484375,
+   "status": "passed"
+  },
+  "test/cli.test.ts": {
+   "ms": 411.6455078125,
+   "status": "passed"
+  },
+  "test/codex-app-router.test.ts": {
+   "ms": 262.8720703125,
+   "status": "passed"
+  },
+  "test/codex-bin-wrapper.test.ts": {
+   "ms": 83959.01025390625,
+   "status": "passed"
+  },
+  "test/codex-cli-mirror.test.ts": {
+   "ms": 41.4375,
+   "status": "passed"
+  },
+  "test/codex-cli-org-account-alignment.test.ts": {
+   "ms": 57.00439453125,
+   "status": "passed"
+  },
+  "test/codex-cli-state.test.ts": {
+   "ms": 344.764892578125,
+   "status": "passed"
+  },
+  "test/codex-cli-sync.test.ts": {
+   "ms": 38.467529296875,
+   "status": "passed"
+  },
+  "test/codex-cli-writer-callers.test.ts": {
+   "ms": 3.248779296875,
+   "status": "passed"
+  },
+  "test/codex-cli-writer.test.ts": {
+   "ms": 12075.734619140625,
+   "status": "passed"
+  },
+  "test/codex-host-resolver.test.ts": {
+   "ms": 20.501220703125,
+   "status": "passed"
+  },
+  "test/codex-manager-account-command.test.ts": {
+   "ms": 11.655029296875,
+   "status": "passed"
+  },
+  "test/codex-manager-account-pool-write.test.ts": {
+   "ms": 5.163818359375,
+   "status": "passed"
+  },
+  "test/codex-manager-best-command.test.ts": {
+   "ms": 24.84130859375,
+   "status": "passed"
+  },
+  "test/codex-manager-bridge-command.test.ts": {
+   "ms": 23.6552734375,
+   "status": "passed"
+  },
+  "test/codex-manager-budget-command.test.ts": {
+   "ms": 5.6953125,
+   "status": "passed"
+  },
+  "test/codex-manager-check-command.test.ts": {
+   "ms": 135.393798828125,
+   "status": "passed"
+  },
+  "test/codex-manager-cli.test.ts": {
+   "ms": 15843.184814453125,
+   "status": "passed"
+  },
+  "test/codex-manager-credentials.test.ts": {
+   "ms": 5.206787109375,
+   "status": "passed"
+  },
+  "test/codex-manager-detail-tone.test.ts": {
+   "ms": 5.458740234375,
+   "status": "passed"
+  },
+  "test/codex-manager-forecast-command.test.ts": {
+   "ms": 36.50537109375,
+   "status": "passed"
+  },
+  "test/codex-manager-formatters.test.ts": {
+   "ms": 23.2646484375,
+   "status": "passed"
+  },
+  "test/codex-manager-help.test.ts": {
+   "ms": 8.630126953125,
+   "status": "passed"
+  },
+  "test/codex-manager-history-command.test.ts": {
+   "ms": 20.22998046875,
+   "status": "passed"
+  },
+  "test/codex-manager-integrations-command.test.ts": {
+   "ms": 6.302001953125,
+   "status": "passed"
+  },
+  "test/codex-manager-login-menu-refresh.test.ts": {
+   "ms": 9.257080078125,
+   "status": "passed"
+  },
+  "test/codex-manager-login-workspace-512.test.ts": {
+   "ms": 4.367431640625,
+   "status": "passed"
+  },
+  "test/codex-manager-manual-callback.test.ts": {
+   "ms": 4.535888671875,
+   "status": "passed"
+  },
+  "test/codex-manager-models-command.test.ts": {
+   "ms": 6.48193359375,
+   "status": "passed"
+  },
+  "test/codex-manager-monitor-command.test.ts": {
+   "ms": 6.64013671875,
+   "status": "passed"
+  },
+  "test/codex-manager-org-override.test.ts": {
+   "ms": 3.196044921875,
+   "status": "passed"
+  },
+  "test/codex-manager-quota-cache-helpers.test.ts": {
+   "ms": 9.16650390625,
+   "status": "passed"
+  },
+  "test/codex-manager-report-command.test.ts": {
+   "ms": 115.206787109375,
+   "status": "passed"
+  },
+  "test/codex-manager-resets.test.ts": {
+   "ms": 316.990478515625,
+   "status": "passed"
+  },
+  "test/codex-manager-rotation-command.test.ts": {
+   "ms": 216.883056640625,
+   "status": "passed"
+  },
+  "test/codex-manager-selection-diagnostics.test.ts": {
+   "ms": 12.1669921875,
+   "status": "passed"
+  },
+  "test/codex-manager-status-command.test.ts": {
+   "ms": 56.48583984375,
+   "status": "passed"
+  },
+  "test/codex-manager-switch-command.test.ts": {
+   "ms": 7.77880859375,
+   "status": "passed"
+  },
+  "test/codex-manager-uninstall-dispatch.test.ts": {
+   "ms": 430.994140625,
+   "status": "passed"
+  },
+  "test/codex-manager-usage-command.test.ts": {
+   "ms": 32.28076171875,
+   "status": "passed"
+  },
+  "test/codex-manager-verify-command.test.ts": {
+   "ms": 18.83349609375,
+   "status": "passed"
+  },
+  "test/codex-manager-why-selected-command.test.ts": {
+   "ms": 14.5185546875,
+   "status": "passed"
+  },
+  "test/codex-manager-workspace-command.test.ts": {
+   "ms": 9.257080078125,
+   "status": "passed"
+  },
+  "test/codex-model-resolution.test.ts": {
+   "ms": 24.337158203125,
+   "status": "passed"
+  },
+  "test/codex-multi-auth-bin-wrapper.test.ts": {
+   "ms": 385.17626953125,
+   "status": "passed"
+  },
+  "test/codex-multi-auth-wrapper.test.ts": {
+   "ms": 37.093505859375,
+   "status": "passed"
+  },
+  "test/codex-prompts.test.ts": {
+   "ms": 149.350830078125,
+   "status": "passed"
+  },
+  "test/codex-routing.test.ts": {
+   "ms": 3.460693359375,
+   "status": "passed"
+  },
+  "test/codex.test.ts": {
+   "ms": 2.66650390625,
+   "status": "passed"
+  },
+  "test/concurrency.test.ts": {
+   "ms": 3.205322265625,
+   "status": "passed"
+  },
+  "test/config-explain.test.ts": {
+   "ms": 193.2529296875,
+   "status": "passed"
+  },
+  "test/config-files.test.ts": {
+   "ms": 8.279296875,
+   "status": "passed"
+  },
+  "test/config-save.test.ts": {
+   "ms": 12541.751220703125,
+   "status": "passed"
+  },
+  "test/config-schema-generated.test.ts": {
+   "ms": 6.201171875,
+   "status": "passed"
+  },
+  "test/config-schema-templates.test.ts": {
+   "ms": 4.431884765625,
+   "status": "passed"
+  },
+  "test/config-toml-restore.test.ts": {
+   "ms": 7.239013671875,
+   "status": "passed"
+  },
+  "test/config.test.ts": {
+   "ms": 9.151611328125,
+   "status": "passed"
+  },
+  "test/context-budget-guard-proxy.test.ts": {
+   "ms": 190.1787109375,
+   "status": "passed"
+  },
+  "test/context-budget-guard.test.ts": {
+   "ms": 8.14306640625,
+   "status": "passed"
+  },
+  "test/context-budget-response.test.ts": {
+   "ms": 30.20947265625,
+   "status": "passed"
+  },
+  "test/context-budget-window-coverage.test.ts": {
+   "ms": 6.299072265625,
+   "status": "passed"
+  },
+  "test/context-overflow.test.ts": {
+   "ms": 33.165283203125,
+   "status": "passed"
+  },
+  "test/copy-oauth-success.test.ts": {
+   "ms": 204.301513671875,
+   "status": "passed"
+  },
+  "test/crash-mid-write.test.ts": {
+   "ms": 1323.072265625,
+   "status": "passed"
+  },
+  "test/credential-sidecars.test.ts": {
+   "ms": 235.67822265625,
+   "status": "passed"
+  },
+  "test/dashboard-display-panel.test.ts": {
+   "ms": 6.400634765625,
+   "status": "passed"
+  },
+  "test/dashboard-formatters.test.ts": {
+   "ms": 2.32177734375,
+   "status": "passed"
+  },
+  "test/dashboard-settings-controller.test.ts": {
+   "ms": 4.87890625,
+   "status": "passed"
+  },
+  "test/dashboard-settings-data.test.ts": {
+   "ms": 8.16064453125,
+   "status": "passed"
+  },
+  "test/dashboard-settings-entry.test.ts": {
+   "ms": 2.37109375,
+   "status": "passed"
+  },
+  "test/dashboard-settings.test.ts": {
+   "ms": 267.703857421875,
+   "status": "passed"
+  },
+  "test/debug-bundle-redact.test.ts": {
+   "ms": 5.199951171875,
+   "status": "passed"
+  },
+  "test/device-auth.test.ts": {
+   "ms": 112.024169921875,
+   "status": "passed"
+  },
+  "test/display-width.test.ts": {
+   "ms": 6.159423828125,
+   "status": "passed"
+  },
+  "test/documentation.test.ts": {
+   "ms": 217.20166015625,
+   "status": "passed"
+  },
+  "test/effort-suffix-stripping.test.ts": {
+   "ms": 6.6337890625,
+   "status": "passed"
+  },
+  "test/entitlement-cache.test.ts": {
+   "ms": 18.197509765625,
+   "status": "passed"
+  },
+  "test/env-parsing.test.ts": {
+   "ms": 6.132080078125,
+   "status": "passed"
+  },
+  "test/errors.test.ts": {
+   "ms": 10.20751953125,
+   "status": "passed"
+  },
+  "test/eslint-config.test.ts": {
+   "ms": 558.334228515625,
+   "status": "passed"
+  },
+  "test/event-handler.test.ts": {
+   "ms": 3.369384765625,
+   "status": "passed"
+  },
+  "test/experimental-settings-entry.test.ts": {
+   "ms": 3.51123046875,
+   "status": "passed"
+  },
+  "test/experimental-settings-prompt.test.ts": {
+   "ms": 6.725341796875,
+   "status": "passed"
+  },
+  "test/experimental-settings-schema.test.ts": {
+   "ms": 3.614501953125,
+   "status": "passed"
+  },
+  "test/experimental-sync-target-entry.test.ts": {
+   "ms": 9.7744140625,
+   "status": "passed"
+  },
+  "test/experimental-sync-target.test.ts": {
+   "ms": 5.18017578125,
+   "status": "passed"
+  },
+  "test/failover-config.test.ts": {
+   "ms": 2.283935546875,
+   "status": "passed"
+  },
+  "test/failure-policy.test.ts": {
+   "ms": 9.20654296875,
+   "status": "passed"
+  },
+  "test/fetch-helpers.test.ts": {
+   "ms": 1259.402099609375,
+   "status": "passed"
+  },
+  "test/first-run.test.ts": {
+   "ms": 101.218017578125,
+   "status": "passed"
+  },
+  "test/fixture-guards.test.ts": {
+   "ms": 3.602294921875,
+   "status": "passed"
+  },
+  "test/flagged-entry.test.ts": {
+   "ms": 3.742919921875,
+   "status": "passed"
+  },
+  "test/flagged-load-entry.test.ts": {
+   "ms": 3.83203125,
+   "status": "passed"
+  },
+  "test/flagged-save-entry.test.ts": {
+   "ms": 3.83984375,
+   "status": "passed"
+  },
+  "test/flagged-storage-io.test.ts": {
+   "ms": 25.234619140625,
+   "status": "passed"
+  },
+  "test/flagged-storage.test.ts": {
+   "ms": 6.212158203125,
+   "status": "passed"
+  },
+  "test/forecast-report-shared.test.ts": {
+   "ms": 115.8193359375,
+   "status": "passed"
+  },
+  "test/forecast.test.ts": {
+   "ms": 15.479248046875,
+   "status": "passed"
+  },
+  "test/fs-retry.test.ts": {
+   "ms": 15.19091796875,
+   "status": "passed"
+  },
+  "test/gitignore.test.ts": {
+   "ms": 14.00146484375,
+   "status": "passed"
+  },
+  "test/global-sandbox.test.ts": {
+   "ms": 2.7529296875,
+   "status": "passed"
+  },
+  "test/gpt56-models.test.ts": {
+   "ms": 12.613525390625,
+   "status": "passed"
+  },
+  "test/gpt6-astra-models.test.ts": {
+   "ms": 19.43310546875,
+   "status": "passed"
+  },
+  "test/gpt6-sol-luna-models.test.ts": {
+   "ms": 14.608154296875,
+   "status": "passed"
+  },
+  "test/gpt61-sol-models.test.ts": {
+   "ms": 16.829833984375,
+   "status": "passed"
+  },
+  "test/h3-token-clobber.test.ts": {
+   "ms": 19.267333984375,
+   "status": "passed"
+  },
+  "test/hashline-tools.test.ts": {
+   "ms": 16.47265625,
+   "status": "passed"
+  },
+  "test/health-check.test.ts": {
+   "ms": 84.692626953125,
+   "status": "passed"
+  },
+  "test/health.test.ts": {
+   "ms": 8.226318359375,
+   "status": "passed"
+  },
+  "test/host-codex-prompt.test.ts": {
+   "ms": 307.979736328125,
+   "status": "passed"
+  },
+  "test/hydrate-emails.test.ts": {
+   "ms": 3.495361328125,
+   "status": "passed"
+  },
+  "test/image-runtime-lifecycle.test.ts": {
+   "ms": 56.50537109375,
+   "status": "passed"
+  },
+  "test/imagegen-canonical-provider.test.ts": {
+   "ms": 2.295654296875,
+   "status": "passed"
+  },
+  "test/import-export.test.ts": {
+   "ms": 17.189697265625,
+   "status": "passed"
+  },
+  "test/index-retry.test.ts": {
+   "ms": 655.501708984375,
+   "status": "passed"
+  },
+  "test/index.test.ts": {
+   "ms": 4893.2001953125,
+   "status": "passed"
+  },
+  "test/inference-activity.test.ts": {
+   "ms": 391.024169921875,
+   "status": "passed"
+  },
+  "test/init-config-command.test.ts": {
+   "ms": 3.5595703125,
+   "status": "passed"
+  },
+  "test/input-utils.test.ts": {
+   "ms": 9.306640625,
+   "status": "passed"
+  },
+  "test/install-codex-auth-retry.test.ts": {
+   "ms": 6.43408203125,
+   "status": "passed"
+  },
+  "test/install-codex-auth.test.ts": {
+   "ms": 187.17529296875,
+   "status": "passed"
+  },
+  "test/integration-generators.test.ts": {
+   "ms": 3.395751953125,
+   "status": "passed"
+  },
+  "test/issue-474-affinity-invalidation.test.ts": {
+   "ms": 36.141357421875,
+   "status": "passed"
+  },
+  "test/issue-474-pin-end-to-end.test.ts": {
+   "ms": 203.07373046875,
+   "status": "passed"
+  },
+  "test/issue-474-pin-honored.test.ts": {
+   "ms": 29.9248046875,
+   "status": "passed"
+  },
+  "test/issue-474-pin-safety.test.ts": {
+   "ms": 95.513916015625,
+   "status": "passed"
+  },
+  "test/issue-689-model-capacity-retry.test.ts": {
+   "ms": 5565.698974609375,
+   "status": "passed"
+  },
+  "test/json-store-lock.test.ts": {
+   "ms": 3271.077880859375,
+   "status": "passed"
+  },
+  "test/limits-command.test.ts": {
+   "ms": 17.357177734375,
+   "status": "passed"
+  },
+  "test/live-account-sync-edge.test.ts": {
+   "ms": 44.9111328125,
+   "status": "passed"
+  },
+  "test/live-account-sync.test.ts": {
+   "ms": 76.923828125,
+   "status": "passed"
+  },
+  "test/live-proxy-parallel.test.ts": {
+   "ms": 501.65966796875,
+   "status": "passed"
+  },
+  "test/live-sync-entry.test.ts": {
+   "ms": 3.857421875,
+   "status": "passed"
+  },
+  "test/loader-setup.test.ts": {
+   "ms": 2.364990234375,
+   "status": "passed"
+  },
+  "test/local-bridge.test.ts": {
+   "ms": 96.33642578125,
+   "status": "failed"
+  },
+  "test/local-client-tokens.test.ts": {
+   "ms": 179.692138671875,
+   "status": "passed"
+  },
+  "test/lockfile-version-floor.test.ts": {
+   "ms": 3.63916015625,
+   "status": "passed"
+  },
+  "test/logger.test.ts": {
+   "ms": 138.097412109375,
+   "status": "passed"
+  },
+  "test/login-flow.test.ts": {
+   "ms": 40.442626953125,
+   "status": "passed"
+  },
+  "test/login-menu-accounts.test.ts": {
+   "ms": 5.293701171875,
+   "status": "passed"
+  },
+  "test/login-menu-actions.test.ts": {
+   "ms": 16.255859375,
+   "status": "passed"
+  },
+  "test/login-menu-data.test.ts": {
+   "ms": 33.723876953125,
+   "status": "passed"
+  },
+  "test/login-oauth-callback-guidance.test.ts": {
+   "ms": 8.505615234375,
+   "status": "passed"
+  },
+  "test/login-oauth-selection.test.ts": {
+   "ms": 14.269287109375,
+   "status": "passed"
+  },
+  "test/login-workspace-choice.test.ts": {
+   "ms": 5.412109375,
+   "status": "passed"
+  },
+  "test/manual-oauth-flow.test.ts": {
+   "ms": 3.893310546875,
+   "status": "passed"
+  },
+  "test/mcodex-launcher.test.ts": {
+   "ms": 10.665283203125,
+   "status": "passed"
+  },
+  "test/mcodex-statusline-scope.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/metadata-section.test.ts": {
+   "ms": 2.710205078125,
+   "status": "passed"
+  },
+  "test/model-capability-matrix.test.ts": {
+   "ms": 6.701416015625,
+   "status": "passed"
+  },
+  "test/model-discovery-status.test.ts": {
+   "ms": 377.665771484375,
+   "status": "passed"
+  },
+  "test/model-map.test.ts": {
+   "ms": 8.216796875,
+   "status": "passed"
+  },
+  "test/model-route-policy.test.ts": {
+   "ms": 15.3203125,
+   "status": "passed"
+  },
+  "test/module-boundaries.test.ts": {
+   "ms": 5.44384765625,
+   "status": "passed"
+  },
+  "test/multi-proc-save.test.ts": {
+   "ms": 698.97412109375,
+   "status": "passed"
+  },
+  "test/named-backup-entry.test.ts": {
+   "ms": 3.373291015625,
+   "status": "passed"
+  },
+  "test/named-backup-export.test.ts": {
+   "ms": 122.889404296875,
+   "status": "passed"
+  },
+  "test/named-backups-entry.test.ts": {
+   "ms": 4.603271484375,
+   "status": "passed"
+  },
+  "test/native-account-storage.test.ts": {
+   "ms": 19.47265625,
+   "status": "passed"
+  },
+  "test/native-account-sync.test.ts": {
+   "ms": 9.4658203125,
+   "status": "passed"
+  },
+  "test/native-client-auth.test.ts": {
+   "ms": 410.717529296875,
+   "status": "passed"
+  },
+  "test/native-provider-config.test.ts": {
+   "ms": 3.521240234375,
+   "status": "passed"
+  },
+  "test/native-rate-limits.test.ts": {
+   "ms": 547.938720703125,
+   "status": "passed"
+  },
+  "test/native-usage-command.test.ts": {
+   "ms": 7.7587890625,
+   "status": "passed"
+  },
+  "test/native-wrapper-binding.test.ts": {
+   "ms": 432.071533203125,
+   "status": "passed"
+  },
+  "test/oauth-server-port-conflict.test.ts": {
+   "ms": 13.880126953125,
+   "status": "passed"
+  },
+  "test/oauth-server.integration.test.ts": {
+   "ms": 43.11376953125,
+   "status": "passed"
+  },
+  "test/oc-chatgpt-import-adapter.test.ts": {
+   "ms": 10.28662109375,
+   "status": "passed"
+  },
+  "test/oc-chatgpt-orchestrator.test.ts": {
+   "ms": 20.42822265625,
+   "status": "passed"
+  },
+  "test/oc-chatgpt-target-detection.test.ts": {
+   "ms": 115.878173828125,
+   "status": "passed"
+  },
+  "test/owned-pids-helper.test.ts": {
+   "ms": 281.599609375,
+   "status": "passed"
+  },
+  "test/package-bin.test.ts": {
+   "ms": 3.20849609375,
+   "status": "passed"
+  },
+  "test/parallel-probe.test.ts": {
+   "ms": 229.5771484375,
+   "status": "passed"
+  },
+  "test/paths.test.ts": {
+   "ms": 46.2958984375,
+   "status": "passed"
+  },
+  "test/pending-auth.test.ts": {
+   "ms": 479.828125,
+   "status": "passed"
+  },
+  "test/persist-selected-account.test.ts": {
+   "ms": 26.465576171875,
+   "status": "passed"
+  },
+  "test/plugin-config.test.ts": {
+   "ms": 145.33251953125,
+   "status": "passed"
+  },
+  "test/plugin-manifest.test.ts": {
+   "ms": 2.295166015625,
+   "status": "passed"
+  },
+  "test/postinstall.test.ts": {
+   "ms": 3.5,
+   "status": "passed"
+  },
+  "test/pr691-proxy-switch-invalidation.test.ts": {
+   "ms": 109.2548828125,
+   "status": "passed"
+  },
+  "test/pr691-switch-revalidation.test.ts": {
+   "ms": 81.60888671875,
+   "status": "passed"
+  },
+  "test/precommit-hook.test.ts": {
+   "ms": 2.321533203125,
+   "status": "passed"
+  },
+  "test/preemptive-quota-scheduler.test.ts": {
+   "ms": 20.156005859375,
+   "status": "passed"
+  },
+  "test/preuninstall.test.ts": {
+   "ms": 80.19287109375,
+   "status": "passed"
+  },
+  "test/proactive-refresh.test.ts": {
+   "ms": 26.39892578125,
+   "status": "passed"
+  },
+  "test/project-migration.test.ts": {
+   "ms": 6.307861328125,
+   "status": "passed"
+  },
+  "test/prompt-fetch-utils.test.ts": {
+   "ms": 82.98876953125,
+   "status": "passed"
+  },
+  "test/property/account-identity.property.test.ts": {
+   "ms": 75.65283203125,
+   "status": "passed"
+  },
+  "test/property/auth-rate-limit.property.test.ts": {
+   "ms": 93.572509765625,
+   "status": "passed"
+  },
+  "test/property/budget-guard.property.test.ts": {
+   "ms": 1200.101318359375,
+   "status": "passed"
+  },
+  "test/property/circuit-breaker.property.test.ts": {
+   "ms": 94.48681640625,
+   "status": "passed"
+  },
+  "test/property/context-overflow.property.test.ts": {
+   "ms": 55.088134765625,
+   "status": "passed"
+  },
+  "test/property/display-width.property.test.ts": {
+   "ms": 37.20751953125,
+   "status": "passed"
+  },
+  "test/property/env-policy-parsing.property.test.ts": {
+   "ms": 23.6181640625,
+   "status": "passed"
+  },
+  "test/property/forecast.property.test.ts": {
+   "ms": 84.443115234375,
+   "status": "passed"
+  },
+  "test/property/health.property.test.ts": {
+   "ms": 71.861083984375,
+   "status": "passed"
+  },
+  "test/property/hybrid-selector-concurrency.property.test.ts": {
+   "ms": 38.28564453125,
+   "status": "passed"
+  },
+  "test/property/ledger-redaction.property.test.ts": {
+   "ms": 788.638427734375,
+   "status": "passed"
+  },
+  "test/property/model-fallback.property.test.ts": {
+   "ms": 49.468994140625,
+   "status": "passed"
+  },
+  "test/property/model-map.property.test.ts": {
+   "ms": 49.036865234375,
+   "status": "passed"
+  },
+  "test/property/request-body.property.test.ts": {
+   "ms": 252.65478515625,
+   "status": "passed"
+  },
+  "test/property/rotation-concurrency.property.test.ts": {
+   "ms": 59.63720703125,
+   "status": "passed"
+  },
+  "test/property/rotation.property.test.ts": {
+   "ms": 103.6357421875,
+   "status": "passed"
+  },
+  "test/property/session-affinity.property.test.ts": {
+   "ms": 89.5712890625,
+   "status": "passed"
+  },
+  "test/property/settings-write-queue.property.test.ts": {
+   "ms": 97.812744140625,
+   "status": "passed"
+  },
+  "test/property/setup.test.ts": {
+   "ms": 16.84619140625,
+   "status": "passed"
+  },
+  "test/property/sse-parse.property.test.ts": {
+   "ms": 3373.265869140625,
+   "status": "passed"
+  },
+  "test/property/storage-roundtrip.property.test.ts": {
+   "ms": 1773.28662109375,
+   "status": "passed"
+  },
+  "test/property/table-formatter.property.test.ts": {
+   "ms": 62.54345703125,
+   "status": "passed"
+  },
+  "test/property/transformer.property.test.ts": {
+   "ms": 77.2138671875,
+   "status": "passed"
+  },
+  "test/prototype-key-safety.test.ts": {
+   "ms": 13.796142578125,
+   "status": "passed"
+  },
+  "test/public-api-contract.test.ts": {
+   "ms": 482.64013671875,
+   "status": "passed"
+  },
+  "test/quota-cache.test.ts": {
+   "ms": 679.40673828125,
+   "status": "passed"
+  },
+  "test/quota-headers.test.ts": {
+   "ms": 28.6162109375,
+   "status": "passed"
+  },
+  "test/quota-probe.test.ts": {
+   "ms": 80.226318359375,
+   "status": "passed"
+  },
+  "test/quota-readiness.test.ts": {
+   "ms": 7.2158203125,
+   "status": "passed"
+  },
+  "test/quota-settings.test.ts": {
+   "ms": 3.60791015625,
+   "status": "passed"
+  },
+  "test/rate-limit-backoff.test.ts": {
+   "ms": 18.198974609375,
+   "status": "passed"
+  },
+  "test/rate-limit-decision.test.ts": {
+   "ms": 35.235595703125,
+   "status": "passed"
+  },
+  "test/record-utils.test.ts": {
+   "ms": 2.192626953125,
+   "status": "passed"
+  },
+  "test/recovery-constants.test.ts": {
+   "ms": 7.619873046875,
+   "status": "passed"
+  },
+  "test/recovery-storage.test.ts": {
+   "ms": 166.849853515625,
+   "status": "passed"
+  },
+  "test/recovery.test.ts": {
+   "ms": 24.402099609375,
+   "status": "passed"
+  },
+  "test/refresh-guardian-entry.test.ts": {
+   "ms": 3.449951171875,
+   "status": "passed"
+  },
+  "test/refresh-guardian.test.ts": {
+   "ms": 34.002197265625,
+   "status": "passed"
+  },
+  "test/refresh-lease.test.ts": {
+   "ms": 2047.967529296875,
+   "status": "passed"
+  },
+  "test/refresh-queue.test.ts": {
+   "ms": 87.357421875,
+   "status": "passed"
+  },
+  "test/release-main-prs-regression.test.ts": {
+   "ms": 283.078125,
+   "status": "passed"
+  },
+  "test/repair-commands.test.ts": {
+   "ms": 60.947265625,
+   "status": "passed"
+  },
+  "test/repo-hygiene.test.ts": {
+   "ms": 482.125244140625,
+   "status": "passed"
+  },
+  "test/request-attempt-budget.test.ts": {
+   "ms": 2.70556640625,
+   "status": "passed"
+  },
+  "test/request-init.test.ts": {
+   "ms": 18.39990234375,
+   "status": "passed"
+  },
+  "test/request-resilience.test.ts": {
+   "ms": 6.463134765625,
+   "status": "passed"
+  },
+  "test/request-transformer.test.ts": {
+   "ms": 3765.165283203125,
+   "status": "passed"
+  },
+  "test/reset-credit-routing.test.ts": {
+   "ms": 23.3955078125,
+   "status": "passed"
+  },
+  "test/reset-credits.test.ts": {
+   "ms": 1707.118408203125,
+   "status": "passed"
+  },
+  "test/reset-identity-collision.test.ts": {
+   "ms": 54.309814453125,
+   "status": "passed"
+  },
+  "test/resilience-storage.integration.test.ts": {
+   "ms": 3085.623291015625,
+   "status": "passed"
+  },
+  "test/response-compaction.test.ts": {
+   "ms": 29.038818359375,
+   "status": "passed"
+  },
+  "test/response-handler-logging.test.ts": {
+   "ms": 29.528076171875,
+   "status": "passed"
+  },
+  "test/response-handler-sse-buffer.test.ts": {
+   "ms": 372.33544921875,
+   "status": "passed"
+  },
+  "test/response-handler.test.ts": {
+   "ms": 196.364501953125,
+   "status": "passed"
+  },
+  "test/response-metadata.test.ts": {
+   "ms": 15.95654296875,
+   "status": "passed"
+  },
+  "test/response-outcome.test.ts": {
+   "ms": 3.284423828125,
+   "status": "passed"
+  },
+  "test/response-output-history.test.ts": {
+   "ms": 3.216552734375,
+   "status": "passed"
+  },
+  "test/responses-websocket.test.ts": {
+   "ms": 367.839599609375,
+   "status": "passed"
+  },
+  "test/restore-assessment.test.ts": {
+   "ms": 3.297607421875,
+   "status": "passed"
+  },
+  "test/restore-backup-entry.test.ts": {
+   "ms": 8.488037109375,
+   "status": "passed"
+  },
+  "test/resume-picker.test.ts": {
+   "ms": 173.53515625,
+   "status": "passed"
+  },
+  "test/retired-models.test.ts": {
+   "ms": 29.193603515625,
+   "status": "passed"
+  },
+  "test/rotation-account-selection.test.ts": {
+   "ms": 20.370361328125,
+   "status": "passed"
+  },
+  "test/rotation-integration.test.ts": {
+   "ms": 274.65966796875,
+   "status": "passed"
+  },
+  "test/rotation-proxy-state.test.ts": {
+   "ms": 77.224853515625,
+   "status": "passed"
+  },
+  "test/rotation-token-refresh.test.ts": {
+   "ms": 26.78564453125,
+   "status": "passed"
+  },
+  "test/rotation.test.ts": {
+   "ms": 30.420166015625,
+   "status": "passed"
+  },
+  "test/router-address-probe.test.ts": {
+   "ms": 4.321533203125,
+   "status": "passed"
+  },
+  "test/routing-mutex-config.test.ts": {
+   "ms": 3.1083984375,
+   "status": "passed"
+  },
+  "test/routing-mutex.test.ts": {
+   "ms": 28.35009765625,
+   "status": "passed"
+  },
+  "test/routing-profiles.test.ts": {
+   "ms": 85.271728515625,
+   "status": "passed"
+  },
+  "test/runtime-account-check.test.ts": {
+   "ms": 23.09423828125,
+   "status": "passed"
+  },
+  "test/runtime-account-manager-cache.test.ts": {
+   "ms": 12.1923828125,
+   "status": "passed"
+  },
+  "test/runtime-account-scope.test.ts": {
+   "ms": 7.628173828125,
+   "status": "passed"
+  },
+  "test/runtime-account-select-event.test.ts": {
+   "ms": 2.2841796875,
+   "status": "passed"
+  },
+  "test/runtime-account-selection.test.ts": {
+   "ms": 6.29638671875,
+   "status": "passed"
+  },
+  "test/runtime-auth-facade.test.ts": {
+   "ms": 8.51611328125,
+   "status": "passed"
+  },
+  "test/runtime-capability-failures.test.ts": {
+   "ms": 4.38623046875,
+   "status": "passed"
+  },
+  "test/runtime-current-account.test.ts": {
+   "ms": 55.708984375,
+   "status": "passed"
+  },
+  "test/runtime-live-sync.test.ts": {
+   "ms": 14.939697265625,
+   "status": "passed"
+  },
+  "test/runtime-manual-oauth-flow.test.ts": {
+   "ms": 4.457275390625,
+   "status": "passed"
+  },
+  "test/runtime-observability-dir-mode.test.ts": {
+   "ms": 69.65380859375,
+   "status": "passed"
+  },
+  "test/runtime-observability.test.ts": {
+   "ms": 392.344970703125,
+   "status": "passed"
+  },
+  "test/runtime-paths.test.ts": {
+   "ms": 18.070068359375,
+   "status": "passed"
+  },
+  "test/runtime-policy-cache.test.ts": {
+   "ms": 106.889404296875,
+   "status": "passed"
+  },
+  "test/runtime-policy.test.ts": {
+   "ms": 30.258056640625,
+   "status": "passed"
+  },
+  "test/runtime-quota-probe.test.ts": {
+   "ms": 18.84423828125,
+   "status": "passed"
+  },
+  "test/runtime-refresh-guardian.test.ts": {
+   "ms": 6.317626953125,
+   "status": "passed"
+  },
+  "test/runtime-request-init.test.ts": {
+   "ms": 28.562255859375,
+   "status": "passed"
+  },
+  "test/runtime-rotation-proxy-safe-equal.test.ts": {
+   "ms": 216.738037109375,
+   "status": "passed"
+  },
+  "test/runtime-rotation-proxy.test.ts": {
+   "ms": 18378.1572265625,
+   "status": "failed"
+  },
+  "test/runtime-services.test.ts": {
+   "ms": 12.782958984375,
+   "status": "passed"
+  },
+  "test/runtime-session-recovery.test.ts": {
+   "ms": 4.380859375,
+   "status": "passed"
+  },
+  "test/runtime-toast.test.ts": {
+   "ms": 5.608154296875,
+   "status": "passed"
+  },
+  "test/runtime-verify-flagged.test.ts": {
+   "ms": 14.994384765625,
+   "status": "passed"
+  },
+  "test/scheduling-strategy-config.test.ts": {
+   "ms": 3.263427734375,
+   "status": "passed"
+  },
+  "test/schemas.test.ts": {
+   "ms": 34.161376953125,
+   "status": "passed"
+  },
+  "test/security-stress.test.ts": {
+   "ms": 181.267333984375,
+   "status": "passed"
+  },
+  "test/select.test.ts": {
+   "ms": 19.226318359375,
+   "status": "passed"
+  },
+  "test/server.unit.test.ts": {
+   "ms": 35.459228515625,
+   "status": "passed"
+  },
+  "test/session-affinity-entry.test.ts": {
+   "ms": 2.593017578125,
+   "status": "passed"
+  },
+  "test/session-affinity.test.ts": {
+   "ms": 8.63427734375,
+   "status": "passed"
+  },
+  "test/settings-hub-entry.test.ts": {
+   "ms": 9.365966796875,
+   "status": "passed"
+  },
+  "test/settings-hub-menu.test.ts": {
+   "ms": 2.355712890625,
+   "status": "passed"
+  },
+  "test/settings-hub-prompt.test.ts": {
+   "ms": 2.983642578125,
+   "status": "passed"
+  },
+  "test/settings-hub-shared.test.ts": {
+   "ms": 766.2421875,
+   "status": "passed"
+  },
+  "test/settings-hub-utils.test.ts": {
+   "ms": 1456.85546875,
+   "status": "passed"
+  },
+  "test/settings-panels.test.ts": {
+   "ms": 7.477783203125,
+   "status": "passed"
+  },
+  "test/settings-persist-utils.test.ts": {
+   "ms": 9.676025390625,
+   "status": "passed"
+  },
+  "test/settings-preview.test.ts": {
+   "ms": 7.491943359375,
+   "status": "passed"
+  },
+  "test/settings-write-queue.test.ts": {
+   "ms": 10.370361328125,
+   "status": "passed"
+  },
+  "test/shutdown.test.ts": {
+   "ms": 49.672119140625,
+   "status": "passed"
+  },
+  "test/snapshot-inspectors.test.ts": {
+   "ms": 12.46484375,
+   "status": "passed"
+  },
+  "test/storage-async.test.ts": {
+   "ms": 56.726806640625,
+   "status": "passed"
+  },
+  "test/storage-file-lock.test.ts": {
+   "ms": 2875.46923828125,
+   "status": "passed"
+  },
+  "test/storage-file-paths.test.ts": {
+   "ms": 3.27587890625,
+   "status": "passed"
+  },
+  "test/storage-flagged.test.ts": {
+   "ms": 731.25439453125,
+   "status": "passed"
+  },
+  "test/storage-health-inspection.test.ts": {
+   "ms": 178.940185546875,
+   "status": "passed"
+  },
+  "test/storage-import-export.test.ts": {
+   "ms": 49.25439453125,
+   "status": "passed"
+  },
+  "test/storage-last-backup.test.ts": {
+   "ms": 120.149169921875,
+   "status": "passed"
+  },
+  "test/storage-named-backups.test.ts": {
+   "ms": 22.403076171875,
+   "status": "passed"
+  },
+  "test/storage-parser.test.ts": {
+   "ms": 77.48583984375,
+   "status": "passed"
+  },
+  "test/storage-recovery-paths.test.ts": {
+   "ms": 238.37353515625,
+   "status": "passed"
+  },
+  "test/storage-scope.test.ts": {
+   "ms": 3.515380859375,
+   "status": "passed"
+  },
+  "test/storage-snapshot-merge.test.ts": {
+   "ms": 9.21923828125,
+   "status": "passed"
+  },
+  "test/storage.test.ts": {
+   "ms": 3931.5009765625,
+   "status": "passed"
+  },
+  "test/stream-failover-runtime.test.ts": {
+   "ms": 174.04443359375,
+   "status": "passed"
+  },
+  "test/stream-failover.test.ts": {
+   "ms": 77.7783203125,
+   "status": "passed"
+  },
+  "test/stream-usage-deferral.test.ts": {
+   "ms": 7.474853515625,
+   "status": "passed"
+  },
+  "test/subscription-first-use.test.ts": {
+   "ms": 28.6396484375,
+   "status": "passed"
+  },
+  "test/subscription-quota-event.test.ts": {
+   "ms": 2.4853515625,
+   "status": "passed"
+  },
+  "test/subscription-quota-order.test.ts": {
+   "ms": 5.28662109375,
+   "status": "passed"
+  },
+  "test/table-formatter.test.ts": {
+   "ms": 6.31005859375,
+   "status": "passed"
+  },
+  "test/temp-path.test.ts": {
+   "ms": 5.6416015625,
+   "status": "passed"
+  },
+  "test/test-model-matrix-script.test.ts": {
+   "ms": 50.7900390625,
+   "status": "passed"
+  },
+  "test/token-utils.test.ts": {
+   "ms": 13.73876953125,
+   "status": "passed"
+  },
+  "test/tool-utils.test.ts": {
+   "ms": 28.355712890625,
+   "status": "passed"
+  },
+  "test/transactions.test.ts": {
+   "ms": 37.5732421875,
+   "status": "passed"
+  },
+  "test/ui-format.test.ts": {
+   "ms": 4.286376953125,
+   "status": "passed"
+  },
+  "test/ui-runtime-entry.test.ts": {
+   "ms": 3.0947265625,
+   "status": "passed"
+  },
+  "test/ui-runtime.test.ts": {
+   "ms": 2.507568359375,
+   "status": "passed"
+  },
+  "test/ui-theme.test.ts": {
+   "ms": 11.33935546875,
+   "status": "passed"
+  },
+  "test/unified-settings-controller.test.ts": {
+   "ms": 7.87646484375,
+   "status": "passed"
+  },
+  "test/unified-settings-entry.test.ts": {
+   "ms": 4.22705078125,
+   "status": "passed"
+  },
+  "test/unified-settings.test.ts": {
+   "ms": 635.251708984375,
+   "status": "passed"
+  },
+  "test/uninstall-command.test.ts": {
+   "ms": 59.922607421875,
+   "status": "passed"
+  },
+  "test/uninstall-ebusy-retry.test.ts": {
+   "ms": 76.10205078125,
+   "status": "passed"
+  },
+  "test/update-notice.test.ts": {
+   "ms": 54.92578125,
+   "status": "passed"
+  },
+  "test/usage-extraction.test.ts": {
+   "ms": 109.54296875,
+   "status": "passed"
+  },
+  "test/usage-ledger.test.ts": {
+   "ms": 150.697509765625,
+   "status": "passed"
+  },
+  "test/usage-pricing-coverage.test.ts": {
+   "ms": 2.2529296875,
+   "status": "passed"
+  },
+  "test/usage-redaction.test.ts": {
+   "ms": 10.204345703125,
+   "status": "passed"
+  },
+  "test/usage-service-tier.test.ts": {
+   "ms": 18.353515625,
+   "status": "passed"
+  },
+  "test/utils.test.ts": {
+   "ms": 66.285400390625,
+   "status": "passed"
+  },
+  "test/wait-utils.test.ts": {
+   "ms": 7.396728515625,
+   "status": "passed"
+  },
+  "test/wsl.test.ts": {
+   "ms": 4.2177734375,
+   "status": "passed"
+  },
+  "test/zz-stress-helper-lifecycle.test.ts": {
+   "ms": 6021.753173828125,
+   "status": "passed"
+  }
+ },
+ "failed_tests": [
+  "test/local-bridge.test.ts > local bridge binds and emits a parseable baseUrl for IPv6 loopback host ::1",
+  "test/local-bridge.test.ts > local bridge binds and emits a parseable baseUrl for IPv6 loopback host [::1]",
+  "test/runtime-rotation-proxy.test.ts > runtime rotation proxy normalizes IPv6 loopback host ::1 for both bind and baseUrl",
+  "test/runtime-rotation-proxy.test.ts > runtime rotation proxy normalizes IPv6 loopback host [::1] for both bind and baseUrl"
+ ]
+}

@@ -1,3 +1,8 @@
 2026-11-23T11:39:42Z FULL RUN pr-index 0 PR #726 base 328343b23d45da17a2478fd49cb15238787e4f7f
 2026-11-23T11:39:42Z   $ git checkout -q -f --detach 328343b23d45da17a2478fd49cb15238787e4f7f && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
 2026-11-23T11:39:46Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.2s
+2026-11-23T11:45:20Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/codex-multi-auth/full-00.json  -> exit 1 in 334.1s
+2026-11-23T11:45:21Z   full run 0: ok exit 1 334.1s {'passed': 7279, 'skipped': 12, 'failed': 4}
+2026-11-23T11:45:21Z FULL RUN pr-index 5 PR #732 base cedbec027cb2ec3f645fcbeb55cd40cccf0479ee
+2026-11-23T11:45:21Z   $ git checkout -q -f --detach cedbec027cb2ec3f645fcbeb55cd40cccf0479ee && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T11:45:24Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.5s
