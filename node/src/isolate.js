@@ -50,6 +50,25 @@ function fullName(id) {
   return parts.join(' ');
 }
 
+/**
+ * The `-t` pattern (a regular expression, anchored by the caller) that matches exactly the runner's full name of a
+ * test from its detjs id. Built from the id, the name is ambiguous in two ways the plain `fullName` got wrong
+ * (gstack /review, 2026-11-23: a filter that matches nothing skips the test, and the session passed):
+ *   * ` #<n>` is detjs' suffix for a duplicate (controls.uniqueIds) only when the same id without it exists in the
+ *     run (`ids`); otherwise it is part of the test's own name ("regression for issue #42") and stays;
+ *   * `::` separates describe blocks and test in the id, which the runner joins with a space -- but a name can contain
+ *     `::` itself ("Parser::parse"), so every `::` matches either.
+ */
+function namePattern(id, ids) {
+  const parts = id.split('::').slice(1);
+  if (parts.length) {
+    const last = parts[parts.length - 1];
+    const m = / #\d+$/.exec(last);
+    if (m && ids && ids.has(id.slice(0, id.length - m[0].length))) parts[parts.length - 1] = last.slice(0, m.index);
+  }
+  return parts.map(escapeRe).join('(?: |::)');
+}
+
 async function main(runner, argv) {
   const session = require('./session');
   const { opts, rest } = session.parseArgs(argv);
@@ -125,11 +144,14 @@ async function main(runner, argv) {
   // tests in run order, grouped by what a name filter can tell apart
   const groups = [];
   const byKey = new Map();
+  const allIds = new Set(collected.tests.map((t) => t.nodeid));
   for (const t of collected.tests) {
     const file = t.nodeid.split('::', 1)[0];
-    const name = patternOf.get(t.nodeid) || fullName(t.nodeid);
-    const key = `${file}\u0000${name}`;
-    if (!byKey.has(key)) { byKey.set(key, { file, name, ids: [] }); groups.push(byKey.get(key)); }
+    const real = patternOf.get(t.nodeid);
+    const name = real || fullName(t.nodeid);
+    const pattern = real ? escapeRe(real) : namePattern(t.nodeid, allIds);
+    const key = `${file}\u0000${pattern}`;
+    if (!byKey.has(key)) { byKey.set(key, { file, name, pattern, ids: [] }); groups.push(byKey.get(key)); }
     byKey.get(key).ids.push(t.nodeid);
   }
   process.stdout.write(`detjs ${runner} --det-isolate: ${collected.tests.length} tests, each in a fresh process (one runner session per test)\n`);
@@ -138,7 +160,13 @@ async function main(runner, argv) {
   const records = [];
   const rows = [];
   const summaries = [];
-  let failed = false;
+  // the collection run itself failed (Jest: a file that fails to load has no test to collect, and every per-test
+  // session of the others passes): the run is red, whatever the per-test sessions say (gstack /review, pass 3)
+  let failed = Boolean(col && (col.status !== 0 || col.signal));
+  if (failed) {
+    process.stderr.write(col.stderr || '');
+    process.stderr.write(`detjs ${runner} --det-isolate: the collection run failed (exit ${col.status}); the run is reported failed\n`);
+  }
   let header = null;
   groups.forEach((g, i) => {
     const tr = path.join(work, `t-${i}.jsonl`);
@@ -147,7 +175,7 @@ async function main(runner, argv) {
     const scope = `iso.${native.digest(`${g.file}\u0000${g.name}`).slice(0, 12)}`;
     const fileArg = runner === 'jest' ? ['--runTestsByPath', path.resolve(root, g.file)] : [path.resolve(root, g.file)];
     const r = runSession({ det: [`--det-trace=${tr}`, `--det-cache-receipts=${rc}`, `--det-cache-summary=${sm}`] },
-      [...fileArg, '-t', `^${escapeRe(g.name)}$`], { DETJS_CACHE_SCOPE: scope });
+      [...fileArg, '-t', `^${g.pattern}$`], { DETJS_CACHE_SCOPE: scope });
     const t = readTrace(tr);
     if (t && !header) header = t.header;
     const mine = t ? t.tests.filter((x) => g.ids.includes(x.nodeid)) : [];
@@ -185,9 +213,16 @@ async function main(runner, argv) {
   meta.files = [...new Set(records.map((x) => x.nodeid.split('::', 1)[0]))];
   const reusedTests = summaries.filter((x) => x.reused).flatMap((x) => x.g.ids);
   if (reusedTests.length) meta.reused_tests = reusedTests; else delete meta.reused_tests;
+  // B7 (spec "Engine P0: no false green"): this process writes the final trace, so it carries the counts and prints
+  // the one status line (the per-test sessions do not: src/session.js printsStatus); bin/detjs.js decides on them
+  const exitStatus = require('./exit-status');
+  const status = exitStatus.countStatus(records);
+  meta.status = status;
+  exitStatus.record(status);
   fs.mkdirSync(path.dirname(tracePath), { recursive: true });
   const res = native.mergeTraces(parts, tracePath, JSON.stringify(meta), order);
   process.stdout.write(`detjs: trace ${path.relative(root, tracePath)}: ${res.nTests} tests, order digest ${res.orderDigest}\n`);
+  process.stderr.write(`${exitStatus.statusLine(status)}\n`);
   if (det.some((a) => a.startsWith('--det-cache'))) {
     fs.mkdirSync(path.dirname(receiptsPath), { recursive: true });
     fs.writeFileSync(receiptsPath, rows.length ? `${rows.join('\n')}\n` : '');
@@ -217,4 +252,4 @@ async function main(runner, argv) {
   return failed ? 1 : 0;
 }
 
-module.exports = { main, fullName };
+module.exports = { main, fullName, namePattern };

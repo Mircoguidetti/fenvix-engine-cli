@@ -66,9 +66,8 @@ Note: the existing marks (`uncontrolled.thread`, `uncontrolled.child`, `uncontro
   never counted in `summary.identical`. A test whose events or inputs also differ stays `diverged` / `input-differs`.
 - Headline: `IDENTICAL` only when every test is `stable`. Otherwise `DIVERGENT` if any test is `diverged` or
   `missing`, else `INPUT DIFFERS` if any is `input-differs`, else `NOT PROVEN` (D1: unchanged runs of a test that
-  uses a thread or a child process headline NOT PROVEN, not DIVERGENT). Exit codes (`fenvix verify`, unchanged
-  meaning): identical 0, divergent or not proven 1, input differs 3, unreadable traces 2. The Node test helpers read
-  `summary.not_proven` (0 when absent in older reports).
+  uses a thread or a child process headline NOT PROVEN, not DIVERGENT). Exit codes: section 6. The Node test
+  helpers read `summary.not_proven` (0 when absent in older reports).
 - New reasons (`summary.reasons` keys and `divergence.reason`): `deps`, `code`, and `env` for `uncontrolled.env`.
   The `fs` reason covers `files_read_outside_tests`.
 - `summary.inputs_recorded` stays as today.
@@ -90,3 +89,37 @@ Note: the existing marks (`uncontrolled.thread`, `uncontrolled.child`, `uncontro
 | V13 `"<random>"` hashseed | none | n/a | never equal |
 | V16 `.env` read + env digest | n/a | yes | none |
 | E1, D3 (explore, repro crash) | yes, with Rust | n/a | yes |
+
+## 6. Exit codes
+
+`verify` (`fenvix verify` and `detjs verify`: one rule, `python/detpy/fenvix.py` `verify_exit_code` and
+`node/src/exit-status.js` `verifyExit`, checked against each other by `node/test/fixtures/exit-cases.json`):
+
+| exit | `detjs verify --json` `status` | when |
+|---|---|---|
+| 0 | `identical` | every test identical |
+| 3 | `input_differs` | the only differences are environment variables tests read (input differs) |
+| 1 | `diverged` | a test diverged or is missing |
+| 1 | `not_proven` | a test is NOT PROVEN, no test ran, or the traces do not record their run inputs |
+| 2 | (no report) | a trace is missing or unreadable, fewer than two traces, a usage error |
+
+When several hold, `status` is the first of `diverged`, `not_proven`, `input_differs`, `identical`.
+
+A deterministic run (`detjs <runner> --det`, `fenvix <node runner>`): one rule, `node/src/exit-status.js` `runExit`,
+on every path of `node/bin/detjs.js` (the normal path, the TZ/locale restart, and the cross-worker hazard re-run wrapper `node/src/parallel-rerun.js`). First match wins:
+
+| exit | when |
+|---|---|
+| 2 | a usage or internal error of detjs, or the runner shell returned 2 |
+| 1 | at least one test failed (outcome failed or error; an outcome other than passed, skipped or todo, such as interrupted, counts as failed), at least one test is NOT PROVEN (a hazard re-run that did not account for a file's first-pass tests), or the runner shell returned any other non-zero code |
+| 0 | otherwise |
+
+A signal that killed the runner is re-raised on detjs. The process that writes the run's final trace prints one line
+on stderr, `detjs: status: failed=N not_proven=M passed=K skipped=S`, and writes the same counts into the trace header
+as `meta.status` (`{"failed":N,"not_proven":M,"passed":K,"skipped":S}`; skipped counts skipped and todo).
+
+The exit code is the verdict; the counts describe the test records. They can read `failed=0` on a red run: a
+failure outside any test record (a file that fails to load, a hook or teardown error, a coverage threshold) is in
+the exit code only. Under the cross-worker hazard re-run (`node/src/parallel-rerun.js`), the trace reports the
+one-lane re-run's outcomes for the hazard files, but the exit code is never lowered below the first run's: a red
+first run stays red even when the re-run passes.

@@ -2,7 +2,11 @@
 #
 # Two depths of the same jobs (CI rule of 2026-11-20, founder decision):
 #   LIGHT  every pull request into claude/release-1 (the required check before merge) and every merge into it:
-#          build, Python 3.13 full suite, Node 24 full suite, smoke python/node.
+#          build, Python 3.13 `shared` suites (see below), Node 24 full suite, attacks, smoke python/node.
+#          Until 2026-12-22 (founder decision 2026-11-22, then reviewed): LIGHT runs only the Python test files labelled
+#          `shared` in release/python-tests.txt (they exercise code Node uses: the verifier, detpy.fenvix_js,
+#          packaging, the shared exit fixture, the attack registry, the Rust core through detpy._core); the files
+#          labelled `python-product` run on FULL only. No test is removed: FULL runs every one, as before.
 #   FULL   by hand (workflow_dispatch, depth "full", the default) and nightly (schedule): Python 3.12, 3.13, 3.14 and
 #          Node 22, 24, 26, each the full suite, the smoke jobs, the install test of the engine artifact in clean
 #          containers and, on claude/release-1, the publication of the artifact (publish-engine). A step of work ends
@@ -14,7 +18,10 @@
 # build      Rust tests of the go-live crates (detpy-core, detpy-node), the wheel fenvix (manylinux_2_28) and the napi
 #            addon (glibc 2.28) every other job tests, the platform floor check, the engine artifact (tarball + sha256)
 #            and, on a pull request, the publication dry run (release/engine/publish.sh --dry-run).
-# python     every Python suite (tests/, reviewer files), one job per version; test_review_results.py informational.
+# python     FULL: every Python suite (tests/, reviewer files), one job per version; test_review_results.py informational.
+#            LIGHT (until 2026-12-22): only the files labelled `shared` in release/python-tests.txt (main shards and
+#            shard-0 extra suites); the runner suites and test_review_results.py are skipped.
+#            tests/test_python_tests_classified.py checks that every selected file is labelled.
 # node       every detjs suite (node/test, reviewer files), one job per version.
 # attacks    every attack on the verifier through the one entry point (tests/attacks.py), Python x Node.
 # smoke      one small real repository per language (Python, Node) under --det (x2, traces verified) and skip with
@@ -95,6 +102,10 @@ jobs:
     runs-on: ubuntu-latest
     # serial on purpose: some suites change the interpreter's site-packages (R-019c E9/E10) and cannot share it
     timeout-minutes: 240
+    env:
+      # "true" on FULL runs, "false" on LIGHT: the expression of the `python` version list below (several versions on
+      # FULL, one on LIGHT). LIGHT runs only `shared` test files until 2026-12-22 (release/python-tests.txt).
+      FULL: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.depth != 'light') }}
     strategy:
       # A red job means there is a bug, and the rest of the matrix is then spent learning nothing (founder,
       # 2026-11-21): every matrix in this gate workflow stops at the first red. This workflow is a gate, not a
@@ -109,6 +120,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "${{ matrix.python }}"}
+      # tests/test_runner_node.py (shared) runs `fenvix-run node` through detjs, which needs Node 22 or newer
+      # (founder decision D1 = A, 2026-11-23)
+      - uses: actions/setup-node@v4
+        with: {node-version: "24"}
       - uses: actions/download-artifact@v4
         with: {name: engine-linux-x64, path: dist}
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq strace > /dev/null
@@ -120,42 +135,57 @@ jobs:
           cp "$(python -c 'import detpy._core as c; print(c.__file__)')" python/detpy/
       - name: Python suites and reviewer test files
         # the gate of claude/parallel-proof-3 REPORT-3 and claude/all-runners-2 REPORT-2: serial, one deselected
-        # pre-existing failure (R-017 H2 reads a results file no engine change touches)
+        # pre-existing failure (R-017 H2 reads a results file no engine change touches).
+        # LIGHT (until 2026-12-22): only the files labelled `shared` in release/python-tests.txt.
         run: |
-          files=$(python3 release/shard.py 4 ${{ matrix.shard }} tests 'test_*.py' '**/test_*.py' '*_test.py' '**/*_test.py')
+          only=""; [ "$FULL" = true ] || only="--only shared release/python-tests.txt"
+          files=$(python3 release/shard.py 4 ${{ matrix.shard }} tests 'test_*.py' '**/test_*.py' '*_test.py' '**/*_test.py' $only)
+          # LIGHT: a shard can hold no shared file (shard.py fails if all four would be empty); pytest with no file would run all
+          if [ -z "$files" ] && [ "$FULL" != true ]; then echo "shard ${{ matrix.shard }}/4: 0 files"; exit 0; fi
           echo "shard ${{ matrix.shard }}/4: $(echo "$files" | wc -l) files"
           python -m pytest -q -p no:randomly --junitxml=py-${{ matrix.python }}-s${{ matrix.shard }}.xml $files \
             --deselect tests/test_review_r017.py::test_h2_report_says_ci_never_sees_tmp_name_exhaustion_but_p8_does \
             -rfE 2>&1 | tee py-${{ matrix.python }}-s${{ matrix.shard }}.log | tail -60; rc=${PIPESTATUS[0]}
           echo "== failures"; grep -E "^(FAILED|ERROR) " py-${{ matrix.python }}-s${{ matrix.shard }}.log || true
           exit $rc
+      # the targets of the shard-0 extra suites that follow: all of them on FULL; on LIGHT (until 2026-12-22) only those whose
+      # file is labelled `shared` in release/python-tests.txt -- a step with none left is skipped
+      - name: shard-0 extra suites to run (LIGHT, until 2026-12-22, only shared files)
+        id: extra
+        if: matrix.shard == 0 && (success() || failure())  # independent of the main suites' result
+        run: |
+          sel() { if [ "$FULL" = true ]; then echo "$*"; else python3 release/python_tests.py select shared release/python-tests.txt "$@"; fi; }
+          runners=$(sel tests/test_runners_django.py tests/test_runners_nose2.py \
+            tests/test_runners_ward.py tests/test_runners_zope.py tests/test_django_order.py tests/test_django_pytest_cache.py)
+          numpy=$(sel tests/test_clock.py::test_time_machine_travel_is_honoured \
+            tests/test_clock_rust.py tests/test_level0_seeds_fsorder_rust.py)
+          hyp=$(sel tests/test_clock.py::test_real_pytest_benchmark \
+            tests/review_r032/test_review_r032_python.py::test_p12_hypothesis_profile_env \
+            tests/test_runners_unittest.py::test_hypothesis_is_seeded_per_test_and_has_no_database)
+          printf 'runners=%s\nnumpy=%s\nhyp=%s\n' "$runners" "$numpy" "$hyp" | tee -a "$GITHUB_OUTPUT"
       - name: runner suites with their runners installed (audit G-0010; own environment, so that pytest-django does not load into the main suites)
-        if: matrix.shard == 0 && (success() || failure())  # independent of the main suites' result; once per version
+        if: matrix.shard == 0 && (success() || failure()) && steps.extra.outputs.runners != ''  # independent of the main suites' result; once per version
         run: |
           python -m venv .venv-runners && . .venv-runners/bin/activate
           pip install -q pytest pytest-xdist django pytest-django nose2 ward zope.testrunner && pip install -q --no-deps dist/fenvix-*.whl
-          python -m pytest -q -p no:randomly -rfE tests/test_runners_django.py tests/test_runners_nose2.py \
-            tests/test_runners_ward.py tests/test_runners_zope.py tests/test_django_order.py tests/test_django_pytest_cache.py \
+          python -m pytest -q -p no:randomly -rfE ${{ steps.extra.outputs.runners }} \
             2>&1 | tee py-${{ matrix.python }}.runners.log | tail -30; exit ${PIPESTATUS[0]}
       - name: suites that need numpy and time-machine (no pytest plugin of their own)
-        if: matrix.shard == 0 && (success() || failure())  # independent of the main suites' result; once per version
+        if: matrix.shard == 0 && (success() || failure()) && steps.extra.outputs.numpy != ''  # independent of the main suites' result; once per version
         run: |
           python -m venv .venv-numpy && . .venv-numpy/bin/activate
           pip install -q pytest pytest-xdist numpy time-machine && pip install -q --no-deps dist/fenvix-*.whl
-          python -m pytest -q -p no:randomly -rfEs tests/test_clock.py::test_time_machine_travel_is_honoured \
-            tests/test_clock_rust.py tests/test_level0_seeds_fsorder_rust.py \
+          python -m pytest -q -p no:randomly -rfEs ${{ steps.extra.outputs.numpy }} \
             2>&1 | tee py-${{ matrix.python }}.numpy.log | tail -30; exit ${PIPESTATUS[0]}
       - name: tests that need hypothesis and pytest-benchmark (auto-loaded plugins, so in their own environment)
-        if: matrix.shard == 0 && (success() || failure())  # independent of the main suites' result; once per version
+        if: matrix.shard == 0 && (success() || failure()) && steps.extra.outputs.hyp != ''  # independent of the main suites' result; once per version
         run: |
           python -m venv .venv-hyp && . .venv-hyp/bin/activate
           pip install -q pytest pytest-xdist hypothesis pytest-benchmark && pip install -q --no-deps dist/fenvix-*.whl
-          python -m pytest -q -p no:randomly -rfEs tests/test_clock.py::test_real_pytest_benchmark \
-            tests/review_r032/test_review_r032_python.py::test_p12_hypothesis_profile_env \
-            tests/test_runners_unittest.py::test_hypothesis_is_seeded_per_test_and_has_no_database \
+          python -m pytest -q -p no:randomly -rfEs ${{ steps.extra.outputs.hyp }} \
             2>&1 | tee py-${{ matrix.python }}.hyp.log | tail -30; exit ${PIPESTATUS[0]}
       - name: R-001 results checks (test_review_results.py; informational, not a gate)
-        if: matrix.shard == 0
+        if: matrix.shard == 0 && env.FULL == 'true'  # FULL only until 2026-12-22 (python-product)
         continue-on-error: true
         run: python -m pytest -q -p no:randomly test_review_results.py 2>&1 | tee py-r001-${{ matrix.python }}.log | tail -20; exit ${PIPESTATUS[0]}
       - uses: actions/upload-artifact@v4

@@ -100,7 +100,7 @@ function makeRunner(Base, realm = globalThis) {
     constructor(config) {
       super(config);
       const c = controls.cfg();
-      this.__det = { active: c.active, ids: new Map(), ctx: new WeakMap(), fileOf: new Map(), root: process.env.DETJS_ROOT || config.root, opened: null };
+      this.__det = { active: c.active, ids: new Map(), ctx: new WeakMap(), fileOf: new Map(), testsOf: new Map(), root: process.env.DETJS_ROOT || config.root, opened: null };
       if (c.active) {
         controls.installProcess();
         controls.installRealm(realm, { sameRealm: realm === globalThis });
@@ -117,6 +117,7 @@ function makeRunner(Base, realm = globalThis) {
     __open(filepath, project) {
       const fileId = path.relative(this.__det.root, filepath).split(path.sep).join('/');
       if (this.__det.opened === fileId) return;
+      if (this.__det.opened !== null) this.__neverStarted(this.__det.opened);
       this.__det.opened = fileId;
       // a lane runs one file at a time, in plan order (waits for the lane's previous file); pool id = lane
       parallel.enter(project ? `${project}|${fileId}` : fileId, { runner: 'vitest' });
@@ -164,6 +165,8 @@ function makeRunner(Base, realm = globalThis) {
         walk(file, base);
         const unique = controls.uniqueIds(flat.map(([, id]) => id));
         flat.forEach(([t], i) => this.__det.ids.set(t, unique[i]));
+        // the file's tests and ids, for B5 (__neverStarted) without a walk over every file this worker collected
+        this.__det.testsOf.set(fileId, flat.map(([t], i) => [t, unique[i], file]));
         if (c.controls.has('order') && c.shuffle && file.tasks) {
           const keyOf = (t) => (t === file ? label : `${label}${this.__det.ids.get(t).slice(base.length)}`);
           const shuffled = controls.shuffleTree(file.tasks, c.orderSeed, label, keyOf, (t) => (t.type === 'suite' ? t.tasks : null));
@@ -225,8 +228,30 @@ function makeRunner(Base, realm = globalThis) {
       return undefined;
     }
 
+    /**
+     * B5 (spec "Engine P0: no false green"): the tests of the open file that never reached onBeforeRunTask (a
+     * failing beforeAll, a filter) are written as `skipped` before its part closes, cache on or off.
+     */
+    __neverStarted(fileId) {
+      // only tests still in the run: --det-order removes the others from the file's tree (reproCollected), and
+      // Vitest does not report them; a collection-only run (--det-collect) records nothing more
+      if (process.env.DETJS_COLLECT === '1') return;
+      const ids = [];
+      const sets = new Map();
+      for (const [task, id0, f] of this.__det.testsOf.get(fileId) || []) {
+        if (task.type !== 'test') continue;
+        const id = this.__det.ids.get(task) || id0;
+        if (!sets.has(f)) { const c = this.__det.collected && this.__det.collected.get(f); sets.set(f, c ? new Set(c) : null); }
+        const inRun = sets.get(f);
+        if (inRun && !inRun.has(repro.wf(id))) continue;
+        ids.push(id);
+      }
+      try { controls.recordNeverStarted(ids); } catch (e) { process.stderr.write(`detjs: never-started tests of ${fileId} not recorded: ${e && e.message}\n`); }
+    }
+
     async onAfterRunFiles(files) {
       if (this.__det.active) {
+        if (this.__det.opened !== null) this.__neverStarted(this.__det.opened);
         controls.closeFile();
         this.__det.opened = null;
         for (const f of files || []) {

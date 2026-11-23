@@ -51,14 +51,17 @@ async function main(argv) {
       rep = JSON.parse(native.verify(paths));
       // settings, order and reuse behind each divergence (G-1482, G-1483, G-1402): src/verify-explain.js
       const ex = require('../src/verify-explain').explain(paths, rep);
-      if (rest.includes('--json')) process.stdout.write(`${JSON.stringify({ ...rep, ...ex.json })}\n`);
+      // B2/B7 (spec "Engine P0: no false green"): the verdict word of the exit rule, src/exit-status.js
+      if (rest.includes('--json')) process.stdout.write(`${JSON.stringify({ ...rep, ...ex.json, status: require('../src/exit-status').verifyStatus(rep.summary) })}\n`);
       else process.stdout.write(require('../src/verify-explain').annotate(native.verifyText(paths, rest.includes('--show-stable')).replace(/^detpy verify:/m, 'detjs verify:'), ex));
     } catch (e) {
       console.error(`detjs verify: unreadable trace: ${e && e.message}`);
       return 2;
     }
-    if (!rep.summary.tests) { console.error('detjs verify: no test ran in these traces: nothing verified'); return 1; }
-    return rep.summary.diverged || rep.summary.missing ? 1 : 0;
+    if (!rep.summary.tests) console.error('detjs verify: no test ran in these traces: nothing verified');
+    // the rule of python/detpy/fenvix.py verify_exit_code, owned by src/exit-status.js: 1 on no test, diverged,
+    // missing, not proven or inputs not recorded; 3 when only inputs differ; else 0
+    return require('../src/exit-status').verifyExit(rep.summary);
   }
   if (cmd === '--det-help') { process.stdout.write(require('../src/session').HELP); return 0; }
   if (cmd === '--version' || cmd === '-v' || cmd === 'version') { process.stdout.write(`fenvix ${VERSION}\n`); return 0; }
@@ -137,9 +140,9 @@ const PIN_NEEDS_RESTART = PIN && process.env.DETJS_PINNED === undefined && (
   Object.entries(PIN.env).some(([k, v]) => process.env[k] !== v) || (PIN.loc !== 'keep' && process.env.LANGUAGE !== undefined));
 if (PIN && !PIN_NEEDS_RESTART) process.env.DETJS_PINNED = process.env.DETJS_PINNED || `tz=${PIN.tz};locale=${PIN.loc}`;
 
-// P1 (docs/LIMITS.md section 10, row JS-07): a placement must never decide an outcome. When a run's lanes turn out
-// to have shared a path or a fixed port, the files the hazard names are run again in one lane and the re-run's
-// outcomes are the ones reported (src/parallel-rerun.js).
+// P1 (docs/LIMITS.md section 10, row JS-07): when a run's lanes turn out to have shared a path or a fixed port, the
+// files the hazard names are run again in one lane and the trace reports the re-run's outcomes; the exit code is
+// never lowered below the first run's (src/parallel-rerun.js wrapperRunnerCode).
 //
 // This sits OUTSIDE the two re-execs below on purpose. Each pass has to be a whole, ordinary detjs invocation: it
 // must do its own early-capture re-exec and its own TZ pinning, exactly as an unwrapped run does. Putting the
@@ -151,12 +154,13 @@ if (PIN && !PIN_NEEDS_RESTART) process.env.DETJS_PINNED = process.env.DETJS_PINN
 const RERUN = require('../src/parallel-rerun');
 if (RERUN.shouldWrap(process.argv[2], process.argv.slice(3))) {
   RERUN.main(process.argv[2], process.argv.slice(3)).then((r) => {
-    if (r.signal) { process.kill(process.pid, r.signal); return; }
+    // red even if the signal does not end this process (one Node ignores): a killed child is never a green run
+    if (r.signal) { process.exitCode = 1; process.kill(process.pid, r.signal); return; }
     process.exitCode = r.status;
   }, (err) => {
     const msg = err && err.message ? err.message : String(err);
     console.error(/^detjs: /.test(msg) && process.env.DETJS_DEBUG !== '1' ? msg : (err && err.stack ? err.stack : err));
-    process.exitCode = 2;
+    process.exitCode = require('../src/exit-status').runExit({ internalError: true });
   });
 } else if (needsEarly(process.argv.slice(2)) || PIN_NEEDS_RESTART) {
   const path = require('node:path');
@@ -170,12 +174,20 @@ if (RERUN.shouldWrap(process.argv[2], process.argv.slice(3))) {
   if (r.signal) process.kill(process.pid, r.signal);
   process.exitCode = r.status ?? 1;
 } else main(process.argv.slice(2)).then((code) => {
-  process.exitCode = code;
+  // B1 (spec "Engine P0: no false green"): the runner shell's code and the counts of the trace this process wrote
+  // (src/session.js finish, src/isolate.js), decided by src/exit-status.js, for a `--det` run of a runner (with no
+  // trace written the counts are 0 and the runner code decides). `verify` (0/1/3/2), repro and the other commands
+  // keep the code they decided.
+  const xs = require('../src/exit-status');
+  const argv = process.argv.slice(2);
+  const det = RUNNERS.includes(argv[0]) && (argv.includes('--det') || process.env.DETJS === '1' || process.env.DETJS === 'true') && !argv.includes('--no-det');
+  const st = xs.recordedStatus();
+  process.exitCode = det || st ? xs.runExit({ ...(st || {}), runnerCode: code }) : code;
 }, (err) => {
   // A user error the shell raised itself (message `detjs: ...`) is printed without the JavaScript stack;
   // DETJS_DEBUG=1 prints the stack of every error (audit G-2176).
   const msg = err && err.message ? err.message : String(err);
   const own = /^detjs: /.test(msg) && process.env.DETJS_DEBUG !== '1';
   console.error(own ? msg : (err && err.stack ? err.stack : err));
-  process.exitCode = 2;
+  process.exitCode = require('../src/exit-status').runExit({ internalError: true });
 });
