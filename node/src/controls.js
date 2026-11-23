@@ -311,6 +311,8 @@ function openFile(fileId, project) {
   STATE.testIndex = 0;
   STATE.begun = new Set();
   if (c.controls.has('seeds')) seeds.seedFile(label);
+  // the virtual pid of the file's test code (P1 C, src/facts.js), seeded like the file's generators
+  if (c.controls.has('seeds')) require('./facts').startFile(label);
   if (c.controls.has('net')) network.startFile(label);
   if (c.controls.has('time')) {
     clock.DRIVER.takeBaseline();
@@ -321,6 +323,7 @@ function openFile(fileId, project) {
 
 function closeFile() {
   if (STATE.testId !== null) STATE.endTest('interrupted');
+  require('./facts').endFile();
   // (Timers left pending by a test were released to real time when it ended.)
   if (STATE.recorder) {
     STATE.flush();
