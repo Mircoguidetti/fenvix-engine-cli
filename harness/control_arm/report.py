@@ -7,6 +7,7 @@ The notes file (hand-written: how runs were made, step 4, per-repository reasons
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import statistics
 import sys
@@ -18,6 +19,31 @@ import control_arm as CA  # noqa: E402
 
 def fmt(x):
     return "-" if x is None else (f"{x:.1f}" if isinstance(x, float) else str(x))
+
+
+def parallel_label_check(name, vs):
+    """DIVERGES/parallel tests against the supplementary SS run with the same seed as each diverging P run (inside a
+    file the order depends only on the seed): (same outcome as serial in every same-seed SS = parallel label holds,
+    differs in a same-seed SS = order under that seed, no same-seed SS recorded = not checked)"""
+    holds = order = unchecked = 0
+    cache = {}
+    for v in vs:
+        if v["verdict"] != "DIVERGES" or v["label"] != "parallel":
+            continue
+        res = []
+        for rn in v["diverging_runs"]:
+            f = os.path.join(CA.DATA, name, "SS" + rn[1:] + ".json")
+            if f not in cache:
+                cache[f] = json.load(open(f))["outcomes"] if os.path.exists(f) else None
+            oc = cache[f]
+            res.append(None if oc is None or v["test"] not in oc else oc[v["test"]] != v["serial"])
+        if any(r is True for r in res):
+            order += 1
+        elif res and all(r is False for r in res):
+            holds += 1
+        else:
+            unchecked += 1
+    return holds, order, unchecked
 
 
 def per_repo(name, rows, pairs):
@@ -58,13 +84,13 @@ def per_repo(name, rows, pairs):
         "short": [f"{r['run']}(-{r['missing_vs_serial']})" for r in runs if r.get("short")],
         "invalid_serial": [r["run"] for r in par if r.get("valid") == "INVALID" and not r["timed_out"] and not r["crashed"]],
         "effective": f"{'yes' if len(valid) == len(par) else 'no' if not valid else 'partly'} ({len(valid)}/{len(par)} valid)",
-        "pairs_found": sum(1 for p in pr if p["result"] == "pair found"),
+        "pairs_found": sum(1 for p in pr if p["result"] == CA.R_PAIR),
         "pairs_not_found": sum(1 for p in pr if p["result"].startswith("no minimal pair")),
-        "alone": sum(1 for p in pr if p["result"] == "no minimal pair (victim file alone reproduces)"),
-        "alone_ctl": sum(1 for p in pr if p["result"] == "no minimal pair (victim file alone reproduces)"
-                         and p.get("control_seeds")),
-        "not_repro": sum(1 for p in pr if p["result"] == "no minimal pair (not reproduced)"),
-        "pairs_budget": sum(1 for p in pr if p["result"] == "pair not found (budget)"),
+        "alone": sum(1 for p in pr if p["result"] == CA.R_ALONE),
+        "alone_ctl": sum(1 for p in pr if p["result"] == CA.R_ALONE and (p.get("alone") or {}).get("control_seeds")),
+        "not_repro": sum(1 for p in pr if p["result"] == CA.R_NOT_REPRO),
+        "pairs_budget": sum(1 for p in pr if p["result"] == CA.R_BUDGET),
+        "par_check": parallel_label_check(name, vs),
         "victims": len(pr),
         "victims_order": sum(1 for p in pr if p.get("label") == "order"),
         "reproduced": sum(1 for p in pr if any(t.get("triggered") for t in p.get("trials") or [])),
@@ -85,15 +111,17 @@ def render(status, notes, rows, pairs):
     out += ["## Verdicts per repository", "",
             "| repository | tests (serial) | IDENTICAL | DIVERGES (order / parallel) | of which in 1 parallel run only | "
             "DIVERGES-order-only | UNDECIDED (insufficient parallel / S1≠S2 / run failed or short) | ENV | test files that "
-            "did not load (per run; their tests are in no column) |",
-            "|---|---|---|---|---|---|---|---|---|"]
+            "did not load (per run; their tests are in no column) | `parallel` label vs SS with the same seed (holds / order / "
+            "not checked) |",
+            "|---|---|---|---|---|---|---|---|---|---|"]
     for n, r in reps:
         if not r:
-            out.append(f"| {n} | not run (see notes) | | | | | | | |")
+            out.append(f"| {n} | not run (see notes) | | | | | | | | |")
             continue
         out.append(f"| {n} | {r['tests']} | {r['IDENTICAL']} | {r['DIVERGES']} ({r['div_order']} / {r['div_parallel']}) | "
                    f"{r['div_one_run']} | {r['order_only']} | {r['UNDECIDED']} ({r['und_insufficient']} / {r['und_serial']} / "
-                   f"{r['und_run']}) | {r['ENV']} | {' / '.join(fmt(x) for x in r['load_failed'])} |")
+                   f"{r['und_run']}) | {r['ENV']} | {' / '.join(fmt(x) for x in r['load_failed'])} | "
+                   f"{' / '.join(str(x) for x in r['par_check'])} |")
     out += ["", "## Runs and parallelism", "",
             "| repository | timed out | crashed | short (tests missing vs serial) | INVALID (serial in disguise) | "
             "parallel mode effective | UNDECIDED with a divergence seen |", "|---|---|---|---|---|---|---|"]
@@ -103,7 +131,8 @@ def render(status, notes, rows, pairs):
                        f"{', '.join(r['short']) or 0} | {', '.join(r['invalid_serial']) or 0} | {r['effective']} | {r['und_seen_div']} |")
     out += ["", "## Minimal pairs and wall time", "",
             "| repository | victims searched (of which label order) | divergence reproduced in any trial | pairs found | "
-            "not found (victim file alone reproduces, of which with a control seed / not reproduced / other) | over "
+            "not found (victim file alone reproduces 2+ of 3 with negative controls clean, of which with a control seed / not "
+            "reproduced / other) | over "
             "budget | serial median (s) | parallel run median (s, completed / valid) | 9 runs (s) | pair search (s) | "
             "total (s) |",
             "|---|---|---|---|---|---|---|---|---|---|---|"]
