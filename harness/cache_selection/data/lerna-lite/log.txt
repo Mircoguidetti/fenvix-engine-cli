@@ -370,3 +370,6 @@
 2026-11-23T23:44:38Z   $ git checkout -q -f --detach f351d518922e3b0493f823ca7a2b14a1d38793f8 && git clean -fdxq -e node_modules  -> exit 0 in 3.7s
 2026-11-23T23:44:45Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 6.9s
 2026-11-23T23:44:54Z   $ npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts  -> exit 0 in 9.1s
+2026-11-23T23:45:01Z   $ npx -y pnpm@11.28.5 build  -> exit 0 in 6.6s
+2026-11-23T23:45:07Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --filesOnly --json=/home/user/work/tmp/lerna-lite/list-all.json  -> exit 0 in 6.0s
+2026-11-23T23:45:08Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --changed 989e099ef3351b69bc829a2c4e578d3b08133b0b --filesOnly --json=/home/user/work/tmp/lerna-lite/list-sel.json  -> exit 0 in 0.7s
