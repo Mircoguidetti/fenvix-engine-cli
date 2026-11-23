@@ -13,7 +13,7 @@ import gzip, hashlib, json, os, re, shlex, subprocess, sys, time
 HERE = os.path.dirname(os.path.abspath(__file__))
 CFG = json.load(open(os.path.join(HERE, 'repos.json')))
 MANIFEST_RE = re.compile(r'(^|/)(package\.json|package-lock\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml|yarn\.lock|\.npmrc|\.pnpmfile\.cjs)$')
-ENV_RE = re.compile(r'EAFNOSUPPORT|ECONNREFUSED|EADDRNOTAVAIL|ENETUNREACH|EAI_AGAIN|ENOTFOUND|getaddrinfo|EHOSTUNREACH|'
+ENV_RE = re.compile(r'No native build was found|EAFNOSUPPORT|ECONNREFUSED|EADDRNOTAVAIL|ENETUNREACH|EAI_AGAIN|ENOTFOUND|getaddrinfo|EHOSTUNREACH|'
                     r"Executable doesn't exist|browserType\.launch|Cannot connect to the Docker|docker: not found")
 
 
