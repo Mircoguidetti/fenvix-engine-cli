@@ -4,3 +4,5 @@ test/controls.test.js 'net: closed by default, record then replay' (vitest, jest
 test/exit-paths-p0.test.js 're-exec path: the same through the TZ/locale restart': + --det-tz=UTC --det-locale=C.UTF-8 (the restart only happens for a pin)
 test/exit-regression.test.js 'AC1(c) through the re-exec path, a test that SIGTERMs its process...': + --det-tz=UTC --det-locale=C.UTF-8 (the restart only happens for a pin)
 test/network-p041.test.js (whole file, through its run helper): every --det run + --det-epoch=fixed --det-net=closed (tests of the closed network, separate-run comparisons and the 2025-01-01 epoch)
+test/node-p041.test.js (through its run helper): every --det run + --det-net=closed; runs without the cache also + --det-epoch=fixed (clock tests of the 2025-01-01 epoch, separate-run comparisons, closed network)
+test/node-p041.test.js 'G-0139 G-0140 time zone and locale pinned and recorded' (vitest, jest): the three pinned cases + --det-tz=UTC --det-locale=C.UTF-8
