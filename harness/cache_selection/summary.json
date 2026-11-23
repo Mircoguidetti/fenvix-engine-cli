@@ -31,6 +31,16 @@
    "files_unknown_minutes": 198,
    "failures_not_classified": 0,
    "median_share_code_le10pct_unknown": 0.6875,
+   "states_ok_by_class": {
+    "code": 63,
+    "dependency": 1
+   },
+   "states_with_excluded_run_by_class": {
+    "code": 58
+   },
+   "excluded_test_files_run_by_class": {
+    "code": 19624
+   },
    "final_states_share_unknown": 0,
    "final_states_over10pct_files_unknown_minutes": [],
    "skips_tests_in_ci": false,
@@ -81,6 +91,18 @@
    "files_unknown_minutes": 117,
    "failures_not_classified": 0,
    "median_share_code_le10pct_unknown": 0.6338,
+   "states_ok_by_class": {
+    "dependency": 17,
+    "code": 34
+   },
+   "states_with_excluded_run_by_class": {
+    "dependency": 15,
+    "code": 31
+   },
+   "excluded_test_files_run_by_class": {
+    "dependency": 5799,
+    "code": 8201
+   },
    "final_states_share_unknown": 0,
    "final_states_over10pct_files_unknown_minutes": [],
    "skips_tests_in_ci": false,
@@ -131,6 +153,15 @@
    "files_unknown_minutes": 1999,
    "failures_not_classified": 0,
    "median_share_code_le10pct_unknown": 0.8811,
+   "states_ok_by_class": {
+    "code": 39
+   },
+   "states_with_excluded_run_by_class": {
+    "code": 25
+   },
+   "excluded_test_files_run_by_class": {
+    "code": 2567
+   },
    "final_states_share_unknown": 0,
    "final_states_over10pct_files_unknown_minutes": [
     2,
@@ -174,6 +205,16 @@
    "files_unknown_minutes": 8,
    "failures_not_classified": 0,
    "median_share_code_le10pct_unknown": null,
+   "states_ok_by_class": {
+    "dependency": 28,
+    "code": 2
+   },
+   "states_with_excluded_run_by_class": {
+    "dependency": 28
+   },
+   "excluded_test_files_run_by_class": {
+    "dependency": 679
+   },
    "final_states_share_unknown": 0,
    "final_states_over10pct_files_unknown_minutes": [],
    "skips_tests_in_ci": false,
@@ -222,6 +263,15 @@
    "files_unknown_minutes": 56,
    "failures_not_classified": 0,
    "median_share_code_le10pct_unknown": 0.9972,
+   "states_ok_by_class": {
+    "code": 57
+   },
+   "states_with_excluded_run_by_class": {
+    "code": 57
+   },
+   "excluded_test_files_run_by_class": {
+    "code": 4536
+   },
    "final_states_share_unknown": 0,
    "final_states_over10pct_files_unknown_minutes": [],
    "skips_tests_in_ci": false,
@@ -273,6 +323,18 @@
    "files_unknown_minutes": 5,
    "failures_not_classified": 0,
    "median_share_code_le10pct_unknown": 1.0,
+   "states_ok_by_class": {
+    "code": 14,
+    "dependency": 7
+   },
+   "states_with_excluded_run_by_class": {
+    "code": 14,
+    "dependency": 2
+   },
+   "excluded_test_files_run_by_class": {
+    "code": 153,
+    "dependency": 24
+   },
    "final_states_share_unknown": 0,
    "final_states_over10pct_files_unknown_minutes": [],
    "skips_tests_in_ci": false,
@@ -306,6 +368,15 @@
    "files_unknown_minutes": 379,
    "failures_not_classified": 0,
    "median_share_code_le10pct_unknown": 0.0,
+   "states_ok_by_class": {
+    "code": 60
+   },
+   "states_with_excluded_run_by_class": {
+    "code": 5
+   },
+   "excluded_test_files_run_by_class": {
+    "code": 2257
+   },
    "final_states_share_unknown": 0,
    "final_states_over10pct_files_unknown_minutes": [],
    "skips_tests_in_ci": false,
@@ -344,6 +415,15 @@
    "files_unknown_minutes": 24,
    "failures_not_classified": 250,
    "median_share_code_le10pct_unknown": 0.0352,
+   "states_ok_by_class": {
+    "code": 39
+   },
+   "states_with_excluded_run_by_class": {
+    "code": 30
+   },
+   "excluded_test_files_run_by_class": {
+    "code": 120
+   },
    "final_states_share_unknown": 12,
    "final_states_over10pct_files_unknown_minutes": [
     625,
@@ -383,6 +463,11 @@
    "files_unknown_minutes": 0,
    "failures_not_classified": 0,
    "median_share_code_le10pct_unknown": null,
+   "states_ok_by_class": {
+    "code": 8
+   },
+   "states_with_excluded_run_by_class": {},
+   "excluded_test_files_run_by_class": {},
    "final_states_share_unknown": 30,
    "final_states_over10pct_files_unknown_minutes": [],
    "skips_tests_in_ci": false,

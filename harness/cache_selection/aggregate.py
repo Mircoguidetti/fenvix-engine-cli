@@ -78,6 +78,10 @@ def main():
             median_share_code_le10pct_unknown=(lambda xs: med(xs) if len(xs) >= 5 else None)(
                 [r['share'] for r in finals if r['class'] == 'code' and r.get('share') is not None and r.get('n_all_files')
                  and len(r.get('files_unknown_minutes') or []) <= 0.1 * r['n_all_files']]),
+            states_ok_by_class=dict(Counter(r['class'] for r in rows if r['status'] == 'ok')),
+            states_with_excluded_run_by_class=dict(Counter(r['class'] for r in rows if r['status'] == 'ok' and r.get('excluded_files'))),
+            excluded_test_files_run_by_class=dict(sum((Counter({r['class']: len(r['excluded_files'])}) for r in rows
+                                                       if r['status'] == 'ok' and r.get('excluded_files')), Counter())),
             final_states_share_unknown=sum(1 for r in finals if r.get('share') is None),
             final_states_over10pct_files_unknown_minutes=sorted(r['pr'] for r in finals if r.get('share') is not None and r.get('n_all_files')
                                                                 and len(r.get('files_unknown_minutes') or []) > 0.1 * r['n_all_files']),
