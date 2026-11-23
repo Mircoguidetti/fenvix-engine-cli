@@ -5,8 +5,8 @@
    "code_prs": 29,
    "dependency_prs": 1,
    "states_planned": 109,
-   "states_done": 34,
-   "states_ok": 34,
+   "states_done": 64,
+   "states_ok": 64,
    "states_unknown": 0,
    "unknown_reasons": {},
    "final_states_measured": {
@@ -18,18 +18,21 @@
    "median_share_code_note": null,
    "median_share_dependency": 0.0,
    "failure_classes": {
-    "ENV": 52,
-    "PREEXISTING": 28,
-    "FLAKY": 2
+    "ENV": 84,
+    "PREEXISTING": 53,
+    "FLAKY": 3
    },
    "selection_miss": {},
    "selection_miss_prs": {
     "code": [],
     "dependency": []
    },
-   "excluded_minutes_run": 85.56,
-   "files_unknown_minutes": 102,
+   "excluded_minutes_run": 157.83,
+   "files_unknown_minutes": 198,
    "failures_not_classified": 0,
+   "median_share_code_le10pct_unknown": 0.6875,
+   "final_states_share_unknown": 0,
+   "final_states_over10pct_files_unknown_minutes": [],
    "skips_tests_in_ci": false,
    "ci_skip_tool": "none found",
    "e1": {
@@ -77,6 +80,9 @@
    "excluded_minutes_run": 78.76,
    "files_unknown_minutes": 117,
    "failures_not_classified": 0,
+   "median_share_code_le10pct_unknown": 0.6338,
+   "final_states_share_unknown": 0,
+   "final_states_over10pct_files_unknown_minutes": [],
    "skips_tests_in_ci": false,
    "ci_skip_tool": "none found",
    "e1": {
@@ -99,8 +105,8 @@
    "code_prs": 19,
    "dependency_prs": 0,
    "states_planned": 40,
-   "states_done": 27,
-   "states_ok": 26,
+   "states_done": 40,
+   "states_ok": 39,
    "states_unknown": 1,
    "unknown_reasons": {
     "UNKNOWN: INSTALL_FAILED: * 1 dependencies were added: playwright@^1.49.0": 1
@@ -114,16 +120,29 @@
    "median_share_code_note": null,
    "median_share_dependency": null,
    "failure_classes": {
-    "PREEXISTING": 110
+    "PREEXISTING": 163
    },
    "selection_miss": {},
    "selection_miss_prs": {
     "code": [],
     "dependency": []
    },
-   "excluded_minutes_run": 3.32,
-   "files_unknown_minutes": 1028,
+   "excluded_minutes_run": 4.12,
+   "files_unknown_minutes": 1999,
    "failures_not_classified": 0,
+   "median_share_code_le10pct_unknown": 0.8811,
+   "final_states_share_unknown": 0,
+   "final_states_over10pct_files_unknown_minutes": [
+    2,
+    3,
+    4,
+    5,
+    8,
+    17,
+    18,
+    19,
+    21
+   ],
    "skips_tests_in_ci": false,
    "ci_skip_tool": "none found",
    "e1": null
@@ -133,27 +152,30 @@
    "code_prs": 2,
    "dependency_prs": 28,
    "states_planned": 30,
-   "states_done": 0,
-   "states_ok": 0,
+   "states_done": 30,
+   "states_ok": 30,
    "states_unknown": 0,
    "unknown_reasons": {},
    "final_states_measured": {
-    "code": 0,
-    "dependency": 0
+    "code": 2,
+    "dependency": 28
    },
-   "median_share_all": null,
+   "median_share_all": 1.0,
    "median_share_code": null,
-   "median_share_code_note": "UNKNOWN: 0 code PRs measured (<5)",
-   "median_share_dependency": null,
+   "median_share_code_note": "UNKNOWN: 2 code PRs measured (<5)",
+   "median_share_dependency": 1.0,
    "failure_classes": {},
    "selection_miss": {},
    "selection_miss_prs": {
     "code": [],
     "dependency": []
    },
-   "excluded_minutes_run": 0,
-   "files_unknown_minutes": 0,
+   "excluded_minutes_run": 2.35,
+   "files_unknown_minutes": 8,
    "failures_not_classified": 0,
+   "median_share_code_le10pct_unknown": null,
+   "final_states_share_unknown": 0,
+   "final_states_over10pct_files_unknown_minutes": [],
    "skips_tests_in_ci": false,
    "ci_skip_tool": "none found",
    "e1": {
@@ -176,27 +198,32 @@
    "code_prs": 30,
    "dependency_prs": 0,
    "states_planned": 57,
-   "states_done": 0,
-   "states_ok": 0,
+   "states_done": 57,
+   "states_ok": 57,
    "states_unknown": 0,
    "unknown_reasons": {},
    "final_states_measured": {
-    "code": 0,
+    "code": 30,
     "dependency": 0
    },
-   "median_share_all": null,
-   "median_share_code": null,
-   "median_share_code_note": "UNKNOWN: 0 code PRs measured (<5)",
+   "median_share_all": 0.9972,
+   "median_share_code": 0.9972,
+   "median_share_code_note": null,
    "median_share_dependency": null,
-   "failure_classes": {},
+   "failure_classes": {
+    "PREEXISTING": 57
+   },
    "selection_miss": {},
    "selection_miss_prs": {
     "code": [],
     "dependency": []
    },
-   "excluded_minutes_run": 0,
-   "files_unknown_minutes": 0,
+   "excluded_minutes_run": 26.57,
+   "files_unknown_minutes": 56,
    "failures_not_classified": 0,
+   "median_share_code_le10pct_unknown": 0.9972,
+   "final_states_share_unknown": 0,
+   "final_states_over10pct_files_unknown_minutes": [],
    "skips_tests_in_ci": false,
    "ci_skip_tool": "none found",
    "e1": {
@@ -222,27 +249,32 @@
    "code_prs": 19,
    "dependency_prs": 11,
    "states_planned": 42,
-   "states_done": 0,
-   "states_ok": 0,
+   "states_done": 21,
+   "states_ok": 21,
    "states_unknown": 0,
    "unknown_reasons": {},
    "final_states_measured": {
-    "code": 0,
-    "dependency": 0
+    "code": 14,
+    "dependency": 7
    },
-   "median_share_all": null,
-   "median_share_code": null,
-   "median_share_code_note": "UNKNOWN: 0 code PRs measured (<5)",
-   "median_share_dependency": null,
-   "failure_classes": {},
+   "median_share_all": 1.0,
+   "median_share_code": 1.0,
+   "median_share_code_note": null,
+   "median_share_dependency": 0.0,
+   "failure_classes": {
+    "FLAKY": 1
+   },
    "selection_miss": {},
    "selection_miss_prs": {
     "code": [],
     "dependency": []
    },
-   "excluded_minutes_run": 0,
-   "files_unknown_minutes": 0,
+   "excluded_minutes_run": 153.79,
+   "files_unknown_minutes": 5,
    "failures_not_classified": 0,
+   "median_share_code_le10pct_unknown": 1.0,
+   "final_states_share_unknown": 0,
+   "final_states_over10pct_files_unknown_minutes": [],
    "skips_tests_in_ci": false,
    "ci_skip_tool": "none found",
    "e1": null
@@ -252,17 +284,17 @@
    "code_prs": 12,
    "dependency_prs": 0,
    "states_planned": 60,
-   "states_done": 0,
-   "states_ok": 0,
+   "states_done": 60,
+   "states_ok": 60,
    "states_unknown": 0,
    "unknown_reasons": {},
    "final_states_measured": {
-    "code": 0,
+    "code": 12,
     "dependency": 0
    },
-   "median_share_all": null,
-   "median_share_code": null,
-   "median_share_code_note": "UNKNOWN: 0 code PRs measured (<5)",
+   "median_share_all": 0.0,
+   "median_share_code": 0.0,
+   "median_share_code_note": null,
    "median_share_dependency": null,
    "failure_classes": {},
    "selection_miss": {},
@@ -270,9 +302,12 @@
     "code": [],
     "dependency": []
    },
-   "excluded_minutes_run": 0,
-   "files_unknown_minutes": 0,
+   "excluded_minutes_run": 11.81,
+   "files_unknown_minutes": 379,
    "failures_not_classified": 0,
+   "median_share_code_le10pct_unknown": 0.0,
+   "final_states_share_unknown": 0,
+   "final_states_over10pct_files_unknown_minutes": [],
    "skips_tests_in_ci": false,
    "ci_skip_tool": "none found",
    "e1": null
@@ -282,27 +317,38 @@
    "code_prs": 30,
    "dependency_prs": 0,
    "states_planned": 55,
-   "states_done": 0,
-   "states_ok": 0,
-   "states_unknown": 0,
-   "unknown_reasons": {},
+   "states_done": 55,
+   "states_ok": 39,
+   "states_unknown": 16,
+   "unknown_reasons": {
+    "UNKNOWN: INSTALL_FAILED: Note that in CI environments this setting is true by default. If ": 16
+   },
    "final_states_measured": {
-    "code": 0,
+    "code": 18,
     "dependency": 0
    },
-   "median_share_all": null,
-   "median_share_code": null,
-   "median_share_code_note": "UNKNOWN: 0 code PRs measured (<5)",
+   "median_share_all": 0.0241,
+   "median_share_code": 0.0241,
+   "median_share_code_note": null,
    "median_share_dependency": null,
-   "failure_classes": {},
+   "failure_classes": {
+    "ENV": 10,
+    "UNKNOWN": 70
+   },
    "selection_miss": {},
    "selection_miss_prs": {
     "code": [],
     "dependency": []
    },
-   "excluded_minutes_run": 0,
-   "files_unknown_minutes": 0,
-   "failures_not_classified": 0,
+   "excluded_minutes_run": 0.12,
+   "files_unknown_minutes": 24,
+   "failures_not_classified": 250,
+   "median_share_code_le10pct_unknown": 0.0352,
+   "final_states_share_unknown": 12,
+   "final_states_over10pct_files_unknown_minutes": [
+    625,
+    626
+   ],
    "skips_tests_in_ci": false,
    "ci_skip_tool": "none found",
    "e1": null
@@ -312,10 +358,13 @@
    "code_prs": 28,
    "dependency_prs": 2,
    "states_planned": 63,
-   "states_done": 0,
-   "states_ok": 0,
-   "states_unknown": 0,
-   "unknown_reasons": {},
+   "states_done": 63,
+   "states_ok": 8,
+   "states_unknown": 55,
+   "unknown_reasons": {
+    "UNKNOWN: INSTALL_FAILED: npm error A complete log of this run can be found in: /root/.npm/": 7,
+    "UNKNOWN: list-only command failed (exit 1 / 1)": 48
+   },
    "final_states_measured": {
     "code": 0,
     "dependency": 0
@@ -333,16 +382,26 @@
    "excluded_minutes_run": 0,
    "files_unknown_minutes": 0,
    "failures_not_classified": 0,
+   "median_share_code_le10pct_unknown": null,
+   "final_states_share_unknown": 30,
+   "final_states_over10pct_files_unknown_minutes": [],
    "skips_tests_in_ci": false,
    "ci_skip_tool": "none found",
    "e1": null
   }
  },
  "kill_line": {
-  "repos_code_median_below_30pct": [],
+  "repos_code_median_below_30pct": [
+   "agentlang",
+   "drydock"
+  ],
   "repos_with_code_median_measured": [
+   "agentlang",
+   "agentsys",
    "codex-multi-auth",
+   "drydock",
    "ironcurtain",
+   "lerna-lite",
    "yalc"
   ],
   "repos_already_skipping_in_ci": [],

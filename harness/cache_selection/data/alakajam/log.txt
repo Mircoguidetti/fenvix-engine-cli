@@ -50,3 +50,466 @@
 2026-11-23T21:06:11Z STATE PR #244 (code) state 1/5 06f0cd0d53 base 23685fb7bf
 2026-11-23T21:06:11Z   $ git checkout -q -f --detach 06f0cd0d53de6f259b1919c1e75b6b71d6d43a34 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
 2026-11-23T21:06:11Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T21:06:23Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 11.8s
+2026-11-23T21:06:24Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 0.8s
+2026-11-23T21:06:25Z   $ npx --no-install vitest list  --changed 23685fb7bf919789f59e6cb35359870b97ddfb61 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 0.8s
+2026-11-23T21:06:25Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_06_24_436Z-debug-0.log | 
+2026-11-23T21:06:25Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:06:25Z STATE PR #267 (code) state 1/1 f402e01b35 base 493abf1405
+2026-11-23T21:06:25Z   $ git checkout -q -f --detach f402e01b3561af76273198920fadc02356a7db82 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:06:25Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T21:06:37Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 12.3s
+2026-11-23T21:06:38Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 0.8s
+2026-11-23T21:06:39Z   $ npx --no-install vitest list  --changed 493abf14052d606445ec6d7996bffd7400c22dbb --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 0.8s
+2026-11-23T21:06:39Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_06_38_808Z-debug-0.log | 
+2026-11-23T21:06:39Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:06:39Z STATE PR #307 (code) state 1/4 99fc09ce3f base 7b066e35bf
+2026-11-23T21:06:39Z   $ git checkout -q -f --detach 99fc09ce3fe1363a9f8cd8ddab41340b632be82f && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:06:40Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T21:06:53Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 13.6s
+2026-11-23T21:06:54Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 0.9s
+2026-11-23T21:06:55Z   $ npx --no-install vitest list  --changed 7b066e35bf71ead2998d93a793e3861ff7a97a1d --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.0s
+2026-11-23T21:06:55Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_06_54_692Z-debug-0.log | 
+2026-11-23T21:06:55Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:06:55Z STATE PR #384 (code) state 1/2 82d1254321 base 9220b173f2
+2026-11-23T21:06:55Z   $ git checkout -q -f --detach 82d125432180b65058c89a57922ea15035bf53bb && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:06:56Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T21:07:13Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 17.2s
+2026-11-23T21:07:14Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 0.8s
+2026-11-23T21:07:15Z   $ npx --no-install vitest list  --changed 9220b173f26f7a40a7074b7d22a186941dfd3bad --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 0.9s
+2026-11-23T21:07:15Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_07_14_421Z-debug-0.log | 
+2026-11-23T21:07:15Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:07:15Z STATE PR #385 (code) state 1/5 f32aa162e4 base 74f9534248
+2026-11-23T21:07:15Z   $ git checkout -q -f --detach f32aa162e41910dbb8d06233e817f62ff301d527 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:07:15Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T21:07:37Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 1 in 21.9s
+2026-11-23T21:07:37Z   -> UNKNOWN: INSTALL_FAILED: npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_07_15_881Z-debug-0.log share=None sel=0 excl=0 failures=[]
+2026-11-23T21:07:37Z STATE PR #423 (code) state 1/1 f487bb22bd base 8db75553f2
+2026-11-23T21:07:37Z   $ git checkout -q -f --detach f487bb22bdacb1ee42b3203a30cb448493c0b1a4 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:07:37Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T21:08:23Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 45.7s
+2026-11-23T21:08:24Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.3s
+2026-11-23T21:08:26Z   $ npx --no-install vitest list  --changed 8db75553f2896e8f2c4bb5023e7cb5466dcc8798 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.4s
+2026-11-23T21:08:26Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_08_24_879Z-debug-0.log | 
+2026-11-23T21:08:26Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:08:26Z STATE PR #456 (dependency) state 1/1 a12a927a78 base e2798d6158
+2026-11-23T21:08:26Z   $ git checkout -q -f --detach a12a927a78fec3f1e62ca770247f5e4362953929 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:08:27Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.7s
+2026-11-23T21:09:09Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 41.3s
+2026-11-23T21:09:10Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.2s
+2026-11-23T21:09:11Z   $ npx --no-install vitest list  --changed e2798d61581ef3d4e27d2d4d331e67a2858873d8 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.1s
+2026-11-23T21:09:11Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_09_10_546Z-debug-0.log | 
+2026-11-23T21:09:11Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:09:11Z STATE PR #463 (code) state 1/5 38d4e2aa6c base 38ebf8d74f
+2026-11-23T21:09:11Z   $ git checkout -q -f --detach 38d4e2aa6cd9c12e55c6f5d4b117757149a463b0 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:09:13Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.4s
+2026-11-23T21:09:41Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 28.8s
+2026-11-23T21:09:42Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.1s
+2026-11-23T21:09:44Z   $ npx --no-install vitest list  --changed 38ebf8d74f85c561f5b24e604a4fd657b1087496 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.2s
+2026-11-23T21:09:44Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_09_43_004Z-debug-0.log | 
+2026-11-23T21:09:44Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:09:44Z STATE PR #473 (code) state 1/2 17d65952af base 0999bac565
+2026-11-23T21:09:44Z   $ git checkout -q -f --detach 17d65952afbda21393e182243033810ea5695f93 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:09:45Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.4s
+2026-11-23T21:10:13Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 27.6s
+2026-11-23T21:10:14Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.2s
+2026-11-23T21:10:15Z   $ npx --no-install vitest list  --changed 0999bac565571bea6b212674cd00a6e3ecb49541 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.2s
+2026-11-23T21:10:15Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_10_14_478Z-debug-0.log | 
+2026-11-23T21:10:15Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:10:15Z STATE PR #610 (code) state 1/2 c0848e2306 base d884e6842a
+2026-11-23T21:10:15Z   $ git checkout -q -f --detach c0848e2306f7503a280c34ba3ff11b1480315d27 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:10:17Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.4s
+2026-11-23T21:11:04Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 47.0s
+2026-11-23T21:11:05Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.3s
+2026-11-23T21:11:06Z   $ npx --no-install vitest list  --changed d884e6842a4290ae40fe44ad87c8eb38317dfc42 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.2s
+2026-11-23T21:11:06Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_11_05_416Z-debug-0.log | 
+2026-11-23T21:11:06Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:11:06Z STATE PR #609 (code) state 1/1 3dd934bef1 base d884e6842a
+2026-11-23T21:11:06Z   $ git checkout -q -f --detach 3dd934bef1107852523d69e1f802733cecda62cd && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:11:08Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.3s
+2026-11-23T21:11:44Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 36.0s
+2026-11-23T21:11:46Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.2s
+2026-11-23T21:11:47Z   $ npx --no-install vitest list  --changed d884e6842a4290ae40fe44ad87c8eb38317dfc42 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.3s
+2026-11-23T21:11:47Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_11_46_131Z-debug-0.log | 
+2026-11-23T21:11:47Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:11:47Z STATE PR #618 (code) state 1/1 97f8deb85f base 26e2f1f111
+2026-11-23T21:11:47Z   $ git checkout -q -f --detach 97f8deb85f565d778617dee7afe7e0e346b89740 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:11:50Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.9s
+2026-11-23T21:12:27Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 37.2s
+2026-11-23T21:12:28Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.2s
+2026-11-23T21:12:29Z   $ npx --no-install vitest list  --changed 26e2f1f111010554e95b0782eb0e806c18e64365 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.2s
+2026-11-23T21:12:29Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_12_28_770Z-debug-0.log | 
+2026-11-23T21:12:29Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:12:29Z STATE PR #621 (code) state 1/5 d41c547943 base eae93cdf7d
+2026-11-23T21:12:29Z   $ git checkout -q -f --detach d41c5479439df9aa159d8ac045949bf7f252b824 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:12:32Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.2s
+2026-11-23T21:13:25Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 53.7s
+2026-11-23T21:13:27Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.4s
+2026-11-23T21:13:28Z   $ npx --no-install vitest list  --changed eae93cdf7d1b2a577781022c7daaf8dfff69a4fa --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.3s
+2026-11-23T21:13:28Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_13_27_315Z-debug-0.log | 
+2026-11-23T21:13:28Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:13:28Z STATE PR #616 (code) state 1/5 6b081779c8 base 328aaff741
+2026-11-23T21:13:28Z   $ git checkout -q -f --detach 6b081779c8e81f7c41b13194efbd9e6d7318e747 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:13:31Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.7s
+2026-11-23T21:14:30Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 58.9s
+2026-11-23T21:14:31Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.1s
+2026-11-23T21:14:32Z   $ npx --no-install vitest list  --changed 328aaff741cff55d5338a65a01cad8112a15b681 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.3s
+2026-11-23T21:14:32Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_14_31_338Z-debug-0.log | 
+2026-11-23T21:14:32Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:14:32Z STATE PR #640 (dependency) state 1/1 7aa4119f05 base ef448d6cdd
+2026-11-23T21:14:32Z   $ git checkout -q -f --detach 7aa4119f055e1a6480575cb0a2f2f688ef163914 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:14:34Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.0s
+2026-11-23T21:15:14Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 39.6s
+2026-11-23T21:15:15Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.3s
+2026-11-23T21:15:16Z   $ npx --no-install vitest list  --changed ef448d6cdd788991f968a1d17cb470f274160d7d --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.5s
+2026-11-23T21:15:16Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_15_15_574Z-debug-0.log | 
+2026-11-23T21:15:16Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:15:16Z STATE PR #661 (code) state 1/2 4d02101c23 base 56b51c1611
+2026-11-23T21:15:17Z   $ git checkout -q -f --detach 4d02101c23e1a80b3db43c15b5ebaf28ef6e7d96 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:15:19Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.8s
+2026-11-23T21:16:05Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 45.5s
+2026-11-23T21:16:06Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.3s
+2026-11-23T21:16:07Z   $ npx --no-install vitest list  --changed 56b51c1611393bbc79bc8cd2e41e8c73de528746 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.3s
+2026-11-23T21:16:07Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_16_06_625Z-debug-0.log | 
+2026-11-23T21:16:07Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:16:07Z STATE PR #667 (code) state 1/1 f8807aad94 base 801d1244fd
+2026-11-23T21:16:07Z   $ git checkout -q -f --detach f8807aad9409cb4dbeae6fd5bcc548b3d55008f2 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:16:10Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.2s
+2026-11-23T21:16:46Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 36.6s
+2026-11-23T21:16:47Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.2s
+2026-11-23T21:16:49Z   $ npx --no-install vitest list  --changed 801d1244fdbfdada94d0d8be410a05f8f9a2cd17 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.3s
+2026-11-23T21:16:49Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_16_47_868Z-debug-0.log | 
+2026-11-23T21:16:49Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:16:49Z STATE PR #665 (code) state 1/1 90c00a5687 base 801d1244fd
+2026-11-23T21:16:49Z   $ git checkout -q -f --detach 90c00a5687dcd91fae48753f8c361c9d16e71ec7 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:16:51Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.6s
+2026-11-23T21:17:28Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 36.4s
+2026-11-23T21:17:29Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.4s
+2026-11-23T21:17:30Z   $ npx --no-install vitest list  --changed 801d1244fdbfdada94d0d8be410a05f8f9a2cd17 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.2s
+2026-11-23T21:17:30Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_17_29_522Z-debug-0.log | 
+2026-11-23T21:17:30Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:17:30Z STATE PR #662 (code) state 1/1 79d6263b6e base 801d1244fd
+2026-11-23T21:17:30Z   $ git checkout -q -f --detach 79d6263b6e1a4b03406ff2feceb740a180390654 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:17:32Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.0s
+2026-11-23T21:18:11Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 39.2s
+2026-11-23T21:18:13Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.4s
+2026-11-23T21:18:14Z   $ npx --no-install vitest list  --changed 801d1244fdbfdada94d0d8be410a05f8f9a2cd17 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.4s
+2026-11-23T21:18:14Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_18_13_303Z-debug-0.log | 
+2026-11-23T21:18:14Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:18:14Z STATE PR #670 (code) state 1/1 ab3bc92678 base 789cce81b6
+2026-11-23T21:18:14Z   $ git checkout -q -f --detach ab3bc92678d57f506fca9d5f47862541788d535f && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:18:16Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.3s
+2026-11-23T21:18:49Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 32.8s
+2026-11-23T21:18:51Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.4s
+2026-11-23T21:18:52Z   $ npx --no-install vitest list  --changed 789cce81b6df4765269b97ee0722ab6d6501c758 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.2s
+2026-11-23T21:18:52Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_18_51_211Z-debug-0.log | 
+2026-11-23T21:18:52Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:18:52Z STATE PR #673 (code) state 1/1 b272458260 base 6b0b41675a
+2026-11-23T21:18:52Z   $ git checkout -q -f --detach b272458260239cfbd329f7f8389ead1ea99bf123 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:18:54Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.1s
+2026-11-23T21:19:26Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 31.9s
+2026-11-23T21:19:27Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.2s
+2026-11-23T21:19:28Z   $ npx --no-install vitest list  --changed 6b0b41675a5c4dd68eb374bec531df308a465f4a --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.1s
+2026-11-23T21:19:28Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_19_27_590Z-debug-0.log | 
+2026-11-23T21:19:28Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:19:28Z STATE PR #675 (code) state 1/1 285cfab7cf base 05fe37d557
+2026-11-23T21:19:28Z   $ git checkout -q -f --detach 285cfab7cf54131d4da58b14eb978867e1e734f0 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:19:30Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.9s
+2026-11-23T21:20:01Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 31.3s
+2026-11-23T21:20:03Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.1s
+2026-11-23T21:20:04Z   $ npx --no-install vitest list  --changed 05fe37d55734d582a084739cd12a1d90d248a2d8 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.2s
+2026-11-23T21:20:04Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_20_03_072Z-debug-0.log | 
+2026-11-23T21:20:04Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:20:04Z STATE PR #676 (code) state 1/1 c8bef4227b base 9096849423
+2026-11-23T21:20:04Z   $ git checkout -q -f --detach c8bef4227bcd0636adac97eee9f2365f1b634b0a && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:20:06Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.9s
+2026-11-23T21:20:35Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 29.5s
+2026-11-23T21:20:36Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.2s
+2026-11-23T21:20:38Z   $ npx --no-install vitest list  --changed 9096849423e0331fcc9e90472ab84454f5e08583 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.2s
+2026-11-23T21:20:38Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_20_36_946Z-debug-0.log | 
+2026-11-23T21:20:38Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:20:38Z STATE PR #677 (code) state 1/1 9feb1bca97 base 2bce719cca
+2026-11-23T21:20:38Z   $ git checkout -q -f --detach 9feb1bca975393641340b384fee019143eba7a1d && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:20:39Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.9s
+2026-11-23T21:21:11Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 31.8s
+2026-11-23T21:21:12Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.2s
+2026-11-23T21:21:14Z   $ npx --no-install vitest list  --changed 2bce719cca6e83593f8a367c2b5f9640692983d8 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.2s
+2026-11-23T21:21:14Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_21_13_035Z-debug-0.log | 
+2026-11-23T21:21:14Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:21:14Z STATE PR #674 (code) state 1/1 5147459785 base 05fe37d557
+2026-11-23T21:21:14Z   $ git checkout -q -f --detach 514745978591f6d3425e11d34668973eb076b41c && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:21:16Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.7s
+2026-11-23T21:21:47Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 30.3s
+2026-11-23T21:21:48Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.2s
+2026-11-23T21:21:49Z   $ npx --no-install vitest list  --changed 05fe37d55734d582a084739cd12a1d90d248a2d8 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.3s
+2026-11-23T21:21:49Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_21_48_386Z-debug-0.log | 
+2026-11-23T21:21:49Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:21:49Z STATE PR #681 (code) state 1/1 f61a60ea93 base 502f0c96f5
+2026-11-23T21:21:49Z   $ git checkout -q -f --detach f61a60ea93c09640762294f1704ee61cd0393a07 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:21:51Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.3s
+2026-11-23T21:22:21Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 29.8s
+2026-11-23T21:22:23Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.3s
+2026-11-23T21:22:24Z   $ npx --no-install vitest list  --changed 502f0c96f5b6ea0d930eccad96d7896f07aa105a --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.3s
+2026-11-23T21:22:24Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_22_23_063Z-debug-0.log | 
+2026-11-23T21:22:24Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:22:24Z STATE PR #689 (code) state 1/3 06048a2700 base 9665d5d436
+2026-11-23T21:22:24Z   $ git checkout -q -f --detach 06048a27007a3e385ca1f7482d272ce580adeeff && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:22:26Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.6s
+2026-11-23T21:22:43Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 16.3s
+2026-11-23T21:22:43Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 0 in 0.5s
+2026-11-23T21:22:44Z   $ npx --no-install vitest list  --changed 9665d5d436c2868b9d6673db16b13248ca45feb2 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 0 in 0.6s
+2026-11-23T21:22:44Z   -> ok share=None sel=27 excl=0 failures=[]
+2026-11-23T21:22:44Z STATE PR #691 (code) state 1/5 74ffe9498d base 2d3d39fb94
+2026-11-23T21:22:44Z   $ git checkout -q -f --detach 74ffe9498d352e64afe9dea563b9b472364c5b91 && git clean -fdxq -e node_modules  -> exit 0 in 0.2s
+2026-11-23T21:22:45Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T21:23:01Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 15.7s
+2026-11-23T21:23:01Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 0 in 0.6s
+2026-11-23T21:23:02Z   $ npx --no-install vitest list  --changed 2d3d39fb94fef0453d694731718b96f73d681d28 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 0 in 0.6s
+2026-11-23T21:23:02Z   -> ok share=None sel=27 excl=0 failures=[]
+2026-11-23T21:23:02Z STATE PR #244 (code) state 2/5 3746d6907e base 23685fb7bf
+2026-11-23T21:23:02Z   $ git checkout -q -f --detach 3746d6907e24a4b84eaf0c369f53f9f698fab8a6 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:23:03Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T21:23:41Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 38.1s
+2026-11-23T21:23:41Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 0.7s
+2026-11-23T21:23:42Z   $ npx --no-install vitest list  --changed 23685fb7bf919789f59e6cb35359870b97ddfb61 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 0.8s
+2026-11-23T21:23:42Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_23_42_028Z-debug-0.log | 
+2026-11-23T21:23:42Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:23:42Z STATE PR #307 (code) state 2/4 0ca202a28f base 7b066e35bf
+2026-11-23T21:23:42Z   $ git checkout -q -f --detach 0ca202a28f388c1d481a55d67db832de3f40ee3a && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:23:43Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T21:24:04Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 21.0s
+2026-11-23T21:24:05Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 0.8s
+2026-11-23T21:24:05Z   $ npx --no-install vitest list  --changed 7b066e35bf71ead2998d93a793e3861ff7a97a1d --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 0.9s
+2026-11-23T21:24:05Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_24_05_090Z-debug-0.log | 
+2026-11-23T21:24:05Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:24:05Z STATE PR #384 (code) state 2/2 daa95ea4f5 base 9220b173f2
+2026-11-23T21:24:05Z   $ git checkout -q -f --detach daa95ea4f57772d23224a3209163b1c59599c45c && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:24:06Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T21:24:21Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 15.3s
+2026-11-23T21:24:22Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 0.9s
+2026-11-23T21:24:23Z   $ npx --no-install vitest list  --changed 9220b173f26f7a40a7074b7d22a186941dfd3bad --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 0.9s
+2026-11-23T21:24:23Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_24_22_728Z-debug-0.log | 
+2026-11-23T21:24:23Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:24:23Z STATE PR #385 (code) state 2/5 5fd0cf3aec base 74f9534248
+2026-11-23T21:24:23Z   $ git checkout -q -f --detach 5fd0cf3aec247def69802bd5628d0fb0188ff81b && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:24:24Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T21:24:30Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 1 in 6.3s
+2026-11-23T21:24:30Z   -> UNKNOWN: INSTALL_FAILED: npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_24_24_338Z-debug-0.log share=None sel=0 excl=0 failures=[]
+2026-11-23T21:24:30Z STATE PR #463 (code) state 2/5 7fd11da82d base 38ebf8d74f
+2026-11-23T21:24:30Z   $ git checkout -q -f --detach 7fd11da82d617c62bfe3767a1a1fae75e68f1782 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:24:30Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T21:25:08Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 38.0s
+2026-11-23T21:25:09Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.2s
+2026-11-23T21:25:11Z   $ npx --no-install vitest list  --changed 38ebf8d74f85c561f5b24e604a4fd657b1087496 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.3s
+2026-11-23T21:25:11Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_25_09_885Z-debug-0.log | 
+2026-11-23T21:25:11Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:25:11Z STATE PR #473 (code) state 2/2 d6eb74527b base 0999bac565
+2026-11-23T21:25:11Z   $ git checkout -q -f --detach d6eb74527bebc085622d92083a10b3d0e2f53c1d && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:25:12Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.3s
+2026-11-23T21:25:42Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 29.6s
+2026-11-23T21:25:43Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.4s
+2026-11-23T21:25:44Z   $ npx --no-install vitest list  --changed 0999bac565571bea6b212674cd00a6e3ecb49541 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.1s
+2026-11-23T21:25:44Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_25_43_535Z-debug-0.log | 
+2026-11-23T21:25:44Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:25:44Z STATE PR #610 (code) state 2/2 775f3478ca base d884e6842a
+2026-11-23T21:25:44Z   $ git checkout -q -f --detach 775f3478ca19dadfab99abb323d30dde2155cf65 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:25:46Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.5s
+2026-11-23T21:26:31Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 45.1s
+2026-11-23T21:26:32Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.3s
+2026-11-23T21:26:33Z   $ npx --no-install vitest list  --changed d884e6842a4290ae40fe44ad87c8eb38317dfc42 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.2s
+2026-11-23T21:26:33Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_26_32_585Z-debug-0.log | 
+2026-11-23T21:26:33Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:26:33Z STATE PR #621 (code) state 2/5 b692494dd6 base eae93cdf7d
+2026-11-23T21:26:33Z   $ git checkout -q -f --detach b692494dd693c62f8e63d95f279e5f20fd3902dc && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:26:35Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.1s
+2026-11-23T21:27:12Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 36.5s
+2026-11-23T21:27:13Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.3s
+2026-11-23T21:27:15Z   $ npx --no-install vitest list  --changed eae93cdf7d1b2a577781022c7daaf8dfff69a4fa --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.3s
+2026-11-23T21:27:15Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_27_13_840Z-debug-0.log | 
+2026-11-23T21:27:15Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:27:15Z STATE PR #616 (code) state 2/5 a942e01e57 base 328aaff741
+2026-11-23T21:27:15Z   $ git checkout -q -f --detach a942e01e57ed23dc79b70c71d887ce50e21e4ff5 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:27:17Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.0s
+2026-11-23T21:27:52Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 35.2s
+2026-11-23T21:27:53Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.1s
+2026-11-23T21:27:54Z   $ npx --no-install vitest list  --changed 328aaff741cff55d5338a65a01cad8112a15b681 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.1s
+2026-11-23T21:27:54Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_27_53_520Z-debug-0.log | 
+2026-11-23T21:27:54Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:27:54Z STATE PR #661 (code) state 2/2 10566337f1 base 56b51c1611
+2026-11-23T21:27:54Z   $ git checkout -q -f --detach 10566337f14f9802531696ff0d2f6641a542294d && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:27:56Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.1s
+2026-11-23T21:28:33Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 36.3s
+2026-11-23T21:28:34Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.2s
+2026-11-23T21:28:35Z   $ npx --no-install vitest list  --changed 56b51c1611393bbc79bc8cd2e41e8c73de528746 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.5s
+2026-11-23T21:28:35Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_28_34_311Z-debug-0.log | 
+2026-11-23T21:28:35Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:28:35Z STATE PR #689 (code) state 2/3 5667c85038 base 9665d5d436
+2026-11-23T21:28:35Z   $ git checkout -q -f --detach 5667c850385c02b430e0c394ad4dfadb23af0c8f && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:28:38Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.4s
+2026-11-23T21:28:52Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 14.7s
+2026-11-23T21:28:53Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 0 in 0.6s
+2026-11-23T21:28:54Z   $ npx --no-install vitest list  --changed 9665d5d436c2868b9d6673db16b13248ca45feb2 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 0 in 0.6s
+2026-11-23T21:28:54Z   -> ok share=None sel=27 excl=0 failures=[]
+2026-11-23T21:28:54Z STATE PR #691 (code) state 2/5 dbfc1b9b75 base 2d3d39fb94
+2026-11-23T21:28:54Z   $ git checkout -q -f --detach dbfc1b9b75813119be49c9dae27cfe1c453aec6d && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:28:55Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.0s
+2026-11-23T21:29:10Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 15.6s
+2026-11-23T21:29:11Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 0 in 0.5s
+2026-11-23T21:29:11Z   $ npx --no-install vitest list  --changed 2d3d39fb94fef0453d694731718b96f73d681d28 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 0 in 0.6s
+2026-11-23T21:29:11Z   -> ok share=None sel=28 excl=0 failures=[]
+2026-11-23T21:29:11Z STATE PR #244 (code) state 3/5 71b66365f9 base 23685fb7bf
+2026-11-23T21:29:11Z   $ git checkout -q -f --detach 71b66365f94ab0720047032513a7eade1dcdda18 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:29:12Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T21:29:58Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 46.0s
+2026-11-23T21:29:59Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 0.8s
+2026-11-23T21:30:00Z   $ npx --no-install vitest list  --changed 23685fb7bf919789f59e6cb35359870b97ddfb61 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 0.8s
+2026-11-23T21:30:00Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_29_59_741Z-debug-0.log | 
+2026-11-23T21:30:00Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:30:00Z STATE PR #307 (code) state 3/4 c5b1abad33 base 7b066e35bf
+2026-11-23T21:30:00Z   $ git checkout -q -f --detach c5b1abad332e137687a5e9ab6b5f7a79e82b0738 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:30:01Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T21:30:22Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 20.9s
+2026-11-23T21:30:22Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 0.8s
+2026-11-23T21:30:23Z   $ npx --no-install vitest list  --changed 7b066e35bf71ead2998d93a793e3861ff7a97a1d --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 0.8s
+2026-11-23T21:30:23Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_30_22_965Z-debug-0.log | 
+2026-11-23T21:30:23Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:30:23Z STATE PR #385 (code) state 3/5 5a26736c49 base 74f9534248
+2026-11-23T21:30:23Z   $ git checkout -q -f --detach 5a26736c49d201eff0c570ae93f7fe9195a52bf1 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:30:24Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.6s
+2026-11-23T21:30:31Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 1 in 7.5s
+2026-11-23T21:30:31Z   -> UNKNOWN: INSTALL_FAILED: npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_30_24_370Z-debug-0.log share=None sel=0 excl=0 failures=[]
+2026-11-23T21:30:31Z STATE PR #463 (code) state 3/5 c963cdd3af base 38ebf8d74f
+2026-11-23T21:30:31Z   $ git checkout -q -f --detach c963cdd3af0d6f345490e80bba72f629f00ab548 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:30:31Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T21:31:14Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 42.1s
+2026-11-23T21:31:15Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.1s
+2026-11-23T21:31:16Z   $ npx --no-install vitest list  --changed 38ebf8d74f85c561f5b24e604a4fd657b1087496 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.1s
+2026-11-23T21:31:16Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_31_15_185Z-debug-0.log | 
+2026-11-23T21:31:16Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:31:16Z STATE PR #621 (code) state 3/5 a861ef3be8 base eae93cdf7d
+2026-11-23T21:31:16Z   $ git checkout -q -f --detach a861ef3be87114649acaaca8d5a9264f33768c1b && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:31:17Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.4s
+2026-11-23T21:32:00Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 43.1s
+2026-11-23T21:32:02Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.2s
+2026-11-23T21:32:03Z   $ npx --no-install vitest list  --changed eae93cdf7d1b2a577781022c7daaf8dfff69a4fa --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.2s
+2026-11-23T21:32:03Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_32_02_108Z-debug-0.log | 
+2026-11-23T21:32:03Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:32:03Z STATE PR #616 (code) state 3/5 e39b0dc77b base 328aaff741
+2026-11-23T21:32:03Z   $ git checkout -q -f --detach e39b0dc77b8800fc684a5179739c0fa26a609b6a && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:32:05Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.0s
+2026-11-23T21:32:41Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 36.1s
+2026-11-23T21:32:42Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.2s
+2026-11-23T21:32:43Z   $ npx --no-install vitest list  --changed 328aaff741cff55d5338a65a01cad8112a15b681 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.2s
+2026-11-23T21:32:43Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_32_42_553Z-debug-0.log | 
+2026-11-23T21:32:43Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:32:43Z STATE PR #689 (code) state 3/3 fbf8edd169 base 9665d5d436
+2026-11-23T21:32:43Z   $ git checkout -q -f --detach fbf8edd169b09909b854bd3db3f0b17f886e5091 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:32:45Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.8s
+2026-11-23T21:33:02Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 16.9s
+2026-11-23T21:33:02Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 0 in 0.5s
+2026-11-23T21:33:03Z   $ npx --no-install vitest list  --changed 9665d5d436c2868b9d6673db16b13248ca45feb2 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 0 in 0.6s
+2026-11-23T21:33:03Z   -> ok share=None sel=27 excl=0 failures=[]
+2026-11-23T21:33:03Z STATE PR #691 (code) state 3/5 964590dadc base 2d3d39fb94
+2026-11-23T21:33:03Z   $ git checkout -q -f --detach 964590dadc51f57260249767373dbdb396cf312c && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:33:04Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.0s
+2026-11-23T21:33:21Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 16.9s
+2026-11-23T21:33:22Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 0 in 0.5s
+2026-11-23T21:33:22Z   $ npx --no-install vitest list  --changed 2d3d39fb94fef0453d694731718b96f73d681d28 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 0 in 0.6s
+2026-11-23T21:33:22Z   -> ok share=None sel=28 excl=0 failures=[]
+2026-11-23T21:33:22Z STATE PR #244 (code) state 4/5 fb6fe1fa78 base 23685fb7bf
+2026-11-23T21:33:22Z   $ git checkout -q -f --detach fb6fe1fa788423e935d345984eb021e68e8cbb9f && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:33:23Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T21:33:34Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 11.4s
+2026-11-23T21:33:35Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 0.8s
+2026-11-23T21:33:36Z   $ npx --no-install vitest list  --changed 23685fb7bf919789f59e6cb35359870b97ddfb61 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 0.7s
+2026-11-23T21:33:36Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_33_35_734Z-debug-0.log | 
+2026-11-23T21:33:36Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:33:36Z STATE PR #307 (code) state 4/4 8ccc0121cb base 7b066e35bf
+2026-11-23T21:33:36Z   $ git checkout -q -f --detach 8ccc0121cbe2f199eec757b35c33de4a08ce31b0 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:33:36Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T21:33:50Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 13.2s
+2026-11-23T21:33:50Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 0.8s
+2026-11-23T21:33:51Z   $ npx --no-install vitest list  --changed 7b066e35bf71ead2998d93a793e3861ff7a97a1d --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 0.8s
+2026-11-23T21:33:51Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_33_50_998Z-debug-0.log | 
+2026-11-23T21:33:51Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:33:51Z STATE PR #385 (code) state 4/5 1ebf2ee4cc base 74f9534248
+2026-11-23T21:33:51Z   $ git checkout -q -f --detach 1ebf2ee4ccdc5865d28eeb22fe2392002b403345 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:33:52Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T21:33:56Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 1 in 4.0s
+2026-11-23T21:33:56Z   -> UNKNOWN: INSTALL_FAILED: npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_33_52_379Z-debug-0.log share=None sel=0 excl=0 failures=[]
+2026-11-23T21:33:56Z STATE PR #463 (code) state 4/5 ce5d85ad72 base 38ebf8d74f
+2026-11-23T21:33:56Z   $ git checkout -q -f --detach ce5d85ad72cfbd5f73df2ed6284ad44ff3b66852 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:33:56Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T21:34:20Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 24.5s
+2026-11-23T21:34:22Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.2s
+2026-11-23T21:34:23Z   $ npx --no-install vitest list  --changed 38ebf8d74f85c561f5b24e604a4fd657b1087496 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.1s
+2026-11-23T21:34:23Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_34_22_216Z-debug-0.log | 
+2026-11-23T21:34:23Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:34:23Z STATE PR #621 (code) state 4/5 0f0c7b8835 base eae93cdf7d
+2026-11-23T21:34:23Z   $ git checkout -q -f --detach 0f0c7b8835568f18536c47ad5e17480a5c3dcd4d && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:34:24Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.3s
+2026-11-23T21:35:07Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 43.4s
+2026-11-23T21:35:09Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.3s
+2026-11-23T21:35:10Z   $ npx --no-install vitest list  --changed eae93cdf7d1b2a577781022c7daaf8dfff69a4fa --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.3s
+2026-11-23T21:35:10Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_35_09_273Z-debug-0.log | 
+2026-11-23T21:35:10Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:35:10Z STATE PR #616 (code) state 4/5 a496958f9c base 328aaff741
+2026-11-23T21:35:10Z   $ git checkout -q -f --detach a496958f9c593bd7ef2fa917141310a9c3d0f99a && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:35:12Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.0s
+2026-11-23T21:35:57Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 45.4s
+2026-11-23T21:35:59Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.2s
+2026-11-23T21:36:00Z   $ npx --no-install vitest list  --changed 328aaff741cff55d5338a65a01cad8112a15b681 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.2s
+2026-11-23T21:36:00Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_35_59_214Z-debug-0.log | 
+2026-11-23T21:36:00Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:36:00Z STATE PR #691 (code) state 4/5 69b9796d2e base 2d3d39fb94
+2026-11-23T21:36:00Z   $ git checkout -q -f --detach 69b9796d2ed885bbb9bc832e0942f65871508c7c && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:36:02Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.7s
+2026-11-23T21:36:18Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 16.0s
+2026-11-23T21:36:18Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 0 in 0.6s
+2026-11-23T21:36:19Z   $ npx --no-install vitest list  --changed 2d3d39fb94fef0453d694731718b96f73d681d28 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 0 in 0.6s
+2026-11-23T21:36:19Z   -> ok share=None sel=28 excl=0 failures=[]
+2026-11-23T21:36:19Z STATE PR #244 (code) state 5/5 6e7b89332f base 23685fb7bf
+2026-11-23T21:36:19Z   $ git checkout -q -f --detach 6e7b89332fb7794d037b1422b966cb9919ee6631 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:36:20Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.2s
+2026-11-23T21:36:40Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 19.8s
+2026-11-23T21:36:41Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 0.8s
+2026-11-23T21:36:42Z   $ npx --no-install vitest list  --changed 23685fb7bf919789f59e6cb35359870b97ddfb61 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 0.9s
+2026-11-23T21:36:42Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_36_41_304Z-debug-0.log | 
+2026-11-23T21:36:42Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:36:42Z STATE PR #385 (code) state 5/5 4cc409e85d base 74f9534248
+2026-11-23T21:36:42Z   $ git checkout -q -f --detach 4cc409e85d1e1e3ad1de5d85f2bb3fee8b0f7ad3 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:36:42Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T21:36:52Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 1 in 9.7s
+2026-11-23T21:36:52Z   -> UNKNOWN: INSTALL_FAILED: npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_36_42_735Z-debug-0.log share=None sel=0 excl=0 failures=[]
+2026-11-23T21:36:52Z STATE PR #463 (code) state 5/5 83741caf05 base 38ebf8d74f
+2026-11-23T21:36:52Z   $ git checkout -q -f --detach 83741caf05c448048aa605f84045d5130760f890 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:36:52Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T21:37:39Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 46.8s
+2026-11-23T21:37:40Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.1s
+2026-11-23T21:37:41Z   $ npx --no-install vitest list  --changed 38ebf8d74f85c561f5b24e604a4fd657b1087496 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.1s
+2026-11-23T21:37:41Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_37_40_416Z-debug-0.log | 
+2026-11-23T21:37:41Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:37:41Z STATE PR #621 (code) state 5/5 546171a285 base eae93cdf7d
+2026-11-23T21:37:41Z   $ git checkout -q -f --detach 546171a285f08949c374ad7ca3f197464ff10878 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:37:42Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.3s
+2026-11-23T21:38:26Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 43.8s
+2026-11-23T21:38:27Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.2s
+2026-11-23T21:38:28Z   $ npx --no-install vitest list  --changed eae93cdf7d1b2a577781022c7daaf8dfff69a4fa --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.1s
+2026-11-23T21:38:28Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_38_27_874Z-debug-0.log | 
+2026-11-23T21:38:28Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:38:28Z STATE PR #616 (code) state 5/5 7e83dd5616 base 328aaff741
+2026-11-23T21:38:28Z   $ git checkout -q -f --detach 7e83dd5616d49b5caa21a73759e4d29e0def5502 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:38:30Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.7s
+2026-11-23T21:39:03Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 32.5s
+2026-11-23T21:39:04Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 1 in 1.2s
+2026-11-23T21:39:05Z   $ npx --no-install vitest list  --changed 328aaff741cff55d5338a65a01cad8112a15b681 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 1 in 1.3s
+2026-11-23T21:39:05Z     selection stderr tail: npm error npx canceled due to missing packages and no YES option: ["vitest@5.1.1"] | npm error A complete log of this run can be found in: /root/.npm/_logs/2026-11-23T21_39_04_398Z-debug-0.log | 
+2026-11-23T21:39:05Z   -> UNKNOWN: list-only command failed (exit 1 / 1) share=None sel=0 excl=0 failures=[]
+2026-11-23T21:39:05Z STATE PR #691 (code) state 5/5 e3b28ec42c base 2d3d39fb94
+2026-11-23T21:39:05Z   $ git checkout -q -f --detach e3b28ec42c814827bc6dca9e6c54bdd84458b634 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:39:07Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.7s
+2026-11-23T21:39:22Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 15.1s
+2026-11-23T21:39:23Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/alakajam/list-all.json  -> exit 0 in 0.6s
+2026-11-23T21:39:23Z   $ npx --no-install vitest list  --changed 2d3d39fb94fef0453d694731718b96f73d681d28 --filesOnly --json=/home/user/work/tmp/alakajam/list-sel.json  -> exit 0 in 0.5s
+2026-11-23T21:39:23Z   -> ok share=None sel=28 excl=0 failures=[]
+2026-11-23T21:39:23Z DONE rounds 5

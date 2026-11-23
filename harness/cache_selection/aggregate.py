@@ -38,6 +38,11 @@ def main():
         miss_prs = {'code': set(), 'dependency': set()}
         for r in rows:
             for f in r.get('failures') or []:
+                if not (isinstance(f.get('state_fail_count'), int) and isinstance(f.get('base_fail_count'), int)):
+                    # a rerun commit could not be installed: the 3x/3x rule cannot be applied
+                    f.setdefault('orig_class', f['class'])
+                    f['class'] = 'UNKNOWN'
+                    f['unknown_reason'] = 'rerun commit not installable: ' + str(f['base_fail_count'] if not isinstance(f.get('base_fail_count'), int) else f['state_fail_count'])[:120]
                 if f.get('class') != 'SELECTION_MISS' and f.get('class') != 'ENV' and ENV_RE.search(f.get('first_failure_line') or ''):
                     f['orig_class'] = f['class']
                     f['class'] = 'ENV'
@@ -69,7 +74,13 @@ def main():
             selection_miss=dict(miss), selection_miss_prs={c: sorted(v) for c, v in miss_prs.items()},
             excluded_minutes_run=round(sum((r.get('minutes_excluded') or 0) for r in rows if r['status'] == 'ok'), 2),
             files_unknown_minutes=sum(len(r.get('files_unknown_minutes') or []) for r in rows),
-            failures_not_classified=sum(r.get('failures_not_classified') or 0 for r in rows),
+            failures_not_classified=sum((len(x) if isinstance(x, list) else (x or 0)) for x in (r.get('failures_not_classified') for r in rows)),
+            median_share_code_le10pct_unknown=(lambda xs: med(xs) if len(xs) >= 5 else None)(
+                [r['share'] for r in finals if r['class'] == 'code' and r.get('share') is not None and r.get('n_all_files')
+                 and len(r.get('files_unknown_minutes') or []) <= 0.1 * r['n_all_files']]),
+            final_states_share_unknown=sum(1 for r in finals if r.get('share') is None),
+            final_states_over10pct_files_unknown_minutes=sorted(r['pr'] for r in finals if r.get('share') is not None and r.get('n_all_files')
+                                                                and len(r.get('files_unknown_minutes') or []) > 0.1 * r['n_all_files']),
             skips_tests_in_ci=sq[key]['skips_tests_in_ci'], ci_skip_tool=sq[key]['tool'],
             e1=e1.get(key),
         )
@@ -87,11 +98,11 @@ def main():
     )
     json.dump(dict(repos=summ, kill_line=kill), open(os.path.join(HERE, 'summary.json'), 'w'), indent=1)
 
-    L = ['| repository | PRs kept (code/dep) | states done/planned | UNKNOWN states | median share all | median share code | median share dependency | SELECTION_MISS code | SELECTION_MISS dep | PREEXISTING | FLAKY | ENV |',
-         '|---|---|---|---|---|---|---|---|---|---|---|---|']
+    L = ['| repository | PRs kept (code/dep) | states done/planned | UNKNOWN states | median share all | median share code | median share dependency | SELECTION_MISS code | SELECTION_MISS dep | PREEXISTING | FLAKY | ENV | UNKNOWN |',
+         '|---|---|---|---|---|---|---|---|---|---|---|---|---|']
     for k, s in summ.items():
         if not s['states_done']:
-            L.append(f'| {k} | {s["prs_kept"]} ({s["code_prs"]}/{s["dependency_prs"]}) | 0/{s["states_planned"]} | – | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | – | – | – |')
+            L.append(f'| {k} | {s["prs_kept"]} ({s["code_prs"]}/{s["dependency_prs"]}) | 0/{s["states_planned"]} | – | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | – | – | – | – |')
             continue
         fc = s['failure_classes']
         L.append(f'| {k} | {s["prs_kept"]} ({s["code_prs"]}/{s["dependency_prs"]}) | {s["states_done"]}/{s["states_planned"]} | {s["states_unknown"]} '
@@ -99,7 +110,7 @@ def main():
                  f'| {pct(s["median_share_code"])} (n={s["final_states_measured"]["code"]}) '
                  f'| {pct(s["median_share_dependency"])} (n={s["final_states_measured"]["dependency"]}) '
                  f'| {s["selection_miss"].get("code", 0)} | {s["selection_miss"].get("dependency", 0)} '
-                 f'| {fc.get("PREEXISTING", 0)} | {fc.get("FLAKY", 0)} | {fc.get("ENV", 0)} |')
+                 f'| {fc.get("PREEXISTING", 0)} | {fc.get("FLAKY", 0)} | {fc.get("ENV", 0)} | {fc.get("UNKNOWN", 0)} |')
     open(os.path.join(HERE, 'tables.md'), 'w').write('\n'.join(L) + '\n\n' + json.dumps(kill, indent=1) + '\n')
     print('\n'.join(L))
     print(json.dumps(kill, indent=1))
