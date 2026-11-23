@@ -1,0 +1,138 @@
+{
+ "repo": "yalc",
+ "pr_index": 10,
+ "pr": 13,
+ "commit": "c5c9063b066d19d1c00a6cfd7bb58a0d373ce1c8",
+ "install": "fresh install, all node_modules removed first (2s)",
+ "cmd": "npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/yalc/full-10.json",
+ "cwd": "/home/user/work/repos/yalc/",
+ "exit": 0,
+ "wall_s": 16.3,
+ "status": "ok",
+ "outcome_counts": {
+  "passed": 411
+ },
+ "files": {
+  "src/__tests__/error-boundary.test.ts": {
+   "ms": 11.112060546875,
+   "status": "passed"
+  },
+  "src/__tests__/onboarding-modes.test.ts": {
+   "ms": 474.03173828125,
+   "status": "passed"
+  },
+  "src/__tests__/outbound-rules.test.ts": {
+   "ms": 10.169189453125,
+   "status": "passed"
+  },
+  "src/__tests__/providers.test.ts": {
+   "ms": 20.174072265625,
+   "status": "passed"
+  },
+  "src/__tests__/qualification.test.ts": {
+   "ms": 6.2900390625,
+   "status": "passed"
+  },
+  "src/lib/campaign/__tests__/blocklist.test.ts": {
+   "ms": 38.767578125,
+   "status": "passed"
+  },
+  "src/lib/campaign/__tests__/schedule.test.ts": {
+   "ms": 31.42822265625,
+   "status": "passed"
+  },
+  "src/lib/campaign/__tests__/significance.test.ts": {
+   "ms": 3.162109375,
+   "status": "passed"
+  },
+  "src/lib/campaign/__tests__/tenant-isolation.test.ts": {
+   "ms": 125.61083984375,
+   "status": "passed"
+  },
+  "src/lib/context/__tests__/onboarding.test.ts": {
+   "ms": 46.042724609375,
+   "status": "passed"
+  },
+  "src/lib/crm/__tests__/crm-adapter.test.ts": {
+   "ms": 153.806396484375,
+   "status": "passed"
+  },
+  "src/lib/dedup/__tests__/engine.test.ts": {
+   "ms": 9.39404296875,
+   "status": "passed"
+  },
+  "src/lib/env/__tests__/claude-code.test.ts": {
+   "ms": 4.353759765625,
+   "status": "passed"
+  },
+  "src/lib/export/__tests__/export.test.ts": {
+   "ms": 4050.139404296875,
+   "status": "passed"
+  },
+  "src/lib/intelligence/__tests__/confidence.test.ts": {
+   "ms": 4.136962890625,
+   "status": "passed"
+  },
+  "src/lib/intelligence/__tests__/tenant-isolation.test.ts": {
+   "ms": 34.470458984375,
+   "status": "passed"
+  },
+  "src/lib/memory/__tests__/chunker.test.ts": {
+   "ms": 16.3984375,
+   "status": "passed"
+  },
+  "src/lib/memory/__tests__/dream.test.ts": {
+   "ms": 47.595703125,
+   "status": "passed"
+  },
+  "src/lib/memory/__tests__/embeddings.test.ts": {
+   "ms": 10.130859375,
+   "status": "passed"
+  },
+  "src/lib/memory/__tests__/graph.test.ts": {
+   "ms": 35.3369140625,
+   "status": "passed"
+  },
+  "src/lib/memory/__tests__/retrieve.test.ts": {
+   "ms": 23.535888671875,
+   "status": "passed"
+  },
+  "src/lib/memory/__tests__/store.test.ts": {
+   "ms": 37.594970703125,
+   "status": "passed"
+  },
+  "src/lib/orchestrator/__tests__/chain.test.ts": {
+   "ms": 927.10986328125,
+   "status": "passed"
+  },
+  "src/lib/outbound/__tests__/validator.test.ts": {
+   "ms": 8.302001953125,
+   "status": "passed"
+  },
+  "src/lib/providers/__tests__/mcp-loader.test.ts": {
+   "ms": 7.331787109375,
+   "status": "passed"
+  },
+  "src/lib/providers/builtin/__tests__/crustdata-provider.test.ts": {
+   "ms": 10.74267578125,
+   "status": "passed"
+  },
+  "src/lib/scraping/__tests__/research-agent.test.ts": {
+   "ms": 15.615478515625,
+   "status": "passed"
+  },
+  "src/lib/signals/__tests__/engine.test.ts": {
+   "ms": 63.600830078125,
+   "status": "passed"
+  },
+  "src/lib/skills/__tests__/markdown-loader.test.ts": {
+   "ms": 15.4609375,
+   "status": "passed"
+  },
+  "src/lib/tenant/__tests__/resolver.test.ts": {
+   "ms": 8.66552734375,
+   "status": "passed"
+  }
+ },
+ "failed_tests": []
+}

@@ -1,0 +1,22 @@
+2026-11-23T16:12:09Z FULL RUN pr-index 0 PR #2 base c418d874ccae482986a850559f8cc07b296547a9
+2026-11-23T16:12:09Z   $ git checkout -q -f --detach c418d874ccae482986a850559f8cc07b296547a9 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T16:12:09Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T16:12:15Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 6.3s
+2026-11-23T16:12:22Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/yalc/full-00.json  -> exit 1 in 6.4s
+2026-11-23T16:12:22Z   full run 0: ok exit 1 6.4s {'passed': 71, 'failed': 29}
+2026-11-23T16:12:22Z FULL RUN pr-index 5 PR #9 base 72ce612f588cdebb0113319c28a7a537e27962ae
+2026-11-23T16:12:22Z   $ git checkout -q -f --detach 72ce612f588cdebb0113319c28a7a537e27962ae && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:12:22Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T16:12:24Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 2.1s
+2026-11-23T16:12:38Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/yalc/full-05.json  -> exit 1 in 14.4s
+2026-11-23T16:12:38Z   full run 5: ok exit 1 14.4s {'passed': 357, 'failed': 27}
+2026-11-23T16:12:38Z FULL RUN pr-index 10 PR #13 base c5c9063b066d19d1c00a6cfd7bb58a0d373ce1c8
+2026-11-23T16:12:38Z   $ git checkout -q -f --detach c5c9063b066d19d1c00a6cfd7bb58a0d373ce1c8 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:12:39Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.3s
+2026-11-23T16:12:40Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 1.7s
+2026-11-23T16:12:57Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/yalc/full-10.json  -> exit 0 in 16.3s
+2026-11-23T16:12:57Z   full run 10: ok exit 0 16.3s {'passed': 411}
+2026-11-23T16:12:57Z FULL RUN pr-index 15 PR #20 base 9a04f2bc3a4f58ac3133443134b82d699c70fbee
+2026-11-23T16:12:57Z   $ git checkout -q -f --detach 9a04f2bc3a4f58ac3133443134b82d699c70fbee && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T16:12:57Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.3s
+2026-11-23T16:13:03Z   $ npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi  -> exit 0 in 5.7s

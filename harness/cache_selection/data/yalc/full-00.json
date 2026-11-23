@@ -1,0 +1,109 @@
+{
+ "repo": "yalc",
+ "pr_index": 0,
+ "pr": 2,
+ "commit": "c418d874ccae482986a850559f8cc07b296547a9",
+ "install": "fresh install, all node_modules removed first (6s)",
+ "cmd": "npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/yalc/full-00.json",
+ "cwd": "/home/user/work/repos/yalc/",
+ "exit": 1,
+ "wall_s": 6.4,
+ "status": "ok",
+ "outcome_counts": {
+  "passed": 71,
+  "failed": 29
+ },
+ "files": {
+  "src/lib/campaign/__tests__/blocklist.test.ts": {
+   "ms": 7.957763671875,
+   "status": "failed"
+  },
+  "src/lib/campaign/__tests__/schedule.test.ts": {
+   "ms": 19.21826171875,
+   "status": "passed"
+  },
+  "src/lib/campaign/__tests__/significance.test.ts": {
+   "ms": 2.12451171875,
+   "status": "passed"
+  },
+  "src/lib/campaign/__tests__/tenant-isolation.test.ts": {
+   "ms": 11.2099609375,
+   "status": "failed"
+  },
+  "src/lib/intelligence/__tests__/confidence.test.ts": {
+   "ms": 6.51171875,
+   "status": "passed"
+  },
+  "src/lib/intelligence/__tests__/tenant-isolation.test.ts": {
+   "ms": 44.30419921875,
+   "status": "failed"
+  },
+  "src/lib/memory/__tests__/chunker.test.ts": {
+   "ms": 16.32080078125,
+   "status": "passed"
+  },
+  "src/lib/memory/__tests__/dream.test.ts": {
+   "ms": 9.011474609375,
+   "status": "failed"
+  },
+  "src/lib/memory/__tests__/embeddings.test.ts": {
+   "ms": 7.219970703125,
+   "status": "passed"
+  },
+  "src/lib/memory/__tests__/graph.test.ts": {
+   "ms": 5.990966796875,
+   "status": "failed"
+  },
+  "src/lib/memory/__tests__/retrieve.test.ts": {
+   "ms": 7.246337890625,
+   "status": "failed"
+  },
+  "src/lib/memory/__tests__/store.test.ts": {
+   "ms": 9.825439453125,
+   "status": "failed"
+  },
+  "src/lib/outbound/__tests__/validator.test.ts": {
+   "ms": 7.2431640625,
+   "status": "passed"
+  },
+  "src/lib/providers/builtin/__tests__/crustdata-provider.test.ts": {
+   "ms": 12.69873046875,
+   "status": "passed"
+  },
+  "src/lib/tenant/__tests__/resolver.test.ts": {
+   "ms": 7.73046875,
+   "status": "passed"
+  }
+ },
+ "failed_tests": [
+  "src/lib/campaign/__tests__/blocklist.test.ts > campaign blocklist \u2014 hasReplied blocks a subsequent send when the prospect already has a LinkedIn reply",
+  "src/lib/campaign/__tests__/blocklist.test.ts > campaign blocklist \u2014 hasReplied blocks a subsequent send when the prospect already has an email reply",
+  "src/lib/campaign/__tests__/blocklist.test.ts > campaign blocklist \u2014 hasReplied blocks when the prospect is on the permanent lead_blocklist",
+  "src/lib/campaign/__tests__/blocklist.test.ts > campaign blocklist \u2014 hasReplied does NOT block a fresh prospect with no reply history",
+  "src/lib/campaign/__tests__/blocklist.test.ts > campaign blocklist \u2014 hasReplied does not see cross-tenant reply history",
+  "src/lib/campaign/__tests__/tenant-isolation.test.ts > Campaign module tenant isolation CampaignManager.get() returns null for a foreign-tenant campaign id",
+  "src/lib/campaign/__tests__/tenant-isolation.test.ts > Campaign module tenant isolation CampaignManager.list() only returns the caller tenant",
+  "src/lib/campaign/__tests__/tenant-isolation.test.ts > Campaign module tenant isolation CampaignManager.pause() on a foreign-tenant campaign is a no-op",
+  "src/lib/campaign/__tests__/tenant-isolation.test.ts > Campaign module tenant isolation runTracker({ tenantId: A, dryRun: true }) never advances tenant B leads",
+  "src/lib/campaign/__tests__/tenant-isolation.test.ts > Campaign module tenant isolation tenant-scoped update cannot reach a foreign tenant row by id",
+  "src/lib/intelligence/__tests__/tenant-isolation.test.ts > A5 regression \u2014 campaign tables stay tenant-scoped a campaignLeads row seeded with tenant B is invisible from a tenant-scoped select",
+  "src/lib/intelligence/__tests__/tenant-isolation.test.ts > A5 regression \u2014 campaign tables stay tenant-scoped a campaigns row seeded with tenant B is invisible via CampaignManager(tenantA).list()",
+  "src/lib/intelligence/__tests__/tenant-isolation.test.ts > IntelligenceStore tenant isolation reads and writes are partitioned by tenantId",
+  "src/lib/intelligence/__tests__/tenant-isolation.test.ts > IntelligenceStore tenant isolation supersede/expire/updateConfidence cannot reach another tenant",
+  "src/lib/memory/__tests__/dream.test.ts > dream pass \u2014 offline mode flags nodes linked by a contradicts edge",
+  "src/lib/memory/__tests__/dream.test.ts > dream pass \u2014 offline mode is idempotent \u2014 running twice does no additional work",
+  "src/lib/memory/__tests__/dream.test.ts > dream pass \u2014 offline mode promotes hypothesis nodes that meet the access threshold",
+  "src/lib/memory/__tests__/dream.test.ts > dream pass \u2014 offline mode runs cleanly with an empty tenant",
+  "src/lib/memory/__tests__/graph.test.ts > graph walker BFS visits nodes reachable within depth",
+  "src/lib/memory/__tests__/graph.test.ts > graph walker getCanonicalHead walks supersedes chain",
+  "src/lib/memory/__tests__/graph.test.ts > graph walker relation filter narrows the walk",
+  "src/lib/memory/__tests__/retrieve.test.ts > retrieve \u2014 integration (keyword-only) returns empty when no candidates match the query at all",
+  "src/lib/memory/__tests__/retrieve.test.ts > retrieve \u2014 integration (keyword-only) returns relevant nodes and bumps access counters",
+  "src/lib/memory/__tests__/store.test.ts > MemoryStore edges are scoped to tenant and filterable by relation",
+  "src/lib/memory/__tests__/store.test.ts > MemoryStore entity upsert resolves by alias and merges names",
+  "src/lib/memory/__tests__/store.test.ts > MemoryStore replaceIndex writes and reads back",
+  "src/lib/memory/__tests__/store.test.ts > MemoryStore tenants cannot see each others nodes",
+  "src/lib/memory/__tests__/store.test.ts > MemoryStore throws on missing tenantId",
+  "src/lib/memory/__tests__/store.test.ts > MemoryStore upsertNodeBySourceHash is idempotent on the same hash"
+ ]
+}

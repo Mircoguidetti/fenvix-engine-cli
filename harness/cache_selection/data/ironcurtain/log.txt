@@ -1494,3 +1494,428 @@
 2026-11-23T15:22:17Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 20.5s
 2026-11-23T15:22:18Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/ironcurtain/list-all.json  -> exit 0 in 0.5s
 2026-11-23T15:22:24Z   $ npx --no-install vitest list  --changed 060a6078ce2eb96ea5c943003afbf9f1653443e8 --filesOnly --json=/home/user/work/tmp/ironcurtain/list-sel.json  -> exit 0 in 6.4s
+2026-11-23T15:24:16Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/excl-542-529da49a.json test/apple-container-manager.test.ts test/approval-whitelist.test.ts test/argument-roles.test.ts test/argument-validation.integration.test.ts test/audit-log-errors.test.ts test/audit-log-tailer.test.ts test/audit-redactor.test.ts test/auth/auth-command.test.ts test/auth/google-scopes.te  -> exit 1 in 112.1s
+2026-11-23T15:24:18Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:24:19Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:24:20Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:24:20Z   $ git checkout -q -f --detach 060a6078ce2eb96ea5c943003afbf9f1653443e8 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T15:24:26Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 5.3s
+2026-11-23T15:24:42Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 16.1s
+2026-11-23T15:24:43Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:24:44Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:24:45Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:24:45Z   -> ok share=0.4608 sel=162 excl=229 failures=[('test/domain-utils.test.ts > resolveDefaultGitRemote returns the origin SSH URL v', 'PREEXISTING')]
+2026-11-23T15:24:45Z STATE PR #550 (code) state 2/2 0a6c3af313 base 0e9a75497a
+2026-11-23T15:24:45Z   $ git checkout -q -f --detach 0a6c3af3137470b4f0ad1402f59492d5a2143a67 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T15:24:46Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T15:25:07Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 20.9s
+2026-11-23T15:25:08Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/ironcurtain/list-all.json  -> exit 0 in 0.6s
+2026-11-23T15:25:14Z   $ npx --no-install vitest list  --changed 0e9a75497a19274b11609d746d159715ca27885b --filesOnly --json=/home/user/work/tmp/ironcurtain/list-sel.json  -> exit 0 in 6.2s
+2026-11-23T15:28:22Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/excl-550-0a6c3af3.json src/web-ui/__tests__/config-dispatch.test.ts test/agent-model-guard.test.ts test/apple-container-manager.test.ts test/approval-whitelist.test.ts test/argument-roles.test.ts test/argument-validation.integration.test.ts test/audit-log-errors.test.ts test/audit-log-tailer.test.ts test/audi  -> exit 1 in 188.1s
+2026-11-23T15:28:23Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:28:24Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:28:25Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:28:26Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/help-integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:28:27Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/help-integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:28:28Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/help-integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:28:29Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:28:30Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:28:31Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:28:33Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:28:34Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:28:35Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:28:36Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/mux-input-handler.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:28:38Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/mux-input-handler.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:28:39Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/mux-input-handler.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:28:40Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:28:41Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:28:42Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:28:42Z   $ git checkout -q -f --detach 0e9a75497a19274b11609d746d159715ca27885b && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T15:28:47Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 5.4s
+2026-11-23T15:29:07Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 19.6s
+2026-11-23T15:29:08Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:29:09Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:29:10Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:29:11Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/help-integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:29:12Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/help-integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:29:13Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/help-integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:29:15Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:29:16Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:29:17Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:29:18Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:29:19Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:29:20Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:29:22Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/mux-input-handler.test.ts  -> exit 1 in 1.4s
+2026-11-23T15:29:23Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/mux-input-handler.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:29:24Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/mux-input-handler.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:29:26Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:29:27Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:29:28Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:29:28Z   -> ok share=0.8147 sel=84 excl=307 failures=[('test/docker-code-mode.integration.test.ts > <file>', 'PREEXISTING'), ('test/help-integration.test.ts > <file>', 'PREEXISTING'), ('test/sandbox-tool-errors.integration.test.ts > <file>', 'PREEXISTING'), ('test/domain-utils.test.ts > resolveDefaultGitRemote returns the origin SSH URL v', 'PREEXISTING'), ('test/mux-input-handler.test.ts > MuxInputHandler handlePaste returns none in pic', 'PREEXISTING'), ('test/sandbox.test.ts > <file>', 'PREEXISTING')]
+2026-11-23T15:29:28Z STATE PR #551 (code) state 2/4 dbc18379a3 base 218290c305
+2026-11-23T15:29:28Z   $ git checkout -q -f --detach dbc18379a3b1e29e69b06f9167b9feab73e7da4f && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T15:29:30Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 2.1s
+2026-11-23T15:29:49Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 19.6s
+2026-11-23T15:29:50Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/ironcurtain/list-all.json  -> exit 0 in 0.5s
+2026-11-23T15:29:56Z   $ npx --no-install vitest list  --changed 218290c3056cf129ea93aa388e9324a989c9f2df --filesOnly --json=/home/user/work/tmp/ironcurtain/list-sel.json  -> exit 0 in 6.4s
+2026-11-23T15:32:34Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/excl-551-dbc18379.json src/web-ui/__tests__/config-dispatch.test.ts test/agent-model-guard.test.ts test/apple-container-manager.test.ts test/approval-whitelist.test.ts test/argument-roles.test.ts test/argument-validation.integration.test.ts test/audit-log-errors.test.ts test/audit-log-tailer.test.ts test/audi  -> exit 1 in 157.6s
+2026-11-23T15:32:35Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:32:36Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:32:37Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:32:38Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/help-integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:32:39Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/help-integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T15:32:40Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/help-integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:32:41Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:32:42Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:32:43Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T15:32:44Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:32:46Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.4s
+2026-11-23T15:32:47Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:32:48Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/mux-input-handler.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:32:49Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/mux-input-handler.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:32:50Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/mux-input-handler.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:32:51Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:32:52Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox.test.ts  -> exit 1 in 0.9s
+2026-11-23T15:32:53Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:32:53Z   $ git checkout -q -f --detach 218290c3056cf129ea93aa388e9324a989c9f2df && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T15:32:58Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 4.8s
+2026-11-23T15:33:13Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 14.4s
+2026-11-23T15:33:14Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:33:15Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:33:16Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:33:17Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/help-integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:33:18Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/help-integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:33:19Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/help-integration.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:33:20Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:33:21Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:33:22Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:33:23Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:33:25Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:33:26Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:33:27Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/mux-input-handler.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:33:28Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/mux-input-handler.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:33:30Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/mux-input-handler.test.ts  -> exit 1 in 1.4s
+2026-11-23T15:33:31Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:33:32Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:33:33Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:33:33Z   -> ok share=0.6459 sel=123 excl=274 failures=[('test/docker-code-mode.integration.test.ts > <file>', 'PREEXISTING'), ('test/help-integration.test.ts > <file>', 'PREEXISTING'), ('test/sandbox-tool-errors.integration.test.ts > <file>', 'PREEXISTING'), ('test/domain-utils.test.ts > resolveDefaultGitRemote returns the origin SSH URL v', 'PREEXISTING'), ('test/mux-input-handler.test.ts > MuxInputHandler handlePaste returns none in pic', 'PREEXISTING'), ('test/sandbox.test.ts > <file>', 'PREEXISTING')]
+2026-11-23T15:33:33Z STATE PR #494 (code) state 3/5 1759be1e5b base 8f9c75a720
+2026-11-23T15:33:33Z   $ git checkout -q -f --detach 1759be1e5bff346ebe7de8b9ea20b7af304d2a42 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T15:33:34Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.2s
+2026-11-23T15:33:56Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 22.0s
+2026-11-23T15:33:57Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/ironcurtain/list-all.json  -> exit 0 in 0.6s
+2026-11-23T15:34:03Z   $ npx --no-install vitest list  --changed 8f9c75a720337271caf1e18c199fcca2d299ad27 --filesOnly --json=/home/user/work/tmp/ironcurtain/list-sel.json  -> exit 0 in 6.7s
+2026-11-23T15:35:52Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/excl-494-1759be1e.json test/apple-container-manager.test.ts test/approval-whitelist.test.ts test/argument-roles.test.ts test/audit-log-errors.test.ts test/audit-log-tailer.test.ts test/audit-redactor.test.ts test/auth/auth-command.test.ts test/auth/google-scopes.test.ts test/auth/oauth-flow.test.ts test/auth/  -> exit 1 in 108.8s
+2026-11-23T15:35:54Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:35:55Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:35:56Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:35:56Z   $ git checkout -q -f --detach 8f9c75a720337271caf1e18c199fcca2d299ad27 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T15:36:01Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 4.8s
+2026-11-23T15:36:19Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 18.5s
+2026-11-23T15:36:21Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:36:22Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:36:23Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:36:23Z   -> ok share=0.4796 sel=163 excl=223 failures=[('test/domain-utils.test.ts > resolveDefaultGitRemote returns the origin SSH URL v', 'PREEXISTING')]
+2026-11-23T15:36:23Z STATE PR #528 (code) state 3/4 a40f3d1b6d base a2b2ae8fad
+2026-11-23T15:36:23Z   $ git checkout -q -f --detach a40f3d1b6dd9f860ac501b0cf2a4e7db4cdadc91 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T15:36:24Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T15:36:45Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 20.6s
+2026-11-23T15:36:45Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/ironcurtain/list-all.json  -> exit 0 in 0.5s
+2026-11-23T15:36:51Z   $ npx --no-install vitest list  --changed a2b2ae8fad9247ae24cdb302919b40bed61fbad9 --filesOnly --json=/home/user/work/tmp/ironcurtain/list-sel.json  -> exit 0 in 6.1s
+2026-11-23T15:38:30Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/excl-528-a40f3d1b.json test/apple-container-manager.test.ts test/approval-whitelist.test.ts test/argument-roles.test.ts test/audit-log-errors.test.ts test/audit-log-tailer.test.ts test/audit-redactor.test.ts test/auth/auth-command.test.ts test/auth/google-scopes.test.ts test/auth/oauth-flow.test.ts test/auth/  -> exit 1 in 98.4s
+2026-11-23T15:38:31Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:38:33Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.4s
+2026-11-23T15:38:34Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.4s
+2026-11-23T15:38:34Z   $ git checkout -q -f --detach a2b2ae8fad9247ae24cdb302919b40bed61fbad9 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T15:38:39Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 5.5s
+2026-11-23T15:39:00Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 20.7s
+2026-11-23T15:39:02Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.4s
+2026-11-23T15:39:03Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:39:04Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:39:04Z   -> ok share=0.4183 sel=155 excl=226 failures=[('test/domain-utils.test.ts > resolveDefaultGitRemote returns the origin SSH URL v', 'PREEXISTING')]
+2026-11-23T15:39:04Z STATE PR #531 (code) state 3/4 cf2ae937d1 base 0b3e75aa1f
+2026-11-23T15:39:04Z   $ git checkout -q -f --detach cf2ae937d1a9add93dd98b76210c2d872a8ca25a && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T15:39:05Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T15:39:25Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 20.3s
+2026-11-23T15:39:26Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/ironcurtain/list-all.json  -> exit 0 in 0.6s
+2026-11-23T15:39:33Z   $ npx --no-install vitest list  --changed 0b3e75aa1f3f6c8c1aea0d69ee97be79e0950df6 --filesOnly --json=/home/user/work/tmp/ironcurtain/list-sel.json  -> exit 0 in 6.5s
+2026-11-23T15:42:13Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/excl-531-cf2ae937.json src/web-ui/__tests__/config-dispatch.test.ts test/agent-model-guard.test.ts test/apple-container-manager.test.ts test/approval-whitelist.test.ts test/argument-roles.test.ts test/audit-log-errors.test.ts test/audit-log-tailer.test.ts test/audit-redactor.test.ts test/auth/auth-command.tes  -> exit 1 in 160.0s
+2026-11-23T15:42:14Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:42:15Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:42:16Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:42:18Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/model-provider.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:42:19Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/model-provider.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:42:20Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/model-provider.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:42:20Z   $ git checkout -q -f --detach 0b3e75aa1f3f6c8c1aea0d69ee97be79e0950df6 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T15:42:26Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 5.8s
+2026-11-23T15:42:42Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 16.3s
+2026-11-23T15:42:44Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:42:45Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:42:46Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:42:47Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/model-provider.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:42:49Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/model-provider.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:42:50Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/model-provider.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:42:50Z   -> ok share=0.6913 sel=117 excl=272 failures=[('test/domain-utils.test.ts > resolveDefaultGitRemote returns the origin SSH URL v', 'PREEXISTING'), ('test/model-provider.test.ts > createLanguageModel passes undefined baseURL when ', 'PREEXISTING')]
+2026-11-23T15:42:50Z STATE PR #532 (code) state 3/4 91e811bd0f base 478e78867b
+2026-11-23T15:42:50Z   $ git checkout -q -f --detach 91e811bd0f7a7ed79c600acae37659e362c83a17 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T15:42:51Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.3s
+2026-11-23T15:43:11Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 19.8s
+2026-11-23T15:43:11Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/ironcurtain/list-all.json  -> exit 0 in 0.6s
+2026-11-23T15:43:18Z   $ npx --no-install vitest list  --changed 478e78867b9cb4c6daa92627001bbdb56534a293 --filesOnly --json=/home/user/work/tmp/ironcurtain/list-sel.json  -> exit 0 in 6.1s
+2026-11-23T15:46:00Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/excl-532-91e811bd.json test/agent-model-guard.test.ts test/apple-container-manager.test.ts test/approval-whitelist.test.ts test/argument-roles.test.ts test/argument-validation.integration.test.ts test/audit-log-errors.test.ts test/audit-log-tailer.test.ts test/audit-redactor.test.ts test/auth/auth-command.tes  -> exit 1 in 162.0s
+2026-11-23T15:46:01Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:46:02Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:46:03Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:46:04Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/help-integration.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:46:05Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/help-integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:46:06Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/help-integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:46:07Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T15:46:08Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:46:09Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:46:10Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.4s
+2026-11-23T15:46:12Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:46:13Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:46:14Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:46:15Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox.test.ts  -> exit 1 in 0.9s
+2026-11-23T15:46:16Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:46:16Z   $ git checkout -q -f --detach 478e78867b9cb4c6daa92627001bbdb56534a293 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T15:46:21Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 5.2s
+2026-11-23T15:46:40Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 18.9s
+2026-11-23T15:46:41Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:46:42Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:46:43Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:46:44Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/help-integration.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:46:45Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/help-integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:46:46Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/help-integration.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:46:47Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T15:46:48Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:46:49Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:46:50Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:46:52Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:46:53Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:46:54Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:46:55Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:46:56Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:46:56Z   -> ok share=0.709 sel=107 excl=282 failures=[('test/docker-code-mode.integration.test.ts > <file>', 'PREEXISTING'), ('test/help-integration.test.ts > <file>', 'PREEXISTING'), ('test/sandbox-tool-errors.integration.test.ts > <file>', 'PREEXISTING'), ('test/domain-utils.test.ts > resolveDefaultGitRemote returns the origin SSH URL v', 'PREEXISTING'), ('test/sandbox.test.ts > <file>', 'PREEXISTING')]
+2026-11-23T15:46:56Z STATE PR #551 (code) state 3/4 b995054475 base 218290c305
+2026-11-23T15:46:56Z   $ git checkout -q -f --detach b995054475003c6867838409aece1e7db96a6479 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T15:46:57Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.0s
+2026-11-23T15:47:16Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 19.4s
+2026-11-23T15:47:17Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/ironcurtain/list-all.json  -> exit 0 in 0.6s
+2026-11-23T15:47:23Z   $ npx --no-install vitest list  --changed 218290c3056cf129ea93aa388e9324a989c9f2df --filesOnly --json=/home/user/work/tmp/ironcurtain/list-sel.json  -> exit 0 in 6.0s
+2026-11-23T15:50:02Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/excl-551-b9950544.json src/web-ui/__tests__/config-dispatch.test.ts test/agent-model-guard.test.ts test/apple-container-manager.test.ts test/approval-whitelist.test.ts test/argument-roles.test.ts test/argument-validation.integration.test.ts test/audit-log-errors.test.ts test/audit-log-tailer.test.ts test/audi  -> exit 1 in 158.8s
+2026-11-23T15:50:03Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/docker-code-mode.integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T15:50:04Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:50:05Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:50:05Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/help-integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T15:50:06Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/help-integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T15:50:07Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/help-integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T15:50:08Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T15:50:09Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T15:50:10Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T15:50:11Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:50:12Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:50:14Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:50:15Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/mux-input-handler.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:50:16Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/mux-input-handler.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:50:17Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/mux-input-handler.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:50:18Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox.test.ts  -> exit 1 in 0.9s
+2026-11-23T15:50:19Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:50:20Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:50:20Z   $ git checkout -q -f --detach 218290c3056cf129ea93aa388e9324a989c9f2df && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T15:50:25Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 4.5s
+2026-11-23T15:50:39Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 14.2s
+2026-11-23T15:50:40Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:50:41Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:50:42Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/docker-code-mode.integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T15:50:43Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/help-integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T15:50:43Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/help-integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T15:50:44Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/help-integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T15:50:45Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:50:46Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:50:47Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T15:50:49Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:50:50Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:50:51Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:50:52Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/mux-input-handler.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:50:53Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/mux-input-handler.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:50:55Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/mux-input-handler.test.ts  -> exit 1 in 1.3s
+2026-11-23T15:50:56Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox.test.ts  -> exit 1 in 0.9s
+2026-11-23T15:50:56Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T15:50:57Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox.test.ts  -> exit 1 in 0.9s
+2026-11-23T15:50:57Z   -> ok share=0.6664 sel=96 excl=297 failures=[('test/docker-code-mode.integration.test.ts > <file>', 'PREEXISTING'), ('test/help-integration.test.ts > <file>', 'PREEXISTING'), ('test/sandbox-tool-errors.integration.test.ts > <file>', 'PREEXISTING'), ('test/domain-utils.test.ts > resolveDefaultGitRemote returns the origin SSH URL v', 'PREEXISTING'), ('test/mux-input-handler.test.ts > MuxInputHandler handlePaste returns none in pic', 'PREEXISTING'), ('test/sandbox.test.ts > <file>', 'PREEXISTING')]
+2026-11-23T15:50:57Z STATE PR #494 (code) state 4/5 08fbdca84c base 8f9c75a720
+2026-11-23T15:50:57Z   $ git checkout -q -f --detach 08fbdca84cd1dce615a651f4794d605e6e8cf62a && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T15:50:58Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T15:51:18Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 19.3s
+2026-11-23T15:51:18Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/ironcurtain/list-all.json  -> exit 0 in 0.5s
+2026-11-23T15:51:24Z   $ npx --no-install vitest list  --changed 8f9c75a720337271caf1e18c199fcca2d299ad27 --filesOnly --json=/home/user/work/tmp/ironcurtain/list-sel.json  -> exit 0 in 6.0s
+2026-11-23T15:53:36Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/excl-494-08fbdca8.json test/apple-container-manager.test.ts test/approval-whitelist.test.ts test/argument-roles.test.ts test/audit-log-errors.test.ts test/audit-log-tailer.test.ts test/audit-redactor.test.ts test/auth/auth-command.test.ts test/auth/google-scopes.test.ts test/auth/oauth-flow.test.ts test/auth/  -> exit 1 in 131.8s
+2026-11-23T15:53:37Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:53:38Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:53:40Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:53:48Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/docker-workload/apple-vm-egress-relay.test.ts  -> exit 0 in 8.8s
+2026-11-23T15:53:57Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/docker-workload/apple-vm-egress-relay.test.ts  -> exit 0 in 8.4s
+2026-11-23T15:54:06Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/docker-workload/apple-vm-egress-relay.test.ts  -> exit 0 in 9.1s
+2026-11-23T15:54:06Z   $ git checkout -q -f --detach 8f9c75a720337271caf1e18c199fcca2d299ad27 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T15:54:11Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 4.8s
+2026-11-23T15:54:29Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 17.8s
+2026-11-23T15:54:30Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.1s
+2026-11-23T15:54:31Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:54:32Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:54:40Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/docker-workload/apple-vm-egress-relay.test.ts  -> exit 0 in 8.3s
+2026-11-23T15:54:49Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/docker-workload/apple-vm-egress-relay.test.ts  -> exit 0 in 8.5s
+2026-11-23T15:54:58Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/docker-workload/apple-vm-egress-relay.test.ts  -> exit 0 in 8.8s
+2026-11-23T15:54:58Z   -> ok share=0.4796 sel=162 excl=223 failures=[('test/domain-utils.test.ts > resolveDefaultGitRemote returns the origin SSH URL v', 'PREEXISTING'), ('test/docker-workload/apple-vm-egress-relay.test.ts > purpose-built Apple VM egre', 'FLAKY')]
+2026-11-23T15:54:58Z STATE PR #528 (code) state 4/4 79153b3687 base a2b2ae8fad
+2026-11-23T15:54:58Z   $ git checkout -q -f --detach 79153b3687e4316c0c3f4af442f59e8c1d49c87d && git clean -fdxq -e node_modules  -> exit 0 in 0.5s
+2026-11-23T15:55:02Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 4.2s
+2026-11-23T15:55:21Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 18.7s
+2026-11-23T15:55:21Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/ironcurtain/list-all.json  -> exit 0 in 0.5s
+2026-11-23T15:55:27Z   $ npx --no-install vitest list  --changed a2b2ae8fad9247ae24cdb302919b40bed61fbad9 --filesOnly --json=/home/user/work/tmp/ironcurtain/list-sel.json  -> exit 0 in 5.8s
+2026-11-23T15:56:59Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/excl-528-79153b36.json test/apple-container-manager.test.ts test/approval-whitelist.test.ts test/argument-roles.test.ts test/audit-log-errors.test.ts test/audit-log-tailer.test.ts test/audit-redactor.test.ts test/auth/auth-command.test.ts test/auth/google-scopes.test.ts test/auth/oauth-flow.test.ts test/auth/  -> exit 1 in 91.9s
+2026-11-23T15:57:00Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:57:02Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:57:03Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:57:03Z   $ git checkout -q -f --detach a2b2ae8fad9247ae24cdb302919b40bed61fbad9 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T15:57:07Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 4.5s
+2026-11-23T15:57:22Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 14.5s
+2026-11-23T15:57:23Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:57:24Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:57:26Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T15:57:26Z   -> ok share=0.4183 sel=155 excl=226 failures=[('test/domain-utils.test.ts > resolveDefaultGitRemote returns the origin SSH URL v', 'PREEXISTING')]
+2026-11-23T15:57:26Z STATE PR #531 (code) state 4/4 dc44a8b389 base 0b3e75aa1f
+2026-11-23T15:57:26Z   $ git checkout -q -f --detach dc44a8b389ad57a63ef3fb4fe7174e219a9e350e && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T15:57:26Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T15:57:46Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 20.0s
+2026-11-23T15:57:47Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/ironcurtain/list-all.json  -> exit 0 in 0.5s
+2026-11-23T15:57:53Z   $ npx --no-install vitest list  --changed 0b3e75aa1f3f6c8c1aea0d69ee97be79e0950df6 --filesOnly --json=/home/user/work/tmp/ironcurtain/list-sel.json  -> exit 0 in 5.7s
+2026-11-23T16:00:24Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/excl-531-dc44a8b3.json src/web-ui/__tests__/config-dispatch.test.ts test/agent-model-guard.test.ts test/apple-container-manager.test.ts test/approval-whitelist.test.ts test/argument-roles.test.ts test/audit-log-errors.test.ts test/audit-log-tailer.test.ts test/audit-redactor.test.ts test/auth/auth-command.tes  -> exit 1 in 151.1s
+2026-11-23T16:00:25Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:00:26Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:00:27Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:00:28Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/model-provider.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:00:30Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/model-provider.test.ts  -> exit 1 in 1.1s
+2026-11-23T16:00:31Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/model-provider.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:00:31Z   $ git checkout -q -f --detach 0b3e75aa1f3f6c8c1aea0d69ee97be79e0950df6 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:00:36Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 5.0s
+2026-11-23T16:00:54Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 18.6s
+2026-11-23T16:00:55Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:00:57Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:00:58Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:00:59Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/model-provider.test.ts  -> exit 1 in 1.1s
+2026-11-23T16:01:00Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/model-provider.test.ts  -> exit 1 in 1.1s
+2026-11-23T16:01:01Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/model-provider.test.ts  -> exit 1 in 1.1s
+2026-11-23T16:01:01Z   -> ok share=0.6913 sel=117 excl=272 failures=[('test/domain-utils.test.ts > resolveDefaultGitRemote returns the origin SSH URL v', 'PREEXISTING'), ('test/model-provider.test.ts > createLanguageModel passes undefined baseURL when ', 'PREEXISTING')]
+2026-11-23T16:01:01Z STATE PR #532 (code) state 4/4 451c6d8101 base 478e78867b
+2026-11-23T16:01:01Z   $ git checkout -q -f --detach 451c6d81018b3ce1aa8870ceb8717f52fd4b0109 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:01:02Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.1s
+2026-11-23T16:01:21Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 18.9s
+2026-11-23T16:01:22Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/ironcurtain/list-all.json  -> exit 0 in 0.5s
+2026-11-23T16:01:28Z   $ npx --no-install vitest list  --changed 478e78867b9cb4c6daa92627001bbdb56534a293 --filesOnly --json=/home/user/work/tmp/ironcurtain/list-sel.json  -> exit 0 in 6.0s
+2026-11-23T16:04:18Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/excl-532-451c6d81.json test/agent-model-guard.test.ts test/apple-container-manager.test.ts test/approval-whitelist.test.ts test/argument-roles.test.ts test/argument-validation.integration.test.ts test/audit-log-errors.test.ts test/audit-log-tailer.test.ts test/audit-redactor.test.ts test/auth/auth-command.tes  -> exit 1 in 170.6s
+2026-11-23T16:04:19Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:04:20Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:04:21Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:04:22Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/help-integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T16:04:23Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/help-integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:04:24Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/help-integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T16:04:25Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T16:04:26Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:04:27Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T16:04:28Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.1s
+2026-11-23T16:04:29Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:04:30Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:04:31Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/model-provider.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:04:32Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/model-provider.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:04:33Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/model-provider.test.ts  -> exit 1 in 1.1s
+2026-11-23T16:04:34Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox.test.ts  -> exit 1 in 0.9s
+2026-11-23T16:04:35Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:04:36Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox.test.ts  -> exit 1 in 0.9s
+2026-11-23T16:04:36Z   $ git checkout -q -f --detach 478e78867b9cb4c6daa92627001bbdb56534a293 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:04:41Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 4.5s
+2026-11-23T16:04:56Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 14.9s
+2026-11-23T16:04:57Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:04:58Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:04:59Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:05:00Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/help-integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T16:05:01Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/help-integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T16:05:02Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/help-integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T16:05:02Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T16:05:03Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T16:05:04Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 0.9s
+2026-11-23T16:05:06Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:05:07Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:05:08Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:05:09Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/model-provider.test.ts  -> exit 1 in 1.1s
+2026-11-23T16:05:10Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/model-provider.test.ts  -> exit 1 in 1.1s
+2026-11-23T16:05:11Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/model-provider.test.ts  -> exit 1 in 1.1s
+2026-11-23T16:05:12Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:05:13Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:05:14Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox.test.ts  -> exit 1 in 0.9s
+2026-11-23T16:05:14Z   -> ok share=0.7614 sel=101 excl=288 failures=[('test/docker-code-mode.integration.test.ts > <file>', 'PREEXISTING'), ('test/help-integration.test.ts > <file>', 'PREEXISTING'), ('test/sandbox-tool-errors.integration.test.ts > <file>', 'PREEXISTING'), ('test/domain-utils.test.ts > resolveDefaultGitRemote returns the origin SSH URL v', 'PREEXISTING'), ('test/model-provider.test.ts > createLanguageModel passes undefined baseURL when ', 'PREEXISTING'), ('test/sandbox.test.ts > <file>', 'PREEXISTING')]
+2026-11-23T16:05:14Z STATE PR #551 (code) state 4/4 a929d6417b base 218290c305
+2026-11-23T16:05:14Z   $ git checkout -q -f --detach a929d6417b5c3e8e2da473c667a9942502747431 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T16:05:15Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.0s
+2026-11-23T16:05:34Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 19.2s
+2026-11-23T16:05:35Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/ironcurtain/list-all.json  -> exit 0 in 0.5s
+2026-11-23T16:05:41Z   $ npx --no-install vitest list  --changed 218290c3056cf129ea93aa388e9324a989c9f2df --filesOnly --json=/home/user/work/tmp/ironcurtain/list-sel.json  -> exit 0 in 5.9s
+2026-11-23T16:08:20Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/excl-551-a929d641.json src/web-ui/__tests__/config-dispatch.test.ts test/agent-model-guard.test.ts test/apple-container-manager.test.ts test/approval-whitelist.test.ts test/argument-roles.test.ts test/argument-validation.integration.test.ts test/audit-log-errors.test.ts test/audit-log-tailer.test.ts test/audi  -> exit 1 in 158.8s
+2026-11-23T16:08:21Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:08:22Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:08:23Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:08:24Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/help-integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:08:25Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/help-integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:08:26Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/help-integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:08:27Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:08:28Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:08:29Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:08:30Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.1s
+2026-11-23T16:08:31Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:08:32Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:08:34Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/mux-input-handler.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:08:35Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/mux-input-handler.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:08:36Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/mux-input-handler.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:08:37Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:08:38Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:08:39Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:08:39Z   $ git checkout -q -f --detach 218290c3056cf129ea93aa388e9324a989c9f2df && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:08:44Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 4.7s
+2026-11-23T16:09:02Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 18.0s
+2026-11-23T16:09:03Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:09:04Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:09:05Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/docker-code-mode.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:09:06Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/help-integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:09:07Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/help-integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:09:08Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/help-integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:09:09Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:09:10Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:09:11Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox-tool-errors.integration.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:09:12Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.4s
+2026-11-23T16:09:13Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:09:15Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:09:16Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/mux-input-handler.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:09:17Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/mux-input-handler.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:09:18Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/mux-input-handler.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:09:19Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:09:20Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox.test.ts  -> exit 1 in 0.9s
+2026-11-23T16:09:21Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/sandbox.test.ts  -> exit 1 in 1.0s
+2026-11-23T16:09:21Z   -> ok share=0.6666 sel=94 excl=299 failures=[('test/docker-code-mode.integration.test.ts > <file>', 'PREEXISTING'), ('test/help-integration.test.ts > <file>', 'PREEXISTING'), ('test/sandbox-tool-errors.integration.test.ts > <file>', 'PREEXISTING'), ('test/domain-utils.test.ts > resolveDefaultGitRemote returns the origin SSH URL v', 'PREEXISTING'), ('test/mux-input-handler.test.ts > MuxInputHandler handlePaste returns none in pic', 'PREEXISTING'), ('test/sandbox.test.ts > <file>', 'PREEXISTING')]
+2026-11-23T16:09:21Z STATE PR #494 (code) state 5/5 93c7be7b0d base 8f9c75a720
+2026-11-23T16:09:21Z   $ git checkout -q -f --detach 93c7be7b0db45503197f6e381630fec412568884 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T16:09:23Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.3s
+2026-11-23T16:09:41Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 18.7s
+2026-11-23T16:09:42Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/ironcurtain/list-all.json  -> exit 0 in 0.5s
+2026-11-23T16:09:48Z   $ npx --no-install vitest list  --changed 8f9c75a720337271caf1e18c199fcca2d299ad27 --filesOnly --json=/home/user/work/tmp/ironcurtain/list-sel.json  -> exit 0 in 6.2s
+2026-11-23T16:11:33Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/excl-494-93c7be7b.json test/apple-container-manager.test.ts test/approval-whitelist.test.ts test/argument-roles.test.ts test/audit-log-errors.test.ts test/audit-log-tailer.test.ts test/audit-redactor.test.ts test/auth/auth-command.test.ts test/auth/google-scopes.test.ts test/auth/oauth-flow.test.ts test/auth/  -> exit 1 in 104.5s
+2026-11-23T16:11:34Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:11:35Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:11:37Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-state.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:11:37Z   $ git checkout -q -f --detach 8f9c75a720337271caf1e18c199fcca2d299ad27 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T16:11:42Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 5.3s
+2026-11-23T16:11:59Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 17.2s
+2026-11-23T16:12:00Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.3s
+2026-11-23T16:12:02Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:12:03Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/rerun-base.json test/domain-utils.test.ts  -> exit 1 in 1.2s
+2026-11-23T16:12:03Z   -> ok share=0.4796 sel=162 excl=223 failures=[('test/domain-utils.test.ts > resolveDefaultGitRemote returns the origin SSH URL v', 'PREEXISTING')]
+2026-11-23T16:12:03Z DONE rounds 5
