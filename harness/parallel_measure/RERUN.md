@@ -12,7 +12,9 @@ git checkout bfaf70b4                       # trunk of the final set (each row: 
 python3 -m venv /tmp/pm/venv/py && /tmp/pm/venv/py/bin/pip install maturin
 (cd node && npm run build)                  # Node addon: node/detjs.linux-x64.node
 /tmp/pm/venv/py/bin/maturin build --release -o /tmp/pm/wheels
-git checkout claude/parallel-measure -- harness/parallel_measure   # the harness (engine sources stay at the trunk)
+# the harness is harness/parallel_measure/ of this checkout (the single copy, README.md); the rows of
+# results.jsonl were measured from claude/parallel-measure 20f7752d, whose measure.py/repro.py/classify.py/table.py
+# are byte-identical to it (only specs.json grew); do not check that branch out over the single copy
 export PM_WORK=/tmp/pm
 ```
 
@@ -70,11 +72,22 @@ rounds start from what the previous run of the same kind left.
 
 ## 4. Lane A (agentic-qe, lerna-lite, step 3 candidates) — branch `claude/harness-trunk`
 
+Status: in progress; `data/lane-a/`, the TABLE.md "Lane A rows" and `REPORT-lane-a.md` are added when the Lane A
+measurements are complete (until then the paths below name where they will be).
+
 Harness: this directory at `claude/harness-trunk` commit ef5b0b20 (the single copy; measure.py / repro.py /
 classify.py / table.py byte-identical to `claude/parallel-measure` 20f7752d). Engine: trunk `claude/release-1`
 bfaf70b4 (`engine_commit` in every row), built as in section 1 (`cd node && npm run build`; `maturin build --release`
 into a Python 3.12 venv `$PM_WORK/venv/engine`, also reachable as `$PM_WORK/venv/networkx`, the `fenvix_python` of the
-Node specs). `PM_WORK=/tmp/pm`. Repositories fetched at the `commit` of their spec and installed with its `install`
+Node specs). `PM_WORK=/tmp/pm`:
+
+```bash
+python3.12 -m venv $PM_WORK/venv/engine && $PM_WORK/venv/engine/bin/pip install maturin
+$PM_WORK/venv/engine/bin/maturin build --release -o $PM_WORK/wheels && $PM_WORK/venv/engine/bin/pip install $PM_WORK/wheels/*.whl
+ln -sfn $PM_WORK/venv/engine $PM_WORK/venv/networkx   # one engine venv under both fenvix_python names of specs.json
+```
+
+ Repositories fetched at the `commit` of their spec and installed with its `install`
 line (agentic-qe: `npm ci --ignore-scripts --no-audit --no-fund && npm rebuild better-sqlite3 hnswlib-node argon2
 sharp`; lerna-lite: `npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts && npx -y pnpm@11.28.5 build`).
 
@@ -94,4 +107,8 @@ python3 table.py data/lane-a/results.jsonl specs.json     # the "Lane A rows" of
 
 `--timeout 14400` (default 3600): the first agentic-qe `--det` serial run was killed by the 3600 s timeout (exit 124,
 no trace; kept in `data/lane-a/interrupted/`); the completed one took 4145.98 s. Rounds interrupted by a container
-restart were moved to `data/lane-a/interrupted/` and re-run from their start.
+restart were moved to `data/lane-a/interrupted/` (rows and that round's output files) and re-run from their start.
+Results go to `$PM_WORK/lane-a/results.jsonl` (and `repro.jsonl`, `<repo>/classification.json`); they are copied to
+`data/lane-a/` (same layout, which `table.py` reads) when complete. Step 3 screening rows
+(`$PM_WORK/lane-a-screen/results.jsonl`) are copied to `data/lane-a/screen/results.jsonl`; an admitted candidate's
+3 plain rounds in `data/lane-a/results.jsonl` come from its full run, not from the screening.

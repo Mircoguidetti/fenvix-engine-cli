@@ -13,8 +13,14 @@ historical; do not measure from them.
   `bugs/sqlectron.md`, `bugs/smart-second-brain.md`.
 - From -c: `results-c.jsonl`, `results-c-pre-d13.jsonl`, `TABLE-c.md` (historical), `TABLE-c.notes.md`,
   `bugs/yalc.md`, `bugs/kodus-ai.md`, and `bugs/lerna-lite-c-pre-d13.md` (-c's `bugs/lerna-lite.md`, renamed so
-  `classify.py` can write a new one).
-- `data/lane-a/`: Lane A measurements (agentic-qe, lerna-lite, step 3 candidates); see `REPORT-lane-a.md`.
+  `classify.py` can write a new one; the name follows the spec, but its content is -c's classification of its
+  bfaf70b4 lerna-lite rows in `results-c.jsonl`, not of the pre-D13 rows).
+- `TABLE-b.md` / `TABLE-c.md`: their first line is the one the spec prescribes. Precisely: `TABLE-b.md` is session B's
+  hand-written status page from before its measurements (superseded by `results-b-preD13.jsonl` and `bugs/*.md` of
+  -b); `TABLE-c.md` was assembled by -c's `mktable_c.sh` (table.py twice, `idea_verdict_c.py`, `TABLE-c.notes.md`)
+  at 1b1f6f0a; those two scripts stay on that branch.
+- `data/lane-a/` (pending until the Lane A measurements are complete): agentic-qe, lerna-lite and the step 3
+  candidates; report `REPORT-lane-a.md`.
 
 Rule: every measurement records in `RERUN.md` the commit of this harness (on the trunk, or on
 `claude/harness-trunk` until it is merged) it was taken with, next to the engine commit `measure.py` records per row.
