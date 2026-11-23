@@ -120,6 +120,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "${{ matrix.python }}"}
+      # tests/test_runner_node.py (shared) runs `fenvix-run node` through detjs, which needs Node 22 or newer
+      # (founder decision D1 = A, 2026-11-23)
+      - uses: actions/setup-node@v4
+        with: {node-version: "24"}
       - uses: actions/download-artifact@v4
         with: {name: engine-linux-x64, path: dist}
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq strace > /dev/null

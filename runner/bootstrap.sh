@@ -14,6 +14,8 @@
 #                           $FENVIX_HOME/wheels           detpy wheel built from this checkout
 #                           $FENVIX_HOME/cache            the persistent cache with proof (survives between jobs)
 #                           $FENVIX_HOME/bin/fenvix-run   the job wrapper
+#                           $FENVIX_HOME/detjs            detjs (the engine's Node shell) built from this checkout
+#                           $FENVIX_HOME/bin/detjs        on the job PATH (`fenvix-run node` runs it)
 #   FENVIX_RUNNER_NAME    runner name                     (default fenvix-<hostname>)
 #   FENVIX_EPHEMERAL      1 = the runner takes one job, then deregisters (needs one token per job; default 0)
 #   FENVIX_PYTHON         Python version for jobs         (default 3.13)
@@ -21,6 +23,10 @@
 #   FENVIX_ENGINE_URL     the engine artifact to install (a release URL of release-1.yml's publish-engine) and
 #   FENVIX_ENGINE_SHA256  its pinned sha256: fetched with release/engine/fetch.sh, refused on any other checksum.
 #                         Both or neither; with neither (development), the wheel is built from this checkout.
+#                         The pinned artifact installs the wheel only (no detjs): Node jobs need the development mode.
+#
+# Node: `node` >= 22 must be on PATH before `install` (the App's install.sh installs a pinned Node 22 as root);
+# detjs is built from this checkout (`node node/scripts/build.js`, which runs `cargo build -p detpy-node`).
 #
 # The registration token (valid one hour, from `POST /repos/{owner}/{repo}/actions/runners/registration-token`, which
 # needs admin rights on the repository, or from Settings -> Actions -> Runners -> New self-hosted runner) is read from,
@@ -88,6 +94,7 @@ build_engine() {
     log "engine: $(cat "$d/VERSION") -> $(ls "$FENVIX_HOME"/wheels/fenvix-*.whl)"
     return
   fi
+  check_node  # before the long wheel build: Node jobs need detjs (build_detjs below)
   log "engine: building the detpy wheel from $ENGINE_SRC"
   mkdir -p "$FENVIX_HOME/wheels" "$FENVIX_HOME/bin" "$FENVIX_HOME/cache"
   local venv="$FENVIX_HOME/build-venv"
@@ -98,6 +105,38 @@ build_engine() {
   ls "$FENVIX_HOME"/wheels/fenvix-*.whl >/dev/null || die "wheel not built"
   install -m 755 "$HERE/fenvix-run" "$FENVIX_HOME/bin/fenvix-run"
   log "engine: $(ls "$FENVIX_HOME"/wheels/fenvix-*.whl)"
+  build_detjs
+}
+
+NODE_MIN_MAJOR=22
+
+check_node() {
+  need_cmd node || die "node not found on PATH: Node $NODE_MIN_MAJOR or newer is needed for Node jobs (detjs). Install it first (the App's install.sh installs a pinned Node 22)"
+  local v major
+  v="$(node --version)" || die "node --version failed"
+  major="${v#v}"; major="${major%%.*}"
+  [[ "$major" =~ ^[0-9]+$ ]] && [ "$major" -ge "$NODE_MIN_MAJOR" ] \
+    || die "node $v on PATH ($(command -v node)) is too old: detjs needs Node $NODE_MIN_MAJOR or newer"
+  log "node: $v ($(command -v node))"
+}
+
+build_detjs() {
+  check_node
+  log "engine: building detjs from $ENGINE_SRC (node node/scripts/build.js)"
+  (cd "$ENGINE_SRC" && node node/scripts/build.js >&2) || die "detjs not built"
+  # node/scripts/build.js names the addon after the platform (detjs.<platform>-<arch>.node)
+  local addon="$ENGINE_SRC/node/detjs.$(node -p 'process.platform + "-" + process.arch').node"
+  [ -f "$addon" ] || die "detjs native core not built ($addon missing)"
+  # the same layout as the engine artifact (release/engine/assemble.sh): bin, src, package.json and the addon
+  local dst="$FENVIX_HOME/detjs"
+  rm -rf "$dst.new" && mkdir -p "$dst.new"
+  cp -R "$ENGINE_SRC/node/bin" "$ENGINE_SRC/node/src" "$ENGINE_SRC/node/package.json" "$addon" "$dst.new/"
+  rm -rf "$dst" && mv "$dst.new" "$dst"
+  mkdir -p "$FENVIX_HOME/bin"
+  ln -sfn "$dst/bin/detjs.js" "$FENVIX_HOME/bin/detjs"
+  chmod 755 "$dst/bin/detjs.js"
+  "$FENVIX_HOME/bin/detjs" --version >/dev/null || die "detjs installed but does not start ($FENVIX_HOME/bin/detjs --version)"
+  log "engine: detjs $("$FENVIX_HOME/bin/detjs" --version) -> $FENVIX_HOME/bin/detjs"
 }
 
 download_runner() {
