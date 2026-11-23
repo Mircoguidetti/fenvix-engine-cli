@@ -84,7 +84,8 @@ test('AC1(c) through the re-exec path, a test that SIGTERMs its process ends the
       "});",
     ].join('\n'),
   });
-  const r = run(d, ['vitest', 'run', '--pool=threads', '--det', '--det-workers=1']);
+  // the restart happens only for a pinned zone/locale: opt-out of the keep default (spec 2026-11-23)
+  const r = run(d, ['vitest', 'run', '--pool=threads', '--det', '--det-workers=1', '--det-tz=UTC', '--det-locale=C.UTF-8']);
   const pids = JSON.parse(fs.readFileSync(path.join(d, 'pids.json'), 'utf8'));
   assert.notEqual(pids.pid, r.pid, `the test ran in the outer detjs: no re-exec happened\n${r.show}`);
   assert.equal(pids.ppid, r.pid, `the test's process is not a child of the outer detjs\n${r.show}`);
