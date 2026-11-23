@@ -25,3 +25,4 @@
 2026-11-23T17:15:32Z FULL RUN pr-index 20 PR #435 base eda6992d7bd3fa1eb23f68ebe5ab8333305edcca
 2026-11-23T17:15:32Z   $ git checkout -q -f --detach eda6992d7bd3fa1eb23f68ebe5ab8333305edcca && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
 2026-11-23T17:15:33Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:15:37Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.2s
