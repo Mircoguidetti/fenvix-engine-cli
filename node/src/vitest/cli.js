@@ -182,8 +182,11 @@ async function main(argv) {
     const { lines } = session.finish(run, opts, executed, {
       runner: 'vitest', runner_version: pkg.version, isolation, serial: !par.plan,
       pool: info.pool, isolate: info.isolate, projects: info.projects, cli_args: args, parallel: par.result.meta,
-      // errors outside any test file (Vitest's unhandled errors): src/session.js fileFailures
-      unhandled_errors: (ctxRef && ctxRef.state && ctxRef.state.errorsSet && ctxRef.state.errorsSet.size) || 0,
+      // the main process's own verdict per file (a failed file: a test, a hook at any level, collection) and the
+      // errors outside any test file (Vitest's unhandled errors): src/session.js fileFailures. Unknown (null) when
+      // the Vitest instance is not there to ask.
+      runner_failed_files: vitestFailedFiles(ctxRef, root),
+      unhandled_errors: ctxRef && ctxRef.state && ctxRef.state.errorsSet ? ctxRef.state.errorsSet.size : null,
     });
     for (const l of lines) fs.writeSync(1, `${l}\n`); // sync: the runner may be exiting
   };
@@ -317,6 +320,15 @@ async function main(argv) {
   }
   finalize();
   return process.exitCode ?? 0;
+}
+
+/** The test files Vitest's main process marked failed (`file.result.state === 'fail'`), as file ids; null if unknown. */
+function vitestFailedFiles(ctx, root) {
+  try {
+    if (!ctx || !ctx.state || typeof ctx.state.getFiles !== 'function') return null;
+    return ctx.state.getFiles().filter((f) => f.result && f.result.state === 'fail')
+      .map((f) => path.relative(root, f.filepath).split(path.sep).join('/')).sort();
+  } catch { return null; }
 }
 
 const EARLY = path.join(__dirname, '..', 'cache', 'early.js');

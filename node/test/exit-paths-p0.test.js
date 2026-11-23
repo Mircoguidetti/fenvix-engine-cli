@@ -123,9 +123,42 @@ test('${n} writes a contiguous block', () => {
   fs.rmSync(path.join(dir, 'shared.log'), { force: true });
   const r = run(dir, ['--det-plan=plan.json'], PINNED);
   assert.match(r.stderr, /run again in one lane/, r.show);
-  assert.deepEqual(r.trace.header.meta.file_failures.files, ['tests/z.test.mjs'], r.show);
+  assert.ok(r.trace.header.meta.file_failures.files.includes('tests/z.test.mjs'), r.show);
   assert.equal(r.status, 1, r.show);
   assert.equal(`${r.stdout}\n${r.stderr}`.split('\n').filter((l) => l.startsWith('detjs: status:')).length, 1, r.show);
+});
+
+// /review pass 2 (2026-11-23): a describe-level beforeAll failure outside the hazard files leaves its tests with no
+// record of their own (B5 writes them `skipped`) and no file error -- the side data's `error` states make it a file
+// failure, so the run stays red.
+test('wrapper path: a beforeAll failure outside the hazard files keeps the run red', T, () => {
+  const body = (n) => `
+const LOG = path.join(process.cwd(), 'shared.log');
+const lines = () => { try { return fs.readFileSync(LOG, 'utf8').trim().split('\\n'); } catch { return []; } };
+test('${n} writes a contiguous block', () => {
+  fs.appendFileSync(LOG, '${n}-start\\n');
+  const sab = new Int32Array(new SharedArrayBuffer(4));
+  for (let i = 0; i < 60; i++) {
+    if (lines().some((l) => l.endsWith('-start') && !l.startsWith('${n}'))) break;
+    Atomics.wait(sab, 0, 0, 50);
+  }
+  fs.appendFileSync(LOG, '${n}-end\\n');
+  expect(lines().slice(-2)).toEqual(['${n}-start', '${n}-end']);
+});`;
+  const dir = project('wrapper-hook-failure', {
+    'x.test.mjs': body('X'),
+    'y.test.mjs': body('Y'),
+    'z.test.mjs': "import { describe, beforeAll } from 'vitest';\ndescribe('d', () => {\n  beforeAll(() => { throw new Error('setup fails'); });\n  test('one', () => {});\n  test('two', () => {});\n});",
+    // a nested afterAll failure: the test itself passed, the error is on the suite (Vitest's main process marks the
+    // file failed; the side data does not see it)
+    'w.test.mjs': "import { describe, afterAll } from 'vitest';\ndescribe('outer', () => { describe('inner', () => {\n  afterAll(() => { throw new Error('teardown fails'); });\n  test('passes', () => {});\n}); });",
+  });
+  fs.rmSync(path.join(dir, 'shared.log'), { force: true });
+  const r = run(dir, ['--det-plan=plan.json'], PINNED);
+  assert.match(r.stderr, /run again in one lane/, r.show);
+  assert.ok(r.trace.header.meta.file_failures.files.includes('tests/z.test.mjs'), r.show);
+  assert.ok(r.trace.header.meta.file_failures.files.includes('tests/w.test.mjs'), r.show);
+  assert.equal(r.status, 1, r.show);
 });
 
 test('--det-isolate: the parent prints the one status line and carries the counts', T, () => {

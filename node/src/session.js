@@ -433,8 +433,8 @@ function finish(run, opts, files, meta) {
   };
   // Failures of the run that are not test records (a file that failed to load, an afterAll error, an unhandled
   // error): the hazard re-run wrapper may clear the first pass's red only when all of it is inside the files it
-  // re-runs (src/parallel-rerun.js wrapperRunnerCode). Known for the shells that write a file error per file.
-  full.file_failures = fileFailures(run.dir, meta);
+  // re-runs (src/parallel-rerun.js firstRedInHazardFiles). Known for the shells that write a file error per file.
+  full.file_failures = fileFailures(run.dir, meta, files);
   try { full.inputs = runInputs(run, meta); } catch (e) { full.inputs_error = String(e && e.message); }
   // the installed dependencies of the project (src/loaded.js, review R-055 V5)
   try { const d = require('./loaded').depsInput(run.dir); if (d && full.inputs) full.inputs.deps = d; } catch (e) { full.inputs_error = String(e && e.message); }
@@ -478,13 +478,18 @@ function finish(run, opts, files, meta) {
 }
 
 /**
- * The run's failures outside the test records, from the per-file repro side data (src/repro.js writeSide) and the
- * shell's own count of errors outside any file (`meta.unhandled_errors`): {known, files, unhandled}. `known` is true
- * only for the shells whose side data carries the file's own error (Vitest, Jest); for the others the wrapper cannot
- * tell a test failure from a file failure and keeps the first pass's code.
+ * The run's failures outside the test records: {known, files, unhandled}. `known` is true only when every failure
+ * of the run is accounted for, so the hazard re-run wrapper may reason about where the red is:
+ *   * Vitest: the main process's own verdict per file (`meta.runner_failed_files`) and its unhandled errors
+ *     (`meta.unhandled_errors`); unknown when either is missing;
+ *   * Jest: the per-file repro side data (src/repro.js writeSide: the file's own error, failed or errored tests),
+ *     known only when EVERY file of the run (`runFiles`) left side data -- a file that failed before detjs' runner
+ *     ran (setupFiles, the test environment, a worker that exited) leaves none, and is then a failure nobody saw;
+ *   * any other shell: unknown, so the wrapper keeps the first pass's code.
+ * Side data is also read for Vitest, as a second source.
  */
 const FILE_ERRORS_KNOWN = new Set(['vitest', 'jest']);
-function fileFailures(dir, meta) {
+function fileFailures(dir, meta, runFiles = null) {
   const runner = String((meta && meta.runner) || '');
   const files = [];
   let names = [];
@@ -492,11 +497,25 @@ function fileFailures(dir, meta) {
   for (const n of names) {
     try {
       const s = JSON.parse(fs.readFileSync(path.join(dir, 'side', n), 'utf8'));
-      if (s && s.file_error) files.push(s.file);
+      // the file's own error, or a test the runner saw fail or error (Vitest: a describe-level beforeAll failure
+      // leaves its tests with no record of their own, so the trace shows them `skipped` -- B5 -- while the runner
+      // reports them failed; the side data has them as `error`)
+      const states = Object.values((s && s.states) || {});
+      if (s && (s.file_error || states.some((o) => o === 'error' || o === 'failed'))) files.push(s.file);
     } catch { /* unreadable side data: not known */ return { known: false, files: [...new Set(files)].sort(), unhandled: 0 }; }
   }
+  let known = FILE_ERRORS_KNOWN.has(runner);
+  if (runner === 'vitest') {
+    const mf = meta && meta.runner_failed_files;
+    if (Array.isArray(mf)) files.push(...mf); else known = false;
+    if (!(meta && Number.isFinite(meta.unhandled_errors))) known = false;
+  }
+  if (runner === 'jest') {
+    const have = new Set(names.map((n) => n.replace(/\.json$/, '')));
+    if (!Array.isArray(runFiles) || runFiles.some((f) => !f || !f.part || !have.has(String(f.part).replace(/\.jsonl$/, '')))) known = false;
+  }
   const unhandled = Number((meta && meta.unhandled_errors) || 0);
-  return { known: FILE_ERRORS_KNOWN.has(runner), files: [...new Set(files)].sort(), unhandled };
+  return { known, files: [...new Set(files)].sort(), unhandled };
 }
 
 /**
@@ -571,4 +590,4 @@ function realEntropyTests(tracePath, urandom) {
   return out;
 }
 
-module.exports = { realEntropyTests, parseArgs, prepare, header, finish, partIds, stampStatus, printsStatus, HELP, VERSION };
+module.exports = { realEntropyTests, parseArgs, prepare, header, finish, partIds, stampStatus, printsStatus, fileFailures, HELP, VERSION };

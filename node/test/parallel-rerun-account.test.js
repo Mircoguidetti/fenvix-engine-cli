@@ -84,6 +84,10 @@ test('firstRedInHazardFiles: only a red that is all inside the hazard files, as 
   assert.equal(firstRedInHazardFiles({ meta: { file_failures: { known: true, files: ['b.test.mjs'], unhandled: 0 } } }, recs, files), true);
   // an error outside any file
   assert.equal(firstRedInHazardFiles({ meta: { file_failures: { known: true, files: [], unhandled: 1 } } }, recs, files), false);
+  // a file failure given as a project label (main|<file>) inside the hazard files
+  assert.equal(firstRedInHazardFiles({ meta: { file_failures: { known: true, files: ['main|b.test.mjs'], unhandled: 0 } } }, recs, files), true);
+  // pass 1 red with nothing red at all to explain it (a coverage threshold, a global setup error): not explained
+  assert.equal(firstRedInHazardFiles(ok, [rec('a.test.mjs::t'), rec('c.test.mjs::u')], files), false);
   // a shell that cannot report file failures (node-test), or an older trace: not proven, the code stays
   assert.equal(firstRedInHazardFiles({ meta: { file_failures: { known: false, files: [], unhandled: 0 } } }, recs, files), false);
   assert.equal(firstRedInHazardFiles({ meta: {} }, recs, files), false);

@@ -146,10 +146,15 @@ function accountRerun(firstTests, rerunTests, files) {
  */
 function firstRedInHazardFiles(header, records, files) {
   const set = new Set(files);
-  if ((records || []).some((r) => !PASSED.has(r.outcome) && !set.has(fileOf(r.nodeid)))) return false;
+  const bad = (records || []).filter((r) => !PASSED.has(r.outcome));
+  if (bad.some((r) => !set.has(fileOf(r.nodeid)))) return false;
   const ff = header && header.meta && header.meta.file_failures;
   if (!ff || ff.known !== true || Number(ff.unhandled || 0) > 0) return false;
-  return (ff.files || []).every((f) => set.has(labelFile(f)));
+  const failedFiles = (ff.files || []).map(labelFile);
+  if (failedFiles.some((f) => !set.has(f))) return false;
+  // (d) there IS a red in the hazard files to explain pass 1's code: a red pass with no failed record and no failed
+  // file (a coverage threshold, a global setup or teardown error) is not explained by anything the re-run re-examines
+  return bad.length > 0 || failedFiles.length > 0;
 }
 
 /**
