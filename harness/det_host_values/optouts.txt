@@ -26,3 +26,5 @@ test/verifier-inputs.test.js 'CI-volatile variables are never inputs': both runs
 test/verifier-inputs.test.js 'by default the time zone and the locale are pinned...': both runs + --det-tz=UTC --det-locale=C.UTF-8
 test/verify-inputs-attacks.test.js cases 'time' (+ --det-epoch=fixed) and 'time zone' (+ --det-tz=UTC --det-locale=C.UTF-8): they check a value controlled by the old defaults
 tests/test_fenvix_js.py test_run_dependent_id_is_reproduced_by_its_stable_id[vitest,jest]: DETJS_EPOCH=2025-01-01T00:00:00Z with DETJS_EPOCH_RUN=1 in its environment (the fixed epoch for its two separate sessions; the env form of --det-epoch=fixed, the sessions are started by the repro driver)
+CI step release/smoke.py node() (job "smoke (node)", LIGHT and FULL): both `--det` runs + --det-epoch=fixed (they are verified against each other)
+CI step release/install_test.py vitest check (job "install", FULL only): both `--det` runs + --det-epoch=fixed (verified against each other)

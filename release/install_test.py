@@ -179,7 +179,8 @@ def node_part(r, a, fx, home):
     traces = []
     for i in (1, 2):
         t = os.path.join(r.work, f"vitest-det{i}.jsonl")
-        rc, out = r.sh(f"vitest-det{i}", [fx, "node", "vitest", "run", "--det", f"--det-trace={t}"], cwd=proj, env=env)
+        # --det-epoch=fixed: the two runs are verified against each other (opt-out of the host-time default)
+        rc, out = r.sh(f"vitest-det{i}", [fx, "node", "vitest", "run", "--det", "--det-epoch=fixed", f"--det-trace={t}"], cwd=proj, env=env)
         r.check(f"vitest_det_run{i}", rc == 0 and os.path.exists(t), last(out))
         traces.append(t)
     rc, out = r.sh("vitest-verify", [fx, "verify", *traces])
