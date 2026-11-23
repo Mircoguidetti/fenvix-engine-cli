@@ -26,3 +26,981 @@
 2026-11-23T17:15:32Z   $ git checkout -q -f --detach eda6992d7bd3fa1eb23f68ebe5ab8333305edcca && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
 2026-11-23T17:15:33Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
 2026-11-23T17:15:37Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.2s
+2026-11-23T17:16:11Z   $ npx --no-install jest  --runInBand --json --outputFile=/home/user/work/tmp/agentsys/full-20.json  -> exit 1 in 34.1s
+2026-11-23T17:16:11Z   full run 20: ok exit 1 34.1s {'passed': 3675, 'failed': 1, 'pending': 40}
+2026-11-23T17:16:11Z FULL RUN pr-index 25 PR #440 base a8dba944da963a6dcc9f786565f2f004f709bb66
+2026-11-23T17:16:11Z   $ git checkout -q -f --detach a8dba944da963a6dcc9f786565f2f004f709bb66 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T17:16:12Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:16:16Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.0s
+2026-11-23T17:16:30Z   $ npx --no-install jest  --runInBand --json --outputFile=/home/user/work/tmp/agentsys/full-25.json  -> exit 1 in 13.6s
+2026-11-23T17:16:30Z   full run 25: ok exit 1 13.6s {'passed': 2183, 'failed': 1, 'pending': 40}
+2026-11-23T17:16:30Z STATE PR #411 (code) state 1/3 af88393b84 base 80d532f84d
+2026-11-23T17:16:30Z   $ git checkout -q -f --detach af88393b8445be2f8a098941743e9a0c9db02841 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T17:16:30Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:16:34Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.2s
+2026-11-23T17:16:35Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.6s
+2026-11-23T17:16:35Z   $ npx --no-install jest  --listTests --findRelatedTests .kiro/agents/agent-enhancer.json .kiro/agents/ci-fixer.json .kiro/agents/ci-monitor.json .kiro/agents/claudemd-enhancer.json .kiro/agents/consult-agent.json .kiro/agents/cross-file-enhancer.json .kiro/agents/debate-orchestrator.json .kiro/agents/delivery-validator.json .kiro/agents/deslop-agent.json .kiro/agents/docs-enhancer.json .kiro/agents/  -> exit 0 in 0.6s
+2026-11-23T17:17:05Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-411-af88393b.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/collectors-extended.  -> exit 1 in 29.9s
+2026-11-23T17:17:06Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:17:07Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:17:08Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:17:08Z   $ git checkout -q -f --detach 80d532f84dc00715ae004c95396f2a54a114e2ca && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T17:17:09Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T17:17:13Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.2s
+2026-11-23T17:17:14Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:17:15Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:17:16Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.2s
+2026-11-23T17:17:16Z   -> ok share=0.9975 sel=1 excl=88 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:17:16Z STATE PR #412 (code) state 1/1 86623895cb base 80d532f84d
+2026-11-23T17:17:16Z   $ git checkout -q -f --detach 86623895cb1acd0a3790ba35577635b2ad631729 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:17:17Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.3s
+2026-11-23T17:17:21Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.7s
+2026-11-23T17:17:22Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:17:22Z   $ npx --no-install jest  --listTests --findRelatedTests lib/enhance/projectmemory-patterns.js  -> exit 0 in 0.6s
+2026-11-23T17:17:52Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-412-86623895.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/collectors-extended.  -> exit 1 in 29.9s
+2026-11-23T17:17:53Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:17:54Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:17:55Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:17:55Z   $ git checkout -q -f --detach 80d532f84dc00715ae004c95396f2a54a114e2ca && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:17:56Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:17:59Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.7s
+2026-11-23T17:18:00Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:18:01Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:18:02Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:18:02Z   -> ok share=0.9817 sel=4 excl=85 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:18:02Z STATE PR #414 (code) state 1/1 17d740839a base b588afc34f
+2026-11-23T17:18:02Z   $ git checkout -q -f --detach 17d740839af0548e04c557cbea8686fc83507630 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:18:02Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:18:07Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.3s
+2026-11-23T17:18:07Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:18:08Z   $ npx --no-install jest  --listTests --findRelatedTests CHANGELOG.md __tests__/bump-version.test.js __tests__/cli-args.test.js __tests__/command-parser.test.js __tests__/dev-install.test.js __tests__/perf-benchmark-runner.test.js __tests__/perf-profiling-runner.test.js lib/utils/command-parser.js tests/sources/custom-handler.test.js  -> exit 0 in 0.5s
+2026-11-23T17:18:34Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-414-17d74083.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/cache-manager.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests__/collectors.test.js __tests__/config.test.js __tests__/context-opt  -> exit 1 in 26.4s
+2026-11-23T17:18:35Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:18:36Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:18:37Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:18:37Z   $ git checkout -q -f --detach b588afc34fd9b649f757c621026eb84030148ca2 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:18:38Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.6s
+2026-11-23T17:18:41Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.8s
+2026-11-23T17:18:42Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:18:43Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.8s
+2026-11-23T17:18:44Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:18:44Z   -> ok share=0.8244 sel=20 excl=69 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:18:44Z STATE PR #413 (code) state 1/5 f2b29c8443 base b588afc34f
+2026-11-23T17:18:44Z   $ git checkout -q -f --detach f2b29c84436e9d70f54a29aab8571f1e6ef5676e && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:18:44Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:18:48Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.7s
+2026-11-23T17:18:48Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:18:49Z   $ npx --no-install jest  --listTests --findRelatedTests .agnix.toml .gitignore CHANGELOG.md README.md __tests__/dev-install.test.js __tests__/gen-adapters.test.js __tests__/platform-adapter-install.test.js adapters/codex/README.md agent-docs/CODEX-REFERENCE.md agent-docs/OPENCODE-REFERENCE.md agent-docs/workflow.md bin/cli.js checklists/cross-platform-compatibility.md docs/ARCHITECTURE.md docs/CROSS  -> exit 0 in 0.5s
+2026-11-23T17:19:20Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-413-f2b29c84.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 30.7s
+2026-11-23T17:19:20Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.8s
+2026-11-23T17:19:21Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:19:22Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:19:22Z   $ git checkout -q -f --detach b588afc34fd9b649f757c621026eb84030148ca2 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:19:23Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:19:27Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.9s
+2026-11-23T17:19:28Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:19:28Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:19:29Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:19:29Z   -> ok share=0.9862 sel=5 excl=84 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:19:29Z STATE PR #419 (code) state 1/1 497bc083b3 base b13ed25cc5
+2026-11-23T17:19:29Z   $ git checkout -q -f --detach 497bc083b33ffaaecc51a7802a3e583de6ed3cb6 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:19:30Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:19:34Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.0s
+2026-11-23T17:19:34Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:19:35Z   $ npx --no-install jest  --listTests --findRelatedTests lib/adapter-transforms.js lib/agentsys.js lib/collectors/analyzer-queries.js lib/enhance/agent-analyzer.js lib/enhance/docs-analyzer.js lib/enhance/docs-patterns.js lib/enhance/hook-analyzer.js lib/enhance/prompt-analyzer.js lib/enhance/skill-analyzer.js  -> exit 0 in 0.5s
+2026-11-23T17:19:59Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-419-497bc083.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-github-contract.test.js __tests__/command-parser.test.js __tests__/con  -> exit 1 in 24.9s
+2026-11-23T17:20:00Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:20:01Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:20:02Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:20:02Z   $ git checkout -q -f --detach b13ed25cc56923b0d2ba0f22bd34a89d033a4477 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:20:02Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:20:05Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 2.5s
+2026-11-23T17:20:06Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:20:07Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:20:08Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:20:08Z   -> ok share=0.8358 sel=19 excl=70 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:20:08Z STATE PR #420 (code) state 1/5 094886f34e base c0e693eec2
+2026-11-23T17:20:08Z   $ git checkout -q -f --detach 094886f34eb764c7adb0a64a8c5f7889ff588149 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:20:08Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.1s
+2026-11-23T17:20:12Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.8s
+2026-11-23T17:20:12Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:20:13Z   $ npx --no-install jest  --listTests --findRelatedTests CHANGELOG.md __tests__/fetch-plugin-pins.test.js bin/cli.js docs/INSTALLATION.md  -> exit 0 in 0.5s
+2026-11-23T17:20:42Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-420-094886f3.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 29.5s
+2026-11-23T17:20:43Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:20:44Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:20:45Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:20:45Z   $ git checkout -q -f --detach c0e693eec2f8856de1351a966c6bccc08f7e99a4 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:20:46Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:20:49Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 2.8s
+2026-11-23T17:20:50Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:20:50Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:20:51Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:20:51Z   -> ok share=0.9791 sel=4 excl=86 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:20:51Z STATE PR #421 (code) state 1/3 d630d39ea5 base 7486b5bbe5
+2026-11-23T17:20:51Z   $ git checkout -q -f --detach d630d39ea51273cee5366a630fc8ec81bfb80303 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:20:52Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:20:55Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.7s
+2026-11-23T17:20:56Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:20:56Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json .claude-plugin/plugin.json CHANGELOG.md README.md __tests__/cli-subcommands.test.js __tests__/marketplace-standalone-contract.test.js __tests__/pin-marketplace.test.js agent-docs/workflow.md bin/cli.js docs/ARCHITECTURE.md docs/INSTALLATION.md docs/USAGE.md docs/reference/AGENTS.md package-lock.json package.json   -> exit 0 in 0.5s
+2026-11-23T17:21:24Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-421-d630d39e.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 28.2s
+2026-11-23T17:21:25Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:21:26Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:21:27Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:21:27Z   $ git checkout -q -f --detach 7486b5bbe58852d195bdb1ec5eacbf235959cf06 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:21:28Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:21:32Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.8s
+2026-11-23T17:21:32Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:21:33Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:21:34Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:21:34Z   -> ok share=0.8942 sel=9 excl=81 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:21:34Z STATE PR #422 (code) state 1/4 881d7b4a2d base 2076bfdad2
+2026-11-23T17:21:34Z   $ git checkout -q -f --detach 881d7b4a2d6d71f5412b40993d1c79ab491b2ba6 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:21:34Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:21:38Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.9s
+2026-11-23T17:21:39Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.4s
+2026-11-23T17:21:39Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json .codex-plugin/plugin.json AGENTS.md CHANGELOG.md README.md __tests__/fetch-plugin-pins.test.js __tests__/marketplace-standalone-contract.test.js __tests__/pin-marketplace.test.js bin/cli.js docs/INSTALLATION.md docs/README.md docs/reference/AGENTS.md scripts/generate-docs.js scripts/pin-marketplace.js site/conten  -> exit 0 in 0.5s
+2026-11-23T17:22:10Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-422-881d7b4a.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 30.8s
+2026-11-23T17:22:11Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:22:12Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:22:13Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:22:13Z   $ git checkout -q -f --detach 2076bfdad2925df82a224dfc5dd6f0675c27c4b7 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:22:14Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:22:18Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.9s
+2026-11-23T17:22:18Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:22:19Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:22:20Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:22:20Z   -> ok share=0.9752 sel=7 excl=83 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:22:20Z STATE PR #423 (code) state 1/2 929a452af3 base e0f8a4c4c4
+2026-11-23T17:22:20Z   $ git checkout -q -f --detach 929a452af3e7a6c7c001f48d598f8248da3f9bb3 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:22:21Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:22:24Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.9s
+2026-11-23T17:22:25Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.4s
+2026-11-23T17:22:25Z   $ npx --no-install jest  --listTests --findRelatedTests AGENTS.md CHANGELOG.md agent-docs/release.md checklists/release.md scripts/bump-version.js  -> exit 0 in 0.5s
+2026-11-23T17:22:57Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-423-929a452a.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/collectors-extended.test.js __tests__/collectors-gi  -> exit 1 in 32.0s
+2026-11-23T17:22:58Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:22:59Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.8s
+2026-11-23T17:23:00Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.8s
+2026-11-23T17:23:00Z   $ git checkout -q -f --detach e0f8a4c4c4057c377f6fd13565167dadf20eca04 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:23:01Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:23:05Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.2s
+2026-11-23T17:23:06Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:23:07Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:23:08Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:23:08Z   -> ok share=0.9987 sel=1 excl=89 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:23:08Z STATE PR #424 (code) state 1/1 9a758345db base 44b1872554
+2026-11-23T17:23:08Z   $ git checkout -q -f --detach 9a758345db43afc5b387e9d19f3c6fe001add522 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:23:08Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:23:12Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.0s
+2026-11-23T17:23:12Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.4s
+2026-11-23T17:23:13Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json .claude-plugin/plugin.json CHANGELOG.md README.md package-lock.json package.json site/content.json  -> exit 0 in 0.5s
+2026-11-23T17:23:42Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-424-9a758345.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 29.0s
+2026-11-23T17:23:43Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.8s
+2026-11-23T17:23:44Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:23:45Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:23:45Z   $ git checkout -q -f --detach 44b1872554453fa0ac097f63332ab63946d2fdac && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:23:45Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T17:23:49Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.8s
+2026-11-23T17:23:50Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:23:51Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:23:52Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:23:52Z   -> ok share=0.8974 sel=7 excl=83 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:23:52Z STATE PR #425 (code) state 1/2 a3b9508c9a base 8a2e3755d1
+2026-11-23T17:23:52Z   $ git checkout -q -f --detach a3b9508c9adbb668fa6a162c7724719317bc7946 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:23:52Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:23:56Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.0s
+2026-11-23T17:23:57Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.4s
+2026-11-23T17:23:57Z   $ npx --no-install jest  --listTests --findRelatedTests .agnix.toml CHANGELOG.md README.md __tests__/repo-consistency-test-count.test.js checklists/cross-platform-compatibility.md docs/ARCHITECTURE.md scripts/validate-repo-consistency.js site/content.json site/index.html site/ux-spec.md  -> exit 0 in 0.5s
+2026-11-23T17:24:32Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-425-a3b9508c.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/collectors-extended.  -> exit 1 in 35.1s
+2026-11-23T17:24:34Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:24:35Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:24:36Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:24:36Z   $ git checkout -q -f --detach 8a2e3755d16883e338937d5fe1c4ab43654a9ec2 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:24:36Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T17:24:41Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.3s
+2026-11-23T17:24:42Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:24:43Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:24:44Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:24:44Z   -> ok share=0.9983 sel=2 excl=89 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:24:44Z STATE PR #426 (code) state 1/1 22ee458c89 base 68eb4a71e2
+2026-11-23T17:24:44Z   $ git checkout -q -f --detach 22ee458c8902d50a88744c23d68678e3465b2162 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:24:44Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:24:48Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.2s
+2026-11-23T17:24:48Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.4s
+2026-11-23T17:24:49Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json  -> exit 0 in 0.7s
+2026-11-23T17:25:24Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-426-22ee458c.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/collectors-extended.  -> exit 1 in 35.1s
+2026-11-23T17:25:25Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:25:26Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:25:27Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:25:27Z   $ git checkout -q -f --detach 68eb4a71e27b9ec6eb1984fc4d0af713fbdbcbc8 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:25:28Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T17:25:32Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.2s
+2026-11-23T17:25:34Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:25:35Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:25:36Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:25:36Z   -> ok share=0.9983 sel=1 excl=90 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:25:36Z STATE PR #427 (code) state 1/4 b5a93f45c8 base c3454be8b7
+2026-11-23T17:25:36Z   $ git checkout -q -f --detach b5a93f45c86fff68e37575ffc4f8f845b0a8d1f5 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:25:36Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:25:40Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.3s
+2026-11-23T17:25:41Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:25:41Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json .codex-plugin/plugin.json AGENTS.md CHANGELOG.md README.md __tests__/repo-consistency-site-catalog.test.js docs/ARCHITECTURE.md docs/CROSS_PLATFORM.md docs/INSTALLATION.md docs/ORG_ARCHITECTURE.md docs/README.md docs/USAGE.md docs/reference/AGENTS.md scripts/generate-docs.js scripts/plugins.txt scripts/validate-r  -> exit 0 in 0.5s
+2026-11-23T17:26:17Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-427-b5a93f45.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/collectors-extended.  -> exit 1 in 35.6s
+2026-11-23T17:26:18Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:26:19Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:26:20Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:26:20Z   $ git checkout -q -f --detach c3454be8b75c284a3bcc793207594fa899db1255 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:26:20Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T17:26:23Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.1s
+2026-11-23T17:26:24Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:26:25Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:26:26Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:26:26Z   -> ok share=0.9966 sel=4 excl=88 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:26:26Z STATE PR #428 (code) state 1/2 c9983ed9fb base 50f0d16fe8
+2026-11-23T17:26:26Z   $ git checkout -q -f --detach c9983ed9fbb7f2155c0f6fc25606e859345f3b31 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:26:26Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:26:30Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.6s
+2026-11-23T17:26:31Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:26:31Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json CHANGELOG.md  -> exit 0 in 0.5s
+2026-11-23T17:27:06Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-428-c9983ed9.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/collectors-extended.  -> exit 1 in 34.8s
+2026-11-23T17:27:07Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:27:08Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:27:09Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:27:09Z   $ git checkout -q -f --detach 50f0d16fe87b9eef9eb16425d681bace5a317d69 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:27:10Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:27:13Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.6s
+2026-11-23T17:27:14Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:27:15Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:27:16Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:27:16Z   -> ok share=0.9983 sel=1 excl=91 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:27:16Z STATE PR #429 (code) state 1/1 a1d5b418d7 base 0965179edc
+2026-11-23T17:27:16Z   $ git checkout -q -f --detach a1d5b418d7f312880e8101aaf02eb1bad7beaade && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:27:16Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.1s
+2026-11-23T17:27:21Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.2s
+2026-11-23T17:27:21Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:27:21Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json CHANGELOG.md  -> exit 0 in 0.5s
+2026-11-23T17:27:57Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-429-a1d5b418.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/collectors-extended.  -> exit 1 in 35.1s
+2026-11-23T17:27:58Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:27:59Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:28:00Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.2s
+2026-11-23T17:28:00Z   $ git checkout -q -f --detach 0965179edcd85879baab756f400faf9a38f18371 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:28:01Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T17:28:05Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.9s
+2026-11-23T17:28:06Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:28:07Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:28:08Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:28:08Z   -> ok share=0.9983 sel=1 excl=91 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:28:08Z STATE PR #430 (code) state 1/1 b5e798fcfe base b9b6180048
+2026-11-23T17:28:08Z   $ git checkout -q -f --detach b5e798fcfecf510956e12df200e7f2304e57c67b && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:28:08Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:28:12Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.1s
+2026-11-23T17:28:12Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:28:13Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json CHANGELOG.md  -> exit 0 in 0.5s
+2026-11-23T17:28:46Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-430-b5e798fc.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/collectors-extended.  -> exit 1 in 33.2s
+2026-11-23T17:28:47Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:28:48Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:28:49Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:28:49Z   $ git checkout -q -f --detach b9b6180048a4b363ba62b492607ef117c1566e2c && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:28:50Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:28:54Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.1s
+2026-11-23T17:28:55Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:28:56Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:28:57Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.2s
+2026-11-23T17:28:57Z   -> ok share=0.9991 sel=1 excl=91 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:28:57Z STATE PR #431 (code) state 1/1 bdda08e839 base de2eb6a9fd
+2026-11-23T17:28:57Z   $ git checkout -q -f --detach bdda08e839867af760fe5939b6e50bfa8ea7a1f7 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:28:57Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:29:01Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.2s
+2026-11-23T17:29:02Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.4s
+2026-11-23T17:29:02Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json CHANGELOG.md  -> exit 0 in 0.5s
+2026-11-23T17:29:34Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-431-bdda08e8.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/collectors-extended.  -> exit 1 in 32.2s
+2026-11-23T17:29:35Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:29:36Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:29:37Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:29:37Z   $ git checkout -q -f --detach de2eb6a9fd3439e104d72f6bfacc53c10038c9a0 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:29:38Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T17:29:42Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.0s
+2026-11-23T17:29:43Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:29:44Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:29:45Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:29:45Z   -> ok share=0.9991 sel=1 excl=91 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:29:45Z STATE PR #432 (code) state 1/1 ca23aeb3ee base bf810e9b63
+2026-11-23T17:29:45Z   $ git checkout -q -f --detach ca23aeb3ee4e9ceb63d625023fbeecb56d925024 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:29:45Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:29:48Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.5s
+2026-11-23T17:29:49Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:29:49Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json CHANGELOG.md  -> exit 0 in 0.5s
+2026-11-23T17:30:24Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-432-ca23aeb3.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/collectors-extended.  -> exit 1 in 34.7s
+2026-11-23T17:30:25Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:30:26Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:30:27Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:30:27Z   $ git checkout -q -f --detach bf810e9b63a87063270fe644329fc424aebd3daf && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:30:28Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:30:31Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.4s
+2026-11-23T17:30:32Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:30:33Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:30:34Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:30:34Z   -> ok share=0.9991 sel=1 excl=91 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:30:34Z STATE PR #433 (code) state 1/1 48606f6cee base 4fddaa419b
+2026-11-23T17:30:34Z   $ git checkout -q -f --detach 48606f6ceefd7e59736f8acdcbb40d8bfb8b3c7c && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:30:34Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:30:38Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.9s
+2026-11-23T17:30:38Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.4s
+2026-11-23T17:30:39Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json CHANGELOG.md  -> exit 0 in 0.5s
+2026-11-23T17:31:10Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-433-48606f6c.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/collectors-extended.  -> exit 1 in 31.5s
+2026-11-23T17:31:11Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:31:12Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:31:13Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:31:13Z   $ git checkout -q -f --detach 4fddaa419bd0a790531f52dc9f2ad4c911c5ee1a && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:31:14Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T17:31:18Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.0s
+2026-11-23T17:31:19Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:31:20Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:31:21Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:31:21Z   -> ok share=0.9991 sel=1 excl=91 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:31:21Z STATE PR #434 (code) state 1/2 23995e005a base 96338b5ad0
+2026-11-23T17:31:21Z   $ git checkout -q -f --detach 23995e005adbbab897041566c5c6d77a26c59529 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:31:21Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:31:25Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.9s
+2026-11-23T17:31:25Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:31:26Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json .codex-plugin/plugin.json .github/ISSUE_TEMPLATE/bug_report.yml AGENTS.md CHANGELOG.md README.md SECURITY.md __tests__/cli-subcommands.test.js __tests__/cross-file-analyzer-comprehensive.test.js __tests__/gen-adapters.test.js __tests__/pin-marketplace.test.js __tests__/preflight.test.js __tests__/validation-scrip  -> exit 0 in 0.6s
+2026-11-23T17:31:52Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-434-23995e00.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 26.2s
+2026-11-23T17:31:53Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:31:54Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:31:55Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:31:55Z   $ git checkout -q -f --detach 96338b5ad0de6d94f9705732ef0598413af8cc75 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:31:55Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:31:58Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 2.9s
+2026-11-23T17:31:59Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:32:00Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:32:01Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:32:01Z   -> ok share=0.798 sel=14 excl=78 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:32:01Z STATE PR #435 (code) state 1/1 67ea3eda9e base eda6992d7b
+2026-11-23T17:32:01Z   $ git checkout -q -f --detach 67ea3eda9e19a4992c232fc52ea72d02a2fb3ce2 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:32:01Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:32:04Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.5s
+2026-11-23T17:32:05Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:32:05Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json .codex-plugin/plugin.json AGENTS.md CHANGELOG.md README.md SECURITY.md __tests__/gen-adapters.test.js __tests__/marketplace-standalone-contract.test.js adapters/README.md adapters/codex/README.md adapters/opencode/README.md docs/ARCHITECTURE.md docs/CROSS_PLATFORM.md docs/INSTALLATION.md docs/ORG_ARCHITECTURE.md   -> exit 0 in 0.5s
+2026-11-23T17:32:37Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-435-67ea3eda.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 31.2s
+2026-11-23T17:32:38Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:32:38Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:32:39Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:32:39Z   $ git checkout -q -f --detach eda6992d7bd3fa1eb23f68ebe5ab8333305edcca && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:32:40Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:32:43Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.0s
+2026-11-23T17:32:44Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:32:45Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:32:46Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:32:46Z   -> ok share=0.8723 sel=7 excl=85 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:32:46Z STATE PR #436 (code) state 1/1 f2d7ed9682 base 933e8ce77c
+2026-11-23T17:32:46Z   $ git checkout -q -f --detach f2d7ed9682aed719b197213f56eb0ce557c5bfbb && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:32:46Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:32:50Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.7s
+2026-11-23T17:32:50Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.4s
+2026-11-23T17:32:51Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json CHANGELOG.md __tests__/marketplace-standalone-contract.test.js  -> exit 0 in 0.6s
+2026-11-23T17:33:26Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-436-f2d7ed96.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/collectors-extended.  -> exit 1 in 34.9s
+2026-11-23T17:33:27Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:33:28Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:33:29Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:33:29Z   $ git checkout -q -f --detach 933e8ce77c13d287511dff37a5b8f6a93da93143 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:33:30Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:33:33Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.6s
+2026-11-23T17:33:34Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:33:35Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:33:36Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:33:36Z   -> ok share=0.9987 sel=1 excl=91 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:33:36Z STATE PR #437 (code) state 1/1 59eb76e11e base 676b25c882
+2026-11-23T17:33:36Z   $ git checkout -q -f --detach 59eb76e11e92416bb935acb810ca258f0224de88 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:33:36Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:33:40Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.9s
+2026-11-23T17:33:41Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:33:41Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json CHANGELOG.md  -> exit 0 in 0.5s
+2026-11-23T17:34:14Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-437-59eb76e1.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/collectors-extended.  -> exit 1 in 32.9s
+2026-11-23T17:34:15Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:34:16Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:34:17Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:34:17Z   $ git checkout -q -f --detach 676b25c882c888aa4cedde316c97ec641dc5938a && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:34:18Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T17:34:22Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.9s
+2026-11-23T17:34:23Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:34:24Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:34:25Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:34:25Z   -> ok share=0.9987 sel=1 excl=91 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:34:25Z STATE PR #438 (code) state 1/5 ec4b8e460d base 39a5550659
+2026-11-23T17:34:25Z   $ git checkout -q -f --detach ec4b8e460d3f071c14d6d0bc8c7b805b88dbbe5e && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:34:25Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:34:29Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.1s
+2026-11-23T17:34:29Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:34:30Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json .codex-plugin/plugin.json .github/ISSUE_TEMPLATE/bug_report.yml .github/workflows/ci.yml AGENTS.md CHANGELOG.md CONTRIBUTING.md README.md SECURITY.md __tests__/adapter-namespace-strip.test.js __tests__/cli-subcommands.test.js __tests__/dev-cli.test.js __tests__/generate-plugin-list.test.js __tests__/next-task-lef  -> exit 0 in 0.5s
+2026-11-23T17:34:38Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-438-ec4b8e46.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-github-contract.test.js __tests__/command-parser.test.js __tests__/con  -> exit 1 in 8.3s
+2026-11-23T17:34:39Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:34:40Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:34:41Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:34:41Z   $ git checkout -q -f --detach 39a55506597c95264f4233cba4663840dc28d397 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:34:41Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:34:45Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.9s
+2026-11-23T17:34:46Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:34:47Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:34:48Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:34:48Z   -> ok share=0.2173 sel=27 excl=68 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:34:48Z STATE PR #439 (code) state 1/2 8064eb9dcf base 44eddebe1c
+2026-11-23T17:34:48Z   $ git checkout -q -f --detach 8064eb9dcf5ed7c3af23f067813ae84a179d295c && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:34:48Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:34:53Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.5s
+2026-11-23T17:34:53Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:34:54Z   $ npx --no-install jest  --listTests --findRelatedTests .agnix.toml .claude-plugin/marketplace.json .codex-plugin/plugin.json .github/ISSUE_TEMPLATE/bug_report.yml AGENTS.md CHANGELOG.md CONTRIBUTING.md README.md __tests__/adapter-namespace-strip.test.js __tests__/cli-subcommands.test.js __tests__/cross-platform.test.js __tests__/fetch-plugin-pins.test.js __tests__/gen-adapters.test.js __tests__/gen  -> exit 0 in 0.6s
+2026-11-23T17:35:00Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-439-8064eb9d.json --runTestsByPath __tests__/atomic-write.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/command-parser.test.js __tests__/config.test.js __tests__/context-optimizer.test.js __tests__/deprecation.test.js __tests__/detect-platform.test.js  -> exit 1 in 5.8s
+2026-11-23T17:35:01Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:35:02Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.2s
+2026-11-23T17:35:03Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:35:03Z   $ git checkout -q -f --detach 44eddebe1cef2b9352e50ef612773bea71afd516 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T17:35:03Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:35:08Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.8s
+2026-11-23T17:35:09Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:35:10Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:35:11Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:35:11Z   -> ok share=0.3912 sel=22 excl=29 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:35:11Z STATE PR #440 (code) state 1/1 f373460025 base a8dba944da
+2026-11-23T17:35:11Z   $ git checkout -q -f --detach f373460025a04d42fdc33b96ce43267dc072a420 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:35:12Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:35:15Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.9s
+2026-11-23T17:35:16Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:35:16Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json CHANGELOG.md  -> exit 0 in 0.5s
+2026-11-23T17:35:30Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-440-f3734600.json --runTestsByPath __tests__/adapter-namespace-strip.test.js __tests__/atomic-write.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/command-parse  -> exit 1 in 13.5s
+2026-11-23T17:35:31Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:35:32Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:35:33Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:35:33Z   $ git checkout -q -f --detach a8dba944da963a6dcc9f786565f2f004f709bb66 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:35:33Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:35:37Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.7s
+2026-11-23T17:35:38Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:35:39Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:35:40Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:35:40Z   -> ok share=0.9972 sel=1 excl=50 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:35:40Z STATE PR #441 (code) state 1/1 66b58748ce base b830a8d42f
+2026-11-23T17:35:40Z   $ git checkout -q -f --detach 66b58748cea49b93f7f6d58f67213a6d5f94123d && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:35:40Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:35:44Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.9s
+2026-11-23T17:35:44Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:35:45Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json CHANGELOG.md  -> exit 0 in 0.5s
+2026-11-23T17:35:58Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-441-66b58748.json --runTestsByPath __tests__/adapter-namespace-strip.test.js __tests__/atomic-write.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/command-parse  -> exit 1 in 13.2s
+2026-11-23T17:35:59Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:36:00Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:36:01Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:36:01Z   $ git checkout -q -f --detach b830a8d42fdbbaebe3f52eb26a605a2ecda5bff3 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:36:01Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:36:05Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.1s
+2026-11-23T17:36:06Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:36:07Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:36:08Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:36:08Z   -> ok share=0.9972 sel=1 excl=50 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:36:08Z STATE PR #442 (code) state 1/1 7fedc67c45 base 68e4a0631c
+2026-11-23T17:36:08Z   $ git checkout -q -f --detach 7fedc67c45e5f98ae3feff613d6481f1b2b37471 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:36:09Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:36:12Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.7s
+2026-11-23T17:36:13Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.4s
+2026-11-23T17:36:13Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json CHANGELOG.md  -> exit 0 in 0.5s
+2026-11-23T17:36:26Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-442-7fedc67c.json --runTestsByPath __tests__/adapter-namespace-strip.test.js __tests__/atomic-write.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/command-parse  -> exit 1 in 12.9s
+2026-11-23T17:36:27Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:36:28Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:36:29Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:36:29Z   $ git checkout -q -f --detach 68e4a0631c3092f0078c8068848b574c0dc78a6f && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:36:29Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:36:33Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.8s
+2026-11-23T17:36:34Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:36:35Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:36:36Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:36:36Z   -> ok share=0.9972 sel=1 excl=50 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:36:36Z STATE PR #447 (code) state 1/1 a29a7c27d8 base a999d11a90
+2026-11-23T17:36:36Z   $ git checkout -q -f --detach a29a7c27d80f1cea777f365ffcc863dd601192bd && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:36:36Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:36:40Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.9s
+2026-11-23T17:36:41Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.4s
+2026-11-23T17:36:41Z   $ npx --no-install jest  --listTests --findRelatedTests CHANGELOG.md package-lock.json package.json  -> exit 0 in 0.5s
+2026-11-23T17:36:48Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-447-a29a7c27.json --runTestsByPath __tests__/adapter-namespace-strip.test.js __tests__/atomic-write.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/command-parser.test.js __tests__/config.test.js __tests__/context-optimize  -> exit 1 in 7.3s
+2026-11-23T17:36:49Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:36:50Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:36:51Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:36:51Z   $ git checkout -q -f --detach a999d11a900d7c60a34d94353a495fcba5a95d8e && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:36:52Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:36:55Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.6s
+2026-11-23T17:36:56Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:36:57Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:36:58Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:36:58Z   -> ok share=0.5763 sel=7 excl=44 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:36:58Z STATE PR #450 (code) state 1/1 ce58913304 base d2a5056b20
+2026-11-23T17:36:58Z   $ git checkout -q -f --detach ce58913304d88a1d1a0513e1837ae43c33f5f6f5 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:36:58Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:37:03Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.1s
+2026-11-23T17:37:03Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:37:04Z   $ npx --no-install jest  --listTests --findRelatedTests README.md  -> exit 0 in 0.5s
+2026-11-23T17:37:18Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-450-ce589133.json --runTestsByPath __tests__/adapter-namespace-strip.test.js __tests__/atomic-write.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/command-parse  -> exit 1 in 14.0s
+2026-11-23T17:37:19Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:37:20Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:37:20Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:37:20Z   $ git checkout -q -f --detach d2a5056b200573db3e1a317c4b947bfbbbe6956d && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:37:21Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:37:24Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.5s
+2026-11-23T17:37:25Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:37:26Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:37:27Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:37:27Z   -> ok share=1.0 sel=0 excl=51 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:37:27Z STATE PR #411 (code) state 2/3 56dec608bb base 80d532f84d
+2026-11-23T17:37:27Z   $ git checkout -q -f --detach 56dec608bbd52b4aeef2c81038e5646b0712c480 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T17:37:27Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:37:31Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.0s
+2026-11-23T17:37:32Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:37:32Z   $ npx --no-install jest  --listTests --findRelatedTests .kiro/agents/agent-enhancer.json .kiro/agents/ci-fixer.json .kiro/agents/ci-monitor.json .kiro/agents/claudemd-enhancer.json .kiro/agents/consult-agent.json .kiro/agents/cross-file-enhancer.json .kiro/agents/debate-orchestrator.json .kiro/agents/delivery-validator.json .kiro/agents/deslop-agent.json .kiro/agents/docs-enhancer.json .kiro/agents/  -> exit 0 in 0.6s
+2026-11-23T17:38:03Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-411-56dec608.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/collectors-extended.  -> exit 1 in 30.6s
+2026-11-23T17:38:04Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:38:05Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:38:06Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:38:06Z   $ git checkout -q -f --detach 80d532f84dc00715ae004c95396f2a54a114e2ca && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T17:38:07Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T17:38:10Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.1s
+2026-11-23T17:38:11Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:38:12Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.8s
+2026-11-23T17:38:13Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.2s
+2026-11-23T17:38:13Z   -> ok share=0.9975 sel=1 excl=88 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:38:13Z STATE PR #413 (code) state 2/5 e184077c48 base b588afc34f
+2026-11-23T17:38:13Z   $ git checkout -q -f --detach e184077c482dfce82d26bc5bb8469dc6ffc281d9 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:38:13Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:38:17Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.8s
+2026-11-23T17:38:18Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:38:18Z   $ npx --no-install jest  --listTests --findRelatedTests .agnix.toml .gitignore CHANGELOG.md README.md __tests__/dev-install.test.js __tests__/gen-adapters.test.js __tests__/platform-adapter-install.test.js adapters/codex/README.md agent-docs/CODEX-REFERENCE.md agent-docs/OPENCODE-REFERENCE.md agent-docs/workflow.md bin/cli.js checklists/cross-platform-compatibility.md docs/ARCHITECTURE.md docs/CROSS  -> exit 0 in 0.5s
+2026-11-23T17:38:48Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-413-e184077c.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 30.2s
+2026-11-23T17:38:49Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:38:50Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:38:51Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:38:51Z   $ git checkout -q -f --detach b588afc34fd9b649f757c621026eb84030148ca2 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:38:52Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:38:55Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.3s
+2026-11-23T17:38:56Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:38:57Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:38:58Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:38:58Z   -> ok share=0.9862 sel=5 excl=84 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:38:58Z STATE PR #420 (code) state 2/5 406da08412 base c0e693eec2
+2026-11-23T17:38:58Z   $ git checkout -q -f --detach 406da0841259406a6774de30eb895b11baa25f91 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:38:58Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:39:02Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.0s
+2026-11-23T17:39:03Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:39:03Z   $ npx --no-install jest  --listTests --findRelatedTests CHANGELOG.md __tests__/fetch-plugin-pins.test.js bin/cli.js docs/INSTALLATION.md  -> exit 0 in 0.5s
+2026-11-23T17:39:34Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-420-406da084.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 31.0s
+2026-11-23T17:39:35Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:39:36Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:39:37Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:39:37Z   $ git checkout -q -f --detach c0e693eec2f8856de1351a966c6bccc08f7e99a4 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:39:38Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:39:41Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.1s
+2026-11-23T17:39:42Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:39:43Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:39:44Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:39:44Z   -> ok share=0.9791 sel=4 excl=86 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:39:44Z STATE PR #421 (code) state 2/3 49ef2cb82b base 7486b5bbe5
+2026-11-23T17:39:44Z   $ git checkout -q -f --detach 49ef2cb82b2fbb23a7959a84a077455b4c14ef25 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:39:44Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:39:48Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.7s
+2026-11-23T17:39:48Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:39:49Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json .claude-plugin/plugin.json CHANGELOG.md README.md __tests__/cli-subcommands.test.js __tests__/marketplace-standalone-contract.test.js __tests__/pin-marketplace.test.js agent-docs/workflow.md bin/cli.js docs/INSTALLATION.md docs/reference/AGENTS.md package-lock.json package.json scripts/pin-marketplace.js site/con  -> exit 0 in 0.5s
+2026-11-23T17:40:17Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-421-49ef2cb8.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 28.2s
+2026-11-23T17:40:18Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:40:19Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:40:20Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:40:20Z   $ git checkout -q -f --detach 7486b5bbe58852d195bdb1ec5eacbf235959cf06 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:40:20Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:40:24Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.8s
+2026-11-23T17:40:25Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:40:26Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:40:27Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:40:27Z   -> ok share=0.8962 sel=8 excl=82 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:40:27Z STATE PR #422 (code) state 2/4 8e895617ac base 2076bfdad2
+2026-11-23T17:40:27Z   $ git checkout -q -f --detach 8e895617ac45a88c1f1c6ed3f98d55a8936f1b8c && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:40:27Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:40:31Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.9s
+2026-11-23T17:40:32Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.4s
+2026-11-23T17:40:32Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json .codex-plugin/plugin.json AGENTS.md CHANGELOG.md README.md __tests__/fetch-plugin-pins.test.js __tests__/marketplace-standalone-contract.test.js __tests__/pin-marketplace.test.js bin/cli.js docs/INSTALLATION.md docs/README.md docs/reference/AGENTS.md scripts/generate-docs.js scripts/pin-marketplace.js site/conten  -> exit 0 in 0.6s
+2026-11-23T17:41:03Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-422-8e895617.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 30.3s
+2026-11-23T17:41:03Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:41:04Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:41:05Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:41:05Z   $ git checkout -q -f --detach 2076bfdad2925df82a224dfc5dd6f0675c27c4b7 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:41:06Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T17:41:10Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.6s
+2026-11-23T17:41:11Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:41:12Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:41:13Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:41:13Z   -> ok share=0.9752 sel=7 excl=83 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:41:13Z STATE PR #423 (code) state 2/2 8e040ae21b base e0f8a4c4c4
+2026-11-23T17:41:13Z   $ git checkout -q -f --detach 8e040ae21b6a02666b3d887ac3896b135030efc3 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:41:13Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.3s
+2026-11-23T17:41:16Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.4s
+2026-11-23T17:41:17Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:41:17Z   $ npx --no-install jest  --listTests --findRelatedTests AGENTS.md CHANGELOG.md agent-docs/release.md checklists/release.md  -> exit 0 in 0.5s
+2026-11-23T17:41:51Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-423-8e040ae2.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/collectors-extended.  -> exit 1 in 33.2s
+2026-11-23T17:41:51Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:41:52Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.8s
+2026-11-23T17:41:53Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:41:53Z   $ git checkout -q -f --detach e0f8a4c4c4057c377f6fd13565167dadf20eca04 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:41:54Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:41:57Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.3s
+2026-11-23T17:41:58Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:41:59Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:42:00Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:42:00Z   -> ok share=1.0 sel=0 excl=90 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:42:00Z STATE PR #425 (code) state 2/2 8b63b861fd base 8a2e3755d1
+2026-11-23T17:42:00Z   $ git checkout -q -f --detach 8b63b861fde91aef72febba6da19316b83fe7144 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:42:00Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:42:04Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.7s
+2026-11-23T17:42:05Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.4s
+2026-11-23T17:42:05Z   $ npx --no-install jest  --listTests --findRelatedTests .agnix.toml CHANGELOG.md README.md __tests__/repo-consistency-test-count.test.js docs/ARCHITECTURE.md scripts/validate-repo-consistency.js site/content.json site/index.html site/ux-spec.md  -> exit 0 in 0.6s
+2026-11-23T17:42:39Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-425-8b63b861.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/collectors-extended.  -> exit 1 in 33.5s
+2026-11-23T17:42:40Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:42:41Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:42:42Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:42:42Z   $ git checkout -q -f --detach 8a2e3755d16883e338937d5fe1c4ab43654a9ec2 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:42:42Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:42:46Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.4s
+2026-11-23T17:42:47Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:42:48Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:42:49Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:42:49Z   -> ok share=0.9983 sel=2 excl=89 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:42:49Z STATE PR #427 (code) state 2/4 ac1da37806 base c3454be8b7
+2026-11-23T17:42:49Z   $ git checkout -q -f --detach ac1da3780616e35c4582743f5b7cfa773b48578d && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:42:49Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:42:52Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.6s
+2026-11-23T17:42:53Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.4s
+2026-11-23T17:42:53Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json .codex-plugin/plugin.json AGENTS.md CHANGELOG.md README.md docs/ARCHITECTURE.md docs/CROSS_PLATFORM.md docs/INSTALLATION.md docs/ORG_ARCHITECTURE.md docs/README.md docs/USAGE.md docs/reference/AGENTS.md scripts/generate-docs.js scripts/plugins.txt site/content.json site/index.html site/ux-spec.md  -> exit 0 in 0.6s
+2026-11-23T17:43:29Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-427-ac1da378.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/collectors-extended.  -> exit 1 in 36.1s
+2026-11-23T17:43:30Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:43:31Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:43:32Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:43:32Z   $ git checkout -q -f --detach c3454be8b75c284a3bcc793207594fa899db1255 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:43:33Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T17:43:37Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.7s
+2026-11-23T17:43:38Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:43:39Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.2s
+2026-11-23T17:43:40Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:43:40Z   -> ok share=0.9966 sel=2 excl=89 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:43:40Z STATE PR #428 (code) state 2/2 567ba5b6e1 base 50f0d16fe8
+2026-11-23T17:43:40Z   $ git checkout -q -f --detach 567ba5b6e18f7f33a0e30280ee73ba8f4d47a72c && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:43:40Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:43:44Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.1s
+2026-11-23T17:43:45Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:43:45Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json CHANGELOG.md  -> exit 0 in 0.5s
+2026-11-23T17:44:20Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-428-567ba5b6.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/collectors-extended.  -> exit 1 in 34.9s
+2026-11-23T17:44:21Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:44:23Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:44:24Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:44:24Z   $ git checkout -q -f --detach 50f0d16fe87b9eef9eb16425d681bace5a317d69 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:44:24Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:44:28Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.3s
+2026-11-23T17:44:29Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:44:30Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:44:31Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:44:31Z   -> ok share=0.9983 sel=1 excl=91 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:44:31Z STATE PR #434 (code) state 2/2 a05cb61d9f base 96338b5ad0
+2026-11-23T17:44:31Z   $ git checkout -q -f --detach a05cb61d9fe89e4bf24b27f5f64dfa32a33fdcf1 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:44:31Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:44:35Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.0s
+2026-11-23T17:44:36Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:44:36Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json .codex-plugin/plugin.json .github/ISSUE_TEMPLATE/bug_report.yml AGENTS.md CHANGELOG.md README.md SECURITY.md __tests__/cli-subcommands.test.js __tests__/cross-file-analyzer-comprehensive.test.js __tests__/gen-adapters.test.js __tests__/pin-marketplace.test.js __tests__/preflight.test.js __tests__/validation-scrip  -> exit 0 in 0.6s
+2026-11-23T17:45:02Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-434-a05cb61d.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 26.2s
+2026-11-23T17:45:03Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:45:04Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:45:05Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:45:05Z   $ git checkout -q -f --detach 96338b5ad0de6d94f9705732ef0598413af8cc75 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:45:06Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:45:09Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.5s
+2026-11-23T17:45:10Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:45:11Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:45:12Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:45:12Z   -> ok share=0.798 sel=14 excl=78 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:45:12Z STATE PR #438 (code) state 2/5 3966de5ca4 base 39a5550659
+2026-11-23T17:45:12Z   $ git checkout -q -f --detach 3966de5ca4662fde5cf215185a93dc57fb944a62 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:45:13Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:45:16Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.9s
+2026-11-23T17:45:17Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.4s
+2026-11-23T17:45:17Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json .codex-plugin/plugin.json .github/ISSUE_TEMPLATE/bug_report.yml .github/workflows/ci.yml AGENTS.md CHANGELOG.md CONTRIBUTING.md README.md SECURITY.md __tests__/adapter-namespace-strip.test.js __tests__/cli-subcommands.test.js __tests__/dev-cli.test.js __tests__/generate-plugin-list.test.js __tests__/next-task-lef  -> exit 0 in 0.5s
+2026-11-23T17:45:25Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-438-3966de5c.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-github-contract.test.js __tests__/command-parser.test.js __tests__/con  -> exit 1 in 7.6s
+2026-11-23T17:45:26Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.2s
+2026-11-23T17:45:27Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:45:28Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:45:28Z   $ git checkout -q -f --detach 39a55506597c95264f4233cba4663840dc28d397 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:45:28Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:45:32Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.0s
+2026-11-23T17:45:34Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:45:35Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:45:36Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:45:36Z   -> ok share=0.2173 sel=27 excl=68 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:45:36Z STATE PR #439 (code) state 2/2 49a31ee810 base 44eddebe1c
+2026-11-23T17:45:36Z   $ git checkout -q -f --detach 49a31ee810a232089c3e608f4745350d21ae398b && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:45:36Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:45:40Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.2s
+2026-11-23T17:45:41Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:45:41Z   $ npx --no-install jest  --listTests --findRelatedTests .agnix.toml .claude-plugin/marketplace.json .codex-plugin/plugin.json .github/ISSUE_TEMPLATE/bug_report.yml AGENTS.md CHANGELOG.md CONTRIBUTING.md README.md __tests__/adapter-namespace-strip.test.js __tests__/cli-subcommands.test.js __tests__/cross-platform.test.js __tests__/fetch-plugin-pins.test.js __tests__/gen-adapters.test.js __tests__/gen  -> exit 0 in 0.6s
+2026-11-23T17:45:47Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-439-49a31ee8.json --runTestsByPath __tests__/atomic-write.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/command-parser.test.js __tests__/config.test.js __tests__/context-optimizer.test.js __tests__/deprecation.test.js __tests__/detect-platform.test.js  -> exit 1 in 6.0s
+2026-11-23T17:45:48Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:45:49Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:45:51Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.3s
+2026-11-23T17:45:51Z   $ git checkout -q -f --detach 44eddebe1cef2b9352e50ef612773bea71afd516 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T17:45:51Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:45:55Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.8s
+2026-11-23T17:45:56Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:45:57Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:45:58Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:45:58Z   -> ok share=0.3912 sel=22 excl=29 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:45:58Z STATE PR #411 (code) state 3/3 671b00fde2 base 80d532f84d
+2026-11-23T17:45:58Z   $ git checkout -q -f --detach 671b00fde2199c6bac9ba4e2e1eeb61d08ae5412 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T17:45:58Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:46:02Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.8s
+2026-11-23T17:46:02Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:46:03Z   $ npx --no-install jest  --listTests --findRelatedTests .kiro/agents/agent-enhancer.json .kiro/agents/ci-fixer.json .kiro/agents/ci-monitor.json .kiro/agents/claudemd-enhancer.json .kiro/agents/consult-agent.json .kiro/agents/cross-file-enhancer.json .kiro/agents/debate-orchestrator.json .kiro/agents/delivery-validator.json .kiro/agents/deslop-agent.json .kiro/agents/docs-enhancer.json .kiro/agents/  -> exit 0 in 0.6s
+2026-11-23T17:46:32Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-411-671b00fd.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/collectors-extended.  -> exit 1 in 29.8s
+2026-11-23T17:46:34Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:46:35Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:46:35Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:46:35Z   $ git checkout -q -f --detach 80d532f84dc00715ae004c95396f2a54a114e2ca && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:46:36Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.6s
+2026-11-23T17:46:40Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.8s
+2026-11-23T17:46:41Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:46:42Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:46:43Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:46:43Z   -> ok share=0.9975 sel=1 excl=88 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:46:43Z STATE PR #413 (code) state 3/5 e4f56ece07 base b588afc34f
+2026-11-23T17:46:43Z   $ git checkout -q -f --detach e4f56ece0715a607ffc758b0075bc74d31c9286a && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:46:43Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.1s
+2026-11-23T17:46:47Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.9s
+2026-11-23T17:46:47Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:46:48Z   $ npx --no-install jest  --listTests --findRelatedTests .agnix.toml .gitignore CHANGELOG.md README.md __tests__/dev-install.test.js __tests__/gen-adapters.test.js __tests__/platform-adapter-install.test.js adapters/codex/README.md agent-docs/CODEX-REFERENCE.md agent-docs/OPENCODE-REFERENCE.md agent-docs/workflow.md bin/cli.js checklists/cross-platform-compatibility.md docs/ARCHITECTURE.md docs/CROSS  -> exit 0 in 0.5s
+2026-11-23T17:47:18Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-413-e4f56ece.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 30.7s
+2026-11-23T17:47:19Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:47:20Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:47:21Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:47:21Z   $ git checkout -q -f --detach b588afc34fd9b649f757c621026eb84030148ca2 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:47:22Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T17:47:26Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.6s
+2026-11-23T17:47:27Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:47:28Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:47:29Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:47:29Z   -> ok share=0.9862 sel=5 excl=84 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:47:29Z STATE PR #420 (code) state 3/5 3fae184c6e base c0e693eec2
+2026-11-23T17:47:29Z   $ git checkout -q -f --detach 3fae184c6e7c54234cb32ea91e911cf21cf4fd83 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:47:29Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:47:33Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.2s
+2026-11-23T17:47:34Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:47:35Z   $ npx --no-install jest  --listTests --findRelatedTests CHANGELOG.md __tests__/fetch-plugin-pins.test.js bin/cli.js docs/INSTALLATION.md  -> exit 0 in 0.6s
+2026-11-23T17:48:04Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-420-3fae184c.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 29.3s
+2026-11-23T17:48:05Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:48:06Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:48:07Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:48:07Z   $ git checkout -q -f --detach c0e693eec2f8856de1351a966c6bccc08f7e99a4 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:48:08Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T17:48:11Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.1s
+2026-11-23T17:48:12Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:48:13Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:48:14Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:48:14Z   -> ok share=0.9791 sel=4 excl=86 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:48:14Z STATE PR #421 (code) state 3/3 2228229224 base 7486b5bbe5
+2026-11-23T17:48:14Z   $ git checkout -q -f --detach 22282292247f7bd633a199cf3f5a7b539a086ac5 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:48:14Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:48:18Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.0s
+2026-11-23T17:48:19Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.4s
+2026-11-23T17:48:19Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json .claude-plugin/plugin.json CHANGELOG.md README.md __tests__/marketplace-standalone-contract.test.js agent-docs/workflow.md docs/reference/AGENTS.md package-lock.json package.json site/content.json  -> exit 0 in 0.6s
+2026-11-23T17:48:46Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-421-22282292.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 27.1s
+2026-11-23T17:48:47Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:48:48Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:48:49Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:48:49Z   $ git checkout -q -f --detach 7486b5bbe58852d195bdb1ec5eacbf235959cf06 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:48:49Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:48:53Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.1s
+2026-11-23T17:48:54Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:48:55Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:48:56Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:48:56Z   -> ok share=0.8974 sel=7 excl=83 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:48:56Z STATE PR #422 (code) state 3/4 8c44a9fa81 base 2076bfdad2
+2026-11-23T17:48:56Z   $ git checkout -q -f --detach 8c44a9fa8121893683666d72bf8390404e51ba2c && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:48:57Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:49:01Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.1s
+2026-11-23T17:49:01Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:49:02Z   $ npx --no-install jest  --listTests --findRelatedTests CHANGELOG.md __tests__/fetch-plugin-pins.test.js bin/cli.js docs/INSTALLATION.md  -> exit 0 in 0.6s
+2026-11-23T17:49:33Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-422-8c44a9fa.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 31.1s
+2026-11-23T17:49:34Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:49:35Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:49:36Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:49:36Z   $ git checkout -q -f --detach 2076bfdad2925df82a224dfc5dd6f0675c27c4b7 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:49:36Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T17:49:40Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.0s
+2026-11-23T17:49:41Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:49:42Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:49:43Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:49:43Z   -> ok share=0.9791 sel=4 excl=86 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:49:43Z STATE PR #427 (code) state 3/4 82f33599ec base c3454be8b7
+2026-11-23T17:49:43Z   $ git checkout -q -f --detach 82f33599ec04209274dce85ba790efabcdfe398a && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:49:43Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:49:47Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.1s
+2026-11-23T17:49:48Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:49:48Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json .codex-plugin/plugin.json AGENTS.md CHANGELOG.md README.md docs/ARCHITECTURE.md docs/CROSS_PLATFORM.md docs/INSTALLATION.md docs/README.md docs/USAGE.md docs/reference/AGENTS.md scripts/generate-docs.js scripts/plugins.txt site/content.json site/index.html site/ux-spec.md  -> exit 0 in 0.6s
+2026-11-23T17:50:22Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-427-82f33599.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/collectors-extended.  -> exit 1 in 34.0s
+2026-11-23T17:50:23Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:50:24Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:50:25Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:50:25Z   $ git checkout -q -f --detach c3454be8b75c284a3bcc793207594fa899db1255 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:50:26Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:50:30Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.0s
+2026-11-23T17:50:31Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:50:32Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:50:33Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:50:33Z   -> ok share=0.9966 sel=2 excl=89 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:50:33Z STATE PR #438 (code) state 3/5 701190db28 base 39a5550659
+2026-11-23T17:50:33Z   $ git checkout -q -f --detach 701190db280b414193d3f141e3c368e87c4b7ef2 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:50:33Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:50:37Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.6s
+2026-11-23T17:50:37Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.4s
+2026-11-23T17:50:38Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json .codex-plugin/plugin.json .github/ISSUE_TEMPLATE/bug_report.yml .github/workflows/ci.yml AGENTS.md CHANGELOG.md CONTRIBUTING.md README.md SECURITY.md __tests__/adapter-namespace-strip.test.js __tests__/cli-subcommands.test.js __tests__/dev-cli.test.js __tests__/generate-plugin-list.test.js __tests__/next-task-lef  -> exit 0 in 0.5s
+2026-11-23T17:50:45Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-438-701190db.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-github-contract.test.js __tests__/command-parser.test.js __tests__/con  -> exit 1 in 7.1s
+2026-11-23T17:50:46Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:50:46Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:50:47Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:50:47Z   $ git checkout -q -f --detach 39a55506597c95264f4233cba4663840dc28d397 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:50:48Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:50:51Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.9s
+2026-11-23T17:50:52Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:50:53Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:50:54Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:50:54Z   -> ok share=0.2173 sel=27 excl=68 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:50:54Z STATE PR #413 (code) state 4/5 a2f77a62be base b588afc34f
+2026-11-23T17:50:54Z   $ git checkout -q -f --detach a2f77a62be84555b9371e1092874c85b996f9526 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:50:54Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.1s
+2026-11-23T17:50:58Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.0s
+2026-11-23T17:50:59Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:50:59Z   $ npx --no-install jest  --listTests --findRelatedTests .agnix.toml .gitignore CHANGELOG.md README.md __tests__/dev-install.test.js __tests__/gen-adapters.test.js __tests__/platform-adapter-install.test.js adapters/codex/README.md agent-docs/CODEX-REFERENCE.md agent-docs/OPENCODE-REFERENCE.md agent-docs/workflow.md bin/cli.js checklists/cross-platform-compatibility.md docs/ARCHITECTURE.md docs/CROSS  -> exit 0 in 0.5s
+2026-11-23T17:51:30Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-413-a2f77a62.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 30.2s
+2026-11-23T17:51:30Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.8s
+2026-11-23T17:51:31Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:51:32Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:51:32Z   $ git checkout -q -f --detach b588afc34fd9b649f757c621026eb84030148ca2 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:51:33Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:51:37Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.6s
+2026-11-23T17:51:38Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:51:38Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:51:39Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:51:39Z   -> ok share=0.9862 sel=5 excl=84 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:51:39Z STATE PR #420 (code) state 4/5 05f2d133d9 base c0e693eec2
+2026-11-23T17:51:39Z   $ git checkout -q -f --detach 05f2d133d93c09abf9c90da8982137c4253ef4ac && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:51:39Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.1s
+2026-11-23T17:51:43Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.9s
+2026-11-23T17:51:44Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.4s
+2026-11-23T17:51:44Z   $ npx --no-install jest  --listTests --findRelatedTests CHANGELOG.md __tests__/fetch-plugin-pins.test.js bin/cli.js docs/INSTALLATION.md  -> exit 0 in 0.5s
+2026-11-23T17:52:13Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-420-05f2d133.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 29.2s
+2026-11-23T17:52:14Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:52:15Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:52:16Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:52:16Z   $ git checkout -q -f --detach c0e693eec2f8856de1351a966c6bccc08f7e99a4 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:52:17Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.6s
+2026-11-23T17:52:21Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.7s
+2026-11-23T17:52:22Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:52:22Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:52:23Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:52:23Z   -> ok share=0.9791 sel=4 excl=86 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:52:23Z STATE PR #422 (code) state 4/4 b68beee55e base 2076bfdad2
+2026-11-23T17:52:23Z   $ git checkout -q -f --detach b68beee55e6f6e3dd5fbfdbe87ff020c7503fc73 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:52:24Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:52:27Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.8s
+2026-11-23T17:52:28Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.4s
+2026-11-23T17:52:28Z   $ npx --no-install jest  --listTests --findRelatedTests CHANGELOG.md __tests__/fetch-plugin-pins.test.js bin/cli.js docs/INSTALLATION.md  -> exit 0 in 0.5s
+2026-11-23T17:52:58Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-422-b68beee5.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 29.5s
+2026-11-23T17:52:59Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:53:00Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:53:01Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:53:01Z   $ git checkout -q -f --detach 2076bfdad2925df82a224dfc5dd6f0675c27c4b7 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:53:01Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:53:05Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.9s
+2026-11-23T17:53:06Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:53:07Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.8s
+2026-11-23T17:53:08Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:53:08Z   -> ok share=0.9791 sel=4 excl=86 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:53:08Z STATE PR #427 (code) state 4/4 ea58e5c37b base c3454be8b7
+2026-11-23T17:53:08Z   $ git checkout -q -f --detach ea58e5c37b7f2079e5219039ff441fa87b54ff2a && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:53:08Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:53:12Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.8s
+2026-11-23T17:53:12Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.4s
+2026-11-23T17:53:13Z   $ npx --no-install jest  --listTests --findRelatedTests .claude-plugin/marketplace.json .codex-plugin/plugin.json AGENTS.md CHANGELOG.md README.md docs/ARCHITECTURE.md docs/CROSS_PLATFORM.md docs/INSTALLATION.md docs/README.md docs/USAGE.md docs/reference/AGENTS.md scripts/generate-docs.js scripts/plugins.txt site/content.json site/index.html site/ux-spec.md  -> exit 0 in 0.5s
+2026-11-23T17:53:46Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-427-ea58e5c3.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-args.test.js __tests__/cli-enhancers.test.js __tests__/cli-subcommands.test.js __tests__/collectors-extended.  -> exit 1 in 32.7s
+2026-11-23T17:53:46Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:53:48Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.2s
+2026-11-23T17:53:49Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:53:49Z   $ git checkout -q -f --detach c3454be8b75c284a3bcc793207594fa899db1255 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:53:49Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T17:53:53Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.2s
+2026-11-23T17:53:54Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:53:54Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:53:55Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:53:55Z   -> ok share=0.9966 sel=2 excl=89 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:53:55Z STATE PR #438 (code) state 4/5 21d12a83a6 base 39a5550659
+2026-11-23T17:53:55Z   $ git checkout -q -f --detach 21d12a83a6f6eef365d1f2c3cf8e5f83732c3c78 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:53:56Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:53:59Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.8s
+2026-11-23T17:54:00Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.4s
+2026-11-23T17:54:00Z   $ npx --no-install jest  --listTests --findRelatedTests .github/workflows/ci.yml AGENTS.md CHANGELOG.md CONTRIBUTING.md __tests__/adapter-namespace-strip.test.js __tests__/dev-cli.test.js __tests__/generate-plugin-list.test.js __tests__/next-task-leftovers.test.js __tests__/opencode-compatibility.test.js __tests__/sources.test.js __tests__/workflow-state.test.js agent-docs/workflow.md bin/dev-cli.js  -> exit 0 in 0.5s
+2026-11-23T17:54:27Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-438-21d12a83.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 26.7s
+2026-11-23T17:54:28Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:54:29Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:54:30Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:54:30Z   $ git checkout -q -f --detach 39a55506597c95264f4233cba4663840dc28d397 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:54:31Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T17:54:34Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.0s
+2026-11-23T17:54:35Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:54:35Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:54:36Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:54:36Z   -> ok share=0.7562 sel=16 excl=78 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:54:36Z STATE PR #413 (code) state 5/5 e1c6107213 base b588afc34f
+2026-11-23T17:54:37Z   $ git checkout -q -f --detach e1c6107213c737c949eb183064335b07de9eff3f && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:54:37Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:54:41Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.0s
+2026-11-23T17:54:41Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:54:42Z   $ npx --no-install jest  --listTests --findRelatedTests .agnix.toml .gitignore CHANGELOG.md README.md __tests__/dev-install.test.js __tests__/gen-adapters.test.js __tests__/platform-adapter-install.test.js adapters/codex/README.md agent-docs/CODEX-REFERENCE.md agent-docs/OPENCODE-REFERENCE.md agent-docs/workflow.md bin/cli.js checklists/cross-platform-compatibility.md docs/ARCHITECTURE.md docs/CROSS  -> exit 0 in 0.5s
+2026-11-23T17:55:11Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-413-e1c61072.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 29.5s
+2026-11-23T17:55:12Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:55:13Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:55:14Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:55:14Z   $ git checkout -q -f --detach b588afc34fd9b649f757c621026eb84030148ca2 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:55:15Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T17:55:19Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.1s
+2026-11-23T17:55:20Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:55:21Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:55:22Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:55:22Z   -> ok share=0.9862 sel=5 excl=84 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:55:22Z STATE PR #420 (code) state 5/5 538f1b51cc base c0e693eec2
+2026-11-23T17:55:22Z   $ git checkout -q -f --detach 538f1b51cc79a0fa18d3ea1186efaac2b30fb8bc && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:55:22Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:55:27Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.5s
+2026-11-23T17:55:27Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:55:28Z   $ npx --no-install jest  --listTests --findRelatedTests CHANGELOG.md __tests__/fetch-plugin-pins.test.js bin/cli.js docs/INSTALLATION.md  -> exit 0 in 0.6s
+2026-11-23T17:55:58Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-420-538f1b51.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 30.0s
+2026-11-23T17:55:59Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:56:00Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:56:01Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:56:01Z   $ git checkout -q -f --detach c0e693eec2f8856de1351a966c6bccc08f7e99a4 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:56:01Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T17:56:06Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.2s
+2026-11-23T17:56:07Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:56:08Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:56:09Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:56:09Z   -> ok share=0.9791 sel=4 excl=86 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:56:09Z STATE PR #438 (code) state 5/5 dde142ff19 base 39a5550659
+2026-11-23T17:56:09Z   $ git checkout -q -f --detach dde142ff19b1adcaa5b9f0bd8e01cefc11eb59d1 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:56:09Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.2s
+2026-11-23T17:56:13Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.2s
+2026-11-23T17:56:13Z   $ npx --no-install jest  --listTests  -> exit 0 in 0.5s
+2026-11-23T17:56:14Z   $ npx --no-install jest  --listTests --findRelatedTests .github/workflows/ci.yml AGENTS.md CHANGELOG.md CONTRIBUTING.md __tests__/adapter-namespace-strip.test.js __tests__/dev-cli.test.js __tests__/generate-plugin-list.test.js bin/dev-cli.js lib/adapter-transforms.js package.json scripts/generate-plugin-list.js scripts/preflight.js  -> exit 0 in 0.5s
+2026-11-23T17:56:40Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/excl-438-dde142ff.json --runTestsByPath __tests__/atomic-write.test.js __tests__/auto-suppression.test.js __tests__/bump-version.test.js __tests__/cache-manager.test.js __tests__/claude-executable.test.js __tests__/cli-enhancers.test.js __tests__/collectors-extended.test.js __tests__/collectors-github-contract.test.js __tests_  -> exit 1 in 26.2s
+2026-11-23T17:56:41Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 0.9s
+2026-11-23T17:56:42Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:56:43Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-state.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:56:43Z   $ git checkout -q -f --detach 39a55506597c95264f4233cba4663840dc28d397 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T17:56:44Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T17:56:48Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 4.2s
+2026-11-23T17:56:49Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.1s
+2026-11-23T17:56:50Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:56:51Z   $ npx --no-install jest  --json --outputFile=/home/user/work/tmp/agentsys/rerun-base.json --runTestsByPath __tests__/atomic-write.test.js  -> exit 1 in 1.0s
+2026-11-23T17:56:51Z   -> ok share=0.7795 sel=10 excl=84 failures=[('__tests__/atomic-write.test.js > atomic-write permission errors throws on read-o', 'PREEXISTING')]
+2026-11-23T17:56:51Z DONE rounds 5

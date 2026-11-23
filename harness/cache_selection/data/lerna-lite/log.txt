@@ -1,0 +1,5 @@
+2026-11-23T17:56:57Z FULL RUN pr-index 0 PR #1430 base 5fe200d392c6ed54f50afd0c68c732c41266d039
+2026-11-23T17:56:57Z   $ git checkout -q -f --detach 5fe200d392c6ed54f50afd0c68c732c41266d039 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T17:56:57Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T17:57:07Z   $ npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts  -> exit 0 in 9.9s
+2026-11-23T17:57:11Z   $ npx -y pnpm@11.28.5 build  -> exit 0 in 4.3s
