@@ -100,7 +100,8 @@ def run(count: str, only: str) -> None:
     if win_path.exists():
         for line in win_path.read_text().splitlines():
             w = json.loads(line)
-            done.add((w["family"], w["window"]))
+            if not w.get("split"):  # a split marker only says the month was divided, not that it was read
+                done.add((w["family"], w["window"]))
     with gzip.open(rows_path, "at") as rows, win_path.open("a") as wins:
         for fam, base in fams.items():
             for y, m in months:
