@@ -12,6 +12,11 @@ Update 2026-11-23, after the report: the founder attached fenvix-app with push a
 
 ## Changes to tests, CI steps or thresholds (listed first, rule 3)
 
+- CI CHANGE (0598ac6): `.github/workflows/release-1.yml`, job `python`: added `actions/setup-node@v4` with
+  `{node-version: "24"}` before the test step (same form as the node jobs). Reason: the shared test
+  `tests/test_runner_node.py` runs detjs, which needs Node >= 22, and the python job had no setup-node. Founder decision
+  D1 = A, 2026-11-23. No step, matrix, threshold or selection was removed or relaxed.
+
 - NEW `tests/test_runner_node.py` (engine), added to `release/python-tests.txt` as `shared`. No existing test is
   changed, skipped or weakened. The CI workflow is not changed.
 - App `supabase/tests/run-local.sh` (`npm run test:rls`): migrates the new `0018` twice (like 0014-0017) and runs a
@@ -241,8 +246,8 @@ Highest-severity findings:
 - red team CRITICAL: "green without proof when outcomes or trace status are missing". **Fixed** (d287443/962acfb,
   tested with a stub detjs).
 - red team CRITICAL / adversarial High: "bootstrap install now dies without Node 22 on Python-only hosts".
-  **Kept**: the spec requires bootstrap to fail without node >= 22. **Founder decision needed** if Python-only
-  development-mode hosts must keep installing without Node.
+  **Kept**: the spec requires bootstrap to fail without node >= 22. Founder decision D2 = A, 2026-11-23: keep
+  bootstrap failing without Node >= 22.
 - re-review High: the first fix's prefix match dropped `--det-cache-verify` / `--det-cache-max-age` /
   `--det-cache-real-clock`, and left `--det-trace FILE`'s value as a runner positional. **Fixed** (exact names,
   value form; tested).
