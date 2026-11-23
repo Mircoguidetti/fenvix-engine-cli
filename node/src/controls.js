@@ -34,8 +34,6 @@ function installProcess() {
   processInstalled = true;
   if (c.controls.has('seeds')) seeds.installProcess(PATCHER, c);
   if (c.controls.has('time')) clock.installProcess(PATCHER, c);
-  if (c.controls.has('fs')) fsorder.installProcess(PATCHER, c);
-  if (c.controls.has('fs')) require('./outside').installProcess(PATCHER); // files outside the project: recorded (R-050 N1)
   if (c.controls.has('net')) STATE.netMode = network.installProcess(PATCHER, c);  // design A (2026-11-20): CI-volatile variables pinned, and the host name (each runner has its own)
   volatile.pinEnv();
   PATCHER.set(require('node:os'), 'hostname', () => volatile.PINNED_HOSTNAME);
@@ -52,6 +50,11 @@ function installProcess() {
   // completion order of a test's concurrent asynchronous I/O (src/ioorder.js); Level 1: timers against I/O
   require('./sched').installProcess(PATCHER);
   require('./ioorder').installProcess(PATCHER);
+  // Above ioorder (P1 E, docs/DESIGN-P1.md section E): the directory listings and the file reads and metadata they
+  // record are written when ioorder delivers each completion, in the order the test started the calls, not in the
+  // order the thread pool completed them (two runs with the same calls recorded them in different orders).
+  if (c.controls.has('fs')) fsorder.installProcess(PATCHER, c);
+  if (c.controls.has('fs')) require('./outside').installProcess(PATCHER); // files outside the project: recorded (R-050 N1)
   // file times, inode and device numbers, fs.watch events (src/fstime.js); Buffer.allocUnsafe (src/realmx.js)
   if (c.controls.has('time')) require('./fstime').installProcess(PATCHER);
   require('./realmx').installProcess(PATCHER);

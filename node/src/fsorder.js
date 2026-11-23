@@ -173,6 +173,9 @@ function pGlob(...a) {
 }
 
 function installProcess(patcher) {
+  // the functions installed now (src/ioorder.js' ordered delivery, P1 E), not the ones loaded at require time
+  Object.assign(real, { readdir: fs.readdir, readdirSync: fs.readdirSync, pReaddir: fs.promises.readdir,
+    opendir: fs.opendir, opendirSync: fs.opendirSync, pOpendir: fs.promises.opendir });
   if (typeof fs.glob === 'function') { real.glob = fs.glob; patcher.set(fs, 'glob', glob); }
   if (typeof fs.promises.glob === 'function') { real.pGlob = fs.promises.glob; patcher.set(fs.promises, 'glob', pGlob); }
   patcher.set(fs, 'readdirSync', readdirSync);
