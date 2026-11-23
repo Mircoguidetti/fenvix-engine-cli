@@ -119,7 +119,9 @@ function hazardFiles(header) {
  *   complete        the re-run's trace exists and accounts for every wanted test
  *   notProven       = unaccounted: each such test is NOT PROVEN (appendix point 4: also when the re-run accounted
  *                   for only some of them)
- *   notProvenFiles  [{file, cause}], one per hazard file with a NOT PROVEN test, in `files` order
+ *   notProvenFiles  [{file, cause, tests}], one per hazard file with a NOT PROVEN test, in `files` order: `tests` its
+ *                   NOT PROVEN tests, `cause` "<file>: the one-lane re-run <what went wrong>" (what the runner sends
+ *                   the customer as one cause of the proof)
  */
 function accountRerun(firstTests, rerunTests, files) {
   const set = new Set(files);
@@ -134,10 +136,10 @@ function accountRerun(firstTests, rerunTests, files) {
     const mine = want.filter((id) => fileOf(id) === f);
     const lost = unaccounted.filter((id) => fileOf(id) === f);
     if (!lost.length) continue;
-    const cause = !Array.isArray(rerunTests)
-      ? 'its trace is missing'
-      : `it ran ${mine.length - lost.length} of its ${mine.length} test(s)`;
-    notProvenFiles.push({ file: f, cause });
+    const what = !Array.isArray(rerunTests)
+      ? 'left no trace'
+      : `ran ${mine.length - lost.length} of its ${mine.length} test(s)`;
+    notProvenFiles.push({ file: f, cause: `${f}: the one-lane re-run ${what}`, tests: lost.length });
   }
   return { want, unaccounted, complete, notProven: unaccounted, notProvenFiles };
 }
@@ -284,8 +286,8 @@ async function main(cmd, argv) {
     process.stderr.write(`detjs: parallel: the one-lane re-run could not account for ${t2 ? `${unaccounted.length} test(s) of the affected files` : 'its own trace'}`
       + `; the first run's records stay, nothing was cleared, and its unaccounted tests are NOT PROVEN${t2 && unaccounted.length ? ` (first: ${unaccounted[0]})` : ''}\n`);
   }
-  for (const { file, cause } of acc.notProvenFiles) {
-    process.stderr.write(`detjs: parallel: NOT PROVEN ${file}: the one-lane re-run did not account for its tests (${cause})\n`);
+  for (const { cause } of acc.notProvenFiles) {
+    process.stderr.write(`detjs: parallel: NOT PROVEN ${cause}: the one-lane re-run did not account for its tests\n`);
   }
   // B7: the counts of the final trace, in its header and on one status line, and the exit decision on them
   const status = exitStatus.countStatus(records, acc.notProven);
@@ -303,6 +305,9 @@ async function main(cmd, argv) {
   // what was done and why, so the trace says it and `verify` and the reviewer can see it
   meta.hazard_rerun = {
     files: affected,
+    // the first pass's tests of the hazard files: what the one-lane re-run had to account for (the runner's
+    // proof.rerun_one_lane)
+    tests: want.length,
     hazards: ((t1.header.meta && t1.header.meta.parallel && t1.header.meta.parallel.hazards) || [])
       .map((h) => ({ kind: h.kind, what: h.what, a: h.a, b: h.b })),
     reported: complete ? 'one-lane re-run' : 'first run (the re-run was not complete)',
