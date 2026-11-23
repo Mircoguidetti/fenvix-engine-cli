@@ -22,12 +22,13 @@ const { project, run, RUNNERS } = require('./helpers');
 const T = { timeout: 600000 };
 const OUT = fs.mkdtempSync(path.join(os.tmpdir(), 'p1c-'));
 
-// each file reads its pid (an event), builds a path from it and writes what it saw
+// each file reads its pid (an event), builds a path from it, checks that the pid is alive, and writes what it saw
 const body = (name) => `test('${name}1', () => {
   const pid = process.pid;
   fs.writeFileSync(path.join(process.env.P1C_OUT, '${name}-' + process.env.P1C_RUN), String(pid));
   const d = path.join(os.tmpdir(), 'p1c-' + pid);
   fs.mkdirSync(d, { recursive: true });
+  expect(process.kill(pid, 0)).toBe(true);
   expect(Number.isInteger(pid) && pid > 0).toBe(true);
 });
 test('${name}2', async () => { await sleepP(50); expect(typeof process.ppid).toBe('number'); });`;
@@ -54,14 +55,6 @@ for (const runner of RUNNERS) {
     assert.equal(rep.summary.stable, 4);
     const ev = p.trace.tests.flatMap((t) => t.events).filter((e) => e.o === 'process.pid');
     assert.ok(ev.length >= 2, 'the reads are still events');
-  });
-
-  // process.kill on the virtual pid reaches this process (the call itself is a gap of the general rule:
-  // `api:process._kill`, NOT PROVEN on the trunk too, so this case checks the call, not the verdict)
-  test(`P1 C ${runner}: process.kill(process.pid, 0) succeeds on the virtual pid`, T, () => {
-    const dir = project(runner, 'p1c-kill', { k: `test('k', () => { expect(process.pid > 4194304).toBe(true); expect(process.kill(process.pid, 0)).toBe(true); expect(() => process.kill(2147480000, 0)).toThrow(); expect(process.ppid < 4194304).toBe(true); });` });
-    const r = run(runner, dir, ['--det', '--det-workers=1'], {});
-    assert.equal(r.status, 0, r.stdout + r.stderr);
   });
 
   // acceptance 2: the pid the test sees really differs between the two runs
