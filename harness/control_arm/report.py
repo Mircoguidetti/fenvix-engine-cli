@@ -60,6 +60,10 @@ def per_repo(name, rows, pairs):
         "effective": f"{'yes' if len(valid) == len(par) else 'no' if not valid else 'partly'} ({len(valid)}/{len(par)} valid)",
         "pairs_found": sum(1 for p in pr if p["result"] == "pair found"),
         "pairs_not_found": sum(1 for p in pr if p["result"].startswith("no minimal pair")),
+        "alone": sum(1 for p in pr if p["result"] == "no minimal pair (victim file alone reproduces)"),
+        "alone_ctl": sum(1 for p in pr if p["result"] == "no minimal pair (victim file alone reproduces)"
+                         and p.get("control_seeds")),
+        "not_repro": sum(1 for p in pr if p["result"] == "no minimal pair (not reproduced)"),
         "pairs_budget": sum(1 for p in pr if p["result"] == "pair not found (budget)"),
         "victims": len(pr),
         "victims_order": sum(1 for p in pr if p.get("label") == "order"),
@@ -99,28 +103,31 @@ def render(status, notes, rows, pairs):
                        f"{', '.join(r['short']) or 0} | {', '.join(r['invalid_serial']) or 0} | {r['effective']} | {r['und_seen_div']} |")
     out += ["", "## Minimal pairs and wall time", "",
             "| repository | victims searched (of which label order) | divergence reproduced in any trial | pairs found | "
-            "not found | over budget | serial median (s) | parallel run median (s, completed / valid) | 9 runs (s) | "
-            "pair search (s) | total (s) |",
+            "not found (victim file alone reproduces, of which with a control seed / not reproduced / other) | over "
+            "budget | serial median (s) | parallel run median (s, completed / valid) | 9 runs (s) | pair search (s) | "
+            "total (s) |",
             "|---|---|---|---|---|---|---|---|---|---|---|"]
     for n, r in reps:
         if r:
             out.append(f"| {n} | {(str(r['victims']) + ' (' + str(r['victims_order']) + ')') if r['searched'] else 'not run'} | "
-                       f"{r['reproduced']} | {r['pairs_found']} | {r['pairs_not_found']} | "
+                       f"{r['reproduced']} | {r['pairs_found']} | {r['pairs_not_found']} ({r['alone']}, {r['alone_ctl']} / "
+                       f"{r['not_repro']} / {r['pairs_not_found'] - r['alone'] - r['not_repro']}) | "
                        f"{r['pairs_budget']} | {fmt(r['serial_median'])} | {fmt(r['par_median'])} / {fmt(r['par_median_valid'])} | "
                        f"{r['nine']} | {r['pair_s']} | {r['total']} |")
     if notes:
         out += ["", notes.rstrip()]
     out += ["", "## For the 22 Dec comparison", "",
             "Control arm columns measured here; engine columns left empty (filled at the verdict).", "",
-            "| repository | control: bugs (confirmed pairs) | control: DIVERGES tests | control: wrong IDENTICAL | "
-            "control: wall serial median / parallel median (s) | engine: bugs | engine: wrong identical | engine: wall |",
-            "|---|---|---|---|---|---|---|---|"]
+            "| repository | control: bugs (confirmed pairs) | control: within-file order dependences reproduced alone "
+            "(victims) | control: DIVERGES tests | control: wrong IDENTICAL | control: wall serial median / parallel "
+            "median (s) | engine: bugs | engine: wrong identical | engine: wall |",
+            "|---|---|---|---|---|---|---|---|---|"]
     for n, r in reps:
         if r:
-            out.append(f"| {n} | {r['pairs_found']} | {r['DIVERGES']} | (at verdict) | {fmt(r['serial_median'])} / "
-                       f"{fmt(r['par_median'])} | | | |")
+            out.append(f"| {n} | {r['pairs_found']} | {r['alone']} of {r['victims']} | {r['DIVERGES']} | (at verdict) | "
+                       f"{fmt(r['serial_median'])} / {fmt(r['par_median'])} | | | |")
         else:
-            out.append(f"| {n} | not run | | | | | | |")
+            out.append(f"| {n} | not run | | | | | | | |")
     return "\n".join(out) + "\n"
 
 
