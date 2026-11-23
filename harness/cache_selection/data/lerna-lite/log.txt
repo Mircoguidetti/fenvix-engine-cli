@@ -241,3 +241,118 @@
 2026-11-23T21:39:37Z   $ npx -y pnpm@11.28.5 build  -> exit 0 in 3.9s
 2026-11-23T21:39:38Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --filesOnly --json=/home/user/work/tmp/lerna-lite/list-all.json  -> exit 0 in 0.5s
 2026-11-23T21:39:39Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --changed ccb70e3d1d8d827d2eea394b8789a4498dfe0709 --filesOnly --json=/home/user/work/tmp/lerna-lite/list-sel.json  -> exit 0 in 0.9s
+2026-11-23T21:49:53Z   $ npx --no-install vitest run --config ./e2e/vitest.config.ts --reporter=json --outputFile=/home/user/work/tmp/lerna-lite/excl-1452-f897a715.json e2e/changed/changed.spec.ts e2e/diff/diff.spec.ts e2e/exec/exec.spec.ts e2e/list/list.spec.ts e2e/publish/publish-dirty-tree.spec.ts e2e/publish/publish-dry-run.spec.ts e2e/publish/publish-npmrc-auth.spec.ts e2e/publish/publish-verdaccio.spec.ts e2e/run/ru  -> exit 0 in 613.7s
+2026-11-23T21:49:53Z   -> ok share=1.0 sel=0 excl=12 failures=[]
+2026-11-23T21:49:53Z STATE PR #1451 (code) state 1/1 0e7e443fdc base ccb70e3d1d
+2026-11-23T21:49:53Z   $ git checkout -q -f --detach 0e7e443fdcd749a172a6f866e2511b88e3ced9bd && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:49:53Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T21:49:55Z   $ npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts  -> exit 0 in 2.4s
+2026-11-23T21:49:59Z   $ npx -y pnpm@11.28.5 build  -> exit 0 in 3.9s
+2026-11-23T21:50:00Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --filesOnly --json=/home/user/work/tmp/lerna-lite/list-all.json  -> exit 0 in 0.6s
+2026-11-23T21:50:01Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --changed ccb70e3d1d8d827d2eea394b8789a4498dfe0709 --filesOnly --json=/home/user/work/tmp/lerna-lite/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T22:00:17Z   $ npx --no-install vitest run --config ./e2e/vitest.config.ts --reporter=json --outputFile=/home/user/work/tmp/lerna-lite/excl-1451-0e7e443f.json e2e/changed/changed.spec.ts e2e/diff/diff.spec.ts e2e/exec/exec.spec.ts e2e/list/list.spec.ts e2e/publish/publish-dirty-tree.spec.ts e2e/publish/publish-dry-run.spec.ts e2e/publish/publish-npmrc-auth.spec.ts e2e/publish/publish-verdaccio.spec.ts e2e/run/ru  -> exit 0 in 616.3s
+2026-11-23T22:00:17Z   -> ok share=1.0 sel=0 excl=12 failures=[]
+2026-11-23T22:00:17Z STATE PR #1453 (code) state 1/2 e1bc6ff2cc base 989e099ef3
+2026-11-23T22:00:17Z   $ git checkout -q -f --detach e1bc6ff2cc451e657a10f9ef322a5fd025d6785e && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T22:00:18Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.4s
+2026-11-23T22:00:21Z   $ npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts  -> exit 0 in 3.7s
+2026-11-23T22:00:25Z   $ npx -y pnpm@11.28.5 build  -> exit 0 in 3.8s
+2026-11-23T22:00:26Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --filesOnly --json=/home/user/work/tmp/lerna-lite/list-all.json  -> exit 0 in 0.5s
+2026-11-23T22:00:26Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --changed 989e099ef3351b69bc829a2c4e578d3b08133b0b --filesOnly --json=/home/user/work/tmp/lerna-lite/list-sel.json  -> exit 0 in 0.7s
+2026-11-23T22:10:39Z   $ npx --no-install vitest run --config ./e2e/vitest.config.ts --reporter=json --outputFile=/home/user/work/tmp/lerna-lite/excl-1453-e1bc6ff2.json e2e/changed/changed.spec.ts e2e/diff/diff.spec.ts e2e/exec/exec.spec.ts e2e/list/list.spec.ts e2e/publish/publish-dirty-tree.spec.ts e2e/publish/publish-dry-run.spec.ts e2e/publish/publish-npmrc-auth.spec.ts e2e/publish/publish-verdaccio.spec.ts e2e/run/ru  -> exit 0 in 612.2s
+2026-11-23T22:10:39Z   -> ok share=1.0 sel=0 excl=12 failures=[]
+2026-11-23T22:10:39Z STATE PR #1454 (dependency) state 1/1 0adb06b672 base 3a7f7bdaa5
+2026-11-23T22:10:39Z   $ git checkout -q -f --detach 0adb06b67209b915c98015f078e1adc87e482a78 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T22:10:39Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T22:10:42Z   $ npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts  -> exit 0 in 2.4s
+2026-11-23T22:10:45Z   $ npx -y pnpm@11.28.5 build  -> exit 0 in 3.7s
+2026-11-23T22:10:46Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --filesOnly --json=/home/user/work/tmp/lerna-lite/list-all.json  -> exit 0 in 0.5s
+2026-11-23T22:10:47Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --changed 3a7f7bdaa5ed3277dc22fba46492d1d659bbb1e6 --filesOnly --json=/home/user/work/tmp/lerna-lite/list-sel.json  -> exit 0 in 0.7s
+2026-11-23T22:20:57Z   $ npx --no-install vitest run --config ./e2e/vitest.config.ts --reporter=json --outputFile=/home/user/work/tmp/lerna-lite/excl-1454-0adb06b6.json e2e/changed/changed.spec.ts e2e/diff/diff.spec.ts e2e/exec/exec.spec.ts e2e/list/list.spec.ts e2e/publish/publish-dirty-tree.spec.ts e2e/publish/publish-dry-run.spec.ts e2e/publish/publish-npmrc-auth.spec.ts e2e/publish/publish-verdaccio.spec.ts e2e/run/ru  -> exit 0 in 610.5s
+2026-11-23T22:20:57Z   -> ok share=1.0 sel=0 excl=12 failures=[]
+2026-11-23T22:20:57Z STATE PR #1456 (code) state 1/3 8fecec7f9f base ccb70e3d1d
+2026-11-23T22:20:57Z   $ git checkout -q -f --detach 8fecec7f9f8378bdb95e60fec420f09823dcf9d4 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T22:20:58Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T22:21:00Z   $ npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts  -> exit 0 in 2.6s
+2026-11-23T22:21:04Z   $ npx -y pnpm@11.28.5 build  -> exit 0 in 3.8s
+2026-11-23T22:21:05Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --filesOnly --json=/home/user/work/tmp/lerna-lite/list-all.json  -> exit 0 in 0.5s
+2026-11-23T22:21:05Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --changed ccb70e3d1d8d827d2eea394b8789a4498dfe0709 --filesOnly --json=/home/user/work/tmp/lerna-lite/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T22:31:14Z   $ npx --no-install vitest run --config ./e2e/vitest.config.ts --reporter=json --outputFile=/home/user/work/tmp/lerna-lite/excl-1456-8fecec7f.json e2e/changed/changed.spec.ts e2e/diff/diff.spec.ts e2e/exec/exec.spec.ts e2e/list/list.spec.ts e2e/publish/publish-dirty-tree.spec.ts e2e/publish/publish-npmrc-auth.spec.ts e2e/publish/publish-verdaccio.spec.ts e2e/run/run.spec.ts e2e/version/version.spec.t  -> exit 0 in 608.7s
+2026-11-23T22:31:14Z   -> ok share=0.9947 sel=1 excl=11 failures=[]
+2026-11-23T22:31:14Z STATE PR #1457 (code) state 1/2 793f332b89 base 4503659a45
+2026-11-23T22:31:14Z   $ git checkout -q -f --detach 793f332b8996aa013d2f1c74b2a362c7de8b0377 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T22:31:15Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.4s
+2026-11-23T22:31:17Z   $ npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts  -> exit 0 in 2.3s
+2026-11-23T22:31:20Z   $ npx -y pnpm@11.28.5 build  -> exit 0 in 3.7s
+2026-11-23T22:31:21Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --filesOnly --json=/home/user/work/tmp/lerna-lite/list-all.json  -> exit 0 in 0.5s
+2026-11-23T22:31:22Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --changed 4503659a451724d340662e53c16e14baa6aa715c --filesOnly --json=/home/user/work/tmp/lerna-lite/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T22:41:28Z   $ npx --no-install vitest run --config ./e2e/vitest.config.ts --reporter=json --outputFile=/home/user/work/tmp/lerna-lite/excl-1457-793f332b.json e2e/changed/changed.spec.ts e2e/diff/diff.spec.ts e2e/exec/exec.spec.ts e2e/list/list.spec.ts e2e/publish/publish-dirty-tree.spec.ts e2e/publish/publish-npmrc-auth.spec.ts e2e/publish/publish-verdaccio.spec.ts e2e/run/run.spec.ts e2e/version/version.spec.t  -> exit 0 in 606.1s
+2026-11-23T22:41:28Z   -> ok share=0.9947 sel=1 excl=11 failures=[]
+2026-11-23T22:41:28Z STATE PR #1455 (dependency) state 1/1 9d87d1dfb9 base 4503659a45
+2026-11-23T22:41:28Z   $ git checkout -q -f --detach 9d87d1dfb9be1926dd4235871d96b4d5c3e3b004 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T22:41:28Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T22:41:33Z   $ npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts  -> exit 0 in 4.4s
+2026-11-23T22:41:37Z   $ npx -y pnpm@11.28.5 build  -> exit 0 in 3.8s
+2026-11-23T22:41:37Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --filesOnly --json=/home/user/work/tmp/lerna-lite/list-all.json  -> exit 0 in 0.5s
+2026-11-23T22:41:38Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --changed 4503659a451724d340662e53c16e14baa6aa715c --filesOnly --json=/home/user/work/tmp/lerna-lite/list-sel.json  -> exit 0 in 0.5s
+2026-11-23T22:41:38Z   -> ok share=0.0 sel=12 excl=0 failures=[]
+2026-11-23T22:41:38Z STATE PR #1458 (dependency) state 1/1 fef3d30ff7 base 4d652aad52
+2026-11-23T22:41:38Z   $ git checkout -q -f --detach fef3d30ff79e270b08a14c6db4c7c574c37202c3 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T22:41:38Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.3s
+2026-11-23T22:41:41Z   $ npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts  -> exit 0 in 2.7s
+2026-11-23T22:41:45Z   $ npx -y pnpm@11.28.5 build  -> exit 0 in 4.2s
+2026-11-23T22:41:45Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --filesOnly --json=/home/user/work/tmp/lerna-lite/list-all.json  -> exit 0 in 0.5s
+2026-11-23T22:41:46Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --changed 4d652aad52d0fc12cf237c5757ca5ab7c48b51b5 --filesOnly --json=/home/user/work/tmp/lerna-lite/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T22:52:02Z   $ npx --no-install vitest run --config ./e2e/vitest.config.ts --reporter=json --outputFile=/home/user/work/tmp/lerna-lite/excl-1458-fef3d30f.json e2e/changed/changed.spec.ts e2e/diff/diff.spec.ts e2e/exec/exec.spec.ts e2e/list/list.spec.ts e2e/publish/publish-dirty-tree.spec.ts e2e/publish/publish-dry-run.spec.ts e2e/publish/publish-npmrc-auth.spec.ts e2e/publish/publish-verdaccio.spec.ts e2e/run/ru  -> exit 0 in 615.9s
+2026-11-23T22:52:02Z   -> ok share=1.0 sel=0 excl=12 failures=[]
+2026-11-23T22:52:02Z STATE PR #1459 (dependency) state 1/1 e6e84ab6af base e408b2a584
+2026-11-23T22:52:02Z   $ git checkout -q -f --detach e6e84ab6af3a8c9a455c13160ec099416105a209 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T22:52:03Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T22:52:06Z   $ npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts  -> exit 0 in 3.4s
+2026-11-23T22:52:10Z   $ npx -y pnpm@11.28.5 build  -> exit 0 in 3.7s
+2026-11-23T22:52:10Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --filesOnly --json=/home/user/work/tmp/lerna-lite/list-all.json  -> exit 0 in 0.5s
+2026-11-23T22:52:11Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --changed e408b2a584ebacf536c8c4ecfc7eb50957279764 --filesOnly --json=/home/user/work/tmp/lerna-lite/list-sel.json  -> exit 0 in 0.6s
+2026-11-23T22:52:11Z   -> ok share=0.0 sel=12 excl=0 failures=[]
+2026-11-23T22:52:11Z STATE PR #1430 (code) state 2/2 23a3be7491 base 5fe200d392
+2026-11-23T22:52:11Z   $ git checkout -q -f --detach 23a3be749164b8d742ec9407bc23edd7651ced7d && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T22:52:11Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.4s
+2026-11-23T22:52:14Z   $ npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts  -> exit 0 in 2.5s
+2026-11-23T22:52:18Z   $ npx -y pnpm@11.28.5 build  -> exit 0 in 3.6s
+2026-11-23T22:52:18Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --filesOnly --json=/home/user/work/tmp/lerna-lite/list-all.json  -> exit 0 in 0.5s
+2026-11-23T22:52:19Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --changed 5fe200d392c6ed54f50afd0c68c732c41266d039 --filesOnly --json=/home/user/work/tmp/lerna-lite/list-sel.json  -> exit 0 in 0.7s
+2026-11-23T23:02:17Z   $ npx --no-install vitest run --config ./e2e/vitest.config.ts --reporter=json --outputFile=/home/user/work/tmp/lerna-lite/excl-1430-23a3be74.json e2e/changed/changed.spec.ts e2e/diff/diff.spec.ts e2e/exec/exec.spec.ts e2e/publish/publish-dry-run.spec.ts e2e/publish/publish-npmrc-auth.spec.ts e2e/publish/publish-verdaccio.spec.ts e2e/run/run.spec.ts e2e/version/version.spec.ts e2e/watch/watch-lifecyc  -> exit 0 in 598.4s
+2026-11-23T23:02:17Z   -> ok share=0.9951 sel=1 excl=10 failures=[]
+2026-11-23T23:02:17Z STATE PR #1431 (code) state 2/3 1bdded26c1 base 19777e2aec
+2026-11-23T23:02:17Z   $ git checkout -q -f --detach 1bdded26c1a0e8f58f5f477be2942c60485ea275 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T23:02:18Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T23:02:20Z   $ npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts  -> exit 0 in 2.3s
+2026-11-23T23:02:24Z   $ npx -y pnpm@11.28.5 build  -> exit 0 in 3.6s
+2026-11-23T23:02:24Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --filesOnly --json=/home/user/work/tmp/lerna-lite/list-all.json  -> exit 0 in 0.5s
+2026-11-23T23:02:25Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --changed 19777e2aec89246a59dbb5a815ca1136ee8950fc --filesOnly --json=/home/user/work/tmp/lerna-lite/list-sel.json  -> exit 0 in 0.7s
+2026-11-23T23:12:28Z   $ npx --no-install vitest run --config ./e2e/vitest.config.ts --reporter=json --outputFile=/home/user/work/tmp/lerna-lite/excl-1431-1bdded26.json e2e/changed/changed.spec.ts e2e/diff/diff.spec.ts e2e/exec/exec.spec.ts e2e/list/list.spec.ts e2e/publish/publish-dry-run.spec.ts e2e/publish/publish-npmrc-auth.spec.ts e2e/publish/publish-verdaccio.spec.ts e2e/run/run.spec.ts e2e/version/version.spec.ts e  -> exit 0 in 603.0s
+2026-11-23T23:12:28Z   -> ok share=1.0 sel=0 excl=11 failures=[]
+2026-11-23T23:12:28Z STATE PR #1439 (code) state 2/2 50aa8e2379 base 2a4b1de2b0
+2026-11-23T23:12:28Z   $ git checkout -q -f --detach 50aa8e237982f02fdbcb056d756c9243a5e1c13e && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T23:12:29Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T23:12:31Z   $ npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts  -> exit 0 in 2.5s
+2026-11-23T23:12:35Z   $ npx -y pnpm@11.28.5 build  -> exit 0 in 3.8s
+2026-11-23T23:12:35Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --filesOnly --json=/home/user/work/tmp/lerna-lite/list-all.json  -> exit 0 in 0.5s
+2026-11-23T23:12:36Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --changed 2a4b1de2b0b3a23b6f52c48c5e38ddef83f99583 --filesOnly --json=/home/user/work/tmp/lerna-lite/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T23:22:34Z   $ npx --no-install vitest run --config ./e2e/vitest.config.ts --reporter=json --outputFile=/home/user/work/tmp/lerna-lite/excl-1439-50aa8e23.json e2e/changed/changed.spec.ts e2e/diff/diff.spec.ts e2e/exec/exec.spec.ts e2e/list/list.spec.ts e2e/publish/publish-dry-run.spec.ts e2e/publish/publish-npmrc-auth.spec.ts e2e/publish/publish-verdaccio.spec.ts e2e/run/run.spec.ts e2e/version/version.spec.ts e  -> exit 0 in 597.7s
+2026-11-23T23:22:34Z   -> ok share=1.0 sel=0 excl=11 failures=[]
+2026-11-23T23:22:34Z STATE PR #1441 (code) state 2/2 01a74245a6 base a16ba4d8fe
+2026-11-23T23:22:34Z   $ git checkout -q -f --detach 01a74245a607936fb9483a3f18ebb2d565f68f78 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T23:22:34Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.5s
+2026-11-23T23:22:37Z   $ npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts  -> exit 0 in 2.2s
+2026-11-23T23:22:40Z   $ npx -y pnpm@11.28.5 build  -> exit 0 in 3.6s
+2026-11-23T23:22:41Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --filesOnly --json=/home/user/work/tmp/lerna-lite/list-all.json  -> exit 0 in 0.5s
+2026-11-23T23:22:42Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --changed a16ba4d8fed6fe61ce4a7247343889dc2658e9da --filesOnly --json=/home/user/work/tmp/lerna-lite/list-sel.json  -> exit 0 in 0.8s
+2026-11-23T23:32:45Z   $ npx --no-install vitest run --config ./e2e/vitest.config.ts --reporter=json --outputFile=/home/user/work/tmp/lerna-lite/excl-1441-01a74245.json e2e/changed/changed.spec.ts e2e/diff/diff.spec.ts e2e/exec/exec.spec.ts e2e/list/list.spec.ts e2e/publish/publish-dirty-tree.spec.ts e2e/publish/publish-dry-run.spec.ts e2e/publish/publish-npmrc-auth.spec.ts e2e/publish/publish-verdaccio.spec.ts e2e/run/ru  -> exit 0 in 603.1s
+2026-11-23T23:32:45Z   -> ok share=1.0 sel=0 excl=12 failures=[]
+2026-11-23T23:32:45Z STATE PR #1449 (code) state 2/4 9f77bddfe6 base fe5d28f712
+2026-11-23T23:32:45Z   $ git checkout -q -f --detach 9f77bddfe6b593ce045445a5ce44bb1d3d1efc27 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T23:32:45Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.4s
+2026-11-23T23:32:47Z   $ npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts  -> exit 0 in 2.2s
+2026-11-23T23:32:51Z   $ npx -y pnpm@11.28.5 build  -> exit 0 in 3.3s
+2026-11-23T23:32:51Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --filesOnly --json=/home/user/work/tmp/lerna-lite/list-all.json  -> exit 0 in 0.5s
+2026-11-23T23:32:52Z   $ npx --no-install vitest list --config ./e2e/vitest.config.ts --changed fe5d28f712e62b677c7626dac9deba32af674ba2 --filesOnly --json=/home/user/work/tmp/lerna-lite/list-sel.json  -> exit 0 in 0.7s
