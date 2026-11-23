@@ -85,7 +85,8 @@ Status: complete (2026-11-23); results in `data/lane-a/`, the TABLE.md "Lane A r
 
 Harness: this directory on `claude/harness-trunk`; the exact harness commit of the Lane A rows is recorded in
 `REPORT-lane-a.md` (measure.py / repro.py / classify.py / table.py byte-identical to `claude/parallel-measure` 20f7752d
-throughout). Engine: trunk `claude/release-1` bfaf70b4 (`engine_commit` in every row), built as in section 1 into a
+throughout). Engine: trunk `claude/release-1` bfaf70b4 (`engine_commit` bfaf70b4 or 0071cbb9, same engine sources; the 9 plain-only sqlectron re-screen rows record
+f67be4a3), built as in section 1 into a
 Python 3.12 venv of its own. Use a work directory of its own, not section 2's (its `venv/networkx` is the networkx test
 interpreter):
 
