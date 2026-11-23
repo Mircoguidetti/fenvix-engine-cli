@@ -25,7 +25,7 @@
 //     summary.diverged         number
 //     summary.missing          number
 //     summary.not_proven       number   (absent = 0)
-//     summary.inputs_recorded  boolean  (absent = true, as in Python)
+//     summary.inputs_recorded  boolean  (absent = true; null, 0, false = not recorded, as in Python)
 //     summary.input_differs    number   (absent = 0)
 //   1 on tests == 0, diverged, missing, not_proven, or inputs_recorded === false; 3 when only input_differs; else 0.
 //   (Unreadable traces and usage errors are exit 2, decided by the caller before a summary exists.)
@@ -41,7 +41,9 @@ const n = (v) => (Number.isFinite(Number(v)) ? Number(v) : 0);
 
 function runExit(run = {}) {
   const r = run || {};
-  const code = n(r.runnerCode);
+  // no code (undefined, null) is 0; a code that is not a number is not a success
+  const rc = r.runnerCode;
+  const code = rc === undefined || rc === null ? 0 : (Number.isFinite(Number(rc)) ? Number(rc) : 1);
   if (r.internalError || code === 2) return 2;
   if (n(r.failed) > 0 || n(r.not_proven) > 0 || code !== 0) return 1;
   return 0;
@@ -50,7 +52,8 @@ function runExit(run = {}) {
 function verifyStatus(summary = {}) {
   const s = summary || {};
   if (n(s.diverged) || n(s.missing)) return 'diverged';
-  if (!n(s.tests) || n(s.not_proven) || s.inputs_recorded === false) return 'not_proven';
+  // inputs_recorded: absent counts as recorded, any other falsy value as not (python/detpy/fenvix.py verify_exit_code)
+  if (!n(s.tests) || n(s.not_proven) || (s.inputs_recorded !== undefined && !s.inputs_recorded)) return 'not_proven';
   if (n(s.input_differs)) return 'input_differs';
   return 'identical';
 }
@@ -67,7 +70,7 @@ function verifyExit(summary = {}) {
  * only, not under their recorded outcome. Any other outcome (`interrupted`, a test whose file ended while it ran,
  * or one this code does not know) counts as failed: the spec names failed and error only (B7), and leaving the rest
  * out of every count would let such a run end green where src/parallel-rerun.js always gave 1 (its `badFinal` was
- * every outcome other than passed, skipped and todo). REPORT.md records this decision.
+ * every outcome other than passed, skipped and todo). docs/CLI.md (exit codes of a run) states it too.
  */
 function countStatus(records, notProven = []) {
   const np = new Set(notProven);

@@ -117,3 +117,9 @@ on every path of `node/bin/detjs.js` (the normal path, the TZ/locale restart, an
 A signal that killed the runner is re-raised on detjs. The process that writes the run's final trace prints one line
 on stderr, `detjs: status: failed=N not_proven=M passed=K skipped=S`, and writes the same counts into the trace header
 as `meta.status` (`{"failed":N,"not_proven":M,"passed":K,"skipped":S}`; skipped counts skipped and todo).
+
+The exit code is the verdict; the counts describe the test records. They can read `failed=0` on a red run: a
+failure outside any test record (a file that fails to load, a hook or teardown error, a coverage threshold) is in
+the exit code only. Under the cross-worker hazard re-run (`node/src/parallel-rerun.js`), the trace reports the
+one-lane re-run's outcomes for the hazard files, but the exit code is never lowered below the first run's: a red
+first run stays red even when the re-run passes.

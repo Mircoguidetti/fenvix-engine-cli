@@ -39,3 +39,18 @@ test('stampStatus: counts into meta.status, other header bytes unchanged; unread
   assert.equal(stampStatus(path.join(dir, 'absent.jsonl')), null);
 });
 
+
+test('stampStatus keeps a symbolic-link trace a link, and the file mode', () => {
+  const dir = path.join(TMP, 'status-line-link');
+  fs.rmSync(dir, { recursive: true, force: true });
+  fs.mkdirSync(dir, { recursive: true });
+  const real = path.join(dir, 'real.jsonl');
+  fs.writeFileSync(real, '{"type":"header","format":"detpy-trace","version":1,"encoding":2,"meta":{},"order":[]}\n{"type":"test","nodeid":"a","outcome":"passed"}\n');
+  fs.chmodSync(real, 0o640);
+  const link = path.join(dir, 'trace.jsonl');
+  fs.symlinkSync(real, link);
+  assert.deepEqual(stampStatus(link), { failed: 0, not_proven: 0, passed: 1, skipped: 0 });
+  assert.ok(fs.lstatSync(link).isSymbolicLink());
+  assert.match(fs.readFileSync(real, 'utf8').split('\n')[0], /"meta":\{"status":\{"failed":0,"not_proven":0,"passed":1,"skipped":0\}\}/);
+  assert.equal(fs.statSync(real).mode & 0o777, 0o640);
+});

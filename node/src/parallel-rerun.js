@@ -1,6 +1,6 @@
 'use strict';
-// P1 (docs/LIMITS.md section 10, row JS-07): a first parallel run must never report a failure a serial run does
-// not.
+// P1 (docs/LIMITS.md section 10, row JS-07): the trace of a first parallel run reports what a serial run of the
+// conflicting files shows; its exit code is never lowered below the first run's (Default-deny below).
 //
 // The lanes are planned before anything is known about what the test files touch, so a path or a fixed port that
 // two files share is found only AFTER the run, from the recorded footprints (src/parallel.js `hazards`). Until this
@@ -12,7 +12,8 @@
 // What this does: run the runner once as a child, exactly as it runs today. If that run reported cross-worker
 // hazards, run the files those hazards name again in ONE lane (`--det-workers=1`, which always wins over the
 // runner's own worker options -- src/parallel.js `resolveWorkers`, precedence rule 1), so they cannot interfere;
-// the re-run's outcomes are then the ones reported, in the exit status and in the trace.
+// the re-run's outcomes replace the first run's records of those files in the trace. The exit code is the first
+// run's or higher: the re-run can raise it (a failure that recurs, a NOT PROVEN test), never lower it.
 //
 // The shape is src/isolate.js's, which already re-executes `bin/detjs.js` as a child runner session and merges the
 // resulting records with `native.mergeTraces`; the argument composition below is the same one, for the same reason
@@ -196,6 +197,10 @@ async function main(cmd, argv) {
   const after = traceStamp(tracePath);
   const t1 = after !== null && after !== before ? readTrace(tracePath) : null;
   const affected = t1 ? hazardFiles(t1.header) : [];
+  if (!t1 && after !== null) {
+    // pass 1 left a trace this process cannot read (malformed, too large): no re-run, its code forwarded as it is
+    process.stderr.write(`detjs: parallel: the first run's trace ${path.relative(root, tracePath)} could not be read back; no one-lane re-run, its exit code ${status1} stands\n`);
+  }
   if (!affected.length) return { status: status1 }; // the ordinary case: nothing re-run, nothing changed
 
   // ---- a hazard was reported: the files it names run again, together, in one lane ----
@@ -269,7 +274,9 @@ async function main(cmd, argv) {
       records.push(...(byFile.get(f) || []));
     }
     // a file the re-run reports that the first pass never did (it died in its lane before recording)
-    for (const [f, rs] of byFile) if (!spliced.has(f)) records.push(...rs);
+    // (only hazard files: a file the runner's own filters made pass 2 run as well is already in the first pass's
+    // records, and a second copy would count it twice)
+    for (const [f, rs] of byFile) if (!spliced.has(f) && set.has(f)) records.push(...rs);
   } else {
     records = t1.tests;
     process.stderr.write(`detjs: parallel: the one-lane re-run could not account for ${t2 ? `${unaccounted.length} test(s) of the affected files` : 'its own trace'}`

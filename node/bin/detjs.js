@@ -140,9 +140,9 @@ const PIN_NEEDS_RESTART = PIN && process.env.DETJS_PINNED === undefined && (
   Object.entries(PIN.env).some(([k, v]) => process.env[k] !== v) || (PIN.loc !== 'keep' && process.env.LANGUAGE !== undefined));
 if (PIN && !PIN_NEEDS_RESTART) process.env.DETJS_PINNED = process.env.DETJS_PINNED || `tz=${PIN.tz};locale=${PIN.loc}`;
 
-// P1 (docs/LIMITS.md section 10, row JS-07): a placement must never decide an outcome. When a run's lanes turn out
-// to have shared a path or a fixed port, the files the hazard names are run again in one lane and the re-run's
-// outcomes are the ones reported (src/parallel-rerun.js).
+// P1 (docs/LIMITS.md section 10, row JS-07): when a run's lanes turn out to have shared a path or a fixed port, the
+// files the hazard names are run again in one lane and the trace reports the re-run's outcomes; the exit code is
+// never lowered below the first run's (src/parallel-rerun.js wrapperRunnerCode).
 //
 // This sits OUTSIDE the two re-execs below on purpose. Each pass has to be a whole, ordinary detjs invocation: it
 // must do its own early-capture re-exec and its own TZ pinning, exactly as an unwrapped run does. Putting the

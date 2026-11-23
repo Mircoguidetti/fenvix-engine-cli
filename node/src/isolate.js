@@ -140,7 +140,7 @@ async function main(runner, argv) {
   const summaries = [];
   // the collection run itself failed (Jest: a file that fails to load has no test to collect, and every per-test
   // session of the others passes): the run is red, whatever the per-test sessions say (gstack /review, pass 3)
-  let failed = Boolean(col && col.status !== 0 && col.status !== null);
+  let failed = Boolean(col && (col.status !== 0 || col.signal));
   if (failed) {
     process.stderr.write(col.stderr || '');
     process.stderr.write(`detjs ${runner} --det-isolate: the collection run failed (exit ${col.status}); the run is reported failed\n`);

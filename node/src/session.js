@@ -495,10 +495,16 @@ function stampStatus(tracePath) {
   if (head.startsWith('{"type":"header"') && at >= 0) {
     const i = at + '"meta":{'.length;
     const field = `"status":${JSON.stringify(status)}${head[i] === '}' ? '' : ','}`;
-    const tmp = `${tracePath}.status-${process.pid}`;
+    // beside the real file (a --det-trace that is a symbolic link stays one), with its mode
+    let real = tracePath;
+    try { real = fs.realpathSync(tracePath); } catch { /* as given */ }
+    const tmp = `${real}.status-${process.pid}`;
     try {
-      fs.writeFileSync(tmp, `${head.slice(0, i)}${field}${head.slice(i)}${nl < 0 ? '' : text.slice(nl)}`);
-      fs.renameSync(tmp, tracePath);
+      let mode = null;
+      try { mode = fs.statSync(real).mode & 0o7777; } catch { /* default */ }
+      fs.writeFileSync(tmp, `${head.slice(0, i)}${field}${head.slice(i)}${nl < 0 ? '' : text.slice(nl)}`, mode === null ? undefined : { mode });
+      if (mode !== null) fs.chmodSync(tmp, mode);
+      fs.renameSync(tmp, real);
     } catch (e) {
       try { fs.rmSync(tmp, { force: true }); } catch { /* best effort */ }
       process.stderr.write(`detjs: meta.status not written into ${tracePath}: ${e && e.message}\n`);
