@@ -14,6 +14,7 @@ Machine: 4 CPUs, Intel Xeon @ 2.30GHz, 15 GB. Every number is MEASURED by the co
 | agentlang | 59.15 | 21.90 (w4) | 2.70x (yes) | 79 (yes) | yes |
 | alakajam | 25.46 | 7.54 (w4) | 3.38x (yes) | 140 (yes) | yes |
 | neat | 6.05 | 3.04 (w4) | 1.99x (no) | 0 (no) | no |
+| instar | - | - | UNKNOWN (no plain/plain_par rows) | - | UNKNOWN |
 
 ## Rows — raw: results-c.jsonl
 
@@ -42,6 +43,27 @@ Machine: 4 CPUs, Intel Xeon @ 2.30GHz, 15 GB. Every number is MEASURED by the co
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | lerna-lite | fec3cb9660 | vitest | serial | yes | 107 | 605.55 (3) | - | 598.96 (3) | 2 | 601.78 (3) | 1.01x | yes; yes; yes | diverged 64, not proven 43 of 107 (identical 0); diverged 65, not proven 42 of 107 (identical 0); diverged 64, not proven 43 of 107 (identical 0) | env 39, fs 65, io 5, other 2 | diverged 62, not proven 45 of 107 (identical 0): env 38, fs 61, io 7, other 1 | OUTCOME IDENTICAL, VERDICT DIVERGED | round 1 cold, later warm | 0 | 4 / Intel(R) Xeon(R) Processor @ 2.30GHz | 5a6463fd | not classified | no: not classified |
 | lerna-lite | fec3cb9660 | vitest | serial | yes | 107 | 605.55 (3) | - | 598.96 (3) | 4 | 599.55 (3) | 1.01x | yes; yes; yes | diverged 64, not proven 43 of 107 (identical 0); diverged 61, not proven 46 of 107 (identical 0); diverged 61, not proven 46 of 107 (identical 0) | env 39, fs 63, io 7, other 1 | diverged 62, not proven 45 of 107 (identical 0): env 38, fs 61, io 7, other 1 | OUTCOME IDENTICAL, VERDICT DIVERGED | round 1 cold, later warm | 0 | 4 / Intel(R) Xeon(R) Processor @ 2.30GHz | 5a6463fd | not classified | no: not classified |
+
+## Final summary (session C, 2026-11-23; engine trunk bfaf70b4; every number MEASURED unless marked)
+
+Rows "outcome identical, verdict identical, faster": 0 of 8 measured repositories. No repository got the engine verdict "identical" in every round.
+
+Admitted by the idea rule ((a) own parallel without the engine >= 2x faster than plain serial, medians; (b) at least one THEIRS test):
+* drydock: (a) 3.48x (465.87 s -> 133.80 s, w4); (b) THEIRS 40 (order-dependent: fail in shuffled plain runs). bugs/drydock.md.
+* agentlang: (a) 2.70x (59.15 s -> 21.90 s, w4); (b) THEIRS 79 (56 fail in a plain 4-worker run, the SQLite lock its config names; 23 order-dependent). bugs/agentlang.md.
+* alakajam: (a) 3.38x (25.46 s -> 7.54 s, w4); (b) THEIRS 140 by classify.py, of which only 2 are reproduced plain FAILURES (migration-0047-node-table.spec.ts in shuffle-1, one user.service.spec.ts test in shuffle-2); the other 138 are skipped (not failed) in the plain 4-worker runs. bugs/alakajam.md.
+* yalc: (a) 2.76x (70.42 s -> 25.47 s, w4); (b) THEIRS 1 (capability-adapters.test.ts crustdata test, 6 of 7 plain runs failed). Admitted by the same rule; listed here although the coordinator's list named three. bugs/yalc.md.
+
+Not admitted: lerna-lite ((a) 2.13x, THEIRS 0), kodus-ai ((a) 1.81x; THEIRS 2), beevibe ((a) 1.23x, THEIRS 0), neat ((a) 1.99x, THEIRS 0).
+
+Stopped / not measured: instar stopped by the coordinator (D1 = A) after its first plain serial run (2597.64 s, 7923 tests, 315 failed): "stopped: ENV-dominated (313 of 315 failures name this container: missing network interface, ssh-keygen)" (251 'actual-private-interface-required-for-real-resolver-test', 62 'spawnSync ssh-keygen ENOENT'); its one raw row is in results-c.jsonl, no table row. open-knowledge: not measured (stopped by coordinator); one trial plain run 2090.50 s. kiri, n8design/htwoo, cypress, uswds-wc: not measured (queue stopped). Excluded before measuring: see "Excluded" below.
+
+Engine findings:
+* neat: in round 2 at 4 workers the engine's parallel run reported 3 src/routes/page.test.ts tests FAILED that pass in every plain and engine-serial run; the lanes share the SQLite file ./data/neat.db (verify marks them diverged).
+* alakajam: `--det` serial alone fails 120 of 217 tests that plain serial passes (73 'Test timed out', SQLITE_IOERR / SQLITE_READONLY during knex migrations), in every serial and parallel engine run.
+* drydock: condition (4) fails for 7 THEIRS tests: the parallel run reported a different outcome from its own serial reference without naming the test in the run output (verify marks them diverged).
+* kodus-ai: 1 test (lifecycle.e2e.test.ts) passes in every plain run and fails in every engine run (uncontrolled I/O readiness order named).
+* Every repository: most not-identical tests are OURS (the engine refuses stable outcomes: uncontrolled env / fs / io / net reads), serial vs serial equally not identical.
 
 ## Notes per row
 
