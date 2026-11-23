@@ -1,0 +1,131 @@
+{
+ "codex-multi-auth": {
+  "commit": "b9886168aafcebd8581d4e344daf7abd19b510ce",
+  "cmds": [
+   "git checkout -q -f --detach b9886168aafcebd8581d4e344daf7abd19b510ce && git clean -fdxq -e node_modules -> exit 0",
+   "find . -name node_modules -type d -prune -exec rm -rf {} + -> exit 0",
+   "npm ci --ignore-scripts --no-audit --no-fund -> exit 0",
+   "npx --no-install vitest --version -> exit 0",
+   "npx --no-install vitest list --help -> exit 0"
+  ],
+  "version": "vitest/5.0.5 linux-x64 node-v22.23.5",
+  "help_lines": [
+   "--changed [since]                                          Print only tests that are affected by the changed files (default: false)",
+   "--filesOnly                                                Print only test files with out the test cases",
+   "--changed [since]                                          Run tests that are affected by the changed files (default: false)"
+  ]
+ },
+ "ironcurtain": {
+  "commit": "abf2b44c2e1b6138ede2d0b46337c684258088d0",
+  "cmds": [
+   "git checkout -q -f --detach abf2b44c2e1b6138ede2d0b46337c684258088d0 && git clean -fdxq -e node_modules -> exit 0",
+   "find . -name node_modules -type d -prune -exec rm -rf {} + -> exit 0",
+   "npm ci --ignore-scripts --no-audit --no-fund -> exit 0",
+   "npx --no-install vitest --version -> exit 0",
+   "npx --no-install vitest list --help -> exit 0"
+  ],
+  "version": "vitest/4.1.11 linux-x64 node-v22.23.5",
+  "help_lines": [
+   "--changed [since]                                          Print only tests that are affected by the changed files (default: false)",
+   "--filesOnly                                                Print only test files with out the test cases",
+   "--changed [since]                                          Run tests that are affected by the changed files (default: false)"
+  ]
+ },
+ "yalc": {
+  "commit": "5686d1f2f526346133f78eef3349fc5a655757b4",
+  "cmds": [
+   "git checkout -q -f --detach 5686d1f2f526346133f78eef3349fc5a655757b4 && git clean -fdxq -e node_modules -> exit 0",
+   "find . -name node_modules -type d -prune -exec rm -rf {} + -> exit 0",
+   "npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi -> exit 0",
+   "npx --no-install vitest --version -> exit 0",
+   "npx --no-install vitest list --help -> exit 0"
+  ],
+  "version": "vitest/4.1.2 linux-x64 node-v22.23.5",
+  "help_lines": [
+   "--changed [since]                                          Print only tests that are affected by the changed files (default: false)",
+   "--filesOnly                                                Print only test files with out the test cases",
+   "--changed [since]                                          Run tests that are affected by the changed files (default: false)"
+  ]
+ },
+ "nestjs-pino": {
+  "commit": "82d92198747c64e87057dfb50c6215a936a1a052",
+  "cmds": [
+   "git checkout -q -f --detach 82d92198747c64e87057dfb50c6215a936a1a052 && git clean -fdxq -e node_modules -> exit 0",
+   "find . -name node_modules -type d -prune -exec rm -rf {} + -> exit 0",
+   "npm ci --ignore-scripts --no-audit --no-fund -> exit 0",
+   "npx --no-install vitest --version -> exit 0",
+   "npx --no-install vitest list --help -> exit 0"
+  ],
+  "version": "vitest/5.1.1 linux-x64 node-v22.23.5",
+  "help_lines": [
+   "--changed [since]                                          Print only tests that are affected by the changed files (default: false)",
+   "--filesOnly                                                Print only test files with out the test cases",
+   "--changed [since]                                          Run tests that are affected by the changed files (default: false)",
+   "--sinceLastRun                                             Run only the tests whose recorded dependencies were modified since the last run of the test, and the tests that failed in their last run. Enables --changed, --experimental.recordDependencies and the mtime provider (default: false)"
+  ]
+ },
+ "agentsys": {
+  "commit": "ce58913304d88a1d1a0513e1837ae43c33f5f6f5",
+  "cmds": [
+   "git checkout -q -f --detach ce58913304d88a1d1a0513e1837ae43c33f5f6f5 && git clean -fdxq -e node_modules -> exit 0",
+   "find . -name node_modules -type d -prune -exec rm -rf {} + -> exit 0",
+   "npm ci --ignore-scripts --no-audit --no-fund -> exit 0",
+   "npx --no-install jest --version -> exit 0",
+   "npx --no-install jest --help -> exit 0"
+  ],
+  "version": "30.5.2",
+  "help_lines": [
+   "--findRelatedTests            Find related tests for a list of source",
+   "--listTests                   Lists all tests Jest will run given the",
+   "system together with `--findRelatedTests` to"
+  ]
+ },
+ "drydock": {
+  "commit": "ce562a6a84c91b7e101398766d7de560cd18e35f",
+  "cmds": [
+   "git checkout -q -f --detach ce562a6a84c91b7e101398766d7de560cd18e35f && git clean -fdxq -e node_modules -> exit 0",
+   "find . -name node_modules -type d -prune -exec rm -rf {} + -> exit 0",
+   "npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund) -> exit 0",
+   "npx --no-install vitest --version -> exit 0",
+   "npx --no-install vitest list --help -> exit 0"
+  ],
+  "version": "vitest/4.1.12 linux-x64 node-v24.22.3",
+  "help_lines": [
+   "--changed [since]                                          Print only tests that are affected by the changed files (default: false)",
+   "--filesOnly                                                Print only test files with out the test cases",
+   "--changed [since]                                          Run tests that are affected by the changed files (default: false)"
+  ]
+ },
+ "agentlang": {
+  "commit": "f02e27199b193096c19985b7877ad1644974507a",
+  "cmds": [
+   "git checkout -q -f --detach f02e27199b193096c19985b7877ad1644974507a && git clean -fdxq -e node_modules -> exit 0",
+   "find . -name node_modules -type d -prune -exec rm -rf {} + -> exit 0",
+   "npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts -> exit 0",
+   "npx --no-install vitest --version -> exit 0",
+   "npx --no-install vitest list --help -> exit 0"
+  ],
+  "version": "vitest/4.0.18 linux-x64 node-v22.23.5",
+  "help_lines": [
+   "--changed [since]                                     Print only tests that are affected by the changed files (default: false)",
+   "--filesOnly                                           Print only test files with out the test cases",
+   "--changed [since]                                     Run tests that are affected by the changed files (default: false)"
+  ]
+ },
+ "alakajam": {
+  "commit": "af63a7e0993f2f7de2ec8dff53a941ccfe855572",
+  "cmds": [
+   "git checkout -q -f --detach af63a7e0993f2f7de2ec8dff53a941ccfe855572 && git clean -fdxq -e node_modules -> exit 0",
+   "find . -name node_modules -type d -prune -exec rm -rf {} + -> exit 0",
+   "npm ci --ignore-scripts --no-audit --no-fund -> exit 0",
+   "npx --no-install vitest --version -> exit 0",
+   "npx --no-install vitest list --help -> exit 0"
+  ],
+  "version": "vitest/5.0.5 linux-x64 node-v22.23.5",
+  "help_lines": [
+   "--changed [since]                                          Print only tests that are affected by the changed files (default: false)",
+   "--filesOnly                                                Print only test files with out the test cases",
+   "--changed [since]                                          Run tests that are affected by the changed files (default: false)"
+  ]
+ }
+}
