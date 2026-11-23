@@ -179,6 +179,18 @@ depends on whether that `stat` happens while a test file is open (timing), not o
   seeded stream) under every option. Native key generation stays real and observed.
 * Tests: `node/test/p1-d-entropy-default.test.js` 6/6 (serial = parallel by default; real difference with
   `--det-urandom=off` and with another `--det-seed`: never stable).
+* Follow-up found by the full Node suite (two latent `--det-urandom` defects that D made the default; both fail on the
+  trunk with `--det-urandom` too):
+  1. `seeds.js`: the streams start in an all-zero xoshiro state until the first test or file seeds them; a
+     `randomBytes` / `randomFillSync` / `randomInt` drawn before that (a runner's or a library's start-up) returned
+     zero bytes every time. Playwright builds its dispatcher GUIDs from them: two equal GUIDs, the worker exited, and
+     all 4 `playwright-p041` tests failed. Such draws now stay real and observed (as with `--det-urandom=off`); once
+     seeded, the stream is controlled as before. Test: `p1-d-entropy-default.test.js` 7th case (red before the fix:
+     `000...0` twice).
+  2. `runners/bun-runtime.js`: `Bun.password.hash/hashSync` and `Bun.CSRF.generate` (native randomness the stream
+     does not reach) were flagged `entropy`, which the cache policy drops when the stream is on, so a bcrypt hash with
+     a real random salt was reused (`review-r032b` B4, red). They are now flagged `keygen` ("OS randomness drawn in
+     native crypto"), which no option drops, like Node's own key generation. No policy change.
 * MEASURED: agentsys D 99 → 0, sqlectron D 5 → 0 (final). The crypto risk is as in DESIGN-P1.md D.2 (an IV or key a
   test draws is the same in every run of that test under `--det`), stated in HELP and docs/NODE.md.
 
@@ -190,6 +202,10 @@ depends on whether that `stat` happens while a test file is open (timing), not o
 - `node/test/p1-d-entropy-default.test.js`: the drawn values go to an output file instead of `golden()` (the engine's parallel re-run failed `golden` on the trunk before verify could show the divergence).
 - `node/test/p1-e-fs-order.test.js`: third case added with the rm follow-up (af0397a).
 - `node/test/network-p041.test.js` G-1426: asserted the former entropy default (observed); now asserts the decided default (controlled) and the same off / on / bare flag / invalid value cases; G-1421 kept (it caught a banner wording that contained "real OS entropy" in a controlled run, fixed in the banner, not in the test).
+- `node/test/cache.test.js` "never cached: child process (git included), worker thread, loopback connection, OS entropy" (vitest, jest): both runs now pass `--det-urandom=off`. Reason: the case is about real OS entropy, which since D exists only with that option (by default the draw comes from the seeded stream and the file is reusable, as it was on the trunk with `--det-urandom`, where the cache key includes the option). Every expectation is unchanged (the entropy file still runs, `os entropy` is still the reason).
+- `node/test/review-r032.test.js` N8 x 3 draws x 2 runners (node-test, mocha): both runs pass `--det-urandom=off`, for the same reason; the assertion (the file is not reused) is unchanged.
+- `node/test/policy-equivalence.test.js` "real node-test / mocha sessions": the first (recording) session passes `--det-urandom=off`. Reason: the second session, `--det-urandom`, is meant to be "another configuration"; since D it was the same configuration as the first, every file was reused and the dump had too few captures. The two configurations compared are again "entropy observed" and "entropy allowed"; the assertions are unchanged.
+- `node/test/p1-d-entropy-default.test.js`: seventh case added (a draw made before any seeding is not a constant), with the follow-up fix below.
 - No test was skipped, weakened or quarantined; no CI step, timeout or threshold changed.
 
 ## 5. Test suites (branch vs trunk)

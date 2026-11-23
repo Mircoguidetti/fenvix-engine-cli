@@ -72,3 +72,30 @@ for (const runner of RUNNERS) {
     });
   }
 }
+
+// Found by the full suite after D (Playwright's worker exited: two dispatchers got the same GUID): before the
+// streams are seeded in a process (a runner's or a library's start-up, before any test or test file), the controlled
+// stream gave zero bytes on every draw, an unseeded xoshiro state. Those draws now stay real (observed).
+// Red on the trunk with --det-urandom (f67be4a) and on this branch before the fix: 00000000... twice.
+test('P1 D: a draw made before any test or file seeded the streams is not a constant', T, () => {
+  const src = path.join(__dirname, '..', 'src');
+  const script = `
+const { STATE } = require(${JSON.stringify(path.join(src, 'state'))});
+STATE.config = { urandom: true, seed: 0n };
+const { Patcher } = require(${JSON.stringify(path.join(src, 'patch'))});
+const seeds = require(${JSON.stringify(path.join(src, 'seeds'))});
+const crypto = require('node:crypto');
+seeds.installProcess(new Patcher(), STATE.config);
+const early = [crypto.randomBytes(16).toString('hex'), crypto.randomBytes(16).toString('hex'), String(crypto.randomInt(1e9)), String(crypto.randomInt(1e9))];
+seeds.seedFile('f'); const f1 = crypto.randomBytes(16).toString('hex');
+seeds.seedFile('f'); const f2 = crypto.randomBytes(16).toString('hex');
+process.stdout.write(JSON.stringify({ early, f1, f2 }));`;
+  const r = require('node:child_process').spawnSync(process.execPath, ['-e', script], { encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stderr);
+  const { early, f1, f2 } = JSON.parse(r.stdout);
+  assert.notEqual(early[0], '0'.repeat(32), 'zero bytes before seeding');
+  assert.notEqual(early[0], early[1], 'two draws before seeding gave the same bytes');
+  assert.notEqual(early[2], early[3], 'two randomInt draws before seeding gave the same value');
+  // once seeded, the stream is controlled: the same file key gives the same bytes
+  assert.equal(f1, f2);
+});

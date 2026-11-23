@@ -70,7 +70,7 @@ node:fs, process.env, os, child_process, net, dgram, dlopen); the main process (
 | `Bun.spawn/spawnSync/$`, `openInEditor`, `Terminal` | not cached (process) |
 | `Bun.serve/listen/connect`, `fetch` to loopback, `WebSocket`, `Bun.dns.*`, `sql/SQL/postgres/redis/RedisClient/s3/S3Client` | not cached (socket); non-local hosts are closed by Level 0 |
 | `Bun.udpSocket` | not cached |
-| `Bun.password.hash`, `Bun.CSRF.generate` | not cached (OS entropy) |
+| `Bun.password.hash`, `Bun.CSRF.generate` | not cached (OS randomness drawn in native crypto, `keygen`: the `--det-urandom` stream does not reach it, so no option makes it reusable) |
 | `Bun.resolve/resolveSync` | the result (module) or the miss |
 | `Bun.fetch`, `BunFile#lastModified`, `Bun.secrets`, `Bun.WebView`, `Bun.ModuleGraph` (not replaceable) | source scan: not cached when used |
 | every other `Bun.*` function or namespace not on the PURE list | not cached (`runtime-api`): an API added by a later Bun is refused until it is classified |

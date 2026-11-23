@@ -289,11 +289,13 @@ function installCapture(cap, bracket, notes) {
   if (typeof globalThis.WebSocket === 'function') {
     wrapCall(globalThis, 'WebSocket', (a) => { const h = hostOf(a[0]); if (!(h && closed && !localHost(h.host))) cap.flag('connect', 'WebSocket'); });
   }
-  // entropy that is not seeded
+  // entropy that is not seeded: native randomness (a bcrypt / argon2 salt, a CSRF token) that the --det-urandom stream
+  // does not reach. `keygen`, not `entropy`: the policy drops `entropy` when the stream is on (the default since P1 D),
+  // and these draws stay real either way.
   if (Bun.password) {
-    for (const k of ['hash', 'hashSync']) wrapCall(Bun.password, k, () => cap.flag('entropy', `Bun.password.${k}`));
+    for (const k of ['hash', 'hashSync']) wrapCall(Bun.password, k, () => cap.flag('keygen', `Bun.password.${k}`));
   }
-  if (Bun.CSRF) wrapCall(Bun.CSRF, 'generate', () => cap.flag('entropy', 'Bun.CSRF.generate'));
+  if (Bun.CSRF) wrapCall(Bun.CSRF, 'generate', () => cap.flag('keygen', 'Bun.CSRF.generate'));
   // resolution done by the code itself: the result is a module dependency, a failure what would make it resolve
   for (const k of ['resolveSync', 'resolve']) {
     const real = Bun[k];

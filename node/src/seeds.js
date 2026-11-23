@@ -82,7 +82,14 @@ const NONCE = new Xoshiro128();
 const INFRA_MATH = new Xoshiro128();
 const INFRA_CRYPTO = new Xoshiro128();
 
+// whether the streams were seeded in this process (a test, or a file's module scope / hooks: seedFile). Before that
+// (a runner's or a library's start-up) the controlled entropy stream is not used: an unseeded xoshiro state is all
+// zeros and gives zero bytes, the same bytes on every draw (Playwright's in-process start-up then made the same
+// dispatcher GUID twice and its worker exited). Such draws stay real and observed, as with --det-urandom=off.
+let SEEDED = false;
+
 function reseed(key) {
+  SEEDED = true;
   const base = STATE.config.seed;
   const [h1, l1] = native.deriveSeedWords(base, key);
   MATH.seed(h1, l1);
@@ -241,7 +248,7 @@ function randomInt(min, max, cb) {
     process.nextTick(cb, null, v);
     return undefined;
   }
-  if (STATE.config.urandom) {
+  if (STATE.config.urandom && SEEDED) {
     if (max === undefined) { max = min; min = 0; }
     const range = max - min;
     const v = min + Math.floor(ENTROPY.nextDouble() * range);
@@ -262,7 +269,7 @@ function randomFill(buf, offset, size, cb) {
 }
 
 function observe(op, buf) {
-  if (STATE.config.urandom) ENTROPY.fill(buf);
+  if (STATE.config.urandom && SEEDED) ENTROPY.fill(buf);
   STATE.record('entropy', op, `${buf.length}:${native.digest(Buffer.from(buf.buffer, buf.byteOffset, buf.byteLength))}`);
   return buf;
 }
