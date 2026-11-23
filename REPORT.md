@@ -1,16 +1,40 @@
-BLOCKED
+DONE
 Customers call fenvix-run explicitly; no hook catches the test step (app `infra/github-app/lib/runner/files/fenvix-job-started:4` only touches a marker; the onboarding setup PR changes only the job's `runs-on`, `github-app/src/onboarding/workflow.ts:4-8`). So after onboarding, a Node customer's `npm test` runs on our machine WITHOUT the engine unless their workflow calls `fenvix-run node` itself.
 
 # Node customers on our machines: vitest, jest, node:test, mocha through `fenvix-run node` (spec 2026-11-23)
 
-Why BLOCKED: the engine is merged (`claude/release-1` = **f67be4a**). The App is ready on `claude/node-runner`
-(**07dfac3**, `engineCliCommit = f67be4a`) but is **not merged into `main`**, for this reason:
-- `.github/workflows/deploy.yml` runs on every push to `main`: a production deploy of the database migrations, the
-  CDK stacks (the runner image with the new engine) and DNS.
-- So the App merge the spec asks for is also a deploy, and the spec's rule 5 says "Do not deploy anything".
-- Merging into `main` waits for the founder.
+Both merged.
+- **Engine:** `claude/release-1` = **f67be4a**.
+- **App:** PR #24 (https://github.com/Mircoguidetti/fenvix-app/pull/24) merged into `main` = **ccc1170**.
+  - A push to `main` is a production deploy (`deploy.yml`), which conflicts with the spec's rule 5. The founder
+    confirmed it in this session (option B: PR, checks green, merge, deploy).
+  - The PR's first `Tests` run failed in the deploy steps:
+    - migration 0018 had no detection probe in `deploy/lib/migrate.mjs`;
+    - the migration tests hard-coded 0017 as the newest migration.
+  - Fixed in a14bb91 (see the test-change lines below). `Tests` was then green, and the PR was merged.
+- **Deploy run 45198260216: success** (14:49 to 14:56 UTC, 2026-11-23):
+  - migrations: `applying 0018_node_test_mocha_runners.sql`, step green;
+  - CDK: `fenvix-prod-github-app` `UPDATE_COMPLETE` (new Image Builder component, recipe and pipeline; Lambdas
+    updated);
+  - smoke: `/healthz` 200, `/v1/me` 401, both expected.
+- **NOT VERIFIED: runner image 1.0.45688296.** Its build was only started ("30-45 minutes; jobs wait for it"). That
+  build is where the new `install.sh` (pinned Node 22.23.5) and `bootstrap.sh install` at f67be4a (wheel + detjs)
+  really run on AWS. This session has no AWS access, so its result is not known here. Check it in EC2 Image Builder
+  (pipeline `fenvix-prod-runner`).
 
 ## Changes to tests, CI steps or thresholds (listed first, rule 3)
+
+- APP DEPLOY TESTS (a14bb91): `deploy/test/database.test.mjs` derives the newest migration (`LAST`) and the numbers
+  of the migrations a test writes itself (`nextVersion`) from the files. Before, it hard-coded 0017, 0018 and 0019.
+  - "0014-0017 run" became "every migration after 0013".
+  - The local-Supabase test title says "the newest migration".
+  - No assertion removed or weakened.
+- APP DEPLOY TEST, new case: `deploy/test/pipeline-2.test.mjs`, 0018 cut before its last statement stops the deploy
+  and records nothing.
+- APP DEPLOY CODE: a probe for 0018 in `deploy/lib/migrate.mjs` `PROBES`, like 0011-0017. It needs the
+  `ci_projects` and `gh_repositories` runner CHECKs to accept mocha.
+- Local result: deploy `npm test` against a scratch Postgres 16 gives 86 pass, 0 fail, 1 skipped (local Supabase
+  only). PR #24 `Tests` on a14bb91: success.
 
 - APP TEST PIN (07dfac3): `infra/github-app/test/cache.test.ts:21` pins `engineCliCommit`. It changed from `a20b93d...` to
   `f67be4a...`, together with `cdk.json` and `lib/cache/PROVENANCE.md`, as PROVENANCE.md prescribes. The test's real
