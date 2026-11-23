@@ -16,6 +16,19 @@ Standard library only: the wrapper runs with any Python 3.9+; pytest runs with `
 
     fenvix-run --project . --python .venv/bin/python [--key owner/repo] [--out DIR] [-- extra pytest args]
     fenvix-run verify --project . --python PY --summary DIR/summary.json [--out DIR]
+
+Node (vitest, jest, node:test, mocha) runs inside detjs, the engine's Node shell (runner/bootstrap.sh installs it on
+the job PATH), with the cache in ``$FENVIX_CACHE_ROOT/<project key>-node<major>``:
+
+    fenvix-run node --project DIR [--runner vitest|jest|node-test|mocha] [--key owner/repo] [--out DIR] [-- runner args]
+    fenvix-run verify --summary DIR/summary.json [--out DIR]     (a Node summary: fresh run + `detjs verify`)
+
+Without --runner the runner is read from package.json (devDependencies vitest / jest / mocha, or a scripts.test that
+runs ``node --test``); none or more than one: exit 2. Exit status: detjs's (0 every test passed and proven; 1 a
+failure or a NOT PROVEN test; 2 usage or internal error), never lowered by the re-run of failures. ``verify`` exits
+with ``detjs verify``'s code: 0 identical, 1 a wrong reuse, a divergence or NOT PROVEN, 3 only the inputs differ.
+The summary has the Python path's field names plus ``language``, ``test_runner``, ``engine``; ``runner_args``
+replaces ``pytest_args``.
 """
 from __future__ import annotations
 
@@ -26,6 +39,7 @@ import json
 import os
 import re
 import shlex
+import shutil
 import subprocess
 import sys
 import time
@@ -372,7 +386,7 @@ def run_link() -> str | None:
     return f"{s}/{r}/actions/runs/{i}#artifacts" if s and r and i else None
 
 
-def write_step_summary(s: dict, title: str | None) -> None:
+def write_step_summary(s: dict, title: str | None, runner_label: str = "pytest") -> None:
     L = [f"## {title or 'fenvix'}: tests with proof", ""]
     L.append(f"Commit `{s['commit'][:12]}` · cache {'warm' if s['cache_was_warm'] else 'cold (first job on this machine)'}"
              f" · machine `{os.uname().nodename}`")
@@ -386,10 +400,10 @@ def write_step_summary(s: dict, title: str | None) -> None:
           f"| Run | {s['ran']} |",
           f"| Skipped with proof (result reused, receipt kept) | **{s['reused_with_proof']}** |",
           f"| Test time saved | **{fmt_s(s['test_seconds_saved'])}** ({s['share_of_test_time_saved']:.1%} of test time) |",
-          f"| Test time spent | {fmt_s(s['test_seconds_run'])} |",
+          f"| Test time spent | {fmt_s(s['test_seconds_run']) if s['test_seconds_run'] is not None else 'unknown'} |",
           f"| Failures | {len(s['failed'])} |",
           f"| Flaky (fail in the suite, pass alone) | {len(s['flaky'])} |",
-          f"| Job wall time (pytest) | {fmt_s(s['wall_seconds'])} |", ""]
+          f"| Job wall time ({runner_label}) | {fmt_s(s['wall_seconds'])} |", ""]
     oc = ", ".join(f"{k} {v}" for k, v in s["outcome_counts"].items())
     L.append(f"Outcomes: {oc or 'none'}.")
     link = run_link()
@@ -476,23 +490,420 @@ def cmd_verify(a: argparse.Namespace, extra: list[str]) -> int:
     return 1 if wrong or v["checked"] < v["reused"] else 0
 
 
+# ---------------------------------------------------------------------------------------------------------------------
+# Node: `fenvix-run node` runs vitest, jest, node:test or mocha inside detjs (the engine's Node shell) with the cache.
+NODE_RUNNERS = ("vitest", "jest", "node-test", "mocha")
+TEST_RUNNER_NAME = {"vitest": "vitest", "jest": "jest", "node-test": "node:test", "mocha": "mocha"}
+_STATUS_KEYS = ("failed", "not_proven", "passed", "skipped")
+
+
+def detect_node_runner(project: Path) -> tuple[str | None, str]:
+    """The test runner named by the project's package.json: devDependencies vitest / jest / mocha, or a
+    ``scripts.test`` that runs ``node --test``. Returns (runner, "") for exactly one, else (None, why)."""
+    pj = project / "package.json"
+    try:
+        data = json.loads(pj.read_text())
+    except OSError:
+        return None, f"no package.json in {project}"
+    except ValueError as e:
+        return None, f"{pj} is not valid JSON ({e})"
+    dev = data.get("devDependencies") or {}
+    found = [r for r in ("vitest", "jest", "mocha") if isinstance(dev, dict) and r in dev]
+    script = ((data.get("scripts") or {}).get("test") or "") if isinstance(data.get("scripts"), dict) else ""
+    if re.search(r"(^|[\s;&|(])node\s+(\S+\s+)*--test(\s|=|$)", script):
+        found.append("node-test")
+    if len(found) == 1:
+        return found[0], ""
+    if not found:
+        return None, (f"no test runner found in {pj}: none of vitest, jest, mocha in devDependencies and no "
+                      f"`node --test` in scripts.test (scripts.test: {script!r}); pass --runner")
+    return None, f"more than one test runner found in {pj}: {', '.join(found)}; pass --runner"
+
+
+def find_detjs(given: str | None) -> list[str] | None:
+    """The detjs command: --detjs, $FENVIX_DETJS, `detjs` on PATH, else $FENVIX_HOME/bin/detjs."""
+    for c in (given, os.environ.get("FENVIX_DETJS")):
+        if c:
+            return shlex.split(c)
+    w = shutil.which("detjs")
+    if w:
+        return [w]
+    home = os.environ.get("FENVIX_HOME")
+    if home and os.access(os.path.join(home, "bin", "detjs"), os.X_OK):
+        return [os.path.join(home, "bin", "detjs")]
+    return None
+
+
+def node_major() -> str:
+    try:
+        v = subprocess.run(["node", "--version"], capture_output=True, text=True, check=True).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        return "node"
+    m = re.match(r"v(\d+)", v)
+    return f"node{m.group(1)}" if m else "node"
+
+
+def detjs_version(detjs: list[str]) -> str | None:
+    r = subprocess.run([*detjs, "--version"], capture_output=True, text=True)
+    m = re.search(r"(\d+\.\d+\.\d+\S*)", r.stdout)
+    return m.group(1) if r.returncode == 0 and m else None
+
+
+def run_detjs(detjs: list[str], runner: str, args: list[str], project: Path, env: dict) -> tuple[int, float]:
+    cmd = [*detjs, runner, *args]
+    log("$ " + " ".join(shlex.quote(c) for c in cmd))
+    t0 = time.monotonic()
+    code = subprocess.run(cmd, cwd=project, env=env).returncode
+    return code, time.monotonic() - t0
+
+
+def trace_header(path: Path) -> dict:
+    try:
+        with open(path) as fh:
+            first = json.loads(fh.readline())
+        return first.get("meta", {}) if first.get("type") == "header" else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def epoch_iso(epoch_ns: int | None) -> str | None:
+    if not epoch_ns:
+        return None
+    t = dt.datetime.fromtimestamp(int(epoch_ns) // 1_000_000_000, tz=dt.timezone.utc)
+    return t.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _regex_escape(s: str) -> str:
+    return re.sub(r"([.*+?^${}()|\[\]\\/])", r"\\\1", s)
+
+
+def split_nodeid(nodeid: str) -> tuple[str, list[str]]:
+    """``file[@@project]::describe::test`` -> (file, [describe, test])."""
+    head, _, rest = nodeid.partition("::")
+    return head.split("@@", 1)[0], (rest.split("::") if rest else [])
+
+
+def outcome_id(receipt_id: str, outcomes: dict) -> str | None:
+    """The --det-outcomes id of a receipt's test: the same id, or (a shared-process unit such as mocha's,
+    ``file@@process::describe::test``; a Vitest project, ``file@@project::test``) the id without the unit."""
+    if receipt_id in outcomes:
+        return receipt_id
+    head, sep, rest = receipt_id.partition("::")
+    plain = head.split("@@", 1)[0] + sep + rest
+    return plain if plain in outcomes else None
+
+
+def single_test_args(runner: str, nodeid: str) -> list[str]:
+    """The runner's own command line for one test (the flaky re-run): vitest/jest ``<file> -t "<name>"``, node:test
+    ``--test-name-pattern "<name>" <file>``, mocha ``<file> --grep "<name>"``. The name is the test's full title
+    (describe blocks and test joined by spaces, as vitest, jest and mocha match it; node:test matches each level, so
+    the test's own name), as an anchored regular expression with its special characters escaped."""
+    f, parts = split_nodeid(nodeid)
+    full = " ".join(parts)
+    if runner == "vitest":
+        return ["run", f, "-t", "^" + _regex_escape(full) + "$"]
+    if runner == "jest":
+        return [f, "-t", "^" + _regex_escape(full) + "$"]
+    if runner == "node-test":
+        return ["--test-name-pattern", "^" + _regex_escape(parts[-1] if parts else f) + "$", f]
+    return [f, "--grep", "^" + _regex_escape(full) + "$"]
+
+
+def _keep_runner_args(runner: str, extra: list[str]) -> list[str]:
+    """Runner arguments of the whole-suite run that also apply to a single-test re-run: options only (positional
+    arguments select files, the re-run selects its own). Vitest's subcommand is set by single_test_args."""
+    out, skip_next = [], False
+    for x in extra:
+        if skip_next:
+            out.append(x)
+            skip_next = False
+        elif x.startswith("-"):
+            if x.startswith("--det-cache"):
+                continue
+            out.append(x)
+            if "=" not in x and x in ("--config", "-c", "--project", "--root", "--require", "-r", "--import"):
+                skip_next = True
+    return out
+
+
+def _runner_args(runner: str, extra: list[str]) -> list[str]:
+    # Vitest without a subcommand starts in watch mode on a terminal: a job runs once.
+    if runner == "vitest" and (not extra or extra[0] not in ("run", "related", "bench", "list")):
+        return ["run", *extra]
+    return list(extra)
+
+
+def write_node_step_summary(s: dict, title: str | None) -> None:
+    write_step_summary(s, title or f"fenvix · {s['test_runner']}", runner_label=f"detjs {s['test_runner']}")
+
+
+def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
+    project = Path(a.project).resolve()
+    runner = a.runner
+    if not runner:
+        runner, why = detect_node_runner(project)
+        if not runner:
+            log(f"error: {why}")
+            return 2
+        log(f"runner {runner} (from {project / 'package.json'})")
+    detjs = find_detjs(a.detjs)
+    if not detjs:
+        log("error: detjs not found: not on PATH, no $FENVIX_DETJS, no $FENVIX_HOME/bin/detjs "
+            "(runner/bootstrap.sh install builds and installs it)")
+        return 2
+    out = Path(a.out or (Path(os.environ.get("RUNNER_TEMP", project)) / "fenvix")).resolve()
+    out.mkdir(parents=True, exist_ok=True)
+    key = project_key(project, a.key)
+    ns = f"{key}-{node_major()}"
+    cache = Path(a.cache) if a.cache else Path(DEFAULT_ROOT) / ns
+    if is_url(str(cache)):
+        log("error: a shared cache URL is not supported by `fenvix-run node` (local cache directory only)")
+        return 2
+    cache.mkdir(parents=True, exist_ok=True)
+    had_cache = any(cache.iterdir())
+    receipts, csum_p = out / "receipts.jsonl", out / "cache-summary.json"
+    outcomes_p, trace_p = out / "outcomes.json", out / "trace.jsonl"
+    for p in (receipts, csum_p, outcomes_p, trace_p):
+        p.unlink(missing_ok=True)
+    env = without_client_env(dict(os.environ))
+    runner_args = _runner_args(runner, extra)
+    args = ["--det", f"--det-cache={cache}", f"--det-cache-receipts={receipts}", f"--det-cache-summary={csum_p}",
+            f"--det-outcomes={outcomes_p}", f"--det-trace={trace_p}", *runner_args]
+    log(f"project {project} @ {git_head(project)[:12]}; runner {runner}; cache {cache} "
+        f"({'warm' if had_cache else 'cold'})")
+    code, wall = run_detjs(detjs, runner, args, project, env)
+
+    try:
+        res = json.loads(outcomes_p.read_text())
+    except (OSError, ValueError):
+        res = {}
+    outcomes: dict[str, str] = res.get("outcomes", {})
+    try:
+        cs = json.loads(csum_p.read_text())
+    except (OSError, ValueError):
+        cs = {}
+    meta = trace_header(trace_p)
+    status = meta.get("status") or {}
+    rec = read_receipts(receipts)
+    # per-test rows (`file::test`) count the tests; file rows (and a shared-process unit) carry the recorded time
+    reused_tests = [r for r in rec if r.get("reused") and r.get("kind") != "file" and "::" in r.get("nodeid", "")]
+    reused_units = [r for r in rec if r.get("reused") and (r.get("kind") == "file" or "::" not in r.get("nodeid", ""))]
+    saved = round(sum(float(r.get("duration") or 0.0) for r in reused_units), 3)
+    ran_files = cs.get("ran_files")
+    ran_time = round(sum(float((v or {}).get("duration") or 0.0) for v in ran_files.values()), 3) \
+        if isinstance(ran_files, dict) else None
+    failed = [n for n in res.get("order", sorted(outcomes)) if outcomes.get(n) in ("failed", "error")]
+    for n in sorted(outcomes):
+        if outcomes[n] not in ("passed", "skipped", "todo", "failed", "error") and n not in failed:
+            failed.append(n)  # an unknown outcome counts as failed (node/src/exit-status.js countStatus)
+    if code == 0 and (failed or int(status.get("failed") or 0) or int(status.get("not_proven") or 0)):
+        log(f"detjs returned 0 with failed or NOT PROVEN tests (status {status}): exit 1")
+        code = 1  # never green on a failure (spec "never lower the red")
+
+    # Failures: once more, alone, without the cache, at the run's epoch. Passes alone -> flaky. The exit code stays.
+    epoch_ns = int(meta["epoch_ns"]) if meta.get("epoch_ns") else (int(cs["epoch_ms"]) * 1_000_000 if cs.get("epoch_ms") else None)
+    ep = [f"--det-epoch={epoch_iso(epoch_ns)}"] if epoch_ns else []
+    flaky, real, reruns = [], list(failed), []
+    if failed and not a.no_rerun:
+        real = []
+        keep = _keep_runner_args(runner, extra)
+        for i, nid in enumerate(failed[: a.max_reruns]):
+            again_p = out / f"outcomes-rerun-{i}.json"
+            again_p.unlink(missing_ok=True)
+            one = single_test_args(runner, nid)
+            run_detjs(detjs, runner, ["--det", *ep, f"--det-outcomes={again_p}",
+                                      f"--det-trace={out / f'trace-rerun-{i}.jsonl'}", *keep, *one], project, env)
+            try:
+                o2 = json.loads(again_p.read_text()).get("outcomes", {}).get(nid)
+            except (OSError, ValueError):
+                o2 = None
+            cmd = " ".join(shlex.quote(x) for x in ["detjs", runner, "--det", *ep, *keep, *one])
+            reruns.append({"nodeid": nid, "command": cmd, "outcome": o2})
+            (flaky if o2 == "passed" else real).append((nid, cmd))
+        real = [n for n, _ in real] + failed[a.max_reruns:]
+
+    version = detjs_version(detjs)
+    rt = {"digest": cs.get("runtime"), "config": cs.get("config"), "engine": "detjs",
+          "dist_list": [f"detjs@{version}"] if version else [], "node": meta.get("node"),
+          "runner_version": meta.get("runner_version"), "parts": cs.get("runtime_parts"),
+          "identity_seconds": cs.get("identity_seconds")}
+    rt_file = cache.parent / f"{cache.name}.fenvix-runtime.json"
+    try:
+        prev_rt = json.loads(rt_file.read_text())
+    except (OSError, ValueError):
+        prev_rt = None
+    rt_changed = []
+    if prev_rt and isinstance(prev_rt.get("parts"), dict) and isinstance(rt.get("parts"), dict):
+        a_, b_ = prev_rt["parts"], rt["parts"]
+        rt_changed = sorted(k for k in set(a_) | set(b_) if a_.get(k) != b_.get(k))
+    try:
+        rt_file.write_text(json.dumps(rt, indent=1))
+    except OSError:
+        pass
+
+    tests = len(outcomes)
+    reused_outcomes = {}
+    for r in reused_tests:
+        nid = outcome_id(r["nodeid"], outcomes)
+        if nid:
+            reused_outcomes[nid] = r.get("outcome")
+    share = round(saved / (saved + ran_time), 4) if ran_time is not None and (saved + ran_time) else 0.0
+    summary = {
+        "language": "node", "test_runner": TEST_RUNNER_NAME[runner], "engine": "detjs", "engine_version": version,
+        "project": str(project), "commit": git_head(project), "cache_dir": str(cache), "cache_was_warm": had_cache,
+        "exit": code, "wall_seconds": round(wall, 3),
+        "tests": tests,
+        "reused_with_proof": len(reused_outcomes),
+        "ran": tests - len(reused_outcomes),
+        "test_seconds_saved": saved,
+        "test_seconds_run": ran_time,
+        "share_of_test_time_saved": share,
+        "failed": real,
+        "not_proven": int(status.get("not_proven") or 0) if status else None,
+        "status": status or None,
+        "flaky": [{"nodeid": n, "replay": f"{c}  # alone, without the cache: passes",
+                   "minimise": f"detjs repro {shlex.quote(n)}"} for n, c in flaky],
+        "reruns": reruns,
+        "outcome_counts": {k: sum(1 for o in outcomes.values() if o == k) for k in sorted(set(outcomes.values()))},
+        "not_cached": cs.get("not_cached", {}) if cs else {},
+        "not_reused_reasons": cs.get("miss_reasons", {}) if cs else {},
+        "cache_check_seconds": cs.get("check_seconds"), "cache_record_seconds": cs.get("record_seconds"),
+        "epoch_ns": epoch_ns,
+        "receipts": str(receipts), "outcomes_file": str(outcomes_p), "trace_file": str(trace_p),
+        "cache_summary_file": str(csum_p),
+        "outcomes": outcomes,
+        "reused_outcomes": reused_outcomes,
+        "reused_files": cs.get("reused_files_list", []) if cs else [],
+        "runner_args": runner_args, "detjs_args": args, "cache_arg": f"--det-cache={cache}",
+        "runtime": rt, "runtime_changed_since_previous_job": rt_changed,
+        "machine": machine_identity(), "shared_cache": None, "reused_from_shared_cache": 0,
+    }
+    (out / "summary.json").write_text(json.dumps(summary, indent=1))
+    write_node_step_summary(summary, a.title)
+    log(f"tests {tests}, reused with proof {summary['reused_with_proof']}, ran {summary['ran']}, saved {fmt_s(saved)} "
+        f"of test time, failed {len(real)}, flaky {len(flaky)}, not proven {summary['not_proven']}; exit {code}")
+    if rt_changed:
+        log("runtime changed since the previous job on this cache: " + ", ".join(rt_changed))
+    return code
+
+
+def cmd_verify_node(a: argparse.Namespace, s: dict) -> int:
+    """Run the suite again without the cache, at the cache run's epoch, with a trace; then ``detjs verify T1 T2
+    --json`` over the cache run's trace and this one. Exit: detjs verify's code (0 no wrong reuse; 1 a wrong reuse,
+    a divergence or NOT PROVEN; 3 only the inputs differ; 2 usage or unreadable trace)."""
+    project = Path(a.project or s["project"]).resolve()
+    out = Path(a.out or Path(a.summary).parent).resolve()
+    runner = {v: k for k, v in TEST_RUNNER_NAME.items()}[s["test_runner"]]
+    detjs = find_detjs(getattr(a, "detjs", None))
+    if not detjs:
+        log("error: detjs not found (runner/bootstrap.sh install)")
+        return 2
+    t1 = Path(s["trace_file"])
+    t2, o2 = out / "trace-fresh.jsonl", out / "outcomes-fresh.json"
+    for p in (t2, o2):
+        p.unlink(missing_ok=True)
+    ep = [f"--det-epoch={epoch_iso(s['epoch_ns'])}"] if s.get("epoch_ns") else []
+    env = without_client_env(dict(os.environ))
+    run_detjs(detjs, runner, ["--det", *ep, f"--det-trace={t2}", f"--det-outcomes={o2}", *s["runner_args"]],
+              project, env)
+    cmd = [*detjs, "verify", str(t1), str(t2), "--json"]
+    log("$ " + " ".join(shlex.quote(c) for c in cmd))
+    r = subprocess.run(cmd, capture_output=True, text=True)
+    sys.stderr.write(r.stderr)
+    try:
+        rep = json.loads(r.stdout)
+    except ValueError:
+        rep = None
+    reused: dict[str, str] = s.get("reused_outcomes", {})
+    if rep is None:
+        v = {"verify_status": None, "exit": r.returncode, "error": (r.stderr or r.stdout)[-500:]}
+    else:
+        sm = rep.get("summary", {})
+        rows = rep.get("tests", [])
+        wrong = [t["nodeid"] for t in rows if t.get("nodeid") in reused
+                 and len(t.get("outcomes") or []) == 2 and (t["outcomes"][1] is None or t["outcomes"][0] != t["outcomes"][1])]
+        v = {"verify_status": rep.get("status"), "exit": r.returncode,
+             "tests": sm.get("tests"), "identical": sm.get("identical"), "diverged": sm.get("diverged"),
+             "missing": sm.get("missing"), "not_proven": sm.get("not_proven"),
+             "input_differs": sm.get("input_differs"), "reused": len(reused),
+             "wrong_reuse": len(wrong), "wrong": wrong,
+             "not_proven_tests": [t["nodeid"] for t in rows if t.get("status") == "not_proven"],
+             "diverged_tests": [{"nodeid": t["nodeid"], "reused": t["nodeid"] in reused,
+                                 "outcomes": t.get("outcomes"),
+                                 "reason": (t.get("divergence") or {}).get("reason")}
+                                for t in rows if t.get("status") == "diverged"],
+             "traces": [str(t1), str(t2)]}
+    (out / "verify.json").write_text(json.dumps(v, indent=1))
+    s.update({"verify_status": v.get("verify_status"), "verify_exit": v["exit"],
+              "verify_counts": {k: v.get(k) for k in ("tests", "identical", "not_proven", "diverged", "missing",
+                                                       "input_differs", "wrong_reuse")}})
+    try:
+        Path(a.summary).write_text(json.dumps(s, indent=1))
+    except OSError:
+        pass
+    if rep is None:
+        text = f"## fenvix: every skip checked\n\n`detjs verify` failed (exit {r.returncode}): nothing verified.\n"
+    else:
+        text = (f"## fenvix: every skip checked\n\nThe whole suite was run again without the cache, at the same epoch, "
+                f"and `detjs verify` compared the two traces: status **{v['verify_status']}**. Of **{v['tests']}** "
+                f"tests, {v['identical']} identical, {v['not_proven']} NOT PROVEN, {v['diverged']} diverged, "
+                f"{v['missing']} missing; of **{len(reused)}** results reused with proof, **wrong: {v['wrong_reuse']}**.\n")
+        if v["wrong"]:
+            text += "\nWrong reuses:\n" + "".join(f"- `{n}`\n" for n in v["wrong"])
+        if v["not_proven_tests"]:
+            text += "\nNOT PROVEN:\n" + "".join(f"- `{n}`\n" for n in v["not_proven_tests"])
+        if v["diverged_tests"]:
+            text += "\nDiverged:\n" + "".join(f"- `{d['nodeid']}` ({d['reason']}; outcomes {d['outcomes']}"
+                                              f"{', reused' if d['reused'] else ''})\n" for d in v["diverged_tests"])
+        if r.returncode == 3:
+            text += ("\nExit 3: the two runs' inputs differ (environment, settings): the traces are not comparable, "
+                     "so nothing is proven or refuted by this check.\n")
+    target = os.environ.get("GITHUB_STEP_SUMMARY")
+    if target:
+        with open(target, "a") as fh:
+            fh.write(text)
+    print(text)
+    return r.returncode
+
+
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
     extra: list[str] = []
     if "--" in argv:
         i = argv.index("--")
         argv, extra = argv[:i], argv[i + 1:]
+    if argv[:1] == ["node"]:
+        p = argparse.ArgumentParser(prog="fenvix-run node")
+        p.add_argument("--project", default=".", help="project directory (default: .)")
+        p.add_argument("--runner", choices=NODE_RUNNERS, default=None,
+                       help="test runner (default: detected from package.json)")
+        p.add_argument("--key", default=None, help="cache key of the project (default: its origin URL)")
+        p.add_argument("--out", default=None, help="where summary.json, receipts.jsonl, the trace and outcomes go "
+                                                   "(default: $RUNNER_TEMP/fenvix)")
+        p.add_argument("--cache", default=None, help=f"cache directory (default: {DEFAULT_ROOT}/<key>-node<major>)")
+        p.add_argument("--detjs", default=None, help="detjs command (default: $FENVIX_DETJS, else detjs on PATH, "
+                                                     "else $FENVIX_HOME/bin/detjs)")
+        p.add_argument("--title", default=None, help="heading of the step summary")
+        p.add_argument("--no-rerun", action="store_true", help="do not re-run failures alone")
+        p.add_argument("--max-reruns", type=int, default=20, help="failures re-run alone at most (default 20)")
+        return cmd_node(p.parse_args(argv[1:]), extra)
     verify = bool(argv) and argv[0] == "verify"
     if verify:
         argv = argv[1:]
     p = argparse.ArgumentParser(prog="fenvix-run" + (" verify" if verify else ""))
-    p.add_argument("--project", default=".", help="project directory (default: .)")
+    p.add_argument("--project", default=None if verify else ".", help="project directory (default: .; for a Node "
+                                                                      "summary, the summary's project)")
     p.add_argument("--python", default=sys.executable, help="interpreter with the project, pytest and detpy installed")
     p.add_argument("--out", default=None, help="where summary.json, receipts.jsonl and outcomes go "
                                                "(default: $RUNNER_TEMP/fenvix)")
     if verify:
         p.add_argument("--summary", required=True, help="summary.json written by the cache run")
+        p.add_argument("--detjs", default=None, help="detjs command (Node summaries only)")
         a = p.parse_args(argv)
+        s = json.loads(Path(a.summary).read_text())
+        if s.get("language") == "node":
+            return cmd_verify_node(a, s)
+        a.project = a.project or "."
         return cmd_verify(a, extra)
     p.add_argument("--key", default=None, help="cache key of the project (default: its origin URL)")
     p.add_argument("--cache", default=None, help=f"cache directory (default: {DEFAULT_ROOT}/<key>-<python>), or the URL "
