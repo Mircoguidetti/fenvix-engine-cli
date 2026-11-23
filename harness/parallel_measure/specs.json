@@ -340,9 +340,9 @@
   "runner": "vitest",
   "dir": "$PM_WORK/repos/neat",
   "args": [],
-  "build": "npx --no-install svelte-kit sync",
+  "build": "npx --no-install svelte-kit sync && mkdir -p data && bun run db:migrate",
   "ci": "DECLARED vite.config.ts:11 fileParallelism: false ('prevent test isolation issues (all tests share the same in-memory SQLite database)'); .github/workflows/ci.yml:53 bun run test:coverage (= vitest run --coverage; coverage left out here)",
-  "install": "bun install --frozen-lockfile --ignore-scripts (bun.lock only); build = svelte-kit sync (the package's prepare script, skipped by --ignore-scripts)"
+  "install": "bun install --frozen-lockfile --ignore-scripts (bun.lock only); build = svelte-kit sync (the package's prepare script, skipped by --ignore-scripts); build also runs CI's 'mkdir -p data && bun run db:migrate' (.github/workflows/ci.yml 'Run database migrations') after every tree reset; better-sqlite3 native module built (npm run install in node_modules/better-sqlite3)"
  },
  "instar": {
   "fenvix_python": "$PM_WORK/venv/engine/bin/python",
