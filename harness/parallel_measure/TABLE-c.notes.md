@@ -1,0 +1,15 @@
+## Notes per row
+
+* lerna-lite (e2e suite, 107 tests): every engine run refuses (0 identical; env/fs/io causes; S1 vs S2 equally not identical); the outcome never changes in any plain, own-parallel or shuffled run: OURS 107, THEIRS 0. Round 1 of the parallel engine runs is slow (cold: hazard files on /tmp/lerna-lite-e2e re-run in one lane: 1120 s w2 / 902 s w4); warm rounds equal serial. The D16 round-1 runs overlapped this session's installs/collect checks (17:00:08-17:00:31, 17:33:29-17:33:54 UTC, then vitest list checks) and the flaky-scan installs (18:58-19:00 UTC, D16 round 3); no NOISY flag from the harness. Pre-D13 rows (engine 5a6463fd): round 1 ran while installs went on (coordinator: NOISY).
+* yalc: plain serial already fails at the pinned commit: `.claude/skills/lost-deal-revival-agent/__tests__/lost-deal-revival.test.ts` imports a module absent from the repository, `src/lib/qualification/__tests__/c8-acceptance.test.ts` fails to load, `backward-compat.test.ts` has 2 failing fixture tests. Outcome map differs by (a) 8 tests of c8-acceptance.test.ts skipped in the plain report and absent from the engine traces and (b) 1 THEIRS flaky test (bugs/yalc.md). OURS 1474: the run reads uncontrolled env/native sources outside any test.
+* kodus-ai (apps/cli): THEIRS 2: `src/__tests__/worktree-e2e.test.ts` hook tests depend on test order (fail in both shuffled plain runs, seeds 1 and 2: "expected 'Pre-push hook: not installed' not to contain 'not installed'", worktree-e2e.test.ts:109); the engine reports them passed = serial reference (condition 4 holds). UNDECIDED 1: `lifecycle.e2e.test.ts` full session flow passes in every plain run and fails in every engine run (serial and parallel); the engine names uncontrolled I/O readiness order at lifecycle.e2e.test.ts:145. OURS 1179 (env 911, io 193, ...).
+
+## Excluded (one line each, no measurement)
+
+* nuxt/scripts: the serial-on-purpose project `e2e` (vitest.config.ts:72) starts a Nuxt server and a Playwright browser (19 of 30 files) and loads third-party CDN scripts.
+* mxfng/drumhaus: the serial project is Vitest browser mode (vitest.config.ts:58, Playwright chromium).
+* prisma/prisma-examples: every test npm-installs (lifecycle scripts on) and builds an example app from the public registry, compute tests need bun; ESTIMATED > 1 h per run, x (3 rounds x 5 runs + 4 repro runs); root dependency `@prisma/dev: latest` is not pinned.
+* vyperlang/titanoboa, ros-claw/rosclaw, psi-oss/get-physics-done: Python, removed from the queue (founder decision D14, Node only until 28 November); titanoboa's serial job also needs Sepolia RPC secrets. Not measured.
+* freedomofpress/securedrop-client: the serial project `server_tests` starts SecureDrop server containers (docker/podman, server_tests/server.ts:24).
+* desci-labs/nodes: desci-server tests need the docker-compose stack (PostgreSQL, IPFS/kubo, Redis, Ceramic, graph node; .env.test).
+* inkeep/open-knowledge: measurable (spec written) but one plain serial run took 2090.50 s (MEASURED trial, 77 of 2364 failed, restart/recovery scenarios); queued last.
