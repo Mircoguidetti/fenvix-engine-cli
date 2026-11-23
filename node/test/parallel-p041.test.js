@@ -61,7 +61,10 @@ function det(runner, dir, args = [], { env = {} } = {}) {
   fs.rmSync(path.join(dir, '.detjs', 'trace.jsonl'), { force: true });
   const runnerArgs = runner === 'vitest' ? ['run'] : [`--cacheDirectory=${path.join(dir, '.jest-cache')}`];
   const t0 = Date.now();
-  const r = spawnSync(process.execPath, [BIN, runner, ...runnerArgs, '--det', ...args], { cwd: dir, encoding: 'utf8', env: cleanEnv(env), timeout: 300000 });
+  // opt-out of the host epoch (spec 2026-11-23): the tests compare separate runs (serial vs parallel, plan replays);
+  // a run with the cache keeps its virtual day, a test that names an epoch keeps it
+  const fixed = args.some((x) => x.startsWith('--det-epoch') || x.startsWith('--det-cache')) ? [] : ['--det-epoch=fixed'];
+  const r = spawnSync(process.execPath, [BIN, runner, ...runnerArgs, '--det', ...fixed, ...args], { cwd: dir, encoding: 'utf8', env: cleanEnv(env), timeout: 300000 });
   const wall = Date.now() - t0;
   let trace = null;
   try { trace = readTrace(path.join(dir, '.detjs', 'trace.jsonl')); } catch { /* none */ }
