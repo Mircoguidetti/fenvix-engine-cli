@@ -1,0 +1,12 @@
+2026-11-23T17:40:53Z INSTALL react-confirm-alert: (cd /tmp/pm/repos/react-confirm-alert && npm ci --ignore-scripts --no-audit --no-fund) exit 0, 5 s
+2026-11-23T17:41:16Z SCREEN react-confirm-alert exit 0
+2026-11-23T17:41:16Z VERDICT react-confirm-alert: UNKNOWN plain=[] par={2: 1.5, 4: 1.55} bad=['plain r1 w1: 0 tests reported, exit 1 after 1.38 s', 'plain r2 w1: 0 tests reported, exit 1 after 1.49 s', 'plain r3 w1: 0 tests reported, exit 1 after 1.45 s']
+2026-11-23T17:41:42Z INSTALL claudekit: (cd /tmp/pm/repos/claudekit && npm install --ignore-scripts --no-audit --no-fund) exit 0, 26 s
+2026-11-23T17:42:49Z SCREEN claudekit exit 0
+2026-11-23T17:42:49Z VERDICT claudekit: REJECT plain median 6.57 s, best plain_par median 6.27 s (w2), ratio 1.05x; par medians {2: 6.27, 4: 6.5}; invalid []
+2026-11-23T17:43:13Z INSTALL sqlectron: (cd /tmp/pm/repos/sqlectron && npm install --ignore-scripts --no-audit --no-fund) exit 0, 24 s
+2026-11-23T17:43:58Z SCREEN sqlectron exit 0
+2026-11-23T17:43:58Z VERDICT sqlectron: REJECT plain median 5.41 s, best plain_par median 2.85 s (w4), ratio 1.90x; par medians {2: 3.53, 4: 2.85}; invalid []
+2026-11-23T17:44:03Z INSTALL smart-second-brain: (cd /tmp/pm/repos/smart-second-brain && /root/.bun/bin/bun install --frozen-lockfile --ignore-scripts) exit 0, 5 s
+2026-11-23T17:59:01Z SCREEN smart-second-brain exit 0
+2026-11-23T17:59:01Z VERDICT smart-second-brain: ADMIT plain median 155.32 s, best plain_par median 57.66 s (w4), ratio 2.69x; par medians {2: 85.08, 4: 57.66}; invalid []
