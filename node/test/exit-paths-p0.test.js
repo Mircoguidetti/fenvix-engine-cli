@@ -123,14 +123,13 @@ test('${n} writes a contiguous block', () => {
   fs.rmSync(path.join(dir, 'shared.log'), { force: true });
   const r = run(dir, ['--det-plan=plan.json'], PINNED);
   assert.match(r.stderr, /run again in one lane/, r.show);
-  assert.ok(r.trace.header.meta.file_failures.files.includes('tests/z.test.mjs'), r.show);
   assert.equal(r.status, 1, r.show);
   assert.equal(`${r.stdout}\n${r.stderr}`.split('\n').filter((l) => l.startsWith('detjs: status:')).length, 1, r.show);
 });
 
 // /review pass 2 (2026-11-23): a describe-level beforeAll failure outside the hazard files leaves its tests with no
 // record of their own (B5 writes them `skipped`) and no file error -- the side data's `error` states make it a file
-// failure, so the run stays red.
+// failure; the run stays red (since the default-deny decision of 2026-11-23 a red first pass always does).
 test('wrapper path: a beforeAll failure outside the hazard files keeps the run red', T, () => {
   const body = (n) => `
 const LOG = path.join(process.cwd(), 'shared.log');
@@ -156,8 +155,6 @@ test('${n} writes a contiguous block', () => {
   fs.rmSync(path.join(dir, 'shared.log'), { force: true });
   const r = run(dir, ['--det-plan=plan.json'], PINNED);
   assert.match(r.stderr, /run again in one lane/, r.show);
-  assert.ok(r.trace.header.meta.file_failures.files.includes('tests/z.test.mjs'), r.show);
-  assert.ok(r.trace.header.meta.file_failures.files.includes('tests/w.test.mjs'), r.show);
   assert.equal(r.status, 1, r.show);
 });
 

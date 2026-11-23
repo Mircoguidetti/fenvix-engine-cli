@@ -4,7 +4,7 @@
 // On bfaf70b4 the function did not exist (the decision was inline in main()) and `fileOf` kept `<file>@@<project>`.
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { accountRerun, fileOf, hazardFiles, labelFile, wrapperRunnerCode, firstRedInHazardFiles, rerunArgs } = require('../src/parallel-rerun');
+const { accountRerun, fileOf, hazardFiles, labelFile, wrapperRunnerCode, rerunArgs } = require('../src/parallel-rerun');
 
 const rec = (nodeid, outcome = 'passed') => ({ nodeid, outcome });
 
@@ -59,38 +59,14 @@ test('the bfaf70b4 defect: a project-qualified id is wanted, and with no re-run 
   assert.deepEqual(r.notProven, ['tests/x.test.mjs@@main::a']);
 });
 
-test('wrapperRunnerCode: pass 1\'s code counts unless all of its red is inside the re-run files', () => {
-  assert.equal(wrapperRunnerCode(0, 0, true, true), 0);
-  assert.equal(wrapperRunnerCode(1, 0, true, true), 0); // all of pass 1's red was re-examined and cleared
-  assert.equal(wrapperRunnerCode(1, 0, false, true), 1); // red outside the re-run (a file that failed to load, ...)
-  assert.equal(wrapperRunnerCode(0, 1, true, true), 1);
-  assert.equal(wrapperRunnerCode(1, 2, true, true), 2);
-  assert.equal(wrapperRunnerCode(2, 0, true, true), 2);
-  assert.equal(wrapperRunnerCode(0, 0, true, false), 1); // the re-run left no trace
-});
-
-// /review (2026-11-23): the false green the wrapper had on bfaf70b4 and on this branch before the fix -- a file
-// that failed to load (no test record) next to a hazard failure the re-run cleared gave exit 0.
-test('firstRedInHazardFiles: only a red that is all inside the hazard files, as the shell reports it', () => {
-  const files = ['a.test.mjs', 'b.test.mjs'];
-  const ok = { meta: { file_failures: { known: true, files: [], unhandled: 0 } } };
-  const recs = [rec('a.test.mjs::t', 'failed'), rec('c.test.mjs::u')];
-  assert.equal(firstRedInHazardFiles(ok, recs, files), true);
-  // a failed test outside the hazard files
-  assert.equal(firstRedInHazardFiles(ok, [...recs, rec('c.test.mjs::v', 'failed')], files), false);
-  // a file failure outside the hazard files (failed to load: no test record at all)
-  assert.equal(firstRedInHazardFiles({ meta: { file_failures: { known: true, files: ['z.test.mjs'], unhandled: 0 } } }, recs, files), false);
-  // a file failure inside them, also as a project label
-  assert.equal(firstRedInHazardFiles({ meta: { file_failures: { known: true, files: ['b.test.mjs'], unhandled: 0 } } }, recs, files), true);
-  // an error outside any file
-  assert.equal(firstRedInHazardFiles({ meta: { file_failures: { known: true, files: [], unhandled: 1 } } }, recs, files), false);
-  // a file failure given as a project label (main|<file>) inside the hazard files
-  assert.equal(firstRedInHazardFiles({ meta: { file_failures: { known: true, files: ['main|b.test.mjs'], unhandled: 0 } } }, recs, files), true);
-  // pass 1 red with nothing red at all to explain it (a coverage threshold, a global setup error): not explained
-  assert.equal(firstRedInHazardFiles(ok, [rec('a.test.mjs::t'), rec('c.test.mjs::u')], files), false);
-  // a shell that cannot report file failures (node-test), or an older trace: not proven, the code stays
-  assert.equal(firstRedInHazardFiles({ meta: { file_failures: { known: false, files: [], unhandled: 0 } } }, recs, files), false);
-  assert.equal(firstRedInHazardFiles({ meta: {} }, recs, files), false);
+test('wrapperRunnerCode: the re-run may raise the first pass\'s code, never lower it (default-deny)', () => {
+  assert.equal(wrapperRunnerCode(0, 0, true), 0);
+  assert.equal(wrapperRunnerCode(1, 0, true), 1); // a red first pass stays red, whatever the re-run shows
+  assert.equal(wrapperRunnerCode(3, 0, true), 3);
+  assert.equal(wrapperRunnerCode(0, 1, true), 1);
+  assert.equal(wrapperRunnerCode(1, 2, true), 2);
+  assert.equal(wrapperRunnerCode(2, 0, true), 2);
+  assert.equal(wrapperRunnerCode(0, 0, false), 1); // the re-run left no trace
 });
 
 // /review pass 3: the second pass runs exactly the hazard files -- the user's own file selectors are not inherited

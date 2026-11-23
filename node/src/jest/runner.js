@@ -393,11 +393,7 @@ async function detjsJestRunner(globalConfig, config, environment, runtime, testP
     parallel.carriedAfter(label);
     parallel.leave(label, carried.length ? { carried } : {});
     if (!fileError && result && result.testExecError) fileError = repro.exceptionOf(result.testExecError, 'collect', root);
-    // what Jest itself counts against this file beyond its test records (src/session.js fileFailures): failing
-    // tests and snapshot failures (an obsolete or unmatched snapshot fails the run without a failed test record)
-    const snap = (result && result.snapshot) || {};
-    const fileRed = Boolean(result && (result.numFailingTests > 0 || snap.unchecked > 0 || snap.unmatched > 0 || snap.fileDeleted));
-    repro.writeSide(c.dir, controls.partName(fileId, project), { file: fileId, project, collected, states: {}, exceptions, file_error: fileError, file_red: fileRed });
+    repro.writeSide(c.dir, controls.partName(fileId, project), { file: fileId, project, collected, states: {}, exceptions, file_error: fileError });
     if (CAP && c.dir) {
       try {
         const ok = Boolean(result) && !result.testExecError && !(result.numFailingTests > 0);

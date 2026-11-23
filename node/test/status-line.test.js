@@ -39,31 +39,3 @@ test('stampStatus: counts into meta.status, other header bytes unchanged; unread
   assert.equal(stampStatus(path.join(dir, 'absent.jsonl')), null);
 });
 
-test('fileFailures: file errors and error/failed states; unreadable side data is not known', () => {
-  const { fileFailures } = require('../src/session');
-  const dir = path.join(TMP, 'status-line-side');
-  fs.rmSync(dir, { recursive: true, force: true });
-  fs.mkdirSync(path.join(dir, 'side'), { recursive: true });
-  const side = (n, o) => fs.writeFileSync(path.join(dir, 'side', `${n}.json`), JSON.stringify(o));
-  side('a', { file: 'a.test.mjs', file_error: ['Error', 'collect', 'boom'], states: {} });
-  side('b', { file: 'b.test.mjs', file_error: null, states: { 'b.test.mjs::t': 'error' } });
-  side('c', { file: 'c.test.mjs', file_error: null, states: { 'c.test.mjs::t': 'passed' } });
-  // Vitest: the main process's verdict plus the side data; unknown without the verdict or the unhandled count
-  const v = { runner: 'vitest', unhandled_errors: 0, runner_failed_files: ['n.test.mjs'], run_level_checks: [] };
-  assert.deepEqual(fileFailures(dir, v), { known: true, files: ['a.test.mjs', 'b.test.mjs', 'n.test.mjs'], unhandled: 0 });
-  assert.equal(fileFailures(dir, { ...v, runner_failed_files: undefined }).known, false);
-  assert.equal(fileFailures(dir, { ...v, unhandled_errors: undefined }).known, false);
-  // a check that can fail the run outside any file (coverage) or keep files from running (bail), or none reported
-  assert.equal(fileFailures(dir, { ...v, run_level_checks: ['coverage'] }).known, false);
-  assert.equal(fileFailures(dir, { ...v, run_level_checks: ['bail'] }).known, false);
-  assert.equal(fileFailures(dir, { ...v, run_level_checks: undefined }).known, false);
-  // Jest: known only when every file of the run left side data; file_red (failing tests, snapshots) is a failure
-  const parts = ['a', 'b', 'c'].map((n) => ({ fileId: `${n}.test.mjs`, part: `${n}.jsonl` }));
-  assert.equal(fileFailures(dir, { runner: 'jest', run_level_checks: [] }, parts).known, true);
-  assert.equal(fileFailures(dir, { runner: 'jest', run_level_checks: [] }, [...parts, { fileId: 'e.test.mjs', part: 'e.jsonl' }]).known, false);
-  side('c', { file: 'c.test.mjs', file_error: null, states: {}, file_red: true });
-  assert.deepEqual(fileFailures(dir, { runner: 'jest', run_level_checks: [] }, parts).files, ['a.test.mjs', 'b.test.mjs', 'c.test.mjs']);
-  assert.equal(fileFailures(dir, { runner: 'node-test' }).known, false);
-  fs.writeFileSync(path.join(dir, 'side', 'd.json'), '{not json');
-  assert.equal(fileFailures(dir, { runner: 'vitest', unhandled_errors: 0, runner_failed_files: [], run_level_checks: [] }).known, false);
-});

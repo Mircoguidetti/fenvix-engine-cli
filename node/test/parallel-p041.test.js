@@ -309,10 +309,14 @@ test('${n} writes a contiguous block', () => {
       const failedOff = off.trace.tests.filter((t) => t.outcome !== 'passed').map((t) => t.nodeid);
       assert.ok(failedOff.length > 0, `the placement must have failed a test: ${show(off)}`);
 
-      // 2. the fix: the files the hazard names run again in one lane and that is what is reported
+      // 2. the fix: the files the hazard names run again in one lane and that is what the trace reports. The exit
+      // code is NOT lowered (founder decision 2026-11-23, after four gstack /review rounds found ways for a cleared
+      // red to hide a real failure): the first pass was red, so the run stays red -- a false red, never a false
+      // green. Before that decision this test expected exit 0.
       fs.rmSync(log, { force: true });
       const on = det(runner, dir, ['--det-plan=plan.json']);
-      assert.equal(on.status, 0, show(on));
+      assert.equal(on.status, 1, show(on));
+      assert.match(on.stderr, /the one-lane re-run of the hazard files passed, but the first run's exit code 1 stands/, show(on));
       assert.match(on.stderr, /named by a cross-worker hazard run again in one lane/, show(on));
       assert.deepEqual(on.trace.tests.filter((t) => t.outcome !== 'passed').map((t) => t.nodeid), [], show(on));
       const hr = on.trace.header.meta.hazard_rerun;
@@ -353,9 +357,10 @@ test('${n} binds the fixed port', async () => {
       assert.notEqual(off.status, 0, show(off));
       assert.match(off.stderr, /CROSS-WORKER port 45321/, show(off));
 
-      // 2. the fix
+      // 2. the fix: the trace reports the one-lane re-run; the red exit code stands (default-deny, see above)
       const on = det(runner, dir, ['--det-plan=plan.json']);
-      assert.equal(on.status, 0, show(on));
+      assert.equal(on.status, 1, show(on));
+      assert.match(on.stderr, /the one-lane re-run of the hazard files passed, but the first run's exit code 1 stands/, show(on));
       assert.match(on.stderr, /named by a cross-worker hazard run again in one lane/, show(on));
       assert.deepEqual(on.trace.tests.filter((t) => t.outcome !== 'passed').map((t) => t.nodeid), [], show(on));
       assert.equal(on.trace.header.meta.hazard_rerun.complete, true, show(on));
@@ -673,7 +678,8 @@ test('${n} writes a contiguous block', () => {
     const hr = on.trace.header.meta.hazard_rerun;
     assert.deepEqual(hr.files, files, show(on));
     assert.equal(hr.complete, true, show(on));
-    assert.equal(on.status, 0, show(on));
+    // the first pass was red (the placement failure): the exit code is never lowered (default-deny, see the P1 tests)
+    assert.equal(on.status, 1, show(on));
   });
 }
 
