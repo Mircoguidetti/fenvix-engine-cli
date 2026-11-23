@@ -724,6 +724,21 @@ def cmd_pairs(name, out=None, max_victims=MAX_VICTIMS):
             res = ps.search(cands, vabs, conc)
             row.update(res)
             row["polluter"] = os.path.relpath(res["polluter"], repo.cwd) if res.get("polluter") else None
+            if res["result"] == "no minimal pair (victim file alone reproduces)":
+                # negative control: the victim file alone with the seeds of up to 2 runs where the victim kept its serial
+                # outcome must not reproduce it (else the divergence is not tied to the diverging run's order)
+                keep = [rn for rn, _, sd in run_names() if sd is not None and rn not in v["diverging_runs"] and
+                        next(r for r in runs if r["name"] == rn)["outcomes"].get(vid) == v["serial"]][:2]
+                ctl = []
+                for rn in keep:
+                    sd = next(x for n, _, x in run_names() if n == rn)
+                    hit, rec = RealTrial(repo, v["serial"], vid, timeout, sd)("serial", [], vabs)
+                    ps.log.append({"mode": "serial", "step": f"control-seed-{rn}", "polluters": [], "triggered": hit, **rec})
+                    ctl.append({"run": rn, "seed": sd, "reproduced": hit})
+                row["control_seeds"] = ctl
+                row["runs_spent"] += len(ctl)
+                if any(c["reproduced"] is not False for c in ctl):
+                    row["result"] = "no minimal pair (victim file alone diverges under a control seed too)"
             row["trials"] = ps.log
         row["search_s"] = round(time.time() - t0, 2)
         out_rows.append(row)
