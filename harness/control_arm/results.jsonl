@@ -1,4 +1,3 @@
-{"row": "pair_search", "repo": "lerna-lite", "victims": 0, "diverges": 0, "pair_search_s": 0.04}
 {"row": "pair_search", "repo": "alakajam", "victims": 0, "diverges": 0, "pair_search_s": 0.04}
 {"row": "verdict", "repo": "codex-multi-auth", "test": "test/account-access.test.ts::applyAuthorizedAccountConstraint::is a no-op when authorization is unknown", "verdict": "IDENTICAL", "label": null, "reason": "S1,S2,SS1,SS2,P1,P2,P3,P4,P5 agree", "serial": "passed", "diverging_runs": []}
 {"row": "verdict", "repo": "codex-multi-auth", "test": "test/account-access.test.ts::applyAuthorizedAccountConstraint::is a no-op when the selection carries no account id", "verdict": "IDENTICAL", "label": null, "reason": "S1,S2,SS1,SS2,P1,P2,P3,P4,P5 agree", "serial": "passed", "diverging_runs": []}
@@ -42159,3 +42158,4 @@
 {"row": "pair_search", "repo": "drydock", "victims": 10, "diverges": 66, "pair_search_s": 82.75}
 {"row": "pair_search", "repo": "nestjs-pino", "victims": 0, "diverges": 0, "pair_search_s": 0.04}
 {"row": "pair_search", "repo": "agentsys", "victims": 0, "diverges": 0, "pair_search_s": 0.03}
+{"row": "pair_search", "repo": "lerna-lite", "victims": 0, "diverges": 0, "pair_search_s": 0.04}
