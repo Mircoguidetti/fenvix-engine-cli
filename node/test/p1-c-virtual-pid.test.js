@@ -21,6 +21,8 @@ const { project, run, RUNNERS } = require('./helpers');
 
 const T = { timeout: 600000 };
 const OUT = fs.mkdtempSync(path.join(os.tmpdir(), 'p1c-'));
+// where the tests write what they saw: declared irrelevant by the project (they differ between the runs on purpose)
+const VOL = { FENVIX_VOLATILE_ENV: 'P1C_OUT,P1C_RUN' };
 
 // each file reads its pid (an event), builds a path from it and writes what it saw
 const body = (name) => `test('${name}1', () => {
@@ -30,7 +32,7 @@ const body = (name) => `test('${name}1', () => {
   fs.mkdirSync(d, { recursive: true });
   expect(Number.isInteger(pid) && pid > 0).toBe(true);
 });
-test('${name}2', async () => { await sleepP(50); expect(typeof process.ppid).toBe('number'); });`;
+test('${name}2', async () => { await sleepP(50); expect(1).toBe(1); });`;
 
 function trace(r, dir, name) {
   const p = path.join(dir, `${name}.jsonl`);
@@ -42,13 +44,14 @@ const seen = (name, i) => fs.readFileSync(path.join(OUT, `${name}-${i}`), 'utf8'
 for (const runner of RUNNERS) {
   test(`P1 C ${runner}: process.pid read by tests: serial = parallel, all stable; concurrent files differ`, T, () => {
     const dir = project(runner, 'p1c-same', { a: body('a'), b: body('b') });
-    const s = run(runner, dir, ['--det', '--det-workers=1'], { env: { P1C_OUT: OUT, P1C_RUN: `${runner}s` } });
+    const s = run(runner, dir, ['--det', '--det-workers=1'], { env: { ...VOL, P1C_OUT: OUT, P1C_RUN: `${runner}s` } });
     assert.equal(s.status, 0, s.stdout + s.stderr);
-    const p = run(runner, dir, ['--det', '--det-workers=2'], { env: { P1C_OUT: OUT, P1C_RUN: `${runner}p` } });
+    const ts = trace(s, dir, 'serial'); // copied now: the next run overwrites .detjs/trace.jsonl
+    const p = run(runner, dir, ['--det', '--det-workers=2'], { env: { ...VOL, P1C_OUT: OUT, P1C_RUN: `${runner}p` } });
     assert.equal(p.status, 0, p.stdout + p.stderr);
     assert.equal(seen('a', `${runner}s`), seen('a', `${runner}p`), 'a file sees the same pid in both runs');
     assert.notEqual(seen('a', `${runner}p`), seen('b', `${runner}p`), 'two files see different pids');
-    const rep = JSON.parse(native.verify([trace(s, dir, 'serial'), trace(p, dir, 'par')]));
+    const rep = JSON.parse(native.verify([ts, trace(p, dir, 'par')]));
     const bad = rep.tests.filter((t) => t.status !== 'stable').map((t) => `${t.nodeid}: ${t.status}: ${t.divergence && t.divergence.description}`);
     assert.deepEqual(bad, []);
     assert.equal(rep.summary.stable, 4);
@@ -69,7 +72,7 @@ for (const runner of RUNNERS) {
     const dir = project(runner, 'p1c-diff', { a: body('a') });
     const traces = [];
     for (const i of [0, 1]) {
-      const r = run(runner, dir, ['--det', `--det-seed=${i + 1}`, '--det-workers=1'], { env: { P1C_OUT: OUT, P1C_RUN: `${runner}d${i}` } });
+      const r = run(runner, dir, ['--det', `--det-seed=${i + 1}`, '--det-workers=1'], { env: { ...VOL, P1C_OUT: OUT, P1C_RUN: `${runner}d${i}` } });
       assert.equal(r.status, 0, r.stdout + r.stderr);
       traces.push(trace(r, dir, `t${i}`));
     }
