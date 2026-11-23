@@ -26,6 +26,7 @@ Usage:
   control_arm.py pairs   --name REPO      minimal pair search, rows into pairs.jsonl
   control_arm.py all     --name REPO      the three in order
   control_arm.py loadfail --name REPO     test files that did not load, from the recorded raw reports (no run)
+  control_arm.py supp_ss --name REPO      supplementary shuffled serial runs SS3..SS5 (seeds of P3..P5)
 """
 from __future__ import annotations
 
@@ -152,8 +153,8 @@ export default async (env) => {{
 
 
 def shell_cmd(cmd, env_add, cwd):
-    pre = " ".join(f"{k}={shlex.quote(v)}" for k, v in env_add.items())
-    return f"cd {shlex.quote(cwd)} && {pre} {' '.join(shlex.quote(c) for c in cmd)}".replace("  ", " ")
+    parts = [f"{k}={shlex.quote(v)}" for k, v in env_add.items()] + [shlex.quote(c) for c in cmd]
+    return f"cd {shlex.quote(cwd)} && " + " ".join(parts)
 
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -415,6 +416,35 @@ def cmd_runs(name, out=None):
     return rows
 
 
+SUPP_SS = [3, 4, 5]
+
+
+def cmd_supp_ss(name, out=None):
+    """Supplementary shuffled serial runs with the seeds of P3..P5 (review of 2026-11-23): inside a file the test order
+    depends only on the seed, so P3..P5 had orders no SS run had. Not used by verdicts() (the spec's rule uses SS1,
+    SS2); report.py uses them to check the `parallel` label against SS with the same seed. Resumable."""
+    repo = Repo(name, out)
+    rows = [x for x in read_jsonl(RESULTS) if x.get("repo") == name and x.get("row") == "run"]
+    med = serial_median(rows)
+    timeout = int(max(3 * med, 60)) if med else SERIAL_TIMEOUT
+    out_rows = []
+    for sd in SUPP_SS:
+        rn = f"SS{sd}"
+        f = os.path.join(repo.data, f"{rn}.json")
+        if os.path.exists(f):
+            d = json.load(open(f))
+        else:
+            _, d = do_run(repo, rn, "SS", sd, timeout)
+            with open(f, "w") as g:
+                json.dump(d, g)
+        r = dict(d["row"], row="run_supp")
+        out_rows.append(r)
+        print(json.dumps({k: r[k] for k in ("repo", "run", "exit", "wall_s", "tests", "timed_out", "crashed")}), flush=True)
+    M.reset_tree(repo.cwd)
+    keep = [x for x in read_jsonl(RESULTS) if not (x.get("repo") == name and x.get("row") == "run_supp")]
+    write_jsonl(RESULTS, keep + out_rows)
+
+
 # ---------------------------------------------------------------------------------------------------------------
 # verdicts
 
@@ -478,7 +508,7 @@ def load_runs(name):
         runs.append({"name": rn, "kind": kind, "status": status, "outcomes": d["outcomes"],
                      "valid": kind == "P" and status == "ok" and row["overlapping_file_pairs"] > 0})
         for k, m in (d.get("messages") or {}).items():
-            msgs[k] = (msgs.get(k, "") + " " + m)[-6000:]
+            msgs[k] = msgs.get(k, "") + " " + m  # every run's message: an ENV cause seen in any run is kept
         times[rn] = d.get("file_times") or {}
     return runs, msgs, times
 
@@ -509,10 +539,26 @@ class TrialFailed(Exception):
     """a trial reported no outcome for the victim (timeout, crash, no report): it is no evidence either way"""
 
 
+DEFAULT = object()  # trial seed: the diverging run's seed given to the trial
+
+# pair search results (report.py counts by these)
+R_PAIR = "pair found"
+R_ALONE = "no minimal pair (victim file alone reproduces)"
+R_ALONE_ONCE = "no minimal pair (victim file alone reproduces once in 3)"
+R_ALONE_UNSEEDED = "no minimal pair (victim file alone diverges without the seed too)"
+R_ALONE_CTL = "no minimal pair (victim file alone diverges under a control seed too)"
+R_INTERACTION = "no minimal pair (interaction)"
+R_NOT_CONFIRMED = "no minimal pair (not confirmed)"
+R_NOT_REPRO = "no minimal pair (not reproduced)"
+R_BUDGET = "pair not found (budget)"
+R_TRIAL_FAILED = "no minimal pair (trial failed)"
+
+
 class PairSearch:
-    """trial(mode, polluters, victim_file) -> True when the victim's outcome differs from its serial outcome
-    (mode 'serial': polluters + victim in one process, given order; 'concurrent': victim process and polluter process
-    started together). Every trial is one plain run of the budget."""
+    """trial(mode, polluters, victim_file, seed=DEFAULT) -> (True when the victim's outcome differs from its serial
+    outcome, None when the trial reported no outcome for it, record). Mode 'serial': polluters + victim in one process,
+    given order; 'concurrent': victim process and polluter process started together. seed: DEFAULT = the diverging run's
+    seed (order inside files), None = no shuffle, or a control seed. Every trial is one plain run of the budget."""
 
     def __init__(self, trial, budget_runs=PAIR_BUDGET_RUNS, deadline=None):
         self.trial = trial
@@ -521,21 +567,22 @@ class PairSearch:
         self.spent = 0
         self.log = []
 
-    def _try(self, mode, polluters, victim, step):
+    def _try(self, mode, polluters, victim, step, seed=DEFAULT):
         if self.spent >= self.budget_runs or (self.deadline and time.time() > self.deadline):
             raise Budget()
         self.spent += 1
-        hit, rec = self.trial(mode, list(polluters), victim)
-        self.log.append({"mode": mode, "step": step, "polluters": list(polluters), "triggered": hit, **(rec or {})})
+        hit, rec = self.trial(mode, list(polluters), victim, seed)
+        self.log.append({"mode": mode, "step": step, "polluters": list(polluters), "triggered": hit,
+                         "seed_used": "diverging run's" if seed is DEFAULT else seed, **(rec or {})})
         if hit is None:
             raise TrialFailed()
         return hit
 
-    def triggers(self, mode, half, victim, step):
+    def triggers(self, mode, half, victim, step, seed=DEFAULT):
         """a half triggers if the victim fails in either of two runs (the second run is not made once the first
         triggered: it cannot change the decision)."""
         for _ in range(2):
-            if self._try(mode, half, victim, step):
+            if self._try(mode, half, victim, step, seed):
                 return True
         return False
 
@@ -561,14 +608,32 @@ class PairSearch:
         return {"pair_fail": with_p, "pair_runs": CONFIRM_RUNS, "alone_fail": alone, "alone_runs": CONFIRM_RUNS,
                 "confirmed": with_p >= 2 and alone == 0}
 
-    def search(self, cands, victim, conc_cands=None):
-        """Controls first (review of 2026-11-23, decision D1): the victim's file alone, with the diverging run's
-        within-file order, must keep its serial outcome (else the cause is inside its own file); per mode, the full
-        candidate set must reproduce the divergence before it is bisected (else nothing is claimed about pairs)."""
-        res = {"result": None, "polluter": None, "search": None, "confirm": None, "attempts": []}
+    def alone(self, victim, control_seeds):
+        """the victim's file alone reproduced once: confirm it (>= 2 of CONFIRM_RUNS with the diverging seed), then
+        two negative controls: without shuffle (twice) and with each control seed (once); none may reproduce."""
+        hits = 1 + sum(bool(self._try("serial", [], victim, "alone-confirm")) for _ in range(CONFIRM_RUNS - 1))
+        info = {"alone_hits": hits, "alone_runs": CONFIRM_RUNS, "unseeded": [], "control_seeds": []}
+        if hits < 2:
+            return R_ALONE_ONCE, info
+        for _ in range(2):
+            info["unseeded"].append(self._try("serial", [], victim, "control-unseeded", None))
+        for sd in control_seeds:
+            info["control_seeds"].append({"seed": sd, "reproduced": self._try("serial", [], victim,
+                                                                              f"control-seed-{sd}", sd)})
+        if any(info["unseeded"]):
+            return R_ALONE_UNSEEDED, info
+        if any(c["reproduced"] for c in info["control_seeds"]):
+            return R_ALONE_CTL, info
+        return R_ALONE, info
+
+    def search(self, cands, victim, conc_cands=None, control_seeds=()):
+        """Controls first (review decision D1, 2026-11-23): the victim's file alone, with the diverging run's
+        within-file order (if it reproduces: confirmed and negative-controlled in alone()); per mode, the full candidate
+        set must reproduce the divergence before it is bisected (else nothing is claimed about pairs)."""
+        res = {"result": None, "polluter": None, "search": None, "confirm": None, "attempts": [], "alone": None}
         try:
             if self.triggers("serial", [], victim, "control-alone"):
-                res["result"] = "no minimal pair (victim file alone reproduces)"
+                res["result"], res["alone"] = self.alone(victim, control_seeds)
             else:
                 for mode, cs in (("serial", cands), ("concurrent", cands if conc_cands is None else conc_cands)):
                     att = {"search": mode, "n_candidates": len(cs), "found": None}
@@ -582,26 +647,39 @@ class PairSearch:
                     p = self.bisect(mode, cs, victim)
                     att["found"] = p
                     if p is None:
-                        att["stop"] = "no minimal pair (interaction)"
+                        att["stop"] = R_INTERACTION
                         continue
                     c = self.confirm(mode, p, victim)
                     att["confirm"] = c
                     if c["confirmed"]:
-                        res.update(result="pair found", polluter=p, search=mode, confirm=c)
+                        res.update(result=R_PAIR, polluter=p, search=mode, confirm=c)
                         break
                     att["stop"] = "not confirmed"
                 else:
                     stops = [a.get("stop") for a in res["attempts"]]
-                    res["result"] = ("no minimal pair (interaction)" if "no minimal pair (interaction)" in stops else
-                                     "no minimal pair (not confirmed)" if "not confirmed" in stops else
-                                     "no minimal pair (not reproduced)")
+                    res["result"] = (R_INTERACTION if R_INTERACTION in stops else
+                                     R_NOT_CONFIRMED if "not confirmed" in stops else R_NOT_REPRO)
         except Budget:
-            res["result"] = "pair not found (budget)"
+            res["result"] = R_BUDGET
         except TrialFailed:
-            res["result"] = "no minimal pair (trial failed)"
+            res["result"] = R_TRIAL_FAILED
         res["runs_spent"] = self.spent
         res["reproduced_in_trials"] = sum(1 for x in self.log if x["triggered"])
         return res
+
+
+def control_seeds_for(runs, vid, verdict):
+    """distinct seeds of runs where the victim kept its serial outcome, the diverging runs' seeds excluded, up to 2"""
+    seed_of = {rn: sd for rn, _, sd in run_names()}
+    bad = {seed_of[rn] for rn in verdict["diverging_runs"]}
+    out = []
+    for r in runs:
+        sd = seed_of.get(r["name"])
+        if sd is None or sd in bad or sd in out:
+            continue
+        if r["status"] == "ok" and (r["outcomes"] or {}).get(vid) == verdict["serial"]:
+            out.append(sd)
+    return out[:2]
 
 
 def victim_file(test_id):
@@ -637,11 +715,12 @@ class RealTrial:
         args, cfg = strip_config(repo.spec.get("args", []))
         self.args, self.cfg = args, cfg
 
-    def _cmd(self, files, raw, rep, tmp, wrapper, gi=0, concurrent=False):
+    def _cmd(self, files, raw, rep, tmp, wrapper, gi=0, concurrent=False, seed=DEFAULT):
         r = self.repo
+        seed = self.seed if seed is DEFAULT else seed
         if r.runner == "jest":
             return direct("jest", self.args) + (["--config", self.cfg] if self.cfg else []) + ["--runInBand", f"--testSequencer={JEST_SEQ}"] + \
-                (["--randomize", f"--seed={self.seed}"] if self.seed is not None else []) + [
+                (["--randomize", f"--seed={seed}"] if seed is not None else []) + [
                                                  f"--cacheDirectory={tmp}/jest", "--json", f"--outputFile={raw}",
                                                  "--runTestsByPath"] + files
         return direct("vitest", self.args) + ["--config", wrapper, "--no-file-parallelism", "--maxWorkers=1",
@@ -649,9 +728,10 @@ class RealTrial:
                                               f"--reporter={rep}"] + \
             ([f"--coverage.reportsDirectory={tmp}/coverage-{gi}"] if concurrent else []) + files
 
-    def __call__(self, mode, polluters, victim):
+    def __call__(self, mode, polluters, victim, seed=DEFAULT):
         r = self.repo
         self.n += 1
+        seed = self.seed if seed is DEFAULT else seed
         built, rep = r.prepare()
         wrapper = write_vitest_wrapper(r.cwd, self.cfg)[0] if r.runner == "vitest" else None
         tmp = r.fresh_tmp()
@@ -665,11 +745,11 @@ class RealTrial:
                 if os.path.exists(f):
                     os.remove(f)
             env_add = {"TMPDIR": tmp, "TMP": tmp, "TEMP": tmp, "CA_ORDER": json.dumps(files)}
-            if self.seed is not None:
-                env_add["CA_SEED"] = str(self.seed)
+            if seed is not None:
+                env_add["CA_SEED"] = str(seed)
             if r.runner == "vitest":
                 env_add["PM_IDS_OUT"] = ids
-            cmd = self._cmd(files, raw, rep, tmp, wrapper, gi, mode == "concurrent")
+            cmd = self._cmd(files, raw, rep, tmp, wrapper, gi, mode == "concurrent", seed)
             jobs.append((cmd, {**r.env, **env_add}))
             meta.append((raw, ids, shell_cmd(cmd, env_add, r.cwd)))
         res = run_procs(jobs, r.cwd, self.timeout, r.log)
@@ -679,10 +759,15 @@ class RealTrial:
         got = (oc or {}).get(self.victim_id)
         vt = vtimes.get(victim)
         overlapped = sorted(f for f, (a, b) in ptimes.items() if vt and a < vt[1] and b > vt[0]) if mode == "concurrent" else None
-        hit = None if got is None else got != self.serial_outcome
+        # vitest file arguments are substring filters: a file not requested that ran before the victim ended in the
+        # victim's process makes the trial no evidence (None); later ones are recorded only
+        asked = set(groups[0])
+        extra = sorted(f for f in vtimes if f not in asked)
+        extra_before = [f for f in extra if vt and vtimes[f][0] < vt[1]]
+        hit = None if got is None or extra_before else got != self.serial_outcome
         rec = {"cmds": [m[2] for m in meta], "exits": [x[0]["exit"] for x in res],
                "wall_s": max(x[0]["wall_s"] for x in res), "timed_out": any(x[0]["timed_out"] for x in res),
-               "victim_outcome": got, "seed": self.seed, "file_times": {**vtimes, **ptimes},
+               "victim_outcome": got, "seed": seed, "extra_files": extra, "extra_before_victim": extra_before, "file_times": {**vtimes, **ptimes},
                "overlapped_victim": overlapped, "build": built, "prep": "tree reset, build, caches cleared, fresh TMPDIR; vitest: wrapper "
                ".fenvix-harness/vitest.control.config.mjs written by control_arm.write_vitest_wrapper" if r.runner == "vitest"
                else "tree reset, build, fresh TMPDIR (jest cache in it)"}
@@ -721,24 +806,9 @@ def cmd_pairs(name, out=None, max_victims=MAX_VICTIMS):
                        runs_spent=0, attempts=[], trials=[])
         else:
             ps = PairSearch(RealTrial(repo, v["serial"], vid, timeout, seed), deadline=deadline)
-            res = ps.search(cands, vabs, conc)
+            res = ps.search(cands, vabs, conc, control_seeds_for(runs, vid, v))
             row.update(res)
             row["polluter"] = os.path.relpath(res["polluter"], repo.cwd) if res.get("polluter") else None
-            if res["result"] == "no minimal pair (victim file alone reproduces)":
-                # negative control: the victim file alone with the seeds of up to 2 runs where the victim kept its serial
-                # outcome must not reproduce it (else the divergence is not tied to the diverging run's order)
-                keep = [rn for rn, _, sd in run_names() if sd is not None and rn not in v["diverging_runs"] and
-                        next(r for r in runs if r["name"] == rn)["outcomes"].get(vid) == v["serial"]][:2]
-                ctl = []
-                for rn in keep:
-                    sd = next(x for n, _, x in run_names() if n == rn)
-                    hit, rec = RealTrial(repo, v["serial"], vid, timeout, sd)("serial", [], vabs)
-                    ps.log.append({"mode": "serial", "step": f"control-seed-{rn}", "polluters": [], "triggered": hit, **rec})
-                    ctl.append({"run": rn, "seed": sd, "reproduced": hit})
-                row["control_seeds"] = ctl
-                row["runs_spent"] += len(ctl)
-                if any(c["reproduced"] is not False for c in ctl):
-                    row["result"] = "no minimal pair (victim file alone diverges under a control seed too)"
             row["trials"] = ps.log
         row["search_s"] = round(time.time() - t0, 2)
         out_rows.append(row)
@@ -772,12 +842,14 @@ def write_jsonl(p, rows):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("what", choices=["runs", "verdict", "pairs", "all", "loadfail"])
+    ap.add_argument("what", choices=["runs", "verdict", "pairs", "all", "loadfail", "supp_ss"])
     ap.add_argument("--name", required=True)
     ap.add_argument("--out")
     o = ap.parse_args()
     if o.what == "loadfail":
         cmd_loadfail(o.name)
+    if o.what == "supp_ss":
+        cmd_supp_ss(o.name, o.out)
     if o.what in ("runs", "all"):
         cmd_runs(o.name, o.out)
     if o.what in ("verdict", "all"):

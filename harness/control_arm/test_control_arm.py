@@ -1,10 +1,8 @@
 """Tests of the control arm's verdict rules (on recorded fixtures) and of the minimal-pair bisect (synthetic 8 files)."""
-import copy
 import json
 import os
 import sys
 
-import pytest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -176,13 +174,16 @@ VICTIM = "victim.test.ts"
 class Fake:
     """victim fails when `polluter` runs before it (serial) / beside it (concurrent), per `modes`."""
 
-    def __init__(self, polluter="f6.test.ts", modes=("serial",), flaky_alone=False, needs=None):
+    def __init__(self, polluter="f6.test.ts", modes=("serial",), flaky_alone=False, needs=None, alone_seeds=None):
         self.polluter, self.modes, self.flaky_alone, self.needs = polluter, modes, flaky_alone, needs
+        self.alone_seeds = alone_seeds  # with flaky_alone: the seeds under which the file alone reproduces (None: all)
         self.calls = []
 
-    def __call__(self, mode, polluters, victim):
+    def __call__(self, mode, polluters, victim, seed=CA.DEFAULT):
         self.calls.append((mode, tuple(polluters)))
         if not polluters:
+            if self.alone_seeds is not None:
+                return self.flaky_alone and (seed in self.alone_seeds), {}
             return self.flaky_alone, {}
         if mode not in self.modes:
             return False, {}
@@ -227,16 +228,61 @@ def test_interaction_no_minimal_pair():
     assert res["result"] == "no minimal pair (interaction)" and res["polluter"] is None
 
 
-def test_victim_file_alone_reproduces():
-    f = Fake(flaky_alone=True, modes=("serial", "concurrent"))
-    res = CA.PairSearch(f).search(FILES, VICTIM)
-    assert res["result"] == "no minimal pair (victim file alone reproduces)" and res["runs_spent"] == 1
+def test_victim_file_alone_reproduces_with_controls():
+    f = Fake(flaky_alone=True, alone_seeds=[CA.DEFAULT])  # only under the diverging run's seed
+    res = CA.PairSearch(f).search(FILES, VICTIM, control_seeds=[4, 5])
+    assert res["result"] == CA.R_ALONE
+    a = res["alone"]
+    assert (a["alone_hits"], a["unseeded"], [c["reproduced"] for c in a["control_seeds"]]) == (3, [False, False], [False, False])
+    assert res["runs_spent"] == 1 + 2 + 2 + 2  # first hit, 2 more confirm runs, 2 unseeded, 2 control seeds
+
+
+def test_alone_without_seed_too():
+    res = CA.PairSearch(Fake(flaky_alone=True)).search(FILES, VICTIM, control_seeds=[4])
+    assert res["result"] == CA.R_ALONE_UNSEEDED
+
+
+def test_alone_under_control_seed_too():
+    res = CA.PairSearch(Fake(flaky_alone=True, alone_seeds=[CA.DEFAULT, 4])).search(FILES, VICTIM, control_seeds=[4])
+    assert res["result"] == CA.R_ALONE_CTL
+
+
+def test_alone_once_in_three_is_not_claimed():
+    class Once(Fake):
+        def __call__(self, mode, polluters, victim, seed=CA.DEFAULT):
+            super().__call__(mode, polluters, victim, seed)
+            return (not polluters and len(self.calls) == 1), {}
+    res = CA.PairSearch(Once()).search(FILES, VICTIM)
+    assert res["result"] == CA.R_ALONE_ONCE and res["alone"]["alone_hits"] == 1
+
+
+def test_failed_control_trial_is_no_evidence():
+    def t(mode, polluters, victim, seed=CA.DEFAULT):
+        return (None if seed == 4 else (not polluters and seed is CA.DEFAULT)), {}
+    assert CA.PairSearch(t).search(FILES, VICTIM, control_seeds=[4])["result"] == CA.R_TRIAL_FAILED
+
+
+def test_control_seeds_distinct_and_not_the_diverging_seed():
+    runs = recorded()
+    by(runs, "P3")["outcomes"][T0] = "failed"
+    by(runs, "P1")["outcomes"][T0] = "failed"  # P1 shares seed 1 with SS1: seed 1 is no control
+    v = CA.verdicts(runs, {})[T0]
+    assert CA.control_seeds_for(runs, T0, v) == [2, 4]
+
+
+def test_realtrial_jest_cmd_replays_seed_only_when_given():
+    class R:
+        runner, spec = "jest", {"args": ["--config", "jest.cfg.js"]}
+    t = CA.RealTrial(R(), "passed", "v.test.ts::x", 60, seed=3)
+    cmd = t._cmd(["/a", "/v"], "r.json", None, "/t", None)
+    assert "--seed=3" in cmd and "--randomize" in cmd and cmd[-2:] == ["/a", "/v"] and "jest.cfg.js" in cmd
+    assert "--randomize" not in t._cmd(["/v"], "r.json", None, "/t", None, seed=None)
 
 
 def test_not_confirmed():
     class Half(Fake):
-        def __call__(self, mode, polluters, victim):  # the pair alone triggers on its 1st and 3rd run only
-            hit, rec = super().__call__(mode, polluters, victim)
+        def __call__(self, mode, polluters, victim, seed=CA.DEFAULT):  # the pair triggers on its 1st and 3rd run only
+            hit, rec = super().__call__(mode, polluters, victim, seed)
             if polluters == ["f6.test.ts"]:
                 hit = sum(1 for _, p in self.calls if p == ("f6.test.ts",)) % 2 == 1  # bisect run 1; confirm 2,3,4
             return hit, rec
@@ -251,7 +297,7 @@ def test_budget():
 
 
 def test_trial_without_victim_outcome_is_not_evidence():
-    def broken(mode, polluters, victim):
+    def broken(mode, polluters, victim, seed=CA.DEFAULT):
         return None, {"victim_outcome": None, "timed_out": True}
     res = CA.PairSearch(broken).search(FILES, VICTIM)
     assert res["result"] == "no minimal pair (trial failed)" and res["runs_spent"] == 1
