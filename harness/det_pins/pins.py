@@ -22,6 +22,7 @@ import json
 import os
 import random
 import re
+import subprocess
 import sys
 import time
 
@@ -49,7 +50,7 @@ VARIANTS = {
 FAILED = ("failed", "error")
 # a failure that names this container (network unreachable from the sandbox, DNS, proxy), only counted on V4-V6
 ENV_RE = re.compile(r"ENOTFOUND|EAI_AGAIN|ENETUNREACH|EHOSTUNREACH|getaddrinfo|fetch failed|"
-                    r"proxy|tunneling socket|self[- ]signed certificate|UNABLE_TO_GET_ISSUER|ECONNRESET", re.I)
+                    r"tunneling socket|UNABLE_TO_GET_ISSUER", re.I)
 
 
 def now_iso():
@@ -202,7 +203,7 @@ def variants(o):
 
 def classify(msg):
     m = msg or ""
-    if re.search(r"timed? ?out|timeout", m, re.I):
+    if re.search(r"timed? ?out|timeout|not met within \d+ ?ms", m, re.I):
         return "timeout"
     if re.search(r"ENOTFOUND|EAI_AGAIN|ECONNREFUSED|ECONNRESET|ENETUNREACH|fetch failed|socket|network|"
                  r"refused.*(host|connect)|detjs.*net", m, re.I):
@@ -233,8 +234,30 @@ def verdict(v, a, b):
     return "absent/skipped"
 
 
+def verify_v0(fpath, proj, vrun, cache):
+    """Optional: `detjs verify --json` on the two V0 traces of a file; nodeid -> divergence.reason (+ command)."""
+    key = (fpath, proj)
+    if key in cache:
+        return cache[key]
+    a, b = vrun.get((fpath, proj, "V0", "1")), vrun.get((fpath, proj, "V0", "2"))
+    res = {"cmd": None, "reasons": {}}
+    if a and b:
+        cmd = ["node", DETJS, "verify", "--json", a["trace"], b["trace"]]
+        p = subprocess.run(cmd, capture_output=True, text=True)
+        res["cmd"], res["exit"] = " ".join(cmd), p.returncode
+        try:
+            j = json.loads(p.stdout)
+            res["reasons"] = {t["nodeid"]: ((t.get("divergence") or {}).get("reason"), t.get("status"))
+                              for t in j.get("tests", [])}
+        except ValueError:
+            res["error"] = (p.stderr or p.stdout)[-500:]
+    cache[key] = res
+    return res
+
+
 def rows(o):
     out = os.path.join(o.out, o.repo)
+    vcache = {}
     with open(f"{out}/sample.json") as f:
         picked = json.load(f)["sample"]
     runs = [json.loads(x) for x in open(f"{out}/runs.jsonl")]
@@ -289,6 +312,10 @@ def rows(o):
         first = None
         if status == "reproduced":
             first = next((v for v in list(VARIANTS)[1:] if row["variants"][v]["verdict"] == "cleared"), None)
+        vf = verify_v0(fpath, proj, vrun, vcache)
+        rs = vf["reasons"].get(tid)
+        row["v0_verify"] = {"cmd": vf["cmd"], "exit": vf.get("exit"), "divergence_reason": rs[0] if rs else None,
+                            "status": rs[1] if rs else None}
         row.update({"status": status, "first_clearing_variant": first, "v0_failure_line": v0_msg,
                     "failure_class": classify(v0_msg) if v0_msg else None,
                     "outcomes": {v: [x["outcome"] for x in row["variants"][v]["runs"]] for v in VARIANTS},
