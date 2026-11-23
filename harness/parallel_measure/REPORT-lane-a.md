@@ -3,9 +3,11 @@ NOT DONE — step 4 (second merge into claude/release-1) pending; steps 1-3 done
 # Lane A report: one harness on the trunk, the missing raw rows, three more candidates
 
 Branch `claude/harness-trunk`. Spec: gstack /spec revision 2 (2026-11-22). Machine: this session's cloud container,
-`nproc` 4, Intel(R) Xeon(R) Processor @ 2.10GHz, 16 GB (cgroup limit), recorded per row. Engine: trunk bfaf70b4 built
-from this checkout; rows taken after the step 1 merge record `engine_commit` 0071cbb9, whose engine sources
-(`crates python node/src node/bin Cargo.* pyproject.toml`) equal bfaf70b4. Harness: `harness/parallel_measure/` of
+`nproc` 4, Intel(R) Xeon(R) Processor @ 2.10GHz, 16 GB (cgroup limit), recorded per row. Engine of every row: trunk bfaf70b4,
+built from this checkout before it merged the later trunk; rows taken after the step 1 merge record `engine_commit`
+0071cbb9, whose engine sources (`crates python node/src node/bin Cargo.* pyproject.toml`) equal bfaf70b4. (For step 4
+this branch merged the trunk f67be4a3, whose engine differs: a rerun of these rows needs RERUN.md section 1's
+engine_commit checkout.) Harness: `harness/parallel_measure/` of
 this branch (measure.py, repro.py, classify.py, table.py byte-identical to `claude/parallel-measure` 20f7752d),
 commits ef5b0b20 (rounds of agentic-qe 1-2) to 0071cbb9 (all later rows); only docs and specs.json changed between
 them. Commands: `RERUN.md` section 4. Labels: MEASURED (command in the row's `cmd`, file named), DECLARED (source
@@ -40,15 +42,18 @@ that output). Commands: RERUN.md section 4.
 
 lerna-lite: 2.18x MEASURED here; the earlier 601.06 s -> 282.62 s (2.13x) DECLARED in chat by session C also has
 pushed D13 rows in `results-c.jsonl` (`claude/parallel-measure-c`), which the spec's "current state" did not list.
-Classification (MEASURED, classify.py via classify_memo.py): agentic-qe THEIRS 83, UNDECIDED 195, OURS 30210, ENV 0;
+Classification (MEASURED, classify.py via classify_memo.py): agentic-qe THEIRS 83, UNDECIDED 195, OURS 30210, ENV 0,
+PARTIAL: it rests on 2 of 6 engine verdicts (verify2w2, verify3w2; the other 4 and the serial-noise check were
+OOM-killed), so `also_serial_vs_serial` is false everywhere by absence, not by measurement;
 lerna-lite OURS 107, THEIRS 0 (as -c's `bugs/lerna-lite-c-pre-d13.md`).
 
 **AC3 — DONE.** agentic-qe, "exit 0 with failed tests": **reproduced**. All 6 `par` rows in
 `data/lane-a/results.jsonl` exit 0 with failed tests in their own trace: round 1 w2 273, w4 276; round 2 w2 269, w4
 275; round 3 w2 271, w4 274 (MEASURED, `outcome_counts.failed`). Reproducing command (round 1, w2), in
 `/tmp/pm/repos/agentic-qe` at 9a42d9eb: `node <checkout>/node/bin/detjs.js vitest run --bail=0 --det --det-workers=2
---det-trace=<out>/P1w2.jsonl`; its output ends "318 test(s) failed under --det (seed 0, fixed order)" and the
-process exits 0 (runs.log). The serial engine runs do the same: exit 0 with 170 / 168 / 169 failed. The DECLARED
+--det-trace=<out>/P1w2.jsonl`; the process exits 0 (runs.log). detjs's own summary line says "318 test(s) failed
+under --det" for that run while its trace records 273 failed; every engine run shows such a gap (serial 213-215 vs
+168-170, parallel 314-321 vs 269-276): its cause is UNKNOWN (not investigated; reported for the engine sessions). The serial engine runs do the same: exit 0 with 170 / 168 / 169 failed. The DECLARED
 "168 failed" (chat) matches a serial count, not a parallel one.
 
 **AC4 — DONE (one with a caveat).** Admitted, each with plain parallel >= 2x plain serial (median of 3, from
@@ -61,12 +66,19 @@ process exits 0 (runs.log). The serial engine runs do the same: exit 0 with 170 
 | agentlang | 76.99 | 39.07 / 28.24 | 2.73x | 86.04 | 86.99 / 87.72 | 38 / 399 / 2 / 0 |
 | alakajam | 29.75 | 12.74 / 9.62 | 3.09x | 67.20 | 49.75 / 54.19 | 138 / 77 / 2 / 0 |
 
-All MEASURED (rows' `cmd`). Caveat, alakajam: in its own parallel mode 8 of 27 test files fail (sqlite contention)
-and 130-143 of 221 tests do not run, while plain serial passes 217 / skips 4; its own-parallel time covers less work,
-so 3.09x overstates the gain. It passes the spec's rule as written; whether it counts is the coordinator's call.
-agentlang: plain serial passes 439 of 439; its own parallel mode fails 21-51 tests per run (all run). smart-second-
-brain: 1 test fails in every run, ENV (`shippedPromptHistory.test.ts` needs git release tags; the checkout is a
-depth-1 fetch). agentic-qe also passes the rule (3.55x, full data, AC2) but is counted apart from the three.
+All MEASURED (rows' `cmd`). Caveats (MEASURED, data/lane-a/results.jsonl and classification.json):
+- alakajam: in its own parallel mode 8-9 of 27 test files fail (sqlite contention) and 130-143 of 221 tests do not
+  run, while plain serial passes 217 / skips 4: its own-parallel time covers less work, so 3.09x overstates the gain.
+  Its THEIRS 138 is mostly not flakiness: 136 of the 138 differ between plain runs only because they are "skipped"
+  (not run) in the own-parallel repro runs; 115 of those fail in all 9 engine runs although they pass in every plain
+  serial run (every `--det` run fails 118-120 tests). Only 2 THEIRS tests are reproduced plain failures (shuffled
+  runs). It passes the spec's ratio rule as written; whether it counts is the coordinator's call.
+- agentlang: plain serial passes 439 of 439; its own parallel mode fails 0-55 tests per run (w2: 18, 55, 46; w4: 0,
+  39, 0; all 439 run), so the w4 median mixes clean and failing runs. Every `--det` run fails 2 tests that pass plain
+  (UNDECIDED 2).
+- smart-second-brain: 1 test fails in every plain run, ENV (`shippedPromptHistory.test.ts` needs git release tags;
+  the checkout is a depth-1 fetch; classify boxes it OURS, its ENV patterns do not match). Every `--det` run fails 8:
+  that one plus 7 that pass in every plain run (UNDECIDED 7: 6 huggingfaceOAuth, 1 deltaMessages). agentic-qe also passes the rule (3.55x, full data, AC2) but is counted apart from the three.
 
 Every repository tried (in the order of the pool: specs.json, then candidates.json):
 
@@ -74,7 +86,7 @@ Every repository tried (in the order of the pool: specs.json, then candidates.js
 |---|---|---|
 | react-confirm-alert | not admitted: UNKNOWN (ENV) | Vitest browser mode needs Playwright chromium_headless_shell-1248, absent here; 0 tests in every run |
 | claudekit | rejected, 1.05x | plain 6.57 s, own parallel 6.27 s (w2) |
-| sqlectron | rejected, 1.90x | plain 5.41 s, own parallel 2.85 s (w4) |
+| sqlectron | rejected, 1.79x | re-screened after `npm rebuild sqlite3`: plain 6.25 s, own parallel 3.49 s (w4), 42 passed / 1 skipped every run. The first screening (1.90x) ran with the sqlite3 binding missing (3 of 7 files did not load, exit 1): withdrawn, rows in `interrupted/sqlectron-screen-native-binding-missing.jsonl` |
 | smart-second-brain | **admitted**, 2.69x screen / 2.74x full | above |
 | beevibe | rejected, 0.98x | plain 26.87 s, own parallel 27.40 s (w4); 7 of 885 tests fail every run (live API keys absent: ENV). Screened last, after the first pass had skipped it for its PostgreSQL setup, to keep the order |
 | agentlang | **admitted**, 2.49x screen / 2.73x full | first attempt withdrawn (below) |
@@ -112,9 +124,11 @@ output of `data/lane-a/results.jsonl`, whose rows carry their command.
 - `--timeout 14400` instead of the default 3600: the first agentic-qe `--det` serial run hit 3600 s (exit 124);
   complete runs take 4056-4491 s. Interrupted rows: `data/lane-a/interrupted/agentic-qe-round1-timeout3600-restart.jsonl`.
 - Two container restarts (likely session inactivity, coordinator): round 1 and round 3 of agentic-qe restarted from
-  their start; completed rounds were never lost.
+  their start; completed rounds were never lost. The first round-3 attempt (08:52-09:08) was killed during its first
+  run (plain, ~1400 s) and wrote no row; the round-1 attempt's rows are in `interrupted/`.
 - `classify_memo.py`: classify.py's `reported()` re-reads every trace per THEIRS test (> 50 min on agentic-qe's 1.2 GB
-  traces); the wrapper caches `measure.trace_tests` (pure) and calls classify.main() unchanged: same output, 91 s.
+  traces); the wrapper caches `measure.trace_tests` (pure) and calls classify.main() unchanged: 91 s instead of > 50 min. Same output MEASURED on lerna-lite: classify.py and
+  classify_memo.py on copies of the same inputs give byte-identical classification.json and bugs/lerna-lite.md.
 - agentic-qe `fenvix verify` was OOM-killed (exit -9, ~13.7 GB RSS on 1.2 GB traces) in 4 of 6 runs and in the serial
   noise check: those verdicts are UNKNOWN (an engine memory limit, reported for the engine sessions). The 2 completed
   ones (round 2/3, w2) say 0 of 30488 identical (all `fs` divergences).
@@ -123,8 +137,9 @@ output of `data/lane-a/results.jsonl`, whose rows carry their command.
   OOM-killed, no verdict lost).
 - My own load during measurement: a gzip of the 2.3 GB file ran during the first minute of lerna-lite round-1
   `plain` (616.70 s vs 618.31 / 617.64 s in rounds 2-3: no visible effect; `busy_before_pct` 25.1 recorded).
-- agentic-qe writes outside TMPDIR (`hardcoded_tmp`: /tmp/agentic-qe-test, ...), and 80-84 tests fail in every plain
-  run (the sampled message: "Transformer initialization previously failed: fetch failed", no model download here): ENV-type, not hidden; classify found ENV 0 because the
+- agentic-qe writes outside TMPDIR in 7 of 25 rows (`hardcoded_tmp`: /tmp/rvf-native-test-rb-integration-*.rvf.lock;
+  2 more rows list /tmp/claude-code-*.pid, this session's own files), and 80-84 tests fail in every measure.py plain
+  run (79-131 in the repro runs) (the sampled message: "Transformer initialization previously failed: fetch failed", no model download here): ENV-type, not hidden; classify found ENV 0 because the
   message does not match its ENV_PATTERNS.
 
 ## Left open

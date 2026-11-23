@@ -33,3 +33,5 @@
 2026-11-23T20:02:11Z STEP3DONE admitted=3
 2026-11-23T20:03:40Z INSTALL beevibe: apt-get install postgresql-16-pgvector; initdb -U beevibe --auth=trust (port 5433, user postgres); CREATE DATABASE beevibe, beevibe_test; (cd $PM_WORK/repos/beevibe && npx -y pnpm@9.12.0 install --frozen-lockfile --ignore-scripts && pnpm run migrate up && pnpm run migrate:test up) with DATABASE_URL(_TEST) exported: all exit 0
 2026-11-23T20:08:18Z VERDICT beevibe: REJECT plain median 26.87 s, best plain_par median 27.40 s (w4), ratio 0.98x; par medians {2: 27.88, 4: 27.4} (screened after step 3 had admitted 3, to keep the specs.json order: beevibe precedes agentlang); 7 of 885 tests fail in every run (live API keys absent: ENV)
+2026-11-23T20:15:51Z WITHDRAWN sqlectron screening: sqlite3 native binding not built (3 of 7 test files failed to load); rows moved to lane-a/interrupted/; rebuilt with npm rebuild sqlite3
+2026-11-23T20:17:04Z VERDICT sqlectron (re-screened after npm rebuild sqlite3): REJECT plain median 6.25 s, best plain_par median 3.49 s (w4), ratio 1.79x; par medians {2: 4.11, 4: 3.49}; 42 passed / 1 skipped in every run

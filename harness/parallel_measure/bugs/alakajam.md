@@ -1,5 +1,9 @@
 # alakajam: tests whose outcome changes without the engine (THEIRS)
 
+> Lane A note (REPORT-lane-a.md, AC4): 136 of the 138 tests below differ between plain runs only because they are
+> "skipped" (not run) in the own-parallel repro runs, where 8-9 test files fail to load; 115 of them fail in every
+> `--det` run although they pass in every plain serial run. Only 2 are reproduced plain failures.
+
 Repository https://github.com/alakajam-team/alakajam at af63a7e0993f2f7de2ec8dff53a941ccfe855572; engine verdicts from trunk ['0071cbb9']. Rule: classify.py (outcome differs between plain runs, no engine). Nothing here was published.
 
 138 test(s).

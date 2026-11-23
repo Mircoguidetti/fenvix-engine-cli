@@ -189,7 +189,7 @@
   "ci_parallel": false,
   "plan_verdict": true,
   "source": "claude/serial-scan harness/serial_scan/candidates.json",
-  "install": "npm install --ignore-scripts --no-audit --no-fund (MEASURED: `npm ci --ignore-scripts` with npm 10.9.9 fails EUSAGE 'Missing: type-fest@4.41.0 from lock file'; npm install rewrote package-lock.json)"
+  "install": "npm install --ignore-scripts --no-audit --no-fund && npm rebuild sqlite3 (MEASURED: `npm ci --ignore-scripts` with npm 10.9.9 fails EUSAGE 'Missing: type-fest@4.41.0 from lock file'; npm install rewrote package-lock.json; MEASURED 2026-11-23: without `npm rebuild sqlite3` 3 of 7 test files fail to load, 'Could not locate the bindings file')"
  },
  "agentic-qe": {
   "repo": "https://github.com/proffesor-for-testing/agentic-qe",

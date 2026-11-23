@@ -100,7 +100,8 @@ if [ -e "$PM_WORK/venv" ]; then echo "STOP: $PM_WORK/venv exists; pick another P
 fi
 ```
 
-(The recorded Lane A rows used `PM_WORK=/tmp/pm`, which held no section 2 venv.)
+(The recorded Lane A rows were taken with `PM_WORK=/tmp/pm`, the paths in their `cmd`/`cwd` fields; that /tmp/pm held
+no section 2 venv, so `venv/networkx` there was the engine venv.)
 Repositories fetched at the `commit` of their spec and installed with its `install`
 line (agentic-qe: `npm ci --ignore-scripts --no-audit --no-fund && npm rebuild better-sqlite3 hnswlib-node argon2
 sharp`; lerna-lite: `npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts && npx -y pnpm@11.28.5 build`).
