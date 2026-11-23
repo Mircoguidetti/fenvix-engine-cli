@@ -20,3 +20,9 @@
 2026-11-23T16:58:27Z   $ git checkout -q -f --detach 6a1b7a4e8f86ebc9c41a76937ab9673466ca4dd0 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
 2026-11-23T16:58:28Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.3s
 2026-11-23T16:58:34Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 6.7s
+2026-11-23T16:58:54Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/nestjs-pino/full-15.json  -> exit 0 in 19.5s
+2026-11-23T16:58:54Z   full run 15: ok exit 0 19.5s {'passed': 259}
+2026-11-23T16:58:54Z FULL RUN pr-index 20 PR #3230 base 38bdd29d6e167f71e58a10c4bca27fe832fbad8c
+2026-11-23T16:58:54Z   $ git checkout -q -f --detach 38bdd29d6e167f71e58a10c4bca27fe832fbad8c && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T16:58:54Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.3s
+2026-11-23T16:59:01Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 6.6s
