@@ -104,7 +104,9 @@ only that `INITIALIZER` line, nothing else in `deadline.js` or `deadline-preload
   `at <instance_members_initializer>` + a Vitest runner frame -> a number; `at TaskDeadline.<instance_members_initializer>`
   + a Vitest runner frame -> a number; no Vitest frame -> `undefined`. On b0a4025: `# pass 1 # fail 1` (the qualified
   case returned undefined; `logs/test-deadline-initializer.before-fix.log`); with the fix (a8e3f85): `# pass 2 # fail
-  0` (`logs/test-deadline-initializer.after-fix.log`).
+  0` (`logs/test-deadline-initializer.after-fix.log`). The runner-deadline tests (G-0144 / J15) still pass with it:
+  `node --test --test-concurrency=1 test/time-p041.test.js test/regressions.test.js test/controls.test.js
+  test/deadline-initializer.test.js` -> `# tests 52 # pass 52 # fail 0`, exit 0 (`logs/deadline-suite.after-fix.log`).
 - The three-line Vitest 5.0.5 cascade as a fixture: **not added**. Vitest 5.0.5 installs from the package registry
   (`npm install --legacy-peer-deps`; a plain install fails in npm's peer-set resolution, `Cannot read properties of
   null (reading 'edgesOut')`), but in a fresh project the same `vitest/dist/chunks/run.BPv-BBRv.js` gives the plain
