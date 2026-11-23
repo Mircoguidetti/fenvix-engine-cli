@@ -1,0 +1,17 @@
+g00.V0.r1 test/api-model-runtime.test.ts  exit=1 2.16s
+g00.V0.r2 test/api-model-runtime.test.ts  exit=1 0.98s
+g01.V0.r1 test/app-bind.test.ts  exit=0 5.48s
+g01.V0.r2 test/app-bind.test.ts  exit=0 5.88s
+g02.V0.r1 test/automatic-api-checks.test.ts  exit=1 2.8s
+g02.V0.r2 test/automatic-api-checks.test.ts  exit=1 2.61s
+g03.V0.r1 test/codex-bin-wrapper.test.ts  exit=1 82.58s
+g03.V0.r2 test/codex-bin-wrapper.test.ts  exit=1 82.7s
+g04.V0.r1 test/crash-mid-write.test.ts  exit=1 8.49s
+g04.V0.r2 test/crash-mid-write.test.ts  exit=1 8.3s
+g05.V0.r1 test/json-store-lock.test.ts  exit=1 13.46s
+g05.V0.r2 test/json-store-lock.test.ts  exit=1 13.72s
+g06.V0.r1 test/property/rotation.property.test.ts  exit=1 1.62s
+g06.V0.r2 test/property/rotation.property.test.ts  exit=1 1.54s
+g07.V0.r1 test/runtime-rotation-proxy.test.ts  exit=1 45.04s
+g07.V0.r2 test/runtime-rotation-proxy.test.ts  exit=1 44.48s
+exit 0

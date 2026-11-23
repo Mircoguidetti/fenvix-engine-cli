@@ -13,16 +13,18 @@ checked out over it (RERUN.md section 1, "+modified").
 
 | AC | verdict | in one line |
 |---|---|---|
-| 1 | **partly**: (a) (c) (d) (e) met; (b) NOT DONE | (a)(c)(d)(e) fail on the trunk engine and pass on the branch; (b) fails on both (timer part NOT DONE, below) |
-| 2 | **NOT DONE** | ironcurtain 206 -> 17 (<= 20, met); codex-multi-auth 362 -> 422 (<= 60, missed: the timer cause) |
+| 1 | **partly**: (a) (c) (d) (e) and the deadline test met; (b) NOT DONE | (a)(c)(d)(e) fail on the trunk engine and pass on the branch; `deadline-initializer.test.js` fails on b0a4025 and passes with the approved fix; (b) fails on both (its shapes are out of `sched.js`'s reach, section 2) |
+| 2 | **NOT DONE** | ironcurtain 206 -> 17 (<= 20, met); codex-multi-auth 362 -> 422 before the `deadline.js` fix, **69** after it (<= 60, missed by 9) |
 | 3 | **NOT DONE (one bound)** | identical counts within 0.5% on all six; exits unchanged; wall time <= 1.10x on five, agentsys 1.110 (23.54 s vs 21.20 s) |
 | 4 | **met, with the listed opt-outs** | `npm test`: the branch fails the trunk's failing groups plus (b); shared Python tests: the same 12 failures as the trunk; LIGHT CI: see section 5 |
 | 5 | **met** | `node/src node/bin crates`: only allowed files; outside them `python/detpy/fenvix_js.py` (reason below) |
 
-The timer part is NOT DONE by the spec's own stop rule: the diagnosis found causes `sched.js` cannot observe, and 0 of
-48 sampled flips clear with the branch engine (threshold 35). Timers were not switched to real. The decisive cause is
-in `node/src/deadline.js`, which this spec forbids changing; a measured, uncommitted one-line experiment there clears
-38 of 48 sampled flips and brings the whole codex-multi-auth list from 422 to 68 flips. **The coordinator decides.**
+Timers: by the spec's stop rule the diagnosis stopped the `sched.js` work (0 of 48 sampled flips cleared without it;
+the causes are outside `sched.js`'s view). The decisive cause was in `node/src/deadline.js`, which spec line 71
+forbade; **the coordinator approved the one-line `INITIALIZER` fix on 2026-11-23 (D1 = A)**, now committed with its
+regression test (a8e3f85): **38 of 48** sampled flips clear (bound 35: met) and the whole codex-multi-auth list drops
+from 422 to **69** flips (bound 60: missed by 9). Timers stay virtual; `sched.js`, `clock.js`, `deadline-preload.js`
+unchanged.
 
 ## 1. Regression tests (commit fa8e845, before any fix)
 
@@ -91,14 +93,42 @@ Count (spec procedure): `cp harness/det_pins/data/codex-multi-auth/flips.json /t
 `python3 harness/det_host_values/timers.py /tmp/pm-hv/timers` -> **0 of 48 cleared** (39 still `Test timed out in
 5000ms`; `timers.out.md`, raw outcomes `data/timers/`).
 
-Experiment for the coordinator (not in the engine): `deadline.js` `INITIALIZER` widened to
-`/^\s*at (?:[\w$.]+\.)?<instance_members_initializer>/` in a separate worktree (`data/timers-deadline-experiment/
-deadline-initializer.patch`):
-- V0 count, same procedure: **38 of 48 cleared** (`data/timers-deadline-experiment/out.md`); the 10 left are the
-  `vi.waitFor` case, the EBUSY drain, the detached-helper cases, the two cross-process lock tests, the two property
-  tests and two `runtime-rotation-proxy` assertions.
-- Whole list, `pins.py find --repo codex-multi-auth` with that engine: **68 flips** (branch without it: 422; trunk
-  362) (`data/find-deadline-experiment/`).
+First, as an experiment in a separate worktree (`data/timers-deadline-experiment/deadline-initializer.patch`):
+`INITIALIZER` widened to `/^\s*at (?:[\w$.]+\.)?<instance_members_initializer>/` gave 38 of 48 at V0 and 68 flips on
+the whole list (`data/timers-deadline-experiment/`, `data/find-deadline-experiment/`).
+
+**Approved fix (coordinator decision 2026-11-23, D1 = A; a deviation from spec line 71, which forbade `deadline.js`):**
+only that `INITIALIZER` line, nothing else in `deadline.js` or `deadline-preload.js`.
+- Regression test first (3b777ef): `node/test/deadline-initializer.test.js` feeds the hook stack strings through
+  `Error.prepareStackTrace` in a child process with the preload's box, the virtual clock and a running test:
+  `at <instance_members_initializer>` + a Vitest runner frame -> a number; `at TaskDeadline.<instance_members_initializer>`
+  + a Vitest runner frame -> a number; no Vitest frame -> `undefined`. On b0a4025: `# pass 1 # fail 1` (the qualified
+  case returned undefined; `logs/test-deadline-initializer.before-fix.log`); with the fix (a8e3f85): `# pass 2 # fail
+  0` (`logs/test-deadline-initializer.after-fix.log`).
+- The three-line Vitest 5.0.5 cascade as a fixture: **not added**. Vitest 5.0.5 installs from the package registry
+  (`npm install --legacy-peer-deps`; a plain install fails in npm's peer-set resolution, `Cannot read properties of
+  null (reading 'edgesOut')`), but in a fresh project the same `vitest/dist/chunks/run.BPv-BBRv.js` gives the plain
+  frame name and the cascade does not reproduce (`Tests 2 passed` before the fix); the same file inside
+  codex-multi-auth's tree fails (`1 failed`). What gives V8 the qualified name there was not identified; the real
+  file stays the check (below).
+- Re-run, same procedure as above, engine a8e3f853 (`PM_WORK=/tmp/pm-hv python3 harness/det_pins/pins.py variants
+  --repo codex-multi-auth --variants V0 --out /tmp/pm-hv/timers2`, exit 0; `python3 harness/det_host_values/timers.py
+  /tmp/pm-hv/timers2`): **38 of 48 cleared, bound 35: met** (`data/timers-after-deadline-fix/out.md`).
+- Whole list (`PM_WORK=/tmp/pm-hv python3 harness/det_pins/pins.py find --repo codex-multi-auth --out
+  /tmp/pm-hv/find2`, exit 0; `flips.py`): **69 flips, bound 60: missed** (trunk 362; branch before the fix 422;
+  `flips.after-deadline-fix.out.md`, `data/find-after-deadline-fix/`). By first failure line: 30 `Test timed out in
+  5000ms`, 9 ledger-snapshot `toMatchObject`, 6 `Storage is busy with another live ...`, 3 property-test pre-condition
+  failures, 21 single assertions (helper metadata, account order, API capability resets ...); by file:
+  codex-bin-wrapper 19, runtime-rotation-proxy 18, crash-mid-write 6, persisted-api-capabilities 4,
+  runtime-policy-cache 4, others <= 3. Failed in one `--det` run only: 7.
+- The 10 sampled flips still out of reach (`data/timers-after-deadline-fix/out.md`): `api-model-runtime` "does not hold
+  native model discovery open" (`vi.waitFor` polls on Vitest's real timers while an unrelated 15 s virtual timer is
+  pending); `automatic-api-checks` "stops daily discovery and drains owner cleanup with EBUSY" (timeout); two
+  `codex-bin-wrapper` detached-helper tests (the test process holds no handle to the helper); `crash-mid-write` and
+  `json-store-lock` (cross-process locks, also failing at V6 in Lane C); two `property/rotation.property` tests
+  (pre-condition failures, cleared only with the time control off in Lane C); two `runtime-rotation-proxy` assertions
+  (ledger snapshot; `503` vs `200`, both cleared only at V6 in Lane C). None is a timer that `sched.js` could hold
+  back without seeing what the test waits on.
 
 ## 3. The new defaults (Node only; commit 441ce38, docs and CHANGELOG in the same commit)
 
@@ -129,8 +159,8 @@ deadline-initializer.patch`):
 
 `git diff --stat origin/claude/release-1...HEAD -- node/src node/bin crates`: `node/bin/detjs.js`,
 `node/src/cache/capture.js`, `node/src/config.js`, `node/src/isolate.js`, `node/src/network.js`,
-`node/src/selfcert.js`, `node/src/session.js` (7 files, +158 -31). No change in `crates/`, `deadline.js`,
-`deadline-preload.js`, `sched.js`, `clock.js`.
+`node/src/selfcert.js`, `node/src/session.js` (7 files, +158 -31), plus `node/src/deadline.js` (one line, approved by
+the coordinator, a8e3f85). No change in `crates/`, `deadline-preload.js`, `sched.js`, `clock.js`.
 
 ### Changed tests, CI steps (opt-out flags only; one line each)
 
@@ -264,9 +294,13 @@ Per-test causes (every test identical on the trunk and not on the branch; `proof
 
 ## 6. Not done, risks, next decisions
 
-- Timer part (AC1 (b), AC2 codex-multi-auth): NOT DONE; decision for the coordinator: allow the `deadline.js`
-  frame-name fix (measured: 38/48 sampled, 422 -> 68 whole list) and decide on the `vi.waitFor` (runner real timers)
-  and detached-grandchild cases, which `sched.js` cannot see.
+- Spec deviation: `node/src/deadline.js` changed (one line), forbidden by spec line 71, approved by the coordinator's
+  decision of 2026-11-23 (D1 = A).
+- AC2 codex-multi-auth: 69 flips after the approved fix, bound 60: missed by 9. Sample: 38/48 (bound 35 met).
+- AC1 (b): still fails; its two shapes (`vi.waitFor` on the runner's real timers, a file written by a detached
+  grandchild) are not observable by `sched.js`; with the 10 sampled flips above they are the cases still out of reach.
+  The flip lists above and the proof table were measured before the fix (ironcurtain find, ddb73366; proof, 702bf489);
+  only the codex-multi-auth sample and whole list were re-run after it, as decided.
 - AC3 agentsys wall time 1.110 > 1.10 on one round.
 - The customer path keeps the virtual day; ironcurtain flips there 72 -> 49 (spec: the next decision).
 - `fenvix repro` through Python (not `detjs repro`): one epoch per driver session now; a repro of an id reported by
