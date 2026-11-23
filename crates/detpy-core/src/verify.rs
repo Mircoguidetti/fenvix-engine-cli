@@ -506,6 +506,57 @@ fn order_divergence(id: &str, a: &Predecessors, b: &Predecessors, run_a: usize, 
     })
 }
 
+/// The `not_proven_outside_tests` entries of the runs that still make every test NOT PROVEN in this comparison,
+/// sorted and deduplicated.
+///
+/// P1 A1 (docs/DESIGN-P1.md section A, docs/VERIFY-CONTRACT.md section 1): the Node shell writes an uncontrolled
+/// variable read outside any test as `env:<NAME>=<digest of NAME=value>` (`*` for an enumeration). Its value is no
+/// run input (it differs between machines, so the cache never reuses such a test), but two runs that saw the same
+/// value did not differ through it: when every run has entries for `<NAME>` and they all carry the same set of
+/// digests, those entries are discharged for this comparison. A different value, a read in some runs only, an entry
+/// without a digest (older traces, the Python shell) and every non-`env` entry stay: every test is NOT PROVEN.
+fn undischarged_outside(traces: &[Trace]) -> Vec<String> {
+    let per_run: Vec<BTreeSet<String>> = traces
+        .iter()
+        .map(|t| meta_array(t, "not_proven_outside_tests").filter_map(|v| v.as_str().map(str::to_string)).collect())
+        .collect();
+    // name -> digests, per run; None when the run has an `env:<NAME>` entry without a digest
+    let digests = |run: &BTreeSet<String>, name: &str| -> Option<BTreeSet<String>> {
+        let mut out = BTreeSet::new();
+        for e in run {
+            let Some(rest) = e.strip_prefix("env:") else { continue };
+            match rest.split_once('=') {
+                Some((n, d)) if n == name => {
+                    out.insert(d.to_string());
+                }
+                None if rest == name => return None,
+                _ => {}
+            }
+        }
+        Some(out)
+    };
+    let names: BTreeSet<String> = per_run
+        .iter()
+        .flatten()
+        .filter_map(|e| e.strip_prefix("env:").and_then(|r| r.split_once('=')).map(|(n, _)| n.to_string()))
+        .collect();
+    let discharged: BTreeSet<String> = names
+        .into_iter()
+        .filter(|name| {
+            let sets: Vec<Option<BTreeSet<String>>> = per_run.iter().map(|r| digests(r, name)).collect();
+            !traces.is_empty()
+                && sets.iter().all(|s| s.as_ref().is_some_and(|s| !s.is_empty()))
+                && sets.windows(2).all(|w| w[0] == w[1])
+        })
+        .collect();
+    let all: BTreeSet<String> = per_run.into_iter().flatten().collect();
+    all.into_iter()
+        .filter(|e| {
+            !e.strip_prefix("env:").and_then(|r| r.split_once('=')).is_some_and(|(n, _)| discharged.contains(n))
+        })
+        .collect()
+}
+
 /// Every test of runs that read an uncontrolled source outside any test (`not_proven_outside_tests`).
 fn outside_not_proven(entries: &[String]) -> Divergence {
     let kind = entries[0].split(':').next().unwrap_or("");
@@ -865,14 +916,7 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
         .collect();
     // uncontrolled reads outside any test (a CI-volatile or proxy variable at module scope, ...): every test is
     // not proven (docs/VERIFY-CONTRACT.md section 1)
-    let not_proven_outside: Vec<String> = {
-        let s: BTreeSet<String> = traces
-            .iter()
-            .flat_map(|t| meta_array(t, "not_proven_outside_tests"))
-            .filter_map(|v| v.as_str().map(str::to_string))
-            .collect();
-        s.into_iter().collect()
-    };
+    let not_proven_outside: Vec<String> = undischarged_outside(traces);
     let mut summary = Summary { runs: n, inputs_recorded: n > 0 && inputs.iter().all(|i| i.is_some()), ..Default::default() };
     let mut tests = Vec::with_capacity(ordered.len());
     for id in ordered {
@@ -1823,5 +1867,45 @@ mod tests {
         let r = verify(&[mk(), mk()], &[]);
         assert_eq!(r.tests[0].status, Status::NotProven);
         assert!(r.tests[0].divergence.as_ref().unwrap().description.contains("env:HTTPS_PROXY"));
+    }
+
+    /// P1 A1 (docs/DESIGN-P1.md section A). protects=an uncontrolled variable read outside any test with the same
+    /// value in every run no longer makes every test NOT PROVEN; fails_when=equal `env:<NAME>=<digest>` entries leave a
+    /// test NOT PROVEN, or different digests, a digest in one run only, an entry without a digest or a non-env entry
+    /// let a test be stable; no_claim=the cache's own judgement (one run) is not exercised here.
+    #[test]
+    fn p1_a1_env_read_outside_tests_compared_by_value() {
+        let mk = |entries: serde_json::Value| {
+            meta_extra(with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10), rec("y", &[t("2")], "passed", 10)]), &BASE), "not_proven_outside_tests", entries)
+        };
+        let j = |v: &[&str]| serde_json::json!(v);
+        // the same value in both runs: discharged, nothing differs
+        let r = verify(&[mk(j(&["env:*=1111", "env:TMPDIR=aaaa"])), mk(j(&["env:*=1111", "env:TMPDIR=aaaa"]))], &[]);
+        assert_eq!((r.summary.stable, r.summary.not_proven), (2, 0), "{:?}", r.tests);
+        // several values in one run (the variable was changed): the same set in both runs
+        let r = verify(&[mk(j(&["env:TMPDIR=aaaa", "env:TMPDIR=bbbb"])), mk(j(&["env:TMPDIR=bbbb", "env:TMPDIR=aaaa"]))], &[]);
+        assert_eq!(r.summary.stable, 2);
+        // a different value: every test NOT PROVEN, the variable named
+        let r = verify(&[mk(j(&["env:TMPDIR=aaaa"])), mk(j(&["env:TMPDIR=bbbb"]))], &[]);
+        assert_eq!((r.summary.stable, r.summary.not_proven), (0, 2));
+        assert!(r.tests[0].divergence.as_ref().unwrap().description.contains("env:TMPDIR"), "{:?}", r.tests[0]);
+        // read outside any test in one run only
+        let r = verify(&[mk(j(&["env:TMPDIR=aaaa"])), mk(j(&[]))], &[]);
+        assert_eq!(r.summary.stable, 0);
+        let r = verify(&[mk(j(&["env:TMPDIR=aaaa", "env:*=1111"])), mk(j(&["env:TMPDIR=aaaa"]))], &[]);
+        assert_eq!(r.summary.stable, 0);
+        // an entry without a digest (older traces, the Python shell): today's verdict
+        let r = verify(&[mk(j(&["env:TMPDIR"])), mk(j(&["env:TMPDIR=aaaa"]))], &[]);
+        assert_eq!(r.summary.stable, 0);
+        let r = verify(&[mk(j(&["env:TMPDIR"])), mk(j(&["env:TMPDIR"]))], &[]);
+        assert_eq!(r.summary.stable, 0);
+        // a non-env entry is never discharged
+        let r = verify(&[mk(j(&["api:process.reallyExit", "env:TMPDIR=aaaa"])), mk(j(&["api:process.reallyExit", "env:TMPDIR=aaaa"]))], &[]);
+        assert_eq!((r.summary.stable, r.summary.not_proven), (0, 2));
+        let d = r.tests[0].divergence.as_ref().unwrap().description.clone();
+        assert!(d.contains("api:process.reallyExit") && !d.contains("env:TMPDIR"), "{d}");
+        // three runs: discharged only if all agree
+        let r = verify(&[mk(j(&["env:TMPDIR=aaaa"])), mk(j(&["env:TMPDIR=aaaa"])), mk(j(&["env:TMPDIR=cccc"]))], &[]);
+        assert_eq!(r.summary.stable, 0);
     }
 }

@@ -54,7 +54,13 @@ to any run (Rust rule, V13: `"<random>"` never compares equal, even to itself): 
 | file read by C code (V7) | `uncontrolled.native` | `file:<path>` | Python: sqlite3 `connect` to a file outside the project, best effort. |
 
 A read outside any test of a volatile or proxy variable goes in `not_proven_outside_tests` as `env:<NAME>`, not in
-`env_read_outside_tests`.
+`env_read_outside_tests`. The Node shell writes `env:<NAME>=<digest>` (P1 A1, docs/DESIGN-P1.md section A): the
+first 16 hex digits of the digest of `NAME=value` (of the sorted `NAME=value` lines of the environment without the
+engine's and the runner's per-process variables, for an enumeration `env:*`). `verify` discharges these entries for
+a comparison in which every run has entries for `<NAME>` with the same set of digests: the value was no run input,
+but the two runs saw the same one. A different value, a read in some runs only, an entry without a digest (Python,
+older traces) and every entry of another kind keep the rule of section 4. The cache, which has no second run, keeps
+refusing such a test.
 
 Note: the existing marks (`uncontrolled.thread`, `uncontrolled.child`, `uncontrolled.io`, `uncontrolled.native`,
 `uncontrolled.net`) keep their op and value.
@@ -62,7 +68,8 @@ Note: the existing marks (`uncontrolled.thread`, `uncontrolled.child`, `uncontro
 ## 4. Verdict (Rust; for the shells' information)
 
 - New test status `not-proven` (`Status::NotProven`), summary counter `summary.not_proven`. A test with any mark in
-  any run, or any entry in `not_proven_outside_tests`, and no other difference, is `not-proven`: never `stable`,
+  any run, or any entry in `not_proven_outside_tests` not discharged (section 3: an `env:<NAME>=<digest>` entry
+  with the same digests in every run), and no other difference, is `not-proven`: never `stable`,
   never counted in `summary.identical`. A test whose events or inputs also differ stays `diverged` / `input-differs`.
 - Headline: `IDENTICAL` only when every test is `stable`. Otherwise `DIVERGENT` if any test is `diverged` or
   `missing`, else `INPUT DIFFERS` if any is `input-differs`, else `NOT PROVEN` (D1: unchanged runs of a test that

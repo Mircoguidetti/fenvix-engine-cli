@@ -121,12 +121,32 @@ function noteNotProven(entry) {
     fs.appendFileSync(path.join(dir, `${process.pid}.txt`), `${entry}\n`);
   } catch { /* the run directory is gone (the run ended) */ } finally { STATE.quietDepth--; }
 }
-function noteOutside(op, k) {
+/**
+ * P1 A1 (docs/DESIGN-P1.md section A): the digest of what a read outside any test saw, so that `verify` can tell two
+ * runs that saw the same value from two that did not (crates/detpy-core/src/verify.rs `undischarged_outside`). For an
+ * enumeration, the sorted NAME=value lines without detjs' own variables and the engine's and runner's per-process
+ * ones (volatile.patterns() prefixes: DETJS_, VITEST_, JEST_WORKER, ...), the exclusion runInputs (src/session.js)
+ * applies to run inputs: otherwise every worker process would have its own digest.
+ */
+function outsideDigest(name, realEnv) {
+  const env = realEnv || process.env;
+  let text;
+  if (name === '*') {
+    const { prefixes } = volatile.patterns();
+    text = Object.keys(env).filter((n) => !OWN_ENV.test(n) && !prefixes.some((x) => n.startsWith(x))).sort()
+      .map((n) => `${n}=${env[n]}`).join('\u0000');
+  } else {
+    text = Object.prototype.hasOwnProperty.call(env, name) ? `${name}=${env[name]}` : `${name}\u0000<unset>`;
+  }
+  return native.digest(Buffer.from(text)).slice(0, 16);
+}
+function noteOutside(op, k, realEnv) {
   if (STATE.quietDepth > 0) return;
   const name = op === 'env.list' ? '*' : String(k);
   if (name !== '*' && OWN_ENV.test(name)) return;
-  // only the project's own code (not the runner copying the environment for a test file, not a package)
-  if (STATE.quiet(() => unproven(name) && projectSite())) noteNotProven(`env:${name}`);
+  // only the project's own code (not the runner copying the environment for a test file, not a package); the entry
+  // carries the value's digest (P1 A1)
+  if (STATE.quiet(() => unproven(name, realEnv) && projectSite())) noteNotProven(`env:${name}=${STATE.quiet(() => outsideDigest(name, realEnv))}`);
   if (outsideSeen.has(name)) return;
   const c = cfg();
   if (!c || !c.dir) return;
@@ -180,7 +200,7 @@ function installEnvRecord(proc) {
     STATE.__envHooked = true;
     STATE.onTestStart.push(() => { envSeen = new Set(); });
     STATE.onEnvRead = (op, k, realEnv) => {
-      if (STATE.testId === null) { noteOutside(op, k); return; }
+      if (STATE.testId === null) { noteOutside(op, k, realEnv); return; }
       if (STATE.quietDepth > 0 || STATE.recorder === null) return;
       if (k !== '*' && OWN_ENV.test(k)) return;
       const key = `${op}\u0000${k}`;
