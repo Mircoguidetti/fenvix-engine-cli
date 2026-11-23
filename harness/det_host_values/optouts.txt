@@ -20,3 +20,4 @@ test/runner-node-test.test.js 'Level 0 inside the test processes: virtual clock 
 #   test/runner-bun.test.js 'two --det runs give identical fingerprints; the controls are active inside bun test'
 #   test/runner-node-test.test.js 'a file another test file wrote: not cacheable'
 test/runners-p041.test.js (through its run helper): every --det run + --det-net=closed; runs without the cache also + --det-epoch=fixed (the tests compare with EPOCH = 2025-01-01)
+test/time-p041.test.js (through its run helper): every run without the cache + --det-epoch=fixed (values against the 2025-01-01 epoch, separate-run comparisons)
