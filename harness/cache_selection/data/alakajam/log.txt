@@ -1,0 +1,8 @@
+2026-11-23T21:01:54Z FULL RUN pr-index 0 PR #179 base 57b6d06f3484fc0f3ff85d6de7a9cefea9cf8ba4
+2026-11-23T21:01:54Z   $ git checkout -q -f --detach 57b6d06f3484fc0f3ff85d6de7a9cefea9cf8ba4 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T21:01:54Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T21:02:23Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 1 in 28.4s
+2026-11-23T21:02:23Z   full run 0: UNKNOWN exit None Nones None
+2026-11-23T21:02:23Z FULL RUN pr-index 5 PR #384 base 9220b173f26f7a40a7074b7d22a186941dfd3bad
+2026-11-23T21:02:23Z   $ git checkout -q -f --detach 9220b173f26f7a40a7074b7d22a186941dfd3bad && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:02:23Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s

@@ -30,3 +30,427 @@
 2026-11-23T20:50:37Z   $ git checkout -q -f --detach 0a2554a60ffc8af2fa805c3cf69d26adccfc5ec9 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
 2026-11-23T20:50:38Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.0s
 2026-11-23T20:50:42Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 4.1s
+2026-11-23T20:51:36Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/agentlang/full-25.json  -> exit 1 in 54.4s
+2026-11-23T20:51:37Z   full run 25: ok exit 1 54.4s {'skipped': 42, 'failed': 194, 'passed': 184}
+2026-11-23T20:51:37Z STATE PR #626 (code) state 1/5 73807ecbe4 base 56689891c6
+2026-11-23T20:51:37Z   $ git checkout -q -f --detach 73807ecbe4f9abfa9b5a18ca2f82fc3176ec6557 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:51:38Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.0s
+2026-11-23T20:51:42Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 4.3s
+2026-11-23T20:51:42Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:51:44Z   $ npx --no-install vitest list  --changed 56689891c6bf4edf2e1f6fef78abe6cb4e4d777d --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.4s
+2026-11-23T20:51:44Z   -> ok share=0.0 sel=18 excl=0 failures=[]
+2026-11-23T20:51:44Z STATE PR #623 (code) state 1/1 2efa2d588a base 56689891c6
+2026-11-23T20:51:44Z   $ git checkout -q -f --detach 2efa2d588a9d6da4fa75c761ba18fe39ae0c4b9a && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:51:45Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:51:49Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 4.9s
+2026-11-23T20:51:50Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:51:51Z   $ npx --no-install vitest list  --changed 56689891c6bf4edf2e1f6fef78abe6cb4e4d777d --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.4s
+2026-11-23T20:51:51Z   -> ok share=0.0 sel=17 excl=0 failures=[]
+2026-11-23T20:51:51Z STATE PR #625 (code) state 1/1 3db65d99af base 56689891c6
+2026-11-23T20:51:51Z   $ git checkout -q -f --detach 3db65d99af4b640f5f3081c5663a7a7d6bd68e83 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:51:52Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:51:57Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 5.1s
+2026-11-23T20:51:58Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:51:59Z   $ npx --no-install vitest list  --changed 56689891c6bf4edf2e1f6fef78abe6cb4e4d777d --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.4s
+2026-11-23T20:52:01Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-625-3db65d99.json test/validating/validating.test.ts  -> exit 0 in 1.3s
+2026-11-23T20:52:01Z   -> ok share=0.013 sel=18 excl=1 failures=[]
+2026-11-23T20:52:01Z STATE PR #591 (code) state 1/5 93a56a8360 base b624ea666f
+2026-11-23T20:52:01Z   $ git checkout -q -f --detach 93a56a8360f07a303ae21cfc36a6eea40208e096 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:52:02Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.0s
+2026-11-23T20:52:02Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 1 in 0.9s
+2026-11-23T20:52:02Z   -> UNKNOWN: INSTALL_FAILED: Note that in CI environments this setting is true by default. If you still need to run install in such cases, use "pnpm install --no-frozen-lockfile" share=None sel=0 excl=0 failures=[]
+2026-11-23T20:52:02Z STATE PR #628 (code) state 1/1 1f973342c0 base c92be97c85
+2026-11-23T20:52:02Z   $ git checkout -q -f --detach 1f973342c01b7597a1809825d08a20d5466d66a9 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:52:02Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T20:52:03Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 1 in 0.9s
+2026-11-23T20:52:03Z   -> UNKNOWN: INSTALL_FAILED: Note that in CI environments this setting is true by default. If you still need to run install in such cases, use "pnpm install --no-frozen-lockfile" share=None sel=0 excl=0 failures=[]
+2026-11-23T20:52:03Z STATE PR #632 (code) state 1/3 4bfd947ce2 base d79b4bd833
+2026-11-23T20:52:03Z   $ git checkout -q -f --detach 4bfd947ce24862dffd22b44ab112b0f506efbb96 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:52:03Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T20:52:04Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 1 in 0.9s
+2026-11-23T20:52:04Z   -> UNKNOWN: INSTALL_FAILED: Note that in CI environments this setting is true by default. If you still need to run install in such cases, use "pnpm install --no-frozen-lockfile" share=None sel=0 excl=0 failures=[]
+2026-11-23T20:52:04Z STATE PR #631 (code) state 1/2 40d7394d5a base d79b4bd833
+2026-11-23T20:52:04Z   $ git checkout -q -f --detach 40d7394d5adeb84ed97bc0ddcd3579833fb5c72e && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:52:04Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T20:52:05Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 1 in 0.9s
+2026-11-23T20:52:05Z   -> UNKNOWN: INSTALL_FAILED: Note that in CI environments this setting is true by default. If you still need to run install in such cases, use "pnpm install --no-frozen-lockfile" share=None sel=0 excl=0 failures=[]
+2026-11-23T20:52:05Z STATE PR #630 (code) state 1/5 16655bfa25 base d79b4bd833
+2026-11-23T20:52:05Z   $ git checkout -q -f --detach 16655bfa25deec61ef46574dd4c41f67bd37d863 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:52:05Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T20:52:06Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 1 in 0.8s
+2026-11-23T20:52:06Z   -> UNKNOWN: INSTALL_FAILED: Note that in CI environments this setting is true by default. If you still need to run install in such cases, use "pnpm install --no-frozen-lockfile" share=None sel=0 excl=0 failures=[]
+2026-11-23T20:52:06Z STATE PR #633 (code) state 1/1 428dd39cdc base 499b137d15
+2026-11-23T20:52:06Z   $ git checkout -q -f --detach 428dd39cdc59b08980788e082d1412b558ea91e4 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:52:06Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T20:52:07Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 1 in 0.9s
+2026-11-23T20:52:07Z   -> UNKNOWN: INSTALL_FAILED: Note that in CI environments this setting is true by default. If you still need to run install in such cases, use "pnpm install --no-frozen-lockfile" share=None sel=0 excl=0 failures=[]
+2026-11-23T20:52:07Z STATE PR #634 (code) state 1/1 e67ff15c0e base a18ddc66bb
+2026-11-23T20:52:07Z   $ git checkout -q -f --detach e67ff15c0ef54add378bb9ed8961dc58f6e1435d && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:52:07Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T20:52:08Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 1 in 0.9s
+2026-11-23T20:52:08Z   -> UNKNOWN: INSTALL_FAILED: Note that in CI environments this setting is true by default. If you still need to run install in such cases, use "pnpm install --no-frozen-lockfile" share=None sel=0 excl=0 failures=[]
+2026-11-23T20:52:08Z STATE PR #637 (code) state 1/1 5d677042b4 base 4203438cd5
+2026-11-23T20:52:08Z   $ git checkout -q -f --detach 5d677042b4a612749c8674d0605a8b6b7e1df710 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:52:08Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T20:52:13Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 5.2s
+2026-11-23T20:52:14Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:52:14Z   $ npx --no-install vitest list  --changed 4203438cd5e28db3b4a8c43c6b1b7d5e923b3f2d --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 0.5s
+2026-11-23T20:52:14Z   -> ok share=None sel=21 excl=0 failures=[]
+2026-11-23T20:52:14Z STATE PR #638 (code) state 1/1 8cbee371f5 base 6654805cd0
+2026-11-23T20:52:14Z   $ git checkout -q -f --detach 8cbee371f54d8576de2005afb8414ed953b4e967 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:52:15Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:52:21Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 5.6s
+2026-11-23T20:52:21Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:52:22Z   $ npx --no-install vitest list  --changed 6654805cd0125a6963ea2763d12d7b935ffde964 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 0.5s
+2026-11-23T20:52:22Z   -> ok share=None sel=21 excl=0 failures=[]
+2026-11-23T20:52:22Z STATE PR #641 (code) state 1/4 30974cb45c base 26da35085a
+2026-11-23T20:52:22Z   $ git checkout -q -f --detach 30974cb45cd2043600d2669b82130db0eb2ab179 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:52:23Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T20:52:29Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 6.0s
+2026-11-23T20:52:29Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:52:31Z   $ npx --no-install vitest list  --changed 26da35085a9bb48ef49da8353d3e56e9641f9856 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.5s
+2026-11-23T20:52:32Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-641-30974cb4.json example/knowledge/test/resolver.test.ts test/runtime/integration-client.test.ts  -> exit 0 in 1.0s
+2026-11-23T20:52:32Z   -> ok share=None sel=19 excl=2 failures=[]
+2026-11-23T20:52:32Z STATE PR #642 (code) state 1/1 2141a89b32 base 26da35085a
+2026-11-23T20:52:32Z   $ git checkout -q -f --detach 2141a89b327e7382d5da3ab85b4b9a23fb998ef0 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:52:33Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.0s
+2026-11-23T20:52:38Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 5.6s
+2026-11-23T20:52:39Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:52:40Z   $ npx --no-install vitest list  --changed 26da35085a9bb48ef49da8353d3e56e9641f9856 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.6s
+2026-11-23T20:52:43Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-642-2141a89b.json example/knowledge/test/resolver.test.ts test/parsing/error-reporter.test.ts test/runtime/integration-client.test.ts test/validating/validating.test.ts  -> exit 0 in 2.5s
+2026-11-23T20:52:43Z   -> ok share=None sel=17 excl=4 failures=[]
+2026-11-23T20:52:43Z STATE PR #643 (code) state 1/2 f0bb45e8b9 base 26da35085a
+2026-11-23T20:52:43Z   $ git checkout -q -f --detach f0bb45e8b9ec567eb2ba27f734e982adc4691d8c && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:52:44Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.0s
+2026-11-23T20:52:50Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 6.2s
+2026-11-23T20:52:51Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:52:52Z   $ npx --no-install vitest list  --changed 26da35085a9bb48ef49da8353d3e56e9641f9856 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.4s
+2026-11-23T20:52:54Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-643-f0bb45e8.json example/knowledge/test/resolver.test.ts test/parsing/error-reporter.test.ts test/runtime/integration-client.test.ts test/validating/validating.test.ts  -> exit 0 in 2.2s
+2026-11-23T20:52:54Z   -> ok share=None sel=17 excl=4 failures=[]
+2026-11-23T20:52:54Z STATE PR #644 (code) state 1/1 3f2e5560ca base 115c9fc992
+2026-11-23T20:52:54Z   $ git checkout -q -f --detach 3f2e5560cabc4294726f1aeb8a291231cd51cd62 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:52:55Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:53:01Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 5.6s
+2026-11-23T20:53:01Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:53:02Z   $ npx --no-install vitest list  --changed 115c9fc992811a5f21949f4612bf5b80fc7e7050 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 0.5s
+2026-11-23T20:53:02Z   -> ok share=0.0 sel=21 excl=0 failures=[]
+2026-11-23T20:53:02Z STATE PR #645 (code) state 1/1 baf8a2be06 base 76c93e384d
+2026-11-23T20:53:02Z   $ git checkout -q -f --detach baf8a2be06569ae6883de11858fbe3260355cbcc && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:53:03Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T20:53:09Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 6.1s
+2026-11-23T20:53:09Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:53:11Z   $ npx --no-install vitest list  --changed 76c93e384dfb37d383b62e2baedd316c3f572714 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.4s
+2026-11-23T20:53:13Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-645-baf8a2be.json example/knowledge/test/resolver.test.ts test/parsing/error-reporter.test.ts test/runtime/integration-client.test.ts test/validating/validating.test.ts  -> exit 0 in 2.4s
+2026-11-23T20:53:13Z   -> ok share=0.0367 sel=17 excl=4 failures=[]
+2026-11-23T20:53:13Z STATE PR #646 (code) state 1/1 08b6a01558 base c1b5040841
+2026-11-23T20:53:13Z   $ git checkout -q -f --detach 08b6a015582c2522571df99a8fa5d50ba6e262fd && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:53:14Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T20:53:20Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 6.4s
+2026-11-23T20:53:21Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:53:22Z   $ npx --no-install vitest list  --changed c1b5040841117c3790391a3b8ad4d51db112b8dd --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.5s
+2026-11-23T20:53:25Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-646-08b6a015.json example/knowledge/test/resolver.test.ts test/parsing/error-reporter.test.ts test/runtime/integration-client.test.ts test/validating/validating.test.ts  -> exit 0 in 2.4s
+2026-11-23T20:53:25Z   -> ok share=0.0367 sel=17 excl=4 failures=[]
+2026-11-23T20:53:25Z STATE PR #647 (code) state 1/5 c793e63fd0 base 2b552b4b4c
+2026-11-23T20:53:25Z   $ git checkout -q -f --detach c793e63fd0e5ff548e76b9ae8d25a515a90b0083 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:53:26Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:53:31Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 5.8s
+2026-11-23T20:53:32Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:53:33Z   $ npx --no-install vitest list  --changed 2b552b4b4caa381f3e876c7fbe4c5ab472644aec --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.4s
+2026-11-23T20:53:36Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-647-c793e63f.json example/knowledge/test/resolver.test.ts test/parsing/error-reporter.test.ts test/runtime/integration-client.test.ts test/validating/validating.test.ts  -> exit 0 in 2.4s
+2026-11-23T20:53:36Z   -> ok share=0.0367 sel=18 excl=4 failures=[]
+2026-11-23T20:53:36Z STATE PR #649 (code) state 1/1 4dfea3b200 base 378e973ba8
+2026-11-23T20:53:36Z   $ git checkout -q -f --detach 4dfea3b20073bdc993143d9039809029941c55e4 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:53:37Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T20:53:43Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 6.2s
+2026-11-23T20:53:43Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:53:45Z   $ npx --no-install vitest list  --changed 378e973ba8103db7fce80c692c3dbacd20399cd2 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.4s
+2026-11-23T20:53:46Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-649-4dfea3b2.json example/knowledge/test/resolver.test.ts test/runtime/integration-client.test.ts  -> exit 0 in 1.0s
+2026-11-23T20:53:46Z   -> ok share=0.0077 sel=21 excl=2 failures=[]
+2026-11-23T20:53:46Z STATE PR #650 (code) state 1/1 b85510835f base 19121f415e
+2026-11-23T20:53:46Z   $ git checkout -q -f --detach b85510835f13e616c3bf39007f05361907962c76 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:53:47Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:53:53Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 6.5s
+2026-11-23T20:53:54Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:53:55Z   $ npx --no-install vitest list  --changed 19121f415e42e0b0fbf66afb3667ca9fcff1133c --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.4s
+2026-11-23T20:53:57Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-650-b8551083.json example/knowledge/test/resolver.test.ts test/parsing/error-reporter.test.ts test/runtime/integration-client.test.ts test/validating/validating.test.ts  -> exit 0 in 2.3s
+2026-11-23T20:53:57Z   -> ok share=0.0369 sel=19 excl=4 failures=[]
+2026-11-23T20:53:57Z STATE PR #651 (code) state 1/1 96c47adfd1 base be504e6e0c
+2026-11-23T20:53:57Z   $ git checkout -q -f --detach 96c47adfd1f10234d21aa31a560d6d93c23167e9 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:53:58Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T20:54:04Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 5.5s
+2026-11-23T20:54:04Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:54:05Z   $ npx --no-install vitest list  --changed be504e6e0c163620ffa67e8007e5d59be28f0bc4 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 0.5s
+2026-11-23T20:54:05Z   -> ok share=0.0 sel=23 excl=0 failures=[]
+2026-11-23T20:54:05Z STATE PR #652 (code) state 1/1 0db13512bd base 734b364c00
+2026-11-23T20:54:05Z   $ git checkout -q -f --detach 0db13512bd0a287356729c238c2bf607155be85b && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:54:06Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T20:54:13Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 6.8s
+2026-11-23T20:54:13Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:54:15Z   $ npx --no-install vitest list  --changed 734b364c0054c5b8095c104280b6e44ea82d7608 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.6s
+2026-11-23T20:54:17Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-652-0db13512.json example/knowledge/test/resolver.test.ts test/parsing/error-reporter.test.ts test/runtime/integration-client.test.ts test/validating/validating.test.ts  -> exit 0 in 2.6s
+2026-11-23T20:54:17Z   -> ok share=0.0369 sel=19 excl=4 failures=[]
+2026-11-23T20:54:17Z STATE PR #653 (code) state 1/2 661118245a base 734b364c00
+2026-11-23T20:54:17Z   $ git checkout -q -f --detach 661118245af2313735d8ed3f1f793b08e456ba76 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:54:18Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T20:54:25Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 6.6s
+2026-11-23T20:54:25Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:54:27Z   $ npx --no-install vitest list  --changed 734b364c0054c5b8095c104280b6e44ea82d7608 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.6s
+2026-11-23T20:54:29Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-653-66111824.json example/knowledge/test/resolver.test.ts test/parsing/error-reporter.test.ts test/runtime/integration-client.test.ts test/validating/validating.test.ts  -> exit 0 in 2.4s
+2026-11-23T20:54:29Z   -> ok share=0.0369 sel=19 excl=4 failures=[]
+2026-11-23T20:54:29Z STATE PR #654 (code) state 1/1 4f1141f92a base d0d9dbc790
+2026-11-23T20:54:29Z   $ git checkout -q -f --detach 4f1141f92a1b5c0a5c249c24924b1353dfa36097 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:54:30Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:54:36Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 5.5s
+2026-11-23T20:54:36Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:54:37Z   $ npx --no-install vitest list  --changed d0d9dbc7906b094a79a2772fad91d364394d4154 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 0.5s
+2026-11-23T20:54:37Z   -> ok share=0.0 sel=23 excl=0 failures=[]
+2026-11-23T20:54:37Z STATE PR #655 (code) state 1/1 d9f49a73e0 base 0a2554a60f
+2026-11-23T20:54:37Z   $ git checkout -q -f --detach d9f49a73e08084a9a249d96cf2cf2ffcda826f4c && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:54:37Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:54:44Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 6.5s
+2026-11-23T20:54:44Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:54:46Z   $ npx --no-install vitest list  --changed 0a2554a60ffc8af2fa805c3cf69d26adccfc5ec9 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.6s
+2026-11-23T20:54:48Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-655-d9f49a73.json example/knowledge/test/resolver.test.ts test/parsing/error-reporter.test.ts test/runtime/integration-client.test.ts test/validating/validating.test.ts  -> exit 0 in 2.3s
+2026-11-23T20:54:48Z   -> ok share=0.0352 sel=19 excl=4 failures=[]
+2026-11-23T20:54:48Z STATE PR #656 (code) state 1/1 369316c21a base bdafcb1030
+2026-11-23T20:54:48Z   $ git checkout -q -f --detach 369316c21ac179c9f241b0be2777aa3e0a703565 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:54:49Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T20:54:53Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 4.2s
+2026-11-23T20:54:54Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:54:54Z   $ npx --no-install vitest list  --changed bdafcb103011c7152c28c937e8db9a54a0a1f1ed --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 0.5s
+2026-11-23T20:54:54Z   -> ok share=0.0 sel=23 excl=0 failures=[]
+2026-11-23T20:54:54Z STATE PR #657 (code) state 1/2 7231230053 base ecfb4ed217
+2026-11-23T20:54:54Z   $ git checkout -q -f --detach 7231230053636d8a5c015281bd207c094190d86a && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:54:55Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:55:02Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 6.5s
+2026-11-23T20:55:02Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:55:04Z   $ npx --no-install vitest list  --changed ecfb4ed217e923e6f3c6a7bae5a0db661302b264 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.5s
+2026-11-23T20:55:06Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-657-72312300.json example/knowledge/test/resolver.test.ts test/parsing/error-reporter.test.ts test/runtime/integration-client.test.ts test/validating/validating.test.ts  -> exit 0 in 2.2s
+2026-11-23T20:55:06Z   -> ok share=0.0352 sel=20 excl=4 failures=[]
+2026-11-23T20:55:06Z STATE PR #659 (code) state 1/1 eac6572c90 base 34a2621529
+2026-11-23T20:55:06Z   $ git checkout -q -f --detach eac6572c900dfc5236d05af3a99f07dad41b9293 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:55:07Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T20:55:13Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 5.6s
+2026-11-23T20:55:13Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:55:14Z   $ npx --no-install vitest list  --changed 34a2621529844d9286dcf8d4e9061146b7cc6980 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 0.5s
+2026-11-23T20:55:14Z   -> ok share=0.0 sel=24 excl=0 failures=[]
+2026-11-23T20:55:14Z STATE PR #661 (code) state 1/1 79a1d8abe2 base eabe916039
+2026-11-23T20:55:14Z   $ git checkout -q -f --detach 79a1d8abe24669839b36e489821a52ac107bc80b && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:55:14Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:55:21Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 6.3s
+2026-11-23T20:55:21Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:55:23Z   $ npx --no-install vitest list  --changed eabe9160391f3b2fccefeaee476e81dc0b3d0d16 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.4s
+2026-11-23T20:55:25Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-661-79a1d8ab.json example/knowledge/test/resolver.test.ts test/parsing/error-reporter.test.ts test/runtime/integration-client.test.ts test/validating/validating.test.ts  -> exit 0 in 2.3s
+2026-11-23T20:55:25Z   -> ok share=0.0352 sel=21 excl=4 failures=[]
+2026-11-23T20:55:25Z STATE PR #626 (code) state 2/5 fe95750a9b base 56689891c6
+2026-11-23T20:55:25Z   $ git checkout -q -f --detach fe95750a9b0328a473cbe168701f22bbb933056e && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:55:26Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.7s
+2026-11-23T20:55:32Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 6.3s
+2026-11-23T20:55:32Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:55:34Z   $ npx --no-install vitest list  --changed 56689891c6bf4edf2e1f6fef78abe6cb4e4d777d --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.5s
+2026-11-23T20:55:35Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-626-fe95750a.json test/validating/validating.test.ts  -> exit 0 in 1.4s
+2026-11-23T20:55:35Z   -> ok share=0.013 sel=16 excl=1 failures=[]
+2026-11-23T20:55:35Z STATE PR #591 (code) state 2/5 47bd1cb5ea base b624ea666f
+2026-11-23T20:55:35Z   $ git checkout -q -f --detach 47bd1cb5ea495fcc93c6be65464468076fb6bc84 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:55:36Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.0s
+2026-11-23T20:55:37Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 1 in 0.9s
+2026-11-23T20:55:37Z   -> UNKNOWN: INSTALL_FAILED: Note that in CI environments this setting is true by default. If you still need to run install in such cases, use "pnpm install --no-frozen-lockfile" share=None sel=0 excl=0 failures=[]
+2026-11-23T20:55:37Z STATE PR #632 (code) state 2/3 50f3faa44e base d79b4bd833
+2026-11-23T20:55:37Z   $ git checkout -q -f --detach 50f3faa44ef9368a54ddd7ed884aa030d23ebe80 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:55:37Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T20:55:38Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 1 in 0.9s
+2026-11-23T20:55:38Z   -> UNKNOWN: INSTALL_FAILED: Note that in CI environments this setting is true by default. If you still need to run install in such cases, use "pnpm install --no-frozen-lockfile" share=None sel=0 excl=0 failures=[]
+2026-11-23T20:55:38Z STATE PR #631 (code) state 2/2 0fd4bf29e9 base d79b4bd833
+2026-11-23T20:55:38Z   $ git checkout -q -f --detach 0fd4bf29e995bb11894b74791bb7f07c44775af1 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:55:38Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T20:55:39Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 1 in 0.9s
+2026-11-23T20:55:39Z   -> UNKNOWN: INSTALL_FAILED: Note that in CI environments this setting is true by default. If you still need to run install in such cases, use "pnpm install --no-frozen-lockfile" share=None sel=0 excl=0 failures=[]
+2026-11-23T20:55:39Z STATE PR #630 (code) state 2/5 e882efb594 base d79b4bd833
+2026-11-23T20:55:39Z   $ git checkout -q -f --detach e882efb594e5f3739b81993e20ff7c2db600bd55 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:55:39Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T20:55:40Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 1 in 0.9s
+2026-11-23T20:55:40Z   -> UNKNOWN: INSTALL_FAILED: Note that in CI environments this setting is true by default. If you still need to run install in such cases, use "pnpm install --no-frozen-lockfile" share=None sel=0 excl=0 failures=[]
+2026-11-23T20:55:40Z STATE PR #641 (code) state 2/4 7ddc2ba878 base 26da35085a
+2026-11-23T20:55:40Z   $ git checkout -q -f --detach 7ddc2ba878d3b6f49d958deae651acac387a1adc && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:55:40Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T20:55:43Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 3.4s
+2026-11-23T20:55:44Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:55:45Z   $ npx --no-install vitest list  --changed 26da35085a9bb48ef49da8353d3e56e9641f9856 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.5s
+2026-11-23T20:55:46Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-641-7ddc2ba8.json example/knowledge/test/resolver.test.ts test/runtime/integration-client.test.ts  -> exit 0 in 1.0s
+2026-11-23T20:55:46Z   -> ok share=None sel=19 excl=2 failures=[]
+2026-11-23T20:55:46Z STATE PR #643 (code) state 2/2 2141a89b32 base 26da35085a
+2026-11-23T20:55:46Z   $ git checkout -q -f --detach 2141a89b327e7382d5da3ab85b4b9a23fb998ef0 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:55:47Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T20:55:54Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 6.2s
+2026-11-23T20:55:54Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:55:56Z   $ npx --no-install vitest list  --changed 26da35085a9bb48ef49da8353d3e56e9641f9856 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.5s
+2026-11-23T20:55:58Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-643-2141a89b.json example/knowledge/test/resolver.test.ts test/parsing/error-reporter.test.ts test/runtime/integration-client.test.ts test/validating/validating.test.ts  -> exit 0 in 2.4s
+2026-11-23T20:55:58Z   -> ok share=None sel=17 excl=4 failures=[]
+2026-11-23T20:55:58Z STATE PR #647 (code) state 2/5 258a15cb4c base 2b552b4b4c
+2026-11-23T20:55:58Z   $ git checkout -q -f --detach 258a15cb4cefa949bc9543ebc415f81006da6209 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:55:59Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:56:05Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 6.0s
+2026-11-23T20:56:05Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.6s
+2026-11-23T20:56:07Z   $ npx --no-install vitest list  --changed 2b552b4b4caa381f3e876c7fbe4c5ab472644aec --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.5s
+2026-11-23T20:56:09Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-647-258a15cb.json example/knowledge/test/resolver.test.ts test/parsing/error-reporter.test.ts test/runtime/integration-client.test.ts test/validating/validating.test.ts  -> exit 0 in 2.4s
+2026-11-23T20:56:09Z   -> ok share=0.0367 sel=18 excl=4 failures=[]
+2026-11-23T20:56:09Z STATE PR #653 (code) state 2/2 4b2ee37ec2 base 734b364c00
+2026-11-23T20:56:09Z   $ git checkout -q -f --detach 4b2ee37ec2a1df1de1a91e845fcc74651c109c64 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:56:10Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.0s
+2026-11-23T20:56:17Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 6.4s
+2026-11-23T20:56:17Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:56:19Z   $ npx --no-install vitest list  --changed 734b364c0054c5b8095c104280b6e44ea82d7608 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.6s
+2026-11-23T20:56:21Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-653-4b2ee37e.json example/knowledge/test/resolver.test.ts test/parsing/error-reporter.test.ts test/runtime/integration-client.test.ts test/validating/validating.test.ts  -> exit 0 in 2.3s
+2026-11-23T20:56:21Z   -> ok share=0.0369 sel=19 excl=4 failures=[]
+2026-11-23T20:56:21Z STATE PR #657 (code) state 2/2 3e72526b9a base ecfb4ed217
+2026-11-23T20:56:21Z   $ git checkout -q -f --detach 3e72526b9aee6b26752e89d2ff0c2efdfdd1f226 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:56:22Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T20:56:28Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 6.3s
+2026-11-23T20:56:29Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:56:31Z   $ npx --no-install vitest list  --changed ecfb4ed217e923e6f3c6a7bae5a0db661302b264 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.5s
+2026-11-23T20:56:33Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-657-3e72526b.json example/knowledge/test/resolver.test.ts test/parsing/error-reporter.test.ts test/runtime/integration-client.test.ts test/validating/validating.test.ts  -> exit 0 in 2.3s
+2026-11-23T20:56:33Z   -> ok share=0.0352 sel=20 excl=4 failures=[]
+2026-11-23T20:56:33Z STATE PR #626 (code) state 3/5 070afa6ba4 base 56689891c6
+2026-11-23T20:56:33Z   $ git checkout -q -f --detach 070afa6ba4be6d8eba4b77b321b119b2b9a4fd72 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:56:34Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.0s
+2026-11-23T20:56:38Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 4.5s
+2026-11-23T20:56:39Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:56:40Z   $ npx --no-install vitest list  --changed 56689891c6bf4edf2e1f6fef78abe6cb4e4d777d --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.4s
+2026-11-23T20:56:42Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-626-070afa6b.json test/validating/validating.test.ts  -> exit 0 in 1.3s
+2026-11-23T20:56:42Z   -> ok share=0.013 sel=16 excl=1 failures=[]
+2026-11-23T20:56:42Z STATE PR #591 (code) state 3/5 36c2ef9fc4 base b624ea666f
+2026-11-23T20:56:42Z   $ git checkout -q -f --detach 36c2ef9fc42c9033284805b5ba011e7931df9805 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:56:42Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T20:56:43Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 1 in 0.9s
+2026-11-23T20:56:43Z   -> UNKNOWN: INSTALL_FAILED: Note that in CI environments this setting is true by default. If you still need to run install in such cases, use "pnpm install --no-frozen-lockfile" share=None sel=0 excl=0 failures=[]
+2026-11-23T20:56:43Z STATE PR #632 (code) state 3/3 a57fd6a408 base d79b4bd833
+2026-11-23T20:56:43Z   $ git checkout -q -f --detach a57fd6a4080bbee2f6b1cb05e0fa9c454696d1ce && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:56:43Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T20:56:44Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 1 in 0.9s
+2026-11-23T20:56:44Z   -> UNKNOWN: INSTALL_FAILED: Note that in CI environments this setting is true by default. If you still need to run install in such cases, use "pnpm install --no-frozen-lockfile" share=None sel=0 excl=0 failures=[]
+2026-11-23T20:56:44Z STATE PR #630 (code) state 3/5 49fc4980a8 base d79b4bd833
+2026-11-23T20:56:44Z   $ git checkout -q -f --detach 49fc4980a8e4efcd65102e305ae014730d4cac57 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:56:44Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T20:56:45Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 1 in 0.9s
+2026-11-23T20:56:45Z   -> UNKNOWN: INSTALL_FAILED: Note that in CI environments this setting is true by default. If you still need to run install in such cases, use "pnpm install --no-frozen-lockfile" share=None sel=0 excl=0 failures=[]
+2026-11-23T20:56:45Z STATE PR #641 (code) state 3/4 3a85da2bd7 base 26da35085a
+2026-11-23T20:56:45Z   $ git checkout -q -f --detach 3a85da2bd7c889601536d401a0dfd799937cbcd0 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:56:45Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T20:56:50Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 5.2s
+2026-11-23T20:56:51Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:56:52Z   $ npx --no-install vitest list  --changed 26da35085a9bb48ef49da8353d3e56e9641f9856 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.4s
+2026-11-23T20:56:53Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-641-3a85da2b.json example/knowledge/test/resolver.test.ts test/runtime/integration-client.test.ts  -> exit 0 in 0.9s
+2026-11-23T20:56:53Z   -> ok share=None sel=19 excl=2 failures=[]
+2026-11-23T20:56:53Z STATE PR #647 (code) state 3/5 5c5528b4c7 base 2b552b4b4c
+2026-11-23T20:56:53Z   $ git checkout -q -f --detach 5c5528b4c7f598e7ce69aebd07e011573930b668 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:56:54Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:57:01Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 6.6s
+2026-11-23T20:57:01Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:57:03Z   $ npx --no-install vitest list  --changed 2b552b4b4caa381f3e876c7fbe4c5ab472644aec --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.4s
+2026-11-23T20:57:05Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-647-5c5528b4.json example/knowledge/test/resolver.test.ts test/parsing/error-reporter.test.ts test/runtime/integration-client.test.ts test/validating/validating.test.ts  -> exit 0 in 2.3s
+2026-11-23T20:57:05Z   -> ok share=0.0367 sel=18 excl=4 failures=[]
+2026-11-23T20:57:05Z STATE PR #626 (code) state 4/5 662ff59e76 base 56689891c6
+2026-11-23T20:57:05Z   $ git checkout -q -f --detach 662ff59e7675ee37c04f586b4d05ae91a9f078d7 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:57:06Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.0s
+2026-11-23T20:57:11Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 5.5s
+2026-11-23T20:57:12Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:57:13Z   $ npx --no-install vitest list  --changed 56689891c6bf4edf2e1f6fef78abe6cb4e4d777d --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.6s
+2026-11-23T20:57:15Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-626-662ff59e.json test/validating/validating.test.ts  -> exit 0 in 1.2s
+2026-11-23T20:57:15Z   -> ok share=0.013 sel=16 excl=1 failures=[]
+2026-11-23T20:57:15Z STATE PR #591 (code) state 4/5 1ab5bf5dec base b624ea666f
+2026-11-23T20:57:15Z   $ git checkout -q -f --detach 1ab5bf5dec3fe4c6f31f4467ae196757d331de28 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:57:15Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.8s
+2026-11-23T20:57:16Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 1 in 0.9s
+2026-11-23T20:57:16Z   -> UNKNOWN: INSTALL_FAILED: Note that in CI environments this setting is true by default. If you still need to run install in such cases, use "pnpm install --no-frozen-lockfile" share=None sel=0 excl=0 failures=[]
+2026-11-23T20:57:16Z STATE PR #630 (code) state 4/5 6a8f69bbfd base d79b4bd833
+2026-11-23T20:57:16Z   $ git checkout -q -f --detach 6a8f69bbfde0a13c0c85c56c77a62902ee3e7f79 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:57:16Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T20:57:23Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 6.5s
+2026-11-23T20:57:23Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:57:24Z   $ npx --no-install vitest list  --changed d79b4bd8335b3d00e53d21252e16ed08c8788526 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 0.6s
+2026-11-23T20:58:07Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-630-6a8f69bb.json test/api/http.test.ts test/parsing/error-reporter.test.ts test/parsing/parsing.test.ts test/parsing/syntax.test.ts test/runtime/agents.test.ts test/runtime/basic.test.ts test/runtime/database-sqljs.test.ts test/runtime/execg.test.ts test/runtime/expr-attr.test.ts test/runtime/fixes01.test  -> exit 1 in 43.0s
+2026-11-23T20:58:07Z   167 failures: classifying the first 40 only
+2026-11-23T20:58:11Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/api/http.test.ts  -> exit 1 in 4.0s
+2026-11-23T20:58:15Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/api/http.test.ts  -> exit 1 in 3.8s
+2026-11-23T20:58:19Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/api/http.test.ts  -> exit 1 in 3.9s
+2026-11-23T20:58:23Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/parsing/parsing.test.ts  -> exit 1 in 3.9s
+2026-11-23T20:58:27Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/parsing/parsing.test.ts  -> exit 1 in 3.8s
+2026-11-23T20:58:31Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/parsing/parsing.test.ts  -> exit 1 in 4.0s
+2026-11-23T20:58:35Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/parsing/syntax.test.ts  -> exit 1 in 4.1s
+2026-11-23T20:58:39Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/parsing/syntax.test.ts  -> exit 1 in 4.1s
+2026-11-23T20:58:43Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/parsing/syntax.test.ts  -> exit 1 in 4.1s
+2026-11-23T20:58:47Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/runtime/agents.test.ts  -> exit 1 in 3.8s
+2026-11-23T20:58:51Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/runtime/agents.test.ts  -> exit 1 in 3.9s
+2026-11-23T20:58:54Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/runtime/agents.test.ts  -> exit 1 in 3.8s
+2026-11-23T20:58:59Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/runtime/basic.test.ts  -> exit 1 in 5.0s
+2026-11-23T20:59:04Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/runtime/basic.test.ts  -> exit 1 in 4.7s
+2026-11-23T20:59:09Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/runtime/basic.test.ts  -> exit 1 in 4.6s
+2026-11-23T20:59:09Z   $ git checkout -q -f --detach d79b4bd8335b3d00e53d21252e16ed08c8788526 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:59:10Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.1s
+2026-11-23T20:59:11Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 1 in 0.9s
+2026-11-23T20:59:11Z   -> ok share=None sel=0 excl=17 failures=[('test/api/http.test.ts > <file>', 'FLAKY'), ('test/parsing/parsing.test.ts > Agent toString test Code generation for agent', 'FLAKY'), ('test/parsing/parsing.test.ts > Module toString tests Code generation from Module', 'FLAKY'), ('test/parsing/parsing.test.ts > Rbac toString test Code generation for rbac', 'FLAKY'), ('test/parsing/parsing.test.ts > Statements to string issue test01', 'FLAKY'), ('test/parsing/parsing.test.ts > enum toString test @enum should appear before oth', 'FLAKY'), ('test/parsing/parsing.test.ts > enum toString test @oneof should appear before ot', 'FLAKY'), ('test/parsing/parsing.test.ts > enum toString test test01', 'FLAKY'), ('test/parsing/parsing.test.ts > relationships toString test test01', 'FLAKY'), ('test/parsing/syntax.test.ts > Extra agent attributes Extra attributes like direc', 'FLAKY'), ('test/parsing/syntax.test.ts > Flow syntax test01', 'FLAKY'), ('test/parsing/syntax.test.ts > Pre/Post workflow syntax test01', 'FLAKY'), ('test/parsing/syntax.test.ts > agent-xtras-to-string standalone scenarios, direct', 'FLAKY'), ('test/parsing/syntax.test.ts > case-generation decsion-cases generated from patte', 'FLAKY'), ('test/parsing/syntax.test.ts > directive-generation directives generated from pat', 'FLAKY'), ('test/parsing/syntax.test.ts > flow-load-fix flow should load', 'FLAKY'), ('test/parsing/syntax.test.ts > import-syntax import statements in module.toString', 'FLAKY'), ('test/parsing/syntax.test.ts > retry-construct load retry construct', 'FLAKY'), ('test/parsing/syntax.test.ts > scenario-generation scenarios generated from patte', 'FLAKY'), ('test/parsing/syntax.test.ts > toString with extends toString should not emit par', 'FLAKY'), ('test/runtime/agents.test.ts > Agent API test01', 'FLAKY'), ('test/runtime/agents.test.ts > Agent cancellation cancelAgent marks chatId and ch', 'FLAKY'), ('test/runtime/agents.test.ts > Agent cancellation clearCancellation removes stale', 'FLAKY'), ('test/runtime/basic.test.ts > Array, enum and oneof tests test01', 'FLAKY'), ('test/runtime/basic.test.ts > Basic CRUD tests test01', 'FLAKY'), ('test/runtime/basic.test.ts > Between operator test test01', 'FLAKY'), ('test/runtime/basic.test.ts > Between relationship query result shape between rel', 'FLAKY'), ('test/runtime/basic.test.ts > Between relationship query result shape between rel', 'FLAKY'), ('test/runtime/basic.test.ts > Between relationship query result shape query via b', 'FLAKY'), ('test/runtime/basic.test.ts > Between relationship query result shape reverse bet', 'FLAKY'), ('test/runtime/basic.test.ts > Built-in date functions dateFns datetime inline att', 'FLAKY'), ('test/runtime/basic.test.ts > Built-in date functions dateFns functions as inline', 'FLAKY'), ('test/runtime/basic.test.ts > Built-in date functions dateFns in between queries', 'FLAKY'), ('test/runtime/basic.test.ts > Built-in date functions dateFns nested calls in bet', 'FLAKY'), ('test/runtime/basic.test.ts > Catch test test01', 'FLAKY'), ('test/runtime/basic.test.ts > Composite unique attributes test01', 'FLAKY'), ('test/runtime/basic.test.ts > Contains relationship query result shape contains q', 'FLAKY'), ('test/runtime/basic.test.ts > Contains relationship query result shape contains q', 'FLAKY'), ('test/runtime/basic.test.ts > Contains relationship query result shape nested con', 'FLAKY'), ('test/runtime/basic.test.ts > Default date-time test test01', 'FLAKY')]
+2026-11-23T20:59:11Z STATE PR #641 (code) state 4/4 5b3d7b3bc3 base 26da35085a
+2026-11-23T20:59:11Z   $ git checkout -q -f --detach 5b3d7b3bc3624383c17e0f607ff2c313e15fdfd8 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:59:11Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T20:59:15Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 4.1s
+2026-11-23T20:59:15Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:59:17Z   $ npx --no-install vitest list  --changed 26da35085a9bb48ef49da8353d3e56e9641f9856 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.5s
+2026-11-23T20:59:18Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-641-5b3d7b3b.json example/knowledge/test/resolver.test.ts test/runtime/integration-client.test.ts  -> exit 0 in 1.0s
+2026-11-23T20:59:18Z   -> ok share=None sel=19 excl=2 failures=[]
+2026-11-23T20:59:18Z STATE PR #647 (code) state 4/5 78d1fc0e32 base 2b552b4b4c
+2026-11-23T20:59:18Z   $ git checkout -q -f --detach 78d1fc0e32b5c8f895f5c4dc3edcf353261a7396 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:59:19Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.0s
+2026-11-23T20:59:24Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 4.9s
+2026-11-23T20:59:24Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:59:26Z   $ npx --no-install vitest list  --changed 2b552b4b4caa381f3e876c7fbe4c5ab472644aec --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.5s
+2026-11-23T20:59:28Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-647-78d1fc0e.json example/knowledge/test/resolver.test.ts test/parsing/error-reporter.test.ts test/runtime/integration-client.test.ts test/validating/validating.test.ts  -> exit 0 in 2.3s
+2026-11-23T20:59:28Z   -> ok share=0.0367 sel=18 excl=4 failures=[]
+2026-11-23T20:59:28Z STATE PR #626 (code) state 5/5 3db65d99af base 56689891c6
+2026-11-23T20:59:28Z   $ git checkout -q -f --detach 3db65d99af4b640f5f3081c5663a7a7d6bd68e83 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:59:29Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T20:59:34Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 5.4s
+2026-11-23T20:59:35Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:59:36Z   $ npx --no-install vitest list  --changed 56689891c6bf4edf2e1f6fef78abe6cb4e4d777d --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.5s
+2026-11-23T20:59:38Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-626-3db65d99.json test/validating/validating.test.ts  -> exit 0 in 1.3s
+2026-11-23T20:59:38Z   -> ok share=0.013 sel=18 excl=1 failures=[]
+2026-11-23T20:59:38Z STATE PR #591 (code) state 5/5 e18a37a465 base b624ea666f
+2026-11-23T20:59:38Z   $ git checkout -q -f --detach e18a37a4655c3c45165db7fb73ea5b822e697d62 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:59:39Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.9s
+2026-11-23T20:59:40Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 1 in 1.0s
+2026-11-23T20:59:40Z   -> UNKNOWN: INSTALL_FAILED: Note that in CI environments this setting is true by default. If you still need to run install in such cases, use "pnpm install --no-frozen-lockfile" share=None sel=0 excl=0 failures=[]
+2026-11-23T20:59:40Z STATE PR #630 (code) state 5/5 29d84160da base d79b4bd833
+2026-11-23T20:59:40Z   $ git checkout -q -f --detach 29d84160da2e1f6214f5185807009f59a392d8e2 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T20:59:40Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T20:59:45Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 4.9s
+2026-11-23T20:59:45Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.5s
+2026-11-23T20:59:46Z   $ npx --no-install vitest list  --changed d79b4bd8335b3d00e53d21252e16ed08c8788526 --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 0.6s
+2026-11-23T21:00:30Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-630-29d84160.json test/api/http.test.ts test/parsing/parsing.test.ts test/parsing/syntax.test.ts test/runtime/agents.test.ts test/runtime/basic.test.ts test/runtime/database-sqljs.test.ts test/runtime/execg.test.ts test/runtime/expr-attr.test.ts test/runtime/fixes01.test.ts test/runtime/harness.test.ts tes  -> exit 1 in 44.1s
+2026-11-23T21:00:30Z   163 failures: classifying the first 40 only
+2026-11-23T21:00:34Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/api/http.test.ts  -> exit 1 in 4.0s
+2026-11-23T21:00:38Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/api/http.test.ts  -> exit 1 in 3.9s
+2026-11-23T21:00:42Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/api/http.test.ts  -> exit 1 in 4.1s
+2026-11-23T21:00:46Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/parsing/parsing.test.ts  -> exit 1 in 4.2s
+2026-11-23T21:00:50Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/parsing/parsing.test.ts  -> exit 1 in 4.2s
+2026-11-23T21:00:54Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/parsing/parsing.test.ts  -> exit 1 in 4.2s
+2026-11-23T21:00:58Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/parsing/syntax.test.ts  -> exit 1 in 4.1s
+2026-11-23T21:01:03Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/parsing/syntax.test.ts  -> exit 1 in 4.4s
+2026-11-23T21:01:07Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/parsing/syntax.test.ts  -> exit 1 in 4.2s
+2026-11-23T21:01:11Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/runtime/agents.test.ts  -> exit 1 in 4.0s
+2026-11-23T21:01:15Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/runtime/agents.test.ts  -> exit 1 in 3.9s
+2026-11-23T21:01:19Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/runtime/agents.test.ts  -> exit 1 in 3.9s
+2026-11-23T21:01:24Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/runtime/basic.test.ts  -> exit 1 in 5.1s
+2026-11-23T21:01:30Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/runtime/basic.test.ts  -> exit 1 in 5.5s
+2026-11-23T21:01:35Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/rerun-state.json test/runtime/basic.test.ts  -> exit 1 in 5.6s
+2026-11-23T21:01:35Z   $ git checkout -q -f --detach d79b4bd8335b3d00e53d21252e16ed08c8788526 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:01:37Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 1.4s
+2026-11-23T21:01:38Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 1 in 1.0s
+2026-11-23T21:01:38Z   -> ok share=None sel=0 excl=16 failures=[('test/api/http.test.ts > <file>', 'FLAKY'), ('test/parsing/parsing.test.ts > Agent toString test Code generation for agent', 'FLAKY'), ('test/parsing/parsing.test.ts > Module toString tests Code generation from Module', 'FLAKY'), ('test/parsing/parsing.test.ts > Rbac toString test Code generation for rbac', 'FLAKY'), ('test/parsing/parsing.test.ts > Statements to string issue test01', 'FLAKY'), ('test/parsing/parsing.test.ts > enum toString test @enum should appear before oth', 'FLAKY'), ('test/parsing/parsing.test.ts > enum toString test @oneof should appear before ot', 'FLAKY'), ('test/parsing/parsing.test.ts > enum toString test test01', 'FLAKY'), ('test/parsing/parsing.test.ts > relationships toString test test01', 'FLAKY'), ('test/parsing/syntax.test.ts > Extra agent attributes Extra attributes like direc', 'FLAKY'), ('test/parsing/syntax.test.ts > Flow syntax test01', 'FLAKY'), ('test/parsing/syntax.test.ts > Pre/Post workflow syntax test01', 'FLAKY'), ('test/parsing/syntax.test.ts > agent-xtras-to-string standalone scenarios, direct', 'FLAKY'), ('test/parsing/syntax.test.ts > case-generation decsion-cases generated from patte', 'FLAKY'), ('test/parsing/syntax.test.ts > directive-generation directives generated from pat', 'FLAKY'), ('test/parsing/syntax.test.ts > flow-load-fix flow should load', 'FLAKY'), ('test/parsing/syntax.test.ts > import-syntax import statements in module.toString', 'FLAKY'), ('test/parsing/syntax.test.ts > retry-construct load retry construct', 'FLAKY'), ('test/parsing/syntax.test.ts > scenario-generation scenarios generated from patte', 'FLAKY'), ('test/parsing/syntax.test.ts > toString with extends toString should not emit par', 'FLAKY'), ('test/runtime/agents.test.ts > Agent API test01', 'FLAKY'), ('test/runtime/agents.test.ts > Agent cancellation cancelAgent marks chatId and ch', 'FLAKY'), ('test/runtime/agents.test.ts > Agent cancellation clearCancellation removes stale', 'FLAKY'), ('test/runtime/basic.test.ts > Array, enum and oneof tests test01', 'FLAKY'), ('test/runtime/basic.test.ts > Basic CRUD tests test01', 'FLAKY'), ('test/runtime/basic.test.ts > Between operator test test01', 'FLAKY'), ('test/runtime/basic.test.ts > Between relationship query result shape between rel', 'FLAKY'), ('test/runtime/basic.test.ts > Between relationship query result shape between rel', 'FLAKY'), ('test/runtime/basic.test.ts > Between relationship query result shape query via b', 'FLAKY'), ('test/runtime/basic.test.ts > Between relationship query result shape reverse bet', 'FLAKY'), ('test/runtime/basic.test.ts > Built-in date functions dateFns datetime inline att', 'FLAKY'), ('test/runtime/basic.test.ts > Built-in date functions dateFns functions as inline', 'FLAKY'), ('test/runtime/basic.test.ts > Built-in date functions dateFns in between queries', 'FLAKY'), ('test/runtime/basic.test.ts > Built-in date functions dateFns nested calls in bet', 'FLAKY'), ('test/runtime/basic.test.ts > Catch test test01', 'FLAKY'), ('test/runtime/basic.test.ts > Composite unique attributes test01', 'FLAKY'), ('test/runtime/basic.test.ts > Contains relationship query result shape contains q', 'FLAKY'), ('test/runtime/basic.test.ts > Contains relationship query result shape contains q', 'FLAKY'), ('test/runtime/basic.test.ts > Contains relationship query result shape nested con', 'FLAKY'), ('test/runtime/basic.test.ts > Default date-time test test01', 'FLAKY')]
+2026-11-23T21:01:38Z STATE PR #647 (code) state 5/5 fb605d1d8b base 2b552b4b4c
+2026-11-23T21:01:38Z   $ git checkout -q -f --detach fb605d1d8bc9500a2e59fdee3ef5f1671eea2c89 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T21:01:38Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T21:01:42Z   $ npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts  -> exit 0 in 4.5s
+2026-11-23T21:01:43Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/agentlang/list-all.json  -> exit 0 in 0.6s
+2026-11-23T21:01:44Z   $ npx --no-install vitest list  --changed 2b552b4b4caa381f3e876c7fbe4c5ab472644aec --filesOnly --json=/home/user/work/tmp/agentlang/list-sel.json  -> exit 0 in 1.8s
+2026-11-23T21:01:47Z   $ npx --no-install vitest run  --reporter=json --outputFile=/home/user/work/tmp/agentlang/excl-647-fb605d1d.json example/knowledge/test/resolver.test.ts test/parsing/error-reporter.test.ts test/runtime/integration-client.test.ts test/validating/validating.test.ts  -> exit 0 in 2.6s
+2026-11-23T21:01:47Z   -> ok share=0.0367 sel=18 excl=4 failures=[]
+2026-11-23T21:01:47Z DONE rounds 5
