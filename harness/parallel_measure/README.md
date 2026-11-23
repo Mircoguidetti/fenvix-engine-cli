@@ -6,7 +6,7 @@ historical; do not measure from them.
 
 - `measure.py`, `repro.py`, `classify.py`, `table.py`, `vitest_ids_reporter.mjs`: byte-identical to
   `claude/parallel-measure` @ 20f7752d (it includes the D18 temp-dir fix; the nestjs-pino and agentsys rows of
-  `results.jsonl` predate it).
+  `results.jsonl` predate it: REPORT.md's "fresh empty TMPDIR" does not apply to them, RERUN.md section 1).
 - `specs.json`: the 14 specs of the reference; `agentic-qe`, `sqlectron`, `claudekit` from -b (each carries a
   measured reason); `smart-second-brain` from -b; the 12 specs added by -c; `wind-comic` stays the reference entry.
 - `results.jsonl`, `data/`, `TABLE.md`, `REPORT.md`, `RERUN.md`, `bugs/*.md`: the reference's.
@@ -23,5 +23,5 @@ historical; do not measure from them.
 - `data/lane-a/` (pending until the Lane A measurements are complete): agentic-qe, lerna-lite and the step 3
   candidates; report `REPORT-lane-a.md`.
 
-Rule: every measurement records in `RERUN.md` the commit of this harness (on the trunk, or on
+Rule: every measurement records in `RERUN.md` (or the report it names) the commit of this harness (on the trunk, or on
 `claude/harness-trunk` until it is merged) it was taken with, next to the engine commit `measure.py` records per row.

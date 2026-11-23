@@ -7,16 +7,20 @@ Intel(R) Xeon(R) Processor @ 2.10GHz (also recorded per row).
 ## 1. Engine (trunk)
 
 ```bash
-git clone https://github.com/mircoguidetti/fenvix-engine-cli && cd fenvix-engine-cli
-git checkout claude/release-1   # the single harness copy (on claude/harness-trunk until that branch is merged)
-# Engine: build it at the engine_commit of the rows you rerun (bfaf70b4 for results.jsonl, 5a6463fd for the earlier
-# sets). If `git diff <engine_commit> -- crates python node/src node/bin Cargo.toml Cargo.lock pyproject.toml` (the
-# check measure.py makes) is not empty, build from a worktree at that commit instead:
-#   git worktree add ../engine-<engine_commit> <engine_commit> && cd ../engine-<engine_commit>
+git clone https://github.com/mircoguidetti/fenvix-engine-cli && cd fenvix-engine-cli && export FENVIX=$PWD
+git checkout claude/harness-trunk   # the single harness copy (claude/release-1 once that branch is merged)
+# measure.py runs the engine of the checkout it lives in (node/bin/detjs.js and its addon, the installed wheel) and
+# records engine_commit from that checkout. To rerun rows whose engine_commit is not this checkout's engine (`git diff
+# <engine_commit> -- crates python node/src node/bin Cargo.toml Cargo.lock pyproject.toml` not empty): check out
+# <engine_commit>, then `git checkout origin/claude/release-1 -- harness/parallel_measure` (before the merge:
+# `origin/claude/harness-trunk`), and build there; such rows record `<engine_commit>+modified` (measure.py compares with
+# origin/claude/release-1). The 5a6463fd
+# sets (data/earlier/) were taken with earlier harnesses and cannot be reproduced exactly with this measure.py.
 python3 -m venv /tmp/pm/venv/py && /tmp/pm/venv/py/bin/pip install maturin
 (cd node && npm run build)                  # Node addon: node/detjs.linux-x64.node
 /tmp/pm/venv/py/bin/maturin build --release -o /tmp/pm/wheels
-# results.jsonl: the ironcurtain and codex-multi-auth rows were measured with this measure.py (D18 temp dir). The 50
+# results.jsonl (committed in 2cd4ea00 on claude/parallel-measure): the ironcurtain and codex-multi-auth rows were
+# measured with this measure.py (D18 temp dir). The 50
 # nestjs-pino and agentsys rows were measured before D18 (18c5da5d) and have neither tmpdir_reset nor hardcoded_tmp:
 # no per-repository TMPDIR was set for them, so REPORT.md's "fresh empty TMPDIR" does not apply to them and this
 # measure.py does not reproduce their exact conditions (their tmpdir-related divergences may differ under D18).
@@ -57,7 +61,7 @@ One repository at a time, nothing else running (a round of codex-multi-auth take
 separate processes with `--reps 1 --first-rep N` to stay under a 2 h job limit):
 
 ```bash
-cd fenvix-engine-cli/harness/parallel_measure
+cd "$FENVIX/harness/parallel_measure"
 for r in nestjs-pino agentsys ironcurtain codex-multi-auth; do
   python3 measure.py --spec specs.json --name $r --reps 3 --workers 2,4 --out $PM_WORK/final
   python3 repro.py   --spec specs.json --name $r --out $PM_WORK/final --runs 2 --seeds 1,2   # plain runs for classify.py
@@ -88,12 +92,13 @@ interpreter):
 
 ```bash
 export PM_WORK=/tmp/pm-lane-a            # not /tmp/pm of sections 1-3
-test ! -e "$PM_WORK/venv/networkx" || echo "STOP: $PM_WORK/venv/networkx exists; pick another PM_WORK"
-python3.12 -m venv "$PM_WORK/venv/engine"
-"$PM_WORK/venv/engine/bin/pip" install maturin
-"$PM_WORK/venv/engine/bin/maturin" build --release -o "$PM_WORK/wheels"     # from the engine checkout
-"$PM_WORK/venv/engine/bin/pip" install --force-reinstall "$PM_WORK"/wheels/fenvix-*.whl
-ln -s "$PM_WORK/venv/engine" "$PM_WORK/venv/networkx"   # the fenvix_python name most Node specs use
+if [ -e "$PM_WORK/venv" ]; then echo "STOP: $PM_WORK/venv exists; pick another PM_WORK"; else
+  python3.12 -m venv "$PM_WORK/venv/engine" &&
+  "$PM_WORK/venv/engine/bin/pip" install maturin &&
+  (cd "$FENVIX" && "$PM_WORK/venv/engine/bin/maturin" build --release -o "$PM_WORK/wheels") &&
+  "$PM_WORK/venv/engine/bin/pip" install --force-reinstall "$PM_WORK"/wheels/fenvix-*.whl &&
+  ln -s "$PM_WORK/venv/engine" "$PM_WORK/venv/networkx"   # the fenvix_python name most Node specs use
+fi
 ```
 
 (The recorded Lane A rows used `PM_WORK=/tmp/pm`, which held no section 2 venv.)
@@ -102,7 +107,7 @@ line (agentic-qe: `npm ci --ignore-scripts --no-audit --no-fund && npm rebuild b
 sharp`; lerna-lite: `npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts && npx -y pnpm@11.28.5 build`).
 
 ```bash
-cd harness/parallel_measure
+cd "$FENVIX/harness/parallel_measure"
 for r in agentic-qe lerna-lite; do
   for n in 1 2 3; do   # one round per process
     python3 measure.py --spec specs.json --name $r --reps 1 --first-rep $n --workers 2,4 --timeout 14400 --out $PM_WORK/lane-a
