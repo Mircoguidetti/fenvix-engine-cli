@@ -2,3 +2,8 @@
 2026-11-23T19:39:17Z   $ git checkout -q -f --detach 955a772adec8376bc769801aa1109f1a1924bafb && git clean -fdxq -e node_modules  -> exit 0 in 0.7s
 2026-11-23T19:39:17Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
 2026-11-23T19:39:30Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 12.4s
+2026-11-23T19:48:10Z   $ npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/drydock/full-00.json  -> exit 0 in 520.4s
+2026-11-23T19:48:10Z   full run 0: ok exit 0 520.4s {'passed': 19990, 'skipped': 1}
+2026-11-23T19:48:10Z FULL RUN pr-index 5 PR #1570 base ea102a9820827dab69e268de1d4593956d41965d
+2026-11-23T19:48:11Z   $ git checkout -q -f --detach ea102a9820827dab69e268de1d4593956d41965d && git clean -fdxq -e node_modules  -> exit 0 in 0.3s
+2026-11-23T19:48:14Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 3.7s
