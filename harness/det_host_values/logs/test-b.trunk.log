@@ -1,0 +1,93 @@
+TAP version 13
+# Subtest: (b) a test waiting on real work is not timed out by the virtual clock
+not ok 1 - (b) a test waiting on real work is not timed out by the virtual clock
+  ---
+  duration_ms: 1631.415459
+  type: 'test'
+  location: '/home/user/fenvix-engine-cli/node/test/host-values-timers.test.js:20:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    the --det run passes too
+    detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+    detjs: serial execution (one worker, files in sequence; --det-workers=N or --maxWorkers=N for parallel lanes); network=block; timers=virtual; entropy=observed (--det-urandom to control); node v22.23.5
+    
+     RUN  v5.1.0 /home/user/fenvix-engine-cli/node/test/.tmp/host-values/timers-waiting
+    
+     [31m❯[39m tests/detached.test.mjs (1 test | 1 failed) 71ms
+       [31m×[39m polls for a file a detached helper writes 68ms
+     [31m❯[39m tests/waitfor.test.mjs (2 tests | 1 failed) 15ms
+       [31m×[39m vi.waitFor while an unrelated long timer is pending 11ms
+    
+     Test Files  2 failed (2)
+          Tests  2 failed | 1 passed (3)
+       Start at  15:18:44
+       Duration  446ms (worker 55%, tests 37%, import 5%, transform 3%)
+    
+    detjs: trace .detjs/trace.jsonl: 3 tests, order digest 02a9e11dd35e882156dcf1e01223fc1e
+    2 test(s) failed under --det (seed 0, fixed order). Turn each into a reproducible defect (cause, seed, order, replay command):
+        fenvix repro 'tests/detached.test.mjs::polls for a file a detached helper writes' --runner=vitest
+        fenvix repro 'tests/waitfor.test.mjs::vi.waitFor while an unrelated long timer is pending' --runner=vitest
+      rerun the failing files with the same seeds and order: detjs vitest run --det tests/detached.test.mjs tests/waitfor.test.mjs
+      the same run again: detjs vitest run --det (with the same arguments)
+    
+    (node:11205) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+    (Use `node --trace-deprecation ...` to show where the warning was created)
+    (node:11227) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+    (Use `node --trace-deprecation ...` to show where the warning was created)
+    
+    ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+    
+     FAIL  tests/detached.test.mjs[2m > [22mpolls for a file a detached helper writes
+    Error: ENOENT: no such file or directory, open '/tmp/det-detached-dLDthR/marker.txt'
+     ❯ Object.readFileSync ../../../../src/outside.js:136:20
+     ❯ tests/detached.test.mjs:23:13
+         21|     await sleep(20);
+         22|   }
+         23|   expect(fs.readFileSync(marker, 'utf8')).toBe('close');
+           |             ^
+         24| });
+         25|
+    
+    ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+    
+     FAIL  tests/waitfor.test.mjs[2m > [22mvi.waitFor while an unrelated long timer is pending
+    Error: Test timed out in 5000ms.
+    If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+     ❯ tests/waitfor.test.mjs:7:1
+          5| import { test, expect, vi } from 'vitest';
+          6|
+          7| test('vi.waitFor while an unrelated long timer is pending', async () =…
+           | ^
+          8|   AbortSignal.timeout(15000);
+          9|   let ready = false;
+    
+    ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+    
+    detjs: serial run: 2 files, 0.121 s of test-file time (MEASURED); with --det-workers=4 (this machine's CPUs) about 0.09 s (ESTIMATED: a plan over these durations, worker start-up not counted)
+    detjs: status: failed=2 not_proven=0 passed=1 skipped=0
+    
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/host-values-timers.test.js:30:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1681.446286
+exit 1
