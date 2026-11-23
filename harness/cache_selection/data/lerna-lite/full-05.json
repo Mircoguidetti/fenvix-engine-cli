@@ -1,0 +1,62 @@
+{
+ "repo": "lerna-lite",
+ "pr_index": 5,
+ "pr": 1435,
+ "commit": "6bce334009b4a63cf98c079515b0c820222cad9a",
+ "install": "fresh install, all node_modules removed first (5s)",
+ "cmd": "npx --no-install vitest run --config ./e2e/vitest.config.ts --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/lerna-lite/full-05.json",
+ "cwd": "/home/user/work/repos/lerna-lite/",
+ "exit": 0,
+ "wall_s": 603.5,
+ "status": "ok",
+ "outcome_counts": {
+  "passed": 91
+ },
+ "files": {
+  "e2e/changed/changed.spec.ts": {
+   "ms": 4683.49462890625,
+   "status": "passed"
+  },
+  "e2e/diff/diff.spec.ts": {
+   "ms": 541.87109375,
+   "status": "passed"
+  },
+  "e2e/exec/exec.spec.ts": {
+   "ms": 5931.996826171875,
+   "status": "passed"
+  },
+  "e2e/list/list.spec.ts": {
+   "ms": 3305.53857421875,
+   "status": "passed"
+  },
+  "e2e/publish/publish-dry-run.spec.ts": {
+   "ms": 1857.806640625,
+   "status": "passed"
+  },
+  "e2e/publish/publish-npmrc-auth.spec.ts": {
+   "ms": 282344.74755859375,
+   "status": "passed"
+  },
+  "e2e/publish/publish-verdaccio.spec.ts": {
+   "ms": 211650.13989257812,
+   "status": "passed"
+  },
+  "e2e/run/run.spec.ts": {
+   "ms": 12135.4267578125,
+   "status": "passed"
+  },
+  "e2e/version/version.spec.ts": {
+   "ms": 5376.981201171875,
+   "status": "passed"
+  },
+  "e2e/watch/watch-lifecycle.spec.ts": {
+   "ms": 11110.142822265625,
+   "status": "passed"
+  },
+  "e2e/watch/watch.spec.ts": {
+   "ms": 59552.9033203125,
+   "status": "passed"
+  }
+ },
+ "failed_tests": []
+}

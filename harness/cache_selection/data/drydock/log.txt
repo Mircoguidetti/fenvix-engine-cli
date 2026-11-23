@@ -1,0 +1,4 @@
+2026-11-23T19:39:16Z FULL RUN pr-index 0 PR #1520 base 955a772adec8376bc769801aa1109f1a1924bafb
+2026-11-23T19:39:17Z   $ git checkout -q -f --detach 955a772adec8376bc769801aa1109f1a1924bafb && git clean -fdxq -e node_modules  -> exit 0 in 0.7s
+2026-11-23T19:39:17Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 0.0s
+2026-11-23T19:39:30Z   $ npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)  -> exit 0 in 12.4s
