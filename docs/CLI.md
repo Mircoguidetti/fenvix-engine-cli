@@ -35,7 +35,7 @@ per-test events):
 | time zone | C: `TZ` pinned (`--det-tz`, default `UTC` whatever the environment sets, Python and Node alike; `keep` = the environment's, recorded and keyed) | input `tz` |
 | locale | C: `LC_ALL` and `LANG` pinned, `LANGUAGE` removed (`--det-locale`, default `C.UTF-8`; `keep`) | input `locale` |
 | environment | O: every `os.environ` read is an event (`env.get NAME=<digest>`); every variable is an input (`env:NAME`, value digest) | input `env:*`; events `env.*` |
-| OS entropy | O (C with `--det-urandom`) | input `urandom`; events `os.urandom` & co. |
+| OS entropy | O (C with `--det-urandom`); Node: C by default (P1 D), O with `--det-urandom=off` | input `urandom`; events `os.urandom` & co. |
 | threads, child processes, I/O readiness | O only: not controlled in this release | events `uncontrolled.thread|child|io` |
 
 Values of environment variables never reach the trace: only digests.

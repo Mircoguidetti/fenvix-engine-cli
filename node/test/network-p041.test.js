@@ -434,27 +434,34 @@ for (const runner of RUNNERS) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------
-// G-1426: crypto.randomBytes & co. stay observed by default (the Python shell's contract: OS entropy observed,
-// --det-urandom controls it), and the run says so; --det-urandom=on controls them, =off is the explicit default
+// G-1426: crypto.randomBytes & co. and the run says what it did. P1 D (decision of 2026-11-23, option 3): a per-test
+// deterministic stream by default (--det-urandom, =on), real OS entropy observed with --det-urandom=off; never silent.
+// (Before P1 D this test asserted the former default, observed: changed with the decision, reported in REPORT-P1.md.)
 const ENT = `${PUT}
 test('session token', () => { put('token', nodeCrypto.randomBytes(8).toString('hex')); });
 test('plain', () => { expect(1).toBe(1); });`;
 for (const runner of RUNNERS) {
-  test(`${runner}: G-1426 OS entropy is observed by default and never silent; --det-urandom=on|off`, T, () => {
+  test(`${runner}: G-1426 OS entropy is controlled by default and never silent; --det-urandom=on|off`, T, () => {
     const dir = proj(runner, 'entropy', { a: ENT });
     const r1 = run(runner, dir);
     assert.equal(r1.status, 0, show(r1));
     const out = r1.stdout + r1.stderr;
-    assert.match(out, /entropy=observed \(--det-urandom to control\)/, show(r1));
-    assert.match(out, /1 test\(s\) used real OS entropy, observed but not controlled \(crypto\.randomBytes\).*--det-urandom makes .* deterministic.*session token/, show(r1));
-    assert.equal(trace(dir).header.meta.entropy, 'observed');
+    assert.match(out, /entropy=controlled \(--det-urandom=off to observe it instead\)/, show(r1));
+    assert.doesNotMatch(out, /used real OS entropy/, show(r1));
+    assert.equal(trace(dir).header.meta.entropy, 'controlled');
+    const t0 = got(dir, 'token');
     const off = run(runner, dir, [], { det: ['--det', '--det-urandom=off'] });
-    assert.match(off.stdout + off.stderr, /used real OS entropy/, show(off));
+    assert.equal(off.status, 0, show(off));
+    const offOut = off.stdout + off.stderr;
+    assert.match(offOut, /entropy=observed \(--det-urandom=off\)/, show(off));
+    assert.match(offOut, /1 test\(s\) used real OS entropy, observed but not controlled \(crypto\.randomBytes\).*without --det-urandom=off, .* deterministic.*session token/, show(off));
+    assert.equal(trace(dir).header.meta.entropy, 'observed');
     const on1 = run(runner, dir, [], { det: ['--det', '--det-urandom=on'] });
     assert.equal(on1.status, 0, show(on1));
     assert.doesNotMatch(on1.stdout + on1.stderr, /used real OS entropy/, show(on1));
     assert.match(on1.stdout + on1.stderr, /entropy=controlled/);
     const t1 = got(dir, 'token');
+    assert.equal(t1, t0, 'the default is the controlled stream');
     assert.equal(run(runner, dir, [], { det: ['--det', '--det-urandom'] }).status, 0);
     assert.equal(got(dir, 'token'), t1, 'controlled: the same token');
     const bad = run(runner, dir, [], { det: ['--det', '--det-urandom=maybe'] });

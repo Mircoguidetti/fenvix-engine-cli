@@ -208,9 +208,10 @@ function randomUUID(options) {
   return uuid;
 }
 
-// OS entropy: observed, controlled only with --det-urandom.
+// OS entropy: a per-test deterministic stream by default (P1 D), observed only with --det-urandom=off.
 function randomBytes(size, cb) {
-  if (!STATE.config.urandom && typeof cb !== 'function' && protocolNonce()) return nonce('crypto.randomBytes', real.randomBytes(size));
+  // a protocol nonce (WebSocket key / mask) keeps its own seeded stream whatever --det-urandom says (P1 D)
+  if (typeof cb !== 'function' && protocolNonce()) return nonce('crypto.randomBytes', real.randomBytes(size));
   if (typeof cb === 'function') {
     return real.randomBytes(size, (err, buf) => {
       if (!err) observe('crypto.randomBytes', buf);
@@ -225,7 +226,7 @@ function randomFillSync(buf, offset, size) {
   const view = ArrayBuffer.isView(buf) ? Buffer.from(buf.buffer, buf.byteOffset, buf.byteLength) : Buffer.from(buf);
   const start = offset === undefined ? 0 : offset * (ArrayBuffer.isView(buf) ? buf.BYTES_PER_ELEMENT || 1 : 1);
   const len = size === undefined ? view.length - start : size * (ArrayBuffer.isView(buf) ? buf.BYTES_PER_ELEMENT || 1 : 1);
-  if (!STATE.config.urandom && protocolNonce()) nonce('crypto.randomFillSync', view.subarray(start, start + len));
+  if (protocolNonce()) nonce('crypto.randomFillSync', view.subarray(start, start + len));
   else observe('crypto.randomFillSync', view.subarray(start, start + len));
   return out;
 }

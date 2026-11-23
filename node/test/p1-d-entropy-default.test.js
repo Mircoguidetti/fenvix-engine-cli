@@ -22,18 +22,21 @@ const body = (name) => `test('${name}1', () => {
   const id = nodeCrypto.randomBytes(8).toString('hex');
   const b = Buffer.alloc(4); nodeCrypto.randomFillSync(b);
   const n = nodeCrypto.randomInt(1000);
-  golden('${name}-' + process.env.P1D_RUN, [id, b.toString('hex'), n]);
+  fs.writeFileSync(path.join(process.env.P1D_OUT, path.basename(process.cwd()) + '-${name}-' + process.env.P1D_RUN), JSON.stringify([id, b.toString('hex'), n]));
   expect(id.length).toBe(16);
 });
 test('${name}2', () => { expect(1).toBe(1); });`;
-const VOL = { FENVIX_VOLATILE_ENV: 'P1D_RUN' };
+const os = require('node:os');
+const OUT = fs.mkdtempSync(path.join(os.tmpdir(), 'p1d-'));
+// where the tests write what they drew (declared irrelevant: P1D_RUN differs between the runs on purpose)
+const VOL = { FENVIX_VOLATILE_ENV: 'P1D_RUN,P1D_OUT', P1D_OUT: OUT };
 
 function keep(r, dir, name) {
   const p = path.join(dir, `${name}.jsonl`);
   fs.copyFileSync(r.tracePath, p);
   return p;
 }
-const seen = (dir, name) => fs.readFileSync(path.join(dir, 'golden', `${name}.json`), 'utf8');
+const seen = (dir, name) => fs.readFileSync(path.join(OUT, `${path.basename(dir)}-${name}`), 'utf8');
 
 for (const runner of RUNNERS) {
   test(`P1 D ${runner}: random bytes drawn by tests: serial = parallel by default, all stable`, T, () => {

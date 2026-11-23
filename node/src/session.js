@@ -34,9 +34,11 @@ const HELP = `detjs options (all others are passed to the test runner):
   --det-timers=real        timers wait for real (default: virtual, fast while no I/O is pending)
   --det-timer-budget=N     fast timer firings per test before falling back to real waits (default 100000)
   --det-disable=LIST       controls to turn off: ${config.CONTROLS.join(',')}
-  --det-urandom[=on|off]   on: also make crypto.randomBytes/randomFillSync/randomInt deterministic (NOT for crypto
-                           tests); off (default): observed only, recorded as entropy events and reported at the end
-                           (the WebSocket handshake keys and frame masks are deterministic either way)
+  --det-urandom[=on|off]   on (default): crypto.randomBytes/randomFillSync/randomInt return a per-test deterministic
+                           stream, recorded as entropy events; NOT for tests of cryptography: an IV, a key or a token
+                           the test draws this way is the same in every run. off: real OS entropy, observed only,
+                           reported at the end. The WebSocket handshake keys and frame masks keep their own seeded
+                           stream either way; native key generation (generateKeyPair*) stays real (observed)
   --det-max-events=N       events stored verbatim per test (default 10000)
   --det-sites=off          do not resolve call sites (faster; runner frames are then not told apart)
   --det-cache=DIR|URL      cache with proof: skip test files whose every recorded input is unchanged
@@ -66,7 +68,7 @@ function parseArgs(argv, env = process.env) {
     det: env.DETJS === '1' || env.DETJS === 'true',
     seed: null, trace: null, compare: null, record: false, cassette: null, allowHosts: [],
     epoch: config.DEFAULT_EPOCH, tick: 1000, tickAdapt: 1000, timers: 'virtual', timerBudget: 100000,
-    disable: '', urandom: false, cassetteMaxAge: 0, maxEvents: 10000, sites: true,
+    disable: '', urandom: true, cassetteMaxAge: 0, maxEvents: 10000, sites: true,
     cache: null, cacheVerify: false, cacheReceipts: null, cacheSummary: null, cacheRealClock: false, epochExplicit: false,
     workers: null, plan: null,
     order: null, outcomes: null, collect: false, orderSeed: null,
@@ -238,7 +240,7 @@ function header(run, opts, extra) {
   const order = shuffleSeed !== null ? `shuffled with seed ${shuffleSeed}${opts.orderSeed !== null ? ` (--det-order-seed; generators: seed ${opts.seed ?? 0})` : ''}` : 'fixed (sorted files, declaration order)';
   return [
     `detjs ${VERSION}: Level 0 active; runner=${extra.runner} ${extra.runnerVersion}; controls=${[...c.controls].sort().join(',')}; order ${order}`,
-    `detjs: ${extra.parallel || 'serial execution'} (${extra.isolation}); network=${run.netMode}; timers=${c.timers}; entropy=${c.urandom ? 'controlled (--det-urandom)' : 'observed (--det-urandom to control)'}; node ${process.version}`,
+    `detjs: ${extra.parallel || 'serial execution'} (${extra.isolation}); network=${run.netMode}; timers=${c.timers}; entropy=${c.urandom ? 'controlled (--det-urandom=off to observe it instead)' : 'observed (--det-urandom=off)'}; node ${process.version}`,
   ];
 }
 
@@ -460,7 +462,7 @@ function finish(run, opts, files, meta) {
   if (res.skipped.length) lines.push(`detjs: unreadable trace parts: ${res.skipped.join('; ')}`);
   const ent = realEntropyTests(run.tracePath, run.cfg.urandom);
   if (ent.length) {
-    lines.push(`detjs: ${ent.length} test(s) used real OS entropy, observed but not controlled (${[...new Set(ent.flatMap((e) => e.ops))].sort().join(', ')}): their results can differ between runs${run.cfg.urandom ? ' (native key generation)' : '; --det-urandom makes crypto.randomBytes & co. deterministic (not for tests of cryptography)'}, e.g. ${ent[0].nodeid}`);
+    lines.push(`detjs: ${ent.length} test(s) used real OS entropy, observed but not controlled (${[...new Set(ent.flatMap((e) => e.ops))].sort().join(', ')}): their results can differ between runs${run.cfg.urandom ? ' (native key generation)' : '; without --det-urandom=off, crypto.randomBytes & co. are deterministic (not for tests of cryptography)'}, e.g. ${ent[0].nodeid}`);
   }
   if (opts.compare) {
     try {
