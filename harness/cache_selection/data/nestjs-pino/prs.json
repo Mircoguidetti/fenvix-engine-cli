@@ -1,0 +1,618 @@
+{
+ "repo": "nestjs-pino",
+ "url": "https://github.com/iamolegga/nestjs-pino",
+ "default": "origin/master",
+ "default_head": "82d92198747c64e87057dfb50c6215a936a1a052",
+ "pr_refs_total": 3024,
+ "pr_numbers_fetched": [
+  3087,
+  3241
+ ],
+ "merged_found_in_fetched": 89,
+ "kept": [
+  {
+   "pr": 3187,
+   "method": "rebase",
+   "landing": "7fe514aeeb99fb62b839679f10b1afd71ed14a8b",
+   "landing_date": "2026-10-10T21:23:23+00:00",
+   "head": "b75d2448b3169a8a1d7fab7bd253790d34cdf51a",
+   "base": "899d070d11e75acf94471de3fe3b8bf052e026ea",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "b75d2448b3169a8a1d7fab7bd253790d34cdf51a"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3188,
+   "method": "rebase",
+   "landing": "9bb4f644f638020d54ac2d06d8b91c2c47ddb137",
+   "landing_date": "2026-10-10T21:23:41+00:00",
+   "head": "25360ea03ca84f344031ab2d555e4cd89aa94b3d",
+   "base": "899d070d11e75acf94471de3fe3b8bf052e026ea",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "25360ea03ca84f344031ab2d555e4cd89aa94b3d"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3189,
+   "method": "rebase",
+   "landing": "a23327d3f43e409f0327437802cde8a6de0fc335",
+   "landing_date": "2026-10-10T21:23:49+00:00",
+   "head": "7d59afbbbf11425105fcdd8f28b953a12db884ea",
+   "base": "899d070d11e75acf94471de3fe3b8bf052e026ea",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    ".github/workflows/build-lint-test.yml",
+    ".github/workflows/publish-alpha.yml",
+    ".github/workflows/publish-with-git-tag-version.yml"
+   ],
+   "states": [
+    "7d59afbbbf11425105fcdd8f28b953a12db884ea"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3191,
+   "method": "rebase",
+   "landing": "2e16ab1ee863ac3470f766aa4a1806d490608e33",
+   "landing_date": "2026-10-10T21:32:24+00:00",
+   "head": "9e742ac4afd4373e53ac14b835a580f750b42fd1",
+   "base": "1fc0759be4e70d38d4add64d7a45617031f0090e",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "9e742ac4afd4373e53ac14b835a580f750b42fd1"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3193,
+   "method": "rebase",
+   "landing": "142b78f2894bc292879f53272f0d9066cc408cc9",
+   "landing_date": "2026-10-10T21:32:36+00:00",
+   "head": "ce928e5637fa20c6f9c40d4486e623f08e13c69c",
+   "base": "1fc0759be4e70d38d4add64d7a45617031f0090e",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "ce928e5637fa20c6f9c40d4486e623f08e13c69c"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3197,
+   "method": "rebase",
+   "landing": "be1e63f972110ea84d53c3f2d1ef90744624cbf1",
+   "landing_date": "2026-10-17T21:14:33+00:00",
+   "head": "22628d4050a09d55409f429c78ba58129bb7e5d8",
+   "base": "142b78f2894bc292879f53272f0d9066cc408cc9",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "22628d4050a09d55409f429c78ba58129bb7e5d8"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3198,
+   "method": "rebase",
+   "landing": "0d02dcae0ac9d446622fab485393454c449ecc9d",
+   "landing_date": "2026-10-17T21:31:06+00:00",
+   "head": "ef73a5000d111b0d2daf5f5df4e4e567fc5d4407",
+   "base": "142b78f2894bc292879f53272f0d9066cc408cc9",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "ef73a5000d111b0d2daf5f5df4e4e567fc5d4407"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3199,
+   "method": "rebase",
+   "landing": "77ef521d453a9a42fe45e46168e5a22c517e64d0",
+   "landing_date": "2026-10-17T21:31:19+00:00",
+   "head": "558e505b665472e102caea4825f7294e35b88059",
+   "base": "142b78f2894bc292879f53272f0d9066cc408cc9",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "558e505b665472e102caea4825f7294e35b88059"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3202,
+   "method": "rebase",
+   "landing": "c5440610014d74dc2026de7bbe39b707177e92ab",
+   "landing_date": "2026-10-21T04:04:45+00:00",
+   "head": "4ce3a545d9ffb3fa42ed2eb18c9f84f39485de38",
+   "base": "77ef521d453a9a42fe45e46168e5a22c517e64d0",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "4ce3a545d9ffb3fa42ed2eb18c9f84f39485de38"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3203,
+   "method": "rebase",
+   "landing": "c384463ca60fd98b3d2fba1b0b19f618740975a5",
+   "landing_date": "2026-10-24T21:17:00+00:00",
+   "head": "af65725f8464f715beb4d6dc904fd7e0edc3d698",
+   "base": "c5440610014d74dc2026de7bbe39b707177e92ab",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "af65725f8464f715beb4d6dc904fd7e0edc3d698"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3204,
+   "method": "rebase",
+   "landing": "06313497bc9020036021f0d616b7a718fdee9a4f",
+   "landing_date": "2026-10-24T21:22:22+00:00",
+   "head": "3ac064e952ebb743a814966dfbd8ada4bccd22f7",
+   "base": "c5440610014d74dc2026de7bbe39b707177e92ab",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "3ac064e952ebb743a814966dfbd8ada4bccd22f7"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3205,
+   "method": "rebase",
+   "landing": "6a1b7a4e8f86ebc9c41a76937ab9673466ca4dd0",
+   "landing_date": "2026-10-24T21:24:09+00:00",
+   "head": "c97734f4b7469799ad6c0cebd3802da754cffdb8",
+   "base": "c5440610014d74dc2026de7bbe39b707177e92ab",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "c97734f4b7469799ad6c0cebd3802da754cffdb8"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3210,
+   "method": "rebase",
+   "landing": "69a805449f103456a02aa4f0f5829b6142afec74",
+   "landing_date": "2026-10-31T22:21:36+00:00",
+   "head": "c346739f22e55de6b123266213871e1004fd836d",
+   "base": "6a1b7a4e8f86ebc9c41a76937ab9673466ca4dd0",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "c346739f22e55de6b123266213871e1004fd836d"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3211,
+   "method": "rebase",
+   "landing": "3f2bad399c55e2198139baa4c8ef9bed23c34969",
+   "landing_date": "2026-10-31T22:35:45+00:00",
+   "head": "128ea55213f86be75c7c3dd4f85c68da99da82db",
+   "base": "6a1b7a4e8f86ebc9c41a76937ab9673466ca4dd0",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    ".github/workflows/publish-coverage.yml"
+   ],
+   "states": [
+    "128ea55213f86be75c7c3dd4f85c68da99da82db"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3212,
+   "method": "rebase",
+   "landing": "5c4772576cf2dbca1a045949fc8ce42d399a75c4",
+   "landing_date": "2026-10-31T22:35:49+00:00",
+   "head": "72548fce96bfb4b08d1bcb691a88b713de88d9fd",
+   "base": "6a1b7a4e8f86ebc9c41a76937ab9673466ca4dd0",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "72548fce96bfb4b08d1bcb691a88b713de88d9fd"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3213,
+   "method": "rebase",
+   "landing": "c0c6f44e1906e14377c921ce1245eb850d5c1a26",
+   "landing_date": "2026-10-31T22:46:59+00:00",
+   "head": "5afb5c717d39c54d8855b23c2dda1278b581fd01",
+   "base": "6a1b7a4e8f86ebc9c41a76937ab9673466ca4dd0",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "5afb5c717d39c54d8855b23c2dda1278b581fd01"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3214,
+   "method": "rebase",
+   "landing": "788e611ed144b946dbebc5118679894779fd6fb4",
+   "landing_date": "2026-10-31T22:59:31+00:00",
+   "head": "b29d679f1f57954db757e7f7e151b9b27f4fab56",
+   "base": "6a1b7a4e8f86ebc9c41a76937ab9673466ca4dd0",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "b29d679f1f57954db757e7f7e151b9b27f4fab56"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3220,
+   "method": "rebase",
+   "landing": "15c4975b97274200d2dcf7baf105d08fcd28abc9",
+   "landing_date": "2026-11-07T22:10:00+00:00",
+   "head": "c429e12dfa0014576cebbff81c1fb8143edf7691",
+   "base": "788e611ed144b946dbebc5118679894779fd6fb4",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "c429e12dfa0014576cebbff81c1fb8143edf7691"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3221,
+   "method": "rebase",
+   "landing": "adece54858087b47a1cba876f9a1f4a27b4d4e83",
+   "landing_date": "2026-11-07T22:16:17+00:00",
+   "head": "47cce4f7691cc4db5244f26d75336daf3aaa6bec",
+   "base": "788e611ed144b946dbebc5118679894779fd6fb4",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "47cce4f7691cc4db5244f26d75336daf3aaa6bec"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3222,
+   "method": "rebase",
+   "landing": "00b397f7b5f8ce02d5692d399e0021192bf05bcf",
+   "landing_date": "2026-11-07T22:27:28+00:00",
+   "head": "e702513ce3f333f9bb0388a258c34324bc149615",
+   "base": "788e611ed144b946dbebc5118679894779fd6fb4",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "e702513ce3f333f9bb0388a258c34324bc149615"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3230,
+   "method": "rebase",
+   "landing": "46d0a033c0425a7b134c04a91831b7d4abebcaa6",
+   "landing_date": "2026-11-14T22:12:01+00:00",
+   "head": "cf345c44a1cb3a1751ee533197b1ccf1131fd6b3",
+   "base": "38bdd29d6e167f71e58a10c4bca27fe832fbad8c",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "cf345c44a1cb3a1751ee533197b1ccf1131fd6b3"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3231,
+   "method": "rebase",
+   "landing": "4b61a923006b64b7e0dce4ec0c0157939736c569",
+   "landing_date": "2026-11-17T08:13:32+00:00",
+   "head": "27c9a48f34c89d1f6df0f60aefbfe7decdd65d05",
+   "base": "1ee306b80586f06158a771d5d935cc34f79a603e",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "27c9a48f34c89d1f6df0f60aefbfe7decdd65d05"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3229,
+   "method": "rebase",
+   "landing": "e211e2ddccc5558412f10786a5056ff7ffff7066",
+   "landing_date": "2026-11-17T08:15:08+00:00",
+   "head": "62929aa32bc73d87eef66cc16dcaeeea15ecfe41",
+   "base": "1ee306b80586f06158a771d5d935cc34f79a603e",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "62929aa32bc73d87eef66cc16dcaeeea15ecfe41"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3232,
+   "method": "rebase",
+   "landing": "6b15c3aa958fbe916ef18df6693ae029b08781eb",
+   "landing_date": "2026-11-17T08:18:36+00:00",
+   "head": "0f25e2ce9801ab3664d6d9006c18fbdcca03f4bd",
+   "base": "e211e2ddccc5558412f10786a5056ff7ffff7066",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "0f25e2ce9801ab3664d6d9006c18fbdcca03f4bd"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3233,
+   "method": "rebase",
+   "landing": "c0c90a05a606759be9022c2d9c68dec5916a27f9",
+   "landing_date": "2026-11-17T09:59:18+02:00",
+   "head": "4746fee531b64c6c4f4157935f2da7db60447251",
+   "base": "46d0a033c0425a7b134c04a91831b7d4abebcaa6",
+   "authors": [
+    "iamolegga\tiamolegga@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "src/LoggerModule.ts"
+   ],
+   "states": [
+    "4746fee531b64c6c4f4157935f2da7db60447251"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3228,
+   "method": "rebase",
+   "landing": "1ee306b80586f06158a771d5d935cc34f79a603e",
+   "landing_date": "2026-11-17T10:07:39+02:00",
+   "head": "e3804e452dd1046bffe6175310aaa8bd11c73a79",
+   "base": "c0c90a05a606759be9022c2d9c68dec5916a27f9",
+   "authors": [
+    "abu-tahir-0\tabu7086619848@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "__tests__/default-routes.spec.ts",
+    "__tests__/utils/test-case.ts",
+    "src/LoggerModule.ts"
+   ],
+   "states": [
+    "e3804e452dd1046bffe6175310aaa8bd11c73a79"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3235,
+   "method": "rebase",
+   "landing": "e15200fe9485411bd0618b3bd69184b5b8a68991",
+   "landing_date": "2026-11-21T22:06:25+00:00",
+   "head": "089c5541652caf90f9a65d2b015893112fc32d75",
+   "base": "94f28c451772eb5f5767744e2255dcd0ff4b8245",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "089c5541652caf90f9a65d2b015893112fc32d75"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3236,
+   "method": "rebase",
+   "landing": "e018b467729d06ecfd87fa334d3592c7819352ea",
+   "landing_date": "2026-11-21T22:13:56+00:00",
+   "head": "143c226d0b04a3703bb32a0417f8444fa417762f",
+   "base": "94f28c451772eb5f5767744e2255dcd0ff4b8245",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "143c226d0b04a3703bb32a0417f8444fa417762f"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3237,
+   "method": "rebase",
+   "landing": "261b0592045ed9a33de92b68732de460f519676a",
+   "landing_date": "2026-11-21T22:14:00+00:00",
+   "head": "6753e6e287b3bdcbfde385f9c9ae7227366037e4",
+   "base": "94f28c451772eb5f5767744e2255dcd0ff4b8245",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    ".github/workflows/publish-coverage.yml"
+   ],
+   "states": [
+    "6753e6e287b3bdcbfde385f9c9ae7227366037e4"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 3238,
+   "method": "rebase",
+   "landing": "82d92198747c64e87057dfb50c6215a936a1a052",
+   "landing_date": "2026-11-21T22:14:03+00:00",
+   "head": "f68841518b54ffb24a91b25a0d83408b20e93c77",
+   "base": "94f28c451772eb5f5767744e2255dcd0ff4b8245",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "f68841518b54ffb24a91b25a0d83408b20e93c77"
+   ],
+   "n_commits": 1
+  }
+ ]
+}

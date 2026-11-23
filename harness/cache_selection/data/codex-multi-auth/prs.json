@@ -1,0 +1,1226 @@
+{
+ "repo": "codex-multi-auth",
+ "url": "https://github.com/ndycode/codex-multi-auth",
+ "default": "origin/main",
+ "default_head": "b9886168aafcebd8581d4e344daf7abd19b510ce",
+ "pr_refs_total": 696,
+ "pr_numbers_fetched": [
+  579,
+  770
+ ],
+ "merged_found_in_fetched": 142,
+ "kept": [
+  {
+   "pr": 726,
+   "method": "merge",
+   "landing": "2eb5b5b78c57676ea586771f5e81fc8ae9366231",
+   "landing_date": "2026-10-02T14:09:20+08:00",
+   "head": "f1c7c76bda55dee0fd70c5c481e0a869892134dd",
+   "base": "328343b23d45da17a2478fd49cb15238787e4f7f",
+   "authors": [
+    "Contributor\tcontributor@example.invalid",
+    "Neil\tndycode@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "docs/reference/commands.md",
+    "docs/upgrade.md",
+    "lib/account-policy.ts",
+    "lib/codex-manager/commands/status.ts",
+    "lib/codex-manager/formatters/subscription-status.ts",
+    "lib/codex-manager/health-check.ts",
+    "lib/codex-manager/quota-cache-helpers.ts",
+    "lib/quota-cache.ts",
+    "lib/quota-probe.ts",
+    "lib/quota-readiness.ts",
+    "lib/runtime/subscription-first-use.ts",
+    "test/account-policy.test.ts",
+    "test/automatic-subscription-checks.test.ts",
+    "test/cli-output-contracts.test.ts",
+    "test/codex-manager-cli.test.ts",
+    "test/codex-manager-login-menu-refresh.test.ts",
+    "test/codex-manager-status-command.test.ts",
+    "test/health-check.test.ts",
+    "test/helpers/cli-test-fixtures.ts",
+    "test/index.test.ts",
+    "test/quota-cache.test.ts",
+    "test/quota-probe.test.ts",
+    "test/repair-commands.test.ts",
+    "test/subscription-first-use.test.ts",
+    "test/subscription-status.test.ts"
+   ],
+   "states": [
+    "f1c7c76bda55dee0fd70c5c481e0a869892134dd",
+    "b542acf4270058746c927148d307a8f116ad2ad4",
+    "c1bf3115e1360b61d337e200f7abf201094e9250",
+    "822e9e62460756ff7fdfbadb741a3a00a70ba0bc",
+    "6b83c1520fdd8e642182f160be70111120286b29"
+   ],
+   "n_commits": 13
+  },
+  {
+   "pr": 729,
+   "method": "merge",
+   "landing": "65b9e68266758fb62baf8a096b4079630acff063",
+   "landing_date": "2026-10-06T19:07:52+08:00",
+   "head": "f2114142125a2cea71e1e9ab24db4dac933415de",
+   "base": "960f8bce100a7ed58207d2a1f134e95f8f225144",
+   "authors": [
+    "Neil\tndycode@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "docs/configuration.md",
+    "docs/development/CONFIG_FIELDS.md",
+    "docs/reference/settings.md",
+    "lib/codex-manager/dashboard-settings-data.ts",
+    "lib/codex-manager/formatters/text-style.ts",
+    "lib/codex-manager/settings-hub/dashboard.ts",
+    "lib/codex-manager/settings-panels.ts",
+    "lib/codex-manager/theme-settings-panel.ts",
+    "lib/dashboard-settings.ts",
+    "lib/ui/index.ts",
+    "lib/ui/runtime.ts",
+    "lib/ui/theme.ts",
+    "lib/ui/ui-copy.ts",
+    "test/codex-manager-cli.test.ts",
+    "test/codex-manager-formatters.test.ts",
+    "test/dashboard-settings-data.test.ts",
+    "test/dashboard-settings.test.ts",
+    "test/documentation.test.ts",
+    "test/settings-hub-utils.test.ts",
+    "test/settings-panels.test.ts",
+    "test/ui-runtime.test.ts",
+    "test/ui-theme.test.ts"
+   ],
+   "states": [
+    "f2114142125a2cea71e1e9ab24db4dac933415de",
+    "2a98b5fb43490c77b0bceec25b4c48836e9f9002",
+    "45e9e2a30612b97d192bba4f3a8a71af92f87cfa"
+   ],
+   "n_commits": 3
+  },
+  {
+   "pr": 730,
+   "method": "merge",
+   "landing": "dcdac51c27bb21704d6d4e6ca851d6c84602f682",
+   "landing_date": "2026-10-06T21:16:30+08:00",
+   "head": "6c10c6d3a142045a7910de9bf010e4366705bbe8",
+   "base": "b4c51d8fa3498c34d6787e2ca639228f6db31761",
+   "authors": [
+    "Neil\tndycode@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    ".github/workflows/ci.yml",
+    ".github/workflows/codeql.yml",
+    ".github/workflows/codex-plugin-scanner.yml",
+    ".nvmrc",
+    "AGENTS.md",
+    "CONTRIBUTING.md",
+    "README.md",
+    "SECURITY.md",
+    "docs/development/ARCHITECTURE.md",
+    "docs/development/REPOSITORY_SCOPE.md",
+    "docs/getting-started.md",
+    "docs/reference/public-api.md",
+    "docs/upgrade.md",
+    "lib/AGENTS.md",
+    "lib/model-route-policy.ts",
+    "lib/request/url-rewriting.ts",
+    "package-lock.json",
+    "package.json",
+    "test/ci-workflows.test.ts",
+    "test/package-bin.test.ts"
+   ],
+   "states": [
+    "6c10c6d3a142045a7910de9bf010e4366705bbe8",
+    "04965cb08ae2dabcb1a6d148af4c5541fc0016c9",
+    "605efc0895c3a1aced5200dd1aff07dc6f80d349"
+   ],
+   "n_commits": 3
+  },
+  {
+   "pr": 735,
+   "method": "merge",
+   "landing": "8646882bf7f2801c4936089e39231e8346474c40",
+   "landing_date": "2026-10-11T21:43:27+08:00",
+   "head": "1f4b93db79e0e2792d6d05a4c4e2e0b878dcb887",
+   "base": "cedbec027cb2ec3f645fcbeb55cd40cccf0479ee",
+   "authors": [
+    "Devin\tdevin@cognition.ai"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "docs/reference/commands.md",
+    "lib/codex-cli/version.ts",
+    "lib/runtime/model-discovery-status.ts",
+    "test/codex-cli-version.test.ts",
+    "test/model-discovery-status.test.ts"
+   ],
+   "states": [
+    "1f4b93db79e0e2792d6d05a4c4e2e0b878dcb887",
+    "ab56aa0f0397ff4d280645bf1459f96f8dd6ea7e"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 731,
+   "method": "merge",
+   "landing": "4daffe9a767ada82054a92aa1005dc8b72ddbf86",
+   "landing_date": "2026-10-11T21:50:42+08:00",
+   "head": "5debbd413fb18e60443b4d22df86a1954de229c1",
+   "base": "cedbec027cb2ec3f645fcbeb55cd40cccf0479ee",
+   "authors": [
+    "jordansilly77-stack\t264403606+jordansilly77-stack@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "docs/troubleshooting.md",
+    "lib/policy/runtime-policy.ts",
+    "lib/request/response-outcome.ts",
+    "lib/runtime-rotation-proxy.ts",
+    "lib/usage/usage-extraction.ts",
+    "test/fetch-helpers.test.ts",
+    "test/response-outcome.test.ts",
+    "test/runtime-policy.test.ts",
+    "test/runtime-rotation-proxy.test.ts",
+    "test/usage-extraction.test.ts"
+   ],
+   "states": [
+    "5debbd413fb18e60443b4d22df86a1954de229c1",
+    "976547ed16136df8ce154b7c089bc466ec2d67df"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 732,
+   "method": "merge",
+   "landing": "013a6159221a005ed47e4aae79c9e943a088d722",
+   "landing_date": "2026-10-11T21:53:18+08:00",
+   "head": "6c8ea1e4c7fac09f8749844ad4947fb7c948cb71",
+   "base": "cedbec027cb2ec3f645fcbeb55cd40cccf0479ee",
+   "authors": [
+    "Rodrigo\trodrigo.marques.ds@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "README.md",
+    "docs/features.md",
+    "docs/reference/commands.md",
+    "docs/upgrade.md",
+    "lib/accounts.ts",
+    "lib/accounts/rate-limits.ts",
+    "lib/codex-manager.ts",
+    "lib/codex-manager/commands/limits.ts",
+    "lib/codex-manager/commands/status.ts",
+    "lib/constants.ts",
+    "lib/context-budget/model-context-windows.ts",
+    "lib/luna-reserve.ts",
+    "lib/request/helpers/model-map.ts",
+    "lib/runtime-rotation-proxy.ts",
+    "lib/runtime/account-status.ts",
+    "lib/runtime/luna-reserve-usage.ts",
+    "lib/runtime/reset-credit-routing.ts",
+    "lib/runtime/rotation-server-types.ts",
+    "lib/runtime/runtime-observability.ts",
+    "lib/usage/pricing.ts",
+    "scripts/codex-app-router.js",
+    "scripts/codex.js",
+    "test/account-rate-limits.test.ts",
+    "test/account-status.test.ts",
+    "test/accounts.test.ts",
+    "test/gpt6-sol-luna-models.test.ts",
+    "test/limits-command.test.ts",
+    "test/luna-reserve-usage.test.ts",
+    "test/luna-reserve.test.ts",
+    "test/reset-credit-routing.test.ts",
+    "test/runtime-observability.test.ts",
+    "test/runtime-rotation-proxy.test.ts"
+   ],
+   "states": [
+    "6c8ea1e4c7fac09f8749844ad4947fb7c948cb71",
+    "21d06458bcc8225146e6050b0c2ce28fd9cd2983",
+    "f58e0ee12cd2ff69f260c59e1ad2de09b8da5413",
+    "086dedb7270e1d570d88a502522bdf458b7ac706",
+    "e8002c6e51eb94373fcbc202a0852d8361790d2b"
+   ],
+   "n_commits": 10
+  },
+  {
+   "pr": 734,
+   "method": "merge",
+   "landing": "40c1e2e74a9c0bd8c594b741a3ef69a713fbc1f8",
+   "landing_date": "2026-10-11T22:12:37+08:00",
+   "head": "9d2b1e85ff4ab5a15aebd74bec70415a5f1463c4",
+   "base": "7ea631a25f4539266fd3a97ea3e01be6646c83cc",
+   "authors": [
+    "Devin\tdevin@cognition.ai",
+    "Mohamed Fadl\tmohamed.fadl@robustastudio.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [],
+   "states": [
+    "9d2b1e85ff4ab5a15aebd74bec70415a5f1463c4",
+    "677048fac00bd1fb34a0160f6d1ea1b8dd812d6c",
+    "52854965853f8ec7bd96b9d6f1ea1a552e53f45c"
+   ],
+   "n_commits": 3
+  },
+  {
+   "pr": 737,
+   "method": "merge",
+   "landing": "80a1853863b62fa5ca6400af9e5a2166b3ad5ec5",
+   "landing_date": "2026-10-14T20:20:03+08:00",
+   "head": "3026e3d6ca00c65f367fff9ee1bcf3b9938a0787",
+   "base": "fafb99cc0182b038ad2cd3992fefdf7b803a34a2",
+   "authors": [
+    "Jingjing Bu\tbujingjing007@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "README.md",
+    "docs/architecture.md",
+    "docs/configuration.md",
+    "docs/development/ARCHITECTURE.md",
+    "docs/reference/commands.md",
+    "docs/upgrade.md",
+    "lib/codex-manager/commands/status.ts",
+    "lib/runtime-rotation-proxy.ts",
+    "lib/runtime/app-bind.ts",
+    "lib/runtime/rotation-account-selection.ts",
+    "lib/runtime/rotation-server-types.ts",
+    "scripts/codex-app-router.js",
+    "test/app-bind.test.ts",
+    "test/codex-app-router.test.ts",
+    "test/codex-manager-status-command.test.ts",
+    "test/rotation-account-selection.test.ts",
+    "test/runtime-rotation-proxy.test.ts"
+   ],
+   "states": [
+    "3026e3d6ca00c65f367fff9ee1bcf3b9938a0787",
+    "3cbe14e9089bbc58a82d2df841f9e2634695274d",
+    "2d695225033ec654728910680c4b59a7b8e7d30c",
+    "6247b0a576d6cc74c9319ff4f560185cd329e68d",
+    "0fd8ef2168f8c7d19e11f75a0a3259903dce87b4"
+   ],
+   "n_commits": 6
+  },
+  {
+   "pr": 738,
+   "method": "merge",
+   "landing": "12d050ed5ddc7c9c3b54dc1b97b150436d73541f",
+   "landing_date": "2026-10-14T20:25:04+08:00",
+   "head": "2c93ec57762e31747d68e5eaa3e536473f68a4db",
+   "base": "80a1853863b62fa5ca6400af9e5a2166b3ad5ec5",
+   "authors": [
+    "Devin\t158243242+devin-ai-integration[bot]@users.noreply.github.com",
+    "Rodrigo\trodrigo.marques.ds@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "README.md",
+    "docs/architecture.md",
+    "docs/development/ARCHITECTURE.md",
+    "docs/features.md",
+    "docs/reference/public-api.md",
+    "docs/upgrade.md",
+    "lib/accounts.ts",
+    "lib/constants.ts",
+    "lib/runtime-rotation-proxy.ts",
+    "lib/runtime/rotation-account-selection.ts",
+    "lib/runtime/rotation-proxy-state.ts",
+    "lib/runtime/rotation-token-refresh.ts",
+    "lib/usage/ledger.ts",
+    "lib/usage/redaction.ts",
+    "lib/usage/types.ts",
+    "test/property/ledger-redaction.property.test.ts",
+    "test/rotation-proxy-state.test.ts",
+    "test/rotation-token-refresh.test.ts",
+    "test/runtime-rotation-proxy.test.ts",
+    "test/runtime-transcription-proxy.test.ts"
+   ],
+   "states": [
+    "2c93ec57762e31747d68e5eaa3e536473f68a4db",
+    "abfd3a739ed30778f14744451fbf2e4a0df5cfc8",
+    "ce58b942512d11bebed2834622384564a2e34abb",
+    "03b93960f7bea9f554c0ddc45e535a6f546664da",
+    "df71dcd7baa04f89a8b62592a34b70ed987e15a5"
+   ],
+   "n_commits": 25
+  },
+  {
+   "pr": 739,
+   "method": "merge",
+   "landing": "f8a5625f7070458f6f282c20889920c56f307967",
+   "landing_date": "2026-10-14T20:27:17+08:00",
+   "head": "0e883f16e1817d109bf55c452018c337e31d88c0",
+   "base": "12d050ed5ddc7c9c3b54dc1b97b150436d73541f",
+   "authors": [
+    "Contributor\tcontributor@example.invalid",
+    "Devin\t158243242+devin-ai-integration[bot]@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "README.md",
+    "docs/architecture.md",
+    "docs/features.md",
+    "docs/privacy.md",
+    "docs/reference/commands.md",
+    "docs/reference/storage-paths.md",
+    "docs/upgrade.md",
+    "lib/api-route-store.ts",
+    "lib/codex-manager.ts",
+    "lib/codex-manager/api-login-menu.ts",
+    "lib/codex-manager/commands/status.ts",
+    "lib/model-route-policy.ts",
+    "lib/runtime-rotation-proxy.ts",
+    "lib/runtime/api-model-capabilities.ts",
+    "lib/runtime/app-bind.ts",
+    "lib/runtime/automatic-api-checks.ts",
+    "lib/runtime/model-discovery-status.ts",
+    "lib/runtime/persisted-api-capabilities.ts",
+    "lib/runtime/responses-websocket.ts",
+    "lib/runtime/rotation-proxy-state.ts",
+    "lib/runtime/rotation-server-types.ts",
+    "lib/storage/credential-sidecars.ts",
+    "lib/storage/file-lock.ts",
+    "scripts/codex-app-router.js",
+    "test/api-capability-custom-fetch.test.ts",
+    "test/api-capability-ownership.test.ts",
+    "test/api-epoch-migration-concurrency.test.ts",
+    "test/api-login-menu.test.ts",
+    "test/api-model-capabilities.test.ts",
+    "test/api-probe-slot-cancellation.test.ts",
+    "test/api-route-store.test.ts",
+    "test/app-bind.test.ts",
+    "test/automatic-api-checks.test.ts",
+    "test/cli-output-contracts.test.ts",
+    "test/codex-app-router.test.ts",
+    "test/codex-manager-cli.test.ts",
+    "test/codex-manager-status-command.test.ts",
+    "test/codex-manager-uninstall-dispatch.test.ts",
+    "test/credential-probe-leases.test.ts",
+    "test/credential-sidecars.test.ts",
+    "test/model-discovery-status.test.ts",
+    "test/model-inventory-cancellation.test.ts",
+    "test/persisted-api-capabilities-repair.test.ts",
+    "test/persisted-api-capabilities.test.ts",
+    "test/responses-websocket.test.ts",
+    "test/rotation-proxy-state.test.ts",
+    "test/storage-file-lock-guard.test.ts",
+    "test/storage-file-lock.test.ts"
+   ],
+   "states": [
+    "0e883f16e1817d109bf55c452018c337e31d88c0",
+    "719bb72c6f9f802c16a8489b89c0a52005b035c4",
+    "d1fa9de6047c3ee71f80514522dcff3c32d65db7",
+    "4ba7cca2eed2df49920df5d6ba3efad6a9dd5ab7",
+    "86bd04055ea844b9280e6658f35dddf965d11592"
+   ],
+   "n_commits": 26
+  },
+  {
+   "pr": 740,
+   "method": "squash",
+   "landing": "a5e37e0bb6b1d816d0cd0f7a5b481fa95d401526",
+   "landing_date": "2026-10-16T22:12:20+08:00",
+   "head": "76616ff8a6b9117bd96e6084a556b81589cfe67f",
+   "base": "ceb4172deda0613d3a2492a5f4f43e60d3698e0a",
+   "authors": [
+    "Contributor\tcontributor@example.invalid",
+    "Devin\t158243242+devin-ai-integration[bot]@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "docs/reference/commands.md",
+    "docs/upgrade.md",
+    "lib/api-route-store.ts",
+    "lib/runtime-rotation-proxy.ts",
+    "lib/runtime/account-model-catalog.ts",
+    "lib/runtime/app-bind.ts",
+    "lib/runtime/responses-websocket.ts",
+    "lib/runtime/rotation-account-selection.ts",
+    "lib/runtime/rotation-server-types.ts",
+    "scripts/codex-app-router.js",
+    "test/app-bind.test.ts",
+    "test/codex-app-router.test.ts",
+    "test/responses-websocket-capacity.test.ts",
+    "test/responses-websocket-fallback.test.ts",
+    "test/responses-websocket.test.ts",
+    "test/runtime-rotation-proxy.test.ts"
+   ],
+   "states": [
+    "76616ff8a6b9117bd96e6084a556b81589cfe67f",
+    "efb9100f9676d35e2b4086146b3d8f0e15d377da",
+    "f51cdfc7bd458be5702cb7cded60d19ad006a5d7",
+    "b185bb9b42b6b8ce2f2981ecddf8ae4b1943330e",
+    "00f5db85bf81d25e974a955fb870aa87fb9897a9"
+   ],
+   "n_commits": 19
+  },
+  {
+   "pr": 742,
+   "method": "squash",
+   "landing": "20f0436b1de4eaae4c60a523dbd20f946a65f0cc",
+   "landing_date": "2026-10-16T22:19:31+08:00",
+   "head": "e8e1050916eef62f4bac132193db7a16f71b592d",
+   "base": "a5e37e0bb6b1d816d0cd0f7a5b481fa95d401526",
+   "authors": [
+    "Devin\t158243242+devin-ai-integration[bot]@users.noreply.github.com",
+    "maomaocun\t124250220+maomaocun@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "README.md",
+    "config/schema/config.schema.json",
+    "docs/configuration.md",
+    "docs/getting-started.md",
+    "docs/index.md",
+    "docs/reference/commands.md",
+    "docs/upgrade.md",
+    "lib/auth/account-access.ts",
+    "lib/auth/auth.ts",
+    "lib/auth/device-auth.ts",
+    "lib/auth/http.ts",
+    "lib/codex-manager.ts",
+    "lib/codex-manager/account-manager-commands.ts",
+    "lib/codex-manager/commands/locale.ts",
+    "lib/codex-manager/commands/status.ts",
+    "lib/codex-manager/help.ts",
+    "lib/config.ts",
+    "lib/locale.ts",
+    "lib/quota-probe.ts",
+    "lib/request/proxy-fetch.ts",
+    "lib/request/url-rewriting.ts",
+    "lib/runtime-rotation-proxy.ts",
+    "lib/schemas.ts",
+    "lib/web-dashboard-html.ts",
+    "lib/web-dashboard.ts",
+    "package-lock.json",
+    "package.json",
+    "scripts/codex-routing.js",
+    "scripts/codex.js",
+    "test/cli-output-contracts.test.ts",
+    "test/codex-bin-wrapper.test.ts",
+    "test/codex-manager-cli.test.ts",
+    "test/codex-manager-status-command.test.ts",
+    "test/config-explain.test.ts",
+    "test/device-auth.test.ts",
+    "test/documentation.test.ts",
+    "test/locale.test.ts",
+    "test/plugin-config.test.ts",
+    "test/proxy-fetch.test.ts",
+    "test/web-dashboard.test.ts"
+   ],
+   "states": [
+    "e8e1050916eef62f4bac132193db7a16f71b592d",
+    "45b3fbba9ab625211d7f7fa537dc29edbed43723",
+    "a10d4ecc78d13c73e4ef11e23e754fa37e6170e3",
+    "6eec90c867b6553d343b8f26dba189b9d860f2d1",
+    "fd339ce5cab99413f10465a592fe71ea7f7deb2c"
+   ],
+   "n_commits": 11
+  },
+  {
+   "pr": 747,
+   "method": "squash",
+   "landing": "11b7148979caa449098f5ba4190ac30a4e93a73d",
+   "landing_date": "2026-10-20T22:45:09+08:00",
+   "head": "d3572102c5612527e9e5c6e0e172d1447c97b5de",
+   "base": "b82211307685a2bb1166cd9f69988b965bfab3bc",
+   "authors": [
+    "Neil\tdevzeian@gmail.com",
+    "danpetruk\tdanpetruk@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "README.md",
+    "docs/features.md",
+    "docs/reference/error-contracts.md",
+    "docs/upgrade.md",
+    "lib/accounts.ts",
+    "lib/accounts/rate-limits.ts",
+    "lib/constants.ts",
+    "lib/preemptive-quota-scheduler.ts",
+    "lib/quota-readiness.ts",
+    "lib/request/rate-limit-decision.ts",
+    "lib/runtime-rotation-proxy.ts",
+    "lib/storage/snapshot-merge.ts",
+    "test/accounts.test.ts",
+    "test/index.test.ts",
+    "test/preemptive-quota-scheduler.test.ts",
+    "test/quota-readiness.test.ts",
+    "test/rate-limit-cache-ttl.test.ts",
+    "test/rate-limit-decision.test.ts",
+    "test/runtime-rotation-proxy.test.ts",
+    "test/storage-snapshot-merge.test.ts",
+    "test/subscription-quota-order.test.ts"
+   ],
+   "states": [
+    "d3572102c5612527e9e5c6e0e172d1447c97b5de",
+    "cd5101fed801229f1b7680ef6881d105a80146bd"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 746,
+   "method": "squash",
+   "landing": "732fd81a60fb1b61dadb954f5e9642bd9a95d244",
+   "landing_date": "2026-10-20T22:45:14+08:00",
+   "head": "a825f429c940a59d8a0bc1710414a2442baa86da",
+   "base": "b82211307685a2bb1166cd9f69988b965bfab3bc",
+   "authors": [
+    "FlitCatz\tflitcatz@gmail.com",
+    "Neil\tdevzeian@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "docs/privacy.md",
+    "docs/reference/commands.md",
+    "lib/codex-manager/commands/resets.ts",
+    "lib/runtime/account-reset-credits.ts",
+    "lib/runtime/reset-credits.ts",
+    "test/account-reset-target.test.ts",
+    "test/codex-manager-resets.test.ts",
+    "test/reset-credits.test.ts",
+    "test/runtime-rotation-proxy.test.ts"
+   ],
+   "states": [
+    "a825f429c940a59d8a0bc1710414a2442baa86da",
+    "30318a50be962892a7bdbf5a90c47f36fe800091",
+    "455144181e9fbf005c05db86c99f2881588b5ad8",
+    "635e9d9ae803e7ce5ceddc60900ef448a3cae4d3",
+    "2492da8f8bb1590ed5c6cb706f815a1be38145f8"
+   ],
+   "n_commits": 5
+  },
+  {
+   "pr": 744,
+   "method": "squash",
+   "landing": "b3ac3fb654a6c2b0964bbf4493f7dc5a2db72d7c",
+   "landing_date": "2026-10-20T23:03:17+08:00",
+   "head": "937ec88d45056c1af7c3f8e74d712a8708db98b4",
+   "base": "732fd81a60fb1b61dadb954f5e9642bd9a95d244",
+   "authors": [
+    "Bayan\tbayan9@users.noreply.github.com",
+    "Bayan\tbayan@subspace.com",
+    "Contributor\tcontributor@example.com",
+    "Contributor\tcontributor@example.invalid",
+    "Neil\tdevzeian@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "README.md",
+    "docs/design/pool-capacity-recovery-review.md",
+    "docs/features.md",
+    "docs/reference/commands.md",
+    "docs/upgrade.md",
+    "index.ts",
+    "lib/account-policy.ts",
+    "lib/accounts.ts",
+    "lib/auth/token-utils.ts",
+    "lib/codex-manager.ts",
+    "lib/codex-manager/commands/account.ts",
+    "lib/codex-manager/commands/resets.ts",
+    "lib/codex-manager/commands/workspace.ts",
+    "lib/codex-manager/help.ts",
+    "lib/policy/runtime-policy-cache.ts",
+    "lib/policy/runtime-policy.ts",
+    "lib/quota-cache.ts",
+    "lib/quota-readiness.ts",
+    "lib/runtime-rotation-proxy.ts",
+    "lib/runtime/account-reset-credits.ts",
+    "lib/runtime/automatic-account-checks.ts",
+    "lib/runtime/automatic-subscription-checks.ts",
+    "lib/runtime/model-discovery-status.ts",
+    "lib/runtime/reset-credit-routing.ts",
+    "lib/runtime/reset-credits.ts",
+    "lib/runtime/rotation-proxy-state.ts",
+    "lib/runtime/subscription-quota-order.ts",
+    "lib/runtime/workspace-model-scopes.ts",
+    "lib/storage/snapshot-merge.ts",
+    "test/account-policy.test.ts",
+    "test/account-reset-target.test.ts",
+    "test/accounts.test.ts",
+    "test/automatic-account-checks.test.ts",
+    "test/automatic-subscription-checks.test.ts",
+    "test/cli-output-contracts.test.ts",
+    "test/codex-manager-account-command.test.ts",
+    "test/codex-manager-emergency-diagnostics.test.ts",
+    "test/codex-manager-resets.test.ts",
+    "test/codex-manager-workspace-command.test.ts",
+    "test/health-check.test.ts",
+    "test/index-retry.test.ts",
+    "test/model-discovery-status.test.ts",
+    "test/plugin-emergency-admission.test.ts",
+    "test/reset-credit-exhaustion.test.ts",
+    "test/reset-credit-expiry.test.ts",
+    "test/reset-credit-routing.test.ts",
+    "test/reset-credits.test.ts",
+    "test/reset-identity-collision.test.ts",
+    "test/responses-websocket.test.ts",
+    "test/runtime-policy-cache.test.ts",
+    "test/runtime-policy.test.ts",
+    "test/runtime-rotation-proxy.test.ts",
+    "test/runtime-transcription-proxy.test.ts",
+    "test/storage-snapshot-merge.test.ts",
+    "test/storage-workspace-policy-merge.test.ts",
+    "test/subscription-quota-order.test.ts",
+    "test/workspace-model-scopes.test.ts"
+   ],
+   "states": [
+    "937ec88d45056c1af7c3f8e74d712a8708db98b4",
+    "ea10692c0c23f358b8406a2f753603712f6cca08",
+    "476fc35e2af44f5c7c19a35c5e2f7c0219b043bd",
+    "5321728f43c3a538d13be4c09346a25a5ccd706c",
+    "936c6e99f6f0910bbeaf8962e23ee3ffe06e5d83"
+   ],
+   "n_commits": 29
+  },
+  {
+   "pr": 756,
+   "method": "squash",
+   "landing": "8578d5e15e586fefaf9918a66300c18b1c9dfbf0",
+   "landing_date": "2026-10-31T18:39:44+08:00",
+   "head": "001f52a7c844c29f8c78cb06514285345c10fbb6",
+   "base": "cce85fbe458162b4094eec16ed003597c7a5777d",
+   "authors": [
+    "Neil\tndycode@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "config/README.md",
+    "config/codex-legacy.json",
+    "config/codex-modern.json",
+    "docs/configuration.md",
+    "docs/upgrade.md",
+    "lib/context-budget/model-context-windows.ts",
+    "lib/request/error-classification.ts",
+    "lib/request/helpers/model-map.ts",
+    "lib/usage/pricing.ts",
+    "lib/usage/types.ts",
+    "lib/usage/usage-extraction.ts",
+    "scripts/codex.js",
+    "test/codex-model-resolution.test.ts",
+    "test/gpt61-sol-models.test.ts",
+    "test/gpt61-terra-models.test.ts",
+    "test/usage-service-tier.test.ts"
+   ],
+   "states": [
+    "001f52a7c844c29f8c78cb06514285345c10fbb6",
+    "c4fdaa481587759e0d445e96467e58a93c028b35"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 751,
+   "method": "squash",
+   "landing": "16dff0e9cf16c41eaaade94d5f3886cd6e6fd250",
+   "landing_date": "2026-10-31T18:41:48+08:00",
+   "head": "6a293dcd191ffee8f214cb9621a51ba8df155424",
+   "base": "cce85fbe458162b4094eec16ed003597c7a5777d",
+   "authors": [
+    "Neil\tndycode@users.noreply.github.com",
+    "danpetruk\tdanpetruk@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "README.md",
+    "docs/development/ARCHITECTURE.md",
+    "docs/getting-started.md",
+    "docs/reference/settings.md",
+    "docs/troubleshooting.md",
+    "docs/upgrade.md",
+    "lib/refresh-lease.ts",
+    "lib/refresh-queue.ts",
+    "lib/request/rate-limit-decision.ts",
+    "lib/request/token-refresh.ts",
+    "lib/runtime-rotation-proxy.ts",
+    "lib/runtime/native-rate-limits.ts",
+    "lib/runtime/rotation-server-types.ts",
+    "lib/runtime/rotation-token-refresh.ts",
+    "lib/schemas.ts",
+    "test/fetch-helpers.test.ts",
+    "test/native-rate-limits.test.ts",
+    "test/refresh-lease.test.ts",
+    "test/refresh-queue.test.ts",
+    "test/rotation-token-refresh.test.ts",
+    "test/runtime-rotation-proxy.test.ts"
+   ],
+   "states": [
+    "6a293dcd191ffee8f214cb9621a51ba8df155424",
+    "4dfe95196d5d541e86f2d5dcd96677a1b1c8903c",
+    "7f339a56249d73d31979ba77d7d490c4f958d32d",
+    "57cb8d99a087efcba8c1053263ea44fe383bd9d3"
+   ],
+   "n_commits": 4
+  },
+  {
+   "pr": 749,
+   "method": "squash",
+   "landing": "6714f2444c285a7f1bf2a138fd719fb48ec2c347",
+   "landing_date": "2026-10-31T18:48:54+08:00",
+   "head": "4f4b7a2030bbb725be8b0740799e18d991735c29",
+   "base": "16dff0e9cf16c41eaaade94d5f3886cd6e6fd250",
+   "authors": [
+    "Contributor\tcontributor@example.invalid",
+    "Neil\tndycode@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "README.md",
+    "lib/api-region.ts",
+    "lib/api-route-store.ts",
+    "lib/codex-manager/api-login-menu.ts",
+    "lib/codex-manager/commands/status.ts",
+    "lib/model-route-policy.ts",
+    "lib/request/api-retry-delay.ts",
+    "lib/request/response-outcome.ts",
+    "lib/runtime-rotation-proxy.ts",
+    "lib/runtime/api-model-capabilities.ts",
+    "lib/runtime/api-model-runtime.ts",
+    "lib/runtime/api-rate-backoff.ts",
+    "lib/runtime/app-bind.ts",
+    "lib/runtime/automatic-api-checks.ts",
+    "lib/runtime/automatic-subscription-checks.ts",
+    "lib/runtime/model-discovery-status.ts",
+    "lib/runtime/persisted-api-capabilities.ts",
+    "lib/runtime/responses-websocket.ts",
+    "lib/runtime/rotation-proxy-state.ts",
+    "lib/runtime/rotation-server-types.ts",
+    "lib/usage/pricing.ts",
+    "lib/web-dashboard-html.ts",
+    "scripts/codex-app-router.js",
+    "test/api-coordinated-backoff.test.ts",
+    "test/api-declared-image-input.test.ts",
+    "test/api-full-model-profile.test.ts",
+    "test/api-literal-ultra.test.ts",
+    "test/api-login-menu.test.ts",
+    "test/api-model-capabilities.test.ts",
+    "test/api-model-runtime.test.ts",
+    "test/api-route-store.test.ts",
+    "test/app-bind.test.ts",
+    "test/codex-app-router.test.ts",
+    "test/codex-manager-status-command.test.ts",
+    "test/discovery-pacing.test.ts",
+    "test/model-discovery-status.test.ts",
+    "test/model-route-policy.test.ts",
+    "test/persisted-api-capabilities.test.ts",
+    "test/responses-websocket-interrupt.test.ts",
+    "test/responses-websocket.test.ts",
+    "test/runtime-rotation-proxy.test.ts"
+   ],
+   "states": [
+    "4f4b7a2030bbb725be8b0740799e18d991735c29",
+    "08f826aeea5515fd92bbd52abe32002e21f3a4a5",
+    "fce620b36412328543fc1e284a6ca4f227d0a62e",
+    "d50e4a542f7de1fb2a86a95c49844caa6763b8b4",
+    "ae0ca49414f3c27ee35588f7c62addf9f18e584e"
+   ],
+   "n_commits": 28
+  },
+  {
+   "pr": 755,
+   "method": "squash",
+   "landing": "d5878830be28519738e2a75c28b7c950266b1d8d",
+   "landing_date": "2026-10-31T18:55:10+08:00",
+   "head": "42b612d5ba0c1bdb4822f049f3f246ef97b9dc5c",
+   "base": "6714f2444c285a7f1bf2a138fd719fb48ec2c347",
+   "authors": [
+    "Neil\tndycode@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "AGENTS.md",
+    "README.md",
+    "docs/architecture.md",
+    "docs/configuration.md",
+    "docs/development/ARCHITECTURE.md",
+    "docs/development/CONFIG_FIELDS.md",
+    "docs/features.md",
+    "docs/index.md",
+    "docs/reference/commands.md",
+    "docs/reference/public-api.md",
+    "docs/upgrade.md",
+    "lib/AGENTS.md",
+    "lib/codex-manager/commands/rotation.ts",
+    "lib/runtime-rotation-proxy.ts",
+    "lib/runtime/app-bind.ts",
+    "lib/runtime/config-toml.ts",
+    "lib/runtime/native-provider-config.ts",
+    "lib/runtime/realtime-calls.ts",
+    "lib/runtime/response-output-history.ts",
+    "lib/runtime/responses-websocket.ts",
+    "lib/runtime/rotation-proxy-state.ts",
+    "lib/runtime/rotation-server-types.ts",
+    "lib/usage/ledger.ts",
+    "lib/usage/redaction.ts",
+    "lib/usage/types.ts",
+    "scripts/codex-app-router.js",
+    "scripts/codex.js",
+    "test/app-bind.test.ts",
+    "test/codex-app-router.test.ts",
+    "test/codex-bin-wrapper.test.ts",
+    "test/codex-manager-rotation-command.test.ts",
+    "test/config-toml-restore.test.ts",
+    "test/native-provider-config.test.ts",
+    "test/response-output-history.test.ts",
+    "test/responses-websocket.test.ts",
+    "test/runtime-realtime-proxy.test.ts",
+    "test/runtime-rotation-proxy.test.ts"
+   ],
+   "states": [
+    "42b612d5ba0c1bdb4822f049f3f246ef97b9dc5c",
+    "52d7353b067ac58095d6bca7395f2b7e52bfcfbb",
+    "fa9aee5783f69b4a63346f76e8d9cad0da0870da",
+    "7d8d7c70c5226bd4710831230f143a22d19c9fb4",
+    "1024baab172b96edb51743a7ddf8f2718fe6417d"
+   ],
+   "n_commits": 8
+  },
+  {
+   "pr": 757,
+   "method": "squash",
+   "landing": "441bb6fd55e6a5f055a43ebf2262ed8400363d04",
+   "landing_date": "2026-10-31T18:55:39+08:00",
+   "head": "2b7f5776fe291aa445df9f235922964cd6ac83cc",
+   "base": "6714f2444c285a7f1bf2a138fd719fb48ec2c347",
+   "authors": [
+    "Neil\tndycode@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "test/automatic-api-checks.test.ts"
+   ],
+   "states": [
+    "2b7f5776fe291aa445df9f235922964cd6ac83cc"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 758,
+   "method": "squash",
+   "landing": "04d20463a84b5a2679fc34d318cf6be4cf630b73",
+   "landing_date": "2026-10-31T19:19:05+08:00",
+   "head": "04f1cf6b21c3b51f2c02fb873ff1795be8dd7ec8",
+   "base": "1007941ef7b1682cc2bfd87a870eff1ef405d8b6",
+   "authors": [
+    "Neil\tndycode@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "lockfile/package.json deps only",
+   "changed_files": [
+    "package-lock.json",
+    "package.json"
+   ],
+   "states": [
+    "04f1cf6b21c3b51f2c02fb873ff1795be8dd7ec8"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 759,
+   "method": "squash",
+   "landing": "1235bbf67b0c6c31dbed20e436c1715c4dfbfc7e",
+   "landing_date": "2026-11-04T13:05:33+08:00",
+   "head": "63e0a85708d48233994adcc0b21cfb2dc56b7a46",
+   "base": "04d20463a84b5a2679fc34d318cf6be4cf630b73",
+   "authors": [
+    "Contributor\tcontributor@example.invalid",
+    "Neil\tndycode@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "docs/decisions-api.md",
+    "docs/reference/commands.md",
+    "docs/reference/storage-paths.md",
+    "docs/upgrade.md",
+    "lib/budget-guard.ts",
+    "lib/local-bridge.ts",
+    "lib/policy/runtime-policy.ts",
+    "lib/runtime-rotation-proxy.ts",
+    "lib/runtime/api-model-runtime.ts",
+    "lib/runtime/decisions-runtime.ts",
+    "lib/runtime/rotation-proxy-state.ts",
+    "lib/usage/ledger.ts",
+    "lib/usage/pricing.ts",
+    "lib/usage/redaction.ts",
+    "lib/usage/types.ts",
+    "test/budget-guard.test.ts",
+    "test/decisions-runtime.test.ts",
+    "test/local-bridge.test.ts",
+    "test/runtime-policy.test.ts",
+    "test/runtime-rotation-proxy.test.ts",
+    "test/usage-redaction.test.ts"
+   ],
+   "states": [
+    "63e0a85708d48233994adcc0b21cfb2dc56b7a46",
+    "0e6267daf45ca1b12212a1c904b14a5e648b3e05",
+    "bb7c4b2bb7a2a5f720f25f6da45698ea833a8b09",
+    "429aea2efbc4a81cdc1a05ddda409cb1cb10d8c1",
+    "323a273f83261d217e21262b5b38a344f9d3d529"
+   ],
+   "n_commits": 14
+  },
+  {
+   "pr": 761,
+   "method": "squash",
+   "landing": "cf54d322ce81fd1cc715ca4eda4be986911ef1e4",
+   "landing_date": "2026-11-04T15:28:54+08:00",
+   "head": "891aea458077ad01fb071f0fa2a12ec6a1d53d40",
+   "base": "1235bbf67b0c6c31dbed20e436c1715c4dfbfc7e",
+   "authors": [
+    "Neil\tndycode@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "docs/reference/commands.md"
+   ],
+   "states": [
+    "891aea458077ad01fb071f0fa2a12ec6a1d53d40"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 760,
+   "method": "squash",
+   "landing": "d05d6baa87bfea3db2813652ac8ac590fb34be48",
+   "landing_date": "2026-11-04T15:30:12+08:00",
+   "head": "78076d60736e6504fd854f3f279b365ea9165494",
+   "base": "1235bbf67b0c6c31dbed20e436c1715c4dfbfc7e",
+   "authors": [
+    "Neil\tndycode@users.noreply.github.com",
+    "danpetruk\tdanpetruk@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "CHANGELOG.md",
+    "docs/design/earned-reset-credits.md",
+    "docs/upgrade.md",
+    "lib/accounts.ts",
+    "lib/accounts/rate-limits.ts",
+    "lib/circuit-breaker.ts",
+    "lib/codex-manager/commands/rotation.ts",
+    "lib/request/request-resilience.ts",
+    "lib/runtime-rotation-proxy.ts",
+    "lib/runtime/account-status.ts",
+    "lib/runtime/carry-runtime-quota-state.ts",
+    "lib/runtime/confirmed-reset-reconciler.ts",
+    "lib/runtime/reset-credit-routing.ts",
+    "lib/runtime/reset-credits.ts",
+    "lib/runtime/rotation-proxy-state.ts",
+    "test/account-rate-limits.test.ts",
+    "test/account-status.test.ts",
+    "test/accounts.test.ts",
+    "test/carry-runtime-quota-state.test.ts",
+    "test/circuit-breaker.test.ts",
+    "test/codex-manager-rotation-command.test.ts",
+    "test/confirmed-reset-reconciler.test.ts",
+    "test/documentation.test.ts",
+    "test/request-resilience.test.ts",
+    "test/reset-credit-expiry.test.ts",
+    "test/reset-credit-routing.test.ts",
+    "test/reset-credits.test.ts",
+    "test/rotation-proxy-state.test.ts",
+    "test/runtime-rotation-proxy.test.ts"
+   ],
+   "states": [
+    "78076d60736e6504fd854f3f279b365ea9165494",
+    "16cee8017220b813b51812f6a72a7f387f14b701",
+    "71bf11cba1c76212c20b5a5f729217447363b876",
+    "16d933e9da5f975ca7c4b0f73fc0cb107567b65a",
+    "7a4c235c1ad0da9548aace4f5c6183e98c84d9fa"
+   ],
+   "n_commits": 42
+  },
+  {
+   "pr": 762,
+   "method": "squash",
+   "landing": "ea116466b4d191ba83d0806c42795803d634c9d7",
+   "landing_date": "2026-11-04T16:58:37+08:00",
+   "head": "b0ed7c57ba2f38f45d046829c7de35d2a196f084",
+   "base": "51f3bfa02b65e8a21eb6c66f4d5a1ccb350a8389",
+   "authors": [
+    "Neil\tndycode@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "lib/accounts.ts",
+    "lib/runtime-rotation-proxy.ts",
+    "lib/runtime/confirmed-reset-reconciler.ts",
+    "lib/runtime/rotation-token-refresh.ts",
+    "test/runtime-rotation-proxy.test.ts"
+   ],
+   "states": [
+    "b0ed7c57ba2f38f45d046829c7de35d2a196f084",
+    "8ba58e981be76e354399c8e5be0b851f84db7b84",
+    "2c7147ea22566218c5b090a017deaaa175e99f3c",
+    "0d702bacd7f1989929321abca4f2272899aa9f24"
+   ],
+   "n_commits": 4
+  },
+  {
+   "pr": 765,
+   "method": "merge",
+   "landing": "6b9ffbe21495210095d7078877b1530eb515412a",
+   "landing_date": "2026-11-13T16:48:29+08:00",
+   "head": "64011a88d7f3efb2e2b4f060caee2cce50785885",
+   "base": "dd7e3ed4411c46205226164a1febccecbff89510",
+   "authors": [
+    "Jinwook Jeong\tjinwookjeongg@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "scripts/codex.js",
+    "test/codex-bin-wrapper.test.ts"
+   ],
+   "states": [
+    "64011a88d7f3efb2e2b4f060caee2cce50785885"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 766,
+   "method": "merge",
+   "landing": "4247663b3171e733a6b8d31606340009842eb2d8",
+   "landing_date": "2026-11-13T16:48:33+08:00",
+   "head": "0bdfdf020512f548f42542d98d61d103b6accc6c",
+   "base": "dd7e3ed4411c46205226164a1febccecbff89510",
+   "authors": [
+    "Neil Daquioag\tndycode@users.noreply.github.com",
+    "danpetruk\tdanpetruk@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "lib/runtime-rotation-proxy.ts",
+    "lib/runtime/native-account-storage.ts",
+    "lib/runtime/native-login-sync.ts",
+    "test/native-login-sync.test.ts"
+   ],
+   "states": [
+    "0bdfdf020512f548f42542d98d61d103b6accc6c",
+    "97eb7dd422fd3cf5c74a542dfb316e71c92fd951"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 767,
+   "method": "merge",
+   "landing": "d563c8d2fa170af69170a0fdb8ba2824d81a14f1",
+   "landing_date": "2026-11-13T16:48:37+08:00",
+   "head": "d1b7eef73932f8f82055b2683bf7ec7b62cb33e3",
+   "base": "dd7e3ed4411c46205226164a1febccecbff89510",
+   "authors": [
+    "Neil Daquioag\tndycode@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "lib/runtime-rotation-proxy.ts",
+    "lib/runtime/rotation-proxy-state.ts",
+    "test/runtime-rotation-proxy.test.ts"
+   ],
+   "states": [
+    "d1b7eef73932f8f82055b2683bf7ec7b62cb33e3",
+    "d613730cddd3bd9378c1c0b07ec89a03b78409c5",
+    "5cd64b3ecac3a53dc9c54353b561aabfcf55b33d",
+    "f417e422b609e6b2366957f728d97bf1d531a743"
+   ],
+   "n_commits": 4
+  },
+  {
+   "pr": 769,
+   "method": "merge",
+   "landing": "3dc01904a398913fdeedd7eddf4232627e494255",
+   "landing_date": "2026-11-18T15:19:54+08:00",
+   "head": "36103f215d2d649f42dbaef6b3b6e840ff92c7c9",
+   "base": "7719820ef8754330ca68b57539fdc65d9500cb59",
+   "authors": [
+    "Neil\tdevzeian@gmail.com",
+    "Neil Daquioag\tneil@zeian.cc"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "config/README.md",
+    "config/codex-legacy.json",
+    "config/codex-modern.json",
+    "docs/architecture.md",
+    "docs/configuration.md",
+    "docs/development/ARCHITECTURE.md",
+    "docs/upgrade.md",
+    "lib/context-budget/model-context-windows.ts",
+    "lib/request/error-classification.ts",
+    "lib/request/fetch-helpers.ts",
+    "lib/request/helpers/model-map.ts",
+    "lib/request/request-transformer.ts",
+    "lib/usage/pricing.ts",
+    "lib/usage/redaction.ts",
+    "scripts/bench-format/models.mjs",
+    "scripts/codex.js",
+    "test/codex-model-resolution.test.ts",
+    "test/gpt62-models.test.ts",
+    "test/usage-ledger.test.ts"
+   ],
+   "states": [
+    "36103f215d2d649f42dbaef6b3b6e840ff92c7c9",
+    "819b2b9d98f9cb2e086268d3547a06fb796f5730",
+    "9c9f184b7012ebeba290efc36c7e4406f1a369cb",
+    "5145828890e1336ec833b62a63a8fdf4a5e86d10"
+   ],
+   "n_commits": 4
+  },
+  {
+   "pr": 770,
+   "method": "merge",
+   "landing": "23569bdedf5de53f9ebefdfac8fa803c26a7074b",
+   "landing_date": "2026-11-18T15:21:15+08:00",
+   "head": "0918d980c16c30e7854b8f6826097e13ceaee87a",
+   "base": "7719820ef8754330ca68b57539fdc65d9500cb59",
+   "authors": [
+    "Neil\tdevzeian@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "scripts/codex.js",
+    "test/codex-bin-wrapper.test.ts"
+   ],
+   "states": [
+    "0918d980c16c30e7854b8f6826097e13ceaee87a",
+    "5d4e090209686c1a432893f4bbca7470a0577092",
+    "a3648f6f6d6f0359b0f939603c680293ab2f0d6c",
+    "6bbdbf2b78fecdcd1f12b6e1ca1e48151e2f9b28",
+    "495693b3038860d2a9ee31f928a513f0c3d3bfc1"
+   ],
+   "n_commits": 5
+  }
+ ]
+}

@@ -1,0 +1,748 @@
+{
+ "repo": "lerna-lite",
+ "url": "https://github.com/lerna-lite/lerna-lite",
+ "default": "origin/main",
+ "default_head": "fec3cb9660bac71efe5d5e5749f615a3802c1cc1",
+ "pr_refs_total": 1301,
+ "pr_numbers_fetched": [
+  1304,
+  1460
+ ],
+ "merged_found_in_fetched": 138,
+ "kept": [
+  {
+   "pr": 1430,
+   "method": "squash",
+   "landing": "19777e2aec89246a59dbb5a815ca1136ee8950fc",
+   "landing_date": "2026-10-16T15:19:42-04:00",
+   "head": "810ba3019e064c9755be354aa8d9462fb7e73168",
+   "base": "5fe200d392c6ed54f50afd0c68c732c41266d039",
+   "authors": [
+    "ghiscoding\tgbeaulac@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "AGENTS.md",
+    "e2e/list/list.spec.ts",
+    "packages/core/src/__tests__/dependency-protocols.spec.ts",
+    "packages/core/src/__tests__/package.spec.ts",
+    "packages/core/src/command.ts",
+    "packages/core/src/package-graph/__tests__/package-graph.spec.ts",
+    "packages/core/src/package-graph/package-graph.ts",
+    "packages/core/src/package.ts",
+    "packages/core/src/utils/catalog-utils.ts",
+    "packages/core/src/utils/collect-updates/__tests__/lib-make-diff-predicate.spec.ts",
+    "packages/core/src/utils/collect-updates/collect-updates.ts",
+    "packages/core/src/utils/collect-updates/lib/make-diff-predicate.ts",
+    "packages/core/src/utils/query-graph.ts",
+    "packages/publish/src/publish-command.ts"
+   ],
+   "states": [
+    "810ba3019e064c9755be354aa8d9462fb7e73168",
+    "23a3be749164b8d742ec9407bc23edd7651ced7d"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 1431,
+   "method": "squash",
+   "landing": "58ea42d52b6eda8ff21565fa6296eea3adb94cb0",
+   "landing_date": "2026-10-16T16:03:19-04:00",
+   "head": "be5c90552abe28686ccc2ce2a4028e7878d10de0",
+   "base": "19777e2aec89246a59dbb5a815ca1136ee8950fc",
+   "authors": [
+    "ghiscoding\tgbeaulac@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "packages/core/src/package-graph/package-graph.ts",
+    "packages/core/src/package.ts",
+    "packages/publish/src/publish-command.ts",
+    "packages/version/src/lib/git-push.ts",
+    "packages/version/src/version-command.ts"
+   ],
+   "states": [
+    "be5c90552abe28686ccc2ce2a4028e7878d10de0",
+    "1bdded26c1a0e8f58f5f477be2942c60485ea275",
+    "59884a230788af448ce433ef7cd9a56469f5f44b"
+   ],
+   "n_commits": 3
+  },
+  {
+   "pr": 1432,
+   "method": "squash",
+   "landing": "5b70731ba430dc69e46f1faf91efc357859e0ae4",
+   "landing_date": "2026-10-17T23:45:41-04:00",
+   "head": "6770c8fff9c030609d3b3a9a6cedd97665fa96c0",
+   "base": "58ea42d52b6eda8ff21565fa6296eea3adb94cb0",
+   "authors": [
+    "ghiscoding\tgbeaulac@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml"
+   ],
+   "states": [
+    "6770c8fff9c030609d3b3a9a6cedd97665fa96c0"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 1433,
+   "method": "squash",
+   "landing": "a2935c4968b36a685f66eb18e6915521b4f954e4",
+   "landing_date": "2026-10-19T00:08:08-04:00",
+   "head": "f6330647c42f00814805645e562b9aa08b759c0e",
+   "base": "5b70731ba430dc69e46f1faf91efc357859e0ae4",
+   "authors": [
+    "ghiscoding\tgbeaulac@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "packages/core/src/__tests__/command.spec.ts",
+    "packages/core/src/command.ts"
+   ],
+   "states": [
+    "f6330647c42f00814805645e562b9aa08b759c0e"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 1434,
+   "method": "squash",
+   "landing": "42a054ebb2dedeafe54739bf29d064b71c844124",
+   "landing_date": "2026-10-19T17:44:43-04:00",
+   "head": "5dda3d70d6da2c990fb9db5b36c15aba41ee5a62",
+   "base": "a2935c4968b36a685f66eb18e6915521b4f954e4",
+   "authors": [
+    "renovate[bot]\t29139614+renovate[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml"
+   ],
+   "states": [
+    "5dda3d70d6da2c990fb9db5b36c15aba41ee5a62"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 1435,
+   "method": "squash",
+   "landing": "3047b5b3a885fdc25852728397d655b2ae6a2113",
+   "landing_date": "2026-10-30T18:05:35-04:00",
+   "head": "f158b9c19023534726811b7dd250638cddfed6ad",
+   "base": "6bce334009b4a63cf98c079515b0c820222cad9a",
+   "authors": [
+    "ghiscoding\tgbeaulac@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml"
+   ],
+   "states": [
+    "f158b9c19023534726811b7dd250638cddfed6ad"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 1436,
+   "method": "squash",
+   "landing": "5c4213824f48601ebcbc171901e87dbbc2a74ce8",
+   "landing_date": "2026-11-02T19:02:37-05:00",
+   "head": "c72035be146dd600e8f49c36fcc7c0daf0cf48cd",
+   "base": "96952c8fc8569a2336516367f6685c5208b047df",
+   "authors": [
+    "ghiscoding\tgbeaulac@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "e2e/publish/publish-dry-run.spec.ts",
+    "packages/publish/README.md",
+    "packages/publish/src/__tests__/publish-config-overrides.spec.ts",
+    "packages/publish/src/__tests__/publish-strip-package-keys.spec.ts",
+    "packages/publish/src/publish-command.ts"
+   ],
+   "states": [
+    "c72035be146dd600e8f49c36fcc7c0daf0cf48cd"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 1437,
+   "method": "squash",
+   "landing": "cff24c619406b45f5282cbf70e5ef840f8c5a269",
+   "landing_date": "2026-11-02T23:50:27-05:00",
+   "head": "52422bafe6e60a505b3361a2d9c0f0815604fc88",
+   "base": "5c4213824f48601ebcbc171901e87dbbc2a74ce8",
+   "authors": [
+    "ghiscoding\tgbeaulac@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "helpers/serializers/serialize-git-sha.ts",
+    "packages/core/src/utils/__tests__/npm-conf.spec.ts",
+    "packages/core/src/utils/defaults.ts",
+    "packages/core/src/utils/types.ts",
+    "packages/publish/README.md",
+    "packages/publish/src/__tests__/npm-publish.spec.ts",
+    "packages/publish/src/__tests__/publish-canary.spec.ts",
+    "packages/publish/src/interfaces.ts",
+    "packages/publish/src/lib/npm-publish.ts",
+    "packages/publish/src/publish-command.ts"
+   ],
+   "states": [
+    "52422bafe6e60a505b3361a2d9c0f0815604fc88"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 1438,
+   "method": "squash",
+   "landing": "2a4b1de2b0b3a23b6f52c48c5e38ddef83f99583",
+   "landing_date": "2026-11-03T00:03:34-05:00",
+   "head": "cdde7fb8b59e7f91ed9685fb5c5d5d9c26977b21",
+   "base": "cff24c619406b45f5282cbf70e5ef840f8c5a269",
+   "authors": [
+    "ghiscoding\tgbeaulac@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "packages/publish/README.md",
+    "packages/publish/src/__tests__/npm-publish.spec.ts",
+    "packages/publish/src/__tests__/provenance-retry.spec.ts",
+    "packages/publish/src/interfaces.ts",
+    "packages/publish/src/lib/npm-publish.ts"
+   ],
+   "states": [
+    "cdde7fb8b59e7f91ed9685fb5c5d5d9c26977b21"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 1439,
+   "method": "squash",
+   "landing": "3b6ce88b8d70b144dec744841374277fb0e0cde1",
+   "landing_date": "2026-11-03T00:36:17-05:00",
+   "head": "d41ed5b5d558b45ad44e95e5e1493ff018c5c27b",
+   "base": "2a4b1de2b0b3a23b6f52c48c5e38ddef83f99583",
+   "authors": [
+    "ghiscoding\tgbeaulac@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "e2e/publish/publish-verdaccio.spec.ts",
+    "packages/publish/README.md",
+    "packages/publish/src/__tests__/npm-publish.spec.ts",
+    "packages/publish/src/__tests__/publish-command.spec.ts",
+    "packages/publish/src/__tests__/publish-from-git.spec.ts",
+    "packages/publish/src/__tests__/publish-version-conflict.spec.ts",
+    "packages/publish/src/__tests__/registry-publish-conflict-http.spec.ts",
+    "packages/publish/src/__tests__/registry-publish-conflict.spec.ts",
+    "packages/publish/src/lib/is-npm-js-publish-version-conflict.ts",
+    "packages/publish/src/lib/is-npm-pkg-github-publish-version-conflict.ts",
+    "packages/publish/src/lib/is-registry-publish-version-conflict.ts",
+    "packages/publish/src/lib/npm-publish.ts",
+    "packages/publish/src/publish-command.ts"
+   ],
+   "states": [
+    "d41ed5b5d558b45ad44e95e5e1493ff018c5c27b",
+    "50aa8e237982f02fdbcb056d756c9243a5e1c13e"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 1440,
+   "method": "squash",
+   "landing": "a16ba4d8fed6fe61ce4a7247343889dc2658e9da",
+   "landing_date": "2026-11-03T00:49:57-05:00",
+   "head": "d003c62f4f1f7b95c57616ff1275f2692b166022",
+   "base": "3b6ce88b8d70b144dec744841374277fb0e0cde1",
+   "authors": [
+    "ghiscoding\tgbeaulac@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "e2e/publish/publish-dirty-tree.spec.ts",
+    "e2e/publish/publish-verdaccio.spec.ts",
+    "packages/core/src/__mocks__/check-working-tree.ts",
+    "packages/core/src/utils/__tests__/check-working-tree.spec.ts",
+    "packages/core/src/utils/check-working-tree.ts",
+    "packages/publish/README.md",
+    "packages/publish/src/__tests__/publish-canary.spec.ts",
+    "packages/publish/src/__tests__/publish-from-git.spec.ts",
+    "packages/publish/src/__tests__/publish-from-package.spec.ts",
+    "packages/publish/src/__tests__/publish-working-tree.spec.ts",
+    "packages/publish/src/publish-command.ts",
+    "packages/version/src/__tests__/version-command.spec.ts",
+    "packages/version/src/version-command.ts"
+   ],
+   "states": [
+    "d003c62f4f1f7b95c57616ff1275f2692b166022"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 1442,
+   "method": "squash",
+   "landing": "e3f8fe16412e0e32724ec25765fea99b0677784a",
+   "landing_date": "2026-11-03T10:57:06-05:00",
+   "head": "49b36ae803c96fa20bb425e8ee73fa58634de24a",
+   "base": "a16ba4d8fed6fe61ce4a7247343889dc2658e9da",
+   "authors": [
+    "ghiscoding\tgbeaulac@gmail.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "lockfile/package.json deps only",
+   "changed_files": [
+    "packages/core/package.json",
+    "pnpm-lock.yaml"
+   ],
+   "states": [
+    "49b36ae803c96fa20bb425e8ee73fa58634de24a"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 1441,
+   "method": "squash",
+   "landing": "7a82806cdf3764d89a320e586ea6e9552d730d7c",
+   "landing_date": "2026-11-03T10:59:18-05:00",
+   "head": "765b1c05895587fc9d48e8d0528458030d8a2495",
+   "base": "a16ba4d8fed6fe61ce4a7247343889dc2658e9da",
+   "authors": [
+    "ghiscoding\tgbeaulac@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    ".gitignore",
+    "packages/publish/README.md",
+    "packages/publish/src/__tests__/npm-dist-tag.spec.ts",
+    "packages/publish/src/__tests__/publish-tagging.spec.ts",
+    "packages/publish/src/__tests__/publish-temp-tag-recovery.spec.ts",
+    "packages/publish/src/lib/npm-dist-tag.ts",
+    "packages/publish/src/publish-command.ts"
+   ],
+   "states": [
+    "765b1c05895587fc9d48e8d0528458030d8a2495",
+    "01a74245a607936fb9483a3f18ebb2d565f68f78"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 1443,
+   "method": "squash",
+   "landing": "2c41c0269ec0df0b744cdddb20140a379eef67b0",
+   "landing_date": "2026-11-03T11:46:41-05:00",
+   "head": "172df22c6b8eb74cf1dd58ec98f7e759bebd1c65",
+   "base": "4c51e3652e36b8c1f5eae5cd94eb35294600536f",
+   "authors": [
+    "renovate[bot]\t29139614+renovate[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    ".github/workflows/main.yml",
+    ".github/workflows/release.yml"
+   ],
+   "states": [
+    "172df22c6b8eb74cf1dd58ec98f7e759bebd1c65"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 1444,
+   "method": "squash",
+   "landing": "f62bdba7d69c982a0557bf93b6a35b6f2df03403",
+   "landing_date": "2026-11-03T17:21:52-05:00",
+   "head": "37073bffd2ec633f6f856382500fb370ce3c4bd5",
+   "base": "4c51e3652e36b8c1f5eae5cd94eb35294600536f",
+   "authors": [
+    "ghiscoding\tgbeaulac@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "packages/version/README.md",
+    "packages/version/src/__tests__/version-create-release.spec.ts",
+    "packages/version/src/version-command.ts"
+   ],
+   "states": [
+    "37073bffd2ec633f6f856382500fb370ce3c4bd5"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 1445,
+   "method": "squash",
+   "landing": "7c0beaeff1dc867e8b47845aa24d608332ea4921",
+   "landing_date": "2026-11-03T17:47:06-05:00",
+   "head": "428ef064dff1c78e40387d7c4058f8b18a8b6b13",
+   "base": "17db8cf9d55bd2ece3e861da15bbaa49caaf47b2",
+   "authors": [
+    "ghiscoding\tgbeaulac@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "packages/version/README.md",
+    "packages/version/src/__tests__/version-create-release.spec.ts",
+    "packages/version/src/version-command.ts"
+   ],
+   "states": [
+    "428ef064dff1c78e40387d7c4058f8b18a8b6b13"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 1446,
+   "method": "squash",
+   "landing": "589a9a9bdded85bcddb47348f9bd3befa1c16e18",
+   "landing_date": "2026-11-03T18:16:24-05:00",
+   "head": "12c91b560bb2f75315da12ffed101ffb9f872637",
+   "base": "7c0beaeff1dc867e8b47845aa24d608332ea4921",
+   "authors": [
+    "renovate[bot]\t29139614+renovate[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package.json",
+    "packages/core/package.json",
+    "packages/publish/package.json",
+    "pnpm-lock.yaml"
+   ],
+   "states": [
+    "12c91b560bb2f75315da12ffed101ffb9f872637"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 1447,
+   "method": "squash",
+   "landing": "fb113e08b850a98c92ff8dd905313ec44e7e88f2",
+   "landing_date": "2026-11-03T18:24:16-05:00",
+   "head": "002c3a3b319b3459e0c68390fe6078881746835d",
+   "base": "589a9a9bdded85bcddb47348f9bd3befa1c16e18",
+   "authors": [
+    "renovate[bot]\t29139614+renovate[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml"
+   ],
+   "states": [
+    "002c3a3b319b3459e0c68390fe6078881746835d"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 1448,
+   "method": "squash",
+   "landing": "e5e4e912f7a6e85adb95324b3cbeeffb66b0d9c6",
+   "landing_date": "2026-11-06T15:23:01-05:00",
+   "head": "fe73bc7cc748874daaa23c9ec0d42e65c34aa771",
+   "base": "fe5d28f712e62b677c7626dac9deba32af674ba2",
+   "authors": [
+    "renovate[bot]\t29139614+renovate[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "packages/version/package.json",
+    "pnpm-lock.yaml"
+   ],
+   "states": [
+    "fe73bc7cc748874daaa23c9ec0d42e65c34aa771"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 1449,
+   "method": "squash",
+   "landing": "5e223a3b14912350acac75b70f9bcaa88ecf7474",
+   "landing_date": "2026-11-07T11:23:25-05:00",
+   "head": "5d5c4ad9bf341fac53df7df75311ce947608ce41",
+   "base": "fe5d28f712e62b677c7626dac9deba32af674ba2",
+   "authors": [
+    "ghiscoding\tgbeaulac@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "e2e/publish/publish-dirty-tree.spec.ts",
+    "packages/cli/schemas/lerna-schema.json",
+    "packages/cli/src/cli-commands/__tests__/cli-publish-commands.spec.ts",
+    "packages/cli/src/cli-commands/cli-publish-commands.ts",
+    "packages/core/src/models/command-options.ts",
+    "packages/publish/README.md",
+    "packages/publish/src/__tests__/publish-command.spec.ts",
+    "packages/publish/src/__tests__/publish-from-package.spec.ts",
+    "packages/publish/src/__tests__/publish-working-tree-fallback.spec.ts",
+    "packages/publish/src/__tests__/publish-working-tree.spec.ts",
+    "packages/publish/src/publish-command.ts"
+   ],
+   "states": [
+    "5d5c4ad9bf341fac53df7df75311ce947608ce41",
+    "9f77bddfe6b593ce045445a5ce44bb1d3d1efc27",
+    "9b74ccad0c30d85802034291239830f2e713a1e8",
+    "61d7d9e31ce2dfb2d6b8d3d147c8540701ff52ac"
+   ],
+   "n_commits": 4
+  },
+  {
+   "pr": 1450,
+   "method": "squash",
+   "landing": "e6f3bed06a18a632e5e2d15d3f7cfee4814e41e6",
+   "landing_date": "2026-11-07T11:28:48-05:00",
+   "head": "c52ca23239676718986bbc3e0bf079252962eaf4",
+   "base": "5e223a3b14912350acac75b70f9bcaa88ecf7474",
+   "authors": [
+    "renovate[bot]\t29139614+renovate[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package.json",
+    "pnpm-lock.yaml"
+   ],
+   "states": [
+    "c52ca23239676718986bbc3e0bf079252962eaf4"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 1452,
+   "method": "squash",
+   "landing": "f65b49c8c9ad0808e21294c9729bde99fcb9dd5f",
+   "landing_date": "2026-11-10T18:49:54-05:00",
+   "head": "f897a715cdd8c0e70401ab1dde5e96693cee7b28",
+   "base": "ccb70e3d1d8d827d2eea394b8789a4498dfe0709",
+   "authors": [
+    "Simon Boudrias\tsimon.boudrias@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "packages/cli/src/__tests__/cli-version-commands.spec.ts",
+    "packages/cli/src/cli-commands/cli-version-commands.ts"
+   ],
+   "states": [
+    "f897a715cdd8c0e70401ab1dde5e96693cee7b28"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 1451,
+   "method": "squash",
+   "landing": "989e099ef3351b69bc829a2c4e578d3b08133b0b",
+   "landing_date": "2026-11-10T18:52:25-05:00",
+   "head": "0e7e443fdcd749a172a6f866e2511b88e3ced9bd",
+   "base": "ccb70e3d1d8d827d2eea394b8789a4498dfe0709",
+   "authors": [
+    "ghiscoding\tgbeaulac@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "packages/publish/README.md",
+    "packages/publish/src/__tests__/npm-publish.spec.ts",
+    "packages/publish/src/__tests__/publish-tagging.spec.ts",
+    "packages/publish/src/lib/npm-publish.ts",
+    "packages/publish/src/publish-command.ts"
+   ],
+   "states": [
+    "0e7e443fdcd749a172a6f866e2511b88e3ced9bd"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 1453,
+   "method": "squash",
+   "landing": "3a7f7bdaa5ed3277dc22fba46492d1d659bbb1e6",
+   "landing_date": "2026-11-10T19:29:51-05:00",
+   "head": "e1bc6ff2cc451e657a10f9ef322a5fd025d6785e",
+   "base": "989e099ef3351b69bc829a2c4e578d3b08133b0b",
+   "authors": [
+    "ghiscoding\tgbeaulac@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml"
+   ],
+   "states": [
+    "e1bc6ff2cc451e657a10f9ef322a5fd025d6785e",
+    "f351d518922e3b0493f823ca7a2b14a1d38793f8"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 1454,
+   "method": "squash",
+   "landing": "4be9c04b6147791ac81ae965da152fe29b1b676a",
+   "landing_date": "2026-11-11T21:21:39-05:00",
+   "head": "0adb06b67209b915c98015f078e1adc87e482a78",
+   "base": "3a7f7bdaa5ed3277dc22fba46492d1d659bbb1e6",
+   "authors": [
+    "renovate[bot]\t29139614+renovate[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    ".github/workflows/lint-pr-title.yml"
+   ],
+   "states": [
+    "0adb06b67209b915c98015f078e1adc87e482a78"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 1456,
+   "method": "squash",
+   "landing": "4503659a451724d340662e53c16e14baa6aa715c",
+   "landing_date": "2026-11-16T09:31:48-05:00",
+   "head": "8fecec7f9f8378bdb95e60fec420f09823dcf9d4",
+   "base": "ccb70e3d1d8d827d2eea394b8789a4498dfe0709",
+   "authors": [
+    "ghiscoding\tgbeaulac@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "e2e/publish/publish-dry-run.spec.ts",
+    "packages/cli/schemas/lerna-schema.json",
+    "packages/core/src/__tests__/package.spec.ts",
+    "packages/core/src/models/command-options.ts",
+    "packages/core/src/models/interfaces.ts",
+    "packages/core/src/package.ts",
+    "packages/publish/README.md",
+    "packages/publish/src/__tests__/publish-command.spec.ts",
+    "packages/publish/src/lib/__mocks__/pack-directory.ts",
+    "packages/publish/src/lib/pack-directory.ts",
+    "packages/publish/src/publish-command.ts"
+   ],
+   "states": [
+    "8fecec7f9f8378bdb95e60fec420f09823dcf9d4",
+    "eab152c74aec2b4a0466131f615824bdf2d5c367",
+    "5dad4ad0a8f495a83954a8536e8afeaa406c4c80"
+   ],
+   "n_commits": 3
+  },
+  {
+   "pr": 1457,
+   "method": "squash",
+   "landing": "e03b5482017f5cd3be641106c29e8b65ce341096",
+   "landing_date": "2026-11-16T09:58:56-05:00",
+   "head": "793f332b8996aa013d2f1c74b2a362c7de8b0377",
+   "base": "4503659a451724d340662e53c16e14baa6aa715c",
+   "authors": [
+    "ghiscoding\tgbeaulac@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "e2e/publish/publish-dry-run.spec.ts",
+    "packages/cli/schemas/lerna-schema.json",
+    "packages/cli/src/cli-commands/cli-publish-commands.ts",
+    "packages/core/src/__tests__/package.spec.ts",
+    "packages/core/src/models/command-options.ts",
+    "packages/core/src/models/interfaces.ts",
+    "packages/core/src/package.ts",
+    "packages/publish/README.md",
+    "packages/publish/src/__tests__/publish-command.spec.ts",
+    "packages/publish/src/publish-command.ts"
+   ],
+   "states": [
+    "793f332b8996aa013d2f1c74b2a362c7de8b0377",
+    "02b0b5a280a50987cf26ff3fe21bfb7745205a6d"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 1455,
+   "method": "squash",
+   "landing": "4d652aad52d0fc12cf237c5757ca5ab7c48b51b5",
+   "landing_date": "2026-11-16T10:02:01-05:00",
+   "head": "9d87d1dfb9be1926dd4235871d96b4d5c3e3b004",
+   "base": "4503659a451724d340662e53c16e14baa6aa715c",
+   "authors": [
+    "renovate[bot]\t29139614+renovate[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package.json",
+    "packages/core/package.json",
+    "packages/publish/package.json",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml"
+   ],
+   "states": [
+    "9d87d1dfb9be1926dd4235871d96b4d5c3e3b004"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 1458,
+   "method": "squash",
+   "landing": "e408b2a584ebacf536c8c4ecfc7eb50957279764",
+   "landing_date": "2026-11-16T10:06:31-05:00",
+   "head": "fef3d30ff79e270b08a14c6db4c7c574c37202c3",
+   "base": "4d652aad52d0fc12cf237c5757ca5ab7c48b51b5",
+   "authors": [
+    "renovate[bot]\t29139614+renovate[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    ".github/workflows/main.yml",
+    ".github/workflows/release.yml"
+   ],
+   "states": [
+    "fef3d30ff79e270b08a14c6db4c7c574c37202c3"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 1459,
+   "method": "squash",
+   "landing": "ad22f153696414004044a9edab9266b55e3b6626",
+   "landing_date": "2026-11-16T10:10:26-05:00",
+   "head": "e6e84ab6af3a8c9a455c13160ec099416105a209",
+   "base": "e408b2a584ebacf536c8c4ecfc7eb50957279764",
+   "authors": [
+    "renovate[bot]\t29139614+renovate[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "packages/core/package.json",
+    "pnpm-lock.yaml"
+   ],
+   "states": [
+    "e6e84ab6af3a8c9a455c13160ec099416105a209"
+   ],
+   "n_commits": 1
+  }
+ ]
+}

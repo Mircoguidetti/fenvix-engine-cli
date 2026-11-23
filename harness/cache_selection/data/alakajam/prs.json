@@ -1,0 +1,825 @@
+{
+ "repo": "alakajam",
+ "url": "https://github.com/alakajam-team/alakajam",
+ "default": "origin/master",
+ "default_head": "af63a7e0993f2f7de2ec8dff53a941ccfe855572",
+ "pr_refs_total": 62,
+ "pr_numbers_fetched": [
+  56,
+  696
+ ],
+ "merged_found_in_fetched": 44,
+ "kept": [
+  {
+   "pr": 179,
+   "method": "merge",
+   "landing": "76088726a969bcccf86b115bf31d32d11e183a67",
+   "landing_date": "2017-09-27T20:42:26+02:00",
+   "head": "4d1a24c4fda68274690f3766cf5738cbcc0d2da7",
+   "base": "57b6d06f3484fc0f3ff85d6de7a9cefea9cf8ba4",
+   "authors": [
+    "Nuno Balbona\tniciusb@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "controllers/post-controller.js"
+   ],
+   "states": [
+    "4d1a24c4fda68274690f3766cf5738cbcc0d2da7"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 185,
+   "method": "merge",
+   "landing": "7c213887540c024c6d031c23a59b7c72aef5dee0",
+   "landing_date": "2017-09-28T20:51:43+02:00",
+   "head": "768c79ddc94eff93226b9a3bb57817b04070ecfc",
+   "base": "a61ae2f2ff0959eb85d104c7c6c0a4234c892bde",
+   "authors": [
+    "Aurel Bi\u0301ly\u0301\taurel.bily@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "controllers/entry-controller.js",
+    "services/event-service.js",
+    "templates/entry/view-entry.html"
+   ],
+   "states": [
+    "768c79ddc94eff93226b9a3bb57817b04070ecfc"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 244,
+   "method": "merge",
+   "landing": "54362f67dadb9063f93af5ce7164d0123f411ae8",
+   "landing_date": "2018-03-02T18:14:03+01:00",
+   "head": "06f0cd0d53de6f259b1919c1e75b6b71d6d43a34",
+   "base": "23685fb7bf919789f59e6cb35359870b97ddfb61",
+   "authors": [
+    "Olivier Grech\tolivier.grech@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "assets/css/navbar.css",
+    "assets/css/variables.css",
+    "assets/js/common/shrink-navbar.js",
+    "assets/js/site.js"
+   ],
+   "states": [
+    "06f0cd0d53de6f259b1919c1e75b6b71d6d43a34",
+    "3746d6907e24a4b84eaf0c369f53f9f698fab8a6",
+    "71b66365f94ab0720047032513a7eade1dcdda18",
+    "fb6fe1fa788423e935d345984eb021e68e8cbb9f",
+    "6e7b89332fb7794d037b1422b966cb9919ee6631"
+   ],
+   "n_commits": 5
+  },
+  {
+   "pr": 267,
+   "method": "merge",
+   "landing": "832a9e273955b90263ed34049ccb23af4e2523ec",
+   "landing_date": "2018-03-29T12:10:49+02:00",
+   "head": "f402e01b3561af76273198920fadc02356a7db82",
+   "base": "493abf14052d606445ec6d7996bffd7400c22dbb",
+   "authors": [
+    "Thomas ten Cate\tttencate@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "core/constants.js",
+    "core/forms.js",
+    "package-lock.json",
+    "package.json"
+   ],
+   "states": [
+    "f402e01b3561af76273198920fadc02356a7db82"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 307,
+   "method": "merge",
+   "landing": "c2cf4d428d09736eb6e3fafffa5f4372dcc7a1d6",
+   "landing_date": "2018-06-25T21:36:01+02:00",
+   "head": "99fc09ce3fe1363a9f8cd8ddab41340b632be82f",
+   "base": "7b066e35bf71ead2998d93a793e3861ff7a97a1d",
+   "authors": [
+    "Thomas ten Cate\tttencate@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "config.sample.js",
+    "controllers/main-controller.js",
+    "controllers/user-controller.js",
+    "core/constants.js",
+    "core/middleware.js",
+    "package-lock.json",
+    "package.json",
+    "server.js",
+    "services/session-service.js"
+   ],
+   "states": [
+    "99fc09ce3fe1363a9f8cd8ddab41340b632be82f",
+    "0ca202a28f388c1d481a55d67db832de3f40ee3a",
+    "c5b1abad332e137687a5e9ab6b5f7a79e82b0738",
+    "8ccc0121cbe2f199eec757b35c33de4a08ce31b0"
+   ],
+   "n_commits": 4
+  },
+  {
+   "pr": 384,
+   "method": "merge",
+   "landing": "449ba4bba88352c7860f988f311725ca7075c25e",
+   "landing_date": "2019-02-13T22:15:41+01:00",
+   "head": "82d125432180b65058c89a57922ea15035bf53bb",
+   "base": "9220b173f26f7a40a7074b7d22a186941dfd3bad",
+   "authors": [
+    "Tom 'voxel' Purnell\ttom@thomaspurnell.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "articles/alakajam-competition-rules.md"
+   ],
+   "states": [
+    "82d125432180b65058c89a57922ea15035bf53bb",
+    "daa95ea4f57772d23224a3209163b1c59599c45c"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 385,
+   "method": "merge",
+   "landing": "3c5235b9c92a77c54c18b874f13df2ec5eaa7119",
+   "landing_date": "2019-03-06T13:57:17+01:00",
+   "head": "f32aa162e41910dbb8d06233e817f62ff301d527",
+   "base": "74f9534248fcd7d1a27332276639f73da6b376d2",
+   "authors": [
+    "Marwane Kalam-Alami\tmarwane.ka@gmail.com",
+    "Thrainsa\teguillot1@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "assets/css/entry.css",
+    "assets/css/event-results.css",
+    "assets/css/event-tournament.css",
+    "controllers/entry-controller.js",
+    "core/cache.js",
+    "core/constants.js",
+    "core/file-storage.js",
+    "core/models.js",
+    "migrations/0028_upgrade_entry_pictures.js",
+    "migrations/0029_upgrade_thumbnails.js",
+    "package.json",
+    "services/event-service.js",
+    "templates/entry/edit-entry.html",
+    "templates/entry/view-entry.html",
+    "templates/event/_macros-event.html",
+    "templates/event/edit-event-tourn-games.html",
+    "templates/event/view-event-games.html",
+    "templates/event/view-event-results.html",
+    "templates/event/view-event-tourn-games.html",
+    "templates/event/view-event-tourn-leaderboard.html",
+    "templates/games.html",
+    "templates/index.html",
+    "templates/post/_macros-post.html",
+    "templates/user/dashboard-entries.html",
+    "templates/user/dashboard-feed.html",
+    "templates/user/profile.html"
+   ],
+   "states": [
+    "f32aa162e41910dbb8d06233e817f62ff301d527",
+    "5fd0cf3aec247def69802bd5628d0fb0188ff81b",
+    "5a26736c49d201eff0c570ae93f7fe9195a52bf1",
+    "1ebf2ee4ccdc5865d28eeb22fe2392002b403345",
+    "4cc409e85d1e1e3ad1de5d85f2bb3fee8b0f7ad3"
+   ],
+   "n_commits": 9
+  },
+  {
+   "pr": 423,
+   "method": "merge",
+   "landing": "afa55ed3cbe03c4629935864bb626f47a5d1a71c",
+   "landing_date": "2019-06-03T15:57:30+02:00",
+   "head": "f487bb22bdacb1ee42b3203a30cb448493c0b1a4",
+   "base": "8db75553f2896e8f2c4bb5023e7cb5466dcc8798",
+   "authors": [
+    "In\u00e1cio Schweller\tiscmendonca@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "server/articles/gjt-practical-tips.md",
+    "server/core/db-init.ts"
+   ],
+   "states": [
+    "f487bb22bdacb1ee42b3203a30cb448493c0b1a4"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 456,
+   "method": "merge",
+   "landing": "e3a783762a2d434fb0100e37a37cdd8d001db0b5",
+   "landing_date": "2019-10-22T20:51:00+02:00",
+   "head": "a12a927a78fec3f1e62ca770247f5e4362953929",
+   "base": "e2798d61581ef3d4e27d2d4d331e67a2858873d8",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json",
+    "package.json"
+   ],
+   "states": [
+    "a12a927a78fec3f1e62ca770247f5e4362953929"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 463,
+   "method": "merge",
+   "landing": "c32dd6a3f8c914b9eb036ddc556c3e7a3e4368e7",
+   "landing_date": "2019-11-03T17:13:01+01:00",
+   "head": "38d4e2aa6cd9c12e55c6f5d4b117757149a463b0",
+   "base": "38ebf8d74f85c561f5b24e604a4fd657b1087496",
+   "authors": [
+    "Marwane Kalam-Alami\tmarwane.ka@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    ".circleci/config.yml",
+    "client/css/lib/animate.css",
+    "client/scripts/common/alerts.ts",
+    "client/scripts/site.ts",
+    "client/scripts/types.d.ts",
+    "client/scss/_variables.scss",
+    "client/scss/bootflat-custom.scss",
+    "client/scss/general.scss",
+    "client/scss/index.scss",
+    "client/tsconfig.json",
+    "config.sample.js",
+    "package-lock.json",
+    "package.json",
+    "server/admin/admin.middleware.ts",
+    "server/admin/announcements/admin-announcements.controller.ts",
+    "server/admin/dev/admin-dev.controller.ts",
+    "server/api/api.controller.ts",
+    "server/base.html",
+    "server/common.middleware.ts",
+    "server/core/config.ts",
+    "server/core/db-init.ts",
+    "server/core/db-typeorm-logger.ts",
+    "server/core/db-typeorm.ts",
+    "server/core/db.ts",
+    "server/core/forms-validation.ts",
+    "server/core/middleware.ts",
+    "server/core/models.ts",
+    "server/docs/article.controller.ts",
+    "server/entity/README.md",
+    "server/entity/bookshelf-compatible.entity.ts",
+    "server/entity/column-types.ts",
+    "server/entity/timestamped.entity.ts",
+    "server/entity/user-details.entity.ts",
+    "server/entity/user.entity.ts",
+    "server/entry/entry-invite.controller.ts",
+    "server/error.middleware.ts",
+    "server/index.ts",
+    "server/macros/form.macros.html",
+    "server/migrations/0029_upgrade_thumbnails.ts",
+    "server/routes.ts",
+    "server/sass.ts",
+    "server/types.d.ts",
+    "server/user/authentication/login.controller.ts",
+    "server/user/authentication/logout.controller.ts",
+    "server/user/authentication/register.controller.ts",
+    "server/user/dashboard/dashboard-entries.controller.ts",
+    "server/user/dashboard/dashboard-feed.controller.ts",
+    "server/user/dashboard/dashboard-password.controller.ts",
+    "server/user/dashboard/dashboard-posts.controller.ts",
+    "server/user/dashboard/dashboard-settings.controller.ts",
+    "server/user/dashboard/dashboard-settings.html",
+    "server/user/dashboard/dashboard.base.html",
+    "server/user/dashboard/dashboard.middleware.ts",
+    "server/user/mail/mail.service.ts",
+    "server/user/user-profile.controller.ts",
+    "server/user/user.service.ts",
+    "static/scripts/bootstrap-notify.min.js",
+    "tsconfig.json"
+   ],
+   "states": [
+    "38d4e2aa6cd9c12e55c6f5d4b117757149a463b0",
+    "7fd11da82d617c62bfe3767a1a1fae75e68f1782",
+    "c963cdd3af0d6f345490e80bba72f629f00ab548",
+    "ce5d85ad72cfbd5f73df2ed6284ad44ff3b66852",
+    "83741caf05c448048aa605f84045d5130760f890"
+   ],
+   "n_commits": 10
+  },
+  {
+   "pr": 473,
+   "method": "rebase",
+   "landing": "4141ef69377d59a2dd70958ce89dd12ba602f677",
+   "landing_date": "2019-12-24T19:16:51+01:00",
+   "head": "17d65952afbda21393e182243033810ea5695f93",
+   "base": "0999bac565571bea6b212674cd00a6e3ecb49541",
+   "authors": [
+    "Marwane Kalam-Alami\tmarwane.ka@gmail.com",
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "package-lock.json",
+    "package.json",
+    "types/bookshelf/index.d.ts"
+   ],
+   "states": [
+    "17d65952afbda21393e182243033810ea5695f93",
+    "d6eb74527bebc085622d92083a10b3d0e2f53c1d"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 610,
+   "method": "merge",
+   "landing": "69b6b4ca2cf5dd59a03699069d228b87a85f4158",
+   "landing_date": "2020-12-09T11:52:45+01:00",
+   "head": "c0848e2306f7503a280c34ba3ff11b1480315d27",
+   "base": "d884e6842a4290ae40fe44ad87c8eb38317dfc42",
+   "authors": [
+    "coxm\tcoxm@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "client/scss/index.scss",
+    "client/scss/user-register.scss",
+    "server/user/authentication/register.controller.spec.ts",
+    "server/user/authentication/register.controller.ts",
+    "server/user/authentication/register.template.tsx"
+   ],
+   "states": [
+    "c0848e2306f7503a280c34ba3ff11b1480315d27",
+    "775f3478ca19dadfab99abb323d30dde2155cf65"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 609,
+   "method": "merge",
+   "landing": "8cd972bc4ef7138b182ed51de7675acb695dd66f",
+   "landing_date": "2020-12-09T11:53:06+01:00",
+   "head": "3dd934bef1107852523d69e1f802733cecda62cd",
+   "base": "d884e6842a4290ae40fe44ad87c8eb38317dfc42",
+   "authors": [
+    "coxm\tcoxm@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "client/scss/general.scss"
+   ],
+   "states": [
+    "3dd934bef1107852523d69e1f802733cecda62cd"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 618,
+   "method": "merge",
+   "landing": "49d8e90bf7b460d460c9802f03dd805c073efa2d",
+   "landing_date": "2021-02-01T22:48:08+01:00",
+   "head": "97f8deb85f565d778617dee7afe7e0e346b89740",
+   "base": "26e2f1f111010554e95b0782eb0e806c18e64365",
+   "authors": [
+    "coxm\tcoxm@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "server/core/config.ts"
+   ],
+   "states": [
+    "97f8deb85f565d778617dee7afe7e0e346b89740"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 621,
+   "method": "merge",
+   "landing": "328aaff741cff55d5338a65a01cad8112a15b681",
+   "landing_date": "2021-02-24T00:20:38+01:00",
+   "head": "d41c5479439df9aa159d8ac045949bf7f252b824",
+   "base": "eae93cdf7d1b2a577781022c7daaf8dfff69a4fa",
+   "authors": [
+    "Marwane Kalam-Alami\tmarwane.ka@gmail.com",
+    "coxm\tcoxm@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "client/scripts/entry/edit-entry-links.ts",
+    "client/scripts/entry/edit-entry-platforms.ts",
+    "server/entity/entry.entity.ts",
+    "server/entry/manage/components/entry-links-field.tsx",
+    "server/entry/manage/entry-manage.controller.ts",
+    "server/entry/manage/entry-manage.template.tsx"
+   ],
+   "states": [
+    "d41c5479439df9aa159d8ac045949bf7f252b824",
+    "b692494dd693c62f8e63d95f279e5f20fd3902dc",
+    "a861ef3be87114649acaaca8d5a9264f33768c1b",
+    "0f0c7b8835568f18536c47ad5e17480a5c3dcd4d",
+    "546171a285f08949c374ad7ca3f197464ff10878"
+   ],
+   "n_commits": 6
+  },
+  {
+   "pr": 616,
+   "method": "merge",
+   "landing": "0fd9329ec2b28082b655b29303bf5583c0ce8f0e",
+   "landing_date": "2021-02-28T18:56:47+01:00",
+   "head": "6b081779c8e81f7c41b13194efbd9e6d7318e747",
+   "base": "328aaff741cff55d5338a65a01cad8112a15b681",
+   "authors": [
+    "Marwane Kalam-Alami\tmarwane.ka@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "client/scripts/common/sortable-table.ts",
+    "client/scripts/site.ts",
+    "cypress/e2e.sqlite",
+    "cypress/integration/entry.spec.ts",
+    "cypress/integration/event-administration.spec.ts",
+    "cypress/integration/event-ratings.spec.ts",
+    "cypress/integration/event-themes.spec.ts",
+    "cypress/integration/event-tournament.spec.ts",
+    "cypress/integration/post.spec.ts",
+    "cypress/integration/user.spec.ts",
+    "cypress/support/commands.ts",
+    "server/admin/event-presets/admin-event-presets.controller.ts",
+    "server/admin/event-templates/admin-event-templates.controller.ts",
+    "server/admin/events/admin-events.controller.ts",
+    "server/admin/events/admin-events.template.tsx",
+    "server/admin/platforms/admin-platforms.controller.ts",
+    "server/admin/platforms/admin-platforms.template.tsx",
+    "server/core/rate-limiter.spec.ts",
+    "server/core/rate-limiter.ts",
+    "server/event/manage/create/event-template.service.ts",
+    "server/event/manage/settings/event-preset.service.ts",
+    "server/routes.ts",
+    "server/scripts/e2e-config.js",
+    "server/scripts/e2e.ts",
+    "server/scripts/mocha-config.js"
+   ],
+   "states": [
+    "6b081779c8e81f7c41b13194efbd9e6d7318e747",
+    "a942e01e57ed23dc79b70c71d887ce50e21e4ff5",
+    "e39b0dc77b8800fc684a5179739c0fa26a609b6a",
+    "a496958f9c593bd7ef2fa917141310a9c3d0f99a",
+    "7e83dd5616d49b5caa21a73759e4d29e0def5502"
+   ],
+   "n_commits": 8
+  },
+  {
+   "pr": 640,
+   "method": "merge",
+   "landing": "7ee34fedea70cb56ce3b0bbe4a47313183929ce9",
+   "landing_date": "2021-05-25T16:43:18+02:00",
+   "head": "7aa4119f055e1a6480575cb0a2f2f688ef163914",
+   "base": "ef448d6cdd788991f968a1d17cb470f274160d7d",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "7aa4119f055e1a6480575cb0a2f2f688ef163914"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 661,
+   "method": "merge",
+   "landing": "801d1244fdbfdada94d0d8be410a05f8f9a2cd17",
+   "landing_date": "2022-03-31T09:42:38+02:00",
+   "head": "4d02101c23e1a80b3db43c15b5ebaf28ef6e7d96",
+   "base": "56b51c1611393bbc79bc8cd2e41e8c73de528746",
+   "authors": [
+    "Mahesh\tmax2mahesh@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "server/macros/jumbotron.macros.tsx"
+   ],
+   "states": [
+    "4d02101c23e1a80b3db43c15b5ebaf28ef6e7d96",
+    "10566337f14f9802531696ff0d2f6641a542294d"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 667,
+   "method": "merge",
+   "landing": "5b42de2b370fb8f7d8bdcde4041fce23ed1e5413",
+   "landing_date": "2022-06-12T20:30:31+02:00",
+   "head": "f8807aad9409cb4dbeae6fd5bcc548b3d55008f2",
+   "base": "801d1244fdbfdada94d0d8be410a05f8f9a2cd17",
+   "authors": [
+    "pixelsyntax\ttom@thomaspurnell.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "server/docs/article-data/alakajam-competition-rules.md"
+   ],
+   "states": [
+    "f8807aad9409cb4dbeae6fd5bcc548b3d55008f2"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 665,
+   "method": "merge",
+   "landing": "8c3b18df93191e957bd2a75b138ab34c91886225",
+   "landing_date": "2022-06-12T20:31:49+02:00",
+   "head": "90c00a5687dcd91fae48753f8c361c9d16e71ec7",
+   "base": "801d1244fdbfdada94d0d8be410a05f8f9a2cd17",
+   "authors": [
+    "Shoozza\tgregor.a.cieslak@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "server/docs/article-data/resources.md"
+   ],
+   "states": [
+    "90c00a5687dcd91fae48753f8c361c9d16e71ec7"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 662,
+   "method": "merge",
+   "landing": "6f5a7dee4a2031f87cefb9a2bfe69a40bdc3f217",
+   "landing_date": "2022-06-12T20:41:52+02:00",
+   "head": "79d6263b6e1a4b03406ff2feceb740a180390654",
+   "base": "801d1244fdbfdada94d0d8be410a05f8f9a2cd17",
+   "authors": [
+    "Mahesh\tmax2mahesh@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "server/event/results/results.template.tsx"
+   ],
+   "states": [
+    "79d6263b6e1a4b03406ff2feceb740a180390654"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 670,
+   "method": "merge",
+   "landing": "6997ace9ff83699e8eb2d75757ddb380b47046e2",
+   "landing_date": "2024-03-26T15:21:25+01:00",
+   "head": "ab3bc92678d57f506fca9d5f47862541788d535f",
+   "base": "789cce81b6df4765269b97ee0722ab6d6501c758",
+   "authors": [
+    "bradur\tbradurdung@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "server/api/api.controller.ts"
+   ],
+   "states": [
+    "ab3bc92678d57f506fca9d5f47862541788d535f"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 673,
+   "method": "merge",
+   "landing": "ece1a0ddd82a349192d831fd06a8602286aca9c6",
+   "landing_date": "2025-02-11T15:49:07+01:00",
+   "head": "b272458260239cfbd329f7f8389ead1ea99bf123",
+   "base": "6b0b41675a5c4dd68eb374bec531df308a465f4a",
+   "authors": [
+    "Aurel B\u00edl\u00fd\taurel.bily@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "server/base.template.tsx",
+    "server/home/home.template.tsx",
+    "static/images/CREDITS.md",
+    "static/images/social/black-mastodon.svg",
+    "static/images/social/discord.svg",
+    "static/images/social/mastodon.svg"
+   ],
+   "states": [
+    "b272458260239cfbd329f7f8389ead1ea99bf123"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 675,
+   "method": "merge",
+   "landing": "34160794585106af34e17934f50b0f1c4b1839e8",
+   "landing_date": "2025-02-25T08:39:46+01:00",
+   "head": "285cfab7cf54131d4da58b14eb978867e1e734f0",
+   "base": "05fe37d55734d582a084739cd12a1d90d248a2d8",
+   "authors": [
+    "BluePinStudio\tinfo.bluepinstudio@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "server/base.template.tsx",
+    "server/event/event.macros.tsx",
+    "server/event/games/event-games.template.tsx"
+   ],
+   "states": [
+    "285cfab7cf54131d4da58b14eb978867e1e734f0"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 676,
+   "method": "merge",
+   "landing": "2bce719cca6e83593f8a367c2b5f9640692983d8",
+   "landing_date": "2025-02-28T17:39:37+01:00",
+   "head": "c8bef4227bcd0636adac97eee9f2365f1b634b0a",
+   "base": "9096849423e0331fcc9e90472ab84454f5e08583",
+   "authors": [
+    "Taevas\tcode@taevas.xyz"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "server/docs/article-data/akj-tournament-rules.md",
+    "server/docs/article-data/welcome.md"
+   ],
+   "states": [
+    "c8bef4227bcd0636adac97eee9f2365f1b634b0a"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 677,
+   "method": "rebase",
+   "landing": "62491267fcf67452bd3e4a4227f23d772ea82291",
+   "landing_date": "2025-03-09T18:19:06+01:00",
+   "head": "9feb1bca975393641340b384fee019143eba7a1d",
+   "base": "2bce719cca6e83593f8a367c2b5f9640692983d8",
+   "authors": [
+    "Aurel B\u00edl\u00fd\taurel.bily@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "server/entry/entry.service.ts"
+   ],
+   "states": [
+    "9feb1bca975393641340b384fee019143eba7a1d"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 674,
+   "method": "rebase",
+   "landing": "e502f0121f804673ae2859fa9aa04cc1fb61ba28",
+   "landing_date": "2025-03-09T22:55:42+01:00",
+   "head": "514745978591f6d3425e11d34668973eb076b41c",
+   "base": "05fe37d55734d582a084739cd12a1d90d248a2d8",
+   "authors": [
+    "Marwane Kalam-Alami\tmarwane@kalam-alami.net"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "server/docs/article-data/alakajam-competition-rules.md"
+   ],
+   "states": [
+    "514745978591f6d3425e11d34668973eb076b41c"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 681,
+   "method": "rebase",
+   "landing": "c10b12dab9dc647dd981f07076179caade2a7774",
+   "landing_date": "2025-07-08T17:29:58+02:00",
+   "head": "f61a60ea93c09640762294f1704ee61cd0393a07",
+   "base": "502f0c96f5b6ea0d930eccad96d7896f07aa105a",
+   "authors": [
+    "DerTee\t4346532+DerTee@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "server/docs/article-data/resources.md"
+   ],
+   "states": [
+    "f61a60ea93c09640762294f1704ee61cd0393a07"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 689,
+   "method": "rebase",
+   "landing": "2d3d39fb94fef0453d694731718b96f73d681d28",
+   "landing_date": "2026-11-01T00:58:05+01:00",
+   "head": "06048a27007a3e385ca1f7482d272ce580adeeff",
+   "base": "9665d5d436c2868b9d6673db16b13248ca45feb2",
+   "authors": [
+    "Marwane Kalam-Alami\tmarwane@kalam-alami.net"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "AGENTS.md",
+    "DEPENDENCIES.md",
+    "UPGRADE_PLAN.md",
+    "deployment/verify-data-folder.js",
+    "package-lock.json",
+    "package.json",
+    "server/entry/entry.service.ts",
+    "server/event/theme/theme-voting.service.ts",
+    "server/post/post.service.ts",
+    "types/bookshelf/index.d.ts"
+   ],
+   "states": [
+    "06048a27007a3e385ca1f7482d272ce580adeeff",
+    "5667c850385c02b430e0c394ad4dfadb23af0c8f",
+    "fbf8edd169b09909b854bd3db3f0b17f886e5091"
+   ],
+   "n_commits": 3
+  },
+  {
+   "pr": 691,
+   "method": "rebase",
+   "landing": "e2076d629986114d175c52c24f9d4a9984c7423c",
+   "landing_date": "2026-11-01T11:12:29+01:00",
+   "head": "74ffe9498d352e64afe9dea563b9b472364c5b91",
+   "base": "2d3d39fb94fef0453d694731718b96f73d681d28",
+   "authors": [
+    "Marwane Kalam-Alami\tmarwane@kalam-alami.net"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "AGENTS.md",
+    "UPGRADE_PLAN.md",
+    "client/scss/index.scss",
+    "eslint.config.mjs",
+    "package-lock.json",
+    "package.json",
+    "server/core/db-typeorm.ts",
+    "server/core/formats.spec.ts",
+    "server/core/middleware.ts",
+    "server/core/route-guards.ts",
+    "server/core/slow-down-middleware.ts",
+    "server/entity/bookshelf-compatible.entity.ts",
+    "server/entity/user.entity.ts",
+    "server/entry/entry.middleware.ts",
+    "server/entry/entry.service.spec.ts",
+    "server/entry/platform/platform.repository.ts",
+    "server/event/dashboard/event-participation.service.ts",
+    "server/post/post.service.spec.ts",
+    "server/routes.ts",
+    "server/scripts/e2e-seed.ts",
+    "server/scripts/sass.ts",
+    "server/types.d.ts",
+    "server/user/user.service.spec.ts",
+    "server/user/user.service.ts"
+   ],
+   "states": [
+    "74ffe9498d352e64afe9dea563b9b472364c5b91",
+    "dbfc1b9b75813119be49c9dae27cfe1c453aec6d",
+    "964590dadc51f57260249767373dbdb396cf312c",
+    "69b9796d2ed885bbb9bc832e0942f65871508c7c",
+    "e3b28ec42c814827bc6dca9e6c54bdd84458b634"
+   ],
+   "n_commits": 5
+  }
+ ]
+}

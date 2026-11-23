@@ -1,0 +1,877 @@
+{
+ "repo": "agentlang",
+ "url": "https://github.com/agentlang-ai/agentlang",
+ "default": "origin/main",
+ "default_head": "f02e27199b193096c19985b7877ad1644974507a",
+ "pr_refs_total": 532,
+ "pr_numbers_fetched": [
+  499,
+  661
+ ],
+ "merged_found_in_fetched": 130,
+ "kept": [
+  {
+   "pr": 626,
+   "method": "rebase",
+   "landing": "59a99a3eb42e246ec824eba407176307fb173884",
+   "landing_date": "2026-02-22T23:32:44-08:00",
+   "head": "73807ecbe4f9abfa9b5a18ca2f82fc3176ec6557",
+   "base": "56689891c6bf4edf2e1f6fef78abe6cb4e4d777d",
+   "authors": [
+    "Pratik Karki\tpratik@fractl.io",
+    "Ranga Rao\tranga@fractl.io"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "docs/integration-auth-guide.md",
+    "docs/oauth-flow-integration-manager.md",
+    "eslint.config.js",
+    "package-lock.json",
+    "src/api/http.ts",
+    "src/cli/main.ts",
+    "src/language/agentlang-validator.ts",
+    "src/language/error-reporter.ts",
+    "src/language/generated/ast.ts",
+    "src/language/generated/grammar.ts",
+    "src/language/generated/module.ts",
+    "src/language/parser.ts",
+    "src/runtime/api.ts",
+    "src/runtime/integration-client.ts",
+    "src/runtime/integrations.ts",
+    "src/runtime/interpreter.ts",
+    "src/runtime/loader.ts",
+    "src/runtime/modules/core.ts",
+    "src/runtime/modules/dashboard.ts",
+    "src/runtime/resolvers/interface.ts",
+    "src/runtime/state.ts",
+    "test/parsing/error-reporter.test.ts",
+    "test/parsing/syntax.test.ts",
+    "test/runtime/basic.test.ts",
+    "test/runtime/integration-client.test.ts"
+   ],
+   "states": [
+    "73807ecbe4f9abfa9b5a18ca2f82fc3176ec6557",
+    "fe95750a9b0328a473cbe168701f22bbb933056e",
+    "070afa6ba4be6d8eba4b77b321b119b2b9a4fd72",
+    "662ff59e7675ee37c04f586b4d05ae91a9f078d7",
+    "3db65d99af4b640f5f3081c5663a7a7d6bd68e83"
+   ],
+   "n_commits": 5
+  },
+  {
+   "pr": 623,
+   "method": "squash",
+   "landing": "59a99a3eb42e246ec824eba407176307fb173884",
+   "landing_date": "2026-02-22T23:32:44-08:00",
+   "head": "2efa2d588a9d6da4fa75c761ba18fe39ae0c4b9a",
+   "base": "56689891c6bf4edf2e1f6fef78abe6cb4e4d777d",
+   "authors": [
+    "Ranga Rao\tranga@fractl.io"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "src/language/agentlang-validator.ts",
+    "src/language/error-reporter.ts",
+    "src/language/generated/ast.ts",
+    "src/language/generated/grammar.ts",
+    "src/language/generated/module.ts",
+    "src/language/parser.ts",
+    "src/runtime/loader.ts",
+    "test/parsing/error-reporter.test.ts"
+   ],
+   "states": [
+    "2efa2d588a9d6da4fa75c761ba18fe39ae0c4b9a"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 625,
+   "method": "squash",
+   "landing": "b624ea666f4c060a0eb2979978acdf65011eb785",
+   "landing_date": "2026-02-23T21:08:47-08:00",
+   "head": "3db65d99af4b640f5f3081c5663a7a7d6bd68e83",
+   "base": "56689891c6bf4edf2e1f6fef78abe6cb4e4d777d",
+   "authors": [
+    "Ranga Rao\tranga@fractl.io"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "docs/integration-auth-guide.md",
+    "docs/oauth-flow-integration-manager.md",
+    "eslint.config.js",
+    "example/knowledge/.gitignore",
+    "example/knowledge/README.md",
+    "example/knowledge/config.al",
+    "example/knowledge/docs/knowledge-architecture.md",
+    "example/knowledge/src/core.al",
+    "example/knowledge/src/resolver.js",
+    "example/knowledge/test/core.test.ts",
+    "example/knowledge/test/resolver.test.ts",
+    "package-lock.json",
+    "src/api/http.ts",
+    "src/cli/main.ts",
+    "src/runtime/api.ts",
+    "src/runtime/integration-client.ts",
+    "src/runtime/integrations.ts",
+    "src/runtime/loader.ts",
+    "src/runtime/resolvers/interface.ts",
+    "src/runtime/state.ts",
+    "test/runtime/integration-client.test.ts"
+   ],
+   "states": [
+    "3db65d99af4b640f5f3081c5663a7a7d6bd68e83"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 591,
+   "method": "squash",
+   "landing": "c92be97c8503e06fa4a578b6d08668bc77e9e31e",
+   "landing_date": "2026-02-26T15:58:29+05:45",
+   "head": "93a56a8360f07a303ae21cfc36a6eea40208e096",
+   "base": "b624ea666f4c060a0eb2979978acdf65011eb785",
+   "authors": [
+    "Pratik Karki\tpratik@fractl.io"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    ".github/RELEASE_PROCESS.md",
+    ".github/workflows/integration.yml",
+    ".github/workflows/publish.yml",
+    ".github/workflows/release-please.yml",
+    ".gitignore",
+    "AGENTS.md",
+    "README.md",
+    "example/custom_config/README.md",
+    "example/custom_config/config.al",
+    "example/custom_config/src/core.al",
+    "example/dracula/MEMORY.md",
+    "example/dracula/README.md",
+    "example/dracula/config.al",
+    "example/dracula/docs/dracula.txt",
+    "example/dracula/package.json",
+    "example/dracula/src/core.al",
+    "package-lock.json",
+    "package.json",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
+    "src/language/generated/ast.ts",
+    "src/runtime/api.ts",
+    "src/runtime/defs.ts",
+    "src/runtime/document-retriever.ts",
+    "src/runtime/embeddings/chunker.ts",
+    "src/runtime/embeddings/openai.ts",
+    "src/runtime/embeddings/provider.ts",
+    "src/runtime/logger.ts",
+    "src/runtime/module.ts",
+    "src/runtime/modules/ai.ts",
+    "src/runtime/resolvers/sqldb/database.ts",
+    "src/runtime/resolvers/sqldb/impl.ts",
+    "src/runtime/resolvers/vector/lancedb-store.ts",
+    "src/runtime/resolvers/vector/types.ts",
+    "src/runtime/services/documentFetcher.ts",
+    "src/runtime/state.ts",
+    "test/runtime/agents.test.ts"
+   ],
+   "states": [
+    "93a56a8360f07a303ae21cfc36a6eea40208e096",
+    "47bd1cb5ea495fcc93c6be65464468076fb6bc84",
+    "36c2ef9fc42c9033284805b5ba011e7931df9805",
+    "1ab5bf5dec3fe4c6f31f4467ae196757d331de28",
+    "e18a37a4655c3c45165db7fb73ea5b822e697d62"
+   ],
+   "n_commits": 40
+  },
+  {
+   "pr": 628,
+   "method": "squash",
+   "landing": "d79b4bd8335b3d00e53d21252e16ed08c8788526",
+   "landing_date": "2026-02-26T16:06:09+05:45",
+   "head": "1f973342c01b7597a1809825d08a20d5466d66a9",
+   "base": "c92be97c8503e06fa4a578b6d08668bc77e9e31e",
+   "authors": [
+    "pratik-fractl\t133940201+pratik-fractl@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "CHANGELOG.md",
+    "package-lock.json",
+    "package.json"
+   ],
+   "states": [
+    "1f973342c01b7597a1809825d08a20d5466d66a9"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 632,
+   "method": "squash",
+   "landing": "a18ddc66bb2cb170d91000367251e0ff16c8c311",
+   "landing_date": "2026-03-09T08:38:50-07:00",
+   "head": "4bfd947ce24862dffd22b44ab112b0f506efbb96",
+   "base": "d79b4bd8335b3d00e53d21252e16ed08c8788526",
+   "authors": [
+    "Ranga Rao\tranga@fractl.io"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "README.md",
+    "example/agent_craft/src/core.al",
+    "example/agent_craft/src/instructions.js",
+    "example/car_dealership/src/core.al",
+    "example/custom_config/src/core.al",
+    "example/customer_support_system/README.md",
+    "example/customer_support_system/src/core.al",
+    "example/jira/issue_creator/src/core.al",
+    "example/jira/issue_triager/src/core.al",
+    "example/monitoring/README.md",
+    "example/monitoring/src/core.al",
+    "example/sdr/README.md",
+    "example/sdr/src/core.al",
+    "example/validation/README.md",
+    "example/validation/src/core.al",
+    "src/runtime/exec-graph.ts",
+    "src/runtime/interpreter.ts",
+    "src/runtime/loader.ts",
+    "src/runtime/modules/ai.ts",
+    "src/runtime/modules/auth.ts",
+    "src/runtime/monitor.ts",
+    "test/parsing/parsing.test.ts",
+    "test/parsing/syntax.test.ts",
+    "test/runtime/agent-rbac.test.ts",
+    "test/runtime/agents.test.ts",
+    "test/runtime/execg.test.ts",
+    "test/runtime/llm-service.test.ts"
+   ],
+   "states": [
+    "4bfd947ce24862dffd22b44ab112b0f506efbb96",
+    "50f3faa44ef9368a54ddd7ed884aa030d23ebe80",
+    "a57fd6a4080bbee2f6b1cb05e0fa9c454696d1ce"
+   ],
+   "n_commits": 3
+  },
+  {
+   "pr": 631,
+   "method": "squash",
+   "landing": "bcee7017004f0001c313d8c496b1f22e348e85dc",
+   "landing_date": "2026-03-09T09:29:11+05:30",
+   "head": "40d7394d5adeb84ed97bc0ddcd3579833fb5c72e",
+   "base": "d79b4bd8335b3d00e53d21252e16ed08c8788526",
+   "authors": [
+    "Vijay Mathew\tvijay@fractl.io"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "src/language/agentlang.langium",
+    "src/language/generated/ast.ts",
+    "src/language/generated/grammar.ts",
+    "src/language/parser.ts",
+    "src/language/syntax.ts",
+    "src/runtime/interpreter.ts",
+    "test/runtime/query.test.ts"
+   ],
+   "states": [
+    "40d7394d5adeb84ed97bc0ddcd3579833fb5c72e",
+    "0fd4bf29e995bb11894b74791bb7f07c44775af1"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 630,
+   "method": "squash",
+   "landing": "499b137d15f669343b3e68ef47f1ca20c605326d",
+   "landing_date": "2026-03-09T09:29:26+05:30",
+   "head": "16655bfa25deec61ef46574dd4c41f67bd37d863",
+   "base": "d79b4bd8335b3d00e53d21252e16ed08c8788526",
+   "authors": [
+    "Ranga Rao\tranga@fractl.io",
+    "Vijay Mathew\t73871437+vijayfractl@users.noreply.github.com",
+    "Vijay Mathew\tvijay@fractl.io"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "src/runtime/modules/core.ts",
+    "src/runtime/modules/messaging.ts"
+   ],
+   "states": [
+    "16655bfa25deec61ef46574dd4c41f67bd37d863",
+    "e882efb594e5f3739b81993e20ff7c2db600bd55",
+    "49fc4980a8e4efcd65102e305ae014730d4cac57",
+    "6a8f69bbfde0a13c0c85c56c77a62902ee3e7f79",
+    "29d84160da2e1f6214f5185807009f59a392d8e2"
+   ],
+   "n_commits": 9
+  },
+  {
+   "pr": 633,
+   "method": "squash",
+   "landing": "f25db64922bf4c5f3840028d78e882a34b25f0fa",
+   "landing_date": "2026-03-09T12:38:06+05:30",
+   "head": "428dd39cdc59b08980788e082d1412b558ea91e4",
+   "base": "499b137d15f669343b3e68ef47f1ca20c605326d",
+   "authors": [
+    "vijayfractl\t73871437+vijayfractl@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "CHANGELOG.md",
+    "package-lock.json",
+    "package.json"
+   ],
+   "states": [
+    "428dd39cdc59b08980788e082d1412b558ea91e4"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 634,
+   "method": "squash",
+   "landing": "4203438cd5e28db3b4a8c43c6b1b7d5e923b3f2d",
+   "landing_date": "2026-03-10T16:24:23+05:30",
+   "head": "e67ff15c0ef54add378bb9ed8961dc58f6e1435d",
+   "base": "a18ddc66bb2cb170d91000367251e0ff16c8c311",
+   "authors": [
+    "Vijay Mathew\tvijay@fractl.io"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "src/language/agentlang.langium",
+    "src/language/generated/ast.ts",
+    "src/language/generated/grammar.ts",
+    "src/language/parser.ts",
+    "src/runtime/interpreter.ts",
+    "test/runtime/agent-rbac.test.ts"
+   ],
+   "states": [
+    "e67ff15c0ef54add378bb9ed8961dc58f6e1435d"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 637,
+   "method": "squash",
+   "landing": "6654805cd0125a6963ea2763d12d7b935ffde964",
+   "landing_date": "2026-03-17T10:53:02+05:45",
+   "head": "5d677042b4a612749c8674d0605a8b6b7e1df710",
+   "base": "4203438cd5e28db3b4a8c43c6b1b7d5e923b3f2d",
+   "authors": [
+    "Pratik Karki\tpratik@fractl.io"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    ".github/RELEASE_PROCESS.md",
+    ".github/workflows/integration.yml",
+    ".github/workflows/publish.yml",
+    ".github/workflows/release-please.yml",
+    ".gitignore",
+    "AGENTS.md",
+    "README.md",
+    "example/custom_config/README.md",
+    "example/custom_config/config.al",
+    "example/custom_config/src/core.al",
+    "example/dracula/MEMORY.md",
+    "example/dracula/README.md",
+    "example/dracula/config.al",
+    "example/dracula/docs/dracula.txt",
+    "example/dracula/package.json",
+    "example/dracula/src/core.al",
+    "package-lock.json",
+    "package.json",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
+    "src/language/generated/ast.ts",
+    "src/runtime/api.ts",
+    "src/runtime/defs.ts",
+    "src/runtime/document-retriever.ts",
+    "src/runtime/embeddings/chunker.ts",
+    "src/runtime/embeddings/openai.ts",
+    "src/runtime/embeddings/provider.ts",
+    "src/runtime/logger.ts",
+    "src/runtime/module.ts",
+    "src/runtime/modules/ai.ts",
+    "src/runtime/resolvers/sqldb/database.ts",
+    "src/runtime/resolvers/sqldb/impl.ts",
+    "src/runtime/resolvers/vector/lancedb-store.ts",
+    "src/runtime/resolvers/vector/types.ts",
+    "src/runtime/services/documentFetcher.ts",
+    "src/runtime/state.ts",
+    "test/runtime/agents.test.ts"
+   ],
+   "states": [
+    "5d677042b4a612749c8674d0605a8b6b7e1df710"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 638,
+   "method": "squash",
+   "landing": "26da35085a9bb48ef49da8353d3e56e9641f9856",
+   "landing_date": "2026-03-17T11:08:23+05:45",
+   "head": "8cbee371f54d8576de2005afb8414ed953b4e967",
+   "base": "6654805cd0125a6963ea2763d12d7b935ffde964",
+   "authors": [
+    "pratik-fractl\t133940201+pratik-fractl@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "CHANGELOG.md",
+    "package-lock.json",
+    "package.json"
+   ],
+   "states": [
+    "8cbee371f54d8576de2005afb8414ed953b4e967"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 641,
+   "method": "squash",
+   "landing": "76c93e384dfb37d383b62e2baedd316c3f572714",
+   "landing_date": "2026-03-24T09:36:59+05:30",
+   "head": "30974cb45cd2043600d2669b82130db0eb2ab179",
+   "base": "26da35085a9bb48ef49da8353d3e56e9641f9856",
+   "authors": [
+    "Vijay Mathew\tvijay@fractl.io"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "src/language/generated/ast.ts",
+    "src/runtime/agents/common.ts",
+    "src/runtime/modules/ai.ts"
+   ],
+   "states": [
+    "30974cb45cd2043600d2669b82130db0eb2ab179",
+    "7ddc2ba878d3b6f49d958deae651acac387a1adc",
+    "3a85da2bd7c889601536d401a0dfd799937cbcd0",
+    "5b3d7b3bc3624383c17e0f607ff2c313e15fdfd8"
+   ],
+   "n_commits": 4
+  },
+  {
+   "pr": 642,
+   "method": "squash",
+   "landing": "49a9281738242604709916fbfb7078b12f058bb0",
+   "landing_date": "2026-03-24T17:38:06+05:00",
+   "head": "2141a89b327e7382d5da3ab85b4b9a23fb998ef0",
+   "base": "26da35085a9bb48ef49da8353d3e56e9641f9856",
+   "authors": [
+    "Muazzam Kazmi\tmuazzam@fractl.io"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "src/runtime/interpreter.ts"
+   ],
+   "states": [
+    "2141a89b327e7382d5da3ab85b4b9a23fb998ef0"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 643,
+   "method": "squash",
+   "landing": "115c9fc992811a5f21949f4612bf5b80fc7e7050",
+   "landing_date": "2026-03-24T18:26:54+05:00",
+   "head": "f0bb45e8b9ec567eb2ba27f734e982adc4691d8c",
+   "base": "26da35085a9bb48ef49da8353d3e56e9641f9856",
+   "authors": [
+    "Muazzam Kazmi\tmuazzam@fractl.io"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "src/runtime/interpreter.ts",
+    "src/runtime/module.ts",
+    "src/runtime/resolvers/sqldb/database.ts",
+    "src/runtime/resolvers/sqldb/dbutil.ts",
+    "src/runtime/resolvers/sqldb/impl.ts",
+    "test/runtime/database-sqljs.test.ts"
+   ],
+   "states": [
+    "f0bb45e8b9ec567eb2ba27f734e982adc4691d8c",
+    "2141a89b327e7382d5da3ab85b4b9a23fb998ef0"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 644,
+   "method": "squash",
+   "landing": "8c389169ed6a643938c3fe8341a6f5dca25e42fa",
+   "landing_date": "2026-03-24T18:32:44+05:00",
+   "head": "3f2e5560cabc4294726f1aeb8a291231cd51cd62",
+   "base": "115c9fc992811a5f21949f4612bf5b80fc7e7050",
+   "authors": [
+    "muazzam0x48\t118562685+muazzam0x48@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "CHANGELOG.md",
+    "package-lock.json",
+    "package.json"
+   ],
+   "states": [
+    "3f2e5560cabc4294726f1aeb8a291231cd51cd62"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 645,
+   "method": "squash",
+   "landing": "c1b5040841117c3790391a3b8ad4d51db112b8dd",
+   "landing_date": "2026-03-25T10:53:07+05:30",
+   "head": "baf8a2be06569ae6883de11858fbe3260355cbcc",
+   "base": "76c93e384dfb37d383b62e2baedd316c3f572714",
+   "authors": [
+    "Vijay Mathew\tvijay@fractl.io"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "src/runtime/interpreter.ts",
+    "src/runtime/resolvers/sqldb/database.ts",
+    "src/runtime/resolvers/sqldb/dbutil.ts",
+    "test/runtime/basic.test.ts"
+   ],
+   "states": [
+    "baf8a2be06569ae6883de11858fbe3260355cbcc"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 646,
+   "method": "squash",
+   "landing": "2b552b4b4caa381f3e876c7fbe4c5ab472644aec",
+   "landing_date": "2026-03-25T15:09:58+05:30",
+   "head": "08b6a015582c2522571df99a8fa5d50ba6e262fd",
+   "base": "c1b5040841117c3790391a3b8ad4d51db112b8dd",
+   "authors": [
+    "Vijay Mathew\tvijay@fractl.io"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "src/runtime/interpreter.ts",
+    "src/runtime/resolvers/sqldb/dbutil.ts",
+    "test/runtime/basic.test.ts"
+   ],
+   "states": [
+    "08b6a015582c2522571df99a8fa5d50ba6e262fd"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 647,
+   "method": "squash",
+   "landing": "378e973ba8103db7fce80c692c3dbacd20399cd2",
+   "landing_date": "2026-03-31T09:54:04+05:30",
+   "head": "c793e63fd0e5ff548e76b9ae8d25a515a90b0083",
+   "base": "2b552b4b4caa381f3e876c7fbe4c5ab472644aec",
+   "authors": [
+    "Vijay Mathew\tvijay@fractl.io"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "docs/migrations.md",
+    "src/cli/main.ts",
+    "src/runtime/defs.ts",
+    "src/runtime/modules/core.ts",
+    "src/runtime/resolvers/sqldb/database.ts",
+    "test/runtime/migration-validation.test.ts"
+   ],
+   "states": [
+    "c793e63fd0e5ff548e76b9ae8d25a515a90b0083",
+    "258a15cb4cefa949bc9543ebc415f81006da6209",
+    "5c5528b4c7f598e7ce69aebd07e011573930b668",
+    "78d1fc0e32b5c8f895f5c4dc3edcf353261a7396",
+    "fb605d1d8bc9500a2e59fdee3ef5f1671eea2c89"
+   ],
+   "n_commits": 5
+  },
+  {
+   "pr": 649,
+   "method": "squash",
+   "landing": "19121f415e42e0b0fbf66afb3667ca9fcff1133c",
+   "landing_date": "2026-03-31T11:18:44+05:00",
+   "head": "4dfea3b20073bdc993143d9039809029941c55e4",
+   "base": "378e973ba8103db7fce80c692c3dbacd20399cd2",
+   "authors": [
+    "Muazzam Kazmi\tmuazzam@fractl.io"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "src/language/agentlang.langium",
+    "src/language/error-reporter.ts",
+    "src/language/generated/ast.ts",
+    "src/language/generated/grammar.ts",
+    "src/runtime/module.ts",
+    "src/syntaxes/agentlang.monarch.ts",
+    "test/runtime/database-sqljs.test.ts",
+    "test/runtime/instance-normalize-array-objects.test.ts"
+   ],
+   "states": [
+    "4dfea3b20073bdc993143d9039809029941c55e4"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 650,
+   "method": "squash",
+   "landing": "be504e6e0c163620ffa67e8007e5d59be28f0bc4",
+   "landing_date": "2026-03-31T12:00:03+05:00",
+   "head": "b85510835f13e616c3bf39007f05361907962c76",
+   "base": "19121f415e42e0b0fbf66afb3667ca9fcff1133c",
+   "authors": [
+    "Muazzam Kazmi\tmuazzam@fractl.io"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "src/runtime/auth/cognito.ts",
+    "src/runtime/auth/interface.ts",
+    "src/runtime/modules/auth.ts"
+   ],
+   "states": [
+    "b85510835f13e616c3bf39007f05361907962c76"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 651,
+   "method": "squash",
+   "landing": "734b364c0054c5b8095c104280b6e44ea82d7608",
+   "landing_date": "2026-03-31T12:04:54+05:00",
+   "head": "96c47adfd1f10234d21aa31a560d6d93c23167e9",
+   "base": "be504e6e0c163620ffa67e8007e5d59be28f0bc4",
+   "authors": [
+    "muazzam0x48\t118562685+muazzam0x48@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "CHANGELOG.md",
+    "package-lock.json",
+    "package.json"
+   ],
+   "states": [
+    "96c47adfd1f10234d21aa31a560d6d93c23167e9"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 652,
+   "method": "squash",
+   "landing": "fecb44201e5e346d546cc9ba51643a1e36c752b1",
+   "landing_date": "2026-04-07T11:04:14+05:00",
+   "head": "0db13512bd0a287356729c238c2bf607155be85b",
+   "base": "734b364c0054c5b8095c104280b6e44ea82d7608",
+   "authors": [
+    "Muazzam Kazmi\tmuazzam@fractl.io"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "src/runtime/interpreter.ts"
+   ],
+   "states": [
+    "0db13512bd0a287356729c238c2bf607155be85b"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 653,
+   "method": "squash",
+   "landing": "d0d9dbc7906b094a79a2772fad91d364394d4154",
+   "landing_date": "2026-04-07T11:05:48+05:00",
+   "head": "661118245af2313735d8ed3f1f793b08e456ba76",
+   "base": "734b364c0054c5b8095c104280b6e44ea82d7608",
+   "authors": [
+    "Muazzam Kazmi\tmuazzam@fractl.io"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "src/runtime/modules/ai.ts",
+    "test/runtime/llm-service.test.ts"
+   ],
+   "states": [
+    "661118245af2313735d8ed3f1f793b08e456ba76",
+    "4b2ee37ec2a1df1de1a91e845fcc74651c109c64"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 654,
+   "method": "squash",
+   "landing": "0a2554a60ffc8af2fa805c3cf69d26adccfc5ec9",
+   "landing_date": "2026-04-07T11:40:54+05:00",
+   "head": "4f1141f92a1b5c0a5c249c24924b1353dfa36097",
+   "base": "d0d9dbc7906b094a79a2772fad91d364394d4154",
+   "authors": [
+    "muazzam0x48\t118562685+muazzam0x48@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "CHANGELOG.md",
+    "package-lock.json",
+    "package.json"
+   ],
+   "states": [
+    "4f1141f92a1b5c0a5c249c24924b1353dfa36097"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 655,
+   "method": "squash",
+   "landing": "bdafcb103011c7152c28c937e8db9a54a0a1f1ed",
+   "landing_date": "2026-04-08T09:45:09+05:00",
+   "head": "d9f49a73e08084a9a249d96cf2cf2ffcda826f4c",
+   "base": "0a2554a60ffc8af2fa805c3cf69d26adccfc5ec9",
+   "authors": [
+    "Muazzam Kazmi\tmuazzam@fractl.io"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "src/runtime/exec-graph-cache.ts",
+    "src/runtime/exec-graph.ts",
+    "src/runtime/interpreter.ts",
+    "src/runtime/loader.ts",
+    "src/runtime/modules/ai.ts",
+    "src/runtime/modules/auth.ts",
+    "test/runtime/agent-rbac.test.ts"
+   ],
+   "states": [
+    "d9f49a73e08084a9a249d96cf2cf2ffcda826f4c"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 656,
+   "method": "squash",
+   "landing": "ecfb4ed217e923e6f3c6a7bae5a0db661302b264",
+   "landing_date": "2026-04-08T09:48:40+05:00",
+   "head": "369316c21ac179c9f241b0be2777aa3e0a703565",
+   "base": "bdafcb103011c7152c28c937e8db9a54a0a1f1ed",
+   "authors": [
+    "muazzam0x48\t118562685+muazzam0x48@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "CHANGELOG.md",
+    "package-lock.json",
+    "package.json"
+   ],
+   "states": [
+    "369316c21ac179c9f241b0be2777aa3e0a703565"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 657,
+   "method": "squash",
+   "landing": "34a2621529844d9286dcf8d4e9061146b7cc6980",
+   "landing_date": "2026-06-05T18:23:49+05:00",
+   "head": "7231230053636d8a5c015281bd207c094190d86a",
+   "base": "ecfb4ed217e923e6f3c6a7bae5a0db661302b264",
+   "authors": [
+    "Muazzam Kazmi\tmuazzam@fractl.io"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    ".gitignore",
+    "README.md",
+    "docs/error-codes.md",
+    "src/api/http.ts",
+    "src/cli/main.ts",
+    "src/runtime/auth/cognito.ts",
+    "src/runtime/defs.ts",
+    "src/runtime/errors/coded-error.ts",
+    "src/runtime/errors/http-error.ts",
+    "src/runtime/interpreter.ts",
+    "src/runtime/logger.ts",
+    "src/runtime/module.ts",
+    "src/runtime/modules/ai.ts",
+    "src/runtime/modules/auth.ts",
+    "src/runtime/modules/core.ts",
+    "src/runtime/resolvers/sqldb/database.ts",
+    "src/runtime/resolvers/sqldb/db-errors.ts",
+    "src/runtime/state.ts",
+    "test/api/http.test.ts",
+    "test/runtime/error-messages.test.ts"
+   ],
+   "states": [
+    "7231230053636d8a5c015281bd207c094190d86a",
+    "3e72526b9aee6b26752e89d2ff0c2efdfdd1f226"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 659,
+   "method": "squash",
+   "landing": "eabe9160391f3b2fccefeaee476e81dc0b3d0d16",
+   "landing_date": "2026-06-16T09:14:36+05:00",
+   "head": "eac6572c900dfc5236d05af3a99f07dad41b9293",
+   "base": "34a2621529844d9286dcf8d4e9061146b7cc6980",
+   "authors": [
+    "muazzam0x48\t118562685+muazzam0x48@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "CHANGELOG.md",
+    "package-lock.json",
+    "package.json"
+   ],
+   "states": [
+    "eac6572c900dfc5236d05af3a99f07dad41b9293"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 661,
+   "method": "squash",
+   "landing": "f02e27199b193096c19985b7877ad1644974507a",
+   "landing_date": "2026-10-25T04:14:57+05:00",
+   "head": "79a1d8abe24669839b36e489821a52ac107bc80b",
+   "base": "eabe9160391f3b2fccefeaee476e81dc0b3d0d16",
+   "authors": [
+    "Muazzam Kazmi\tmuazzam@fractl.io"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "README.md",
+    "src/api/common.ts",
+    "src/api/http.ts",
+    "src/api/mcp.ts",
+    "src/cli/main.ts",
+    "src/runtime/state.ts",
+    "test/api/mcp.test.ts"
+   ],
+   "states": [
+    "79a1d8abe24669839b36e489821a52ac107bc80b"
+   ],
+   "n_commits": 1
+  }
+ ]
+}

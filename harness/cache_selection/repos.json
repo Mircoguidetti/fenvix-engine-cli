@@ -1,0 +1,81 @@
+{
+ "codex-multi-auth": {
+  "clone": "/home/user/work/repos/codex-multi-auth",
+  "runner": "vitest",
+  "args": [],
+  "env": {},
+  "install": "npm ci --ignore-scripts --no-audit --no-fund",
+  "spec_install": "npm ci --ignore-scripts --no-audit --no-fund"
+ },
+ "ironcurtain": {
+  "clone": "/home/user/work/repos/ironcurtain",
+  "runner": "vitest",
+  "args": [],
+  "env": {},
+  "install": "npm ci --ignore-scripts --no-audit --no-fund",
+  "spec_install": "npm ci --ignore-scripts --no-audit --no-fund"
+ },
+ "yalc": {
+  "clone": "/home/user/work/repos/yalc",
+  "runner": "vitest",
+  "args": [],
+  "env": {},
+  "install": "npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts; (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace). The candidates.json pnpm@9 (= CI ci.yml:15 version 9) fails here: 'packages field missing or empty' in pnpm-workspace.yaml. vitest.globalSetup.ts spawns `pnpm exec drizzle-kit push`: pnpm 10.28.0 on PATH",
+  "spec_install": "npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts; (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace). The candidates.json pnpm@9 (= CI ci.yml:15 version 9) fails here: 'packages field missing or empty' in pnpm-workspace.yaml. vitest.globalSetup.ts spawns `pnpm exec drizzle-kit push`: pnpm 10.28.0 on PATH"
+ },
+ "nestjs-pino": {
+  "clone": "/home/user/work/repos/nestjs-pino",
+  "runner": "vitest",
+  "args": [],
+  "env": {},
+  "install": "npm ci --ignore-scripts --no-audit --no-fund",
+  "spec_install": "npm ci --ignore-scripts --no-audit --no-fund"
+ },
+ "agentsys": {
+  "clone": "/home/user/work/repos/agentsys",
+  "runner": "jest",
+  "args": [],
+  "env": {},
+  "install": "npm ci --ignore-scripts --no-audit --no-fund",
+  "spec_install": "npm ci --ignore-scripts --no-audit --no-fund"
+ },
+ "lerna-lite": {
+  "clone": "/home/user/work/repos/lerna-lite",
+  "runner": "vitest",
+  "args": [
+   "--config",
+   "./e2e/vitest.config.ts"
+  ],
+  "env": {},
+  "install": "npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts && npx -y pnpm@11.28.5 build (the e2e suite runs the built CLI); without Verdaccio (package.json test:e2e:no-verdaccio): all 107 e2e tests pass without it",
+  "spec_install": "npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts && npx -y pnpm@11.28.5 build (the e2e suite runs the built CLI); without Verdaccio (package.json test:e2e:no-verdaccio): all 107 e2e tests pass without it"
+ },
+ "drydock": {
+  "clone": "/home/user/work/repos/drydock",
+  "runner": "vitest",
+  "args": [],
+  "env": {
+   "PATH": "/opt/node24/bin:$PATH"
+  },
+  "install": "Node 24.22.3; npm ci --ignore-scripts at the root and in app/",
+  "spec_install": "Node 24.22.3; npm ci --ignore-scripts at the root and in app/"
+ },
+ "agentlang": {
+  "clone": "/home/user/work/repos/agentlang",
+  "runner": "vitest",
+  "args": [],
+  "env": {
+   "NODE_ENV": "test"
+  },
+  "install": "npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts (packageManager pnpm@10.28.2; CI uses npm ci on package-lock.json); Langium generated files are committed",
+  "spec_install": "npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts (packageManager pnpm@10.28.2; CI uses npm ci on package-lock.json); Langium generated files are committed"
+ },
+ "alakajam": {
+  "clone": "/home/user/work/repos/alakajam",
+  "runner": "vitest",
+  "args": [],
+  "env": {},
+  "install": "npm ci --ignore-scripts --no-audit --no-fund",
+  "spec_install": "npm ci --ignore-scripts --no-audit --no-fund"
+ }
+}

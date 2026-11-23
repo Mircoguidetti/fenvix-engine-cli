@@ -1,0 +1,968 @@
+{
+ "repo": "ironcurtain",
+ "url": "https://github.com/provos/ironcurtain",
+ "default": "origin/master",
+ "default_head": "abf2b44c2e1b6138ede2d0b46337c684258088d0",
+ "pr_refs_total": 516,
+ "pr_numbers_fetched": [
+  394,
+  551
+ ],
+ "merged_found_in_fetched": 77,
+ "kept": [
+  {
+   "pr": 489,
+   "method": "squash",
+   "landing": "a71ed86ee1de492d3ee3e946447076fb21e47531",
+   "landing_date": "2026-10-01T18:36:32-06:00",
+   "head": "30dbf00b6b28114736fc060dfc2ca2301a6eef50",
+   "base": "f1fc25426b7e60ba420e19a4532bcf305da52bf3",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "30dbf00b6b28114736fc060dfc2ca2301a6eef50"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 486,
+   "method": "squash",
+   "landing": "8f9c75a720337271caf1e18c199fcca2d299ad27",
+   "landing_date": "2026-10-01T19:46:13-06:00",
+   "head": "6c2e894f01565816edd6181f48fafabd5fe57338",
+   "base": "a71ed86ee1de492d3ee3e946447076fb21e47531",
+   "authors": [
+    "IronCurtain\tironcurtain@provos.org",
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "package-lock.json",
+    "packages/web-ui/package.json",
+    "src/docker-workload/private-docker.ts",
+    "src/docker/docker-infrastructure.ts",
+    "src/docker/docker-probe.ts",
+    "src/docker/llm-observation/completion-endpoint.ts",
+    "src/docker/llm-observation/sse-event-framer.ts",
+    "src/docker/mitm-proxy.ts",
+    "src/docker/oci-image-archive-canonicalizer.ts",
+    "src/docker/openrouter.ts",
+    "src/docker/package-egress-proxy.ts",
+    "src/docker/package-types.ts",
+    "src/docker/resource-watchdog.ts",
+    "src/docker/selected-image-file.ts",
+    "src/llm-metrics/identity-protector.ts",
+    "src/llm-metrics/types.ts",
+    "src/mux/types.ts",
+    "src/pipeline/pipeline-runner.ts",
+    "src/session/index.ts",
+    "src/session/step-loop-detector.ts",
+    "src/skills/types.ts",
+    "src/workflow/cli-shared.ts",
+    "src/workflow/lint.ts",
+    "src/workflow/message-log.ts",
+    "src/workflow/orchestrator.ts",
+    "src/workflow/status-parser.ts",
+    "src/workflow/types.ts",
+    "test/ca.test.ts",
+    "test/docker-manager.test.ts",
+    "test/docker/docker-workload-egress.test.ts",
+    "test/doctor.test.ts",
+    "test/escalation-scenarios.test.ts",
+    "test/workflow/orchestrator-log.test.ts"
+   ],
+   "states": [
+    "6c2e894f01565816edd6181f48fafabd5fe57338",
+    "4402b1b0b6c77d23938ed692435c857e2d5d1b72"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 494,
+   "method": "squash",
+   "landing": "d51a3467cbda6a2e94cf04e885e8ae1abdd0f6be",
+   "landing_date": "2026-10-07T01:04:50-07:00",
+   "head": "448a56acaaad4322adb17716393153cf8e4ea2b0",
+   "base": "8f9c75a720337271caf1e18c199fcca2d299ad27",
+   "authors": [
+    "provos\tprovos@gmail.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "CONFIG.md",
+    "MODEL_ROUTING.md",
+    "README.md",
+    "docs/designs/openrouter-integration.md",
+    "docs/designs/zai-provider-profiles.md",
+    "packages/web-ui/scripts/mock-ws-server.ts",
+    "packages/web-ui/src/lib/__tests__/stores-pty.test.ts",
+    "packages/web-ui/src/lib/stores.svelte.ts",
+    "packages/web-ui/src/lib/types.ts",
+    "packages/web-ui/src/routes/Settings.svelte",
+    "packages/web-ui/src/routes/Settings.test.ts",
+    "packages/web-ui/src/routes/settings-helpers.test.ts",
+    "packages/web-ui/src/routes/settings-helpers.ts",
+    "src/config/config-command.ts",
+    "src/config/gateway-client.ts",
+    "src/config/model-id.ts",
+    "src/config/model-mapping.ts",
+    "src/config/model-provider.ts",
+    "src/config/openrouter-goose.ts",
+    "src/config/openrouter-models-fallback.ts",
+    "src/config/openrouter.ts",
+    "src/config/provider-catalog.ts",
+    "src/config/provider-definitions.ts",
+    "src/config/provider-editor.ts",
+    "src/config/provider-preference.ts",
+    "src/config/user-config.ts",
+    "src/config/zai.ts",
+    "src/docker/CLAUDE.md",
+    "src/docker/adapters/claude-code.ts",
+    "src/docker/adapters/codex-model-catalog.ts",
+    "src/docker/adapters/codex.ts",
+    "src/docker/adapters/goose.ts",
+    "src/docker/agent-adapter.ts",
+    "src/docker/docker-agent-session.ts",
+    "src/docker/docker-infrastructure.ts",
+    "src/docker/gateway-runtime.ts",
+    "src/docker/mitm-proxy.ts",
+    "src/docker/openrouter.ts",
+    "src/docker/trajectory-reassembler.ts",
+    "src/docker/zai.ts",
+    "src/doctor/checks.ts",
+    "src/llm-metrics/identity-protector.ts",
+    "src/mux/mux-command.ts",
+    "src/mux/provider-profile-snapshot.ts",
+    "src/persona/persona-compile-orchestrator.ts",
+    "src/pipeline/pipeline-runner.ts",
+    "src/pipeline/pipeline-shared.ts",
+    "src/sandbox/index.ts",
+    "src/session/agent-session.ts",
+    "src/session/message-compactor.ts",
+    "src/session/preflight.ts",
+    "src/trusted-process/index.ts",
+    "src/web-ui/__tests__/config-dispatch.test.ts",
+    "src/web-ui/dispatch/config-dispatch.ts",
+    "src/web-ui/web-ui-types.ts",
+    "test/config-command.test.ts",
+    "test/docker-infrastructure.test.ts",
+    "test/docker/openrouter-agent-session.test.ts",
+    "test/docker/openrouter-mitm.test.ts",
+    "test/docker/openrouter.unit.test.ts",
+    "test/docker/zai-claude-offline.integration.test.ts",
+    "test/docker/zai-mitm.test.ts",
+    "test/doctor.test.ts",
+    "test/mitm-proxy.test.ts",
+    "test/model-provider.test.ts",
+    "test/mux-provider-profile-snapshot.test.ts",
+    "test/openrouter-goose-format.test.ts",
+    "test/provider-definitions.test.ts",
+    "test/session.test.ts",
+    "test/user-config.test.ts",
+    "test/zai-provider.test.ts"
+   ],
+   "states": [
+    "448a56acaaad4322adb17716393153cf8e4ea2b0",
+    "7e42d038d1c1ff090aecfc4cbba46fa4f89fa1a4",
+    "1759be1e5bff346ebe7de8b9ea20b7af304d2a42",
+    "08fbdca84cd1dce615a651f4794d605e6e8cf62a",
+    "93c7be7b0db45503197f6e381630fec412568884"
+   ],
+   "n_commits": 13
+  },
+  {
+   "pr": 518,
+   "method": "squash",
+   "landing": "a2b2ae8fad9247ae24cdb302919b40bed61fbad9",
+   "landing_date": "2026-10-30T13:49:56-07:00",
+   "head": "f8efb344f7badb24640894ac02234dba66db04d6",
+   "base": "d51a3467cbda6a2e94cf04e885e8ae1abdd0f6be",
+   "authors": [
+    "Fairuzan Roslan\triaf@mysec.org"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "docker/Dockerfile.base",
+    "docs/designs/linux-nested-docker-implementation-plan.md"
+   ],
+   "states": [
+    "f8efb344f7badb24640894ac02234dba66db04d6"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 528,
+   "method": "squash",
+   "landing": "4732bd737b149b30de1738cb8d30ca207dd744e9",
+   "landing_date": "2026-11-09T09:23:37-08:00",
+   "head": "6bf23117ff5e7d58ce01511f42a7c636b0d891dc",
+   "base": "a2b2ae8fad9247ae24cdb302919b40bed61fbad9",
+   "authors": [
+    "IronCurtain\tironcurtain@provos.org"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "CONFIG.md",
+    "packages/web-ui/e2e/settings.spec.ts",
+    "packages/web-ui/scripts/mock-ws-server.ts",
+    "packages/web-ui/src/lib/stores.svelte.ts",
+    "packages/web-ui/src/lib/types.ts",
+    "packages/web-ui/src/routes/NetworkSettings.svelte",
+    "packages/web-ui/src/routes/NetworkSettings.test.ts",
+    "packages/web-ui/src/routes/Settings.svelte",
+    "packages/web-ui/src/routes/Settings.test.ts",
+    "src/config/config-command.ts",
+    "src/config/user-config.ts",
+    "src/docker/docker-infrastructure.ts",
+    "src/docker/mitm-proxy.ts",
+    "src/docker/outbound-transport.ts",
+    "src/docker/proxy-tools.ts",
+    "src/web-ui/__tests__/config-dispatch.test.ts",
+    "src/web-ui/dispatch/config-dispatch.ts",
+    "src/web-ui/web-ui-types.ts",
+    "test/config-command.test.ts",
+    "test/docker/outbound-transport.test.ts",
+    "test/mitm-proxy.test.ts",
+    "test/proxy-integration.test.ts",
+    "test/proxy-tools.test.ts",
+    "test/user-config.test.ts"
+   ],
+   "states": [
+    "6bf23117ff5e7d58ce01511f42a7c636b0d891dc",
+    "cae6cfc6464f92c09f6b62bd485c3f3a8f771c58",
+    "a40f3d1b6dd9f860ac501b0cf2a4e7db4cdadc91",
+    "79153b3687e4316c0c3f4af442f59e8c1d49c87d"
+   ],
+   "n_commits": 4
+  },
+  {
+   "pr": 529,
+   "method": "squash",
+   "landing": "f77b79063816ccb39993f47f64133bb6d521e24e",
+   "landing_date": "2026-11-09T10:30:27-08:00",
+   "head": "23dffe0fb082a175d889d7df6be6436e0071ef03",
+   "base": "4732bd737b149b30de1738cb8d30ca207dd744e9",
+   "authors": [
+    "IronCurtain\tironcurtain@provos.org"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "CONFIG.md",
+    "docs/designs/linux-nested-docker-implementation-plan.md",
+    "docs/designs/session-resume.md",
+    "docs/designs/webui-pty-terminal.md",
+    "packages/web-ui/src/lib/__tests__/fixtures.ts",
+    "packages/web-ui/src/lib/__tests__/stores-pty.test.ts",
+    "packages/web-ui/src/lib/stores.svelte.ts",
+    "packages/web-ui/src/routes/Sessions.pty.test.ts",
+    "src/docker/adapters/claude-code.ts",
+    "src/docker/adapters/codex.ts",
+    "src/docker/agent-adapter.ts",
+    "src/docker/conversation-state.ts",
+    "src/docker/docker-agent-session.ts",
+    "src/docker/pty-session.ts",
+    "src/docker/pty-types.ts",
+    "src/pty/session-scanner.ts",
+    "src/session/index.ts",
+    "src/session/types.ts",
+    "src/web-ui/pty-session-manager.ts",
+    "test/conversation-state.test.ts",
+    "test/docker-infrastructure.test.ts",
+    "test/docker-session-factory.test.ts",
+    "test/docker-session.test.ts",
+    "test/helpers/conversation-state.ts",
+    "test/pty-web-escalation.integration.test.ts",
+    "test/pty/pty-session-manager.test.ts",
+    "test/session-resume-security.test.ts",
+    "test/session-scanner.test.ts",
+    "test/session-snapshot.test.ts"
+   ],
+   "states": [
+    "23dffe0fb082a175d889d7df6be6436e0071ef03",
+    "272e7ea02e2fe8f208f02ed164a969d5f9c59eb5"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 530,
+   "method": "squash",
+   "landing": "0b3e75aa1f3f6c8c1aea0d69ee97be79e0950df6",
+   "landing_date": "2026-11-09T21:54:21-08:00",
+   "head": "87a4dfda8929a5382e2b34a9eae864332fc007fd",
+   "base": "f77b79063816ccb39993f47f64133bb6d521e24e",
+   "authors": [
+    "IronCurtain\tironcurtain@provos.org"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "src/docker-workload/cleanup-ownership.ts",
+    "src/docker-workload/infrastructure.ts",
+    "src/docker-workload/lifecycle-evidence.ts",
+    "src/docker-workload/resource-watchdog-supervisor.ts",
+    "src/docker/CLAUDE.md",
+    "test/docker-workload/infrastructure-teardown.test.ts",
+    "test/docker/resource-watchdog-supervisor.test.ts"
+   ],
+   "states": [
+    "87a4dfda8929a5382e2b34a9eae864332fc007fd",
+    "4711acbe1ed3969c73f08c65bda26f4489bcc690"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 531,
+   "method": "squash",
+   "landing": "478e78867b9cb4c6daa92627001bbdb56534a293",
+   "landing_date": "2026-11-10T18:52:04-08:00",
+   "head": "a5c090eca2ccba71163926079e294fe678e60ddd",
+   "base": "0b3e75aa1f3f6c8c1aea0d69ee97be79e0950df6",
+   "authors": [
+    "IronCurtain\tironcurtain@provos.org"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "docs/designs/readonly-extra-mounts.md",
+    "packages/web-ui/CLAUDE.md",
+    "packages/web-ui/e2e/errors.spec.ts",
+    "packages/web-ui/e2e/helpers.ts",
+    "packages/web-ui/e2e/pty-terminal.spec.ts",
+    "packages/web-ui/e2e/sessions.spec.ts",
+    "packages/web-ui/src/lib/components/features/new-session-dialog.svelte",
+    "packages/web-ui/src/lib/components/features/new-session-dialog.test.ts",
+    "packages/web-ui/src/lib/components/features/session-sidebar.svelte",
+    "packages/web-ui/src/lib/components/features/session-sidebar.test.ts",
+    "packages/web-ui/src/lib/stores.svelte.ts",
+    "packages/web-ui/src/lib/types.ts",
+    "packages/web-ui/src/routes/Sessions.svelte",
+    "packages/web-ui/src/routes/Sessions.test.ts",
+    "src/docker/container-workspace.ts",
+    "src/docker/docker-infrastructure.ts",
+    "src/docker/pty-session.ts",
+    "src/index.ts",
+    "src/mux/mux-app.ts",
+    "src/mux/mux-input-handler.ts",
+    "src/mux/mux-renderer.ts",
+    "src/mux/types.ts",
+    "src/pty/pty-bridge.ts",
+    "src/session/index.ts",
+    "src/session/readonly-mounts.ts",
+    "src/session/types.ts",
+    "src/web-ui/dispatch/session-dispatch.ts",
+    "src/web-ui/pty-session-manager.ts",
+    "test/docker-infrastructure.test.ts",
+    "test/docker/pty-cleanup.test.ts",
+    "test/docker/pty-nested-ordering.test.ts",
+    "test/mux-input-handler.test.ts",
+    "test/pty-bridge.test.ts",
+    "test/pty/pty-session-manager.test.ts",
+    "test/session-readonly-mounts-validation.test.ts",
+    "test/session-readonly-mounts.test.ts"
+   ],
+   "states": [
+    "a5c090eca2ccba71163926079e294fe678e60ddd",
+    "ded4d16a9626bb62b9d17678ee3d931145ab4432",
+    "cf2ae937d1a9add93dd98b76210c2d872a8ca25a",
+    "dc44a8b389ad57a63ef3fb4fe7174e219a9e350e"
+   ],
+   "n_commits": 4
+  },
+  {
+   "pr": 532,
+   "method": "squash",
+   "landing": "060a6078ce2eb96ea5c943003afbf9f1653443e8",
+   "landing_date": "2026-11-10T22:52:08-08:00",
+   "head": "fb4ba0150c17716e70f6792814461bbdd86a0c78",
+   "base": "478e78867b9cb4c6daa92627001bbdb56534a293",
+   "authors": [
+    "IronCurtain\tironcurtain@provos.org"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "docs/designs/readonly-extra-mounts.md",
+    "packages/web-ui/CLAUDE.md",
+    "packages/web-ui/e2e/sessions.spec.ts",
+    "packages/web-ui/scripts/mock-ws-server.ts",
+    "packages/web-ui/src/lib/components/features/new-session-dialog.svelte",
+    "packages/web-ui/src/lib/components/features/readonly-folders-input.svelte",
+    "packages/web-ui/src/lib/components/features/resume-session-modal.svelte",
+    "packages/web-ui/src/lib/components/features/resume-session-modal.test.ts",
+    "packages/web-ui/src/lib/readonly-folders.ts",
+    "packages/web-ui/src/lib/stores.svelte.ts",
+    "packages/web-ui/src/lib/types.ts",
+    "packages/web-ui/src/routes/Sessions.svelte",
+    "packages/web-ui/src/routes/Sessions.test.ts",
+    "src/docker-workload/resource-watchdog-supervisor.ts",
+    "src/docker/pty-session.ts",
+    "src/index.ts",
+    "src/mux/mux-app.ts",
+    "src/mux/mux-input-handler.ts",
+    "src/mux/mux-renderer.ts",
+    "src/mux/types.ts",
+    "src/session/index.ts",
+    "src/session/readonly-mounts.ts",
+    "src/session/types.ts",
+    "src/web-ui/dispatch/session-dispatch.ts",
+    "src/web-ui/pty-session-manager.ts",
+    "src/web-ui/web-ui-types.ts",
+    "test/docker-workload/watchdog-supervisor-launch.test.ts",
+    "test/fetch-server.test.ts",
+    "test/helpers/tsx-bin.ts",
+    "test/mcp-proxy-server-no-backend.integration.test.ts",
+    "test/model-provider.test.ts",
+    "test/mux-input-handler.test.ts",
+    "test/proxy-integration.test.ts",
+    "test/proxy-router-mode.test.ts",
+    "test/pty-bridge.test.ts",
+    "test/pty/pty-session-manager.test.ts",
+    "test/roots-expansion-bridging.integration.test.ts",
+    "test/session-readonly-mounts-validation.test.ts",
+    "test/session-readonly-mounts.test.ts"
+   ],
+   "states": [
+    "fb4ba0150c17716e70f6792814461bbdd86a0c78",
+    "ea6cfd9398ebe51f80d04a091ccf75cd46f4d96c",
+    "91e811bd0f7a7ed79c600acae37659e362c83a17",
+    "451c6d81018b3ce1aa8870ceb8717f52fd4b0109"
+   ],
+   "n_commits": 4
+  },
+  {
+   "pr": 542,
+   "method": "squash",
+   "landing": "5db1c99defa008df32d0d8401e087fa7365a2cb3",
+   "landing_date": "2026-11-16T16:41:19-08:00",
+   "head": "5ae07ac8396734b0eb453097d68feb0cdd47e5fe",
+   "base": "060a6078ce2eb96ea5c943003afbf9f1653443e8",
+   "authors": [
+    "George Pickett\tgeorge@parallel.ai"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "CHANGELOG.md",
+    "CONFIG.md",
+    "README.md",
+    "src/config/config-command.ts",
+    "src/config/first-start.ts",
+    "src/config/user-config.ts",
+    "src/servers/fetch-server.ts",
+    "src/servers/search-providers.ts",
+    "test/config-command.test.ts",
+    "test/first-start.test.ts",
+    "test/parallel-search-provider.test.ts"
+   ],
+   "states": [
+    "5ae07ac8396734b0eb453097d68feb0cdd47e5fe",
+    "529da49a76ac33b7fd16788e6b8c0d604f9a9af5"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 496,
+   "method": "squash",
+   "landing": "d4f8048c0f5dbd6b755ff8df4894830e84f1ffc6",
+   "landing_date": "2026-11-17T14:52:12-08:00",
+   "head": "4813a95378f4ad91191b87b0443092fdf6313f71",
+   "base": "d51a3467cbda6a2e94cf04e885e8ae1abdd0f6be",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "4813a95378f4ad91191b87b0443092fdf6313f71"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 499,
+   "method": "squash",
+   "landing": "04b44a480734405acb2789649392009f4edf3420",
+   "landing_date": "2026-11-17T14:52:17-08:00",
+   "head": "b75cbef8a4911c14d926f456c79bea1ffe13103c",
+   "base": "d51a3467cbda6a2e94cf04e885e8ae1abdd0f6be",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "b75cbef8a4911c14d926f456c79bea1ffe13103c"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 513,
+   "method": "squash",
+   "landing": "b1c4278f2398b41ba0c55b0dfe9c1021bdff9f96",
+   "landing_date": "2026-11-17T14:52:22-08:00",
+   "head": "ac772349155fe02ae81c9ebea8aa6237d48d49cc",
+   "base": "d51a3467cbda6a2e94cf04e885e8ae1abdd0f6be",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json",
+    "packages/web-ui/package.json"
+   ],
+   "states": [
+    "ac772349155fe02ae81c9ebea8aa6237d48d49cc"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 525,
+   "method": "squash",
+   "landing": "06bec00a752637d3ec878a061c42e778444befb6",
+   "landing_date": "2026-11-17T14:52:40-08:00",
+   "head": "8d451645dbbac25189986ef2e1df60bdda76e2c3",
+   "base": "a2b2ae8fad9247ae24cdb302919b40bed61fbad9",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "8d451645dbbac25189986ef2e1df60bdda76e2c3"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 534,
+   "method": "squash",
+   "landing": "6a6407f1c0b31eb4bd2f1713af7d8d3d5c663448",
+   "landing_date": "2026-11-17T14:52:45-08:00",
+   "head": "006a454593fe05374b2fa484cac36ec468877251",
+   "base": "060a6078ce2eb96ea5c943003afbf9f1653443e8",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "006a454593fe05374b2fa484cac36ec468877251"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 536,
+   "method": "squash",
+   "landing": "e116316840c8c8735cb8adaa597be1cdfdd4d563",
+   "landing_date": "2026-11-17T14:52:50-08:00",
+   "head": "e909727e50a008302a71c826bfe0ec1e1ea3f056",
+   "base": "060a6078ce2eb96ea5c943003afbf9f1653443e8",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "e909727e50a008302a71c826bfe0ec1e1ea3f056"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 540,
+   "method": "squash",
+   "landing": "8a337ebcc1c91db7ffc1f663865dc87769693f8a",
+   "landing_date": "2026-11-17T14:52:55-08:00",
+   "head": "04a5830da68ce3e2571327388fc52c6e03e833b9",
+   "base": "060a6078ce2eb96ea5c943003afbf9f1653443e8",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "04a5830da68ce3e2571327388fc52c6e03e833b9"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 538,
+   "method": "squash",
+   "landing": "2c5d6935026ce3a576aa099c2f4e7f3afb0e5678",
+   "landing_date": "2026-11-17T14:53:00-08:00",
+   "head": "800348b1026d5d525079cf340a02b688427ca1a7",
+   "base": "060a6078ce2eb96ea5c943003afbf9f1653443e8",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "800348b1026d5d525079cf340a02b688427ca1a7"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 537,
+   "method": "squash",
+   "landing": "e1726b4490078e00288506ac39c4566bb20cc6b5",
+   "landing_date": "2026-11-17T14:53:05-08:00",
+   "head": "c9c4f96d6b8a7b3b0ca6138a0f8d4015edca1d8f",
+   "base": "060a6078ce2eb96ea5c943003afbf9f1653443e8",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "c9c4f96d6b8a7b3b0ca6138a0f8d4015edca1d8f"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 519,
+   "method": "squash",
+   "landing": "f07571b4805eabac747a5317b42a543126dec493",
+   "landing_date": "2026-11-17T14:53:10-08:00",
+   "head": "dfbb82a7022ded3e547c6a677df4fede35f71aed",
+   "base": "a2b2ae8fad9247ae24cdb302919b40bed61fbad9",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "dfbb82a7022ded3e547c6a677df4fede35f71aed"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 503,
+   "method": "squash",
+   "landing": "4f4d9fb1b463863d5bfae0886fa2979e48eeb5f7",
+   "landing_date": "2026-11-17T14:53:15-08:00",
+   "head": "35c779fd8ecfac7a2c20cbe81685e88568cbe23a",
+   "base": "d51a3467cbda6a2e94cf04e885e8ae1abdd0f6be",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "35c779fd8ecfac7a2c20cbe81685e88568cbe23a"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 492,
+   "method": "squash",
+   "landing": "f03dff4aa7d7d1927499d0d9ad00094b73641a7e",
+   "landing_date": "2026-11-17T14:53:20-08:00",
+   "head": "2f11381c528a3725b1ab501b0a41b10c8f75f58c",
+   "base": "8f9c75a720337271caf1e18c199fcca2d299ad27",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "2f11381c528a3725b1ab501b0a41b10c8f75f58c"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 524,
+   "method": "squash",
+   "landing": "ade7fdf74a9cac882a872a0eb4b6430589f00513",
+   "landing_date": "2026-11-17T14:53:24-08:00",
+   "head": "c68b9790a757076f98e7d523c0b9ec30b3d1d96c",
+   "base": "a2b2ae8fad9247ae24cdb302919b40bed61fbad9",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "c68b9790a757076f98e7d523c0b9ec30b3d1d96c"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 509,
+   "method": "squash",
+   "landing": "4f482e40852416583d870e97f097da0cbb02c926",
+   "landing_date": "2026-11-17T14:53:29-08:00",
+   "head": "4fbcd6ea5bf9459d45e34997c30eca5849c317c7",
+   "base": "d51a3467cbda6a2e94cf04e885e8ae1abdd0f6be",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "4fbcd6ea5bf9459d45e34997c30eca5849c317c7"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 522,
+   "method": "squash",
+   "landing": "be56009ba38d6c8887c8bdeaa3ee15875a19b493",
+   "landing_date": "2026-11-17T14:53:33-08:00",
+   "head": "3fa8304ccca526212d51d6359b642be75592a2cb",
+   "base": "a2b2ae8fad9247ae24cdb302919b40bed61fbad9",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json"
+   ],
+   "states": [
+    "3fa8304ccca526212d51d6359b642be75592a2cb"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 535,
+   "method": "squash",
+   "landing": "853de8777eb3a630b7da19518f6f5c5f75e8a84f",
+   "landing_date": "2026-11-17T14:53:38-08:00",
+   "head": "72c701aa236f9dcf9f1708e19d9c148707b94cb4",
+   "base": "060a6078ce2eb96ea5c943003afbf9f1653443e8",
+   "authors": [
+    "dependabot[bot]\t49699333+dependabot[bot]@users.noreply.github.com"
+   ],
+   "klass": "dependency",
+   "class_reason": "bot author",
+   "changed_files": [
+    "package-lock.json",
+    "packages/web-ui/package.json"
+   ],
+   "states": [
+    "72c701aa236f9dcf9f1708e19d9c148707b94cb4"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 547,
+   "method": "squash",
+   "landing": "0e9a75497a19274b11609d746d159715ca27885b",
+   "landing_date": "2026-11-17T19:45:27-08:00",
+   "head": "e1c466d44fffdc81b9fbc1b1666ebeeb90ec63e2",
+   "base": "853de8777eb3a630b7da19518f6f5c5f75e8a84f",
+   "authors": [
+    "IronCurtain\tironcurtain@provos.org"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "package-lock.json",
+    "packages/web-ui/CLAUDE.md",
+    "packages/web-ui/README.md",
+    "packages/web-ui/e2e/escalations.spec.ts",
+    "packages/web-ui/e2e/helpers.ts",
+    "packages/web-ui/e2e/theme.spec.ts",
+    "packages/web-ui/package.json",
+    "packages/web-ui/postcss.config.js",
+    "packages/web-ui/src/App.svelte",
+    "packages/web-ui/src/app.css",
+    "packages/web-ui/src/lib/components/features/escalation-card.svelte",
+    "packages/web-ui/src/lib/components/features/escalation-modal.svelte",
+    "packages/web-ui/src/lib/components/features/file-tree.svelte",
+    "packages/web-ui/src/lib/components/features/gate-review-panel.svelte",
+    "packages/web-ui/src/lib/components/features/model-combobox.svelte",
+    "packages/web-ui/src/lib/components/features/new-session-dialog.svelte",
+    "packages/web-ui/src/lib/components/features/readonly-folders-input.svelte",
+    "packages/web-ui/src/lib/components/features/resource-budget-panel.svelte",
+    "packages/web-ui/src/lib/components/features/resource-limits-settings.svelte",
+    "packages/web-ui/src/lib/components/features/statistics/StatisticsNavSummary.svelte",
+    "packages/web-ui/src/lib/components/ui/input/input.svelte",
+    "packages/web-ui/src/lib/components/ui/modal/modal.svelte",
+    "packages/web-ui/src/lib/components/ui/table/table-row.svelte",
+    "packages/web-ui/src/routes/Jobs.svelte",
+    "packages/web-ui/src/routes/Personas.svelte",
+    "packages/web-ui/src/routes/Settings.svelte",
+    "packages/web-ui/src/routes/WorkflowDetail.svelte",
+    "packages/web-ui/src/routes/Workflows.svelte",
+    "packages/web-ui/tailwind.config.js",
+    "packages/web-ui/vite.config.ts"
+   ],
+   "states": [
+    "e1c466d44fffdc81b9fbc1b1666ebeeb90ec63e2"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 549,
+   "method": "squash",
+   "landing": "f4dde4f2ada61f457655a43aca0ba1366f25d1d0",
+   "landing_date": "2026-11-19T11:43:31-08:00",
+   "head": "28220815c017511e21ec9eb82057ae46b031d0fe",
+   "base": "0e9a75497a19274b11609d746d159715ca27885b",
+   "authors": [
+    "IronCurtain\tironcurtain@provos.org"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "CONFIG.md",
+    "DEVELOPER_GUIDE.md",
+    "MODEL_ROUTING.md",
+    "WORKFLOWS.md",
+    "examples/workflow-real-spike.ts",
+    "packages/memory-mcp-server/README.md",
+    "packages/memory-mcp-server/benchmark/locomo/config.py",
+    "packages/memory-mcp-server/benchmark/locomo/reader.py",
+    "packages/memory-mcp-server/benchmark/longmemeval/README.md",
+    "packages/memory-mcp-server/benchmark/longmemeval/config.py",
+    "packages/memory-mcp-server/benchmark/longmemeval/evaluate.py",
+    "packages/memory-mcp-server/benchmark/longmemeval/reader.py",
+    "packages/memory-mcp-server/src/config.ts",
+    "packages/memory-mcp-server/src/llm/client.ts",
+    "packages/memory-mcp-server/test/config.test.ts",
+    "packages/memory-mcp-server/test/e2e/consolidation.e2e.test.ts",
+    "packages/memory-mcp-server/test/llm-client.test.ts",
+    "scripts/memory-corpus/README.md",
+    "scripts/memory-corpus/corpus-lib.ts",
+    "src/config/agent-model-guard.ts",
+    "src/config/config-command.ts",
+    "src/config/model-provider.ts",
+    "src/config/openrouter-models-fallback.ts",
+    "src/config/types.ts",
+    "src/config/user-config.ts",
+    "src/docker/adapters/goose.ts",
+    "src/pipeline/server-prefilter.ts",
+    "src/session/resource-budget-tracker.ts",
+    "src/workflow/types.ts",
+    "src/workflow/workflow-command.ts",
+    "src/workflow/workflows/deterministic-eval-smoke/workflow.yaml",
+    "src/workflow/workflows/deterministic-verdict-smoke/workflow.yaml",
+    "src/workflow/workflows/evolve/README.md",
+    "src/workflow/workflows/evolve/workflow.yaml",
+    "src/workflow/workflows/test-email-summary/workflow.yaml",
+    "test/config-command.test.ts",
+    "test/docker/openrouter-agent-session.test.ts",
+    "test/model-provider.test.ts",
+    "test/resource-budget-tracker.test.ts"
+   ],
+   "states": [
+    "28220815c017511e21ec9eb82057ae46b031d0fe"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 550,
+   "method": "squash",
+   "landing": "218290c3056cf129ea93aa388e9324a989c9f2df",
+   "landing_date": "2026-11-19T13:52:18-08:00",
+   "head": "0b599fa91a5af5944dd6a322766f501afb063b0e",
+   "base": "0e9a75497a19274b11609d746d159715ca27885b",
+   "authors": [
+    "IronCurtain\tironcurtain@provos.org"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "src/docker-workload/infrastructure.ts",
+    "src/docker/docker-infrastructure.ts",
+    "test/docker/docker-workload-prepare-failure.test.ts"
+   ],
+   "states": [
+    "0b599fa91a5af5944dd6a322766f501afb063b0e",
+    "0a6c3af3137470b4f0ad1402f59492d5a2143a67"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 551,
+   "method": "squash",
+   "landing": "abf2b44c2e1b6138ede2d0b46337c684258088d0",
+   "landing_date": "2026-11-19T16:55:49-08:00",
+   "head": "af2eecaa3b3a2871dccad7f853447445669b0638",
+   "base": "218290c3056cf129ea93aa388e9324a989c9f2df",
+   "authors": [
+    "IronCurtain\tironcurtain@provos.org"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "src/docker/llm-observation/sse-event-framer.ts",
+    "src/docker/mediated-egress.ts",
+    "src/docker/mitm-proxy.ts",
+    "src/docker/provider-config.ts",
+    "src/docker/registry-egress-policy.ts",
+    "src/docker/trajectory-capture.ts",
+    "src/docker/trajectory-reassembler.ts",
+    "src/docker/trajectory-tap.ts",
+    "src/docker/trajectory-types.ts",
+    "test/docker-workload/lease-recovery-model.test.ts",
+    "test/docker/mitm-capture-model.test.ts",
+    "test/docker/mitm-domain-model.test.ts",
+    "test/docker/mitm-provider-model.test.ts",
+    "test/docker/mitm-tool-filter-model.test.ts",
+    "test/docker/outbound-transport.test.ts",
+    "test/docker/registry-egress-proxy.test.ts",
+    "test/docker/trajectory-reassembly-model.test.ts",
+    "test/helpers/fake-parent-proxy.ts",
+    "test/helpers/trajectory-model-fixtures.ts"
+   ],
+   "states": [
+    "af2eecaa3b3a2871dccad7f853447445669b0638",
+    "dbc18379a3b1e29e69b06f9167b9feab73e7da4f",
+    "b995054475003c6867838409aece1e7db96a6479",
+    "a929d6417b5c3e8e2da473c667a9942502747431"
+   ],
+   "n_commits": 4
+  }
+ ]
+}

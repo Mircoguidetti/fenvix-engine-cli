@@ -1,0 +1,61 @@
+{
+ "agentsys": {
+  "env_in_test": 129,
+  "env_run_level": 1536,
+  "fs_all": 18,
+  "fs_of_which_run_input_before_test": 0,
+  "io_read": 0,
+  "io_race_concurrent": 1,
+  "io_not_read_not_race": 0,
+  "tests_total": 2224,
+  "not_counted": {
+   "entropy": 99,
+   "other": 362,
+   "beyond-trace": 1,
+   "child": 78
+  },
+  "source": "harness/parallel_measure/data/verify-agentsys-round2-w4.json.gz"
+ },
+ "codex-multi-auth": {
+  "env_in_test": 0,
+  "env_run_level": 0,
+  "fs_all": 8658,
+  "fs_of_which_run_input_before_test": 8658,
+  "io_read": 0,
+  "io_race_concurrent": 0,
+  "io_not_read_not_race": 0,
+  "tests_total": 8660,
+  "not_counted": {
+   "missing": 2
+  },
+  "source": "harness/parallel_measure/data/verify-codex-multi-auth-round2-w4.json.gz"
+ },
+ "ironcurtain": {
+  "env_in_test": 0,
+  "env_run_level": 0,
+  "fs_all": 6667,
+  "fs_of_which_run_input_before_test": 6667,
+  "io_read": 0,
+  "io_race_concurrent": 0,
+  "io_not_read_not_race": 0,
+  "tests_total": 6913,
+  "not_counted": {
+   "missing": 246
+  },
+  "source": "harness/parallel_measure/data/verify-ironcurtain-round2-w4.json.gz"
+ },
+ "nestjs-pino": {
+  "env_in_test": 1,
+  "env_run_level": 0,
+  "fs_all": 2,
+  "fs_of_which_run_input_before_test": 0,
+  "io_read": 0,
+  "io_race_concurrent": 0,
+  "io_not_read_not_race": 8,
+  "tests_total": 269,
+  "not_counted": {
+   "other": 35
+  },
+  "source": "harness/parallel_measure/data/verify-nestjs-pino-round2-w4.json.gz"
+ }
+}

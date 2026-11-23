@@ -1,0 +1,641 @@
+{
+ "repo": "yalc",
+ "url": "https://github.com/Othmane-Khadri/YALC-the-GTM-operating-system",
+ "default": "origin/main",
+ "default_head": "5686d1f2f526346133f78eef3349fc5a655757b4",
+ "pr_refs_total": 24,
+ "pr_numbers_fetched": [
+  2,
+  30
+ ],
+ "merged_found_in_fetched": 19,
+ "kept": [
+  {
+   "pr": 2,
+   "method": "merge",
+   "landing": "0b1d7eed77cc9b6aaafa285bbf1f877a69e9887f",
+   "landing_date": "2026-04-23T12:54:21+01:00",
+   "head": "c73ffdaa21d0e2d912ffba27641ddeb297011442",
+   "base": "c418d874ccae482986a850559f8cc07b296547a9",
+   "authors": [
+    "Othmane Khadri\tothmane@earleads.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    ".claude/rules/campaigns.md",
+    ".claude/rules/enrichment.md",
+    ".claude/rules/qualification.md",
+    ".claude/rules/skills.md",
+    ".claude/settings.json",
+    ".github/workflows/test.yml",
+    "CLAUDE.md",
+    "README.md",
+    "configs/agents/signal-detector.yaml",
+    "configs/mcp/apollo.json",
+    "configs/mcp/hubspot.json",
+    "configs/mcp/peopledatalabs.json",
+    "configs/mcp/zoominfo.json",
+    "configs/pipelines/find-enrich-qualify.yaml",
+    "configs/pipelines/import-dedup-score.yaml",
+    "configs/pipelines/signal-to-campaign.yaml",
+    "configs/skills/detect-funding.md",
+    "configs/skills/detect-hiring-surge.md",
+    "configs/skills/detect-job-change.md",
+    "configs/skills/detect-news.md",
+    "configs/skills/enrich-email.md",
+    "configs/skills/research-company.md",
+    "configs/skills/score-lead.md",
+    "docs/SLACK-ANNOUNCEMENT.md",
+    "docs/WHATS-NEW.md",
+    "package.json",
+    "pnpm-lock.yaml",
+    "src/__tests__/error-boundary.test.ts",
+    "src/__tests__/outbound-rules.test.ts",
+    "src/__tests__/providers.test.ts",
+    "src/__tests__/qualification.test.ts",
+    "src/cli/commands/skills-create.ts",
+    "src/cli/index.ts",
+    "src/lib/ai/client.ts",
+    "src/lib/cli/error-boundary.ts",
+    "src/lib/crm/__tests__/crm-adapter.test.ts",
+    "src/lib/crm/config-store.ts",
+    "src/lib/crm/field-mapper.ts",
+    "src/lib/crm/index.ts",
+    "src/lib/crm/mcp-crm-adapter.ts",
+    "src/lib/crm/setup-wizard.ts",
+    "src/lib/crm/types.ts",
+    "src/lib/db/migrations/0003_signal_watches.sql",
+    "src/lib/db/schema.ts",
+    "src/lib/dedup/__tests__/engine.test.ts",
+    "src/lib/dedup/engine.ts",
+    "src/lib/dedup/index.ts",
+    "src/lib/dedup/live-sync.ts",
+    "src/lib/dedup/slack-confirm.ts",
+    "src/lib/dedup/types.ts",
+    "src/lib/diagnostics/doctor.ts",
+    "src/lib/diagnostics/error-handler.ts",
+    "src/lib/env/claude-code.ts",
+    "src/lib/export/__tests__/export.test.ts",
+    "src/lib/export/adapters/csv.ts",
+    "src/lib/export/adapters/google-sheets.ts",
+    "src/lib/export/adapters/sequencer-csv.ts",
+    "src/lib/export/adapters/webhook.ts",
+    "src/lib/export/index.ts",
+    "src/lib/export/registry.ts",
+    "src/lib/export/types.ts",
+    "src/lib/onboarding/start.ts",
+    "src/lib/orchestrator/__tests__/chain.test.ts",
+    "src/lib/orchestrator/chain-types.ts",
+    "src/lib/orchestrator/chain.ts",
+    "src/lib/orchestrator/conditions.ts",
+    "src/lib/orchestrator/transforms.ts",
+    "src/lib/providers/__tests__/mcp-loader.test.ts",
+    "src/lib/providers/builtin/index.ts",
+    "src/lib/providers/builtin/research-provider.ts",
+    "src/lib/providers/mcp-adapter.ts",
+    "src/lib/providers/mcp-loader.ts",
+    "src/lib/providers/registry.ts",
+    "src/lib/qualification/importers.ts",
+    "src/lib/qualification/pipeline.ts",
+    "src/lib/scraping/__tests__/research-agent.test.ts",
+    "src/lib/scraping/research-agent.ts",
+    "src/lib/signals/__tests__/engine.test.ts",
+    "src/lib/signals/engine.ts",
+    "src/lib/signals/index.ts",
+    "src/lib/signals/triggers.ts",
+    "src/lib/signals/types.ts",
+    "src/lib/skills/__tests__/markdown-loader.test.ts",
+    "src/lib/skills/builtin/competitive-intel.ts",
+    "src/lib/skills/builtin/index.ts",
+    "src/lib/skills/builtin/research.ts",
+    "src/lib/skills/markdown-loader.ts",
+    "src/lib/skills/markdown-validator.ts",
+    "src/lib/skills/registry.ts"
+   ],
+   "states": [
+    "c73ffdaa21d0e2d912ffba27641ddeb297011442",
+    "c7e5e1b6f80c93d436bbf69527ab35e5fa0608d0",
+    "99658cb7f3eb87fcf35bad96205af11e6af4ca88",
+    "cc0f45779083490fa5964f480604d8eddb3aaa43",
+    "52f353277b5b57c8ad00deb15a11d5daf0911b64"
+   ],
+   "n_commits": 20
+  },
+  {
+   "pr": 3,
+   "method": "merge",
+   "landing": "72ce612f588cdebb0113319c28a7a537e27962ae",
+   "landing_date": "2026-04-23T16:46:26+01:00",
+   "head": "390a97f3c8b9192dc06dc7b1ba4424938970139f",
+   "base": "0b1d7eed77cc9b6aaafa285bbf1f877a69e9887f",
+   "authors": [
+    "Othmane Khadri\tothmane@earleads.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    ".env.example",
+    "README.md",
+    "bin/yalc-gtm.mjs",
+    "package.json",
+    "pnpm-lock.yaml",
+    "src/cli/index.ts",
+    "src/lib/onboarding/start.ts"
+   ],
+   "states": [
+    "390a97f3c8b9192dc06dc7b1ba4424938970139f"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 4,
+   "method": "merge",
+   "landing": "e7d33edf11809ed26bbbafa33af116beaab59dcb",
+   "landing_date": "2026-04-24T08:43:00+01:00",
+   "head": "b4c07304af7b020a1325e52bde8ab255ed1b8531",
+   "base": "72ce612f588cdebb0113319c28a7a537e27962ae",
+   "authors": [
+    "Othmane Khadri\tothmane@earleads.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "vitest.config.ts",
+    "vitest.globalSetup.ts"
+   ],
+   "states": [
+    "b4c07304af7b020a1325e52bde8ab255ed1b8531"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 5,
+   "method": "merge",
+   "landing": "e87dfe1513de2be4f8117c606e1e8538a0afccf6",
+   "landing_date": "2026-04-24T08:43:06+01:00",
+   "head": "a4b64085f60fb9e30122db4f094e0fd52bdcff41",
+   "base": "72ce612f588cdebb0113319c28a7a537e27962ae",
+   "authors": [
+    "Othmane Khadri\tothmane@earleads.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "drizzle.config.ts",
+    "package.json",
+    "pnpm-lock.yaml",
+    "src/lib/onboarding/start.ts"
+   ],
+   "states": [
+    "a4b64085f60fb9e30122db4f094e0fd52bdcff41"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 8,
+   "method": "merge",
+   "landing": "c5ee4f142c3d3fbaed5274d0b38a4b3c59e0ddbb",
+   "landing_date": "2026-04-24T08:43:32+01:00",
+   "head": "2a3f9b217e9953d56ffae9d1ffc740d20ce8e84f",
+   "base": "72ce612f588cdebb0113319c28a7a537e27962ae",
+   "authors": [
+    "Othmane Khadri\tothmane@earleads.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "gtm-os.example.yaml",
+    "src/lib/db/migrations/0001_add_tenant_id.sql",
+    "src/lib/db/migrations/0002_memory_layer.sql",
+    "src/lib/db/migrations/0003_signal_watches.sql",
+    "src/lib/db/migrations/meta/0000_snapshot.json",
+    "src/lib/db/migrations/meta/_journal.json"
+   ],
+   "states": [
+    "2a3f9b217e9953d56ffae9d1ffc740d20ce8e84f"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 9,
+   "method": "merge",
+   "landing": "265318dedb433b29f102ac86b54c568ad6a6cd45",
+   "landing_date": "2026-04-24T08:43:44+01:00",
+   "head": "326ed90db3555e62f41f03aa5466d96be6002135",
+   "base": "72ce612f588cdebb0113319c28a7a537e27962ae",
+   "authors": [
+    "Othmane Khadri\tothmane@earleads.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "README.md",
+    "src/cli/index.ts",
+    "src/index.ts",
+    "src/lib/agents/logger.ts",
+    "src/lib/config/loader.ts",
+    "src/lib/config/setup.ts",
+    "src/lib/config/types.ts",
+    "src/lib/factory.ts",
+    "src/lib/onboarding/start.ts"
+   ],
+   "states": [
+    "326ed90db3555e62f41f03aa5466d96be6002135"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 7,
+   "method": "merge",
+   "landing": "5093b316411996cc11ad54e9d1248313de9d2482",
+   "landing_date": "2026-04-24T08:43:58+01:00",
+   "head": "9a680746f7a1d8040b1692d3dfd1d3582fa55573",
+   "base": "72ce612f588cdebb0113319c28a7a537e27962ae",
+   "authors": [
+    "Othmane Khadri\tothmane@earleads.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "src/lib/services/unipile.ts",
+    "src/lib/skills/builtin/answer-comments.ts",
+    "src/lib/skills/builtin/reply-to-comments.ts"
+   ],
+   "states": [
+    "9a680746f7a1d8040b1692d3dfd1d3582fa55573"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 10,
+   "method": "merge",
+   "landing": "ceb65739c4fd3244f5e259c74218a1c835d4b28c",
+   "landing_date": "2026-04-24T08:44:23+01:00",
+   "head": "ec4ee6cd721cff2efaffa885f077ad6f8720bd04",
+   "base": "72ce612f588cdebb0113319c28a7a537e27962ae",
+   "authors": [
+    "Othmane Khadri\tothmane@earleads.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "README.md"
+   ],
+   "states": [
+    "ec4ee6cd721cff2efaffa885f077ad6f8720bd04"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 11,
+   "method": "merge",
+   "landing": "e2d88fe1b01feee02722b0a632964530bf2f7c85",
+   "landing_date": "2026-04-24T18:57:59+01:00",
+   "head": "3adfdd0d81e6ddac6b1807f713aec4564d1d8739",
+   "base": "ceb65739c4fd3244f5e259c74218a1c835d4b28c",
+   "authors": [
+    "Othmane Khadri\tothmane@earleads.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    ".github/workflows/publish.yml",
+    ".gitignore",
+    ".npmignore",
+    "drizzle.config.js",
+    "package.json",
+    "pnpm-lock.yaml",
+    "src/cli/index.ts",
+    "src/lib/db/index.ts",
+    "src/lib/db/migrations/0000_bootstrap.sql",
+    "src/lib/db/migrations/meta/0000_snapshot.json",
+    "src/lib/db/migrations/meta/_journal.json",
+    "src/lib/onboarding/start.ts"
+   ],
+   "states": [
+    "3adfdd0d81e6ddac6b1807f713aec4564d1d8739"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 12,
+   "method": "merge",
+   "landing": "c29d2c8104f6cfbf03b63c855584ad9a93da4b7c",
+   "landing_date": "2026-04-25T10:20:12+01:00",
+   "head": "ad51e7821e56a6d3d787d2dcdcad78ff0e0c76b1",
+   "base": "e2d88fe1b01feee02722b0a632964530bf2f7c85",
+   "authors": [
+    "Othmane Khadri\tothmane@earleads.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "README.md"
+   ],
+   "states": [
+    "ad51e7821e56a6d3d787d2dcdcad78ff0e0c76b1"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 13,
+   "method": "merge",
+   "landing": "a1722678d376d86152a7357b706d873220c8cfa0",
+   "landing_date": "2026-04-25T11:07:58+01:00",
+   "head": "d538c518d749e03ef68f2a310025b9d2137cd70a",
+   "base": "c5c9063b066d19d1c00a6cfd7bb58a0d373ce1c8",
+   "authors": [
+    "Othmane Khadri\tothmane@earleads.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "README.md",
+    "docs/commands.md",
+    "docs/first-run.md",
+    "src/cli/commands/update.ts",
+    "src/lib/onboarding/start.ts"
+   ],
+   "states": [
+    "d538c518d749e03ef68f2a310025b9d2137cd70a"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 17,
+   "method": "merge",
+   "landing": "c3cec7b336161ae08eb451ba00e29447025e2774",
+   "landing_date": "2026-05-11T14:43:57+01:00",
+   "head": "adfb08525e542cb3cbfe93b796ec32db51d3ba8c",
+   "base": "5cac1816391b00325b3aa0ca8718c35258d5d603",
+   "authors": [
+    "FARAHI Ismail\tismail.farahi@cegedim.com",
+    "Farahi Ismail\t41419030+ifarahi@users.noreply.github.com",
+    "Farahi Ismail\tdr0farahi@gmail.com",
+    "Othmane Khadri\tothmane@earleads.com",
+    "davidasmall\t68559056+davidasmall@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    ".claude/rules/campaigns.md",
+    ".claude/rules/enrichment.md",
+    ".claude/rules/qualification.md",
+    ".claude/skills/icp-import/SKILL.md",
+    ".claude/skills/icp-import/skills/icp-import.md",
+    ".gitignore",
+    "TEAM_SETUP.md",
+    "UPSTREAM-UNIPILE-BUG-REPORT.md",
+    "bin/yalc-update.mjs",
+    "docs/commands.md",
+    "docs/enrichment/country-footprint-recipe.md",
+    "docs/qualification-update-spec.md",
+    "package.json",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
+    "src/cli/commands/update.ts",
+    "src/cli/index.ts",
+    "src/cli/yalc-update/index.ts",
+    "src/lib/cache/__tests__/cached-fetch.test.ts",
+    "src/lib/cache/cached-fetch.ts",
+    "src/lib/dedup/types.ts",
+    "src/lib/framework/types.ts",
+    "src/lib/providers/builtin/__tests__/unipile-provider.test.ts",
+    "src/lib/providers/builtin/qualify-provider.ts",
+    "src/lib/providers/builtin/unipile-provider.ts",
+    "src/lib/qualification/__tests__/backward-compat.test.ts",
+    "src/lib/qualification/__tests__/c8-acceptance.test.ts",
+    "src/lib/qualification/__tests__/drift.test.ts",
+    "src/lib/qualification/__tests__/icp-gate.test.ts",
+    "src/lib/qualification/__tests__/icp-source.test.ts",
+    "src/lib/qualification/icp-gate.ts",
+    "src/lib/qualification/icp-source.ts",
+    "src/lib/qualification/pipeline.ts",
+    "src/lib/qualification/types.ts",
+    "src/lib/services/crustdata.ts",
+    "src/lib/services/unipile.ts"
+   ],
+   "states": [
+    "adfb08525e542cb3cbfe93b796ec32db51d3ba8c",
+    "b1c313b977c722c3e8407f65090a379815846d10",
+    "8ce1f331c28e5a0ebcf76fd393a19af413ebbcde",
+    "754d41875e1ffb7151e4befb70dcd8f07a7b7394",
+    "7654eb114304113852109b7994bd72ba37d6d524"
+   ],
+   "n_commits": 10
+  },
+  {
+   "pr": 18,
+   "method": "merge",
+   "landing": "a87dc6d47a02415cb4eec3d033188c92fc61e1b7",
+   "landing_date": "2026-05-18T14:22:28+01:00",
+   "head": "6f8cc53fdd82c787b47c0f282ac7b9812b684fd4",
+   "base": "13d316dac455e431e793d1e82ce4556211901c5b",
+   "authors": [
+    "Farahi Ismail\t41419030+ifarahi@users.noreply.github.com",
+    "Farahi Ismail\tdr0farahi@gmail.com",
+    "david-earleads\tdavid@earleads.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    ".claude/rules/campaigns.md",
+    ".claude/skills/campaign-strategy/SKILL.md",
+    ".claude/skills/notion-review/SKILL.md",
+    ".claude/skills/notion-review/skills/notion-review.md",
+    ".gitignore",
+    "drizzle.config.js",
+    "src/__tests__/notion-reviews.test.ts",
+    "src/cli/commands/describe-change.ts",
+    "src/cli/commands/publish.ts",
+    "src/cli/commands/review.ts",
+    "src/cli/index.ts",
+    "src/lib/campaign/annotate.ts",
+    "src/lib/campaign/import-heyreach.ts",
+    "src/lib/campaign/strategy.ts",
+    "src/lib/qualification/__tests__/icp-gate.test.ts",
+    "src/lib/qualification/icp-gate.ts",
+    "src/lib/services/heyreach.ts",
+    "src/lib/services/notion-reviews.ts",
+    "src/lib/services/notion.ts",
+    "src/lib/skills/builtin/qualify-leads.ts",
+    "test-file"
+   ],
+   "states": [
+    "6f8cc53fdd82c787b47c0f282ac7b9812b684fd4",
+    "2bd19bd4fb8f87a878aee4a42e1b92bcae78a046",
+    "d179d862b1595ec4683eff87cffd801cd6d5f07c",
+    "82369dfd83ffc9283125e6dc802272209c2d13a1",
+    "c72d058c6385b6644eaac1ac0bc9ab5dd74dca83"
+   ],
+   "n_commits": 9
+  },
+  {
+   "pr": 19,
+   "method": "merge",
+   "landing": "9a04f2bc3a4f58ac3133443134b82d699c70fbee",
+   "landing_date": "2026-05-20T09:37:33+01:00",
+   "head": "cf427c64b7c99f7f7f75e69ee6cf2c33689d2309",
+   "base": "860de6f97387cf4a59a54f4ec6ca65ece43a2e8a",
+   "authors": [
+    "Othmane Khadri\tothmane@earleads.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    ".claude/skills/lemlist-campaign-from-icp/CHANGELOG.md",
+    ".claude/skills/lemlist-campaign-from-icp/README.md",
+    ".claude/skills/lemlist-campaign-from-icp/SKILL.md",
+    ".claude/skills/lemlist-campaign-from-icp/examples/dryrun-output-sample.json",
+    ".claude/skills/lemlist-campaign-from-icp/tests/README.md",
+    ".claude/skills/lemlist-campaign-from-icp/tests/dryrun-schema.json",
+    ".claude/skills/lemlist-campaign-from-icp/tests/expected-mcp-calls.md",
+    ".claude/skills/lemlist-campaign-from-icp/tests/regression-checklist.md",
+    ".claude/skills/lemlist-campaign-from-icp/tests/sandbox-prompt.md"
+   ],
+   "states": [
+    "cf427c64b7c99f7f7f75e69ee6cf2c33689d2309",
+    "cb87b136e286bf5da76b9c1206b26fc3102120d3",
+    "4772beb1dc91595ff70b38d77200aa267b70ebe0",
+    "64c2158af8f36c40fe7d584a42ea01421cc1b64f",
+    "fe79afecba94e762aae3da1750b9d639e1d25a6e"
+   ],
+   "n_commits": 8
+  },
+  {
+   "pr": 21,
+   "method": "squash",
+   "landing": "ee7a2dc77a629e42ac1cd267fc0a561bc04b1230",
+   "landing_date": "2026-05-20T10:41:45+01:00",
+   "head": "e01373bd3353f7d4f813df2f585cf65ca58da710",
+   "base": "9a04f2bc3a4f58ac3133443134b82d699c70fbee",
+   "authors": [
+    "Othmane Khadri\tothmane@earleads.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    ".claude/skills/claap-weekly-recap/.gitignore",
+    ".claude/skills/claap-weekly-recap/README.md",
+    ".claude/skills/claap-weekly-recap/SKILL.md",
+    ".claude/skills/claap-weekly-recap/references/notion-db-schema.md",
+    ".claude/skills/claap-weekly-recap/references/setup.md",
+    ".claude/skills/claap-weekly-recap/references/troubleshooting.md",
+    ".claude/skills/claap-weekly-recap/scripts/run.sh.template"
+   ],
+   "states": [
+    "e01373bd3353f7d4f813df2f585cf65ca58da710"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 20,
+   "method": "merge",
+   "landing": "dd36fac78fd1241b2b8a8cd67e313c3339c13e22",
+   "landing_date": "2026-05-20T14:06:20+01:00",
+   "head": "305f3d2d52643b2bb2d42eb716dd14a80c6557e1",
+   "base": "9a04f2bc3a4f58ac3133443134b82d699c70fbee",
+   "authors": [
+    "Othmane Khadri\tothmane@earleads.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    ".claude/skills/lemlist-campaign-from-icp/README.md"
+   ],
+   "states": [
+    "305f3d2d52643b2bb2d42eb716dd14a80c6557e1"
+   ],
+   "n_commits": 1
+  },
+  {
+   "pr": 22,
+   "method": "squash",
+   "landing": "ec0e7093c1c3c861d46b37ccebf2fe40f1ed2ce9",
+   "landing_date": "2026-05-21T13:10:04+01:00",
+   "head": "3170eed55b30151bf9deb5aef82c595f784f786b",
+   "base": "dd36fac78fd1241b2b8a8cd67e313c3339c13e22",
+   "authors": [
+    "Othmane Khadri\tothmane@earleads.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    ".claude/skills/fullenrich-event-attendees/scripts/lib/fullenrich-client.mjs",
+    ".claude/skills/fullenrich-network-activation/SKILL.md",
+    ".claude/skills/fullenrich-network-activation/package.json",
+    ".claude/skills/fullenrich-network-activation/scripts/lib/fullenrich-client.mjs",
+    ".claude/skills/fullenrich-network-activation/scripts/run.mjs",
+    ".claude/skills/lemlist-campaign-from-icp/CHANGELOG.md",
+    ".claude/skills/lemlist-campaign-from-icp/SKILL.md"
+   ],
+   "states": [
+    "3170eed55b30151bf9deb5aef82c595f784f786b",
+    "c8b5dbe0c4a7c76391ab4fe5811beb10c381c43f"
+   ],
+   "n_commits": 2
+  },
+  {
+   "pr": 23,
+   "method": "merge",
+   "landing": "2f63bf7a74316afe39b4dd4e97235f3230cda7ae",
+   "landing_date": "2026-05-22T13:40:24+01:00",
+   "head": "9aee7e3cc2e6ab9ff5f8762ed3d5421cc6a81b2b",
+   "base": "ec0e7093c1c3c861d46b37ccebf2fe40f1ed2ce9",
+   "authors": [
+    "FARAHI Ismail\tismail.farahi@cegedim.com",
+    "Farahi Ismail\t41419030+ifarahi@users.noreply.github.com",
+    "Farahi Ismail\tdr0farahi@gmail.com",
+    "Othmane Khadri\tothmane@earleads.com",
+    "davidasmall\t68559056+davidasmall@users.noreply.github.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    ".claude/skills/cross-platform-scheduler/SKILL.md",
+    ".claude/skills/integrate-with-yalc/SKILL.md",
+    "docs/cross-platform-scheduler.md",
+    "docs/integrate-with-yalc.md",
+    "docs/publish-to-internal.md",
+    "docs/publish-to-public.md",
+    "package.json",
+    "pnpm-lock.yaml",
+    "src/cli/commands/describe-change.ts",
+    "src/cli/index.ts",
+    "src/lib/agents/cross-platform-scheduler.ts",
+    "src/lib/agents/types.ts"
+   ],
+   "states": [
+    "9aee7e3cc2e6ab9ff5f8762ed3d5421cc6a81b2b",
+    "f5cc88130d4e2aaa9073338c3cd71a198aa5ae73",
+    "73c65324e39724cd72eec06083a5c61caaaafe34",
+    "97072728e96dd18dbfd1a05ce5611c888dd7d3b6",
+    "aad7e04265ec1eff5358b1d9b8be9e6d762c55ef"
+   ],
+   "n_commits": 21
+  },
+  {
+   "pr": 27,
+   "method": "squash",
+   "landing": "5686d1f2f526346133f78eef3349fc5a655757b4",
+   "landing_date": "2026-08-20T18:57:18+02:00",
+   "head": "393df7a4ec3f2582f75a08aa32b50f362408161c",
+   "base": "ffc6e372d68270f26478160d11c5999df982f37b",
+   "authors": [
+    "Othmane Khadri\tothmane@earleads.com"
+   ],
+   "klass": "code",
+   "class_reason": "other files changed",
+   "changed_files": [
+    "CLAUDE.md",
+    "README.md",
+    "package.json"
+   ],
+   "states": [
+    "393df7a4ec3f2582f75a08aa32b50f362408161c"
+   ],
+   "n_commits": 1
+  }
+ ]
+}

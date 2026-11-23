@@ -1,0 +1,52 @@
+{
+ "_method": "Read at each repository's default head (commit in data/<repo>/prs.json default_head) with `statusquo_scan.sh <clone> <default ref>`: .github/workflows/*.yml, nx.json, turbo.json, every package.json, vitest/jest configs, .circleci, lefthook/husky; grep for Nx/Turbo affected or remote cache, --changed, --changedSince, related, --findRelatedTests, --onlyChanged, Datadog TIA, Launchable, Develocity, CircleCI test selection; then the test step of each workflow read by hand. No nx.json, turbo.json or .circleci exists in any of the 9 repositories.",
+ "codex-multi-auth": {
+  "skips_tests_in_ci": false,
+  "tool": "none found",
+  "ci_test_command": ".github/workflows/ci.yml:55 npm run coverage -> package.json:106 npm run build && vitest run --coverage --maxWorkers=1 (full suite on every PR; also ci.yml:45 one-file lockfile guard)",
+  "notes": "no paths filter on pull_request (ci.yml:3-7)"
+ },
+ "ironcurtain": {
+  "skips_tests_in_ci": false,
+  "tool": "none found",
+  "ci_test_command": ".github/workflows/ci.yml:81 npm test -> package.json:67 bash scripts/test.sh (scripts/test.sh:46 npx vitest run, full root suite, then web-ui)",
+  "notes": "ci.yml:11-17 paths filter skips the whole CI for PRs touching only **/*.md, docs/**, LICENSE: not test selection, not in the spec's list"
+ },
+ "yalc": {
+  "skips_tests_in_ci": false,
+  "tool": "none found",
+  "ci_test_command": ".github/workflows/ci.yml:22 pnpm test -> package.json:60 vitest run (also test.yml:22)"
+ },
+ "nestjs-pino": {
+  "skips_tests_in_ci": false,
+  "tool": "none found",
+  "ci_test_command": ".github/workflows/build-lint-test.yml:50 npm t -> package.json:22 vitest run (matrix over @nestjs versions, build-lint-test.yml:36-37)"
+ },
+ "agentsys": {
+  "skips_tests_in_ci": false,
+  "tool": "none found",
+  "ci_test_command": ".github/workflows/ci.yml:36 npm test -> package.json:13 jest"
+ },
+ "lerna-lite": {
+  "skips_tests_in_ci": false,
+  "tool": "none found",
+  "ci_test_command": ".github/workflows/main.yml:117 pnpm test -> package.json:60 vitest --coverage --config ./vitest/vitest.config.ts (unit); main.yml:196 pnpm test:e2e -> package.json:63 node scripts/run-e2e-with-verdaccio.mjs (e2e, the suite measured here via specs.json --config ./e2e/vitest.config.ts)",
+  "notes": "main.yml:99-107 actions/cache of node_modules/.vitest and packages/*/lib: vitest's results cache orders files, it does not skip any; main.yml:113-114 skips unit tests only on 'chore(release)' commits"
+ },
+ "drydock": {
+  "skips_tests_in_ci": false,
+  "tool": "none found",
+  "ci_test_command": ".github/workflows/ci-verify.yml:659 job test-app (app/package.json:17 vitest run --coverage --maxWorkers=1 --fileParallelism=false), :745 test-ui, :589 test-repo; no paths condition on these jobs",
+  "notes": "ci-verify.yml:244 dorny/paths-filter (.github/filters/runtime.yml) gates heavy e2e/web jobs (ci-verify.yml:999, :1320, :1919) on changed paths: job-level path gating, not in the spec's list and not applied to the unit suites measured here"
+ },
+ "agentlang": {
+  "skips_tests_in_ci": false,
+  "tool": "none found",
+  "ci_test_command": ".github/workflows/ci.yml:62 NODE_ENV=test npm test -> package.json:50 vitest run"
+ },
+ "alakajam": {
+  "skips_tests_in_ci": false,
+  "tool": "none found",
+  "ci_test_command": ".github/workflows/ci.yml:25 npm run test:unit:ci -> package.json:26 vitest run; ci.yml:37 npm run test:e2e (playwright)"
+ }
+}
