@@ -3,3 +3,745 @@
 > node --test --test-concurrency=1 test/*.test.js
 
 TAP version 13
+# Subtest: tap: R-032 F7
+    # Subtest: F7 OS randomness in native crypto (subtle) makes the file not cached
+    ok 1 - F7 OS randomness in native crypto (subtle) makes the file not cached
+      ---
+      duration_ms: 4366.531393
+      type: 'test'
+      ...
+    # Subtest: F7 OS randomness in native crypto (keypair) makes the file not cached
+    ok 2 - F7 OS randomness in native crypto (keypair) makes the file not cached
+      ---
+      duration_ms: 4691.035329
+      type: 'test'
+      ...
+    # Subtest: F7 OS randomness in native crypto (ecdh) makes the file not cached
+    ok 3 - F7 OS randomness in native crypto (ecdh) makes the file not cached
+      ---
+      duration_ms: 4390.316625
+      type: 'test'
+      ...
+    1..3
+ok 1 - tap: R-032 F7
+  ---
+  duration_ms: 13448.77918
+  type: 'suite'
+  ...
+# Subtest: ava: R-032 F7
+    # Subtest: F7 OS randomness in native crypto (subtle) makes the file not cached
+    ok 1 - F7 OS randomness in native crypto (subtle) makes the file not cached
+      ---
+      duration_ms: 2625.514064
+      type: 'test'
+      ...
+    # Subtest: F7 OS randomness in native crypto (keypair) makes the file not cached
+    ok 2 - F7 OS randomness in native crypto (keypair) makes the file not cached
+      ---
+      duration_ms: 2501.716155
+      type: 'test'
+      ...
+    # Subtest: F7 OS randomness in native crypto (ecdh) makes the file not cached
+    ok 3 - F7 OS randomness in native crypto (ecdh) makes the file not cached
+      ---
+      duration_ms: 2639.813002
+      type: 'test'
+      ...
+    1..3
+ok 2 - ava: R-032 F7
+  ---
+  duration_ms: 7767.305173
+  type: 'suite'
+  ...
+# Subtest: jasmine: R-032 F7
+    # Subtest: F7 OS randomness in native crypto (subtle) makes the file not cached
+    ok 1 - F7 OS randomness in native crypto (subtle) makes the file not cached
+      ---
+      duration_ms: 1767.51116
+      type: 'test'
+      ...
+    # Subtest: F7 OS randomness in native crypto (keypair) makes the file not cached
+    ok 2 - F7 OS randomness in native crypto (keypair) makes the file not cached
+      ---
+      duration_ms: 1695.923155
+      type: 'test'
+      ...
+    # Subtest: F7 OS randomness in native crypto (ecdh) makes the file not cached
+    ok 3 - F7 OS randomness in native crypto (ecdh) makes the file not cached
+      ---
+      duration_ms: 1804.652881
+      type: 'test'
+      ...
+    1..3
+ok 3 - jasmine: R-032 F7
+  ---
+  duration_ms: 5268.605574
+  type: 'suite'
+  ...
+# Subtest: uvu: R-032 F7
+    # Subtest: F7 OS randomness in native crypto (subtle) makes the file not cached
+    ok 1 - F7 OS randomness in native crypto (subtle) makes the file not cached
+      ---
+      duration_ms: 1721.583067
+      type: 'test'
+      ...
+    # Subtest: F7 OS randomness in native crypto (keypair) makes the file not cached
+    ok 2 - F7 OS randomness in native crypto (keypair) makes the file not cached
+      ---
+      duration_ms: 1705.15828
+      type: 'test'
+      ...
+    # Subtest: F7 OS randomness in native crypto (ecdh) makes the file not cached
+    ok 3 - F7 OS randomness in native crypto (ecdh) makes the file not cached
+      ---
+      duration_ms: 1595.401377
+      type: 'test'
+      ...
+    1..3
+ok 4 - uvu: R-032 F7
+  ---
+  duration_ms: 5022.362517
+  type: 'suite'
+  ...
+# Subtest: bun: R-032 F6/F7
+    # Subtest: F7 OS randomness in native crypto (keypair)
+    ok 1 - F7 OS randomness in native crypto (keypair)
+      ---
+      duration_ms: 712.766541
+      type: 'test'
+      ...
+    # Subtest: F7 OS randomness in native crypto (ecdh)
+    ok 2 - F7 OS randomness in native crypto (ecdh)
+      ---
+      duration_ms: 766.511577
+      type: 'test'
+      ...
+    # Subtest: F6 a nested package.json with "type": "module" appears (lib/x.js)
+    ok 3 - F6 a nested package.json with "type": "module" appears (lib/x.js)
+      ---
+      duration_ms: 986.222101
+      type: 'test'
+      ...
+    # Subtest: R-032b F5 Temporal.Now (real clock) makes the file not cached
+    ok 4 - R-032b F5 Temporal.Now (real clock) makes the file not cached
+      ---
+      duration_ms: 762.330715
+      type: 'test'
+      ...
+    1..4
+ok 5 - bun: R-032 F6/F7
+  ---
+  duration_ms: 3228.136594
+  type: 'suite'
+  ...
+# Subtest: deno: R-032 F6/F7
+ok 6 - deno: R-032 F6/F7 # SKIP no deno
+  ---
+  duration_ms: 0.060944
+  type: 'suite'
+  ...
+# Subtest: vitest: receipts and refusal accounting
+    # Subtest: G-2161: a reused result says why in its receipt
+    ok 1 - G-2161: a reused result says why in its receipt
+      ---
+      duration_ms: 1370.933197
+      type: 'test'
+      ...
+    # Subtest: G-2225: a capture that cannot be written is a counted, visible refusal
+    ok 2 - G-2225: a capture that cannot be written is a counted, visible refusal
+      ---
+      duration_ms: 763.983297
+      type: 'test'
+      ...
+    1..2
+ok 7 - vitest: receipts and refusal accounting
+  ---
+  duration_ms: 2135.709517
+  type: 'suite'
+  ...
+# Subtest: vitest: keys
+    # Subtest: G-1399: another runner's configuration file is not an input; a configuration miss names the changed file
+    ok 1 - G-1399: another runner's configuration file is not an input; a configuration miss names the changed file
+      ---
+      duration_ms: 1907.780088
+      type: 'test'
+      ...
+    # Subtest: G-1401: a file written by globalSetup is keyed by its content (Vitest decides after globalSetup)
+    ok 2 - G-1401: a file written by globalSetup is keyed by its content (Vitest decides after globalSetup)
+      ---
+      duration_ms: 2518.441153
+      type: 'test'
+      ...
+    1..2
+ok 8 - vitest: keys
+  ---
+  duration_ms: 4426.517938
+  type: 'suite'
+  ...
+# Subtest: vitest: trace and verify
+    # Subtest: G-1402: reused tests are in the trace with their recorded fingerprints; verify of a cached run vs a full run is stable
+    ok 1 - G-1402: reused tests are in the trace with their recorded fingerprints; verify of a cached run vs a full run is stable
+      ---
+      duration_ms: 1254.856036
+      type: 'test'
+      ...
+    # Subtest: G-1481: listings from callbacks, promise chains and fs.glob carry their call site
+    ok 2 - G-1481: listings from callbacks, promise chains and fs.glob carry their call site
+      ---
+      duration_ms: 616.492891
+      type: 'test'
+      ...
+    # Subtest: G-1482: verify says when the traces were recorded with different settings
+    ok 3 - G-1482: verify says when the traces were recorded with different settings
+      ---
+      duration_ms: 1287.312964
+      type: 'test'
+      ...
+    # Subtest: G-1483: an order-dependent failure names the tests that ran before it in the failing run only
+    ok 4 - G-1483: an order-dependent failure names the tests that ran before it in the failing run only
+      ---
+      duration_ms: 4847.474334
+      type: 'test'
+      ...
+    1..4
+ok 9 - vitest: trace and verify
+  ---
+  duration_ms: 8006.889902
+  type: 'suite'
+  ...
+# Subtest: vitest: --det-isolate
+    # Subtest: G-1394: --det-isolate runs every test in a fresh process (state an earlier test left is gone)
+    ok 1 - G-1394: --det-isolate runs every test in a fresh process (state an earlier test left is gone)
+      ---
+      duration_ms: 2229.767225
+      type: 'test'
+      ...
+    # Subtest: G-1397: with --det-isolate a test is reused or run on its own inputs; without it the file is the unit (and must be)
+    ok 2 - G-1397: with --det-isolate a test is reused or run on its own inputs; without it the file is the unit (and must be)
+      ---
+      duration_ms: 6955.750462
+      type: 'test'
+      ...
+    1..2
+ok 10 - vitest: --det-isolate
+  ---
+  duration_ms: 9185.702646
+  type: 'suite'
+  ...
+# Subtest: vitest: refusals kept, each proven never to give a wrong result
+    # Subtest: G-1582 clock-real: a test that reads process.cpuUsage() is never reused
+    ok 1 - G-1582 clock-real: a test that reads process.cpuUsage() is never reused
+      ---
+      duration_ms: 2685.807186
+      type: 'test'
+      ...
+    # Subtest: G-1584 keygen: a test that generates a key pair is never reused
+    ok 2 - G-1584 keygen: a test that generates a key pair is never reused
+      ---
+      duration_ms: 2869.989847
+      type: 'test'
+      ...
+    # Subtest: G-2220 /proc: a test that reads /proc is never reused
+    ok 3 - G-2220 /proc: a test that reads /proc is never reused
+      ---
+      duration_ms: 2777.593417
+      type: 'test'
+      ...
+    # Subtest: G-2223 UDP: a test that sends UDP (to a local listener) is never reused
+    ok 4 - G-2223 UDP: a test that sends UDP (to a local listener) is never reused
+      ---
+      duration_ms: 2939.057432
+      type: 'test'
+      ...
+    # Subtest: G-1586 preload: a preload module that reads the clock before Level 0 makes the tests never reused
+    ok 5 - G-1586 preload: a preload module that reads the clock before Level 0 makes the tests never reused
+      ---
+      duration_ms: 2926.380586
+      type: 'test'
+      ...
+    # Subtest: G-1585 loader: an off-thread loader (module.register in an --import preload) makes the tests never reused, and no longer breaks the run
+    ok 6 - G-1585 loader: an off-thread loader (module.register in an --import preload) makes the tests never reused, and no longer breaks the run
+      ---
+      duration_ms: 3854.973818
+      type: 'test'
+      ...
+    # Subtest: G-2222 net-record: a --det-record session records nothing in the cache; its results are never reused
+    ok 7 - G-2222 net-record: a --det-record session records nothing in the cache; its results are never reused
+      ---
+      duration_ms: 1528.913413
+      type: 'test'
+      ...
+    1..7
+ok 11 - vitest: refusals kept, each proven never to give a wrong result
+  ---
+  duration_ms: 19583.310586
+  type: 'suite'
+  ...
+# Subtest: jest: receipts and refusal accounting
+    # Subtest: G-2161: a reused result says why in its receipt
+    ok 1 - G-2161: a reused result says why in its receipt
+      ---
+      duration_ms: 1772.372144
+      type: 'test'
+      ...
+    # Subtest: G-2225: a capture that cannot be written is a counted, visible refusal
+    ok 2 - G-2225: a capture that cannot be written is a counted, visible refusal
+      ---
+      duration_ms: 1290.1462
+      type: 'test'
+      ...
+    1..2
+ok 12 - jest: receipts and refusal accounting
+  ---
+  duration_ms: 3062.690229
+  type: 'suite'
+  ...
+# Subtest: jest: keys
+    # Subtest: G-1399: another runner's configuration file is not an input; a configuration miss names the changed file
+    ok 1 - G-1399: another runner's configuration file is not an input; a configuration miss names the changed file
+      ---
+      duration_ms: 3095.347898
+      type: 'test'
+      ...
+    # Subtest: G-1401 (kept for Jest): Jest decides before globalSetup, so a file globalSetup writes is never reused
+    ok 2 - G-1401 (kept for Jest): Jest decides before globalSetup, so a file globalSetup writes is never reused
+      ---
+      duration_ms: 4611.714714
+      type: 'test'
+      ...
+    1..2
+ok 13 - jest: keys
+  ---
+  duration_ms: 7707.247747
+  type: 'suite'
+  ...
+# Subtest: jest: trace and verify
+    # Subtest: G-1402: reused tests are in the trace with their recorded fingerprints; verify of a cached run vs a full run is stable
+    ok 1 - G-1402: reused tests are in the trace with their recorded fingerprints; verify of a cached run vs a full run is stable
+      ---
+      duration_ms: 1867.215414
+      type: 'test'
+      ...
+    # Subtest: G-1481: listings from callbacks, promise chains and fs.glob carry their call site
+    ok 2 - G-1481: listings from callbacks, promise chains and fs.glob carry their call site
+      ---
+      duration_ms: 1066.170465
+      type: 'test'
+      ...
+    # Subtest: G-1482: verify says when the traces were recorded with different settings
+    ok 3 - G-1482: verify says when the traces were recorded with different settings
+      ---
+      duration_ms: 2107.774031
+      type: 'test'
+      ...
+    # Subtest: G-1483: an order-dependent failure names the tests that ran before it in the failing run only
+    ok 4 - G-1483: an order-dependent failure names the tests that ran before it in the failing run only
+      ---
+      duration_ms: 8230.625212
+      type: 'test'
+      ...
+    1..4
+ok 14 - jest: trace and verify
+  ---
+  duration_ms: 13272.101311
+  type: 'suite'
+  ...
+# Subtest: jest: --det-isolate
+    # Subtest: G-1394: --det-isolate runs every test in a fresh process (state an earlier test left is gone)
+    ok 1 - G-1394: --det-isolate runs every test in a fresh process (state an earlier test left is gone)
+      ---
+      duration_ms: 3935.0323
+      type: 'test'
+      ...
+    # Subtest: G-1397: with --det-isolate a test is reused or run on its own inputs; without it the file is the unit (and must be)
+    ok 2 - G-1397: with --det-isolate a test is reused or run on its own inputs; without it the file is the unit (and must be)
+      ---
+      duration_ms: 11750.378568
+      type: 'test'
+      ...
+    1..2
+ok 15 - jest: --det-isolate
+  ---
+  duration_ms: 15685.564775
+  type: 'suite'
+  ...
+# Subtest: jest: refusals kept, each proven never to give a wrong result
+    # Subtest: G-1582 clock-real: a test that reads process.cpuUsage() is never reused
+    ok 1 - G-1582 clock-real: a test that reads process.cpuUsage() is never reused
+      ---
+      duration_ms: 4641.852373
+      type: 'test'
+      ...
+    # Subtest: G-1584 keygen: a test that generates a key pair is never reused
+    ok 2 - G-1584 keygen: a test that generates a key pair is never reused
+      ---
+      duration_ms: 4716.000872
+      type: 'test'
+      ...
+    # Subtest: G-2220 /proc: a test that reads /proc is never reused
+    ok 3 - G-2220 /proc: a test that reads /proc is never reused
+      ---
+      duration_ms: 4771.047537
+      type: 'test'
+      ...
+    # Subtest: G-2223 UDP: a test that sends UDP (to a local listener) is never reused
+    ok 4 - G-2223 UDP: a test that sends UDP (to a local listener) is never reused
+      ---
+      duration_ms: 5566.510173
+      type: 'test'
+      ...
+    # Subtest: G-1586 preload: a preload module that reads the clock before Level 0 makes the tests never reused
+    ok 5 - G-1586 preload: a preload module that reads the clock before Level 0 makes the tests never reused
+      ---
+      duration_ms: 4714.248403
+      type: 'test'
+      ...
+    # Subtest: G-1585 loader: an off-thread loader (module.register in an --import preload) makes the tests never reused, and no longer breaks the run
+    ok 6 - G-1585 loader: an off-thread loader (module.register in an --import preload) makes the tests never reused, and no longer breaks the run
+      ---
+      duration_ms: 0.072881
+      type: 'test'
+      ...
+    # Subtest: G-2222 net-record: a --det-record session records nothing in the cache; its results are never reused
+    ok 7 - G-2222 net-record: a --det-record session records nothing in the cache; its results are never reused
+      ---
+      duration_ms: 2382.454889
+      type: 'test'
+      ...
+    1..7
+ok 16 - jest: refusals kept, each proven never to give a wrong result
+  ---
+  duration_ms: 26792.714945
+  type: 'suite'
+  ...
+# Subtest: tap: env-unobserved refusal (G-2221)
+    # Subtest: G-2221: a test whose own code reads a variable tap sets per process is never reused; a change is never missed
+    ok 1 - G-2221: a test whose own code reads a variable tap sets per process is never reused; a change is never missed
+      ---
+      duration_ms: 8829.300315
+      type: 'test'
+      ...
+    1..1
+ok 17 - tap: env-unobserved refusal (G-2221)
+  ---
+  duration_ms: 8829.40794
+  type: 'suite'
+  ...
+# Subtest: bun: dynamic-import refusal (G-1583)
+    # Subtest: G-1583: an import() whose target is not a literal is never reused; its target changing changes the result
+    ok 1 - G-1583: an import() whose target is not a literal is never reused; its target changing changes the result
+      ---
+      duration_ms: 1216.332349
+      type: 'test'
+      ...
+    1..1
+ok 18 - bun: dynamic-import refusal (G-1583)
+  ---
+  duration_ms: 1216.480061
+  type: 'suite'
+  ...
+# Subtest: cache with proof: vitest
+    # Subtest: unchanged project: every file reused, receipts in the Python format
+    ok 1 - unchanged project: every file reused, receipts in the Python format
+      ---
+      duration_ms: 1167.411027
+      type: 'test'
+      ...
+    # Subtest: code: a changed module reruns only the files that loaded it (direct and transitive)
+    ok 2 - code: a changed module reruns only the files that loaded it (direct and transitive)
+      ---
+      duration_ms: 1883.3013
+      type: 'test'
+      ...
+    # Subtest: code: a module loaded only by a dynamic import inside one test
+    ok 3 - code: a module loaded only by a dynamic import inside one test
+      ---
+      duration_ms: 1870.64755
+      type: 'test'
+      ...
+    # Subtest: data: content read, read-write open, stream, listing, existence and link target are inputs
+    ok 4 - data: content read, read-write open, stream, listing, existence and link target are inputs
+      ---
+      duration_ms: 5546.038609
+      type: 'test'
+      ...
+    # Subtest: environment: an unread variable is not an input; enumerating the environment makes all of it one
+    ok 5 - environment: an unread variable is not an input; enumerating the environment makes all of it one
+      ---
+      duration_ms: 2047.096472
+      type: 'test'
+      ...
+    # Subtest: environment: changed value of a variable read reruns its reader only
+    ok 6 - environment: changed value of a variable read reruns its reader only
+      ---
+      duration_ms: 1942.099125
+      type: 'test'
+      ...
+    # Subtest: machine facts: os.homedir() follows HOME, os.hostname() and the user are keyed
+    ok 7 - machine facts: os.homedir() follows HOME, os.hostname() and the user are keyed
+      ---
+      duration_ms: 2113.474526
+      type: 'test'
+      ...
+    # Subtest: runtime: an installed package file or the lockfile changes -> everything runs
+    ok 8 - runtime: an installed package file or the lockfile changes -> everything runs
+      ---
+      duration_ms: 3420.719747
+      type: 'test'
+      ...
+    # Subtest: runtime: TZ is part of the identity (local time formatting depends on it)
+    ok 9 - runtime: TZ is part of the identity (local time formatting depends on it)
+      ---
+      duration_ms: 1939.585574
+      type: 'test'
+      ...
+    # Subtest: runtime: by default TZ is pinned to UTC (a TZ of the environment changes nothing, reused)
+    ok 10 - runtime: by default TZ is pinned to UTC (a TZ of the environment changes nothing, reused)
+      ---
+      duration_ms: 1886.710546
+      type: 'test'
+      ...
+    # Subtest: configuration: runner configuration, detjs options and tsconfig changes
+    ok 11 - configuration: runner configuration, detjs options and tsconfig changes
+      ---
+      duration_ms: 4752.947872
+      type: 'test'
+      ...
+    # Subtest: a failure is never reused
+    ok 12 - a failure is never reused
+      ---
+      duration_ms: 1571.837332
+      type: 'test'
+      ...
+    # Subtest: never cached: child process (git included), worker thread, loopback connection, OS entropy
+    ok 13 - never cached: child process (git included), worker thread, loopback connection, OS entropy
+      ---
+      duration_ms: 2026.066996
+      type: 'test'
+      ...
+    # Subtest: git: reading .git directly makes the repository state an input
+    ok 14 - git: reading .git directly makes the repository state an input
+      ---
+      duration_ms: 1942.418773
+      type: 'test'
+      ...
+    # Subtest: a file written by another test file is never an input of a reused result
+    ok 15 - a file written by another test file is never an input of a reused result
+      ---
+      duration_ms: 2203.897325
+      type: 'test'
+      ...
+    # Subtest: verify mode decides but runs everything and compares
+    ok 16 - verify mode decides but runs everything and compares
+      ---
+      duration_ms: 1398.503327
+      type: 'test'
+      ...
+    1..16
+ok 19 - cache with proof: vitest
+  ---
+  duration_ms: 37714.19123
+  type: 'suite'
+  ...
+# Subtest: cache with proof: jest
+    # Subtest: unchanged project: every file reused, receipts in the Python format
+    ok 1 - unchanged project: every file reused, receipts in the Python format
+      ---
+      duration_ms: 1778.627555
+      type: 'test'
+      ...
+    # Subtest: code: a changed module reruns only the files that loaded it (direct and transitive)
+    ok 2 - code: a changed module reruns only the files that loaded it (direct and transitive)
+      ---
+      duration_ms: 3069.687683
+      type: 'test'
+      ...
+    # Subtest: code: a module loaded only by a dynamic import inside one test
+    ok 3 - code: a module loaded only by a dynamic import inside one test
+      ---
+      duration_ms: 3075.563928
+      type: 'test'
+      ...
+    # Subtest: data: content read, read-write open, stream, listing, existence and link target are inputs
+    ok 4 - data: content read, read-write open, stream, listing, existence and link target are inputs
+      ---
+      duration_ms: 8969.028253
+      type: 'test'
+      ...
+    # Subtest: environment: an unread variable is not an input; enumerating the environment makes all of it one
+    ok 5 - environment: an unread variable is not an input; enumerating the environment makes all of it one
+      ---
+      duration_ms: 3296.250061
+      type: 'test'
+      ...
+    # Subtest: environment: changed value of a variable read reruns its reader only
+    ok 6 - environment: changed value of a variable read reruns its reader only
+      ---
+      duration_ms: 3010.220235
+      type: 'test'
+      ...
+    # Subtest: machine facts: os.homedir() follows HOME, os.hostname() and the user are keyed
+    ok 7 - machine facts: os.homedir() follows HOME, os.hostname() and the user are keyed
+      ---
+      duration_ms: 2881.003172
+      type: 'test'
+      ...
+    # Subtest: runtime: an installed package file or the lockfile changes -> everything runs
+    ok 8 - runtime: an installed package file or the lockfile changes -> everything runs
+      ---
+      duration_ms: 4769.081304
+      type: 'test'
+      ...
+    # Subtest: runtime: TZ is part of the identity (local time formatting depends on it)
+    ok 9 - runtime: TZ is part of the identity (local time formatting depends on it)
+      ---
+      duration_ms: 2973.035979
+      type: 'test'
+      ...
+    # Subtest: runtime: by default TZ is pinned to UTC (a TZ of the environment changes nothing, reused)
+    ok 10 - runtime: by default TZ is pinned to UTC (a TZ of the environment changes nothing, reused)
+      ---
+      duration_ms: 2422.814957
+      type: 'test'
+      ...
+    # Subtest: configuration: runner configuration, detjs options and tsconfig changes
+    ok 11 - configuration: runner configuration, detjs options and tsconfig changes
+      ---
+      duration_ms: 7304.580354
+      type: 'test'
+      ...
+    # Subtest: a failure is never reused
+    ok 12 - a failure is never reused
+      ---
+      duration_ms: 2383.46287
+      type: 'test'
+      ...
+    # Subtest: never cached: child process (git included), worker thread, loopback connection, OS entropy
+    ok 13 - never cached: child process (git included), worker thread, loopback connection, OS entropy
+      ---
+      duration_ms: 3476.563918
+      type: 'test'
+      ...
+    # Subtest: git: reading .git directly makes the repository state an input
+    ok 14 - git: reading .git directly makes the repository state an input
+      ---
+      duration_ms: 3034.368856
+      type: 'test'
+      ...
+    # Subtest: a file written by another test file is never an input of a reused result
+    ok 15 - a file written by another test file is never an input of a reused result
+      ---
+      duration_ms: 2260.073392
+      type: 'test'
+      ...
+    # Subtest: verify mode decides but runs everything and compares
+    ok 16 - verify mode decides but runs everything and compares
+      ---
+      duration_ms: 2385.194317
+      type: 'test'
+      ...
+    1..16
+ok 20 - cache with proof: jest
+  ---
+  duration_ms: 57090.540907
+  type: 'suite'
+  ...
+# Subtest: cache with proof: Vitest start-up and resolution
+    # Subtest: globalSetup: what it reads and what its processes print are inputs of every file; async processes taint all
+    ok 1 - globalSetup: what it reads and what its processes print are inputs of every file; async processes taint all
+      ---
+      duration_ms: 5481.868854
+      type: 'test'
+      ...
+    # Subtest: setupFiles: their code and what they read are inputs of every file
+    ok 2 - setupFiles: their code and what they read are inputs of every file
+      ---
+      duration_ms: 3396.667603
+      type: 'test'
+      ...
+    # Subtest: configuration file dependencies (an alias module the config imports)
+    ok 3 - configuration file dependencies (an alias module the config imports)
+      ---
+      duration_ms: 1957.124084
+      type: 'test'
+      ...
+    # Subtest: a new file that shadows a resolved module (extension probing) reruns its importers
+    ok 4 - a new file that shadows a resolved module (extension probing) reruns its importers
+      ---
+      duration_ms: 1892.531494
+      type: 'test'
+      ...
+    # Subtest: a package.json is a resolution input through its resolution fields only (version and engines are not)
+    ok 5 - a package.json is a resolution input through its resolution fields only (version and engines are not)
+      ---
+      duration_ms: 2447.778696
+      type: 'test'
+      ...
+    # Subtest: snapshot files are inputs
+    ok 6 - snapshot files are inputs
+      ---
+      duration_ms: 2748.075713
+      type: 'test'
+      ...
+    1..6
+ok 21 - cache with proof: Vitest start-up and resolution
+  ---
+  duration_ms: 17924.604314
+  type: 'suite'
+  ...
+# Subtest: cache with proof: Jest start-up
+    # Subtest: setupFiles: what they read from the environment and the disk are inputs of every file
+    ok 1 - setupFiles: what they read from the environment and the disk are inputs of every file
+      ---
+      duration_ms: 5392.024614
+      type: 'test'
+      ...
+    # Subtest: globalSetup: what it reads is an input of every file
+    ok 2 - globalSetup: what it reads is an input of every file
+      ---
+      duration_ms: 3307.767254
+      type: 'test'
+      ...
+    1..2
+ok 22 - cache with proof: Jest start-up
+  ---
+  duration_ms: 8700.050549
+  type: 'suite'
+  ...
+# Subtest: cache with proof: projects
+    # Subtest: Vitest: a file the project configuration imports reruns only that project
+    ok 1 - Vitest: a file the project configuration imports reruns only that project
+      ---
+      duration_ms: 2276.453011
+      type: 'test'
+      ...
+    # Subtest: Vitest: a change to a project's configuration file reruns only that project
+    ok 2 - Vitest: a change to a project's configuration file reruns only that project
+      ---
+      duration_ms: 2246.771715
+      type: 'test'
+      ...
+    # Subtest: Vitest: the root configuration and what it imports rerun every project
+    ok 3 - Vitest: the root configuration and what it imports rerun every project
+      ---
+      duration_ms: 3462.612774
+      type: 'test'
+      ...
+    # Subtest: Jest: two projects without a displayName both stay in the configuration (a change to the first reruns it)
+    ok 4 - Jest: two projects without a displayName both stay in the configuration (a change to the first reruns it)
+      ---
+      duration_ms: 3306.887498
+      type: 'test'
+      ...
+    1..4
+ok 23 - cache with proof: projects
+  ---
+  duration_ms: 11293.040193
+  type: 'suite'
+  ...
+# Subtest: cache with proof: shared cache service
+ok 24 - cache with proof: shared cache service # SKIP out of go-live scope
+  ---
+  duration_ms: 0.074467
+  type: 'suite'
+  ...
