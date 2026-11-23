@@ -3,3 +3,4 @@ test/controls.test.js goldenCheck (seeds, time, timers; vitest, jest): default d
 test/controls.test.js 'net: closed by default, record then replay' (vitest, jest): the blocked run + --det-net=closed
 test/exit-paths-p0.test.js 're-exec path: the same through the TZ/locale restart': + --det-tz=UTC --det-locale=C.UTF-8 (the restart only happens for a pin)
 test/exit-regression.test.js 'AC1(c) through the re-exec path, a test that SIGTERMs its process...': + --det-tz=UTC --det-locale=C.UTF-8 (the restart only happens for a pin)
+test/network-p041.test.js (whole file, through its run helper): every --det run + --det-epoch=fixed --det-net=closed (tests of the closed network, separate-run comparisons and the 2025-01-01 epoch)
