@@ -20,7 +20,7 @@
   "runner": "vitest",
   "args": [],
   "env": {},
-  "install": "npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts; (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace). The candidates.json pnpm@9 (= CI ci.yml:15 version 9) fails here: 'packages field missing or empty' in pnpm-workspace.yaml. vitest.globalSetup.ts spawns `pnpm exec drizzle-kit push`: pnpm 10.28.0 on PATH",
+  "install": "npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts && if [ -f web/package.json ]; then (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace); fi",
   "spec_install": "npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts; (cd web && npx -y pnpm@10.30.3 install --frozen-lockfile --ignore-scripts --ignore-workspace). The candidates.json pnpm@9 (= CI ci.yml:15 version 9) fails here: 'packages field missing or empty' in pnpm-workspace.yaml. vitest.globalSetup.ts spawns `pnpm exec drizzle-kit push`: pnpm 10.28.0 on PATH"
  },
  "nestjs-pino": {
@@ -47,8 +47,9 @@
    "./e2e/vitest.config.ts"
   ],
   "env": {},
-  "install": "npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts && npx -y pnpm@11.28.5 build (the e2e suite runs the built CLI); without Verdaccio (package.json test:e2e:no-verdaccio): all 107 e2e tests pass without it",
-  "spec_install": "npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts && npx -y pnpm@11.28.5 build (the e2e suite runs the built CLI); without Verdaccio (package.json test:e2e:no-verdaccio): all 107 e2e tests pass without it"
+  "install": "npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts",
+  "spec_install": "npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts && npx -y pnpm@11.28.5 build (the e2e suite runs the built CLI); without Verdaccio (package.json test:e2e:no-verdaccio): all 107 e2e tests pass without it",
+  "build": "npx -y pnpm@11.28.5 build"
  },
  "drydock": {
   "clone": "/home/user/work/repos/drydock",
@@ -57,8 +58,9 @@
   "env": {
    "PATH": "/opt/node24/bin:$PATH"
   },
-  "install": "Node 24.22.3; npm ci --ignore-scripts at the root and in app/",
-  "spec_install": "Node 24.22.3; npm ci --ignore-scripts at the root and in app/"
+  "install": "npm ci --ignore-scripts --no-audit --no-fund && (cd app && npm ci --ignore-scripts --no-audit --no-fund)",
+  "spec_install": "Node 24.22.3; npm ci --ignore-scripts at the root and in app/",
+  "subdir": "app"
  },
  "agentlang": {
   "clone": "/home/user/work/repos/agentlang",
@@ -67,7 +69,7 @@
   "env": {
    "NODE_ENV": "test"
   },
-  "install": "npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts (packageManager pnpm@10.28.2; CI uses npm ci on package-lock.json); Langium generated files are committed",
+  "install": "npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts",
   "spec_install": "npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts (packageManager pnpm@10.28.2; CI uses npm ci on package-lock.json); Langium generated files are committed"
  },
  "alakajam": {
