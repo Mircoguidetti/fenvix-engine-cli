@@ -1,0 +1,1589 @@
+{
+ "repo": "ironcurtain",
+ "pr_index": 15,
+ "pr": 536,
+ "commit": "060a6078ce2eb96ea5c943003afbf9f1653443e8",
+ "install": "fresh install, all node_modules removed first (18s)",
+ "cmd": "npx --no-install vitest run  --no-file-parallelism --maxWorkers=1 --reporter=json --outputFile=/home/user/work/tmp/ironcurtain/full-15.json",
+ "cwd": "/home/user/work/repos/ironcurtain/",
+ "exit": 1,
+ "wall_s": 233.7,
+ "status": "ok",
+ "outcome_counts": {
+  "failed": 7,
+  "passed": 7361,
+  "skipped": 143,
+  "todo": 1
+ },
+ "files": {
+  "src/web-ui/__tests__/config-dispatch.test.ts": {
+   "ms": 141.18017578125,
+   "status": "passed"
+  },
+  "src/web-ui/__tests__/json-rpc-dispatch.test.ts": {
+   "ms": 49.24267578125,
+   "status": "passed"
+  },
+  "src/web-ui/__tests__/statistics-dispatch.test.ts": {
+   "ms": 32.2900390625,
+   "status": "passed"
+  },
+  "test/agent-model-guard.test.ts": {
+   "ms": 2.2529296875,
+   "status": "passed"
+  },
+  "test/apple-container-manager.test.ts": {
+   "ms": 830.247314453125,
+   "status": "passed"
+  },
+  "test/apple-container.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/approval-whitelist.test.ts": {
+   "ms": 28.1923828125,
+   "status": "passed"
+  },
+  "test/argument-roles.test.ts": {
+   "ms": 25.087646484375,
+   "status": "passed"
+  },
+  "test/argument-validation.integration.test.ts": {
+   "ms": 12.616455078125,
+   "status": "passed"
+  },
+  "test/audit-log-errors.test.ts": {
+   "ms": 11.7412109375,
+   "status": "passed"
+  },
+  "test/audit-log-tailer.test.ts": {
+   "ms": 18.30029296875,
+   "status": "passed"
+  },
+  "test/audit-redactor.test.ts": {
+   "ms": 8.22119140625,
+   "status": "passed"
+  },
+  "test/auth/auth-command.test.ts": {
+   "ms": 83.36083984375,
+   "status": "passed"
+  },
+  "test/auth/google-scopes.test.ts": {
+   "ms": 6.278564453125,
+   "status": "passed"
+  },
+  "test/auth/oauth-flow.test.ts": {
+   "ms": 268.40869140625,
+   "status": "passed"
+  },
+  "test/auth/oauth-provider.test.ts": {
+   "ms": 19.431884765625,
+   "status": "passed"
+  },
+  "test/auth/oauth-registry.test.ts": {
+   "ms": 3.199462890625,
+   "status": "passed"
+  },
+  "test/auth/oauth-token-provider.test.ts": {
+   "ms": 79.05615234375,
+   "status": "passed"
+  },
+  "test/auth/oauth-token-store.test.ts": {
+   "ms": 53.576904296875,
+   "status": "passed"
+  },
+  "test/auto-approver-integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/auto-approver.test.ts": {
+   "ms": 49.825927734375,
+   "status": "passed"
+  },
+  "test/auto-save-memory.test.ts": {
+   "ms": 8.907958984375,
+   "status": "passed"
+  },
+  "test/build-corpus.test.ts": {
+   "ms": 11.188232421875,
+   "status": "passed"
+  },
+  "test/ca.test.ts": {
+   "ms": 5823.504150390625,
+   "status": "passed"
+  },
+  "test/call-circuit-breaker.test.ts": {
+   "ms": 10.67529296875,
+   "status": "passed"
+  },
+  "test/checkpoint-selection.test.ts": {
+   "ms": 18.93798828125,
+   "status": "passed"
+  },
+  "test/cli-support-predicates.test.ts": {
+   "ms": 3.132080078125,
+   "status": "passed"
+  },
+  "test/cli-transport-shutdown.test.ts": {
+   "ms": 196.0830078125,
+   "status": "passed"
+  },
+  "test/codex-adapter.test.ts": {
+   "ms": 68.360595703125,
+   "status": "passed"
+  },
+  "test/compile-policy-cli.test.ts": {
+   "ms": 6.087890625,
+   "status": "passed"
+  },
+  "test/config-command.test.ts": {
+   "ms": 62.187255859375,
+   "status": "passed"
+  },
+  "test/constitution-compiler.test.ts": {
+   "ms": 40.29052734375,
+   "status": "passed"
+  },
+  "test/constitution-customizer.test.ts": {
+   "ms": 26.037353515625,
+   "status": "passed"
+  },
+  "test/constitution-freshness.test.ts": {
+   "ms": 18.6826171875,
+   "status": "passed"
+  },
+  "test/constitution-generator.test.ts": {
+   "ms": 7.176025390625,
+   "status": "passed"
+  },
+  "test/container-command.test.ts": {
+   "ms": 11.942626953125,
+   "status": "passed"
+  },
+  "test/control-socket.test.ts": {
+   "ms": 43.75830078125,
+   "status": "passed"
+  },
+  "test/conversation-state.test.ts": {
+   "ms": 19.1259765625,
+   "status": "passed"
+  },
+  "test/coordinator-control-server.test.ts": {
+   "ms": 138.64208984375,
+   "status": "passed"
+  },
+  "test/cron-prompts.test.ts": {
+   "ms": 5.109619140625,
+   "status": "passed"
+  },
+  "test/cron-scheduler.test.ts": {
+   "ms": 11.119140625,
+   "status": "passed"
+  },
+  "test/daemon-client.test.ts": {
+   "ms": 665.652587890625,
+   "status": "passed"
+  },
+  "test/definition-loader.test.ts": {
+   "ms": 19.276611328125,
+   "status": "passed"
+  },
+  "test/diagnose-corpus.test.ts": {
+   "ms": 12.1552734375,
+   "status": "passed"
+  },
+  "test/docker-agent-adapter.test.ts": {
+   "ms": 19.10986328125,
+   "status": "passed"
+  },
+  "test/docker-agent-session-retry.test.ts": {
+   "ms": 47.08837890625,
+   "status": "passed"
+  },
+  "test/docker-code-mode.integration.test.ts": {
+   "ms": 0,
+   "status": "failed"
+  },
+  "test/docker-infrastructure.test.ts": {
+   "ms": 400.1669921875,
+   "status": "passed"
+  },
+  "test/docker-manager.test.ts": {
+   "ms": 2971.2509765625,
+   "status": "passed"
+  },
+  "test/docker-progress-sink.test.ts": {
+   "ms": 7.22412109375,
+   "status": "passed"
+  },
+  "test/docker-resource-lifecycle.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/docker-resource-lifecycle.test.ts": {
+   "ms": 242.906494140625,
+   "status": "passed"
+  },
+  "test/docker-resource-limits.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/docker-resource-limits.test.ts": {
+   "ms": 9.548095703125,
+   "status": "passed"
+  },
+  "test/docker-session-factory.test.ts": {
+   "ms": 102.757568359375,
+   "status": "passed"
+  },
+  "test/docker-session.test.ts": {
+   "ms": 177.468017578125,
+   "status": "passed"
+  },
+  "test/docker-workload/apple-vm-daemon.test.ts": {
+   "ms": 53.247314453125,
+   "status": "passed"
+  },
+  "test/docker-workload/apple-vm-egress-relay.test.ts": {
+   "ms": 7840.646728515625,
+   "status": "passed"
+  },
+  "test/docker-workload/cleanup-ownership.test.ts": {
+   "ms": 68.9697265625,
+   "status": "passed"
+  },
+  "test/docker-workload/config.test.ts": {
+   "ms": 23.235107421875,
+   "status": "passed"
+  },
+  "test/docker-workload/docker-desktop-sidecar.test.ts": {
+   "ms": 253.39892578125,
+   "status": "passed"
+  },
+  "test/docker-workload/environment.test.ts": {
+   "ms": 7.5068359375,
+   "status": "passed"
+  },
+  "test/docker-workload/infrastructure-admission.test.ts": {
+   "ms": 125.071533203125,
+   "status": "passed"
+  },
+  "test/docker-workload/infrastructure-fuse-guard.test.ts": {
+   "ms": 2.029296875,
+   "status": "passed"
+  },
+  "test/docker-workload/infrastructure-reconciliation.test.ts": {
+   "ms": 499.065185546875,
+   "status": "passed"
+  },
+  "test/docker-workload/infrastructure-teardown.test.ts": {
+   "ms": 749.470703125,
+   "status": "passed"
+  },
+  "test/docker-workload/lifecycle-evidence.test.ts": {
+   "ms": 90.2294921875,
+   "status": "passed"
+  },
+  "test/docker-workload/nested-daemon-identity.test.ts": {
+   "ms": 22.161376953125,
+   "status": "passed"
+  },
+  "test/docker-workload/private-docker.test.ts": {
+   "ms": 5.115478515625,
+   "status": "passed"
+  },
+  "test/docker-workload/process-lock.test.ts": {
+   "ms": 41.036865234375,
+   "status": "passed"
+  },
+  "test/docker-workload/profile-ceiling.test.ts": {
+   "ms": 4.026123046875,
+   "status": "passed"
+  },
+  "test/docker-workload/qualification-observer.test.ts": {
+   "ms": 3090.029296875,
+   "status": "passed"
+  },
+  "test/docker-workload/toolchain-source.test.ts": {
+   "ms": 8.772216796875,
+   "status": "passed"
+  },
+  "test/docker-workload/watchdog-sigkill.integration.test.ts": {
+   "ms": 4358.507080078125,
+   "status": "passed"
+  },
+  "test/docker-workload/watchdog-supervisor-launch.test.ts": {
+   "ms": 61.08056640625,
+   "status": "passed"
+  },
+  "test/docker/agent-startup.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/docker/agent-startup.test.ts": {
+   "ms": 43.52880859375,
+   "status": "passed"
+  },
+  "test/docker/apple-private-docker.test.ts": {
+   "ms": 47.107421875,
+   "status": "passed"
+  },
+  "test/docker/backend-qualification-plan.test.ts": {
+   "ms": 6.482666015625,
+   "status": "passed"
+  },
+  "test/docker/base-image.test.ts": {
+   "ms": 5.293212890625,
+   "status": "passed"
+  },
+  "test/docker/bounded-log-tail.test.ts": {
+   "ms": 2.4423828125,
+   "status": "passed"
+  },
+  "test/docker/bundle-lease.test.ts": {
+   "ms": 111.364013671875,
+   "status": "passed"
+  },
+  "test/docker/bundle-revocation.test.ts": {
+   "ms": 130.73095703125,
+   "status": "passed"
+  },
+  "test/docker/client-toolchain.test.ts": {
+   "ms": 25.106201171875,
+   "status": "passed"
+  },
+  "test/docker/completion-endpoint.test.ts": {
+   "ms": 2.09521484375,
+   "status": "passed"
+  },
+  "test/docker/desktop-relay-uds.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/docker/desktop-relay.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/docker/desktop-relay.test.ts": {
+   "ms": 19.648681640625,
+   "status": "passed"
+  },
+  "test/docker/destroy-bundle-outer-resources.test.ts": {
+   "ms": 80.260498046875,
+   "status": "passed"
+  },
+  "test/docker/docker-build-shim-lifecycle.test.ts": {
+   "ms": 96.878662109375,
+   "status": "passed"
+  },
+  "test/docker/docker-build-shim.test.ts": {
+   "ms": 499.999755859375,
+   "status": "passed"
+  },
+  "test/docker/docker-endpoint.test.ts": {
+   "ms": 10.343017578125,
+   "status": "passed"
+  },
+  "test/docker/docker-workload-admission.test.ts": {
+   "ms": 141.14990234375,
+   "status": "passed"
+  },
+  "test/docker/docker-workload-egress.test.ts": {
+   "ms": 473.534912109375,
+   "status": "passed"
+  },
+  "test/docker/docker-workload-prepare-failure.test.ts": {
+   "ms": 478.66796875,
+   "status": "passed"
+  },
+  "test/docker/docker-workload-wiring.test.ts": {
+   "ms": 778.352783203125,
+   "status": "passed"
+  },
+  "test/docker/egress-forwarding.test.ts": {
+   "ms": 1.678955078125,
+   "status": "passed"
+  },
+  "test/docker/linux-dependency-abi.test.ts": {
+   "ms": 16.996826171875,
+   "status": "passed"
+  },
+  "test/docker/llm-observation-content-decoder.test.ts": {
+   "ms": 121.50390625,
+   "status": "passed"
+  },
+  "test/docker/llm-observation-hub.test.ts": {
+   "ms": 10.1650390625,
+   "status": "passed"
+  },
+  "test/docker/llm-observation-sse-event-framer.test.ts": {
+   "ms": 6.357666015625,
+   "status": "passed"
+  },
+  "test/docker/mitm-cascade.test.ts": {
+   "ms": 506.003173828125,
+   "status": "passed"
+  },
+  "test/docker/mitm-llm-metrics.test.ts": {
+   "ms": 3016.579833984375,
+   "status": "passed"
+  },
+  "test/docker/nested-daemon-image.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/docker/nested-daemon-image.test.ts": {
+   "ms": 2.213623046875,
+   "status": "passed"
+  },
+  "test/docker/nested-daemon-wiring.test.ts": {
+   "ms": 1068.6201171875,
+   "status": "passed"
+  },
+  "test/docker/oci-image-archive-canonicalizer.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/docker/oci-image-archive-canonicalizer.test.ts": {
+   "ms": 53.908203125,
+   "status": "passed"
+  },
+  "test/docker/oci-image-archive.test.ts": {
+   "ms": 20.5107421875,
+   "status": "passed"
+  },
+  "test/docker/openrouter-agent-session.test.ts": {
+   "ms": 26.343017578125,
+   "status": "passed"
+  },
+  "test/docker/openrouter-connect.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/docker/openrouter-live.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/docker/openrouter-mitm.test.ts": {
+   "ms": 2704.43798828125,
+   "status": "passed"
+  },
+  "test/docker/openrouter-selection.test.ts": {
+   "ms": 11.54345703125,
+   "status": "passed"
+  },
+  "test/docker/openrouter.unit.test.ts": {
+   "ms": 8.108642578125,
+   "status": "passed"
+  },
+  "test/docker/outbound-transport.test.ts": {
+   "ms": 137.13623046875,
+   "status": "passed"
+  },
+  "test/docker/package-egress-address-policy.test.ts": {
+   "ms": 15.660400390625,
+   "status": "passed"
+  },
+  "test/docker/package-egress-ledger.test.ts": {
+   "ms": 4.409912109375,
+   "status": "passed"
+  },
+  "test/docker/package-egress-proxy.test.ts": {
+   "ms": 4368.38330078125,
+   "status": "passed"
+  },
+  "test/docker/package-validator.test.ts": {
+   "ms": 7.086181640625,
+   "status": "passed"
+  },
+  "test/docker/provision-lock.test.ts": {
+   "ms": 951.800537109375,
+   "status": "passed"
+  },
+  "test/docker/proxy-authorization.test.ts": {
+   "ms": 1.699951171875,
+   "status": "passed"
+  },
+  "test/docker/pty-cleanup.test.ts": {
+   "ms": 11.981201171875,
+   "status": "passed"
+  },
+  "test/docker/pty-nested-ordering.test.ts": {
+   "ms": 171.7353515625,
+   "status": "passed"
+  },
+  "test/docker/qualification-evidence.test.ts": {
+   "ms": 705.229736328125,
+   "status": "passed"
+  },
+  "test/docker/qualification-process.test.ts": {
+   "ms": 6426.19921875,
+   "status": "passed"
+  },
+  "test/docker/qualification-runner.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/docker/qualification-runner.test.ts": {
+   "ms": 78.950927734375,
+   "status": "passed"
+  },
+  "test/docker/registry-egress-live.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/docker/registry-egress-policy.test.ts": {
+   "ms": 26.648681640625,
+   "status": "passed"
+  },
+  "test/docker/registry-egress-proxy.test.ts": {
+   "ms": 428.131103515625,
+   "status": "passed"
+  },
+  "test/docker/registry-proxy.test.ts": {
+   "ms": 178.631103515625,
+   "status": "passed"
+  },
+  "test/docker/resource-watchdog-supervisor.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/docker/resource-watchdog-supervisor.test.ts": {
+   "ms": 543.203857421875,
+   "status": "passed"
+  },
+  "test/docker/resource-watchdog.test.ts": {
+   "ms": 120.779296875,
+   "status": "passed"
+  },
+  "test/docker/runtime-trust.test.ts": {
+   "ms": 16.102294921875,
+   "status": "passed"
+  },
+  "test/docker/scanner-fixture.test.ts": {
+   "ms": 13.931884765625,
+   "status": "passed"
+  },
+  "test/docker/selected-agent-artifact.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/docker/selected-agent-artifact.test.ts": {
+   "ms": 164.721435546875,
+   "status": "passed"
+  },
+  "test/docker/selected-image-file.test.ts": {
+   "ms": 100.984130859375,
+   "status": "passed"
+  },
+  "test/docker/stream-delay.unit.test.ts": {
+   "ms": 23.26171875,
+   "status": "passed"
+  },
+  "test/docker/token-stream-bus.test.ts": {
+   "ms": 3.478515625,
+   "status": "passed"
+  },
+  "test/docker/trajectory-abort-survivorship.test.ts": {
+   "ms": 417.2685546875,
+   "status": "passed"
+  },
+  "test/docker/trajectory-capture-gate.test.ts": {
+   "ms": 16.72509765625,
+   "status": "passed"
+  },
+  "test/docker/trajectory-credential-leakage.unit.test.ts": {
+   "ms": 17.40283203125,
+   "status": "passed"
+  },
+  "test/docker/trajectory-poison.test.ts": {
+   "ms": 239.970947265625,
+   "status": "passed"
+  },
+  "test/docker/trajectory-reassembler-openai.test.ts": {
+   "ms": 12.32568359375,
+   "status": "passed"
+  },
+  "test/docker/trajectory-reassembler-stringify-guard.unit.test.ts": {
+   "ms": 2.38330078125,
+   "status": "passed"
+  },
+  "test/docker/trajectory-streaming-fidelity.test.ts": {
+   "ms": 1100.23046875,
+   "status": "passed"
+  },
+  "test/docker/vulnerability-fixture-sources.test.ts": {
+   "ms": 2.62744140625,
+   "status": "passed"
+  },
+  "test/docker/vulnerability-fixture.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/docker/workflow-runtime-deps.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/docker/wsl-qualification-preparation.test.ts": {
+   "ms": 12.538818359375,
+   "status": "passed"
+  },
+  "test/docker/zai-claude-offline.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/docker/zai-mitm.test.ts": {
+   "ms": 890.27099609375,
+   "status": "passed"
+  },
+  "test/doctor.test.ts": {
+   "ms": 258.517578125,
+   "status": "passed"
+  },
+  "test/domain-utils.test.ts": {
+   "ms": 435.866455078125,
+   "status": "failed"
+  },
+  "test/dynamic-lists.test.ts": {
+   "ms": 82.225341796875,
+   "status": "passed"
+  },
+  "test/escalation-scenarios.test.ts": {
+   "ms": 16.21875,
+   "status": "passed"
+  },
+  "test/escalation-watcher.test.ts": {
+   "ms": 27.220703125,
+   "status": "passed"
+  },
+  "test/fetch-server.test.ts": {
+   "ms": 2466.159423828125,
+   "status": "passed"
+  },
+  "test/file-lock.test.ts": {
+   "ms": 244.055908203125,
+   "status": "passed"
+  },
+  "test/first-start.test.ts": {
+   "ms": 349.16845703125,
+   "status": "passed"
+  },
+  "test/format-utils.test.ts": {
+   "ms": 5.086669921875,
+   "status": "passed"
+  },
+  "test/generate-with-repair.test.ts": {
+   "ms": 44.201171875,
+   "status": "passed"
+  },
+  "test/git-sync.test.ts": {
+   "ms": 9.084716796875,
+   "status": "passed"
+  },
+  "test/github-identity.test.ts": {
+   "ms": 23.4716796875,
+   "status": "passed"
+  },
+  "test/goose-adapter.test.ts": {
+   "ms": 16.197265625,
+   "status": "passed"
+  },
+  "test/gworkspace-credentials.test.ts": {
+   "ms": 11.08642578125,
+   "status": "passed"
+  },
+  "test/handwritten-scenarios.test.ts": {
+   "ms": 7.422607421875,
+   "status": "passed"
+  },
+  "test/headless-transport.test.ts": {
+   "ms": 17.947265625,
+   "status": "passed"
+  },
+  "test/help-integration.test.ts": {
+   "ms": 0,
+   "status": "failed"
+  },
+  "test/help-llm-integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/integration.test.ts": {
+   "ms": 1293.52734375,
+   "status": "passed"
+  },
+  "test/interaction-log.test.ts": {
+   "ms": 34.67529296875,
+   "status": "passed"
+  },
+  "test/isolated-vm-test-inventory.test.ts": {
+   "ms": 22.6865234375,
+   "status": "passed"
+  },
+  "test/job-customizer.test.ts": {
+   "ms": 3.138427734375,
+   "status": "passed"
+  },
+  "test/job-store.test.ts": {
+   "ms": 63.614013671875,
+   "status": "passed"
+  },
+  "test/json-rpc-dispatch.test.ts": {
+   "ms": 23.189453125,
+   "status": "passed"
+  },
+  "test/list-resolver.test.ts": {
+   "ms": 85.951171875,
+   "status": "passed"
+  },
+  "test/listener-state.test.ts": {
+   "ms": 7.210205078125,
+   "status": "passed"
+  },
+  "test/llm-logger.test.ts": {
+   "ms": 41.122314453125,
+   "status": "passed"
+  },
+  "test/llm-metrics-attribution-registry.test.ts": {
+   "ms": 5.269775390625,
+   "status": "passed"
+  },
+  "test/llm-metrics-event-bus.test.ts": {
+   "ms": 4.28857421875,
+   "status": "passed"
+  },
+  "test/llm-metrics-identity-protector.test.ts": {
+   "ms": 677.126220703125,
+   "status": "passed"
+  },
+  "test/llm-metrics-persistence.test.ts": {
+   "ms": 4831.46875,
+   "status": "passed"
+  },
+  "test/llm-metrics-query-safety.test.ts": {
+   "ms": 671.853271484375,
+   "status": "passed"
+  },
+  "test/llm-metrics-retention-runtime.test.ts": {
+   "ms": 25.5205078125,
+   "status": "passed"
+  },
+  "test/llm-metrics-runtime.test.ts": {
+   "ms": 377.07373046875,
+   "status": "passed"
+  },
+  "test/llm-metrics-sqlite-busy-retry.test.ts": {
+   "ms": 124.0205078125,
+   "status": "passed"
+  },
+  "test/llm-metrics-statistics-command.test.ts": {
+   "ms": 14.289306640625,
+   "status": "passed"
+  },
+  "test/llm-metrics/gateway-adapters.test.ts": {
+   "ms": 5.46044921875,
+   "status": "passed"
+  },
+  "test/llm-metrics/normalization.test.ts": {
+   "ms": 5.311279296875,
+   "status": "passed"
+  },
+  "test/llm-metrics/protocol-adapters.test.ts": {
+   "ms": 14.251220703125,
+   "status": "passed"
+  },
+  "test/llm-metrics/protocol-registry.test.ts": {
+   "ms": 1.681640625,
+   "status": "passed"
+  },
+  "test/logger.test.ts": {
+   "ms": 24.14013671875,
+   "status": "passed"
+  },
+  "test/mcp-error-utils.test.ts": {
+   "ms": 4.06396484375,
+   "status": "passed"
+  },
+  "test/mcp-proxy-server-no-backend.integration.test.ts": {
+   "ms": 1147.9033203125,
+   "status": "passed"
+  },
+  "test/mcp-proxy-server.test.ts": {
+   "ms": 251.13037109375,
+   "status": "passed"
+  },
+  "test/mcp-roots-race.integration.test.ts": {
+   "ms": 720.325927734375,
+   "status": "passed"
+  },
+  "test/memory-integration.test.ts": {
+   "ms": 8.103515625,
+   "status": "passed"
+  },
+  "test/memory-policy.test.ts": {
+   "ms": 8.445556640625,
+   "status": "passed"
+  },
+  "test/message-compactor.test.ts": {
+   "ms": 58.562255859375,
+   "status": "passed"
+  },
+  "test/mitm-proxy-extraction.test.ts": {
+   "ms": 9.42822265625,
+   "status": "passed"
+  },
+  "test/mitm-proxy-token-stream.test.ts": {
+   "ms": 1695.99072265625,
+   "status": "passed"
+  },
+  "test/mitm-proxy.test.ts": {
+   "ms": 12467.85595703125,
+   "status": "passed"
+  },
+  "test/model-provider.test.ts": {
+   "ms": 57.38525390625,
+   "status": "passed"
+  },
+  "test/mux-command.test.ts": {
+   "ms": 12.1259765625,
+   "status": "passed"
+  },
+  "test/mux-escalation-manager.test.ts": {
+   "ms": 646.85302734375,
+   "status": "passed"
+  },
+  "test/mux-input-handler.test.ts": {
+   "ms": 73.1318359375,
+   "status": "failed"
+  },
+  "test/mux-layout.test.ts": {
+   "ms": 3.173095703125,
+   "status": "passed"
+  },
+  "test/mux-provider-profile-snapshot.test.ts": {
+   "ms": 5.234375,
+   "status": "passed"
+  },
+  "test/mux-renderer.test.ts": {
+   "ms": 43.17333984375,
+   "status": "passed"
+  },
+  "test/mux-trusted-input.test.ts": {
+   "ms": 9.400390625,
+   "status": "passed"
+  },
+  "test/network-isolation.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/network-topology.test.ts": {
+   "ms": 13.164306640625,
+   "status": "passed"
+  },
+  "test/next-state-slug.test.ts": {
+   "ms": 24.0322265625,
+   "status": "passed"
+  },
+  "test/oauth-credentials.test.ts": {
+   "ms": 109.313232421875,
+   "status": "passed"
+  },
+  "test/oauth-token-manager.test.ts": {
+   "ms": 61.217529296875,
+   "status": "passed"
+  },
+  "test/observe-command.integration.test.ts": {
+   "ms": 48.470947265625,
+   "status": "passed"
+  },
+  "test/observe-renderer.test.ts": {
+   "ms": 6.052978515625,
+   "status": "passed"
+  },
+  "test/observe-tui-rain.test.ts": {
+   "ms": 21.15234375,
+   "status": "passed"
+  },
+  "test/observe-tui-text-panel.test.ts": {
+   "ms": 55.121826171875,
+   "status": "passed"
+  },
+  "test/observe-tui-word-scorer.test.ts": {
+   "ms": 14.083740234375,
+   "status": "passed"
+  },
+  "test/observe-tui.test.ts": {
+   "ms": 11.068115234375,
+   "status": "passed"
+  },
+  "test/openrouter-catalog.test.ts": {
+   "ms": 23.29345703125,
+   "status": "passed"
+  },
+  "test/openrouter-goose-format.test.ts": {
+   "ms": 13.34130859375,
+   "status": "passed"
+  },
+  "test/package-publishing.test.ts": {
+   "ms": 2.110595703125,
+   "status": "passed"
+  },
+  "test/paste-interceptor.test.ts": {
+   "ms": 8.275146484375,
+   "status": "passed"
+  },
+  "test/path-utils.test.ts": {
+   "ms": 8.1201171875,
+   "status": "passed"
+  },
+  "test/per-server-compilation.test.ts": {
+   "ms": 13.063720703125,
+   "status": "passed"
+  },
+  "test/permissive-output-validator.test.ts": {
+   "ms": 2.195068359375,
+   "status": "passed"
+  },
+  "test/persona-broad-policy-validator.test.ts": {
+   "ms": 17.47998046875,
+   "status": "passed"
+  },
+  "test/persona-compile-orchestrator.test.ts": {
+   "ms": 159.24560546875,
+   "status": "passed"
+  },
+  "test/persona-dispatch-crud.test.ts": {
+   "ms": 55.869873046875,
+   "status": "passed"
+  },
+  "test/persona-dispatch-gate.test.ts": {
+   "ms": 6.535888671875,
+   "status": "passed"
+  },
+  "test/persona-policy-mutation-audit.test.ts": {
+   "ms": 19.5458984375,
+   "status": "passed"
+  },
+  "test/persona-service.test.ts": {
+   "ms": 101.853271484375,
+   "status": "passed"
+  },
+  "test/persona-session.test.ts": {
+   "ms": 153.419677734375,
+   "status": "passed"
+  },
+  "test/persona.test.ts": {
+   "ms": 62.75927734375,
+   "status": "passed"
+  },
+  "test/pipeline-atomicity.test.ts": {
+   "ms": 196.798095703125,
+   "status": "passed"
+  },
+  "test/pipeline-golden.test.ts": {
+   "ms": 3.1142578125,
+   "status": "passed"
+  },
+  "test/pipeline-import-boundary.test.ts": {
+   "ms": 2.375,
+   "status": "passed"
+  },
+  "test/pipeline-integration.test.ts": {
+   "ms": 4.653564453125,
+   "status": "passed"
+  },
+  "test/pipeline-mcp-lists-disallowed.test.ts": {
+   "ms": 34.1884765625,
+   "status": "passed"
+  },
+  "test/pipeline-shared.test.ts": {
+   "ms": 74.142822265625,
+   "status": "passed"
+  },
+  "test/point-fix-repair.test.ts": {
+   "ms": 19.2060546875,
+   "status": "passed"
+  },
+  "test/policy-dir-validation.test.ts": {
+   "ms": 248.1181640625,
+   "status": "passed"
+  },
+  "test/policy-engine-stress.test.ts": {
+   "ms": 15.423583984375,
+   "status": "passed"
+  },
+  "test/policy-engine.test.ts": {
+   "ms": 315.1201171875,
+   "status": "passed"
+  },
+  "test/policy-roots.test.ts": {
+   "ms": 8.065185546875,
+   "status": "passed"
+  },
+  "test/policy-verifier.test.ts": {
+   "ms": 42.167724609375,
+   "status": "passed"
+  },
+  "test/preflight.test.ts": {
+   "ms": 17.764892578125,
+   "status": "passed"
+  },
+  "test/prompt-cache.test.ts": {
+   "ms": 5.2001953125,
+   "status": "passed"
+  },
+  "test/provider-definitions.test.ts": {
+   "ms": 17.38525390625,
+   "status": "passed"
+  },
+  "test/proxy-integration.test.ts": {
+   "ms": 1769.890380859375,
+   "status": "passed"
+  },
+  "test/proxy-router-mode.test.ts": {
+   "ms": 1548.030029296875,
+   "status": "passed"
+  },
+  "test/proxy-tools.test.ts": {
+   "ms": 2252.659423828125,
+   "status": "passed"
+  },
+  "test/pty-bridge.test.ts": {
+   "ms": 72.970458984375,
+   "status": "passed"
+  },
+  "test/pty-entrypoint.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/pty-preconnect-bounds.test.ts": {
+   "ms": 6.56689453125,
+   "status": "passed"
+  },
+  "test/pty-session.test.ts": {
+   "ms": 359.99560546875,
+   "status": "passed"
+  },
+  "test/pty-web-escalation.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/pty/pty-session-manager.test.ts": {
+   "ms": 100.037841796875,
+   "status": "passed"
+  },
+  "test/readonly-policy-paths.test.ts": {
+   "ms": 3.166015625,
+   "status": "passed"
+  },
+  "test/resolve-rule-paths.test.ts": {
+   "ms": 6.291015625,
+   "status": "passed"
+  },
+  "test/resource-budget-tracker.test.ts": {
+   "ms": 27.108154296875,
+   "status": "passed"
+  },
+  "test/roots-expansion-bridging.integration.test.ts": {
+   "ms": 229.70458984375,
+   "status": "passed"
+  },
+  "test/run-preflight.test.ts": {
+   "ms": 25.047607421875,
+   "status": "passed"
+  },
+  "test/sandbox-integration.test.ts": {
+   "ms": 55.1396484375,
+   "status": "passed"
+  },
+  "test/sandbox-tool-errors.integration.test.ts": {
+   "ms": 0,
+   "status": "failed"
+  },
+  "test/sandbox.test.ts": {
+   "ms": 0,
+   "status": "failed"
+  },
+  "test/scenario-generator.test.ts": {
+   "ms": 100.256103515625,
+   "status": "passed"
+  },
+  "test/scenario-schema-validator.test.ts": {
+   "ms": 6.251708984375,
+   "status": "passed"
+  },
+  "test/search-providers.test.ts": {
+   "ms": 37.281494140625,
+   "status": "passed"
+  },
+  "test/select-resumable-workflow.test.ts": {
+   "ms": 20.41650390625,
+   "status": "passed"
+  },
+  "test/server-context.test.ts": {
+   "ms": 3.46044921875,
+   "status": "passed"
+  },
+  "test/server-prefilter.test.ts": {
+   "ms": 29.076416015625,
+   "status": "passed"
+  },
+  "test/session-identity-brands.test.ts": {
+   "ms": 12.52490234375,
+   "status": "passed"
+  },
+  "test/session-manager.test.ts": {
+   "ms": 14.176513671875,
+   "status": "passed"
+  },
+  "test/session-memory-gate.test.ts": {
+   "ms": 28.849853515625,
+   "status": "passed"
+  },
+  "test/session-metadata.test.ts": {
+   "ms": 28.54833984375,
+   "status": "passed"
+  },
+  "test/session-readonly-mounts-validation.test.ts": {
+   "ms": 63.2275390625,
+   "status": "passed"
+  },
+  "test/session-readonly-mounts.test.ts": {
+   "ms": 62.622802734375,
+   "status": "passed"
+  },
+  "test/session-registry.test.ts": {
+   "ms": 21.375732421875,
+   "status": "passed"
+  },
+  "test/session-resume-security.test.ts": {
+   "ms": 46.220458984375,
+   "status": "passed"
+  },
+  "test/session-scanner.test.ts": {
+   "ms": 39.046630859375,
+   "status": "passed"
+  },
+  "test/session-snapshot.test.ts": {
+   "ms": 34.65380859375,
+   "status": "passed"
+  },
+  "test/session.test.ts": {
+   "ms": 343.775634765625,
+   "status": "passed"
+  },
+  "test/signal-format.test.ts": {
+   "ms": 41.24853515625,
+   "status": "passed"
+  },
+  "test/signal/format.test.ts": {
+   "ms": 17.20263671875,
+   "status": "passed"
+  },
+  "test/signal/markdown-to-signal.test.ts": {
+   "ms": 19.14453125,
+   "status": "passed"
+  },
+  "test/signal/setup-signal.test.ts": {
+   "ms": 2099.458251953125,
+   "status": "passed"
+  },
+  "test/signal/signal-bot-daemon.test.ts": {
+   "ms": 1286.822265625,
+   "status": "passed"
+  },
+  "test/skills-borrow-restage.test.ts": {
+   "ms": 74.258544921875,
+   "status": "passed"
+  },
+  "test/skills-discovery.test.ts": {
+   "ms": 77.54736328125,
+   "status": "passed"
+  },
+  "test/skills-end-to-end.integration.test.ts": {
+   "ms": 77.17333984375,
+   "status": "passed"
+  },
+  "test/skills-staging.test.ts": {
+   "ms": 29.651123046875,
+   "status": "passed"
+  },
+  "test/smoke-child-process.test.ts": {
+   "ms": 9.93896484375,
+   "status": "passed"
+  },
+  "test/smoke-environment.test.ts": {
+   "ms": 6.37255859375,
+   "status": "passed"
+  },
+  "test/smoke-nested-apple-tui.test.ts": {
+   "ms": 23.33447265625,
+   "status": "passed"
+  },
+  "test/smoke-nested-apple-workload.test.ts": {
+   "ms": 17.5615234375,
+   "status": "passed"
+  },
+  "test/socket-path-budget.test.ts": {
+   "ms": 7.449462890625,
+   "status": "passed"
+  },
+  "test/spike-git-branch-roles.test.ts": {
+   "ms": 4.363037109375,
+   "status": "passed"
+  },
+  "test/sse-extractor.test.ts": {
+   "ms": 21.44091796875,
+   "status": "passed"
+  },
+  "test/state-graph.test.ts": {
+   "ms": 5.43212890625,
+   "status": "passed"
+  },
+  "test/stdio-guard.test.ts": {
+   "ms": 5.30029296875,
+   "status": "passed"
+  },
+  "test/step-loop-detector.test.ts": {
+   "ms": 9.156005859375,
+   "status": "passed"
+  },
+  "test/tcp-server-transport.test.ts": {
+   "ms": 75.099853515625,
+   "status": "passed"
+  },
+  "test/token-file-refresher.test.ts": {
+   "ms": 20.422119140625,
+   "status": "passed"
+  },
+  "test/token-stream-bridge.test.ts": {
+   "ms": 27.815185546875,
+   "status": "passed"
+  },
+  "test/token-stream-bus.test.ts": {
+   "ms": 10.27001953125,
+   "status": "passed"
+  },
+  "test/token-stream-dispatch.test.ts": {
+   "ms": 10.458984375,
+   "status": "passed"
+  },
+  "test/tool-annotator.test.ts": {
+   "ms": 75.1748046875,
+   "status": "passed"
+  },
+  "test/tool-call-coordinator.test.ts": {
+   "ms": 290.72265625,
+   "status": "passed"
+  },
+  "test/tool-description-hints.test.ts": {
+   "ms": 3.21435546875,
+   "status": "passed"
+  },
+  "test/truncate-result.test.ts": {
+   "ms": 5.154052734375,
+   "status": "passed"
+  },
+  "test/uds-server-transport.test.ts": {
+   "ms": 35.97802734375,
+   "status": "passed"
+  },
+  "test/uid-remap.codex.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/uid-remap.goose.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/uid-remap.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/upstream-overrides.test.ts": {
+   "ms": 9.478271484375,
+   "status": "passed"
+  },
+  "test/user-config.test.ts": {
+   "ms": 260.219482421875,
+   "status": "passed"
+  },
+  "test/web-event-bus.test.ts": {
+   "ms": 5.2822265625,
+   "status": "passed"
+  },
+  "test/web-session-manager.test.ts": {
+   "ms": 10.956298828125,
+   "status": "passed"
+  },
+  "test/web-ui-server.test.ts": {
+   "ms": 187.181396484375,
+   "status": "passed"
+  },
+  "test/web-ui-statistics-types.test.ts": {
+   "ms": 4.336669921875,
+   "status": "passed"
+  },
+  "test/workflow-artifact-versioning.test.ts": {
+   "ms": 38.81298828125,
+   "status": "passed"
+  },
+  "test/workflow-discovery-runs.test.ts": {
+   "ms": 26.688720703125,
+   "status": "passed"
+  },
+  "test/workflow-discovery.test.ts": {
+   "ms": 205.968994140625,
+   "status": "passed"
+  },
+  "test/workflow-dispatch.test.ts": {
+   "ms": 574.7978515625,
+   "status": "passed"
+  },
+  "test/workflow-file-dispatch.test.ts": {
+   "ms": 5.317138671875,
+   "status": "passed"
+  },
+  "test/workflow-hidden-readme.test.ts": {
+   "ms": 218.60107421875,
+   "status": "passed"
+  },
+  "test/workflow-lint-dispatch.test.ts": {
+   "ms": 24.55078125,
+   "status": "passed"
+  },
+  "test/workflow-manager-capture-traces.test.ts": {
+   "ms": 23.3349609375,
+   "status": "passed"
+  },
+  "test/workflow-manager.test.ts": {
+   "ms": 95.880615234375,
+   "status": "passed"
+  },
+  "test/workflow-policy-cycling.integration.test.ts": {
+   "ms": 0,
+   "status": "failed"
+  },
+  "test/workflow-resource-budget.test.ts": {
+   "ms": 514.923095703125,
+   "status": "passed"
+  },
+  "test/workflow-resume-dispatch.test.ts": {
+   "ms": 25.005126953125,
+   "status": "passed"
+  },
+  "test/workflow-shutdown-signals.test.ts": {
+   "ms": 4.800048828125,
+   "status": "passed"
+  },
+  "test/workflow-snapshot-resume.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/workflow/agent-gate-loop.integration.test.ts": {
+   "ms": 271.675537109375,
+   "status": "passed"
+  },
+  "test/workflow/artifacts.test.ts": {
+   "ms": 73.746826171875,
+   "status": "passed"
+  },
+  "test/workflow/checkpoint.test.ts": {
+   "ms": 27.058837890625,
+   "status": "passed"
+  },
+  "test/workflow/container-snapshots.test.ts": {
+   "ms": 4.650146484375,
+   "status": "passed"
+  },
+  "test/workflow/daemon-gate-commands.integration.test.ts": {
+   "ms": 305.333740234375,
+   "status": "passed"
+  },
+  "test/workflow/deterministic-verdict-smoke.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/workflow/evolve-correctness.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/workflow/evolve-experiment-harness.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/workflow/evolve-human-surface.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/workflow/evolve-multi-round.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/workflow/evolve-result-bridge.test.ts": {
+   "ms": 10793.19384765625,
+   "status": "passed"
+  },
+  "test/workflow/evolve-search-quality.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/workflow/evolve-single-round.integration.test.ts": {
+   "ms": 0,
+   "status": "passed"
+  },
+  "test/workflow/guards.test.ts": {
+   "ms": 4.23681640625,
+   "status": "passed"
+  },
+  "test/workflow/host-observer.test.ts": {
+   "ms": 1520.713134765625,
+   "status": "passed"
+  },
+  "test/workflow/lane-template.test.ts": {
+   "ms": 2.335205078125,
+   "status": "passed"
+  },
+  "test/workflow/lint.test.ts": {
+   "ms": 245.633056640625,
+   "status": "passed"
+  },
+  "test/workflow/machine-builder.test.ts": {
+   "ms": 2934.947509765625,
+   "status": "passed"
+  },
+  "test/workflow/message-log.test.ts": {
+   "ms": 13.490966796875,
+   "status": "passed"
+  },
+  "test/workflow/model-selection.test.ts": {
+   "ms": 258.967041015625,
+   "status": "passed"
+  },
+  "test/workflow/nested-artifacts.test.ts": {
+   "ms": 22.174072265625,
+   "status": "passed"
+  },
+  "test/workflow/nested-docker-live-smoke.test.ts": {
+   "ms": 7471.120361328125,
+   "status": "passed"
+  },
+  "test/workflow/orchestrator-bifurcated.test.ts": {
+   "ms": 143.820068359375,
+   "status": "passed"
+  },
+  "test/workflow/orchestrator-deterministic.test.ts": {
+   "ms": 170.474853515625,
+   "status": "passed"
+  },
+  "test/workflow/orchestrator-docker-workload.test.ts": {
+   "ms": 10.378662109375,
+   "status": "passed"
+  },
+  "test/workflow/orchestrator-fanout.test.ts": {
+   "ms": 757.013916015625,
+   "status": "passed"
+  },
+  "test/workflow/orchestrator-log.test.ts": {
+   "ms": 677.666259765625,
+   "status": "passed"
+  },
+  "test/workflow/orchestrator-policy-cycling.test.ts": {
+   "ms": 160.935546875,
+   "status": "passed"
+  },
+  "test/workflow/orchestrator-quota.test.ts": {
+   "ms": 83.677001953125,
+   "status": "passed"
+  },
+  "test/workflow/orchestrator-resume.test.ts": {
+   "ms": 497.5830078125,
+   "status": "passed"
+  },
+  "test/workflow/orchestrator-retry.test.ts": {
+   "ms": 294.46435546875,
+   "status": "passed"
+  },
+  "test/workflow/orchestrator-session-paths.test.ts": {
+   "ms": 138.20166015625,
+   "status": "passed"
+  },
+  "test/workflow/orchestrator-shared-container.test.ts": {
+   "ms": 405.501220703125,
+   "status": "passed"
+  },
+  "test/workflow/orchestrator-transient.test.ts": {
+   "ms": 120.85986328125,
+   "status": "passed"
+  },
+  "test/workflow/orchestrator.test.ts": {
+   "ms": 511.89111328125,
+   "status": "passed"
+  },
+  "test/workflow/prompt-builder-framing.test.ts": {
+   "ms": 4.193359375,
+   "status": "passed"
+  },
+  "test/workflow/run-state-debug-capture.test.ts": {
+   "ms": 9.564697265625,
+   "status": "passed"
+  },
+  "test/workflow/spike.test.ts": {
+   "ms": 159.512451171875,
+   "status": "passed"
+  },
+  "test/workflow/status-parser.test.ts": {
+   "ms": 37.233642578125,
+   "status": "passed"
+  },
+  "test/workflow/transition-actions.test.ts": {
+   "ms": 2186.234619140625,
+   "status": "passed"
+  },
+  "test/workflow/types.test.ts": {
+   "ms": 2.364501953125,
+   "status": "passed"
+  },
+  "test/workflow/validate.test.ts": {
+   "ms": 108.94384765625,
+   "status": "passed"
+  },
+  "test/workflow/verdict-validation.test.ts": {
+   "ms": 188.349609375,
+   "status": "passed"
+  },
+  "test/workflow/visit-counts.test.ts": {
+   "ms": 1217.943603515625,
+   "status": "passed"
+  },
+  "test/workflow/workflow-help.test.ts": {
+   "ms": 3.759033203125,
+   "status": "passed"
+  },
+  "test/workflow/workflow-watch-command.test.ts": {
+   "ms": 333.6337890625,
+   "status": "passed"
+  },
+  "test/workflow/worktree.test.ts": {
+   "ms": 1894.29638671875,
+   "status": "passed"
+  },
+  "test/workspace-validation.test.ts": {
+   "ms": 39.46337890625,
+   "status": "passed"
+  },
+  "test/zai-provider.test.ts": {
+   "ms": 91.349853515625,
+   "status": "passed"
+  }
+ },
+ "failed_tests": [
+  "test/docker-code-mode.integration.test.ts > <file>",
+  "test/domain-utils.test.ts > resolveDefaultGitRemote returns the origin SSH URL via fallback when no tracking branch",
+  "test/help-integration.test.ts > <file>",
+  "test/mux-input-handler.test.ts > MuxInputHandler handlePaste returns none in picker browse mode with list focused",
+  "test/sandbox-tool-errors.integration.test.ts > <file>",
+  "test/sandbox.test.ts > <file>",
+  "test/workflow-policy-cycling.integration.test.ts > <file>"
+ ]
+}
