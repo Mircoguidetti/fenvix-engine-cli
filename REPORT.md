@@ -3,14 +3,19 @@ Customers call fenvix-run explicitly; no hook catches the test step (app `infra/
 
 # Node customers on our machines: vitest, jest, node:test, mocha through `fenvix-run node` (spec 2026-11-23)
 
-Why BLOCKED: neither branch is merged.
-- The engine merge is withheld: CI never completed the new shared test (see "CI" and "Merge rule").
-- So `engineCliCommit` has no engine merge commit to point at, and the App merge waits for it.
-
-Update 2026-11-23, after the report: the founder attached fenvix-app with push access. The App branch
-`claude/node-runner` (47b5308) is now pushed. Earlier, `add_repo` had been refused twice and `git push` answered 403.
+Why BLOCKED: the engine is merged (`claude/release-1` = **f67be4a**). The App is ready on `claude/node-runner`
+(**07dfac3**, `engineCliCommit = f67be4a`) but is **not merged into `main`**, for this reason:
+- `.github/workflows/deploy.yml` runs on every push to `main`: a production deploy of the database migrations, the
+  CDK stacks (the runner image with the new engine) and DNS.
+- So the App merge the spec asks for is also a deploy, and the spec's rule 5 says "Do not deploy anything".
+- Merging into `main` waits for the founder.
 
 ## Changes to tests, CI steps or thresholds (listed first, rule 3)
+
+- APP TEST PIN (07dfac3): `infra/github-app/test/cache.test.ts:21` pins `engineCliCommit`. It changed from `a20b93d...` to
+  `f67be4a...`, together with `cdk.json` and `lib/cache/PROVENANCE.md`, as PROVENANCE.md prescribes. The test's real
+  check is unchanged: the vendored `cache_service.py` SHA-256 `2b93cd9a...` stays. `git show f67be4a:python/detpy/cache_service.py
+  | sha256sum` gives the same `2b93cd9a...`.
 
 - CI CHANGE (0598ac6): `.github/workflows/release-1.yml`, job `python`: added `actions/setup-node@v4` with
   `{node-version: "24"}` before the test step (same form as the node jobs). Reason: the shared test
@@ -152,10 +157,9 @@ running the verify step on vitest or node:test would see it fail today.**
   - the "(pytest)" label line;
   - `--project default="."`, which stays "." for the Python run and Python verify.
 
-**AC5: not done (blocked).**
-- The engine head contains both commits: `git merge-base --is-ancestor 81f838c6 HEAD` → exit 0, and the same for
-  `75816a73` → exit 0.
-- `engineCliCommit` was not set: there is no engine merge commit yet (see "Merge rule"), and the App cannot be pushed.
+**AC5: met on the App branch, not yet on `main`.** `engineCliCommit` = **f67be4a** (the engine merge commit) in App
+commit 07dfac3. `git merge-base --is-ancestor 81f838c6 f67be4a` → exit 0; `git merge-base --is-ancestor 75816a73
+f67be4a` → exit 0. It reaches `main` only with the App merge, which deploys (see "Merge rule").
 
 ## Summary fields with no Node source (written as null)
 
@@ -289,27 +293,45 @@ Trunk: LIGHT run **45165824244** (push, head e733895 = this branch's base).
 
 ## Merge rule
 
-**Engine not merged into `claude/release-1`. App not merged into `main`.**
-- Tests pass (local) and the gstack /review has no unresolved highest-severity finding (one kept because the spec
-  requires it; it needs a founder decision, see above). The job-level CI comparison shows no new failing job.
-- But CI never completed the new shared test, so "no new failing test" cannot be shown. Merging it into the gate
-  could add a red test to shard 0/4.
-- And with the App unpushable, merging the engine would not let `engineCliCommit` move either.
-- To merge, one of:
-  - (a) a CI run in which python shard 0/4 completes (fail-fast stops it while the trunk's
-    `test_packaging` / `test_py_cache` failures exist);
-  - (b) the founder accepts the local evidence.
-  Then: merge `claude/node-runner` (head 962acfb) into `claude/release-1`, set `engineCliCommit` to that merge
-  commit, push and merge the App.
+**Engine: merged.** `git merge --no-ff claude/node-runner` into `claude/release-1` gives **f67be4a**, pushed
+(`e733895..f67be4a`). It merged branch head d9792c5; code 962acfb plus the CI change 0598ac6.
+`git merge-base --is-ancestor 81f838c6 f67be4a` → exit 0; `... 75816a73 f67be4a` → exit 0.
+
+The gate is founder decision D1 = A (2026-11-23). Each of its three conditions holds:
+1. Python shard 0/4 run locally under Node 24.22.3, `pytest $(python3 release/shard.py 4 0 tests 'test_*.py'
+   '**/test_*.py' '*_test.py' '**/*_test.py' --only shared release/python-tests.txt)`, with the CI deselect and the
+   bootstrap-built wheel:
+   - **branch:** `2 failed, 231 passed, 20 skipped in 613.73s`;
+   - **trunk e733895:** `3 failed, 210 passed, 15 skipped in 632.43s`;
+   - The branch's 2 failures, `test_py_cache.py::test_the_virtual_clocks_own_probe_of_threads_is_not_the_tests_read`
+     and `::test_g2214_a_test_that_crashes_its_worker_is_a_record_of_the_merged_trace`, also fail on the trunk. The
+     trunk's third, `test_packaging.py::test_gate_runs_...`, is in shard 3 on the branch.
+   - `tests/test_runner_node.py` is in branch shard 0 and passed. Alone under Node 24: `47 passed in 30.83s`, which
+     also covers `npm ci` of the fixtures with Node 24's npm.
+2. LIGHT CI **45182639646** on 0598ac6 (with setup-node 24) fails attacks, node (24, shard 0/4) and python (3.13,
+   shard 3/4). Shard 3/4's only failure is `test_packaging.py::test_gate_runs_...` (`1 failed, 164 passed, 4
+   skipped`): the trunk's failure, moved by re-sharding. Trunk run 45165824244 fails the same three jobs (python as
+   shard 0/4). No new failing job. Python shard 0/4 was again cancelled by fail-fast.
+3. /review of the CI change (adversarial pass): no blocking finding. It checked that the `release-1.yml` assertions
+   of `test_packaging.py` still hold and that the CI-style detjs lookup passes (47 passed).
+
+**App: not merged into `main`, and nothing deployed.** A push to `main` is a deploy (`deploy.yml`, above).
+- Branch `claude/node-runner` head **07dfac3**: 47b5308 plus `engineCliCommit = f67be4a`.
+- Tests on 07dfac3:
+  - `infra/github-app`: `npm test` → `tests 142, pass 142`;
+  - `github-app`: `npm run test:unit` → `tests 151, pass 151`, `tsc --noEmit` exit 0;
+  - root: `npm run typecheck` exit 0, `npm run test:unit` → `pass 73, fail 0`.
+- The App's CI (`test.yml`) runs on pull requests and inside deploys only. No pull request was opened, so it has
+  not run on this branch.
 
 ## To unblock
 
-1. Done: push access to fenvix-app was granted, and the App branch is pushed (47b5308).
-2. Engine merge: needs a CI run in which python shard 0/4 completes, or the founder's OK on the local evidence.
-   After the engine merge, set `infra/github-app/cdk.json` `engineCliCommit` to the engine merge commit. Run
-   `git merge-base --is-ancestor 81f838c6 <merge>` and `... 75816a73 <merge>` (both exit 0 on head 962acfb). Then
-   merge the App into `main` after its own CI.
-3. Decide E-1/E-2/E-4 (engine): until then, `fenvix-run verify` is red on green vitest and node:test suites.
+1. Done: push access to fenvix-app was granted, and the App branch is pushed.
+2. Done: the engine is merged (f67be4a), and `engineCliCommit` is set on the App branch (07dfac3).
+3. **Founder decision:** merge the App into `main`. That push starts `deploy.yml`: migration 0018, the CDK stacks,
+   and a runner image with Node 22.23.5 and engine f67be4a. Optionally, first open a pull request so `test.yml` runs
+   in the App's own CI.
+4. Decide E-1/E-2/E-4 (engine): until then, `fenvix-run verify` is red on green vitest and node:test suites.
 
 Not checked: the AWS image (nothing deployed), real customer repositories, shellcheck on install.sh, and
 `release/engine/install.sh` / the pinned-artifact mode for Node.
