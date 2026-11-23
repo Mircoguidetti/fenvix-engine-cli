@@ -1824,4 +1824,428 @@ mod tests {
         assert_eq!(r.tests[0].status, Status::NotProven);
         assert!(r.tests[0].divergence.as_ref().unwrap().description.contains("env:HTTPS_PROXY"));
     }
+    // ---- golden corpus (P0 big trace, criterion 6) ----
+    //
+    // `golden_corpus_generate` writes every case below to tests/golden/ (`<case>.runN.jsonl`) with the report the
+    // verifier gives for it (`<case>.report.json`, labels set to run0, run1, ...). It is run once, on the code before
+    // the bounded-memory refactor, and its output is committed; `tests/golden_verify.rs` then requires the refactored
+    // verifier to give the same report byte for byte, over in-memory traces and over the files.
+    // Run: cargo test -p detpy-core --lib golden_corpus_generate -- --ignored
+
+    fn golden_line(kind: &str, v: serde_json::Value) -> String {
+        let mut o = v.as_object().unwrap().clone();
+        o.insert("type".into(), serde_json::json!(kind));
+        serde_json::Value::Object(o).to_string()
+    }
+
+    fn golden_trace_text(t: &Trace) -> String {
+        let mut s = golden_line("header", serde_json::to_value(&t.header).unwrap());
+        s.push('\n');
+        for r in &t.tests {
+            s.push_str(&golden_line("test", serde_json::to_value(r).unwrap()));
+            s.push('\n');
+        }
+        if let Some(f) = &t.footer {
+            s.push_str(&golden_line("footer", serde_json::to_value(f).unwrap()));
+            s.push('\n');
+        }
+        s
+    }
+
+    fn golden_labels(r: &mut Report) {
+        r.labels = (0..r.labels.len()).map(|i| format!("run{i}")).collect();
+    }
+
+    /// The traces of every `verify(&[...])` call of this module's tests (same constructions), plus the extra
+    /// pairs of criterion 6. Each case is the list of runs passed to `verify`.
+    fn golden_cases() -> Vec<(String, Vec<Trace>)> {
+        let mut out: Vec<(String, Vec<Trace>)> = Vec::new();
+        let mut add = |name: &str, ts: Vec<Trace>| out.push((name.to_string(), ts));
+        let one = |v: &str, o: &str| trace(vec![rec("x", &[t(v)], o, 100)]);
+        add("identical_runs_are_stable", vec![one("1", "passed"), one("1", "passed")]);
+        {
+            let ent = |v: &str| Event::new(Source::Entropy, "os.urandom", "t.py:9", v);
+            add("value_divergence", vec![
+                trace(vec![rec("x", &[t("1"), ent("aa"), t("2")], "passed", 100)]),
+                trace(vec![rec("x", &[t("1"), ent("bb"), t("2")], "passed", 100)]),
+            ]);
+        }
+        add("outcome_only", vec![one("1", "passed"), one("1", "failed")]);
+        {
+            let fs = Event::new(Source::Fs, "os.listdir", "t.py:4", "3:abc");
+            add("extra_event", vec![one("1", "passed"), trace(vec![rec("x", &[t("1"), fs], "passed", 100)])]);
+            let end = Event::new(Source::Random, "random.state", END_SITE, "x");
+            add("extra_event_over_end", vec![
+                trace(vec![rec("x", &[end.clone()], "passed", 100)]),
+                trace(vec![rec("x", &[t("1"), end], "passed", 100)]),
+            ]);
+        }
+        add("thread", vec![
+            trace(vec![rec("x", &[t("1"), t("2").with_thread(1)], "passed", 100)]),
+            trace(vec![rec("x", &[t("1").with_thread(1), t("2")], "passed", 100)]),
+        ]);
+        {
+            let mut ea: Vec<Event> = (0..20).map(|i| t(&i.to_string())).collect();
+            let eb = ea.clone();
+            ea[13] = t("changed");
+            add("beyond_trace", vec![trace(vec![rec("x", &ea, "passed", 5)]), trace(vec![rec("x", &eb, "passed", 5)])]);
+        }
+        add("missing_and_order", vec![
+            trace(vec![rec("x", &[], "passed", 10), rec("y", &[], "passed", 10)]),
+            trace(vec![rec("y", &[], "passed", 10)]),
+        ]);
+        {
+            let cases: [(&str, &str); 9] = [
+                ("runtime", "CPython 3.12.0 linux x86_64"),
+                ("hashseed", "7"),
+                ("seed", "3"),
+                ("clock", "virtual epoch=2 tick=1000"),
+                ("tz", "Asia/Tokyo (not pinned)"),
+                ("locale", "de_DE.UTF-8 (pinned)"),
+                ("network", "record"),
+                ("fs", "real"),
+                ("entropy", "controlled"),
+            ];
+            for (name, value) in cases {
+                let a = with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &BASE);
+                let mut changed: Vec<(&str, &str)> = BASE.iter().filter(|(k, _)| *k != name).copied().collect();
+                changed.push((name, value));
+                let b = with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &changed);
+                add(&format!("input_{name}"), vec![a, b]);
+            }
+            let mut old: Vec<(&str, &str)> = BASE.to_vec();
+            old.push(("urandom", "controlled"));
+            let mut new: Vec<(&str, &str)> = BASE.to_vec();
+            new.push(("entropy", "controlled"));
+            add("input_urandom_is_entropy", vec![
+                with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &old),
+                with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &new),
+            ]);
+            let empty = || with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &[]);
+            add("input_empty", vec![empty(), empty()]);
+            add("input_same", vec![
+                with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &BASE),
+                with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &BASE),
+            ]);
+        }
+        {
+            let base: Vec<(&str, &str)> = vec![("tz", "UTC"), ("env:MY_FLAG", "aaaa"), ("env:OTHER", "1111")];
+            let changed: Vec<(&str, &str)> = vec![("tz", "UTC"), ("env:MY_FLAG", "bbbb"), ("env:OTHER", "1111")];
+            let reads = [env_ev("env.get", "MY_FLAG=set"), t("1")];
+            add("env_read", vec![
+                with_inputs(trace(vec![rec("reads", &reads, "passed", 10), rec("plain", &[t("1")], "passed", 10)]), &base),
+                with_inputs(trace(vec![rec("reads", &reads, "passed", 10), rec("plain", &[t("1")], "passed", 10)]), &changed),
+            ]);
+            add("env_not_read", vec![
+                with_inputs(trace(vec![rec("plain", &[t("1")], "passed", 10)]), &base),
+                with_inputs(trace(vec![rec("plain", &[t("1")], "passed", 10)]), &changed),
+            ]);
+            let unrec = |t: Trace| {
+                let mut t = t;
+                t.header.meta.as_object_mut().unwrap().remove("env_reads_recorded");
+                t
+            };
+            add("env_unrecorded", vec![
+                unrec(with_inputs(trace(vec![rec("plain", &[t("1")], "passed", 10)]), &base)),
+                unrec(with_inputs(trace(vec![rec("plain", &[t("1")], "passed", 10)]), &changed)),
+            ]);
+            add("env_list", vec![
+                with_inputs(trace(vec![rec("lists", &[env_ev("env.list", "3:abc")], "passed", 10)]), &base),
+                with_inputs(trace(vec![rec("lists", &[env_ev("env.list", "3:abc")], "passed", 10)]), &changed),
+            ]);
+            add("env_read_and_other_event", vec![
+                with_inputs(trace(vec![rec("x", &[env_ev("env.get", "MY_FLAG=set"), t("1")], "passed", 10)]), &base),
+                with_inputs(trace(vec![rec("x", &[env_ev("env.get", "MY_FLAG=set"), t("2")], "passed", 10)]), &changed),
+            ]);
+            let other: Vec<(&str, &str)> = vec![("tz", "Asia/Tokyo"), ("env:MY_FLAG", "bbbb"), ("env:OTHER", "1111")];
+            add("env_and_tz", vec![
+                with_inputs(trace(vec![rec("plain", &[t("1")], "passed", 10)]), &base),
+                with_inputs(trace(vec![rec("plain", &[t("1")], "passed", 10)]), &other),
+            ]);
+        }
+        add("input_rank", vec![
+            with_inputs(trace(vec![rec("x", &[], "passed", 10)]), &[("tz", "UTC"), ("env:A", "1"), ("seed", "0")]),
+            with_inputs(trace(vec![rec("x", &[], "passed", 10)]), &[("tz", "Asia/Tokyo"), ("env:A", "2"), ("seed", "1")]),
+        ]);
+        add("inputs_in_one_run", vec![
+            with_inputs(trace(vec![rec("x", &[], "passed", 10)]), &BASE),
+            trace(vec![rec("x", &[], "passed", 10)]),
+        ]);
+        add("inputs_in_no_run", vec![trace(vec![rec("x", &[], "passed", 10)]), trace(vec![rec("x", &[], "passed", 10)])]);
+        for kind in ["thread", "child", "io"] {
+            let marker = Event::new(Source::Other, format!("uncontrolled.{kind}"), "t.py:3", "x");
+            add(&format!("uncontrolled_{kind}"), vec![
+                trace(vec![rec("x", &[t("1"), marker.clone()], "passed", 10)]),
+                trace(vec![rec("x", &[t("1"), marker.clone()], "passed", 10)]),
+            ]);
+            let mut evs: Vec<Event> = (0..10).map(|i| t(&i.to_string())).collect();
+            evs.push(marker);
+            add(&format!("uncontrolled_{kind}_truncated"), vec![
+                trace(vec![rec("x", &evs, "passed", 3)]),
+                trace(vec![rec("x", &evs, "passed", 3)]),
+            ]);
+        }
+        {
+            let m = Event::new(Source::Other, "uncontrolled.thread", "t.py:3", "x");
+            add("uncontrolled_outcome", vec![
+                trace(vec![rec("x", &[m.clone()], "passed", 10)]),
+                trace(vec![rec("x", &[m], "failed", 10)]),
+            ]);
+            let e = |v: &str| Event::new(Source::Other, "env.get", "t.py:2", v);
+            add("env_event_value", vec![
+                trace(vec![rec("x", &[e("MY_FLAG=aa")], "passed", 10)]),
+                trace(vec![rec("x", &[e("MY_FLAG=bb")], "failed", 10)]),
+            ]);
+        }
+        add("empty_runs", vec![trace(vec![]), trace(vec![])]);
+        {
+            let a = trace(vec![rec("p", &[], "passed", 10), rec("v", &[], "passed", 10)]);
+            let b = trace(vec![rec("v", &[], "passed", 10), rec("p", &[], "passed", 10)]);
+            add("same_order", vec![a.clone(), a.clone()]);
+            add("order_change", vec![a, b]);
+        }
+        add("three_runs", vec![one("1", "passed"), one("1", "passed"), trace(vec![rec("x", &[t("2")], "passed", 10)])]);
+        {
+            let pol = rec("p", &[r("1")], "passed", 10);
+            let vic_serial = rec("v", &[r("2")], "passed", 10);
+            let mut pol2 = pol.clone();
+            pol2.worker = Some("gw0".into());
+            pol2.worker_index = Some(0);
+            let mut vic_par = rec("v", &[t("3")], "passed", 10);
+            vic_par.worker = Some("gw1".into());
+            vic_par.worker_index = Some(0);
+            add("placement", vec![trace(vec![pol, vic_serial]), trace(vec![pol2, vic_par])]);
+            add("two_serial_not_placement", vec![
+                trace(vec![rec("v", &[r("2")], "passed", 10)]),
+                trace(vec![rec("v", &[t("3")], "passed", 10)]),
+            ]);
+        }
+        {
+            let f = |d: &str| serde_json::json!([{ "path": "data.txt", "digest": d }]);
+            let mk = |d: &str| meta_extra(with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &BASE), "files_read_outside_tests", f(d));
+            add("files_outside_differ", vec![mk("2:aa"), mk("2:bb")]);
+            add("files_outside_same", vec![mk("2:aa"), mk("2:aa")]);
+            add("files_outside_one_run", vec![mk("2:aa"), with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &BASE)]);
+        }
+        for k in ["deps", "code"] {
+            let mut a: Vec<(&str, &str)> = BASE.to_vec();
+            let mut b = a.clone();
+            a.push((k, "3 files aa"));
+            b.push((k, "3 files bb"));
+            add(&format!("input_{k}"), vec![
+                with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &a),
+                with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &b),
+            ]);
+        }
+        {
+            let mut a: Vec<(&str, &str)> = BASE.iter().filter(|(k, _)| *k != "hashseed").copied().collect();
+            a.push(("hashseed", "<random>"));
+            add("random_hashseed", vec![
+                with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &a),
+                with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &a),
+            ]);
+        }
+        {
+            let strip = |mut tr: Trace| {
+                tr.header.meta.as_object_mut().unwrap().remove("provable");
+                tr
+            };
+            add("no_sensor", vec![
+                strip(with_inputs(trace_without_sensor(vec![rec("x", &[t("1")], "passed", 100)]), &BASE)),
+                strip(with_inputs(trace_without_sensor(vec![rec("x", &[t("1")], "passed", 100)]), &BASE)),
+            ]);
+            for (field, value) in [("surface", "deadbeefdeadbeefdeadbeefdeadbeef"), ("runtime", "cpython3.99")] {
+                let mk = || {
+                    let mut tr = with_inputs(trace(vec![rec("x", &[t("1")], "passed", 100)]), &BASE);
+                    tr.header.meta["provable"][field] = serde_json::json!(value);
+                    tr
+                };
+                add(&format!("unknown_{field}"), vec![mk(), mk()]);
+            }
+            let u = Event::new(Source::Other, "unaccounted.api", "t.py:3", "posix.getxattr");
+            let mk = || with_inputs(trace(vec![rec("x", &[u.clone(), t("1")], "passed", 10)]), &BASE);
+            add("unaccounted_api", vec![mk(), mk()]);
+        }
+        {
+            let m = Event::new(Source::Other, "uncontrolled.env", "t.py:3", "TMPDIR");
+            add("marks_not_proven", vec![
+                with_inputs(trace(vec![rec("x", &[m.clone(), t("1")], "passed", 10), rec("y", &[t("1")], "passed", 10)]), &BASE),
+                with_inputs(trace(vec![rec("x", &[m, t("1")], "passed", 10), rec("y", &[t("1")], "passed", 10)]), &BASE),
+            ]);
+            let mk = || meta_extra(with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &BASE), "not_proven_outside_tests", serde_json::json!(["env:HTTPS_PROXY"]));
+            add("not_proven_outside", vec![mk(), mk()]);
+        }
+        // ---- criterion 6 extras ----
+        // a generated pair where every test diverges: a serial run against a parallel one, different values,
+        // different outcomes, truncated records, extra events, threads
+        {
+            let mut sa = Vec::new();
+            let mut pb = Vec::new();
+            for i in 0..300u64 {
+                let id = format!("tests/f{}.test.ts::suite::case {i}", i % 17);
+                let n = 2 + (i % 9) as usize;
+                let ea: Vec<Event> = (0..n).map(|k| t(&format!("{i}.{k}"))).collect();
+                let mut eb = ea.clone();
+                match i % 5 {
+                    0 => eb[n / 2] = r(&format!("{i}")),
+                    1 => eb.push(Event::new(Source::Fs, "fs.readdir", "f.ts:3", format!("{i}"))),
+                    2 => eb[0] = t("x").with_thread(1),
+                    _ => eb[n - 1] = t(&format!("{i}.changed")),
+                }
+                let max = if i % 7 == 0 { 2 } else { 100 };
+                let mut a = rec(&id, &ea, if i % 11 == 0 { "failed" } else { "passed" }, max);
+                a.index = i;
+                let mut b = rec(&id, &eb, if i % 13 == 0 { "failed" } else { "passed" }, max);
+                b.index = i;
+                b.worker = Some(format!("w{}", i % 4));
+                b.worker_index = Some(i / 4);
+                sa.push(a);
+                pb.push(b);
+            }
+            let mut a = with_inputs(trace(sa), &BASE);
+            let mut b = with_inputs(trace(pb), &BASE);
+            a.footer = Some(crate::trace::Footer { n_tests: 300, order_digest: "x".into(), missing: vec![], plan_digest: None, late: None });
+            b.footer = Some(crate::trace::Footer { n_tests: 300, order_digest: "y".into(), missing: vec!["gone".into()], plan_digest: Some("pd".into()), late: None });
+            add("all_diverge", vec![a, b]);
+        }
+        // env differences with env.list, an uncontrolled event past truncation, a record whose fingerprint does not
+        // match its events, and a footer `late` input
+        {
+            let base: Vec<(&str, &str)> = vec![("tz", "UTC"), ("env:MY_FLAG", "aaaa"), ("env:LISTED", "1"), ("seed", "0")];
+            let changed: Vec<(&str, &str)> = vec![("tz", "UTC"), ("env:MY_FLAG", "bbbb"), ("env:LISTED", "2"), ("seed", "0")];
+            let mut long: Vec<Event> = (0..10).map(|i| t(&i.to_string())).collect();
+            long.push(Event::new(Source::Other, "uncontrolled.child", "t.py:8", "sh"));
+            let mk = |inputs: &[(&str, &str)], tamper: &str, diff: &str| {
+                let mut bad = rec("tampered", &[t("1"), t("2")], "passed", 10);
+                bad.fingerprint = tamper.into();
+                let recs = vec![
+                    rec("lists", &[env_ev("env.list", "3:abc"), t("1")], "passed", 10),
+                    rec("reads", &[env_ev("env.has", "MY_FLAG"), t("1")], "passed", 10),
+                    rec("reads_and_differs", &[env_ev("env.get", "MY_FLAG=x"), t(diff)], "passed", 10),
+                    rec("late_mark", &long, "passed", 3),
+                    bad,
+                    rec("plain", &[t("1")], "passed", 10),
+                ];
+                let mut tr = with_inputs(trace(recs), inputs);
+                tr.footer = Some(crate::trace::Footer {
+                    n_tests: 6,
+                    order_digest: "z".into(),
+                    missing: vec![],
+                    plan_digest: None,
+                    late: Some(serde_json::json!({"inputs": {"late:x": "1"}, "env_read_outside_tests": ["OUTSIDE"]})),
+                });
+                tr
+            };
+            add("env_list_truncated_mark_tampered", vec![
+                mk(&base, "00000000000000000000000000000000", "1"),
+                mk(&changed, "00000000000000000000000000000000", "2"),
+            ]);
+        }
+        out
+    }
+
+    /// The r058 integration pairs (tests/r058_false_identical.rs, tests/r058_empty_fingerprint.rs), as the text
+    /// those tests write.
+    fn golden_r058_cases() -> Vec<(String, Vec<String>)> {
+        use crate::provable::{required_controls, surface_digest, SENSOR_CONTRACT};
+        let mut out = Vec::new();
+        // r058_false_identical: run B's fingerprint field is run A's
+        {
+            const NODEID: &str = "t.py::test_draw";
+            let controls: Vec<String> = required_controls("py-monitoring/1").iter().map(|s| s.to_string()).collect();
+            let header = Header::new(
+                serde_json::json!({
+                    "provable": {"sensor": "py-monitoring/1", "contract": SENSOR_CONTRACT, "surface": surface_digest(), "runtime": "cpython3.13"},
+                    "controls": controls,
+                    "env_reads_recorded": true,
+                    "inputs": {"runtime": "cpython3.13", "runner": "pytest-8.3.2", "seed": "0", "hashseed": "0",
+                               "clock": "virtual@2025-01-01Z", "tz": "UTC", "locale": "C", "network": "closed",
+                               "fs": "ordered", "entropy": "controlled", "bytecode": "precompiled"},
+                }),
+                vec![NODEID.to_string()],
+            );
+            let draw = |v: &str| {
+                let mut f = Fingerprinter::default();
+                f.push(Event::new(Source::Random, "random.random", "t.py:4", v));
+                f.finish(NODEID, 0, "passed")
+            };
+            let a = draw("0.1");
+            let mut b = draw("0.9");
+            b.fingerprint = a.fingerprint.clone();
+            let footer = crate::trace::Footer { n_tests: 1, order_digest: order_digest(&[NODEID]), missing: vec![], plan_digest: None, late: None };
+            let mk = |r: TestRecord| golden_trace_text(&Trace { header: header.clone(), tests: vec![r], footer: Some(footer.clone()) });
+            out.push(("r058_false_identical".to_string(), vec![mk(a), mk(b)]));
+        }
+        // r058_empty_fingerprint: two cached runs, then two fully-cached runs with every control off
+        {
+            const NODEID: &str = "t.test.ts > draws";
+            let controls: Vec<String> = required_controls("node-vitest/1").iter().map(|s| s.to_string()).collect();
+            let header = Header::new(
+                serde_json::json!({
+                    "provable": {"sensor": "node-vitest/1", "contract": SENSOR_CONTRACT, "surface": surface_digest(), "runtime": "node24"},
+                    "controls": controls,
+                    "env_reads_recorded": true,
+                    "inputs": {"runtime": "node24", "runner": "vitest-2.1.0", "seed": "0", "hashseed": "0",
+                               "clock": "virtual@2025-01-01Z", "tz": "UTC", "locale": "C", "network": "closed",
+                               "fs": "ordered", "entropy": "controlled"},
+                }),
+                vec![NODEID.to_string()],
+            );
+            let line = serde_json::json!({
+                "type": "test", "nodeid": NODEID, "index": 0, "outcome": "passed", "fingerprint": "",
+                "n_events": 0, "truncated": true, "counts": {}, "checkpoints": [], "events": [],
+            });
+            let footer = serde_json::json!({"type":"footer","n_tests":1,"order_digest": order_digest(&[NODEID])});
+            let text = format!("{}\n{line}\n{footer}\n", golden_line("header", serde_json::to_value(&header).unwrap()));
+            out.push(("r058_empty_fingerprint".to_string(), vec![text.clone(), text]));
+            let header = serde_json::json!({
+                "type": "header", "format": "detpy-trace", "version": 1, "encoding": 2,
+                "meta": {
+                    "provable": {"sensor": "cache-reuse/1", "contract": SENSOR_CONTRACT, "surface": surface_digest(), "runtime": "node24"},
+                    "controls": [], "env_reads_recorded": true, "reused_tests": [NODEID],
+                    "inputs": { "runtime": "node24", "runner": "vitest-2.1.0" },
+                },
+                "order": [NODEID],
+            });
+            let text = format!("{header}\n{line}\n{footer}\n");
+            out.push(("r058_all_cached".to_string(), vec![text.clone(), text]));
+        }
+        out
+    }
+
+    #[test]
+    #[ignore]
+    fn golden_corpus_generate() {
+        let dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("tests").join("golden");
+        std::fs::create_dir_all(&dir).unwrap();
+        let mut texts: Vec<(String, Vec<String>, Option<Report>)> = Vec::new();
+        for (name, ts) in golden_cases() {
+            let labels: Vec<String> = (0..ts.len()).map(|i| format!("run{i}")).collect();
+            let mem = verify(&ts, &labels);
+            texts.push((name, ts.iter().map(golden_trace_text).collect(), Some(mem)));
+        }
+        for (name, ts) in golden_r058_cases() {
+            texts.push((name, ts, None));
+        }
+        for (name, ts, mem) in texts {
+            let paths: Vec<std::path::PathBuf> = ts
+                .iter()
+                .enumerate()
+                .map(|(i, text)| {
+                    let p = dir.join(format!("{name}.run{i}.jsonl"));
+                    std::fs::write(&p, text).unwrap();
+                    p
+                })
+                .collect();
+            let mut rep = verify_paths(&paths).unwrap();
+            golden_labels(&mut rep);
+            let json = serde_json::to_string_pretty(&rep).unwrap();
+            // the files describe the in-memory case exactly: today's verifier gives the same report for both
+            if let Some(mut mem) = mem {
+                golden_labels(&mut mem);
+                assert_eq!(serde_json::to_string_pretty(&mem).unwrap(), json, "{name}: file round trip");
+            }
+            std::fs::write(dir.join(format!("{name}.report.json")), format!("{json}\n")).unwrap();
+        }
+    }
 }

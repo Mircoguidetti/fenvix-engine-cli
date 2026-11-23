@@ -1,0 +1,94 @@
+{
+  "labels": [
+    "run0",
+    "run1"
+  ],
+  "order_digests": [
+    "b306e81e3d45a22b1be5cf8a2de293f4",
+    "e7f032dde1e14c2699f769ecc81a7366"
+  ],
+  "complete": [
+    false,
+    false
+  ],
+  "summary": {
+    "runs": 2,
+    "tests": 2,
+    "stable": 0,
+    "diverged": 1,
+    "missing": 1,
+    "outcome_unstable": 0,
+    "order_identical": false,
+    "reasons": {
+      "missing": 1,
+      "order": 1
+    },
+    "inputs_recorded": false,
+    "identical": 0,
+    "input_differs": 0,
+    "not_proven": 0
+  },
+  "tests": [
+    {
+      "nodeid": "x",
+      "status": "missing",
+      "fingerprints": [
+        "31af55e422bc4accd412eab03c7f8ad0",
+        null
+      ],
+      "outcomes": [
+        "passed",
+        null
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 0,
+        "index": null,
+        "window": null,
+        "event_a": null,
+        "event_b": null,
+        "reason": "missing",
+        "description": "not executed in run(s) 1"
+      }
+    },
+    {
+      "nodeid": "y",
+      "status": "diverged",
+      "fingerprints": [
+        "31af55e422bc4accd412eab03c7f8ad0",
+        "31af55e422bc4accd412eab03c7f8ad0"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 1,
+        "index": null,
+        "window": null,
+        "event_a": {
+          "t": 0,
+          "s": "other",
+          "o": "order.predecessor",
+          "at": "<run>",
+          "v": "x"
+        },
+        "event_b": {
+          "t": 0,
+          "s": "other",
+          "o": "order.predecessor",
+          "at": "<run>",
+          "v": "<none>"
+        },
+        "reason": "order",
+        "description": "before the test started: it ran after different tests in its process: [x] vs [] (first difference at position 0: x vs <none>)"
+      }
+    }
+  ],
+  "input_differences": []
+}
