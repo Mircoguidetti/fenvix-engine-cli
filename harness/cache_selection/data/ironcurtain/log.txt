@@ -5,3 +5,4 @@
 2026-11-23T12:23:25Z   full run 0: ok exit 1 229.1s {'failed': 7, 'passed': 7088, 'skipped': 141, 'todo': 1}
 2026-11-23T12:23:25Z FULL RUN pr-index 5 PR #529 base 4732bd737b149b30de1738cb8d30ca207dd744e9
 2026-11-23T12:23:25Z   $ git checkout -q -f --detach 4732bd737b149b30de1738cb8d30ca207dd744e9 && git clean -fdxq -e node_modules  -> exit 0 in 0.1s
+2026-11-23T12:23:42Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 17.2s

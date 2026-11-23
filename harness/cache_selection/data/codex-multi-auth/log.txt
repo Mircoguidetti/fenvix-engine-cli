@@ -58,3 +58,11 @@
 2026-11-23T12:23:30Z   -> ok share=0.7615 sel=56 excl=365 failures=[('test/local-bridge.test.ts > local bridge binds and emits a parseable baseUrl for', 'PREEXISTING'), ('test/local-bridge.test.ts > local bridge binds and emits a parseable baseUrl for', 'PREEXISTING')]
 2026-11-23T12:23:30Z STATE PR #730 (code) state 1/3 6c10c6d3a1 base b4c51d8fa3
 2026-11-23T12:23:30Z   $ git checkout -q -f --detach 6c10c6d3a142045a7910de9bf010e4366705bbe8 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T12:23:33Z   $ npm ci --ignore-scripts --no-audit --no-fund  -> exit 0 in 3.2s
+2026-11-23T12:23:34Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-all.json  -> exit 0 in 0.5s
+2026-11-23T12:23:35Z   $ npx --no-install vitest list  --changed b4c51d8fa3498c34d6787e2ca639228f6db31761 --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-sel.json  -> exit 0 in 0.7s
+2026-11-23T12:23:35Z   -> ok share=0.0 sel=421 excl=0 failures=[]
+2026-11-23T12:23:35Z STATE PR #735 (code) state 1/2 1f4b93db79 base cedbec027c
+2026-11-23T12:23:35Z   $ git checkout -q -f --detach 1f4b93db79e0e2792d6d05a4c4e2e0b878dcb887 && git clean -fdxq -e node_modules  -> exit 0 in 0.0s
+2026-11-23T12:23:35Z   $ npx --no-install vitest list  --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-all.json  -> exit 0 in 0.6s
+2026-11-23T12:23:42Z   $ npx --no-install vitest list  --changed cedbec027cb2ec3f645fcbeb55cd40cccf0479ee --filesOnly --json=/home/user/work/tmp/codex-multi-auth/list-sel.json  -> exit 0 in 6.9s
