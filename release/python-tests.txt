@@ -34,8 +34,10 @@ shared tests/test_network_gaps.py
 shared tests/test_network_rust.py
 shared tests/test_packaging.py
 shared tests/test_parallel_proof.py
+shared tests/test_parallel_proof_round3.py
 shared tests/test_precompile_rust.py
 shared tests/test_provable_general_rule.py
+shared tests/test_py_cache.py
 shared tests/test_python_tests_classified.py
 shared tests/test_r017b_fixes.py
 shared tests/test_reexec_rust.py
@@ -78,12 +80,10 @@ python-product tests/test_nonbinding.py
 python-product tests/test_nonbinding_generic.py
 python-product tests/test_order.py
 python-product tests/test_parallel_proof_r023_fixes.py
-python-product tests/test_parallel_proof_round3.py
 python-product tests/test_precompile_stamp.py
 python-product tests/test_proofcache.py
 python-product tests/test_proofcache_follow.py
 python-product tests/test_proofcache_import_lookups.py
-python-product tests/test_py_cache.py
 python-product tests/test_r015_fixes.py
 python-product tests/test_r015b_fixes.py
 python-product tests/test_r023c_fixes.py
