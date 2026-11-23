@@ -146,6 +146,12 @@ def test_overlap_count():
     assert CA.overlapping_pairs(j["S1"]["file_times"]) == 0
 
 
+def test_overlapping_files_for_concurrent_search():
+    times = {"/v": [10, 20], "/a": [0, 5], "/b": [15, 30], "/c": [20, 25], "/d": [5, 12]}
+    assert CA.overlapping(times, "/v") == ["/d", "/b"]
+    assert CA.overlapping(times, "/x") is None
+
+
 def test_candidates_start_before_victim_end():
     times = {"/v": [10, 20], "/a": [0, 5], "/b": [15, 30], "/c": [20, 25], "/d": [19, 40]}
     assert CA.candidates(times, "/v") == ["/a", "/b", "/d"]
@@ -190,35 +196,52 @@ def test_bisect_finds_known_polluter_serial():
     res = CA.PairSearch(f).search(FILES, VICTIM)
     assert res["result"] == "pair found" and res["polluter"] == "f6.test.ts" and res["search"] == "serial"
     assert res["confirm"] == {"pair_fail": 3, "pair_runs": 3, "alone_fail": 0, "alone_runs": 3, "confirmed": True}
-    # 3 bisect steps (8 -> 4 -> 2 -> 1); the confirm is 3 + 3 runs
-    assert res["runs_spent"] <= 3 * 4 + 6
+    # controls 2 + 1 runs, 3 bisect steps (8 -> 4 -> 2 -> 1), the confirm 3 + 3 runs
+    assert res["runs_spent"] <= 3 + 3 * 4 + 6
     assert all(m == "serial" for m, _ in f.calls)
 
 
-def test_bisect_halves_keep_start_order():
+def test_controls_before_bisect():
     f = Fake(polluter="f1.test.ts")
     CA.PairSearch(f).search(FILES, VICTIM)
-    assert f.calls[0] == ("serial", tuple(FILES[:4]))
+    # victim alone twice, then the full candidate set (triggers at once), then the first half in start order
+    assert f.calls[:4] == [("serial", ()), ("serial", ()), ("serial", tuple(FILES)), ("serial", tuple(FILES[:4]))]
 
 
-def test_falls_back_to_concurrent_search():
+def test_falls_back_to_concurrent_search_on_overlapping_files():
     f = Fake(polluter="f3.test.ts", modes=("concurrent",))
-    res = CA.PairSearch(f).search(FILES, VICTIM)
+    res = CA.PairSearch(f).search(FILES, VICTIM, conc_cands=FILES[1:4])
     assert res["result"] == "pair found" and res["search"] == "concurrent" and res["polluter"] == "f3.test.ts"
-    assert res["attempts"][0]["stop"] == "no minimal pair (interaction)"
+    assert res["attempts"][0]["stop"] == "not reproduced (full candidate set)"
+    assert all(set(p) <= set(FILES[1:4]) for m, p in f.calls if m == "concurrent")
+
+
+def test_not_reproduced_by_full_set():
+    res = CA.PairSearch(Fake(modes=())).search(FILES, VICTIM)
+    assert res["result"] == "no minimal pair (not reproduced)" and res["runs_spent"] == 2 + 2 + 2
 
 
 def test_interaction_no_minimal_pair():
-    f = Fake(needs=["f1.test.ts", "f8.test.ts"], modes=("serial", "concurrent"))
+    f = Fake(needs=["f1.test.ts", "f8.test.ts"], modes=("serial", "concurrent"))  # full set triggers, no half does
     res = CA.PairSearch(f).search(FILES, VICTIM)
     assert res["result"] == "no minimal pair (interaction)" and res["polluter"] is None
 
 
-def test_not_confirmed_when_victim_fails_alone():
+def test_victim_file_alone_reproduces():
     f = Fake(flaky_alone=True, modes=("serial", "concurrent"))
     res = CA.PairSearch(f).search(FILES, VICTIM)
-    assert res["result"] == "no minimal pair (not confirmed)"
-    assert res["attempts"][0]["confirm"]["alone_fail"] == 3
+    assert res["result"] == "no minimal pair (victim file alone reproduces)" and res["runs_spent"] == 1
+
+
+def test_not_confirmed():
+    class Half(Fake):
+        def __call__(self, mode, polluters, victim):  # the pair alone triggers on its 1st and 3rd run only
+            hit, rec = super().__call__(mode, polluters, victim)
+            if polluters == ["f6.test.ts"]:
+                hit = sum(1 for _, p in self.calls if p == ("f6.test.ts",)) % 2 == 1  # bisect run 1; confirm 2,3,4
+            return hit, rec
+    res = CA.PairSearch(Half(modes=("serial",))).search(FILES, VICTIM)
+    assert res["result"] == "no minimal pair (not confirmed)" and res["attempts"][0]["confirm"]["pair_fail"] == 1
 
 
 def test_budget():
@@ -236,7 +259,9 @@ def test_trial_without_victim_outcome_is_not_evidence():
 
 def test_reproduced_in_trials_counts_triggering_trials():
     assert CA.PairSearch(Fake()).search(FILES, VICTIM)["reproduced_in_trials"] >= 3
-    assert CA.PairSearch(Fake(needs=["f1.test.ts", "f8.test.ts"])).search(FILES, VICTIM)["reproduced_in_trials"] == 0
+    # interaction: only the full-set control reproduces; not reproduced at all: 0
+    assert CA.PairSearch(Fake(needs=["f1.test.ts", "f8.test.ts"])).search(FILES, VICTIM)["reproduced_in_trials"] == 1
+    assert CA.PairSearch(Fake(modes=())).search(FILES, VICTIM)["reproduced_in_trials"] == 0
 
 
 def test_load_failures(tmp_path):

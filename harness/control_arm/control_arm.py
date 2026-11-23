@@ -138,7 +138,11 @@ import FixedOrderSequencer from './fixed_order_sequencer.mjs';
 export default async (env) => {{
   const e = env || {{ command: 'serve', mode: process.env.NODE_ENV || 'test', isSsrBuild: false, isPreview: false }};
   const c = typeof base === 'function' ? await base(e) : await base;
-  return mergeConfig(c || {{}}, {{ test: {{ sequence: {{ sequencer: FixedOrderSequencer }} }} }});
+  // CA_SEED: the diverging run's seed; tests inside each file in that run's order, the files in CA_ORDER
+  const seq = process.env.CA_SEED
+    ? {{ sequencer: FixedOrderSequencer, shuffle: {{ files: false, tests: true }}, seed: Number(process.env.CA_SEED) }}
+    : {{ sequencer: FixedOrderSequencer }};
+  return mergeConfig(c || {{}}, {{ test: {{ sequence: seq }} }});
 }};
 """
     p = os.path.join(d, "vitest.control.config.mjs")
@@ -557,25 +561,40 @@ class PairSearch:
         return {"pair_fail": with_p, "pair_runs": CONFIRM_RUNS, "alone_fail": alone, "alone_runs": CONFIRM_RUNS,
                 "confirmed": with_p >= 2 and alone == 0}
 
-    def search(self, cands, victim):
+    def search(self, cands, victim, conc_cands=None):
+        """Controls first (review of 2026-11-23, decision D1): the victim's file alone, with the diverging run's
+        within-file order, must keep its serial outcome (else the cause is inside its own file); per mode, the full
+        candidate set must reproduce the divergence before it is bisected (else nothing is claimed about pairs)."""
         res = {"result": None, "polluter": None, "search": None, "confirm": None, "attempts": []}
         try:
-            for mode in ("serial", "concurrent"):
-                p = self.bisect(mode, cands, victim)
-                att = {"search": mode, "found": p}
-                if p is not None:
+            if self.triggers("serial", [], victim, "control-alone"):
+                res["result"] = "no minimal pair (victim file alone reproduces)"
+            else:
+                for mode, cs in (("serial", cands), ("concurrent", cands if conc_cands is None else conc_cands)):
+                    att = {"search": mode, "n_candidates": len(cs), "found": None}
+                    res["attempts"].append(att)
+                    if not cs:
+                        att["stop"] = "no candidate"
+                        continue
+                    if not self.triggers(mode, cs, victim, "control-full"):
+                        att["stop"] = "not reproduced (full candidate set)"
+                        continue
+                    p = self.bisect(mode, cs, victim)
+                    att["found"] = p
+                    if p is None:
+                        att["stop"] = "no minimal pair (interaction)"
+                        continue
                     c = self.confirm(mode, p, victim)
                     att["confirm"] = c
-                    res["attempts"].append(att)
                     if c["confirmed"]:
                         res.update(result="pair found", polluter=p, search=mode, confirm=c)
                         break
+                    att["stop"] = "not confirmed"
                 else:
-                    att["stop"] = "no minimal pair (interaction)"
-                    res["attempts"].append(att)
-            else:
-                res["result"] = ("no minimal pair (interaction)" if all(a.get("found") is None for a in res["attempts"])
-                                 else "no minimal pair (not confirmed)")
+                    stops = [a.get("stop") for a in res["attempts"]]
+                    res["result"] = ("no minimal pair (interaction)" if "no minimal pair (interaction)" in stops else
+                                     "no minimal pair (not confirmed)" if "not confirmed" in stops else
+                                     "no minimal pair (not reproduced)")
         except Budget:
             res["result"] = "pair not found (budget)"
         except TrialFailed:
@@ -589,6 +608,15 @@ def victim_file(test_id):
     return test_id.split("::", 1)[0].split("@@", 1)[0]
 
 
+def overlapping(times, vfile_abs):
+    """files whose [start, end] overlapped the victim's file in the diverging run, in start order (concurrent search)"""
+    if vfile_abs not in times:
+        return None
+    vs, ve = times[vfile_abs]
+    c = [(v[0], f) for f, v in times.items() if f != vfile_abs and v[0] < ve and v[1] > vs]
+    return [f for _, f in sorted(c)]
+
+
 def candidates(times, vfile_abs):
     """files that started before the victim's file ended in the diverging run, in start order (victim excluded)."""
     if vfile_abs not in times:
@@ -599,8 +627,9 @@ def candidates(times, vfile_abs):
 
 
 class RealTrial:
-    def __init__(self, repo, serial_outcome, victim_id, timeout):
+    def __init__(self, repo, serial_outcome, victim_id, timeout, seed=None):
         self.repo = repo
+        self.seed = seed
         self.serial_outcome = serial_outcome
         self.victim_id = victim_id
         self.timeout = timeout
@@ -611,7 +640,8 @@ class RealTrial:
     def _cmd(self, files, raw, rep, tmp, wrapper, gi=0, concurrent=False):
         r = self.repo
         if r.runner == "jest":
-            return direct("jest", self.args) + (["--config", self.cfg] if self.cfg else []) + ["--runInBand", f"--testSequencer={JEST_SEQ}",
+            return direct("jest", self.args) + (["--config", self.cfg] if self.cfg else []) + ["--runInBand", f"--testSequencer={JEST_SEQ}"] + \
+                (["--randomize", f"--seed={self.seed}"] if self.seed is not None else []) + [
                                                  f"--cacheDirectory={tmp}/jest", "--json", f"--outputFile={raw}",
                                                  "--runTestsByPath"] + files
         return direct("vitest", self.args) + ["--config", wrapper, "--no-file-parallelism", "--maxWorkers=1",
@@ -635,6 +665,8 @@ class RealTrial:
                 if os.path.exists(f):
                     os.remove(f)
             env_add = {"TMPDIR": tmp, "TMP": tmp, "TEMP": tmp, "CA_ORDER": json.dumps(files)}
+            if self.seed is not None:
+                env_add["CA_SEED"] = str(self.seed)
             if r.runner == "vitest":
                 env_add["PM_IDS_OUT"] = ids
             cmd = self._cmd(files, raw, rep, tmp, wrapper, gi, mode == "concurrent")
@@ -642,12 +674,16 @@ class RealTrial:
             meta.append((raw, ids, shell_cmd(cmd, env_add, r.cwd)))
         res = run_procs(jobs, r.cwd, self.timeout, r.log)
         raw, ids, _ = meta[0]
-        oc, msgs, _ = read_report(r.runner, raw, ids, r.cwd)
+        oc, _, vtimes = read_report(r.runner, raw, ids, r.cwd)
+        ptimes = read_report(r.runner, meta[1][0], meta[1][1], r.cwd)[2] if len(meta) > 1 else {}
         got = (oc or {}).get(self.victim_id)
+        vt = vtimes.get(victim)
+        overlapped = sorted(f for f, (a, b) in ptimes.items() if vt and a < vt[1] and b > vt[0]) if mode == "concurrent" else None
         hit = None if got is None else got != self.serial_outcome
         rec = {"cmds": [m[2] for m in meta], "exits": [x[0]["exit"] for x in res],
                "wall_s": max(x[0]["wall_s"] for x in res), "timed_out": any(x[0]["timed_out"] for x in res),
-               "victim_outcome": got, "build": built, "prep": "tree reset, build, caches cleared, fresh TMPDIR; vitest: wrapper "
+               "victim_outcome": got, "seed": self.seed, "file_times": {**vtimes, **ptimes},
+               "overlapped_victim": overlapped, "build": built, "prep": "tree reset, build, caches cleared, fresh TMPDIR; vitest: wrapper "
                ".fenvix-harness/vitest.control.config.mjs written by control_arm.write_vitest_wrapper" if r.runner == "vitest"
                else "tree reset, build, fresh TMPDIR (jest cache in it)"}
         return hit, rec
@@ -670,19 +706,22 @@ def cmd_pairs(name, out=None, max_victims=MAX_VICTIMS):
         drun = v["diverging_runs"][0]
         vabs = os.path.join(repo.cwd, victim_file(vid))
         cands = candidates(times[drun], vabs)
+        conc = overlapping(times[drun], vabs)
+        seed = next(sd for rn, _, sd in run_names() if rn == drun)
         t0 = time.time()
         row = {"repo": name, "victim": vid, "victim_file": victim_file(vid), "label": v["label"],
                "serial_outcome": v["serial"], "diverged_in": drun,
                "diverged_outcome": next(r["outcomes"].get(vid) for r in runs if r["name"] == drun),
                "n_candidates": len(cands) if cands is not None else None,
+               "n_overlapping": len(conc) if conc is not None else None, "seed": seed,
                "victims_sampled": f"{len(victims)} of {len(div)} (random.Random(1).sample over sorted ids)" if len(div) > max_victims else f"all {len(div)}"}
         if not cands:
             row.update(result="no minimal pair", why="no candidate file started before the victim's file ended"
                        if cands is not None else "victim file has no start/end time in the diverging run",
                        runs_spent=0, attempts=[], trials=[])
         else:
-            ps = PairSearch(RealTrial(repo, v["serial"], vid, timeout), deadline=deadline)
-            res = ps.search(cands, vabs)
+            ps = PairSearch(RealTrial(repo, v["serial"], vid, timeout, seed), deadline=deadline)
+            res = ps.search(cands, vabs, conc)
             row.update(res)
             row["polluter"] = os.path.relpath(res["polluter"], repo.cwd) if res.get("polluter") else None
             row["trials"] = ps.log
