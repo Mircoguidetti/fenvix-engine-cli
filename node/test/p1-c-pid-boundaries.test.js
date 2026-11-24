@@ -18,7 +18,12 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const native = require('../src/native');
-const { project, run, RUNNERS } = require('./helpers');
+const helpers = require('./helpers');
+const { project, RUNNERS } = helpers;
+// two separate runs are compared: --det-epoch=fixed, the opt-out of det-host-values' per-run host epoch (merged from
+// release-1 9ac63d6), as the trunk's own two-run tests do; a test that names its own epoch keeps it
+const run = (runner, dir, args = [], opts) =>
+  helpers.run(runner, dir, args.includes('--det') && !args.some((x) => x.startsWith('--det-epoch')) ? [...args, '--det-epoch=fixed'] : args, opts);
 
 const T = { timeout: 600000 };
 const OUT = fs.mkdtempSync(path.join(os.tmpdir(), 'p1cb-'));
@@ -75,6 +80,25 @@ const CASES = {
     const a = nFstat(fd); const b = nLstat(d); const c = nStat(d);
     nClose(fd);
     expect([a.ino === b.ino, a.dev === b.dev, b.ino === c.ino]).toEqual([true, true, true]);`,
+  // review 2026-11-24: a virtual pid put in the inherited environment (no env option) reaches the child mapped
+  'inherited environment (no env option)': `${V}
+    // Jest gives each file its own copy of process.env, which a child does not inherit (plain Jest too): vitest only
+    if (typeof jest !== 'undefined') return;
+    process.env.P1C_PARENT = String(process.pid);
+    try {
+      const r = cp.spawnSync('sh', ['-c', 'kill -0 "$P1C_PARENT"']);
+      expect(r.status).toBe(0);
+    } finally { delete process.env.P1C_PARENT; }`,
+  // review 2026-11-24: a worker thread runs in the same process: it sees the pid of the test that started it
+  'worker thread sees the test pid': `${V}
+    const { Worker } = typeof require === 'function' ? require('node:worker_threads') : await import('node:worker_threads');
+    // a worker file (code with a site of its own: an eval'd worker has none and reads the real pid, as Node's own code)
+    const wf = path.join(process.env.P1C_OUT, 'w-' + process.env.P1C_RUN + '.cjs');
+    fs.writeFileSync(wf, "const { parentPort, workerData } = require('node:worker_threads'); let k; try { k = process.kill(workerData, 0); } catch (e) { k = e.code; } parentPort.postMessage([process.pid, k]);");
+    const w = new Worker(wf, { workerData: process.pid });
+    const [pid, k] = await new Promise((res, rej) => { w.once('message', res); w.once('error', rej); });
+    await w.terminate();
+    expect([pid, k]).toEqual([process.pid, true]);`,
   'process.kill': `${V}
     expect(process.kill(process.pid, 0)).toBe(true);`,
 };
@@ -149,6 +173,6 @@ for (const runner of RUNNERS) {
     assert.notEqual(odd.status, 0);
     const rep = JSON.parse(native.verify([even.t, odd.t]));
     const t = rep.tests.find((x) => x.nodeid.endsWith('p1'));
-    assert.ok(t && ['diverged', 'not_proven'].includes(t.status), JSON.stringify(t));
+    assert.ok(t && ['diverged', 'not-proven'].includes(t.status), JSON.stringify(t));
   });
 }

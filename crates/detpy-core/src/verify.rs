@@ -616,7 +616,9 @@ fn undischarged_outside<S: RecordSource>(traces: &[S]) -> Vec<String> {
         .into_iter()
         .filter(|name| {
             let sets: Vec<Option<BTreeSet<String>>> = per_run.iter().map(|r| digests(r, name)).collect();
-            !traces.is_empty()
+            // at least two runs: a value is discharged only when another run saw the same one (one run has nothing
+            // to compare it with: review 2026-11-24)
+            traces.len() > 1
                 && sets.iter().all(|s| s.as_ref().is_some_and(|s| !s.is_empty()))
                 && sets.windows(2).all(|w| w[0] == w[1])
         })
@@ -1264,7 +1266,8 @@ fn check_headers(headers: &[&Header], labels: &[String]) -> Result<(), TraceErro
 pub const HINTS: &[(&str, &str)] = &[
     ("entropy", "the test reads OS entropy (os.urandom, uuid4, secrets) and the runs did not control it alike: \
                  Python controls it by default under --det (--det-entropy=observe leaves it real); Node controls \
-                 crypto.randomBytes & co. with --det-urandom (not for tests of cryptography)"),
+                 crypto.randomBytes & co. by default (--det-urandom=off leaves them real; not for tests of \
+                 cryptography)"),
     ("env", "an environment variable differs between the runs; give both runs the same environment, or declare it \
              irrelevant with --ignore-env NAME"),
     ("tz", "the runs used different time zones; keep the default --det-tz=UTC (or the same zone in both runs)"),
@@ -2049,6 +2052,9 @@ mod tests {
         // three runs: discharged only if all agree
         let r = verify(&[mk(j(&["env:TMPDIR=aaaa"])), mk(j(&["env:TMPDIR=aaaa"])), mk(j(&["env:TMPDIR=cccc"]))], &[]);
         assert_eq!(r.summary.stable, 0);
+        // one run: nothing to compare the value with, nothing discharged (review 2026-11-24)
+        let r = verify(&[mk(j(&["env:TMPDIR=aaaa"]))], &[]);
+        assert_eq!((r.summary.stable, r.summary.not_proven), (0, 2), "{:?}", r.tests);
     }
 
     // ---- golden corpus (P0 big trace, criterion 6) ----

@@ -15,7 +15,12 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const native = require('../src/native');
-const { project, run, RUNNERS } = require('./helpers');
+const helpers = require('./helpers');
+const { project, RUNNERS } = helpers;
+// two separate runs are compared: --det-epoch=fixed, the opt-out of det-host-values' per-run host epoch (merged from
+// release-1 9ac63d6), as the trunk's own two-run tests do; a test that names its own epoch keeps it
+const run = (runner, dir, args = [], opts) =>
+  helpers.run(runner, dir, args.includes('--det') && !args.some((x) => x.startsWith('--det-epoch')) ? [...args, '--det-epoch=fixed'] : args, opts);
 
 const T = { timeout: 600000 };
 const body = (name) => `test('${name}1', () => {
@@ -99,3 +104,30 @@ process.stdout.write(JSON.stringify({ early, f1, f2 }));`;
   // once seeded, the stream is controlled: the same file key gives the same bytes
   assert.equal(f1, f2);
 });
+
+// Review of 2026-11-24 (adversarial finding 2): an asynchronous `randomBytes(n, cb)` got its seeded bytes in the
+// callback, so two concurrent calls were served in completion order (the thread pool's), not in call order: the
+// bytes a variable held could differ between two runs while the recorded events stayed equal (rule 3). The bytes are
+// now drawn at the call. protects=concurrent asynchronous draws get the stream in call order; fails_when=the small
+// draw started after a large one gets other bytes than the same draws made synchronously in that order.
+const order = (mode) => `test('o', async () => {
+  let small;
+  if (process.env.P1D_MODE === 'sync') { nodeCrypto.randomBytes(8 << 20); small = nodeCrypto.randomBytes(16); }
+  else {
+    const big = new Promise((res, rej) => nodeCrypto.randomBytes(8 << 20, (e, b) => (e ? rej(e) : res(b))));
+    small = await new Promise((res, rej) => nodeCrypto.randomBytes(16, (e, b) => (e ? rej(e) : res(b))));
+    await big;
+  }
+  fs.writeFileSync(path.join(process.env.P1D_OUT, path.basename(process.cwd()) + '-o-' + process.env.P1D_RUN), small.toString('hex'));
+  expect(small.length).toBe(16);
+});`;
+for (const runner of RUNNERS) {
+  test(`P1 D ${runner}: concurrent asynchronous randomBytes calls draw in call order, not completion order`, T, () => {
+    const dir = project(runner, 'p1d-order', { o: order() });
+    for (const mode of ['sync', 'async']) {
+      const r = run(runner, dir, ['--det', '--det-workers=1'], { env: { ...VOL, FENVIX_VOLATILE_ENV: `${VOL.FENVIX_VOLATILE_ENV},P1D_MODE`, P1D_RUN: mode, P1D_MODE: mode } });
+      assert.equal(r.status, 0, r.stdout + r.stderr);
+    }
+    assert.equal(seen(dir, 'o-async'), seen(dir, 'o-sync'), 'the small draw gets the bytes after the large one, as when made synchronously');
+  });
+}

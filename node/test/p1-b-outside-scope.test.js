@@ -3,9 +3,10 @@
 // the header as a run input (`files_read_outside_tests`), and a difference made EVERY test of the run diverge. Under a
 // runner that isolates test files from one another (Jest; Vitest with a fresh worker per file), an entry read while a
 // test file is open is scoped to that file: a difference diverges that file's tests only.
-// (B2 of the design -- dropping a read of the process's own write -- is not implemented: the bytes written can come
-// from a source nothing records outside a test, and then dropping the read would hide a real difference. The first
-// case below is that situation: the file's tests must still diverge.)
+// (B2 as implemented drops only a `missing` answer inside the process's own mkdtemp directory, with no child started
+// since: p1-b2-own-dir.test.js. A read of the process's own write is never dropped: the bytes written can come from a
+// source nothing records outside a test. The first case below is that situation: the file's tests must still
+// diverge, through the file's bytes and size.)
 //
 // protects=a differing read in one file's module scope or hook no longer diverges the other files' tests;
 // fails_when=a test of another file diverges because of such a read, or a test of the file whose hook read bytes that
@@ -20,7 +21,12 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const native = require('../src/native');
-const { project, run, RUNNERS } = require('./helpers');
+const helpers = require('./helpers');
+const { project, RUNNERS } = helpers;
+// two separate runs are compared: --det-epoch=fixed, the opt-out of det-host-values' per-run host epoch (merged from
+// release-1 9ac63d6), as the trunk's own two-run tests do; a test that names its own epoch keeps it
+const run = (runner, dir, args = [], opts) =>
+  helpers.run(runner, dir, args.includes('--det') && !args.some((x) => x.startsWith('--det-epoch')) ? [...args, '--det-epoch=fixed'] : args, opts);
 
 const T = { timeout: 600000 };
 const OUT = fs.mkdtempSync(path.join(os.tmpdir(), 'p1b-'));

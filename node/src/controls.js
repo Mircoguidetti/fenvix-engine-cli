@@ -136,6 +136,7 @@ function noteNotProven(entry) {
  * ones (volatile.patterns() prefixes: DETJS_, VITEST_, JEST_WORKER, ...), the exclusion runInputs (src/session.js)
  * applies to run inputs: otherwise every worker process would have its own digest.
  */
+const CREDENTIALS = /:\/\/[^/@\s]*:[^/@\s]*@/;
 function outsideDigest(name, realEnv) {
   const env = realEnv || process.env;
   let text;
@@ -154,7 +155,12 @@ function noteOutside(op, k, realEnv) {
   if (name !== '*' && OWN_ENV.test(name)) return;
   // only the project's own code (not the runner copying the environment for a test file, not a package); the entry
   // carries the value's digest (P1 A1)
-  if (STATE.quiet(() => unproven(name, realEnv) && projectSite())) noteNotProven(`env:${name}=${STATE.quiet(() => outsideDigest(name, realEnv))}`);
+  if (STATE.quiet(() => unproven(name, realEnv) && projectSite())) {
+    // a value carrying URL credentials (`scheme://user:pass@host`) gets no digest: a short unkeyed hash of a password
+    // in the trace header can be reversed offline (review 2026-11-24). The bare name is never discharged by verify.
+    const v = name === '*' ? '' : String((realEnv || process.env)[name] ?? '');
+    noteNotProven(CREDENTIALS.test(v) ? `env:${name}` : `env:${name}=${STATE.quiet(() => outsideDigest(name, realEnv))}`);
+  }
   if (outsideSeen.has(name)) return;
   const c = cfg();
   if (!c || !c.dir) return;

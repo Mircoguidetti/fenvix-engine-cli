@@ -18,7 +18,12 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const native = require('../src/native');
-const { project, run, RUNNERS } = require('./helpers');
+const helpers = require('./helpers');
+const { project, RUNNERS } = helpers;
+// two separate runs are compared: --det-epoch=fixed, the opt-out of det-host-values' per-run host epoch (merged from
+// release-1 9ac63d6), as the trunk's own two-run tests do; a test that names its own epoch keeps it
+const run = (runner, dir, args = [], opts) =>
+  helpers.run(runner, dir, args.includes('--det') && !args.some((x) => x.startsWith('--det-epoch')) ? [...args, '--det-epoch=fixed'] : args, opts);
 
 const T = { timeout: 600000 };
 const OUT = fs.mkdtempSync(path.join(os.tmpdir(), 'p1a-'));
@@ -80,5 +85,31 @@ for (const runner of RUNNERS) {
     assert.ok(a1, JSON.stringify(rep.tests.map((t) => t.nodeid)));
     assert.notEqual(a1.status, 'stable', `a1 observed ${JSON.stringify(vals)} and was called stable`);
     assert.ok(['input-differs', 'not-proven', 'diverged'].includes(a1.status), a1.status);
+  });
+}
+
+// Review of 2026-11-24 (security / adversarial finding 1): the digest of `HTTPS_PROXY=http://user:pass@host` is a short
+// unkeyed hash of a credential, written into the trace header, where a weak password can be recovered offline. A value
+// carrying URL credentials gets no digest: the entry is the name alone, never discharged (the trunk's verdict: NOT
+// PROVEN); a value without credentials keeps its digest. protects=no credential-bearing value is hashed into the
+// trace, and dropping the digest never lets a run be called stable through that entry; fails_when=the header holds a
+// digest for a credential-bearing proxy value, or the tests of such runs are reported stable.
+for (const runner of RUNNERS) {
+  test(`P1 A1 ${runner}: a proxy URL with credentials read outside any test gets no digest and stays NOT PROVEN`, T, () => {
+    const dir = project(runner, 'p1a-cred', { c: `const P = String(process.env.HTTPS_PROXY); const Q = String(process.env.HTTP_PROXY);
+test('c1', () => { expect(P.length > 0 && Q.length > 0).toBe(true); });` });
+    const env = { HTTPS_PROXY: 'http://alice:s3cret@proxy.invalid:8080', HTTP_PROXY: 'http://proxy.invalid:8080' };
+    const traces = [];
+    for (const w of [1, 2]) {
+      const r = run(runner, dir, ['--det', '--det-net=closed', `--det-workers=${w}`], { env });
+      assert.equal(r.status, 0, r.stdout + r.stderr);
+      const np = r.trace.header.meta.not_proven_outside_tests || [];
+      assert.ok(np.includes('env:HTTPS_PROXY'), `the credential-bearing value is named without a digest: ${JSON.stringify(np)}`);
+      assert.ok(!np.some((e) => e.startsWith('env:HTTPS_PROXY=')), `no digest of a credential: ${JSON.stringify(np)}`);
+      assert.ok(np.some((e) => e.startsWith('env:HTTP_PROXY=')), `a value without credentials keeps its digest: ${JSON.stringify(np)}`);
+      traces.push(trace(r, dir, `cred${w}`));
+    }
+    const rep = JSON.parse(native.verify(traces));
+    assert.equal(rep.tests.find((t) => t.nodeid.endsWith('c1')).status, 'not-proven');
   });
 }

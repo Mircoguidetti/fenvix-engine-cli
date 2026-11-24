@@ -66,7 +66,8 @@ function installWorkers(patcher) {
       const [file, opts0] = args;
       const opts = opts0 && typeof opts0 === 'object' ? opts0 : {};
       const key = `${STATE.testId}\u001fworker${workers++}`; // an environment value: no NUL byte (a NUL made every Worker constructor throw)
-      const env = opts.env === wt.SHARE_ENV ? opts.env : { ...(opts.env || process.env), DETJS_WORKER_KEY: key };
+      const vpid = require('./facts').currentVpid(); // P1 C: the worker sees the test's pid (same process)
+      const env = opts.env === wt.SHARE_ENV ? opts.env : { ...(opts.env || process.env), DETJS_WORKER_KEY: key, ...(vpid !== null ? { DETJS_WORKER_VPID: String(vpid) } : {}) };
       const withPreload = { ...opts, env, execArgv: [...(opts.execArgv !== undefined ? opts.execArgv : process.execArgv), '--require', WORKER_PRELOAD] };
       let w;
       try {

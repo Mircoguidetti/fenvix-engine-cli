@@ -10,6 +10,8 @@ if (process.env.DETJS === '1') {
   if (controls.installProcess()) {
     controls.installRealm(globalThis, { sameRealm: true });
     controls.openFile(`<worker>${process.env.DETJS_WORKER_KEY || ''}`, '');
+    // P1 C: the virtual pid of the test that started the worker (same process), not one of its own
+    if (process.env.DETJS_WORKER_VPID) require('./facts').adoptVpid(process.env.DETJS_WORKER_VPID);
     controls.STATE.beginTest(process.env.DETJS_WORKER_KEY || '<worker>');
   }
 }

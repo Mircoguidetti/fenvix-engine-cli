@@ -202,16 +202,39 @@ function toRealPidArgs(a) {
   if (VPID.current === null && !anyVpid()) return a;
   const out = a.slice();
   if (typeof out[0] === 'string') out[0] = toRealPid(out[0]);
+  let opts = -1;
   for (let i = 1; i < out.length; i++) {
     const x = out[i];
     if (Array.isArray(x)) out[i] = x.map((y) => (typeof y === 'string' || typeof y === 'number' ? toRealPid(y) : y));
-    else if (x && typeof x === 'object' && x.env && typeof x.env === 'object') {
-      const env = {};
-      for (const k of Object.keys(x.env)) env[k] = toRealPid(x.env[k]);
-      out[i] = { ...x, env };
+    else if (x && typeof x === 'object' && opts < 0) {
+      opts = i;
+      if (x.env && typeof x.env === 'object') out[i] = { ...x, env: mapEnv(x.env) };
+    }
+  }
+  // no env option: the child inherits process.env, which may hold a virtual pid the test put there (review
+  // 2026-11-24); it gets a mapped copy only when one is found (the options object goes after the argument list)
+  if (opts < 0 || !(out[opts].env && typeof out[opts].env === 'object')) {
+    const inherited = STATE.quiet(() => ({ ...process.env }));
+    const mapped = mapEnv(inherited);
+    if (Object.keys(mapped).some((k) => mapped[k] !== inherited[k])) {
+      if (opts >= 0) out[opts] = { ...out[opts], env: mapped };
+      else {
+        const at = Array.isArray(out[1]) ? 2 : 1;
+        out.splice(at, typeof out[at] === 'undefined' && out.length > at ? 1 : 0, { env: mapped });
+      }
     }
   }
   return out;
+}
+function mapEnv(env) {
+  const o = {};
+  for (const k of Object.keys(env)) o[k] = toRealPid(env[k]);
+  return o;
+}
+/** A worker thread runs in the process of the test that started it: it reads that test file's virtual pid. */
+function adoptVpid(v) {
+  const n = Number(v);
+  if (Number.isInteger(n) && n > VPID_BASE) VPID.current = n;
 }
 // whether this process can meet a virtual pid at all: a file of its own is open, or the run has a table (a process
 // with no test file of its own -- a child the test started, a worker between files -- given another's virtual pid)
@@ -435,4 +458,5 @@ function installMkdtemp(patcher) {
   }
 }
 
-module.exports = { installProcess, installRealm, installPidBoundaries, startFile, endFile, realPid, toRealPid, toRealPidArgs, VPID_BASE };
+const currentVpid = () => VPID.current;
+module.exports = { installProcess, installRealm, installPidBoundaries, startFile, endFile, adoptVpid, currentVpid, toRealPidArgs };

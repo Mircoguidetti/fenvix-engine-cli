@@ -8,9 +8,10 @@
 // * `crypto.getRandomValues` and `crypto.randomUUID` (global Web Crypto and
 //   `node:crypto`) draw from a second stream derived from the same key.
 // * `crypto.randomBytes`, `randomFillSync`, `randomFill`, `randomInt`, `pseudoRandomBytes` are OS
-//   entropy: observed (digest in the fingerprint), not controlled, unless
-//   `--det-urandom` is given (the Python shell's contract: os.urandom observed, --det-urandom controls it; audit
-//   G-1426). Never silently: each draw is an `entropy` event and the run ends with the list of tests that drew it.
+//   entropy: by default (P1 D, decision of 2026-11-23) a per-test deterministic stream, drawn at the call (an
+//   asynchronous call too, in call order); `--det-urandom=off` leaves them real and observed (digest in the
+//   fingerprint; audit G-1426), and so are draws made before the first test or file seeds the streams. Never
+//   silently: each draw is an `entropy` event; real draws are listed at the end of the run.
 // * Protocol nonces drawn through them are controlled whatever the option (G-1421): the WebSocket handshake key
 //   (`Sec-WebSocket-Key`) and the frame masks of the global `WebSocket` (undici) and of the `ws` package. They are
 //   not secrets (RFC 6455 uses them against proxy cache poisoning), and real ones made every WebSocket test differ
@@ -220,6 +221,13 @@ function randomBytes(size, cb) {
   // a protocol nonce (WebSocket key / mask) keeps its own seeded stream whatever --det-urandom says (P1 D)
   if (typeof cb !== 'function' && protocolNonce()) return nonce('crypto.randomBytes', real.randomBytes(size));
   if (typeof cb === 'function') {
+    // controlled: drawn now, in call order, and delivered on a later tick (as randomFill); drawn in the callback,
+    // concurrent calls were served in the thread pool's completion order (review 2026-11-24, rule 3)
+    if (STATE.config.urandom && SEEDED) {
+      const buf = observe('crypto.randomBytes', real.randomBytes(size));
+      process.nextTick(cb, null, buf);
+      return undefined;
+    }
     return real.randomBytes(size, (err, buf) => {
       if (!err) observe('crypto.randomBytes', buf);
       cb(err, buf);

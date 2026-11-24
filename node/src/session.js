@@ -646,7 +646,8 @@ function printsStatus(meta, env = process.env) {
   return true;
 }
 
-// OS entropy Level 0 only observes: crypto.randomBytes & co. without --det-urandom, native key generation always
+// OS entropy Level 0 only observes: crypto.randomBytes & co. with --det-urandom=off (or drawn before the streams are
+// seeded), native key generation always
 const URANDOM_OPS = /^crypto\.(?:randomBytes|randomFillSync|randomFill|randomInt|pseudoRandomBytes)$/;
 /** Tests of the merged trace that drew real OS entropy: [{nodeid, ops}] (G-1426: the default is never silent). */
 function realEntropyTests(tracePath, urandom) {

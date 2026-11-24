@@ -17,7 +17,12 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const native = require('../src/native');
-const { project, run, RUNNERS } = require('./helpers');
+const helpers = require('./helpers');
+const { project, RUNNERS } = helpers;
+// two separate runs are compared: --det-epoch=fixed, the opt-out of det-host-values' per-run host epoch (merged from
+// release-1 9ac63d6), as the trunk's own two-run tests do; a test that names its own epoch keeps it
+const run = (runner, dir, args = [], opts) =>
+  helpers.run(runner, dir, args.includes('--det') && !args.some((x) => x.startsWith('--det-epoch')) ? [...args, '--det-epoch=fixed'] : args, opts);
 
 const T = { timeout: 600000 };
 const OUT = fs.mkdtempSync(path.join(os.tmpdir(), 'p1c-'));
