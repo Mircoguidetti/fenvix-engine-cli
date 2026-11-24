@@ -1,0 +1,64 @@
+{
+ "finished": null,
+ "queries": {
+  "postgres jest": {
+   "done": true,
+   "leaves": 10,
+   "nodes": 19,
+   "root_incomplete": false,
+   "root_total": 4480,
+   "stack": []
+  },
+  "postgres vitest": {
+   "done": false,
+   "leaves": 3,
+   "nodes": 14,
+   "root_incomplete": false,
+   "root_total": 13952,
+   "stack": [
+    [
+     2345,
+     2735
+    ],
+    [
+     2736,
+     3125
+    ],
+    [
+     3126,
+     6250
+    ],
+    [
+     6251,
+     12500
+    ],
+    [
+     12501,
+     25000
+    ],
+    [
+     25001,
+     50000
+    ],
+    [
+     50001,
+     100000
+    ],
+    [
+     100001,
+     200000
+    ],
+    [
+     200001,
+     400000
+    ]
+   ]
+  }
+ },
+ "rate_limit": {
+  "code_search": 10
+ },
+ "requests": 0,
+ "route": "session",
+ "started": "2026-11-24T17:47:31+00:00"
+}
