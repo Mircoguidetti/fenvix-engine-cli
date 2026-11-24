@@ -1,0 +1,78 @@
+name: agent-pr-count2
+
+# Count 2 (harness/agent_pr_scan_count2/): head and base CI results of third-party agent pull requests, read with
+# this workflow's GITHUB_TOKEN (read-only on every other repository). A chunk starts when a push to this branch adds
+# a request file harness/agent_pr_scan_count2/requests/<n>.json; results are committed back to this branch only
+# (a push made with GITHUB_TOKEN does not start another workflow run).
+
+on:
+  push:
+    branches: [claude/agent-pr-scan-count2]
+    paths:
+      - harness/agent_pr_scan_count2/requests/**
+      - .github/workflows/agent-pr-count2.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: agent-pr-count2
+  cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
+  C2_BRANCH: claude/agent-pr-scan-count2
+
+jobs:
+  chunk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Request files added by this push
+        id: req
+        run: |
+          mkdir -p "$RUNNER_TEMP/req"
+          before="${{ github.event.before }}"
+          if [ -z "$before" ] || [ "$before" = "0000000000000000000000000000000000000000" ]; then
+            echo "no previous commit (branch creation): no request files"; exit 0
+          fi
+          git diff --name-only --diff-filter=A "$before" "${{ github.sha }}" -- harness/agent_pr_scan_count2/requests/ \
+            | sort | while read -r f; do cp "$f" "$RUNNER_TEMP/req/"; echo "request: $f"; done
+          ls -1 "$RUNNER_TEMP/req"
+      - name: Latest checkpoint
+        run: |
+          git fetch -q origin "$C2_BRANCH"
+          git checkout -q -B c2 "origin/$C2_BRANCH"
+          git log --oneline -1
+      - name: Chunks
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for f in $(ls -1 "$RUNNER_TEMP/req" | sort -n); do
+            echo "== $f"; cat "$RUNNER_TEMP/req/$f"
+            python3 harness/agent_pr_scan_count2/job.py --request "$RUNNER_TEMP/req/$f"
+          done
+      - name: Commit results to this branch
+        if: always()
+        run: |
+          git config user.name "agent-pr-count2-bot"
+          git config user.email "agent-pr-count2-bot@users.noreply.github.com"
+          out=harness/agent_pr_scan_count2/results
+          [ -d "$out" ] || exit 0
+          for i in 1 2 3 4 5 6 7 8; do
+            git fetch -q origin "$C2_BRANCH" && git reset -q --soft "origin/$C2_BRANCH" && git reset -q
+            git add -f "$out" && git commit -q -m "agent-pr-count2: results (run ${{ github.run_id }})" || exit 0
+            git push -q origin "HEAD:$C2_BRANCH" && exit 0
+            sleep $((5 + RANDOM % 20))
+          done
+          exit 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: count2-results-${{ github.run_id }}
+          path: harness/agent_pr_scan_count2/results/
+          if-no-files-found: ignore
