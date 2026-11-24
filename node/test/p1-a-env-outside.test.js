@@ -7,7 +7,8 @@
 //
 // protects=a variable read outside any test with the same value in both runs no longer makes every test NOT PROVEN,
 //   and a different value is never called identical;
-// fails_when=serial and parallel runs with the same environment leave a test NOT PROVEN for an `env:` entry, or two
+// fails_when=two one-worker runs with the same environment leave a test NOT PROVEN for an `env:` entry, a one-worker
+//   run compared with a two-worker run is called stable through one (fail-safe of 2026-11-24), or two
 //   runs whose TMPDIR differs (read at module scope, written by the test) report every test stable;
 // no_claim=the cache (one run, no second to compare with) keeps refusing such tests; non-env entries
 //   (`api:`, `native:`) are unchanged.
@@ -46,7 +47,11 @@ function trace(r, dir, name) {
 }
 
 for (const runner of RUNNERS) {
-  test(`P1 A1 ${runner}: TMPDIR and the environment read at module scope, same values: serial = parallel, all stable`, T, () => {
+  // fail-safe of 2026-11-24 (founder decision D1 = C, eng review of the P1 merge): the entries are one set per run, so
+  // a run with several workers does not say which worker saw which value; the entry is discharged only when every
+  // compared run used one worker (fails_when also: a serial run compared with a two-worker run is called stable
+  // through an `env:` entry; red on 0358ea4, where it was)
+  test(`P1 A1 ${runner}: TMPDIR and the environment read at module scope, same values: two one-worker runs all stable, one-worker vs two-worker NOT PROVEN`, T, () => {
     const dir = project(runner, 'p1a-same', files(runner));
     const tmp = path.join(OUT, `${runner}-same`);
     fs.mkdirSync(tmp, { recursive: true });
@@ -54,15 +59,22 @@ for (const runner of RUNNERS) {
     const s = run(runner, dir, ['--det', '--det-workers=1'], { env });
     assert.equal(s.status, 0, s.stdout + s.stderr);
     const ts = trace(s, dir, 'serial');
+    const s2 = run(runner, dir, ['--det', '--det-workers=1'], { env });
+    assert.equal(s2.status, 0, s2.stdout + s2.stderr);
+    const ts2 = trace(s2, dir, 'serial2');
     const p = run(runner, dir, ['--det', '--det-workers=2'], { env });
     assert.equal(p.status, 0, p.stdout + p.stderr);
     const tp = trace(p, dir, 'par');
     const np = s.trace.header.meta.not_proven_outside_tests || [];
     assert.ok(np.some((e) => e.startsWith('env:TMPDIR')), `the module-scope read is recorded: ${JSON.stringify(np)}`);
-    const rep = JSON.parse(native.verify([ts, tp]));
+    const rep = JSON.parse(native.verify([ts, ts2]));
     const bad = rep.tests.filter((t) => t.status !== 'stable').map((t) => `${t.nodeid}: ${t.status}: ${t.divergence && t.divergence.description}`);
-    assert.deepEqual(bad, [], 'same values in both runs: nothing differs');
+    assert.deepEqual(bad, [], 'same values in two one-worker runs: nothing differs');
     assert.equal(rep.summary.stable, 4);
+    const mixed = JSON.parse(native.verify([ts, tp]));
+    const st = mixed.tests.map((t) => `${t.nodeid}: ${t.status}`);
+    assert.ok(mixed.tests.every((t) => t.status === 'not-proven'), `one-worker vs two-worker: every test NOT PROVEN: ${st}`);
+    assert.ok(mixed.tests[0].divergence.description.includes('env:TMPDIR'), mixed.tests[0].divergence.description);
   });
 
   // acceptance 2: the value really differs between the two runs

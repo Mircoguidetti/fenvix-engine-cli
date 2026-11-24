@@ -14,6 +14,12 @@
 //   stable;
 // no_claim=runners without per-file isolation (Vitest isolate: false or one shared fork, node:test, mocha, ...) keep
 //   the run-wide rule.
+// Fail-safe of 2026-11-24 (founder decision D1 = C, eng review of the P1 merge): Jest keeps state that is not per file
+// (process-wide state of its worker: the real process.env, native modules, files in /tmp) and detjs does not track it
+// yet, so Jest writes `files_outside_scope: "run"`: the other file's tests are NOT stable under Jest either
+// (fails_when also: a Jest run writes "file", or another file's Jest test is called stable; red on 0358ea4). Vitest
+// keeps the per-file scope with a fresh worker per file; the shell-level check that isolate: false and singleFork
+// write "run" is the last part of this file.
 // Red on the trunk (e7338950): the other file's tests diverge too.
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
@@ -31,6 +37,8 @@ const run = (runner, dir, args = [], opts) =>
 const T = { timeout: 600000 };
 const OUT = fs.mkdtempSync(path.join(os.tmpdir(), 'p1b-'));
 const hook = () => 'beforeAll';
+// the scope each runner's shell writes (Jest: run-wide until process-wide state is tracked, fail-safe of 2026-11-24)
+const SCOPE = { vitest: 'file', jest: 'run' };
 
 // every run writes .detjs/trace.jsonl: copied right after the run
 function keep(r, dir, i) { const p = path.join(dir, `t${i}.jsonl`); fs.copyFileSync(r.tracePath, p); return p; }
@@ -59,8 +67,10 @@ test('a2', () => { expect(1).toBe(1); });`,
     assert.equal(p.status, 0, p.stdout + p.stderr);
     const rep = verify([ts, keep(p, dir, 1)]);
     for (const id of ['a1', 'a2']) assert.notEqual(status(rep, id).status, 'stable', `${id}: its file read bytes that differ between the runs`);
+    assert.equal(s.trace.header.meta.files_outside_scope, SCOPE[runner]);
     const b1 = status(rep, 'b1');
-    assert.equal(b1.status, 'stable', `b1 never read the file: ${JSON.stringify(b1.divergence)}`);
+    if (SCOPE[runner] === 'file') assert.equal(b1.status, 'stable', `b1 never read the file: ${JSON.stringify(b1.divergence)}`);
+    else assert.notEqual(b1.status, 'stable', `run-wide scope (${runner}): b1 is not stable: ${JSON.stringify(b1)}`);
   });
 
   // B1 and acceptance 2: the bytes really differ between the runs
@@ -84,7 +94,30 @@ test('b2', () => { expect(3).toBe(3); });`,
     assert.notEqual(a1.status, 'stable', `a1 read v0 then v1 and was called stable: ${JSON.stringify(a1)}`);
     for (const id of ['b1', 'b2']) {
       const t = status(rep, id);
-      assert.equal(t.status, 'stable', `${id} never read the file: ${JSON.stringify(t.divergence)}`);
+      if (SCOPE[runner] === 'file') assert.equal(t.status, 'stable', `${id} never read the file: ${JSON.stringify(t.divergence)}`);
+      else assert.notEqual(t.status, 'stable', `run-wide scope (${runner}): ${id} is not stable: ${JSON.stringify(t)}`);
     }
+  });
+}
+
+// The shell-level check of the Vitest scope (eng review of the P1 merge, 2026-11-24): the header says "file" only when
+// every file runs in a fresh worker of its own. protects=a Vitest run that shares a worker between files (isolate:
+// false, or one fork) is compared run-wide; fails_when=such a run writes `files_outside_scope: "file"` (a read in one
+// file's module scope would then diverge only that file, although the next file in the same worker saw its effects),
+// or the default configuration (a fresh fork per file) writes "run"; no_claim=threads / vmThreads pools and browser
+// mode (src/vitest/cli.js isolatedFiles), not exercised here.
+for (const [name, vitest, want] of [
+  ['default (a fresh fork per file)', {}, 'file'],
+  ['isolate: false', { isolate: false }, 'run'],
+  ['poolOptions.forks.singleFork', { poolOptions: { forks: { singleFork: true } } }, 'run'],
+]) {
+  test(`P1 B1 vitest ${name}: the header writes files_outside_scope "${want}"`, T, () => {
+    const dir = project('vitest', `p1b-vscope-${want}-${Object.keys(vitest).join('')}`, {
+      a: `test('a1', () => { expect(1).toBe(1); });`,
+      b: `test('b1', () => { expect(2).toBe(2); });`,
+    }, { vitest });
+    const r = run('vitest', dir, ['--det', '--det-workers=1']);
+    assert.equal(r.status, 0, r.stdout + r.stderr);
+    assert.equal(r.trace.header.meta.files_outside_scope, want, JSON.stringify(r.trace.header.meta.isolation));
   });
 }

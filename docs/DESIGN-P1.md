@@ -168,6 +168,9 @@ can compare the value itself.
   no entry for that name), the entry is not discharged and, in addition, every test gets `input-differs` naming the
   variable (the existing `input_differs` path, `verify.rs:1048-1066`, `read.all = true`). Entries without a digest
   (older traces, the Python shell) are never discharged: today's verdict.
+  Fail-safe added before the merge (founder decision D1 = C, 2026-11-24): an entry is discharged only when every
+  compared run used one worker (`meta.parallel.workers` 1), since a run's entries are one set and do not say which
+  worker saw which value; the per-worker comparison is a follow-up.
 * The cache keeps today's rule: `judge_record` for the cache is called with the undischarged list (the cache has no
   second run to compare with). No change to `crates/detpy-core/src/provable.rs`.
 

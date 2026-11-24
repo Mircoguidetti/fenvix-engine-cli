@@ -19,6 +19,12 @@ merge ordered by the coordinator, not by this session):
 B2 is narrower than the design (rule 3, section B), and one codex-multi-auth run-level entry of another kind is left
 open (a proposal in section B). Ready for the coordinator's `/review`; merge only on the founder's authorization.
 
+**Fail-safes before the merge (founder decision D1 = C of 2026-11-24, section 3.1).** The identical counts above
+were measured BEFORE the three fail-safes, on S1 vs P1w4 pairs (one worker against four). The A1 fail-safe
+discharges an `env:` entry only when every compared run used one worker, and Jest is now compared run-wide
+(`files_outside_scope: "run"`), so the A1 gain on agentsys (Jest; A 1,540 → 0, identical 0 → 1,542) is expected
+not to hold on S1 vs P1w4 pairs. **Not re-measured**: no figure after the fail-safes is given here.
+
 ## 1. How it was measured
 
 * Before: `harness/p1/data/before/`, engine trunk e7338950 (DESIGN-P1.md section 1).
@@ -336,6 +342,23 @@ depends on whether that `stat` happens while a test file is open (timing), not o
 * MEASURED: agentsys D 99 → 0, sqlectron D 5 → 0 (final). The crypto risk is as in DESIGN-P1.md D.2 (an IV or key a
   test draws is the same in every run of that test under `--det`), stated in HELP and docs/NODE.md.
 
+### 3.1 Fail-safes for the three remaining rule-3 risks (founder decision D1 = C, 2026-11-24)
+
+Ordered by the coordinator after the founder's `/plan-eng-review` of the P1 merge
+(new-brain `gstack/projects/Mircoguidetti-new-brain/main-eng-review-p1-merge-20261124-215500.md`): make each risk
+fail safe now; the exact fixes go to a follow-up branch after the merge queue. Each has a test that fails on 0358ea4
+and passes after (red logs `/tmp/pm-p1/failsafe/a1-red.log`, `b1-red.log`, `f-red.log`).
+
+| risk | fail-safe | test (red on 0358ea4) |
+|---|---|---|
+| A1: a run's `env:<NAME>=<digest>` entries are one set; with several workers they do not say which worker saw which value | `verify.rs` `undischarged_outside`: discharged only when every compared run says `meta.parallel.workers` 1; a run with more, or without the field, keeps the entry (NOT PROVEN) | `verify.rs` `p1_a1_discharged_only_when_every_run_used_one_worker`; `node/test/p1-a-env-outside.test.js` first case (one-worker vs two-worker: every test `not-proven`, vitest and jest) |
+| B1 on Jest: its worker process keeps state across files that is not tracked per file | `src/jest/cli.js`: `files_outside_scope: "run"` always | `node/test/p1-b-outside-scope.test.js`, jest: header `"run"`, the other file's tests not stable |
+| F: the test's own code run inside a file operation (`fs.cp` filter, the iterable `fs.promises.writeFile` / `appendFile` draws from) was a step of that operation, its I/O hidden | `src/ioorder.js`: that code runs in a user scope; a file operation it starts marks the test `uncontrolled.io` (NOT PROVEN) | `node/test/p1-f-nested-io.test.js`, 4 "fail-safe" cases (promise and callback `cp` filter, `writeFile` and `appendFile` from an async iterable); 2 no-false-alarm cases (a filter / iterable without I/O) |
+
+Shell-level test added (it was missing): `node/test/p1-b-outside-scope.test.js`, Vitest default writes
+`files_outside_scope: "file"`, `isolate: false` and `poolOptions.forks.singleFork` write `"run"`.
+Not covered by the F fail-safe: a Readable stream passed as the data (Node's stream code reads it), `fs.cpSync`.
+
 ## 4. Test changes (each on its own line, with its reason)
 
 - `node/test/p1-f-nested-io.test.js`: the concurrency guard uses `mkdtempSync` instead of `fs.promises.mkdtemp`, so it holds on the trunk too (there an awaited `fs.promises.mkdtemp` before the reads made node:test cancel the test).
@@ -350,6 +373,8 @@ depends on whether that `stat` happens while a test file is open (timing), not o
 - `tests/test_runner_node.py::test_entropy_is_named_by_verify` (shared Python test, from the trunk merge f67be4a; 4 runners): the recorded run passes `-- --det-urandom=off`. Reason: its fixture "reads real OS entropy", which since D needs that option (by default the draw is seeded and both runs are identical); the assertions (verify exits 1 and names the test NOT PROVEN or DIVERGED `entropy`) are unchanged.
 - `node/test/p1-d-entropy-default.test.js`: seventh case added (a draw made before any seeding is not a constant), with the follow-up fix below.
 - Six P1 test files (`p1-a-env-outside`, `p1-b-outside-scope`, `p1-b2-own-dir`, `p1-c-pid-boundaries`, `p1-c-virtual-pid`, `p1-d-entropy-default`): their two-run cases add `--det-epoch=fixed` when a `--det` run names no epoch. Reason: the merge of release-1 9ac63d6 (det-host-values) gives each run the host epoch, so two separate runs differ on the clock input; `--det-epoch=fixed` is the documented opt-out the trunk's own two-run tests use. The assertions are unchanged.
+- `node/test/p1-a-env-outside.test.js` first case: it compared a one-worker run with a two-worker run and expected every test stable; it now expects two one-worker runs stable and one-worker vs two-worker `not-proven`. Reason: the A1 fail-safe (section 3.1) deliberately keeps the entry when a run used several workers; this narrows what is called stable, it relaxes no proof.
+- `node/test/p1-b-outside-scope.test.js` both B1 cases: on Jest the other file's tests were expected stable; they are now expected not stable, and the header `"run"`. Reason: the B1 Jest fail-safe (section 3.1); Vitest expectations unchanged.
 - No test was skipped, weakened or quarantined; no CI step, timeout or threshold changed.
 
 ## 5. Test suites (branch vs trunk)
@@ -415,6 +440,9 @@ Node failures on both heads: (b) timers; jest parallel lanes (3 cancelled); repr
 
 ## 7. For the coordinator
 
+* Fail-safes of 2026-11-24 (section 3.1) are in; the exact fixes (per-worker A1 comparison, per-file Jest state,
+  tracking the I/O of the test's own callbacks inside an operation) are for a follow-up branch after the merge queue.
+  The 5 gate-edit hunks stay under decision D option 3.
 * Merge: not done by this session (coordinator's instruction). The branch contains the trunk up to f67be4a (merge
   commit e40aaf6, no conflict; f67be4a changes no engine file).
 * Open decisions: C (options in section 3), B2 (not implementable without hiding a real difference), the B1

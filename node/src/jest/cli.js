@@ -197,9 +197,11 @@ async function main(argv) {
     if (customRunners.size) require('./custom-runner').report(files);
     const { lines } = session.finish(run, opts, files, {
       runner: 'jest', runner_version: jest.pkg.version, isolation, serial: !par.plan, projects, cli_args: rest, parallel: par.result.meta,
-      // P1 B1: Jest gives every test file its own module registry, global and process.env copy; a custom runner
-      // places the files itself (src/jest/custom-runner.js: they share one process)
-      files_outside_scope: customRunners.size ? 'run' : 'file',
+      // P1 B1: Jest gives every test file its own module registry, global and process.env copy, but its worker
+      // process keeps state across files that detjs does not track per file yet (the real process.env, native
+      // modules, process-wide handles): run-wide until that is tracked (fail-safe, founder decision D1 = C of
+      // 2026-11-24; the per-file scope for Jest is a follow-up)
+      files_outside_scope: 'run',
     });
     for (const l of lines) fs.writeSync(1, `${l}\n`); // sync: the runner may be exiting
   };

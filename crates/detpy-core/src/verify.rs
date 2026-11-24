@@ -587,7 +587,14 @@ fn order_divergence(id: &str, a: &Predecessors, b: &Predecessors, run_a: usize, 
 /// value did not differ through it: when every run has entries for `<NAME>` and they all carry the same set of
 /// digests, those entries are discharged for this comparison. A different value, a read in some runs only, an entry
 /// without a digest (older traces, the Python shell) and every non-`env` entry stay: every test is NOT PROVEN.
+///
+/// Fail-safe (founder decision D1 = C of 2026-11-24): a run's entries are one set for the whole run, so in a run with
+/// several workers the set does not say which worker saw which value. Entries are discharged only when every compared
+/// run says it used one worker (`meta.parallel.workers` 1); a run with more, or one that does not say, keeps them.
 fn undischarged_outside<S: RecordSource>(traces: &[S]) -> Vec<String> {
+    let one_worker = traces.iter().all(|t| {
+        t.header().meta.get("parallel").and_then(|p| p.get("workers")).and_then(|w| w.as_u64()) == Some(1)
+    });
     let per_run: Vec<BTreeSet<String>> = traces
         .iter()
         .map(|t| meta_array(t.header(), t.footer(), "not_proven_outside_tests").filter_map(|v| v.as_str().map(str::to_string)).collect())
@@ -619,6 +626,7 @@ fn undischarged_outside<S: RecordSource>(traces: &[S]) -> Vec<String> {
             // at least two runs: a value is discharged only when another run saw the same one (one run has nothing
             // to compare it with: review 2026-11-24)
             traces.len() > 1
+                && one_worker
                 && sets.iter().all(|s| s.as_ref().is_some_and(|s| !s.is_empty()))
                 && sets.windows(2).all(|w| w[0] == w[1])
         })
@@ -2020,9 +2028,12 @@ mod tests {
     /// let a test be stable; no_claim=the cache's own judgement (one run) is not exercised here.
     #[test]
     fn p1_a1_env_read_outside_tests_compared_by_value() {
-        let mk = |entries: serde_json::Value| {
-            meta_extra(with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10), rec("y", &[t("2")], "passed", 10)]), &BASE), "not_proven_outside_tests", entries)
+        // every run here is a one-worker run (`meta.parallel.workers` 1): the fail-safe below discharges nothing else
+        let mkw = |entries: serde_json::Value, parallel: Option<serde_json::Value>| {
+            let t0 = meta_extra(with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10), rec("y", &[t("2")], "passed", 10)]), &BASE), "not_proven_outside_tests", entries);
+            match parallel { Some(p) => meta_extra(t0, "parallel", p), None => t0 }
         };
+        let mk = |entries: serde_json::Value| mkw(entries, Some(serde_json::json!({ "workers": 1 })));
         let j = |v: &[&str]| serde_json::json!(v);
         // the same value in both runs: discharged, nothing differs
         let r = verify(&[mk(j(&["env:*=1111", "env:TMPDIR=aaaa"])), mk(j(&["env:*=1111", "env:TMPDIR=aaaa"]))], &[]);
@@ -2054,6 +2065,37 @@ mod tests {
         assert_eq!(r.summary.stable, 0);
         // one run: nothing to compare the value with, nothing discharged (review 2026-11-24)
         let r = verify(&[mk(j(&["env:TMPDIR=aaaa"]))], &[]);
+        assert_eq!((r.summary.stable, r.summary.not_proven), (0, 2), "{:?}", r.tests);
+    }
+
+    /// P1 A1 fail-safe (founder decision D1 = C of 2026-11-24, eng review of the P1 merge): a run's entries are one set
+    /// for the whole run, so with several workers the set does not say which worker (which files) saw which value; the
+    /// same set in two runs does not prove each file saw the same value. protects=an `env:<NAME>=<digest>` entry is
+    /// discharged only when every compared run used a single worker; fails_when=a run with two workers, or a run whose
+    /// trace does not say its worker count, has an equal entry discharged; no_claim=the exact per-worker comparison
+    /// (a follow-up branch).
+    #[test]
+    fn p1_a1_discharged_only_when_every_run_used_one_worker() {
+        let mkw = |entries: serde_json::Value, parallel: Option<serde_json::Value>| {
+            let t0 = meta_extra(with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10), rec("y", &[t("2")], "passed", 10)]), &BASE), "not_proven_outside_tests", entries);
+            match parallel { Some(p) => meta_extra(t0, "parallel", p), None => t0 }
+        };
+        let e = || serde_json::json!(["env:TMPDIR=aaaa"]);
+        let one = || Some(serde_json::json!({ "workers": 1 }));
+        let two = || Some(serde_json::json!({ "workers": 2 }));
+        // both runs one worker: discharged
+        let r = verify(&[mkw(e(), one()), mkw(e(), one())], &[]);
+        assert_eq!((r.summary.stable, r.summary.not_proven), (2, 0), "{:?}", r.tests);
+        // one run with two workers: the entry stays, every test NOT PROVEN, the variable named
+        let r = verify(&[mkw(e(), one()), mkw(e(), two())], &[]);
+        assert_eq!((r.summary.stable, r.summary.not_proven), (0, 2), "{:?}", r.tests);
+        assert!(r.tests[0].divergence.as_ref().unwrap().description.contains("env:TMPDIR"), "{:?}", r.tests[0]);
+        let r = verify(&[mkw(e(), two()), mkw(e(), two())], &[]);
+        assert_eq!((r.summary.stable, r.summary.not_proven), (0, 2), "{:?}", r.tests);
+        // a run that does not say how many workers it used: the entry stays
+        let r = verify(&[mkw(e(), one()), mkw(e(), None)], &[]);
+        assert_eq!((r.summary.stable, r.summary.not_proven), (0, 2), "{:?}", r.tests);
+        let r = verify(&[mkw(e(), one()), mkw(e(), Some(serde_json::json!({ "workers": "1" })))], &[]);
         assert_eq!((r.summary.stable, r.summary.not_proven), (0, 2), "{:?}", r.tests);
     }
 
