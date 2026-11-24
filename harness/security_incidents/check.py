@@ -87,8 +87,6 @@ def check_rows(rows: list[dict]) -> None:
         if r["counts"] not in ("yes",) and not re.fullmatch(r"no \(rule [1-7](?:[;,] ?[1-7])*\)", r["counts"]):
             err(f"{rid}: counts must be 'yes' or 'no (rule N)', got {r['counts']!r}")
         if counted:
-            if not r["flag_reason"].startswith(("FLAGGED",) + REASONS) and r["flagged"] != "FLAGGED":
-                pass
             if r["flagged"] == "NOT_FLAGGED" and not r["flag_reason"].startswith(REASONS[:3]):
                 err(f"{rid}: NOT_FLAGGED flag_reason must start with not_traced|channel|not_new")
             if r["flagged"] == "UNCLEAR" and not r["flag_reason"].startswith(("unclear_where", "unclear_how")):

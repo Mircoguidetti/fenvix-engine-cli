@@ -31,8 +31,10 @@ Each row has an id (`C-NN`). `incidents.csv` `channels_line` cites these ids.
 | C-17 | payload code inside a **runner-infra** package | Node | **not recorded**: an event whose site is runner infrastructure is dropped (`node/src/sites.js:9` `INFRA` = vitest, vite, jest-*, mocha, tap, ava, jasmine, uvu, ... ; `node/src/sites.js:66-69`; `node/src/state.js:66`; env: `node/src/controls.js:190-191`; network: `node/src/network.js:721-722`) | env names still reach `envout` (C-01, no site filter in `noteOutside`); network, files, children: not recorded |
 | C-18 | payload code inside a runner-infra package | Python | **not recorded** (runner frames are skipped like pytest's: `python/detpy/envobs.py:100`, `_level0.INFRA_PACKAGES`, `pytest_*` modules) | env: a named read goes to `OUTSIDE` as a runner read (`python/detpy/envobs.py:120-123`), an enumeration does not; files and network: not recorded |
 
+| C-19 | a GitHub Actions step, a CI workflow, a build step or a CLI run outside the test command | both | n/a | **not recorded**: the engine runs only inside the test command's process tree as it starts it (C-14, C-15); a separate CI step, a workflow file, a native build (`node-gyp`) or a CLI invocation is another process tree. INFERRED from the same evidence as C-14 |
+
 Any of these verdicts is the rule the incident rows use as `NOT_FLAGGED (channel)`: C-07 (outside), C-08/C-09 (outside),
-C-10/C-11 (outside, and everything the child does in either column), C-12, C-13 (C extension), C-14, C-15, C-16, C-17, C-18.
+C-10/C-11 (outside, and everything the child does in either column), C-12, C-13 (C extension), C-14, C-15, C-16, C-17, C-18, C-19.
 
 ## 2. Run-level records (rule 3b `run_level`, note 1)
 
