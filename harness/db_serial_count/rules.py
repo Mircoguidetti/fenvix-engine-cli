@@ -668,7 +668,13 @@ def expand_matrix(s: str, mv: dict[str, list]) -> list[str]:
 
 
 def image_ok(img) -> bool:
-    return isinstance(img, str) and bool(IMAGE_RE.match(img.strip()))
+    """IMAGE_RE on the image with a registry prefix `docker.io/` and the official-image prefix `library/` removed
+    (CHANGES.md 8: `library/postgres` is the same image as `postgres`)."""
+    if not isinstance(img, str):
+        return False
+    x = re.sub(r"^(docker\.io/|index\.docker\.io/)", "", img.strip())
+    x = re.sub(r"^library/", "", x)
+    return bool(IMAGE_RE.match(x))
 
 
 def working_dir(step: dict, job: dict, wf: dict) -> str | None:
@@ -684,12 +690,15 @@ def working_dir(step: dict, job: dict, wf: dict) -> str | None:
     return ""
 
 
-def compose_db(run: str, wd: str, read) -> tuple[bool, str | None]:
+def compose_db(run: str, wd: str, read, env: dict | None = None) -> tuple[bool, str | None]:
     for ln in run.splitlines():
         if not COMPOSE_UP_RE.search(ln):
             continue
         t = tokens(ln)
         files = [t[i + 1] for i, w in enumerate(t) if w in ("-f", "--file") and i + 1 < len(t)]
+        cf = str((env or {}).get("COMPOSE_FILE") or "")
+        if not files and cf and "${{" not in cf:
+            files = [x for x in re.split(r"[:]", cf) if x]  # CHANGES.md 9: COMPOSE_FILE names the files
         names = files or ["docker-compose.yml", "docker-compose.yaml", "compose.yml", "compose.yaml"]
         for n in names:
             p = jpath(wd, n)
@@ -725,7 +734,7 @@ def db_job_evidence(job: dict, wf: dict, read) -> str | None:
             return f"run {SYSTEMCTL_RE.search(run).group(0)}"
         if COMPOSE_UP_RE.search(run):
             wd = working_dir(st, job, wf)
-            ok, ev = compose_db(run, wd or "", read)
+            ok, ev = compose_db(run, wd or "", read, merged_env(wf, job, st))
             if ok:
                 return ev
     return None

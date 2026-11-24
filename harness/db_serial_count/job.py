@@ -3,7 +3,9 @@
 
 Usage: job.py --request requests/<n>.json
 Request kinds: {"chunk": n, "probe": true} (§0 route probe), {"chunk": n, "discovery": true} (§1, resumed from
-discovery_state.json), {"chunk": n, "candidates": [...]} (§2-§3 rows).
+discovery_state.json), {"chunk": n, "candidates": [...]} (§2-§3 rows),
+{"chunk": n, "perworker": true} (§4 file reads for results/perworker_search.jsonl), {"chunk": "debug-x", "debug": true,
+"repos": [...]} (pipeline check on named repositories, kept in results/debug/, not counted).
 """
 from __future__ import annotations
 
@@ -27,6 +29,9 @@ def main() -> int:
     if req.get("discovery"):
         import discover
         return discover.main(["--route", "workflow", "--max-minutes", str(req.get("max_minutes", 320))])
+    if req.get("perworker"):
+        import perworker
+        return perworker.fetch_eval()
     import chunk
     return chunk.run_chunk(req)
 
