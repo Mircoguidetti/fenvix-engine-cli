@@ -341,3 +341,43 @@ def test_part1_state():
     assert M.part1_state(99, False, True) == "NO DECISION"
     assert M.part1_state(100, False, False) == "no"
     assert M.part1_state(0, True, None) == "BLOCKED"
+
+
+# ------------------------------------------------------------------------------------------------ consistency
+
+def test_check_py_recomputes_verdict_and_fails_on_mismatch_or_agent_file(tmp_path, monkeypatch):
+    """protects=check.py recomputes REPORT line 1 from the CSVs and fails on a mismatch, a missing field or a
+    control with an agent file; fails_when=a wrong line or a bad control passes; no_claim=representative sample."""
+    import shutil
+    import check
+    (tmp_path / "probe").mkdir()
+    (tmp_path / "probe" / "search.json").write_text(json.dumps({"AGENTS.md": {"form": "a"}}))
+    (tmp_path / "results" / "probe" / "web").mkdir(parents=True)
+    (tmp_path / "results" / "probe" / "web" / "summary.json").write_text(json.dumps([{"name": "news1",
+                                                                                     "status": 200}]))
+    (tmp_path / "companies.csv").write_text(
+        "company,listed,class_2_3,quoted_text,summed_as\nA,seed:T,T,fast CI,T\nB,seed:E,E,LLM evals,E\n")
+    hdr = "company,date,amount_usd,source_url,access_date,summed\n"
+    (tmp_path / "funding_T.csv").write_text(hdr + "A,2025-05-01,100,https://a,2026-11-24,yes\n")
+    (tmp_path / "funding_E.csv").write_text(hdr + "B,2026-02-01,250,https://b,2026-11-24,yes\n")
+    (tmp_path / "pairs.csv").write_text(",".join(check.PAIR_FIELDS) + "\n")
+    (tmp_path / "dropped.csv").write_text("idx,repo,reason\n1,x/y,excluded\n")
+    (tmp_path / "control_checks.jsonl").write_text("")
+    monkeypatch.setattr(check, "HERE", tmp_path)
+    rows = ["| Complete pairs | 0 |", "| F_T (USD) | 100 |", "| F_E (USD) | 250 |", "| R | 2.50 |",
+            "| Part 1 | NO DECISION |", "| Part 2 | R<3 |"]
+    (tmp_path / "REPORT.md").write_text("STANDS\n\n" + "\n".join(rows) + "\n")
+    assert check.main() == 0
+    (tmp_path / "REPORT.md").write_text("REOPEN\n\n" + "\n".join(rows) + "\n")
+    assert check.main() == 1
+    # a pair whose control has an agent file by T0 + 272 d fails
+    (tmp_path / "REPORT.md").write_text("STANDS\n\n" + "\n".join(rows) + "\n")
+    row = dict(zip(check.PAIR_FIELDS, ["a/a", "c/c", "2026-04-20T12:00:00Z", "w", "w", "step", "step",
+                                        "10", "12", "1.2", "10", "11", "1.1"]))
+    (tmp_path / "pairs.csv").write_text(",".join(check.PAIR_FIELDS) + "\n" + ",".join(row.values()) + "\n")
+    paths = {p: [] for p in M.AGENT_PATHS}
+    paths["CLAUDE.md"] = ["sha1"]
+    (tmp_path / "control_checks.jsonl").write_text(json.dumps(
+        {"agent": "a/a", "repo": "c/c", "until": M.iso(T0 + dt.timedelta(days=272)), "paths": paths}) + "\n")
+    res, errs = check.compute()
+    assert any("agent file" in e for e in errs)
