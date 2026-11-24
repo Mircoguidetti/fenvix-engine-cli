@@ -1,0 +1,19 @@
+{
+ "at": "2026-11-24T19:11:35+00:00",
+ "error": "ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='www.businesswire.com', port=443): Read timed out. (read timeout=30)\"))",
+ "final_url": "https://www.businesswire.com/news/home/20250710009580/en/Vellum-Raises-$20M-Series-A-to-Bring-Rigor-Speed-and-Reliability-to-Enterprise-AI-Development",
+ "first_2kb": "",
+ "hops": [
+  {
+   "error": "ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='www.businesswire.com', port=443): Read timed out. (read timeout=30)\"))",
+   "status": null,
+   "url": "https://www.businesswire.com/news/home/20250710009580/en/Vellum-Raises-$20M-Series-A-to-Bring-Rigor-Speed-and-Reliability-to-Enterprise-AI-Development"
+  }
+ ],
+ "length": 0,
+ "name": "src020",
+ "status": null,
+ "text": "",
+ "text_source": "",
+ "url": "https://www.businesswire.com/news/home/20250710009580/en/Vellum-Raises-$20M-Series-A-to-Bring-Rigor-Speed-and-Reliability-to-Enterprise-AI-Development"
+}

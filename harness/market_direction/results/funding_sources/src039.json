@@ -1,0 +1,18 @@
+{
+ "at": "2026-11-24T19:11:46+00:00",
+ "error": null,
+ "final_url": "https://runtimewire.com/article/raindrop-raises-35m-series-a-launches-agent-simulations",
+ "first_2kb": "<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, viewport-fit=cover\" />\n    <meta name=\"color-scheme\" content=\"dark\" />\n    <meta name=\"theme-color\" content=\"#0a0a0f\" />\n    <meta name=\"format-detection\" content=\"telephone=no\" />\n    <meta name=\"apple-itunes-app\" content=\"app-id=6809035218\" />\n\n    <!-- Pre-paint the persisted color theme onto <html> so there's no flash\n         of the wrong palette before React hydrates. Mirrors the useTheme hook\n         (storage key \"rw-theme\"; classes rw-theme-dark|light|ascii). -->\n    <script id=\"rw-theme-bootstrap\">\n      (function () {\n        // Calendar only; visible styles also require dark mode + .public-shell.\n        // Mirrors isHalloweenDate; parity tests execute this actual script.\n        try {\n          var parts = new Intl.DateTimeFormat(\"en-US\", {\n            timeZone: \"America/Chicago\", calendar: \"gregory\",\n            numberingSystem: \"latn\", month: \"numeric\", day: \"numeric\"\n          }).formatToParts(new Date());\n          var month = Number(parts.find(function (p) { return p.type === \"month\"; }).value);\n          var day = Number(parts.find(function (p) { return p.type === \"day\"; }).value);\n          document.documentElement.toggleAttribute(\"data-rw-halloween\", month === 10 && day >= 29 && day <= 31);\n        } catch (e) {\n          document.documentElement.removeAttribute(\"data-rw-halloween\");\n        }\n        try {\n          var t = null;\n          try { t = localStorage.getItem(\"rw-theme\"); } catch (e) {}\n          if (t !== \"dark\" && t !== \"light\" && t !== \"ascii\") {\n            var m2 = document.cookie.match(/(?:^|;\\s*)rw-theme=([^;]+)/);\n            t = m2 ? decodeURIComponent(m2[1]) : null;\n          }\n          if (t !== \"dark\" && t !== \"light\" && t !== \"ascii\") {\n            var prefersDark = true;\n            try {\n              if (window.matchMedia) {\n                prefersDark = window.matchMedia(\"(prefers-color-scheme: dark)\").matches;\n         ",
+ "hops": [
+  {
+   "status": 200,
+   "url": "https://runtimewire.com/article/raindrop-raises-35m-series-a-launches-agent-simulations"
+  }
+ ],
+ "length": 45802,
+ "name": "src039",
+ "status": 200,
+ "text": "Raindrop raises $35M and launches pre-release testing for AI agents",
+ "text_source": "h1",
+ "url": "https://runtimewire.com/article/raindrop-raises-35m-series-a-launches-agent-simulations"
+}

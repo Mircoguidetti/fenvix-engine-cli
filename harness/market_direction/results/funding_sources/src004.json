@@ -1,0 +1,18 @@
+{
+ "at": "2026-11-24T19:11:01+00:00",
+ "error": null,
+ "final_url": "https://dealroom.co/news/164699-blacksmith-hits-1b-valuation-with-66m-series-c-led-by-sequoia/",
+ "first_2kb": "<!DOCTYPE html>\n<html lang=\"en\">\n<head><script>\n(function() {\n  /* The site is light only. Nothing is read from storage and nothing chooses:\n     the attribute is pinned before first paint so there is no flash, and an OS\n     dark preference or a stale 'dealroom-theme' value in an old browser cannot\n     reach the page. Charts and decks are excluded from this injection and keep\n     their own two-theme handling.\n\n     The attribute must always be PRESENT. css/dealroom-theme-3da7d8e.css has no\n     bare :root colour block - every colour token is defined under\n     html[data-theme=\"light\"] / html[data-theme=\"dark\"]. Drop the attribute and\n     every var(--navy)/var(--white)/var(--text-light) resolves to nothing and the\n     page loses its colour entirely. */\n  document.documentElement.dataset.theme = 'light';\n  document.documentElement.style.colorScheme = 'light';\n})();\n</script>\n<link rel=\"stylesheet\" href=\"/css/dealroom-theme-3da7d8e.css?v=9b0c482dd17c68aa\">\n<script defer src=\"/js/dealroom-theme-3da7d8e.js?v=8e037441727df604\"></script>\n<link rel=\"stylesheet\" href=\"/css/nav-search.css?v=7bf8a5aa470d74ac\">\n<script defer src=\"/js/nav-search.js?v=2275f7d0174502bd\" data-results-css=\"/css/search-results.css?v=6b9bce8019b58564\" data-results-js=\"/js/search-results.js?v=2b1def41ea41d712\" data-crop-src=\"/charts/preview-crop.js?v=a923b24416b443eb\" data-radial-src=\"/js/mafia-radial-thumb.js?v=670b59a854bb2e79\"></script>\n<script defer src=\"/js/newsletter-subscribe.js?v=8be786790ccd8294\"></script>\n<script defer src=\"/js/update-toast.js?v=6a2db8ee53ab9b44\" data-build=\"580f1411eb347d51931850ae42026aae789c2bfe\"></script>\n<script defer src=\"/js/demo-pill.js?v=bf590ade857338be\"></script>\n<style>\n  html.is-embed body > nav, html.is-embed nav.site-nav, html.is-embed .mobile-nav, html.is-embed .family-subnav, html.is-embed #footer-placeholder, html.is-embed body > footer { display: none !important; }\n  html.is-embed main { padding-top: 0 !important; }\n</style>\n<script>(function(){try{var e=new URLSearchParams(location.search).get('emb",
+ "hops": [
+  {
+   "status": 200,
+   "url": "https://dealroom.co/news/164699-blacksmith-hits-1b-valuation-with-66m-series-c-led-by-sequoia/"
+  }
+ ],
+ "length": 93406,
+ "name": "src004",
+ "status": 200,
+ "text": "Blacksmith hits $1B valuation with $66M Series C led by Sequoia",
+ "text_source": "h1",
+ "url": "https://dealroom.co/news/164699-blacksmith-hits-1b-valuation-with-66m-series-c-led-by-sequoia/"
+}

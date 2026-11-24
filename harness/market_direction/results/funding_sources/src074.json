@@ -1,0 +1,19 @@
+{
+ "at": "2026-11-24T19:12:30+00:00",
+ "error": "ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='www.businesswire.com', port=443): Read timed out. (read timeout=30)\"))",
+ "final_url": "https://www.businesswire.com/news/home/20250527864827/en",
+ "first_2kb": "",
+ "hops": [
+  {
+   "error": "ReadTimeout(ReadTimeoutError(\"HTTPSConnectionPool(host='www.businesswire.com', port=443): Read timed out. (read timeout=30)\"))",
+   "status": null,
+   "url": "https://www.businesswire.com/news/home/20250527864827/en"
+  }
+ ],
+ "length": 0,
+ "name": "src074",
+ "status": null,
+ "text": "",
+ "text_source": "",
+ "url": "https://www.businesswire.com/news/home/20250527864827/en"
+}

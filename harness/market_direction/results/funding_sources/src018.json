@@ -1,0 +1,22 @@
+{
+ "at": "2026-11-24T19:11:05+00:00",
+ "error": null,
+ "final_url": "https://parsers.vc/news/250409-honeyhive-takes-flight-with-7-4-million/",
+ "first_2kb": "<!DOCTYPE html>\r\n<html lang=\"en\">\r\n\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/static/img/favIco.png\">\r\n<link rel=\"alternate icon\" href=\"/favicon.ico\">\r\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\r\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\r\n<meta property=\"og:site_name\" content=\"Parsers VC\">\r\n\r\n<script async src=\"https://assets.endorsely.com/endorsely.js\" data-endorsely=\"41752bff-0702-4786-a8f3-d2a6ecb453c4\"></script>\r\n<script>\r\n    // The script leaves the referral in window.endorsely_referral, and the checkout that has to\r\n    // carry it to Stripe is started on the server. Copied into the form when it is submitted, not\r\n    // when the page is drawn: the HTML may be a Cloudflare copy made for somebody else, and the\r\n    // async script may not have run yet by the time the page is ready.\r\n    document.addEventListener('submit', function(e){\r\n        var field = e.target && e.target.elements ? e.target.elements.endorsely_referral : null;\r\n        if(field && window.endorsely_referral){ field.value = window.endorsely_referral; }\r\n    }, true);\r\n</script>\r\n\r\n<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\">\r\n    <title>HoneyHive Takes Flight with $7.4 Million Funding Round</title>\r\n\r\n    <meta name=\"description\" content=\"In the bustling heart of New York City, a new player is making waves in the AI landscape. HoneyHive, an innovative platform focused on AI agent observab...\">\r\n    <meta name=\"dateModified\" content=\"April 9, 2025, 9:34 am UTC\">\r\n    <meta property=\"og:image\" content=\"https://parsers.vc/logo/b7824535-5d68-4401-8e31-9181667b9e15-1.png\">\r\n    <meta property=\"og:description\" content=\"In the bustling heart of New York City, a new player is making waves in the AI landscape. HoneyHive, an innovative platform focused on AI agent observab...\">\r\n    <meta property=\"og:title\" content=\"HoneyHive Takes Flight with $7.4 Million Funding Round\">\r\n    <meta name=\"twitter:card\" content=\"summary_large_image\"",
+ "hops": [
+  {
+   "status": 301,
+   "url": "https://parsers.vc/news/250409-honeyhive-takes-flight-with-7-4-million"
+  },
+  {
+   "status": 200,
+   "url": "https://parsers.vc/news/250409-honeyhive-takes-flight-with-7-4-million/"
+  }
+ ],
+ "length": 53054,
+ "name": "src018",
+ "status": 200,
+ "text": "HoneyHive Takes Flight with $7.4 Million Funding Round",
+ "text_source": "h1",
+ "url": "https://parsers.vc/news/250409-honeyhive-takes-flight-with-7-4-million"
+}

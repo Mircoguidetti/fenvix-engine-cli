@@ -1,0 +1,18 @@
+{
+ "at": "2026-11-24T19:11:52+00:00",
+ "error": null,
+ "final_url": "https://sqmagazine.co.uk/datumo-raises-15m-for-ai-evaluation-tools/",
+ "first_2kb": "<!DOCTYPE html>\n<html lang=\"en-US\">\n<head >\n<meta charset=\"UTF-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<script id=\"consent-defaults\" data-cfasync=\"false\" data-no-optimize=\"1\" data-no-defer=\"1\">\nwindow.dataLayer = window.dataLayer || [];\nfunction cmpGtag(){ window.dataLayer.push(arguments); }\n(function () {\n  var gpc = navigator.globalPrivacyControl === true;\n  cmpGtag('consent', 'default', {\n    'analytics_storage': 'denied', 'ad_storage': 'denied', 'ad_user_data': 'denied', 'ad_personalization': 'denied',\n    'region': ['GB','AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','CH'],\n    'wait_for_update': 500\n  });\n  if (gpc) {\n    cmpGtag('consent', 'default', { 'ad_user_data': 'denied', 'ad_personalization': 'denied' });\n  }\n  window.clarity = window.clarity || function () { (window.clarity.q = window.clarity.q || []).push(arguments); };\n  window.clarity('consentv2', { analytics_Storage: 'denied', ad_Storage: 'denied' });\n\n  var s = function (b) { return b ? 'granted' : 'denied'; };\n  function send(analytics, adStore, adData, adPers) {\n    cmpGtag('consent', 'update', { 'analytics_storage': s(analytics), 'ad_storage': s(adStore), 'ad_user_data': s(adData && !gpc), 'ad_personalization': s(adPers && !gpc) });\n    window.clarity('consentv2', { analytics_Storage: s(analytics), ad_Storage: s(adStore && !gpc) });\n  }\n  function apply(tcData, success) {\n    if (!success || !tcData) return;\n    var st = tcData.eventStatus;\n    if (st !== 'tcloaded' && st !== 'useractioncomplete') return;\n    if (tcData.gdprApplies === false) { send(true, true, true, true); return; }\n    var c = (tcData.purpose && tcData.purpose.consents) || {};\n    send(c[1] === true, c[1] === true, c[1] === true && c[7] === true, c[3] === true && c[4] === true);\n  }\n  var tries = 0;\n  (function init(){\n    if (typeof window.__tcfapi === 'function') { window.__tcfapi('addEventListener', 2, apply); }\n    else if (++trie",
+ "hops": [
+  {
+   "status": 200,
+   "url": "https://sqmagazine.co.uk/datumo-raises-15m-for-ai-evaluation-tools/"
+  }
+ ],
+ "length": 372422,
+ "name": "src045",
+ "status": 200,
+ "text": "Datumo Eyes US and Japan After Fresh $15.5M Funding for AI Trust Tools",
+ "text_source": "h1",
+ "url": "https://sqmagazine.co.uk/datumo-raises-15m-for-ai-evaluation-tools/"
+}

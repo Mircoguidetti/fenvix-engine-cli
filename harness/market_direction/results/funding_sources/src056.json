@@ -1,0 +1,18 @@
+{
+ "at": "2026-11-24T19:11:55+00:00",
+ "error": null,
+ "final_url": "https://momentic.ai/blog/series-a",
+ "first_2kb": "<!DOCTYPE html><html lang=\"en\" data-theme=\"light\"> <head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, viewport-fit=cover\"><meta name=\"theme-color\" content=\"#f5f3f2\"><link rel=\"icon\" type=\"image/png\" sizes=\"64x64\" href=\"/images/favicon-tile.png\"><link rel=\"apple-touch-icon\" href=\"/images/apple-touch-icon.png\"><title>Momentic raises $15M Series A for software verification</title><meta name=\"description\" content=\"Momentic raised a $15M Series A led by Standard Capital to build the definitive verification layer for modern software so teams can ship faster with confidence.\"><meta name=\"is-agentic-site-type\" content=\"app\"><link rel=\"canonical\" href=\"https://momentic.ai/blog/series-a\"><link rel=\"alternate\" type=\"text/markdown\" href=\"/blog/series-a.md\"><link rel=\"alternate\" type=\"application/rss+xml\" title=\"Momentic blog\" href=\"/rss.xml\"><meta name=\"last-modified\" content=\"2026-11-17T19:09:20Z\"><script>(function(){var m=document.cookie.match(/(?:^|; )momentic_consent=([^;]+)/);var state=m?decodeURIComponent(m[1]):null;function gtag(){window.dataLayer.push(arguments)}function consentVendors(mode,value){window.dataLayer=window.dataLayer||[];gtag(\"consent\",mode,{analytics_storage:value,ad_storage:value,ad_user_data:value,ad_personalization:value})}consentVendors(\"default\",state===\"granted\"?\"granted\":\"denied\");window.momenticDefer=function(cb){var run=function(){var ric=window.requestIdleCallback||function(f){return setTimeout(f,1)};ric(cb,{timeout:2000})};if(document.readyState===\"complete\")run();else window.addEventListener(\"load\",run,{once:true})};window.momenticConsent={getState:function(){return state},grant:function(){if(state===\"granted\")return;state=\"granted\";consentVendors(\"update\",\"granted\");window.dataLayer.push({event:\"consent_granted\"});if(window.momenticLoadHubSpot)window.momenticLoadHubSpot()},deny:function(){state=\"denied\";consentVendors(\"update\",\"denied\");try{if(window.posthog&&window.posthog.opt_out_capturing)window.posthog.opt_out_capturing()}catch(e){}window.",
+ "hops": [
+  {
+   "status": 200,
+   "url": "https://momentic.ai/blog/series-a"
+  }
+ ],
+ "length": 87897,
+ "name": "src056",
+ "status": 200,
+ "text": "Momentic Raises $15M Series A to Build the Definitive Verification Layer for Software",
+ "text_source": "h1",
+ "url": "https://momentic.ai/blog/series-a"
+}
