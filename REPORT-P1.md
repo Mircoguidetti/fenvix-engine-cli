@@ -14,8 +14,8 @@ merge ordered by the coordinator, not by this session):
 | B scope of files read outside tests | **PARTLY DONE**: B1 done, B2 not implemented | ironcurtain run-level B 7,033 → 0 (B-abs 7,033 → 165 scoped); codex-multi-auth run-level B removed in one of two final rounds |
 | D entropy controlled by default (option 3) | **DONE** | agentsys D 99 → 0, sqlectron D 5 → 0 |
 
-**Tests that became identical: 778 → 2,555 (+1,777) in round 1, 2,551 in round 2** (6 repositories, S1 vs P1w4,
-4 workers). First line `NOT DONE` because C is not done and B2 is not implemented; the rest is ready for the
+**Tests that became identical: 778 → 2,555 (+1,777) in round 1, 2,550 in round 2 on the final engine 0903cf2**
+(6 repositories, S1 vs P1w4, 4 workers; 2,555 / 2,551 on d9c5854, before the D follow-up). First line `NOT DONE` because C is not done and B2 is not implemented; the rest is ready for the
 coordinator's `/review` and merge order.
 
 ## 1. How it was measured
@@ -37,10 +37,16 @@ coordinator's `/review` and merge order.
   `harness/p1/data/items/{F,A1,C,E,B}/`. The C, E and B rounds include C (it was reverted after them).
 * Data: `harness/p1/after.json`, `after-round2.json`, `after-serial-pair.json`, `items-*.json`,
   `harness/p1/data/after/` (rows, every verify JSON, trace header lines, E events; files over 1 MB gzipped).
+* Re-measurement on the final engine **0903cf2** (the D follow-up: entropy drawn before seeding, Bun password/CSRF;
+  section 3 D), same loop and build steps from a worktree at 0903cf2 (`/tmp/pm-p1/wt-final4`, the addon copied:
+  no Rust change since d9c5854), `--out $PM_WORK/p1-after4`, 2026-11-24. `engine_commit` in every row:
+  `0903cf229418300297669137d264c1a5abe69ca1+modified`. Data: `harness/p1/after-final.json`,
+  `after-final-round2.json`, `after-final-serial-pair.json`, `harness/p1/data/after-final/`. Section 2.1.
 
 ## 2. Before / after per repository
 
-Round 1 (round 2 in brackets), counts by `tally.py` category:
+Engine d9c5854 (the final engine 0903cf2 is in section 2.1). Round 1 (round 2 in brackets), counts by `tally.py`
+category:
 
 | repository | tests | identical before | identical after | A | B-tmp | B-abs | C | D | E | F | noise | other |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -74,6 +80,30 @@ Outcomes (each run's `outcome_counts`, round 1): identical before and after for 
 claudekit, sqlectron and ironcurtain (serial 226 failed, parallel 407 failed in both). codex-multi-auth: plain 6 → 7
 failed, `--det` serial 438 → 400 failed, parallel 429 → 428 failed (its `--det` runs fail ~400 tests on the trunk
 too; not investigated here).
+
+### 2.1 Re-measurement on 0903cf2 (final engine)
+
+Round 1 (round 2 in brackets), same columns; the before column is unchanged:
+
+| repository | identical after | A | B-tmp | B-abs | C | D | E | F | noise | other |
+|---|---|---|---|---|---|---|---|---|---|---|
+| agentsys | **1,542** (1,538) | 0 (0) | 0 | 0 | 1 (1) | 0 (0) | 0 | 1 (1) | 327 (327) | 353 (357) |
+| codex-multi-auth | 0 (0) | 4,552 (0) | 36 (8,661) | 0 | 550 (0) | 0 | 0 | 4 (0) | 3,520 (1) | 1 (1) |
+| ironcurtain | 0 (0) | 5,163 (5,170) | 266 (266) | 165 (165) | 548 (548) | 4 (4) | 0 | 135 (121) | 752 (759) | 0 |
+| nestjs-pino | 223 (223) | 0 | 0 | 0 | 35 (35) | 0 | 0 | 9 (9) | 2 (2) | 0 |
+| claudekit | **790** (789) | 0 | 0 | 0 | 2 (2) | 0 | 0 | 1 (0) | 20 (22) | 1 (1) |
+| sqlectron (sqlite3 rebuilt) | 0 (0) | 43 (43) | 0 | 0 | 0 | 0 (0) | 0 | 0 | 0 | 0 |
+| **total** | **2,555** (2,550) | | | | | | | | | |
+
+* Same as d9c5854 within one test per repository and round; the D follow-up changed no count.
+* codex-multi-auth: run-level B (8,661 tests) is gone in round 1 and present in round 2 here, the opposite of
+  d9c5854; the same timing-dependent `stat` (section 2, B).
+* Outcomes (`outcome_counts`): identical to d9c5854 for agentsys, nestjs-pino, claudekit, sqlectron; ironcurtain
+  `--det` parallel 408 / 407 failed (407 / 406 on d9c5854; serial 226 in both); codex-multi-auth `--det` serial
+  411 / 429 failed, parallel 389 / 330 (400 / 438 and 428 / 368 on d9c5854; plain 6 / 6).
+* Run time: round 1 ran on a loaded machine (plain, which the engine does not touch, was slower too: sqlectron plain
+  5.54 → 23.76 s, claudekit 7.65 → 11.82 s); round 2 matches d9c5854: claudekit `--det` serial 9.07 s, parallel
+  9.16 s; sqlectron serial 7.80 s, parallel 4.67 s. No run time is claimed from round 1.
 
 ## 3. Per item (one round each, cumulative; identical tests and the item's count)
 

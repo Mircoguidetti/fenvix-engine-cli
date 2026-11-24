@@ -1,0 +1,1088 @@
+{
+ "agentsys": {
+  "A_only_via_enumeration": 0,
+  "B_abs_top20": [],
+  "F_detail": {
+   "not-proven uncontrolled.io": 4
+  },
+  "also_not_identical_serial_vs_serial": {
+   "A": 0,
+   "B-abs": 0,
+   "B-tmp": 0,
+   "C": 0,
+   "D": 0,
+   "E": 0,
+   "F": 0,
+   "noise": 0,
+   "other": 0
+  },
+  "counts": {
+   "A": 0,
+   "B-abs": 0,
+   "B-tmp": 0,
+   "C": 1,
+   "D": 0,
+   "E": 0,
+   "F": 4,
+   "noise": 0,
+   "other": 324
+  },
+  "engine_commit": [
+   "0903cf229418300297669137d264c1a5abe69ca1+modified"
+  ],
+  "env_read_outside_tests": 269,
+  "examples": {
+   "C": [
+    {
+     "at": "<deps>/write-file-atomic/lib/index.js:32",
+     "description": "event #0: process.pid @ <deps>/write-file-atomic/lib/index.js:32 returned different values: \"c7880e52ccc1\" vs \"1e4373f459ea\"",
+     "nodeid": "tests/lib-package.test.js::agentsys package security::does not ship the unused js-yaml parser",
+     "op": "process.pid",
+     "reason": "other",
+     "status": "diverged"
+    }
+   ],
+   "F": [
+    {
+     "at": "lib/platform/detect-platform.js:136",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ lib/platform/detect-platform.js:136) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: child, env, io)",
+     "nodeid": "__tests__/dev-cli.test.js::async handler support::detect handler returns a promise that resolves to 0",
+     "op": "uncontrolled.io",
+     "reason": "io",
+     "status": "not-proven"
+    },
+    {
+     "at": "lib/patterns/pipeline.js:82",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ lib/patterns/pipeline.js:82) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "nodeid": "__tests__/pipeline.test.js::pipeline::target file filtering::should respect maxFiles option",
+     "op": "uncontrolled.io",
+     "reason": "io",
+     "status": "not-proven"
+    },
+    {
+     "at": "lib/patterns/pipeline.js:82",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ lib/patterns/pipeline.js:82) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "nodeid": "__tests__/pipeline.test.js::pipeline::finding aggregation::should aggregate findings from multiple files",
+     "op": "uncontrolled.io",
+     "reason": "io",
+     "status": "not-proven"
+    }
+   ],
+   "other": [
+    {
+     "at": "lib/patterns/cli-enhancers.js:110",
+     "description": "the test started a child process: what the child does (uncontrolled.child @ lib/patterns/cli-enhancers.js:110) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: child, env)",
+     "nodeid": "__tests__/cli-enhancers.test.js::cli-enhancers::isToolAvailable::should return true for available commands",
+     "op": "uncontrolled.child",
+     "reason": "child",
+     "status": "not-proven"
+    },
+    {
+     "at": "lib/patterns/cli-enhancers.js:110",
+     "description": "the test started a child process: what the child does (uncontrolled.child @ lib/patterns/cli-enhancers.js:110) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: child, env)",
+     "nodeid": "__tests__/cli-enhancers.test.js::cli-enhancers::isToolAvailable::should return false for unavailable commands",
+     "op": "uncontrolled.child",
+     "reason": "child",
+     "status": "not-proven"
+    },
+    {
+     "at": "lib/patterns/cli-enhancers.js:110",
+     "description": "the test started a child process: what the child does (uncontrolled.child @ lib/patterns/cli-enhancers.js:110) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: child)",
+     "nodeid": "__tests__/cli-enhancers.test.js::cli-enhancers::isToolAvailable::should handle command execution errors gracefully",
+     "op": "uncontrolled.child",
+     "reason": "child",
+     "status": "not-proven"
+    }
+   ]
+  },
+  "identical": 1895,
+  "input_differences": [],
+  "noise_file": null,
+  "noise_pair_not_identical": null,
+  "noise_whose_serial_pair_verdict_is_A_F": {},
+  "noise_whose_serial_pair_verdict_is_A_F_by_reason": {},
+  "not_identical": 329,
+  "other_by_reason": {
+   "child": 131,
+   "env": 179,
+   "fs": 14
+  },
+  "pair": "serial",
+  "repo": "agentsys",
+  "run_level": 0,
+  "run_level_first_input": {},
+  "status_by_category": {
+   "C": {
+    "diverged": 1
+   },
+   "F": {
+    "not-proven": 4
+   },
+   "other": {
+    "diverged": 14,
+    "not-proven": 310
+   }
+  },
+  "summary": {
+   "diverged": 15,
+   "identical": 1895,
+   "input_differs": 0,
+   "inputs_recorded": true,
+   "missing": 0,
+   "not_proven": 314,
+   "order_identical": true,
+   "outcome_unstable": 0,
+   "reasons": {
+    "child": 131,
+    "env": 179,
+    "fs": 14,
+    "io": 4,
+    "other": 1
+   },
+   "runs": 2,
+   "stable": 1895,
+   "tests": 2224
+  },
+  "tests": 2224,
+  "verify_cmd": "/tmp/pm-p1/venv/networkx/bin/python -m detpy.fenvix verify /tmp/pm-p1/p1-after4/agentsys/S1.jsonl /tmp/pm-p1/p1-after4/agentsys/S2.jsonl --json",
+  "verify_file": "agentsys/verify_serial_noise2w1.json"
+ },
+ "claudekit": {
+  "A_only_via_enumeration": 0,
+  "B_abs_top20": [],
+  "F_detail": {
+   "not-proven uncontrolled.io": 2
+  },
+  "also_not_identical_serial_vs_serial": {
+   "A": 0,
+   "B-abs": 0,
+   "B-tmp": 0,
+   "C": 0,
+   "D": 0,
+   "E": 0,
+   "F": 0,
+   "noise": 0,
+   "other": 0
+  },
+  "counts": {
+   "A": 0,
+   "B-abs": 0,
+   "B-tmp": 0,
+   "C": 2,
+   "D": 0,
+   "E": 0,
+   "F": 2,
+   "noise": 0,
+   "other": 20
+  },
+  "engine_commit": [
+   "0903cf229418300297669137d264c1a5abe69ca1+modified"
+  ],
+  "env_read_outside_tests": 8,
+  "examples": {
+   "C": [
+    {
+     "at": "<deps>/signal-exit/index.js:15",
+     "description": "event #523: process.pid @ <deps>/signal-exit/index.js:15 returned different values: \"c30af3c6995c\" vs \"93cc95b95219\"",
+     "nodeid": "tests/integration/setup-embedded-hooks.test.ts::Setup Command - Embedded Hooks Integration::Installation types::should handle user-only installation",
+     "op": "process.pid",
+     "reason": "other",
+     "status": "diverged"
+    },
+    {
+     "at": "<deps>/signal-exit/index.js:15",
+     "description": "event #16: process.pid @ <deps>/signal-exit/index.js:15 returned different values: \"c30af3c6995c\" vs \"93cc95b95219\"",
+     "nodeid": "tests/integration/setup-embedded-hooks.test.ts::Setup Command - Embedded Hooks Integration::Installation types::should handle project-only installation",
+     "op": "process.pid",
+     "reason": "other",
+     "status": "diverged"
+    }
+   ],
+   "F": [
+    {
+     "at": "cli/lib/filesystem.ts:315",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ cli/lib/filesystem.ts:315) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: child, io)",
+     "nodeid": "tests/lib/project-detection.test.ts::Project Detection System::detectProjectContext::should resolve path correctly",
+     "op": "uncontrolled.io",
+     "reason": "io",
+     "status": "not-proven"
+    },
+    {
+     "at": "cli/lib/filesystem.ts:315",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ cli/lib/filesystem.ts:315) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: child, io)",
+     "nodeid": "tests/lib/project-detection.test.ts::Project Detection System::Edge cases and error handling::should handle corrupted package.json files",
+     "op": "uncontrolled.io",
+     "reason": "io",
+     "status": "not-proven"
+    }
+   ],
+   "other": [
+    {
+     "at": "tests/colors.test.ts:18",
+     "description": "the test read a CI-volatile or proxy environment variable: its value (uncontrolled.env @ tests/colors.test.ts:18) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: env)",
+     "nodeid": "tests/colors.test.ts::Colors utility::Environment detection::should enable colors by default in TTY",
+     "op": "uncontrolled.env",
+     "reason": "env",
+     "status": "not-proven"
+    },
+    {
+     "at": "<deps>/graceful-fs/polyfills.js:309",
+     "description": "event #14: fs.stat.mtimeMs @ <deps>/graceful-fs/polyfills.js:309 returned different values: \"+0.0009765625\" vs \"+0\"",
+     "nodeid": "tests/commands/list.test.ts::list command::listAgents::should display agent names from frontmatter, not filenames",
+     "op": "fs.stat.mtimeMs",
+     "reason": "fs",
+     "status": "diverged"
+    },
+    {
+     "at": null,
+     "description": "the test called something the engine cannot account for: not accounted for: api:tty.isatty (and 1 more). Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun",
+     "nodeid": "tests/config/vitest-configs.test.ts::Vitest Configuration Validation::Main Configuration::should load main vitest config without errors",
+     "op": null,
+     "reason": "api",
+     "status": "not-proven"
+    }
+   ]
+  },
+  "identical": 790,
+  "input_differences": [],
+  "noise_file": null,
+  "noise_pair_not_identical": null,
+  "noise_whose_serial_pair_verdict_is_A_F": {},
+  "noise_whose_serial_pair_verdict_is_A_F_by_reason": {},
+  "not_identical": 24,
+  "other_by_reason": {
+   "api": 1,
+   "child": 4,
+   "env": 1,
+   "fs": 2,
+   "other": 12
+  },
+  "pair": "serial",
+  "repo": "claudekit",
+  "run_level": 0,
+  "run_level_first_input": {},
+  "status_by_category": {
+   "C": {
+    "diverged": 2
+   },
+   "F": {
+    "not-proven": 2
+   },
+   "other": {
+    "diverged": 14,
+    "not-proven": 6
+   }
+  },
+  "summary": {
+   "diverged": 16,
+   "identical": 790,
+   "input_differs": 0,
+   "inputs_recorded": true,
+   "missing": 0,
+   "not_proven": 8,
+   "order_identical": true,
+   "outcome_unstable": 0,
+   "reasons": {
+    "api": 1,
+    "child": 4,
+    "env": 1,
+    "fs": 2,
+    "io": 2,
+    "other": 14
+   },
+   "runs": 2,
+   "stable": 790,
+   "tests": 814
+  },
+  "tests": 814,
+  "verify_cmd": "/tmp/pm-p1/venv/networkx/bin/python -m detpy.fenvix verify /tmp/pm-p1/p1-after4/claudekit/S1.jsonl /tmp/pm-p1/p1-after4/claudekit/S2.jsonl --json",
+  "verify_file": "claudekit/verify_serial_noise2w1.json"
+ },
+ "codex-multi-auth": {
+  "A_only_via_enumeration": 0,
+  "B_abs_top20": [],
+  "F_detail": {
+   "diverged fs.mkdtemp,uncontrolled.io": 3,
+   "diverged uncontrolled.io": 1,
+   "not-proven uncontrolled.io": 4
+  },
+  "also_not_identical_serial_vs_serial": {
+   "A": 0,
+   "B-abs": 0,
+   "B-tmp": 0,
+   "C": 0,
+   "D": 0,
+   "E": 0,
+   "F": 0,
+   "noise": 0,
+   "other": 0
+  },
+  "counts": {
+   "A": 4578,
+   "B-abs": 0,
+   "B-tmp": 37,
+   "C": 563,
+   "D": 0,
+   "E": 0,
+   "F": 8,
+   "noise": 0,
+   "other": 3477
+  },
+  "engine_commit": [
+   "0903cf229418300297669137d264c1a5abe69ca1+modified"
+  ],
+  "env_read_outside_tests": 262,
+  "examples": {
+   "A": [
+    {
+     "at": null,
+     "description": "outside any test the run read sources that are not controlled (api:process.reallyExit, env:*=0110ed4098fc34b8, env:*=014203fb8eb4ee70, env:*=05e8c40ca7423987, env:*=05f7c5ac654a7275, env:*=05ffea3936c09511, env:*=0742b73103b75768, env:*=098c806c79ab66ac, env:*=0de8c177e914ed5a, env:*=0f0f918707090fe",
+     "nodeid": "test/account-access.test.ts::parseAuthorizedAccounts::reads the ids and the default from a wham/accounts/check payload",
+     "op": null,
+     "reason": "api",
+     "status": "not-proven"
+    },
+    {
+     "at": null,
+     "description": "outside any test the run read sources that are not controlled (api:process.reallyExit, env:*=0110ed4098fc34b8, env:*=014203fb8eb4ee70, env:*=05e8c40ca7423987, env:*=05f7c5ac654a7275, env:*=05ffea3936c09511, env:*=0742b73103b75768, env:*=098c806c79ab66ac, env:*=0de8c177e914ed5a, env:*=0f0f918707090fe",
+     "nodeid": "test/account-access.test.ts::parseAuthorizedAccounts::keeps every listed account, not just the default",
+     "op": null,
+     "reason": "api",
+     "status": "not-proven"
+    },
+    {
+     "at": null,
+     "description": "outside any test the run read sources that are not controlled (api:process.reallyExit, env:*=0110ed4098fc34b8, env:*=014203fb8eb4ee70, env:*=05e8c40ca7423987, env:*=05f7c5ac654a7275, env:*=05ffea3936c09511, env:*=0742b73103b75768, env:*=098c806c79ab66ac, env:*=0de8c177e914ed5a, env:*=0f0f918707090fe",
+     "nodeid": "test/account-access.test.ts::parseAuthorizedAccounts::returns null for a payload with no usable account list",
+     "op": null,
+     "reason": "api",
+     "status": "not-proven"
+    }
+   ],
+   "B-tmp": [
+    {
+     "at": "test/app-bind.test.ts:1103",
+     "description": "event #227: fs.read.outside @ test/app-bind.test.ts:1103 returned different values: \"<tmp>/multi-auth/runtime-rotation-app-helper.json|218:d0688e59c777636e3caf3d9a8aba1d6d\" vs \"<tmp>/multi-auth/runtime-rotation-app-helper.json|219:e1e8c7ce1321ccb0ee6d1dd028789207\"",
+     "nodeid": "test/app-bind.test.ts::Codex app runtime rotation bind::preserves an owned helper status when identity verification or stopping fails",
+     "op": "fs.read.outside",
+     "reason": "fs",
+     "status": "diverged"
+    },
+    {
+     "at": "test/app-bind.test.ts:1925",
+     "description": "event #222: fs.read.outside @ test/app-bind.test.ts:1925 returned different values: \"<tmp>/router-status.json|1022:b4a92853c10f6249d5f665fd51f2b64b\" vs \"<tmp>/router-status.json|1023:ef9fb055f0117091353248934095ba50\"",
+     "nodeid": "test/app-bind.test.ts::Codex app runtime rotation bind::rejects router startup when state is transiently unreadable instead of binding port 0",
+     "op": "fs.read.outside",
+     "reason": "fs",
+     "status": "diverged"
+    },
+    {
+     "at": "test/codex-app-router.test.ts:86",
+     "description": "event #228: fs.read.outside @ test/codex-app-router.test.ts:86 returned different values: \"<tmp>/status.json|1094:185933d019f29d4992394c8ba97fcd34\" vs \"<tmp>/status.json|1095:3bcb10c9b94f71d728ace30416b97c15\"",
+     "nodeid": "test/codex-app-router.test.ts::codex app router daemon::starts, serializes redacted running status, and cleans up on SIGTERM",
+     "op": "fs.read.outside",
+     "reason": "fs",
+     "status": "diverged"
+    }
+   ],
+   "C": [
+    {
+     "at": "lib/storage/file-lock.ts:148",
+     "description": "event #10: process.pid @ lib/storage/file-lock.ts:148 returned different values: \"300a43fd5d85\" vs \"85a0fac71ebb\"",
+     "nodeid": "test/account-policy.test.ts::account policy store::persists an emergency-only policy without converting it into a pause",
+     "op": "process.pid",
+     "reason": "other",
+     "status": "diverged"
+    },
+    {
+     "at": "lib/storage/file-lock.ts:148",
+     "description": "event #15: process.pid @ lib/storage/file-lock.ts:148 returned different values: \"300a43fd5d85\" vs \"85a0fac71ebb\"",
+     "nodeid": "test/account-policy.test.ts::account policy store::keeps automatic first-use priming off for fresh accounts and pre-2.17 policy files",
+     "op": "process.pid",
+     "reason": "other",
+     "status": "diverged"
+    },
+    {
+     "at": "lib/storage/file-lock.ts:148",
+     "description": "event #10: process.pid @ lib/storage/file-lock.ts:148 returned different values: \"300a43fd5d85\" vs \"85a0fac71ebb\"",
+     "nodeid": "test/account-policy.test.ts::account policy store::stores policy rows by hashed account identity",
+     "op": "process.pid",
+     "reason": "other",
+     "status": "diverged"
+    }
+   ],
+   "F": [
+    {
+     "at": "<node>",
+     "description": "event #1: [fs] fs.mkdtemp @ <node> = daily-lease-stop-LNHBSQ  <>  [other] uncontrolled.io @ lib/storage/file-lock.ts:208 = concurrent I/O",
+     "nodeid": "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with EPERM",
+     "op": "fs.mkdtemp",
+     "reason": "fs",
+     "status": "diverged"
+    },
+    {
+     "at": "lib/storage/file-lock.ts:56",
+     "description": "event #1: [other] uncontrolled.io @ lib/storage/file-lock.ts:56 = concurrent I/O  <>  [fs] fs.mkdtemp @ <node> = api-checks-TlTTHk",
+     "nodeid": "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes",
+     "op": "uncontrolled.io",
+     "reason": "io",
+     "status": "diverged"
+    },
+    {
+     "at": "lib/runtime/inference-activity.ts:21",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ lib/runtime/inference-activity.ts:21) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "nodeid": "test/codex-manager-cli.test.ts::codex manager cli commands::prints populated account status for auth status",
+     "op": "uncontrolled.io",
+     "reason": "io",
+     "status": "not-proven"
+    }
+   ],
+   "other": [
+    {
+     "at": null,
+     "description": "the test called something the engine cannot account for: not accounted for: api:worker_threads.markAsUncloneable. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun",
+     "nodeid": "test/accounts-edge.test.ts::accounts edge branches::loadFromDisk tolerates sync persistence failures",
+     "op": null,
+     "reason": "api",
+     "status": "not-proven"
+    },
+    {
+     "at": "lib/codex-cli/state.ts:253",
+     "description": "event #5: [other] env.get @ lib/codex-cli/state.ts:253 = CODEX_CLI_CONFIG_PATH=unset  <>  [other] os.tmpdir @ lib/storage.ts:1387 = 2b5283140ad8",
+     "nodeid": "test/accounts.test.ts::AccountManager::saveToDiskDebounced::uses the manager's captured storage path state for delayed saves",
+     "op": "env.get",
+     "reason": "env",
+     "status": "diverged"
+    },
+    {
+     "at": "lib/storage.ts:1387",
+     "description": "event #3: [fs] fs.stat @ lib/storage.ts:1387 = C:/repo-a/storage.json|missing  <>  [other] env.get @ lib/codex-cli/state.ts:253 = CODEX_CLI_CONFIG_PATH=unset",
+     "nodeid": "test/accounts.test.ts::AccountManager::saveToDiskDebounced::uses the manager's captured Windows-style storage path state for delayed saves",
+     "op": "fs.stat",
+     "reason": "fs",
+     "status": "diverged"
+    }
+   ]
+  },
+  "identical": 0,
+  "input_differences": [],
+  "noise_file": null,
+  "noise_pair_not_identical": null,
+  "noise_whose_serial_pair_verdict_is_A_F": {},
+  "noise_whose_serial_pair_verdict_is_A_F_by_reason": {},
+  "not_identical": 8663,
+  "other_by_reason": {
+   "api": 6,
+   "beyond-trace": 1,
+   "child": 25,
+   "env": 222,
+   "fs": 146,
+   "missing": 2,
+   "net": 1,
+   "order": 2933,
+   "other": 121,
+   "sched": 1,
+   "time": 19
+  },
+  "pair": "serial",
+  "repo": "codex-multi-auth",
+  "run_level": 0,
+  "run_level_first_input": {},
+  "status_by_category": {
+   "A": {
+    "not-proven": 4578
+   },
+   "B-tmp": {
+    "diverged": 37
+   },
+   "C": {
+    "diverged": 563
+   },
+   "F": {
+    "diverged": 4,
+    "not-proven": 4
+   },
+   "other": {
+    "diverged": 3223,
+    "missing": 2,
+    "not-proven": 252
+   }
+  },
+  "summary": {
+   "diverged": 3827,
+   "identical": 0,
+   "input_differs": 0,
+   "inputs_recorded": true,
+   "missing": 2,
+   "not_proven": 4834,
+   "order_identical": false,
+   "outcome_unstable": 22,
+   "reasons": {
+    "api": 4584,
+    "beyond-trace": 1,
+    "child": 25,
+    "env": 222,
+    "fs": 185,
+    "io": 6,
+    "missing": 2,
+    "net": 1,
+    "order": 2933,
+    "other": 684,
+    "sched": 1,
+    "time": 19
+   },
+   "runs": 2,
+   "stable": 0,
+   "tests": 8663
+  },
+  "tests": 8663,
+  "verify_cmd": "/tmp/pm-p1/venv/networkx/bin/python -m detpy.fenvix verify /tmp/pm-p1/p1-after4/codex-multi-auth/S1.jsonl /tmp/pm-p1/p1-after4/codex-multi-auth/S2.jsonl --json",
+  "verify_file": "codex-multi-auth/verify_serial_noise2w1.json"
+ },
+ "ironcurtain": {
+  "A_only_via_enumeration": 0,
+  "B_abs_top20": [
+   [
+    "<abs>/062a71d14ede78988ad20da36f5aec4ada23f4",
+    151
+   ],
+   [
+    "<abs>/session-state.json",
+    11
+   ],
+   [
+    "<abs>/ironcurtain-roots-bridge-a-13051",
+    3
+   ]
+  ],
+  "F_detail": {
+   "not-proven uncontrolled.io": 135
+  },
+  "also_not_identical_serial_vs_serial": {
+   "A": 0,
+   "B-abs": 0,
+   "B-tmp": 0,
+   "C": 0,
+   "D": 0,
+   "E": 0,
+   "F": 0,
+   "noise": 0,
+   "other": 0
+  },
+  "counts": {
+   "A": 5256,
+   "B-abs": 165,
+   "B-tmp": 267,
+   "C": 625,
+   "D": 4,
+   "E": 0,
+   "F": 135,
+   "noise": 0,
+   "other": 581
+  },
+  "engine_commit": [
+   "0903cf229418300297669137d264c1a5abe69ca1+modified"
+  ],
+  "env_read_outside_tests": 324,
+  "examples": {
+   "A": [
+    {
+     "at": null,
+     "description": "outside any test the run read sources that are not controlled (api:process._kill, native:/tmp/pm-p1/repos/ironcurtain/node_modules/@rolldown/binding-linux-x64-gnu/rolldown-binding.linux-x64-gnu.node): every test may have observed them, so identical fingerprints are no evidence of an identical execut",
+     "nodeid": "src/web-ui/__tests__/config-dispatch.test.ts@@main::network settings::reads default false without mutating the config file",
+     "op": null,
+     "reason": "api",
+     "status": "not-proven"
+    },
+    {
+     "at": null,
+     "description": "outside any test the run read sources that are not controlled (api:process._kill, native:/tmp/pm-p1/repos/ironcurtain/node_modules/@rolldown/binding-linux-x64-gnu/rolldown-binding.linux-x64-gnu.node): every test may have observed them, so identical fingerprints are no evidence of an identical execut",
+     "nodeid": "src/web-ui/__tests__/config-dispatch.test.ts@@main::network settings::persists private network access false and emits config.changed",
+     "op": null,
+     "reason": "api",
+     "status": "not-proven"
+    },
+    {
+     "at": null,
+     "description": "outside any test the run read sources that are not controlled (api:process._kill, native:/tmp/pm-p1/repos/ironcurtain/node_modules/@rolldown/binding-linux-x64-gnu/rolldown-binding.linux-x64-gnu.node): every test may have observed them, so identical fingerprints are no evidence of an identical execut",
+     "nodeid": "src/web-ui/__tests__/config-dispatch.test.ts@@main::network settings::persists private network access true and emits config.changed",
+     "op": null,
+     "reason": "api",
+     "status": "not-proven"
+    }
+   ],
+   "B-abs": [
+    {
+     "at": "<run>",
+     "description": "before the test started: run input file:<abs>/062a71d14ede78988ad20da36f5aec4ada23f4 differs: <not recorded> vs \"stat:file size=334\"; also differ: file:<abs>/88a34982b40b21235b184addf20db013de4522, file:<abs>/94, file:<abs>/e9, file:<abs>/ic-enrich-evil-V2QKUW, file:<abs>/ic-enrich-evil-rtvBbO, file",
+     "nodeid": "test/policy-engine.test.ts@@main::PolicyEngine::structural invariants::denies access to the real constitution file",
+     "op": "input.file:<abs>/062a71d14ede78988ad20da36f5aec4ada23f4",
+     "reason": "fs",
+     "status": "diverged"
+    },
+    {
+     "at": "<run>",
+     "description": "before the test started: run input file:<abs>/062a71d14ede78988ad20da36f5aec4ada23f4 differs: <not recorded> vs \"stat:file size=334\"; also differ: file:<abs>/88a34982b40b21235b184addf20db013de4522, file:<abs>/94, file:<abs>/e9, file:<abs>/ic-enrich-evil-V2QKUW, file:<abs>/ic-enrich-evil-rtvBbO, file",
+     "nodeid": "test/policy-engine.test.ts@@main::PolicyEngine::structural invariants::denies access to generated policy directory",
+     "op": "input.file:<abs>/062a71d14ede78988ad20da36f5aec4ada23f4",
+     "reason": "fs",
+     "status": "diverged"
+    },
+    {
+     "at": "<run>",
+     "description": "before the test started: run input file:<abs>/062a71d14ede78988ad20da36f5aec4ada23f4 differs: <not recorded> vs \"stat:file size=334\"; also differ: file:<abs>/88a34982b40b21235b184addf20db013de4522, file:<abs>/94, file:<abs>/e9, file:<abs>/ic-enrich-evil-V2QKUW, file:<abs>/ic-enrich-evil-rtvBbO, file",
+     "nodeid": "test/policy-engine.test.ts@@main::PolicyEngine::structural invariants::denies write to audit log",
+     "op": "input.file:<abs>/062a71d14ede78988ad20da36f5aec4ada23f4",
+     "reason": "fs",
+     "status": "diverged"
+    }
+   ],
+   "B-tmp": [
+    {
+     "at": "<run>",
+     "description": "before the test started: run input file:<tmp>/ca/current.json differs: \"173:a1ff676655a56470df3e5273a1f0cdc2,stat:file size=173,stat:missing\" vs \"173:af32224d978df34d07d5627a245807d3,stat:file size=173,stat:missing\"; also differ: file:<tmp>/ca/generations/gen-510bf4ca-d897-4e9e-aa50-b86f485a7323/ca-",
+     "nodeid": "test/docker/docker-workload-egress.test.ts@@main::Docker-workload egress gating::builds no listener for a disabled workload",
+     "op": "input.file:<tmp>/ca/current.json",
+     "reason": "fs",
+     "status": "diverged"
+    },
+    {
+     "at": "<run>",
+     "description": "before the test started: run input file:<tmp>/ca/current.json differs: \"173:a1ff676655a56470df3e5273a1f0cdc2,stat:file size=173,stat:missing\" vs \"173:af32224d978df34d07d5627a245807d3,stat:file size=173,stat:missing\"; also differ: file:<tmp>/ca/generations/gen-510bf4ca-d897-4e9e-aa50-b86f485a7323/ca-",
+     "nodeid": "test/docker/docker-workload-egress.test.ts@@main::Docker-workload egress gating::builds no listener when both egress modes are off",
+     "op": "input.file:<tmp>/ca/current.json",
+     "reason": "fs",
+     "status": "diverged"
+    },
+    {
+     "at": "<run>",
+     "description": "before the test started: run input file:<tmp>/ca/current.json differs: \"173:a1ff676655a56470df3e5273a1f0cdc2,stat:file size=173,stat:missing\" vs \"173:af32224d978df34d07d5627a245807d3,stat:file size=173,stat:missing\"; also differ: file:<tmp>/ca/generations/gen-510bf4ca-d897-4e9e-aa50-b86f485a7323/ca-",
+     "nodeid": "test/docker/docker-workload-egress.test.ts@@main::Docker-workload egress gating::builds only the registry listener for images network access",
+     "op": "input.file:<tmp>/ca/current.json",
+     "reason": "fs",
+     "status": "diverged"
+    }
+   ],
+   "C": [
+    {
+     "at": "test/auth/auth-command.test.ts:57",
+     "description": "event #1: process.pid @ test/auth/auth-command.test.ts:57 returned different values: \"e0abf374b1bb\" vs \"4f5d00268e39\"",
+     "nodeid": "test/auth/auth-command.test.ts@@main::auth import credential import::copies credentials file to oauth dir with correct permissions",
+     "op": "process.pid",
+     "reason": "other",
+     "status": "diverged"
+    },
+    {
+     "at": "test/auth/auth-command.test.ts:57",
+     "description": "event #1: process.pid @ test/auth/auth-command.test.ts:57 returned different values: \"e0abf374b1bb\" vs \"4f5d00268e39\"",
+     "nodeid": "test/auth/auth-command.test.ts@@main::auth import credential import::creates oauth directory if it does not exist",
+     "op": "process.pid",
+     "reason": "other",
+     "status": "diverged"
+    },
+    {
+     "at": "test/auth/auth-command.test.ts:57",
+     "description": "event #1: process.pid @ test/auth/auth-command.test.ts:57 returned different values: \"e0abf374b1bb\" vs \"4f5d00268e39\"",
+     "nodeid": "test/auth/auth-command.test.ts@@main::auth import credential import::creates a missing IronCurtain home with owner-only permissions",
+     "op": "process.pid",
+     "reason": "other",
+     "status": "diverged"
+    }
+   ],
+   "D": [
+    {
+     "at": "<deps>/node-forge/lib/rsa.js:1043",
+     "description": "event #2: crypto.generateKeyPairSync @ <deps>/node-forge/lib/rsa.js:1043 returned different values: \"fbc5f3620bbf\" vs \"566fdd544934\"",
+     "nodeid": "test/ca.test.ts@@main::loadOrCreateCA::automatically replaces a legacy flat pair with a fresh CA",
+     "op": "crypto.generateKeyPairSync",
+     "reason": "entropy",
+     "status": "diverged"
+    },
+    {
+     "at": "<deps>/node-forge/lib/rsa.js:1043",
+     "description": "event #2: crypto.generateKeyPairSync @ <deps>/node-forge/lib/rsa.js:1043 returned different values: \"1d0463eaa21a\" vs \"34320d5c99cb\"",
+     "nodeid": "test/ca.test.ts@@main::loadOrCreateCA::automatically replaces a malformed near-legacy flat pair",
+     "op": "crypto.generateKeyPairSync",
+     "reason": "entropy",
+     "status": "diverged"
+    },
+    {
+     "at": "<deps>/node-forge/lib/rsa.js:1043",
+     "description": "event #2: crypto.generateKeyPairSync @ <deps>/node-forge/lib/rsa.js:1043 returned different values: \"11d7dfe0dbb1\" vs \"1d4b2563eb16\"",
+     "nodeid": "test/ca.test.ts@@main::loadOrCreateCA::automatically replaces a current legacy-v1 generation",
+     "op": "crypto.generateKeyPairSync",
+     "reason": "entropy",
+     "status": "diverged"
+    }
+   ],
+   "F": [
+    {
+     "at": "src/daemon/control-socket.ts:315",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ src/daemon/control-socket.ts:315) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "nodeid": "test/control-socket.test.ts@@main::ControlSocketServer::responds to ping",
+     "op": "uncontrolled.io",
+     "reason": "io",
+     "status": "not-proven"
+    },
+    {
+     "at": "src/daemon/control-socket.ts:315",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ src/daemon/control-socket.ts:315) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "nodeid": "test/control-socket.test.ts@@main::isDaemonRunning::returns true when daemon is running",
+     "op": "uncontrolled.io",
+     "reason": "io",
+     "status": "not-proven"
+    },
+    {
+     "at": "src/daemon/control-socket.ts:315",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ src/daemon/control-socket.ts:315) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "nodeid": "test/control-socket.test.ts@@main::Control socket commands::forwards status and serializes Date to ISO string",
+     "op": "uncontrolled.io",
+     "reason": "io",
+     "status": "not-proven"
+    }
+   ],
+   "other": [
+    {
+     "at": "src/docker/apple-container-manager.ts:571",
+     "description": "the test read a CI-volatile or proxy environment variable: its value (uncontrolled.env @ src/docker/apple-container-manager.ts:571) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: env)",
+     "nodeid": "test/apple-container-manager.test.ts@@main::AppleContainerManager::exec::passes workdir and per-exec environment overrides",
+     "op": "uncontrolled.env",
+     "reason": "env",
+     "status": "not-proven"
+    },
+    {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "description": "the test read a CI-volatile or proxy environment variable: its value (uncontrolled.env @ src/docker/spawn-with-idle-timeout.ts:79) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: env)",
+     "nodeid": "test/apple-container-manager.test.ts@@main::AppleContainerManager::streamed pull / build::pulls with plain progress through the container binary",
+     "op": "uncontrolled.env",
+     "reason": "env",
+     "status": "not-proven"
+    },
+    {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "description": "the test read a CI-volatile or proxy environment variable: its value (uncontrolled.env @ src/docker/spawn-with-idle-timeout.ts:79) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: env)",
+     "nodeid": "test/apple-container-manager.test.ts@@main::AppleContainerManager::streamed pull / build::builds with tag, dockerfile, and labels",
+     "op": "uncontrolled.env",
+     "reason": "env",
+     "status": "not-proven"
+    }
+   ]
+  },
+  "identical": 0,
+  "input_differences": [],
+  "noise_file": null,
+  "noise_pair_not_identical": null,
+  "noise_whose_serial_pair_verdict_is_A_F": {},
+  "noise_whose_serial_pair_verdict_is_A_F_by_reason": {},
+  "not_identical": 7033,
+  "other_by_reason": {
+   "api": 6,
+   "child": 19,
+   "env": 245,
+   "fs": 272,
+   "net": 21,
+   "other": 6,
+   "sched": 3,
+   "time": 9
+  },
+  "pair": "serial",
+  "repo": "ironcurtain",
+  "run_level": 409,
+  "run_level_first_input": {
+   "input.file:<abs>/062a71d14ede78988ad20da36f5aec4ada23f4": 151,
+   "input.file:<abs>/ironcurtain-roots-bridge-a-13051": 3,
+   "input.file:<tmp>/ca/current.json": 246,
+   "input.file:<tmp>/custom-remote-tracking/.git/objects/53": 9
+  },
+  "status_by_category": {
+   "A": {
+    "not-proven": 5256
+   },
+   "B-abs": {
+    "diverged": 165
+   },
+   "B-tmp": {
+    "diverged": 267
+   },
+   "C": {
+    "diverged": 625
+   },
+   "D": {
+    "diverged": 4
+   },
+   "F": {
+    "not-proven": 135
+   },
+   "other": {
+    "diverged": 311,
+    "not-proven": 270
+   }
+  },
+  "summary": {
+   "diverged": 1372,
+   "identical": 0,
+   "input_differs": 0,
+   "inputs_recorded": true,
+   "missing": 0,
+   "not_proven": 5661,
+   "order_identical": true,
+   "outcome_unstable": 0,
+   "reasons": {
+    "api": 5262,
+    "child": 19,
+    "entropy": 4,
+    "env": 245,
+    "fs": 704,
+    "io": 135,
+    "net": 21,
+    "other": 631,
+    "sched": 3,
+    "time": 9
+   },
+   "runs": 2,
+   "stable": 0,
+   "tests": 7033
+  },
+  "tests": 7033,
+  "verify_cmd": "/tmp/pm-p1/venv/networkx/bin/python -m detpy.fenvix verify /tmp/pm-p1/p1-after4/ironcurtain/S1.jsonl /tmp/pm-p1/p1-after4/ironcurtain/S2.jsonl --json",
+  "verify_file": "ironcurtain/verify_serial_noise2w1.json"
+ },
+ "nestjs-pino": {
+  "A_only_via_enumeration": 0,
+  "B_abs_top20": [],
+  "F_detail": {
+   "not-proven uncontrolled.io": 10
+  },
+  "also_not_identical_serial_vs_serial": {
+   "A": 0,
+   "B-abs": 0,
+   "B-tmp": 0,
+   "C": 0,
+   "D": 0,
+   "E": 0,
+   "F": 0,
+   "noise": 0,
+   "other": 0
+  },
+  "counts": {
+   "A": 0,
+   "B-abs": 0,
+   "B-tmp": 0,
+   "C": 35,
+   "D": 0,
+   "E": 0,
+   "F": 10,
+   "noise": 0,
+   "other": 1
+  },
+  "engine_commit": [
+   "0903cf229418300297669137d264c1a5abe69ca1+modified"
+  ],
+  "env_read_outside_tests": 209,
+  "examples": {
+   "C": [
+    {
+     "at": "<deps>/@nestjs/common/services/console-logger.service.js:227",
+     "description": "event #3: process.pid @ <deps>/@nestjs/common/services/console-logger.service.js:227 returned different values: \"3a624069b232\" vs \"d721b80032c4\"",
+     "nodeid": "__tests__/microservice-unit.spec.ts::hook registration::degrades with a warning when the NestJS in use has no pre-request hooks",
+     "op": "process.pid",
+     "reason": "other",
+     "status": "diverged"
+    },
+    {
+     "at": "<deps>/@nestjs/common/services/console-logger.service.js:265",
+     "description": "event #2: process.pid @ <deps>/@nestjs/common/services/console-logger.service.js:265 returned different values: \"d14241bcf26a\" vs \"7c5e37c3703c\"",
+     "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::ExpressAdapter::single string message produces matching fields",
+     "op": "process.pid",
+     "reason": "other",
+     "status": "diverged"
+    },
+    {
+     "at": "<deps>/@nestjs/common/services/console-logger.service.js:265",
+     "description": "event #3: process.pid @ <deps>/@nestjs/common/services/console-logger.service.js:265 returned different values: \"d14241bcf26a\" vs \"7c5e37c3703c\"",
+     "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::ExpressAdapter::multiple messages are each logged separately",
+     "op": "process.pid",
+     "reason": "other",
+     "status": "diverged"
+    }
+   ],
+   "F": [
+    {
+     "at": "<deps>/superagent/lib/node/index.js:958",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ <deps>/superagent/lib/node/index.js:958) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "nodeid": "__tests__/global-prefix.spec.ts::global prefix::ExpressAdapter::with a path excluded from the prefix::logs both the prefixed and the excluded path",
+     "op": "uncontrolled.io",
+     "reason": "io",
+     "status": "not-proven"
+    },
+    {
+     "at": "<deps>/superagent/lib/node/index.js:958",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ <deps>/superagent/lib/node/index.js:958) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "nodeid": "__tests__/global-prefix.spec.ts::global prefix::FastifyAdapter::with a path excluded from the prefix::logs both the prefixed and the excluded path",
+     "op": "uncontrolled.io",
+     "reason": "io",
+     "status": "not-proven"
+    },
+    {
+     "at": "<deps>/superagent/lib/node/index.js:958",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ <deps>/superagent/lib/node/index.js:958) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "nodeid": "__tests__/module.spec.ts::module initialization::ExpressAdapter::forRoot::should work properly without params",
+     "op": "uncontrolled.io",
+     "reason": "io",
+     "status": "not-proven"
+    }
+   ],
+   "other": [
+    {
+     "at": "<deps>/debug/src/node.js:124",
+     "description": "the test read a CI-volatile or proxy environment variable: its value (uncontrolled.env @ <deps>/debug/src/node.js:124) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: env)",
+     "nodeid": "__tests__/get-logger-token.spec.ts::get-logger-token::should work",
+     "op": "uncontrolled.env",
+     "reason": "env",
+     "status": "not-proven"
+    }
+   ]
+  },
+  "identical": 223,
+  "input_differences": [],
+  "noise_file": null,
+  "noise_pair_not_identical": null,
+  "noise_whose_serial_pair_verdict_is_A_F": {},
+  "noise_whose_serial_pair_verdict_is_A_F_by_reason": {},
+  "not_identical": 46,
+  "other_by_reason": {
+   "env": 1
+  },
+  "pair": "serial",
+  "repo": "nestjs-pino",
+  "run_level": 0,
+  "run_level_first_input": {},
+  "status_by_category": {
+   "C": {
+    "diverged": 35
+   },
+   "F": {
+    "not-proven": 10
+   },
+   "other": {
+    "not-proven": 1
+   }
+  },
+  "summary": {
+   "diverged": 35,
+   "identical": 223,
+   "input_differs": 0,
+   "inputs_recorded": true,
+   "missing": 0,
+   "not_proven": 11,
+   "order_identical": true,
+   "outcome_unstable": 0,
+   "reasons": {
+    "env": 1,
+    "io": 10,
+    "other": 35
+   },
+   "runs": 2,
+   "stable": 223,
+   "tests": 269
+  },
+  "tests": 269,
+  "verify_cmd": "/tmp/pm-p1/venv/networkx/bin/python -m detpy.fenvix verify /tmp/pm-p1/p1-after4/nestjs-pino/S1.jsonl /tmp/pm-p1/p1-after4/nestjs-pino/S2.jsonl --json",
+  "verify_file": "nestjs-pino/verify_serial_noise2w1.json"
+ },
+ "sqlectron": {
+  "A_only_via_enumeration": 0,
+  "B_abs_top20": [],
+  "F_detail": {},
+  "also_not_identical_serial_vs_serial": {
+   "A": 0,
+   "B-abs": 0,
+   "B-tmp": 0,
+   "C": 0,
+   "D": 0,
+   "E": 0,
+   "F": 0,
+   "noise": 0,
+   "other": 0
+  },
+  "counts": {
+   "A": 43,
+   "B-abs": 0,
+   "B-tmp": 0,
+   "C": 0,
+   "D": 0,
+   "E": 0,
+   "F": 0,
+   "noise": 0,
+   "other": 0
+  },
+  "engine_commit": [
+   "0903cf229418300297669137d264c1a5abe69ca1+modified"
+  ],
+  "env_read_outside_tests": 21,
+  "examples": {
+   "A": [
+    {
+     "at": null,
+     "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution",
+     "nodeid": "test/browser/config.test.ts::config::.prepare::should include id for those servers without it",
+     "op": null,
+     "reason": "native",
+     "status": "not-proven"
+    },
+    {
+     "at": null,
+     "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution",
+     "nodeid": "test/browser/servers.test.ts::servers::.getAll::should load servers from file",
+     "op": null,
+     "reason": "native",
+     "status": "not-proven"
+    },
+    {
+     "at": null,
+     "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution",
+     "nodeid": "test/browser/servers.test.ts::servers::.add::should add new server",
+     "op": null,
+     "reason": "native",
+     "status": "not-proven"
+    }
+   ]
+  },
+  "identical": 0,
+  "input_differences": [],
+  "noise_file": null,
+  "noise_pair_not_identical": null,
+  "noise_whose_serial_pair_verdict_is_A_F": {},
+  "noise_whose_serial_pair_verdict_is_A_F_by_reason": {},
+  "not_identical": 43,
+  "other_by_reason": {},
+  "pair": "serial",
+  "repo": "sqlectron",
+  "run_level": 0,
+  "run_level_first_input": {},
+  "status_by_category": {
+   "A": {
+    "not-proven": 43
+   }
+  },
+  "summary": {
+   "diverged": 0,
+   "identical": 0,
+   "input_differs": 0,
+   "inputs_recorded": true,
+   "missing": 0,
+   "not_proven": 43,
+   "order_identical": true,
+   "outcome_unstable": 0,
+   "reasons": {
+    "native": 43
+   },
+   "runs": 2,
+   "stable": 0,
+   "tests": 43
+  },
+  "tests": 43,
+  "verify_cmd": "/tmp/pm-p1/venv/networkx/bin/python -m detpy.fenvix verify /tmp/pm-p1/p1-after4/sqlectron/S1.jsonl /tmp/pm-p1/p1-after4/sqlectron/S2.jsonl --json",
+  "verify_file": "sqlectron/verify_serial_noise2w1.json"
+ }
+}
