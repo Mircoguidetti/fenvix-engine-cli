@@ -381,3 +381,13 @@ def test_check_py_recomputes_verdict_and_fails_on_mismatch_or_agent_file(tmp_pat
         {"agent": "a/a", "repo": "c/c", "until": M.iso(T0 + dt.timedelta(days=272)), "paths": paths}) + "\n")
     res, errs = check.compute()
     assert any("agent file" in e for e in errs)
+
+
+def test_retry_seconds_parses_seconds_and_milliseconds():
+    import ghapi
+    assert ghapi.retry_seconds('{"message": "try again in 7.95s"}', {"retry-after": "7"}) == pytest.approx(9.95)
+    # millisecond message wins over a large Retry-After header (seen 2026-11-24: 12-minute sleeps)
+    assert ghapi.retry_seconds('{"message": "try again in 581.6ms"}', {"retry-after": "734"}) == pytest.approx(2.5816)
+    assert ghapi.retry_seconds("", {"retry-after": "30"}) == 30
+    assert ghapi.retry_seconds("", {"x-ratelimit-remaining": "0", "x-ratelimit-reset": "1100"}, now=1000) == 103
+    assert ghapi.retry_seconds("", {}) == 60

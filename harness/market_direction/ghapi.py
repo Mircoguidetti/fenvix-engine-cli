@@ -25,6 +25,21 @@ def gap(per_min: float) -> float:
     return 60.0 / per_min + 0.05
 
 
+def retry_seconds(msg: str, h: dict, now: float | None = None) -> float:
+    """Wait after a rate-limit answer. The message ("try again in 7.9s" / "try again in 581.6ms") wins over the
+    Retry-After header (GitHub sends a millisecond value there with the "ms" message); then the reset time; else 60."""
+    m = re.search(r"try again in ([0-9.]+)(ms|s)\b", msg)
+    if m:
+        v = float(m.group(1))
+        return (v / 1000 if m.group(2) == "ms" else v) + 2
+    ra = float(h.get("retry-after") or 0)
+    if ra:
+        return ra
+    if h.get("x-ratelimit-remaining") == "0" and h.get("x-ratelimit-reset"):
+        return max(int(h["x-ratelimit-reset"]) - (time.time() if now is None else now), 0) + 3
+    return 60.0
+
+
 class Client:
     def __init__(self, token: str | None = None, use_gh: bool = False, pace: float = 0.25,
                  code_per_min: float = 4, repo_per_min: float = 25):
@@ -106,13 +121,7 @@ class Client:
             msg = json.dumps(data)[:600].lower() if data is not None else ""
             h = {k.lower(): v for k, v in hd.items()}
             if st == 429 or (st == 403 and ("rate limit" in msg or "abuse" in msg or "retry-after" in h)):
-                ra = float(h.get("retry-after") or 0)
-                m = re.search(r"try again in ([0-9.]+)s", msg)
-                if m:
-                    ra = float(m.group(1)) + 2
-                if not ra and h.get("x-ratelimit-remaining") == "0" and h.get("x-ratelimit-reset"):
-                    ra = max(int(h["x-ratelimit-reset"]) - time.time(), 0) + 3
-                sl = ra or 60
+                sl = retry_seconds(msg, h)
                 sys.stderr.write(f"rate limited ({st}) on {path[:90]}: sleeping {sl:.0f}s\n")
                 time.sleep(min(sl, 3700))
                 continue
