@@ -316,3 +316,67 @@ Per-test causes (every test identical on the trunk and not on the branch; `proof
 `harness/det_host_values/`: this report; `optouts.txt`; `timers.py` / `timers.out.md`; `flips.py` /
 `flips.out.md`; `customer_run.py`, `customer.py` / `customer.out.md`; `proof_run.sh`, `proof.py` / `proof.out.md`;
 `data/` (raw rows, outcomes, verify reports, experiments); `logs/`.
+
+## 7. Addendum 2026-11-24: merge of release-1, /review, suites and wall time on the final engine
+
+First line unchanged: **NOT DONE** (AC1 (b) and AC2 codex-multi-auth, as before; nothing below changes them).
+
+**Merge.** `origin/claude/release-1` @ 8bb687b merged into this branch with an ordinary merge commit (e17eb24), no
+rebase, no force-push. One conflict, `node/src/session.js` `module.exports`: resolved as the union of both lists.
+Not merged into the trunk (the founder's typed authorization is needed).
+
+**/review** (gstack, branch diff against `claude/release-1`; 5 specialists: testing, maintainability, security,
+performance, simplification; adversarial pass). Regression tests first (9767324, each failing on e17eb24), fixes
+after (37214de):
+
+| finding | severity | fix | test (fails before, passes after) |
+|---|---|---|---|
+| open network: a test that only *resolved* an external name (no connection) was reused by the cache | CRITICAL | `network.js` records `dns.<op>` `<name> allowed` under open; `capture.js` `levelEvent` flags it; `runners/common.js` passes the event op through | `host-values.test.js` "a test that only resolved an external name ..." |
+| `fenvix replay` / the bundle's command ran on the replay's own time, not the failing run's epoch | CRITICAL | `fenvix_js.finish_bundle` stores `epoch`; `runner_command` adds `--det-epoch`; `replay` passes it | `tests/test_fenvix_js.py::test_bundle_keeps_the_epoch_of_the_failing_run_and_replay_uses_it` |
+| Bun / Deno native `fetch`/`connect` still refused external hosts under the open default | informational | `bun-runtime.js`, `deno-runtime.js`: `open` like `record` (the capture flags the live fetch) | `runner-bun.test.js`, `runner-deno.test.js` "default --det: fetch to an external host is not refused" (Deno: skipped here, no `deno` binary) |
+| reading `*_PROXY` was NOT PROVEN under open although they are run inputs | informational | `controls.js` `unproven` excludes open | `host-values.test.js` "reading a *_PROXY variable ..." |
+| `--det-isolate` without `--det`: one epoch per per-test session | informational | `bin/detjs.js` `pickEpoch`: `--det-isolate` implies `--det` | `host-values.test.js` "--det-isolate without --det ..." |
+| fixture `timers-waiting/node_modules` caches committed | informational | removed; `.gitignore` `node/test/fixtures/**/node_modules/` | none (no behaviour) |
+| warning text duplicated the default epoch | informational | built from `DEFAULT_EPOCH` | none (text) |
+| error paths without tests (`--det-net` refusal, invalid / unmarked inherited epoch, selfcert range) | informational | `host-values-unit.test.js` (coverage; passes before and after) | same |
+
+Open, advisory: `opts.epochSource` is written, never read (`session.js`). Gate edits: partial (5 of 36 eligible
+read, 52 listed); the hunks read (RH-13 `noqa`) are no findings. The (b) test still fails by design (gate decision,
+not weakened). Docs: `docs/NODE.md` row 6, CHANGELOG.
+
+**Suites on the final engine** (branch 37214de; trunk 8bb687b in a separate worktree `/tmp/fenvix-trunk2`, addon
+built there, a venv with the same wheel and 8bb687b's `python/detpy`; Rust is identical on both: no `*.rs` /
+`Cargo.*` difference). Commands: `cargo test -p detpy-core -p detpy-node`; `cd node && npm test`;
+`python -m pytest -q -p no:randomly -n 4 <53 shared files>`; `python3 tests/attacks.py`. Logs:
+`logs/suites-37214de/`.
+
+| suite | branch 37214de | trunk 8bb687b | failing only on the branch |
+|---|---|---|---|
+| cargo | exit 0 | exit 0 | none |
+| `npm test` | 1021 tests, 1013 pass, 4 fail, 3 cancelled, exit 1 (56 min) | 1002 tests, 995 pass, 3 fail, 3 cancelled, exit 1 (62 min) | **(b) "a test waiting on real work is not timed out by the virtual clock"** only |
+| shared Python | 9 failed, 945 passed, 39 skipped | 9 failed, 944 passed, 39 skipped | none (same names) |
+| attacks | python rc=1 (11 `test_review_r056_pycache.py` cases), node rc=0 (60/60) | python rc=1 (the same 11), node rc=0 (60/60) | none |
+
+Failing on both (`npm test`): "jest: parallel lanes" (3 subtests, 3 cancelled), "repro options (vitest)"
+(`--det-order`), "bun: Level 0 controls" ("two --det runs ..."), "node-test: adversarial" ("a file another test file
+wrote"). Shared Python on both: `test_clock_rust::test_cache_matches_reference`,
+`test_level0_rust::test_level0_traces_match_reference`, `test_packaging::test_gate_runs_on_pull_requests...`,
+`test_parallel_proof` (4), `test_py_cache` (2). Attacks on both: `test_review_r056_pycache.py` w3 (7), w4, w5 (2), w8.
+
+**agentsys wall time, 3 rounds** (`proof_run.sh agentsys`, trunk then branch back to back per round, `--workers 4`,
+`TRUNK=/tmp/fenvix-trunk2` with this branch's `measure.py`; branch engine 37214de's tree; raw rows
+`data/agentsys-3rounds/`). Exit 1 on both in every round (as before), 2224 tests, identical counts equal.
+
+| round | trunk s | branch s | ratio |
+|---|---|---|---|
+| 1 | 20.84 | 22.94 | 1.101 |
+| 2 | 22.46 | 24.03 | 1.070 |
+| 3 | 21.88 | 24.39 | 1.115 |
+| **median** | **21.88** | **24.03** | **1.098** (median of the per-round ratios: 1.101) |
+
+Against the bound 1.10: the ratio of the medians, 1.098, is under it; the median per-round ratio, 1.101, is over it.
+The 3 rounds spread 1.070-1.115, wider than the 0.003 either side of the bound: **on the edge, not settled by 3
+rounds**. Reported as measured, not tuned.
+
+**codex-multi-auth flips** (restated, not re-measured): **69** after the approved `deadline.js` fix, bound 60:
+missed by 9 (section 2; the review fixes touch the network, the epoch of repro bundles and Bun/Deno, not the timers).
