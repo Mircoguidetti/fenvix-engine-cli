@@ -1,23 +1,15 @@
 {
  "finished": null,
  "queries": {
-  "postgres jest": {
-   "done": true,
-   "leaves": 10,
-   "nodes": 19,
-   "root_incomplete": false,
-   "root_total": 4480,
-   "stack": []
-  },
-  "postgres vitest": {
+  "postgres \"manage.py\"": {
    "done": false,
-   "leaves": 3,
-   "nodes": 14,
+   "leaves": 9,
+   "nodes": 26,
    "root_incomplete": false,
-   "root_total": 13952,
+   "root_total": 12128,
    "stack": [
     [
-     2345,
+     2541,
      2735
     ],
     [
@@ -53,6 +45,62 @@
      400000
     ]
    ]
+  },
+  "postgres \"node --test\"": {
+   "done": true,
+   "leaves": 15,
+   "nodes": 29,
+   "root_incomplete": false,
+   "root_total": 7440,
+   "stack": []
+  },
+  "postgres jest": {
+   "done": true,
+   "leaves": 10,
+   "nodes": 19,
+   "root_incomplete": false,
+   "root_total": 4480,
+   "stack": []
+  },
+  "postgres mocha": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 204,
+   "stack": []
+  },
+  "postgres nox": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 215,
+   "stack": []
+  },
+  "postgres pytest": {
+   "done": true,
+   "leaves": 90,
+   "nodes": 179,
+   "root_incomplete": false,
+   "root_total": 57728,
+   "stack": []
+  },
+  "postgres tox": {
+   "done": true,
+   "leaves": 6,
+   "nodes": 11,
+   "root_incomplete": false,
+   "root_total": 1122,
+   "stack": []
+  },
+  "postgres vitest": {
+   "done": true,
+   "leaves": 24,
+   "nodes": 47,
+   "root_incomplete": false,
+   "root_total": 13952,
+   "stack": []
   }
  },
  "rate_limit": {
