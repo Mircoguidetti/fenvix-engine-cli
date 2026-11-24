@@ -175,3 +175,14 @@
 2026-11-24T23:12:58+00:00 postgres "go test"       size:9376..10938 tc=752 leaf=True read=800 inc=False req=690
 --- restarted 2026-11-24T23:14:06Z (planned 113-min stop)
 2026-11-24T23:15:45+00:00 postgres "go test"       size:10939..12500 tc=693 leaf=True read=700 inc=False req=13
+2026-11-24T23:16:04+00:00 postgres "go test"       size:12501..25000 tc=2764 leaf=False read=- inc=- req=15
+2026-11-24T23:16:22+00:00 postgres "go test"       size:12501..18750 tc=1864 leaf=False read=- inc=- req=17
+2026-11-24T23:16:39+00:00 postgres "go test"       size:12501..15625 tc=1104 leaf=False read=- inc=- req=19
+2026-11-24T23:18:49+00:00 postgres "go test"       size:12501..14063 tc=620 leaf=True read=649 inc=False req=33
+2026-11-24T23:20:06+00:00 postgres "go test"       size:14064..15625 tc=436 leaf=True read=500 inc=False req=43
+2026-11-24T23:34:52+00:00 postgres "go test"       size:15626..18750 tc=686 leaf=True read=689 inc=False req=59
+2026-11-24T23:37:24+00:00 postgres "go test"       size:18751..25000 tc=796 leaf=True read=800 inc=False req=75
+2026-11-24T23:37:41+00:00 postgres "go test"       size:25001..50000 tc=1288 leaf=False read=- inc=- req=77
+2026-11-24T23:40:42+00:00 postgres "go test"       size:25001..37500 tc=868 leaf=True read=900 inc=False req=95
+2026-11-24T23:42:19+00:00 postgres "go test"       size:37501..50000 tc=428 leaf=True read=451 inc=False req=105
+2026-11-24T23:43:53+00:00 postgres "go test"       size:50001..100000 tc=499 leaf=True read=500 inc=False req=115

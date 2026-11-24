@@ -3,23 +3,11 @@
  "queries": {
   "postgres \"go test\"": {
    "done": false,
-   "leaves": 28,
-   "nodes": 60,
+   "leaves": 35,
+   "nodes": 71,
    "root_incomplete": false,
    "root_total": 22560,
    "stack": [
-    [
-     12501,
-     25000
-    ],
-    [
-     25001,
-     50000
-    ],
-    [
-     50001,
-     100000
-    ],
     [
      100001,
      200000
