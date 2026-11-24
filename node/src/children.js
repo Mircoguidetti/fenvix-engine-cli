@@ -60,6 +60,7 @@ function installWorkers(patcher) {
   if (!Real || Real.__detjsLevel0) return;
   const W = new Proxy(Real, {
     construct(target, args, nt) {
+      require('./outside').noteChild(); // P1 B2: a worker can write into this process's directories
       const at = STATE.testId !== null ? site() : null;
       if (at === null) return Reflect.construct(target, args, nt === W ? target : nt);
       const [file, opts0] = args;
@@ -96,6 +97,7 @@ function installChildren(patcher) {
     if (typeof real !== 'function') continue;
     const w = function (...a) {
       const at = STATE.testId !== null ? site() : null;
+      require('./outside').noteChild(); // P1 B2: a child can write into this process's directories
       // a virtual pid in the command, its arguments or environment is the real one for the child (P1 C)
       const child = real.apply(this, toRealPidArgs(a));
       if (at !== null) {
@@ -115,6 +117,7 @@ function installChildren(patcher) {
     if (typeof real !== 'function') continue;
     const w = function (...a) {
       const at = STATE.testId !== null ? site() : null;
+      require('./outside').noteChild(); // P1 B2
       a = toRealPidArgs(a); // P1 C: as for the asynchronous forms
       if (at === null) return real.apply(this, a);
       mark('child', `${n} ${argvOf(a[0], Array.isArray(a[1]) ? a[1] : [])}`, at);
