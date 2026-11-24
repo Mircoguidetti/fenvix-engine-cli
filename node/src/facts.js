@@ -119,6 +119,11 @@ function installProcessFacts(patcher, proc) {
   // through rec() and its `<node>`-site rule like every other fact: a read with no user frame on the stack (MEASURED,
   // jest 29.7.0 --maxWorkers=2: Node's own machinery reading `process.pid` inside a worker while a test is in flight)
   // is not an event of the test, so serial and parallel fingerprints stay equal.
+  //
+  // P1 C (docs/DESIGN-P1.md section C): while a test file is open, the test's code reads a VIRTUAL pid (`startFile`),
+  // the same in every run of that file and different for two files that run at the same time; detjs, the runner and
+  // Node's internals keep reading the real one (`testCaller`). `process.ppid` stays real: a test that checks the
+  // process tree (its parent is the detjs that spawned it: test/exit-regression.test.js AC1(c)) must keep seeing it.
   for (const n of ['pid', 'ppid']) {
     const d = Object.getOwnPropertyDescriptor(proc, n);
     if (!d || !d.configurable || d.get) continue;
@@ -126,16 +131,81 @@ function installProcessFacts(patcher, proc) {
     try {
       Object.defineProperty(proc, n, {
         configurable: true, enumerable: d.enumerable,
-        get() { if (STATE.testId !== null && STATE.quietDepth === 0) recQuietSafe(`process.${n}`, value); return value; },
+        get: function pidGetter() {
+          const v = n !== 'pid' || VPID.current === null || STATE.quietDepth > 0 || !testCaller(pidGetter) ? value : VPID.current;
+          if (STATE.testId !== null && STATE.quietDepth === 0) recQuietSafe(`process.${n}`, v);
+          return v;
+        },
         set(v) { Object.defineProperty(proc, n, { value: v, writable: true, configurable: true, enumerable: d.enumerable }); },
       });
     } catch { /* keep */ }
   }
 }
 
+// -- the virtual pid (P1 C) ------------------------------------------------------------------------------------------
+// Linux's PID_MAX_LIMIT (2^22): no process has this pid or a higher one, so a virtual pid is never another live
+// process's. A file's pid: VPID_BASE + 1 + a digest of (run seed, file label)
+// below 2^31 - 1 - VPID_BASE: the same file gets the same value in every run with that seed (serial or parallel), two
+// files running at the same time get different ones unless their digests collide (probability about n^2 / 4.3e9 for
+// n files running at once).
+const VPID_BASE = 4194304;
+const REAL_PID = process.pid;
+const VPID = { current: null };
+function startFile(label) {
+  const cfg = STATE.config;
+  if (!cfg) { VPID.current = null; return; }
+  const [h, l] = native.deriveSeedWords(cfg.seed, `vpid\u0000${label}`);
+  const range = BigInt(2147483647 - VPID_BASE - 1);
+  VPID.current = VPID_BASE + 1 + Number(((BigInt(h >>> 0) << 32n) | BigInt(l >>> 0)) % range);
+  // where another process of the run finds the real process behind it (process.kill(V, 0) in a lock file check)
+  if (cfg.dir) {
+    STATE.quietDepth++;
+    try {
+      const dir = path.join(cfg.dir, 'vpid');
+      fs.mkdirSync(dir, { recursive: true });
+      fs.writeFileSync(path.join(dir, `${VPID.current}.txt`), String(REAL_PID));
+    } catch { /* the run directory is gone */ } finally { STATE.quietDepth--; }
+  }
+}
+function endFile() { VPID.current = null; }
+/** The real pid behind a virtual one (this process's, or another process of the run's), or `pid`. */
+function realPid(pid) {
+  if (typeof pid !== 'number' || pid <= VPID_BASE) return pid;
+  if (pid === VPID.current) return REAL_PID;
+  const cfg = STATE.config;
+  if (cfg && cfg.dir) {
+    STATE.quietDepth++;
+    try { const r = Number(fs.readFileSync(path.join(cfg.dir, 'vpid', `${pid}.txt`), 'utf8')); if (r > 0) return r; } catch { /* none */ } finally { STATE.quietDepth--; }
+  }
+  return pid;
+}
+const SRC_DIR = path.resolve(__dirname) + path.sep;
+const STRUCTURED = (_e, cs) => cs;
+/** The pid was asked for by the test's code (its own or a package's), not by detjs, the runner or Node itself. */
+function testCaller(getter) {
+  const E = Error;
+  const pp = E.prepareStackTrace;
+  const lim = E.stackTraceLimit;
+  const h = {};
+  E.prepareStackTrace = STRUCTURED;
+  E.stackTraceLimit = 1;
+  try { E.captureStackTrace(h, getter); /* eslint-disable-next-line no-unused-expressions */ h.stack; } finally { E.prepareStackTrace = pp; E.stackTraceLimit = lim; }
+  const cs = Array.isArray(h.stack) ? h.stack[0] : null;
+  let f = (cs && cs.getFileName && cs.getFileName()) || '';
+  if (f.startsWith('file://')) { try { f = require('node:url').fileURLToPath(f); } catch { /* keep */ } }
+  if (!f || f.startsWith(SRC_DIR) || f.startsWith('node:') || f.startsWith('internal/')) return false;
+  const site = STATE.quiet(() => sites.resolve());
+  return site !== null && site !== '<node>';
+}
+
 function installProcess(patcher) {
   if (STATE.__factsHooked) return;
   STATE.__factsHooked = true;
+  // process.kill on a virtual pid reaches the real process (P1 C)
+  const realKill = process.kill;
+  if (typeof realKill === 'function') {
+    patcher.set(process, 'kill', function kill(pid, ...a) { return realKill.call(this, realPid(pid), ...a); });
+  }
   for (const n of OS_FACTS) wrap(os, n, `os.${n}`, patcher);
   wrap(os, 'cpus', 'os.cpus', patcher, 'other', (r) => `${r.length}|${r[0] ? r[0].model : ''}`);
   installProcessFacts(patcher, process);
@@ -289,4 +359,4 @@ function installMkdtemp(patcher) {
   }
 }
 
-module.exports = { installProcess, installRealm };
+module.exports = { installProcess, installRealm, startFile, endFile, realPid, VPID_BASE };
