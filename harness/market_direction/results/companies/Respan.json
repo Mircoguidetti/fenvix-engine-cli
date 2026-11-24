@@ -1,0 +1,22 @@
+{
+ "at": "2026-11-24T18:55:46+00:00",
+ "error": null,
+ "final_url": "https://www.respan.ai/",
+ "first_2kb": "---\ntitle: \"Respan | The fastest open-source AI gateway\"\ndescription: \"Respan is an open-source AI gateway with built-in observability and evals. The gateway is open source (MIT or Apache-2.0); observability and evals run on Respan's cloud.\"\nurl: https://www.respan.ai/\nimage: https://www.respan.ai/og/home-logs.jpg\n---\n\n# The fastest OSS AI gateway.\n\n1,000+ models, one API key. Up to 40% off tokens. Every call traced.\n\n[Get API key](https://platform.respan.ai/) [Book a demo](https://cal.com/team/respan/demo)\n\nSet up with your agent\n\nPrompt\n\nCLI\n\nPaste into Claude Code, Cursor, or Codex\n\nHelp me set up the Respan gateway: fetch and follow <https://www.respan.ai/docs/agent-setup.md>\n\nOpenAI SDK\n\n```\nimport os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    base_url=\"https://gateway.respan.ai/v1/\",\n    api_key=os.environ[\"RESPAN_API_KEY\"],\n)\n\nresponse = client.chat.completions.create(\n    model=\"claude-opus-5-5\",\n    messages=[\n        {\"role\": \"user\", \"content\": \"Hi\"},\n    ],\n)\nprint(response.choices[0].message.content)\n```\n\nRespan routes it to Anthropic with **0% fee**.\n\n[1,000+](https://www.respan.ai/models)\n\n![AlphaSense](https://www.respan.ai/landing-v2/customers/alphasense.svg)\n\n![Mem0](https://www.respan.ai/landing-v2/customers/mem0.svg)\n\n![Whatnot](https://www.respan.ai/landing-v2/customers/whatnot.svg)\n\n![Mercor](https://www.respan.ai/landing-v2/customers/mercor.svg)\n\n![Gumloop](https://www.respan.ai/landing-v2/customers/gumloop.svg)\n\n![Retell AI](https://www.respan.ai/landing-v2/customers/retell.svg)\n\n![Govly](https://www.respan.ai/landing-v2/customers/govly.svg)\n\n![Datacurve](https://www.respan.ai/landing-v2/customers/datacurve.svg)\n\n![Freebuff](https://www.respan.ai/landing-v2/customers/freebuff-wordmark.svg)\n\n![Command Code](https://www.respan.ai/landing-v2/customers/commandcode-wordmark.svg)\n\nOrca\n\n![Algolia](https://www.respan.ai/landing-v2/customers/algolia-wordmark.svg)\n\n01 Pricing\n\n## Respan costs up to 40% less per token.\n\nBulk rates, passed on. 0% fee.\n\n[Browse all models](https://www.respan.ai/mo",
+ "hops": [
+  {
+   "status": 301,
+   "url": "https://respan.ai/"
+  },
+  {
+   "status": 200,
+   "url": "https://www.respan.ai/"
+  }
+ ],
+ "length": 15584,
+ "name": "Respan",
+ "status": 200,
+ "text": "",
+ "text_source": "",
+ "url": "https://respan.ai/"
+}

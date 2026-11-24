@@ -1,0 +1,18 @@
+{
+ "at": "2026-11-24T18:55:46+00:00",
+ "error": null,
+ "final_url": "https://www.groundcover.com/",
+ "first_2kb": "<!DOCTYPE html><html lang=\"en\" dir=\"ltr\"><head><!-- First thing in <head>: remember the page reveal (and its view transition) so the\n\t\t     sub-nav line can start gliding once the page is actually on screen. --><script>addEventListener('pagereveal',function(e){window.__gcReveal={vt:e.viewTransition||null}},{once:true});</script><!-- Analytics and marketing tags only run on the production hostname, so Vercel\n\t\t     previews, the *.vercel.app alias and local dev don't pollute the data.\n\t\t     Every tracking loader checks this flag (see src/lib/analytics-gate.ts). --><script data-cookieconsent=\"ignore\">window.__gcTrack=/^(www\\.)?groundcover\\.com$/.test(location.hostname);</script><!-- groundcover.js bundles Rive webgl2 2.35.0, which calls framebufferTexturePixelLocalStorageWEBGL\n\t\t     with 4 args; current Chrome needs 5, so every Rive canvas fails to load. Hiding the PLS extension\n\t\t     makes Rive use its non-PLS renderer. Lives here (not PageScripts) because CMS pages load\n\t\t     groundcover.js from their raw Webflow scripts. shortcut: remove once groundcover.js ships a newer Rive. --><script>(function(){if(typeof WebGL2RenderingContext==='undefined')return;var p=WebGL2RenderingContext.prototype,x=function(n){return /pixel_local_storage/i.test(n)},g=p.getExtension,s=p.getSupportedExtensions;p.getExtension=function(n){return x(n)?null:g.call(this,n)};p.getSupportedExtensions=function(){return(s.call(this)||[]).filter(function(n){return!x(n)})}})();</script><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>The full-stack observability platform for engineers &amp; agents</title><meta name=\"description\" content=\"Monitor everything you run in the cloud, without compromising on data, control, or cost. Deployed in your cloud. Built for your agents.\"><link rel=\"canonical\" href=\"https://www.groundcover.com/\"><link rel=\"manifest\" href=\"/manifest.json\"><meta property=\"og:title\" content=\"The full-stack observability platform for engineers &amp; agents\"><meta property=\"og:descrip",
+ "hops": [
+  {
+   "status": 200,
+   "url": "https://www.groundcover.com/"
+  }
+ ],
+ "length": 357529,
+ "name": "Groundcover",
+ "status": 200,
+ "text": "The full-stack observability platform for engineers & agents",
+ "text_source": "h1",
+ "url": "https://www.groundcover.com/"
+}

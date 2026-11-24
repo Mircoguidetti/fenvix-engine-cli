@@ -1,0 +1,18 @@
+{
+ "at": "2026-11-24T18:55:45+00:00",
+ "error": null,
+ "final_url": "https://www.composo.ai/",
+ "first_2kb": "<!DOCTYPE html><html lang=\"en\"> <head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta name=\"theme-color\" content=\"#FBFAF7\"><!--\n  Set the light/dark class on <html> BEFORE first paint, so a dark-mode visitor\n  never flashes the light theme on load. Inline vanilla JS with no imports so it\n  runs synchronously ahead of any bundle. The storage key + resolution rule\n  mirror ThemeToggle.astro \u00e2\u0080\u0094 keep the two in sync.\n--><script>\n  (function () {\n    try {\n      var pref = localStorage.getItem(\"composo.theme\");\n      if (pref !== \"light\" && pref !== \"dark\" && pref !== \"system\") {\n        pref = \"system\";\n      }\n      var dark = pref === \"dark\" || (pref === \"system\" && window.matchMedia(\"(prefers-color-scheme: dark)\").matches);\n      var root = document.documentElement;\n      root.setAttribute(\"data-theme-pref\", pref);\n      root.classList.toggle(\"dark\", dark);\n      root.style.colorScheme = dark ? \"dark\" : \"light\";\n      var meta = document.querySelector('meta[name=\"theme-color\"]');\n      if (meta) meta.setAttribute(\"content\", dark ? \"#1c1813\" : \"#FBFAF7\");\n    } catch (e) {}\n  })();\n</script><link rel=\"icon\" type=\"image/svg+xml\" href=\"/favicon.svg\"><link rel=\"icon\" type=\"image/x-icon\" href=\"/favicon.ico\"><link rel=\"apple-touch-icon\" href=\"/images/composo-square.png\"><link rel=\"canonical\" href=\"https://www.composo.ai/\"><title>Composo - Teaching machines the human definition of quality</title><meta name=\"description\" content=\"Expert judgement, turned into signal: evaluation for your AI agents in production, and benchmarks and training signal for frontier models. Published research, open benchmarks.\"><meta property=\"og:type\" content=\"website\"><meta property=\"og:url\" content=\"https://www.composo.ai/\"><meta property=\"og:title\" content=\"Composo - Teaching machines the human definition of quality\"><meta property=\"og:description\" content=\"Expert judgement, turned into signal: evaluation for your AI agents in production, and benchmarks and training signal for frontier models. ",
+ "hops": [
+  {
+   "status": 200,
+   "url": "https://www.composo.ai/"
+  }
+ ],
+ "length": 68752,
+ "name": "Composo",
+ "status": 200,
+ "text": "Teaching machines the human definition of quality.",
+ "text_source": "h1",
+ "url": "https://www.composo.ai/"
+}

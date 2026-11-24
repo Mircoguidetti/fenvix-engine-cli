@@ -1,0 +1,18 @@
+{
+ "at": "2026-11-24T18:55:42+00:00",
+ "error": null,
+ "final_url": "https://momentic.ai/",
+ "first_2kb": "<!DOCTYPE html><html lang=\"en\" data-theme=\"light\"> <head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, viewport-fit=cover\"><meta name=\"theme-color\" content=\"#f5f3f2\"><link rel=\"icon\" type=\"image/png\" sizes=\"64x64\" href=\"/images/favicon-tile.png\"><link rel=\"apple-touch-icon\" href=\"/images/apple-touch-icon.png\"><title>AI QA Engineer &amp; AI Testing Platform | Momentic</title><meta name=\"description\" content=\"Momentic is an AI QA platform that explores your web, iOS and Android apps to find bugs, then writes, runs and repairs the tests that catch them before they ship.\"><meta name=\"is-agentic-site-type\" content=\"app\"><link rel=\"canonical\" href=\"https://momentic.ai/\"><link rel=\"alternate\" type=\"text/markdown\" href=\"/index.md\"><link rel=\"alternate\" type=\"application/rss+xml\" title=\"Momentic blog\" href=\"/rss.xml\"><script>(function(){var m=document.cookie.match(/(?:^|; )momentic_consent=([^;]+)/);var state=m?decodeURIComponent(m[1]):null;function gtag(){window.dataLayer.push(arguments)}function consentVendors(mode,value){window.dataLayer=window.dataLayer||[];gtag(\"consent\",mode,{analytics_storage:value,ad_storage:value,ad_user_data:value,ad_personalization:value})}consentVendors(\"default\",state===\"granted\"?\"granted\":\"denied\");window.momenticDefer=function(cb){var run=function(){var ric=window.requestIdleCallback||function(f){return setTimeout(f,1)};ric(cb,{timeout:2000})};if(document.readyState===\"complete\")run();else window.addEventListener(\"load\",run,{once:true})};window.momenticConsent={getState:function(){return state},grant:function(){if(state===\"granted\")return;state=\"granted\";consentVendors(\"update\",\"granted\");window.dataLayer.push({event:\"consent_granted\"});if(window.momenticLoadHubSpot)window.momenticLoadHubSpot()},deny:function(){state=\"denied\";consentVendors(\"update\",\"denied\");try{if(window.posthog&&window.posthog.opt_out_capturing)window.posthog.opt_out_capturing()}catch(e){}window._hsq=window._hsq||[];window._hsq.push([\"doNotTrack\"])}}})();</script><script>(fun",
+ "hops": [
+  {
+   "status": 200,
+   "url": "https://momentic.ai/"
+  }
+ ],
+ "length": 232969,
+ "name": "Momentic",
+ "status": 200,
+ "text": "Catch bugs before they ship.",
+ "text_source": "h1",
+ "url": "https://momentic.ai/"
+}

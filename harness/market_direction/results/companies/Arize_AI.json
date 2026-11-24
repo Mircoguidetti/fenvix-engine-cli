@@ -1,0 +1,18 @@
+{
+ "at": "2026-11-24T18:55:36+00:00",
+ "error": null,
+ "final_url": "https://arize.com/",
+ "first_2kb": "<!DOCTYPE html>\n<html lang=\"en-US\" class=\"smooth-scroll bg-page-light dark:bg-page-dark dark:[color-scheme:dark] dark\">\n\n<head>\n\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"initial-scale=1, width=device-width, height=device-height, viewport-fit=cover\">\n  <meta name=\"color-scheme\" content=\"dark\">\n\n  <script>\n    // The operating system, recorded on every page view so a forced dark page\n    // can be split from a visitor whose machine was already dark. This is not\n    // the theme we paint, and it does not change color_scheme_source.\n    function arizePrefersColorScheme() {\n      if (!window.matchMedia) return 'no-preference';\n      if (window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';\n      if (window.matchMedia('(prefers-color-scheme: light)').matches) return 'light';\n      return 'no-preference';\n    }\n\n    \n      // Get mode from PHP\n      const mode = \"\";\n      const forceDark = false;\n      const THEME_STORAGE_KEY = 'arize-color-scheme';\n\n      function getStoredTheme() {\n        try {\n          const stored = localStorage.getItem(THEME_STORAGE_KEY);\n          return stored === 'light' || stored === 'dark' ? stored : null;\n        } catch (error) {\n          return null;\n        }\n      }\n\n      function resolveTheme() {\n        if (forceDark || mode === 'dark') {\n          return 'dark';\n        }\n\n        if (mode === 'light') {\n          return 'light';\n        }\n\n        // The footer toggle writes light or dark. No choice keeps the site default.\n        return getStoredTheme() === 'light' ? 'light' : 'dark';\n      }\n\n      function syncColorSchemeMeta(isDark) {\n        const meta = document.querySelector('meta[name=\"color-scheme\"]');\n        if (!meta) return;\n        meta.setAttribute('content', isDark ? 'dark' : 'light');\n      }\n\n      function syncThemeToggleControls() {\n        const isDark = document.documentElement.classList.contains('dark');\n        document.querySelectorAll('[data-arize-theme-toggle]').forEach((button) => {\n          button.setAttribute('ari",
+ "hops": [
+  {
+   "status": 200,
+   "url": "https://arize.com/"
+  }
+ ],
+ "length": 411830,
+ "name": "Arize AI",
+ "status": 200,
+ "text": "The agent observability and evaluation platform.",
+ "text_source": "h1",
+ "url": "https://arize.com/"
+}

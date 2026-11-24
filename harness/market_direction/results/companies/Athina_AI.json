@@ -1,0 +1,19 @@
+{
+ "at": "2026-11-24T18:55:38+00:00",
+ "error": "SSLError(MaxRetryError(\"HTTPSConnectionPool(host='www.athina.ai', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake failure (_ssl.c:1011)')))\"))",
+ "final_url": "https://www.athina.ai/",
+ "first_2kb": "",
+ "hops": [
+  {
+   "error": "SSLError(MaxRetryError(\"HTTPSConnectionPool(host='www.athina.ai', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake failure (_ssl.c:1011)')))\"))",
+   "status": null,
+   "url": "https://www.athina.ai/"
+  }
+ ],
+ "length": 0,
+ "name": "Athina AI",
+ "status": null,
+ "text": "",
+ "text_source": "",
+ "url": "https://www.athina.ai/"
+}

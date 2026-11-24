@@ -1,0 +1,18 @@
+{
+ "at": "2026-11-24T18:55:34+00:00",
+ "error": null,
+ "final_url": "https://runs-on.com/",
+ "first_2kb": "<!DOCTYPE html><html lang=\"en\"> <head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><script>\n  (function () {\n    if (!location.hash) return;\n\n    document.documentElement.setAttribute(\"data-initial-anchor\", \"\");\n    window.addEventListener(\n      \"load\",\n      function () {\n        requestAnimationFrame(function () {\n          var id;\n          try {\n            id = decodeURIComponent(location.hash.slice(1));\n          } catch (e) {\n            id = location.hash.slice(1);\n          }\n          var target = document.getElementById(id);\n          if (target) target.scrollIntoView({ behavior: \"auto\", block: \"start\" });\n          document.documentElement.removeAttribute(\"data-initial-anchor\");\n        });\n      },\n      { once: true },\n    );\n  })();\n</script><script>\n  (function () {\n    if (!(\"scrollRestoration\" in history)) return;\n    history.scrollRestoration = \"manual\";\n\n    var KEY = \"ro-scroll:\";\n    function save() {\n      try {\n        sessionStorage.setItem(KEY + location.pathname, String(window.scrollY));\n      } catch (e) {}\n    }\n    // Persist scroll position as the user leaves the page. \"pagehide\" also\n    // fires when the page enters the back/forward cache, keeping the saved\n    // value accurate for a later bfcache restore.\n    window.addEventListener(\"pagehide\", save);\n    document.addEventListener(\"visibilitychange\", function () {\n      if (document.visibilityState === \"hidden\") save();\n    });\n\n    window.addEventListener(\"pageshow\", function (event) {\n      // Detect back/forward navigation. A non-cached history reload is reported\n      // as \"back_forward\" by the Navigation Timing API; a restore from the\n      // back/forward cache is signalled by event.persisted (and in that case\n      // the Timing API still reports the document's ORIGINAL load type, so it\n      // can't be trusted on its own).\n      var nav = performance.getEntriesByType(\"navigation\")[0];\n      var isBackForward =\n        event.persisted || (nav && nav.type === \"back_forward\");",
+ "hops": [
+  {
+   "status": 200,
+   "url": "https://runs-on.com/"
+  }
+ ],
+ "length": 219059,
+ "name": "RunsOn",
+ "status": 200,
+ "text": "Self-hosted GitHub Actions runners, done properly .",
+ "text_source": "h1",
+ "url": "https://runs-on.com/"
+}

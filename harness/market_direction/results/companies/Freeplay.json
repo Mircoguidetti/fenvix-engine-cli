@@ -1,0 +1,18 @@
+{
+ "at": "2026-11-24T18:55:40+00:00",
+ "error": null,
+ "final_url": "https://freeplay.ai/",
+ "first_2kb": "<!DOCTYPE html>\n<html lang=\"en\">\n  <meta charset=\"utf-8\" />\n  <meta\n    name=\"viewport\"\n    content=\"width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover\"\n  />\n  <title>Site Not Found | Framer</title>\n  <style>\n    /* Mirrors FramerStudio's empty state styles, see static/static.go. */\n    @font-face {\n      font-display: swap;\n      font-family: \"Inter Variable UI\";\n      font-style: normal;\n      font-weight: 100 900;\n      src: url(\"https://app.framerstatic.com/InterVariable.latin-5EYCRJRY.woff2\")\n        format(\"woff2\");\n    }\n\n    :root {\n      --background: #fff;\n      --text: #666;\n      --text-title: #222;\n      --selection-background: rgba(0, 0, 0, 0.1);\n      --selection-text: #000;\n    }\n\n    @media (prefers-color-scheme: dark) {\n      :root {\n        --background: #111;\n        --text: #999;\n        --text-title: #fff;\n        --selection-background: rgba(255, 255, 255, 0.15);\n        --selection-text: #fff;\n        color-scheme: dark;\n      }\n    }\n\n    html {\n      height: 100%;\n      -webkit-font-smoothing: antialiased;\n      -moz-osx-font-smoothing: grayscale;\n    }\n\n    body {\n      display: flex;\n      box-sizing: border-box;\n      padding: 24px;\n      min-height: 100%;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n      margin: 0;\n      background-color: var(--background);\n      color: var(--text);\n      font-family:\n        \"Inter Variable UI\",\n        system-ui,\n        -apple-system,\n        BlinkMacSystemFont,\n        \"Segoe UI\",\n        Roboto,\n        Helvetica,\n        Arial,\n        sans-serif;\n      font-feature-settings:\n        \"cv01\" 1,\n        \"cv05\" 1,\n        \"cv09\" 1,\n        \"cv11\" 1;\n    }\n\n    ::selection {\n      background-color: var(--selection-background);\n      color: var(--selection-text);\n    }\n\n    h1 {\n      max-width: 200px;\n      margin: 15px 0 10px;\n      text-align: center;\n      text-wrap: balance;\n      color: var(--text-title);\n      font-size: 12px;\n      font-weight: 550;\n      line-height: 1;\n ",
+ "hops": [
+  {
+   "status": 404,
+   "url": "https://freeplay.ai/"
+  }
+ ],
+ "length": 2627,
+ "name": "Freeplay",
+ "status": 404,
+ "text": "",
+ "text_source": "",
+ "url": "https://freeplay.ai/"
+}

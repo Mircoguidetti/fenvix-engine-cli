@@ -1,0 +1,18 @@
+{
+ "at": "2026-11-24T18:55:47+00:00",
+ "error": null,
+ "final_url": "https://insightfinder.com/",
+ "first_2kb": "<!DOCTYPE html>\n<html lang=\"en-US\">\n<head>\n\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /><script type=\"text/javascript\">(window.NREUM||(NREUM={})).init={\"privacy\":{\"cookies_enabled\":true},\"ajax\":{\"deny_list\":[\"bam.nr-data.net\"]},\"feature_flags\":[\"rum_v2\"],\"distributed_tracing\":{\"enabled\":true}};(window.NREUM||(NREUM={})).loader_config={\"agentID\":\"1589296959\",\"accountID\":\"8647834\",\"trustKey\":\"8647834\",\"xpid\":\"XAADVl5QDBABV1VaDgUCVlYI\",\"licenseKey\":\"NRJS-78766e9551c40ce367c\",\"applicationID\":\"1348945029\",\"browserID\":\"1589296959\"};;/*! For license information please see nr-loader-spa-1.324.1.min.js.LICENSE.txt */\n(()=>{var e={8122(e,t,r){\"use strict\";r.d(t,{a:()=>i});var n=r(944);function i(e,t){try{if(!e||\"object\"!=typeof e)return(0,n.R)(3);if(!t||\"object\"!=typeof t)return(0,n.R)(4);const r=Object.create(Object.getPrototypeOf(t),Object.getOwnPropertyDescriptors(t)),s=0===Object.keys(r).length?e:r;for(let a in s)if(void 0!==e[a])try{if(null===e[a]){r[a]=null;continue}Array.isArray(e[a])&&Array.isArray(t[a])?r[a]=Array.from(new Set([...e[a],...t[a]])):e[a]instanceof Map||e[a]instanceof Set||e[a]instanceof Date||e[a]instanceof RegExp?r[a]=e[a]:\"object\"==typeof e[a]&&null!==t[a]&&\"object\"==typeof t[a]?r[a]=i(e[a],t[a]):r[a]=e[a]}catch(e){r[a]||(0,n.R)(1,e)}return r}catch(e){(0,n.R)(2,e)}}},2555(e,t,r){\"use strict\";r.d(t,{f:()=>a});var n=r(384),i=r(8122);const s={beacon:n.NT.beacon,errorBeacon:n.NT.errorBeacon,licenseKey:void 0,applicationID:void 0,sa:void 0,queueTime:void 0,applicationTime:void 0,ttGuid:void 0,user:void 0,account:void 0,product:void 0,extra:void 0,jsAttributes:{},userAttributes:void 0,atts:void 0,transactionName:void 0,tNamePlain:void 0};function a(e){try{return!!e.licenseKey&&!!e.errorBeacon&&!!e.applicationID}catch(e){return!1}}r.d(t,[\"D\",0,e=>(0,i.a)(e,s)])},7699(e,t,r){\"use strict\";var n=r(860);const i=1e6,s={[n.K7.logging]:!0,[n.K7.genericEvents]:!0,[n.K7.jserrors]:!0,[n.K7.ajax]:!0};r.d(t,[\"It\",0,i,\"KC\",0,s,\"qh\",0,\"SESSION_ERROR\",\"zd\",0,5e5])},9324(e,t,r){\"use strict\";r.d(t",
+ "hops": [
+  {
+   "status": 200,
+   "url": "https://insightfinder.com/"
+  }
+ ],
+ "length": 215453,
+ "name": "InsightFinder",
+ "status": 200,
+ "text": "Predict Failures. Prevent Outages. Protect Your Business.",
+ "text_source": "h1",
+ "url": "https://insightfinder.com/"
+}
