@@ -24,7 +24,7 @@ not hold, the direction stands and the numbers are recorded.
 | Launch date | 2026-11-24 |
 | Staleness cut (`pushed_at`, control `pushed:>=`) | launch - 30 d = 2026-10-25 |
 | T0 upper bound | 2026-05-24 (inclusive) |
-| T0_MIN | written after the §0.3 probe, in a second commit, before any candidate is read |
+| T0_MIN | **2026-04-01** (second commit, after the §0.3 probe, before any candidate is read): oldest listed runs nodejs/node 2025-12-21, python/cpython 2025-12-28, microsoft/vscode 2025-12-12 (day bisection; each listing `total_count` 40,000 > 1,000; `results/probe/retention.json`, workflow run 45463684419); latest 2025-12-28 + 90 d = 2026-03-28, rounded up to 2026-04-01 |
 | T0_MIN if the retention probe fails (note 9) | launch - 400 d + 90 d = 2026-01-18, rounded up to the first of a month = **2026-02-01** |
 | D0 window | `created_at` in [T0 - 90 d, T0) |
 | D1 window | `created_at` in [T0 + 182 d, min(T0 + 272 d, read time)] |
