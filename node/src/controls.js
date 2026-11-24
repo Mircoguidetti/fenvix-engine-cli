@@ -47,6 +47,11 @@ function installProcess() {
   require('./envview').install();
   // machine and process facts, native key generation, mkdtemp names (src/facts.js)
   require('./facts').installProcess(PATCHER);
+  // P1 C: a virtual pid leaving the process through a /proc path or os.get/setPriority is the real one (src/facts.js).
+  // Below the fs controls (installed before them): src/fstime.js keeps its Stats mapping the outermost wrapper and
+  // retires a wrapper found below another one, so a wrapper over it made every stat of a test unmapped (MEASURED:
+  // ironcurtain test/ca.test.ts 2 -> 32 failed, lstatSync and fstatSync disagreeing on the virtual inode).
+  require('./facts').installPidBoundaries(PATCHER);
   // completion order of a test's concurrent asynchronous I/O (src/ioorder.js); Level 1: timers against I/O
   require('./sched').installProcess(PATCHER);
   require('./ioorder').installProcess(PATCHER);
@@ -63,9 +68,6 @@ function installProcess() {
     try { require('./sqlvirt').installProcess(PATCHER); } catch (e) { level0Gap(`sqlite: ${e && e.message}`, false); }
     try { require('./wasi').installProcess(PATCHER); } catch (e) { level0Gap(`wasi: ${e && e.message}`, false); }
   }
-  // P1 C: a virtual pid leaving the process through a /proc path or os.get/setPriority is the real one (src/facts.js);
-  // after the fs controls, so that it is the outermost wrapper of the fs functions it maps
-  require('./facts').installPidBoundaries(PATCHER);
   // worker threads, child processes and vm contexts started by tests (src/children.js)
   require('./children').installProcess(PATCHER, (g) => installRealm(g, { sameRealm: false, vm: true }));
   // The general rule's wide sensor, last of the controls: it wraps every builtin export the engine's accounting

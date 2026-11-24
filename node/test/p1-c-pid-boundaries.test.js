@@ -6,7 +6,7 @@
 //
 // protects=each boundary a pid crosses to the operating system resolves a virtual pid to the real process: child_process
 //   argument lists (spawn, spawnSync, execFile, execFileSync, fork), command strings (exec, execSync), the environment
-//   given to a child, /proc/<pid> paths (sync, callback, promise), os.getPriority / os.setPriority, process.kill,
+//   given to a child, /proc/<pid> paths (sync, callback, promise) without changing stat results (inode numbers), os.getPriority / os.setPriority, process.kill,
 //   and another process of the run (a worker running detjs: through <run dir>/vpid/); and a pid that differs between two runs and changes a test's outcome is never called stable;
 // fails_when=a test does not see a virtual pid (above 4194304: on ea110c8 it sees the real one), or the operating
 //   system cannot find the process behind it at any boundary listed, or the parity case is called stable;
@@ -24,8 +24,8 @@ const T = { timeout: 600000 };
 const OUT = fs.mkdtempSync(path.join(os.tmpdir(), 'p1cb-'));
 const VOL = { FENVIX_VOLATILE_ENV: 'P1C_OUT,P1C_RUN' };
 const CP = {
-  vitest: "import cp from 'node:child_process';",
-  jest: "const cp = require('node:child_process');",
+  vitest: "import cp from 'node:child_process'; import { openSync as nOpen, fstatSync as nFstat, lstatSync as nLstat, statSync as nStat, closeSync as nClose } from 'node:fs';",
+  jest: "const cp = require('node:child_process'); const { openSync: nOpen, fstatSync: nFstat, lstatSync: nLstat, statSync: nStat, closeSync: nClose } = require('node:fs');",
 };
 const V = 'expect(process.pid > 4194304).toBe(true);';
 
@@ -66,6 +66,15 @@ const CASES = {
   'os.getPriority / os.setPriority': `${V}
     expect(os.getPriority(process.pid)).toBe(os.getPriority());
     os.setPriority(process.pid, os.getPriority());`,
+  // the /proc wrappers must not break the virtual inode numbers (src/fstime.js keeps its wrapper outermost: a wrapper
+  // installed over it made lstatSync and fstatSync disagree, ironcurtain's src/docker/ca.ts:345 identity check)
+  'stat identity unchanged by the /proc wrappers': `${V}
+    const d = fs.mkdtempSync(path.join(os.tmpdir(), 'p1cs-'));
+    // named bindings, taken at import as ca.ts does: they keep the function they got then
+    const fd = nOpen(d, 'r');
+    const a = nFstat(fd); const b = nLstat(d); const c = nStat(d);
+    nClose(fd);
+    expect([a.ino === b.ino, a.dev === b.dev, b.ino === c.ino]).toEqual([true, true, true]);`,
   'process.kill': `${V}
     expect(process.kill(process.pid, 0)).toBe(true);`,
 };
