@@ -6,17 +6,17 @@ Plain runner commands only; the engine (detjs, fenvix) was never run. Data: `res
 
 ## Verdicts per repository
 
-| repository | tests (serial) | IDENTICAL | DIVERGES (order / parallel) | of which in 1 parallel run only | DIVERGES-order-only | UNDECIDED (insufficient parallel / S1≠S2 / run failed or short) | ENV | test files that did not load (per run; their tests are in no column) |
-|---|---|---|---|---|---|---|---|---|
-| codex-multi-auth | 8662 | 8644 | 9 (9 / 0) | 1 | 0 | 19 (0 / 1 / 18) | 6 | 0 |
-| ironcurtain | 7033 | 7028 | 5 (4 / 1) | 1 | 0 | 0 (0 / 0 / 0) | 0 | 60 |
-| yalc | 1483 | 1480 | 2 (0 / 2) | 1 | 0 | 1 (0 / 1 / 0) | 0 | 1 |
-| nestjs-pino | 269 | 269 | 0 (0 / 0) | 0 | 0 | 0 (0 / 0 / 0) | 0 | 0 |
-| agentsys | 2224 | 2224 | 0 (0 / 0) | 0 | 0 | 0 (0 / 0 / 0) | 0 | 0 |
-| lerna-lite | 107 | 107 | 0 (0 / 0) | 0 | 0 | 0 (0 / 0 / 0) | 0 | 0 |
-| drydock | 21578 | 21488 | 66 (40 / 26) | 29 | 0 | 216 (0 / 0 / 216) | 0 | 0 |
-| agentlang | 439 | 434 | 5 (4 / 1) | 2 | 0 | 0 (0 / 0 / 0) | 0 | 0 |
-| alakajam | 68 | 68 | 0 (0 / 0) | 0 | 0 | 0 (0 / 0 / 0) | 0 | 14 |
+| repository | tests (serial) | IDENTICAL | DIVERGES (order / parallel) | of which in 1 parallel run only | DIVERGES-order-only | UNDECIDED (insufficient parallel / S1≠S2 / run failed or short) | ENV | test files that did not load (per run; their tests are in no column) | `parallel` label vs SS with the same seed (holds / order / not checked) |
+|---|---|---|---|---|---|---|---|---|---|
+| codex-multi-auth | 8662 | 8644 | 9 (9 / 0) | 1 | 0 | 19 (0 / 1 / 18) | 6 | 0 | 0 / 0 / 0 |
+| ironcurtain | 7033 | 7028 | 5 (4 / 1) | 1 | 0 | 0 (0 / 0 / 0) | 0 | 60 | 0 / 1 / 0 |
+| yalc | 1483 | 1480 | 2 (0 / 2) | 1 | 0 | 1 (0 / 1 / 0) | 0 | 1 | 2 / 0 / 0 |
+| nestjs-pino | 269 | 269 | 0 (0 / 0) | 0 | 0 | 0 (0 / 0 / 0) | 0 | 0 | 0 / 0 / 0 |
+| agentsys | 2224 | 2224 | 0 (0 / 0) | 0 | 0 | 0 (0 / 0 / 0) | 0 | 0 | 0 / 0 / 0 |
+| lerna-lite | 107 | 107 | 0 (0 / 0) | 0 | 0 | 0 (0 / 0 / 0) | 0 | 0 | 0 / 0 / 0 |
+| drydock | 21578 | 21488 | 66 (40 / 26) | 29 | 0 | 216 (0 / 0 / 216) | 0 | 0 | 0 / 26 / 0 |
+| agentlang | 439 | 434 | 5 (4 / 1) | 2 | 0 | 0 (0 / 0 / 0) | 0 | 0 | 0 / 1 / 0 |
+| alakajam | 68 | 68 | 0 (0 / 0) | 0 | 0 | 0 (0 / 0 / 0) | 0 | 14 | 0 / 0 / 0 |
 
 ## Runs and parallelism
 
@@ -34,16 +34,16 @@ Plain runner commands only; the engine (detjs, fenvix) was never run. Data: `res
 
 ## Minimal pairs and wall time
 
-| repository | victims searched (of which label order) | divergence reproduced in any trial | pairs found | not found (victim file alone reproduces, of which with a control seed / not reproduced / other) | over budget | serial median (s) | parallel run median (s, completed / valid) | 9 runs (s) | pair search (s) | total (s) |
+| repository | victims searched (of which label order) | divergence reproduced in any trial | pairs found | not found (victim file alone reproduces 2+ of 3 with negative controls clean, of which with a control seed / not reproduced / other) | over budget | serial median (s) | parallel run median (s, completed / valid) | 9 runs (s) | pair search (s) | total (s) |
 |---|---|---|---|---|---|---|---|---|---|---|
-| codex-multi-auth | 9 (9) | 9 | 0 | 9 (9, 4 / 0 / 0) | 0 | 358.5 | 119.1 / 119.1 | 2040.7 | 100.2 | 2140.9 |
-| ironcurtain | 5 (4) | 5 | 0 | 5 (5, 5 / 0 / 0) | 0 | 204.9 | 65.5 / 65.5 | 1150.5 | 21.85 | 1172.4 |
-| yalc | 2 (0) | 0 | 0 | 2 (0, 0 / 2 / 0) | 0 | 78.4 | 30.7 / 30.7 | 468.0 | 114.38 | 582.4 |
+| codex-multi-auth | 9 (9) | 9 | 0 | 9 (9, 4 / 0 / 0) | 0 | 358.5 | 119.1 / 119.1 | 2040.7 | 321.5 | 2362.2 |
+| ironcurtain | 5 (4) | 5 | 0 | 5 (5, 5 / 0 / 0) | 0 | 204.9 | 65.5 / 65.5 | 1150.5 | 52.03 | 1202.5 |
+| yalc | 2 (0) | 0 | 0 | 2 (0, 0 / 2 / 0) | 0 | 78.4 | 30.7 / 30.7 | 468.0 | 113.02 | 581.0 |
 | nestjs-pino | 0 (0) | 0 | 0 | 0 (0, 0 / 0 / 0) | 0 | 16.3 | 6.2 / 6.2 | 96.2 | 0.04 | 96.2 |
 | agentsys | 0 (0) | 0 | 0 | 0 (0, 0 / 0 / 0) | 0 | 13.8 | 5.6 / 5.6 | 78.0 | 0.03 | 78.0 |
 | lerna-lite | 0 (0) | 0 | 0 | 0 (0, 0 / 0 / 0) | 0 | 604.2 | 292.8 / 292.8 | 3885.1 | 0.04 | 3885.1 |
-| drydock | 10 (7) | 10 | 0 | 10 (10, 9 / 0 / 0) | 0 | 475.0 | 145.2 / 145.2 | 2672.3 | 117.5 | 2789.8 |
-| agentlang | 5 (4) | 5 | 0 | 5 (5, 4 / 0 / 0) | 0 | 49.7 | 18.5 / 18.5 | 285.8 | 44.3 | 330.1 |
+| drydock | 10 (7) | 10 | 0 | 10 (10, 9 / 0 / 0) | 0 | 475.0 | 145.2 / 145.2 | 2672.3 | 332.04 | 3004.3 |
+| agentlang | 5 (4) | 5 | 0 | 5 (5, 4 / 0 / 0) | 0 | 49.7 | 18.5 / 18.5 | 285.8 | 113.69 | 399.5 |
 | alakajam | 0 (0) | 0 | 0 | 0 (0, 0 / 0 / 0) | 0 | 12.1 | 5.1 / 5.0 | 74.8 | 0.04 | 74.8 |
 
 ## How the runs were made
@@ -84,27 +84,47 @@ Plain runner commands only; the engine (detjs, fenvix) was never run. Data: `res
   in the diverging run's order: its seed is replayed (vitest `sequence.shuffle: {files: false, tests: true}` + seed;
   jest `--randomize --seed`).
 - Order of a search (each trial is one plain run of the 30-run budget; 3 h per repository): (1) control: the victim's
-  file alone, twice; if the victim's outcome differs from serial, the cause is inside its own file: "no minimal pair
-  (victim file alone reproduces)", then a negative control runs the file alone with the seeds of up to 2 runs where the
-  victim kept its serial outcome (it must not reproduce). (2) per mode, serial (candidates: files started before the
-  victim's file ended in the diverging run, in start order) then concurrent (candidates: files whose run overlapped the
-  victim's file; victim file and candidates in two processes started together): the full candidate set twice; if the
-  divergence does not show, "not reproduced (full candidate set)". (3) bisect, each half run twice, a half triggers if
-  the victim differs in either run; neither -> "no minimal pair (interaction)". (4) confirm: pair differs >= 2 of 3 and
-  victim alone keeps its serial outcome 3 of 3.
-- Result: 29 of 31 victims reproduce with their own file alone under the diverging run's seed (one run each). 22 of
-  them had a control seed: 43 control runs, 0 reproduced. The other 7 (codex-multi-auth 5, drydock 1, agentlang 1)
-  differed in all 5 parallel runs, so no control seed was available. These are dependences on test order inside one
-  file, not pairs of files: 0 confirmed pairs. The 2 yalc victims (label `parallel`) were not reproduced by the full
-  candidate set in either mode (serial 59 and 37 files, concurrent 2 and 7 files), so nothing is claimed about their cause.
-- This is the second pair search. The first (commit 70b27fd, 22484 s over 31 victims) bisected without controls and
-  without the seed replay: 0 of 244 trials reproduced a divergence, recorded as "no minimal pair (interaction)" (30)
-  and "pair not found (budget)" (1). The pre-merge review showed that search could not reproduce within-file order and
-  rarely overlapped the suspect files concurrently. On that review, the user chose to rerun the search with the
-  controls (decision D1, 2026-11-23); its rows replace the first search's rows in `pairs.jsonl`, and the wall times in
-  the tables are the rerun's.
+  file alone with the diverging run's seed, twice. If the victim's outcome differs from serial, confirm: it must differ
+  in at least 2 of 3 runs; then two negative controls must keep the serial outcome: the file alone without a seed
+  (2 runs) and the file alone with up to 2 distinct control seeds (seeds of runs where the victim kept its serial
+  outcome). All pass -> "no minimal pair (victim file alone reproduces)": the cause is inside its own file. (2) per
+  mode, serial (candidates: files started before the victim's file ended in the diverging run, in start order) then
+  concurrent (candidates: files whose run overlapped the victim's file; victim file and candidates in two processes
+  started together): the full candidate set twice; if the divergence does not show, "not reproduced". (3) bisect,
+  each half run twice; neither half triggers -> "no minimal pair (interaction)". (4) confirm: pair differs >= 2 of 3
+  and victim alone keeps its serial outcome 3 of 3. A trial in which a file outside the trial's set ran before the
+  victim's file ended (vitest CLI file arguments are substring filters) yields no evidence and ends the search as
+  "trial failed" (none occurred).
+- Result (third search, 199 runs, 932.3 s in all): 29 of 31 victims reproduce with their own file alone under the
+  diverging run's seed in 3 of 3 runs. Negative controls: unseeded 58 runs, 0 reproduced; control seeds 42 runs over
+  22 victims, 0 reproduced. The other 7 victims (codex-multi-auth 5, drydock 1, agentlang 1) differed in all 5
+  parallel runs, so no control seed was available; their unseeded controls were clean. These are dependences on test
+  order inside one file, not pairs of files: 0 confirmed pairs. The 2 yalc victims (label `parallel`) were not
+  reproduced: alone 2 runs, full serial candidate set 2 runs (59 and 37 files), full concurrent set 2 runs (2 and 7
+  files), 6 runs each; nothing is claimed about their cause.
+- Earlier searches. The first (commit 70b27fd, 22484 s over 31 victims) bisected without controls and without the seed
+  replay: 0 of 244 trials reproduced a divergence, recorded as "no minimal pair (interaction)" (30) and "pair not
+  found (budget)" (1). On the pre-merge review showing it could not reproduce within-file order, the user chose to
+  rerun the search with controls (decision D1, 2026-11-23). The second search added the seed replay and a single
+  control-seed run; the second review asked for a 2-of-3 confirmation, an unseeded control and distinct control seeds,
+  which the third search adds. Each search's rows replace the previous ones in `pairs.jsonl`; wall times in the tables
+  are the third search's.
 - A trial with no victim outcome (timeout, crash, no report) ends a search as "no minimal pair (trial failed)" (none
   occurred).
+
+## The `parallel` label checked against shuffled serial runs with the same seed
+
+- Inside a file, the test order depends only on the seed (vitest shuffles each suite's tasks with `sequence.seed`; jest
+  `--randomize --seed`), so Pk and SSk share it. Every DIVERGES test labelled `parallel` diverged only in P3, P4 or P5,
+  whose seeds no SS run of the spec used. Supplementary runs SS3, SS4, SS5 (`control_arm.py supp_ss`, rows
+  `"row": "run_supp"` in `results.jsonl`, data `data/<repo>/SS3..SS5.json`) were made for all 9 repositories; they do
+  not enter any verdict.
+- Result (column "`parallel` label vs SS with the same seed"): of 30 tests labelled `parallel`, 28 (drydock 26,
+  ironcurtain 1, agentlang 1) also differ from serial in the serial run with the same seed: their divergence is test
+  order under that seed, not parallelism. The 2 yalc tests keep their serial outcome in SS3, SS4 and SS5: the label
+  holds for them. The verdicts keep the spec's labels; the column is the correction.
+- So a divergence seen in one parallel run only (column "of which in 1 parallel run only", drydock 29 of 66) is, for the
+  28 above, a deterministic order under that run's seed, not a rare flaky failure.
 
 ## Tests in no verdict column
 
@@ -125,7 +145,8 @@ Plain runner commands only; the engine (detjs, fenvix) was never run. Data: `res
   and fails only in a parallel run with a local `ECONNREFUSED` would be ENV, not DIVERGES. Measured: all 6 ENV tests
   (codex-multi-auth) failed in all 9 runs with the ENV message, so no verdict here is affected.
 - DIVERGES needs one valid parallel run that differs; column "of which in 1 parallel run only" counts the DIVERGES
-  tests that differ in exactly one of the 5 (drydock 29 of 66), which a rare flaky failure would also produce.
+  tests that differ in exactly one of the 5 (drydock 29 of 66). A rare flaky failure would also produce that; the
+  same-seed SS check above shows which ones do not.
 
 ## Per-repository remarks
 
