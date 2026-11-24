@@ -343,10 +343,15 @@ fn verify_with(paths: Vec<PathBuf>, ignore_env: Vec<String>, show_stable: bool) 
 struct PyChunkWriter<'py> {
     out: Bound<'py, PyAny>,
     buf: Vec<u8>,
+    /// a write to `out` failed: every later write fails at once (nothing is resent, the buffer does not grow)
+    failed: bool,
 }
 
 impl PyChunkWriter<'_> {
     fn send(&mut self, all: bool) -> std::io::Result<()> {
+        if self.failed {
+            return Err(std::io::Error::other("an earlier write of the report failed"));
+        }
         let valid = match std::str::from_utf8(&self.buf) {
             Ok(_) => self.buf.len(),
             Err(e) => e.valid_up_to(),
@@ -356,7 +361,10 @@ impl PyChunkWriter<'_> {
             return Ok(());
         }
         let text = String::from_utf8_lossy(&self.buf[..n]).into_owned();
-        self.out.call_method1("write", (text,)).map_err(std::io::Error::other)?;
+        if let Err(e) = self.out.call_method1("write", (text,)) {
+            self.failed = true;
+            return Err(std::io::Error::other(e));
+        }
         self.buf.drain(..n);
         Ok(())
     }
@@ -364,6 +372,9 @@ impl PyChunkWriter<'_> {
 
 impl std::io::Write for PyChunkWriter<'_> {
     fn write(&mut self, data: &[u8]) -> std::io::Result<usize> {
+        if self.failed {
+            return Err(std::io::Error::other("an earlier write of the report failed"));
+        }
         // a large write (the text rendering is one string) is taken ~1 MiB at a time, so neither side ever holds
         // more than a chunk of it
         const CHUNK: usize = 1 << 20;
@@ -402,7 +413,7 @@ fn verify_write(
     let report = v::verify_paths_ignoring(&paths, &ignore_env).map_err(trace_err)?;
     let summary = serde_json::to_string(&report.summary).map_err(|e| PyRuntimeError::new_err(e.to_string()))?;
     let io = |e: std::io::Error| PyRuntimeError::new_err(e.to_string());
-    let mut w = PyChunkWriter { out, buf: Vec::with_capacity(1 << 20) };
+    let mut w = PyChunkWriter { out, buf: Vec::with_capacity(1 << 20), failed: false };
     if as_json {
         serde_json::to_writer(&mut w, &report).map_err(|e| PyRuntimeError::new_err(e.to_string()))?;
         w.write_all(b"\n").map_err(io)?;
@@ -415,6 +426,10 @@ fn verify_write(
         }
         impl std::fmt::Write for Text<'_, '_> {
             fn write_str(&mut self, s: &str) -> std::fmt::Result {
+                // render_text_to goes on after an error (its writes are `let _ =`): stop writing at the first one
+                if self.err.is_some() {
+                    return Err(std::fmt::Error);
+                }
                 let r = match (self.prog, s.find("detpy verify")) {
                     (Some(prog), Some(i)) => {
                         self.prog = None;
@@ -432,8 +447,8 @@ fn verify_write(
             }
         }
         let mut t = Text { w: &mut w, prog: Some(&prog), err: None };
-        if v::render_text_to(&report, show_stable, &mut t).is_err() {
-            let e = t.err.take().unwrap_or_else(|| std::io::Error::other("rendering the report failed"));
+        let _ = v::render_text_to(&report, show_stable, &mut t);
+        if let Some(e) = t.err.take() {
             return Err(io(e));
         }
     }

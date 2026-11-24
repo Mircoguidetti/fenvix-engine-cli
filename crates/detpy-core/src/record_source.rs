@@ -14,7 +14,7 @@
 //! (blank lines counted), the same UTF-8, format and version checks, and the last header/footer line wins.
 
 use crate::event::Event;
-use crate::fingerprint::{fingerprint_of, TestRecord, UNCONTROLLED_PREFIX};
+use crate::fingerprint::{digest_bytes, fingerprint_of, TestRecord, UNCONTROLLED_PREFIX};
 use crate::trace::{Footer, Header, Line, Trace, TraceError, TRACE_FORMAT, TRACE_VERSION};
 use std::cell::RefCell;
 use std::collections::BTreeSet;
@@ -55,6 +55,8 @@ pub struct SlimRecord {
     /// Byte offset and length of the record's line in its file (0, 0 for an in-memory record).
     pub offset: u64,
     pub length: u64,
+    /// Digest of the line's bytes (file-backed records; empty in memory): `full` refuses a line that changed since.
+    pub line_digest: String,
 }
 
 impl SlimRecord {
@@ -93,6 +95,7 @@ impl SlimRecord {
             env_reads: env,
             offset,
             length,
+            line_digest: String::new(),
         }
     }
 }
@@ -194,7 +197,11 @@ impl FileTrace {
                     }
                     header = Some(h)
                 }
-                Line::Test(t) => slims.push(SlimRecord::of(&t, start, end as u64)),
+                Line::Test(t) => {
+                    let mut slim = SlimRecord::of(&t, start, end as u64);
+                    slim.line_digest = digest_bytes(&buf[..end]).short();
+                    slims.push(slim)
+                }
                 Line::Footer(f) => footer = Some(f),
             }
         }
@@ -231,6 +238,9 @@ impl RecordSource for FileTrace {
                 format!("the trace changed after it was read: the line at byte {} is not the record of {}", s.offset, s.nodeid),
             )
         };
+        if digest_bytes(&buf).short() != s.line_digest {
+            return Err(changed());
+        }
         match serde_json::from_slice::<Line>(&buf).map_err(|_| changed())? {
             Line::Test(t) if t.nodeid == s.nodeid && t.fingerprint == s.fingerprint => Ok(t),
             _ => Err(changed()),
@@ -308,6 +318,26 @@ mod tests {
         assert!(e.to_string().contains("changed after it was read"), "{e}");
     }
 
+    /// protects=full(i) refuses a record rewritten after open that keeps its nodeid and fingerprint but not its events
+    /// (complete record: the events' own fingerprint; truncated record: the line's bytes); fails_when=the events read
+    /// back differ from the scanned ones and decide the divergence (second review pass); no_claim=a rewrite of the
+    /// same bytes.
+    #[test]
+    fn full_refuses_changed_events_under_the_same_fingerprint() {
+        let d = tempfile::tempdir().unwrap();
+        let ev = |v: &str| format!(r#"{{"t":0,"s":"time","o":"time.time","at":"t.py:1","v":"{v}"}}"#);
+        for truncated in [false, true] {
+            let line = |v: &str| T.replace(r#""events":[]"#, &format!(r#""events":[{}]"#, ev(v)))
+                .replace(r#""truncated":false"#, &format!(r#""truncated":{truncated}"#));
+            let p = write(d.path(), "ev.jsonl", &format!("{H}\n{}\n", line("1")));
+            let ft = FileTrace::open(&p).unwrap();
+            assert!(ft.full(0).is_ok());
+            std::fs::OpenOptions::new().write(true).open(&p).unwrap().write_all(format!("{H}\n{}\n", line("2")).as_bytes()).unwrap();
+            let e = ft.full(0).unwrap_err();
+            assert!(e.to_string().contains("changed after it was read"), "truncated={truncated}: {e}");
+        }
+    }
+
     /// protects=full(i) returns exactly the record read_trace loads, by offset, CRLF lines and a last line without
     /// a newline included; fails_when=an offset or length is off by one; no_claim=concurrent modification of the file.
     #[test]
@@ -320,7 +350,9 @@ mod tests {
         assert_eq!(ft.len(), 2);
         for i in 0..2 {
             assert_eq!(ft.full(i).unwrap(), tr.tests[i]);
-            assert_eq!(ft.slim(i), &SlimRecord { offset: ft.slim(i).offset, length: ft.slim(i).length, ..SlimRecord::of(&tr.tests[i], 0, 0) });
+            let line_digest = ft.slim(i).line_digest.clone();
+            assert_eq!(line_digest.len(), 32);
+            assert_eq!(ft.slim(i), &SlimRecord { offset: ft.slim(i).offset, length: ft.slim(i).length, line_digest, ..SlimRecord::of(&tr.tests[i], 0, 0) });
         }
     }
 }

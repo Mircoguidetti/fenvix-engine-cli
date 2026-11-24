@@ -252,9 +252,6 @@ function partNotes(file) {
   }
 }
 
-/** Ids of the tests recorded in a part, in execution order. Streams the part (src/trace-lines.js); a part that
- * cannot be read throws (the caller fails closed: src/session.js finish). A line that is not JSON is skipped (a
- * truncated last line, as before). */
 /** The ids of every part, in order; `onError(part, err)` for a part whose ids cannot be read (it adds none). */
 function partOrder(parts, onError) {
   const order = [];
@@ -267,6 +264,9 @@ function partOrder(parts, onError) {
   return order;
 }
 
+/** Ids of the tests recorded in a part, in execution order. Streams the part (src/trace-lines.js); a part that
+ * cannot be read throws (the caller fails closed: src/session.js finish). A line that is not JSON is skipped (a
+ * truncated last line, as before). */
 function partIds(file) {
   const ids = [];
   require('./trace-lines').forEachLine(file, (line) => {

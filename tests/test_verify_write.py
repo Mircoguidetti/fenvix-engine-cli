@@ -98,3 +98,34 @@ def test_large_reports_reach_python_in_bounded_chunks(tmp_path, as_json):
     _core.verify_write([str(a), str(b)], [], False, as_json, out, "fenvix verify")
     assert "".join(out.parts) == want
     assert max(out.sizes) <= (1 << 20) + (64 << 10), out.sizes[:5]
+
+
+class _Broken:
+    """A file object whose writes fail, like a closed pipe (`fenvix verify a b | head`)."""
+
+    def __init__(self):
+        self.calls = 0
+
+    def write(self, text):
+        self.calls += 1
+        raise BrokenPipeError("closed")
+
+
+@pytest.mark.parametrize("as_json", [True, False])
+def test_a_failed_write_stops_the_output(tmp_path, as_json):
+    """protects=the first failed write ends verify_write with an error (the CLI then exits 2); fails_when=rendering
+    goes on and the writer resends a growing buffer (second review pass: 5804 calls and 6.1 GB for 3000 tests in text
+    mode); no_claim=what a reader of the truncated stdout sees."""
+    head = {"type": "header", "format": "detpy-trace", "version": 1, "encoding": 2, "meta": {}, "order": []}
+    lines = [json.dumps(head)]
+    for i in range(3000):
+        lines.append(json.dumps({"type": "test", "nodeid": f"t.py::{'x' * 800}{i}", "index": i, "outcome": "passed",
+                                 "fingerprint": f"{i:032x}", "n_events": 0, "truncated": True, "counts": {},
+                                 "checkpoints": [], "events": []}))
+    a, b = tmp_path / "a.jsonl", tmp_path / "b.jsonl"
+    a.write_text("\n".join(lines) + "\n")
+    b.write_text("\n".join(lines[:1] + lines[1:][::-1]) + "\n")
+    out = _Broken()
+    with pytest.raises(Exception):
+        _core.verify_write([str(a), str(b)], [], False, as_json, out, "fenvix verify")
+    assert out.calls == 1, out.calls

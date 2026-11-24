@@ -305,6 +305,39 @@ async function main(cmd, argv) {
 }
 
 /**
+ * The merged records of a complete re-run: the first pass's records, each hazard file's replaced at its first position
+ * by the re-run's (one record per nodeid: the first the re-run wrote), then hazard files only the re-run reported.
+ */
+function spliceRecords(firstTests, rerunTests, affected) {
+  const set = new Set(affected);
+  const byFile = new Map();
+  // one record per nodeid: the first the re-run wrote. A runner that ran a file twice (see dropPatterns above)
+  // must not put two records of one test in the merged trace, whatever the argument handling did.
+  const seen = new Set();
+  for (const r of rerunTests) {
+    if (seen.has(r.nodeid)) continue;
+    seen.add(r.nodeid);
+    const f = fileOf(r.nodeid);
+    if (!byFile.has(f)) byFile.set(f, []);
+    byFile.get(f).push(r);
+  }
+  const spliced = new Set();
+  const records = [];
+  for (const r of firstTests) {
+    const f = fileOf(r.nodeid);
+    if (!set.has(f)) { records.push(r); continue; }
+    if (spliced.has(f)) continue; // its records went in at the file's first position
+    spliced.add(f);
+    for (const x of byFile.get(f) || []) records.push(x); // one push per record: a spread overflows above ~100 000
+  }
+  // a file the re-run reports that the first pass never did (it died in its lane before recording)
+  // (only hazard files: a file the runner's own filters made pass 2 run as well is already in the first pass's
+  // records, and a second copy would count it twice)
+  for (const [f, rs] of byFile) if (!spliced.has(f) && set.has(f)) for (const x of rs) records.push(x);
+  return records;
+}
+
+/**
  * Everything after the one-lane re-run (split out of main so it can be tested on its own, P0 big trace criterion 3):
  * read the re-run's trace, account for the affected tests, write the merged trace to `tracePath` (records copied
  * byte for byte from t1 or t2) and decide the status. `t1` is t1Path already read with readTrace (read here when
@@ -334,30 +367,7 @@ function finishRerun({ t1Path, t2Path, status1, status2, affected, tracePath, ro
 
   let records;
   if (complete) {
-    const byFile = new Map();
-    // one record per nodeid: the first the re-run wrote. A runner that ran a file twice (see dropPatterns above)
-    // must not put two records of one test in the merged trace, whatever the argument handling did.
-    const seen = new Set();
-    for (const r of t2.tests) {
-      if (seen.has(r.nodeid)) continue;
-      seen.add(r.nodeid);
-      const f = fileOf(r.nodeid);
-      if (!byFile.has(f)) byFile.set(f, []);
-      byFile.get(f).push(r);
-    }
-    const spliced = new Set();
-    records = [];
-    for (const r of t1.tests) {
-      const f = fileOf(r.nodeid);
-      if (!set.has(f)) { records.push(r); continue; }
-      if (spliced.has(f)) continue; // its records went in at the file's first position
-      spliced.add(f);
-      records.push(...(byFile.get(f) || []));
-    }
-    // a file the re-run reports that the first pass never did (it died in its lane before recording)
-    // (only hazard files: a file the runner's own filters made pass 2 run as well is already in the first pass's
-    // records, and a second copy would count it twice)
-    for (const [f, rs] of byFile) if (!spliced.has(f) && set.has(f)) records.push(...rs);
+    records = spliceRecords(t1.tests, t2.tests, affected);
   } else {
     records = t1.tests;
     process.stderr.write(`detjs: parallel: the one-lane re-run could not account for ${t2 ? `${unaccounted.length} test(s) of the affected files` : 'its own trace'}`
@@ -420,4 +430,4 @@ function finishRerun({ t1Path, t2Path, status1, status2, affected, tracePath, ro
   return { status: exitStatus.runExit({ ...status, runnerCode: wrapperRunnerCode(status1, status2, Boolean(t2)) }), res };
 }
 
-module.exports = { main, finishRerun, readTrace, writeRecordParts, shouldWrap, hazardFiles, rerunArgs, fileOf, labelFile, accountRerun, wrapperRunnerCode };
+module.exports = { main, finishRerun, spliceRecords, readTrace, writeRecordParts, shouldWrap, hazardFiles, rerunArgs, fileOf, labelFile, accountRerun, wrapperRunnerCode };

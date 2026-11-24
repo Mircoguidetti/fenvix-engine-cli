@@ -357,3 +357,16 @@ test('parallel wrapper (review fix): protects=finishRerun writes the merged trac
   assert.ok(fs.existsSync(out));
   assert.deepEqual(fs.readdirSync(path.dirname(out)), ['trace.jsonl'], 'no temporary merge directory left');
 });
+
+test('parallel wrapper (review fix): protects=a complete re-run of a hazard file with 150 000 tests is spliced into the merged records whole and in order; fails_when=the file\'s records are spread into push() (RangeError: Maximum call stack size exceeded, the wrapper dies without its status line); no_claim=writing the merged trace (finishRerun tests above)', () => {
+  const { spliceRecords } = require('../src/parallel-rerun');
+  const big = (n, src) => Array.from({ length: n }, (_, i) => ({ nodeid: `tests/h.test.js::case ${i}`, outcome: 'passed', src }));
+  const first = [{ nodeid: 'tests/a.test.js::x', outcome: 'passed', src: 1 }, ...big(150000, 1), { nodeid: 'tests/z.test.js::y', outcome: 'passed', src: 1 }];
+  const out = spliceRecords(first, [...big(150000, 2), { nodeid: 'tests/k.test.js::only-rerun', outcome: 'failed', src: 2 }], ['tests/h.test.js', 'tests/k.test.js']);
+  assert.equal(out.length, 150003);
+  assert.equal(out[0].nodeid, 'tests/a.test.js::x');
+  assert.equal(out[1].src, 2);
+  assert.equal(out[150000].nodeid, 'tests/h.test.js::case 149999');
+  assert.equal(out[150001].nodeid, 'tests/z.test.js::y');
+  assert.equal(out[150002].nodeid, 'tests/k.test.js::only-rerun');
+});
