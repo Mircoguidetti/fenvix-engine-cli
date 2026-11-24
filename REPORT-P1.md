@@ -15,7 +15,7 @@ merge ordered by the coordinator, not by this session):
 | D entropy controlled by default (option 3) | **DONE** | agentsys D 99 → 0, sqlectron D 5 → 0 |
 
 **Tests that became identical: 778 → 2,555 (+1,777) in round 1, 2,550 in round 2 on the final engine 0903cf2**
-(6 repositories, S1 vs P1w4, 4 workers; 2,555 / 2,551 on d9c5854, before the D follow-up). With C (1541685): **2,589 in round 1, 2,603 in round 2** (section C). First line `DONE`: every item is implemented. Two things the coordinator should see first:
+(6 repositories, S1 vs P1w4, 4 workers; 2,555 / 2,551 on d9c5854, before the D follow-up). With C (1541685): **2,589 in round 1, 2,603 in round 2** (section C); final engine 944e86a (C + B2): **2,593 / 2,587** (section B). First line `DONE`: every item is implemented. Two things the coordinator should see first:
 B2 is narrower than the design (rule 3, section B), and one codex-multi-auth run-level entry of another kind is left
 open (a proposal in section B). Ready for the coordinator's `/review`; merge only on the founder's authorization.
 
