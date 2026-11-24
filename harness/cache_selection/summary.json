@@ -299,8 +299,8 @@
    "code_prs": 19,
    "dependency_prs": 11,
    "states_planned": 42,
-   "states_done": 34,
-   "states_ok": 34,
+   "states_done": 42,
+   "states_ok": 42,
    "states_unknown": 0,
    "unknown_reasons": {},
    "final_states_measured": {
@@ -319,20 +319,20 @@
     "code": [],
     "dependency": []
    },
-   "excluded_minutes_run": 265.35,
+   "excluded_minutes_run": 346.02,
    "files_unknown_minutes": 6,
    "failures_not_classified": 0,
    "median_share_code_le10pct_unknown": 1.0,
    "states_ok_by_class": {
-    "code": 23,
+    "code": 31,
     "dependency": 11
    },
    "states_with_excluded_run_by_class": {
-    "code": 23,
+    "code": 31,
     "dependency": 4
    },
    "excluded_test_files_run_by_class": {
-    "code": 255,
+    "code": 344,
     "dependency": 48
    },
    "final_states_share_unknown": 0,

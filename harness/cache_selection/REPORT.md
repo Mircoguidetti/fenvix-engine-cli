@@ -1,4 +1,4 @@
-NOT DONE
+DONE
 
 # Measurement A: test skipping today, free per-PR selection share, and free-selection false greens
 
@@ -38,7 +38,7 @@ This report is a claim until the coordinator re-checks it. What I verified and w
 | yalc | 19 / 0 | 19 / 0 | no (none found) | 81.3% (n=19) MEASURED | UNKNOWN: no dependency PR | 0 over 25 states with excluded files MEASURED | – (no PR) | UNKNOWN: no verify output |
 | nestjs-pino | 2 / 28 | 2 / 28 | no (none found) | UNKNOWN: fewer than 5 code PRs measured (n=2 of 2) | 100.0% (n=28) MEASURED | 0 over 0 states with excluded files MEASURED | 0 over 28 states with excluded files MEASURED | env in-test 1, env run-level 0, fs 2, io read 0, io race 0 (of 269 tests) MEASURED |
 | agentsys | 30 / 0 | 30 / 0 | no (none found) | 99.7% (n=30) MEASURED | UNKNOWN: no dependency PR | 0 over 57 states with excluded files MEASURED | – (no PR) | env in-test 129, env run-level 1536, fs 18, io read 0, io race 1 (of 2224 tests) MEASURED |
-| lerna-lite | 19 / 11 | 14 / 7 | no (none found) | 100.0% (n=14) MEASURED | 0.0% (n=7) MEASURED | 0 over 14 states with excluded files MEASURED | 0 over 2 states with excluded files MEASURED | UNKNOWN: no verify output |
+| lerna-lite | 19 / 11 | 19 / 11 | no (none found) | 100.0% (n=19) MEASURED | 0.0% (n=11) MEASURED | 0 over 31 states with excluded files MEASURED | 0 over 4 states with excluded files MEASURED | UNKNOWN: no verify output |
 | drydock | 12 / 0 | 12 / 0 | no (none found) | 0.0% (n=12) MEASURED | UNKNOWN: no dependency PR | 0 over 5 states with excluded files MEASURED | – (no PR) | UNKNOWN: no verify output |
 | agentlang | 30 / 0 | 18 / 0 | no (none found) | 2.4% (n=18) MEASURED | UNKNOWN: no dependency PR | 0 over 30 states with excluded files MEASURED | – (no PR) | UNKNOWN: no verify output |
 | alakajam | 28 / 2 | 0 / 0 | no (none found) | UNKNOWN: no code PR with a measured share | UNKNOWN: no dependency PR with a measured share | 0 over 0 states with excluded files MEASURED | UNKNOWN: no measured state | UNKNOWN: no verify output |
@@ -56,7 +56,7 @@ Column notes:
 - **yalc**: states measured 39 of 40 run / 40 planned (UNKNOWN states: 1; 1x UNKNOWN: INSTALL_FAILED: * 1 dependencies were added: playwright@^1.49.0). Excluded test files run: 2567 (code 2567). Failing tests classified: SELECTION_MISS 0, PREEXISTING 163, FLAKY 0, ENV 0, UNKNOWN 0; not classified (cap) 0. Median share over all PRs: 81.3%. Final states with share UNKNOWN: 0. Final states where more than 10% of test files have UNKNOWN minutes: PRs [2, 3, 4, 5, 8, 17, 18, 19, 21]; code median over the remaining code PRs: 88.1%. 
 - **nestjs-pino**: states measured 30 of 30 run / 30 planned (UNKNOWN states: 0). Excluded test files run: 679 (dependency 679). Failing tests classified: SELECTION_MISS 0, PREEXISTING 0, FLAKY 0, ENV 0, UNKNOWN 0; not classified (cap) 0. Median share over all PRs: 100.0%. Final states with share UNKNOWN: 0. 
 - **agentsys**: states measured 57 of 57 run / 57 planned (UNKNOWN states: 0). Excluded test files run: 4536 (code 4536). Failing tests classified: SELECTION_MISS 0, PREEXISTING 57, FLAKY 0, ENV 0, UNKNOWN 0; not classified (cap) 0. Median share over all PRs: 99.7%. Final states with share UNKNOWN: 0. 
-- **lerna-lite**: states measured 21 of 21 run / 42 planned (UNKNOWN states: 0). Excluded test files run: 177 (code 153, dependency 24). Failing tests classified: SELECTION_MISS 0, PREEXISTING 0, FLAKY 1, ENV 0, UNKNOWN 0; not classified (cap) 0. Median share over all PRs: 100.0%. Final states with share UNKNOWN: 0. 
+- **lerna-lite**: states measured 42 of 42 run / 42 planned (UNKNOWN states: 0). Excluded test files run: 392 (code 344, dependency 48). Failing tests classified: SELECTION_MISS 0, PREEXISTING 0, FLAKY 1, ENV 0, UNKNOWN 0; not classified (cap) 0. Median share over all PRs: 100.0%. Final states with share UNKNOWN: 0. 
 - **drydock**: states measured 60 of 60 run / 60 planned (UNKNOWN states: 0). Excluded test files run: 2257 (code 2257). Failing tests classified: SELECTION_MISS 0, PREEXISTING 0, FLAKY 0, ENV 0, UNKNOWN 0; not classified (cap) 0. Median share over all PRs: 0.0%. Final states with share UNKNOWN: 0. 
 - **agentlang**: states measured 39 of 55 run / 55 planned (UNKNOWN states: 16; 16x UNKNOWN: INSTALL_FAILED: Note that in CI environments this setting is true by default. If ). Excluded test files run: 120 (code 120). Failing tests classified: SELECTION_MISS 0, PREEXISTING 0, FLAKY 0, ENV 10, UNKNOWN 70; not classified (cap) 250. Median share over all PRs: 2.4%. Final states with share UNKNOWN: 12. Final states where more than 10% of test files have UNKNOWN minutes: PRs [625, 626]; code median over the remaining code PRs: 3.5%. 
 - **alakajam**: states measured 8 of 63 run / 63 planned (UNKNOWN states: 55; 7x UNKNOWN: INSTALL_FAILED: npm error A complete log of this run can be found in: /root/.npm/; 48x UNKNOWN: list-only command failed (exit 1 / 1)). Excluded test files run: 0 (none). Failing tests classified: SELECTION_MISS 0, PREEXISTING 0, FLAKY 0, ENV 0, UNKNOWN 0; not classified (cap) 0. Median share over all PRs: UNKNOWN. Final states with share UNKNOWN: 30. 
@@ -67,7 +67,7 @@ Column notes:
 
 (b) **0 of 9** repositories already skip tests in CI with one of the listed tools (`statusquo.json`). MEASURED (read of CI files).
 
-(c) **0** SELECTION_MISS over all code PRs. Checked: 220 code-PR states where the free selection excluded at least one test file, 37458 excluded test files run in total. MEASURED. (Dependency PRs: 0.)
+(c) **0** SELECTION_MISS over all code PRs. Checked: 237 code-PR states where the free selection excluded at least one test file, 37649 excluded test files run in total. MEASURED. (Dependency PRs: 0.)
 
 Caveat for (c): "measured on the last 5 commits of merged PRs; breakages fixed before a commit was made, and PRs never merged, are not seen, so the count is a lower bound".
 
@@ -107,7 +107,15 @@ Caveat: "causes are named only for tests that differ or are not proven; these ar
 
 ## Repositories, PRs and states skipped, and why
 
-(pending)
+- codex-multi-auth: stopped at the 8 h cap (log.txt, STOPPED line 19:39:12Z). Drop order applied: states first. 64 of 109 planned states ran (rounds 1-2 complete, round 3 8/21); 45 states not run; all 30 PRs kept with their final state measured.
+- yalc: only 19 merged PRs exist in the history window kept (all kept, ≥10). 1 state UNKNOWN: install failed (playwright added to package.json, lockfile out of sync).
+- drydock: 12 merged PRs kept (all available, ≥10).
+- nestjs-pino: code median UNKNOWN, "fewer than 5 code PRs" (2 code PRs; 28 dependency PRs).
+- agentlang: 16 states UNKNOWN because the specs.json pnpm install failed (no pnpm-lock.yaml at those commits); 12 final states have share UNKNOWN; full runs 05 and 10 UNKNOWN; 70 failures UNKNOWN because their rerun commit (base) could not be installed (rule change 8).
+- alakajam: 28 of 30 PRs have mocha (`mocha -t 10000 tests/`) at base, so the vitest list-only command fails: 48 states UNKNOWN ("list-only command failed"), 7 states UNKNOWN (npm ci lockfile out of sync). Code and dependency medians UNKNOWN. Only PRs 689 and 691 run vitest; their 8 states selected every file (0 excluded).
+- lerna-lite: the container restarted twice (~23:43Z and ~00:06Z); each time the state in progress was lost and discarded, and the lane resumed from rows.jsonl (log.txt NOTE lines). All 42 planned states completed at 00:59:08Z, inside the 8 h cap counted from 17:56Z.
+- No repository was blocked for more than 2 h.
+- E1 / --det-cache / the engine: out of scope, not run beyond the 4 verify files.
 
 ## Method (commands as run; observed exit codes and counts are in the data files)
 
@@ -132,4 +140,16 @@ Caveat: "causes are named only for tests that differ or are not proven; these ar
 
 ## What I verified and what I could not
 
-(pending)
+Verified:
+- `git diff origin/claude/release-1 --name-only | grep -v '^harness/cache_selection/'` printed nothing; `harness/parallel_measure/` untouched.
+- Runner versions and the `--help` lines of the selection flags are in runner_versions.json, recorded at each default head after a fresh install.
+- Every excluded file of every measured state was run (parallel mode); every failure was rerun 3x at the state and 3x at base, file by file (rows in results.jsonl carry the counts).
+
+Could not be verified / caveats:
+- Tests that fail at base (PREEXISTING or ENV) cannot reveal a miss: yalc libsql tables missing at early commits (163 PREEXISTING), ironcurtain native module with no build for the container ("No native build was found", 132 ENV), agentlang better-sqlite3 bindings missing under `--ignore-scripts` (10 ENV), codex-multi-auth IPv6 sockets unsupported in the container (EAFNOSUPPORT, 84 ENV). SELECTION_MISS is a lower bound for these repositories.
+- A share of 0% (drydock, codex-multi-auth and lerna-lite dependency PRs) comes from vitest's default forceRerunTriggers (`**/package.json`, `**/{vitest,vite}.config.*`): any change to these selects every file. A share of 100% means the selection listed no file at all (lockfile-only or non-test changes).
+- Durations were measured with each lane pinned to 2 cores (taskset), two lanes in parallel; absolute minutes are not CI minutes, only their ratio is used.
+- base = merge-base of the landing commit's first parent and the PR head (rule change 1), not the PR's recorded base SHA.
+- agentsys full run 25 (base of PR 26) passed 2183 tests in 13.6 s against 3675 in 34.1 s at full run 20 (data/agentsys/log.txt); the cause was not investigated, so file minutes for PRs 26-30 come from a run with fewer tests.
+- yalc: 9 PRs have >10% test files without measured minutes; median without them is reported next to the main one.
+- The coordinator should re-check the class assignment (rule changes 2-3) and the ENV patterns (rule change 7).
