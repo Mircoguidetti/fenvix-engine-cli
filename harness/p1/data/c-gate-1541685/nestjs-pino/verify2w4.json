@@ -1,0 +1,4301 @@
+{
+ "labels": [
+  "/tmp/pm-p1/p1-c3/nestjs-pino/S2.jsonl",
+  "/tmp/pm-p1/p1-c3/nestjs-pino/P2w4.jsonl"
+ ],
+ "order_digests": [
+  "d0dbe6f504055a436b6bee7f6ebb6d51",
+  "d0dbe6f504055a436b6bee7f6ebb6d51"
+ ],
+ "complete": [
+  true,
+  true
+ ],
+ "summary": {
+  "runs": 2,
+  "tests": 269,
+  "stable": 258,
+  "diverged": 1,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {
+   "env": 1,
+   "io": 9,
+   "other": 1
+  },
+  "inputs_recorded": true,
+  "identical": 258,
+  "input_differs": 0,
+  "not_proven": 10
+ },
+ "tests": [
+  {
+   "nodeid": "__tests__/assign.spec.ts::assign::ExpressAdapter::in request context",
+   "status": "stable",
+   "fingerprints": [
+    "8746976e95da0bf40942951004e9d189",
+    "8746976e95da0bf40942951004e9d189"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/assign.spec.ts::assign::ExpressAdapter::out of request context",
+   "status": "stable",
+   "fingerprints": [
+    "c253f5a8c5eef4c8ab34fd0ac14c22bf",
+    "c253f5a8c5eef4c8ab34fd0ac14c22bf"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/assign.spec.ts::assign::ExpressAdapter::response log",
+   "status": "stable",
+   "fingerprints": [
+    "eaf7335b28f23dab065413b9a9595150",
+    "eaf7335b28f23dab065413b9a9595150"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/assign.spec.ts::assign::FastifyAdapter::in request context",
+   "status": "stable",
+   "fingerprints": [
+    "45563eb27fec9cd4ffaaebf5cb658c16",
+    "45563eb27fec9cd4ffaaebf5cb658c16"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/assign.spec.ts::assign::FastifyAdapter::out of request context",
+   "status": "stable",
+   "fingerprints": [
+    "9f7856acb1b333188ff9dd07e5791a9b",
+    "9f7856acb1b333188ff9dd07e5791a9b"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/assign.spec.ts::assign::FastifyAdapter::response log",
+   "status": "stable",
+   "fingerprints": [
+    "10960e04a0860399f28209851d9fd2a5",
+    "10960e04a0860399f28209851d9fd2a5"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/default-routes.spec.ts::default routes::ExpressAdapter::keeps the request context on a nested path",
+   "status": "stable",
+   "fingerprints": [
+    "9d096692f8c50871dd9988c2542586b1",
+    "9d096692f8c50871dd9988c2542586b1"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/default-routes.spec.ts::default routes::ExpressAdapter::still emits the automatic response log for a nested path",
+   "status": "stable",
+   "fingerprints": [
+    "5b67f22e1bb4a58cd7e6ded96f805403",
+    "5b67f22e1bb4a58cd7e6ded96f805403"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/default-routes.spec.ts::default routes::ExpressAdapter::with URI versioning::keeps the request context on /v1",
+   "status": "stable",
+   "fingerprints": [
+    "588d885d96967e33742854e2e08d90c8",
+    "588d885d96967e33742854e2e08d90c8"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/default-routes.spec.ts::default routes::ExpressAdapter::with URI versioning::keeps the request context on /v1/deep",
+   "status": "stable",
+   "fingerprints": [
+    "2a1aeabe9c941de80091d88464921785",
+    "2a1aeabe9c941de80091d88464921785"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/default-routes.spec.ts::default routes::FastifyAdapter::keeps the request context on a nested path",
+   "status": "stable",
+   "fingerprints": [
+    "b61b8f4163d034332d87100a8fc7b9c9",
+    "b61b8f4163d034332d87100a8fc7b9c9"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/default-routes.spec.ts::default routes::FastifyAdapter::still emits the automatic response log for a nested path",
+   "status": "stable",
+   "fingerprints": [
+    "f03f24593c4c91bfa14309b0304e1c9b",
+    "f03f24593c4c91bfa14309b0304e1c9b"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/default-routes.spec.ts::default routes::FastifyAdapter::with URI versioning::keeps the request context on /v1",
+   "status": "stable",
+   "fingerprints": [
+    "eb26b95a77089c051f85975b97135299",
+    "eb26b95a77089c051f85975b97135299"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/default-routes.spec.ts::default routes::FastifyAdapter::with URI versioning::keeps the request context on /v1/deep",
+   "status": "stable",
+   "fingerprints": [
+    "10b2af65a74a31de51b8a1a6e8a94509",
+    "10b2af65a74a31de51b8a1a6e8a94509"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/direct-calls.spec.ts::direct logger calls::NativeLogger::logs a lone message with no context",
+   "status": "stable",
+   "fingerprints": [
+    "0069ae5490849e8f23714a4954c1ef64",
+    "0069ae5490849e8f23714a4954c1ef64"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/direct-calls.spec.ts::direct logger calls::NativeLogger::treats a trailing string as the context",
+   "status": "stable",
+   "fingerprints": [
+    "0069ae5490849e8f23714a4954c1ef64",
+    "0069ae5490849e8f23714a4954c1ef64"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/direct-calls.spec.ts::direct logger calls::NativeLogger::treats a trailing stack as the stack, not the context",
+   "status": "stable",
+   "fingerprints": [
+    "0069ae5490849e8f23714a4954c1ef64",
+    "0069ae5490849e8f23714a4954c1ef64"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/direct-calls.spec.ts::direct logger calls::NativeLogger::keeps the stack when more arguments precede it",
+   "status": "stable",
+   "fingerprints": [
+    "0069ae5490849e8f23714a4954c1ef64",
+    "0069ae5490849e8f23714a4954c1ef64"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/direct-calls.spec.ts::direct logger calls::NativeLogger::extracts the context when the trailing argument is not a stack",
+   "status": "stable",
+   "fingerprints": [
+    "0069ae5490849e8f23714a4954c1ef64",
+    "0069ae5490849e8f23714a4954c1ef64"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/direct-calls.spec.ts::direct logger calls::NativeLogger::does not mistake a trailing object for a stack or a context",
+   "status": "stable",
+   "fingerprints": [
+    "6f4032b9b66207aff23dab6c527bcbbd",
+    "6f4032b9b66207aff23dab6c527bcbbd"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/direct-calls.spec.ts::direct logger calls::NativeLogger::falls back to the message of an Error that carries no stack",
+   "status": "stable",
+   "fingerprints": [
+    "0069ae5490849e8f23714a4954c1ef64",
+    "0069ae5490849e8f23714a4954c1ef64"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/direct-calls.spec.ts::direct logger calls::NativeLogger::handles a lone trailing object that is neither stack nor context",
+   "status": "stable",
+   "fingerprints": [
+    "0069ae5490849e8f23714a4954c1ef64",
+    "0069ae5490849e8f23714a4954c1ef64"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/direct-calls.spec.ts::direct logger calls::NativeLogger::treats a null-prototype object as a plain object",
+   "status": "stable",
+   "fingerprints": [
+    "0069ae5490849e8f23714a4954c1ef64",
+    "0069ae5490849e8f23714a4954c1ef64"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/direct-calls.spec.ts::direct logger calls::nativeLogger options::nests params by default when structuredParams is on",
+   "status": "stable",
+   "fingerprints": [
+    "0069ae5490849e8f23714a4954c1ef64",
+    "0069ae5490849e8f23714a4954c1ef64"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/direct-calls.spec.ts::direct logger calls::nativeLogger options::omits the params field when there is nothing to collect",
+   "status": "stable",
+   "fingerprints": [
+    "0069ae5490849e8f23714a4954c1ef64",
+    "0069ae5490849e8f23714a4954c1ef64"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/direct-calls.spec.ts::direct logger calls::nativeLogger options::spreads params into the root when flattenParams is on",
+   "status": "stable",
+   "fingerprints": [
+    "0069ae5490849e8f23714a4954c1ef64",
+    "0069ae5490849e8f23714a4954c1ef64"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/direct-calls.spec.ts::direct logger calls::nativeLogger options::logs every argument separately when structuredParams is off",
+   "status": "stable",
+   "fingerprints": [
+    "6f4032b9b66207aff23dab6c527bcbbd",
+    "6f4032b9b66207aff23dab6c527bcbbd"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/direct-calls.spec.ts::direct logger calls::nativeLogger options::prefers an explicit context over a flattened param of the same name",
+   "status": "stable",
+   "fingerprints": [
+    "0069ae5490849e8f23714a4954c1ef64",
+    "0069ae5490849e8f23714a4954c1ef64"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/direct-calls.spec.ts::direct logger calls::nativeLogger options::uses a flattened context param when the call sets no context",
+   "status": "stable",
+   "fingerprints": [
+    "0069ae5490849e8f23714a4954c1ef64",
+    "0069ae5490849e8f23714a4954c1ef64"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/direct-calls.spec.ts::direct logger calls::nativeLogger options::respects renameContext when a param uses the renamed key",
+   "status": "stable",
+   "fingerprints": [
+    "0069ae5490849e8f23714a4954c1ef64",
+    "0069ae5490849e8f23714a4954c1ef64"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/direct-calls.spec.ts::direct logger calls::Logger::turns a message plus a stack into an `err` object",
+   "status": "stable",
+   "fingerprints": [
+    "0069ae5490849e8f23714a4954c1ef64",
+    "0069ae5490849e8f23714a4954c1ef64"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/direct-calls.spec.ts::direct logger calls::Logger::keeps a non-stack string as a plain argument",
+   "status": "stable",
+   "fingerprints": [
+    "0069ae5490849e8f23714a4954c1ef64",
+    "0069ae5490849e8f23714a4954c1ef64"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/errors.spec.ts::error logging::ExpressAdapter::passing error directly::InjectPinoLogger",
+   "status": "stable",
+   "fingerprints": [
+    "68cd6d30d3af1c115f59a20da5ecffbe",
+    "68cd6d30d3af1c115f59a20da5ecffbe"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/errors.spec.ts::error logging::ExpressAdapter::passing error directly::PinoLogger",
+   "status": "stable",
+   "fingerprints": [
+    "6e7b3ed252517181b2130c054ad3dd1d",
+    "6e7b3ed252517181b2130c054ad3dd1d"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/errors.spec.ts::error logging::ExpressAdapter::passing error directly::Logger",
+   "status": "stable",
+   "fingerprints": [
+    "c2d2364177ef57805e0966de2d22d9fd",
+    "c2d2364177ef57805e0966de2d22d9fd"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/errors.spec.ts::error logging::ExpressAdapter::passing error with `err` field::InjectPinoLogger",
+   "status": "stable",
+   "fingerprints": [
+    "386bd5be89a40b45897f40106041ca67",
+    "386bd5be89a40b45897f40106041ca67"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/errors.spec.ts::error logging::ExpressAdapter::passing error with `err` field::PinoLogger",
+   "status": "stable",
+   "fingerprints": [
+    "7ff6e2e3aa6a46620909af30cf2d8c78",
+    "7ff6e2e3aa6a46620909af30cf2d8c78"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/errors.spec.ts::error logging::ExpressAdapter::passing error with `err` field::Logger",
+   "status": "stable",
+   "fingerprints": [
+    "03129c4cc2f6e4f6b6524d3a31b7bf01",
+    "03129c4cc2f6e4f6b6524d3a31b7bf01"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/errors.spec.ts::error logging::ExpressAdapter::setting custom attribute keys::setting the `err` custom attribute key",
+   "status": "stable",
+   "fingerprints": [
+    "f75e71e8a0ef98df05de5fc7a8c86c8d",
+    "f75e71e8a0ef98df05de5fc7a8c86c8d"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/errors.spec.ts::error logging::ExpressAdapter::setting custom attribute keys::setting the `req` custom attribute key",
+   "status": "stable",
+   "fingerprints": [
+    "11372640030611aa93d98c61e2c09c62",
+    "11372640030611aa93d98c61e2c09c62"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/errors.spec.ts::error logging::ExpressAdapter::keeps stack of thrown error::built-in error handler logs with correct stack",
+   "status": "stable",
+   "fingerprints": [
+    "294545e31c2977b9f3010c6b249eef76",
+    "294545e31c2977b9f3010c6b249eef76"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/errors.spec.ts::error logging::FastifyAdapter::passing error directly::InjectPinoLogger",
+   "status": "stable",
+   "fingerprints": [
+    "0975860395e7cd215c1e14e89f5149f7",
+    "0975860395e7cd215c1e14e89f5149f7"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/errors.spec.ts::error logging::FastifyAdapter::passing error directly::PinoLogger",
+   "status": "stable",
+   "fingerprints": [
+    "92eb8a2f6e1420d9daa73d0492fc9598",
+    "92eb8a2f6e1420d9daa73d0492fc9598"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/errors.spec.ts::error logging::FastifyAdapter::passing error directly::Logger",
+   "status": "stable",
+   "fingerprints": [
+    "992d66ba64f3f4328f888f1444d4f2e1",
+    "992d66ba64f3f4328f888f1444d4f2e1"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/errors.spec.ts::error logging::FastifyAdapter::passing error with `err` field::InjectPinoLogger",
+   "status": "stable",
+   "fingerprints": [
+    "4135299f1c883f7dec743c33d68a3300",
+    "4135299f1c883f7dec743c33d68a3300"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/errors.spec.ts::error logging::FastifyAdapter::passing error with `err` field::PinoLogger",
+   "status": "stable",
+   "fingerprints": [
+    "8de825ba7e6e46d4d287c89dbb531b56",
+    "8de825ba7e6e46d4d287c89dbb531b56"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/errors.spec.ts::error logging::FastifyAdapter::passing error with `err` field::Logger",
+   "status": "stable",
+   "fingerprints": [
+    "f7a8725693a6056994896a9f7066a7e2",
+    "f7a8725693a6056994896a9f7066a7e2"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/errors.spec.ts::error logging::FastifyAdapter::setting custom attribute keys::setting the `err` custom attribute key",
+   "status": "stable",
+   "fingerprints": [
+    "7a49662f2351bee48acaced403cd3d37",
+    "7a49662f2351bee48acaced403cd3d37"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/errors.spec.ts::error logging::FastifyAdapter::setting custom attribute keys::setting the `req` custom attribute key",
+   "status": "stable",
+   "fingerprints": [
+    "7206636e10d8e8116be1351b9fc9dc77",
+    "7206636e10d8e8116be1351b9fc9dc77"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/errors.spec.ts::error logging::FastifyAdapter::keeps stack of thrown error::built-in error handler logs with correct stack",
+   "status": "stable",
+   "fingerprints": [
+    "d24b9dc49de8190c5558873915bda49c",
+    "d24b9dc49de8190c5558873915bda49c"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/extending.spec.ts::extending::ExpressAdapter::should work properly with an extended logger service",
+   "status": "stable",
+   "fingerprints": [
+    "233406d930d293d5f136781a34e0ce7b",
+    "233406d930d293d5f136781a34e0ce7b"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/extending.spec.ts::extending::ExpressAdapter::should work properly with an extended PinoLogger service",
+   "status": "stable",
+   "fingerprints": [
+    "53b252e26fedc04ce5755580b86fe11f",
+    "53b252e26fedc04ce5755580b86fe11f"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/extending.spec.ts::extending::FastifyAdapter::should work properly with an extended logger service",
+   "status": "stable",
+   "fingerprints": [
+    "42945212d216075e87d204baed9b3eec",
+    "42945212d216075e87d204baed9b3eec"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/extending.spec.ts::extending::FastifyAdapter::should work properly with an extended PinoLogger service",
+   "status": "stable",
+   "fingerprints": [
+    "1610bcdccc9d5eba170a6049eaede59e",
+    "1610bcdccc9d5eba170a6049eaede59e"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/get-logger-token.spec.ts::get-logger-token::should work",
+   "status": "not-proven",
+   "fingerprints": [
+    "7681c3b2026060b0db9a0d087d189ebc",
+    "7681c3b2026060b0db9a0d087d189ebc"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": 24,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "uncontrolled.env",
+     "at": "<deps>/debug/src/node.js:124",
+     "v": "*"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "uncontrolled.env",
+     "at": "<deps>/debug/src/node.js:124",
+     "v": "*"
+    },
+    "reason": "env",
+    "description": "the test read a CI-volatile or proxy environment variable: its value (uncontrolled.env @ <deps>/debug/src/node.js:124) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: env)"
+   }
+  },
+  {
+   "nodeid": "__tests__/global-prefix.spec.ts::global prefix::ExpressAdapter::keeps the request context on /v1",
+   "status": "stable",
+   "fingerprints": [
+    "4e03a993fcfaf1b1d2819637e6ff3db0",
+    "4e03a993fcfaf1b1d2819637e6ff3db0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/global-prefix.spec.ts::global prefix::ExpressAdapter::still emits the automatic response log for /v1",
+   "status": "stable",
+   "fingerprints": [
+    "b5fde09671e6f8d5154ccc168fb4d56e",
+    "b5fde09671e6f8d5154ccc168fb4d56e"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/global-prefix.spec.ts::global prefix::ExpressAdapter::keeps the request context on /v1/deep",
+   "status": "stable",
+   "fingerprints": [
+    "6ec612ac7edaad25c046a708ddbfda9a",
+    "6ec612ac7edaad25c046a708ddbfda9a"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/global-prefix.spec.ts::global prefix::ExpressAdapter::still emits the automatic response log for /v1/deep",
+   "status": "stable",
+   "fingerprints": [
+    "a4e3075906ba8e07fdfb01ee717fc2ee",
+    "a4e3075906ba8e07fdfb01ee717fc2ee"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/global-prefix.spec.ts::global prefix::ExpressAdapter::starts up with no warnings at all",
+   "status": "stable",
+   "fingerprints": [
+    "8f7a6cef9362465f2f50797365a08fb8",
+    "8f7a6cef9362465f2f50797365a08fb8"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/global-prefix.spec.ts::global prefix::ExpressAdapter::with a path excluded from the prefix::logs both the prefixed and the excluded path",
+   "status": "not-proven",
+   "fingerprints": [
+    "dac56011a50c5c10ba854091e3f44a13",
+    "dac56011a50c5c10ba854091e3f44a13"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": 57,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "uncontrolled.io",
+     "at": "<deps>/superagent/lib/node/index.js:958",
+     "v": "concurrent I/O"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "uncontrolled.io",
+     "at": "<deps>/superagent/lib/node/index.js:958",
+     "v": "concurrent I/O"
+    },
+    "reason": "io",
+    "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ <deps>/superagent/lib/node/index.js:958) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)"
+   }
+  },
+  {
+   "nodeid": "__tests__/global-prefix.spec.ts::global prefix::ExpressAdapter::with a path excluded from the prefix::starts up with no warnings at all",
+   "status": "stable",
+   "fingerprints": [
+    "653c87c7e9178641ffa4c36cc1bde37e",
+    "653c87c7e9178641ffa4c36cc1bde37e"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/global-prefix.spec.ts::global prefix::FastifyAdapter::keeps the request context on /v1",
+   "status": "stable",
+   "fingerprints": [
+    "9f14f37abd2755c5043337f67ac1cd4e",
+    "9f14f37abd2755c5043337f67ac1cd4e"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/global-prefix.spec.ts::global prefix::FastifyAdapter::still emits the automatic response log for /v1",
+   "status": "stable",
+   "fingerprints": [
+    "a166a06462f420fc387810db8e62da80",
+    "a166a06462f420fc387810db8e62da80"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/global-prefix.spec.ts::global prefix::FastifyAdapter::keeps the request context on /v1/deep",
+   "status": "stable",
+   "fingerprints": [
+    "9b9b7d4e66a353e165c6ab88960e154f",
+    "9b9b7d4e66a353e165c6ab88960e154f"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/global-prefix.spec.ts::global prefix::FastifyAdapter::still emits the automatic response log for /v1/deep",
+   "status": "stable",
+   "fingerprints": [
+    "723bf5c410150718d1dcf6dd10257df4",
+    "723bf5c410150718d1dcf6dd10257df4"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/global-prefix.spec.ts::global prefix::FastifyAdapter::starts up with no warnings at all",
+   "status": "stable",
+   "fingerprints": [
+    "33e7f45bb2b2db210fe7e72ccd4ef297",
+    "33e7f45bb2b2db210fe7e72ccd4ef297"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/global-prefix.spec.ts::global prefix::FastifyAdapter::with a path excluded from the prefix::logs both the prefixed and the excluded path",
+   "status": "not-proven",
+   "fingerprints": [
+    "459e10620e370edadb909f867827ec53",
+    "459e10620e370edadb909f867827ec53"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": 207,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "uncontrolled.io",
+     "at": "<deps>/superagent/lib/node/index.js:958",
+     "v": "concurrent I/O"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "uncontrolled.io",
+     "at": "<deps>/superagent/lib/node/index.js:958",
+     "v": "concurrent I/O"
+    },
+    "reason": "io",
+    "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ <deps>/superagent/lib/node/index.js:958) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)"
+   }
+  },
+  {
+   "nodeid": "__tests__/global-prefix.spec.ts::global prefix::FastifyAdapter::with a path excluded from the prefix::starts up with no warnings at all",
+   "status": "stable",
+   "fingerprints": [
+    "6470760f586a6d39d2802273d7cd51fd",
+    "6470760f586a6d39d2802273d7cd51fd"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::Logger levels::ExpressAdapter::verbose",
+   "status": "stable",
+   "fingerprints": [
+    "c85042ae3e2567aed4c4a1a70759e7ef",
+    "c85042ae3e2567aed4c4a1a70759e7ef"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::Logger levels::ExpressAdapter::debug",
+   "status": "stable",
+   "fingerprints": [
+    "fc4bc1fdc518970ff86e4af7f3bafa71",
+    "fc4bc1fdc518970ff86e4af7f3bafa71"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::Logger levels::ExpressAdapter::log",
+   "status": "stable",
+   "fingerprints": [
+    "78940d999f5dd975cbc7174302e4ff91",
+    "78940d999f5dd975cbc7174302e4ff91"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::Logger levels::ExpressAdapter::warn",
+   "status": "stable",
+   "fingerprints": [
+    "33132e2f133b1f4f0c8acf361ff8ff0b",
+    "33132e2f133b1f4f0c8acf361ff8ff0b"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::Logger levels::ExpressAdapter::error",
+   "status": "stable",
+   "fingerprints": [
+    "f2d4d1bd1127f76c6049517ebfa8ffef",
+    "f2d4d1bd1127f76c6049517ebfa8ffef"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::Logger levels::ExpressAdapter::fatal",
+   "status": "stable",
+   "fingerprints": [
+    "3b23102771dd654abf1c1c1b968af3d0",
+    "3b23102771dd654abf1c1c1b968af3d0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::Logger levels::FastifyAdapter::verbose",
+   "status": "stable",
+   "fingerprints": [
+    "57eb0bdba38236e3d5de5259ec75bfb2",
+    "57eb0bdba38236e3d5de5259ec75bfb2"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::Logger levels::FastifyAdapter::debug",
+   "status": "stable",
+   "fingerprints": [
+    "b9a633bc8c30145a56672c26dec909d5",
+    "b9a633bc8c30145a56672c26dec909d5"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::Logger levels::FastifyAdapter::log",
+   "status": "stable",
+   "fingerprints": [
+    "b81a8832696d9769cc95f258eeed20cb",
+    "b81a8832696d9769cc95f258eeed20cb"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::Logger levels::FastifyAdapter::warn",
+   "status": "stable",
+   "fingerprints": [
+    "0310fbb3e45ad470990220592a349b32",
+    "0310fbb3e45ad470990220592a349b32"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::Logger levels::FastifyAdapter::error",
+   "status": "stable",
+   "fingerprints": [
+    "fc7dea719ccf3d9321cd8666ed13ee1f",
+    "fc7dea719ccf3d9321cd8666ed13ee1f"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::Logger levels::FastifyAdapter::fatal",
+   "status": "stable",
+   "fingerprints": [
+    "76b13cc68c569a6ff8a6349bdec4bce0",
+    "76b13cc68c569a6ff8a6349bdec4bce0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::PinoLogger levels::ExpressAdapter::trace",
+   "status": "stable",
+   "fingerprints": [
+    "c51f686b8fec73594e192ab1d0f8ec47",
+    "c51f686b8fec73594e192ab1d0f8ec47"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::PinoLogger levels::ExpressAdapter::debug",
+   "status": "stable",
+   "fingerprints": [
+    "6893d63519d50f1e453953d4704eeccc",
+    "6893d63519d50f1e453953d4704eeccc"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::PinoLogger levels::ExpressAdapter::info",
+   "status": "stable",
+   "fingerprints": [
+    "53921bf2d07786ce5469d2c155f3711e",
+    "53921bf2d07786ce5469d2c155f3711e"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::PinoLogger levels::ExpressAdapter::warn",
+   "status": "stable",
+   "fingerprints": [
+    "76bce75e17cbd32e49ee54fa313fad58",
+    "76bce75e17cbd32e49ee54fa313fad58"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::PinoLogger levels::ExpressAdapter::error",
+   "status": "stable",
+   "fingerprints": [
+    "9e27f8fcd0dc5c2d6bbf18a8b463be3e",
+    "9e27f8fcd0dc5c2d6bbf18a8b463be3e"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::PinoLogger levels::ExpressAdapter::fatal",
+   "status": "stable",
+   "fingerprints": [
+    "db13d2bbc734e422dc16a375ef343f76",
+    "db13d2bbc734e422dc16a375ef343f76"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::PinoLogger levels::ExpressAdapter::fatal #2",
+   "status": "stable",
+   "fingerprints": [
+    "d0c8236a9f6918af96e4042004500126",
+    "d0c8236a9f6918af96e4042004500126"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::PinoLogger levels::FastifyAdapter::trace",
+   "status": "stable",
+   "fingerprints": [
+    "415791819e70c4ed8236d5ca4d594652",
+    "415791819e70c4ed8236d5ca4d594652"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::PinoLogger levels::FastifyAdapter::debug",
+   "status": "stable",
+   "fingerprints": [
+    "1140a0d577d0ab873ab26e2a134c99d1",
+    "1140a0d577d0ab873ab26e2a134c99d1"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::PinoLogger levels::FastifyAdapter::info",
+   "status": "stable",
+   "fingerprints": [
+    "3f2cdf2ca1df627ab4bac93267186d8f",
+    "3f2cdf2ca1df627ab4bac93267186d8f"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::PinoLogger levels::FastifyAdapter::warn",
+   "status": "stable",
+   "fingerprints": [
+    "b9422c567ef6310f2086d5a39be13842",
+    "b9422c567ef6310f2086d5a39be13842"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::PinoLogger levels::FastifyAdapter::error",
+   "status": "stable",
+   "fingerprints": [
+    "6e36df605e1b689a097b655f219fbfb1",
+    "6e36df605e1b689a097b655f219fbfb1"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::PinoLogger levels::FastifyAdapter::fatal",
+   "status": "stable",
+   "fingerprints": [
+    "29efeff62b802b20e0d9bac79b856235",
+    "29efeff62b802b20e0d9bac79b856235"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/levels.spec.ts::PinoLogger levels::FastifyAdapter::fatal #2",
+   "status": "stable",
+   "fingerprints": [
+    "68c17ce2e6bac71b51b7050d125104b0",
+    "68c17ce2e6bac71b51b7050d125104b0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/logger-error-interceptor-unit.spec.ts::LoggerErrorInterceptor (unit)::rethrows when there is no response to decorate",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/logger-error-interceptor-unit.spec.ts::LoggerErrorInterceptor (unit)::assigns the error on an express-like response",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/logger-error-interceptor-unit.spec.ts::LoggerErrorInterceptor (unit)::assigns the error on the raw object of a fastify-like response",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/logger-error-interceptor.spec.ts::error intercepting::ExpressAdapter::logger is publicly accessible",
+   "status": "stable",
+   "fingerprints": [
+    "a22c827a3628bfd1dcb54712047b8598",
+    "a22c827a3628bfd1dcb54712047b8598"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/logger-error-interceptor.spec.ts::error intercepting::FastifyAdapter::logger is publicly accessible",
+   "status": "stable",
+   "fingerprints": [
+    "436da46dc17f69a9719702e4ee3bac05",
+    "436da46dc17f69a9719702e4ee3bac05"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/logger-instance.spec.ts::getting the logger instance::ExpressAdapter::logger is publicly accessible",
+   "status": "stable",
+   "fingerprints": [
+    "c9f27b3512e2ab010ed860d7dd4598de",
+    "c9f27b3512e2ab010ed860d7dd4598de"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/logger-instance.spec.ts::getting the logger instance::FastifyAdapter::logger is publicly accessible",
+   "status": "stable",
+   "fingerprints": [
+    "e1f822f0cc62a6808ca944908d6abaf5",
+    "e1f822f0cc62a6808ca944908d6abaf5"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::getRpcInfo::reads a message pattern",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::getRpcInfo::reads an event pattern",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::getRpcInfo::takes the transport from the per-message context class",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::getRpcInfo::keeps every pattern of a multi-pattern handler",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::getRpcInfo::names every transport of the Transport enum",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::getRpcInfo::falls back to a message for a handler with no metadata",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::microservice hook::logs a completed message with the rpc record",
+   "status": "stable",
+   "fingerprints": [
+    "15fed11b86ea728fc6143d80f3ee6a7b",
+    "15fed11b86ea728fc6143d80f3ee6a7b"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::microservice hook::says event for an @EventPattern",
+   "status": "stable",
+   "fingerprints": [
+    "15fed11b86ea728fc6143d80f3ee6a7b",
+    "15fed11b86ea728fc6143d80f3ee6a7b"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::microservice hook::logs an error at error level and rethrows it",
+   "status": "stable",
+   "fingerprints": [
+    "9a8be62344be12fbe22131ed682f3b49",
+    "9a8be62344be12fbe22131ed682f3b49"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::microservice hook::passes the handler result through untouched",
+   "status": "stable",
+   "fingerprints": [
+    "15fed11b86ea728fc6143d80f3ee6a7b",
+    "15fed11b86ea728fc6143d80f3ee6a7b"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::microservice hook::keeps the context but drops the logs when autoLogging is false",
+   "status": "stable",
+   "fingerprints": [
+    "92cd350b8848921f5af72cc0ca5348a7",
+    "92cd350b8848921f5af72cc0ca5348a7"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::microservice hook::skips the logs of an ignored message but keeps the context",
+   "status": "stable",
+   "fingerprints": [
+    "92cd350b8848921f5af72cc0ca5348a7",
+    "92cd350b8848921f5af72cc0ca5348a7"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::microservice hook::logs nothing on arrival unless asked to",
+   "status": "stable",
+   "fingerprints": [
+    "aaa2cb3237403b9f55124e58f6f8c06b",
+    "aaa2cb3237403b9f55124e58f6f8c06b"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::microservice hook::uses genReqId for the bound id",
+   "status": "stable",
+   "fingerprints": [
+    "15fed11b86ea728fc6143d80f3ee6a7b",
+    "15fed11b86ea728fc6143d80f3ee6a7b"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::microservice hook::honours customLogLevel, including silent",
+   "status": "stable",
+   "fingerprints": [
+    "36c24f8abfbedea695d73138fa150993",
+    "36c24f8abfbedea695d73138fa150993"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::microservice hook::refuses useLevel together with customLogLevel",
+   "status": "stable",
+   "fingerprints": [
+    "dd7908f449c68af08ae46d81ad47f629",
+    "dd7908f449c68af08ae46d81ad47f629"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::microservice hook::applies useLevel to the completed log",
+   "status": "stable",
+   "fingerprints": [
+    "15fed11b86ea728fc6143d80f3ee6a7b",
+    "15fed11b86ea728fc6143d80f3ee6a7b"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::microservice hook::honours the custom message and object builders",
+   "status": "stable",
+   "fingerprints": [
+    "15fed11b86ea728fc6143d80f3ee6a7b",
+    "15fed11b86ea728fc6143d80f3ee6a7b"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::microservice hook::honours the custom error message and object builders",
+   "status": "stable",
+   "fingerprints": [
+    "9a8be62344be12fbe22131ed682f3b49",
+    "9a8be62344be12fbe22131ed682f3b49"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::microservice hook::binds customProps to the handler logs and the completed log",
+   "status": "stable",
+   "fingerprints": [
+    "03a76b1fdcb20ebf7c46a1b389425858",
+    "03a76b1fdcb20ebf7c46a1b389425858"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::microservice hook::renames the keys it adds",
+   "status": "stable",
+   "fingerprints": [
+    "5c46bc75f42ced57834d7fea5f39c0fc",
+    "5c46bc75f42ced57834d7fea5f39c0fc"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::microservice hook::drops the rpc record with quietRpcLogger and quietResLogger",
+   "status": "stable",
+   "fingerprints": [
+    "bed9de33631a643978e4b213bcaa5eb0",
+    "bed9de33631a643978e4b213bcaa5eb0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::microservice hook::leaves the payload out unless asked for it",
+   "status": "stable",
+   "fingerprints": [
+    "18e2745c06d66fa5092003b057f2bfe2",
+    "18e2745c06d66fa5092003b057f2bfe2"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::microservice hook::lets redact reach the payload",
+   "status": "stable",
+   "fingerprints": [
+    "15fed11b86ea728fc6143d80f3ee6a7b",
+    "15fed11b86ea728fc6143d80f3ee6a7b"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::microservice hook::keeps assign out of the completed log unless assignResponse is set",
+   "status": "stable",
+   "fingerprints": [
+    "18e2745c06d66fa5092003b057f2bfe2",
+    "18e2745c06d66fa5092003b057f2bfe2"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::microservice hook::numbers messages from one when no genReqId is given",
+   "status": "stable",
+   "fingerprints": [
+    "c73b39963991a66386af16024e6d1a6e",
+    "c73b39963991a66386af16024e6d1a6e"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::hook registration::registers once, however many times it is asked",
+   "status": "stable",
+   "fingerprints": [
+    "dd7908f449c68af08ae46d81ad47f629",
+    "dd7908f449c68af08ae46d81ad47f629"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice-unit.spec.ts::hook registration::degrades with a warning when the NestJS in use has no pre-request hooks",
+   "status": "stable",
+   "fingerprints": [
+    "bd1043464bcd0828bacfc1e5a27c5f1c",
+    "bd1043464bcd0828bacfc1e5a27c5f1c"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice.spec.ts::microservice::logs a completed message and replies untouched",
+   "status": "stable",
+   "fingerprints": [
+    "196b86e9b3809a87ef3d328fe5f1ba5b",
+    "196b86e9b3809a87ef3d328fe5f1ba5b"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice.spec.ts::microservice::gives every log made while handling the message its context",
+   "status": "stable",
+   "fingerprints": [
+    "adc6a831843ff6b0aa17dbd99917e59a",
+    "adc6a831843ff6b0aa17dbd99917e59a"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice.spec.ts::microservice::runs before the guards, so their logs have the context too",
+   "status": "stable",
+   "fingerprints": [
+    "4b4dc42b81b7717b6f5a9f730c2c8de5",
+    "4b4dc42b81b7717b6f5a9f730c2c8de5"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice.spec.ts::microservice::logs an event as an event",
+   "status": "stable",
+   "fingerprints": [
+    "a2bbc4ebcf2fbd39f87aff8612859091",
+    "a2bbc4ebcf2fbd39f87aff8612859091"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice.spec.ts::microservice::logs a failed message and still rejects the caller",
+   "status": "stable",
+   "fingerprints": [
+    "7afcd74a73ef5f4e4d27f19d549cd3eb",
+    "7afcd74a73ef5f4e4d27f19d549cd3eb"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice.spec.ts::microservice::logs an error the application handles itself",
+   "status": "stable",
+   "fingerprints": [
+    "17841488815307551c443e3beb356e95",
+    "17841488815307551c443e3beb356e95"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice.spec.ts::microservice::keeps concurrent messages apart",
+   "status": "stable",
+   "fingerprints": [
+    "ac2749a0264c9f0df26586fc0c87232c",
+    "ac2749a0264c9f0df26586fc0c87232c"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice.spec.ts::microservice::exposes the root logger in a microservice application",
+   "status": "stable",
+   "fingerprints": [
+    "d4c2c82e5325ee69a56b0cc0bc9f5146",
+    "d4c2c82e5325ee69a56b0cc0bc9f5146"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice.spec.ts::microservice::honours the parameters end to end",
+   "status": "stable",
+   "fingerprints": [
+    "1a2296b60f3483d2ff03f53a3e786ddd",
+    "1a2296b60f3483d2ff03f53a3e786ddd"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice.spec.ts::microservice::does nothing at all when microservice is not configured",
+   "status": "stable",
+   "fingerprints": [
+    "351fe46ddb783d10d52ea7a320161132",
+    "351fe46ddb783d10d52ea7a320161132"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice.spec.ts::microservice::can be registered by hand",
+   "status": "stable",
+   "fingerprints": [
+    "467ffed49eb090e6839bf944f4dbc23f",
+    "467ffed49eb090e6839bf944f4dbc23f"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice.spec.ts::microservice::hybrid application::works when connected with inheritAppConfig",
+   "status": "stable",
+   "fingerprints": [
+    "83042579af3f78fc15bb3ed99ee07c58",
+    "83042579af3f78fc15bb3ed99ee07c58"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/microservice.spec.ts::microservice::hybrid application::degrades without inheritAppConfig instead of breaking",
+   "status": "stable",
+   "fingerprints": [
+    "e21f282daaa6ebad0e853106a0539ed0",
+    "e21f282daaa6ebad0e853106a0539ed0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/module.spec.ts::module initialization::ExpressAdapter::forRoot::should work properly without params",
+   "status": "diverged",
+   "fingerprints": [
+    "8576b7505a28044cf246d187549ef0a3",
+    "059be40290d44c79c069059c34d4e2dd"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 2,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 68,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "io.complete",
+     "at": "<deps>/sonic-boom/index.js:622",
+     "v": "fs.write#2"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "Date.now",
+     "at": "<deps>/pino-http/logger.js:170",
+     "v": "57000"
+    },
+    "reason": "other",
+    "description": "event #68: [other] io.complete @ <deps>/sonic-boom/index.js:622 = fs.write#2  <>  [time] Date.now @ <deps>/pino-http/logger.js:170 = 57000"
+   }
+  },
+  {
+   "nodeid": "__tests__/module.spec.ts::module initialization::ExpressAdapter::forRoot::should work properly with single value of `httpPino` property",
+   "status": "stable",
+   "fingerprints": [
+    "04ce3be9864101dafd8ce15612376b2a",
+    "04ce3be9864101dafd8ce15612376b2a"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/module.spec.ts::module initialization::ExpressAdapter::forRoot::should work properly with array as value of `httpPino` property",
+   "status": "stable",
+   "fingerprints": [
+    "2d3e12464b77e4eb607fc44df9021777",
+    "2d3e12464b77e4eb607fc44df9021777"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/module.spec.ts::module initialization::ExpressAdapter::forRootAsync::should work properly when useFactory returns single value of `httpPino` property",
+   "status": "stable",
+   "fingerprints": [
+    "377c1fd9e2c0272a1f8902bd60494c84",
+    "377c1fd9e2c0272a1f8902bd60494c84"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/module.spec.ts::module initialization::ExpressAdapter::forRootAsync::should work properly when useFactory returns array as value of `httpPino` property",
+   "status": "stable",
+   "fingerprints": [
+    "a517ef5d1219381abcba9042eba36ea5",
+    "a517ef5d1219381abcba9042eba36ea5"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/module.spec.ts::module initialization::ExpressAdapter::forRootAsync::should work properly when pass deps via providers",
+   "status": "stable",
+   "fingerprints": [
+    "2c8d15808a7571a526f116914ae35325",
+    "2c8d15808a7571a526f116914ae35325"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/module.spec.ts::module initialization::ExpressAdapter::forRootAsync::should work properly when useFactory returns Promise",
+   "status": "stable",
+   "fingerprints": [
+    "1c87be36bc4622812d32b624d5e1ecf2",
+    "1c87be36bc4622812d32b624d5e1ecf2"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/module.spec.ts::module initialization::FastifyAdapter::forRoot::should work properly without params",
+   "status": "not-proven",
+   "fingerprints": [
+    "087e5adf0607d805bbc5e56e781a0c11",
+    "087e5adf0607d805bbc5e56e781a0c11"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": 193,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "uncontrolled.io",
+     "at": "<deps>/superagent/lib/node/index.js:958",
+     "v": "concurrent I/O"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "uncontrolled.io",
+     "at": "<deps>/superagent/lib/node/index.js:958",
+     "v": "concurrent I/O"
+    },
+    "reason": "io",
+    "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ <deps>/superagent/lib/node/index.js:958) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)"
+   }
+  },
+  {
+   "nodeid": "__tests__/module.spec.ts::module initialization::FastifyAdapter::forRoot::should work properly with single value of `httpPino` property",
+   "status": "stable",
+   "fingerprints": [
+    "f6d6d4de08ec2aa3296a97edf094b883",
+    "f6d6d4de08ec2aa3296a97edf094b883"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/module.spec.ts::module initialization::FastifyAdapter::forRoot::should work properly with array as value of `httpPino` property",
+   "status": "stable",
+   "fingerprints": [
+    "6e25f8a9cd52284e8ca80c30de3f7e93",
+    "6e25f8a9cd52284e8ca80c30de3f7e93"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/module.spec.ts::module initialization::FastifyAdapter::forRootAsync::should work properly when useFactory returns single value of `httpPino` property",
+   "status": "stable",
+   "fingerprints": [
+    "f42d7daefb93c6f6533a3f82041e191d",
+    "f42d7daefb93c6f6533a3f82041e191d"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/module.spec.ts::module initialization::FastifyAdapter::forRootAsync::should work properly when useFactory returns array as value of `httpPino` property",
+   "status": "stable",
+   "fingerprints": [
+    "199601695063522065fdaa5e1dd4fe01",
+    "199601695063522065fdaa5e1dd4fe01"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/module.spec.ts::module initialization::FastifyAdapter::forRootAsync::should work properly when pass deps via providers",
+   "status": "stable",
+   "fingerprints": [
+    "ad2bac05e29c7083ef2e46ab696154a3",
+    "ad2bac05e29c7083ef2e46ab696154a3"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/module.spec.ts::module initialization::FastifyAdapter::forRootAsync::should work properly when useFactory returns Promise",
+   "status": "stable",
+   "fingerprints": [
+    "f9903e0839945226a0d76d38fb9215e0",
+    "f9903e0839945226a0d76d38fb9215e0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::ExpressAdapter::single string message produces matching fields",
+   "status": "stable",
+   "fingerprints": [
+    "57a1b75d8a4fc8a694e2bc2ceefc3295",
+    "57a1b75d8a4fc8a694e2bc2ceefc3295"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::ExpressAdapter::multiple messages are each logged separately",
+   "status": "stable",
+   "fingerprints": [
+    "541e94c38cfea5fc9e73c9fc7badd4c9",
+    "541e94c38cfea5fc9e73c9fc7badd4c9"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::ExpressAdapter::error with stack trace has same fields",
+   "status": "stable",
+   "fingerprints": [
+    "b1ba4e72ddb43a12de0233963d69a132",
+    "b1ba4e72ddb43a12de0233963d69a132"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::ExpressAdapter::NestJS exception handler produces same structure",
+   "status": "stable",
+   "fingerprints": [
+    "7fbf243fc2a84d1056446e43c05d4c6b",
+    "7fbf243fc2a84d1056446e43c05d4c6b"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::ExpressAdapter::object message includes object fields",
+   "status": "stable",
+   "fingerprints": [
+    "103f6976e7125bcdfb0bc2aa27cdabbf",
+    "103f6976e7125bcdfb0bc2aa27cdabbf"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::ExpressAdapter::object after the message matches ConsoleLogger",
+   "status": "stable",
+   "fingerprints": [
+    "01341a2fda35296eab0ec54ffa9ca3cd",
+    "01341a2fda35296eab0ec54ffa9ca3cd"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::ExpressAdapter::flattenParams matches ConsoleLogger",
+   "status": "stable",
+   "fingerprints": [
+    "8e0fd8561ea0aeb16382c5affaa7ed19",
+    "8e0fd8561ea0aeb16382c5affaa7ed19"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::ExpressAdapter::errors::log(message, error) matches ConsoleLogger",
+   "status": "stable",
+   "fingerprints": [
+    "8baac1883f700a532d142aad7b2ddd16",
+    "8baac1883f700a532d142aad7b2ddd16"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::ExpressAdapter::errors::error(message, error) matches ConsoleLogger",
+   "status": "stable",
+   "fingerprints": [
+    "bf7d3593d79a6392f893fc6714be5fa2",
+    "bf7d3593d79a6392f893fc6714be5fa2"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::ExpressAdapter::errors::error(error) matches ConsoleLogger",
+   "status": "stable",
+   "fingerprints": [
+    "3da36e01b96bd66b7074089d6523940f",
+    "3da36e01b96bd66b7074089d6523940f"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::ExpressAdapter::errors::own properties and the cause chain match ConsoleLogger",
+   "status": "stable",
+   "fingerprints": [
+    "5881d37dd84c640a68cf381d91e89f86",
+    "5881d37dd84c640a68cf381d91e89f86"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::ExpressAdapter::errors::AggregateError matches ConsoleLogger",
+   "status": "stable",
+   "fingerprints": [
+    "1a1af70dd1057c0460fc82f8f44726de",
+    "1a1af70dd1057c0460fc82f8f44726de"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::ExpressAdapter::errors::cause cycles and deep cause chains match ConsoleLogger",
+   "status": "stable",
+   "fingerprints": [
+    "504354a016be0477233755b2ff98ee0e",
+    "504354a016be0477233755b2ff98ee0e"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::ExpressAdapter::fatal::fatal(message, stack) matches ConsoleLogger",
+   "status": "stable",
+   "fingerprints": [
+    "85c1ca997d07a5e1f31b8e4358977c0d",
+    "85c1ca997d07a5e1f31b8e4358977c0d"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::ExpressAdapter::fatal::fatal(message, string) with a context matches ConsoleLogger",
+   "status": "stable",
+   "fingerprints": [
+    "f7c1e9afa80ad03f36e6b2dfec814afb",
+    "f7c1e9afa80ad03f36e6b2dfec814afb"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::ExpressAdapter::function messages::a lazy message is logged as its result",
+   "status": "stable",
+   "fingerprints": [
+    "2ed2beef7f646cf512bd7898bf501db1",
+    "2ed2beef7f646cf512bd7898bf501db1"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::ExpressAdapter::function messages::a class message is logged as its name",
+   "status": "stable",
+   "fingerprints": [
+    "0de01bbe4d8f90b55b023462b7786bfd",
+    "0de01bbe4d8f90b55b023462b7786bfd"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::FastifyAdapter::single string message produces matching fields",
+   "status": "stable",
+   "fingerprints": [
+    "7a350951c5977caf23901e1545bfec1c",
+    "7a350951c5977caf23901e1545bfec1c"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::FastifyAdapter::multiple messages are each logged separately",
+   "status": "stable",
+   "fingerprints": [
+    "98fb36bb542f81b8b675d61261869e58",
+    "98fb36bb542f81b8b675d61261869e58"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::FastifyAdapter::error with stack trace has same fields",
+   "status": "stable",
+   "fingerprints": [
+    "0ef8c8766dd69108f34a29d018a5648a",
+    "0ef8c8766dd69108f34a29d018a5648a"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::FastifyAdapter::NestJS exception handler produces same structure",
+   "status": "stable",
+   "fingerprints": [
+    "008cf271568051253796c3eb5a12b557",
+    "008cf271568051253796c3eb5a12b557"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::FastifyAdapter::object message includes object fields",
+   "status": "stable",
+   "fingerprints": [
+    "77847cbfa09c3870793a929fa5127742",
+    "77847cbfa09c3870793a929fa5127742"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::FastifyAdapter::object after the message matches ConsoleLogger",
+   "status": "stable",
+   "fingerprints": [
+    "7a629fffa02cece18fa4ac3e22f7a5e0",
+    "7a629fffa02cece18fa4ac3e22f7a5e0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::FastifyAdapter::flattenParams matches ConsoleLogger",
+   "status": "stable",
+   "fingerprints": [
+    "ee548a01d5a395da6404c51fa1db4816",
+    "ee548a01d5a395da6404c51fa1db4816"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::FastifyAdapter::errors::log(message, error) matches ConsoleLogger",
+   "status": "stable",
+   "fingerprints": [
+    "cc2098fd3fd00ea74cdc1e7dd8d44e01",
+    "cc2098fd3fd00ea74cdc1e7dd8d44e01"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::FastifyAdapter::errors::error(message, error) matches ConsoleLogger",
+   "status": "stable",
+   "fingerprints": [
+    "0b5b964137044a1048f15ed115dba6a8",
+    "0b5b964137044a1048f15ed115dba6a8"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::FastifyAdapter::errors::error(error) matches ConsoleLogger",
+   "status": "stable",
+   "fingerprints": [
+    "e0065aa4068243c68cd0ee5737eb3f30",
+    "e0065aa4068243c68cd0ee5737eb3f30"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::FastifyAdapter::errors::own properties and the cause chain match ConsoleLogger",
+   "status": "stable",
+   "fingerprints": [
+    "2a97c4a43ea0c7f4caad7e7371b4b32b",
+    "2a97c4a43ea0c7f4caad7e7371b4b32b"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::FastifyAdapter::errors::AggregateError matches ConsoleLogger",
+   "status": "stable",
+   "fingerprints": [
+    "69ddbeaf45af60ff4207c0cf4d40169a",
+    "69ddbeaf45af60ff4207c0cf4d40169a"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::FastifyAdapter::errors::cause cycles and deep cause chains match ConsoleLogger",
+   "status": "stable",
+   "fingerprints": [
+    "802819ac155aeb160d0c94b9a8f2fd61",
+    "802819ac155aeb160d0c94b9a8f2fd61"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::FastifyAdapter::fatal::fatal(message, stack) matches ConsoleLogger",
+   "status": "stable",
+   "fingerprints": [
+    "0729c2d8008868200665053f1cec1d8b",
+    "0729c2d8008868200665053f1cec1d8b"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::FastifyAdapter::fatal::fatal(message, string) with a context matches ConsoleLogger",
+   "status": "stable",
+   "fingerprints": [
+    "b2bb44b3df13726364b0cf89378e6615",
+    "b2bb44b3df13726364b0cf89378e6615"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::FastifyAdapter::function messages::a lazy message is logged as its result",
+   "status": "stable",
+   "fingerprints": [
+    "2d263dd1ae9c8d115bf7c3b3dafde5a2",
+    "2d263dd1ae9c8d115bf7c3b3dafde5a2"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger-comparison.spec.ts::NativeLogger vs ConsoleLogger comparison::FastifyAdapter::function messages::a class message is logged as its name",
+   "status": "stable",
+   "fingerprints": [
+    "17ba627fd068e8ef06552248c56edeb0",
+    "17ba627fd068e8ef06552248c56edeb0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::ExpressAdapter::level mapping::verbose maps to pino trace",
+   "status": "stable",
+   "fingerprints": [
+    "21a12f0b0279dba967f2514a036f09c4",
+    "21a12f0b0279dba967f2514a036f09c4"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::ExpressAdapter::level mapping::debug maps to pino debug",
+   "status": "stable",
+   "fingerprints": [
+    "1a05969c50f2f071075381adcc068153",
+    "1a05969c50f2f071075381adcc068153"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::ExpressAdapter::level mapping::log maps to pino info",
+   "status": "stable",
+   "fingerprints": [
+    "8695d6acac86560b1826f10496b8cc9e",
+    "8695d6acac86560b1826f10496b8cc9e"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::ExpressAdapter::level mapping::warn maps to pino warn",
+   "status": "stable",
+   "fingerprints": [
+    "61c59743d8d10eee2e73a439f0cf1dd6",
+    "61c59743d8d10eee2e73a439f0cf1dd6"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::ExpressAdapter::level mapping::error maps to pino error",
+   "status": "stable",
+   "fingerprints": [
+    "12e9459068c7f5de548d545254b10ec5",
+    "12e9459068c7f5de548d545254b10ec5"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::ExpressAdapter::level mapping::fatal maps to pino fatal",
+   "status": "stable",
+   "fingerprints": [
+    "d0e8d549781683aed774d5003b489aa3",
+    "d0e8d549781683aed774d5003b489aa3"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::ExpressAdapter::argument parsing (non-error)::single string message gets context from NestJS Logger",
+   "status": "stable",
+   "fingerprints": [
+    "04572c4e31b690621a5e02e6d5f9ed60",
+    "04572c4e31b690621a5e02e6d5f9ed60"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::ExpressAdapter::argument parsing (non-error)::extra string arg becomes a separate message, NestJS context wins",
+   "status": "stable",
+   "fingerprints": [
+    "ccefc6cffd0312e1068a41997411d966",
+    "ccefc6cffd0312e1068a41997411d966"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::ExpressAdapter::argument parsing (non-error)::object after the message matches ConsoleLogger",
+   "status": "stable",
+   "fingerprints": [
+    "c32aafefa24fdedef463e16a4f513141",
+    "c32aafefa24fdedef463e16a4f513141"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::ExpressAdapter::argument parsing (non-error)::object message with NestJS context",
+   "status": "stable",
+   "fingerprints": [
+    "4c2d1fcde2c243ac828a9773e0549ee3",
+    "4c2d1fcde2c243ac828a9773e0549ee3"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::ExpressAdapter::argument parsing (non-error)::Error object as message",
+   "status": "stable",
+   "fingerprints": [
+    "1e29e2301de25565a9346398229fbe22",
+    "1e29e2301de25565a9346398229fbe22"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::ExpressAdapter::error method::error with NestJS context only",
+   "status": "stable",
+   "fingerprints": [
+    "77bec68890fb47c0a386c3d26facdd74",
+    "77bec68890fb47c0a386c3d26facdd74"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::ExpressAdapter::error method::error with stack trace",
+   "status": "stable",
+   "fingerprints": [
+    "3b4caa3a3fe79fb3b8628e448e1108ed",
+    "3b4caa3a3fe79fb3b8628e448e1108ed"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::ExpressAdapter::error method::NestJS exception handler contract (thrown error)",
+   "status": "stable",
+   "fingerprints": [
+    "71c387f50f02bfef8d0757abfd9ec870",
+    "71c387f50f02bfef8d0757abfd9ec870"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::ExpressAdapter::renameContext::respects renameContext parameter",
+   "status": "stable",
+   "fingerprints": [
+    "7b85c768966b08876867880352cf67aa",
+    "7b85c768966b08876867880352cf67aa"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::FastifyAdapter::level mapping::verbose maps to pino trace",
+   "status": "stable",
+   "fingerprints": [
+    "a7730f051baba136459de570fe597142",
+    "a7730f051baba136459de570fe597142"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::FastifyAdapter::level mapping::debug maps to pino debug",
+   "status": "stable",
+   "fingerprints": [
+    "454370e5f17124a88c2ee8bf35a2e6bd",
+    "454370e5f17124a88c2ee8bf35a2e6bd"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::FastifyAdapter::level mapping::log maps to pino info",
+   "status": "stable",
+   "fingerprints": [
+    "a82e023de491eefe8aafe9e2c3c925a1",
+    "a82e023de491eefe8aafe9e2c3c925a1"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::FastifyAdapter::level mapping::warn maps to pino warn",
+   "status": "stable",
+   "fingerprints": [
+    "984313eb380b594345808393cebbb291",
+    "984313eb380b594345808393cebbb291"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::FastifyAdapter::level mapping::error maps to pino error",
+   "status": "stable",
+   "fingerprints": [
+    "b55807b8958dd7d0dedd02391f2a96f2",
+    "b55807b8958dd7d0dedd02391f2a96f2"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::FastifyAdapter::level mapping::fatal maps to pino fatal",
+   "status": "stable",
+   "fingerprints": [
+    "ab4e70cb91527a52f006baed3cd6f87d",
+    "ab4e70cb91527a52f006baed3cd6f87d"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::FastifyAdapter::argument parsing (non-error)::single string message gets context from NestJS Logger",
+   "status": "stable",
+   "fingerprints": [
+    "df91d8f7334bbb578c14007f48ae3fd5",
+    "df91d8f7334bbb578c14007f48ae3fd5"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::FastifyAdapter::argument parsing (non-error)::extra string arg becomes a separate message, NestJS context wins",
+   "status": "stable",
+   "fingerprints": [
+    "3c3f086daff3df06da95a4739c8e8e25",
+    "3c3f086daff3df06da95a4739c8e8e25"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::FastifyAdapter::argument parsing (non-error)::object after the message matches ConsoleLogger",
+   "status": "stable",
+   "fingerprints": [
+    "fef1e5e686e00cd1e265c6c58170b349",
+    "fef1e5e686e00cd1e265c6c58170b349"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::FastifyAdapter::argument parsing (non-error)::object message with NestJS context",
+   "status": "stable",
+   "fingerprints": [
+    "fa2eb72bab4b6c0a1280353e723b9881",
+    "fa2eb72bab4b6c0a1280353e723b9881"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::FastifyAdapter::argument parsing (non-error)::Error object as message",
+   "status": "stable",
+   "fingerprints": [
+    "e0209b211774f9b6f70141b155cab936",
+    "e0209b211774f9b6f70141b155cab936"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::FastifyAdapter::error method::error with NestJS context only",
+   "status": "stable",
+   "fingerprints": [
+    "85b5eec8708eaa3acd4bb22ccbd6822b",
+    "85b5eec8708eaa3acd4bb22ccbd6822b"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::FastifyAdapter::error method::error with stack trace",
+   "status": "stable",
+   "fingerprints": [
+    "9b3044810c4b8b451d673e059660b2d4",
+    "9b3044810c4b8b451d673e059660b2d4"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::FastifyAdapter::error method::NestJS exception handler contract (thrown error)",
+   "status": "stable",
+   "fingerprints": [
+    "3a75d29b1c34dbc0af006d38fa21f585",
+    "3a75d29b1c34dbc0af006d38fa21f585"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/native-logger.spec.ts::NativeLogger::FastifyAdapter::renameContext::respects renameContext parameter",
+   "status": "stable",
+   "fingerprints": [
+    "b867e77a35f46117fed53ff5b09ab83c",
+    "b867e77a35f46117fed53ff5b09ab83c"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/no-context.spec.ts::no context::ExpressAdapter::Logger",
+   "status": "stable",
+   "fingerprints": [
+    "342d5dcd174927ea3fd8ffb12b0806d6",
+    "342d5dcd174927ea3fd8ffb12b0806d6"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/no-context.spec.ts::no context::ExpressAdapter::PinoLogger",
+   "status": "stable",
+   "fingerprints": [
+    "9ff5eeba52f5c1a28322f04c7e015a2f",
+    "9ff5eeba52f5c1a28322f04c7e015a2f"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/no-context.spec.ts::no context::FastifyAdapter::Logger",
+   "status": "stable",
+   "fingerprints": [
+    "65e8657a16b32f2117cecf05dd0fadba",
+    "65e8657a16b32f2117cecf05dd0fadba"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/no-context.spec.ts::no context::FastifyAdapter::PinoLogger",
+   "status": "stable",
+   "fingerprints": [
+    "35a8e5387bcc30b70f90aa246828da56",
+    "35a8e5387bcc30b70f90aa246828da56"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/rename-context.spec.ts::rename context property name::ExpressAdapter::InjectPinoLogger",
+   "status": "stable",
+   "fingerprints": [
+    "f006fa36d32b83f76318de4b4245b4ed",
+    "f006fa36d32b83f76318de4b4245b4ed"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/rename-context.spec.ts::rename context property name::ExpressAdapter::PinoLogger",
+   "status": "stable",
+   "fingerprints": [
+    "6f48d95b8ef544c622fe61b126c8dc1e",
+    "6f48d95b8ef544c622fe61b126c8dc1e"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/rename-context.spec.ts::rename context property name::ExpressAdapter::Logger",
+   "status": "stable",
+   "fingerprints": [
+    "fa9e41c4fc5140137c61e93b8a192ba1",
+    "fa9e41c4fc5140137c61e93b8a192ba1"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/rename-context.spec.ts::rename context property name::FastifyAdapter::InjectPinoLogger",
+   "status": "stable",
+   "fingerprints": [
+    "feb3023b6eae90f823683ff7745e98ea",
+    "feb3023b6eae90f823683ff7745e98ea"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/rename-context.spec.ts::rename context property name::FastifyAdapter::PinoLogger",
+   "status": "stable",
+   "fingerprints": [
+    "751e33c6e5ab1f4a817bcbfe2e683869",
+    "751e33c6e5ab1f4a817bcbfe2e683869"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/rename-context.spec.ts::rename context property name::FastifyAdapter::Logger",
+   "status": "stable",
+   "fingerprints": [
+    "ba175bcdef9d0e74ca37c98cc6e10542",
+    "ba175bcdef9d0e74ca37c98cc6e10542"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/response-headers.spec.ts::response headers::ExpressAdapter::are logged",
+   "status": "stable",
+   "fingerprints": [
+    "ec416d7982fd773ade513eafb0d51c75",
+    "ec416d7982fd773ade513eafb0d51c75"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/response-headers.spec.ts::response headers::ExpressAdapter::are logged when a single name carries several values",
+   "status": "stable",
+   "fingerprints": [
+    "7f7b91f851afe06521d05351a91b19cc",
+    "7f7b91f851afe06521d05351a91b19cc"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/response-headers.spec.ts::response headers::FastifyAdapter::are logged",
+   "status": "stable",
+   "fingerprints": [
+    "1083e89f5a9e2aef0f236a988d544961",
+    "1083e89f5a9e2aef0f236a988d544961"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/response-headers.spec.ts::response headers::FastifyAdapter::are logged when a single name carries several values",
+   "status": "stable",
+   "fingerprints": [
+    "3aede25ea42add76438aba4b4816b630",
+    "3aede25ea42add76438aba4b4816b630"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/root-logger.spec.ts::root logger::is exposed without any HTTP middleware",
+   "status": "stable",
+   "fingerprints": [
+    "dd7908f449c68af08ae46d81ad47f629",
+    "dd7908f449c68af08ae46d81ad47f629"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/root-logger.spec.ts::root logger::governs logs made outside of a request",
+   "status": "stable",
+   "fingerprints": [
+    "9fa5665176307c5a9debc3cf2971bb21",
+    "9fa5665176307c5a9debc3cf2971bb21"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/root-logger.spec.ts::root logger::is built once and reused by every logger",
+   "status": "stable",
+   "fingerprints": [
+    "dd7908f449c68af08ae46d81ad47f629",
+    "dd7908f449c68af08ae46d81ad47f629"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/root-logger.spec.ts::root logger::options that cannot be applied twice::keeps custom levels working",
+   "status": "stable",
+   "fingerprints": [
+    "73c14e4e95f9f05b78d7ea8ac43ec356",
+    "73c14e4e95f9f05b78d7ea8ac43ec356"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/routing.spec.ts::routing::ExpressAdapter::included",
+   "status": "stable",
+   "fingerprints": [
+    "4afdeb64dd8c1907927b998b2f681e6b",
+    "4afdeb64dd8c1907927b998b2f681e6b"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/routing.spec.ts::routing::ExpressAdapter::excluded",
+   "status": "stable",
+   "fingerprints": [
+    "8f47501a212aa9669cf950db6f5ac4a3",
+    "8f47501a212aa9669cf950db6f5ac4a3"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/routing.spec.ts::routing::ExpressAdapter::not included",
+   "status": "stable",
+   "fingerprints": [
+    "3112568eb0c58e43de5270eb745d4a98",
+    "3112568eb0c58e43de5270eb745d4a98"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/routing.spec.ts::routing::FastifyAdapter::included",
+   "status": "stable",
+   "fingerprints": [
+    "cb6c52756b1990192e3e0e921e76ec6a",
+    "cb6c52756b1990192e3e0e921e76ec6a"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/routing.spec.ts::routing::FastifyAdapter::excluded",
+   "status": "stable",
+   "fingerprints": [
+    "690d95cdda866220b66af4331a0e814c",
+    "690d95cdda866220b66af4331a0e814c"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/routing.spec.ts::routing::FastifyAdapter::not included",
+   "status": "stable",
+   "fingerprints": [
+    "1675a49e1eb7e7f03cfd658e37571943",
+    "1675a49e1eb7e7f03cfd658e37571943"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/run-in-context.spec.ts::runInContext::makes assign work outside of a request",
+   "status": "stable",
+   "fingerprints": [
+    "9fa5665176307c5a9debc3cf2971bb21",
+    "9fa5665176307c5a9debc3cf2971bb21"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/run-in-context.spec.ts::runInContext::binds the given fields to every log inside",
+   "status": "stable",
+   "fingerprints": [
+    "cb1abf5553375f5f2d271d552b399538",
+    "cb1abf5553375f5f2d271d552b399538"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/run-in-context.spec.ts::runInContext::closes the context afterwards, on return and on throw",
+   "status": "stable",
+   "fingerprints": [
+    "dd7908f449c68af08ae46d81ad47f629",
+    "dd7908f449c68af08ae46d81ad47f629"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/run-in-context.spec.ts::runInContext::survives awaits",
+   "status": "stable",
+   "fingerprints": [
+    "a2762d57c1c32fdfc905ecb6d962d9d7",
+    "a2762d57c1c32fdfc905ecb6d962d9d7"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/run-in-context.spec.ts::runInContext::keeps concurrent contexts apart",
+   "status": "stable",
+   "fingerprints": [
+    "9e488a0b64f9c7b429dbf6236d71d6bf",
+    "9e488a0b64f9c7b429dbf6236d71d6bf"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/run-in-context.spec.ts::runInContext::nests without disturbing the surrounding context",
+   "status": "stable",
+   "fingerprints": [
+    "cb1abf5553375f5f2d271d552b399538",
+    "cb1abf5553375f5f2d271d552b399538"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/run-in-context.spec.ts::runInContext::falls back to the root when asked to inherit with no context",
+   "status": "stable",
+   "fingerprints": [
+    "9fa5665176307c5a9debc3cf2971bb21",
+    "9fa5665176307c5a9debc3cf2971bb21"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/run-in-context.spec.ts::runInContext::ExpressAdapter::inherits the request fields without leaking assign back into it",
+   "status": "stable",
+   "fingerprints": [
+    "01f5f3b4723cbd37b1a37dc9457b48cb",
+    "01f5f3b4723cbd37b1a37dc9457b48cb"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/run-in-context.spec.ts::runInContext::FastifyAdapter::inherits the request fields without leaking assign back into it",
+   "status": "stable",
+   "fingerprints": [
+    "5611d8f6fba4bf8c500613a6e3f0b5c8",
+    "5611d8f6fba4bf8c500613a6e3f0b5c8"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/runtime-update.spec.ts::runtime update::ExpressAdapter::works",
+   "status": "not-proven",
+   "fingerprints": [
+    "2b77786330c2f266a3bf1bec9f72012c",
+    "2b77786330c2f266a3bf1bec9f72012c"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": 52,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "uncontrolled.io",
+     "at": "<deps>/superagent/lib/node/index.js:958",
+     "v": "concurrent I/O"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "uncontrolled.io",
+     "at": "<deps>/superagent/lib/node/index.js:958",
+     "v": "concurrent I/O"
+    },
+    "reason": "io",
+    "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ <deps>/superagent/lib/node/index.js:958) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)"
+   }
+  },
+  {
+   "nodeid": "__tests__/runtime-update.spec.ts::runtime update::FastifyAdapter::works",
+   "status": "not-proven",
+   "fingerprints": [
+    "4654557b9a6464d6f32a95dc97410114",
+    "4654557b9a6464d6f32a95dc97410114"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": 190,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "uncontrolled.io",
+     "at": "<deps>/superagent/lib/node/index.js:958",
+     "v": "concurrent I/O"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "uncontrolled.io",
+     "at": "<deps>/superagent/lib/node/index.js:958",
+     "v": "concurrent I/O"
+    },
+    "reason": "io",
+    "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ <deps>/superagent/lib/node/index.js:958) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)"
+   }
+  },
+  {
+   "nodeid": "__tests__/runtime-update.spec.ts::runtime update::doesn't work with useExisting",
+   "status": "not-proven",
+   "fingerprints": [
+    "626ac5f0eb0dfb0f2e5cb3b6772bc937",
+    "626ac5f0eb0dfb0f2e5cb3b6772bc937"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": 170,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "uncontrolled.io",
+     "at": "<deps>/superagent/lib/node/index.js:958",
+     "v": "concurrent I/O"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "uncontrolled.io",
+     "at": "<deps>/superagent/lib/node/index.js:958",
+     "v": "concurrent I/O"
+    },
+    "reason": "io",
+    "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ <deps>/superagent/lib/node/index.js:958) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)"
+   }
+  },
+  {
+   "nodeid": "__tests__/types.spec.ts::types::accepts express Request/Response in pinoHttp options (#2075)",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/types.spec.ts::types::accepts custom levels (#1863)",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/types.spec.ts::types::still accepts unparameterised Params",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/types.spec.ts::types::type-checks the inject array of forRootAsync",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/types.spec.ts::types::accepts microservice parameters",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/types.spec.ts::types::narrows the rpc type to its two literals",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/types.spec.ts::types::exposes custom levels on PinoLogger#logger",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/types.spec.ts::dependencies the source must not take::never imports @nestjs/microservices",
+   "status": "not-proven",
+   "fingerprints": [
+    "72b49cfe914d618f0efa79190e2a380c",
+    "72b49cfe914d618f0efa79190e2a380c"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": 1,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "uncontrolled.io",
+     "at": "__tests__/types.spec.ts:127",
+     "v": "concurrent I/O"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "uncontrolled.io",
+     "at": "__tests__/types.spec.ts:127",
+     "v": "concurrent I/O"
+    },
+    "reason": "io",
+    "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ __tests__/types.spec.ts:127) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)"
+   }
+  },
+  {
+   "nodeid": "__tests__/types.spec.ts::dependencies the source must not take::never imports the v12-only PreRequestHook type",
+   "status": "not-proven",
+   "fingerprints": [
+    "72b49cfe914d618f0efa79190e2a380c",
+    "72b49cfe914d618f0efa79190e2a380c"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": 1,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "uncontrolled.io",
+     "at": "__tests__/types.spec.ts:127",
+     "v": "concurrent I/O"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "uncontrolled.io",
+     "at": "__tests__/types.spec.ts:127",
+     "v": "concurrent I/O"
+    },
+    "reason": "io",
+    "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ __tests__/types.spec.ts:127) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)"
+   }
+  },
+  {
+   "nodeid": "__tests__/use-existing.spec.ts::useExisting property::FastifyAdapter::should use adapter logger in req context and default beyond",
+   "status": "not-proven",
+   "fingerprints": [
+    "57e719b4e251fde5dfb8242c70db44b0",
+    "57e719b4e251fde5dfb8242c70db44b0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": {
+    "run_a": 0,
+    "run_b": 0,
+    "index": 182,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "uncontrolled.io",
+     "at": "<deps>/superagent/lib/node/index.js:958",
+     "v": "concurrent I/O"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "uncontrolled.io",
+     "at": "<deps>/superagent/lib/node/index.js:958",
+     "v": "concurrent I/O"
+    },
+    "reason": "io",
+    "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ <deps>/superagent/lib/node/index.js:958) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)"
+   }
+  },
+  {
+   "nodeid": "__tests__/use-existing.spec.ts::pass existing pino instance::ExpressAdapter::should use passed instance out of context",
+   "status": "stable",
+   "fingerprints": [
+    "1e041181b52dd3f36a8154f874c701f3",
+    "1e041181b52dd3f36a8154f874c701f3"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "__tests__/use-existing.spec.ts::pass existing pino instance::FastifyAdapter::should use passed instance out of context",
+   "status": "stable",
+   "fingerprints": [
+    "630b5778ea8695b0186bb8aff0124d58",
+    "630b5778ea8695b0186bb8aff0124d58"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  }
+ ],
+ "input_differences": []
+}
