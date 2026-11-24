@@ -1,0 +1,20 @@
+{
+ "at": "2026-11-24T17:39:55+00:00",
+ "body": {
+  "documentation_url": "https://docs.github.com/rest/search/search#search-code",
+  "message": "try again in 2.044344713s",
+  "status": "429"
+ },
+ "headers": {
+  "Date": "Tue, 24 Nov 2026 17:39:55 GMT",
+  "X-RateLimit-Limit": "10",
+  "X-RateLimit-Remaining": "10",
+  "X-RateLimit-Reset": "1795542055",
+  "X-RateLimit-Resource": "code_search",
+  "X-RateLimit-Used": "0"
+ },
+ "path": "search/code?q=postgres+jest+path%3A.github%2Fworkflows&per_page=100&page=1",
+ "query": "postgres jest path:.github/workflows",
+ "route": "workflow",
+ "status": 429
+}
