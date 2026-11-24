@@ -248,9 +248,12 @@ def read_agent(c: ghapi.Client, cand: dict, read_time: dt.datetime) -> dict:
     if r:
         raise Drop(r, json.dumps({k: row[k] for k in ("stars", "fork", "archived", "pushed_at", "language")}))
     br = meta["default_branch"]
-    lists = [src.pages(f"repos/{repo}/commits?path={f}&sha={ghapi.q(br)}&per_page=100", ok404=True)
-             for f in ("AGENTS.md", "CLAUDE.md")]
-    t0 = M.t0_of(lists)
+    if cand.get("t0_override"):  # debug runs only
+        lists, t0 = [[], []], M.ts(cand["t0_override"])
+    else:
+        lists = [src.pages(f"repos/{repo}/commits?path={f}&sha={ghapi.q(br)}&per_page=100", ok404=True)
+                 for f in ("AGENTS.md", "CLAUDE.md")]
+        t0 = M.t0_of(lists)
     row["n_agent_file_commits"] = [len(x) for x in lists]
     if t0 is None:
         raise Drop("no_root_file", "no commit touching root AGENTS.md/CLAUDE.md on the default branch")
@@ -312,7 +315,7 @@ def run(req: dict) -> None:
     global RES
     if req.get("debug_repos"):  # debug run on named repositories: rows kept apart, never candidates or pairs
         RES = HERE / "results" / "debug"
-        cands = [{"idx": i, "repo": r} for i, r in enumerate(req["debug_repos"])]
+        cands = [{"idx": i, "repo": r, "t0_override": req.get("debug_t0")} for i, r in enumerate(req["debug_repos"])]
     else:
         cands = jl(HERE / "discovery" / "candidates.jsonl.gz")
     RES.mkdir(parents=True, exist_ok=True)
