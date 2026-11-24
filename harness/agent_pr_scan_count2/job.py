@@ -3,10 +3,11 @@
 
 Usage: job.py --request requests/<n>.json
 
-Request file: {"chunk": "<n>", "probe": bool, "max_prs": int|null}. Resumes from results/checkpoint.json, walks
+Request file: {"chunk": "<n>", "probe": bool, "max_prs": int|null, "max_minutes": int|null}. Resumes from results/checkpoint.json, walks
 draw.jsonl.gz in order applying the quota (40 rateable per family), the 3-per-repository cap and the 1,500 hard cap,
 reads each selected PR with pipeline.run_pr, and stops before the next PR when X-RateLimit-Remaining < 20% of the
-limit, when ``max_prs`` PRs were read in this chunk, or when the prepared draw ends. Writes
+limit, when ``max_prs`` PRs were read in this chunk, after ``max_minutes`` (so the
+results are committed before the job's 340-minute timeout), or when the prepared draw ends. Writes
 results/raw/<chunk>.jsonl.gz (every response, per PR), results/rows.jsonl, results/excluded_cap.jsonl,
 results/checkpoint.json and results/chunks.jsonl.
 """
@@ -80,6 +81,7 @@ def main() -> int:
     a = ap.parse_args()
     req = json.loads(Path(a.request).read_text())
     chunk, probe, max_prs = str(req["chunk"]), bool(req.get("probe")), req.get("max_prs")
+    max_minutes = req.get("max_minutes")
     res = HERE / "results"
     (res / "raw").mkdir(parents=True, exist_ok=True)
     ck = res / "checkpoint.json"
@@ -102,6 +104,9 @@ def main() -> int:
             continue
         if max_prs is not None and n_chunk >= max_prs:
             stop = f"chunk limit {max_prs} PRs"
+            break
+        if max_minutes is not None and time.time() - t0 > 60 * max_minutes:
+            stop = f"chunk time limit {max_minutes} min"
             break
         if src.low():
             stop = f"rate limit: remaining {src.remaining} < 20% of {src.limit}"
