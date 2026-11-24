@@ -355,6 +355,12 @@ and passes after (red logs `/tmp/pm-p1/failsafe/a1-red.log`, `b1-red.log`, `f-re
 | B1 on Jest: its worker process keeps state across files that is not tracked per file | `src/jest/cli.js`: `files_outside_scope: "run"` always | `node/test/p1-b-outside-scope.test.js`, jest: header `"run"`, the other file's tests not stable |
 | F: the test's own code run inside a file operation (`fs.cp` filter, the iterable `fs.promises.writeFile` / `appendFile` draws from) was a step of that operation, its I/O hidden | `src/ioorder.js`: that code runs in a user scope; a file operation it starts marks the test `uncontrolled.io` (NOT PROVEN) | `node/test/p1-f-nested-io.test.js`, 4 "fail-safe" cases (promise and callback `cp` filter, `writeFile` and `appendFile` from an async iterable); 2 no-false-alarm cases (a filter / iterable without I/O) |
 
+Green on ce9e51c (`/tmp/pm-p1/failsafe/`): cargo `-p detpy-core -p detpy-node` 0 failed (core 202 passed); every
+`node/test/p1-*.test.js` plus the three P0 exit tests (unmodified vs 9ac63d6) **120 tests, 120 pass**; shared Python
+tests 3 failed, 1,019 passed, 39 skipped: the same 3 as trunk 9ac63d6 (section 5.1). The Vitest header test below
+passes on 0358ea4 by design; a mutation (`isolatedFiles` always true) makes its `isolate: false` and `singleFork`
+cases fail (`/tmp/pm-p1/mut/mut.log`).
+
 Shell-level test added (it was missing): `node/test/p1-b-outside-scope.test.js`, Vitest default writes
 `files_outside_scope: "file"`, `isolate: false` and `poolOptions.forks.singleFork` write `"run"`.
 Not covered by the F fail-safe: a Readable stream passed as the data (Node's stream code reads it), `fs.cpSync`.
