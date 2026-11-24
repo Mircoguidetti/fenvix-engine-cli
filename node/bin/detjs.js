@@ -143,7 +143,8 @@ function pickEpoch(argv) {
   const repro = argv[0] === 'repro' || argv[0] === 'explore' || argv[0] === 'replay';
   if (!repro && !RUNNERS_ALL.has(argv[0]) && argv[0] !== 'playwright') return;
   if (!repro) {
-    const det = argv.includes('--det') || process.env.DETJS === '1' || process.env.DETJS === 'true';
+    const det = argv.includes('--det') || process.env.DETJS === '1' || process.env.DETJS === 'true'
+      || argv.some((a) => a === '--det-isolate' || a === '--det-isolate=1' || a === '--det-isolate=true'); // implies --det (src/isolate.js)
     if (!det || argv.includes('--no-det') || argv.includes('--det-help')) return;
   }
   try {

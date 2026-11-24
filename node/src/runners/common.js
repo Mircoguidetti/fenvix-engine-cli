@@ -547,14 +547,14 @@ function child() {
       // OS entropy drawn by the runner itself (tap's mock service keys, ...) is the runner's business: only a draw
       // whose direct caller is not runner infrastructure makes a test not cacheable
       const realLevel = CAPTURE.levelEvent.bind(CAPTURE);
-      CAPTURE.levelEvent = (source, value) => {
+      CAPTURE.levelEvent = (source, value, op) => {
         if (source === 'entropy' && CAPTURE.active && !CAPTURE.busy) {
           CAPTURE.busy++;
           let who;
           try { who = CAPTURE.directCaller(); } finally { CAPTURE.busy--; }
           if (who === 'infra') return undefined;
         }
-        return realLevel(source, value);
+        return realLevel(source, value, op);
       };
     }
   }

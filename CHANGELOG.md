@@ -19,6 +19,10 @@ All notable changes of the fenvix engine. One version for every component (`rele
   - network: new `--det-net=open|closed`, default `open`: external hosts are reached live, recorded as `allowed`
     events with their bytes in the fingerprint, never reused by the cache, `*_PROXY` variables are run inputs.
     Opt-out: `--det-net=closed`. `--det-record` and an existing cassette keep recording / replaying.
+    A name sent to the live resolver (`dns.lookup`, `resolve*`, `reverse`) is an `allowed` event too and keeps the
+    test out of the cache. Bun's and Deno's native `fetch` / `Bun.connect` / `Deno.connect` follow the same default.
+  - `--det-isolate` without `--det` (it implies `--det`): one epoch for all its per-test sessions.
+  - `fenvix repro` / `explore` bundles record the failing run's `epoch`; the bundle's command and `fenvix replay` use it.
   - timers: unchanged (virtual; the runner timeouts stay virtual, G-0144). `--det-timers=real` as before.
   - `selfcert.generate(commonName, { notBefore, notAfter })` takes an optional validity.
 

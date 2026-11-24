@@ -875,6 +875,9 @@ class Capture {
     else if (source === 'entropy') this.add(['flag', 'entropy', ''], false);
     else if (source === 'net' && typeof value === 'string' && value.includes('record#')) this.add(['flag', 'net-record', value], false);
     else if (source === 'net' && typeof value === 'string' && value.includes('replay')) this.add(['net-replay'], false);
+    // --det-net=open: a name answered by the live resolver (src/network.js dnsOpen): no input the cache can key
+    else if (source === 'net' && typeof value === 'string' && value.endsWith(' allowed') && String(op || '').startsWith('dns.')
+      && process.env.DETJS_NET_MODE === 'open') this.flag('dns', `${value.slice(0, -' allowed'.length)} (resolved live, open network)`);
   }
 
   // -- code ----------------------------------------------------------------------------------------------------

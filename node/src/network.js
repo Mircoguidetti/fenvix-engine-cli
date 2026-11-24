@@ -880,7 +880,12 @@ function dnsCheck(host) {
   if (POLICY === null || host === null || host === undefined) return undefined;
   const h = String(host);
   if (isLocalName(h) || net.isIP(h) || POLICY.allow.has(h.toLowerCase().replace(/\.$/, ''))) return undefined;
-  if (POLICY.mode === 'record' || POLICY.mode === 'open') return undefined;
+  if (POLICY.mode === 'open') {
+    // --det-net=open: the live resolver answers; its answer is no run input, so the event lets the cache refuse reuse
+    STATE.record('net', 'dns.lookup', `${h} allowed`);
+    return undefined;
+  }
+  if (POLICY.mode === 'record') return undefined;
   if (POLICY.mode === 'replay' && POLICY.hasRecording(h)) {
     STATE.record('net', 'dns.lookup', `${h} replay`);
     return POLICY.fakeIp(h);
@@ -924,12 +929,14 @@ function guardResolve(obj, name, promises) {
   if (typeof orig !== 'function') return null;
   if (promises) {
     return async function (hostname, ...rest) {
-      if (POLICY && POLICY.mode !== 'record' && POLICY.mode !== 'open') dnsCheckNoFake(hostname);
+      if (POLICY && POLICY.mode === 'open') dnsOpen(hostname, name);
+      else if (POLICY && POLICY.mode !== 'record') dnsCheckNoFake(hostname);
       return orig.call(this, hostname, ...rest);
     };
   }
   return function (hostname, ...rest) {
-    if (POLICY && POLICY.mode !== 'record' && POLICY.mode !== 'open') {
+    if (POLICY && POLICY.mode === 'open') dnsOpen(hostname, name);
+    else if (POLICY && POLICY.mode !== 'record') {
       try {
         dnsCheckNoFake(hostname);
       } catch (err) {
@@ -947,9 +954,10 @@ function guardReverse(obj, name, promises) {
   const orig = obj[name];
   if (typeof orig !== 'function') return null;
   const check = (ip) => {
-    if (POLICY === null || POLICY.mode === 'record' || POLICY.mode === 'open') return null;
+    if (POLICY === null || POLICY.mode === 'record') return null;
     const h = String(ip);
     if (isLocalName(h) || POLICY.allow.has(h.toLowerCase())) return null;
+    if (POLICY.mode === 'open') { STATE.record('net', `dns.${name}`, `${h} allowed`); return null; }
     STATE.record('net', `dns.${name}`, `${h} blocked`);
     const err = new NetworkBlockedError(`${h} (reverse DNS)`, 'ENOTFOUND');
     err.hostname = h;
@@ -971,6 +979,13 @@ function guardReverse(obj, name, promises) {
     }
     return orig.call(this, ip, ...rest);
   };
+}
+
+/** --det-net=open: a non-local name sent to the live resolver is recorded (`<name> allowed`); the cache flags it. */
+function dnsOpen(hostname, op) {
+  const h = String(hostname);
+  if (isLocalName(h) || net.isIP(h) || POLICY.allow.has(h.toLowerCase().replace(/\.$/, ''))) return;
+  STATE.record('net', `dns.${op}`, `${h} allowed`);
 }
 
 function dnsCheckNoFake(hostname) {

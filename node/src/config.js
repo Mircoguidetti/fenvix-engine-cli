@@ -39,7 +39,7 @@ function envEpoch(env, active) {
   if (env.DETJS_EPOCH) return env.DETJS_EPOCH;
   if (active && !WARNED_EPOCH) {
     WARNED_EPOCH = true;
-    try { process.stderr.write('detjs: no DETJS_EPOCH, using 2025-01-01\n'); } catch { /* not printed */ }
+    try { process.stderr.write(`detjs: no DETJS_EPOCH, using ${DEFAULT_EPOCH}\n`); } catch { /* not printed */ }
   }
   return DEFAULT_EPOCH;
 }
