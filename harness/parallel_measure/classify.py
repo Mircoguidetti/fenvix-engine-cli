@@ -40,6 +40,7 @@ VERIFY_STATUSES = {"stable", "diverged", "missing", "input-differs", "not-proven
 
 ENV_PATTERNS = [
     (r"EAFNOSUPPORT|address family not supported|::1", "no IPv6 loopback (::1) in this container"),
+    (r"ECONNREFUSED\s+(?:127\.\d{1,3}\.\d{1,3}\.\d{1,3}|localhost)\b", "a local service (127.0.0.1/localhost) is not running in this container"),
     (r"EADDRNOTAVAIL", "address not available in this container"),
     (r"Executable doesn't exist at /opt/pw-browsers|playwright install", "browser not installed in this container"),
     (r"PackageNotFoundError: No package metadata", "package metadata missing (checkout not installed as a package)"),
