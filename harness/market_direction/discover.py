@@ -113,7 +113,7 @@ def fetch_leaves(c, state, deadline: float):
         lf = order[state["next_leaf"]]
         F, form = lf["F"], state["forms"][lf["F"]]
         read = kept = 0
-        pages = max(1, min(10, -(-(lf["total_count"] or 0) // 100)))
+        pages = 1  # PREREG amendment 1: page 1 of each leaf only
         for p in range(1, pages + 1):
             st, data, _ = search(c, query(F, form, lf["a"], lf["b"]), p)
             items = data.get("items") or [] if isinstance(data, dict) else []

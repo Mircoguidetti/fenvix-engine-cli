@@ -357,3 +357,23 @@ Branch `claude/market-direction-check` from `origin/claude/release-1` 9ac63d6, f
 `PREREG.md`, `probe/`, `REPORT.md`, `pairs.csv`, `dropped.csv`, `control_checks.jsonl`, `control_search/`,
 `funding_T.csv`, `funding_E.csv`, `companies.csv`, `queries.md`, `check.py`, scripts, `test_market_direction.py`.
 Only `.github/workflows/market-direction.yml` may change outside that folder (when the workflow route is used).
+
+## Amendment 1 (2026-11-24, before any leaf page is read): discovery reads page 1 of each leaf
+
+Approved change (rule 3), coordinator message of 2026-11-24 18:54 UTC, verbatim: "Coordinator: your rule-3 proposal
+is approved by the founder (gstack /plan-eng-review, D1 = A, recorded in new-brain
+gstack/projects/Mircoguidetti-new-brain/main-eng-review-market-frame-20261124-185500.md). Apply it as written: bisect
+fully, then fetch page 1 (100 hits) of each leaf in Random(1) leaf order; candidates = distinct repositories over
+those pages; print the page-1 (best-match) bias as a limit. Amend PREREG with this change (quote this decision, commit
+it) before any leaf page is read. Everything else stays as pre-registered." Confirmed 19:16 UTC: "run Part 1 to its
+end".
+
+Justification (reported to the coordinator at §0): about 1.49M root files; bisection alone is about 6,000 split
+queries (about 25 h at 4/min); fetching every leaf in full is about 30,000 requests and does not fit the 24 h
+discovery budget.
+
+Rule replacing §1.1's leaf fetch: after the bisection is complete for both files, the leaves (sorted by (F, a),
+shuffled once with `random.Random(1)`) are fetched in that order, **page 1 only** (up to 100 hits, the API's default
+best-match order); hits with `path` == F are kept; candidates = distinct repositories over those pages, sorted by
+`html_url`, then `random.Random(1).shuffle` once. The 24 h discovery budget still applies. Limit printed in REPORT:
+within a leaf, only the 100 best-match hits are in the frame (page-1 bias).
