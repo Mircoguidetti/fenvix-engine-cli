@@ -89,8 +89,13 @@ def report(t: dict, extra: dict) -> None:
           f"{(f'{sum(ea)}/{len(ea)}' if ea else '-')} / {(f'{sum(ec)}/{len(ec)}' if ec else '-')} |",
           f"| F_T (USD) | {res['F_T']:,.0f} |", f"| F_E (USD) | {res['F_E']:,.0f} |",
           f"| R | {check.fmt_r(res['R'])} |",
+          f"| Sensitivity (information): R without the largest round per category | {extra.get('sens', {}).get('no_largest', '-')} |",
+          f"| Sensitivity (information): R with borderline counted as E | {extra.get('sens', {}).get('border_E', '-')} |",
+          f"| Sensitivity (information): R with borderline counted as T | {extra.get('sens', {}).get('border_T', '-')} |",
           f"| Seed companies UNVERIFIED | {res['seed_unverified']} of {res['seed']} |",
           "| T0_MIN | 2026-04-01 |", ""]
+    if extra.get("sens_sentence"):
+        L += [extra["sens_sentence"], ""]
     L += ["## Dropped agent candidates by reason", "", "| Reason | Count |", "|---|---|"]
     L += [f"| {k} | {reasons.get(k, 0)} |" for k in M.DROP_REASONS] + [""]
     L += extra.get("body", [])

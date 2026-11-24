@@ -1,16 +1,22 @@
 {
  "changes": [
-  "## Changes after PREREG (each on its own line, with justification; status as of the last coordinator message)",
+  "## Changes after PREREG (each on its own line, with justification)",
   "",
   "1. APPROVED (founder, /plan-eng-review D1 = A; coordinator 2026-11-24 18:54 UTC): PREREG amendment 1, discovery reads page 1 of each leaf. Justification: about 1.49M root files; reading every leaf in full does not fit the 24 h discovery budget.",
-  "2. PENDING (Part 2 interpretation 1, route): every Part 2 page fetch ran in the workflow runner with the pre-registered tool (Python requests 2.34.2, manual redirects); this container's proxy refuses most company hosts (probe/web_session).",
-  "3. PENDING (Part 2 interpretation 2): home URLs of 16 added companies came from one logged lookup query each (queries.md, L1-L16), used for the domain only.",
-  "4. PENDING (Part 2 interpretation 3): a round counts only if a cited company page or news page loaded (HTTP 200) and states the amount; funding-database profiles do not count. Within a round the company's figure wins; otherwise the news figure stated by the most pages, ties to the lower.",
-  "5. PENDING (Part 2 interpretation 4): two rows excluded: Buildkite $21M Series B (the 2022 round re-dated 2026-09-20) and Langfuse $50M Series B (a vendor's blog; Langfuse joined ClickHouse in 2026-01).",
-  "6. PENDING (Part 2 interpretation 5): Blacksmith Series C date completed from its page (Dealroom News, 2026-10-21).",
-  "7. PENDING (Part 2 interpretation 6): the 162 per-company queries were run by 6 subagents with one fixed brief; raw results in funding_queries/batch0-5.md.",
+  "2. APPROVED by the founder (D2 = A, ~19:20 UTC) (Part 2 interpretation 1, route): every Part 2 page fetch ran in the workflow runner with the pre-registered tool (Python requests 2.34.2, manual redirects); this container's proxy refuses most company hosts (probe/web_session).",
+  "3. APPROVED by the founder (D2 = A, ~19:20 UTC) (Part 2 interpretation 2): home URLs of 16 added companies came from one logged lookup query each (queries.md, L1-L16), used for the domain only.",
+  "4. APPROVED by the founder (D2 = A, ~19:20 UTC) (Part 2 interpretation 3): a round counts only if a cited company page or news page loaded (HTTP 200) and states the amount; funding-database profiles do not count. Within a round the company's figure wins; otherwise the news figure stated by the most pages, ties to the lower.",
+  "5. APPROVED by the founder (D2 = A, ~19:20 UTC) (Part 2 interpretation 4): two rows excluded: Buildkite $21M Series B (the 2022 round re-dated 2026-09-20) and Langfuse $50M Series B (a vendor's blog; Langfuse joined ClickHouse in 2026-01).",
+  "6. APPROVED by the founder (D2 = A, ~19:20 UTC) (Part 2 interpretation 5): Blacksmith Series C date completed from its page (Dealroom News, 2026-10-21).",
+  "7. APPROVED by the founder (D2 = A, ~19:20 UTC) (Part 2 interpretation 6): the 162 per-company queries were run by 6 subagents with one fixed brief; raw results in funding_queries/batch0-5.md.",
   "8. Implementation (rule unchanged, db-serial-count gate note 7): a step whose script resolves to no runner command is not a test step, so it cannot make a job `unresolved` (found in debug run 4, sindresorhus/got).",
   ""
  ],
- "body": []
+ "body": [],
+ "sens": {
+  "no_largest": "2.94",
+  "border_E": "12.06",
+  "border_T": "0.21"
+ },
+ "sens_sentence": "R < 3 depends on the pre-registered classification: with the borderline companies counted as E, R = 12.06."
 }
