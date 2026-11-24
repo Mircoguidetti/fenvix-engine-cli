@@ -1,0 +1,42 @@
+{
+ "at": "2026-11-24T18:50:07+00:00",
+ "code_search": {
+  "body": {
+   "documentation_url": "https://docs.github.com/rest/search/search#search-code",
+   "message": "try again in 95.458621254s",
+   "status": "429"
+  },
+  "ratelimit": {
+   "X-RateLimit-Limit": "10",
+   "X-RateLimit-Remaining": "10",
+   "X-RateLimit-Reset": "1795546269",
+   "X-RateLimit-Resource": "code_search",
+   "X-RateLimit-Used": "0"
+  },
+  "status": 429,
+  "total_count": null
+ },
+ "repo_search": {
+  "body": null,
+  "ratelimit": {
+   "X-RateLimit-Limit": "30",
+   "X-RateLimit-Remaining": "29",
+   "X-RateLimit-Reset": "1795546268",
+   "X-RateLimit-Resource": "search",
+   "X-RateLimit-Used": "1"
+  },
+  "status": 200,
+  "total_count": 7573
+ },
+ "repos_nodejs_node": {
+  "full_name": "nodejs/node",
+  "ratelimit": {
+   "X-RateLimit-Limit": "5000",
+   "X-RateLimit-Remaining": "4649",
+   "X-RateLimit-Reset": "1795546351",
+   "X-RateLimit-Resource": "core",
+   "X-RateLimit-Used": "351"
+  },
+  "status": 200
+ }
+}

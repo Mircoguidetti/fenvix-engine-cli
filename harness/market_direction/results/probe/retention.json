@@ -1,0 +1,395 @@
+{
+ "at": "2026-11-24T18:50:47+00:00",
+ "repos": [
+  {
+   "calls": [
+    {
+     "created_at": [
+      "2026-11-24T18:46:45Z"
+     ],
+     "link": "<https://api.github.com/repositories/27193779/actions/runs?per_page=1&page=2>; rel=\"next\", <https://api.github.com/repositories/27193779/actions/runs?per_page=1&page=40000>; rel=\"last\"",
+     "path": "repos/nodejs/node/actions/runs?per_page=1",
+     "status": 200,
+     "total_count": 40000
+    },
+    {
+     "created_at": [
+      "2026-10-17T20:32:08Z"
+     ],
+     "link": "<https://api.github.com/repositories/27193779/actions/runs?per_page=1&page=39999>; rel=\"prev\", <https://api.github.com/repositories/27193779/actions/runs?per_page=1&page=1>; rel=\"first\"",
+     "path": "repos/nodejs/node/actions/runs?per_page=1&page=40000",
+     "status": 200,
+     "total_count": 40000
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/nodejs/node/actions/runs?per_page=1&created=%3C2015-01-01",
+     "status": 200,
+     "total_count": 0
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/nodejs/node/actions/runs?per_page=1&created=%3C2020-12-13",
+     "status": 200,
+     "total_count": 0
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/nodejs/node/actions/runs?per_page=1&created=%3C2023-12-04",
+     "status": 200,
+     "total_count": 0
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/nodejs/node/actions/runs?per_page=1&created=%3C2025-05-30",
+     "status": 200,
+     "total_count": 0
+    },
+    {
+     "created_at": [
+      "2026-02-25T23:59:24Z"
+     ],
+     "link": "<https://api.github.com/repositories/27193779/actions/runs?per_page=1&created=%3C2026-02-26&page=2>; rel=\"next\", <https://api.github.com/repositories/27193779/actions/runs?per_page=1&created=%3C2026-02-26&page=2500>; rel=\"last\"",
+     "path": "repos/nodejs/node/actions/runs?per_page=1&created=%3C2026-02-26",
+     "status": 200,
+     "total_count": 2500
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/nodejs/node/actions/runs?per_page=1&created=%3C2025-10-13",
+     "status": 200,
+     "total_count": 0
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/nodejs/node/actions/runs?per_page=1&created=%3C2025-12-20",
+     "status": 200,
+     "total_count": 0
+    },
+    {
+     "created_at": [
+      "2026-01-22T23:59:02Z"
+     ],
+     "link": "<https://api.github.com/repositories/27193779/actions/runs?per_page=1&created=%3C2026-01-23&page=2>; rel=\"next\", <https://api.github.com/repositories/27193779/actions/runs?per_page=1&created=%3C2026-01-23&page=2500>; rel=\"last\"",
+     "path": "repos/nodejs/node/actions/runs?per_page=1&created=%3C2026-01-23",
+     "status": 200,
+     "total_count": 2500
+    },
+    {
+     "created_at": [
+      "2026-01-05T23:56:50Z"
+     ],
+     "link": "<https://api.github.com/repositories/27193779/actions/runs?per_page=1&created=%3C2026-01-06&page=2>; rel=\"next\", <https://api.github.com/repositories/27193779/actions/runs?per_page=1&created=%3C2026-01-06&page=2500>; rel=\"last\"",
+     "path": "repos/nodejs/node/actions/runs?per_page=1&created=%3C2026-01-06",
+     "status": 200,
+     "total_count": 2500
+    },
+    {
+     "created_at": [
+      "2025-12-23T15:16:34Z"
+     ],
+     "link": "<https://api.github.com/repositories/27193779/actions/runs?per_page=1&created=%3C2025-12-28&page=2>; rel=\"next\", <https://api.github.com/repositories/27193779/actions/runs?per_page=1&created=%3C2025-12-28&page=2>; rel=\"last\"",
+     "path": "repos/nodejs/node/actions/runs?per_page=1&created=%3C2025-12-28",
+     "status": 200,
+     "total_count": 2
+    },
+    {
+     "created_at": [
+      "2025-12-23T15:16:34Z"
+     ],
+     "link": "<https://api.github.com/repositories/27193779/actions/runs?per_page=1&created=%3C2025-12-24&page=2>; rel=\"next\", <https://api.github.com/repositories/27193779/actions/runs?per_page=1&created=%3C2025-12-24&page=2>; rel=\"last\"",
+     "path": "repos/nodejs/node/actions/runs?per_page=1&created=%3C2025-12-24",
+     "status": 200,
+     "total_count": 2
+    },
+    {
+     "created_at": [
+      "2025-12-21T14:23:49Z"
+     ],
+     "link": null,
+     "path": "repos/nodejs/node/actions/runs?per_page=1&created=%3C2025-12-22",
+     "status": 200,
+     "total_count": 1
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/nodejs/node/actions/runs?per_page=1&created=%3C2025-12-21",
+     "status": 200,
+     "total_count": 0
+    }
+   ],
+   "last_page": 40000,
+   "method": "day bisection (listing capped at 1,000)",
+   "ok": true,
+   "oldest": "2025-12-21",
+   "repo": "nodejs/node",
+   "spec_last_page_created_at": "2026-10-17T20:32:08Z",
+   "total_count": 40000
+  },
+  {
+   "calls": [
+    {
+     "created_at": [
+      "2026-11-24T18:33:41Z"
+     ],
+     "link": "<https://api.github.com/repositories/81598961/actions/runs?per_page=1&page=2>; rel=\"next\", <https://api.github.com/repositories/81598961/actions/runs?per_page=1&page=40000>; rel=\"last\"",
+     "path": "repos/python/cpython/actions/runs?per_page=1",
+     "status": 200,
+     "total_count": 40000
+    },
+    {
+     "created_at": [
+      "2026-10-11T02:41:55Z"
+     ],
+     "link": "<https://api.github.com/repositories/81598961/actions/runs?per_page=1&page=39999>; rel=\"prev\", <https://api.github.com/repositories/81598961/actions/runs?per_page=1&page=1>; rel=\"first\"",
+     "path": "repos/python/cpython/actions/runs?per_page=1&page=40000",
+     "status": 200,
+     "total_count": 40000
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/python/cpython/actions/runs?per_page=1&created=%3C2015-01-01",
+     "status": 200,
+     "total_count": 0
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/python/cpython/actions/runs?per_page=1&created=%3C2020-12-13",
+     "status": 200,
+     "total_count": 0
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/python/cpython/actions/runs?per_page=1&created=%3C2023-12-04",
+     "status": 200,
+     "total_count": 0
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/python/cpython/actions/runs?per_page=1&created=%3C2025-05-30",
+     "status": 200,
+     "total_count": 0
+    },
+    {
+     "created_at": [
+      "2026-02-25T22:49:07Z"
+     ],
+     "link": "<https://api.github.com/repositories/81598961/actions/runs?per_page=1&created=%3C2026-02-26&page=2>; rel=\"next\", <https://api.github.com/repositories/81598961/actions/runs?per_page=1&created=%3C2026-02-26&page=2500>; rel=\"last\"",
+     "path": "repos/python/cpython/actions/runs?per_page=1&created=%3C2026-02-26",
+     "status": 200,
+     "total_count": 2500
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/python/cpython/actions/runs?per_page=1&created=%3C2025-10-13",
+     "status": 200,
+     "total_count": 0
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/python/cpython/actions/runs?per_page=1&created=%3C2025-12-20",
+     "status": 200,
+     "total_count": 0
+    },
+    {
+     "created_at": [
+      "2026-01-22T23:36:55Z"
+     ],
+     "link": "<https://api.github.com/repositories/81598961/actions/runs?per_page=1&created=%3C2026-01-23&page=2>; rel=\"next\", <https://api.github.com/repositories/81598961/actions/runs?per_page=1&created=%3C2026-01-23&page=2500>; rel=\"last\"",
+     "path": "repos/python/cpython/actions/runs?per_page=1&created=%3C2026-01-23",
+     "status": 200,
+     "total_count": 2500
+    },
+    {
+     "created_at": [
+      "2026-01-05T23:40:03Z"
+     ],
+     "link": "<https://api.github.com/repositories/81598961/actions/runs?per_page=1&created=%3C2026-01-06&page=2>; rel=\"next\", <https://api.github.com/repositories/81598961/actions/runs?per_page=1&created=%3C2026-01-06&page=2500>; rel=\"last\"",
+     "path": "repos/python/cpython/actions/runs?per_page=1&created=%3C2026-01-06",
+     "status": 200,
+     "total_count": 2500
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/python/cpython/actions/runs?per_page=1&created=%3C2025-12-28",
+     "status": 200,
+     "total_count": 0
+    },
+    {
+     "created_at": [
+      "2025-12-31T23:54:38Z"
+     ],
+     "link": "<https://api.github.com/repositories/81598961/actions/runs?per_page=1&created=%3C2026-01-01&page=2>; rel=\"next\", <https://api.github.com/repositories/81598961/actions/runs?per_page=1&created=%3C2026-01-01&page=640>; rel=\"last\"",
+     "path": "repos/python/cpython/actions/runs?per_page=1&created=%3C2026-01-01",
+     "status": 200,
+     "total_count": 640
+    },
+    {
+     "created_at": [
+      "2025-12-29T23:28:16Z"
+     ],
+     "link": "<https://api.github.com/repositories/81598961/actions/runs?per_page=1&created=%3C2025-12-30&page=2>; rel=\"next\", <https://api.github.com/repositories/81598961/actions/runs?per_page=1&created=%3C2025-12-30&page=101>; rel=\"last\"",
+     "path": "repos/python/cpython/actions/runs?per_page=1&created=%3C2025-12-30",
+     "status": 200,
+     "total_count": 101
+    },
+    {
+     "created_at": [
+      "2025-12-28T15:23:43Z"
+     ],
+     "link": "<https://api.github.com/repositories/81598961/actions/runs?per_page=1&created=%3C2025-12-29&page=2>; rel=\"next\", <https://api.github.com/repositories/81598961/actions/runs?per_page=1&created=%3C2025-12-29&page=7>; rel=\"last\"",
+     "path": "repos/python/cpython/actions/runs?per_page=1&created=%3C2025-12-29",
+     "status": 200,
+     "total_count": 7
+    }
+   ],
+   "last_page": 40000,
+   "method": "day bisection (listing capped at 1,000)",
+   "ok": true,
+   "oldest": "2025-12-28",
+   "repo": "python/cpython",
+   "spec_last_page_created_at": "2026-10-11T02:41:55Z",
+   "total_count": 40000
+  },
+  {
+   "calls": [
+    {
+     "created_at": [
+      "2026-11-24T18:49:46Z"
+     ],
+     "link": "<https://api.github.com/repositories/41881900/actions/runs?per_page=1&page=2>; rel=\"next\", <https://api.github.com/repositories/41881900/actions/runs?per_page=1&page=40000>; rel=\"last\"",
+     "path": "repos/microsoft/vscode/actions/runs?per_page=1",
+     "status": 200,
+     "total_count": 40000
+    },
+    {
+     "created_at": [
+      "2026-10-26T20:33:20Z"
+     ],
+     "link": "<https://api.github.com/repositories/41881900/actions/runs?per_page=1&page=39999>; rel=\"prev\", <https://api.github.com/repositories/41881900/actions/runs?per_page=1&page=1>; rel=\"first\"",
+     "path": "repos/microsoft/vscode/actions/runs?per_page=1&page=40000",
+     "status": 200,
+     "total_count": 40000
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/microsoft/vscode/actions/runs?per_page=1&created=%3C2015-01-01",
+     "status": 200,
+     "total_count": 0
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/microsoft/vscode/actions/runs?per_page=1&created=%3C2020-12-13",
+     "status": 200,
+     "total_count": 0
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/microsoft/vscode/actions/runs?per_page=1&created=%3C2023-12-04",
+     "status": 200,
+     "total_count": 0
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/microsoft/vscode/actions/runs?per_page=1&created=%3C2025-05-30",
+     "status": 200,
+     "total_count": 0
+    },
+    {
+     "created_at": [
+      "2026-02-25T23:46:20Z"
+     ],
+     "link": "<https://api.github.com/repositories/41881900/actions/runs?per_page=1&created=%3C2026-02-26&page=2>; rel=\"next\", <https://api.github.com/repositories/41881900/actions/runs?per_page=1&created=%3C2026-02-26&page=2500>; rel=\"last\"",
+     "path": "repos/microsoft/vscode/actions/runs?per_page=1&created=%3C2026-02-26",
+     "status": 200,
+     "total_count": 2500
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/microsoft/vscode/actions/runs?per_page=1&created=%3C2025-10-13",
+     "status": 200,
+     "total_count": 0
+    },
+    {
+     "created_at": [],
+     "link": "<https://api.github.com/repositories/41881900/actions/runs?per_page=1&created=%3C2025-12-20&page=2>; rel=\"next\", <https://api.github.com/repositories/41881900/actions/runs?per_page=1&created=%3C2025-12-20&page=16>; rel=\"last\"",
+     "path": "repos/microsoft/vscode/actions/runs?per_page=1&created=%3C2025-12-20",
+     "status": 200,
+     "total_count": 16
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/microsoft/vscode/actions/runs?per_page=1&created=%3C2025-11-16",
+     "status": 200,
+     "total_count": 0
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/microsoft/vscode/actions/runs?per_page=1&created=%3C2025-12-03",
+     "status": 200,
+     "total_count": 0
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/microsoft/vscode/actions/runs?per_page=1&created=%3C2025-12-11",
+     "status": 200,
+     "total_count": 0
+    },
+    {
+     "created_at": [
+      "2025-12-14T12:08:05Z"
+     ],
+     "link": "<https://api.github.com/repositories/41881900/actions/runs?per_page=1&created=%3C2025-12-15&page=2>; rel=\"next\", <https://api.github.com/repositories/41881900/actions/runs?per_page=1&created=%3C2025-12-15&page=10>; rel=\"last\"",
+     "path": "repos/microsoft/vscode/actions/runs?per_page=1&created=%3C2025-12-15",
+     "status": 200,
+     "total_count": 10
+    },
+    {
+     "created_at": [
+      "2025-12-12T16:50:28Z"
+     ],
+     "link": "<https://api.github.com/repositories/41881900/actions/runs?per_page=1&created=%3C2025-12-13&page=2>; rel=\"next\", <https://api.github.com/repositories/41881900/actions/runs?per_page=1&created=%3C2025-12-13&page=5>; rel=\"last\"",
+     "path": "repos/microsoft/vscode/actions/runs?per_page=1&created=%3C2025-12-13",
+     "status": 200,
+     "total_count": 5
+    },
+    {
+     "created_at": [],
+     "link": null,
+     "path": "repos/microsoft/vscode/actions/runs?per_page=1&created=%3C2025-12-12",
+     "status": 200,
+     "total_count": 0
+    }
+   ],
+   "last_page": 40000,
+   "method": "day bisection (listing capped at 1,000)",
+   "ok": true,
+   "oldest": "2025-12-12",
+   "repo": "microsoft/vscode",
+   "spec_last_page_created_at": "2026-10-26T20:33:20Z",
+   "total_count": 40000
+  }
+ ]
+}
