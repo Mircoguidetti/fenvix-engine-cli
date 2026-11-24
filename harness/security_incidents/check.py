@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Consistency check for the security-incidents desk research.
 
-protects=   the REPORT.md verdict (line 1) and the counts it states equal what incidents.csv and queries.md say.
+protects=   the REPORT.md verdict (line 1), its headline counts, the FLAGGED-by-scope, NOT_FLAGGED-by-reason and
+            counts=no-by-rule breakdowns and the query totals equal what incidents.csv and queries.md say.
 fails_when= a verdict or a count the CSV does not support, a required field left empty, a counts=no row without the
             failing rule number, a FLAGGED row without its channels.md line or its rule-3c statement, a flag_reason
             that does not start with a known reason, or a BLOCKED line when no more than half the queries failed.
@@ -47,8 +48,13 @@ def err(msg: str) -> None:
 
 def read_csv(name: str) -> list[dict]:
     with open(os.path.join(HERE, name), newline="", encoding="utf-8") as f:
-        rows = list(csv.DictReader(f))
-        header = list(rows[0].keys()) if rows else []
+        reader = csv.DictReader(f)
+        header = list(reader.fieldnames or [])
+        rows = []
+        for n, raw in enumerate(reader, 2):
+            if None in raw or any(v is None for v in raw.values()):
+                err(f"{name} line {n}: wrong number of columns")
+            rows.append({k: (v or "").strip() for k, v in raw.items() if k is not None})
     if name == "incidents.csv" and header != FIELDS:
         err(f"incidents.csv header differs from spec section 2: {header}")
     return rows
@@ -117,6 +123,8 @@ def summary(rows: list[dict]) -> dict:
         "not_flagged": sum(r["flagged"] == "NOT_FLAGGED" for r in counted),
         "counts_no": len(rows) - len(counted),
     }
+    if s["flagged"] + s["unclear"] + s["not_flagged"] != s["counted"]:
+        err("FLAGGED + UNCLEAR + NOT_FLAGGED differs from the counted total")
     for sc in SCOPES:
         s[f"scope_{sc}"] = sum(r["flagged"] == "FLAGGED" and r["scope"] == sc for r in counted)
     for re_ in REASONS[:3]:
@@ -136,6 +144,9 @@ def queries() -> tuple[int, int, bool]:
     for fam in ("F1", "F2", "F3", "F4", "F5"):
         if not any(re.search(rf"\|\s*{fam}\s*\|", l) for l in rows):
             err(f"queries.md: required family {fam} has no query")
+    m = re.search(r"^Totals: (\d+) queries, (\d+) ok, (\d+) failed", text, re.M)
+    if not m or (int(m.group(1)), int(m.group(2)), int(m.group(3))) != (len(rows), ok, failed):
+        err(f"queries.md: Totals line missing or differs from the rows ({len(rows)} queries, {ok} ok, {failed} failed)")
     stop = bool(re.search(r"^Stopped by:", text, re.M))
     if not stop:
         err("queries.md: no 'Stopped by:' line")
@@ -145,25 +156,46 @@ def queries() -> tuple[int, int, bool]:
 def main() -> int:
     rows = read_csv("incidents.csv")
     check_rows(rows)
-    read_csv("log_only.csv")
     s = summary(rows)
     ok, failed, _ = queries()
     expected = "CONTINUE" if s["counted"] >= 5 and s["flagged"] >= 3 else "DROP"
     report = open(os.path.join(HERE, "REPORT.md"), encoding="utf-8").read().splitlines()
-    first = report[0].strip() if report else ""
-    if first.startswith("BLOCKED: "):
-        if not failed * 2 > ok + failed:
-            err(f"REPORT.md says BLOCKED but only {failed} of {ok + failed} queries failed")
+    first = report[0] if report else ""
+    if failed * 2 > ok + failed:
+        if not first.startswith("BLOCKED: "):
+            err(f"{failed} of {ok + failed} queries failed: REPORT.md line 1 must be 'BLOCKED: <reason>'")
+    elif first.startswith("BLOCKED: "):
+        err(f"REPORT.md says BLOCKED but only {failed} of {ok + failed} queries failed")
     elif first != expected:
         err(f"REPORT.md line 1 is {first!r}, incidents.csv gives {expected!r}")
     body = "\n".join(report)
     for key, label in (("counted", "Counted incidents"), ("flagged", "FLAGGED"), ("unclear", "UNCLEAR"),
                        ("not_flagged", "NOT_FLAGGED"), ("counts_no", "counts=no")):
-        m = re.search(rf"^{re.escape(label)}: (\d+)", body, re.M)
+        found = re.findall(rf"^{re.escape(label)}: (\d+)", body, re.M)
+        if len(found) != 1:
+            err(f"REPORT.md must have exactly one line '{label}: N' (found {len(found)})")
+        elif int(found[0]) != s[key]:
+            err(f"REPORT.md {label}: {found[0]}, incidents.csv gives {s[key]}")
+    breakdown = {
+        "FLAGGED by scope": [(sc, s["scope_" + sc]) for sc in SCOPES],
+        "NOT_FLAGGED by reason": [(r, s["nf_" + r]) for r in REASONS[:3]],
+    }
+    for label, pairs in breakdown.items():
+        m = re.search(rf"^\* {re.escape(label)}: (.*)$", body, re.M)
         if not m:
-            err(f"REPORT.md lacks a line '{label}: N'")
-        elif int(m.group(1)) != s[key]:
-            err(f"REPORT.md {label}: {m.group(1)}, incidents.csv gives {s[key]}")
+            err(f"REPORT.md lacks the line '* {label}: ...'")
+            continue
+        for k, v in pairs:
+            g = re.search(rf"\b{k} (\d+)", m.group(1))
+            if not g or int(g.group(1)) != v:
+                err(f"REPORT.md {label}: {k} should be {v}")
+    for k in range(1, 8):
+        g = re.search(rf"^  \* rule {k} \([^)]*\): (\d+)", body, re.M)
+        if not g or int(g.group(1)) != s[f"no_rule_{k}"]:
+            err(f"REPORT.md counts=no by rule: rule {k} should be {s[f'no_rule_{k}']}")
+    m = re.search(r"(\d+) queries, (\d+) ok, (\d+) failed", body)
+    if not m or (int(m.group(2)), int(m.group(3))) != (ok, failed):
+        err(f"REPORT.md query totals missing or differ from queries.md ({ok} ok, {failed} failed)")
     log_only = len(read_csv("log_only.csv"))
     m = re.search(r"^Log-only: (\d+)", body, re.M)
     if not m or int(m.group(1)) != log_only:

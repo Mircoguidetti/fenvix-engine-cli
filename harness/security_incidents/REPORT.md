@@ -39,7 +39,7 @@ Log-only: 2
 
 ## Why nothing is FLAGGED: the pattern in plain words
 
-1. **A third of the counted incidents never touch a test process** (8 CI-step, 11 install-script, 4 `.pth` rows).
+1. **Two thirds of the counted incidents (23 of 34) never touch a test process** (8 CI-step, 11 install-script, 4 `.pth` rows).
    Install scripts, workflow steps and `.pth` start-up files run before or outside the test command, so the engine is not
    loaded (channels.md C-14, C-15, C-16, C-19). In 2026 the big campaigns (Shai-Hulud lineage, TeamPCP, Miasma,
    GhostAction, WFX Phantom) live here.
@@ -54,7 +54,7 @@ Log-only: 2
    `env_read_outside_tests` / `files_read_outside_tests` (channels.md C-01..C-05).
    * The only cases with that shape are not counted. chimera-sandbox-extensions (N14) was published for an internal
      audit. mrmustard (N15) explicitly does nothing when it detects CI. The fake Paysafe SDKs (N19) have no campaign
-     name and no confirmed victim.
+     name and no confirmed victim, and its anti-analysis checks may skip CI.
    * The one case that sends from inside a call is N08 (@injectivelabs/sdk-ts). There the stolen secret is a wallet
      key passed to a function, not a CI secret.
 
@@ -91,7 +91,7 @@ side effect the founder should know about.
 (that would be `run_level`) or in a child. **I33 durabletask** (May 2026) runs a downloaded `.pyz`; the sources do not
 say whether it runs in the same interpreter or a child.
 
-**Near-misses not counted:** N19 fake Paysafe SDKs (would be `run_level` if rule 7 were relaxed) and N08
+**Near-misses not counted:** N19 fake Paysafe SDKs (would be `run_level` only if rule 7 were relaxed **and** its anti-analysis checks were shown not to skip CI, rule 2) and N08
 @injectivelabs (would be `per_test` if a wallet key passed to a function counted under rule 3).
 
 Even counting all six, the line holds only if every doubt is resolved toward "flagged".
@@ -141,6 +141,8 @@ runners and the default network modes: `channels.md`.
 * **Payload behaviour:** read on the opened pages for node-ipc, ChainDrop, AsyncAPI and LiteLLM 1.107.0 (Datadog) and
   in the AsyncAPI GitHub issue. Everything else is from search-result summaries collected by the research agents, and
   is a claim until the coordinator re-checks it.
+* **`n_sources`** counts every independent source the research agents saw, including ones not listed in `sources`. "Single source" in an `exfil` cell refers only to that host claim.
+* **Engine limits that strengthen DROP:** Node does not record reads under `/proc`, `/dev`, `/sys` (`node/src/outside.js:30`), so runner-memory scraping inside a Node test would leave no file event either (channels.md C-04).
 * **Not verified at all:** exfiltration hosts marked "single source" in the CSV, and the CI-detection details of
   Shai-Hulud 2.0 and Miasma.
 * **What would change the verdict:** a source showing that SANDWORM_MODE, durabletask or the fake Paysafe SDKs read
