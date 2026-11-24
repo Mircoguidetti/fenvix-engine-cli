@@ -208,7 +208,10 @@ function toRealPidArgs(a) {
     if (Array.isArray(x)) out[i] = x.map((y) => (typeof y === 'string' || typeof y === 'number' ? toRealPid(y) : y));
     else if (x && typeof x === 'object' && opts < 0) {
       opts = i;
-      if (x.env && typeof x.env === 'object') out[i] = { ...x, env: mapEnv(x.env) };
+      if (x.env && typeof x.env === 'object') {
+        const env = mapEnv(x.env);
+        if (Object.keys(env).some((k) => env[k] !== x.env[k])) out[i] = { ...x, env };
+      }
     }
   }
   // no env option: the child inherits process.env, which may hold a virtual pid the test put there (review
