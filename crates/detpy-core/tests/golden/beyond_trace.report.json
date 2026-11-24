@@ -1,0 +1,60 @@
+{
+  "labels": [
+    "run0",
+    "run1"
+  ],
+  "order_digests": [
+    "83dc55ccddb68bf3cf487468c2681a52",
+    "83dc55ccddb68bf3cf487468c2681a52"
+  ],
+  "complete": [
+    false,
+    false
+  ],
+  "summary": {
+    "runs": 2,
+    "tests": 1,
+    "stable": 0,
+    "diverged": 1,
+    "missing": 0,
+    "outcome_unstable": 0,
+    "order_identical": true,
+    "reasons": {
+      "beyond-trace": 1
+    },
+    "inputs_recorded": false,
+    "identical": 0,
+    "input_differs": 0,
+    "not_proven": 0
+  },
+  "tests": [
+    {
+      "nodeid": "x",
+      "status": "diverged",
+      "fingerprints": [
+        "951e5032dcca9dd244cf520836898852",
+        "d2354c300620a5a7dcc5371930c310cb"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 2,
+      "outcome_stable": true,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 1,
+        "index": null,
+        "window": [
+          12,
+          16
+        ],
+        "event_a": null,
+        "event_b": null,
+        "reason": "beyond-trace",
+        "description": "stored events are identical; first difference in events [12, 16) (raise --det-max-events to capture it exactly)"
+      }
+    }
+  ],
+  "input_differences": []
+}

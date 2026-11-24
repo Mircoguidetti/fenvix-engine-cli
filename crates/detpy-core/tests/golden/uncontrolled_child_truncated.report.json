@@ -1,0 +1,57 @@
+{
+  "labels": [
+    "run0",
+    "run1"
+  ],
+  "order_digests": [
+    "83dc55ccddb68bf3cf487468c2681a52",
+    "83dc55ccddb68bf3cf487468c2681a52"
+  ],
+  "complete": [
+    false,
+    false
+  ],
+  "summary": {
+    "runs": 2,
+    "tests": 1,
+    "stable": 0,
+    "diverged": 0,
+    "missing": 0,
+    "outcome_unstable": 0,
+    "order_identical": true,
+    "reasons": {
+      "child": 1
+    },
+    "inputs_recorded": false,
+    "identical": 0,
+    "input_differs": 0,
+    "not_proven": 1
+  },
+  "tests": [
+    {
+      "nodeid": "x",
+      "status": "not-proven",
+      "fingerprints": [
+        "9eb477859dd46cd3dd343a65b381fcd5",
+        "9eb477859dd46cd3dd343a65b381fcd5"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 0,
+        "index": null,
+        "window": null,
+        "event_a": null,
+        "event_b": null,
+        "reason": "child",
+        "description": "the test started a child process: what the child does is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: child)"
+      }
+    }
+  ],
+  "input_differences": []
+}

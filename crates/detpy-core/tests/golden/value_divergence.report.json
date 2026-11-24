@@ -1,0 +1,69 @@
+{
+  "labels": [
+    "run0",
+    "run1"
+  ],
+  "order_digests": [
+    "83dc55ccddb68bf3cf487468c2681a52",
+    "83dc55ccddb68bf3cf487468c2681a52"
+  ],
+  "complete": [
+    false,
+    false
+  ],
+  "summary": {
+    "runs": 2,
+    "tests": 1,
+    "stable": 0,
+    "diverged": 1,
+    "missing": 0,
+    "outcome_unstable": 0,
+    "order_identical": true,
+    "reasons": {
+      "entropy": 1
+    },
+    "inputs_recorded": false,
+    "identical": 0,
+    "input_differs": 0,
+    "not_proven": 0
+  },
+  "tests": [
+    {
+      "nodeid": "x",
+      "status": "diverged",
+      "fingerprints": [
+        "42855dd46de66d68d08c12454921e293",
+        "d173903ef930a22430323edc5892835e"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 2,
+      "outcome_stable": true,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 1,
+        "index": 1,
+        "window": null,
+        "event_a": {
+          "t": 0,
+          "s": "entropy",
+          "o": "os.urandom",
+          "at": "t.py:9",
+          "v": "aa"
+        },
+        "event_b": {
+          "t": 0,
+          "s": "entropy",
+          "o": "os.urandom",
+          "at": "t.py:9",
+          "v": "bb"
+        },
+        "reason": "entropy",
+        "description": "event #1: os.urandom @ t.py:9 returned different values: \"aa\" vs \"bb\""
+      }
+    }
+  ],
+  "input_differences": []
+}

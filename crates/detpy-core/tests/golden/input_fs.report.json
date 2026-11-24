@@ -1,0 +1,78 @@
+{
+  "labels": [
+    "run0",
+    "run1"
+  ],
+  "order_digests": [
+    "83dc55ccddb68bf3cf487468c2681a52",
+    "83dc55ccddb68bf3cf487468c2681a52"
+  ],
+  "complete": [
+    false,
+    false
+  ],
+  "summary": {
+    "runs": 2,
+    "tests": 1,
+    "stable": 0,
+    "diverged": 1,
+    "missing": 0,
+    "outcome_unstable": 0,
+    "order_identical": true,
+    "reasons": {
+      "fs": 1
+    },
+    "inputs_recorded": true,
+    "identical": 0,
+    "input_differs": 0,
+    "not_proven": 0
+  },
+  "tests": [
+    {
+      "nodeid": "x",
+      "status": "diverged",
+      "fingerprints": [
+        "ad34a2a530790da587c4a41ac6eb6904",
+        "ad34a2a530790da587c4a41ac6eb6904"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 1,
+        "index": null,
+        "window": null,
+        "event_a": {
+          "t": 0,
+          "s": "other",
+          "o": "input.fs",
+          "at": "<run>",
+          "v": "sorted"
+        },
+        "event_b": {
+          "t": 0,
+          "s": "other",
+          "o": "input.fs",
+          "at": "<run>",
+          "v": "real"
+        },
+        "reason": "fs",
+        "description": "before the test started: run input fs differs: \"sorted\" vs \"real\""
+      }
+    }
+  ],
+  "input_differences": [
+    {
+      "name": "fs",
+      "run_a": 0,
+      "run_b": 1,
+      "value_a": "sorted",
+      "value_b": "real",
+      "reason": "fs"
+    }
+  ]
+}

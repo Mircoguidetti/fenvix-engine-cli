@@ -149,17 +149,17 @@ function readSide(dir, part) {
 
 const OUTCOME = { passed: 'passed', failed: 'failed', skipped: 'skipped', todo: 'skipped', error: 'error', interrupted: 'error', unknown: 'error' };
 
+/** nodeid -> {outcome, fingerprint} of the trace's tests. Streamed (P0 big trace); a trace that cannot be read
+ * throws: no outcome is ever taken from side states in place of an unreadable trace. */
 function traceTests(file) {
   const out = new Map();
-  let text = '';
-  try { text = fs.readFileSync(file, 'utf8'); } catch { return out; }
-  for (const line of text.split('\n')) {
-    if (!line.startsWith('{"type":"test"')) continue;
+  require('./trace-lines').forEachLine(file, (line) => {
+    if (!line.startsWith('{"type":"test"')) return;
     try {
       const r = JSON.parse(line);
       if (!out.has(wf(r.nodeid))) out.set(wf(r.nodeid), { outcome: r.outcome, fingerprint: r.fingerprint });
     } catch { /* truncated line */ }
-  }
+  });
   return out;
 }
 
@@ -209,7 +209,15 @@ function shellQuote(s) {
  * lines to print (the `fenvix repro` command of every failing test).
  */
 function afterMerge(run, opts, files, runner) {
-  const tests = traceTests(run.tracePath);
+  let tests;
+  try {
+    tests = traceTests(run.tracePath);
+  } catch (e) {
+    // P0 big trace: before, an unreadable trace gave an empty map and the outcomes came from the side states (a
+    // runner reading them saw a result the trace does not back). Now no outcomes file is written, and why is said;
+    // runner/fenvix-run then fails closed (no outcomes: exit 1).
+    return [`detjs: --det-outcomes not written: the trace ${run.tracePath} could not be read: ${e && e.message}`];
+  }
   const p = opts.order ? makePlan(readOrder(path.resolve(opts.order))) : null;
   const order = [];
   const seen = new Set();

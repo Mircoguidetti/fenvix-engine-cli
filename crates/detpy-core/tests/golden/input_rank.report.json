@@ -1,0 +1,97 @@
+{
+  "labels": [
+    "run0",
+    "run1"
+  ],
+  "order_digests": [
+    "83dc55ccddb68bf3cf487468c2681a52",
+    "83dc55ccddb68bf3cf487468c2681a52"
+  ],
+  "complete": [
+    false,
+    false
+  ],
+  "summary": {
+    "runs": 2,
+    "tests": 1,
+    "stable": 0,
+    "diverged": 1,
+    "missing": 0,
+    "outcome_unstable": 0,
+    "order_identical": true,
+    "reasons": {
+      "seed": 1
+    },
+    "inputs_recorded": true,
+    "identical": 0,
+    "input_differs": 0,
+    "not_proven": 0
+  },
+  "tests": [
+    {
+      "nodeid": "x",
+      "status": "diverged",
+      "fingerprints": [
+        "31af55e422bc4accd412eab03c7f8ad0",
+        "31af55e422bc4accd412eab03c7f8ad0"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 1,
+        "index": null,
+        "window": null,
+        "event_a": {
+          "t": 0,
+          "s": "other",
+          "o": "input.seed",
+          "at": "<run>",
+          "v": "0"
+        },
+        "event_b": {
+          "t": 0,
+          "s": "other",
+          "o": "input.seed",
+          "at": "<run>",
+          "v": "1"
+        },
+        "reason": "seed",
+        "description": "before the test started: run input seed differs: \"0\" vs \"1\"; also differ: tz, env:A"
+      }
+    }
+  ],
+  "input_differences": [
+    {
+      "name": "seed",
+      "run_a": 0,
+      "run_b": 1,
+      "value_a": "0",
+      "value_b": "1",
+      "reason": "seed"
+    },
+    {
+      "name": "tz",
+      "run_a": 0,
+      "run_b": 1,
+      "value_a": "UTC",
+      "value_b": "Asia/Tokyo",
+      "reason": "tz"
+    },
+    {
+      "name": "env:A",
+      "run_a": 0,
+      "run_b": 1,
+      "value_a": "1",
+      "value_b": "2",
+      "reason": "env"
+    }
+  ],
+  "env_not_read": [
+    "env:A"
+  ]
+}

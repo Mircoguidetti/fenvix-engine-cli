@@ -1393,6 +1393,18 @@ pub fn judge_record(
     controls: &[String],
     outside: &[String],
 ) -> Verdict {
+    judge_slim(&crate::record_source::SlimRecord::of(record, 0, 0), header, controls, outside)
+}
+
+/// [`judge_record`] over the values the verifier keeps of a record ([`SlimRecord`](crate::record_source::SlimRecord)):
+/// the record's own fields and `events_len` / `events_fingerprint` (the length and `fingerprint_of` of its stored
+/// events). The rule lives here; `judge_record` builds these values and calls it.
+pub fn judge_slim(
+    record: &crate::record_source::SlimRecord,
+    header: Option<&serde_json::Value>,
+    controls: &[String],
+    outside: &[String],
+) -> Verdict {
     // The two evidence clauses. They come before the attestation, because a verdict can only rest on evidence
     // the record actually holds, and both of these are a record that holds none. R-058 #1 and #2.
     //
@@ -1415,16 +1427,16 @@ pub fn judge_record(
     // read, and a record whose fingerprint does not belong to its events was reported as "observed the same
     // events". Only a complete record can be checked this way: a truncated one does not hold every event it
     // chained. `fingerprint_of` carried the doc comment "used by the verifier to validate traces" and had no
-    // caller; this is that caller.
+    // caller; this is that caller (through `SlimRecord::events_fingerprint`).
     if !record.truncated {
-        let recomputed = crate::fingerprint::fingerprint_of(&record.events);
-        if recomputed != record.fingerprint {
+        let recomputed = &record.events_fingerprint;
+        if *recomputed != record.fingerprint {
             return not_proven(
                 "trace",
                 format!(
                     "the record's fingerprint does not match its own events ({} event(s) recomputing to \
                      {recomputed}, stored as {}): this trace does not describe its own run",
-                    record.events.len(),
+                    record.events_len,
                     record.fingerprint
                 ),
             );

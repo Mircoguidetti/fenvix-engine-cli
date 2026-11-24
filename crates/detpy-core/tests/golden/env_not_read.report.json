@@ -1,0 +1,58 @@
+{
+  "labels": [
+    "run0",
+    "run1"
+  ],
+  "order_digests": [
+    "ca90024bbd3aafc00c63fb0b4f43e9e1",
+    "ca90024bbd3aafc00c63fb0b4f43e9e1"
+  ],
+  "complete": [
+    false,
+    false
+  ],
+  "summary": {
+    "runs": 2,
+    "tests": 1,
+    "stable": 1,
+    "diverged": 0,
+    "missing": 0,
+    "outcome_unstable": 0,
+    "order_identical": true,
+    "reasons": {},
+    "inputs_recorded": true,
+    "identical": 1,
+    "input_differs": 0,
+    "not_proven": 0
+  },
+  "tests": [
+    {
+      "nodeid": "plain",
+      "status": "stable",
+      "fingerprints": [
+        "ad34a2a530790da587c4a41ac6eb6904",
+        "ad34a2a530790da587c4a41ac6eb6904"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": null
+    }
+  ],
+  "input_differences": [
+    {
+      "name": "env:MY_FLAG",
+      "run_a": 0,
+      "run_b": 1,
+      "value_a": "aaaa",
+      "value_b": "bbbb",
+      "reason": "env"
+    }
+  ],
+  "env_not_read": [
+    "env:MY_FLAG"
+  ]
+}
