@@ -9,13 +9,13 @@ merge ordered by the coordinator, not by this session):
 |---|---|---|
 | F nested file operations | **DONE** | claudekit F 225 → 1, identical 555 → 790 with E; `--det` serial 21.7 / 21.1 s → 8.7 s, parallel 21.0 / 21.6 s → 9.1 s; sqlectron F 8 → 0 |
 | A1 KEPT/proxy variables read outside tests | **DONE** | agentsys A 1,540 → 0, identical 0 → 1,542 (with D) |
-| C virtual pid | **NOT DONE (reverted)** | +35 identical on nestjs-pino, but **+207 failing tests** on ironcurtain under `--det` (section C) |
+| C virtual pid | **DONE** (second attempt, mapped at every OS boundary, 1541685) | nestjs-pino C 35 → 0, identical 223 → 257 (258); C 550 / 548 → 3 / 40 on codex-multi-auth / ironcurtain; gate: ironcurtain 226 / 407 failed as before, codex-multi-auth's gate-run excess did not reproduce in 3 + 3 repeat runs (section C) |
 | E stat/readdir order | **DONE** (with a follow-up commit) | claudekit E 22 → 0 |
 | B scope of files read outside tests | **PARTLY DONE**: B1 done, B2 not implemented | ironcurtain run-level B 7,033 → 0 (B-abs 7,033 → 165 scoped); codex-multi-auth run-level B removed in one of two final rounds |
 | D entropy controlled by default (option 3) | **DONE** | agentsys D 99 → 0, sqlectron D 5 → 0 |
 
 **Tests that became identical: 778 → 2,555 (+1,777) in round 1, 2,550 in round 2 on the final engine 0903cf2**
-(6 repositories, S1 vs P1w4, 4 workers; 2,555 / 2,551 on d9c5854, before the D follow-up). First line `NOT DONE` because C is not done and B2 is not implemented; the rest is ready for the
+(6 repositories, S1 vs P1w4, 4 workers; 2,555 / 2,551 on d9c5854, before the D follow-up). With C (1541685): **2,589 in round 1, 2,603 in round 2** (section C). First line `NOT DONE` because B2 is not implemented; the rest is ready for the
 coordinator's `/review` and merge order.
 
 ## 1. How it was measured
@@ -147,28 +147,86 @@ depends on whether that `stat` happens while a test file is open (timing), not o
   `test/helpers/global-sandbox.ts` sets `HOME` to a fresh `mkdtempSync` directory outside any test (real random names
   outside tests), so the enumerated environment really differs; and its `api:process.reallyExit` (A3, not approved).
 
-### C: virtual pid — NOT DONE (reverted in 8f125d7, 94850de, d9c5854)
-* Implemented as designed (4167c87 test, 4939fc1 fix, 3ddaa2d test fix): test code read
-  `4194305 + digest(seed, file)`; `process.kill` mapped back; `process.ppid` kept real
-  (test/exit-regression.test.js AC1(c) reads the process tree from inside a test: a virtual ppid failed it).
-* MEASURED gain: nestjs-pino C 35 → 0, identical 223 → 258 (+C round).
-* MEASURED damage: ironcurtain `--det` serial **226 → 433 failed tests**, parallel 407 → 423 (+C round; the plain
-  run unchanged at 20). The 207 new failures are in its docker suites: `src/docker/docker-resource-lifecycle.ts:76`
-  passes `process.pid` to `ps -o lstart= -p <pid>`; the virtual pid does not exist for `ps`, the identity is
-  undefined and the code throws. The pid also goes into lock files, a watchdog supervisor's metadata and child
-  processes (`src/docker/provision-lock.ts:113`, `src/docker-workload/resource-watchdog-supervisor.ts:156`): a
-  virtual pid escapes to the operating system wherever a program hands it to another process. An engine control that
-  makes passing tests fail is worse than the false alarm, so C is reverted; after the revert ironcurtain is back to
-  226 / 407 failed (final rounds).
-* Options for the coordinator / founder:
-  1. **Record the real pid symbolically** (the counterfactual: the test sees the real pid, the event records a
-     constant). Removes the 35 (MEASURED in phase 1) and breaks nothing, but a pid that differs between the runs and
-     that a test used without another visible effect would be called identical: a relaxation of rule 3, so a product
-     decision.
-  2. **Map the virtual pid at every boundary** (child_process arguments and command strings, `/proc/<pid>` paths,
-     `os.getPriority`, the run's `vpid` table for other processes, children running detjs). ESTIMATED 1-2 days, and a
-     program that sends the pid over a socket or to native code still sees a pid no process has.
-  3. Leave C as it is (nestjs-pino stays at 223/269).
+### C: virtual pid, mapped at every OS boundary — DONE (second attempt, the founder's D1 = A of 2026-11-24)
+* First attempt (4167c87, 4939fc1, 3ddaa2d): test code read `4194305 + digest(seed, file)`; only `process.kill` was mapped.
+  MEASURED: nestjs-pino 223 → 258 identical, but ironcurtain `--det` serial 226 → 433 failed: its docker suites pass
+  `process.pid` to `ps -o lstart= -p <pid>` (src/docker/docker-resource-lifecycle.ts:76) and the virtual pid did not
+  exist for `ps`. Reverted (8f125d7, 94850de, d9c5854).
+* Second attempt, ordered by the coordinator (founder decision D1 = A, /plan-eng-review record 477ae28 on new-brain):
+  * Commits:
+    * 125e757, 615088e, a8222fc: the first attempt re-applied.
+    * 7cfadf6: the boundary tests. Red on ea110c8 (26 of 26).
+    * 844ea5c: the mapping.
+    * 1541685: the order fix (below), plus one more test case.
+  * One function maps a virtual pid back to the real one: `toRealPid`, `node/src/facts.js`. Every boundary uses it:
+    * `process.kill`.
+    * child_process argument lists, command strings and the child's environment (spawn, exec, execFile, fork and the
+      sync forms; `node/src/children.js`).
+    * `/proc/<pid>` paths: fs read, stat, access, readdir, readlink, open, realpath and createReadStream, in their
+      sync, callback and promise forms.
+    * `os.getPriority` and `os.setPriority`.
+    * The run's `<run dir>/vpid/` table, for other processes of the run (workers running detjs).
+    `process.ppid` stays real. docs/NODE.md row 7f.
+  * Not mapped (no_claim of the test):
+    * native code given the pid;
+    * the number sent over a socket, or written to a file that a process not running detjs reads (a child the test
+      started: `src/runners/preload.js` leaves those alone).
+* Regression tests:
+  * `node/test/p1-c-pid-boundaries.test.js`, 28/28 on 1541685, in vitest and jest. One case per boundary, among them
+    the ironcurtain `ps -o lstart= -p <pid>` call.
+  * Another worker of the run reaches the pid through the table.
+  * Acceptance 2: a test that fails when the pid is odd, run under two seeds that give pids of different parity, is
+    reported diverged or NOT PROVEN (it passed).
+  * Stat identity: fstatSync, lstatSync and statSync through named bindings agree. This case was added after the
+    first gate run (see below).
+  * `node/test/p1-c-virtual-pid.test.js` 6/6.
+  * P0 exit tests unmodified, with the above: 69/69.
+* First gate run, 844ea5c (`harness/p1/data/c-gate-844ea5c/`): **failed**.
+  * ironcurtain `--det` serial went from 226 / 226 to 411 / 410 failed.
+  * Cause: the `/proc` fs wrappers were installed over src/fstime.js. That control keeps its Stats mapping as the
+    outermost wrapper and re-wraps at each test start. A named ESM import of `lstatSync` (as in ironcurtain's
+    src/docker/ca.ts) kept the retired mapping while `fstatSync` was mapped, so a directory's virtual inode differed
+    between the two and the code threw "parent directory changed while it was being inspected".
+  * MEASURED: test/ca.test.ts had 32 failed (2 on 0903cf2); 2 failed with the wrappers off.
+  * Fixed in 1541685: the wrappers are installed below the fs controls.
+* Gate run, 1541685: same loop and judge as 0903cf2, 2026-11-24 (`harness/p1/data/c-gate-1541685/`,
+  `harness/p1/c-gate-1541685*.json`).
+  * Failed tests, plain / `--det` serial / `--det` parallel, round 1 and round 2:
+    * ironcurtain: 20 / **226** / **407**, and 20 / **226** / **407**. 0903cf2 had 20 / 226 / 408 and 20 / 226 / 407.
+    * agentsys, nestjs-pino, claudekit and sqlectron: unchanged in every run.
+    * codex-multi-auth: plain 6 / 6. `--det` serial 460 / 437 (0903cf2: 411 / 429). `--det` parallel 439 / 349
+      (0903cf2: 389 / 330).
+  * Codex-multi-auth's excess comes from 24 tests: each failed in one of the four C runs and in none of the eight
+    runs without C (d9c5854, 0903cf2). 22 of them are in test/runtime-rotation-proxy.test.ts. The project does use the
+    pid (`lib/rotation.ts:624`, `process.pid % 100` sets the credential offset), but a virtual pid is the same in
+    every run, so a pid-caused failure would repeat.
+  * Checked: 3 more full `--det` serial runs per engine, alternating, on the same machine
+    (`harness/p1/data/c-codex-repeats/`).
+    * Failed: 0903cf2 439 / 434 / 439; 1541685 429 / 431 / 435.
+    * None of the 24 failed in any of the six runs.
+    * No test failed only with C; 5 failed only without it.
+  * Read as: codex-multi-auth's `--det` failure count varies by run (400-438 on the same engine before C), and the gate
+    run's excess did not reproduce. MEASURED, not proven: a pid-dependent failure that occurs once in more than seven
+    runs cannot be excluded.
+  * P0 exit tests unmodified (no diff against e7338950), and passing.
+* Identical tests on 1541685 against 0903cf2, round 1 (round 2):
+  * nestjs-pino: 223 → **257** (258); C 35 → 0.
+  * claudekit: 790 → 790 (789 → 792); C 2 → 0.
+  * agentsys: 1,542 → 1,542 (1,538 → 1,553); C 1 → 0.
+  * codex-multi-auth: 0 (0); C 550 → 3 (0 → 0); run-level B in round 2 this time.
+  * ironcurtain: 0 (0); C 548 → 40 (59).
+  * sqlectron: 0 (0).
+  * **Total: 2,555 → 2,589 (2,550 → 2,603).**
+  * ironcurtain's remaining C divergences are event-order differences (a `process.pid` read at
+    src/docker-workload/process-lock.ts:110 on one side, an `fs.stat` on the other), not differing pid values.
+* Wall time, round 2 (round 1 ran while the machine was loaded):
+  * claudekit `--det` serial 9.07 → 8.48 s, parallel 9.16 → 9.43 s.
+  * nestjs-pino serial 20.79 → 18.05 s, parallel 8.54 → 7.66 s.
+  * ironcurtain serial 227.77 → 204.94 s, parallel 81.66 → 66.79 s.
+  * codex-multi-auth serial 438.34 → 421.47 s, parallel 142.41 → 144.29 s.
+  * Plain runs, which the engine does not touch, moved by similar amounts. No speed-up is claimed.
+* Rule 3 unchanged: the test sees the virtual pid and the event records it. A pid that differs between runs and
+  changes the outcome is reported diverged or NOT PROVEN (acceptance 2, tested).
 
 ### E: stat/readdir events in start order — DONE
 * Commits: 875e82d (test, red), ec81d74 (fix: `controls.js` installs `fsorder` and `outside` after `ioorder`;
