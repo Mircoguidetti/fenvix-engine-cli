@@ -26,6 +26,13 @@ All notable changes of the fenvix engine. One version for every component (`rele
   - timers: unchanged (virtual; the runner timeouts stay virtual, G-0144). `--det-timers=real` as before.
   - `selfcert.generate(commonName, { notBefore, notAfter })` takes an optional validity.
 
+### Known defects
+- Node `--det`: a test that waits on real work (a `vi.waitFor` poll on the runner's real timers, a detached
+  grandchild writing a file) can still be timed out by the virtual clock. The regression test
+  `node/test/host-values-timers.test.js` ("(b) a test waiting on real work is not timed out by the virtual clock")
+  fails on purpose until it is fixed; codex-multi-auth keeps 69 such flips under `--det` (bound 60). Tracked as the
+  separate work item "remaining --det timer flips" (harness/det_host_values/REPORT.md section 7).
+
 ## [0.1.0]
 
 First versioned engine artifact.
