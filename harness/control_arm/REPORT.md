@@ -56,7 +56,7 @@ Plain runner commands only; the engine (detjs, fenvix) was never run. Data: `res
 - Flags copied from `harness/parallel_measure/repro.py` `main()` (cited in `control_arm.py`): vitest S
   `--no-file-parallelism`, SS + `--sequence.shuffle --sequence.seed=S`, P `--maxWorkers=4 --fileParallelism
   --sequence.shuffle --sequence.seed=S`; jest S `--runInBand`, SS `--runInBand --randomize --seed=S`, P
-  `--maxWorkers=4 --randomize --seed=S`. The full command of every run is the `cmd` field of its row in `results.jsonl`.
+  `--maxWorkers=4 --randomize --seed=S`. The command of every run is the `cmd` field of its row in `results.jsonl` (without the spec's `env`, see below).
 - Parallel check: a P run is valid only if at least two of its test files overlap in time (per-file start/end from the
   JSON report); otherwise INVALID ("serial in disguise") and not used as evidence.
 - Short run: fewer tests than the serial runs (count). A test whose id is absent from a run (a test name that changes
@@ -148,6 +148,30 @@ Plain runner commands only; the engine (detjs, fenvix) was never run. Data: `res
   groups: 70 (228 ids); 224 IDENTICAL ids are in 68 of them, the other 2 groups (4 ids, drydock) are DIVERGES; in no run does a duplicate group have mixed outcomes, so no verdict depends on
   the swap.
 
+## Isolation limits (review pass 3)
+
+- Only the work tree, `node_modules/.vite*`/`.vitest*` and TMPDIR are reset per run (as above); HOME and hard-coded
+  `/tmp` paths are not. Seen: `~/.gtm-os` (yalc, created in S1), `~/.ironcurtain` (created in ironcurtain S1, 15:00:25),
+  and ironcurtain fixtures using a fixed `/tmp/ironcurtain-sandbox`. State left by S1 is seen alike by every later run,
+  so it shows only as S1 differing from S2 (UNDECIDED serial-disagree: 2 tests in all, the yalc one traced above); a
+  test whose parallel failure such state hides cannot be ruled out. A rerun with a fresh HOME per run would remove it;
+  not done.
+- ironcurtain: 54 of its 60 files that did not load (33 `.../@provos/memory-mcp-server/dist/index.js`, 21
+  `.../prompts`) fail because `packages/memory-mcp-server` (a workspace package) is not built: `specs.json` has no
+  `build` for ironcurtain and the tree reset removes `dist/`. This is the shared spec's setup (not changed here: out of
+  this lane's scope), not the machine.
+- The `cmd` field records the runner command with the variables the harness adds, not the spec's `env`: drydock runs
+  with `PATH=/opt/node24/bin:$PATH` and agentlang with `NODE_ENV=test` (`specs.json`), which a replay must add.
+- yalc's 2 `parallel` tests (the only labels the same-seed SS check keeps): skill-migration fails in P3, P4, P5 with
+  messages naming temporary yaml files in `configs/frameworks` that other test files write and delete
+  (`schema-test-*`, `gates-api-*`, `runner-test-*`; P3: `schema-test-1795451097083-570124.yaml: skill 'schema-emit' not
+  found`); framework-loader fails in P5 finding one framework more than expected (5 against 4), consistent with such a
+  file being present. That points to a race between files sharing
+  that directory; the pair search did not confirm it (2 concurrent runs per candidate set, overlap judged from test
+  times, which leave out imports and hooks), so the "bugs (confirmed pairs)" column stays 0 and this is an observation.
+- "Reproduced" compares the outcome (passed/failed) only; trial failure messages are not compared with the diverging
+  run's.
+
 ## Verdict rule notes
 
 - ENV is checked first, on failure messages pooled over all 9 runs (as the spec orders). A test that passes serially
@@ -165,7 +189,11 @@ Plain runner commands only; the engine (detjs, fenvix) was never run. Data: `res
 - yalc: parallel runs overlapped (228-260 file pairs) despite the repository's single-fork setting.
 - UNDECIDED serial-disagree: codex-multi-auth `test/codex-bin-wrapper.test.ts::codex bin wrapper::stress: metadata stays
   bounded across many launch/exit cycles` (S1 failed, S2 passed); yalc `src/__tests__/capability-adapters.test.ts::
-  icp-company-search adapters::crustdata adapter calls autocomplete_filter ...` (S1 passed, S2 failed).
+  icp-company-search adapters::crustdata adapter calls autocomplete_filter ...` (S1 passed, S2 failed). The yalc one
+  is caused by the harness, not the test: HOME is not reset between runs, a yalc test wrote
+  `~/.gtm-os/_cache/crustdata/199bcf....json` at 16:18:43 during S1 (file mtime), and every later run (S2 to P5, SS3 to
+  SS5) failed the test with the cache-hit message `expected [ 'autocomplete' ] to deeply equal [ 'autocomplete',
+  'search' ]`.
 - ENV (codex-multi-auth, 6): messages matched `classify.ENV_PATTERNS` (no IPv6 loopback; a file the test copies is
   missing). No measured failure matched the local ECONNREFUSED pattern.
 
