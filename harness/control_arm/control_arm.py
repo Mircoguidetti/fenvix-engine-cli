@@ -609,11 +609,14 @@ class PairSearch:
                 "confirmed": with_p >= 2 and alone == 0}
 
     def alone(self, victim, control_seeds):
-        """the victim's file alone reproduced once: confirm it (>= 2 of CONFIRM_RUNS with the diverging seed), then
+        """the victim's file alone reproduced: confirm it (CONFIRM_RUNS - 1 more runs with the diverging seed; every
+        control-alone run counts, a miss before the first hit included; at least 2 hits and 2 of 3 of all runs), then
         two negative controls: without shuffle (twice) and with each control seed (once); none may reproduce."""
-        hits = 1 + sum(bool(self._try("serial", [], victim, "alone-confirm")) for _ in range(CONFIRM_RUNS - 1))
-        info = {"alone_hits": hits, "alone_runs": CONFIRM_RUNS, "unseeded": [], "control_seeds": []}
-        if hits < 2:
+        first = [bool(x["triggered"]) for x in self.log if x["step"] == "control-alone"]
+        conf = [bool(self._try("serial", [], victim, "alone-confirm")) for _ in range(CONFIRM_RUNS - 1)]
+        hits, n = sum(first) + sum(conf), len(first) + len(conf)
+        info = {"alone_hits": hits, "alone_runs": n, "unseeded": [], "control_seeds": []}
+        if hits < 2 or 3 * hits < 2 * n:
             return R_ALONE_ONCE, info
         for _ in range(2):
             info["unseeded"].append(self._try("serial", [], victim, "control-unseeded", None))
@@ -669,9 +672,11 @@ class PairSearch:
 
 
 def control_seeds_for(runs, vid, verdict):
-    """distinct seeds of runs where the victim kept its serial outcome, the diverging runs' seeds excluded, up to 2"""
+    """distinct seeds of runs where the victim kept its serial outcome, up to 2. A seed under which the victim differed
+    from serial in any run (a diverging P run, an SS run, an invalid or crashed P run that reported it) is excluded."""
     seed_of = {rn: sd for rn, _, sd in run_names()}
     bad = {seed_of[rn] for rn in verdict["diverging_runs"]}
+    bad |= {seed_of.get(r["name"]) for r in runs if vid in (r["outcomes"] or {}) and r["outcomes"][vid] != verdict["serial"]}
     out = []
     for r in runs:
         sd = seed_of.get(r["name"])
@@ -680,6 +685,18 @@ def control_seeds_for(runs, vid, verdict):
         if r["status"] == "ok" and (r["outcomes"] or {}).get(vid) == verdict["serial"]:
             out.append(sd)
     return out[:2]
+
+
+def trial_evidence(got, serial_outcome, vtimes, victim, asked):
+    """(hit, extra files, extra files started before the victim's file ended) of one trial. vitest file arguments are
+    substring filters: a file not requested that started before the victim's file ended in the victim's process makes
+    the trial no evidence (hit None); later ones are recorded only. Without the victim's outcome, or without its file's
+    start/end (the rule cannot be checked), hit is None too."""
+    vt = vtimes.get(victim)
+    extra = sorted(f for f in vtimes if f not in set(asked))
+    extra_before = [f for f in extra if vt and vtimes[f][0] < vt[1]]
+    hit = None if got is None or vt is None or extra_before else got != serial_outcome
+    return hit, extra, extra_before
 
 
 def victim_file(test_id):
@@ -759,12 +776,7 @@ class RealTrial:
         got = (oc or {}).get(self.victim_id)
         vt = vtimes.get(victim)
         overlapped = sorted(f for f, (a, b) in ptimes.items() if vt and a < vt[1] and b > vt[0]) if mode == "concurrent" else None
-        # vitest file arguments are substring filters: a file not requested that ran before the victim ended in the
-        # victim's process makes the trial no evidence (None); later ones are recorded only
-        asked = set(groups[0])
-        extra = sorted(f for f in vtimes if f not in asked)
-        extra_before = [f for f in extra if vt and vtimes[f][0] < vt[1]]
-        hit = None if got is None or extra_before else got != self.serial_outcome
+        hit, extra, extra_before = trial_evidence(got, self.serial_outcome, vtimes, victim, groups[0])
         rec = {"cmds": [m[2] for m in meta], "exits": [x[0]["exit"] for x in res],
                "wall_s": max(x[0]["wall_s"] for x in res), "timed_out": any(x[0]["timed_out"] for x in res),
                "victim_outcome": got, "seed": seed, "extra_files": extra, "extra_before_victim": extra_before, "file_times": {**vtimes, **ptimes},

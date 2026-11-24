@@ -52,7 +52,7 @@ Plain runner commands only; the engine (detjs, fenvix) was never run. Data: `res
   (work tree `/tmp/pm`). Machine: every run row carries `nproc` and `cpu_model`.
 - Before every run: `measure.reset_tree` + build, `node_modules/.vite*` and `.vitest*` removed, reporter placed, a fresh
   TMPDIR (`/tmp/pm-<repo>`, emptied) (D18); jest also `--cacheDirectory=$TMPDIR/jest`. Timeout per run: 3x the serial
-  median (S1, S2 use 7200 s) (R7). stderr goes to the run log, never silenced.
+  median, at least 60 s (agentsys, alakajam, nestjs-pino: 60 s) (S1, S2 use 7200 s) (R7). stderr goes to the run log, never silenced.
 - Flags copied from `harness/parallel_measure/repro.py` `main()` (cited in `control_arm.py`): vitest S
   `--no-file-parallelism`, SS + `--sequence.shuffle --sequence.seed=S`, P `--maxWorkers=4 --fileParallelism
   --sequence.shuffle --sequence.seed=S`; jest S `--runInBand`, SS `--runInBand --randomize --seed=S`, P
@@ -72,7 +72,7 @@ Plain runner commands only; the engine (detjs, fenvix) was never run. Data: `res
 - ironcurtain P3 (DIVERGES/parallel): `npx --no-install vitest run --maxWorkers=4 --fileParallelism --sequence.shuffle
   --sequence.seed=3 ...` - `test/docker-agent-adapter.test.ts@@main::Agent Registry::lists registered agents` failed
   with `AssertionError: expected 0 to be greater than or equal to 1` (test/docker-agent-adapter.test.ts:685); passed in
-  every other run.
+  every other run of the spec; it also failed in the supplementary SS3 (same seed, serial), see below.
 - agentsys P1: `npx --no-install jest --maxWorkers=4 --randomize --seed=1 --json ... --cacheDirectory=/tmp/pm-agentsys/jest`
   - 2224 tests, 140-143 overlapping file pairs per parallel run, every test the same outcome as serial.
 
@@ -84,8 +84,8 @@ Plain runner commands only; the engine (detjs, fenvix) was never run. Data: `res
   in the diverging run's order: its seed is replayed (vitest `sequence.shuffle: {files: false, tests: true}` + seed;
   jest `--randomize --seed`).
 - Order of a search (each trial is one plain run of the 30-run budget; 3 h per repository): (1) control: the victim's
-  file alone with the diverging run's seed, twice. If the victim's outcome differs from serial, confirm: it must differ
-  in at least 2 of 3 runs; then two negative controls must keep the serial outcome: the file alone without a seed
+  file alone with the diverging run's seed, twice. If the victim's outcome differs from serial, confirm with 2 more runs: it
+  must differ in at least 2 runs and in at least 2 of 3 of all its alone runs (a miss before the first hit counts); then two negative controls must keep the serial outcome: the file alone without a seed
   (2 runs) and the file alone with up to 2 distinct control seeds (seeds of runs where the victim kept its serial
   outcome). All pass -> "no minimal pair (victim file alone reproduces)": the cause is inside its own file. (2) per
   mode, serial (candidates: files started before the victim's file ended in the diverging run, in start order) then
@@ -95,7 +95,7 @@ Plain runner commands only; the engine (detjs, fenvix) was never run. Data: `res
   and victim alone keeps its serial outcome 3 of 3. A trial in which a file outside the trial's set ran before the
   victim's file ended (vitest CLI file arguments are substring filters) yields no evidence and ends the search as
   "trial failed" (none occurred).
-- Result (third search, 199 runs, 932.3 s in all): 29 of 31 victims reproduce with their own file alone under the
+- Result (third search, 199 runs, 932.4 s in all): 29 of 31 victims reproduce with their own file alone under the
   diverging run's seed in 3 of 3 runs. Negative controls: unseeded 58 runs, 0 reproduced; control seeds 42 runs over
   22 victims, 0 reproduced. The other 7 victims (codex-multi-auth 5, drydock 1, agentlang 1) differed in all 5
   parallel runs, so no control seed was available; their unseeded controls were clean. These are dependences on test
@@ -111,6 +111,10 @@ Plain runner commands only; the engine (detjs, fenvix) was never run. Data: `res
   are the third search's.
 - A trial with no victim outcome (timeout, crash, no report) ends a search as "no minimal pair (trial failed)" (none
   occurred).
+- Three rules were tightened after the third search (review pass 3): a miss before the first alone hit now counts; a
+  seed under which the victim differed in any run (SS included) is no control seed; a trial without the victim file's
+  start/end is no evidence. Checked on the recorded trials: every first alone run hit, no control seed used diverged
+  in any run, every trial has the victim file's start/end; so the recorded results are those the tightened code gives.
 
 ## The `parallel` label checked against shuffled serial runs with the same seed
 
@@ -123,8 +127,9 @@ Plain runner commands only; the engine (detjs, fenvix) was never run. Data: `res
   ironcurtain 1, agentlang 1) also differ from serial in the serial run with the same seed: their divergence is test
   order under that seed, not parallelism. The 2 yalc tests keep their serial outcome in SS3, SS4 and SS5: the label
   holds for them. The verdicts keep the spec's labels; the column is the correction.
-- So a divergence seen in one parallel run only (column "of which in 1 parallel run only", drydock 29 of 66) is, for the
-  28 above, a deterministic order under that run's seed, not a rare flaky failure.
+- Each of the 28 rests on one same-seed SS run (5 of them were also pair-search victims reproduced 3 of 3 with their
+  file alone). Of drydock's 29 DIVERGES tests seen in one parallel run only, 21 are among the 28 (reproduced in the
+  same-seed serial run, so not a one-off parallel failure); the other 8 are labelled `order`.
 
 ## Tests in no verdict column
 
@@ -135,8 +140,8 @@ Plain runner commands only; the engine (detjs, fenvix) was never run. Data: `res
   '@provos/memory-mcp-server/prompts'`, 5 `No native build was found` (isolated-vm), 1 vitest mocking error), yalc 1
   (`Cannot find module .../lost-deal-revival`). The IDENTICAL counts of these three repositories cover only the files
   that loaded; the 22 Dec comparison must compare the same test set.
-- Duplicate test names inside one file get a ` #n` suffix by report order (measure.py), which a shuffle can swap. 224
-  IDENTICAL ids belong to 70 such groups; in no run does a duplicate group have mixed outcomes, so no verdict depends on
+- Duplicate test names inside one file get a ` #n` suffix by report order (measure.py), which a shuffle can swap. Such
+  groups: 70 (228 ids); 224 IDENTICAL ids are in 68 of them, the other 2 groups (4 ids, drydock) are DIVERGES; in no run does a duplicate group have mixed outcomes, so no verdict depends on
   the swap.
 
 ## Verdict rule notes

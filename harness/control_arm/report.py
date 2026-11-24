@@ -33,8 +33,10 @@ def parallel_label_check(name, vs):
         res = []
         for rn in v["diverging_runs"]:
             f = os.path.join(CA.DATA, name, "SS" + rn[1:] + ".json")
-            if f not in cache:
-                cache[f] = json.load(open(f))["outcomes"] if os.path.exists(f) else None
+            if f not in cache:  # a supplementary run that timed out or crashed is not used (counted not checked)
+                d = json.load(open(f)) if os.path.exists(f) else None
+                ok = d is not None and not d["row"].get("timed_out") and not d["row"].get("crashed")
+                cache[f] = d["outcomes"] if ok else None
             oc = cache[f]
             res.append(None if oc is None or v["test"] not in oc else oc[v["test"]] != v["serial"])
         if any(r is True for r in res):

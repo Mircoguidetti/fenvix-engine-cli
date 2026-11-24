@@ -318,3 +318,58 @@ def test_load_failures(tmp_path):
         {"name": "/r/c.test.ts", "status": "passed", "assertionResults": []}]}))
     assert CA.load_failures(str(raw)) == {"/r/a.test.ts": "Error: Could not locate the bindings file"}
     assert CA.load_failures(str(tmp_path / "missing.json")) is None
+
+
+def test_alone_counts_a_miss_before_the_first_hit():
+    class Seq(Fake):  # victim file alone: miss, hit, then the given confirm results
+        def __init__(self, conf):
+            super().__init__()
+            self.seq = [False, True] + conf
+
+        def __call__(self, mode, polluters, victim, seed=CA.DEFAULT):
+            super().__call__(mode, polluters, victim, seed)
+            return (self.seq.pop(0) if not polluters and seed is CA.DEFAULT and self.seq else False), {}
+    res = CA.PairSearch(Seq([True, False])).search(FILES, VICTIM)  # 2 hits in 4 runs: below 2 of 3
+    assert res["result"] == CA.R_ALONE_ONCE and (res["alone"]["alone_hits"], res["alone"]["alone_runs"]) == (2, 4)
+    res = CA.PairSearch(Seq([True, True])).search(FILES, VICTIM)  # 3 hits in 4 runs
+    assert res["result"] == CA.R_ALONE and (res["alone"]["alone_hits"], res["alone"]["alone_runs"]) == (3, 4)
+
+
+def test_control_seeds_exclude_a_seed_that_diverged_in_ss():
+    runs = recorded()
+    by(runs, "SS1")["outcomes"][T0] = "failed"  # seed 1 reproduces serially; P1 (seed 1) kept the serial outcome
+    by(runs, "P2")["outcomes"][T0] = "failed"
+    v = CA.verdicts(runs, {})[T0]
+    assert v["verdict"] == "DIVERGES" and 1 not in CA.control_seeds_for(runs, T0, v)
+    assert CA.control_seeds_for(runs, T0, v) == [3, 4]
+
+
+def test_trial_evidence_extra_file_rule():
+    vt = {"/v": (10.0, 20.0)}
+    assert CA.trial_evidence("failed", "passed", vt, "/v", ["/v"]) == (True, [], [])
+    assert CA.trial_evidence("passed", "passed", {**vt, "/x": (21.0, 22.0)}, "/v", ["/v"]) == (False, ["/x"], [])
+    assert CA.trial_evidence("failed", "passed", {**vt, "/x": (5.0, 9.0)}, "/v", ["/v"])[0] is None
+    assert CA.trial_evidence("failed", "passed", {}, "/v", ["/v"])[0] is None  # victim times missing: not checkable
+    assert CA.trial_evidence(None, "passed", vt, "/v", ["/v"])[0] is None
+
+
+def test_parallel_label_check(tmp_path, monkeypatch):
+    import report as R
+    monkeypatch.setattr(CA, "DATA", str(tmp_path))
+    os.makedirs(tmp_path / "r")
+
+    def ss(n, oc, crashed=False):
+        json.dump({"row": {"timed_out": False, "crashed": crashed}, "outcomes": oc}, open(tmp_path / "r" / f"SS{n}.json", "w"))
+    ss(3, {"a": "failed", "b": "passed", "c": "failed"})
+    ss(4, {"a": "passed", "c": "failed"})
+    ss(5, {"d": "failed"}, crashed=True)
+
+    def v(t, runs):
+        return {"verdict": "DIVERGES", "label": "parallel", "test": t, "serial": "passed", "diverging_runs": runs}
+    vs = [v("a", ["P3"]),        # differs in SS3: order
+          v("b", ["P3"]),        # same in SS3: holds
+          v("c", ["P4", "P1"]),  # SS1 not recorded here: [True, None] counts order
+          v("a", ["P4", "P2"]),  # [False, None]: not checked
+          v("d", ["P5"]),        # SS5 crashed: not checked
+          {**v("a", ["P3"]), "label": "order"}]  # not a parallel label: skipped
+    assert R.parallel_label_check("r", vs) == (1, 2, 2)
