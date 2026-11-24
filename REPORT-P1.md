@@ -1,4 +1,4 @@
-NOT DONE
+DONE
 
 # P1: the engine's run-level false alarms (phase 2 report)
 
@@ -11,12 +11,13 @@ merge ordered by the coordinator, not by this session):
 | A1 KEPT/proxy variables read outside tests | **DONE** | agentsys A 1,540 → 0, identical 0 → 1,542 (with D) |
 | C virtual pid | **DONE** (second attempt, mapped at every OS boundary, 1541685) | nestjs-pino C 35 → 0, identical 223 → 257 (258); C 550 / 548 → 3 / 40 on codex-multi-auth / ironcurtain; gate: ironcurtain 226 / 407 failed as before, codex-multi-auth's gate-run excess did not reproduce in 3 + 3 repeat runs (section C) |
 | E stat/readdir order | **DONE** (with a follow-up commit) | claudekit E 22 → 0 |
-| B scope of files read outside tests | **PARTLY DONE**: B1 done, B2 not implemented | ironcurtain run-level B 7,033 → 0 (B-abs 7,033 → 165 scoped); codex-multi-auth run-level B removed in one of two final rounds |
+| B scope of files read outside tests | **DONE**: B1, and B2 narrowed by rule 3 (944e86a) | ironcurtain run-level B 7,033 → 0 (B-abs 7,033 → 165 scoped); codex-multi-auth: B2 removes its `.codex` `stat:missing` entries in every run; one run-level entry of another kind (`<tmp>/api-routes.json`, `stat:file`, read after its file closed) is left in one of the two rounds (section B) |
 | D entropy controlled by default (option 3) | **DONE** | agentsys D 99 → 0, sqlectron D 5 → 0 |
 
 **Tests that became identical: 778 → 2,555 (+1,777) in round 1, 2,550 in round 2 on the final engine 0903cf2**
-(6 repositories, S1 vs P1w4, 4 workers; 2,555 / 2,551 on d9c5854, before the D follow-up). With C (1541685): **2,589 in round 1, 2,603 in round 2** (section C). First line `NOT DONE` because B2 is not implemented; the rest is ready for the
-coordinator's `/review` and merge order.
+(6 repositories, S1 vs P1w4, 4 workers; 2,555 / 2,551 on d9c5854, before the D follow-up). With C (1541685): **2,589 in round 1, 2,603 in round 2** (section C). First line `DONE`: every item is implemented. Two things the coordinator should see first:
+B2 is narrower than the design (rule 3, section B), and one codex-multi-auth run-level entry of another kind is left
+open (a proposal in section B). Ready for the coordinator's `/review`; merge only on the founder's authorization.
 
 ## 1. How it was measured
 
@@ -171,6 +172,10 @@ depends on whether that `stat` happens while a test file is open (timing), not o
     * native code given the pid;
     * the number sent over a socket, or written to a file that a process not running detjs reads (a child the test
       started: `src/runners/preload.js` leaves those alone).
+* Correction (2026-11-24): commit 7cfadf6 says "red on ea110c8: 26 of 26". That check ran in a worktree without
+  `node_modules`, so the fixture runs failed before any assertion. Redone with `node_modules`: all 28 cases fail on
+  0903cf2 (the same node/src as ea110c8), each at `expect(process.pid > 4194304)`, because the test sees the real pid.
+  All 28 pass on 1541685 and on 944e86a.
 * Regression tests:
   * `node/test/p1-c-pid-boundaries.test.js`, 28/28 on 1541685, in vitest and jest. One case per boundary, among them
     the ironcurtain `ps -o lstart= -p <pid>` call.
@@ -243,15 +248,56 @@ depends on whether that `stat` happens while a test file is open (timing), not o
   (passes on the trunk); recursive rm leaves no event inside the tree (red without af0397a).
 * MEASURED: claudekit E 22 → 13 (+B round, before the follow-up) → 0 (final).
 
-### B: files read outside any test — B1 DONE, B2 NOT IMPLEMENTED
+### B: files read outside any test — B1 DONE, B2 DONE (narrowed by rule 3)
 * Commits: d989cde (test), f7ad850 (B1: `outside.js` records the open test file with each entry; the header says
   `files_outside_scope: "file"` for Jest without a custom runner and for Vitest when every file runs in a fresh
   worker; `verify.rs` `scoped_inputs` / `scoped_divergence` compare a scoped entry for that file's tests only;
   docs/VERIFY-CONTRACT.md).
-* B2 (drop a read of the process's own write) is **not implemented**: the bytes a hook writes can come from a source
-  nothing records outside a test (`/proc`, a real temp name), and dropping the read back would call identical two runs
-  that saw different bytes (rule 3). The narrower "stat only" variant has the same hole (a directory created or not
-  depending on such a value). The B2 case of the regression test asserted that behaviour; it became a B1 case.
+* B2, first pass (phase 2): not implemented. A hook can write bytes from a source that nothing records outside a
+  test (`/proc`, a real temp name). Dropping the read-back would then call two runs identical when they saw different
+  bytes (rule 3). The B2 case of the regression test asserted that behaviour; it became a B1 case.
+* **B2, second pass (coordinator 2026-11-24: "B2 as the P1 design review defined it"):** implemented in 944e86a (test
+  1ecaa94, red on 1541685: 2 of 8).
+  * The rule: a `stat` / `exists` / `access` answer of **`missing`**, outside any test, for a path inside a directory
+    the same process created with **`mkdtemp`**, is no input. This holds only while that process has started no
+    child process or worker thread since the directory was created (`src/children.js` counts them).
+  * Why this keeps rule 3: the directory's name is random and nothing else can have written into it, so the answer is
+    the process's own work. A path that exists in one run and is missing in the other is still an entry in one run
+    only, so the entry sets differ and that file's tests diverge (acceptance 2, tested).
+  * Narrower than the design, on purpose (rule 3):
+    * A read-back of bytes the process wrote is not discharged: the bytes can come from a source nothing records
+      outside a test (the first pass's reason).
+    * A `present` / `file` answer stays an entry: the size can depend on such a source too.
+    * A directory made with `mkdir` (a fixed name another process or an earlier run can know) stays an entry.
+    * So does a directory a child or a worker could have written into.
+  * Test: `node/test/p1-b2-own-dir.test.js`, 8/8 on 944e86a, in vitest and jest. The gain case (a run that stats such
+    a path and one that does not are stable) is red on 1541685. Acceptance 2, the child-process guard and the `mkdir`
+    guard pass on both.
+  * B1 test 4/4, `verify-inputs-attacks` 34/34, P0 exit tests unmodified, passing.
+  * docs/VERIFY-CONTRACT.md, `files_read_outside_tests`.
+* Measured on 944e86a (all six repositories, 2 rounds, 2026-11-24; `harness/p1/data/b2-944e86a/`,
+  `harness/p1/b2-944e86a*.json`):
+  * codex-multi-auth: every `<tmp>/.codex/...` `stat:missing` entry is gone from all four traces, unscoped and scoped.
+    Before, these were the run-level entries.
+  * codex-multi-auth round 1 still diverged run-wide (8,662), because of one entry of another kind:
+    `<tmp>/api-routes.json` = `stat:file size=274`. It is recorded in the parallel run only, while no test file was
+    open: a step that outlived its file. It is not B2's case (the file exists), and the size can depend on what was
+    written. Round 2: no run-level entry. Identical stays 0 in both rounds; what B hid is now counted (A 6,818,
+    codex-multi-auth's `env:*` digests, A1 section).
+  * Still open (proposal, ESTIMATED 0.5 day, not done; it changes B1's scope rule, so it is the coordinator's call):
+    scope an entry read while no file is open in a worker to the last file that process closed and every later file
+    of that process.
+  * Other repositories: B unchanged (ironcurtain run-level 0, B-abs 151 / B-tmp 268 scoped).
+  * Identical, round 1 (round 2), 944e86a against 1541685: agentsys 1,542 (1,538 against 1,553); claudekit 793 (792);
+    nestjs-pino 258 (257); 0 elsewhere. **Total 2,593 (2,587)**, against 2,589 (2,603) on 1541685. Within each repo's
+    round-to-round spread; B2 changes no count measured here.
+  * Failed tests:
+    * ironcurtain: 226 / 407 and 226 / 408 (0903cf2: 226 / 408, 226 / 407).
+    * agentsys, nestjs-pino, claudekit, sqlectron: unchanged.
+    * codex-multi-auth `--det`: serial 439 / 489, parallel 464 / 372. Every failing test in these four runs failed
+      in at least one of the 22 earlier runs of this project (with and without C). No new failure, but the count
+      spread is wide (serial 400-489).
+  * Wall time, round 2: no change beyond the spread of the plain runs.
 * Tests: `node/test/p1-b-outside-scope.test.js` 4/4 (vitest, jest): a hook reads a file whose bytes differ between the
   runs (written from /proc by the hook itself, or outside the project): that file's tests diverge, the other file's
   stay stable (trunk: 0/4); Rust `p1_b1_file_read_outside_tests_scoped_to_its_test_file` (red on the trunk judge).
