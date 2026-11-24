@@ -308,3 +308,52 @@ test('vitest exit 0 (item 5): protects=a runner\'s own process.exit(0) after det
   assert.match(r.stderr, /^detjs: status: failed=1 not_proven=0 passed=0 skipped=0$/m, r.show);
   assert.equal(r.status, 1, r.show);
 });
+
+test('session (review fix): protects=the order of a part with 150 000 tests is read whole; fails_when=the ids are spread into push() (RangeError: Maximum call stack size exceeded, the part is reported unreadable and a clean run exits 2); no_claim=parts too large for the 256 MiB line limit', () => {
+  const { partOrder } = require('../src/session');
+  const p = path.join(dir, 'many.jsonl');
+  const fd = fs.openSync(p, 'w');
+  try {
+    fs.writeSync(fd, `${headerLine({})}\n`);
+    let chunk = '';
+    for (let i = 0; i < 150000; i++) {
+      chunk += `{"type":"test","nodeid":"t.test.js::case ${i}","index":${i},"outcome":"passed"}\n`;
+      if (chunk.length > 1 << 20) { fs.writeSync(fd, chunk); chunk = ''; }
+    }
+    fs.writeSync(fd, chunk);
+  } finally { fs.closeSync(fd); }
+  const errors = [];
+  const order = partOrder([p], (part, e) => errors.push(String(e && e.message)));
+  assert.deepEqual(errors, []);
+  assert.equal(order.length, 150000);
+  assert.equal(order[149999], 't.test.js::case 149999');
+});
+
+test('session (review fix): protects=a part whose ids cannot be read makes the run exit 2 with the unknown line; fails_when=the read error is swallowed (partIds returning [] as on f67be4a3) and the run exits 0; no_claim=which part (the injected EIO hits every part)', T, () => {
+  const d = project('part-read', PASSING);
+  const r = detjs(d, ['--det-workers=1'], { NODE_OPTIONS: `--require ${HOOK}`, BIG_TRACE_HOOK: 'part-read' });
+  assert.equal(r.status, 2, r.show);
+  assert.match(r.stderr, /detjs: status: unknown \(trace part .* could not be read: injected read error.*\): exit 2, NOT PROVEN/, r.show);
+});
+
+test('session (review fix): protects=a merged trace that cannot be read back makes the run exit 2 with the unknown line; fails_when=stampStatus returns null and the runner\'s code 0 decides (the original agentic-qe false green); no_claim=why it cannot be read (an injected EIO here, ERR_STRING_TOO_LONG on f67be4a3)', T, () => {
+  const d = project('trace-read', PASSING);
+  const r = detjs(d, ['--det-workers=1'], { NODE_OPTIONS: `--require ${HOOK}`, BIG_TRACE_HOOK: 'trace-read' });
+  assert.equal(r.status, 2, r.show);
+  assert.match(r.stderr, /detjs: status: unknown \(the trace .*trace\.jsonl could not be read back\): exit 2, NOT PROVEN/, r.show);
+});
+
+test('parallel wrapper (review fix): protects=finishRerun writes the merged trace into a directory that does not exist yet; fails_when=its temporary merge directory is created inside that directory before it exists (ENOENT thrown before any status is decided); no_claim=a directory that cannot be created', () => {
+  const meta = { parallel: { hazards: [{ a: 'tests/h.test.js', b: 'tests/k.test.js' }] } };
+  const ok = (id) => testLine(id, 0, 'passed', { payload: 'p' });
+  const t1 = path.join(dir, 'nodir-t1.jsonl');
+  fs.writeFileSync(t1, `${headerLine(meta)}\n${ok('tests/h.test.js::a')}\n${ok('tests/k.test.js::b')}\n`);
+  const t2 = path.join(dir, 'nodir-t2.jsonl');
+  fs.writeFileSync(t2, `${headerLine({})}\n${ok('tests/h.test.js::a')}\n${ok('tests/k.test.js::b')}\n`);
+  const out = path.join(dir, 'not-yet', 'deeper', 'trace.jsonl');
+  const { status, res } = finishRerun({ t1Path: t1, t2Path: t2, status1: 0, status2: 0, affected: ['tests/h.test.js', 'tests/k.test.js'], tracePath: out, root: dir });
+  assert.equal(status, 0);
+  assert.equal(res.nTests, 2);
+  assert.ok(fs.existsSync(out));
+  assert.deepEqual(fs.readdirSync(path.dirname(out)), ['trace.jsonl'], 'no temporary merge directory left');
+});

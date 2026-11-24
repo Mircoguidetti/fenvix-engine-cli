@@ -364,9 +364,17 @@ impl PyChunkWriter<'_> {
 
 impl std::io::Write for PyChunkWriter<'_> {
     fn write(&mut self, data: &[u8]) -> std::io::Result<usize> {
-        self.buf.extend_from_slice(data);
-        if self.buf.len() >= 1 << 20 {
-            self.send(false)?;
+        // a large write (the text rendering is one string) is taken ~1 MiB at a time, so neither side ever holds
+        // more than a chunk of it
+        const CHUNK: usize = 1 << 20;
+        let mut rest = data;
+        while !rest.is_empty() {
+            let n = rest.len().min(CHUNK.saturating_sub(self.buf.len()).max(1));
+            self.buf.extend_from_slice(&rest[..n]);
+            rest = &rest[n..];
+            if self.buf.len() >= CHUNK {
+                self.send(false)?;
+            }
         }
         Ok(data.len())
     }
@@ -399,9 +407,35 @@ fn verify_write(
         serde_json::to_writer(&mut w, &report).map_err(|e| PyRuntimeError::new_err(e.to_string()))?;
         w.write_all(b"\n").map_err(io)?;
     } else {
-        let text = v::render_text(&report, show_stable);
-        drop(report);
-        w.write_all(text.replacen("detpy verify", &prog, 1).as_bytes()).map_err(io)?;
+        // rendered straight into the writer, the first "detpy verify" (the first line's start) replaced by `prog`
+        struct Text<'a, 'py> {
+            w: &'a mut PyChunkWriter<'py>,
+            prog: Option<&'a str>,
+            err: Option<std::io::Error>,
+        }
+        impl std::fmt::Write for Text<'_, '_> {
+            fn write_str(&mut self, s: &str) -> std::fmt::Result {
+                let r = match (self.prog, s.find("detpy verify")) {
+                    (Some(prog), Some(i)) => {
+                        self.prog = None;
+                        self.w
+                            .write_all(s[..i].as_bytes())
+                            .and_then(|_| self.w.write_all(prog.as_bytes()))
+                            .and_then(|_| self.w.write_all(s[i + "detpy verify".len()..].as_bytes()))
+                    }
+                    _ => self.w.write_all(s.as_bytes()),
+                };
+                r.map_err(|e| {
+                    self.err = Some(e);
+                    std::fmt::Error
+                })
+            }
+        }
+        let mut t = Text { w: &mut w, prog: Some(&prog), err: None };
+        if v::render_text_to(&report, show_stable, &mut t).is_err() {
+            let e = t.err.take().unwrap_or_else(|| std::io::Error::other("rendering the report failed"));
+            return Err(io(e));
+        }
     }
     w.flush().map_err(io)?;
     Ok(summary)

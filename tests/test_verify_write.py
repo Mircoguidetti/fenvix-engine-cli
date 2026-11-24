@@ -64,3 +64,37 @@ def test_chunks_never_cut_a_multibyte_character(tmp_path):
     buf = io.StringIO()
     _core.verify_write([str(a), str(b)], [], False, True, buf, "fenvix verify")
     assert buf.getvalue() == report_json + "\n"
+
+
+class _Chunks:
+    """A file object that records the size of every write."""
+
+    def __init__(self):
+        self.sizes, self.parts = [], []
+
+    def write(self, text):
+        self.sizes.append(len(text.encode()))
+        self.parts.append(text)
+
+
+@pytest.mark.parametrize("as_json", [True, False])
+def test_large_reports_reach_python_in_bounded_chunks(tmp_path, as_json):
+    """protects=both output modes hand Python the report in pieces of about 1 MiB (the 1.2 GB agentic-qe report was
+    held 4-5 times in text mode, review of 73c0ae5); fails_when=the text rendering (or the JSON) is written in one
+    piece; no_claim=the peak memory of render_text itself (the rendered text is still built whole)."""
+    head = {"type": "header", "format": "detpy-trace", "version": 1, "encoding": 2, "meta": {}, "order": []}
+    lines = [json.dumps(head)]
+    for i in range(3000):
+        lines.append(json.dumps({"type": "test", "nodeid": f"t.py::{'x' * 800}{i}", "index": i, "outcome": "passed",
+                                 "fingerprint": f"{i:032x}", "n_events": 0, "truncated": True, "counts": {},
+                                 "checkpoints": [], "events": []}))
+    a, b = tmp_path / "a.jsonl", tmp_path / "b.jsonl"
+    a.write_text("\n".join(lines) + "\n")
+    b.write_text("\n".join(lines[:1] + lines[1:][::-1]) + "\n")
+    report_json, text = _core.verify_with([str(a), str(b)], [], False)
+    want = report_json + "\n" if as_json else text.replace("detpy verify", "fenvix verify", 1)
+    assert len(want.encode()) > 4 << 20
+    out = _Chunks()
+    _core.verify_write([str(a), str(b)], [], False, as_json, out, "fenvix verify")
+    assert "".join(out.parts) == want
+    assert max(out.sizes) <= (1 << 20) + (64 << 10), out.sizes[:5]

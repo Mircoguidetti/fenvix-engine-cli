@@ -255,6 +255,18 @@ function partNotes(file) {
 /** Ids of the tests recorded in a part, in execution order. Streams the part (src/trace-lines.js); a part that
  * cannot be read throws (the caller fails closed: src/session.js finish). A line that is not JSON is skipped (a
  * truncated last line, as before). */
+/** The ids of every part, in order; `onError(part, err)` for a part whose ids cannot be read (it adds none). */
+function partOrder(parts, onError) {
+  const order = [];
+  for (const p of parts) {
+    let ids;
+    try { ids = partIds(p); } catch (e) { onError(p, e); continue; }
+    // one push per id: spreading a part's ids into push() overflows the stack above ~100 000 arguments
+    for (const id of ids) order.push(id);
+  }
+  return order;
+}
+
 function partIds(file) {
   const ids = [];
   require('./trace-lines').forEachLine(file, (line) => {
@@ -391,10 +403,7 @@ function finish(run, opts, files, meta) {
   const extra = fs.readdirSync(path.join(run.dir, 'parts')).map((p) => path.join(run.dir, 'parts', p)).filter((p) => !known.has(p)).sort();
   const all = [...parts, ...extra];
   // P0 big trace: a part whose ids cannot be read leaves the order incomplete: the run's status is unknown (exit 2)
-  const order = [];
-  for (const p of all) {
-    try { order.push(...partIds(p)); } catch (e) { exitStatus.recordUnknown(`trace part ${p} could not be read: ${e && e.message}`); }
-  }
+  const order = partOrder(all, (p, e) => exitStatus.recordUnknown(`trace part ${p} could not be read: ${e && e.message}`));
   const full = {
     ...meta,
     runtime: 'node',
@@ -587,4 +596,4 @@ function realEntropyTests(tracePath, urandom) {
   return out;
 }
 
-module.exports = { realEntropyTests, parseArgs, prepare, header, finish, partIds, stampStatus, printsStatus, HELP, VERSION };
+module.exports = { realEntropyTests, parseArgs, prepare, header, finish, partIds, partOrder, stampStatus, printsStatus, HELP, VERSION };

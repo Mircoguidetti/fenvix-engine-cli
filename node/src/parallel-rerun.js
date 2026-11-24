@@ -371,6 +371,7 @@ function finishRerun({ t1Path, t2Path, status1, status2, affected, tracePath, ro
 
   // the merged trace, written where the user asked for it; each record's line copied byte for byte from its trace
   const order = records.map((r) => r.nodeid);
+  fs.mkdirSync(path.dirname(tracePath), { recursive: true });
   const work = fs.mkdtempSync(path.join(path.dirname(tracePath), '.detjs-merge-'));
   let res;
   try {
@@ -388,7 +389,6 @@ function finishRerun({ t1Path, t2Path, status1, status2, affected, tracePath, ro
       first_run_failed: bad1.map((r) => r.nodeid),
     };
     meta.status = status;
-    fs.mkdirSync(path.dirname(tracePath), { recursive: true });
     res = native.mergeTraces(parts, tracePath, JSON.stringify(meta), order);
   } finally {
     fs.rmSync(work, { recursive: true, force: true });

@@ -199,7 +199,8 @@ impl FileTrace {
             }
         }
         let header = header.ok_or_else(|| TraceError::Format("missing header".into()))?;
-        Ok(FileTrace { header, footer, slims, file: RefCell::new(File::open(path)?) })
+        // the handle that was scanned (not the path again): a trace renamed over this one after the scan is not read
+        Ok(FileTrace { header, footer, slims, file: RefCell::new(reader.into_inner()) })
     }
 }
 
@@ -222,9 +223,17 @@ impl RecordSource for FileTrace {
         f.seek(SeekFrom::Start(s.offset))?;
         let mut buf = vec![0u8; s.length as usize];
         f.read_exact(&mut buf)?;
-        match serde_json::from_slice::<Line>(&buf).map_err(io::Error::other)? {
-            Line::Test(t) => Ok(t),
-            _ => Err(io::Error::new(io::ErrorKind::InvalidData, format!("line at byte {} is not a test record", s.offset))),
+        // the record must be the one the scan located: a file rewritten in place after the scan is refused (I/O error,
+        // `fenvix verify` exit 2) instead of another test's events being compared
+        let changed = || {
+            io::Error::new(
+                io::ErrorKind::InvalidData,
+                format!("the trace changed after it was read: the line at byte {} is not the record of {}", s.offset, s.nodeid),
+            )
+        };
+        match serde_json::from_slice::<Line>(&buf).map_err(|_| changed())? {
+            Line::Test(t) if t.nodeid == s.nodeid && t.fingerprint == s.fingerprint => Ok(t),
+            _ => Err(changed()),
         }
     }
 }
@@ -280,6 +289,23 @@ mod tests {
             assert!(matches!(a, TraceError::Format(_)), "{a}");
             assert_eq!(a.to_string(), b.to_string());
         }
+    }
+
+    /// protects=full(i) refuses a record that is not the one the scan located (the file was rewritten after open);
+    /// fails_when=full(i) parses whatever bytes now sit at the offset and the verifier compares another test's events
+    /// (review of the bounded verifier, testing + adversarial); no_claim=a rewrite that keeps nodeid and fingerprint.
+    #[test]
+    fn full_refuses_a_record_rewritten_after_open() {
+        let d = tempfile::tempdir().unwrap();
+        let tb = T.replace(r#""nodeid":"a""#, r#""nodeid":"b""#).replace(r#""fingerprint":"f""#, r#""fingerprint":"g""#);
+        let p = write(d.path(), "swap.jsonl", &format!("{H}\n{T}\n{tb}\n"));
+        let ft = FileTrace::open(&p).unwrap();
+        assert_eq!(ft.full(0).unwrap().nodeid, "a");
+        // same lengths, records swapped, in place (same inode)
+        std::fs::OpenOptions::new().write(true).open(&p).unwrap().write_all(format!("{H}\n{tb}\n{T}\n").as_bytes()).unwrap();
+        let e = ft.full(0).unwrap_err();
+        assert_eq!(e.kind(), io::ErrorKind::InvalidData, "{e}");
+        assert!(e.to_string().contains("changed after it was read"), "{e}");
     }
 
     /// protects=full(i) returns exactly the record read_trace loads, by offset, CRLF lines and a last line without

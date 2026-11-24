@@ -928,8 +928,8 @@ pub fn verify_sources<S: RecordSource>(traces: &[S], labels: &[String]) -> std::
         } else if distinct.len() <= 1 {
             // Every run agrees on the fingerprint. That is not enough to say IDENTICAL: the general rule
             // (`crate::provable`) asks whether everything the test did was accounted for, and answers NOT PROVEN
-            // when it was not. `judge_record` is the only predicate allowed to conclude that it was, and the
-            // cache calls the same one, so the two cannot drift apart. Its default is NOT PROVEN, which is what
+            // when it was not. `judge_slim` is the only predicate allowed to conclude that it was, and the
+            // cache reaches the same one (through `judge_record`), so the two cannot drift apart. Its default is NOT PROVEN, which is what
             // keeps a channel nobody has thought of yet out of this verdict.
             match recs
                 .iter()
@@ -1173,9 +1173,15 @@ pub const HINTS: &[(&str, &str)] = &[
 
 /// Human-readable rendering of a report.
 pub fn render_text(report: &Report, show_stable: bool) -> String {
-    use std::fmt::Write;
-    let s = &report.summary;
     let mut out = String::new();
+    let _ = render_text_to(report, show_stable, &mut out);
+    out
+}
+
+/// [`render_text`] written to `out` as it is rendered (P0 big trace: the text of a 30765-test report is 1.2 GB; the
+/// Python CLI streams it instead of holding it whole next to the report). Same text, piece by piece.
+pub fn render_text_to<W: std::fmt::Write>(report: &Report, show_stable: bool, out: &mut W) -> std::fmt::Result {
+    let s = &report.summary;
     let _ = writeln!(out, "detpy verify: {} runs, {} tests", s.runs, s.tests);
     for (i, l) in report.labels.iter().enumerate() {
         let partial = if report.complete.get(i).copied().unwrap_or(true) { "" } else { " (partial)" };
@@ -1289,7 +1295,7 @@ pub fn render_text(report: &Report, show_stable: bool) -> String {
             }
         }
     }
-    out
+    Ok(())
 }
 
 #[cfg(test)]
