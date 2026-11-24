@@ -62,7 +62,7 @@ def main() -> None:
         "`PREREG.md` (commit 454d89a, before any result). Routes: `routes.md`. Re-derivation: "
         "`python3 harness/agent_pr_scan_count2/verify_count2.py` (exit 0).",
         "",
-        "## Changes after the pre-registration (each decided before any rate was computed)",
+        "## Changes after the pre-registration (each says when it was decided)",
         "",
         nt.get("changes", "None."),
         "",
@@ -121,7 +121,8 @@ def main() -> None:
         "",
         "## Hand check",
         "",
-        f"`random.Random(2).sample(sorted(urls_with_failed_check), 20)`, drawn before any rate was computed: "
+        f"`random.Random(2).sample(sorted(urls_with_failed_check), 20)` (the set is fixed by the PRs read; the hand "
+        "reading was done after the first pooled rate had been computed, see the changes above): "
         f"{k('hand_n')} PRs, automatic verdict agreed with the hand verdict on first reading for {k('hand_agree')}, "
         f"disagreed for {k('hand_disagree')}. Rows: `handcheck.jsonl` (automatic verdict, hand verdict, four "
         "confirmed fields with notes).",
