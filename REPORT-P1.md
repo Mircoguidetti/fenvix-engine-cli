@@ -349,6 +349,7 @@ depends on whether that `stat` happens while a test file is open (timing), not o
 - `node/test/policy-equivalence.test.js` "real node-test / mocha sessions": the first (recording) session passes `--det-urandom=off`. Reason: the second session, `--det-urandom`, is meant to be "another configuration"; since D it was the same configuration as the first, every file was reused and the dump had too few captures. The two configurations compared are again "entropy observed" and "entropy allowed"; the assertions are unchanged.
 - `tests/test_runner_node.py::test_entropy_is_named_by_verify` (shared Python test, from the trunk merge f67be4a; 4 runners): the recorded run passes `-- --det-urandom=off`. Reason: its fixture "reads real OS entropy", which since D needs that option (by default the draw is seeded and both runs are identical); the assertions (verify exits 1 and names the test NOT PROVEN or DIVERGED `entropy`) are unchanged.
 - `node/test/p1-d-entropy-default.test.js`: seventh case added (a draw made before any seeding is not a constant), with the follow-up fix below.
+- Six P1 test files (`p1-a-env-outside`, `p1-b-outside-scope`, `p1-b2-own-dir`, `p1-c-pid-boundaries`, `p1-c-virtual-pid`, `p1-d-entropy-default`): their two-run cases add `--det-epoch=fixed` when a `--det` run names no epoch. Reason: the merge of release-1 9ac63d6 (det-host-values) gives each run the host epoch, so two separate runs differ on the clock input; `--det-epoch=fixed` is the documented opt-out the trunk's own two-run tests use. The assertions are unchanged.
 - No test was skipped, weakened or quarantined; no CI step, timeout or threshold changed.
 
 ## 5. Test suites (branch vs trunk)
@@ -392,6 +393,20 @@ section 4; re-run **4 passed**).
 **CI (LIGHT)**: run 45227028354 on 7984fe7 failed attacks, python shard 0, node shard 0, the same jobs as the trunk
 base e7338950 (run 45165824244); trunk f67be4a (run 45186293624) failed attacks, python 3, node 0. Not re-run on the
 final commit by this session.
+
+### 5.1 After the merge of release-1 9ac63d6: final head 0358ea4 vs trunk 9ac63d6
+
+Same machine, one after the other (2026-11-24, 18:25 to 21:44 UTC), with the same script for both heads (`/tmp/pm-p1/suites.sh`: cargo, `cd node && npm test`, the shared Python tests, `tests/attacks.py`; logs `/tmp/pm-p1/suite-final/` and `/tmp/pm-p1/suite-trunk9/`). The Python run deselects `tests/test_review_r017.py::test_h2_report_says_ci_never_sees_tmp_name_exhaustion_but_p8_does` on both heads, as the repository's CI does (`.github/workflows/release-1.yml:147`).
+
+| suite | final 0358ea4 | trunk 9ac63d6 | failing only on final |
+|---|---|---|---|
+| cargo (detpy-core, detpy-node) | 0 failed (core 201 passed) | 0 failed (core 199 passed) | none |
+| Node `npm test` | 1,095 tests, 1,086 pass, 5 fail, 3 cancelled, 1 skipped | 1,021 tests, 1,012 pass, 5 fail, 3 cancelled, 1 skipped | none (identical failing names) |
+| Python shared | 3 failed, 1,019 passed, 39 skipped | 3 failed, 1,019 passed, 39 skipped | none (identical) |
+| attacks: node | 60 / 60 pass | 60 / 60 pass | none |
+| attacks: python | 12 failed, 157 passed, 2 skipped | 12 failed, 157 passed, 2 skipped | none (identical: 12 `test_review_r056_pycache` cases) |
+
+Node failures on both heads: (b) timers; jest parallel lanes (3 cancelled); repro `--det-order`; bun "two --det runs"; node-test adversarial #7; `customer-nodetest` "a flaky (order-dependent) test becomes a defect", which in this script fails on both heads with `No module named 'detpy'` because `npm test` runs before the venv is on PATH (a script artifact, not an engine result). Python shared failures on both heads: `test_packaging` gate, `test_py_cache` virtual-clock thread probe and g2214.
 
 ## 6. P0 exit rule
 
