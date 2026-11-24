@@ -394,3 +394,5 @@
 2026-11-24T00:07:48Z NOTE: container restarted again at ~00:06Z; state in progress lost and discarded; lane resumed from rows.jsonl (8 h cap still counted from 17:56Z)
 2026-11-24T00:07:49Z STATE PR #1457 (code) state 2/2 02b0b5a280 base 4503659a45
 2026-11-24T00:07:52Z   $ git checkout -q -f --detach 02b0b5a280a50987cf26ff3fe21bfb7745205a6d && git clean -fdxq -e node_modules  -> exit 0 in 2.3s
+2026-11-24T00:08:01Z   $ find . -name node_modules -type d -prune -exec rm -rf {} +  -> exit 0 in 8.6s
+2026-11-24T00:08:10Z   $ npx -y pnpm@11.28.5 install --frozen-lockfile --ignore-scripts  -> exit 0 in 9.2s
