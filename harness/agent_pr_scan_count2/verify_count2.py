@@ -182,6 +182,8 @@ def extra_values(rows) -> dict[str, str]:
             "chunks": str(len(chunks)), "requests": str(sum(c["requests"] for c in chunks)),
             "cap_excluded": str(len(caps)), "draw_prepared": str(dm["prepared"]),
             "draw_eligible": str(dm["eligible"]), "probe_n": str(len(probe)),
+            "rate_limit": str(max(c.get("limit") or 0 for c in chunks)),
+            "own_head_in_base": str(sum(1 for r in rows if "base_commits_own_excluded" in r)),
             "probe_base_ok": str(sum(1 for r in probe if (r.get("probe_base_runs") or {}).get("status") == 200))}
 
 

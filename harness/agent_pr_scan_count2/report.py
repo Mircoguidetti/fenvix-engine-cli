@@ -50,6 +50,7 @@ def main() -> None:
                 f"{k(p + 'no_base')} | {k(p + 'unreadable')} | {k(p + 'rate')} | {k(p + 'lo')} to {k(p + 'hi')} | "
                 f"{k(p + 'unrated_share')} | {k(p + 'sec_already')} ({k(p + 'sec_rate')}) |")
 
+    nt = {name: re.sub(r"\{\{([a-z0-9_]+)\}\}", lambda m: k(m.group(1)), txt) for name, txt in nt.items()}
     valid = v["decision_valid"] == "valid"
     stop = ck.get("stopped") or "?"
     met = all(ck["rateable"][f] >= J.QUOTA for f in J.FAMILIES)
