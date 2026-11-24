@@ -211,7 +211,45 @@ depends on whether that `stat` happens while a test file is open (timing), not o
 
 ## 5. Test suites (branch vs trunk)
 
-PENDING: the branch and trunk suite runs (Node full suite, cargo detpy-core + detpy-node, the 52 shared Python files) are running; this section is filled when they end.
+Same machine, one suite at a time. Trunk = e7338950 for Node (`/tmp/pm-p1/trunk-npm-test.log`), f67be4a for cargo
+and Python (worktree `/tmp/pm-p1/trunk2`, trunk wheel); branch = this branch (logs `/tmp/pm-p1/branch-*.log`).
+
+**cargo test -p detpy-core -p detpy-node**: trunk 194 + 10 passed, 0 failed; branch 196 + 10 passed, 0 failed (the
+two new verify.rs tests of A1 and B1).
+
+**Node full suite (`cd node && npm test`)**: trunk 975 tests, 967 pass, 4 fail, 3 cancelled, 1 skipped. The first
+branch run (commit e40aaf6 + the uncommitted report) had 998 tests, 976 pass, **18 fail**, 3 cancelled, 1 skipped.
+Every failure, and what it was:
+
+| failing on the branch | also on the trunk? | cause / action |
+|---|---|---|
+| jest: parallel lanes (3 cancelled subtests) | yes | pre-existing |
+| repro options (vitest) `--det-order` across describe blocks | yes | pre-existing |
+| bun: Level 0 controls, "two --det runs give identical fingerprints" | yes (same subtest) | pre-existing |
+| node-test: adversarial, "a file another test file wrote: not cacheable" | yes (same subtest) | pre-existing |
+| detjs playwright (4 subtests) | no | **D**: zero bytes before seeding (section 3 D, follow-up 1); fixed in 0903cf2 |
+| bun: R-032b specific, B4 `Bun.password.hashSync` reused | no | **D**: native randomness flagged `entropy` (follow-up 2); fixed in 0903cf2 |
+| cache with proof (vitest, jest): "never cached ... OS entropy" | no | **D** default: the test's real-entropy case now asks for `--det-urandom=off` (section 4) |
+| node-test / mocha: environment read in C, entropy (N8 x 3 each) | no | same (section 4) |
+| real node-test / mocha sessions: the Rust policy equals the JavaScript one | no | same (section 4) |
+
+After 0903cf2, the 19 test files concerned (every P1 test, the three P0 exit tests, playwright, review-r032/r032b,
+policy-equivalence, cache, network, unchanged, verifier attacks, and every file that draws entropy) were re-run:
+**290 tests, 290 pass** (`/tmp/pm-p1/targeted.log`). The full Node suite was not re-run after 0903cf2 (about an hour);
+the coordinator's `/review` CI run covers it.
+
+**Python shared tests (53 files, `release/shard.py ... --only shared`)**: trunk 3 failed, 950 passed, 39 skipped:
+`test_packaging::test_gate_runs_on_pull_requests_and_trunk_only_and_cancels_only_superseded_pr_runs`,
+`test_py_cache::test_the_virtual_clocks_own_probe_of_threads_is_not_the_tests_read`,
+`test_py_cache::test_g2214_a_test_that_crashes_its_worker_is_a_record_of_the_merged_trace`. Branch (run started
+before 0903cf2) 11 failed, 942 passed, 39 skipped: the same 3, plus 4 Playwright cases of `test_fenvix_js.py` (the
+zero-bytes defect, fixed in 0903cf2: re-run **5 passed**, `/tmp/pm-p1/py-pw.log`) and
+`test_runner_node.py::test_entropy_is_named_by_verify` x 4 runners (D default; the test now asks for real entropy,
+section 4; re-run **4 passed**).
+
+**CI (LIGHT)**: run 45227028354 on 7984fe7 failed attacks, python shard 0, node shard 0, the same jobs as the trunk
+base e7338950 (run 45165824244); trunk f67be4a (run 45186293624) failed attacks, python 3, node 0. Not re-run on the
+final commit by this session.
 
 ## 6. P0 exit rule
 
