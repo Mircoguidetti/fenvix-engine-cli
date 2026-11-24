@@ -1,0 +1,22 @@
+{
+ "at": "2026-11-24T18:59:58+00:00",
+ "error": null,
+ "final_url": "https://www.composo.ai/blog/",
+ "first_2kb": "<!DOCTYPE html><html lang=\"en\"> <head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta name=\"theme-color\" content=\"#FBFAF7\"><!--\n  Set the light/dark class on <html> BEFORE first paint, so a dark-mode visitor\n  never flashes the light theme on load. Inline vanilla JS with no imports so it\n  runs synchronously ahead of any bundle. The storage key + resolution rule\n  mirror ThemeToggle.astro \u00e2\u0080\u0094 keep the two in sync.\n--><script>\n  (function () {\n    try {\n      var pref = localStorage.getItem(\"composo.theme\");\n      if (pref !== \"light\" && pref !== \"dark\" && pref !== \"system\") {\n        pref = \"system\";\n      }\n      var dark = pref === \"dark\" || (pref === \"system\" && window.matchMedia(\"(prefers-color-scheme: dark)\").matches);\n      var root = document.documentElement;\n      root.setAttribute(\"data-theme-pref\", pref);\n      root.classList.toggle(\"dark\", dark);\n      root.style.colorScheme = dark ? \"dark\" : \"light\";\n      var meta = document.querySelector('meta[name=\"theme-color\"]');\n      if (meta) meta.setAttribute(\"content\", dark ? \"#1c1813\" : \"#FBFAF7\");\n    } catch (e) {}\n  })();\n</script><link rel=\"icon\" type=\"image/svg+xml\" href=\"/favicon.svg\"><link rel=\"icon\" type=\"image/x-icon\" href=\"/favicon.ico\"><link rel=\"apple-touch-icon\" href=\"/images/composo-square.png\"><link rel=\"canonical\" href=\"https://www.composo.ai/blog/\"><title>Blog | Composo</title><meta name=\"description\" content=\"Technical articles on AI evaluation, LLM judges, RAG evals, agent testing, and more.\"><meta property=\"og:type\" content=\"website\"><meta property=\"og:url\" content=\"https://www.composo.ai/blog/\"><meta property=\"og:title\" content=\"Blog | Composo\"><meta property=\"og:description\" content=\"Technical articles on AI evaluation, LLM judges, RAG evals, agent testing, and more.\"><meta property=\"og:image\" content=\"https://www.composo.ai/images/og/home.png\"><meta property=\"og:image:width\" content=\"1200\"><meta property=\"og:image:height\" content=\"630\"><meta name=\"twitter:card\" content=\"summary_large_ima",
+ "hops": [
+  {
+   "status": 302,
+   "url": "https://www.composo.ai/blog"
+  },
+  {
+   "status": 200,
+   "url": "https://www.composo.ai/blog/"
+  }
+ ],
+ "length": 42711,
+ "name": "Composo",
+ "status": 200,
+ "text": "Blog",
+ "text_source": "h1",
+ "url": "https://www.composo.ai/blog"
+}

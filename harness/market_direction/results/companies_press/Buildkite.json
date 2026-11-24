@@ -1,0 +1,18 @@
+{
+ "at": "2026-11-24T18:59:42+00:00",
+ "error": null,
+ "final_url": "https://buildkite.com/about/press/",
+ "first_2kb": "<!DOCTYPE html><html lang=\"en\"> <head><!-- Prevent flash when transitioning between pages --><script>(function(){const defaultTheme = \"system\";\n\n  ;(function () {\n    const theme = localStorage?.getItem('theme') || defaultTheme\n    const isDark =\n      theme === 'dark' ||\n      (theme === 'system' &&\n        window.matchMedia('(prefers-color-scheme: dark)').matches)\n    document.documentElement.classList.toggle('dark', isDark)\n    window.theme = theme\n  })()\n})();</script> <script>\n  document.addEventListener('DOMContentLoaded', () => {\n    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')\n\n    // Apply theme and update storage if needed\n    function applyTheme(theme) {\n      const isDark =\n        theme === 'dark' || (theme === 'system' && mediaQuery.matches)\n      document.documentElement.classList.toggle('dark', isDark)\n      theme !== 'system' && localStorage.setItem('theme', theme)\n    }\n\n    // Event listeners for theme changes\n    mediaQuery.addEventListener(\n      'change',\n      () =>\n        (localStorage.getItem('theme') || 'system') === 'system' &&\n        applyTheme('system'),\n    )\n\n    window.addEventListener(\n      'storage',\n      ({ key, newValue }) => key === 'theme' && applyTheme(newValue),\n    )\n\n    // Observer to sync DOM class changes with storage\n    new MutationObserver(() => {\n      const currentTheme = localStorage.getItem('theme')\n      if (currentTheme !== 'system') {\n        localStorage.setItem(\n          'theme',\n          document.documentElement.classList.contains('dark')\n            ? 'dark'\n            : 'light',\n        )\n      }\n    }).observe(document.documentElement, {\n      attributes: true,\n      attributeFilter: ['class'],\n    })\n  })\n</script><meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><!-- HubSpot provides the site's consent banner and consent API. All other\n     marketing trackers are loaded by consent-gated-tracking.js after the\n     relev",
+ "hops": [
+  {
+   "status": 200,
+   "url": "https://buildkite.com/about/press/"
+  }
+ ],
+ "length": 80366,
+ "name": "Buildkite",
+ "status": 200,
+ "text": "See the latest press releases and news on Buildkite, the CI orchestration platform. Find contact information for media inquiries.",
+ "text_source": "meta description",
+ "url": "https://buildkite.com/about/press/"
+}
