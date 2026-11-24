@@ -163,3 +163,43 @@ suites (python-product files), and the Go/JVM workflows (no Go or JVM code chang
 - The verify report repeats the full list of differing inputs in every test's description (37 KB x 30765 tests);
   a format change (naming them once) would cut the report ~1000x. Report format was out of scope.
 - No change to the trace format, the report format, the runner, the console or the App. Rollback: revert the merge.
+
+## Addendum 2026-11-24: merge of claude/release-1, /review, suites on the final head
+
+Coordinator request: merge `origin/claude/release-1` (ae5ccba: harness/control_arm and harness/parallel_measure only,
+no engine file) into this branch with an ordinary merge (95afbd7, no rebase or force-push), run gstack `/review`
+against `claude/release-1`, fix its findings with tests, and re-run the suites. Not merged into `claude/release-1`:
+that waits for the founder's authorization in this session.
+
+### /review (3 passes; specialists: testing, maintainability, security, performance, simplification; Claude adversarial each pass)
+
+Fixed, each with a test that fails before the fix (62af0ac, 16c4b28):
+
+| finding | fix | test |
+|---|---|---|
+| `session.js` `order.push(...partIds(p))`: a part with > ~100k ids overflows the stack and a clean run exits 2 | `partOrder`, one push per id | 150 000-test part (`Maximum call stack size exceeded` before) |
+| `parallel-rerun.js` same spread in the splice | `spliceRecords`, one push per record | 150 000-test hazard file |
+| text-mode `verify_write` held the 1.2 GB report 4-5 times (2.45 GB measured) | `verify::render_text_to` streamed through the chunk writer; writer takes large writes 1 MiB at a time | chunks of at most ~1 MiB reach Python, both modes |
+| (pass 2) after a failed stdout write, text mode resent a growing buffer (quadratic) | writer latches the failure; `verify_write` checks it | a raising writer gets exactly 1 call, both modes |
+| `FileTrace::full` re-opened the path and could compare another test's events if the trace changed after the scan | scanned handle kept; per-record line digest; nodeid + fingerprint + digest checked | records swapped in place; events changed under the same fingerprint (complete and truncated) |
+| `finishRerun` made its temp dir before the trace's directory existed | directory created first | trace path in a directory that does not exist |
+| untested fail-closed branches (unreadable part; trace not readable back) | none needed | 2 `bin/detjs.js` tests, both fail on f67be4a3's session.js |
+
+Auto-fixed: stale comment (`judge_slim`), misplaced doc comment. Left open (Low, never green): an exception from
+`sys.stdout.write`, `KeyboardInterrupt` included, reaches Python as `RuntimeError` (exit 2 with one line instead of an
+interrupt). Left with reasons: exit guard folds codes like 130 to 1 (`runExit`'s rule everywhere); partial stdout before
+exit 2 on a write failure; no golden case with non-empty `ignore_env` or duplicate ids; `stampStatus` on a header without
+`meta` (pre-existing); `readLineAt` (spec'd); `remeasure.sh` paths (record of what ran). Gate edits: 3 listed, 3 kept
+(the spec'd `#[ignore]` generator; the check_p0 pragmas copied from claude/p0-remeasure).
+
+`fenvix verify S1 P1w4` on 16c4b28: `--json` 1,342,548 kB, 19.6 s; text 1,341,296 kB, 19.2 s; exit 1; both outputs
+byte-identical (`cmp`) to the earlier outputs.
+
+### Suites on 16c4b28
+
+| command | result |
+|---|---|
+| `cargo test -p detpy-core -p detpy-node` | all ok: lib 199 passed, 1 ignored; golden_verify 1; r058 3+1+3+3 |
+| `cd node && npm test` | 1002 tests: 994 pass, 4 fail, 3 cancelled, 1 skipped, 64 min. Failures: the 4 base failures (`jest: parallel lanes`, `repro options (vitest)`, `bun: Level 0 controls`, `node-test: adversarial`); `customer-nodetest` "a flaky test..." failed for the environment only and passes 4/4 with `PYTHONPATH=python` |
+| Python shared suite (LIGHT, 4 shards, release-1.yml's deselect) | 785 passed, 19 skipped, 1 failed: `test_packaging::test_gate_runs_on_pull_requests_and_trunk_only_and_cancels_only_superseded_pr_runs` (base failure) |
+| `python3 tests/attacks.py` | node 60 passed; python 157 passed, 2 skipped, 12 failed, all `tests/test_review_r056_pycache.py` (base failures) |
