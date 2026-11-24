@@ -133,12 +133,12 @@ function exceptionOf(err, phase, root) {
   if (e === null || e === undefined) return ['unknown', phase, '', ''];
   if (typeof e !== 'object') return ['thrown', phase, String(e).slice(0, MSG_MAX), ''];
   const name = String(e.name || (e.constructor && e.constructor.name) || 'Error');
-  const msg = String(e.message === undefined ? e : e.message);
-  let text = linesOf(msg).slice(0, MSG_MAX);
+  const lines = linesOf(String(e.message === undefined ? e : e.message));
+  let text = lines.slice(0, MSG_MAX);
   const cause = causeOf(e);
-  if (cause && !linesOf(msg).includes(cause)) {
+  if (cause && !lines.includes(cause)) {
     const tail = ` / cause: ${cause}`.slice(0, CAUSE_MAX);
-    text = `${linesOf(msg).slice(0, MSG_MAX - tail.length)}${tail}`;
+    text = `${lines.slice(0, MSG_MAX - tail.length)}${tail}`;
   }
   return [name, phase, text, whereOf(String(e.stack || ''), root)];
 }
@@ -146,6 +146,9 @@ function exceptionOf(err, phase, root) {
 function whereOf(stack, root) {
   const r = path.resolve(root || process.cwd()) + path.sep;
   for (const line of stack.replace(ANSI, '').split('\n')) {
+    // a frame line is short; a long line is a message (an assertion diff on one line): not scanned (the patterns
+    // below are quadratic on very long lines)
+    if (line.length > 4096) continue;
     // an absolute path, or (Mocha's stack filter) one relative to the working directory
     const m = /(?:^|[\s(])((?:file:\/\/)?\/[^():]+):(\d+):\d+\)?\s*$/.exec(line)
       || /^\s*at (?:.*\()?((?![a-z]+:)[^\s():/][^\s():]*\.[cm]?[jt]sx?):(\d+):\d+\)?\s*$/.exec(line);

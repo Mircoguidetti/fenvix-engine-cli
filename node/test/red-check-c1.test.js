@@ -93,11 +93,43 @@ describe('C1: side-record fields of every Node shell, in the --det-outcomes file
     // protects: spec C1 criterion 3 (node-test unwraps ERR_TEST_FAILURE to the test's own error)
     // fails_when: node-test records the wrapper (type Error, location inside node:test) instead of the assertion
     // no_claim: Node versions without TestContext.error write no record (the runner's fallback applies)
-    if (!seen.vitest || !seen['node-test']) { t.skip('needs the vitest and node-test cases of this file'); return; }
+    // fails (never skips) without its inputs: run the whole file, not this test alone
+    assert.ok(seen.vitest && seen['node-test'], 'needs the vitest and node-test cases of this file (run the whole file)');
     assert.equal(seen['node-test'][0], seen.vitest[0]);
     assert.equal(seen['node-test'][1], seen.vitest[1]);
     // both locations are the assertion's own line in the test file (checked per runner above), not a frame in node:test
     for (const e of [seen['node-test'], seen.vitest]) assert.match(e[3], /^(test|tests)\/a\.test\.m?js:\d+$/);
+  });
+
+  test('mocha: a failing each-hook is recorded on the running test with phase setup or teardown', T, () => {
+    // protects: the phase of a Mocha hook failure (preload.js 'fail' handler)
+    // fails_when: a beforeEach/afterEach failure is recorded as 'call', swapped, or not at all
+    // no_claim: before/after (all) hooks, which run outside any test's bracket
+    const file = 'test/h.spec.cjs';
+    const body = [
+      "describe('b', () => { beforeEach(() => { throw new Error('before broke'); }); it('x', () => {}); });",
+      "describe('a', () => { afterEach(() => { throw new Error('after broke'); }); it('y', () => {}); });",
+    ].join('\n');
+    const dir = fixture('c1', 'mocha-hooks', { [file]: `${body}\n` });
+    const r = crun('mocha', dir, [file], { cache: false, det: ['--det', '--det-outcomes=o.json'] });
+    assert.equal(r.status, 1, show(r));
+    const o = readOutcomes(dir);
+    assert.deepEqual(o.exceptions[`${file}::b::x`].slice(0, 3), ['Error', 'setup', 'before broke'], JSON.stringify(o.exceptions));
+    assert.deepEqual(o.exceptions[`${file}::a::y`].slice(0, 3), ['Error', 'teardown', 'after broke'], JSON.stringify(o.exceptions));
+  });
+
+  test('vitest: concurrent tests get their real durations too', T, () => {
+    // protects: the deferred (concurrent) bracket's durations (state.js initConcurrent / endTest)
+    // fails_when: concurrent tests have no duration (sent as 0)
+    // no_claim: how the real time of interleaved tests splits between them
+    const dir = project('vitest', 'c1-concurrent', { a: [
+      "test.concurrent('c1', async () => { Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 30); });",
+      "test.concurrent('c2', async () => { Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 30); });",
+    ].join('\n') });
+    const r = detRun('vitest', dir, ['--det-outcomes=o.json']);
+    assert.equal(r.status, 0, r.out);
+    const o = readOutcomes(dir);
+    for (const n of ['c1', 'c2']) assert.ok(o.durations[`tests/a.test.mjs::${n}`] >= 1, JSON.stringify(o.durations));
   });
 
   test('vitest: a fetch() refused by the closed network carries the engine block as its cause', T, () => {
@@ -130,6 +162,11 @@ describe('C1: exceptionOf with a cause (unit)', () => {
     assert.equal(long[2].length, 200);
     assert.ok(long[2].endsWith(` / cause: ${blocked}`), long[2]);
     assert.deepEqual(repro.exceptionOf(new Error('plain'), 'setup', process.cwd()).slice(0, 3), ['Error', 'setup', 'plain']);
+    // a long cause is cut (at most 120 characters of the tail), the text stays within 200
+    const longCause = repro.exceptionOf(new Error('m', { cause: new Error('x'.repeat(300)) }), 'call', process.cwd())[2];
+    assert.equal(longCause, `m / cause: ${'x'.repeat(120 - ' / cause: '.length)}`);
+    // a cause that is not an error: its string
+    assert.equal(repro.exceptionOf(new Error('m', { cause: 'str' }), 'call', process.cwd())[2], 'm / cause: str');
   });
 
   test('location: an absolute frame, and a frame Mocha made relative to the working directory', () => {
@@ -143,5 +180,9 @@ describe('C1: exceptionOf with a cause (unit)', () => {
     assert.equal(repro.exceptionOf(err(`Error: x\n    at f (${root}/tests/a.test.js:7:3)`), 'call', root)[3], 'tests/a.test.js:7');
     assert.equal(repro.exceptionOf(err(`Error: x\n    at ${root}/tests/a.test.js:9:1`), 'call', root)[3], 'tests/a.test.js:9');
     assert.equal(repro.exceptionOf(err('Error: x\n    at f (node_modules/x/y.js:1:1)\n    at node:internal/timers:1:1'), 'call', root)[3], '');
+    // a huge single-line message before the frames is not scanned (quadratic patterns), the frame still found
+    const t0 = Date.now();
+    assert.equal(repro.exceptionOf(err(`Error: ${' /a'.repeat(400000)}\n    at f (${root}/tests/a.test.js:5:1)`), 'call', root)[3], 'tests/a.test.js:5');
+    assert.ok(Date.now() - t0 < 2000, `took ${Date.now() - t0} ms`);
   });
 });

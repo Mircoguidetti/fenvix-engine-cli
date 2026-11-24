@@ -97,6 +97,9 @@ def test_reused_test_is_skipped_with_proof_with_its_receipt():
     assert by["b"]["outcome"] == by["c"]["outcome"] == by["e"]["outcome"] == "passed"
     assert by["d"]["outcome"] == "skipped_with_proof" and "runtime" not in receipts["d"]
     assert set(receipts) == {"a", "d"}
+    # an unreadable or infinite recorded duration: 0, never a crash or a value the App refuses
+    for bad in ("x", float("inf"), float("nan"), -3):
+        assert W.receipt_of(row(duration=bad), "t")["reusedDurationMs"] == 0
 
 
 def test_not_proven_and_hazard_rerun_overrides():
@@ -139,13 +142,36 @@ def test_node_hazard_overrides_from_meta_and_final_trace(tmp_path):
     assert W.node_hazard_overrides({}, trace) == ({}, {})
 
 
+def test_strings_fit_the_app_in_utf16_units_without_nul_or_lone_surrogates():
+    # protects: the App's length checks (JavaScript .length: UTF-16 units) and Postgres jsonb (no NUL, no lone
+    #   surrogate): one bad string loses the whole chunk
+    # fails_when: an astral character counts as one unit, a message is cut inside a surrogate pair, or a NUL/lone
+    #   surrogate reaches the chunk; no_claim: characters other than NUL and lone surrogates (sent as they are)
+    emoji = "\U0001F600"
+    assert W.u16len(emoji * 3) == 6 and W.cap16(emoji * 3, 5) == emoji * 2
+    rec = W.failure_record(["E\x00rr", "call", emoji * 3000, "f\ud800.py:1"])
+    assert W.u16len(rec["message"]) <= 4000 and rec["message"] == emoji * 2000
+    assert rec["exceptionType"] == "Err" and rec["location"] == "f\ufffd.py:1"
+    rec = W.failure_record(["E" * 5000, "p" * 5000, "m", "l" * 5000])
+    assert len(rec["exceptionType"]) == len(rec["phase"]) == len(rec["location"]) == 2000
+    # an id of 1,001 astral characters is 2,002 units: not sent, logged; its failure still named (unsent list)
+    tid = emoji * 1001
+    tests, _, unsent = W.results_rows([tid, "ok\x00"], {tid: "failed", "ok\x00": "passed"}, {"ok\x00": float("inf")}, {}, {},
+                                      seconds=True)
+    assert [t["testId"] for t in tests] == ["ok"] and tests[0]["durationMs"] == 0 and unsent == [tid]
+    # a cause is cut in units too
+    t2, _, _ = W.results_rows(["n"], {"n": "passed"}, {}, {}, {}, seconds=False, not_proven={"n": emoji * 400})
+    assert W.u16len(t2[0]["notProvenCause"]) == 500
+    assert W.ms_of(1e300, seconds=True) == 2 ** 53 - 1
+
+
 def test_too_long_id_is_skipped_and_logged(capsys):
     # protects: 2.2 (a testId over 2,000 characters would reject the whole chunk at the App)
     # fails_when: it is sent, or dropped silently; no_claim: ids of exactly 2,000 characters are kept (checked here)
     long_id, edge = "x" * 2001, "y" * 2000
     tests, _, too_long = W.results_rows([long_id, edge], {long_id: "failed", edge: "failed"}, {}, {}, {}, seconds=True)
     assert [t["testId"] for t in tests] == [edge] and tests[0]["failSeq"] == 0
-    assert too_long == [long_id]
+    assert too_long == [long_id]  # failed: returned to be named in summary.json's failures
     assert "2001 characters" in capsys.readouterr().out
 
 
@@ -202,6 +228,29 @@ def test_chunk_limits_tests_receipts_bytes_and_pairs():
     # an empty run: one chunk 0 with no tests
     assert W.chunk_tests([], {}, head) == [{"chunk": 0, "chunks": 1, "engineRunId": "r1", "seed": None, "tests": [],
                                             "receipts": []}]
+
+
+def test_job_limit_and_write_errors_never_fail_the_run(tmp_path, monkeypatch, capsys):
+    # protects: the App's per-job limits (200 chunks, 256 MiB: later chunks would be dropped there) and a run whose
+    #   results cannot be written (a file system problem must not change its outcome)
+    # fails_when: more than 200 chunks are written, chunk 0's `chunks` does not match what was written, or an OSError
+    #   escapes write_results/clear_results; no_claim: which tests are kept when the job is cut (the first ones)
+    monkeypatch.setattr(W, "RESULTS_MAX_TESTS", 1)
+    tests, receipts = _tests(205)
+    out = tmp_path / "o"
+    assert W.write_results(out, tests, receipts, {"seed": None}) == 200
+    files = sorted((out / "results").glob("chunk-*.json"))
+    assert len(files) == 200 and json.loads((out / "results" / "chunk-0.json").read_text())["chunks"] == 200
+    assert "cut at 200 of 205" in capsys.readouterr().out
+    bad = tmp_path / "bad"
+    bad.mkdir()
+    (bad / "results").write_text("a file where the directory goes")
+    assert W.write_results(bad, tests[:2], {}, {"seed": None}) == 0
+    assert "not written" in capsys.readouterr().out
+    d = tmp_path / "d" / "results" / "chunk-0.json"
+    d.mkdir(parents=True)  # a directory named like a chunk (the workspace can hold anything)
+    W.clear_results(tmp_path / "d")
+    assert not d.exists()
 
 
 @pytest.mark.parametrize("run,seed,shuffle,expected", [
@@ -292,6 +341,7 @@ def test_rerun_set_follows_failseq_and_summary_lists_follow_it(tmp_path):
     tests = {t["testId"]: t for c in chunks for t in c["tests"]}
     assert [tests[i]["failSeq"] for i in (ids[4], ids[3], ids[2], ids[1])] == [0, 1, 2, 3]
     assert tests[ids[3]]["rerunAlone"] == {"ran": True, "outcome": "passed"}
+    assert s["exit"] == 1
     assert tests[ids[4]]["rerunAlone"]["outcome"] == "failed" and tests[ids[4]]["rerunAlone"]["failure"]["message"] == "again"
     assert tests[ids[1]]["rerunAlone"] == {"ran": False}
     assert "rerunAlone" not in tests[ids[0]] and tests[ids[0]]["durationMs"] == 3
@@ -328,7 +378,10 @@ def test_parallel_incomplete_rerun_sends_unaccounted_tests_not_proven(tmp_path):
         assert tests[n]["outcome"] == "not_proven" and "its trace is missing" in tests[n]["notProvenCause"], tests[n]
         assert "failSeq" not in tests[n]
     assert tests["k.test.js::c"]["outcome"] == "passed"
+    # spec C1 2.6: NOT PROVEN tests are not in the failed set (not re-run, not in summary.json's failed list);
+    # the run stays red: detjs's exit 1 is kept
     assert reran == [] and s["failed"] == []
+    assert s["exit"] == 1
 
 
 def test_parallel_complete_rerun_failure_is_sent_failed(tmp_path):
@@ -347,3 +400,14 @@ def test_parallel_complete_rerun_failure_is_sent_failed(tmp_path):
     assert tests["h.test.js::a"]["failure"] == {"kind": "real", "phase": "call"} and tests["h.test.js::a"]["durationMs"] == 9
     assert tests["h.test.js::b"]["outcome"] == "passed"
     assert reran == ["h.test.js::a"] and s["failed"] == ["h.test.js::a"]
+
+
+def test_xpassed_rerun_is_flaky_like_its_rerun_alone(tmp_path):
+    # protects: one table for the re-run's outcome (rerunAlone and summary.json's flaky list agree)
+    # fails_when: a re-run that xpassed is sent rerunAlone passed but listed as a real failure in the summary
+    # no_claim: xpassed under Node runners (pytest's outcome; the table is shared)
+    plan = {"order": ["t.test.js::a"], "outcomes": {"t.test.js::a": "failed"}, "alone": {"t.test.js::a": "xpassed"}}
+    _, s, reran, chunks, _ = _job(tmp_path, plan)
+    assert reran == ["t.test.js::a"]
+    assert chunks[0]["tests"][0]["rerunAlone"] == {"ran": True, "outcome": "passed"}
+    assert [f["nodeid"] for f in s["flaky"]] == ["t.test.js::a"] and s["failed"] == []

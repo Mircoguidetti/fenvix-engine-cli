@@ -66,12 +66,14 @@ if (role === 'file' || role === 'shared') {
   const endCurrent = () => {
     if (!cur) return;
     const o = outcomeOf(cur.ctx);
-    if (o === 'failed') {
-      const err = errorOf(cur.ctx);
-      if (err !== null) fp.exception(cur.id, err, 'call');
-    }
+    const { ctx, id } = cur;
     cur = null;
     fp.end(o);
+    // after the bracket: reading the error's stack (a user Error.prepareStackTrace may read files) adds no event
+    if (o === 'failed') {
+      const err = errorOf(ctx);
+      if (err !== null) fp.exception(id, err, 'call');
+    }
   };
   const begin = (ctx) => {
     if (onBegin) onBegin(ctx);

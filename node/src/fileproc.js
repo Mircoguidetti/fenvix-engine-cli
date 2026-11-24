@@ -48,7 +48,7 @@ class FileProcess {
     this.t0 = realNow();
     this.counts = new Map();
     this.exceptions = {};
-    STATE.takeDurations(); // durations of the previous file's tests were written with its side record
+    STATE.takeDurations(); // drop durations measured outside any file (the previous file took its own on close)
     controls.openFile(fileId, '');
     if (this.cap) {
       this.cap.resetFile();
