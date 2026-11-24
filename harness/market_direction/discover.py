@@ -23,7 +23,7 @@ from pathlib import Path
 import ghapi
 
 HERE = Path(__file__).resolve().parent
-D = HERE / "discovery"
+D = HERE / "live" / "discovery"  # live files; checkpoint.sh copies them to discovery/
 STATE = D / "state.json"
 FORMS = {"a": "filename:{F} path:/", "b": "filename:{F}", "c": "{STEM} filename:{F}"}
 STEM = {"AGENTS.md": "AGENTS", "CLAUDE.md": "CLAUDE"}
