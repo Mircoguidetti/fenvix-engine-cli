@@ -373,3 +373,22 @@ def test_parallel_label_check(tmp_path, monkeypatch):
           v("d", ["P5"]),        # SS5 crashed: not checked
           {**v("a", ["P3"]), "label": "order"}]  # not a parallel label: skipped
     assert R.parallel_label_check("r", vs) == (1, 2, 2)
+
+
+def test_trial_evidence_concurrent_needs_overlap_and_a_live_polluter():
+    vt = {"/v": (10.0, 20.0)}
+    assert CA.trial_evidence("passed", "passed", vt, "/v", ["/v"], True, ["/p"])[0] is False
+    assert CA.trial_evidence("passed", "passed", vt, "/v", ["/v"], True, [])[0] is None   # no polluter file overlapped
+    assert CA.trial_evidence("passed", "passed", vt, "/v", ["/v"], False, ["/p"])[0] is None  # polluter crashed
+    assert CA.trial_evidence("failed", "passed", vt, "/v", ["/v"], False, None)[0] is True  # serial mode: not used
+
+
+def test_control_seeds_exclude_a_seed_that_diverged_in_a_supplementary_ss():
+    runs = recorded()
+    by(runs, "P4")["outcomes"][T0] = "failed"
+    v = CA.verdicts(runs, {})[T0]
+    supp = [{"name": "SS3", "kind": "SS", "status": "ok", "outcomes": {T0: "failed"}, "supp": True},
+            {"name": "SS5", "kind": "SS", "status": "ok", "outcomes": {T0: "passed"}, "supp": True}]
+    assert CA.control_seeds_for(runs + supp, T0, v) == [1, 2]
+    runs2 = [r for r in runs if r["name"] not in ("SS1", "P1", "SS2", "P2")]
+    assert CA.control_seeds_for(runs2 + supp, T0, v) == [5]  # P3 kept serial but SS3 diverged; SS5 is no source

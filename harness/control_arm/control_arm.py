@@ -142,7 +142,7 @@ export default async (env) => {{
   // CA_SEED: the diverging run's seed; tests inside each file in that run's order, the files in CA_ORDER
   const seq = process.env.CA_SEED
     ? {{ sequencer: FixedOrderSequencer, shuffle: {{ files: false, tests: true }}, seed: Number(process.env.CA_SEED) }}
-    : {{ sequencer: FixedOrderSequencer }};
+    : {{ sequencer: FixedOrderSequencer, shuffle: false }};  // unseeded control: no shuffle even if the base sets one
   return mergeConfig(c || {{}}, {{ test: {{ sequence: seq }} }});
 }};
 """
@@ -544,7 +544,7 @@ DEFAULT = object()  # trial seed: the diverging run's seed given to the trial
 # pair search results (report.py counts by these)
 R_PAIR = "pair found"
 R_ALONE = "no minimal pair (victim file alone reproduces)"
-R_ALONE_ONCE = "no minimal pair (victim file alone reproduces once in 3)"
+R_ALONE_ONCE = "no minimal pair (victim file alone reproduces below 2 of 3)"
 R_ALONE_UNSEEDED = "no minimal pair (victim file alone diverges without the seed too)"
 R_ALONE_CTL = "no minimal pair (victim file alone diverges under a control seed too)"
 R_INTERACTION = "no minimal pair (interaction)"
@@ -671,10 +671,23 @@ class PairSearch:
         return res
 
 
+def supp_runs(name):
+    """the supplementary SS3..SS5 runs recorded for a repository (outcomes only; never used by a verdict)"""
+    out = []
+    for sd in SUPP_SS:
+        f = os.path.join(DATA, name, f"SS{sd}.json")
+        if os.path.exists(f):
+            row = json.load(open(f))
+            st = "timeout" if row["row"]["timed_out"] else "crash" if row["row"]["crashed"] else "ok"
+            out.append({"name": f"SS{sd}", "kind": "SS", "status": st, "outcomes": row["outcomes"], "supp": True})
+    return out
+
+
 def control_seeds_for(runs, vid, verdict):
     """distinct seeds of runs where the victim kept its serial outcome, up to 2. A seed under which the victim differed
     from serial in any run (a diverging P run, an SS run, an invalid or crashed P run that reported it) is excluded."""
     seed_of = {rn: sd for rn, _, sd in run_names()}
+    seed_of.update({f"SS{k}": k for k in SUPP_SS})  # supplementary runs (supp_runs) count for exclusion only
     bad = {seed_of[rn] for rn in verdict["diverging_runs"]}
     bad |= {seed_of.get(r["name"]) for r in runs if vid in (r["outcomes"] or {}) and r["outcomes"][vid] != verdict["serial"]}
     out = []
@@ -682,20 +695,24 @@ def control_seeds_for(runs, vid, verdict):
         sd = seed_of.get(r["name"])
         if sd is None or sd in bad or sd in out:
             continue
+        if r.get("supp"):
+            continue
         if r["status"] == "ok" and (r["outcomes"] or {}).get(vid) == verdict["serial"]:
             out.append(sd)
     return out[:2]
 
 
-def trial_evidence(got, serial_outcome, vtimes, victim, asked):
+def trial_evidence(got, serial_outcome, vtimes, victim, asked, polluter_ok=True, overlapped=None):
     """(hit, extra files, extra files started before the victim's file ended) of one trial. vitest file arguments are
     substring filters: a file not requested that started before the victim's file ended in the victim's process makes
     the trial no evidence (hit None); later ones are recorded only. Without the victim's outcome, or without its file's
-    start/end (the rule cannot be checked), hit is None too."""
+    start/end (the rule cannot be checked), hit is None too. Concurrent mode (overlapped is a list): if the polluter
+    process timed out or crashed, or none of its files overlapped the victim's file, the trial is no evidence either."""
     vt = vtimes.get(victim)
     extra = sorted(f for f in vtimes if f not in set(asked))
     extra_before = [f for f in extra if vt and vtimes[f][0] < vt[1]]
-    hit = None if got is None or vt is None or extra_before else got != serial_outcome
+    no_conc = overlapped is not None and (not polluter_ok or not overlapped)
+    hit = None if got is None or vt is None or extra_before or no_conc else got != serial_outcome
     return hit, extra, extra_before
 
 
@@ -776,7 +793,9 @@ class RealTrial:
         got = (oc or {}).get(self.victim_id)
         vt = vtimes.get(victim)
         overlapped = sorted(f for f, (a, b) in ptimes.items() if vt and a < vt[1] and b > vt[0]) if mode == "concurrent" else None
-        hit, extra, extra_before = trial_evidence(got, self.serial_outcome, vtimes, victim, groups[0])
+        pol_ok = all(not x[0]["timed_out"] and x[0]["exit"] in (0, 1) for x in res[1:])
+        hit, extra, extra_before = trial_evidence(got, self.serial_outcome, vtimes, victim, groups[0],
+                                                  pol_ok, overlapped if len(groups) > 1 else None)
         rec = {"cmds": [m[2] for m in meta], "exits": [x[0]["exit"] for x in res],
                "wall_s": max(x[0]["wall_s"] for x in res), "timed_out": any(x[0]["timed_out"] for x in res),
                "victim_outcome": got, "seed": seed, "extra_files": extra, "extra_before_victim": extra_before, "file_times": {**vtimes, **ptimes},
@@ -818,7 +837,7 @@ def cmd_pairs(name, out=None, max_victims=MAX_VICTIMS):
                        runs_spent=0, attempts=[], trials=[])
         else:
             ps = PairSearch(RealTrial(repo, v["serial"], vid, timeout, seed), deadline=deadline)
-            res = ps.search(cands, vabs, conc, control_seeds_for(runs, vid, v))
+            res = ps.search(cands, vabs, conc, control_seeds_for(runs + supp_runs(name), vid, v))
             row.update(res)
             row["polluter"] = os.path.relpath(res["polluter"], repo.cwd) if res.get("polluter") else None
             row["trials"] = ps.log

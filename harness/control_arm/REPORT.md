@@ -101,7 +101,8 @@ Plain runner commands only; the engine (detjs, fenvix) was never run. Data: `res
   parallel runs, so no control seed was available; their unseeded controls were clean. These are dependences on test
   order inside one file, not pairs of files: 0 confirmed pairs. The 2 yalc victims (label `parallel`) were not
   reproduced: alone 2 runs, full serial candidate set 2 runs (59 and 37 files), full concurrent set 2 runs (2 and 7
-  files), 6 runs each; nothing is claimed about their cause.
+  files; in those trials 1 of the 2 and 1 or 2 of the 7 files overlapped the victim's file), 6 runs each; nothing is
+  claimed about their cause.
 - Earlier searches. The first (commit 70b27fd, 22484 s over 31 victims) bisected without controls and without the seed
   replay: 0 of 244 trials reproduced a divergence, recorded as "no minimal pair (interaction)" (30) and "pair not
   found (budget)" (1). On the pre-merge review showing it could not reproduce within-file order, the user chose to
@@ -111,10 +112,13 @@ Plain runner commands only; the engine (detjs, fenvix) was never run. Data: `res
   are the third search's.
 - A trial with no victim outcome (timeout, crash, no report) ends a search as "no minimal pair (trial failed)" (none
   occurred).
-- Three rules were tightened after the third search (review pass 3): a miss before the first alone hit now counts; a
-  seed under which the victim differed in any run (SS included) is no control seed; a trial without the victim file's
-  start/end is no evidence. Checked on the recorded trials: every first alone run hit, no control seed used diverged
-  in any run, every trial has the victim file's start/end; so the recorded results are those the tightened code gives.
+- Rules tightened after the third search (review pass 3): a miss before the first alone hit now counts; a seed under
+  which the victim differed in any run (SS1, SS2 and the supplementary SS3..SS5 included) is no control seed; a trial
+  without the victim file's start/end is no evidence; a concurrent trial whose polluter process timed out or crashed,
+  or whose polluter files did not overlap the victim's file, is no evidence; the unseeded control sets shuffle off.
+  Checked on the recorded trials: every first alone run hit, no control seed used diverged in any run, every trial has
+  the victim file's start/end, every concurrent trial exited 0 on both sides with at least one overlapping file, and no
+  measured repository's config sets a shuffle; so the recorded results are those the tightened code gives.
 
 ## The `parallel` label checked against shuffled serial runs with the same seed
 
