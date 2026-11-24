@@ -1,0 +1,22 @@
+{
+ "at": "2026-11-24T18:52:10+00:00",
+ "error": null,
+ "final_url": "https://www.splunk.com/en_us/products/agent-observability.html",
+ "first_2kb": "<HTML><HEAD>\n<TITLE>Access Denied</TITLE>\n</HEAD><BODY>\n<H1>Access Denied</H1>\n \nYou don't have permission to access \"http&#58;&#47;&#47;www&#46;splunk&#46;com&#47;en&#95;us&#47;products&#47;agent&#45;observability&#46;html\" on this server.<P>\nReference&#32;&#35;18&#46;54951eb8&#46;1795546330&#46;9c3a8ab6\n<P>https&#58;&#47;&#47;errors&#46;edgesuite&#46;net&#47;18&#46;54951eb8&#46;1795546330&#46;9c3a8ab6</P>\n</BODY>\n</HTML>\n",
+ "hops": [
+  {
+   "status": 301,
+   "url": "https://galileo.ai/"
+  },
+  {
+   "status": 403,
+   "url": "https://www.splunk.com/en_us/products/agent-observability.html"
+  }
+ ],
+ "length": 427,
+ "name": "Galileo",
+ "status": 403,
+ "text": "",
+ "text_source": "",
+ "url": "https://galileo.ai/"
+}
