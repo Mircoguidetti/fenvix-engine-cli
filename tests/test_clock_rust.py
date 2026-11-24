@@ -534,7 +534,8 @@ def test_cache_matches_reference(pytester, ref_env):
     def norm(b: bytes) -> bytes:
         # the run id (time and pid) and the measured durations are the only wall-clock values of a store; a
         # thread id is in the detail of the /proc reads of time.sleep
-        b = re.sub(rb'"(run|duration)": ?("[^"]*"|[0-9.e-]+)', b"", b)
+        # (with its comma: the outcomes file's cache dict has a `run` too, spec C1 1.2, and must stay valid JSON)
+        b = re.sub(rb'(, ?)?"(run|duration)": ?("[^"]*"|[0-9.e-]+)(?(1)|,? ?)', b"", b)
         return re.sub(rb"/proc/self/task/[0-9]+/", b"/proc/self/task/N/", b)
 
     # Not here: test_sleep_with_open_mocked. With open mocked, its sleeps' check of /proc/self/task/*/children
