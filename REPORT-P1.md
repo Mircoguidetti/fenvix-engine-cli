@@ -284,6 +284,10 @@ depends on whether that `stat` happens while a test file is open (timing), not o
     open: a step that outlived its file. It is not B2's case (the file exists), and the size can depend on what was
     written. Round 2: no run-level entry. Identical stays 0 in both rounds; what B hid is now counted (A 6,818,
     codex-multi-auth's `env:*` digests, A1 section).
+  * **Decision (coordinator, 2026-11-24, /plan-eng-review with the founder, new-brain
+    gstack/projects/Mircoguidetti-new-brain/main-eng-review-p1-phase2-20261124-164500.md): D1 = A, B2 as narrowed
+    here (rule 3) is accepted; D2 = A, the B1 scope proposal below is not in this merge: a separate small branch after
+    the merge queue.**
   * Still open (proposal, ESTIMATED 0.5 day, not done; it changes B1's scope rule, so it is the coordinator's call):
     scope an entry read while no file is open in a worker to the last file that process closed and every later file
     of that process.
