@@ -57,7 +57,6 @@ PY_FILES = {
         "@pytest.mark.skip(reason='c1')\ndef test_s1():\n    pass\n\n"
         "@pytest.mark.skip(reason='c1')\ndef test_s2():\n    pass\n\n"
         "@pytest.mark.xfail(strict=True)\ndef test_xf():\n    assert 0\n"),
-    "test_0_reuse.py": "def test_reused():\n    assert True\n",
     "pytest.ini": "[pytest]\n",
 }
 
@@ -181,7 +180,11 @@ def test_pytest_job_sends_per_test_results(tmp_path, mode):
     # no_claim: pytest's own durations as real time of the test body only (they include setup and teardown)
     proj = tmp_path / "proj"
     proj.mkdir()
-    for name, body in PY_FILES.items():
+    # The engine reuses a test only where skipping it changes no test that runs after it in the same process: in
+    # one session (serial) the reused file sorts last; under xdist --dist loadfile it sorts first (the first file a
+    # worker gets has no predecessors), else its predecessors differ from job to job ("placement" misses)
+    reuse = "test_zz_reuse.py" if mode == "serial" else "test_0_reuse.py"
+    for name, body in {**PY_FILES, reuse: "def test_reused():\n    assert True\n"}.items():
         (proj / name).write_text(body)
     extra = [] if mode == "serial" else ["--", "-n", "2", "--dist", "loadfile"]
     argv = ["--project", str(proj), "--python", sys.executable, "--key", f"c1/pytest-{mode}", *extra]
@@ -192,7 +195,7 @@ def test_pytest_job_sends_per_test_results(tmp_path, mode):
     log = r2.stdout + r2.stderr
     assert r2.returncode != 0, log[-3000:]
     ids = {"victim": "test_a_flaky.py::test_2_victim", "pollute": "test_a_flaky.py::test_1_pollute",
-           "reused": "test_0_reuse.py::test_reused", "teardown": "test_fails.py::test_teardown",
+           "reused": f"{reuse}::test_reused", "teardown": "test_fails.py::test_teardown",
            "absent": ["test_fails.py::test_s1", "test_fails.py::test_s2", "test_fails.py::test_xf"]}
     _check(f"pytest-{mode}", chunks, s2, ids, False, log)
     # criterion 4: the re-runs follow failSeq, each with its own outcomes file
