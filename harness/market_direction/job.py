@@ -98,6 +98,28 @@ def probe(req: dict) -> None:
         print(r["repo"], r.get("ok"), r.get("oldest"), r.get("method"), r.get("why"))
 
 
+def web_fetch(req: dict) -> None:
+    """Part 2 fetches (Python requests, PREREG constants) for {"kind": "web", "out": <dir under results/>,
+    "urls": {name: url}}: per URL the status, final URL, hops, the §2.3 text and the full page (gzip)."""
+    import gzip
+    import web
+    out = RES / req["out"]
+    out.mkdir(parents=True, exist_ok=True)
+    summary = []
+    for name, url in req["urls"].items():
+        r = web.fetch(url)
+        text, src = web.class_text(r["text"]) if r["status"] == 200 else ("", "")
+        slug = re.sub(r"[^A-Za-z0-9]+", "_", name).strip("_")
+        with gzip.open(out / f"{slug}.html.gz", "wt") as f:
+            f.write(r["text"])
+        rec = {k: r.get(k) for k in ("url", "final_url", "status", "hops", "error", "at")}
+        rec.update(name=name, text=text, text_source=src, first_2kb=r["text"][:2048], length=len(r["text"]))
+        (out / f"{slug}.json").write_text(json.dumps(rec, indent=1, sort_keys=True))
+        summary.append({k: rec[k] for k in ("name", "url", "final_url", "status", "text", "text_source", "at")})
+        print(json.dumps(summary[-1])[:300], flush=True)
+    (out / "summary.json").write_text(json.dumps(summary, indent=1, sort_keys=True))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--request", required=True)
@@ -105,6 +127,8 @@ def main() -> int:
     kind = req.get("kind")
     if kind == "probe":
         probe(req)
+    elif kind == "web":
+        web_fetch(req)
     elif kind == "pairs":
         import pairs
         pairs.run(req)

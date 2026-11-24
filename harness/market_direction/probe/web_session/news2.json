@@ -1,0 +1,16 @@
+{
+ "url": "https://thenextweb.com/news/endform-seed-funding",
+ "final_url": "https://thenextweb.com/news/endform-seed-funding",
+ "status": null,
+ "hops": [
+  {
+   "url": "https://thenextweb.com/news/endform-seed-funding",
+   "status": null,
+   "error": "ProxyError(MaxRetryError(\"HTTPSConnectionPool(host='thenextweb.com', port=443): Max retries exceeded with url: /news/endform-seed-funding (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden (agent proxy: no rule or network setting allows this host)'))"
+  }
+ ],
+ "error": "ProxyError(MaxRetryError(\"HTTPSConnectionPool(host='thenextweb.com', port=443): Max retries exceeded with url: /news/endform-seed-funding (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden (agent proxy: no rule or network setting allows this host)'))",
+ "at": "2026-11-24T18:50:27+00:00",
+ "first_2kb": "",
+ "name": "news2"
+}

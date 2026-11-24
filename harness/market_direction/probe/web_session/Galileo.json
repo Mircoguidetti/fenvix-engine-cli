@@ -1,0 +1,16 @@
+{
+ "url": "https://galileo.ai/",
+ "final_url": "https://galileo.ai/",
+ "status": null,
+ "hops": [
+  {
+   "url": "https://galileo.ai/",
+   "status": null,
+   "error": "ProxyError(MaxRetryError(\"HTTPSConnectionPool(host='galileo.ai', port=443): Max retries exceeded with url: / (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden (agent proxy: no rule or network setting allows this host)')))\"))"
+  }
+ ],
+ "error": "ProxyError(MaxRetryError(\"HTTPSConnectionPool(host='galileo.ai', port=443): Max retries exceeded with url: / (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden (agent proxy: no rule or network setting allows this host)')))\"))",
+ "at": "2026-11-24T18:50:27+00:00",
+ "first_2kb": "",
+ "name": "Galileo"
+}

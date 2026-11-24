@@ -1,0 +1,51 @@
+[
+ {
+  "name": "Blacksmith",
+  "status": 200,
+  "final": "https://www.blacksmith.sh/",
+  "len": 132973,
+  "err": ""
+ },
+ {
+  "name": "Trunk",
+  "status": 200,
+  "final": "https://trunk.io/",
+  "len": 109891,
+  "err": ""
+ },
+ {
+  "name": "Braintrust",
+  "status": null,
+  "final": "https://www.braintrust.dev/",
+  "len": 0,
+  "err": "ProxyError(MaxRetryError(\"HTTPSConnectionPool(host='www.braintrust.dev', port=443): Max retries exceeded with url: / (Ca"
+ },
+ {
+  "name": "Arize AI",
+  "status": null,
+  "final": "https://arize.com/",
+  "len": 0,
+  "err": "ProxyError(MaxRetryError(\"HTTPSConnectionPool(host='arize.com', port=443): Max retries exceeded with url: / (Caused by P"
+ },
+ {
+  "name": "Galileo",
+  "status": null,
+  "final": "https://galileo.ai/",
+  "len": 0,
+  "err": "ProxyError(MaxRetryError(\"HTTPSConnectionPool(host='galileo.ai', port=443): Max retries exceeded with url: / (Caused by "
+ },
+ {
+  "name": "news1",
+  "status": null,
+  "final": "https://www.insightpartners.com/?p=25726",
+  "len": 0,
+  "err": "ProxyError(MaxRetryError(\"HTTPSConnectionPool(host='www.insightpartners.com', port=443): Max retries exceeded with url: "
+ },
+ {
+  "name": "news2",
+  "status": null,
+  "final": "https://thenextweb.com/news/endform-seed-funding",
+  "len": 0,
+  "err": "ProxyError(MaxRetryError(\"HTTPSConnectionPool(host='thenextweb.com', port=443): Max retries exceeded with url: /news/end"
+ }
+]

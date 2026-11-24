@@ -1,0 +1,16 @@
+{
+ "url": "https://www.braintrust.dev/",
+ "final_url": "https://www.braintrust.dev/",
+ "status": null,
+ "hops": [
+  {
+   "url": "https://www.braintrust.dev/",
+   "status": null,
+   "error": "ProxyError(MaxRetryError(\"HTTPSConnectionPool(host='www.braintrust.dev', port=443): Max retries exceeded with url: / (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden (agent proxy: no rule or network setting allows this host)')))\"))"
+  }
+ ],
+ "error": "ProxyError(MaxRetryError(\"HTTPSConnectionPool(host='www.braintrust.dev', port=443): Max retries exceeded with url: / (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden (agent proxy: no rule or network setting allows this host)')))\"))",
+ "at": "2026-11-24T18:50:27+00:00",
+ "first_2kb": "",
+ "name": "Braintrust"
+}
