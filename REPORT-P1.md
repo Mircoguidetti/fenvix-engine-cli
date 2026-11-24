@@ -225,6 +225,10 @@ depends on whether that `stat` happens while a test file is open (timing), not o
   * ironcurtain serial 227.77 → 204.94 s, parallel 81.66 → 66.79 s.
   * codex-multi-auth serial 438.34 → 421.47 s, parallel 142.41 → 144.29 s.
   * Plain runs, which the engine does not touch, moved by similar amounts. No speed-up is claimed.
+* **Decision (coordinator, 2026-11-24, after /plan-eng-review with the founder, D1 = A; record
+  gstack/projects/Mircoguidetti-new-brain/main-eng-review-merge-gates-20261124-154500.md in new-brain): C passes its
+  gate** (no test fails only with C in the 3 + 3 repeat runs; codex-multi-auth's gate-run excess did not reproduce).
+  C stays on this branch.
 * Rule 3 unchanged: the test sees the virtual pid and the event records it. A pid that differs between runs and
   changes the outcome is reported diverged or NOT PROVEN (acceptance 2, tested).
 
