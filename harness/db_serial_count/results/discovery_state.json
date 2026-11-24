@@ -1,6 +1,55 @@
 {
  "finished": null,
  "queries": {
+  "postgres \"go test\"": {
+   "done": false,
+   "leaves": 3,
+   "nodes": 15,
+   "root_incomplete": false,
+   "root_total": 22560,
+   "stack": [
+    [
+     1173,
+     1367
+    ],
+    [
+     1368,
+     1562
+    ],
+    [
+     1563,
+     3125
+    ],
+    [
+     3126,
+     6250
+    ],
+    [
+     6251,
+     12500
+    ],
+    [
+     12501,
+     25000
+    ],
+    [
+     25001,
+     50000
+    ],
+    [
+     50001,
+     100000
+    ],
+    [
+     100001,
+     200000
+    ],
+    [
+     200001,
+     400000
+    ]
+   ]
+  },
   "postgres \"manage.py\"": {
    "done": true,
    "leaves": 24,
@@ -58,45 +107,12 @@
    "stack": []
   },
   "postgres rake": {
-   "done": false,
-   "leaves": 7,
-   "nodes": 21,
+   "done": true,
+   "leaves": 15,
+   "nodes": 29,
    "root_incomplete": false,
    "root_total": 7768,
-   "stack": [
-    [
-     3908,
-     4688
-    ],
-    [
-     4689,
-     6250
-    ],
-    [
-     6251,
-     12500
-    ],
-    [
-     12501,
-     25000
-    ],
-    [
-     25001,
-     50000
-    ],
-    [
-     50001,
-     100000
-    ],
-    [
-     100001,
-     200000
-    ],
-    [
-     200001,
-     400000
-    ]
-   ]
+   "stack": []
   },
   "postgres rspec": {
    "done": true,
