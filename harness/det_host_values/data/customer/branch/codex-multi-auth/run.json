@@ -1,0 +1,23 @@
+{
+ "repo": "codex-multi-auth",
+ "engine": "branch",
+ "engine_commit": "e09b1d34f4fa5a29fe1bec56b42cc99a47ffebb4",
+ "cmd": [
+  "/home/user/fenvix-engine-cli/runner/fenvix-run",
+  "node",
+  "--project",
+  "/tmp/pm-hv/repos/codex-multi-auth",
+  "--runner",
+  "vitest",
+  "--cache",
+  "/tmp/pm-hv/customer/branch/codex-multi-auth/cache",
+  "--out",
+  "/tmp/pm-hv/customer/branch/codex-multi-auth",
+  "--detjs",
+  "node /home/user/fenvix-engine-cli/node/bin/detjs.js"
+ ],
+ "cwd": "/tmp/pm-hv/repos/codex-multi-auth",
+ "exit": 1,
+ "wall_s": 368.79,
+ "at": "2026-11-23T20:39:39.956Z"
+}

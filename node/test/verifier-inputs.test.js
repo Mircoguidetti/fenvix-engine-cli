@@ -8,7 +8,16 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const native = require('../src/native');
-const { fixture, crun, show } = require('./runner-helpers');
+const RH = require('./runner-helpers');
+const { fixture, show } = RH;
+
+// Opt-out of the host epoch (spec 2026-11-23): every test here verifies separate runs against each other, so each
+// --det run without the cache keeps --det-epoch=fixed (a test that names an epoch keeps it).
+function crun(runner, dir, args, o = {}) {
+  const det = o.det || ['--det'];
+  const fixed = o.cache !== false || !det.includes('--det') || det.some((x) => x.startsWith('--det-epoch')) ? [] : ['--det-epoch=fixed'];
+  return RH.crun(runner, dir, args, { ...o, det: [...det, ...fixed] });
+}
 
 const T = { timeout: 600000 };
 const BODY = "import { test } from 'node:test'; import assert from 'node:assert/strict';\n"
@@ -60,8 +69,10 @@ for (const [name, envA, envB, reason, det] of [
 
 test('CI-volatile variables are never inputs (design A): runs differing only in them are identical', T, () => {
   const dir = fixture('verifier-inputs', 'volatile', { 'tests/a.test.mjs': BODY });
-  const a = runTo(dir, 'a', { TZ: 'UTC', GITHUB_RUN_ID: '11', RUNNER_TEMP: '/tmp/r1', EXAM_OUT: '/o/1', FENVIX_VOLATILE_ENV: 'EXAM_*' });
-  const b = runTo(dir, 'b', { TZ: 'UTC', GITHUB_RUN_ID: '22', RUNNER_TEMP: '/tmp/r2', EXAM_OUT: '/o/2', FENVIX_VOLATILE_ENV: 'EXAM_*', HTTPS_PROXY: 'http://127.0.0.1:9', SUDO_USER: 'exam' });
+  // --det-net=closed: with the open network (the default since 2026-11-23) the proxy variables are run inputs
+  const closed = ['--det', '--det-net=closed'];
+  const a = runTo(dir, 'a', { TZ: 'UTC', GITHUB_RUN_ID: '11', RUNNER_TEMP: '/tmp/r1', EXAM_OUT: '/o/1', FENVIX_VOLATILE_ENV: 'EXAM_*' }, closed);
+  const b = runTo(dir, 'b', { TZ: 'UTC', GITHUB_RUN_ID: '22', RUNNER_TEMP: '/tmp/r2', EXAM_OUT: '/o/2', FENVIX_VOLATILE_ENV: 'EXAM_*', HTTPS_PROXY: 'http://127.0.0.1:9', SUDO_USER: 'exam' }, closed);
   const rep = JSON.parse(native.verify([a, b]));
   assert.equal(rep.summary.stable, rep.summary.tests, JSON.stringify(rep.input_differences));
   const hdr = JSON.parse(fs.readFileSync(a, 'utf8').split('\n')[0]).meta;
@@ -84,8 +95,10 @@ test('the CPU count is pinned under --det (design A); the engine keeps the real 
 // environment sets, so two runs under different TZ / LANG are the same run: identical, with identical inputs
 test('by default the time zone and the locale are pinned: runs under different TZ and LANG are identical', T, () => {
   const dir = fixture('verifier-inputs', 'tz-pinned', { 'tests/a.test.mjs': BODY });
-  const a = runTo(dir, 'a', { TZ: 'UTC', LANG: 'C.UTF-8', LC_ALL: 'C.UTF-8' });
-  const b = runTo(dir, 'b', { TZ: 'Asia/Tokyo', LANG: 'de_DE.UTF-8', LC_ALL: 'de_DE.UTF-8' });
+  // the pin is asked for: opt-out of the keep default (spec 2026-11-23)
+  const pin = ['--det', '--det-tz=UTC', '--det-locale=C.UTF-8'];
+  const a = runTo(dir, 'a', { TZ: 'UTC', LANG: 'C.UTF-8', LC_ALL: 'C.UTF-8' }, pin);
+  const b = runTo(dir, 'b', { TZ: 'Asia/Tokyo', LANG: 'de_DE.UTF-8', LC_ALL: 'de_DE.UTF-8' }, pin);
   const rep = JSON.parse(native.verify([a, b]));
   assert.equal(rep.summary.stable, rep.summary.tests, JSON.stringify(rep.input_differences));
   for (const t of ['tz', 'locale']) assert.ok(!rep.input_differences.some((d) => d.reason === t), JSON.stringify(rep.input_differences));

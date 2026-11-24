@@ -103,7 +103,7 @@ function installLevel0(cfg, notes) {
   }
   if (cfg.controls.has('net')) {
     if (cfg.netMode === 'record') notes.push('bun: --det-record does not record Bun\'s native connections (fetch, Bun.connect): they are allowed and not recorded');
-    const open = cfg.netMode === 'record';
+    const open = cfg.netMode === 'record' || cfg.netMode === 'open';
     const realFetch = globalThis.fetch;
     const fetchW = function fetch(input, init) {
       const h = hostOf(input);
@@ -165,7 +165,7 @@ function installLevel0(cfg, notes) {
 // -- capture ---------------------------------------------------------------------------------------------------
 function installCapture(cap, bracket, notes) {
   const cfg = require('../controls').cfg();
-  const closed = cfg.controls.has('net') && cfg.netMode !== 'record';
+  const closed = cfg.controls.has('net') && cfg.netMode !== 'record' && cfg.netMode !== 'open';
   const flagger = (kind, name) => function () { if (cap.active && !cap.busy) cap.flag(kind, name); };
   const wrapCall = (obj, key, before, after) => {
     const real = obj[key];

@@ -1,0 +1,23 @@
+{
+ "repo": "ironcurtain",
+ "engine": "branch",
+ "engine_commit": "e09b1d34f4fa5a29fe1bec56b42cc99a47ffebb4",
+ "cmd": [
+  "/home/user/fenvix-engine-cli/runner/fenvix-run",
+  "node",
+  "--project",
+  "/tmp/pm-hv/repos/ironcurtain",
+  "--runner",
+  "vitest",
+  "--cache",
+  "/tmp/pm-hv/customer/branch/ironcurtain/cache",
+  "--out",
+  "/tmp/pm-hv/customer/branch/ironcurtain",
+  "--detjs",
+  "node /home/user/fenvix-engine-cli/node/bin/detjs.js"
+ ],
+ "cwd": "/tmp/pm-hv/repos/ironcurtain",
+ "exit": 1,
+ "wall_s": 201.42,
+ "at": "2026-11-23T20:27:20.139Z"
+}

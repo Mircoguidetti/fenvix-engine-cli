@@ -25,24 +25,25 @@ const avail = (rt) => (rt === 'bun' || rt === 'deno' ? Boolean(H.BINARY[rt]) : t
 function fixture(rt, name, files) {
   return rt === 'bun' || rt === 'deno' ? H.fixture(rt, `r032b-${name}`, files) : RH.fixture('review-r032b', `${rt}-${name}`, files);
 }
-function run(rt, dir, { cache = true, env = {} } = {}) {
-  if (rt === 'bun' || rt === 'deno') return H.crun(rt, dir, { cache, env });
-  return RH.crun(rt, dir, [], { cache, env });
+function run(rt, dir, { cache = true, env = {}, extra = [] } = {}) {
+  if (rt === 'bun' || rt === 'deno') return H.crun(rt, dir, { cache, env, args: extra });
+  return RH.crun(rt, dir, [], { cache, env, det: ['--det', ...extra] });
 }
 const reusedFiles = (r) => ((r.summary && r.summary.reused_files_list) || []).map((f) => f.split('@@')[0]);
 const show = (r) => `status=${r.status}\nreused=${JSON.stringify(r.summary && r.summary.reused_files_list)}\nnc=${JSON.stringify(r.summary && r.summary.not_cached_detail)}\nstdout=${(r.stdout || '').slice(-2000)}\nstderr=${(r.stderr || '').slice(-1500)}`;
 const sleep = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
 
 function attack(rt, dir, file, change, o = {}) {
-  const r1 = run(rt, dir, { env: o.env1 });
+  const x = o.extra || [];
+  const r1 = run(rt, dir, { env: o.env1, extra: x });
   assert.equal(r1.status, 0, `run 1 must pass\n${show(r1)}`);
-  const r2 = run(rt, dir, { env: o.env1 });
+  const r2 = run(rt, dir, { env: o.env1, extra: x });
   if (!reusedFiles(r2).includes(file)) { console.log(`R032B-RESULT ${rt} ${file} uncached`); return 'uncached'; }
   if (typeof change === 'function') change(); else if (change) H.write(dir, change);
   const env2 = o.env2 || o.env1;
-  const fresh = run(rt, dir, { cache: false, env: env2 });
+  const fresh = run(rt, dir, { cache: false, env: env2, extra: x });
   if (fresh.status === 0) { console.log(`R032B-RESULT ${rt} ${file} held (a fresh --det run still passes)`); return 'held'; }
-  const r3 = run(rt, dir, { env: env2 });
+  const r3 = run(rt, dir, { env: env2, extra: x });
   assert.ok(!reusedFiles(r3).includes(file), `WRONG REUSE: ${rt} ${file}\n${show(r3)}\n--- fresh\n${show(fresh)}`);
   console.log(`R032B-RESULT ${rt} ${file} sound`);
   return 'sound';
@@ -61,7 +62,9 @@ for (const rt of ALL) {
       test(`C-${name}: a real clock read (deadline passes between runs)`, T, () => {
         const deadline = Date.now() + 40000;
         const dir = fixture(rt, `clock-${name}`, tf(rt, `c_${name}`, `test('c', () => { ${expr} expect(now < ${deadline}).toBe(true); });`));
-        attack(rt, dir, FILE[rt](`c_${name}`), () => { const w = deadline - Date.now() + 2000; if (w > 0) sleep(w); });
+        // opt-out of the host epoch (spec 2026-11-23): with it the fresh run (no cache: host time) and the cached run
+        // (the cache's virtual day) read different virtual clocks, so the fresh run is no longer this attack's oracle
+        attack(rt, dir, FILE[rt](`c_${name}`), () => { const w = deadline - Date.now() + 2000; if (w > 0) sleep(w); }, { extra: ['--det-epoch=fixed'] });
       });
     }
 

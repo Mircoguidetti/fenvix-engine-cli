@@ -36,7 +36,12 @@ function proj(runner, name, files, extra = {}, cfg = {}) {
   return fixture(`netp041-${runner}`, name, { ...f, ...extra });
 }
 const args = (runner, a = []) => (runner === 'vitest' ? ['run', ...a] : a);
-const run = (runner, dir, a = [], o = {}) => crun(runner, dir, args(runner, a), { cache: false, ...o });
+// Opt-out of the host-values defaults (spec 2026-11-23) for every --det run of this file: its tests check the closed
+// network (blocked hosts, record/replay) and compare separate runs or the 2025-01-01 epoch, so each run keeps
+// --det-epoch=fixed and --det-net=closed unless the test names its own.
+const OPT_OUT = (det) => [...det, ...(det.some((x) => x.startsWith('--det-epoch')) ? [] : ['--det-epoch=fixed']),
+  ...(det.some((x) => x.startsWith('--det-net')) ? [] : ['--det-net=closed'])];
+const run = (runner, dir, a = [], o = {}) => crun(runner, dir, args(runner, a), { cache: false, ...o, det: OPT_OUT(o.det || ['--det']) });
 const PUT = "const put = (k, v) => { fs.mkdirSync('out', { recursive: true }); fs.writeFileSync(path.join('out', k + '.txt'), String(v)); };";
 const got = (dir, k) => fs.readFileSync(path.join(dir, 'out', `${k}.txt`), 'utf8');
 const save = (dir, name) => fs.copyFileSync(path.join(dir, '.detjs', 'trace.jsonl'), path.join(dir, name));

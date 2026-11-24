@@ -1,0 +1,34 @@
+{
+ "plain_counts": [
+  {
+   "passed": 6900,
+   "skipped": 113,
+   "failed": 20
+  },
+  {
+   "passed": 6900,
+   "skipped": 113,
+   "failed": 20
+  }
+ ],
+ "det_counts": [
+  {
+   "passed": 6873,
+   "skipped": 123,
+   "failed": 37
+  },
+  {
+   "passed": 6872,
+   "skipped": 123,
+   "failed": 38
+  }
+ ],
+ "plain_both_passed": 6900,
+ "det_both_passed": 6872,
+ "n_flips": 17,
+ "n_absent_in_det": 0,
+ "n_skipped_in_det": 10,
+ "n_mixed_in_det": 1,
+ "n_ids_only_in_det": 0
+}
+exit 0

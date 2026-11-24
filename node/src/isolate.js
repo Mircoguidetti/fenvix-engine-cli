@@ -88,7 +88,7 @@ async function main(runner, argv) {
     if (OWN.test(a)) { if (OWN_VALUE.has(a)) i++; continue; }
     det.push(a);
     if (!a.includes('=') && ['--det-seed', '--det-cache', '--det-epoch', '--det-disable', '--det-cassette', '--det-allow-host', '--det-tick',
-      '--det-tick-adapt', '--det-timers', '--det-timer-budget', '--det-max-events', '--det-sites', '--det-cache-max-age', '--det-tz', '--det-locale'].includes(a) && i + 1 < argv.length) det.push(argv[++i]);
+      '--det-tick-adapt', '--det-timers', '--det-timer-budget', '--det-max-events', '--det-sites', '--det-cache-max-age', '--det-tz', '--det-locale', '--det-net'].includes(a) && i + 1 < argv.length) det.push(argv[++i]);
   }
   if (!det.includes('--det') && !opts.det) det.unshift('--det');
   const runnerArgs = runner === 'vitest' && ['run', 'watch', 'dev'].includes(rest[0]) ? rest.slice(1) : rest;

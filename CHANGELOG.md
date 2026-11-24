@@ -7,6 +7,32 @@ All notable changes of the fenvix engine. One version for every component (`rele
 
 ## [Unreleased]
 
+### Changed
+- Node `--det` uses the machine's values by default (spec 2026-11-23), so it stops failing tests that pass without
+  it; each old default stays one flag away:
+  - clock: the epoch is the machine's time when the run starts (rounded down to the second), picked once and shared
+    by every process and session of the run (parallel lanes, the one-lane re-run, `--det-isolate`, the repro
+    driver); `--det-cache` keeps the virtual day; `--det-compare`/`--det-plan=TRACE` take that trace's epoch; the
+    trace header has `meta.epoch` (ISO) beside `meta.epoch_ns`. Opt-out: `--det-epoch=fixed` (2025-01-01).
+    Certificates a test makes now validate (`certificate has expired` before).
+  - time zone and locale: kept from the machine and recorded. Opt-out: `--det-tz=UTC --det-locale=C.UTF-8`.
+  - network: new `--det-net=open|closed`, default `open`: external hosts are reached live, recorded as `allowed`
+    events with their bytes in the fingerprint, never reused by the cache, `*_PROXY` variables are run inputs.
+    Opt-out: `--det-net=closed`. `--det-record` and an existing cassette keep recording / replaying.
+    A name sent to the live resolver (`dns.lookup`, `resolve*`, `reverse`) is an `allowed` event too and keeps the
+    test out of the cache. Bun's and Deno's native `fetch` / `Bun.connect` / `Deno.connect` follow the same default.
+  - `--det-isolate` without `--det` (it implies `--det`): one epoch for all its per-test sessions.
+  - `fenvix repro` / `explore` bundles record the failing run's `epoch`; the bundle's command and `fenvix replay` use it.
+  - timers: unchanged (virtual; the runner timeouts stay virtual, G-0144). `--det-timers=real` as before.
+  - `selfcert.generate(commonName, { notBefore, notAfter })` takes an optional validity.
+
+### Known defects
+- Node `--det`: a test that waits on real work (a `vi.waitFor` poll on the runner's real timers, a detached
+  grandchild writing a file) can still be timed out by the virtual clock. The regression test
+  `node/test/host-values-timers.test.js` ("(b) a test waiting on real work is not timed out by the virtual clock")
+  fails on purpose until it is fixed; codex-multi-auth keeps 69 such flips under `--det` (bound 60). Tracked as the
+  separate work item "remaining --det timer flips" (harness/det_host_values/REPORT.md section 7).
+
 ## [0.1.0]
 
 First versioned engine artifact.

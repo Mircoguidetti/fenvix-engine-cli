@@ -111,7 +111,9 @@ class Smoke:
         traces = []
         for i in (1, 2):
             t = os.path.join(self.work, f"det{i}.jsonl")
-            self.sh(f"det{i}", self.fx + ["node", "node-test", "--det", f"--det-trace={t}"] + args)
+            # --det-epoch=fixed: the two runs are verified against each other, so they share one epoch (opt-out of the
+            # host-time default, spec det-host-values 2026-11-23)
+            self.sh(f"det{i}", self.fx + ["node", "node-test", "--det", "--det-epoch=fixed", f"--det-trace={t}"] + args)
             traces.append(t)
         self.verify(*traces)
         cache = os.path.join(self.work, "cache")

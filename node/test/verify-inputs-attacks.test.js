@@ -105,6 +105,10 @@ function server(payload) {
   return new Promise((r) => cp.stdout.once('data', (d) => r({ port: Number(String(d).trim()), close: () => cp.kill() })));
 }
 
+// Opt-out of the host-values defaults (spec 2026-11-23) for the two cases that check a controlled value against the
+// old defaults: the fixed epoch (two runs a second apart) and the pinned time zone.
+const OPT_OUT = { time: ['--det-epoch=fixed'], 'time zone': ['--det-tz=UTC', '--det-locale=C.UTF-8'] };
+
 for (const [name, [runner, files0, kind, change, adjust]] of Object.entries(CASES)) {
   test(`${name}: verify is IDENTICAL only if the test observed the same value`, T, async () => {
     const files = { ...files0 };
@@ -133,9 +137,9 @@ for (const [name, [runner, files0, kind, change, adjust]] of Object.entries(CASE
       else if (change === 'taskset' && i === 1) prefixTaskset = true;
       if (prefixTaskset && (!fs.existsSync('/usr/bin/taskset') || os.availableParallelism() < 2)) return;
       const r = prefixTaskset
-        ? require('node:child_process').spawnSync('taskset', ['-c', '0', process.execPath, path.join(__dirname, '..', 'bin', 'detjs.js'), runner, '--det', ...(runner === 'vitest' ? ['run'] : [])],
+        ? require('node:child_process').spawnSync('taskset', ['-c', '0', process.execPath, path.join(__dirname, '..', 'bin', 'detjs.js'), runner, '--det', ...(OPT_OUT[name] || []), ...(runner === 'vitest' ? ['run'] : [])],
           { cwd: dir, encoding: 'utf8', env: { ...process.env, ...env }, timeout: 240000 })
-        : await new Promise((res) => setImmediate(() => res(crun(runner, dir, runner === 'vitest' ? ['run'] : [], { cache: false, env }))));
+        : await new Promise((res) => setImmediate(() => res(crun(runner, dir, runner === 'vitest' ? ['run'] : [], { cache: false, env, det: ['--det', ...(OPT_OUT[name] || [])] }))));
       if (srv) srv.close();
       assert.ok(fs.existsSync(out), `${name}: no value written\n${show(r)}`);
       vals.push(fs.readFileSync(out, 'utf8'));

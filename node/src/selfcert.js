@@ -35,8 +35,23 @@ const utcTime = (s) => tlv(0x17, Buffer.from(s, 'latin1'));
 
 const ECDSA_SHA256 = seq(oid('1.2.840.10045.4.3.2'));
 
-/** { key, cert } PEM strings of a new self-signed certificate for `commonName`. */
-function generate(commonName = 'detjs network replay (throwaway)') {
+/** UTCTime (YYMMDDHHMMSSZ, years 1950-2049) of a Date. */
+function utcTimeOf(d) {
+  const t = new Date(d);
+  if (Number.isNaN(t.getTime())) throw new Error(`selfcert: not a date: ${d}`);
+  const y = t.getUTCFullYear();
+  if (y < 1950 || y > 2049) throw new Error(`selfcert: ${t.toISOString()} is outside 1950-2049 (UTCTime)`);
+  const p = (n) => String(n).padStart(2, '0');
+  return `${p(y % 100)}${p(t.getUTCMonth() + 1)}${p(t.getUTCDate())}${p(t.getUTCHours())}${p(t.getUTCMinutes())}${p(t.getUTCSeconds())}Z`;
+}
+
+/**
+ * { key, cert } PEM strings of a new self-signed certificate for `commonName`. `validity` (optional):
+ * { notBefore, notAfter } as Dates (or anything `new Date` takes); default 2000-01-01 to 2049-12-31.
+ */
+function generate(commonName = 'detjs network replay (throwaway)', validity = null) {
+  const from = validity && validity.notBefore !== undefined ? utcTimeOf(validity.notBefore) : '000101000000Z';
+  const to = validity && validity.notAfter !== undefined ? utcTimeOf(validity.notAfter) : '491231235959Z';
   const { privateKey, publicKey } = nodeCrypto.generateKeyPairSync('ec', { namedCurve: 'prime256v1' });
   const name = seq(set(seq(oid('2.5.4.3'), utf8(commonName))));
   const spki = publicKey.export({ type: 'spki', format: 'der' });
@@ -48,7 +63,7 @@ function generate(commonName = 'detjs network replay (throwaway)') {
     int(serial),
     ECDSA_SHA256,
     name,
-    seq(utcTime('000101000000Z'), utcTime('491231235959Z')),
+    seq(utcTime(from), utcTime(to)),
     name,
     spki,
   );

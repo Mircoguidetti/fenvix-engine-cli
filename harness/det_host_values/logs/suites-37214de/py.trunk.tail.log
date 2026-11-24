@@ -1,0 +1,60 @@
+tests/test_b.py ........                                                 [ 68%]
+tests/test_c.py ..F                                                      [ 87%]
+tests/test_d.py ..                                                       [100%]
+
+=================================== FAILURES ===================================
+_________________________________ test_worker __________________________________
+
+worker_id = 'master', testrun_uid = 'a52cb0e7208500c9025889ca8dd7d855'
+
+    def test_worker(worker_id, testrun_uid):
+>       assert os.environ.get("PYTEST_XDIST_WORKER", "master") == worker_id
+E       AssertionError: assert 'gw2' == 'master'
+E         
+E         - master
+E         + gw2
+
+tests/test_c.py:8: AssertionError
+=============================== warnings summary ===============================
+tests/test_c.py::test_worker
+  /tmp/pm-hv/venv/trunk2/lib/python3.12/site-packages/_pytest/fixtures.py:1392: PytestRemovedIn10Warning: Session-scoped fixtures defined as instance methods are deprecated.
+  Instance attributes set in the 'testrun_uid' fixture will NOT be visible to test methods,
+  as each test gets a new instance while the fixture runs only once per class.
+  Use a @classmethod decorator below @pytest.fixture and set attributes on cls instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#class-scoped-fixture-as-instance-method
+    fixturefunc = resolve_fixture_function(fixturedef, request)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=============================== detpy (Level 0) ================================
+trace: /tmp/pytest-of-root/pytest-17/popen-gw2/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/t-serial2.jsonl  order digest: 9b79ef97066964c89a99b27cb70c1a4b  seed: 0
+1 test(s) failed under --det (seed 0, fixed order). Turn each into a reproducible defect (cause, seed, order, replay command):
+    fenvix repro tests/test_c.py::test_worker
+  the same run again: pytest --det (with the same arguments)
+============================ detpy cache with proof ============================
+reused 2 result(s) with proof, ran 14, recorded 13 (check 0.055s, record 0.295s); config ba8f0aa792af58beaedd419c6023bd46, runtime 554119ba3c30186eacb54c1cdfbffbfb
+not reused: new 1, placement 13
+not cacheable: outcome 1
+receipts: /tmp/pytest-of-root/pytest-17/popen-gw2/test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable0/rc-serial2.jsonl
+=========================== short test summary info ============================
+FAILED tests/test_c.py::test_worker - AssertionError: assert 'gw2' == 'master'
+=================== 1 failed, 15 passed, 1 warning in 1.81s ====================
+=============================== warnings summary ===============================
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+  /usr/lib/python3.12/importlib/metadata/__init__.py:467: DeprecationWarning: Implicit None on return values is deprecated and will raise KeyErrors.
+    return self.metadata['Version']
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_clock_rust.py::test_cache_matches_reference - AssertionErro...
+FAILED tests/test_level0_rust.py::test_level0_traces_match_reference - Assert...
+FAILED tests/test_py_cache.py::test_the_virtual_clocks_own_probe_of_threads_is_not_the_tests_read
+FAILED tests/test_py_cache.py::test_g2214_a_test_that_crashes_its_worker_is_a_record_of_the_merged_trace
+FAILED tests/test_packaging.py::test_gate_runs_on_pull_requests_and_trunk_only_and_cancels_only_superseded_pr_runs
+FAILED tests/test_parallel_proof.py::test_merged_fingerprints_equal_serial_ones
+FAILED tests/test_parallel_proof.py::test_serial_run_is_unchanged_without_n
+FAILED tests/test_parallel_proof.py::test_serial_and_parallel_sessions_take_the_same_decisions
+FAILED tests/test_parallel_proof.py::test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable
+9 failed, 944 passed, 39 skipped, 4 warnings in 1010.22s (0:16:50)

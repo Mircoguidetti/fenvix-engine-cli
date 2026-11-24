@@ -41,11 +41,15 @@ const { spawnSync } = require('node:child_process');
 const { BIN } = require('./helpers');
 
 /** A detjs run; `o.node` / `o.nodeArgs`: another Node binary or V8 flags (Temporal, ShadowRealm). */
+// Opt-out of the host epoch (spec 2026-11-23) for every run without the cache: the tests check values against the
+// 2025-01-01 epoch and compare separate runs; a run with the cache keeps its virtual day, a test that names an epoch
+// keeps it.
+const fixedEpoch = (det, o) => (o.cache || det.some((x) => x.startsWith('--det-epoch')) ? det : [...det, '--det-epoch=fixed']);
 function run(runner, dir, a = [], o = {}) {
-  if (!o.node && !o.nodeArgs) return crun(runner, dir, args(runner, a), { cache: false, ...o });
+  if (!o.node && !o.nodeArgs) return crun(runner, dir, args(runner, a), { cache: false, ...o, det: fixedEpoch(o.det || ['--det'], o) });
   const env = { ...process.env };
   for (const k of ['CI', 'GITHUB_ACTIONS', 'DETJS', 'NODE_OPTIONS', 'NODE_TEST_CONTEXT', 'DETJS_SEED', 'DETJS_CACHE_DIR']) delete env[k];
-  const r = spawnSync(o.node || process.execPath, [...(o.nodeArgs || []), BIN, runner, ...(o.det || ['--det']), ...args(runner, a)],
+  const r = spawnSync(o.node || process.execPath, [...(o.nodeArgs || []), BIN, runner, ...fixedEpoch(o.det || ['--det'], o), ...args(runner, a)],
     { cwd: dir, encoding: 'utf8', env, timeout: 240000 });
   return { status: r.status, summary: null, stdout: r.stdout || '', stderr: r.stderr || '' };
 }
