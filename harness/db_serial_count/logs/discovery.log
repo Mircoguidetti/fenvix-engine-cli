@@ -30,3 +30,79 @@
 2026-11-24T17:56:00+00:00 postgres vitest          size:1563..2344 tc=1136 leaf=False read=- inc=- req=76
 --- resumed 2026-11-24T21:20:48Z after process death (~20:01Z)
 2026-11-24T21:21:53+00:00 postgres "manage.py"     size:4689..5469 tc=946 leaf=True read=953 inc=False req=10
+2026-11-24T21:22:33+00:00 postgres "manage.py"     size:5470..6250 tc=530 leaf=True read=551 inc=False req=16
+2026-11-24T21:22:40+00:00 postgres "manage.py"     size:6251..12500 tc=1414 leaf=False read=- inc=- req=17
+2026-11-24T21:22:47+00:00 postgres "manage.py"     size:6251..9375 tc=1052 leaf=False read=- inc=- req=18
+2026-11-24T21:23:28+00:00 postgres "manage.py"     size:6251..7813 tc=524 leaf=True read=595 inc=False req=24
+2026-11-24T21:24:02+00:00 postgres "manage.py"     size:7814..9375 tc=414 leaf=True read=436 inc=False req=29
+2026-11-24T21:24:35+00:00 postgres "manage.py"     size:9376..12500 tc=474 leaf=True read=500 inc=False req=34
+2026-11-24T21:25:09+00:00 postgres "manage.py"     size:12501..25000 tc=435 leaf=True read=488 inc=False req=39
+2026-11-24T21:25:23+00:00 postgres "manage.py"     size:25001..50000 tc=139 leaf=True read=161 inc=False req=41
+2026-11-24T21:25:29+00:00 postgres "manage.py"     size:50001..100000 tc=46 leaf=True read=46 inc=False req=42
+2026-11-24T21:25:36+00:00 postgres "manage.py"     size:100001..200000 tc=15 leaf=True read=15 inc=False req=43
+2026-11-24T21:25:43+00:00 postgres "manage.py"     size:200001..400000 tc=1 leaf=True read=1 inc=False req=44
+2026-11-24T21:25:50+00:00 postgres rspec           size:0..400000 tc=5280 leaf=False read=- inc=- req=45
+2026-11-24T21:25:56+00:00 postgres rspec           size:0..200000 tc=5280 leaf=False read=- inc=- req=46
+2026-11-24T21:26:03+00:00 postgres rspec           size:0..100000 tc=5216 leaf=False read=- inc=- req=47
+2026-11-24T21:26:10+00:00 postgres rspec           size:0..50000 tc=5312 leaf=False read=- inc=- req=48
+2026-11-24T21:26:17+00:00 postgres rspec           size:0..25000 tc=5392 leaf=False read=- inc=- req=49
+2026-11-24T21:26:24+00:00 postgres rspec           size:0..12500 tc=5240 leaf=False read=- inc=- req=50
+2026-11-24T21:26:30+00:00 postgres rspec           size:0..6250 tc=4792 leaf=False read=- inc=- req=51
+2026-11-24T21:26:37+00:00 postgres rspec           size:0..3125 tc=3584 leaf=False read=- inc=- req=52
+2026-11-24T21:26:44+00:00 postgres rspec           size:0..1562 tc=1168 leaf=False read=- inc=- req=53
+2026-11-24T21:26:50+00:00 postgres rspec           size:0..781 tc=40 leaf=True read=40 inc=False req=54
+2026-11-24T21:26:57+00:00 postgres rspec           size:782..1562 tc=1120 leaf=False read=- inc=- req=55
+2026-11-24T21:27:31+00:00 postgres rspec           size:782..1172 tc=415 leaf=True read=450 inc=False req=60
+2026-11-24T21:28:25+00:00 postgres rspec           size:1173..1562 tc=716 leaf=True read=800 inc=False req=68
+2026-11-24T21:28:32+00:00 postgres rspec           size:1563..3125 tc=2572 leaf=False read=- inc=- req=69
+2026-11-24T21:28:39+00:00 postgres rspec           size:1563..2344 tc=1556 leaf=False read=- inc=- req=70
+2026-11-24T21:29:40+00:00 postgres rspec           size:1563..1953 tc=812 leaf=True read=900 inc=False req=79
+2026-11-24T21:30:27+00:00 postgres rspec           size:1954..2344 tc=662 leaf=True read=700 inc=False req=86
+2026-11-24T21:31:35+00:00 postgres rspec           size:2345..3125 tc=914 leaf=True read=1000 inc=False req=96
+2026-11-24T21:31:42+00:00 postgres rspec           size:3126..6250 tc=1092 leaf=False read=- inc=- req=97
+2026-11-24T21:32:36+00:00 postgres rspec           size:3126..4688 tc=760 leaf=True read=800 inc=False req=105
+2026-11-24T21:32:56+00:00 postgres rspec           size:4689..6250 tc=288 leaf=True read=290 inc=False req=108
+2026-11-24T21:33:23+00:00 postgres rspec           size:6251..12500 tc=308 leaf=True read=385 inc=False req=112
+2026-11-24T21:33:37+00:00 postgres rspec           size:12501..25000 tc=125 leaf=True read=150 inc=False req=114
+2026-11-24T21:33:43+00:00 postgres rspec           size:25001..50000 tc=43 leaf=True read=43 inc=False req=115
+2026-11-24T21:33:51+00:00 postgres rspec           size:50001..100000 tc=75 leaf=True read=75 inc=False req=116
+2026-11-24T21:33:57+00:00 postgres rspec           size:100001..200000 tc=16 leaf=True read=16 inc=False req=117
+2026-11-24T21:34:04+00:00 postgres rspec           size:200001..400000 tc=3 leaf=True read=3 inc=False req=118
+2026-11-24T21:34:12+00:00 postgres "rails test"    size:0..400000 tc=1840 leaf=False read=- inc=- req=119
+2026-11-24T21:34:19+00:00 postgres "rails test"    size:0..200000 tc=1840 leaf=False read=- inc=- req=120
+2026-11-24T21:34:24+00:00 postgres "rails test"    size:0..100000 tc=1840 leaf=False read=- inc=- req=121
+2026-11-24T21:34:31+00:00 postgres "rails test"    size:0..50000 tc=1836 leaf=False read=- inc=- req=122
+2026-11-24T21:34:38+00:00 postgres "rails test"    size:0..25000 tc=1820 leaf=False read=- inc=- req=123
+2026-11-24T21:34:45+00:00 postgres "rails test"    size:0..12500 tc=1796 leaf=False read=- inc=- req=124
+2026-11-24T21:34:51+00:00 postgres "rails test"    size:0..6250 tc=1680 leaf=False read=- inc=- req=125
+2026-11-24T21:34:58+00:00 postgres "rails test"    size:0..3125 tc=1182 leaf=False read=- inc=- req=126
+2026-11-24T21:35:31+00:00 postgres "rails test"    size:0..1562 tc=401 leaf=True read=406 inc=False req=131
+2026-11-24T21:36:34+00:00 postgres "rails test"    size:1563..3125 tc=814 leaf=True read=900 inc=False req=140
+2026-11-24T21:37:00+00:00 postgres "rails test"    size:3126..6250 tc=400 leaf=True read=400 inc=False req=144
+2026-11-24T21:37:07+00:00 postgres "rails test"    size:6251..12500 tc=78 leaf=True read=78 inc=False req=145
+2026-11-24T21:37:14+00:00 postgres "rails test"    size:12501..25000 tc=22 leaf=True read=22 inc=False req=146
+2026-11-24T21:37:20+00:00 postgres "rails test"    size:25001..50000 tc=6 leaf=True read=6 inc=False req=147
+2026-11-24T21:37:26+00:00 postgres "rails test"    size:50001..100000 tc=2 leaf=True read=2 inc=False req=148
+2026-11-24T21:37:34+00:00 postgres "rails test"    size:100001..200000 tc=2 leaf=True read=2 inc=False req=149
+2026-11-24T21:37:40+00:00 postgres "rails test"    size:200001..400000 tc=1 leaf=True read=1 inc=False req=150
+2026-11-24T21:37:47+00:00 postgres rake            size:0..400000 tc=7768 leaf=False read=- inc=- req=151
+2026-11-24T21:37:54+00:00 postgres rake            size:0..200000 tc=7768 leaf=False read=- inc=- req=152
+2026-11-24T21:38:01+00:00 postgres rake            size:0..100000 tc=7640 leaf=False read=- inc=- req=153
+2026-11-24T21:38:07+00:00 postgres rake            size:0..50000 tc=7592 leaf=False read=- inc=- req=154
+2026-11-24T21:38:14+00:00 postgres rake            size:0..25000 tc=7400 leaf=False read=- inc=- req=155
+2026-11-24T21:38:21+00:00 postgres rake            size:0..12500 tc=7176 leaf=False read=- inc=- req=156
+2026-11-24T21:38:28+00:00 postgres rake            size:0..6250 tc=6448 leaf=False read=- inc=- req=157
+2026-11-24T21:38:34+00:00 postgres rake            size:0..3125 tc=4928 leaf=False read=- inc=- req=158
+2026-11-24T21:39:42+00:00 postgres rake            size:0..1562 tc=961 leaf=True read=985 inc=False req=168
+2026-11-24T21:39:49+00:00 postgres rake            size:1563..3125 tc=3700 leaf=False read=- inc=- req=169
+2026-11-24T21:39:56+00:00 postgres rake            size:1563..2344 tc=2060 leaf=False read=- inc=- req=170
+2026-11-24T21:40:03+00:00 postgres rake            size:1563..1953 tc=1048 leaf=False read=- inc=- req=171
+2026-11-24T21:40:29+00:00 postgres rake            size:1563..1758 tc=384 leaf=True read=400 inc=False req=175
+2026-11-24T21:41:17+00:00 postgres rake            size:1759..1953 tc=696 leaf=True read=700 inc=False req=182
+2026-11-24T21:42:25+00:00 postgres rake            size:1954..2344 tc=942 leaf=True read=1000 inc=False req=192
+2026-11-24T21:42:32+00:00 postgres rake            size:2345..3125 tc=1602 leaf=False read=- inc=- req=193
+2026-11-24T21:43:39+00:00 postgres rake            size:2345..2735 tc=957 leaf=True read=1000 inc=False req=203
+2026-11-24T21:44:19+00:00 postgres rake            size:2736..3125 tc=515 leaf=True read=578 inc=False req=209
+2026-11-24T21:44:26+00:00 postgres rake            size:3126..6250 tc=1464 leaf=False read=- inc=- req=210
+2026-11-24T21:44:35+00:00 postgres rake            size:3126..4688 tc=1180 leaf=False read=- inc=- req=211
+2026-11-24T21:45:14+00:00 postgres rake            size:3126..3907 tc=547 leaf=True read=597 inc=False req=217

@@ -2,41 +2,12 @@
  "finished": null,
  "queries": {
   "postgres \"manage.py\"": {
-   "done": false,
-   "leaves": 15,
-   "nodes": 36,
+   "done": true,
+   "leaves": 24,
+   "nodes": 47,
    "root_incomplete": false,
    "root_total": 12128,
-   "stack": [
-    [
-     5470,
-     6250
-    ],
-    [
-     6251,
-     12500
-    ],
-    [
-     12501,
-     25000
-    ],
-    [
-     25001,
-     50000
-    ],
-    [
-     50001,
-     100000
-    ],
-    [
-     100001,
-     200000
-    ],
-    [
-     200001,
-     400000
-    ]
-   ]
+   "stack": []
   },
   "postgres \"node --test\"": {
    "done": true,
@@ -44,6 +15,14 @@
    "nodes": 29,
    "root_incomplete": false,
    "root_total": 7440,
+   "stack": []
+  },
+  "postgres \"rails test\"": {
+   "done": true,
+   "leaves": 9,
+   "nodes": 17,
+   "root_incomplete": false,
+   "root_total": 1840,
    "stack": []
   },
   "postgres jest": {
@@ -76,6 +55,55 @@
    "nodes": 179,
    "root_incomplete": false,
    "root_total": 57728,
+   "stack": []
+  },
+  "postgres rake": {
+   "done": false,
+   "leaves": 7,
+   "nodes": 21,
+   "root_incomplete": false,
+   "root_total": 7768,
+   "stack": [
+    [
+     3908,
+     4688
+    ],
+    [
+     4689,
+     6250
+    ],
+    [
+     6251,
+     12500
+    ],
+    [
+     12501,
+     25000
+    ],
+    [
+     25001,
+     50000
+    ],
+    [
+     50001,
+     100000
+    ],
+    [
+     100001,
+     200000
+    ],
+    [
+     200001,
+     400000
+    ]
+   ]
+  },
+  "postgres rspec": {
+   "done": true,
+   "leaves": 14,
+   "nodes": 27,
+   "root_incomplete": false,
+   "root_total": 5280,
    "stack": []
   },
   "postgres tox": {
