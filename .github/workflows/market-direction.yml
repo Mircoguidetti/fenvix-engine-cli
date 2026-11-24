@@ -1,0 +1,72 @@
+name: market-direction
+
+# Market direction check (harness/market_direction/): reads public repository metadata, files and Actions run/job
+# metadata with this workflow's GITHUB_TOKEN (GET only; read-only on every other repository). A run starts when a push
+# to this branch adds a request file harness/market_direction/requests/<n>.json; only request files added by the push
+# are processed (git diff --diff-filter=A before..sha). Results are committed back to this branch only (a push made
+# with GITHUB_TOKEN does not start another workflow run).
+
+on:
+  push:
+    branches: [claude/market-direction-check]
+    paths:
+      - harness/market_direction/requests/**
+
+permissions:
+  contents: write
+
+concurrency:
+  group: market-direction
+  cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
+  MD_BRANCH: claude/market-direction-check
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install pyyaml==6.0.2
+      - name: Request files added by this push
+        run: |
+          mkdir -p "$RUNNER_TEMP/req"
+          before="${{ github.event.before }}"
+          if [ -z "$before" ] || [ "$before" = "0000000000000000000000000000000000000000" ]; then
+            before=$(git rev-list --max-parents=0 HEAD | tail -1)
+          fi
+          git diff --name-only --diff-filter=A "$before" "${{ github.sha }}" -- harness/market_direction/requests/ \
+            | sort | while read -r f; do cp "$f" "$RUNNER_TEMP/req/"; echo "request: $f"; done
+          ls -1 "$RUNNER_TEMP/req"
+      - name: Latest checkpoint
+        run: |
+          git fetch -q origin "$MD_BRANCH"
+          git checkout -q -B md "origin/$MD_BRANCH"
+          git log --oneline -1
+      - name: Requests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for f in $(ls -1 "$RUNNER_TEMP/req" | sort -n); do
+            echo "== $f"; cat "$RUNNER_TEMP/req/$f"
+            python3 harness/market_direction/job.py --request "$RUNNER_TEMP/req/$f"
+          done
+      - name: Commit results to this branch
+        if: always()
+        run: |
+          git config user.name "market-direction-bot"
+          git config user.email "market-direction-bot@users.noreply.github.com"
+          out=harness/market_direction/results
+          [ -d "$out" ] || exit 0
+          for i in 1 2 3 4 5 6 7 8; do
+            git fetch -q origin "$MD_BRANCH" && git reset -q --soft "origin/$MD_BRANCH" && git reset -q
+            git add -f "$out" && git commit -q -m "market-direction: results (run ${{ github.run_id }})" || exit 0
+            git push -q origin "HEAD:$MD_BRANCH" && exit 0
+            sleep $((5 + RANDOM % 20))
+          done
+          exit 1

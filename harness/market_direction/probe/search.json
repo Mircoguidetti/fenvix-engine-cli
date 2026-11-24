@@ -1,0 +1,46 @@
+{
+ "AGENTS.md": {
+  "form": "a",
+  "tried": [
+   {
+    "at": "2026-11-24T18:46:37+00:00",
+    "form": "a",
+    "incomplete_results": false,
+    "items_page1": 100,
+    "kept_path_eq_F_page1": 100,
+    "query": "filename:AGENTS.md path:/",
+    "ratelimit": {
+     "X-Ratelimit-Limit": "10",
+     "X-Ratelimit-Remaining": "10",
+     "X-Ratelimit-Reset": "1795546030",
+     "X-Ratelimit-Resource": "code_search",
+     "X-Ratelimit-Used": "5"
+    },
+    "status": 200,
+    "total_count": 763904
+   }
+  ]
+ },
+ "CLAUDE.md": {
+  "form": "a",
+  "tried": [
+   {
+    "at": "2026-11-24T18:46:52+00:00",
+    "form": "a",
+    "incomplete_results": false,
+    "items_page1": 100,
+    "kept_path_eq_F_page1": 99,
+    "query": "filename:CLAUDE.md path:/",
+    "ratelimit": {
+     "X-Ratelimit-Limit": "10",
+     "X-Ratelimit-Remaining": "10",
+     "X-Ratelimit-Reset": "1795546030",
+     "X-Ratelimit-Resource": "code_search",
+     "X-Ratelimit-Used": "8"
+    },
+    "status": 200,
+    "total_count": 729088
+   }
+  ]
+ }
+}
