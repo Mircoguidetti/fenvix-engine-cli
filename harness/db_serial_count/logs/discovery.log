@@ -173,3 +173,5 @@
 2026-11-24T23:10:20+00:00 postgres "go test"       size:8595..9375 tc=548 leaf=True read=587 inc=False req=672
 2026-11-24T23:10:36+00:00 postgres "go test"       size:9376..12500 tc=1560 leaf=False read=- inc=- req=674
 2026-11-24T23:12:58+00:00 postgres "go test"       size:9376..10938 tc=752 leaf=True read=800 inc=False req=690
+--- restarted 2026-11-24T23:14:06Z (planned 113-min stop)
+2026-11-24T23:15:45+00:00 postgres "go test"       size:10939..12500 tc=693 leaf=True read=700 inc=False req=13
