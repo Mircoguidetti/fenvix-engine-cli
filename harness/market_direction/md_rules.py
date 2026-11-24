@@ -99,7 +99,8 @@ def job_test_steps(job: dict, wf: dict, read) -> dict:
 
 def measured_job(files: list[tuple[str, str | None]], read) -> dict:
     """1.2 step 3. ``files`` = [(path, text)] of .github/workflows (.yml/.yaml) at the T0 commit.
-    Returns {"WF", "key", "name", "steps"} or {"reason": no_test_step|unresolved, "detail"}."""
+    Returns {"WF", "key", "name", "steps"} or {"reason": no_test_step|unresolved, "detail"}: `unresolved` when a
+    candidate step raised `unresolved` and no job has a resolving step."""
     any_cand = False
     detail = []
     for path, text in sorted(files):
@@ -120,7 +121,7 @@ def measured_job(files: list[tuple[str, str | None]], read) -> dict:
             if not isinstance(job, dict) or job.get("uses"):
                 continue
             ts_ = job_test_steps(job, wf, read)
-            if ts_["candidates"]:
+            if ts_["unresolved"]:  # a step that resolves to no runner command is not a test step (db note 7)
                 any_cand = True
             if ts_["resolving"]:
                 return {"WF": path, "key": str(key), "name": str(job.get("name") or key),

@@ -216,6 +216,8 @@ def test_measured_job_skips_workflow_call_only_files_and_picks_first_resolving_j
     mj = M.measured_job(files, reader({"package.json": PKG}))
     assert mj["WF"] == ".github/workflows/b.yml" and mj["key"] == "test"
     no_e2e = WF.replace("npx jest e2e", "echo done")
+    no_runner = {"package.json": json.dumps({"scripts": {"test": "ava"}})}
+    assert M.measured_job([(".github/workflows/b.yml", no_e2e)], reader(no_runner))["reason"] == "no_test_step"
     assert M.measured_job([(".github/workflows/b.yml", no_e2e)], reader({}))["reason"] == "unresolved"
     assert M.measured_job([(".github/workflows/c.yml", "on: push\njobs:\n  a:\n    steps:\n      - run: ls\n")],
                           reader({}))["reason"] == "no_test_step"
