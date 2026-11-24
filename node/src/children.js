@@ -19,6 +19,7 @@ const path = require('node:path');
 const { STATE } = require('./state');
 const sites = require('./sites');
 const native = require('./native');
+const { toRealPidArgs } = require('./facts');
 
 const WORKER_PRELOAD = path.join(__dirname, 'worker-preload.js');
 let seen = new Set();
@@ -95,7 +96,8 @@ function installChildren(patcher) {
     if (typeof real !== 'function') continue;
     const w = function (...a) {
       const at = STATE.testId !== null ? site() : null;
-      const child = real.apply(this, a);
+      // a virtual pid in the command, its arguments or environment is the real one for the child (P1 C)
+      const child = real.apply(this, toRealPidArgs(a));
       if (at !== null) {
         mark('child', `${n} ${argvOf(a[0], a[1])}`, at);
         const test = STATE.testId;
@@ -113,6 +115,7 @@ function installChildren(patcher) {
     if (typeof real !== 'function') continue;
     const w = function (...a) {
       const at = STATE.testId !== null ? site() : null;
+      a = toRealPidArgs(a); // P1 C: as for the asynchronous forms
       if (at === null) return real.apply(this, a);
       mark('child', `${n} ${argvOf(a[0], Array.isArray(a[1]) ? a[1] : [])}`, at);
       let r;

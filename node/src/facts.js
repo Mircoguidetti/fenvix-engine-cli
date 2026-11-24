@@ -179,6 +179,82 @@ function realPid(pid) {
   }
   return pid;
 }
+/**
+ * The ONE mapping from what test code holds to what the operating system knows (P1 C): every boundary where a pid
+ * leaves the process (process.kill, child_process arguments, command strings and environment values, `/proc/<pid>`
+ * paths, os.getPriority / os.setPriority) passes its value through it. A number above VPID_BASE that is this file's
+ * virtual pid or another process's of the run (`<run dir>/vpid/`) becomes the real pid; a string gets every such
+ * number in it (as a whole decimal number) replaced; anything else is returned as it is.
+ */
+const PID_IN_TEXT = /(?<![0-9])[0-9]{7,10}(?![0-9])/g;
+function toRealPid(v) {
+  if (typeof v === 'number') return realPid(v);
+  if (typeof v !== 'string' || v.length < 7 || !/[0-9]{7}/.test(v)) return v;
+  return v.replace(PID_IN_TEXT, (m) => {
+    const n = Number(m);
+    if (n <= VPID_BASE) return m;
+    const r = realPid(n);
+    return r === n ? m : String(r);
+  });
+}
+/** child_process arguments: the command / file, the argument list, the options' `env` values (a new object). */
+function toRealPidArgs(a) {
+  if (VPID.current === null && !anyVpid()) return a;
+  const out = a.slice();
+  if (typeof out[0] === 'string') out[0] = toRealPid(out[0]);
+  for (let i = 1; i < out.length; i++) {
+    const x = out[i];
+    if (Array.isArray(x)) out[i] = x.map((y) => (typeof y === 'string' || typeof y === 'number' ? toRealPid(y) : y));
+    else if (x && typeof x === 'object' && x.env && typeof x.env === 'object') {
+      const env = {};
+      for (const k of Object.keys(x.env)) env[k] = toRealPid(x.env[k]);
+      out[i] = { ...x, env };
+    }
+  }
+  return out;
+}
+// whether this process can meet a virtual pid at all: a file of its own is open, or the run has a table (a process
+// with no test file of its own -- a child the test started, a worker between files -- given another's virtual pid)
+let tableSeen = false;
+function anyVpid() {
+  if (tableSeen) return true;
+  const cfg = STATE.config;
+  if (!cfg || !cfg.dir) return false;
+  STATE.quietDepth++;
+  try { tableSeen = fs.existsSync(path.join(cfg.dir, 'vpid')); } catch { /* none */ } finally { STATE.quietDepth--; }
+  return tableSeen;
+}
+const PROC_FS = ['readFileSync', 'readFile', 'statSync', 'stat', 'lstatSync', 'lstat', 'existsSync', 'exists',
+  'accessSync', 'access', 'readdirSync', 'readdir', 'readlinkSync', 'readlink', 'openSync', 'open', 'realpathSync',
+  'createReadStream'];
+const PROC_FSP = ['readFile', 'stat', 'lstat', 'access', 'readdir', 'readlink', 'open', 'realpath'];
+/** `/proc/<virtual pid>/...` -> `/proc/<real pid>/...` (string paths only). */
+function procPath(p) {
+  return typeof p === 'string' && p.startsWith('/proc/') ? toRealPid(p) : p;
+}
+function installPidBoundaries(patcher) {
+  if (STATE.__pidBoundaries) return;
+  STATE.__pidBoundaries = true;
+  const wrapFirst = (obj, n) => {
+    const real = obj[n];
+    if (typeof real !== 'function') return;
+    const w = function (p, ...a) { return real.call(this, procPath(p), ...a); };
+    for (const k of Reflect.ownKeys(real)) {
+      if (['length', 'name', 'prototype', 'arguments', 'caller'].includes(k)) continue;
+      try { Object.defineProperty(w, k, Object.getOwnPropertyDescriptor(real, k)); } catch { /* keep */ }
+    }
+    try { Object.defineProperty(w, 'name', { value: real.name }); } catch { /* keep */ }
+    patcher.set(obj, n, w);
+  };
+  for (const n of PROC_FS) wrapFirst(fs, n);
+  for (const n of PROC_FSP) wrapFirst(fs.promises, n);
+  const realGet = os.getPriority;
+  if (typeof realGet === 'function') patcher.set(os, 'getPriority', function getPriority(pid, ...a) { return realGet.call(this, toRealPid(pid), ...a); });
+  const realSet = os.setPriority;
+  if (typeof realSet === 'function') {
+    patcher.set(os, 'setPriority', function setPriority(pid, ...a) { return a.length ? realSet.call(this, toRealPid(pid), ...a) : realSet.call(this, pid); });
+  }
+}
 const SRC_DIR = path.resolve(__dirname) + path.sep;
 const STRUCTURED = (_e, cs) => cs;
 /** The pid was asked for by the test's code (its own or a package's), not by detjs, the runner or Node itself. */
@@ -204,7 +280,7 @@ function installProcess(patcher) {
   // process.kill on a virtual pid reaches the real process (P1 C)
   const realKill = process.kill;
   if (typeof realKill === 'function') {
-    patcher.set(process, 'kill', function kill(pid, ...a) { return realKill.call(this, realPid(pid), ...a); });
+    patcher.set(process, 'kill', function kill(pid, ...a) { return realKill.call(this, toRealPid(pid), ...a); });
   }
   for (const n of OS_FACTS) wrap(os, n, `os.${n}`, patcher);
   wrap(os, 'cpus', 'os.cpus', patcher, 'other', (r) => `${r.length}|${r[0] ? r[0].model : ''}`);
@@ -359,4 +435,4 @@ function installMkdtemp(patcher) {
   }
 }
 
-module.exports = { installProcess, installRealm, startFile, endFile, realPid, VPID_BASE };
+module.exports = { installProcess, installRealm, installPidBoundaries, startFile, endFile, realPid, toRealPid, toRealPidArgs, VPID_BASE };

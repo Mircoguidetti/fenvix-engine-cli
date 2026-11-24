@@ -63,6 +63,9 @@ function installProcess() {
     try { require('./sqlvirt').installProcess(PATCHER); } catch (e) { level0Gap(`sqlite: ${e && e.message}`, false); }
     try { require('./wasi').installProcess(PATCHER); } catch (e) { level0Gap(`wasi: ${e && e.message}`, false); }
   }
+  // P1 C: a virtual pid leaving the process through a /proc path or os.get/setPriority is the real one (src/facts.js);
+  // after the fs controls, so that it is the outermost wrapper of the fs functions it maps
+  require('./facts').installPidBoundaries(PATCHER);
   // worker threads, child processes and vm contexts started by tests (src/children.js)
   require('./children').installProcess(PATCHER, (g) => installRealm(g, { sameRealm: false, vm: true }));
   // The general rule's wide sensor, last of the controls: it wraps every builtin export the engine's accounting
