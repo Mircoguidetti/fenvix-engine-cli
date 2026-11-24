@@ -141,7 +141,7 @@ Caveat: "causes are named only for tests that differ or are not proven; these ar
 ## What I verified and what I could not
 
 Verified:
-- `git diff origin/claude/release-1 --name-only | grep -v '^harness/cache_selection/'` printed nothing; `harness/parallel_measure/` untouched.
+- Scope: `git diff origin/claude/release-1...HEAD --name-only | grep -vc '^harness/cache_selection/'` printed 0 (133 files changed, all under harness/cache_selection/). The two-dot form `git diff origin/claude/release-1 --stat` now also lists files outside the directory, because claude/release-1 gained 78 commits after this branch was cut (`git log --oneline HEAD..origin/claude/release-1 | wc -l` printed 78); those are changes on claude/release-1, not on this branch. The branch was not merged or rebased. `harness/parallel_measure/` is not modified by this branch.
 - Runner versions and the `--help` lines of the selection flags are in runner_versions.json, recorded at each default head after a fresh install.
 - Every excluded file of every measured state was run (parallel mode); every failure was rerun 3x at the state and 3x at base, file by file (rows in results.jsonl carry the counts).
 
