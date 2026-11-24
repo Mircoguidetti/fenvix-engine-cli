@@ -118,5 +118,177 @@ def main() -> int:
     return 0
 
 
+# Decisions on single rows, each with the reason (listed in REPORT.md under "Funding decisions").
+EXCLUDE = {
+    ("Buildkite", "https://www.thesaasnews.com/news/buildkite-raises-21m-series-b/"):
+        "the page is Buildkite's 2022 Series B (co-led by OneVentures and AirTree, total $39M), re-dated "
+        "'Updated September 20, 2026'; not announced in the window",
+    ("Langfuse", "https://callsphere.ai/blog/langfuse-raises-50m-series-b-ai-agent-observability"):
+        "a vendor's blog (CallSphere), neither the company nor a news outlet; langfuse.com/press says "
+        "'Langfuse joins ClickHouse' (2026-01-16)",
+}
+
+
+def round_key(company: str, rnd: str | None) -> str:
+    r = (rnd or "").lower()
+    r = re.sub(r"\(.*?\)", "", r)
+    if "pre-seed" in r or "pre seed" in r:
+        k = "pre-seed"
+    elif "series" in r:
+        m = re.search(r"series\s+([a-z])", r)
+        k = f"series {m.group(1)}" if m else "series"
+        if "seed" in r:
+            k = "seed + " + k
+    elif "seed" in r:
+        k = "seed"
+    else:
+        k = r.strip() or "unspecified"
+    return f"{company}|{k}"
+
+
+def fx_table() -> dict:
+    out = {}
+    for cur in ("USD", "GBP", "AUD"):
+        p = HERE / "results" / "fx" / f"ECB_EUR_{cur}.json"
+        if not p.exists():
+            continue
+        g = HERE / "results" / "fx" / f"ECB_EUR_{cur}.html.gz"
+        text = gzip.open(g, "rt").read()
+        rows = list(csv.DictReader(text.splitlines()))
+        out[cur] = {r["TIME_PERIOD"]: float(r["OBS_VALUE"]) for r in rows if r.get("OBS_VALUE")}
+    return out
+
+
+def rate_on(table: dict, day: str) -> tuple[str, float]:
+    """ECB reference rate of the date, or of the previous business day with a rate."""
+    import datetime as dt
+    d = dt.date.fromisoformat(day)
+    for _ in range(10):
+        if d.isoformat() in table:
+            return d.isoformat(), table[d.isoformat()]
+        d -= dt.timedelta(days=1)
+    raise KeyError(day)
+
+
+def to_usd(amount: float, cur: str, day: str, fx: dict) -> tuple[float, str]:
+    if cur == "USD":
+        return amount, ""
+    d, eur_usd = rate_on(fx["USD"], day)
+    if cur == "EUR":
+        return amount * eur_usd, f"ECB {d}: 1 EUR = {eur_usd} USD"
+    d2, eur_x = rate_on(fx[cur], day)
+    return amount / eur_x * eur_usd, f"ECB {d}: 1 EUR = {eur_usd} USD; ECB {d2}: 1 EUR = {eur_x} {cur}"
+
+
+def select(checks: list[dict], comps: dict, fx: dict, access: dict) -> tuple[list[dict], list[dict]]:
+    """Confirmed rounds per (company, round); returns (rounds, listed-not-summed)."""
+    groups: dict = {}
+    listed = []
+    for c in checks:
+        name = c["company"]
+        if name not in comps:
+            listed.append({**c, "why": "company not in companies.csv (name variant)"})
+            continue
+        if c.get("outside_window") or not in_window(c.get("date")):
+            continue
+        if c["kind"] != "round" or not c.get("amount"):
+            listed.append({**c, "why": f"{c['kind']}: not summed (acquisition or undisclosed)"})
+            continue
+        ok = []
+        for x in c["confirmations"]:
+            if (name, x["url"]) in EXCLUDE:
+                listed.append({**c, "why": EXCLUDE[(name, x["url"])]})
+                continue
+            if x["amount_on_page"] and not x["database"]:
+                ok.append(x)
+        if not ok:
+            if not any((name, x["url"]) in EXCLUDE for x in c["confirmations"]):
+                listed.append({**c, "why": "amount not confirmed on a company or news page (database source, "
+                                           "page did not load, or amount absent)"})
+            continue
+        groups.setdefault(round_key(name, c["round"]), []).append((c, ok))
+    rounds = []
+    for key, vers in groups.items():
+        comp_v = [(c, ok) for c, ok in vers if any(x["company_page"] for x in ok)]
+        pick_from = comp_v or vers
+        def usd(v):
+            c = v[0]
+            return to_usd(float(c["amount"]), c["currency"], date_of(c, vers), fx)[0]
+        pick_from = sorted(pick_from, key=lambda v: (-len(v[1]), usd(v)))
+        c, ok = pick_from[0]
+        day = date_of(c, vers)
+        amt_usd, fx_note = to_usd(float(c["amount"]), c["currency"], day, fx)
+        comp = comps[c["company"]]
+        src = next((x for x in ok if x["company_page"]), ok[0])
+        rounds.append({"company": c["company"], "class_2_3": comp["class_2_3"], "round": c["round"],
+                       "round_key": key.split("|", 1)[1], "date": day, "amount": c["amount"],
+                       "currency": c["currency"], "amount_usd": round(amt_usd), "fx": fx_note,
+                       "source_url": src["url"], "source_type": "company" if src["company_page"] else "news",
+                       "access_date": access.get(src["url"], ""), "query": c.get("query"), "batch": c["batch"],
+                       "versions": "; ".join(f"{v[0]['amount']} {v[0]['currency']} ({v[0]['source_url']})"
+                                             for v in vers if v[0] is not c),
+                       "public_at_round": "yes" if comp.get("public_note") else "no"})
+    return rounds, listed
+
+
+# Month-only dates completed from the date printed on the confirming page (checked by hand).
+DATE_FROM_PAGE = {("Blacksmith", "https://dealroom.co/news/164699-blacksmith-hits-1b-valuation-with-66m-series-c-led-by-sequoia/"):
+                  "2026-10-21"}
+
+
+def date_of(c: dict, vers: list) -> str:
+    """Full date of the version, else the date printed on the confirming page (DATE_FROM_PAGE), else the earliest
+    full date among versions of the same round, else the 1st of the month."""
+    k = (c["company"], c.get("source_url"))
+    if k in DATE_FROM_PAGE:
+        return DATE_FROM_PAGE[k]
+    if c.get("date") and len(c["date"]) == 10:
+        return c["date"]
+    full = sorted(v[0]["date"] for v in vers if v[0].get("date") and len(v[0]["date"]) == 10)
+    return full[0] if full else (c["date"] + "-01")[:10]
+
+
+def write_tables() -> dict:
+    comps, slug_of, _ = load()
+    checks = json.loads((HERE / "funding_checks.json").read_text())
+    access = {}
+    for u, n in slug_of.items():
+        j = json.loads((HERE / "results" / "funding_sources" / f"{n}.json").read_text())
+        access[u] = (j.get("at") or "")[:10]
+    fx = fx_table()
+    rounds, listed = select(checks, comps, fx, access)
+    cols = ["company", "class_2_3", "round", "round_key", "date", "amount", "currency", "amount_usd", "fx",
+            "source_url", "source_type", "access_date", "query", "batch", "versions", "public_at_round", "summed",
+            "note"]
+    out = {"T": [], "E": [], "other": []}
+    for r in sorted(rounds, key=lambda x: (x["company"], x["date"])):
+        cat = comps[r["company"]]["summed_as"]
+        r["summed"] = "yes" if cat in ("T", "E") and r["public_at_round"] == "no" else "no"
+        r["note"] = "" if r["summed"] == "yes" else f"class {r['class_2_3']}: listed, not summed"
+        out[cat if cat in ("T", "E") else "other"].append(r)
+    for r in listed:
+        cat = comps.get(r["company"], {}).get("summed_as")
+        out[cat if cat in ("T", "E") else "other"].append(
+            {"company": r["company"], "class_2_3": comps.get(r["company"], {}).get("class_2_3", ""),
+             "round": r.get("round"), "date": r.get("date"), "amount": r.get("amount"),
+             "currency": r.get("currency"), "source_url": r.get("source_url"), "query": r.get("query"),
+             "batch": r.get("batch"), "summed": "no", "note": r["why"]})
+    for cat, rows in out.items():
+        with open(HERE / f"funding_{cat}.csv", "w", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=cols, extrasaction="ignore")
+            w.writeheader()
+            w.writerows(rows)
+    return out
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    if len(sys.argv) > 1 and sys.argv[1] == "tables":
+        o = write_tables()
+        for cat, rows in o.items():
+            s = sum(r.get("amount_usd") or 0 for r in rows if r.get("summed") == "yes")
+            print(cat, len(rows), "rows, summed", s)
+            for r in rows:
+                if r.get("amount_usd"):
+                    print("  ", r["company"], r["round_key"], r["date"], r["amount_usd"], r["summed"], r["source_type"])
+    else:
+        sys.exit(main())
