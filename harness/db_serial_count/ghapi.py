@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -104,8 +105,11 @@ class Client:
             self._rate(hd)
             last = (st, data, hd)
             msg = json.dumps(data)[:400].lower() if data is not None else ""
-            if st in (403, 429) and ("rate limit" in msg or "abuse" in msg):
+            if st == 429 or (st == 403 and ("rate limit" in msg or "abuse" in msg)):
                 ra = int({k.lower(): v for k, v in hd.items()}.get("retry-after") or 0)
+                m = re.search(r"try again in ([0-9.]+)s", msg)
+                if m:
+                    ra = int(float(m.group(1))) + 2
                 res = "code_search" if search else "core"
                 sl = ra or (max(self.reset.get(res, 0) - time.time(), 0) + 3 if self.remaining.get(res) == 0 else 60)
                 sys.stderr.write(f"rate limited ({st}) on {path[:80]}: sleeping {sl:.0f}s\n")
