@@ -190,8 +190,14 @@ def timing(src: Source, branch: str, t0: dt.datetime, mj: dict, read_time: dt.da
             if run["id"] not in jobs_cache:
                 jobs_cache[run["id"]] = src.pages(
                     f"repos/{src.repo}/actions/runs/{run['id']}/jobs?filter=latest&per_page=100", "jobs")
-            return M.run_value(wf_text, mj["key"], src.reader(sha), jobs_cache[run["id"]], level)
+            try:
+                return M.run_value(wf_text, mj["key"], src.reader(sha), jobs_cache[run["id"]], level)
+            except M.JobLevel:
+                trigger.append([run["id"], run["created_at"]])
+                raise
         return value_of
+
+    trigger: list = []
 
     windows = {"D0": (M.d0_subranges(t0), True, False), "D1": (M.d1_subranges(t0, read_time), False, True)}
     for level in ("step", "job"):
@@ -215,7 +221,7 @@ def timing(src: Source, branch: str, t0: dt.datetime, mj: dict, read_time: dt.da
     return {"level": level, "D0": d0, "D1": d1, "g": d1 / d0,
             "D0_runs": [[r["id"], r["created_at"], v] for r, v in sel["D0"]],
             "D1_runs": [[r["id"], r["created_at"], v] for r, v in sel["D1"]],
-            "run_queries": len(run_log)}
+            "run_queries": len(run_log), "job_level_trigger": trigger[:1]}
 
 
 def eval_setup_at(src: Source, branch: str, when: dt.datetime) -> dict:
