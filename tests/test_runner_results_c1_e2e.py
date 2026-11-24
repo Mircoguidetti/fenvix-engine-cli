@@ -57,7 +57,7 @@ PY_FILES = {
         "@pytest.mark.skip(reason='c1')\ndef test_s1():\n    pass\n\n"
         "@pytest.mark.skip(reason='c1')\ndef test_s2():\n    pass\n\n"
         "@pytest.mark.xfail(strict=True)\ndef test_xf():\n    assert 0\n"),
-    "test_reuse.py": "def test_reused():\n    assert True\n",
+    "test_0_reuse.py": "def test_reused():\n    assert True\n",
     "pytest.ini": "[pytest]\n",
 }
 
@@ -83,7 +83,8 @@ def _job(tmp: Path, argv: list[str], name: str, cache_root: Path, extra_env: dic
     out = tmp / name
     e = {"PATH": os.environ.get("PATH", "/usr/bin:/bin"), "HOME": str(tmp), "GITHUB_STEP_SUMMARY": str(tmp / f"{name}.md"),
          "FENVIX_CACHE_ROOT": str(cache_root), "TMPDIR": str(tmp), **(extra_env or {})}
-    r = subprocess.run([sys.executable, str(WRAPPER), *argv[:1], "--out", str(out), *argv[1:]], env=e,
+    head = argv[:1] if argv[:1] == ["node"] else []
+    r = subprocess.run([sys.executable, str(WRAPPER), *head, "--out", str(out), *argv[len(head):]], env=e,
                        capture_output=True, text=True, timeout=1800)
     s = json.loads((out / "summary.json").read_text()) if (out / "summary.json").exists() else {}
     chunks = [json.loads(p.read_text()) for p in sorted((out / "results").glob("chunk-*.json"),
@@ -191,7 +192,7 @@ def test_pytest_job_sends_per_test_results(tmp_path, mode):
     log = r2.stdout + r2.stderr
     assert r2.returncode != 0, log[-3000:]
     ids = {"victim": "test_a_flaky.py::test_2_victim", "pollute": "test_a_flaky.py::test_1_pollute",
-           "reused": "test_reuse.py::test_reused", "teardown": "test_fails.py::test_teardown",
+           "reused": "test_0_reuse.py::test_reused", "teardown": "test_fails.py::test_teardown",
            "absent": ["test_fails.py::test_s1", "test_fails.py::test_s2", "test_fails.py::test_xf"]}
     _check(f"pytest-{mode}", chunks, s2, ids, False, log)
     # criterion 4: the re-runs follow failSeq, each with its own outcomes file
