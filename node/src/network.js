@@ -1,6 +1,9 @@
 'use strict';
-// Closed network with optional record/replay, and the bytes of every connection in the fingerprint.
+// Open or closed network with optional record/replay, and the bytes of every connection in the fingerprint.
 //
+// * `--det-net=open` (the default since 2026-11-23): external hosts are reached live like `--det-allow-host` hosts
+//   (a `net.connect`/`tls.connect` event `<host>:<port> allowed`, the bytes digested); the cache never reuses a test
+//   that reached one (src/cache/capture.js). The rules below are those of `--det-net=closed`.
 // * Connections (`net.Socket#connect`, hence `net.connect`, `http`, `https`, `http2`, `tls.connect`, global `fetch`
 //   and `undici`) and DNS lookups (`dns.lookup`, `dns.resolve*`, `dns.promises.*`) towards non-local hosts fail with
 //   `NetworkBlockedError` (code ECONNREFUSED; ENOTFOUND for DNS). Loopback, Unix sockets and hosts given with
@@ -111,7 +114,7 @@ function cassetteAges(file, maxAgeDays = 0, now = real.Date.now()) {
 
 class Policy {
   constructor(cfg) {
-    this.mode = cfg.netMode; // block | record | replay
+    this.mode = cfg.netMode; // open | block | record | replay
     this.allow = new Set(cfg.allowHosts);
     this.proxies = proxyEndpoints();
     this.cassettePath = cfg.cassette;
@@ -166,6 +169,8 @@ class Policy {
   }
 
   external(host, port) {
+    // --det-net=open: every host is reached like a --det-allow-host host (live, `allowed`, bytes in the fingerprint)
+    if (this.mode === 'open') return false;
     if (this.proxies.has(`${String(host).toLowerCase()}:${port}`)) return true;
     if (isLocalName(host)) return false;
     return !this.allow.has(this.hostname(host).toLowerCase());
@@ -875,6 +880,11 @@ function dnsCheck(host) {
   if (POLICY === null || host === null || host === undefined) return undefined;
   const h = String(host);
   if (isLocalName(h) || net.isIP(h) || POLICY.allow.has(h.toLowerCase().replace(/\.$/, ''))) return undefined;
+  if (POLICY.mode === 'open') {
+    // --det-net=open: the live resolver answers; its answer is no run input, so the event lets the cache refuse reuse
+    STATE.record('net', 'dns.lookup', `${h} allowed`);
+    return undefined;
+  }
   if (POLICY.mode === 'record') return undefined;
   if (POLICY.mode === 'replay' && POLICY.hasRecording(h)) {
     STATE.record('net', 'dns.lookup', `${h} replay`);
@@ -919,12 +929,14 @@ function guardResolve(obj, name, promises) {
   if (typeof orig !== 'function') return null;
   if (promises) {
     return async function (hostname, ...rest) {
-      if (POLICY && POLICY.mode !== 'record') dnsCheckNoFake(hostname);
+      if (POLICY && POLICY.mode === 'open') dnsOpen(hostname, name);
+      else if (POLICY && POLICY.mode !== 'record') dnsCheckNoFake(hostname);
       return orig.call(this, hostname, ...rest);
     };
   }
   return function (hostname, ...rest) {
-    if (POLICY && POLICY.mode !== 'record') {
+    if (POLICY && POLICY.mode === 'open') dnsOpen(hostname, name);
+    else if (POLICY && POLICY.mode !== 'record') {
       try {
         dnsCheckNoFake(hostname);
       } catch (err) {
@@ -945,6 +957,7 @@ function guardReverse(obj, name, promises) {
     if (POLICY === null || POLICY.mode === 'record') return null;
     const h = String(ip);
     if (isLocalName(h) || POLICY.allow.has(h.toLowerCase())) return null;
+    if (POLICY.mode === 'open') { STATE.record('net', `dns.${name}`, `${h} allowed`); return null; }
     STATE.record('net', `dns.${name}`, `${h} blocked`);
     const err = new NetworkBlockedError(`${h} (reverse DNS)`, 'ENOTFOUND');
     err.hostname = h;
@@ -966,6 +979,13 @@ function guardReverse(obj, name, promises) {
     }
     return orig.call(this, ip, ...rest);
   };
+}
+
+/** --det-net=open: a non-local name sent to the live resolver is recorded (`<name> allowed`); the cache flags it. */
+function dnsOpen(hostname, op) {
+  const h = String(hostname);
+  if (isLocalName(h) || net.isIP(h) || POLICY.allow.has(h.toLowerCase().replace(/\.$/, ''))) return;
+  STATE.record('net', `dns.${op}`, `${h} allowed`);
 }
 
 function dnsCheckNoFake(hostname) {

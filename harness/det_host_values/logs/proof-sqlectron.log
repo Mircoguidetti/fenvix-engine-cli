@@ -1,0 +1,12 @@
+== sqlectron trunk f67be4a31f1a9cf4d4e048ab8b5ec2d58b8e0055 2026-11-23T21:04:03Z
+{"repo": "sqlectron", "kind": "plain", "rep": 1, "workers": 1, "exit": 0, "wall_s": 28.34, "busy_before_pct": 0.2}
+{"repo": "sqlectron", "kind": "serial", "rep": 1, "workers": 1, "exit": 0, "wall_s": 32.48, "busy_before_pct": 0.0}
+{"repo": "sqlectron", "kind": "par", "rep": 1, "workers": 4, "exit": 0, "wall_s": 15.73, "busy_before_pct": 0.2}
+{"repo": "sqlectron", "kind": "verify", "rep": 1, "workers": 4, "exit": 1, "wall_s": 0.08, "busy_before_pct": 0.0}
+exit 0 2026-11-23T21:05:24Z
+== sqlectron branch 702bf4890c4b2827db4250e9872f31562bb76012 2026-11-23T21:05:24Z
+{"repo": "sqlectron", "kind": "plain", "rep": 1, "workers": 1, "exit": 0, "wall_s": 5.2, "busy_before_pct": 0.0}
+{"repo": "sqlectron", "kind": "serial", "rep": 1, "workers": 1, "exit": 0, "wall_s": 19.31, "busy_before_pct": 0.3}
+{"repo": "sqlectron", "kind": "par", "rep": 1, "workers": 4, "exit": 0, "wall_s": 15.57, "busy_before_pct": 0.0}
+{"repo": "sqlectron", "kind": "verify", "rep": 1, "workers": 4, "exit": 1, "wall_s": 0.09, "busy_before_pct": 0.0}
+exit 0 2026-11-23T21:06:09Z

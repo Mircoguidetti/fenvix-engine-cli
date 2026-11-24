@@ -1,0 +1,91 @@
+{
+  "labels": [
+    "run0",
+    "run1"
+  ],
+  "order_digests": [
+    "4761f7cc019b1d28804dd37e9affd989",
+    "4761f7cc019b1d28804dd37e9affd989"
+  ],
+  "complete": [
+    false,
+    false
+  ],
+  "summary": {
+    "runs": 2,
+    "tests": 2,
+    "stable": 1,
+    "diverged": 0,
+    "missing": 0,
+    "outcome_unstable": 0,
+    "order_identical": true,
+    "reasons": {},
+    "inputs_recorded": true,
+    "identical": 1,
+    "input_differs": 1,
+    "not_proven": 0
+  },
+  "tests": [
+    {
+      "nodeid": "reads",
+      "status": "input-differs",
+      "fingerprints": [
+        "0aad127da759ec1b6147a7c6575dc092",
+        "0aad127da759ec1b6147a7c6575dc092"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 1,
+        "index": null,
+        "window": null,
+        "event_a": {
+          "t": 0,
+          "s": "other",
+          "o": "input.env:MY_FLAG",
+          "at": "<run>",
+          "v": "aaaa"
+        },
+        "event_b": {
+          "t": 0,
+          "s": "other",
+          "o": "input.env:MY_FLAG",
+          "at": "<run>",
+          "v": "bbbb"
+        },
+        "reason": "env",
+        "description": "input differs: MY_FLAG (read at t.py:3): the test read an environment variable whose value differs between the runs; otherwise identical"
+      }
+    },
+    {
+      "nodeid": "plain",
+      "status": "stable",
+      "fingerprints": [
+        "ad34a2a530790da587c4a41ac6eb6904",
+        "ad34a2a530790da587c4a41ac6eb6904"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": null
+    }
+  ],
+  "input_differences": [
+    {
+      "name": "env:MY_FLAG",
+      "run_a": 0,
+      "run_b": 1,
+      "value_a": "aaaa",
+      "value_b": "bbbb",
+      "reason": "env"
+    }
+  ]
+}

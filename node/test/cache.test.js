@@ -270,7 +270,8 @@ for (const runner of RUNNERS) {
         ...tfile(runner, 'tzp', "test('tzp', () => { expect(new Date(0).getHours()).toBe(0); });"),
       });
       const files = [F(runner, 'tzp')];
-      cycle(runner, dir, files, () => {}, [], { env: { TZ: 'UTC' }, env3: { TZ: 'Asia/Tokyo' } });
+      // opt-out of the host-values default (spec 2026-11-23): this test checks the pinned zone
+      cycle(runner, dir, files, () => {}, [], { args: ['--det-tz=UTC', '--det-locale=C.UTF-8'], env: { TZ: 'UTC' }, env3: { TZ: 'Asia/Tokyo' } });
     });
 
     test('configuration: runner configuration, detjs options and tsconfig changes', T, () => {

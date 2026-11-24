@@ -1,0 +1,395 @@
+TAP version 13
+# Subtest: (a) the clock is the host clock by default; certificates made in a test validate
+    # Subtest: Date.now() within 10 minutes of the real time; a certificate valid from now-1h to now+1h passes the TLS handshake
+    not ok 1 - Date.now() within 10 minutes of the real time; a certificate valid from now-1h to now+1h passes the TLS handshake
+      ---
+      duration_ms: 354.940146
+      type: 'test'
+      location: '/home/user/fenvix-engine-cli/node/test/host-values.test.js:42:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        status=1
+        summary=null
+        stdout='testCodeFailure'
+          error: 'Date.now() 2025-01-01T00:00:00.000Z vs real 2026-11-23T15:00:57.356Z'
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected: true
+          actual: false
+          operator: '=='
+          stack: |-
+            TestContext.<anonymous> (file:///home/user/fenvix-engine-cli/node/test/.tmp/host-values/clock-cert/tests/clock.test.mjs:5:10)
+            Test.runInAsyncScope (node:async_hooks:214:14)
+            Test.run (node:internal/test_runner/test:1047:25)
+            async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+          ...
+        # Subtest: certificate made in the test
+        ok 2 - certificate made in the test
+          ---
+          duration_ms: 25.027571
+          type: 'test'
+          ...
+        1..2
+        # tests 2
+        # suites 0
+        # pass 1
+        # fail 1
+        # cancelled 0
+        # skipped 0
+        # todo 0
+        # duration_ms 134.122212
+        detjs: trace .detjs/trace.jsonl: 2 tests, order digest d351e5f9fd200736e13b761e879260ff
+        detjs: 1 test(s) used real OS entropy, observed but not controlled (crypto.generateKeyPairSync): their results can differ between runs; --det-urandom makes crypto.randomBytes & co. deterministic (not for tests of cryptography), e.g. tests/clock.test.mjs::certificate made in the test
+        1 test(s) failed under --det (seed 0, fixed order). Turn each into a reproducible defect (cause, seed, order, replay command):
+            fenvix repro 'tests/clock.test.mjs::wall clock' --runner=node-test
+          rerun the failing file with the same seeds and order: detjs node-test --det tests/clock.test.mjs
+          the same run again: detjs node-test --det (with the same arguments)
+        
+        stderr=detjs: status: failed=1 not_proven=0 passed=1 skipped=0
+        
+        
+        1 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/host-values.test.js:64:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    1..1
+not ok 1 - (a) the clock is the host clock by default; certificates made in a test validate
+  ---
+  duration_ms: 355.721019
+  type: 'suite'
+  location: '/home/user/fenvix-engine-cli/node/test/host-values.test.js:41:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: (c) network policy: open by default, closed on request
+    # Subtest: default: a non-local host goes through and is recorded `<host>:<port> allowed`
+    not ok 1 - default: a non-local host goes through and is recorded `<host>:<port> allowed`
+      ---
+      duration_ms: 384.424756
+      type: 'test'
+      location: '/home/user/fenvix-engine-cli/node/test/host-values.test.js:81:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        status=1
+        summary=null
+        stdout=e-cli/node/test/.tmp/host-values/net-open/tests/net.test.mjs:11:1'
+          failureType: 'testCodeFailure'
+          error: 'detjs: network access to api.external.example:36683 blocked (Level 0 closes the network; localhost is allowed); use --det-record to record real responses, or --det-allow-host to allow it'
+          code: 'ECONNREFUSED'
+          name: 'NetworkBlockedError'
+          stack: |-
+            blockSocket (/home/user/fenvix-engine-cli/node/src/network.js:685:15)
+            Socket.connect (/home/user/fenvix-engine-cli/node/src/network.js:758:10)
+            Socket.connect (/home/user/fenvix-engine-cli/node/src/ioorder.js:281:24)
+            Socket.connect (/home/user/fenvix-engine-cli/node/src/parallel.js:403:110)
+            Object.connect (node:net:246:17)
+            Agent.createConnection (node:_http_agent:321:16)
+            Agent.createSocket (node:_http_agent:487:26)
+            Agent.addRequest (node:_http_agent:427:10)
+            new ClientRequest (node:_http_client:404:16)
+            request (node:http:102:10)
+          ...
+        1..1
+        # tests 1
+        # suites 0
+        # pass 0
+        # fail 1
+        # cancelled 0
+        # skipped 0
+        # todo 0
+        # duration_ms 138.476851
+        detjs: trace .detjs/trace.jsonl: 1 tests, order digest 4f93205bb2086a4d47f760e58c7a51fd
+        1 test(s) failed under --det (seed 0, fixed order). Turn each into a reproducible defect (cause, seed, order, replay command):
+            fenvix repro 'tests/net.test.mjs::external host' --runner=node-test
+          rerun the failing file with the same seeds and order: detjs node-test --det tests/net.test.mjs
+          the same run again: detjs node-test --det (with the same arguments)
+        
+        stderr=detjs: status: failed=1 not_proven=0 passed=0 skipped=0
+        
+        
+        1 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/host-values.test.js:84:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: --det-net=closed: the same connection is refused with NetworkBlockedError
+    not ok 2 - --det-net=closed: the same connection is refused with NetworkBlockedError
+      ---
+      duration_ms: 52.995847
+      type: 'test'
+      location: '/home/user/fenvix-engine-cli/node/test/host-values.test.js:93:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        status=2
+        summary=null
+        stdout=
+        stderr= LANG of the run (default: LC_ALL/LANG when set, else C.UTF-8)
+          --det-cache-max-age=D    never reuse a result recorded more than D days ago (default 30; 0 = no limit)
+          --det-cache-real-clock   nightly check: run every file on the real clock (no reuse, nothing recorded) and report
+                                   each test whose cached result differs (an expiry); its cache entries are removed
+                                   With --det-cache and no --det-epoch the epoch is today 00:00 UTC (the virtual day): a
+                                   test that reads the clock is reused only on the UTC day it was recorded
+          --det-isolate            a fresh process per test (Vitest, Jest) or per test file (Mocha, Jasmine, uvu, Bun, Deno):
+                                   no in-memory state crosses that boundary; with --det-cache, a test (file) is reused or run
+                                   on its own inputs only (docs/NODE-CACHE.md)
+          --det-cache-receipts=P   receipts file (default <root>/.detjs/receipts.jsonl)
+          --det-cache-summary=P    summary JSON (default <root>/.detjs/cache-summary.json)
+          --det-workers=N|N%|auto  run test files in N parallel lanes with a fixed plan (default: the machine's CPUs, or the
+                                   runner's own --maxWorkers / -w / --fileParallelism when given on the command line;
+                                   --det-workers=1 or the runner's own serial option for one lane)
+          --det-plan=TRACE|JSON    replay the lane plan of an earlier parallel run (its trace's meta.parallel.plan)
+        
+        
+        
+        2 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 2
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/host-values.test.js:101:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - (c) network policy: open by default, closed on request
+  ---
+  duration_ms: 437.63839
+  type: 'suite'
+  location: '/home/user/fenvix-engine-cli/node/test/host-values.test.js:71:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: (d) the cache with an open network
+    # Subtest: a test that reached an external host is never reused; the reason is in its receipt
+    not ok 1 - a test that reached an external host is never reused; the reason is in its receipt
+      ---
+      duration_ms: 47.469081
+      type: 'test'
+      location: '/home/user/fenvix-engine-cli/node/test/host-values.test.js:109:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        status=2
+        summary=null
+        stdout=
+        stderr= LANG of the run (default: LC_ALL/LANG when set, else C.UTF-8)
+          --det-cache-max-age=D    never reuse a result recorded more than D days ago (default 30; 0 = no limit)
+          --det-cache-real-clock   nightly check: run every file on the real clock (no reuse, nothing recorded) and report
+                                   each test whose cached result differs (an expiry); its cache entries are removed
+                                   With --det-cache and no --det-epoch the epoch is today 00:00 UTC (the virtual day): a
+                                   test that reads the clock is reused only on the UTC day it was recorded
+          --det-isolate            a fresh process per test (Vitest, Jest) or per test file (Mocha, Jasmine, uvu, Bun, Deno):
+                                   no in-memory state crosses that boundary; with --det-cache, a test (file) is reused or run
+                                   on its own inputs only (docs/NODE-CACHE.md)
+          --det-cache-receipts=P   receipts file (default <root>/.detjs/receipts.jsonl)
+          --det-cache-summary=P    summary JSON (default <root>/.detjs/cache-summary.json)
+          --det-workers=N|N%|auto  run test files in N parallel lanes with a fixed plan (default: the machine's CPUs, or the
+                                   runner's own --maxWorkers / -w / --fileParallelism when given on the command line;
+                                   --det-workers=1 or the runner's own serial option for one lane)
+          --det-plan=TRACE|JSON    replay the lane plan of an earlier parallel run (its trace's meta.parallel.plan)
+        
+        
+        
+        2 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 2
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/host-values.test.js:116:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: the *_PROXY variables are run inputs while the network is open (the default)
+    not ok 2 - the *_PROXY variables are run inputs while the network is open (the default)
+      ---
+      duration_ms: 361.580429
+      type: 'test'
+      location: '/home/user/fenvix-engine-cli/node/test/host-values.test.js:127:3'
+      failureType: 'testCodeFailure'
+      error: '["clock","entropy","env:AI_AGENT","env:ANGLE_FEATURE_OVERRIDES_ENABLED","env:ANTHROPIC_BASE_URL","env:AWS_ACCESS_KEY_ID","env:AWS_CA_BUNDLE","env:AWS_SECRET_ACCESS_KEY","env:BUN_FEATURE_FLAG_DISABLE_STANDALONE_MADVISE","env:BUN_INSTALL","env:BUN_OPTIONS","env:BUN_TLS_EXTRA_DISTRUSTED_KEYS","env:CARGO_HTTP_CAINFO","env:CCR_AGENT_PROXY_CA_WATCH_ENABLED","env:CCR_AGENT_PROXY_ENABLED","env:CCR_ASYNC_FIRST_HEARTBEAT","env:CCR_ASYNC_REGISTER_WORKER","env:CCR_AUTO_MODE_USER_ENV_KEYS_FACT","env:CCR_DIAG_FLUSH_INTERVAL_S","env:CCR_EGRESS_GATEWAY_ENABLED","env:CCR_ENABLE_TRACING","env:CCR_OTLP_METRICS_INTERVAL_S","env:CCR_PRELOAD_CLAUDE","env:CCR_SESSION_PROFILE","env:CCR_SPAWN_TIMESTAMP_MS","env:CCR_UPSTREAM_PROXY_ENABLED","env:CHROME_BIN","env:CHROME_PATH","env:CLAUDECODE","env:CLAUDE_ADDITIONAL_DIRECTORIES","env:CLAUDE_AFTER_LAST_COMPACT","env:CLAUDE_AUTOCOMPACT_PCT_OVERRIDE","env:CLAUDE_AUTO_BACKGROUND_TASKS","env:CLAUDE_CODE_ACCOUNT_UUID","env:CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD","env:CLAUDE_CODE_ARTIFACT_ASSETS","env:CLAUDE_CODE_ARTIFACT_DB","env:CLAUDE_CODE_ARTIFACT_MULTI_FILE","env:CLAUDE_CODE_ARTIFACT_TYPES","env:CLAUDE_CODE_ARTIFACT_TYPE_CATALOG","env:CLAUDE_CODE_ARTIFACT_TYPE_CLOUD_CREATE","env:CLAUDE_CODE_BASE_REF","env:CLAUDE_CODE_BG_TASKS_REPORT_RUNNING","env:CLAUDE_CODE_CCR_EVENT_FLUSH_POLICY","env:CLAUDE_CODE_CHILD_NOTES_DIR","env:CLAUDE_CODE_CHILD_SESSION","env:CLAUDE_CODE_CHROME_SIDE_PANEL","env:CLAUDE_CODE_CONFIG_WATCH_EVENTS","env:CLAUDE_CODE_CONTAINER_ID","env:CLAUDE_CODE_DEBUG","env:CLAUDE_CODE_DIAGNOSTICS_FILE","env:CLAUDE_CODE_DISABLE_BUILTIN_ANTMCP","env:CLAUDE_CODE_DISABLE_MCP_TASK_BACKGROUND","env:CLAUDE_CODE_ELEGANT_MEADOW","env:CLAUDE_CODE_ENTRYPOINT","env:CLAUDE_CODE_ENVIRONMENT_RUNNER_VERSION","env:CLAUDE_CODE_EXECPATH","env:CLAUDE_CODE_GZIP_REQUEST_BODIES","env:CLAUDE_CODE_HOLD_UNANSWERED_PARKED_PERMISSION","env:CLAUDE_CODE_HOSTED_DESKTOP","env:CLAUDE_CODE_INCLUDE_PARTIAL_MESSAGES","env:CLAUDE_CODE_JIT_POLICY_AFTER_STARTUP","env:CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH","env:CLAUDE_CODE_MCP_ALWAYS_LOAD_JOIN_BEFORE_INPUT","env:CLAUDE_CODE_MCP_NO_REDIAL_AFTER_POLICY_REFUSAL","env:CLAUDE_CODE_MESSAGING_SOCKET","env:CLAUDE_CODE_MESSAGING_TOKEN","env:CLAUDE_CODE_ORGANIZATION_UUID","env:CLAUDE_CODE_POST_FOR_SESSION_INGRESS_V2","env:CLAUDE_CODE_PROVIDER_MANAGED_BY_HOST","env:CLAUDE_CODE_PROXY_RESOLVES_HOSTS","env:CLAUDE_CODE_REMOTE","env:CLAUDE_CODE_REMOTE_ENVIRONMENT_TYPE","env:CLAUDE_CODE_REMOTE_HERMETIC_MODE","env:CLAUDE_CODE_REMOTE_SDK_URL","env:CLAUDE_CODE_REMOTE_SEND_KEEPALIVES","env:CLAUDE_CODE_REMOTE_SESSION_ID","env:CLAUDE_CODE_REQUIRED_PLUGINS_HOLD","env:CLAUDE_CODE_SESSION_ATTENDED","env:CLAUDE_CODE_SESSION_ID","env:CLAUDE_CODE_SYNC_SESSION_REFS","env:CLAUDE_CODE_SYNC_SKILLS","env:CLAUDE_CODE_TEE_SDK_STDOUT","env:CLAUDE_CODE_USER_EMAIL","env:CLAUDE_CODE_USE_CCR_V2","env:CLAUDE_CODE_VERSION","env:CLAUDE_CODE_WORKER_EPOCH","env:CLAUDE_EFFORT","env:CLAUDE_ENABLE_STREAM_WATCHDOG","env:CLAUDE_PID","env:CLAUDE_SESSION_INGRESS_TOKEN_FILE","env:CLOUDSDK_AUTH_ACCESS_TOKEN","env:CLOUDSDK_CORE_CUSTOM_CA_CERTS_FILE","env:CLOUDSDK_PROXY_ADDRESS","env:CLOUDSDK_PROXY_PORT","env:CLOUDSDK_PROXY_TYPE","env:COREPACK_ENABLE_AUTO_PIN","env:CURL_CA_BUNDLE","env:DEBIAN_FRONTEND","env:DENO_CERT","env:DENO_TLS_CA_STORE","env:DETJS","env:DISABLE_AUTOUPDATER","env:DOCKER_HTTPS_PROXY","env:DOCUMENTS_MCP_SCRATCH_ROOT","env:ELECTRON_GET_USE_PROXY","env:ENVRUNNER_SKIP_ACK","env:ENV_MANAGER_ENABLE_DIAG_LOGS","env:FSSPEC_GCS","env:GCM_INTERACTIVE","env:GH_NO_UPDATE_NOTIFIER","env:GH_TOKEN","env:GITHUB_TOKEN","env:GIT_ASKPASS","env:GIT_CONFIG_COUNT","env:GIT_CONFIG_KEY_0","env:GIT_CONFIG_KEY_1","env:GIT_CONFIG_KEY_2","env:GIT_CONFIG_VALUE_0","env:GIT_CONFIG_VALUE_1","env:GIT_CONFIG_VALUE_2","env:GIT_EDITOR","env:GIT_SSL_CAINFO","env:GIT_TERMINAL_PROMPT","env:GLOBAL_AGENT_HTTPS_PROXY","env:GLOBAL_AGENT_NO_PROXY","env:GRPC_DEFAULT_SSL_ROOTS_FILE_PATH","env:HEX_CACERTS_PATH","env:HOME","env:HTTPLIB2_CA_CERTS","env:IS_SANDBOX","env:JAVA_HOME","env:JAVA_TOOL_OPTIONS","env:LANG","env:LC_ALL","env:MATPLOTLIBRC","env:MAX_THINKING_TOKENS","env:MCP_CONNECTION_NONBLOCKING","env:MCP_TOOL_TIMEOUT","env:NIX_PROFILES","env:NIX_SSL_CERT_FILE","env:NODE_EXTRA_CA_CERTS","env:NODE_PATH","env:NPM_CONFIG_USERCONFIG","env:NoDefaultCurrentDirectoryInExePath","env:ORT_DISABLE_TELEMETRY","env:PATH","env:PIP_CERT","env:PIP_CONFIG_FILE","env:PIP_DISABLE_PIP_VERSION_CHECK","env:PLAYWRIGHT_BROWSERS_PATH","env:PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD","env:PUPPETEER_EXECUTABLE_PATH","env:PYTHONUNBUFFERED","env:RBENV_ROOT","env:REQUESTS_CA_BUNDLE","env:RUSTUP_HOME","env:RUST_BACKTRACE","env:SBX_TELEMETRY_SOCKET","env:SESSION_INGRESS_URL","env:SHELL","env:SKIP_PLUGIN_MARKETPLACE","env:SSL_CERT_FILE","env:TERM","env:TRACEPARENT","env:TZ","env:USE_BUILTIN_RIPGREP","env:USE_SHTTP_MCP","env:UV_NATIVE_TLS","env:XDG_DATA_DIRS","env:YARN_HTTPS_PROXY","env:YARN_NETWORK_CONCURRENCY","env:_JAVA_OPTIONS","env:__ETC_PROFILE_NIX_SOURCED","env:npm_config_https_proxy","env:npm_config_noproxy","locale","network","runner","runtime","seed","shuffle","tz"]'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/host-values.test.js:132:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 3 - (d) the cache with an open network
+  ---
+  duration_ms: 409.300152
+  type: 'suite'
+  location: '/home/user/fenvix-engine-cli/node/test/host-values.test.js:108:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: (e) one epoch per run
+    # Subtest: a parallel run and its one-lane re-run (passes 1 and 2) see one start time
+    not ok 1 - a parallel run and its one-lane re-run (passes 1 and 2) see one start time
+      ---
+      duration_ms: 4846.636263
+      type: 'test'
+      location: '/home/user/fenvix-engine-cli/node/test/host-values.test.js:175:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        meta.epoch (ISO) in the trace header: {"cassette_max_age_days":0,"cassette_oldest_days":null,"cli_args":[],"controls":["fs","isolation","net","order","seeds","time","timers"],"detjs":"0.1.0","entropy":"observed","env_read_outside_tests":["FENVIX_NO_PROVABLE_SENSOR","JEST_WORKER_ID","NODE_V8_COVERAGE","UNDICI_NO_FG","VITEST_POOL_ID"],"env_reads_recorded":true,"epoch_ns":"1735689600000000000","files":["tests/a.test.mjs","tests/b.test.mj
+        + actual - expected
+        
+        + 'undefined'
+        - 'string'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'string'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        epochMeta (/home/user/fenvix-engine-cli/node/test/host-values.test.js:170:12)
+        TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/host-values.test.js:182:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+      ...
+    # Subtest: --det-isolate: every per-test session sees one start time
+    not ok 2 - --det-isolate: every per-test session sees one start time
+      ---
+      duration_ms: 5384.734369
+      type: 'test'
+      location: '/home/user/fenvix-engine-cli/node/test/host-values.test.js:186:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        meta.epoch (ISO) in the trace header: {"cassette_max_age_days":0,"cassette_oldest_days":null,"cli_args":["/home/user/fenvix-engine-cli/node/test/.tmp/host-values/epoch-isolate/tests/a.test.mjs","-t","^a1$"],"controls":["fs","isolation","net","order","seeds","time","timers"],"detjs":"0.1.0","entropy":"observed","env_read_outside_tests":["FENVIX_NO_PROVABLE_SENSOR","JEST_WORKER_ID","NODE_V8_COVERAGE","UNDICI_NO_FG","VITEST_POOL_ID"],"en
+        + actual - expected
+        
+        + 'undefined'
+        - 'string'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'string'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        epochMeta (/home/user/fenvix-engine-cli/node/test/host-values.test.js:170:12)
+        TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/host-values.test.js:193:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: --det-compare=T and --det-plan=T without --det-epoch use the epoch of T
+    not ok 3 - --det-compare=T and --det-plan=T without --det-epoch use the epoch of T
+      ---
+      duration_ms: 679.754596
+      type: 'test'
+      location: '/home/user/fenvix-engine-cli/node/test/host-values.test.js:197:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        meta.epoch (ISO) in the trace header: {"status":{"failed":0,"not_proven":0,"passed":2,"skipped":0},"cassette_max_age_days":0,"cassette_oldest_days":null,"cli_args":[],"controls":["fs","isolation","net","order","seeds","time","timers"],"detjs":"0.1.0","entropy":"observed","env_read_outside_tests":["FENVIX_NO_PROVABLE_SENSOR","JEST_WORKER_ID","NODE_V8_COVERAGE","UNDICI_NO_FG","VITEST_POOL_ID"],"env_reads_recorded":true,"epoch_ns":"17356
+        + actual - expected
+        
+        + 'undefined'
+        - 'string'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'string'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        epochMeta (/home/user/fenvix-engine-cli/node/test/host-values.test.js:170:12)
+        TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/host-values.test.js:204:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 4 - (e) one epoch per run
+  ---
+  duration_ms: 10911.716213
+  type: 'suite'
+  location: '/home/user/fenvix-engine-cli/node/test/host-values.test.js:137:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..4
+# tests 8
+# suites 4
+# pass 0
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12184.782789
+exit 1

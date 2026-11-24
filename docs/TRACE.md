@@ -32,7 +32,7 @@ A run that crashed has no footer (the verifier marks it `(partial)`).
 | `seed`, `shuffle` | the seed of every generator and of the shuffle |
 | `hashseed` | `PYTHONHASHSEED` |
 | `clock` | virtual clock: epoch, tick, adaptive tick, sleep mode (or `real (time control off)`) |
-| `tz` | the pinned zone (`UTC (pinned)`), or the machine's when `--det-tz=keep` |
+| `tz` | the pinned zone (`UTC (pinned)`), or the machine's when `--det-tz=keep` (the Node default) |
 | `locale` | the pinned locale, or the machine's when `--det-locale=keep` |
 | `env` | whether environment reads are recorded |
 | `env:NAME` | one per environment variable, CI-volatile ones excepted (docs/CLI.md): a digest of `NAME=value` (never the value) |
@@ -78,7 +78,7 @@ and its fingerprints are equal. The counters keep their historical names: `cover
 | `runtime` | interpreter, version, platform or runner | compare runs of the same environment |
 | `seed`, `hashseed` | the seed, the hash seed | same `--det-seed` in both runs |
 | `time` | the clock configuration (epoch, tick), or a clock read returned another value | same `--det-epoch`; for a read: what changed the number of clock reads before it |
-| `tz`, `locale` | time zone, locale | keep the defaults (`--det-tz=UTC`, `--det-locale=C.UTF-8`) |
+| `tz`, `locale` | time zone, locale | pin them in both runs (`--det-tz=UTC`, `--det-locale=C.UTF-8`; the Python default, Node keeps the machine's) |
 | `env` | an environment variable (named), or the test read it (named, with the site) | same environment, or `--ignore-env NAME` |
 | `net` | network mode, allowed hosts, cassette, or a network event | same cassette; re-record with `--det-record` |
 | `fs` | file-system order control, or a listing returned other entries | the directory content differed (files created by an earlier run, for example) |

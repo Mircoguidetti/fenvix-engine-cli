@@ -1,0 +1,27 @@
+tjs vitest --det --det-epoch=2026-11-23T00:00:00Z run test/api-model-runtime.test.ts -t '^keeps responses failover within the selected credential region$'  # alone, without the cache: passes`
+  - minimise: `detjs repro 'test/api-model-runtime.test.ts::keeps responses failover within the selected credential region'`
+- `test/api-model-runtime.test.ts::applies operator-declared reasoning levels and Daybreak access to API metadata`
+  - replay: `detjs vitest --det --det-epoch=2026-11-23T00:00:00Z run test/api-model-runtime.test.ts -t '^applies operator-declared reasoning levels and Daybreak access to API metadata$'  # alone, without the cache: passes`
+  - minimise: `detjs repro 'test/api-model-runtime.test.ts::applies operator-declared reasoning levels and Daybreak access to API metadata'`
+- `test/api-model-runtime.test.ts::does not retain operator metadata after it is cleared on the route`
+  - replay: `detjs vitest --det --det-epoch=2026-11-23T00:00:00Z run test/api-model-runtime.test.ts -t '^does not retain operator metadata after it is cleared on the route$'  # alone, without the cache: passes`
+  - minimise: `detjs repro 'test/api-model-runtime.test.ts::does not retain operator metadata after it is cleared on the route'`
+- `test/api-model-runtime.test.ts::keeps api failover within the selected pool and region`
+  - replay: `detjs vitest --det --det-epoch=2026-11-23T00:00:00Z run test/api-model-runtime.test.ts -t '^keeps api failover within the selected pool and region$'  # alone, without the cache: passes`
+  - minimise: `detjs repro 'test/api-model-runtime.test.ts::keeps api failover within the selected pool and region'`
+- `test/api-model-runtime.test.ts::keeps zdr failover within the selected pool and region`
+  - replay: `detjs vitest --det --det-epoch=2026-11-23T00:00:00Z run test/api-model-runtime.test.ts -t '^keeps zdr failover within the selected pool and region$'  # alone, without the cache: passes`
+  - minimise: `detjs repro 'test/api-model-runtime.test.ts::keeps zdr failover within the selected pool and region'`
+- `test/api-model-runtime.test.ts::keeps psp failover within the selected pool and region`
+  - replay: `detjs vitest --det --det-epoch=2026-11-23T00:00:00Z run test/api-model-runtime.test.ts -t '^keeps psp failover within the selected pool and region$'  # alone, without the cache: passes`
+  - minimise: `detjs repro 'test/api-model-runtime.test.ts::keeps psp failover within the selected pool and region'`
+
+<details><summary>Why the other tests ran</summary>
+
+Not reused (an input changed or no entry yet): new 460.
+
+Not cacheable (the test touched something the engine cannot prove): os-entropy 1221, network-connection 759, a-level-0-control-could-not-be-installed 606, outcome-failed 385, subprocess 312, reads-a-clock-level-0-does-not 163, touched-a-path-or-port-another-test-file 31, capture-not-written 1.
+
+</details>
+
+[fenvix] tests 8662, reused with proof 0, ran 8662, saved 0.0 s of test time, failed 353, flaky 18, not proven 0; exit 1

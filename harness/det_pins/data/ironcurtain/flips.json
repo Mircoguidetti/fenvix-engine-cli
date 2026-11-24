@@ -1,0 +1,3184 @@
+{
+ "repo": "ironcurtain",
+ "engine_commit": "e7338950262acc4bd24ed6d3af6a59e3f765a3af",
+ "plain_counts": [
+  {
+   "passed": 6900,
+   "skipped": 113,
+   "failed": 20
+  },
+  {
+   "passed": 6900,
+   "skipped": 113,
+   "failed": 20
+  }
+ ],
+ "det_counts": [
+  {
+   "passed": 6684,
+   "skipped": 123,
+   "failed": 226
+  },
+  {
+   "passed": 6684,
+   "skipped": 123,
+   "failed": 226
+  }
+ ],
+ "plain_both_passed": 6900,
+ "det_both_passed": 6684,
+ "flips": [
+  "test/ca.test.ts@@main::loadOrCreateCA::publishes one authority under concurrent first-use creator/loaders",
+  "test/ca.test.ts@@main::loadOrCreateCA::serves a strict-v2 leaf accepted by Python strict OpenSSL verification",
+  "test/docker-workload/watchdog-sigkill.integration.test.ts@@main::resource watchdog supervisor across a coordinator SIGKILL::outlives the coordinator and revokes a post-mortem hard-threshold breach",
+  "test/docker/docker-workload-admission.test.ts@@main::secure nested Docker resolved-variant admission::pins Docker Desktop agent identity for 'packages' without Apple archive transport",
+  "test/docker/docker-workload-egress.test.ts@@main::registry-egress listener (end-to-end through createMitmProxy)::admits a manifest pull to a listed registry and forwards it destination-bound",
+  "test/docker/docker-workload-egress.test.ts@@main::registry-egress listener (end-to-end through createMitmProxy)::changes the exported ledger snapshot for a denied zero-byte request",
+  "test/docker/docker-workload-egress.test.ts@@main::registry-egress listener (end-to-end through createMitmProxy)::refuses a push to a listed registry with no upstream contact",
+  "test/docker/mitm-capture-model.test.ts@@main::MITM capture and session attribution model::keeps A attribution through 'OAuth retry' with B ending first=false",
+  "test/docker/mitm-capture-model.test.ts@@main::MITM capture and session attribution model::keeps A attribution through 'OAuth retry' with B ending first=true",
+  "test/docker/mitm-capture-model.test.ts@@main::MITM capture and session attribution model::keeps A attribution through 'aborted JSON' with B ending first=false",
+  "test/docker/mitm-capture-model.test.ts@@main::MITM capture and session attribution model::keeps A attribution through 'aborted JSON' with B ending first=true",
+  "test/docker/mitm-capture-model.test.ts@@main::MITM capture and session attribution model::keeps A attribution through 'finish' with B ending first=false",
+  "test/docker/mitm-capture-model.test.ts@@main::MITM capture and session attribution model::keeps A attribution through 'finish' with B ending first=true",
+  "test/docker/mitm-capture-model.test.ts@@main::MITM capture and session attribution model::keeps A attribution through 'truncated SSE' with B ending first=false",
+  "test/docker/mitm-capture-model.test.ts@@main::MITM capture and session attribution model::keeps A attribution through 'truncated SSE' with B ending first=true",
+  "test/docker/mitm-capture-model.test.ts@@main::MITM capture and session attribution model::rewrites both OAuth attempts and captures the original request with the reassembled reply",
+  "test/docker/mitm-cascade.test.ts@@main::nested MITM credential and policy cascade::swaps inner sentinel to outer sentinel, then outer sentinel to the real credential",
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'CONNECT' authorization follows add/remove/re-add (uppercase=false)",
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'CONNECT' authorization follows add/remove/re-add (uppercase=true)",
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'HTTP' authorization follows add/remove/re-add (uppercase=false)",
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'HTTP' authorization follows add/remove/re-add (uppercase=true)",
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'WebSocket' authorization follows add/remove/re-add (uppercase=false)",
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'WebSocket' authorization follows add/remove/re-add (uppercase=true)",
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'disconnect' ('hold')",
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'stop' ('decline')",
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'stop' ('hold')",
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::finishes a refused WebSocket response after the client half-closes",
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::aborts and drains an active exact observation during proxy stop",
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::captures a built-in Google generateContent JSON response with minimal valid usage",
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::captures a built-in Google streamGenerateContent SSE response with minimal valid usage",
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::captures rewritten Anthropic SSE exactly once and releases attribution only after finalization",
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::captures trajectory and metrics from the same response without semantic coupling",
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::decodes gzip for observation while forwarding the original compressed bytes unchanged",
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::does not observe when statistics are disabled",
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::finalizes once on an upstream transport error",
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::finalizes once when an auth retry cannot refresh its token",
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::finalizes once when the client aborts a live upstream stream",
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::keeps large compressed SSE observable and byte-identical with trajectory capture on and off",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::applies a shared refresh to both in-flight requests for 'bearer.provider.test'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::applies a shared refresh to both in-flight requests for 'header.provider.test'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::rejects routes outside the CONNECT authority policy before making any outbound request",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'absent', rotate=false, challenge='every attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'absent', rotate=false, challenge='first attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'absent', rotate=false, challenge='none'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'absent', rotate=true, challenge='every attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'absent', rotate=true, challenge='first attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'absent', rotate=true, challenge='none'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'agent key', rotate=false, challenge='every attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'agent key', rotate=false, challenge='first attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'agent key', rotate=false, challenge='none'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'agent key', rotate=true, challenge='every attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'agent key', rotate=true, challenge='first attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'agent key', rotate=true, challenge='none'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'other sentinel', rotate=false, challenge='every attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'other sentinel', rotate=false, challenge='first attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'other sentinel', rotate=false, challenge='none'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'other sentinel', rotate=true, challenge='every attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'other sentinel', rotate=true, challenge='first attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'other sentinel', rotate=true, challenge='none'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'sentinel', rotate=false, challenge='every attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'sentinel', rotate=false, challenge='first attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'sentinel', rotate=false, challenge='none'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'sentinel', rotate=true, challenge='every attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'sentinel', rotate=true, challenge='first attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'sentinel', rotate=true, challenge='none'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'absent', rotate=false, challenge='every attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'absent', rotate=false, challenge='first attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'absent', rotate=false, challenge='none'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'absent', rotate=true, challenge='every attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'absent', rotate=true, challenge='first attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'absent', rotate=true, challenge='none'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'agent key', rotate=false, challenge='every attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'agent key', rotate=false, challenge='first attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'agent key', rotate=false, challenge='none'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'agent key', rotate=true, challenge='every attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'agent key', rotate=true, challenge='first attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'agent key', rotate=true, challenge='none'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'other sentinel', rotate=false, challenge='every attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'other sentinel', rotate=false, challenge='first attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'other sentinel', rotate=false, challenge='none'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'other sentinel', rotate=true, challenge='every attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'other sentinel', rotate=true, challenge='first attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'other sentinel', rotate=true, challenge='none'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'sentinel', rotate=false, challenge='every attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'sentinel', rotate=false, challenge='first attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'sentinel', rotate=false, challenge='none'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'sentinel', rotate=true, challenge='every attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'sentinel', rotate=true, challenge='first attempt'",
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'sentinel', rotate=true, challenge='none'",
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::fires tool_result extraction for a body POSTed to /api/v1/messages",
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::injects the D3 default soft z-ai pin when providerPreference is unset",
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::injects the configured provider preference (strict) verbatim",
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::keeps OpenRouter metadata negotiation enabled when statistics are enabled",
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::keeps session_id stable for same conversation+model, distinct across model and tokenSessionId",
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::passes a count_tokens 404 through unchanged and leaves a following messages call working",
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::preserves cache_control blocks and strips context_management",
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::rejects a chat/completions POST on a messages-kind provider (403)",
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::rewrites the requested model to the mapped OpenRouter slug",
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::routes Goose main and auxiliary requests once and formats each selected model through TLS",
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::surfaces usage.cost and cached_tokens on the token-stream bus (Anthropic skin)",
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::surfaces usage.cost and cached_tokens on the token-stream bus (Chat Completions skin)",
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::surfaces usage.cost and cached_tokens on the token-stream bus (Responses skin)",
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::swaps the sentinel bearer key for the real OpenRouter key upstream",
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::tolerates interleaved keep-alive comment lines without erroring the stream",
+  "test/docker/outbound-transport.test.ts@@main::derived-redirect refusal symmetry::refuses the redirect target on the direct transport",
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps 'https:' through the fixed parent under 'approved-private-network' when the parent 'disappears'",
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps 'https:' through the fixed parent under 'approved-private-network' when the parent 'refuses'",
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps 'https:' through the fixed parent under 'trusted-provider-override' when the parent 'disappears'",
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps 'https:' through the fixed parent under 'trusted-provider-override' when the parent 'refuses'",
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'http:' pool isolated after 'approved-private-network' with 'dual-stack private answers'",
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'http:' pool isolated after 'approved-private-network' with 'missing answer'",
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'http:' pool isolated after 'approved-private-network' with 'private answer'",
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'http:' pool isolated after 'trusted-provider-override' with 'dual-stack private answers'",
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'http:' pool isolated after 'trusted-provider-override' with 'missing answer'",
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'http:' pool isolated after 'trusted-provider-override' with 'private answer'",
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'https:' pool isolated after 'approved-private-network' with 'dual-stack private answers'",
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'https:' pool isolated after 'approved-private-network' with 'missing answer'",
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'https:' pool isolated after 'approved-private-network' with 'private answer'",
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'https:' pool isolated after 'trusted-provider-override' with 'dual-stack private answers'",
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'https:' pool isolated after 'trusted-provider-override' with 'missing answer'",
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'https:' pool isolated after 'trusted-provider-override' with 'private answer'",
+  "test/docker/outbound-transport.test.ts@@main::direct destination-bound transport::admits a trusted host-configured private provider gateway without relaxing ordinary requests",
+  "test/docker/outbound-transport.test.ts@@main::direct destination-bound transport::allows an explicitly authorized private passthrough without relaxing other requests",
+  "test/docker/outbound-transport.test.ts@@main::direct destination-bound transport::destroys idle pooled upstream sockets without waiting for their timeout",
+  "test/docker/outbound-transport.test.ts@@main::direct destination-bound transport::rejects a DNS answer set containing any private rebinding address",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::MITM-forwards only an authorized exact CONNECT/SNI/Host route with fixed outbound headers",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::aborts an idle upstream through its owning client well before the absolute deadline",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::allows and audits the exact deb.debian.org security archive while rejecting close path variants",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::allows recognized artifacts without metadata or policy evaluation when package policy is disabled",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::bounds concurrent derived metadata and aborts the owned operation during stop",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::canonicalizes a relative same-route redirect and never consumes a second upstream slot",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::closes a pinned socket if the destination becomes current before request bytes",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::denies a destination that becomes current immediately before connect without dialing",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::derives npm metadata for the exact artifact version and enforces fresh deny versus old allow",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::destroys and releases the direct operation on duplicate Location validation failure",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::dials only the selected screened literal and refreshes identities before connect and before bytes",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::enforces exact per-request byte and absolute time ceilings",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::keeps a derived metadata request alive while upstream chunks continue arriving",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::leaves recognized metadata unfiltered but makes artifact validation the policy backstop",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::rejects a credential authority redirect without contacting its target",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::rejects a cross-ecosystem redirect without contacting its target",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::rejects a denied IPv4 identity embedded in 6to4 before dialing",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::rejects a denied IPv4 identity embedded in RFC 6052 /64 before dialing",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::rejects a denied IPv4 identity embedded in Teredo client before dialing",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::rejects a denied IPv4 identity embedded in well-known NAT64 before dialing",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::rejects a query-bearing route redirect without contacting its target",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::rejects a unknown route redirect without contacting its target",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::requires TLS 1.2 or newer and rejects renegotiation after the initial handshake",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::requires exact fixed CONNECT authority, TLS SNI, and inner Host",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::requires explicit route authorization and supports exact plain-HTTP Debian inputs via HTTPS upstream",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::returns one canonical allowed redirect without following it, then charges the next client request separately",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::stops an active response stream, drains every socket/lease, and removes its owned inode",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::uses an exact source-owned metadata GET for 'cargo' artifacts",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::uses an exact source-owned metadata GET for 'pypi' artifacts",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::uses one remaining absolute deadline across repeated DNS and identity phases",
+  "test/docker/qualification-evidence.test.ts@@main::qualification evidence::retains both output streams and exact live-gate execution metadata",
+  "test/docker/registry-egress-proxy.test.ts@@main::registry-egress over a real fixed-parent transport (nested mode)::refuses a derived redirect that resolves to a non-public address, and never asks the parent for it",
+  "test/docker/zai-mitm.test.ts@@main::claude-code forwards streaming tool calls/results only on its authorized Z.AI route",
+  "test/docker/zai-mitm.test.ts@@main::codex forwards streaming tool calls/results only on its authorized Z.AI route",
+  "test/docker/zai-mitm.test.ts@@main::goose forwards streaming tool calls/results only on its authorized Z.AI route",
+  "test/llm-metrics-persistence.test.ts@@main::LLM statistics query service::provides stable pagination and coverage-aware summaries",
+  "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps timed-out retention single-flight until its late lease cleanup settles",
+  "test/llm-metrics-query-safety.test.ts@@main::LLM statistics query output safety::rejects grouped summaries with high-cardinality maximum-length identifiers",
+  "test/llm-metrics-query-safety.test.ts@@main::LLM statistics query output safety::yields to the event loop between expensive aggregation operations",
+  "test/mitm-proxy-token-stream.test.ts@@main::MitmProxy token stream integration::delivers events to global bus subscribers",
+  "test/mitm-proxy-token-stream.test.ts@@main::MitmProxy token stream integration::does not tap when sessionId is not provided",
+  "test/mitm-proxy-token-stream.test.ts@@main::MitmProxy token stream integration::extracts events from non-streaming JSON responses on LLM endpoints",
+  "test/mitm-proxy-token-stream.test.ts@@main::MitmProxy token stream integration::publishes into the singleton bus when sessionId is provided",
+  "test/mitm-proxy-token-stream.test.ts@@main::MitmProxy token stream integration::taps SSE responses and pushes events to the bus",
+  "test/mitm-proxy-token-stream.test.ts@@main::MitmProxy.setTokenSessionId dynamic routing::respects a constructor-supplied sessionId as the initial value",
+  "test/mitm-proxy-token-stream.test.ts@@main::MitmProxy.setTokenSessionId dynamic routing::routes events under the current sessionId and reroutes when it changes",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::IRONCURTAIN_MITM_ALLOW_ALL_HOSTS escape hatch::allows ws:// upgrade to an unknown host when set",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::IRONCURTAIN_MITM_ALLOW_ALL_HOSTS escape hatch::forwards plain HTTP proxy requests to unknown hosts when set",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::IRONCURTAIN_MITM_ALLOW_ALL_HOSTS escape hatch::routes mixed-case provider CONNECT through MITM (case-insensitive allowlist)",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::IRONCURTAIN_MITM_ALLOW_ALL_HOSTS escape hatch::still routes provider CONNECT through MITM (not wildcard tunnel) when set",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::MITMs nested HTTPS passthrough and uses only the fixed parent transport",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::blocks requests to disallowed endpoints",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::bridges plain HTTP WebSocket upgrade through proxy",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::cleans up active WebSocket connections on stop()",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::closes idle upstream sockets on stop without waiting for keep-alive expiry",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::contains synchronous TLS passthrough rejection Error: synchronous TLS destination rejection and keeps serving requests",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::contains synchronous TLS passthrough rejection non-Error TLS destination rejection and keeps serving requests",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::forwards WebSocket upgrade through CONNECT tunnel to passthrough domain",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::forwards plain HTTP proxy requests to passthrough domains",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::forwards plain HTTP through CONNECT tunnel to passthrough domain",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::forwards requests with no API key header (unauthenticated endpoint)",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::handles ECONNRESET without crashing",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::handles bearer key injection for OpenAI-style providers",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::handles client request body errors",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::passes through requests with non-sentinel key (agent own credential)",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::performs TLS handshake with CA-signed cert for allowed host",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::preserves schedule-skill tools when agentKind is unset (default-conservative)",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::preserves schedule-skill tools when agentKind=pty",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::refreshes OAuth tokens and retries bodyless authenticated requests after upstream 401",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::refreshes OAuth tokens and retries bodyless bearer requests after upstream 401",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::rejects requests with Content-Encoding on rewrite endpoints",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::removes only a duplicate managed bearer after swapping header key (agent-own-key, Bearer sk-test-fake-key-for-testing)",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::removes only a duplicate managed bearer after swapping header key (sk-test-fake-key-for-testing, Bearer agent-own-token)",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::removes only a duplicate managed bearer after swapping header key (sk-test-fake-key-for-testing, Bearer sk-test-fake-key-for-testing)",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::removes only a duplicate managed bearer after swapping header key (undefined, Bearer sk-test-fake-key-for-testing)",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::renews leaf cert when cached cert is near expiry",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::requires domain approval and gates private HTTP with flag=true",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::returns 400 for malformed HTTP after TLS handshake",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::still screens the resolved address when only the resolver seam is supplied",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::strips ScheduleWakeup + CronCreate from upstream body when agentKind=batch",
+  "test/mitm-proxy.test.ts@@main::MitmProxy::strips ScheduleWakeup + CronCreate from upstream body when agentKind=workflow"
+ ],
+ "n_flips": 206,
+ "absent_in_det": [],
+ "n_absent_in_det": 0,
+ "skipped_in_det": [
+  {
+   "id": "test/argument-validation.integration.test.ts@@main::argument name validation -- real filesystem server::rejects snake_case parameter names with an actionable error",
+   "det1": "skipped",
+   "det2": "skipped"
+  },
+  {
+   "id": "test/argument-validation.integration.test.ts@@main::argument name validation -- real filesystem server::rejects when mixing valid and invalid parameter names",
+   "det1": "skipped",
+   "det2": "skipped"
+  },
+  {
+   "id": "test/argument-validation.integration.test.ts@@main::argument name validation -- real filesystem server::succeeds with correct parameter names after correction",
+   "det1": "skipped",
+   "det2": "skipped"
+  },
+  {
+   "id": "test/argument-validation.integration.test.ts@@main::argument name validation -- real filesystem server::uses real inputSchema from server (has properties field)",
+   "det1": "skipped",
+   "det2": "skipped"
+  },
+  {
+   "id": "test/mcp-roots-race.integration.test.ts@@main::MCP roots-expansion race -- handleCallTool retry::escalates and succeeds for a file outside the sandbox (exercises retry logic)",
+   "det1": "skipped",
+   "det2": "skipped"
+  },
+  {
+   "id": "test/mcp-roots-race.integration.test.ts@@main::MCP roots-expansion race -- handleCallTool retry::exported ROOTS_RACE_RETRY_DELAY_MS is a positive number",
+   "det1": "skipped",
+   "det2": "skipped"
+  },
+  {
+   "id": "test/mcp-roots-race.integration.test.ts@@main::MCP roots-expansion race -- handleCallTool retry::reads a file inside the sandbox without escalation",
+   "det1": "skipped",
+   "det2": "skipped"
+  },
+  {
+   "id": "test/roots-expansion-bridging.integration.test.ts@@main::Roots expansion bridges across the relay subprocess::denies (no roots expansion) when the human declines the escalation",
+   "det1": "skipped",
+   "det2": "skipped"
+  },
+  {
+   "id": "test/roots-expansion-bridging.integration.test.ts@@main::Roots expansion bridges across the relay subprocess::escalates and succeeds for a file outside the sandbox via the relay",
+   "det1": "skipped",
+   "det2": "skipped"
+  },
+  {
+   "id": "test/roots-expansion-bridging.integration.test.ts@@main::Roots expansion bridges across the relay subprocess::reads a file inside the sandbox without escalation",
+   "det1": "skipped",
+   "det2": "skipped"
+  }
+ ],
+ "n_skipped_in_det": 10,
+ "mixed_in_det": [],
+ "n_mixed_in_det": 0,
+ "ids_only_in_det": [],
+ "n_ids_only_in_det": 0,
+ "flip_exceptions": {
+  "test/ca.test.ts@@main::loadOrCreateCA::publishes one authority under concurrent first-use creator/loaders": [
+   [
+    "AssertionError",
+    "call",
+    "expected '-----BEGIN CERTIFICATE-----\\r\\nMIIDLD\u2026' to be '-----BEGIN CERTIFICATE-----\\r\\nMIIDLD\u2026' // Object.is equality",
+    "test/ca.test.ts:462"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected '-----BEGIN CERTIFICATE-----\\r\\nMIIDLD\u2026' to be '-----BEGIN CERTIFICATE-----\\r\\nMIIDLD\u2026' // Object.is equality",
+    "test/ca.test.ts:462"
+   ]
+  ],
+  "test/ca.test.ts@@main::loadOrCreateCA::serves a strict-v2 leaf accepted by Python strict OpenSSL verification": [
+   [
+    "Error",
+    "call",
+    "strict Python TLS client exited 1: Traceback (most recent call last): / File \"<string>\", line 12, in <module> / with context.wrap_socket(raw, server_hostname=sys.argv[3]) as connection: / ~~~~~~~~~~~~",
+    "test/ca.test.ts:769"
+   ],
+   [
+    "Error",
+    "call",
+    "strict Python TLS client exited 1: Traceback (most recent call last): / File \"<string>\", line 12, in <module> / with context.wrap_socket(raw, server_hostname=sys.argv[3]) as connection: / ~~~~~~~~~~~~",
+    "test/ca.test.ts:769"
+   ]
+  ],
+  "test/docker-workload/watchdog-sigkill.integration.test.ts@@main::resource watchdog supervisor across a coordinator SIGKILL::outlives the coordinator and revokes a post-mortem hard-threshold breach": [
+   [
+    "Error",
+    "call",
+    "watchdog supervisor never closed after the breach (state=revoking)",
+    "test/docker-workload/watchdog-sigkill.integration.test.ts:408"
+   ],
+   [
+    "Error",
+    "call",
+    "watchdog supervisor never closed after the breach (state=revoking)",
+    "test/docker-workload/watchdog-sigkill.integration.test.ts:408"
+   ]
+  ],
+  "test/docker/docker-workload-admission.test.ts@@main::secure nested Docker resolved-variant admission::pins Docker Desktop agent identity for 'packages' without Apple archive transport": [
+   [
+    "Error",
+    "call",
+    "Docker Desktop nested Docker packages mode requires at least 1216 MiB and 1.25 CPU in dockerWorkload.resources",
+    "src/docker/docker-infrastructure.ts:2466"
+   ],
+   [
+    "Error",
+    "call",
+    "Docker Desktop nested Docker packages mode requires at least 1216 MiB and 1.25 CPU in dockerWorkload.resources",
+    "src/docker/docker-infrastructure.ts:2466"
+   ]
+  ],
+  "test/docker/docker-workload-egress.test.ts@@main::registry-egress listener (end-to-end through createMitmProxy)::admits a manifest pull to a listed registry and forwards it destination-bound": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/docker-workload-egress.test.ts@@main::registry-egress listener (end-to-end through createMitmProxy)::changes the exported ledger snapshot for a denied zero-byte request": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/docker-workload-egress.test.ts@@main::registry-egress listener (end-to-end through createMitmProxy)::refuses a push to a listed registry with no upstream contact": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-capture-model.test.ts@@main::MITM capture and session attribution model::keeps A attribution through 'OAuth retry' with B ending first=false": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-capture-model.test.ts@@main::MITM capture and session attribution model::keeps A attribution through 'OAuth retry' with B ending first=true": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-capture-model.test.ts@@main::MITM capture and session attribution model::keeps A attribution through 'aborted JSON' with B ending first=false": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-capture-model.test.ts@@main::MITM capture and session attribution model::keeps A attribution through 'aborted JSON' with B ending first=true": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-capture-model.test.ts@@main::MITM capture and session attribution model::keeps A attribution through 'finish' with B ending first=false": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-capture-model.test.ts@@main::MITM capture and session attribution model::keeps A attribution through 'finish' with B ending first=true": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-capture-model.test.ts@@main::MITM capture and session attribution model::keeps A attribution through 'truncated SSE' with B ending first=false": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-capture-model.test.ts@@main::MITM capture and session attribution model::keeps A attribution through 'truncated SSE' with B ending first=true": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-capture-model.test.ts@@main::MITM capture and session attribution model::rewrites both OAuth attempts and captures the original request with the reassembled reply": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-capture-model.test.ts:339"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-capture-model.test.ts:339"
+   ]
+  ],
+  "test/docker/mitm-cascade.test.ts@@main::nested MITM credential and policy cascade::swaps inner sentinel to outer sentinel, then outer sentinel to the real credential": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'CONNECT' authorization follows add/remove/re-add (uppercase=false)": [
+   [
+    "Error",
+    "call",
+    "write EPIPE",
+    "test/docker/mitm-domain-model.test.ts:185"
+   ],
+   [
+    "Error",
+    "call",
+    "write EPIPE",
+    "test/docker/mitm-domain-model.test.ts:185"
+   ]
+  ],
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'CONNECT' authorization follows add/remove/re-add (uppercase=true)": [
+   [
+    "Error",
+    "call",
+    "write EPIPE",
+    "test/docker/mitm-domain-model.test.ts:185"
+   ],
+   [
+    "Error",
+    "call",
+    "write EPIPE",
+    "test/docker/mitm-domain-model.test.ts:185"
+   ]
+  ],
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'HTTP' authorization follows add/remove/re-add (uppercase=false)": [
+   [
+    "AssertionError",
+    "call",
+    "expected 502 to be 200 // Object.is equality",
+    "test/docker/mitm-domain-model.test.ts:206"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 502 to be 200 // Object.is equality",
+    "test/docker/mitm-domain-model.test.ts:206"
+   ]
+  ],
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'HTTP' authorization follows add/remove/re-add (uppercase=true)": [
+   [
+    "AssertionError",
+    "call",
+    "expected 502 to be 200 // Object.is equality",
+    "test/docker/mitm-domain-model.test.ts:206"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 502 to be 200 // Object.is equality",
+    "test/docker/mitm-domain-model.test.ts:206"
+   ]
+  ],
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'WebSocket' authorization follows add/remove/re-add (uppercase=false)": [
+   [
+    "AssertionError",
+    "call",
+    "expected 502 to be 101 // Object.is equality",
+    "test/docker/mitm-domain-model.test.ts:206"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 502 to be 101 // Object.is equality",
+    "test/docker/mitm-domain-model.test.ts:206"
+   ]
+  ],
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'WebSocket' authorization follows add/remove/re-add (uppercase=true)": [
+   [
+    "AssertionError",
+    "call",
+    "expected 502 to be 101 // Object.is equality",
+    "test/docker/mitm-domain-model.test.ts:206"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 502 to be 101 // Object.is equality",
+    "test/docker/mitm-domain-model.test.ts:206"
+   ]
+  ],
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'disconnect' ('hold')": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-domain-model.test.ts:277"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-domain-model.test.ts:277"
+   ]
+  ],
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'stop' ('decline')": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-domain-model.test.ts:277"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-domain-model.test.ts:277"
+   ]
+  ],
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'stop' ('hold')": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-domain-model.test.ts:277"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-domain-model.test.ts:277"
+   ]
+  ],
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::finishes a refused WebSocket response after the client half-closes": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-domain-model.test.ts:256"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-domain-model.test.ts:256"
+   ]
+  ],
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::aborts and drains an active exact observation during proxy stop": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-llm-metrics.test.ts:691"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-llm-metrics.test.ts:691"
+   ]
+  ],
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::captures a built-in Google generateContent JSON response with minimal valid usage": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::captures a built-in Google streamGenerateContent SSE response with minimal valid usage": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::captures rewritten Anthropic SSE exactly once and releases attribution only after finalization": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-llm-metrics.test.ts:340"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-llm-metrics.test.ts:340"
+   ]
+  ],
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::captures trajectory and metrics from the same response without semantic coupling": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::decodes gzip for observation while forwarding the original compressed bytes unchanged": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::does not observe when statistics are disabled": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::finalizes once on an upstream transport error": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::finalizes once when an auth retry cannot refresh its token": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::finalizes once when the client aborts a live upstream stream": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::keeps large compressed SSE observable and byte-identical with trajectory capture on and off": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::applies a shared refresh to both in-flight requests for 'bearer.provider.test'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::applies a shared refresh to both in-flight requests for 'header.provider.test'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::rejects routes outside the CONNECT authority policy before making any outbound request": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'absent', rotate=false, challenge='every attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'absent', rotate=false, challenge='first attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'absent', rotate=false, challenge='none'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'absent', rotate=true, challenge='every attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'absent', rotate=true, challenge='first attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'absent', rotate=true, challenge='none'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'agent key', rotate=false, challenge='every attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'agent key', rotate=false, challenge='first attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'agent key', rotate=false, challenge='none'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'agent key', rotate=true, challenge='every attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'agent key', rotate=true, challenge='first attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'agent key', rotate=true, challenge='none'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'other sentinel', rotate=false, challenge='every attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'other sentinel', rotate=false, challenge='first attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'other sentinel', rotate=false, challenge='none'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'other sentinel', rotate=true, challenge='every attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'other sentinel', rotate=true, challenge='first attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'other sentinel', rotate=true, challenge='none'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'sentinel', rotate=false, challenge='every attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'sentinel', rotate=false, challenge='first attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'sentinel', rotate=false, challenge='none'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'sentinel', rotate=true, challenge='every attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'sentinel', rotate=true, challenge='first attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'bearer.provider.test' with 'sentinel', rotate=true, challenge='none'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'absent', rotate=false, challenge='every attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'absent', rotate=false, challenge='first attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'absent', rotate=false, challenge='none'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'absent', rotate=true, challenge='every attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'absent', rotate=true, challenge='first attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'absent', rotate=true, challenge='none'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'agent key', rotate=false, challenge='every attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'agent key', rotate=false, challenge='first attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'agent key', rotate=false, challenge='none'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'agent key', rotate=true, challenge='every attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'agent key', rotate=true, challenge='first attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'agent key', rotate=true, challenge='none'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'other sentinel', rotate=false, challenge='every attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'other sentinel', rotate=false, challenge='first attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'other sentinel', rotate=false, challenge='none'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'other sentinel', rotate=true, challenge='every attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'other sentinel', rotate=true, challenge='first attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'other sentinel', rotate=true, challenge='none'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'sentinel', rotate=false, challenge='every attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'sentinel', rotate=false, challenge='first attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'sentinel', rotate=false, challenge='none'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'sentinel', rotate=true, challenge='every attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'sentinel', rotate=true, challenge='first attempt'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/mitm-provider-model.test.ts@@main::MITM provider routing and credential model::routes 'header.provider.test' with 'sentinel', rotate=true, challenge='none'": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::fires tool_result extraction for a body POSTed to /api/v1/messages": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::injects the D3 default soft z-ai pin when providerPreference is unset": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::injects the configured provider preference (strict) verbatim": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::keeps OpenRouter metadata negotiation enabled when statistics are enabled": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::keeps session_id stable for same conversation+model, distinct across model and tokenSessionId": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::passes a count_tokens 404 through unchanged and leaves a following messages call working": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::preserves cache_control blocks and strips context_management": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::rejects a chat/completions POST on a messages-kind provider (403)": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::rewrites the requested model to the mapped OpenRouter slug": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::routes Goose main and auxiliary requests once and formats each selected model through TLS": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::surfaces usage.cost and cached_tokens on the token-stream bus (Anthropic skin)": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::surfaces usage.cost and cached_tokens on the token-stream bus (Chat Completions skin)": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::surfaces usage.cost and cached_tokens on the token-stream bus (Responses skin)": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::swaps the sentinel bearer key for the real OpenRouter key upstream": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/openrouter-mitm.test.ts@@main::OpenRouter through the real MITM (G3 / \u00a712.2)::tolerates interleaved keep-alive comment lines without erroring the stream": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/outbound-transport.test.ts@@main::derived-redirect refusal symmetry::refuses the redirect target on the direct transport": [
+   [
+    "AssertionError",
+    "call",
+    "expected NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) } to match object { message: StringContaining{\u2026} } / (7 matching properties omitted from actual)",
+    "test/docker/outbound-transport.test.ts:452"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) } to match object { message: StringContaining{\u2026} } / (7 matching properties omitted from actual)",
+    "test/docker/outbound-transport.test.ts:452"
+   ]
+  ],
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps 'https:' through the fixed parent under 'approved-private-network' when the parent 'disappears'": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"Error: certificate has expired { \u2026(1) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:607"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"Error: certificate has expired { \u2026(1) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:607"
+   ]
+  ],
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps 'https:' through the fixed parent under 'approved-private-network' when the parent 'refuses'": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"Error: certificate has expired { \u2026(1) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:607"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"Error: certificate has expired { \u2026(1) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:607"
+   ]
+  ],
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps 'https:' through the fixed parent under 'trusted-provider-override' when the parent 'disappears'": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"Error: certificate has expired { \u2026(1) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:607"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"Error: certificate has expired { \u2026(1) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:607"
+   ]
+  ],
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps 'https:' through the fixed parent under 'trusted-provider-override' when the parent 'refuses'": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"Error: certificate has expired { \u2026(1) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:607"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"Error: certificate has expired { \u2026(1) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:607"
+   ]
+  ],
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'http:' pool isolated after 'approved-private-network' with 'dual-stack private answers'": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ]
+  ],
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'http:' pool isolated after 'approved-private-network' with 'missing answer'": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ]
+  ],
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'http:' pool isolated after 'approved-private-network' with 'private answer'": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ]
+  ],
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'http:' pool isolated after 'trusted-provider-override' with 'dual-stack private answers'": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ]
+  ],
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'http:' pool isolated after 'trusted-provider-override' with 'missing answer'": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ]
+  ],
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'http:' pool isolated after 'trusted-provider-override' with 'private answer'": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ]
+  ],
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'https:' pool isolated after 'approved-private-network' with 'dual-stack private answers'": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ]
+  ],
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'https:' pool isolated after 'approved-private-network' with 'missing answer'": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ]
+  ],
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'https:' pool isolated after 'approved-private-network' with 'private answer'": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ]
+  ],
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'https:' pool isolated after 'trusted-provider-override' with 'dual-stack private answers'": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ]
+  ],
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'https:' pool isolated after 'trusted-provider-override' with 'missing answer'": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ]
+  ],
+  "test/docker/outbound-transport.test.ts@@main::destination policy model::keeps the direct 'https:' pool isolated after 'trusted-provider-override' with 'private answer'": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:520"
+   ]
+  ],
+  "test/docker/outbound-transport.test.ts@@main::direct destination-bound transport::admits a trusted host-configured private provider gateway without relaxing ordinary requests": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:140"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:140"
+   ]
+  ],
+  "test/docker/outbound-transport.test.ts@@main::direct destination-bound transport::allows an explicitly authorized private passthrough without relaxing other requests": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:83"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:83"
+   ]
+  ],
+  "test/docker/outbound-transport.test.ts@@main::direct destination-bound transport::destroys idle pooled upstream sockets without waiting for their timeout": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:60"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) }\" instead of resolving",
+    "test/docker/outbound-transport.test.ts:60"
+   ]
+  ],
+  "test/docker/outbound-transport.test.ts@@main::direct destination-bound transport::rejects a DNS answer set containing any private rebinding address": [
+   [
+    "AssertionError",
+    "call",
+    "expected NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) } to match object { message: StringContaining{\u2026} } / (7 matching properties omitted from actual)",
+    "test/docker/outbound-transport.test.ts:197"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected NetworkBlockedError: detjs: network acces\u2026 { \u2026(6) } to match object { message: StringContaining{\u2026} } / (7 matching properties omitted from actual)",
+    "test/docker/outbound-transport.test.ts:197"
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::MITM-forwards only an authorized exact CONNECT/SNI/Host route with fixed outbound headers": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::aborts an idle upstream through its owning client well before the absolute deadline": [
+   [
+    "Error",
+    "call",
+    "condition not met within 1000ms",
+    "test/docker/package-egress-proxy.test.ts:1668"
+   ],
+   [
+    "Error",
+    "call",
+    "condition not met within 1000ms",
+    "test/docker/package-egress-proxy.test.ts:1668"
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::allows and audits the exact deb.debian.org security archive while rejecting close path variants": [
+   [
+    "AssertionError",
+    "call",
+    "expected 'HTTP/1.1 502 Bad Gateway\\r\\nDate: Wed\u2026' to contain 'security-release'",
+    "test/docker/package-egress-proxy.test.ts:468"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 'HTTP/1.1 502 Bad Gateway\\r\\nDate: Wed\u2026' to contain 'security-release'",
+    "test/docker/package-egress-proxy.test.ts:468"
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::allows recognized artifacts without metadata or policy evaluation when package policy is disabled": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::bounds concurrent derived metadata and aborts the owned operation during stop": [
+   [
+    "Error",
+    "call",
+    "condition not met within 1000ms",
+    "test/docker/package-egress-proxy.test.ts:1668"
+   ],
+   [
+    "Error",
+    "call",
+    "condition not met within 1000ms",
+    "test/docker/package-egress-proxy.test.ts:1668"
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::canonicalizes a relative same-route redirect and never consumes a second upstream slot": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::closes a pinned socket if the destination becomes current before request bytes": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::denies a destination that becomes current immediately before connect without dialing": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::derives npm metadata for the exact artifact version and enforces fresh deny versus old allow": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::destroys and releases the direct operation on duplicate Location validation failure": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::dials only the selected screened literal and refreshes identities before connect and before bytes": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::enforces exact per-request byte and absolute time ceilings": [
+   [
+    "AssertionError",
+    "call",
+    "expected 136 to be greater than 4096",
+    "test/docker/package-egress-proxy.test.ts:1228"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 136 to be greater than 4096",
+    "test/docker/package-egress-proxy.test.ts:1228"
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::keeps a derived metadata request alive while upstream chunks continue arriving": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::leaves recognized metadata unfiltered but makes artifact validation the policy backstop": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::rejects a credential authority redirect without contacting its target": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::rejects a cross-ecosystem redirect without contacting its target": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::rejects a denied IPv4 identity embedded in 6to4 before dialing": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::rejects a denied IPv4 identity embedded in RFC 6052 /64 before dialing": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::rejects a denied IPv4 identity embedded in Teredo client before dialing": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::rejects a denied IPv4 identity embedded in well-known NAT64 before dialing": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::rejects a query-bearing route redirect without contacting its target": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::rejects a unknown route redirect without contacting its target": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::requires TLS 1.2 or newer and rejects renegotiation after the initial handshake": [
+   [
+    "Error",
+    "call",
+    "initial TLS 1.2 handshake failed: certificate has expired",
+    "test/docker/package-egress-proxy.test.ts:1637"
+   ],
+   [
+    "Error",
+    "call",
+    "initial TLS 1.2 handshake failed: certificate has expired",
+    "test/docker/package-egress-proxy.test.ts:1637"
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::requires exact fixed CONNECT authority, TLS SNI, and inner Host": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::requires explicit route authorization and supports exact plain-HTTP Debian inputs via HTTPS upstream": [
+   [
+    "AssertionError",
+    "call",
+    "expected 'HTTP/1.1 502 Bad Gateway\\r\\nDate: Wed\u2026' to contain 'release'",
+    "test/docker/package-egress-proxy.test.ts:451"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 'HTTP/1.1 502 Bad Gateway\\r\\nDate: Wed\u2026' to contain 'release'",
+    "test/docker/package-egress-proxy.test.ts:451"
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::returns one canonical allowed redirect without following it, then charges the next client request separately": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::stops an active response stream, drains every socket/lease, and removes its owned inode": [
+   [
+    "Error",
+    "call",
+    "condition not met within 1000ms",
+    "test/docker/package-egress-proxy.test.ts:1668"
+   ],
+   [
+    "Error",
+    "call",
+    "condition not met within 1000ms",
+    "test/docker/package-egress-proxy.test.ts:1668"
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::uses an exact source-owned metadata GET for 'cargo' artifacts": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::uses an exact source-owned metadata GET for 'pypi' artifacts": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::uses one remaining absolute deadline across repeated DNS and identity phases": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/qualification-evidence.test.ts@@main::qualification evidence::retains both output streams and exact live-gate execution metadata": [
+   [
+    "Error",
+    "call",
+    "smoke process group 15389 survived SIGKILL",
+    "scripts/qualification-evidence.ts:153"
+   ],
+   [
+    "Error",
+    "call",
+    "smoke process group 21197 survived SIGKILL",
+    "scripts/qualification-evidence.ts:153"
+   ]
+  ],
+  "test/docker/registry-egress-proxy.test.ts@@main::registry-egress over a real fixed-parent transport (nested mode)::refuses a derived redirect that resolves to a non-public address, and never asks the parent for it": [
+   [
+    "AssertionError",
+    "call",
+    "expected 'certificate has expired\\n' to match /non-public address/u",
+    "test/docker/registry-egress-proxy.test.ts:648"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 'certificate has expired\\n' to match /non-public address/u",
+    "test/docker/registry-egress-proxy.test.ts:648"
+   ]
+  ],
+  "test/docker/zai-mitm.test.ts@@main::claude-code forwards streaming tool calls/results only on its authorized Z.AI route": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/zai-mitm.test.ts@@main::codex forwards streaming tool calls/results only on its authorized Z.AI route": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/docker/zai-mitm.test.ts@@main::goose forwards streaming tool calls/results only on its authorized Z.AI route": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/llm-metrics-persistence.test.ts@@main::LLM statistics query service::provides stable pagination and coverage-aware summaries": [
+   [
+    "AssertionError",
+    "call",
+    "expected { sessionId: 'session-1', \u2026(14) } to match object { Object (exchanges, inputTokens, ...) } / (10 matching properties omitted from actual)",
+    "test/llm-metrics-persistence.test.ts:1057"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected { sessionId: 'session-1', \u2026(14) } to match object { Object (exchanges, inputTokens, ...) } / (10 matching properties omitted from actual)",
+    "test/llm-metrics-persistence.test.ts:1057"
+   ]
+  ],
+  "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps timed-out retention single-flight until its late lease cleanup settles": [
+   [
+    "AssertionError",
+    "call",
+    "promise resolved \"{ status: 'complete', \u2026(4) }\" instead of rejecting",
+    "test/llm-metrics-persistence.test.ts:813"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise resolved \"{ status: 'complete', \u2026(4) }\" instead of rejecting",
+    "test/llm-metrics-persistence.test.ts:813"
+   ]
+  ],
+  "test/llm-metrics-query-safety.test.ts@@main::LLM statistics query output safety::rejects grouped summaries with high-cardinality maximum-length identifiers": [
+   [
+    "AssertionError",
+    "call",
+    "expected [Function] to throw error including 'Statistics response exceeds the outpu\u2026' but got 'Statistics query exceeds the aggregat\u2026'",
+    "test/llm-metrics-query-safety.test.ts:358"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected [Function] to throw error including 'Statistics response exceeds the outpu\u2026' but got 'Statistics query exceeds the aggregat\u2026'",
+    "test/llm-metrics-query-safety.test.ts:358"
+   ]
+  ],
+  "test/llm-metrics-query-safety.test.ts@@main::LLM statistics query output safety::yields to the event loop between expensive aggregation operations": [
+   [
+    "AssertionError",
+    "call",
+    "expected 0 to be greater than 0",
+    "test/llm-metrics-query-safety.test.ts:126"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 0 to be greater than 0",
+    "test/llm-metrics-query-safety.test.ts:126"
+   ]
+  ],
+  "test/mitm-proxy-token-stream.test.ts@@main::MitmProxy token stream integration::delivers events to global bus subscribers": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy-token-stream.test.ts@@main::MitmProxy token stream integration::does not tap when sessionId is not provided": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy-token-stream.test.ts@@main::MitmProxy token stream integration::extracts events from non-streaming JSON responses on LLM endpoints": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy-token-stream.test.ts@@main::MitmProxy token stream integration::publishes into the singleton bus when sessionId is provided": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy-token-stream.test.ts@@main::MitmProxy token stream integration::taps SSE responses and pushes events to the bus": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy-token-stream.test.ts@@main::MitmProxy.setTokenSessionId dynamic routing::respects a constructor-supplied sessionId as the initial value": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy-token-stream.test.ts@@main::MitmProxy.setTokenSessionId dynamic routing::routes events under the current sessionId and reroutes when it changes": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::IRONCURTAIN_MITM_ALLOW_ALL_HOSTS escape hatch::allows ws:// upgrade to an unknown host when set": [
+   [
+    "Error",
+    "call",
+    "Expected upgrade but got response: 502",
+    "test/mitm-proxy.test.ts:1996"
+   ],
+   [
+    "Error",
+    "call",
+    "Expected upgrade but got response: 502",
+    "test/mitm-proxy.test.ts:1996"
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::IRONCURTAIN_MITM_ALLOW_ALL_HOSTS escape hatch::forwards plain HTTP proxy requests to unknown hosts when set": [
+   [
+    "AssertionError",
+    "call",
+    "expected 502 to be 200 // Object.is equality",
+    "test/mitm-proxy.test.ts:2768"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 502 to be 200 // Object.is equality",
+    "test/mitm-proxy.test.ts:2768"
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::IRONCURTAIN_MITM_ALLOW_ALL_HOSTS escape hatch::routes mixed-case provider CONNECT through MITM (case-insensitive allowlist)": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::IRONCURTAIN_MITM_ALLOW_ALL_HOSTS escape hatch::still routes provider CONNECT through MITM (not wildcard tunnel) when set": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::MITMs nested HTTPS passthrough and uses only the fixed parent transport": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::blocks requests to disallowed endpoints": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::bridges plain HTTP WebSocket upgrade through proxy": [
+   [
+    "Error",
+    "call",
+    "Expected upgrade but got response: 502",
+    "test/mitm-proxy.test.ts:1996"
+   ],
+   [
+    "Error",
+    "call",
+    "Expected upgrade but got response: 502",
+    "test/mitm-proxy.test.ts:1996"
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::cleans up active WebSocket connections on stop()": [
+   [
+    "Error",
+    "call",
+    "Expected upgrade but got response: 502",
+    "test/mitm-proxy.test.ts:1996"
+   ],
+   [
+    "Error",
+    "call",
+    "Expected upgrade but got response: 502",
+    "test/mitm-proxy.test.ts:1996"
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::closes idle upstream sockets on stop without waiting for keep-alive expiry": [
+   [
+    "AssertionError",
+    "call",
+    "expected +0 to be 1 // Object.is equality",
+    "test/mitm-proxy.test.ts:2500"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected +0 to be 1 // Object.is equality",
+    "test/mitm-proxy.test.ts:2500"
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::contains synchronous TLS passthrough rejection Error: synchronous TLS destination rejection and keeps serving requests": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::contains synchronous TLS passthrough rejection non-Error TLS destination rejection and keeps serving requests": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::forwards WebSocket upgrade through CONNECT tunnel to passthrough domain": [
+   [
+    "Error",
+    "call",
+    "Upgrade timeout",
+    "test/mitm-proxy.test.ts:2431"
+   ],
+   [
+    "Error",
+    "call",
+    "Upgrade timeout",
+    "test/mitm-proxy.test.ts:2431"
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::forwards plain HTTP proxy requests to passthrough domains": [
+   [
+    "AssertionError",
+    "call",
+    "expected 502 to be 200 // Object.is equality",
+    "test/mitm-proxy.test.ts:930"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 502 to be 200 // Object.is equality",
+    "test/mitm-proxy.test.ts:930"
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::forwards plain HTTP through CONNECT tunnel to passthrough domain": [
+   [
+    "Error",
+    "call",
+    "write EPIPE",
+    "test/mitm-proxy.test.ts:2256"
+   ],
+   [
+    "Error",
+    "call",
+    "write EPIPE",
+    "test/mitm-proxy.test.ts:2256"
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::forwards requests with no API key header (unauthenticated endpoint)": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::handles ECONNRESET without crashing": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::handles bearer key injection for OpenAI-style providers": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::handles client request body errors": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/mitm-proxy.test.ts:1856"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/mitm-proxy.test.ts:1856"
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::passes through requests with non-sentinel key (agent own credential)": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::performs TLS handshake with CA-signed cert for allowed host": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::preserves schedule-skill tools when agentKind is unset (default-conservative)": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::preserves schedule-skill tools when agentKind=pty": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::refreshes OAuth tokens and retries bodyless authenticated requests after upstream 401": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::refreshes OAuth tokens and retries bodyless bearer requests after upstream 401": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::rejects requests with Content-Encoding on rewrite endpoints": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::removes only a duplicate managed bearer after swapping header key (agent-own-key, Bearer sk-test-fake-key-for-testing)": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::removes only a duplicate managed bearer after swapping header key (sk-test-fake-key-for-testing, Bearer agent-own-token)": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::removes only a duplicate managed bearer after swapping header key (sk-test-fake-key-for-testing, Bearer sk-test-fake-key-for-testing)": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::removes only a duplicate managed bearer after swapping header key (undefined, Bearer sk-test-fake-key-for-testing)": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::renews leaf cert when cached cert is near expiry": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::requires domain approval and gates private HTTP with flag=true": [
+   [
+    "AssertionError",
+    "call",
+    "expected 502 to be 200 // Object.is equality",
+    "test/mitm-proxy.test.ts:2173"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 502 to be 200 // Object.is equality",
+    "test/mitm-proxy.test.ts:2173"
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::returns 400 for malformed HTTP after TLS handshake": [
+   [
+    "AssertionError",
+    "call",
+    "expected '' to contain '400'",
+    "test/mitm-proxy.test.ts:1609"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected '' to contain '400'",
+    "test/mitm-proxy.test.ts:1609"
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::still screens the resolved address when only the resolver seam is supplied": [
+   [
+    "AssertionError",
+    "call",
+    "expected 'Upstream error: detjs: network access\u2026' to match /non-public address/u",
+    "test/mitm-proxy.test.ts:977"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 'Upstream error: detjs: network access\u2026' to match /non-public address/u",
+    "test/mitm-proxy.test.ts:977"
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::strips ScheduleWakeup + CronCreate from upstream body when agentKind=batch": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ],
+  "test/mitm-proxy.test.ts@@main::MitmProxy::strips ScheduleWakeup + CronCreate from upstream body when agentKind=workflow": [
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ],
+   [
+    "Error",
+    "call",
+    "certificate has expired",
+    ""
+   ]
+  ]
+ }
+}

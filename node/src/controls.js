@@ -108,7 +108,7 @@ function unproven(name, realEnv) {
   if (name === '*') return Object.keys(realEnv || process.env).some((n) => unproven(n));
   if (KEPT.has(name)) return true;
   const c = STATE.config;
-  return volatile.PROXY_ENV.has(name) && !!c && c.controls.has('net') && String(STATE.netMode) !== 'record';
+  return volatile.PROXY_ENV.has(name) && !!c && c.controls.has('net') && String(STATE.netMode) !== 'record' && String(STATE.netMode) !== 'open';
 }
 function projectSite() {
   const c = STATE.config;

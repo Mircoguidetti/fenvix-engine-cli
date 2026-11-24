@@ -1,0 +1,30 @@
+test/cache.test.js 'runtime: by default TZ is pinned to UTC' (vitest, jest): + --det-tz=UTC --det-locale=C.UTF-8 (checks the pinned zone)
+test/controls.test.js goldenCheck (seeds, time, timers; vitest, jest): default detArgs + --det-epoch=fixed (verifies two separate runs, diverged === 0)
+test/controls.test.js 'net: closed by default, record then replay' (vitest, jest): the blocked run + --det-net=closed
+test/exit-paths-p0.test.js 're-exec path: the same through the TZ/locale restart': + --det-tz=UTC --det-locale=C.UTF-8 (the restart only happens for a pin)
+test/exit-regression.test.js 'AC1(c) through the re-exec path, a test that SIGTERMs its process...': + --det-tz=UTC --det-locale=C.UTF-8 (the restart only happens for a pin)
+test/network-p041.test.js (whole file, through its run helper): every --det run + --det-epoch=fixed --det-net=closed (tests of the closed network, separate-run comparisons and the 2025-01-01 epoch)
+test/node-p041.test.js (through its run helper): every --det run + --det-net=closed; runs without the cache also + --det-epoch=fixed (clock tests of the 2025-01-01 epoch, separate-run comparisons, closed network)
+test/node-p041.test.js 'G-0139 G-0140 time zone and locale pinned and recorded' (vitest, jest): the three pinned cases + --det-tz=UTC --det-locale=C.UTF-8
+test/parallel-p041.test.js (through its det helper): every --det run without the cache + --det-epoch=fixed (compares separate serial and parallel runs)
+test/projects.test.js 'vitest projects running the same file...': runWith + --det-epoch=fixed (verifies separate runs)
+test/review-p1-verifier.test.js 'F-01: --det pins the time zone and the locale': both runs + --det-tz=UTC --det-locale=C.UTF-8
+test/review-r032b.test.js C-intl, C-timeorigin (node-test, mocha, bun, deno): every run of the attack + --det-epoch=fixed (the fresh no-cache run must read the same virtual clock as the cached run)
+test/runner-b-cases.js control case 'two --det runs give identical fingerprints; clock, seeds and closed network active in tests' (tap, ava, jasmine, uvu): both runs + --det-epoch=fixed --det-net=closed
+test/runner-bun.test.js 'two --det runs give identical fingerprints...' and 'seeded shuffle...': every run + --det-epoch=fixed --det-net=closed (fixture checks the 2025 epoch and the closed network)
+test/runner-deno.test.js the same two tests: every run + --det-epoch=fixed --det-net=closed
+test/runner-mocha.test.js 'Level 0 inside the tests: virtual clock at the epoch, seeded randomness, closed network': the --det runs + --det-epoch=fixed --det-net=closed
+test/runner-node-test.test.js 'Level 0 inside the test processes: virtual clock at the epoch, ...': the --det runs + --det-epoch=fixed --det-net=closed
+# pre-existing (fail identically on the trunk engine /tmp/fenvix-trunk, f67be4a3), not changed:
+#   test/repro-p041.test.js '--det-order: exactly the listed tests ...' (vitest)
+#   test/runner-bun.test.js 'two --det runs give identical fingerprints; the controls are active inside bun test'
+#   test/runner-node-test.test.js 'a file another test file wrote: not cacheable'
+test/runners-p041.test.js (through its run helper): every --det run + --det-net=closed; runs without the cache also + --det-epoch=fixed (the tests compare with EPOCH = 2025-01-01)
+test/time-p041.test.js (through its run helper): every run without the cache + --det-epoch=fixed (values against the 2025-01-01 epoch, separate-run comparisons)
+test/verifier-inputs.test.js (file-level crun wrapper): every --det run without the cache + --det-epoch=fixed (verifies separate runs)
+test/verifier-inputs.test.js 'CI-volatile variables are never inputs': both runs + --det-net=closed (with the open network the *_PROXY variables are inputs, by the spec)
+test/verifier-inputs.test.js 'by default the time zone and the locale are pinned...': both runs + --det-tz=UTC --det-locale=C.UTF-8
+test/verify-inputs-attacks.test.js cases 'time' (+ --det-epoch=fixed) and 'time zone' (+ --det-tz=UTC --det-locale=C.UTF-8): they check a value controlled by the old defaults
+tests/test_fenvix_js.py test_run_dependent_id_is_reproduced_by_its_stable_id[vitest,jest]: DETJS_EPOCH=2025-01-01T00:00:00Z with DETJS_EPOCH_RUN=1 in its environment (the fixed epoch for its two separate sessions; the env form of --det-epoch=fixed, the sessions are started by the repro driver)
+CI step release/smoke.py node() (job "smoke (node)", LIGHT and FULL): both `--det` runs + --det-epoch=fixed (they are verified against each other)
+CI step release/install_test.py vitest check (job "install", FULL only): both `--det` runs + --det-epoch=fixed (verified against each other)

@@ -60,7 +60,8 @@ describe('mocha: control', () => {
       "test('network', async () => { await assert.rejects(fetch('http://example.com/')); });",
     ].join('\n')));
     for (const n of ['1', '2']) {
-      const r = crun(R, dir, [], { cache: false, env: { RUN_N: n } });
+      // opt-out of the host-values defaults (spec 2026-11-23): 2025 epoch, closed network
+      const r = crun(R, dir, [], { cache: false, det: ['--det', '--det-epoch=fixed', '--det-net=closed'], env: { RUN_N: n } });
       assert.equal(r.status, 0, show(r));
     }
     assert.equal(fs.readFileSync(path.join(dir, 'out', 'r-1'), 'utf8'), fs.readFileSync(path.join(dir, 'out', 'r-2'), 'utf8'));

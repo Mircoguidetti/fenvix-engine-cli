@@ -106,10 +106,18 @@ class DetjsRunner(_repro.Runner):
 
     runner: str = "vitest"
     detjs: list | None = None
+    epoch: str | None = None
 
     def __post_init__(self):
         if self.detjs is None:
             self.detjs = detjs_command() or ["detjs"]
+        # One epoch for every detjs run of this repro session (spec "--det uses the machine's values by default",
+        # 2026-11-23: a detjs run started on its own picks the machine's time): the epoch of the run this driver
+        # belongs to (bin/detjs.js repro exports it), else the machine's time now, rounded down to the second.
+        if self.epoch is None:
+            env = self.env if isinstance(getattr(self, "env", None), dict) else os.environ
+            inherited = env.get("DETJS_EPOCH") if env.get("DETJS_EPOCH_RUN") == "1" else None
+            self.epoch = inherited or time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
     @property
     def runner_args(self) -> list:
@@ -118,6 +126,8 @@ class DetjsRunner(_repro.Runner):
     def _cmd(self, config: str, extra: list) -> list:
         extra = ["--det-collect" if a == "--collect-only" else a for a in extra]
         cmd = [*self.detjs, self.runner, *SUBCOMMAND.get(self.runner, []), "--det", *extra]
+        if self.epoch and not any(str(a).startswith("--det-epoch") for a in [*extra, *self.pytest_args]):
+            cmd.append(f"--det-epoch={self.epoch}")
         if config != _repro.FIXED:
             cmd.append(f"--det-seed={int(config)}")
         return [*cmd, *self.pytest_args]
@@ -235,8 +245,10 @@ def _killpg(pid: int) -> None:
         pass
 
 
-def runner_command(runner: str, config: str, order_file: str, args: list) -> str:
+def runner_command(runner: str, config: str, order_file: str, args: list, epoch: str | None = None) -> str:
     words = ["detjs", runner, *SUBCOMMAND.get(runner, []), "--det"]
+    if epoch and not any(str(a).startswith("--det-epoch") for a in args):
+        words.append(f"--det-epoch={epoch}")  # the failing run's start time: the clock reads it reproduces
     if config != _repro.FIXED:
         words.append(f"--det-seed={config}")
     words.append(f"--det-order={order_file}")
@@ -287,8 +299,9 @@ def finish_bundle(b: dict, out_dir: Path, runner: DetjsRunner) -> dict:
     b.pop("pytest_args", None)
     b.pop("python", None)
     b["runner_args"] = list(runner.pytest_args)
+    b["epoch"] = runner.epoch
     b["bundle"] = str(bdir)
-    b["command"] = runner_command(runner.runner, b["config"], str(bdir / "order.txt"), runner.pytest_args)
+    b["command"] = runner_command(runner.runner, b["config"], str(bdir / "order.txt"), runner.pytest_args, runner.epoch)
     b["replay_command"] = f"{PROG} replay {shlex.quote(str(bdir))}"
     b["root"] = str(runner.cwd)
     try:
@@ -398,7 +411,8 @@ class DetjsAdapter(_AdapterBase):
         bundle = Path(bundle)
         data = json.loads((bundle / "bundle.json").read_text())
         runner = DetjsRunner(cwd=Path.cwd(), workdir=bundle / "replay", runner=data.get("runner", self.name),
-                             pytest_args=list(data.get("runner_args", [])))
+                             pytest_args=list(data.get("runner_args", [])),
+                             epoch=data.get("epoch"))  # None (a bundle of an earlier detjs): one epoch, picked now
         rs = [runner.run(data["config"], data["order"], f"replay-{i}") for i in range(runs)]
         return _core.repro_replay_verdict(data, rs, runs)
 

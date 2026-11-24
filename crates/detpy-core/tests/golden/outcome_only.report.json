@@ -1,0 +1,69 @@
+{
+  "labels": [
+    "run0",
+    "run1"
+  ],
+  "order_digests": [
+    "83dc55ccddb68bf3cf487468c2681a52",
+    "83dc55ccddb68bf3cf487468c2681a52"
+  ],
+  "complete": [
+    false,
+    false
+  ],
+  "summary": {
+    "runs": 2,
+    "tests": 1,
+    "stable": 0,
+    "diverged": 1,
+    "missing": 0,
+    "outcome_unstable": 1,
+    "order_identical": true,
+    "reasons": {
+      "outcome-only": 1
+    },
+    "inputs_recorded": false,
+    "identical": 0,
+    "input_differs": 0,
+    "not_proven": 0
+  },
+  "tests": [
+    {
+      "nodeid": "x",
+      "status": "diverged",
+      "fingerprints": [
+        "ad34a2a530790da587c4a41ac6eb6904",
+        "5145db5407f61a4e6d09a4e459bb319a"
+      ],
+      "outcomes": [
+        "passed",
+        "failed"
+      ],
+      "distinct_fingerprints": 2,
+      "outcome_stable": false,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 1,
+        "index": 1,
+        "window": null,
+        "event_a": {
+          "t": 0,
+          "s": "outcome",
+          "o": "outcome",
+          "at": "",
+          "v": "passed"
+        },
+        "event_b": {
+          "t": 0,
+          "s": "outcome",
+          "o": "outcome",
+          "at": "",
+          "v": "failed"
+        },
+        "reason": "outcome-only",
+        "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+      }
+    }
+  ],
+  "input_differences": []
+}

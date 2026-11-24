@@ -56,7 +56,7 @@ pub struct Footer {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "lowercase")]
-enum Line {
+pub(crate) enum Line {
     Header(Header),
     Test(TestRecord),
     Footer(Footer),

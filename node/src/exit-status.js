@@ -97,13 +97,49 @@ function statusLine(st) {
 // process.exit in a runner) makes session.finish run in an 'exit' listener and never returns to bin/detjs.js, and
 // Node exits with the exitCode an 'exit' listener leaves. The normal path decides again on the shell's return.
 let recorded = null;
+// P0 big trace: the engine could not establish the run's outcome (the trace could not be read back or stamped, a
+// worker part could not be merged). Sticky: no later record() clears it, so the run ends 2 (NOT PROVEN), never 0.
+let unknown = null;
+// A runner whose own code calls process.exit(0) after detjs decided (agentic-qe's vitest global teardown: process.exit(0)
+// 5 s after the tests, while the process is still alive) would set the exit code back to 0: the decision is applied
+// again on 'exit', after that call. It only ever raises the code (runExit over the code being exited with).
+let guarded = false;
+function guardExit() {
+  if (guarded) return;
+  guarded = true;
+  process.on('exit', () => {
+    if (!recorded) return;
+    const cur = process.exitCode === undefined || process.exitCode === null ? 0 : Number(process.exitCode);
+    process.exitCode = runExit({ ...recorded, runnerCode: Number.isFinite(cur) ? cur : 1 });
+  });
+}
 function record(st) {
+  if (unknown) { process.exitCode = 2; return; }
   recorded = st ? { ...st } : null;
   if (recorded) {
+    guardExit();
     const cur = process.exitCode === undefined || process.exitCode === null ? 0 : Number(process.exitCode);
     process.exitCode = runExit({ ...recorded, runnerCode: Number.isFinite(cur) ? cur : 1 });
   }
 }
 function recordedStatus() { return recorded; }
 
-module.exports = { runExit, verifyExit, verifyStatus, countStatus, statusLine, record, recordedStatus };
+/**
+ * The run's status is unknown: `cause` says why (one sentence). Sets the recorded status to `{internalError: true,
+ * cause}` (runExit gives 2, also when bin/detjs.js decides again after main returns), sets process.exitCode = 2 and
+ * prints `detjs: status: unknown (<cause>): exit 2, NOT PROVEN` (once per cause). Sticky: record() never clears it.
+ */
+const unknownCauses = new Set();
+function recordUnknown(cause) {
+  const c = String(cause);
+  if (!unknown) unknown = c;
+  recorded = { internalError: true, cause: unknown };
+  process.exitCode = 2;
+  guardExit();
+  if (!unknownCauses.has(c)) {
+    unknownCauses.add(c);
+    try { require('node:fs').writeSync(2, `detjs: status: unknown (${c}): exit 2, NOT PROVEN\n`); } catch { /* not printed */ }
+  }
+}
+
+module.exports = { runExit, verifyExit, verifyStatus, countStatus, statusLine, record, recordedStatus, recordUnknown };

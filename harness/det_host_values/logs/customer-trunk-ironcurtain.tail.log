@@ -1,0 +1,25 @@
+
+- `test/docker/outbound-transport.test.ts@@main::destination policy model::keeps 'https:' through the fixed parent under 'trusted-provider-override' when the parent 'refuses'`
+- `test/docker/outbound-transport.test.ts@@main::destination policy model::keeps 'https:' through the fixed parent under 'trusted-provider-override' when the parent 'disappears'`
+- `test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::MITM-forwards only an authorized exact CONNECT/SNI/Host route with fixed outbound headers`
+- `test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::requires explicit route authorization and supports exact plain-HTTP Debian inputs via HTTPS upstream`
+- `test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::allows and audits the exact deb.debian.org security archive while rejecting close path variants`
+- `test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::derives npm metadata for the exact artifact version and enforces fresh deny versus old allow`
+- `test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::keeps a derived metadata request alive while upstream chunks continue arriving`
+- `test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::uses an exact source-owned metadata GET for 'pypi' artifacts`
+- `test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::uses an exact source-owned metadata GET for 'cargo' artifacts`
+- `test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::leaves recognized metadata unfiltered but makes artifact validation the policy backstop`
+- `test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::allows recognized artifacts without metadata or policy evaluation when package policy is disabled`
+- `test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::bounds concurrent derived metadata and aborts the owned operation during stop`
+- `test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::returns one canonical allowed redirect without following it, then charges the next client request separately`
+- `test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::rejects a cross-ecosystem redirect without contacting its target`
+
+<details><summary>Why the other tests ran</summary>
+
+Not reused (an input changed or no entry yet): new 397.
+
+Not cacheable (the test touched something the engine cannot prove): touched-a-path-or-port-another-test-file 1336, subprocess 358, os-entropy 286, reads-proc-sys-or-dev 239, network-connection 229, a-level-0-control-could-not-be-installed 209, outcome-failed 171, os-randomness-drawn-in-native-crypto 136, worker-thread 26, watches-the-file-system 14, reads-file-system-statistics 13, capture-not-written 1.
+
+</details>
+
+[fenvix] tests 7033, reused with proof 0, ran 7033, saved 0.0 s of test time, failed 92, flaky 0, not proven 39; exit 1

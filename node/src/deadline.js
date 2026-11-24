@@ -18,7 +18,7 @@ const { STATE } = require('./state');
 const KEY = Symbol.for('detjs.deadlineClock');
 const DEADLINE_SETUP = /\b(?:callAsyncCircusFn|runWithTimeout|new TaskDeadline)\b/;
 // frames that read the clock for a deadline: Vitest 1-4 `runWithTimeout` / its `resolve`, Vitest 5 `TaskDeadline`
-const INITIALIZER = /^\s*at <instance_members_initializer>/;
+const INITIALIZER = /^\s*at (?:[\w$.]+\.)?<instance_members_initializer>/;
 const DEADLINE_READ = /^\s*at (?:runWithTimeout|resolve|new TaskDeadline|TaskDeadline\.(?:remaining|exceeded|derive|track|settle)) \(.*[\\/](?:@vitest[\\/]runner|vitest[\\/]dist)[\\/]/m;
 
 function stackOf(limit) {

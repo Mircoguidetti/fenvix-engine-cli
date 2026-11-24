@@ -66,7 +66,7 @@ function replace(obj, key, fn) {
 function installLevel0(cfg, notes) {
   if (!cfg.controls.has('net')) return;
   if (cfg.netMode === 'record') notes.push('deno: --det-record does not record Deno\'s native connections: they are allowed and not recorded');
-  const open = cfg.netMode === 'record';
+  const open = cfg.netMode === 'record' || cfg.netMode === 'open';
   const realFetch = globalThis.fetch;
   const fetchW = function fetch(input, init) {
     const h = hostOf(input);
@@ -127,7 +127,7 @@ const explained = { paths: new Set(), env: new Set(), sys: new Set(), any: false
 
 function installCapture(cap, notes, { wrappers = true } = {}) {
   const cfg = require('../controls').cfg();
-  const closed = cfg.controls.has('net') && cfg.netMode !== 'record';
+  const closed = cfg.controls.has('net') && cfg.netMode !== 'record' && cfg.netMode !== 'open';
   const abs = (p) => { try { const t = require('../cache/capture').toPath(p); return t; } catch { return null; } };
   // explained accesses: whatever the shared capture is asked about, before its own filters
   for (const m of ['read', 'wrote']) {

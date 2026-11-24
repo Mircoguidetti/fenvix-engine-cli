@@ -23,12 +23,18 @@ const HELP = `detjs options (all others are passed to the test runner):
   --det-outcomes=PATH      write order, outcomes, fingerprints and exceptions of the run as JSON (repro drivers)
   --det-collect            collection only: write the order this run would use to --det-outcomes; run no test
   --det-compare=TRACE      compare fingerprints with a previous trace
+  --det-net=open|closed    open (default): external hosts are reached like --det-allow-host hosts (a net event
+                           "<host>:<port> allowed", bytes in the fingerprint; a test that used one is never reused by
+                           the cache); closed: refused with NetworkBlockedError (the earlier default)
   --det-record             allow external network access and record it into the cassette
   --det-cassette=PATH      network cassette (default: <root>/.detjs/cassette.json); replayed when present
   --det-cassette-max-age=D do not replay recordings older than D days (refused like an unrecorded connection; default
                            0 = no limit; recordings older than 30 days are always reported)
   --det-allow-host=HOST    external host that may be reached (repeatable)
-  --det-epoch=ISO          wall clock at the start of every test (default ${config.DEFAULT_EPOCH})
+  --det-epoch=ISO|fixed    wall clock at the start of every test (default: the machine's time when the run starts,
+                           rounded down to the second, one value for every process of the run; with --det-cache the
+                           virtual day; with --det-compare/--det-plan=TRACE the epoch of that trace; fixed =
+                           ${config.DEFAULT_EPOCH}); recorded as meta.epoch / meta.epoch_ns
   --det-tick=NS            nanoseconds per clock read (default 1000)
   --det-tick-adapt=N       double the tick after N consecutive reads with no other event (default 1000, 0 = fixed)
   --det-timers=real        timers wait for real (default: virtual, fast while no I/O is pending)
@@ -44,8 +50,8 @@ const HELP = `detjs options (all others are passed to the test runner):
   --det-cache=DIR|URL      cache with proof: skip test files whose every recorded input is unchanged
                            (a directory, or a shared cache service https://host/<namespace>)
   --det-cache-verify       decide reuse but run every file anyway and compare (receipts say what would be reused)
-  --det-tz=ZONE|keep       time zone of the run (default: TZ when set, else UTC; recorded)
-  --det-locale=LOC|keep    LC_ALL and LANG of the run (default: LC_ALL/LANG when set, else C.UTF-8)
+  --det-tz=ZONE|keep       time zone of the run (default keep: the machine's TZ; --det-tz=UTC pins it; recorded)
+  --det-locale=LOC|keep    LC_ALL and LANG of the run (default keep: the machine's; --det-locale=C.UTF-8 pins them)
   --det-cache-max-age=D    never reuse a result recorded more than D days ago (default 30; 0 = no limit)
   --det-cache-real-clock   nightly check: run every file on the real clock (no reuse, nothing recorded) and report
                            each test whose cached result differs (an expiry); its cache entries are removed
@@ -67,9 +73,10 @@ function parseArgs(argv, env = process.env) {
   const opts = {
     det: env.DETJS === '1' || env.DETJS === 'true',
     seed: null, trace: null, compare: null, record: false, cassette: null, allowHosts: [],
-    epoch: config.DEFAULT_EPOCH, tick: 1000, tickAdapt: 1000, timers: 'virtual', timerBudget: 100000,
+    epoch: null, tick: 1000, tickAdapt: 1000, timers: 'virtual', timerBudget: 100000,
     disable: '', urandom: true, cassetteMaxAge: 0, maxEvents: 10000, sites: true,
     cache: null, cacheVerify: false, cacheReceipts: null, cacheSummary: null, cacheRealClock: false, epochExplicit: false,
+    net: 'open',
     workers: null, plan: null,
     order: null, outcomes: null, collect: false, orderSeed: null,
     isolate: env.DETJS_ISOLATE === '1',
@@ -77,7 +84,7 @@ function parseArgs(argv, env = process.env) {
   if (env.DETJS_CACHE_DIR) opts.cache = env.DETJS_CACHE_DIR;
   if (env.DETJS_SEED !== undefined && env.DETJS_SEED !== '') opts.seed = config.int(env.DETJS_SEED, 0);
   const rest = [];
-  const takes = new Set(['--det-cassette-max-age', '--det-cache-max-age', '--det-tz', '--det-locale', '--det-seed', '--det-order-seed', '--det-trace', '--det-compare', '--det-cassette', '--det-allow-host', '--det-epoch',
+  const takes = new Set(['--det-cassette-max-age', '--det-cache-max-age', '--det-tz', '--det-locale', '--det-seed', '--det-order-seed', '--det-trace', '--det-compare', '--det-cassette', '--det-allow-host', '--det-epoch', '--det-net',
     '--det-tick', '--det-tick-adapt', '--det-timers', '--det-timer-budget', '--det-disable', '--det-max-events', '--det-sites',
     '--det-cache', '--det-cache-receipts', '--det-cache-summary', '--det-workers', '--det-plan', '--det-order', '--det-outcomes']);
   for (let i = 0; i < argv.length; i++) {
@@ -93,9 +100,13 @@ function parseArgs(argv, env = process.env) {
       case '--det-trace': opts.trace = value; break;
       case '--det-compare': opts.compare = value; break;
       case '--det-record': opts.record = true; break;
+      case '--det-net':
+        if (value !== 'open' && value !== 'closed') throw new Error(`detjs: --det-net: open or closed, got ${value}`);
+        opts.net = value;
+        break;
       case '--det-cassette': opts.cassette = value; break;
       case '--det-allow-host': opts.allowHosts.push(value); break;
-      case '--det-epoch': config.parseEpoch(value); opts.epoch = value; opts.epochExplicit = true; break;
+      case '--det-epoch': config.parseEpoch(value); opts.epoch = value === 'fixed' ? config.DEFAULT_EPOCH : value; opts.epochExplicit = true; break;
       case '--det-tick': opts.tick = config.int(value, 1000); break;
       case '--det-tick-adapt': opts.tickAdapt = config.int(value, 1000); break;
       case '--det-timers': opts.timers = value === 'real' ? 'real' : 'virtual'; break;
@@ -129,7 +140,7 @@ function parseArgs(argv, env = process.env) {
       default: throw new Error(`detjs: unknown option ${a}\n${HELP}`);
     }
   }
-  if (opts.cache && !opts.epochExplicit) opts.epoch = virtualDay();
+  resolveEpoch(opts, env);
   if (opts.cacheRealClock) {
     if (!opts.cache) throw new Error('detjs: --det-cache-real-clock needs --det-cache=DIR|URL');
     // run on the real clock; the reuse decision is still the one of the virtual day (src/cache/proof.js)
@@ -139,6 +150,53 @@ function parseArgs(argv, env = process.env) {
     opts.disable = [...off].join(',');
   }
   return { opts, rest };
+}
+
+/**
+ * The epoch of the run, picked once (spec "--det uses the machine's values by default", 2026-11-23). First match:
+ * --det-epoch; the DETJS_EPOCH of the run this session belongs to (exported by the outermost detjs, bin/detjs.js,
+ * which marks it DETJS_EPOCH_RUN=1; the one-lane re-run's passes and --det-isolate's sessions carry their own marks
+ * too); with --det-cache the virtual day; the meta.epoch_ns of the trace given to --det-compare or --det-plan; the
+ * machine's time now, rounded down to the second.
+ */
+function resolveEpoch(opts, env = process.env) {
+  opts.epochSource = 'option';
+  if (opts.epochExplicit) return opts.epoch;
+  const child = env.DETJS_EPOCH_RUN === '1' || env.DETJS_HAZARD_RERUN === '1' || env.DETJS_ISOLATE_CHILD === '1';
+  if (child && env.DETJS_EPOCH) {
+    try { config.parseEpoch(env.DETJS_EPOCH); opts.epoch = env.DETJS_EPOCH; opts.epochSource = 'run'; return opts.epoch; } catch { /* picked below */ }
+  }
+  if (opts.cache) { opts.epochSource = 'cache'; return (opts.epoch = virtualDay()); }
+  for (const t of [opts.compare, opts.plan]) {
+    const ns = traceEpochNs(t);
+    if (ns !== null) { opts.epochSource = 'trace'; return (opts.epoch = isoOfNs(ns)); }
+  }
+  opts.epochSource = 'host';
+  return (opts.epoch = new Date(Math.floor(Date.now() / 1000) * 1000).toISOString().replace('.000Z', 'Z'));
+}
+
+function isoOfNs(ns) {
+  return new Date(Number(BigInt(ns) / 1000000n)).toISOString();
+}
+
+/** meta.epoch_ns of a trace file (its header line), or null (no such file, a JSON plan, no epoch). */
+function traceEpochNs(file) {
+  if (!file) return null;
+  let fd = null;
+  try {
+    fd = fs.openSync(file, 'r');
+    const buf = Buffer.alloc(1 << 20);
+    const n = fs.readSync(fd, buf, 0, buf.length, 0);
+    const text = buf.subarray(0, n).toString('utf8');
+    const nl = text.indexOf('\n');
+    const head = JSON.parse(nl < 0 ? text : text.slice(0, nl));
+    const ns = head && head.type === 'header' && head.meta ? head.meta.epoch_ns : undefined;
+    return ns !== undefined && /^\d+$/.test(String(ns)) ? String(ns) : null;
+  } catch {
+    return null;
+  } finally {
+    if (fd !== null) { try { fs.closeSync(fd); } catch { /* closed */ } }
+  }
 }
 
 /** Today 00:00 UTC on the real clock (DECISIONS 2026-11-19: the virtual day of skip with proof). */
@@ -156,7 +214,9 @@ function prepare(opts, root, runner) {
   // G-2177), as pytest's and Vitest's caches do
   try { fs.writeFileSync(path.join(root, '.detjs', '.gitignore'), "# created by fenvix (the engine's run state)\n*\n", { flag: 'wx' }); } catch { /* present or read-only */ }
   const cassette = path.resolve(root, opts.cassette || path.join('.detjs', 'cassette.json'));
-  const netMode = opts.record ? 'record' : fs.existsSync(cassette) ? 'replay' : 'block';
+  // --det-net=open (default) reaches external hosts live; closed refuses them; --det-record and an existing cassette
+  // keep recording and replaying
+  const netMode = opts.record ? 'record' : fs.existsSync(cassette) ? 'replay' : opts.net === 'closed' ? 'block' : 'open';
   const env = {
     DETJS: '1',
     DETJS_SEED: String(opts.seed ?? 0),
@@ -183,6 +243,8 @@ function prepare(opts, root, runner) {
   };
   if (opts.order && !fs.existsSync(env.DETJS_ORDER)) throw new Error(`detjs: --det-order: no such file ${opts.order}`);
   Object.assign(process.env, env);
+  // the mark of the run's epoch is for the detjs sessions of the run (bin/detjs.js), not for the tests' processes
+  delete process.env.DETJS_EPOCH_RUN;
   // the capture's loader mode is chosen per shell for its own test processes (runners/common.js childEnv sets
   // `register` for the tap, AVA, Jasmine and uvu shells): never inherited from an outer process
   delete process.env.DETJS_CAPTURE_LOADER;
@@ -247,21 +309,34 @@ function header(run, opts, extra) {
 /** Ids of the tests recorded in a part, in execution order. */
 function partNotes(file) {
   try {
-    const first = fs.readFileSync(file, 'utf8').split('\n', 1)[0];
+    const first = require('./trace-lines').firstLine(file);
     return (JSON.parse(first).meta || {}).notes || [];
   } catch {
     return [];
   }
 }
 
+/** The ids of every part, in order; `onError(part, err)` for a part whose ids cannot be read (it adds none). */
+function partOrder(parts, onError) {
+  const order = [];
+  for (const p of parts) {
+    let ids;
+    try { ids = partIds(p); } catch (e) { onError(p, e); continue; }
+    // one push per id: spreading a part's ids into push() overflows the stack above ~100 000 arguments
+    for (const id of ids) order.push(id);
+  }
+  return order;
+}
+
+/** Ids of the tests recorded in a part, in execution order. Streams the part (src/trace-lines.js); a part that
+ * cannot be read throws (the caller fails closed: src/session.js finish). A line that is not JSON is skipped (a
+ * truncated last line, as before). */
 function partIds(file) {
   const ids = [];
-  let text;
-  try { text = fs.readFileSync(file, 'utf8'); } catch { return ids; }
-  for (const line of text.split('\n')) {
-    if (!line.startsWith('{"type":"test"')) continue;
+  require('./trace-lines').forEachLine(file, (line) => {
+    if (!line.startsWith('{"type":"test"')) return;
     try { ids.push(JSON.parse(line).nodeid); } catch { /* truncated last line */ }
-  }
+  });
   return ids;
 }
 
@@ -296,8 +371,8 @@ function runInputs(run, meta) {
   // differing one is reported `input-differs` for the tests that read it (their `env.get` events, src/controls.js)
   const vp = volatile.patterns();
   // while the network is closed the proxy variables are its part (the closed network decides every connection), not
-  // inputs; while recording (the real network) they are inputs
-  const closed = has('net') && String(run.netMode) !== 'record';
+  // inputs; while recording or open (the real network) they are inputs
+  const closed = has('net') && String(run.netMode) !== 'record' && String(run.netMode) !== 'open';
   for (const [k, v] of Object.entries(process.env)) {
     if (volatile.isVolatile(k, vp) || (closed && volatile.PROXY_ENV.has(k))) continue;
     inputs[`env:${k}`] = dig(`${k}=${v}`);
@@ -395,7 +470,8 @@ function finish(run, opts, files, meta) {
   const known = new Set(parts);
   const extra = fs.readdirSync(path.join(run.dir, 'parts')).map((p) => path.join(run.dir, 'parts', p)).filter((p) => !known.has(p)).sort();
   const all = [...parts, ...extra];
-  const order = all.flatMap(partIds);
+  // P0 big trace: a part whose ids cannot be read leaves the order incomplete: the run's status is unknown (exit 2)
+  const order = partOrder(all, (p, e) => exitStatus.recordUnknown(`trace part ${p} could not be read: ${e && e.message}`));
   const full = {
     ...meta,
     runtime: 'node',
@@ -406,6 +482,7 @@ function finish(run, opts, files, meta) {
     shuffle: run.cfg.shuffle,
     controls: [...run.cfg.controls].sort(),
     epoch_ns: run.cfg.epochNs.toString(),
+    epoch: isoOfNs(run.cfg.epochNs),
     tick_ns: run.cfg.tickNs,
     tick_adapt: run.cfg.tickAdapt,
     timers: run.cfg.timers,
@@ -444,23 +521,32 @@ function finish(run, opts, files, meta) {
   // the installed dependencies of the project (src/loaded.js, review R-055 V5)
   try { const d = require('./loaded').depsInput(run.dir); if (d && full.inputs) full.inputs.deps = d; } catch (e) { full.inputs_error = String(e && e.message); }
   const res = native.mergeTraces(all, run.tracePath, JSON.stringify(full), order);
+  // P0 big trace: a worker part the merge could not read is missing from the trace with its tests (and their
+  // failures): the run's status is unknown, exit 2, never green
+  if (res.skipped.length) exitStatus.recordUnknown(`unreadable trace parts, their tests are not counted: ${res.skipped.join('; ')}`);
   // B7 (spec "Engine P0: no false green"): the counts of the trace, in its header and on one status line; the exit
-  // decision of this process (bin/detjs.js, src/exit-status.js runExit) uses them
-  const status = stampStatus(run.tracePath);
-  if (status) {
+  // decision of this process (bin/detjs.js, src/exit-status.js runExit) uses them. A trace that cannot be read back
+  // or stamped is a run whose status is unknown: exit 2 (P0 big trace; before, the runner's code decided, and a 1.2
+  // GB trace with failed tests ended 0)
+  let status = null;
+  try {
+    status = stampStatus(run.tracePath);
+    if (!status) exitStatus.recordUnknown(`the trace ${run.tracePath} could not be read back`);
+  } catch (e) {
+    exitStatus.recordUnknown(`the trace ${run.tracePath} could not be read back or stamped: ${e && e.message}`);
+  }
+  if (status && !res.skipped.length && !exitStatus.recordedStatus()?.internalError) {
     exitStatus.record(status);
     // sync: the runner may be exiting; a stderr that cannot take the line (closed, full) must not abort the finish
     if (printsStatus(full)) { try { fs.writeSync(2, `${exitStatus.statusLine(status)}\n`); } catch { /* not printed */ } }
-  } else {
-    // no counts are invented for a trace that cannot be read: the exit decision rests on the runner's code
-    try { fs.writeSync(2, `detjs: status: not written (the trace ${run.tracePath} could not be read back)\n`); } catch { /* not printed */ }
   }
   let reproLines = [];
   try { reproLines = require('./repro').afterMerge(run, opts, files, meta.runner); } catch (e) { reproLines = [`detjs: --det-outcomes not written: ${e && e.message}`]; }
   fs.rmSync(run.dir, { recursive: true, force: true });
   const lines = [`detjs: trace ${path.relative(process.cwd(), run.tracePath) || run.tracePath}: ${res.nTests} tests, order digest ${res.orderDigest}`];
   if (res.skipped.length) lines.push(`detjs: unreadable trace parts: ${res.skipped.join('; ')}`);
-  const ent = realEntropyTests(run.tracePath, run.cfg.urandom);
+  let ent = [];
+  try { ent = realEntropyTests(run.tracePath, run.cfg.urandom); } catch (e) { lines.push(`detjs: the entropy check could not read the trace: ${e && e.message}`); }
   if (ent.length) {
     lines.push(`detjs: ${ent.length} test(s) used real OS entropy, observed but not controlled (${[...new Set(ent.flatMap((e) => e.ops))].sort().join(', ')}): their results can differ between runs${run.cfg.urandom ? ' (native key generation)' : '; without --det-urandom=off, crypto.randomBytes & co. are deterministic (not for tests of cryptography)'}, e.g. ${ent[0].nodeid}`);
   }
@@ -487,20 +573,31 @@ function finish(run, opts, files, meta) {
  * Count the merged trace's tests (exit-status.js countStatus; a single run has no NOT PROVEN test of its own, B3)
  * and write the counts into its header as `meta.status` (appendix point 3: in `meta`, no change to the Rust Header).
  * The header line is edited as text, not re-serialized, so no other field of it can change; the new trace is
- * written beside the old one and renamed over it, so a crash never leaves a truncated trace. Returns null when the
- * trace cannot be read (no counts are invented); a test line that cannot be parsed counts as failed.
+ * written beside the old one and renamed over it, so a crash never leaves a truncated trace. A test line that
+ * cannot be parsed counts as failed.
+ *
+ * P0 big trace: the trace is streamed (src/trace-lines.js; a 1.2 GB trace does not fit in one JavaScript string),
+ * and the body after the header line is copied byte for byte. A trace that cannot be read gives null; a stamp that
+ * cannot be written or renamed THROWS. Either way the caller records the run's status as unknown (exit 2).
  */
 function stampStatus(tracePath) {
-  let text;
-  try { text = fs.readFileSync(tracePath, 'utf8'); } catch { return null; }
+  const { forEachLine, copyRange } = require('./trace-lines');
   const recs = [];
-  for (const line of text.split('\n')) {
-    if (!line.startsWith('{"type":"test"')) continue;
-    try { const t = JSON.parse(line); recs.push({ nodeid: t.nodeid, outcome: t.outcome }); } catch { recs.push({ nodeid: `<unreadable line ${recs.length}>`, outcome: 'unreadable' }); }
+  let head = null;
+  let headLen = 0;
+  try {
+    forEachLine(tracePath, (line, i, off, len) => {
+      if (i === 0) { head = line; headLen = len; }
+      if (!line.startsWith('{"type":"test"')) return;
+      try { const t = JSON.parse(line); recs.push({ nodeid: t.nodeid, outcome: t.outcome }); } catch { recs.push({ nodeid: `<unreadable line ${recs.length}>`, outcome: 'unreadable' }); }
+    });
+  } catch {
+    // no counts are invented for a trace that cannot be read (absent, a read error, a line over the limit): null,
+    // and the caller records the run's status as unknown (exit 2)
+    return null;
   }
   const status = exitStatus.countStatus(recs);
-  const nl = text.indexOf('\n');
-  const head = nl < 0 ? text : text.slice(0, nl);
+  if (head === null) head = '';
   const at = head.indexOf('"meta":{');
   if (head.startsWith('{"type":"header"') && at >= 0) {
     const i = at + '"meta":{'.length;
@@ -508,6 +605,9 @@ function stampStatus(tracePath) {
     // beside the real file (a --det-trace that is a symbolic link stays one), with its mode
     let real = tracePath;
     try { real = fs.realpathSync(tracePath); } catch { /* as given */ }
+    const size = fs.statSync(real).size;
+    // the raw header line ends with "\r" when the file's lines do: kept
+    const cr = Buffer.byteLength(head, 'utf8') < headLen ? '\r' : '';
     // created exclusively (never through a file or link already at that name) and set up through its descriptor
     const tmp = `${real}.status-${process.pid}-${Date.now().toString(36)}`;
     let fd = null;
@@ -515,7 +615,9 @@ function stampStatus(tracePath) {
       let mode = 0o644;
       try { mode = fs.statSync(real).mode & 0o7777; } catch { /* default */ }
       fd = fs.openSync(tmp, 'wx', mode);
-      fs.writeSync(fd, `${head.slice(0, i)}${field}${head.slice(i)}${nl < 0 ? '' : text.slice(nl)}`);
+      // a trace of one line without "\n" stays one line without "\n"
+      fs.writeSync(fd, `${head.slice(0, i)}${field}${head.slice(i)}${cr}${size > headLen ? '\n' : ''}`);
+      if (size > headLen + 1) copyRange(real, headLen + 1, fd);
       fs.fchmodSync(fd, mode);
       fs.closeSync(fd);
       fd = null;
@@ -523,7 +625,7 @@ function stampStatus(tracePath) {
     } catch (e) {
       if (fd !== null) { try { fs.closeSync(fd); } catch { /* closed */ } }
       if (e && e.code !== 'EEXIST') { try { fs.rmSync(tmp, { force: true }); } catch { /* best effort */ } }
-      process.stderr.write(`detjs: meta.status not written into ${tracePath}: ${e && e.message}\n`);
+      throw new Error(`meta.status not written into ${tracePath}: ${e && e.message}`);
     }
   }
   return status;
@@ -549,12 +651,11 @@ const URANDOM_OPS = /^crypto\.(?:randomBytes|randomFillSync|randomFill|randomInt
 /** Tests of the merged trace that drew real OS entropy: [{nodeid, ops}] (G-1426: the default is never silent). */
 function realEntropyTests(tracePath, urandom) {
   const out = [];
-  let text;
-  try { text = fs.readFileSync(tracePath, 'utf8'); } catch { return out; }
-  for (const line of text.split('\n')) {
-    if (!line.startsWith('{"type":"test"') || !line.includes('"entropy"')) continue;
+  // streamed (P0 big trace); a read error is thrown to the caller, which prints it
+  require('./trace-lines').forEachLine(tracePath, (line) => {
+    if (!line.startsWith('{"type":"test"') || !line.includes('"entropy"')) return;
     let t;
-    try { t = JSON.parse(line); } catch { continue; }
+    try { t = JSON.parse(line); } catch { return; }
     const ops = new Set();
     for (const e of t.events || []) {
       if (e.s !== 'entropy') continue;
@@ -563,8 +664,8 @@ function realEntropyTests(tracePath, urandom) {
     }
     if (!ops.size && t.counts && t.counts.entropy && !urandom && !(t.events || []).length) ops.add('entropy');
     if (ops.size) out.push({ nodeid: t.nodeid, ops: [...ops] });
-  }
+  });
   return out;
 }
 
-module.exports = { realEntropyTests, parseArgs, prepare, header, finish, partIds, stampStatus, printsStatus, HELP, VERSION };
+module.exports = { realEntropyTests, parseArgs, resolveEpoch, traceEpochNs, prepare, header, finish, partIds, partOrder, stampStatus, printsStatus, HELP, VERSION };

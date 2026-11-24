@@ -1,0 +1,15 @@
+    not ok 1 - the plan is identical across runs, recorded in the trace and replayed from it; lanes overlap in time
+    not ok 2 - parallel fingerprints equal the serial ones (workers)
+    not ok 3 - cache: recorded in parallel, reused serially; recorded serially, reused in parallel
+not ok 128 - jest: parallel lanes
+    not ok 4 - --det-order: exactly the listed tests, in the listed order (files by first listed test), across describe blocks
+not ok 173 - repro options (vitest)
+    not ok 1 - two --det runs give identical fingerprints; the controls are active inside bun test
+not ok 221 - bun: Level 0 controls
+    not ok 7 - a file another test file wrote: not cacheable
+not ok 234 - node-test: adversarial (environment, processes, R-009 / R-017)
+# tests 1002
+# pass 995
+# fail 3
+# cancelled 3
+# skipped 1

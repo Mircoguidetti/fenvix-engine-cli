@@ -1,0 +1,57 @@
+{
+  "labels": [
+    "run0",
+    "run1"
+  ],
+  "order_digests": [
+    "865d5410009e19e044e5a6fc36d5dd2e",
+    "865d5410009e19e044e5a6fc36d5dd2e"
+  ],
+  "complete": [
+    true,
+    true
+  ],
+  "summary": {
+    "runs": 2,
+    "tests": 1,
+    "stable": 0,
+    "diverged": 0,
+    "missing": 0,
+    "outcome_unstable": 0,
+    "order_identical": true,
+    "reasons": {
+      "other": 1
+    },
+    "inputs_recorded": true,
+    "identical": 0,
+    "input_differs": 0,
+    "not_proven": 1
+  },
+  "tests": [
+    {
+      "nodeid": "t.test.ts > draws",
+      "status": "not-proven",
+      "fingerprints": [
+        "",
+        ""
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 0,
+        "index": null,
+        "window": null,
+        "event_a": null,
+        "event_b": null,
+        "reason": "other",
+        "description": "the test called something the engine cannot account for: the run recorded no fingerprint for this test: there is nothing to compare, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+      }
+    }
+  ],
+  "input_differences": []
+}
