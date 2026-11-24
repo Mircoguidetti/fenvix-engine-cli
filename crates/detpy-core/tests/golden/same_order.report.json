@@ -1,0 +1,61 @@
+{
+  "labels": [
+    "run0",
+    "run1"
+  ],
+  "order_digests": [
+    "3976e4714862c8c31a02b13221992d69",
+    "3976e4714862c8c31a02b13221992d69"
+  ],
+  "complete": [
+    false,
+    false
+  ],
+  "summary": {
+    "runs": 2,
+    "tests": 2,
+    "stable": 2,
+    "diverged": 0,
+    "missing": 0,
+    "outcome_unstable": 0,
+    "order_identical": true,
+    "reasons": {},
+    "inputs_recorded": false,
+    "identical": 2,
+    "input_differs": 0,
+    "not_proven": 0
+  },
+  "tests": [
+    {
+      "nodeid": "p",
+      "status": "stable",
+      "fingerprints": [
+        "31af55e422bc4accd412eab03c7f8ad0",
+        "31af55e422bc4accd412eab03c7f8ad0"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": null
+    },
+    {
+      "nodeid": "v",
+      "status": "stable",
+      "fingerprints": [
+        "31af55e422bc4accd412eab03c7f8ad0",
+        "31af55e422bc4accd412eab03c7f8ad0"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": null
+    }
+  ],
+  "input_differences": []
+}

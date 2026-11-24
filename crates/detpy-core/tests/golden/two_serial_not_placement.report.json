@@ -1,0 +1,69 @@
+{
+  "labels": [
+    "run0",
+    "run1"
+  ],
+  "order_digests": [
+    "1acc60126bfc691451fa67ec02e74e4e",
+    "1acc60126bfc691451fa67ec02e74e4e"
+  ],
+  "complete": [
+    false,
+    false
+  ],
+  "summary": {
+    "runs": 2,
+    "tests": 1,
+    "stable": 0,
+    "diverged": 1,
+    "missing": 0,
+    "outcome_unstable": 0,
+    "order_identical": true,
+    "reasons": {
+      "random": 1
+    },
+    "inputs_recorded": false,
+    "identical": 0,
+    "input_differs": 0,
+    "not_proven": 0
+  },
+  "tests": [
+    {
+      "nodeid": "v",
+      "status": "diverged",
+      "fingerprints": [
+        "0db4a16fca5f64f8aff8aec96348baa5",
+        "239e96d25fe93fe007ffb752c53fcff6"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 2,
+      "outcome_stable": true,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 1,
+        "index": 0,
+        "window": null,
+        "event_a": {
+          "t": 0,
+          "s": "random",
+          "o": "random.random",
+          "at": "t.py:1",
+          "v": "2"
+        },
+        "event_b": {
+          "t": 0,
+          "s": "time",
+          "o": "time.time",
+          "at": "t.py:1",
+          "v": "3"
+        },
+        "reason": "random",
+        "description": "event #0: [random] random.random @ t.py:1 = 2  <>  [time] time.time @ t.py:1 = 3"
+      }
+    }
+  ],
+  "input_differences": []
+}

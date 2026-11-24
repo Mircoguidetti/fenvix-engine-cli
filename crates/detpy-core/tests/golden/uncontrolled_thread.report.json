@@ -1,0 +1,69 @@
+{
+  "labels": [
+    "run0",
+    "run1"
+  ],
+  "order_digests": [
+    "83dc55ccddb68bf3cf487468c2681a52",
+    "83dc55ccddb68bf3cf487468c2681a52"
+  ],
+  "complete": [
+    false,
+    false
+  ],
+  "summary": {
+    "runs": 2,
+    "tests": 1,
+    "stable": 0,
+    "diverged": 0,
+    "missing": 0,
+    "outcome_unstable": 0,
+    "order_identical": true,
+    "reasons": {
+      "thread": 1
+    },
+    "inputs_recorded": false,
+    "identical": 0,
+    "input_differs": 0,
+    "not_proven": 1
+  },
+  "tests": [
+    {
+      "nodeid": "x",
+      "status": "not-proven",
+      "fingerprints": [
+        "a033fc70143ad00018875a37dd856323",
+        "a033fc70143ad00018875a37dd856323"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 0,
+        "index": 1,
+        "window": null,
+        "event_a": {
+          "t": 0,
+          "s": "other",
+          "o": "uncontrolled.thread",
+          "at": "t.py:3",
+          "v": "x"
+        },
+        "event_b": {
+          "t": 0,
+          "s": "other",
+          "o": "uncontrolled.thread",
+          "at": "t.py:3",
+          "v": "x"
+        },
+        "reason": "thread",
+        "description": "the test started a thread: thread scheduling (uncontrolled.thread @ t.py:3) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: thread)"
+      }
+    }
+  ],
+  "input_differences": []
+}

@@ -27,15 +27,18 @@ const SETTINGS = [
 
 function readTrace(p) {
   const out = { header: null, tests: [] };
-  let text = '';
-  try { text = fs.readFileSync(p, 'utf8'); } catch { return out; }
-  for (const line of text.split('\n')) {
-    if (!line) continue;
-    let o;
-    try { o = JSON.parse(line); } catch { break; }
-    if (o.type === 'header') out.header = o;
-    else if (o.type === 'test') out.tests.push({ nodeid: o.nodeid, outcome: o.outcome, fingerprint: o.fingerprint, index: o.index });
-  }
+  const STOP = {};
+  // streamed (P0 big trace); reading stops at the first line that is not JSON, and an unreadable trace explains
+  // nothing (this text decides no exit code)
+  try {
+    require('./trace-lines').forEachLine(p, (line) => {
+      if (!line) return;
+      let o;
+      try { o = JSON.parse(line); } catch { throw STOP; }
+      if (o.type === 'header') out.header = o;
+      else if (o.type === 'test') out.tests.push({ nodeid: o.nodeid, outcome: o.outcome, fingerprint: o.fingerprint, index: o.index });
+    });
+  } catch (e) { if (e !== STOP) return { header: null, tests: [] }; }
   out.tests.sort((a, b) => a.index - b.index);
   return out;
 }

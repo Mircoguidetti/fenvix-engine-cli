@@ -1,0 +1,3 @@
+{"encoding":2,"format":"detpy-trace","meta":{"controls":["time","seeds","fs","net","timers"],"env_reads_recorded":true,"inputs":{"clock":"virtual@2025-01-01Z","entropy":"controlled","fs":"ordered","hashseed":"0","locale":"C","network":"closed","runner":"vitest-2.1.0","runtime":"node24","seed":"0","tz":"UTC"},"provable":{"contract":1,"runtime":"node24","sensor":"node-vitest/1","surface":"1c76bbb0040d64255f76cbe7426cf7d4"}},"order":["t.test.ts > draws"],"type":"header","version":1}
+{"checkpoints":[],"counts":{},"events":[],"fingerprint":"","index":0,"n_events":0,"nodeid":"t.test.ts > draws","outcome":"passed","truncated":true,"type":"test"}
+{"n_tests":1,"order_digest":"865d5410009e19e044e5a6fc36d5dd2e","type":"footer"}

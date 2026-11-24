@@ -656,14 +656,14 @@ def cmd_verify(argv: list) -> int:
     if missing:
         print(f"{PROG} verify: trace not found: {', '.join(missing)}", file=sys.stderr)
         return 2
+    # the report is written as it is serialized and only its summary comes back (P0 big trace: a 1.2 GB report was
+    # held as a Rust string, a Python string and a parsed object at once, 7 GB); same bytes as before
     try:
-        report_json, text = _core.verify_with(ns.traces, ns.ignore_env, ns.show_stable)
+        summary = _core.verify_write(ns.traces, ns.ignore_env, ns.show_stable, ns.json, sys.stdout, f"{PROG} verify")
     except Exception as e:  # unreadable or incompatible traces: one line, no traceback
         print(f"{PROG} verify: {e}", file=sys.stderr)
         return 2
-    report = json.loads(report_json)
-    print(report_json if ns.json else text.replace("detpy verify", f"{PROG} verify", 1), end="" if not ns.json else "\n")
-    return verify_exit_code(report["summary"])
+    return verify_exit_code(json.loads(summary))
 
 
 def verify_exit_code(s: dict) -> int:

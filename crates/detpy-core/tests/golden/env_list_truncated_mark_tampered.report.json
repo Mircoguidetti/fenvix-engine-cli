@@ -1,0 +1,223 @@
+{
+  "labels": [
+    "run0",
+    "run1"
+  ],
+  "order_digests": [
+    "c0b9041333e48d644e54396e102f79c1",
+    "c0b9041333e48d644e54396e102f79c1"
+  ],
+  "complete": [
+    true,
+    true
+  ],
+  "summary": {
+    "runs": 2,
+    "tests": 6,
+    "stable": 1,
+    "diverged": 1,
+    "missing": 0,
+    "outcome_unstable": 0,
+    "order_identical": true,
+    "reasons": {
+      "child": 1,
+      "other": 1,
+      "time": 1
+    },
+    "inputs_recorded": true,
+    "identical": 1,
+    "input_differs": 2,
+    "not_proven": 2
+  },
+  "tests": [
+    {
+      "nodeid": "lists",
+      "status": "input-differs",
+      "fingerprints": [
+        "b690a6c8fcabf11cfd5d47009af6e6a1",
+        "b690a6c8fcabf11cfd5d47009af6e6a1"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 1,
+        "index": null,
+        "window": null,
+        "event_a": {
+          "t": 0,
+          "s": "other",
+          "o": "input.env:LISTED",
+          "at": "<run>",
+          "v": "1"
+        },
+        "event_b": {
+          "t": 0,
+          "s": "other",
+          "o": "input.env:LISTED",
+          "at": "<run>",
+          "v": "2"
+        },
+        "reason": "env",
+        "description": "input differs: LISTED, MY_FLAG (read at t.py:3): the test read an environment variable whose value differs between the runs; otherwise identical"
+      }
+    },
+    {
+      "nodeid": "reads",
+      "status": "input-differs",
+      "fingerprints": [
+        "8cf24be20d65e74de05c684795d58687",
+        "8cf24be20d65e74de05c684795d58687"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 1,
+        "index": null,
+        "window": null,
+        "event_a": {
+          "t": 0,
+          "s": "other",
+          "o": "input.env:MY_FLAG",
+          "at": "<run>",
+          "v": "aaaa"
+        },
+        "event_b": {
+          "t": 0,
+          "s": "other",
+          "o": "input.env:MY_FLAG",
+          "at": "<run>",
+          "v": "bbbb"
+        },
+        "reason": "env",
+        "description": "input differs: MY_FLAG (read at t.py:3): the test read an environment variable whose value differs between the runs; otherwise identical"
+      }
+    },
+    {
+      "nodeid": "reads_and_differs",
+      "status": "diverged",
+      "fingerprints": [
+        "7660d7efdb6c785ca9c9277ce9d4bd47",
+        "3f39f94d6c10ab4a67d615135f6a14ca"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 2,
+      "outcome_stable": true,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 1,
+        "index": 1,
+        "window": null,
+        "event_a": {
+          "t": 0,
+          "s": "time",
+          "o": "time.time",
+          "at": "t.py:1",
+          "v": "1"
+        },
+        "event_b": {
+          "t": 0,
+          "s": "time",
+          "o": "time.time",
+          "at": "t.py:1",
+          "v": "2"
+        },
+        "reason": "time",
+        "description": "event #1: time.time @ t.py:1 returned different values: \"1\" vs \"2\""
+      }
+    },
+    {
+      "nodeid": "late_mark",
+      "status": "not-proven",
+      "fingerprints": [
+        "9aa7d7fde4b12b2981ef65e3d079fafc",
+        "9aa7d7fde4b12b2981ef65e3d079fafc"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 0,
+        "index": null,
+        "window": null,
+        "event_a": null,
+        "event_b": null,
+        "reason": "child",
+        "description": "the test started a child process: what the child does is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: child)"
+      }
+    },
+    {
+      "nodeid": "tampered",
+      "status": "not-proven",
+      "fingerprints": [
+        "00000000000000000000000000000000",
+        "00000000000000000000000000000000"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 0,
+        "index": null,
+        "window": null,
+        "event_a": null,
+        "event_b": null,
+        "reason": "other",
+        "description": "the test called something the engine cannot account for: the record's fingerprint does not match its own events (3 event(s) recomputing to a9ffb4ca8f7f54d35e3ec38833464acb, stored as 00000000000000000000000000000000): this trace does not describe its own run. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+      }
+    },
+    {
+      "nodeid": "plain",
+      "status": "stable",
+      "fingerprints": [
+        "ad34a2a530790da587c4a41ac6eb6904",
+        "ad34a2a530790da587c4a41ac6eb6904"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": null
+    }
+  ],
+  "input_differences": [
+    {
+      "name": "env:LISTED",
+      "run_a": 0,
+      "run_b": 1,
+      "value_a": "1",
+      "value_b": "2",
+      "reason": "env"
+    },
+    {
+      "name": "env:MY_FLAG",
+      "run_a": 0,
+      "run_b": 1,
+      "value_a": "aaaa",
+      "value_b": "bbbb",
+      "reason": "env"
+    }
+  ]
+}

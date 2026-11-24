@@ -32,10 +32,18 @@ function escapeRe(s) {
   return s.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
 }
 
+/** {header, tests} of a trace, streamed (P0 big trace); null when it cannot be read or a line is not JSON. */
 function readTrace(p) {
   try {
-    const lines = fs.readFileSync(p, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l));
-    return { header: lines.find((l) => l.type === 'header'), tests: lines.filter((l) => l.type === 'test') };
+    let header;
+    const tests = [];
+    require('./trace-lines').forEachLine(p, (l) => {
+      if (!l) return;
+      const o = JSON.parse(l);
+      if (o.type === 'header' && header === undefined) header = o;
+      else if (o.type === 'test') tests.push(o);
+    });
+    return { header, tests };
   } catch { return null; }
 }
 
@@ -221,6 +229,8 @@ async function main(runner, argv) {
   exitStatus.record(status);
   fs.mkdirSync(path.dirname(tracePath), { recursive: true });
   const res = native.mergeTraces(parts, tracePath, JSON.stringify(meta), order);
+  // P0 big trace: a part the merge could not read is missing from the trace: the status is unknown (exit 2)
+  if (res.skipped.length) exitStatus.recordUnknown(`unreadable trace parts, their tests are not counted: ${res.skipped.join('; ')}`);
   process.stdout.write(`detjs: trace ${path.relative(root, tracePath)}: ${res.nTests} tests, order digest ${res.orderDigest}\n`);
   process.stderr.write(`${exitStatus.statusLine(status)}\n`);
   if (det.some((a) => a.startsWith('--det-cache'))) {

@@ -1,0 +1,84 @@
+{
+  "labels": [
+    "run0",
+    "run1"
+  ],
+  "order_digests": [
+    "b306e81e3d45a22b1be5cf8a2de293f4",
+    "b306e81e3d45a22b1be5cf8a2de293f4"
+  ],
+  "complete": [
+    false,
+    false
+  ],
+  "summary": {
+    "runs": 2,
+    "tests": 2,
+    "stable": 1,
+    "diverged": 0,
+    "missing": 0,
+    "outcome_unstable": 0,
+    "order_identical": true,
+    "reasons": {
+      "env": 1
+    },
+    "inputs_recorded": true,
+    "identical": 1,
+    "input_differs": 0,
+    "not_proven": 1
+  },
+  "tests": [
+    {
+      "nodeid": "x",
+      "status": "not-proven",
+      "fingerprints": [
+        "d5a66048ca7291da8e0da1a02cdea5e0",
+        "d5a66048ca7291da8e0da1a02cdea5e0"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 0,
+        "index": 0,
+        "window": null,
+        "event_a": {
+          "t": 0,
+          "s": "other",
+          "o": "uncontrolled.env",
+          "at": "t.py:3",
+          "v": "TMPDIR"
+        },
+        "event_b": {
+          "t": 0,
+          "s": "other",
+          "o": "uncontrolled.env",
+          "at": "t.py:3",
+          "v": "TMPDIR"
+        },
+        "reason": "env",
+        "description": "the test read a CI-volatile or proxy environment variable: its value (uncontrolled.env @ t.py:3) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: env)"
+      }
+    },
+    {
+      "nodeid": "y",
+      "status": "stable",
+      "fingerprints": [
+        "ad34a2a530790da587c4a41ac6eb6904",
+        "ad34a2a530790da587c4a41ac6eb6904"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": null
+    }
+  ],
+  "input_differences": []
+}
