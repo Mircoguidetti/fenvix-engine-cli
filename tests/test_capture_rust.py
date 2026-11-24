@@ -292,7 +292,8 @@ def _session(pytester, mode: str, cache: Path, tag: str, *extra) -> dict:
     assert "INTERNALERROR" not in r.stdout.str(), r.stdout.str()[-3000:]
     d = json.loads(o.read_text())
     cache_part = d.get("cache") or {}
-    summary = {k: v for k, v in cache_part.items() if not k.endswith("seconds") and k != "receipts"}
+    # (`run`: the cache session's run id, a time and pid of its own on every run, spec C1 1.2)
+    summary = {k: v for k, v in cache_part.items() if not k.endswith("seconds") and k not in ("receipts", "run")}
     receipts = [_VOLATILE.sub(b"", x.encode()) for x in (cache / "receipts.jsonl").read_text().splitlines()]
     return {"store": _VOLATILE.sub(b"", (cache / "proof-cache.json").read_bytes()), "receipts": receipts,
             "outcomes": d.get("outcomes"), "summary": summary,

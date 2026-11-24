@@ -36,6 +36,7 @@ import argparse
 import datetime as dt
 import hashlib
 import json
+import math
 import os
 import re
 import shlex
@@ -249,6 +250,254 @@ def fmt_s(s: float) -> str:
 
 
 # ---------------------------------------------------------------------------------------------------------------------
+# Per-test results (spec C1, idea 3 "is this red real?"): <out>/results/chunk-<n>.json, what the machine's poster
+# sends to POST /v1/runner/results (fenvix-app docs/data-contract.md section 2). One bad field rejects a whole chunk
+# there, so every value is built to the App's checks (github-app/src/results/runner-records.ts).
+RESULTS_MAX_TESTS = 5000
+RESULTS_MAX_RECEIPTS = 2000
+RESULTS_MAX_BYTES = 4_000_000
+TEST_ID_MAX = 2000
+NOT_PROVEN_CAUSE_MAX = 500
+FAILURE_MESSAGE_MAX = 4000
+ENGINE_RUN_ID_MAX = 100
+_HEX32 = re.compile(r"[0-9a-f]{32}")
+_SAFE_INT = 2 ** 53 - 1
+
+
+def send_results_enabled(env: dict | None = None) -> bool:
+    """FENVIX_SEND_RESULTS (default 1): 0 writes no chunks (the operator's rollback switch)."""
+    return (env if env is not None else os.environ).get("FENVIX_SEND_RESULTS", "1").strip() != "0"
+
+
+def outcome_value(v) -> str:
+    """An outcomes-file value as a string (a dict form carries it under ``outcome``)."""
+    if isinstance(v, dict):
+        v = v.get("outcome")
+    return v if isinstance(v, str) else "unknown"
+
+
+def sent_outcome(engine: str) -> str | None:
+    """The App's outcome of an engine outcome (before NOT PROVEN and reuse): ``passed``, ``failed``, or None (not
+    sent: skipped, todo, xfailed). Every other value, known or not, is a failure: ``failed``, ``error``,
+    ``unknown``, ``passed+teardown-error``, an outcome this wrapper has never seen."""
+    if engine in ("passed", "xpassed"):
+        return "passed"
+    if engine in ("skipped", "todo", "xfailed"):
+        return None
+    return "failed"
+
+
+def failure_record(exc) -> dict:
+    """The App's failure of a failed test from the engine's [type, phase, message, location] record; without one
+    (a runner that writes none), the bare ``{kind: real, phase: call}``."""
+    if not (isinstance(exc, (list, tuple)) and len(exc) >= 4):
+        return {"kind": "real", "phase": "call"}
+    out = {"kind": "real", "phase": str(exc[1] or "call")}
+    for k, v, cap in (("exceptionType", exc[0], None), ("message", exc[2], FAILURE_MESSAGE_MAX), ("location", exc[3], None)):
+        if isinstance(v, str) and v:
+            out[k] = v[:cap] if cap else v
+    return out
+
+
+def ordered_ids(order, outcomes: dict) -> list[str]:
+    """Every id of ``order`` (once, first place), then the ids of ``outcomes`` not in it, in their file order."""
+    seen, out = set(), []
+    for n in list(order or []) + list(outcomes):
+        if isinstance(n, str) and n not in seen:
+            seen.add(n)
+            out.append(n)
+    return out
+
+
+def node_hazard_overrides(meta: dict, trace_p: Path) -> tuple[dict, dict]:
+    """Parallel Node runs with a one-lane re-run of hazard files (node/src/parallel-rerun.js meta.hazard_rerun):
+    (not_proven {id: cause}, final {id: engine outcome}). Incomplete re-run: each unaccounted id is NOT PROVEN with
+    its file's cause. Complete: the final trace's record of every test of those files replaces the first pass's
+    outcome (the outcomes file is the first pass's)."""
+    hr = meta.get("hazard_rerun") if isinstance(meta, dict) else None
+    if not isinstance(hr, dict):
+        return {}, {}
+    file_of = lambda n: n.split("::", 1)[0].split("@@", 1)[0]  # noqa: E731
+    causes = {str(x.get("file")): str(x.get("cause") or "") for x in hr.get("not_proven") or [] if isinstance(x, dict)}
+    not_proven = {}
+    for n in hr.get("unaccounted") or []:
+        if isinstance(n, str):
+            c = causes.get(file_of(n), "")
+            not_proven[n] = (f"{file_of(n)}: the one-lane re-run of the hazard files did not account for this test"
+                             + (f" ({c})" if c else ""))
+    final: dict[str, str] = {}
+    files = set(str(f) for f in hr.get("files") or [])
+    if hr.get("complete") is True and files:
+        trace_map = {"todo": "skipped", "interrupted": "error"}
+        try:
+            with open(trace_p, encoding="utf-8", errors="replace") as fh:  # streamed: a trace can be very large
+                for line in fh:
+                    if not line.startswith('{"type":"test"'):
+                        continue
+                    try:
+                        r = json.loads(line)
+                    except ValueError:
+                        continue
+                    n = r.get("nodeid")
+                    if isinstance(n, str) and file_of(n) in files and n not in final:
+                        o = r.get("outcome")
+                        final[n] = trace_map.get(o, o) if isinstance(o, str) else "unknown"
+        except OSError as e:
+            log(f"warning: the final trace {trace_p} could not be read for the re-run hazard files: {e}")
+    return not_proven, final
+
+
+def receipt_of(row: dict, test_id: str) -> dict | None:
+    """The App's receipt of a reused test (contract section 2) from an engine receipt row, or None when the row
+    cannot back one (no 32-hex key or fingerprint, no run id): the test is then sent as passed."""
+    key, fp, run = row.get("key"), row.get("fingerprint"), row.get("run")
+    if not (isinstance(key, str) and _HEX32.fullmatch(key) and isinstance(fp, str) and _HEX32.fullmatch(fp)
+            and isinstance(run, str) and 0 < len(run) <= ENGINE_RUN_ID_MAX):
+        return None
+    try:
+        dur = max(0, int(round(float(row.get("duration") or 0.0) * 1000)))
+    except (TypeError, ValueError):
+        dur = 0
+    out = {"testId": test_id, "cacheKey": key, "reusedEngineRunId": run, "fingerprint": fp, "reusedDurationMs": dur,
+           "config": {"digest": row.get("config") if isinstance(row.get("config"), str) else None}}
+    if isinstance(row.get("runtime"), str):
+        out["runtime"] = {"digest": row["runtime"]}
+    return out
+
+
+def results_rows(order, outcomes: dict, durations: dict, exceptions: dict, reused_rows: dict, *, seconds: bool,
+                 not_proven: dict | None = None, final: dict | None = None) -> tuple[list[dict], dict, list[str]]:
+    """(tests, receipts by test id, ids skipped as too long) for every test of the run (spec C1 2.2-2.5).
+    ``durations``: seconds (pytest) or ms (Node); ``reused_rows``: {outcome id: receipt row} of reused tests;
+    ``final``: engine outcomes that replace the outcomes file's (Node complete hazard re-run)."""
+    not_proven, final = not_proven or {}, final or {}
+    tests, receipts, too_long = [], {}, []
+    seq = 0
+    for n in ordered_ids(order, outcomes):
+        if len(n) > TEST_ID_MAX:
+            too_long.append(n)
+            continue
+        replaced = n in final
+        engine = final[n] if replaced else outcome_value(outcomes.get(n, "unknown"))
+        try:
+            d = float(durations.get(n) or 0)
+            dur = max(0, int(round(d * 1000)) if seconds else int(math.ceil(d)))
+        except (TypeError, ValueError):
+            dur = 0
+        if n in not_proven:
+            tests.append({"testId": n, "outcome": "not_proven", "durationMs": dur,
+                          "notProvenCause": not_proven[n][:NOT_PROVEN_CAUSE_MAX]})
+            continue
+        sent = sent_outcome(engine)
+        if sent is None:
+            continue
+        row = reused_rows.get(n) if sent == "passed" and not replaced else None
+        rc = receipt_of(row, n) if row else None
+        if rc:
+            tests.append({"testId": n, "outcome": "skipped_with_proof", "durationMs": rc["reusedDurationMs"],
+                          "cacheKey": rc["cacheKey"]})
+            receipts[n] = rc
+        elif sent == "passed":
+            tests.append({"testId": n, "outcome": "passed", "durationMs": dur})
+        else:
+            fail = {"kind": "real", "phase": "call"} if replaced else failure_record(exceptions.get(n))
+            tests.append({"testId": n, "outcome": "failed", "durationMs": dur, "failure": fail, "failSeq": seq})
+            seq += 1
+    for n in too_long:
+        log(f"warning: test id of {len(n)} characters (over {TEST_ID_MAX}) not sent: {n[:120]}...")
+    return tests, receipts, too_long
+
+
+def failed_in_order(tests: list[dict]) -> list[str]:
+    """The failed tests in failSeq order: the set the re-run loop runs alone."""
+    return [t["testId"] for t in sorted((t for t in tests if t["outcome"] == "failed"), key=lambda t: t["failSeq"])]
+
+
+def rerun_alone(engine_outcome: str | None, exc) -> dict:
+    """``rerunAlone`` of a failed test re-run alone: its outcome by the same table (anything but passed or failed,
+    or no readable outcomes file, is not_proven) and, when it failed again, its failure record."""
+    sent = sent_outcome(engine_outcome) if isinstance(engine_outcome, str) else None
+    if sent == "passed":
+        return {"ran": True, "outcome": "passed"}
+    if sent == "failed" and engine_outcome is not None:
+        return {"ran": True, "outcome": "failed", "failure": failure_record(exc)}
+    return {"ran": True, "outcome": "not_proven"}
+
+
+def chunk_tests(tests: list[dict], receipts: dict, head: dict) -> list[dict]:
+    """Chunks of at most 5,000 tests, 2,000 receipts and 4,000,000 bytes, a reused test and its receipt in the same
+    chunk; chunk 0 carries ``chunks`` and ``head`` (engineRunId, seed)."""
+    def size(o) -> int:
+        return len(json.dumps(o, separators=(",", ":")).encode())
+    head_bytes = size({**head, "chunk": 9999, "chunks": 10000, "tests": [], "receipts": []})
+    out, cur_t, cur_r, cur_b = [], [], [], head_bytes
+    for t in tests:
+        rc = receipts.get(t["testId"]) if t["outcome"] == "skipped_with_proof" else None
+        add = size(t) + 1 + (size(rc) + 1 if rc else 0)
+        if cur_t and (len(cur_t) + 1 > RESULTS_MAX_TESTS or len(cur_r) + (1 if rc else 0) > RESULTS_MAX_RECEIPTS
+                      or cur_b + add > RESULTS_MAX_BYTES):
+            out.append((cur_t, cur_r))
+            cur_t, cur_r, cur_b = [], [], head_bytes
+        cur_t.append(t)
+        if rc:
+            cur_r.append(rc)
+        cur_b += add
+    if cur_t or not out:
+        out.append((cur_t, cur_r))
+    chunks = []
+    for i, (ts, rs) in enumerate(out):
+        c = {"chunk": i}
+        if i == 0:
+            c["chunks"] = len(out)
+            c.update(head)
+        c["tests"] = ts
+        c["receipts"] = rs
+        chunks.append(c)
+    return chunks
+
+
+def results_head(engine_run_id, seed, shuffle) -> dict:
+    """engineRunId (omitted when unknown) and seed (null when the order was not shuffled, contract l.471; a seed the
+    App cannot hold as an exact integer is sent as null with a warning rather than rejecting the chunk)."""
+    head = {}
+    if isinstance(engine_run_id, str) and 0 < len(engine_run_id) <= ENGINE_RUN_ID_MAX:
+        head["engineRunId"] = engine_run_id
+    if shuffle and isinstance(seed, int) and not isinstance(seed, bool) and -_SAFE_INT <= seed <= _SAFE_INT:
+        head["seed"] = seed
+    else:
+        if shuffle and seed is not None:
+            log(f"warning: seed {seed!r} is not an integer the App accepts (|seed| <= 2^53-1): sent as null")
+        head["seed"] = None
+    return head
+
+
+def clear_results(out: Path) -> Path:
+    """<out>/results with no chunk of an earlier run left (always, even when sending is off)."""
+    d = out / "results"
+    if d.is_dir():
+        for p in d.glob("chunk-*.json"):
+            p.unlink(missing_ok=True)
+    return d
+
+
+def write_results(out: Path, tests: list[dict], receipts: dict, head: dict) -> int:
+    """Write the chunks (behind FENVIX_SEND_RESULTS); returns how many were written."""
+    d = clear_results(out)
+    if not send_results_enabled():
+        log("FENVIX_SEND_RESULTS=0: no per-test results written")
+        return 0
+    d.mkdir(parents=True, exist_ok=True)
+    chunks = chunk_tests(tests, receipts, head)
+    for c in chunks:
+        p = d / f"chunk-{c['chunk']}.json"
+        tmp = d / f".chunk-{c['chunk']}.json.tmp"
+        tmp.write_text(json.dumps(c, separators=(",", ":")))
+        os.replace(tmp, p)
+    log(f"per-test results: {len(tests)} test(s), {len(receipts)} receipt(s) in {len(chunks)} chunk(s) under {d}")
+    return len(chunks)
+
+
+# ---------------------------------------------------------------------------------------------------------------------
 def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
     project = Path(a.project).resolve()
     out = Path(a.out or (Path(os.environ.get("RUNNER_TEMP", project)) / "fenvix")).resolve()
@@ -279,6 +528,7 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
     outcomes_p, junit_p = out / "outcomes.json", out / "junit.xml"
     for p in (receipts, outcomes_p, junit_p):
         p.unlink(missing_ok=True)
+    clear_results(out)  # no chunk of an earlier run is ever sent for this one
 
     base = ["--det", "--det-urandom", "-p", "no:cacheprovider", "-q", "-rN", "--tb=short"]
     args = base + [f"--det-cache={cache_arg}", f"--det-cache-receipts={receipts}", f"--det-outcomes={outcomes_p}",
@@ -302,29 +552,45 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
     saved = round(sum(float(r.get("duration") or 0.0) for r in reused), 3)
     times = junit_times(junit_p)
     ran_time = total_time(times)  # reused tests report ~0 s
-    failed = sorted(n for n, o in outcomes.items() if o in ("failed", "error"))
+    # per-test results (spec C1): every test's outcome as sent and the receipts of reused tests; the failed set, in
+    # failSeq order (failed, error, unknown, <x>+teardown-error), is what is re-run alone below
+    reused_rows = {r["nodeid"]: r for r in reused if isinstance(r.get("nodeid"), str)}
+    durations = res.get("durations") if isinstance(res.get("durations"), dict) else {}
+    exceptions = res.get("exceptions") if isinstance(res.get("exceptions"), dict) else {}
+    result_tests, result_receipts, _ = results_rows(res.get("order") or [], outcomes, durations, exceptions,
+                                                    reused_rows, seconds=True)
+    failed = failed_in_order(result_tests)
 
     # Failures: once more, alone, without the cache. Passes alone -> flaky (order-dependent), with its replay.
     flaky, real = [], list(failed)
+    alone: dict[str, dict] = {}
     if failed and not a.no_rerun:
-        again_p = out / "outcomes-rerun.json"
-        again_p.unlink(missing_ok=True)
         epoch = cache_s.get("epoch_ns")
         ep = []
         if epoch:
             t = dt.datetime.fromtimestamp(epoch // 1_000_000_000, tz=dt.timezone.utc)
             ep = [f"--det-epoch={t.strftime('%Y-%m-%dT%H:%M:%S')}"]
         rr_args = ["--det", "--det-urandom", "-p", "no:cacheprovider", "-q", "--tb=no", *ep,
-                   f"--det-outcomes={again_p}", *[x for x in extra if not x.startswith("--det-cache")]]
+                   *[x for x in extra if not x.startswith("--det-cache")]]
         real, flaky = [], []
-        for nid in failed[: a.max_reruns]:
-            run_pytest(a.python, project, rr_args + [nid], without_client_env(env))
+        for i, nid in enumerate(failed[: a.max_reruns]):
+            again_p = out / f"outcomes-rerun-{i}.json"  # one file per re-run (spec C1 2.6)
+            again_p.unlink(missing_ok=True)
+            run_pytest(a.python, project, rr_args + [f"--det-outcomes={again_p}", nid], without_client_env(env))
             try:
-                o2 = json.loads(again_p.read_text()).get("outcomes", {}).get(nid)
-            except (OSError, ValueError):
-                o2 = None
+                d2 = json.loads(again_p.read_text())
+                o2 = outcome_value(d2["outcomes"][nid]) if nid in (d2.get("outcomes") or {}) else None
+                e2 = (d2.get("exceptions") or {}).get(nid)
+            except (OSError, ValueError, AttributeError, TypeError):
+                o2, e2 = None, None
+            alone[nid] = rerun_alone(o2, e2)
             (flaky if o2 == "passed" else real).append(nid)
         real += failed[a.max_reruns:]
+    for t in result_tests:
+        if t["outcome"] == "failed":
+            t["rerunAlone"] = alone.get(t["testId"], {"ran": False})
+    write_results(out, result_tests, result_receipts,
+                  results_head(cache_s.get("run"), res.get("seed"), res.get("shuffle")))
 
     rt = runtime_components(a.python, project)
     rt_file = cache.parent / f"{cache.name}.fenvix-runtime.json"
@@ -718,6 +984,7 @@ def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
     outcomes_p, trace_p = out / "outcomes.json", out / "trace.jsonl"
     for p in (receipts, csum_p, outcomes_p, trace_p):
         p.unlink(missing_ok=True)
+    clear_results(out)  # no chunk of an earlier run is ever sent for this one
     env = without_client_env(dict(os.environ))
     kept, dropped = split_wrapper_owned(extra)
     if dropped:
@@ -756,6 +1023,20 @@ def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
     for n in sorted(outcomes):
         if outcomes[n] not in ("passed", "skipped", "todo", "failed", "error") and n not in failed:
             failed.append(n)  # an unknown outcome counts as failed (node/src/exit-status.js countStatus)
+    # per-test results (spec C1): every test's outcome as sent, the NOT PROVEN and re-run hazard files of a parallel
+    # run, the receipts of reused tests; their failed set, in failSeq order, is what is re-run alone below
+    hz_not_proven, hz_final = node_hazard_overrides(meta, trace_p)
+    reused_rows = {}
+    for r in rec:
+        if r.get("reused") and r.get("kind") != "file" and "::" in str(r.get("nodeid", "")):
+            nid = outcome_id(r["nodeid"], outcomes)
+            if nid and nid not in reused_rows:
+                reused_rows[nid] = r
+    durations = res.get("durations") if isinstance(res.get("durations"), dict) else {}
+    exceptions = res.get("exceptions") if isinstance(res.get("exceptions"), dict) else {}
+    result_tests, result_receipts, _ = results_rows(res.get("order") or [], outcomes, durations, exceptions,
+                                                    reused_rows, seconds=False, not_proven=hz_not_proven,
+                                                    final=hz_final)
     if code == 0 and (failed or int(status.get("failed") or 0) or int(status.get("not_proven") or 0)):
         log(f"detjs returned 0 with failed or NOT PROVEN tests (status {status}): exit 1")
         code = 1  # never green on a failure (spec "never lower the red")
@@ -768,7 +1049,9 @@ def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
     # Failures: once more, alone, without the cache, at the run's epoch. Passes alone -> flaky. The exit code stays.
     epoch_ns = int(meta["epoch_ns"]) if meta.get("epoch_ns") else (int(cs["epoch_ms"]) * 1_000_000 if cs.get("epoch_ms") else None)
     ep = [f"--det-epoch={epoch_iso(epoch_ns)}"] if epoch_ns else []
+    failed = failed_in_order(result_tests)  # the re-run set (spec C1 2.6): exit code decided above, unchanged
     flaky, real, reruns = [], list(failed), []
+    alone: dict[str, dict] = {}
     if failed and not a.no_rerun:
         real = []
         keep = _keep_runner_args(extra)
@@ -779,13 +1062,20 @@ def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
             run_detjs(detjs, runner, ["--det", *ep, f"--det-outcomes={again_p}",
                                       f"--det-trace={out / f'trace-rerun-{i}.jsonl'}", *keep, *one], project, env)
             try:
-                o2 = json.loads(again_p.read_text()).get("outcomes", {}).get(nid)
-            except (OSError, ValueError):
-                o2 = None
+                d2 = json.loads(again_p.read_text())
+                o2 = outcome_value(d2["outcomes"][nid]) if nid in (d2.get("outcomes") or {}) else None
+                e2 = (d2.get("exceptions") or {}).get(nid)
+            except (OSError, ValueError, AttributeError, TypeError):
+                o2, e2 = None, None
+            alone[nid] = rerun_alone(o2, e2)
             cmd = " ".join(shlex.quote(x) for x in ["detjs", runner, "--det", *ep, *keep, *one])
             reruns.append({"nodeid": nid, "command": cmd, "outcome": o2})
             (flaky if o2 == "passed" else real).append((nid, cmd))
         real = [n for n, _ in real] + failed[a.max_reruns:]
+    for t in result_tests:
+        if t["outcome"] == "failed":
+            t["rerunAlone"] = alone.get(t["testId"], {"ran": False})
+    write_results(out, result_tests, result_receipts, results_head(cs.get("run"), res.get("seed"), res.get("shuffle")))
 
     version = detjs_version(detjs)
     rt = {"digest": cs.get("runtime"), "config": cs.get("config"), "engine": "detjs",
