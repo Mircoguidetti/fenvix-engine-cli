@@ -55,6 +55,15 @@ describe('deno: Level 0 controls', { skip: SKIP }, () => {
     assert.deepEqual(b.trace.header.order, a.trace.header.order);
   });
 
+  // /review of det-host-values (2026-11-24): the default network is open in the deno runner too (its native fetch)
+  test('default --det: fetch to an external host is not refused (--det-net=open is the default)', T, () => {
+    const dir = H.fixture(RT, 'net-open', { ...tf('netopen', "Deno.test('fetch open', async () => { const e = await fetch('http://api.external.example:9/').then(() => null, (x) => x); if (e && e.cause && e.cause.name === 'NetworkBlockedError') throw new Error('blocked'); });") });
+    const r = H.crun(RT, dir, { cache: false });
+    assert.equal(r.status, 0, H.show(r));
+    const blockedEv = Object.values(r.trace.tests || {}).flatMap((t) => (t.events || []).filter((e) => e.s === 'net' && /blocked/.test(String(e.v))));
+    assert.deepEqual(blockedEv, [], H.show(r));
+  });
+
   test('seeded shuffle: same seed same order, another seed another order', T, () => {
     const dir = H.fixture(RT, 'shuffle', { ...files, 'tests/random_test.ts': null });
     const order = (r) => r.trace.header.order;

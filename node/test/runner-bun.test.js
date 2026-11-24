@@ -55,6 +55,15 @@ describe('bun: Level 0 controls', { skip: SKIP }, () => {
     assert.deepEqual(b.trace.header.order, a.trace.header.order);
   });
 
+  // /review of det-host-values (2026-11-24): the default network is open in the bun runner too (its native fetch)
+  test('default --det: fetch to an external host is not refused (--det-net=open is the default)', T, () => {
+    const dir = H.fixture(RT, 'net-open', { ...tf('netopen', "test('fetch open', async () => { const e = await fetch('http://api.external.example:9/').then(() => null, (x) => x); expect(String(e && e.cause && e.cause.name)).not.toBe('NetworkBlockedError'); });") });
+    const r = H.crun(RT, dir, { cache: false });
+    assert.equal(r.status, 0, H.show(r));
+    const blockedEv = Object.values(r.trace.tests || {}).flatMap((t) => (t.events || []).filter((e) => e.s === 'net' && /blocked/.test(String(e.v))));
+    assert.deepEqual(blockedEv, [], H.show(r));
+  });
+
   test('seeded shuffle: same seed same order, another seed another order (files and tests)', T, () => {
     const dir = H.fixture(RT, 'shuffle', { ...files, 'tests/random.test.ts': null }); // its golden values depend on the seed
     const order = (r) => r.trace.header.order;

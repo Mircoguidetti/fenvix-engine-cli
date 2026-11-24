@@ -156,11 +156,11 @@ describe('(e) one epoch per run', () => {
     fs.writeFileSync(path.join(dir, 'plan.json'), JSON.stringify({ lanes: Object.keys(files).map((f) => [`tests/${f}`]) }));
     return dir;
   }
-  function vrun(dir, args, trace = path.join('.detjs', 'trace.jsonl')) {
+  function vrun(dir, args, trace = path.join('.detjs', 'trace.jsonl'), det = ['--det']) {
     const env = { ...process.env };
     for (const k of ['CI', 'GITHUB_ACTIONS', 'DETJS', 'NODE_OPTIONS', 'NODE_TEST_CONTEXT', 'DETJS_SEED', 'DETJS_CACHE_DIR', 'DETJS_EPOCH',
       'DETJS_PINNED', 'DETJS_HAZARD_RERUN', 'DETJS_HAZARD_PASS', 'DETJS_ISOLATE_CHILD', 'DETJS_EARLY', 'VITEST_POOL_ID', 'VITEST_WORKER_ID']) delete env[k];
-    const r = spawnSync(process.execPath, [BIN, 'vitest', 'run', '--det', `--det-trace=${trace}`, ...args], { cwd: dir, encoding: 'utf8', env, timeout: 300000 });
+    const r = spawnSync(process.execPath, [BIN, 'vitest', 'run', ...det, `--det-trace=${trace}`, ...args], { cwd: dir, encoding: 'utf8', env, timeout: 300000 });
     const lines = fs.readFileSync(path.join(dir, trace), 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l));
     return { ...r, header: lines[0], show: `status=${r.status}\nstdout=${(r.stdout || '').slice(-2000)}\nstderr=${(r.stderr || '').slice(-2000)}` };
   }
@@ -200,6 +200,16 @@ describe('(e) one epoch per run', () => {
     sameStart(dir, r.header, 3, r);
   });
 
+  test('--det-isolate without --det (it implies --det): every per-test session sees one start time', T, () => {
+    const dir = vproject('epoch-isolate-implied', {
+      'a.test.mjs': ["test('a1', () => { log('a1'); realSleep(1100); });", "test('a2', () => { log('a2'); realSleep(1100); });"].join('\n'),
+    });
+    const r = vrun(dir, ['--det-isolate', '--det-workers=1'], path.join('.detjs', 'trace.jsonl'), []);
+    assert.equal(r.status, 0, r.show);
+    epochMeta(r.header);
+    sameStart(dir, r.header, 2, r);
+  });
+
   test('--det-compare=T and --det-plan=T without --det-epoch use the epoch of T', T, () => {
     const dir = vproject('epoch-compare', {
       'a.test.mjs': "test('a', () => { log('a'); });",
@@ -221,3 +231,33 @@ describe('(e) one epoch per run', () => {
 });
 
 function realSleep(ms) { Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms); }
+
+// /review of det-host-values against claude/release-1 (2026-11-24): findings, each with its regression test.
+describe('review: the open network and the epoch', () => {
+  test('a test that only resolved an external name (no connection) is never reused while the network is open', T, () => {
+    // the answer of a live resolver is no input the cache can key: a DNS-only test must not be stored
+    const dir = fixture('host-values', 'cache-open-dns', {
+      ...tf('dns', "import dns from 'node:dns'; test('resolves', async () => { await dns.promises.lookup('api.external.example').catch(() => null); await dns.promises.resolve4('api.external.example').catch(() => null); });"),
+      ...tf('plain', "test('pure', () => { assert.equal(1 + 1, 2); });"),
+    });
+    const det = ['--det'];
+    const r1 = crun('node-test', dir, [], { det });
+    assert.equal(r1.status, 0, show(r1));
+    const r2 = crun('node-test', dir, [], { det });
+    assert.equal(r2.status, 0, show(r2));
+    const reused = ((r2.summary && r2.summary.reused_files_list) || []).map((f) => f.split('@@')[0]);
+    assert.ok(reused.includes('tests/plain.test.mjs'), `the file without network use is reused\n${show(r2)}`);
+    assert.ok(!reused.includes('tests/dns.test.mjs'), `WRONG REUSE of the file that asked the live resolver\n${show(r2)}`);
+    const why = (r1.summary && r1.summary.not_cached_detail && r1.summary.not_cached_detail['tests/dns.test.mjs']) || '';
+    assert.match(why, /api\.external\.example/, `the reason names the host\n${show(r1)}`);
+  });
+
+  test('reading a *_PROXY variable is no uncontrolled input while the network is open (it is a run input)', T, () => {
+    const dir = fixture('host-values', 'proxy-read', tf('p', "test('p', () => { assert.equal(typeof process.env.HTTPS_PROXY, 'string'); });"));
+    const r = crun('node-test', dir, [], { cache: false, det: ['--det'], env: { HTTPS_PROXY: 'http://127.0.0.1:9' } });
+    assert.equal(r.status, 0, show(r));
+    const t = trace(dir).tests['tests/p.test.mjs::p'];
+    const unc = (t.events || []).filter((e) => e.o === 'uncontrolled.env').map((e) => e.v);
+    assert.deepEqual(unc, [], `HTTPS_PROXY is in meta.inputs, so reading it is proven: ${JSON.stringify(unc)}`);
+  });
+});
