@@ -309,8 +309,13 @@ def append(p: Path, rec: dict) -> None:
 
 
 def run(req: dict) -> None:
-    RES.mkdir(exist_ok=True)
-    cands = jl(HERE / "discovery" / "candidates.jsonl.gz")
+    global RES
+    if req.get("debug_repos"):  # debug run on named repositories: rows kept apart, never candidates or pairs
+        RES = HERE / "results" / "debug"
+        cands = [{"idx": i, "repo": r} for i, r in enumerate(req["debug_repos"])]
+    else:
+        cands = jl(HERE / "discovery" / "candidates.jsonl.gz")
+    RES.mkdir(parents=True, exist_ok=True)
     frame = {x["repo"] for x in cands}
     rows = jl(RES / "agents.jsonl")
     done = {r["idx"] for r in rows}
