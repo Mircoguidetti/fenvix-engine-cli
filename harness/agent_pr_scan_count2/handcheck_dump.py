@@ -23,7 +23,7 @@ def sample(rows):
 def main():
     res = HERE / "results"
     rows = {r["url"]: r for r in J.read_jsonl(res / "rows.jsonl")}
-    raws = {x["url"]: x for p in sorted((res / "raw").glob("*.jsonl.gz")) for x in J.read_jsonl(p)}
+    raws = {x["url"]: x for x in J.raw_records(res)}
     urls = sample(rows.values())
     pick = [int(sys.argv[1])] if len(sys.argv) > 1 else range(len(urls))
     for i in pick:

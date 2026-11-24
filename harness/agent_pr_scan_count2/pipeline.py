@@ -252,6 +252,17 @@ def run_pr(src, pr: dict, probe: bool = False) -> dict:
             commits_err = f"base commits {_err(st, d)}"
         else:
             commits = d[:MAX_BASE_COMMITS]
+            # Change after the pre-registration (hand check): the base branch history read now can contain the
+            # PR's own commits (merge commit or fast-forward after S); they are not base-side evidence. When the
+            # head commit is in the listing, the PR's commits are read and dropped from the walk.
+            if any(c["sha"] == sha for c in commits):
+                pst, pc = src.get(f"repos/{repo}/pulls/{n}/commits?per_page=100")
+                if pst != 200:
+                    commits_err = f"PR commits {_err(pst, pc)}"
+                else:
+                    own = {c["sha"] for c in pc}
+                    out["base_commits_own_excluded"] = sum(1 for c in commits if c["sha"] in own)
+                    commits = [c for c in commits if c["sha"] not in own]
 
     for f in failed:
         S = R.ts(f["S"]) if f["S"] else None

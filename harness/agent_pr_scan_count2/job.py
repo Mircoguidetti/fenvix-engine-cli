@@ -75,11 +75,91 @@ def record_read(state: dict, d: dict, verdict: str) -> None:
         state["rateable"][d["family"]] += 1
 
 
+def raw_records(res: Path | None = None) -> list[dict]:
+    """Committed raw JSON per PR: results/raw/*.jsonl.gz, with the responses of results/supplement/*.jsonl.gz
+    (reads added by a supplement chunk) merged into the same PR's record."""
+    res = res or HERE / "results"
+    raws = [x for p in sorted((res / "raw").glob("*.jsonl.gz")) for x in read_jsonl(p)]
+    by_url = {x["url"]: x for x in raws}
+    for p in sorted((res / "supplement").glob("*.jsonl.gz")):
+        for x in read_jsonl(p):
+            by_url[x["url"]]["responses"].update(x["responses"])
+    return raws
+
+
+class HybridSource:
+    """Committed responses first; a path not recorded is read live and kept as a supplement response."""
+
+    def __init__(self, recorded: dict, live):
+        self.recorded, self.live, self.new = recorded, live, {}
+
+    def has(self, path: str) -> bool:
+        return path in self.recorded or path in self.new
+
+    def get(self, path: str):
+        if path in self.recorded:
+            rec = self.recorded[path]
+            return rec["status"], rec.get("data", rec.get("error"))
+        self.live.responses = {}
+        st, d = self.live.get(path)
+        self.new[path] = self.live.responses[path]
+        return st, d
+
+
+def supplement(chunk: str) -> int:
+    """Re-run every PR already read against its committed responses (the current pipeline code), reading live only
+    the responses it lacks; rewrite rows.jsonl and checkpoint rateable counts from the new outcomes."""
+    res = HERE / "results"
+    (res / "supplement").mkdir(parents=True, exist_ok=True)
+    src = pipeline.LiveSource(pipeline.token())
+    t0 = time.time()
+    raws = {x["url"]: x for x in raw_records(res)}
+    rows = read_jsonl(res / "rows.jsonl")
+    state = json.loads((res / "checkpoint.json").read_text())
+    new_rows, changes = [], []
+    for row in rows:
+        raw = raws[row["url"]]
+        h = HybridSource(raw["responses"], src)
+        out = pipeline.run_pr(h, {"repo": raw["repo"], "number": raw["number"]}, probe=raw["probe"])
+        if h.new:
+            with gzip.open(res / "supplement" / f"{chunk}.jsonl.gz", "at") as f:
+                f.write(json.dumps({"url": row["url"], "repo": raw["repo"], "number": raw["number"],
+                                    "chunk": chunk, "responses": h.new}, sort_keys=True) + "\n")
+        keep = {k: row[k] for k in ("idx", "url", "family", "repo", "number", "state", "month", "chunk", "probe")}
+        nr = {**keep, **out}
+        if nr["verdict"] != row["verdict"] or h.new:
+            changes.append({"url": row["url"], "family": row["family"], "old": row["verdict"],
+                            "new": nr["verdict"], "new_reads": sorted(h.new)})
+        new_rows.append(nr)
+    rate = Counter()
+    for r in new_rows:
+        if r["verdict"] in (R.ALREADY_RED, R.NEW_RED):
+            rate[r["family"]] += 1
+    state["rateable"] = {f: rate[f] for f in FAMILIES}
+    with open(res / "rows.jsonl", "w") as f:
+        for r in new_rows:
+            f.write(json.dumps(r, sort_keys=True) + "\n")
+    with open(res / "supplement" / f"{chunk}_changes.jsonl", "w") as f:
+        for c in changes:
+            f.write(json.dumps(c, sort_keys=True) + "\n")
+    (res / "checkpoint.json").write_text(json.dumps(state, indent=1, sort_keys=True) + "\n")
+    with open(res / "chunks.jsonl", "a") as f:
+        f.write(json.dumps({"chunk": chunk, "supplement": True, "requests": src.n_requests,
+                            "remaining": src.remaining, "limit": src.limit, "reset": src.reset,
+                            "seconds": round(time.time() - t0), "changed": len(changes)}, sort_keys=True) + "\n")
+    print(f"supplement {chunk}: {src.n_requests} requests, {len(changes)} PRs changed", flush=True)
+    for c in changes:
+        print(json.dumps(c), flush=True)
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--request", required=True)
     a = ap.parse_args()
     req = json.loads(Path(a.request).read_text())
+    if req.get("supplement"):
+        return supplement(str(req["chunk"]))
     chunk, probe, max_prs = str(req["chunk"]), bool(req.get("probe")), req.get("max_prs")
     max_minutes = req.get("max_minutes")
     res = HERE / "results"

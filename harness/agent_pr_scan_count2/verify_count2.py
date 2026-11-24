@@ -190,7 +190,7 @@ def main() -> int:
     complete = json.loads((HERE / "draw_meta.json").read_text())["complete"]
     res = HERE / "results"
     rows = J.read_jsonl(res / "rows.jsonl")
-    raws = [x for p in sorted((res / "raw").glob("*.jsonl.gz")) for x in J.read_jsonl(p)]
+    raws = J.raw_records(res)
     caps = J.read_jsonl(res / "excluded_cap.jsonl")
     checkpoint = json.loads((res / "checkpoint.json").read_text())
     check_draw(draw)

@@ -28,10 +28,11 @@ class FixtureSource:
     """Answers pipeline requests by endpoint pattern from small fixture tables (independent of exact query text)."""
 
     def __init__(self, head_runs=(), statuses=(), head_wf=(), jobs=None, base_runs=(), commits=(), commit_checks=None,
-                 errors=()):
+                 errors=(), pr_commits=()):
         self.head_runs, self.statuses, self.head_wf = list(head_runs), list(statuses), list(head_wf)
         self.jobs, self.base_runs, self.commits = jobs or {}, list(base_runs), list(commits)
         self.commit_checks, self.errors, self.seen = commit_checks or {}, set(errors), []
+        self.pr_commits = list(pr_commits)
 
     def has(self, path):
         return path in self.seen
@@ -46,6 +47,8 @@ class FixtureSource:
         if p.endswith("/pulls/1"):
             return 200, {"head_sha": SHA, "base_ref": "main", "created_at": CREATED, "merged_at": None,
                          "closed_at": "2026-06-11T00:00:00Z"}
+        if p.endswith("/pulls/1/commits"):
+            return 200, self.pr_commits
         m = re.search(r"/commits/(\w+)/check-runs$", p)
         if m:
             runs = self.head_runs if m.group(1) == SHA else self.commit_checks.get(m.group(1), {}).get("runs", [])
@@ -183,6 +186,30 @@ def test_failure_states_statuses(state, failed):
     assert (out["verdict"] != R.NO_FAILED_CHECK) is failed
     if failed:
         assert out["verdict"] == R.ALREADY_RED and out["failed_checks"][0]["identity"] == "ci/x"
+
+
+def test_pr_own_commits_are_not_base_evidence():
+    """protects=when the PR's head commit is in the base branch listing (merged later with a merge commit or
+    fast-forward), the PR's own earlier commits are skipped by the base commit walk and only real base commits judge
+    the status (change after the pre-registration, found by the hand check);
+    fails_when=a failed status on the PR's own earlier commit makes the PR ALREADY_RED, or pulls/{n}/commits is read
+    although the head commit is not in the listing;
+    no_claim=a PR with more than 100 commits is fully excluded (one page is read)."""
+    fail = {"context": "ci/x", "state": "failure"}
+    head = [dict(fail, created_at=S, updated_at=S)]
+    checks = {"p1": {"runs": [], "statuses": [dict(fail, created_at="2026-06-10T11:00:00Z", updated_at=None)]},
+              "c1": {"runs": [], "statuses": [{"context": "ci/x", "state": "success",
+                                               "created_at": "2026-06-10T08:00:00Z", "updated_at": None}]}}
+    listing = [{"sha": SHA, "date": S}, {"sha": "p1", "date": "2026-06-10T11:00:00Z"},
+               {"sha": "c1", "date": "2026-06-10T08:00:00Z"}]
+    src = FixtureSource(statuses=head, commits=listing, commit_checks=checks,
+                        pr_commits=[{"sha": "p1", "date": None}, {"sha": SHA, "date": None}])
+    out = run(src)
+    assert out["verdict"] == R.NEW_RED and out["failed_checks"][0]["base"]["commit"] == "c1"
+    assert out["base_commits_own_excluded"] == 2
+    src = FixtureSource(statuses=head, commits=listing[1:], commit_checks=checks)
+    out = run(src)
+    assert out["verdict"] == R.ALREADY_RED and not any(x.endswith("/pulls/1/commits?per_page=100") for x in src.seen)
 
 
 def test_secondary_rule_on_same_fixtures():
