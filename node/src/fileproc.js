@@ -21,6 +21,8 @@ class FileProcess {
     this.t0 = 0;
     this.current = null; // {id, t0}
     this.counts = new Map(); // id -> occurrences (duplicate names get ` #n`)
+    this.exceptions = {}; // id -> repro.exceptionOf record of the open file's failed tests
+    this.collectedOf = null; // () => [ids]: the file's declared tests (node-test under --det-order/--det-collect)
     if (!this.c.active) return;
     controls.installProcess();
     controls.installRealm(globalThis, { sameRealm: true });
@@ -45,6 +47,8 @@ class FileProcess {
     this.fileId = fileId;
     this.t0 = realNow();
     this.counts = new Map();
+    this.exceptions = {};
+    STATE.takeDurations(); // durations of the previous file's tests were written with its side record
     controls.openFile(fileId, '');
     if (this.cap) {
       this.cap.resetFile();
@@ -79,6 +83,12 @@ class FileProcess {
     }
   }
 
+  /** The error a test failed with (the first one recorded for the id is kept). */
+  exception(id, err, phase) {
+    if (!this.c.active || id === null || id === undefined || id in this.exceptions) return;
+    try { this.exceptions[id] = require('./repro').exceptionOf(err, phase, this.root); } catch { /* none */ }
+  }
+
   /** Tests that never started (filtered, skipped by a failing hook): recorded as skipped. */
   skipped(id) {
     if (!this.c.active) return;
@@ -93,6 +103,13 @@ class FileProcess {
     controls.closeFile();
     const fileId = this.fileId;
     this.fileId = null;
+    // what the trace does not say (read by src/repro.js afterMerge into the --det-outcomes file): durations, errors
+    let collected = [];
+    try { collected = this.collectedOf ? this.collectedOf() : []; } catch { /* none */ }
+    require('./repro').writeSide(this.c.dir, controls.partName(fileId, ''), {
+      file: fileId, project: '', collected, states: {}, exceptions: this.exceptions, durations: STATE.takeDurations(), file_error: null,
+    });
+    this.exceptions = {};
     if (this.cap && this.c.dir) {
       try {
         // a process unit (Mocha's one process under --det-cache): its entries under the project `process`

@@ -393,7 +393,7 @@ async function detjsJestRunner(globalConfig, config, environment, runtime, testP
     parallel.carriedAfter(label);
     parallel.leave(label, carried.length ? { carried } : {});
     if (!fileError && result && result.testExecError) fileError = repro.exceptionOf(result.testExecError, 'collect', root);
-    repro.writeSide(c.dir, controls.partName(fileId, project), { file: fileId, project, collected, states: {}, exceptions, file_error: fileError });
+    repro.writeSide(c.dir, controls.partName(fileId, project), { file: fileId, project, collected, states: {}, exceptions, durations: controls.STATE.takeDurations(), file_error: fileError });
     if (CAP && c.dir) {
       try {
         const ok = Boolean(result) && !result.testExecError && !(result.numFailingTests > 0);

@@ -990,6 +990,10 @@ class _DetSession(_Outcomes):
         pc = proofcache.PLUGIN
         if pc is not None:
             out["cache"] = pc.outcomes_data()
+            # the engine run id of the cache session (receipts name it as `run`): the runner sends it as engineRunId
+            run_id = getattr(pc, "run_id", None)
+            if isinstance(out["cache"], dict) and run_id:
+                out["cache"]["run"] = run_id
         if S.controller is not None:
             out["order"] = list(S.order)
             out["plan"] = S.controller.plan

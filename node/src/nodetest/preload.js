@@ -53,9 +53,23 @@ if (role === 'file' || role === 'shared') {
     try { passed = ctx.passed; } catch { passed = false; }
     return passed ? 'passed' : 'failed';
   };
+  // the error a failed test ended with: node:test's TestContext `error` (Node versions that have it); its
+  // ERR_TEST_FAILURE wrapper's `cause` is the test's own error. Without it no record is written (the runner then
+  // sends the failure without details).
+  const errorOf = (ctx) => {
+    let err;
+    try { err = ctx.error; } catch { return null; }
+    if (err === null || err === undefined) return null;
+    if (err && err.code === 'ERR_TEST_FAILURE' && err.cause !== undefined && err.cause !== null) return err.cause;
+    return err;
+  };
   const endCurrent = () => {
     if (!cur) return;
     const o = outcomeOf(cur.ctx);
+    if (o === 'failed') {
+      const err = errorOf(cur.ctx);
+      if (err !== null) fp.exception(cur.id, err, 'call');
+    }
     cur = null;
     fp.end(o);
   };
@@ -74,7 +88,7 @@ if (role === 'file' || role === 'shared') {
     }
     const id = fp.idFor(name.split(' > '));
     fp.begin(id);
-    cur = { ctx, name, done: false };
+    cur = { ctx, name, id, done: false };
     for (const k of ['skip', 'todo']) {
       const realFn = ctx[k];
       if (typeof realFn !== 'function') continue;
@@ -107,6 +121,7 @@ if (role === 'file' || role === 'shared') {
   };
   let facadeObj = null;
   const declared = []; // --det-order / --det-collect: the ids this file runs (or would run), in order
+  if (env.DETJS_ORDER || env.DETJS_COLLECT === '1') fp.collectedOf = () => declared;
   const { makeFacade, wrapContextTest } = require('./facade');
   globalThis[KEY] = {
     role,
@@ -198,10 +213,7 @@ if (role === 'file' || role === 'shared') {
       const code = process.exitCode !== undefined && process.exitCode !== null ? Number(process.exitCode) : Number(a[0] || 0);
       endCurrent();
       if (parallel) parallel.leave(fp.fileId);
-      if ((env.DETJS_ORDER || env.DETJS_COLLECT === '1') && fp.fileId) {
-        const repro = require('../repro');
-        repro.writeSide(fp.c.dir, require('../controls').partName(fp.fileId, ''), { file: fp.fileId, collected: declared, states: {}, exceptions: {}, file_error: null });
-      }
+      // the side record (with the ids declared under --det-order/--det-collect) is written by fp.close
       fp.close({ ok: code === 0 });
     }
     return r;

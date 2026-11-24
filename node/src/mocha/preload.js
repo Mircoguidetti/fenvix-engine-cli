@@ -138,15 +138,20 @@ if (role) {
         const base = `${file}::${names.join('::')}`;
         if (cur && cur.base === base && typeof t.currentRetry === 'function' && t.currentRetry() > 0) { cur.test = t; return; } // a retry
         endCur();
-        fp.begin(fp.idFor(names, file));
-        cur = { test: t, base };
+        const id = fp.idFor(names, file);
+        fp.begin(id);
+        cur = { test: t, base, id };
       });
       this.on('pending', (t) => {
         if (cur && cur.test === t) return; // skipped from inside (this.skip()): its outcome says so
         endCur();
         fp.skipped(fp.idFor(t.titlePath(), fileOf(t)));
       });
-      this.on('fail', (r) => {
+      this.on('fail', (r, err) => {
+        // the error of the running test (its own, or of an each-hook that ran inside its bracket)
+        const hook = r && r.type === 'hook' ? String(r.title || '') : '';
+        const each = /"(before|after) each" hook/i.exec(hook);
+        if (cur && (cur.test === r || each)) fp.exception(cur.id, err, each ? (/after/i.test(each[1]) ? 'teardown' : 'setup') : 'call');
         const f = fileOf(r);
         results.files[f] = results.files[f] || {};
         results.files[f].failed = true;

@@ -304,7 +304,8 @@ function reproSide(file, det, project) {
   walk(file, fileErr);
   repro.writeSide(c.dir, controls.partName(fileId, project), {
     file: fileId, project: project || '', collected: (det.collected && det.collected.get(file)) || [],
-    states, exceptions, file_error: fileErr ? repro.exceptionOf(fileErr, 'collect', det.root) : null,
+    states, exceptions, durations: controls.STATE.takeDurations(),
+    file_error: fileErr ? repro.exceptionOf(fileErr, 'collect', det.root) : null,
   });
 }
 

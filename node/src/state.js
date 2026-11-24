@@ -14,6 +14,14 @@ const FS = '\u001f';
 const RS = '\u001e';
 const FLUSH_AT = 256;
 
+// the clock control's real process.hrtime.bigint, captured before it patches anything (src/clock.js REAL); required
+// on first use (clock.js loads this module)
+let REAL_HRTIME = null;
+function realNs() {
+  if (REAL_HRTIME === null) REAL_HRTIME = require('./clock').REAL.hrtimeBigint;
+  return REAL_HRTIME.call(process);
+}
+
 class State {
   constructor() {
     this.config = null;
@@ -31,6 +39,27 @@ class State {
     this.onEvent = null; // set by the cache capture (src/cache/capture.js)
     this.onRealClock = null; // set by the cache capture: a read of a clock Level 0 does not virtualize
     this.begun = new Set(); // ids of the tests of the current file that have a record (B5, controls.recordNeverStarted)
+    this.started = new Map(); // id -> real ns at its bracket's start (durations)
+    this.durations = new Map(); // id -> real elapsed ms of its bracket (ceil), until a shell takes them (takeDurations)
+  }
+
+  /** Real elapsed time of test brackets: the clock control's captured real clock, never the patched one. */
+  markStart(id) {
+    this.started.set(id, realNs());
+  }
+
+  markEnd(id) {
+    const t0 = this.started.get(id);
+    if (t0 === undefined) return;
+    this.started.delete(id);
+    this.durations.set(id, Math.ceil(Number(realNs() - t0) / 1e6));
+  }
+
+  /** The durations measured since the last call ({id: ms}), for the side record of the file just run. */
+  takeDurations() {
+    const out = Object.fromEntries(this.durations);
+    this.durations.clear();
+    return out;
   }
 
   /** The running test: with concurrent tests running, the test whose asynchronous work is running (src/concur.js). */
@@ -110,6 +139,7 @@ class State {
     this.begun.add(id);
     this.testIndex++;
     this.testId = id;
+    this.markStart(id);
     for (const f of this.onTestStart) f(id);
   }
 
@@ -122,6 +152,7 @@ class State {
     this._testId = id;
     this.buffer = [];
     this.deferred = true;
+    this.markStart(id);
     for (const f of this.onTestStart) f(id);
   }
 
@@ -132,6 +163,7 @@ class State {
       // often it was resumed is not recorded: with a sibling waiting on real I/O it changes from run to run, while the
       // test's own events do not.)
       const id = this._testId;
+      this.markEnd(id);
       for (const f of this.onTestEnd) f(id);
       this.buffer.push(`sched${FS}sched.concurrent${FS}<detjs>${FS}interleaved`);
       let fp = null;
@@ -146,6 +178,7 @@ class State {
       this.deferred = false;
       return fp;
     }
+    this.markEnd(this.testId);
     for (const f of this.onTestEnd) f(this.testId);
     this.flush();
     this.testId = null;

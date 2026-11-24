@@ -103,24 +103,54 @@ function flatIds(children, idOf, kidsOf) {
 
 const ANSI = /\u001b\[[0-9;]*[A-Za-z]/g;
 
-/** [exception type, phase, message (first lines, 200 chars), file:line of the first frame in the project]. */
+const MSG_MAX = 200;
+const CAUSE_MAX = 120;
+
+/** The first lines of a message, joined (ANSI colors removed). */
+function linesOf(msg) {
+  return String(msg).replace(ANSI, '').split('\n').map((l) => l.trim()).filter(Boolean).slice(0, 4).join(' / ');
+}
+
+/** The message of an error's `cause`, or '' (a non-error cause: its string). */
+function causeOf(e) {
+  let c;
+  try { c = e.cause; } catch { return ''; }
+  if (c === null || c === undefined) return '';
+  if (typeof c !== 'object') return linesOf(String(c));
+  let m;
+  try { m = c.message === undefined ? String(c) : c.message; } catch { return ''; }
+  return linesOf(m);
+}
+
+/**
+ * [exception type, phase, message (first lines, 200 chars), file:line of the first frame in the project]. An error
+ * whose `cause` says something its own message does not (a `fetch()` wrapping the engine's network block reads only
+ * "fetch failed") gets ` / cause: <cause message>` within the 200 characters.
+ */
 function exceptionOf(err, phase, root) {
   let e = err;
   if (Array.isArray(e)) e = e[0]; // jest-circus: [error, asyncError]
   if (e === null || e === undefined) return ['unknown', phase, '', ''];
-  if (typeof e !== 'object') return ['thrown', phase, String(e).slice(0, 200), ''];
+  if (typeof e !== 'object') return ['thrown', phase, String(e).slice(0, MSG_MAX), ''];
   const name = String(e.name || (e.constructor && e.constructor.name) || 'Error');
-  const msg = String(e.message === undefined ? e : e.message).replace(ANSI, '');
-  const text = msg.split('\n').map((l) => l.trim()).filter(Boolean).slice(0, 4).join(' / ').slice(0, 200);
+  const msg = String(e.message === undefined ? e : e.message);
+  let text = linesOf(msg).slice(0, MSG_MAX);
+  const cause = causeOf(e);
+  if (cause && !linesOf(msg).includes(cause)) {
+    const tail = ` / cause: ${cause}`.slice(0, CAUSE_MAX);
+    text = `${linesOf(msg).slice(0, MSG_MAX - tail.length)}${tail}`;
+  }
   return [name, phase, text, whereOf(String(e.stack || ''), root)];
 }
 
 function whereOf(stack, root) {
   const r = path.resolve(root || process.cwd()) + path.sep;
   for (const line of stack.replace(ANSI, '').split('\n')) {
-    const m = /\(?((?:file:\/\/)?\/[^():]+):(\d+):\d+\)?\s*$/.exec(line);
+    // an absolute path, or (Mocha's stack filter) one relative to the working directory
+    const m = /(?:^|[\s(])((?:file:\/\/)?\/[^():]+):(\d+):\d+\)?\s*$/.exec(line)
+      || /^\s*at (?:.*\()?((?![a-z]+:)[^\s():/][^\s():]*\.[cm]?[jt]sx?):(\d+):\d+\)?\s*$/.exec(line);
     if (!m) continue;
-    let f = m[1].replace(/^file:\/\//, '');
+    let f = path.resolve(m[1].replace(/^file:\/\//, ''));
     if (!f.startsWith(r) || /[\\/]node_modules[\\/]/.test(f) || f.startsWith(path.resolve(__dirname) + path.sep)) continue;
     return `${path.relative(r, f).split(path.sep).join('/')}:${m[2]}`;
   }
@@ -224,6 +254,7 @@ function afterMerge(run, opts, files, runner) {
   const outcomes = {};
   const fingerprints = {};
   const exceptions = {};
+  const durations = {};
   const fileErrors = new Map();
   const push = (id) => { if (!seen.has(id)) { seen.add(id); order.push(id); } };
   for (const f of files) {
@@ -233,6 +264,7 @@ function afterMerge(run, opts, files, runner) {
     for (const id of side.collected || []) push(wf(id));
     if (!opts.collect) for (const [id, st] of Object.entries(side.states || {})) if (!tests.has(wf(id))) outcomes[wf(id)] = OUTCOME[st] || st;
     for (const [id, e] of Object.entries(side.exceptions || {})) exceptions[wf(id)] = e;
+    for (const [id, ms] of Object.entries(side.durations || {})) if (Number.isFinite(ms)) durations[wf(id)] = ms;
   }
   for (const id of tests.keys()) push(id); // bracketed tests the worker did not list (a runner path not covered)
   if (p) {
@@ -267,6 +299,8 @@ function afterMerge(run, opts, files, runner) {
       outcomes,
       fingerprints,
       exceptions,
+      // real elapsed ms of each test's bracket (side records; tests that never started have none)
+      durations: Object.fromEntries(order.filter((id) => id in durations).map((id) => [id, durations[id]])),
       controls: [...run.cfg.controls].sort(),
       seed: Number(run.cfg.seed),
       shuffle: run.cfg.shuffle,
