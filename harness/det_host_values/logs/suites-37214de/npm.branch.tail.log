@@ -1,0 +1,60 @@
+  duration_ms: 760.1398
+  type: 'test'
+  ...
+# Subtest: udp to localhost: verify is IDENTICAL only if the test observed the same value
+ok 340 - udp to localhost: verify is IDENTICAL only if the test observed the same value
+  ---
+  duration_ms: 789.362311
+  type: 'test'
+  ...
+# Subtest: stat size only: verify is IDENTICAL only if the test observed the same value
+ok 341 - stat size only: verify is IDENTICAL only if the test observed the same value
+  ---
+  duration_ms: 766.94307
+  type: 'test'
+  ...
+# Subtest: dependency reads a project file at import: verify is IDENTICAL only if the test observed the same value
+ok 342 - dependency reads a project file at import: verify is IDENTICAL only if the test observed the same value
+  ---
+  duration_ms: 645.768452
+  type: 'test'
+  ...
+# Subtest: generated client in node_modules/.prisma: verify is IDENTICAL only if the test observed the same value
+ok 343 - generated client in node_modules/.prisma: verify is IDENTICAL only if the test observed the same value
+  ---
+  duration_ms: 661.492573
+  type: 'test'
+  ...
+# Subtest: dependency same size same mtime: verify is IDENTICAL only if the test observed the same value
+ok 344 - dependency same size same mtime: verify is IDENTICAL only if the test observed the same value
+  ---
+  duration_ms: 656.409253
+  type: 'test'
+  ...
+# Subtest: process.loadEnvFile in the test: verify is IDENTICAL only if the test observed the same value
+ok 345 - process.loadEnvFile in the test: verify is IDENTICAL only if the test observed the same value
+  ---
+  duration_ms: 647.899076
+  type: 'test'
+  ...
+# Subtest: inputs.deps: two serial --det runs of a Vitest 5 project are equal (node_modules/.vitest-cache is not a dependency)
+ok 346 - inputs.deps: two serial --det runs of a Vitest 5 project are equal (node_modules/.vitest-cache is not a dependency)
+  ---
+  duration_ms: 3405.243399
+  type: 'test'
+  ...
+# Subtest: --det: a different node_modules/.vitest-cache (and a recorded failure) changes neither file order nor outcomes
+ok 347 - --det: a different node_modules/.vitest-cache (and a recorded failure) changes neither file order nor outcomes
+  ---
+  duration_ms: 2089.030314
+  type: 'test'
+  ...
+1..347
+# tests 1021
+# suites 140
+# pass 1013
+# fail 4
+# cancelled 3
+# skipped 1
+# todo 0
+# duration_ms 3374318.871348

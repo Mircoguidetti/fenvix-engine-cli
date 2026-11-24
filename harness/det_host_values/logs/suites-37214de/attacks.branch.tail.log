@@ -1,0 +1,60 @@
+  ...
+# Subtest: fs.promises.access: verify is IDENTICAL only if the test observed the same value
+ok 53 - fs.promises.access: verify is IDENTICAL only if the test observed the same value
+  ---
+  duration_ms: 615.165049
+  type: 'test'
+  ...
+# Subtest: udp connected socket: verify is IDENTICAL only if the test observed the same value
+ok 54 - udp connected socket: verify is IDENTICAL only if the test observed the same value
+  ---
+  duration_ms: 664.214737
+  type: 'test'
+  ...
+# Subtest: udp to localhost: verify is IDENTICAL only if the test observed the same value
+ok 55 - udp to localhost: verify is IDENTICAL only if the test observed the same value
+  ---
+  duration_ms: 667.439924
+  type: 'test'
+  ...
+# Subtest: stat size only: verify is IDENTICAL only if the test observed the same value
+ok 56 - stat size only: verify is IDENTICAL only if the test observed the same value
+  ---
+  duration_ms: 600.832965
+  type: 'test'
+  ...
+# Subtest: dependency reads a project file at import: verify is IDENTICAL only if the test observed the same value
+ok 57 - dependency reads a project file at import: verify is IDENTICAL only if the test observed the same value
+  ---
+  duration_ms: 600.904596
+  type: 'test'
+  ...
+# Subtest: generated client in node_modules/.prisma: verify is IDENTICAL only if the test observed the same value
+ok 58 - generated client in node_modules/.prisma: verify is IDENTICAL only if the test observed the same value
+  ---
+  duration_ms: 563.403226
+  type: 'test'
+  ...
+# Subtest: dependency same size same mtime: verify is IDENTICAL only if the test observed the same value
+ok 59 - dependency same size same mtime: verify is IDENTICAL only if the test observed the same value
+  ---
+  duration_ms: 566.153057
+  type: 'test'
+  ...
+# Subtest: process.loadEnvFile in the test: verify is IDENTICAL only if the test observed the same value
+ok 60 - process.loadEnvFile in the test: verify is IDENTICAL only if the test observed the same value
+  ---
+  duration_ms: 604.323172
+  type: 'test'
+  ...
+1..60
+# tests 60
+# suites 0
+# pass 60
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 53647.30004
+
+=== attacks: python rc=1, node rc=0, 854s (12 python + 5 node files) ===

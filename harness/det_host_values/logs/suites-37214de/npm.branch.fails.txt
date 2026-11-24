@@ -1,0 +1,16 @@
+not ok 88 - (b) a test waiting on real work is not timed out by the virtual clock
+    not ok 1 - the plan is identical across runs, recorded in the trace and replayed from it; lanes overlap in time
+    not ok 2 - parallel fingerprints equal the serial ones (workers)
+    not ok 3 - cache: recorded in parallel, reused serially; recorded serially, reused in parallel
+not ok 140 - jest: parallel lanes
+    not ok 4 - --det-order: exactly the listed tests, in the listed order (files by first listed test), across describe blocks
+not ok 185 - repro options (vitest)
+    not ok 1 - two --det runs give identical fingerprints; the controls are active inside bun test
+not ok 233 - bun: Level 0 controls
+    not ok 7 - a file another test file wrote: not cacheable
+not ok 246 - node-test: adversarial (environment, processes, R-009 / R-017)
+# tests 1021
+# pass 1013
+# fail 4
+# cancelled 3
+# skipped 1
