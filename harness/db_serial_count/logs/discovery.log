@@ -28,3 +28,5 @@
 2026-11-24T17:55:46+00:00 postgres vitest          size:0..1562 tc=667 leaf=True read=676 inc=False req=74
 2026-11-24T17:55:53+00:00 postgres vitest          size:1563..3125 tc=2140 leaf=False read=- inc=- req=75
 2026-11-24T17:56:00+00:00 postgres vitest          size:1563..2344 tc=1136 leaf=False read=- inc=- req=76
+--- resumed 2026-11-24T21:20:48Z after process death (~20:01Z)
+2026-11-24T21:21:53+00:00 postgres "manage.py"     size:4689..5469 tc=946 leaf=True read=953 inc=False req=10
