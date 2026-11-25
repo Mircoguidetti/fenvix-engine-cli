@@ -407,7 +407,8 @@ def test_text_capped_is_unknown():
 def test_issue_matching_only_in_comment_becomes_candidate():
     """protects=§3.2 comment fetch; fails_when=an issue whose model term appears only in a comment stays filtered;
     no_claim=comments beyond the first page of 100."""
-    hit = {"kind": "issue", "url": "https://github.com/acme/agent/issues/7", "number": 7, "title": "Flaky test",
+    hit = {"kind": "issue", "url": "https://github.com/acme/agent/issues/7", "repo": "acme/agent", "number": 7,
+           "title": "Flaky test",
            "body": "test_chat fails sometimes", "created_at": "2025-05-01T00:00:00Z", "query": "q"}
     texts = T.member_texts("acme/agent", [], {"queries": [], "hits": [hit]})
     assert T.candidates_of(texts, {})[0] == []
