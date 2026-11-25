@@ -190,6 +190,23 @@ Lifting it needs per-test tracking of the state each test changes (a separate se
   resolves `localhost` in every test (litellm's pytest-socket `socket_allow_hosts`) reuses nothing and pays the
   per-file cost: 220-240 s against 48 s at `-n 4` (MEASURED, litellm 17e6ea8c `tests/unit/llms/vertex_ai`).
 
+**Object addresses differ from uncached `--det` (review R-056 W11; founder decision 2026-11-25: investigate at most 4 h,
+else a written limit).** A test the cache runs (not reused) can get another outcome than under uncached `--det` when
+the outcome depends on object addresses: `id()`, `hash(object())`, the iteration order of a set or dict keyed by
+objects with the default hash. The address of an object depends on every allocation the process made before it, and
+a cached run's history differs from uncached `--det`'s in two ways that cannot be removed: the session loads the
+store and computes keys before it knows which tests to run, and a reused test does not run, so every later test of
+its process starts from another heap. MEASURED on release-1 6e79a62c + fixes, CPython 3.13.18, one test printing the
+order of a set of six default-hash objects and the low 16 bits of three `id()`s: each mode gives the same answer on
+every run, and the modes differ from one another: plain `pytest` `[1, 2, 4, 0, 5, 3]` (`0x9940`, ...), uncached
+`--det` `[3, 1, 2, 5, 0, 4]` (`0xb230`, ...), `--det-cache` `[0, 3, 1, 2, 4, 5]` (`0x9940`, `0xead0`, ...),
+`--det-cache-in-process` `[0, 3, 1, 2, 4, 5]` (`0x9940`, `0xaad0`, ...). A fork at the point uncached `--det` starts
+its first test, told afterwards what to run, still allocates to receive that, and cannot help a test after a reused
+one. Measured direction: the cached run fails a test that uncached `--det` passes (a false red; the test ran, nothing
+was reused). The opposite direction, a cached run that passes such a test where uncached `--det` fails it, is possible
+in principle and would be a false green of the same kind (an outcome, not a reuse); it was not observed. `tests/test_review_r056_pycache.py::test_w11_object_addresses_match_uncached_det`
+stays in the suite, failing (no xfail, no skip).
+
 ## 10. Parallel lanes (`--det-workers=N`, and the default since G-1044): cross-file state on a first run
 
 Since row JS-07 (gap G-1044) a `--det` run of the JavaScript runners uses this machine's CPUs as lanes unless the
