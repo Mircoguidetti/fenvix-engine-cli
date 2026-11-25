@@ -2,6 +2,7 @@
 """P2 Phase B: where an engine parallel run's wall time goes, per repository (BREAKDOWN.md tables).
 
   breakdown.py [--base harness/p2/data/baseline] [--phaseb harness/p2/data/phaseB] [--json OUT.json]
+  breakdown.py lanes [BASELINE_DIR]     round-3 timed traces: outside-lanes time, plan vs runtime excess
 
 Sources, all raw: the baseline `results.jsonl` (medians as in table.py), the Phase B `fixed.jsonl` row of the
 `phases` run (its wall) and its `<trace>.phases.jsonl` (the timers, node/src/phases.js), and `cpuprof-summary.json`.
@@ -101,8 +102,34 @@ def repo(base, pb, name):
     return res
 
 
+def lanes(base, rnd=3):
+    """From the baseline timed traces (header meta.parallel, original machine): where the par wall goes."""
+    rows = table.rows_of(base)
+    wall = {(r["repo"], r["rep"], r["workers"]): r["wall_s"] for r in rows if r["kind"] == "par"}
+    print(f"| repo | w | par wall | outside lanes | lanes wall | plan makespan | sum of file s / w | waited s (sum) | together groups | plan excess (makespan - sum/w) | runtime excess (lanes - makespan) |")
+    print("|---|---|---|---|---|---|---|---|---|---|---|")
+    for repo in table.POOL:
+        for w in table.WORKERS:
+            p = os.path.join(base, repo, f"P{rnd}w{w}.jsonl")
+            if not os.path.exists(p):
+                continue
+            with open(p) as f:
+                h = json.loads(f.readline())
+            P = h["meta"].get("parallel") or {}
+            t, pl = P.get("timing") or {}, P.get("plan") or {}
+            W = wall.get((repo, rnd, w))
+            if not pl or t.get("lanes_wall_seconds") is None:
+                print(f"| {repo} | {w} | {W:.1f} | - | - | - | - | - | - | refused: {(P.get('requested') or {}).get('refused')} | - |")
+                continue
+            lw, mk, ideal = t["lanes_wall_seconds"], float(pl["makespan"]), t["test_file_seconds"] / w
+            print(f"| {repo} | {w} | {W:.1f} | {W - lw:.1f} | {lw:.1f} | {mk:.1f} | {ideal:.1f} | {P['placement']['waited_seconds']:.1f} | "
+                  f"{len(pl.get('together') or [])} | {mk - ideal:.1f} | {lw - mk:.1f} |")
+
+
 def main(argv=None):
     a = sys.argv[1:] if argv is None else argv
+    if a[:1] == ["lanes"]:
+        return lanes(a[1] if len(a) > 1 else os.path.join(HERE, "data", "baseline"))
     opt = lambda k, dflt: a[a.index(k) + 1] if k in a else dflt
     base = opt("--base", os.path.join(HERE, "data", "baseline"))
     pb = opt("--phaseb", os.path.join(HERE, "data", "phaseB"))
