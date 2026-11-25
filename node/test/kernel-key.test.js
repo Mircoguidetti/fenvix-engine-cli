@@ -10,9 +10,13 @@ const { spawnSync } = require('node:child_process');
 const { BIN, TMP } = require('./helpers');
 
 const T = { timeout: 300000 };
-const hasSetarch = spawnSync('setarch', ['--version'], { encoding: 'utf8' }).status === 0;
+// the kernel can be faked here: setarch runs a program under --uname-2.6 (not only `setarch --version`: on another
+// architecture or under a seccomp policy that blocks personality() the faked runs fail before Vitest starts, and the
+// test would pass without testing anything -- /review testing)
+const canFake = process.arch === 'x64'
+  && spawnSync('setarch', ['x86_64', '--uname-2.6', process.execPath, '-p', 'require("os").release()'], { encoding: 'utf8' }).stdout.trim().startsWith('2.6');
 
-test('protects=a cached Vitest test that reads the kernel release through process.report is rerun when the kernel differs (setarch --uname-2.6), and fails as uncached --det does; fails_when=the result is reused with proof (release-1 24962a94 and this branch at ca0bbb9c: MEASURED); no_claim=other machine facts', { ...T, skip: !hasSetarch && 'needs setarch' }, () => {
+test('protects=a cached Vitest test that reads the kernel release through process.report is rerun when the kernel differs (setarch --uname-2.6), and fails as uncached --det does; fails_when=the result is reused with proof (release-1 24962a94 and this branch at ca0bbb9c: MEASURED); no_claim=other machine facts', { ...T, skip: !canFake && 'needs setarch x86_64 --uname-2.6' }, () => {
   const dir = path.join(TMP, 'kernel-key', 'report');
   fs.rmSync(dir, { recursive: true, force: true });
   fs.mkdirSync(path.join(dir, 'tests'), { recursive: true });
@@ -28,6 +32,9 @@ test('protects=a cached Vitest test that reads the kernel release through proces
   const warm = spawnSync('setarch', ['x86_64', '--uname-2.6', process.execPath, ...args], { cwd: dir, env, encoding: 'utf8' });
   const uncached = spawnSync('setarch', ['x86_64', '--uname-2.6', process.execPath, BIN, 'vitest', 'run', '--det'], { cwd: dir, env, encoding: 'utf8' });
   assert.notEqual(uncached.status, 0, 'precondition: uncached --det fails under the other kernel');
+  // both failed on test k itself, under Vitest (not before it started)
+  assert.match(uncached.stdout + uncached.stderr, /k\.test\.mjs/, `precondition: Vitest ran k\n${uncached.stdout}\n${uncached.stderr}`);
   assert.notEqual(warm.status, 0, `the cached run must not reuse the pass\n${warm.stdout}\n${warm.stderr}`);
+  assert.match(warm.stdout + warm.stderr, /k\.test\.mjs/, `the cached run ran k\n${warm.stdout}\n${warm.stderr}`);
   assert.doesNotMatch(warm.stdout, /reused with proof [1-9]/, warm.stdout);
 });

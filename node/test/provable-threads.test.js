@@ -125,3 +125,15 @@ test('protects=the prov reader fails closed on a file it does not know, on a par
   assert.equal(silent.provable, undefined);
   assert.match(silent.provable_absent, /1-2/);
 });
+
+test('protects=a part whose .ran marker cannot be written declares absent at once, without waiting for a later declare() (which an earlier control\'s throw, or a sensor never installed, skips); fails_when=the part is invisible to the prov reader and the other parts\' ok is taken as the run\'s (this branch at f3ecbe73, /review adversarial); no_claim=a part whose declaration write fails too (the same I/O failure: its outcome records fail with it and its tests are missing)', () => {
+  const { provableField } = require('../src/session');
+  const ok = `ok ${JSON.stringify({ contract: 1, runtime: 'node22', sensor: 'node-surface/1', surface: 'x' })}\n`;
+  const dir = provDir({ '1-0.txt': ok, '1-0.ran': '' });
+  const id = `${process.pid}-${require('node:worker_threads').threadId}`;
+  fs.mkdirSync(path.join(dir, 'prov', `${id}.ran`)); // a directory: writeFileSync fails with EISDIR
+  require('../src/provable').markRan(dir);
+  const r = provableField(dir, [], ['t']);
+  assert.equal(r.provable, undefined, JSON.stringify(r));
+  assert.match(String(r.provable_absent), /marker could not be written/, JSON.stringify(r));
+});

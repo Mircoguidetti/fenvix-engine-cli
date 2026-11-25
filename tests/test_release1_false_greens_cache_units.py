@@ -220,8 +220,62 @@ def test_w8_reseeding_a_c_generator_from_entropy_is_never_reused(tmp_path):
     cached run reuses it while fresh --det runs read different values (this branch before the fix: MEASURED);
     no_claim=seeds other than None (a seeded ``r.seed(42)`` called as a method is refused too: stricter, not tested)."""
     body = "import _random\n\ndef test_e():\n    r = _random.Random(0)\n    r.seed()\n    print('VALUE', r.random())\n"
-    _, _, log = _cache_vs_uncached(tmp_path, {"tests/test_e.py": body}, lambda r: None, "tests/test_e.py::test_e")
+    cached, _, log = _cache_vs_uncached(tmp_path, {"tests/test_e.py": body}, lambda r: None, "tests/test_e.py::test_e")
+    assert cached == "passed", f"positive control: the warm run ran the test (/review testing)\n{log[-1500:]}"
+    assert "not cacheable" in log, log[-1500:]
     assert not any(ln.startswith("reused 1 ") for ln in log.splitlines()), log[-1500:]
+
+
+@pytest.mark.parametrize("call", ["r = _random.Random(5)\n    r.__init__()",
+                                  "r = random.Random(5)\n    _random.Random.__init__(r)"],
+                         ids=["bound-init", "descriptor-init-on-random.Random"])
+def test_w8_reinitialising_a_c_generator_from_entropy_is_never_reused(tmp_path, call):
+    """protects=``__init__`` called on an existing C generator (``r.__init__()``; ``_random.Random.__init__(p)``, also on
+    a ``random.Random``, which skips the seed --det controls) reseeds it from OS entropy and makes the test NOT PROVEN,
+    as ``seed()`` does (founder decision W8 = refuse); fails_when=the warm cached run reuses it with proof while fresh
+    --det runs read different values (this branch at f3ecbe73: MEASURED ``reused 1 result(s) with proof``, /review red
+    team); no_claim=construction (``_unseeded_c_random``) and ``seed`` (the tests above)."""
+    body = f"import _random, random\n\ndef test_e():\n    {call}\n    print('VALUE', r.random())\n"
+    cached, _, log = _cache_vs_uncached(tmp_path, {"tests/test_e.py": body}, lambda r: None, "tests/test_e.py::test_e")
+    assert cached == "passed", log[-1500:]
+    assert "not cacheable" in log, log[-1500:]
+    assert not any(ln.startswith("reused 1 ") for ln in log.splitlines()), log[-1500:]
+
+
+def test_w8_reinit_rule_names_init_on_a_c_generator_and_not_the_controlled_path():
+    """protects=``provable._c_random_reseed`` names ``__init__`` like ``seed``: the C descriptor on any C generator
+    (a ``random.Random`` too: nothing in ``random`` or detpy calls it), a bound C ``__init__`` without a fixed seed;
+    fails_when=it misses them (this branch at f3ecbe73) or flags ``random.Random``'s own Python ``__init__`` (which
+    calls the seed --det controls) or a fixed seed; no_claim=the call-event plumbing (end to end: the test above)."""
+    import _random
+
+    from detpy import provable
+
+    missing = getattr(sys.monitoring, "MISSING")
+    reseed = provable._c_random_reseed
+    c_gen, py_gen = _random.Random(0), random.Random(0)
+    assert reseed(_random.Random.__init__, c_gen) and reseed(_random.Random.__init__, py_gen)
+    assert reseed(c_gen.__init__, None) and reseed(c_gen.__init__, missing) and not reseed(c_gen.__init__, 7)
+    assert not reseed(py_gen.__init__, None) and not reseed(py_gen.__init__, missing), "--det controls random.Random"
+    assert not reseed(dict.__init__, {}) and not reseed({}.__init__, None)
+
+
+def test_reversed_posix_environ_is_a_whole_environment_read(tmp_path):
+    """protects=``reversed(posix.environ)`` (the C ``dict.__reversed__`` slot, which calls none of the recorded
+    methods) is noted as a read of the whole environment, like ``list(posix.environ)``; fails_when=it lists every
+    variable name unrecorded (this branch at f3ecbe73, /review security and adversarial); no_claim=``dict.get(posix.
+    environ, k)`` called on the base class (an explicit bypass of the subclass)."""
+    out = _child("""
+        import json, posix
+        from detpy import _proof
+
+        noted = []
+        _proof._note_env = noted.append
+        _proof._patch_posix_environ()
+        names = list(reversed(posix.environ))
+        print(json.dumps({"noted": [n if isinstance(n, str) else n.decode() for n in noted], "n": len(names)}))
+    """, tmp_path)
+    assert out["n"] > 0 and "*" in out["noted"], out
 
 
 def test_import_machinery_api_called_by_a_test_is_an_input(tmp_path):

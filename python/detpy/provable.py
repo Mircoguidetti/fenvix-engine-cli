@@ -58,6 +58,7 @@ _MISSING = getattr(_mon, "MISSING", object())
 _C_RANDOM = _random.Random
 _PY_RANDOM = random.Random
 _C_SEED = _random.Random.seed  # the method descriptor (W8)
+_C_INIT = _random.Random.__init__  # the slot wrapper: a reinitialisation reseeds too (W8, /review red team)
 
 #: Name and version of this sensor, as the trace header declares it. The core refuses a trace whose sensor it
 #: does not know, so this string and the contract version travel together.
@@ -490,8 +491,13 @@ def _c_random_reseed(c, arg0) -> bool:
     ``arg0`` is the seed."""
     if c is _C_SEED:
         return isinstance(arg0, _C_RANDOM) and not isinstance(arg0, _PY_RANDOM)
+    if c is _C_INIT:
+        # ``_random.Random.__init__(r)`` reseeds ``r`` (tp_init: OS entropy without a seed). Unlike ``seed``, nothing in
+        # ``random`` or detpy calls the C ``__init__`` (``random.Random.__init__`` is Python and calls the controlled
+        # ``seed``), so a ``random.Random`` instance is no exception here (/review red team)
+        return isinstance(arg0, _C_RANDOM)
     s = getattr(c, "__self__", None)
-    if s is not None and getattr(c, "__name__", None) == "seed" and isinstance(s, _C_RANDOM) \
+    if s is not None and getattr(c, "__name__", None) in ("seed", "__init__") and isinstance(s, _C_RANDOM) \
             and not isinstance(s, _PY_RANDOM):
         return _entropy_or_address_seed(arg0)
     return False

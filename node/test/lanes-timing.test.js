@@ -28,10 +28,14 @@ test('protects=lanes_wall_seconds is a finite number when one lane marker has no
     { label: 'b.test.js', pid: 2, thread: 0, start: 1100, preds: [] }, // no end
   ]);
   const { meta } = collect(root, dir, ['a.test.js', 'b.test.js'], plan, { shared: false, write: false });
-  const w = JSON.parse(JSON.stringify(meta)).timing.lanes_wall_seconds;
+  const timing = JSON.parse(JSON.stringify(meta)).timing;
+  const w = timing.lanes_wall_seconds;
   assert.equal(typeof w, 'number', JSON.stringify(meta.timing));
   assert.ok(Number.isFinite(w) && w >= 0, String(w));
   assert.equal(w, 0.4);
+  // the test-file time over the same markers (/review maintainability: `durs` kept a marker without end, NaN -> null)
+  assert.equal(timing.test_file_seconds, 0.4, JSON.stringify(timing));
+  assert.equal(timing.files, 1, JSON.stringify(timing));
 });
 
 test('protects=a parallel run in which a test file crashes in the middle of a test is red; fails_when=the crash leaves the run green (its tests have no outcome record); no_claim=the exit code\'s exact value beyond non-zero', { timeout: 300000 }, () => {

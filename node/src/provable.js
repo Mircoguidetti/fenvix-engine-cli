@@ -348,6 +348,10 @@ function markRan(dir) {
     // the marker could not be written (ENOSPC, EMFILE, ...): this part would be invisible to session.js, so its
     // own declaration says absent instead (founder decision 2026-11-25: a markRan write failure fails closed)
     ranFailed = `the part's test-hook marker could not be written: ${e && e.message}`;
+    // and says so now: a later declare() does not run when an earlier control throws or the sensor is never
+    // installed (/review adversarial). If this write fails too, the same I/O failure takes the part's outcome
+    // records with it and its tests are missing (a red run), as for any part that wrote nothing
+    try { fs.appendFileSync(path.join(dir, 'prov', `${partId()}.txt`), `absent ${ranFailed}\n`); } catch { /* see above */ }
   } finally { STATE.quietDepth--; }
 }
 let ranFailed = null;

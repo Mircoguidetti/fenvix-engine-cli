@@ -6,7 +6,10 @@
 # files") in FULL mode (every file, not only `shared`), serial inside the shard. The shard-0 extra suites (runners,
 # numpy, hypothesis environments) are not run. Node: the command of the `node` job, all files in one run per shard.
 set -u
-tree=$(cd "$1" && pwd); out=$(mkdir -p "$2" && cd "$2" && pwd); shift 2
+# a wrong tree or output path stops here: never suites of the current directory labelled with another sha (/review)
+tree=$(cd "$1" && pwd) || { echo "no tree $1" >&2; exit 2; }
+out=$(mkdir -p "$2" && cd "$2" && pwd) || { echo "no output dir $2" >&2; exit 2; }
+shift 2
 parts=${*:-"cargo node py0 py1 py2 py3 attacks-py attacks-node"}
 cd "$tree"
 echo "tree $tree sha $(git rev-parse HEAD)" > "$out/sha.txt"
@@ -19,13 +22,14 @@ for p in $parts; do
     node)
       rc=0; : > "$out/node.failures"
       for s in 0 1 2 3; do
-        files=$(cd node && python3 ../release/shard.py 4 $s . 'test/*.test.js')
+        files=$(cd node && python3 ../release/shard.py 4 $s . 'test/*.test.js') && [ -n "$files" ] || { echo "node shard $s: no files" >&2; rc=2; continue; }
         (cd node && node --test --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout $files) > "$out/node-s$s.log" 2>&1 || rc=1
         sed -n '/^✖ failing tests:/,$p' "$out/node-s$s.log" | grep -E "^(test at|✖)" | grep -v "failing tests" >> "$out/node.failures"
       done ;;
     py[0-3])
       s=${p#py}
-      files=$(python3 release/shard.py 4 $s tests 'test_*.py' '**/test_*.py' '*_test.py' '**/*_test.py')
+      files=$(python3 release/shard.py 4 $s tests 'test_*.py' '**/test_*.py' '*_test.py' '**/*_test.py') && [ -n "$files" ] \
+        || { echo "py$s: no files: the shard is not run (pytest would collect everything)" >&2; echo "$p rc=2 0s" | tee -a "$out/summary.txt"; continue; }
       "${PY:-python3}" -m pytest -q -p no:randomly $files \
         --deselect tests/test_review_r017.py::test_h2_report_says_ci_never_sees_tmp_name_exhaustion_but_p8_does \
         -rfE > "$out/py-s$s.log" 2>&1; rc=$?

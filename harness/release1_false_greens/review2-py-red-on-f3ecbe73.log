@@ -1,0 +1,30 @@
+E       AssertionError: .
+E         ==================================== PASSES ====================================
+E         =============================== detpy (Level 0) ================================
+E         trace: /tmp/pytest-of-root/pytest-67/test_w8_reinitialising_a_c_gen0/.detpy/trace.jsonl  order digest: 4c01d7447a95e96c885193c5db9b40e1  seed: 0
+E         ============================ detpy cache with proof ============================
+E         reused 1 result(s) with proof, ran 0, recorded 0 (check 0.063s, record 0.232s); config ae583b03f77d49cf32fb4ec98e832d99, runtime 2cb8c52b56c75f88f32ae8306e2467a9
+E         receipts: /tmp/pytest-of-root/pytest-67/test_w8_reinitialising_a_c_gen0/.c/receipts.jsonl
+E         =========================== short test summary info ============================
+E         PASSED tests/test_e.py::test_e
+E         1 passed in 1.08s
+E         
+E       assert 'not cacheable' in '.\n==================================== PASSES ====================================\n=============================== ...============ short test summary info ============================\nPASSED tests/test_e.py::test_e\n1 passed in 1.08s\n'
+E       AssertionError: .
+E         ==================================== PASSES ====================================
+E         =============================== detpy (Level 0) ================================
+E         trace: /tmp/pytest-of-root/pytest-67/test_w8_reinitialising_a_c_gen1/.detpy/trace.jsonl  order digest: 4c01d7447a95e96c885193c5db9b40e1  seed: 0
+E         ============================ detpy cache with proof ============================
+E         reused 1 result(s) with proof, ran 0, recorded 0 (check 0.06s, record 0.226s); config ae583b03f77d49cf32fb4ec98e832d99, runtime 2cb8c52b56c75f88f32ae8306e2467a9
+E         receipts: /tmp/pytest-of-root/pytest-67/test_w8_reinitialising_a_c_gen1/.c/receipts.jsonl
+E         =========================== short test summary info ============================
+E         PASSED tests/test_e.py::test_e
+E         1 passed in 0.94s
+E         
+E       assert 'not cacheable' in '.\n==================================== PASSES ====================================\n=============================== ...============ short test summary info ============================\nPASSED tests/test_e.py::test_e\n1 passed in 0.94s\n'
+E       AssertionError: assert (False)
+E        +  where False = <function _c_random_reseed at 0x7f4288bcc400>(<slot wrapper '__init__' of '_random.Random' objects>, <_random.Random object at 0x268b02b0>)
+E        +    where <slot wrapper '__init__' of '_random.Random' objects> = <class '_random.Random'>.__init__
+E        +      where <class '_random.Random'> = <module '_random' (built-in)>.Random
+E       AssertionError: {'noted': [], 'n': 186}
+E       assert (186 > 0 and '*' in [])
