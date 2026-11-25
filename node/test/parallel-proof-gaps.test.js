@@ -188,6 +188,72 @@ describe('hazards() unit: recursive roots, shared services', () => {
   });
 });
 
+describe('connect wrapper unit: the keys a real socket connect records (a3)', () => {
+  /** In a fresh process: install the recorder, record one "file" that opens the given connects, return its footprint. */
+  const record = (connects, env = {}) => {
+    const dir = fs.mkdtempSync(path.join(BASE, 'conn-'));
+    const code = `
+const net = require('node:net'); const parallel = require(${JSON.stringify(path.join(__dirname, '..', 'src', 'parallel'))});
+parallel.installFootprint(process.cwd());
+parallel.enter('f');
+for (const c of ${JSON.stringify(connects)}) { const s = new net.Socket(); s.on('error', () => {}); try { s.connect(...c); } catch {} s.destroy(); }
+parallel.leave('f');
+process.stdout.write(require('node:fs').readFileSync(require('node:fs').readdirSync(process.env.DETJS_DIR + '/lanes').filter((n) => n.endsWith('.json')).map((n) => process.env.DETJS_DIR + '/lanes/' + n)[0], 'utf8'));`;
+    const r = spawnSync(process.execPath, ['-e', code], { cwd: dir, encoding: 'utf8', env: cleanEnv({ DETJS_DIR: path.join(dir, 'run'), DETJS_WORKERS: '2', ...env }) });
+    assert.equal(r.status, 0, r.stderr);
+    return JSON.parse(r.stdout).footprint;
+  };
+
+  test('non-local host:port, loopback forms and unix paths get their own keys', () => {
+    // protects=the keys hazards() matches are what a real net.Socket#connect records; fails_when=a remote service or a
+    // unix socket records nothing, or a loopback alias is taken for a remote host; no_claim=no connection is made
+    // (the hosts need not exist: the key is recorded before the connect)
+    const fp = record([[{ host: 'DB.Example.com', port: 5432 }], [6379, 'redis.internal'], [{ host: '::ffff:127.0.0.1', port: 7000 }],
+      [{ host: '[::1]', port: 7001 }], [{ path: '/run/x/s.sock' }], ['/run/x/t.sock'], [{ port: 7002 }]]);
+    assert.deepEqual(fp.connect, ['7000', '7001', '7002', 'tcp:db.example.com:5432', 'tcp:redis.internal:6379', 'unix:/run/x/s.sock', 'unix:/run/x/t.sock']);
+  });
+
+  test('DETJS_HAZARD_SHARED_SERVICE=0 records only loopback ports, as release-1 did', () => {
+    // protects=the measurement switch does what it says; fails_when=it changes nothing; no_claim=the runner side
+    // (tests/test_runner_proof.py: a job with the variable gets no proof)
+    const fp = record([[{ host: 'db.example.com', port: 5432 }], [{ path: '/run/x/s.sock' }], [{ host: '127.0.0.1', port: 7002 }]], { DETJS_HAZARD_SHARED_SERVICE: '0' });
+    assert.deepEqual(fp.connect, ['7002']);
+  });
+});
+
+describe('fs wrapper unit: the recursive roots real fs calls record', () => {
+  const record = (env = {}) => {
+    const dir = fs.mkdtempSync(path.join(BASE, 'fsrec-'));
+    for (const f of ['src/a/x.txt', 'gone/y.txt', 'mv/z.txt', 'plain.txt']) write(dir, { [f]: 'x' });
+    const code = `
+const fs = require('node:fs'); const parallel = require(${JSON.stringify(path.join(__dirname, '..', 'src', 'parallel'))});
+parallel.installFootprint(process.cwd());
+parallel.enter('f');
+fs.cpSync('src', 'dst', { recursive: true }); fs.rmSync('gone', { recursive: true, force: true }); fs.mkdirSync('deep/a/b', { recursive: true });
+fs.readdirSync('src', { recursive: true }); fs.renameSync('mv', 'moved'); fs.renameSync('plain.txt', 'plain2.txt'); fs.mkdirSync('flat'); fs.readdirSync('deep');
+parallel.leave('f');
+process.stdout.write(fs.readFileSync(fs.readdirSync(process.env.DETJS_DIR + '/lanes').filter((n) => n.endsWith('.json')).map((n) => process.env.DETJS_DIR + '/lanes/' + n)[0], 'utf8'));`;
+    const r = spawnSync(process.execPath, ['-e', code], { cwd: dir, encoding: 'utf8', env: cleanEnv({ DETJS_DIR: path.join(dir, '.detjs', 'run'), DETJS_WORKERS: '2', ...env }) });
+    assert.equal(r.status, 0, r.stderr);
+    return JSON.parse(r.stdout).footprint;
+  };
+
+  test('recursive cp, rm, mkdir, readdir and a directory rename record wr / lr roots; plain calls do not', () => {
+    // protects=what hazards() matches is what the wrappers record; fails_when=a recursive call records no root, or a
+    // file rename / plain mkdir / plain readdir records one; no_claim=fs.promises and callback forms share the wrappers
+    const fp = record();
+    assert.deepEqual(fp.wr, ['deep/a/b', 'dst', 'gone', 'moved', 'mv']);
+    assert.deepEqual(fp.lr, ['src']);
+    for (const k of ['dst', 'gone', 'deep/a/b', 'flat', 'mv', 'moved']) assert.ok(fp.w.includes(k), `${k} in ${fp.w}`);
+  });
+
+  test('DETJS_HAZARD_RECURSIVE=0 records no roots, as release-1 did', () => {
+    // protects=the measurement switch; fails_when=it changes nothing; no_claim=the runner side (test_runner_proof.py)
+    const fp = record({ DETJS_HAZARD_RECURSIVE: '0' });
+    assert.deepEqual([fp.wr, fp.lr], [[], []]);
+  });
+});
+
 describe('footprint skip dirs unit: only node_modules and tmpdir (c)', () => {
   const os = require('node:os');
   const { footprintSkip } = require('../src/parallel');

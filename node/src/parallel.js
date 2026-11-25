@@ -515,15 +515,43 @@ function installFootprint(root) {
     if (x && typeof x === 'object' && x.port !== undefined && /^\d+$/.test(String(x.port))) return Number(x.port);
     return null;
   };
-  if (SP) wrap(SP, 'listen', (a) => { const p = portOf(a); if (cur && p) cur.listen.add(String(p)); });
+  // a unix socket a server listens on or a client connects to: `unix:<real path>` (abstract sockets: `unix:\0name`)
+  const unixKey = (p) => (p.startsWith('\0') ? `unix:${p}` : `unix:${realOf(path.resolve(p))}`);
+  const pathOf = (x) => {
+    if (typeof x === 'string' && x && !/^\d+$/.test(x)) return x;
+    if (x && typeof x === 'object' && typeof x.path === 'string' && x.path) return x.path;
+    return null;
+  };
+  if (SP) {
+    wrap(SP, 'listen', (a) => {
+      if (!cur) return;
+      const p = portOf(a);
+      if (p) { cur.listen.add(String(p)); return; }
+      const u = pathOf(a[0]);
+      if (u) cur.listen.add(unixKey(u));
+    });
+  }
+  // services (spec parallel-proof-gaps (a), gate notes 4 and 7): a TCP connect to a loopback host is keyed by its port
+  // (as listeners are), a unix-socket connect by `unix:<path>`, a TCP connect to any other host by
+  // `tcp:<host as given, lower-cased>:<port>`. Two lanes connecting to one key share a service: a hazard
+  // (`shared-service`), whether or not a lane listens on it. DETJS_HAZARD_SHARED_SERVICE=0 records only loopback ports,
+  // as before (measurement only; the runner then gives no proof). UDP / dgram is not recorded (known limit).
+  const sharedService = process.env.DETJS_HAZARD_SHARED_SERVICE !== '0';
+  const LOOPBACK = /^(localhost|127\.|::1$|0:0:0:0:0:0:0:1$|\[::1\]$|0\.0\.0\.0$|::$|::ffff:127\.)/;
   const SockP = net.Socket && net.Socket.prototype;
   if (SockP) {
     wrap(SockP, 'connect', (a) => {
+      if (!cur) return;
       let o = a[0];
       if (Array.isArray(o)) o = o[0];
       let port = null; let host = 'localhost';
+      const u = pathOf(o);
+      if (u) { if (sharedService) cur.connect.add(unixKey(u)); return; }
       if (o && typeof o === 'object') { port = o.port; host = o.host || 'localhost'; } else if (o !== undefined) { port = o; host = typeof a[1] === 'string' ? a[1] : 'localhost'; }
-      if (cur && port && /^(localhost|127\.|::1$|0\.0\.0\.0$)/.test(String(host))) cur.connect.add(String(port));
+      if (!port || !/^\d+$/.test(String(port))) return;
+      const h = String(host).toLowerCase();
+      if (LOOPBACK.test(h)) cur.connect.add(String(Number(port)));
+      else if (sharedService) cur.connect.add(`tcp:${h}:${Number(port)}`);
     });
   }
   require('node:module').syncBuiltinESMExports();
@@ -708,6 +736,7 @@ function hazards(markers, laneOf) {
     }
     for (const p of S(f, 'listen')) for (const o of listeners.get(p) || []) addH(label, o, 'port', p);
     for (const p of S(f, 'connect')) for (const o of listeners.get(p) || []) addH(label, o, 'port', p);
+    if (process.env.DETJS_HAZARD_SHARED_SERVICE !== '0') for (const p of S(f, 'connect')) for (const o of connectors.get(p) || []) addH(label, o, 'shared-service', p);
     for (const d of S(f, 'wr')) {
       for (const [, o] of anyIdx.under(d)) addH(label, o, 'recursive-write', d);
       for (const a of keyAncestors(d)) for (const o of listers.get(a) || []) addH(label, o, 'recursive-write', d);
