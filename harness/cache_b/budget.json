@@ -1,0 +1,197 @@
+{
+ "codex-multi-auth": {
+  "plain_s": 345.1,
+  "full_estimate_h": 42.95,
+  "after_drops_h": 15.15,
+  "drops": [
+   "k2b_replays",
+   "k2a_replays",
+   "red_search_beyond_5",
+   "prs_beyond_5",
+   "commits_beyond_10"
+  ],
+  "plan": {
+   "commits": 5,
+   "prs": 5,
+   "k2a": 30,
+   "k2b": 10,
+   "red_search": 5,
+   "red_replays": 5,
+   "faults": 6,
+   "k2a_replays": false,
+   "k2b_replays": false
+  },
+  "under_sampled": true,
+  "over_cap_at_minimum": true
+ },
+ "ironcurtain": {
+  "plain_s": 233.7,
+  "full_estimate_h": 20.51,
+  "after_drops_h": 7.92,
+  "drops": [
+   "k2b_replays",
+   "k2a_replays",
+   "red_search_beyond_5",
+   "prs_beyond_5",
+   "commits_beyond_10"
+  ],
+  "plan": {
+   "commits": 7,
+   "prs": 5,
+   "k2a": 8,
+   "k2b": 10,
+   "red_search": 5,
+   "red_replays": 5,
+   "faults": 6,
+   "k2a_replays": false,
+   "k2b_replays": false
+  },
+  "under_sampled": true,
+  "over_cap_at_minimum": false
+ },
+ "yalc": {
+  "plain_s": 16.3,
+  "full_estimate_h": 1.57,
+  "after_drops_h": 1.57,
+  "drops": [],
+  "plan": {
+   "commits": 20,
+   "prs": 10,
+   "k2a": 13,
+   "k2b": 10,
+   "red_search": 10,
+   "red_replays": 10,
+   "faults": 6,
+   "k2a_replays": true,
+   "k2b_replays": true
+  },
+  "under_sampled": false,
+  "over_cap_at_minimum": false
+ },
+ "nestjs-pino": {
+  "plain_s": 19.6,
+  "full_estimate_h": 1.24,
+  "after_drops_h": 1.24,
+  "drops": [],
+  "plan": {
+   "commits": 20,
+   "prs": 2,
+   "k2a": 0,
+   "k2b": 10,
+   "red_search": 10,
+   "red_replays": 10,
+   "faults": 6,
+   "k2a_replays": true,
+   "k2b_replays": true
+  },
+  "under_sampled": false,
+  "over_cap_at_minimum": false
+ },
+ "agentsys": {
+  "plain_s": 34.6,
+  "full_estimate_h": 2.75,
+  "after_drops_h": 2.75,
+  "drops": [],
+  "plan": {
+   "commits": 20,
+   "prs": 10,
+   "k2a": 3,
+   "k2b": 10,
+   "red_search": 10,
+   "red_replays": 10,
+   "faults": 6,
+   "k2a_replays": true,
+   "k2b_replays": true
+  },
+  "under_sampled": false,
+  "over_cap_at_minimum": false
+ },
+ "lerna-lite": {
+  "plain_s": 616.6,
+  "full_estimate_h": 45.9,
+  "after_drops_h": 16.79,
+  "drops": [
+   "k2b_replays",
+   "k2a_replays",
+   "red_search_beyond_5",
+   "prs_beyond_5",
+   "commits_beyond_10"
+  ],
+  "plan": {
+   "commits": 5,
+   "prs": 5,
+   "k2a": 0,
+   "k2b": 10,
+   "red_search": 5,
+   "red_replays": 5,
+   "faults": 6,
+   "k2a_replays": false,
+   "k2b_replays": false
+  },
+  "under_sampled": true,
+  "over_cap_at_minimum": true
+ },
+ "drydock": {
+  "plain_s": 520.4,
+  "full_estimate_h": 47.41,
+  "after_drops_h": 17.06,
+  "drops": [
+   "k2b_replays",
+   "k2a_replays",
+   "red_search_beyond_5",
+   "prs_beyond_5",
+   "commits_beyond_10"
+  ],
+  "plan": {
+   "commits": 5,
+   "prs": 5,
+   "k2a": 10,
+   "k2b": 10,
+   "red_search": 5,
+   "red_replays": 5,
+   "faults": 6,
+   "k2a_replays": false,
+   "k2b_replays": false
+  },
+  "under_sampled": true,
+  "over_cap_at_minimum": true
+ },
+ "agentlang": {
+  "plain_s": 54.0,
+  "full_estimate_h": 5.01,
+  "after_drops_h": 5.01,
+  "drops": [],
+  "plan": {
+   "commits": 20,
+   "prs": 10,
+   "k2a": 11,
+   "k2b": 10,
+   "red_search": 10,
+   "red_replays": 10,
+   "faults": 6,
+   "k2a_replays": true,
+   "k2b_replays": true
+  },
+  "under_sampled": false,
+  "over_cap_at_minimum": false
+ },
+ "alakajam": {
+  "plain_s": 1.2,
+  "full_estimate_h": 0.12,
+  "after_drops_h": 0.12,
+  "drops": [],
+  "plan": {
+   "commits": 20,
+   "prs": 10,
+   "k2a": 13,
+   "k2b": 10,
+   "red_search": 10,
+   "red_replays": 10,
+   "faults": 6,
+   "k2a_replays": true,
+   "k2b_replays": true
+  },
+  "under_sampled": false,
+  "over_cap_at_minimum": false
+ }
+}
