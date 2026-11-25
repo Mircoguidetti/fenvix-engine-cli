@@ -474,12 +474,36 @@ function installFootprint(root) {
   const w1 = (a) => H.add('w', a[1]);
   const l0 = (a) => H.add('l', a[0]);
   const open = (a) => { const f = a[1]; if (f !== undefined && f !== null && (typeof f === 'number' ? (f & 3) !== 0 || (f & fs.constants.O_CREAT) : WRITE_FLAGS.test(String(f)))) H.add('w', a[0]); else H.add('r', a[0]); };
+  // recursive operations (spec parallel-proof-gaps (b)): the target of a recursive rm / rmdir / mkdir, the destination
+  // of a recursive cp and both paths of a directory rename are recursive WRITE roots (`wr`): they conflict with every
+  // key of another lane inside them and with listings of their ancestors; the source of a recursive cp and a recursive
+  // readdir / opendir are recursive READ roots (`lr`): they conflict with every write of another lane inside them.
+  // The plain keys are kept. DETJS_HAZARD_RECURSIVE=0 turns the roots off (measurement only; the runner gives no proof).
+  const recursive = process.env.DETJS_HAZARD_RECURSIVE !== '0';
+  const rec = (o) => Boolean(o && typeof o === 'object' && o.recursive);
+  const lstat = fs.lstatSync;
+  const isDir = (p) => { const x = toPath(p); if (x === null) return false; try { const st = lstat(x, { throwIfNoEntry: false }); return Boolean(st && st.isDirectory()); } catch { return false; } };
+  const wRec = (a) => { H.add('w', a[0]); if (recursive && rec(a[1])) H.add('wr', a[0]); };
+  const lRec = (a) => { H.add('l', a[0]); if (recursive && rec(a[1])) H.add('lr', a[0]); };
   for (const o of [fs, P]) {
     for (const n of ['readFile', 'readFileSync', 'createReadStream', 'exists', 'existsSync', 'stat', 'statSync', 'lstat', 'lstatSync', 'access', 'accessSync', 'readlink', 'readlinkSync', 'realpath', 'realpathSync', 'openAsBlob']) wrap(o, n, r0);
-    for (const n of ['readdir', 'readdirSync', 'opendir', 'opendirSync']) wrap(o, n, l0);
-    for (const n of ['writeFile', 'writeFileSync', 'appendFile', 'appendFileSync', 'createWriteStream', 'mkdir', 'mkdirSync', 'rm', 'rmSync', 'rmdir', 'rmdirSync', 'unlink', 'unlinkSync', 'truncate', 'truncateSync', 'chmod', 'chmodSync', 'utimes', 'utimesSync', 'lchown', 'chown', 'chownSync']) wrap(o, n, w0);
-    for (const n of ['rename', 'renameSync']) wrap(o, n, (a) => { H.add('w', a[0]); H.add('w', a[1]); H.add('r', a[0]); });
-    for (const n of ['copyFile', 'copyFileSync', 'cp', 'cpSync']) wrap(o, n, (a) => { H.add('r', a[0]); H.add('w', a[1]); });
+    for (const n of ['readdir', 'readdirSync', 'opendir', 'opendirSync']) wrap(o, n, lRec);
+    for (const n of ['writeFile', 'writeFileSync', 'appendFile', 'appendFileSync', 'createWriteStream', 'unlink', 'unlinkSync', 'truncate', 'truncateSync', 'chmod', 'chmodSync', 'utimes', 'utimesSync', 'lchown', 'chown', 'chownSync']) wrap(o, n, w0);
+    for (const n of ['mkdir', 'mkdirSync', 'rm', 'rmSync', 'rmdir', 'rmdirSync']) wrap(o, n, wRec);
+    for (const n of ['rename', 'renameSync']) {
+      wrap(o, n, (a) => {
+        H.add('w', a[0]); H.add('w', a[1]); H.add('r', a[0]);
+        if (recursive && isDir(a[0])) { H.add('wr', a[0]); H.add('wr', a[1]); }
+      });
+    }
+    for (const n of ['copyFile', 'copyFileSync']) wrap(o, n, (a) => { H.add('r', a[0]); H.add('w', a[1]); });
+    // a directory can only be copied with {recursive: true} (Node throws ERR_FS_EISDIR otherwise)
+    for (const n of ['cp', 'cpSync']) {
+      wrap(o, n, (a) => {
+        H.add('r', a[0]); H.add('w', a[1]);
+        if (recursive && rec(typeof a[2] === 'function' ? null : a[2])) { H.add('lr', a[0]); H.add('wr', a[1]); }
+      });
+    }
     for (const n of ['symlink', 'symlinkSync', 'link', 'linkSync']) wrap(o, n, w1);
     for (const n of ['open', 'openSync']) wrap(o, n, open);
   }
@@ -596,16 +620,70 @@ function readMarkers(dir) {
   return out;
 }
 
-/** Cross-lane hazards between files of different lanes, from their footprints. */
+// keys: root-relative ('a/b', the root itself '.') or absolute ('/x/y'); a root-relative key is never under an
+// absolute one and the reverse (prefix matching compares keys of the same form only, gate note 7)
+const keyUnder = (k, d) => (d === '.' ? !k.startsWith('/') : k === d || k.startsWith(`${d}/`));
+
+/** The ancestors of key `d` (nearest first): 'a/b/c' -> ['a/b', 'a', '.']; '/x/y' -> ['/x', '/']. */
+function keyAncestors(d) {
+  const out = [];
+  if (d === '.' || d === '/') return out;
+  let x = d;
+  for (;;) {
+    const i = x.lastIndexOf('/');
+    if (i < 0) { out.push('.'); return out; }
+    x = i === 0 ? '/' : x.slice(0, i);
+    out.push(x);
+    if (x === '/') return out;
+  }
+}
+
+/** Sorted [key, label] entries: the entries equal to `d` or inside it (a contiguous range, found by binary search). */
+function sortedIndex(entries) {
+  entries.sort((x, y) => (x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : 0));
+  const lower = (k) => { let lo = 0; let hi = entries.length; while (lo < hi) { const m = (lo + hi) >> 1; if (entries[m][0] < k) lo = m + 1; else hi = m; } return lo; };
+  return {
+    under(d) {
+      if (d === '.') return entries.filter((e) => !e[0].startsWith('/'));
+      const out = [];
+      for (let i = lower(d); i < entries.length && entries[i][0] === d; i++) out.push(entries[i]);
+      const pre = `${d}/`;
+      for (let i = lower(pre); i < entries.length && entries[i][0].startsWith(pre); i++) out.push(entries[i]);
+      return out;
+    },
+  };
+}
+
+/**
+ * Cross-lane hazards between files of different lanes, from their footprints. Kinds: read-write, write-write (one
+ * key), list-write (a write of a direct child of a listed dir), port (listen-listen, connect to a listener),
+ * recursive-write (a recursive write root and any key of the other file inside it, or a listing of one of its
+ * ancestors), recursive-read (a recursive read root and a write inside it), shared-service (two files connecting to
+ * the same local port or unix socket, or the same remote host:port). One hazard per file pair (the first found).
+ */
 function hazards(markers, laneOf) {
   const writers = new Map();
   const listeners = new Map();
+  const connectors = new Map();
+  const listers = new Map(); // listed dir (plain or recursive) -> labels
+  const anyKeys = []; // [key, label] of r, w, l, wr, lr
+  const writeKeys = []; // [key, label] of w, wr
+  const plainWrites = []; // [key, label] of w
+  const S = (f, n) => (Array.isArray(f[n]) ? f[n] : []);
+  const push = (m, k, label) => { if (!m.has(k)) m.set(k, []); m.get(k).push(label); };
   for (const [label, m] of markers) {
     const f = m.footprint;
     if (!f) continue;
-    for (const w of f.w) { if (!writers.has(w)) writers.set(w, []); writers.get(w).push(label); }
-    for (const p of f.listen) { if (!listeners.has(p)) listeners.set(p, []); listeners.get(p).push(label); }
+    for (const w of S(f, 'w')) { push(writers, w, label); plainWrites.push([w, label]); writeKeys.push([w, label]); }
+    for (const w of S(f, 'wr')) writeKeys.push([w, label]);
+    for (const p of S(f, 'listen')) push(listeners, p, label);
+    for (const p of S(f, 'connect')) push(connectors, p, label);
+    for (const n of ['l', 'lr']) for (const d of S(f, n)) push(listers, d, label);
+    for (const n of ['r', 'w', 'l', 'wr', 'lr']) for (const k of S(f, n)) anyKeys.push([k, label]);
   }
+  const anyIdx = sortedIndex(anyKeys);
+  const writeIdx = sortedIndex(writeKeys);
+  const plainIdx = sortedIndex(plainWrites);
   const out = new Map(); // "a\0b" -> {a, b, kind, what}
   const lane = (l) => (laneOf.has(l) ? laneOf.get(l) : null);
   const addH = (a, b, kind, what) => {
@@ -619,14 +697,22 @@ function hazards(markers, laneOf) {
   for (const [label, m] of markers) {
     const f = m.footprint;
     if (!f) continue;
-    for (const r of f.r) for (const w of writers.get(r) || []) addH(label, w, 'read-write', r);
-    for (const r of f.w) for (const w of writers.get(r) || []) addH(label, w, 'write-write', r);
-    for (const d of f.l) {
-      const pre = d.endsWith('/') ? d : `${d}/`;
-      for (const [p, ws] of writers) if (p.startsWith(pre) && !p.slice(pre.length).includes('/')) for (const w of ws) addH(label, w, 'list-write', d);
+    for (const r of S(f, 'r')) for (const w of writers.get(r) || []) addH(label, w, 'read-write', r);
+    for (const r of S(f, 'w')) for (const w of writers.get(r) || []) addH(label, w, 'write-write', r);
+    for (const d of S(f, 'l')) {
+      for (const [p, w] of plainIdx.under(d)) {
+        if (p === d) continue;
+        const rest = d === '.' ? p : p.slice(d.length + 1);
+        if (!rest.includes('/')) addH(label, w, 'list-write', d);
+      }
     }
-    for (const p of f.listen) for (const o of listeners.get(p) || []) addH(label, o, 'port', p);
-    for (const p of f.connect) for (const o of listeners.get(p) || []) addH(label, o, 'port', p);
+    for (const p of S(f, 'listen')) for (const o of listeners.get(p) || []) addH(label, o, 'port', p);
+    for (const p of S(f, 'connect')) for (const o of listeners.get(p) || []) addH(label, o, 'port', p);
+    for (const d of S(f, 'wr')) {
+      for (const [, o] of anyIdx.under(d)) addH(label, o, 'recursive-write', d);
+      for (const a of keyAncestors(d)) for (const o of listers.get(a) || []) addH(label, o, 'recursive-write', d);
+    }
+    for (const d of S(f, 'lr')) for (const [, o] of writeIdx.under(d)) addH(label, o, 'recursive-read', d);
   }
   return [...out.values()].sort((x, y) => (x.a < y.a ? -1 : x.a > y.a ? 1 : x.b < y.b ? -1 : x.b > y.b ? 1 : 0));
 }
