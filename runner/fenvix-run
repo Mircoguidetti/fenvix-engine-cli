@@ -770,9 +770,12 @@ def node_proof(meta: dict, footer: dict | None, outcomes: dict, reused_outcomes:
 
 # Job variables that steer what detjs records: a hidden footprint (skip dirs), the engine acting as one of its own child
 # passes (it then skips the one-lane re-run and the hazard accounting), another marker directory, controls turned off.
-# The trace does not show them, so a proof under any of them is not given.
+# The trace does not show them, so a proof under any of them is not given. DETJS_HAZARD_RECURSIVE and
+# DETJS_HAZARD_SHARED_SERVICE switch hazard kinds off for measurement only (spec parallel-proof-gaps, gate note 9): any
+# value, 1 included, gives no proof (fail closed: the switch has no job outside a measurement).
 PROOF_ENV = ("DETJS_FOOTPRINT_SKIP_DIRS", "DETJS_CACHE_SKIP_DIRS", "DETJS_HAZARD_RERUN", "DETJS_HAZARD_PASS",
-             "DETJS_EPOCH_RUN", "DETJS_ISOLATE_CHILD", "DETJS_DIR", "DETJS_DISABLE")
+             "DETJS_EPOCH_RUN", "DETJS_ISOLATE_CHILD", "DETJS_DIR", "DETJS_DISABLE",
+             "DETJS_HAZARD_RECURSIVE", "DETJS_HAZARD_SHARED_SERVICE")
 
 
 def proof_env(env: dict) -> str | None:
