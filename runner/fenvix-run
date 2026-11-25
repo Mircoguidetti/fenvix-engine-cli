@@ -59,7 +59,8 @@ hazard re-run):
                              "other causes"
 
 Fail closed: with tests run in lanes, a ``meta.parallel`` that is not an object, a missing or malformed ``workers``
-(or below 1), ``parallel.hazards`` not a list, hazards recorded but no ``hazard_rerun`` (the re-run was skipped), a
+(or below 1), ``parallel.hazards`` not a list, hazards recorded but no ``hazard_rerun`` (the re-run was skipped) or
+a re-run that accounted for 0 tests, a
 missing or malformed ``status.not_proven``, ``status.passed``,
 ``status.failed``, ``timing.lanes_wall_seconds``, ``hazard_rerun.tests`` (when there was a re-run), any
 ``hazard_rerun.not_proven[].tests`` or ``.cause``, or a ``proven`` below 0: no ``proof``, top-level ``not_proven`` at
@@ -718,6 +719,10 @@ def node_proof(meta: dict, footer: dict | None, outcomes: dict, reused_outcomes:
     if hr is not None:
         if not isinstance(hr, dict) or not _whole(hr.get("tests")):
             return None, "hazard_rerun.tests"
+        # hazards, and a re-run that accounted for no test: the engine matched no test to the hazard files, so the
+        # first pass's records of those files (run in conflicting lanes) stand unproven
+        if hazards and hr["tests"] == 0:
+            return None, "hazard_rerun.tests"
         rerun = hr["tests"]
         np_ = hr.get("not_proven")
         np_ = [] if np_ is None else np_
@@ -764,12 +769,17 @@ def engine_signals(meta: dict) -> tuple[str | None, int]:
 
 
 def trace_header(path: Path) -> dict:
+    """The trace header's ``meta``, or {} when the first line is not a header object with an object ``meta`` (the
+    caller then fails closed: no status, exit 1)."""
     try:
         with open(path) as fh:
             first = json.loads(fh.readline())
-        return first.get("meta", {}) if first.get("type") == "header" else {}
     except (OSError, ValueError):
         return {}
+    if not isinstance(first, dict) or first.get("type") != "header":
+        return {}
+    meta = first.get("meta", {})
+    return meta if isinstance(meta, dict) else {}
 
 
 def epoch_iso(epoch_ns: int | None) -> str | None:

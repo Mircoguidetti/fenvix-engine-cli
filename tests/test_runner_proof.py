@@ -218,6 +218,25 @@ def test_review_fail_closed_shapes(field, edit):
     assert proof(m) == (None, field)
 
 
+def test_hazards_with_a_rerun_of_zero_tests_fail_closed():
+    """protects=hazards recorded but a re-run that accounted for 0 tests (a hazard file the engine could not match to
+    any test) is not proven; fails_when=it gives a proof with rerun_one_lane 0 and a green check; no_claim=why the
+    engine could not match the file (review 2026-11-25, pass 2)."""
+    m = meta(hazard_rerun={"files": ["x|y.test.js"], "tests": 0, "not_proven": [], "complete": True})
+    m["parallel"]["hazards"] = [{"kind": "path", "a": "x|y.test.js", "b": "b.test.js"}]
+    assert proof(m) == (None, "hazard_rerun.tests")
+
+
+@pytest.mark.parametrize("first", ['[1, 2]', '{"type": "header", "meta": null}', '{"type": "header", "meta": [1]}', '"x"'])
+def test_a_malformed_trace_header_reads_as_no_header(tmp_path, first):
+    """protects=a first trace line that is not an object, or whose meta is not one, reads as no header (the wrapper
+    then fails closed: no status, exit 1) instead of crashing without a summary; fails_when=AttributeError or a
+    non-dict meta; no_claim=the rest of the trace."""
+    t = tmp_path / "t.jsonl"
+    t.write_text(first + "\n")
+    assert W.trace_header(t) == {}
+
+
 def test_hazards_with_a_rerun_still_give_a_proof():
     """protects=the normal hazard path (hazards and a complete re-run) keeps its proof; fails_when=the new hazard
     check fails it closed too; no_claim=the re-run's correctness."""
