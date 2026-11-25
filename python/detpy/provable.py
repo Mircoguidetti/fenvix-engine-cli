@@ -484,11 +484,18 @@ def _entropy_or_address_seed(arg0) -> bool:
 
 
 def _c_random_reseed(c, arg0) -> bool:
-    """W8 (/review security finding): a reseed of an existing C generator from OS entropy, ``r.seed()`` /
-    ``r.seed(None)`` on a ``_random.Random`` that is not a ``random.Random`` (whose Python ``seed`` --det
-    controls). Called as a method, the event shows the descriptor and the instance (``arg0``), not the seed: such a
-    call is a gap whatever its seed (stricter than needed for ``r.seed(42)``, never looser). Called as a bound method,
-    ``arg0`` is the seed."""
+    """W8: a reseed of an existing C generator from OS entropy (/review security and red team findings).
+
+    ``seed``: ``r.seed()`` / ``r.seed(None)`` on a ``_random.Random`` that is not a ``random.Random``, whose Python
+    ``seed`` --det controls and itself calls the C ``seed`` through ``super()`` (seen here as the descriptor or a
+    bound method on a ``random.Random``: not a gap). Called as a method, the event shows the descriptor and the
+    instance (``arg0``), not the seed: such a call is a gap whatever its seed (stricter than needed for ``r.seed(42)``,
+    never looser). Called as a bound method, ``arg0`` is the seed.
+
+    ``__init__``: the C slot (tp_init reseeds, from OS entropy without a seed) on ANY C generator, a ``random.Random``
+    included: nothing in ``random`` or detpy calls it (``random.Random.__init__`` is Python, calls the controlled
+    ``seed``, and as a Python function never reaches this check). The descriptor ``_random.Random.__init__(r)`` is a
+    gap whatever its seed; a bound one (``r.__init__``, ``super(random.Random, r).__init__``) follows its seed."""
     if c is _C_SEED:
         return isinstance(arg0, _C_RANDOM) and not isinstance(arg0, _PY_RANDOM)
     if c is _C_INIT:
@@ -497,8 +504,10 @@ def _c_random_reseed(c, arg0) -> bool:
         # ``seed``), so a ``random.Random`` instance is no exception here (/review red team)
         return isinstance(arg0, _C_RANDOM)
     s = getattr(c, "__self__", None)
-    if s is not None and getattr(c, "__name__", None) in ("seed", "__init__") and isinstance(s, _C_RANDOM) \
-            and not isinstance(s, _PY_RANDOM):
+    if s is None or not isinstance(s, _C_RANDOM) or hasattr(c, "__func__"):
+        return False  # a Python method (random.Random.__init__ / seed, a subclass's): what it calls is seen on its own
+    name = getattr(c, "__name__", None)
+    if name == "__init__" or (name == "seed" and not isinstance(s, _PY_RANDOM)):
         return _entropy_or_address_seed(arg0)
     return False
 

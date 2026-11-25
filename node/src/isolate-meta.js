@@ -82,12 +82,12 @@ function mergeSessionMeta(metas, labels = [], cliArgs = null, requiredControls =
   for (let i = 0; i < metas.length; i++) {
     const p = (metas[i] || {}).parallel;
     if (p === undefined) continue;
-    if (!p || typeof p !== 'object') { failClosed.push(`${name(i)}: meta.parallel is not an object`); continue; }
+    if (!p || typeof p !== 'object' || Array.isArray(p)) { failClosed.push(`${name(i)}: meta.parallel is not an object`); continue; }
     // absent or an empty list is nothing; anything else, a truthy non-list included, is not what a one-file session
     // writes (/review adversarial: `{}` has no .length)
     const some = (x) => x !== undefined && x !== null && !(Array.isArray(x) && x.length === 0);
     const placementBad = p.placement !== undefined && p.placement !== null
-      && (typeof p.placement !== 'object' || some(p.placement.deviations));
+      && (typeof p.placement !== 'object' || Array.isArray(p.placement) || some(p.placement.deviations));
     if (some(p.hazards) || some(p.carried) || placementBad) {
       failClosed.push(`${name(i)}: its session reported cross-worker hazards, carried state or placement deviations`);
     }

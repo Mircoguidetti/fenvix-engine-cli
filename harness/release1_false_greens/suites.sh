@@ -12,7 +12,8 @@ out=$(mkdir -p "$2" && cd "$2" && pwd) || { echo "no output dir $2" >&2; exit 2;
 shift 2
 parts=${*:-"cargo node py0 py1 py2 py3 attacks-py attacks-node"}
 cd "$tree"
-echo "tree $tree sha $(git rev-parse HEAD)" > "$out/sha.txt"
+sha=$(git rev-parse HEAD) || { echo "$tree is not a git tree" >&2; exit 2; }
+echo "tree $tree sha $sha" > "$out/sha.txt"
 for p in $parts; do
   start=$(date +%s)
   case $p in
@@ -23,7 +24,8 @@ for p in $parts; do
       rc=0; : > "$out/node.failures"
       for s in 0 1 2 3; do
         files=$(cd node && python3 ../release/shard.py 4 $s . 'test/*.test.js') && [ -n "$files" ] || { echo "node shard $s: no files" >&2; rc=2; continue; }
-        (cd node && node --test --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout $files) > "$out/node-s$s.log" 2>&1 || rc=1
+        # a test failure (1) never replaces a missing shard (2) in the summary
+        (cd node && node --test --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout $files) > "$out/node-s$s.log" 2>&1 || { [ "$rc" -lt 1 ] && rc=1; }
         sed -n '/^✖ failing tests:/,$p' "$out/node-s$s.log" | grep -E "^(test at|✖)" | grep -v "failing tests" >> "$out/node.failures"
       done ;;
     py[0-3])

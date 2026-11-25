@@ -28,3 +28,9 @@ E        +    where <slot wrapper '__init__' of '_random.Random' objects> = <cla
 E        +      where <class '_random.Random'> = <module '_random' (built-in)>.Random
 E       AssertionError: {'noted': [], 'n': 186}
 E       assert (186 > 0 and '*' in [])
+
+# review cycle 2 (on 3816da4c, before the bound C __init__ fix): super(random.Random, r).__init__()
+FAILED tests/test_release1_false_greens_cache_units.py::test_w8_reinitialising_a_c_generator_from_entropy_is_never_reused[super-init-on-random.Random]
+FAILED tests/test_release1_false_greens_cache_units.py::test_w8_reinit_rule_names_init_on_a_c_generator_and_not_the_controlled_path
+2 failed, 2 passed, 10 deselected in 27.93s
+# manual probe on 3816da4c: second cached run "reused 1 result(s) with proof" with a value drawn from OS entropy

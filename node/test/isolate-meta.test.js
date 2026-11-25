@@ -120,7 +120,7 @@ test('protects=the merge\'s other fail-closed branches (/review): a configuratio
 
 test('protects=a session whose meta.parallel lists (hazards, carried, placement.deviations) are not arrays fails closed; fails_when=a truthy non-array (`{}`: no .length) passes as an empty list (this branch at f3ecbe73, /review adversarial); no_claim=what a session writes there (one-file sessions: empty lists)', () => {
   const p = base().parallel;
-  for (const bad of [{ ...p, hazards: {} }, { ...p, carried: 'x' }, { ...p, placement: { ...p.placement, deviations: {} } }, { ...p, placement: 'x' }]) {
+  for (const bad of [{ ...p, hazards: {} }, { ...p, carried: 'x' }, { ...p, placement: { ...p.placement, deviations: {} } }, { ...p, placement: 'x' }, { ...p, placement: [] }, [p]]) {
     const { failClosed } = mergeSessionMeta([base(), base({ parallel: bad })], ['a', 'b']);
     assert.ok(failClosed.some((r) => /^b: /.test(r)), `${JSON.stringify(bad)} -> ${JSON.stringify(failClosed)}`);
   }

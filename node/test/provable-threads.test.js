@@ -131,9 +131,16 @@ test('protects=a part whose .ran marker cannot be written declares absent at onc
   const ok = `ok ${JSON.stringify({ contract: 1, runtime: 'node22', sensor: 'node-surface/1', surface: 'x' })}\n`;
   const dir = provDir({ '1-0.txt': ok, '1-0.ran': '' });
   const id = `${process.pid}-${require('node:worker_threads').threadId}`;
-  fs.mkdirSync(path.join(dir, 'prov', `${id}.ran`)); // a directory: writeFileSync fails with EISDIR
-  require('../src/provable').markRan(dir);
+  // ENOSPC on the marker only, leaving no .ran entry at all (cycle 2 /review testing: an EISDIR directory named .ran
+  // kept the part visible, so the old code was already absent and only the message told them apart)
+  const orig = fs.writeFileSync;
+  fs.writeFileSync = function (p, ...rest) {
+    if (/[\\/]prov[\\/][^\\/]+\.ran$/.test(String(p))) throw Object.assign(new Error('injected: ENOSPC'), { code: 'ENOSPC' });
+    return orig.call(this, p, ...rest);
+  };
+  try { require('../src/provable').markRan(dir); } finally { fs.writeFileSync = orig; }
+  assert.ok(!fs.readdirSync(path.join(dir, 'prov')).includes(`${id}.ran`), 'precondition: no marker for this part');
   const r = provableField(dir, [], ['t']);
   assert.equal(r.provable, undefined, JSON.stringify(r));
-  assert.match(String(r.provable_absent), /marker could not be written/, JSON.stringify(r));
+  assert.match(String(r.provable_absent), /marker could not be written: injected: ENOSPC/, JSON.stringify(r));
 });

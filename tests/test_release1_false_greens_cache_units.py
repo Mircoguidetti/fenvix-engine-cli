@@ -227,8 +227,9 @@ def test_w8_reseeding_a_c_generator_from_entropy_is_never_reused(tmp_path):
 
 
 @pytest.mark.parametrize("call", ["r = _random.Random(5)\n    r.__init__()",
-                                  "r = random.Random(5)\n    _random.Random.__init__(r)"],
-                         ids=["bound-init", "descriptor-init-on-random.Random"])
+                                  "r = random.Random(5)\n    _random.Random.__init__(r)",
+                                  "r = random.Random(5)\n    super(random.Random, r).__init__()"],
+                         ids=["bound-init", "descriptor-init-on-random.Random", "super-init-on-random.Random"])
 def test_w8_reinitialising_a_c_generator_from_entropy_is_never_reused(tmp_path, call):
     """protects=``__init__`` called on an existing C generator (``r.__init__()``; ``_random.Random.__init__(p)``, also on
     a ``random.Random``, which skips the seed --det controls) reseeds it from OS entropy and makes the test NOT PROVEN,
@@ -257,6 +258,8 @@ def test_w8_reinit_rule_names_init_on_a_c_generator_and_not_the_controlled_path(
     assert reseed(_random.Random.__init__, c_gen) and reseed(_random.Random.__init__, py_gen)
     assert reseed(c_gen.__init__, None) and reseed(c_gen.__init__, missing) and not reseed(c_gen.__init__, 7)
     assert not reseed(py_gen.__init__, None) and not reseed(py_gen.__init__, missing), "--det controls random.Random"
+    sup = super(random.Random, py_gen).__init__  # the C slot bound to a random.Random (cycle 2 /review: still open)
+    assert reseed(sup, missing) and reseed(sup, None) and not reseed(sup, 7)
     assert not reseed(dict.__init__, {}) and not reseed({}.__init__, None)
 
 
