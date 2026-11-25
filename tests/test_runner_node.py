@@ -403,3 +403,35 @@ def test_parallel_hazard_run_sends_a_proof_with_the_one_lane_rerun(hazard_projec
     assert p["rerun_one_lane"] == 4 and p["proven"] == 4, p
     assert s["provable_absent"] is None and s["not_proven_outside"] == 0
     record("vitest-hazard", "proof", p)
+
+
+# ---------------------------------------------------------------- spec "false greens on release-1", Phase B (runner)
+
+
+def _isolate_project(tmp_path_factory, name: str, late_read: bool) -> Path:
+    d = tmp_path_factory.mktemp(name) / "vitest"
+    shutil.copytree(FIXTURES / "vitest", d)
+    r = subprocess.run(["npm", "ci", "--no-audit", "--no-fund"], cwd=d, capture_output=True, text=True, timeout=600)
+    assert r.returncode == 0, f"npm ci in the vitest fixture failed:\n{r.stdout}\n{r.stderr}"
+    if late_read:
+        # last in file order, so its per-test session is not the first one
+        (d / "zz.test.js").write_text("import { test, expect } from 'vitest';\nconst ws = process.env.GITHUB_WORKSPACE;\n"
+                                      "test('reads at module scope', () => { expect(typeof ws).toBe('string'); });\n")
+    return d
+
+
+def test_det_isolate_read_outside_tests_in_a_later_session_is_not_proven(detjs, tmp_path, tmp_path_factory):
+    """protects=`fenvix-run node -- --det-isolate` reports NOT PROVEN (exit 1, not_proven_outside >= 1) when a later
+    per-test session reads a CI-volatile variable outside any test; and a clean --det-isolate job stays green (positive
+    control); fails_when=the final header is the first session's and the job is green (release-1 24962a94: the
+    engine's isolate merge kept the first session's signals only); no_claim=the verifier's comparison of two such
+    runs."""
+    env = {"GITHUB_WORKSPACE": "/w/one"}
+    clean = _isolate_project(tmp_path_factory, "iso-clean", late_read=False)
+    code, s, _, log = job(tmp_path, clean, "clean", detjs, "--", "--det-isolate", env=env)
+    assert code == 0 and s.get("exit") == 0, log
+    assert s.get("provable_absent") is None and s.get("not_proven_outside") == 0, s
+    late = _isolate_project(tmp_path_factory, "iso-late", late_read=True)
+    code, s, _, log = job(tmp_path, late, "late", detjs, "--", "--det-isolate", env=env)
+    assert code == 1 and s.get("exit") == 1, log
+    assert s.get("not_proven_outside", 0) >= 1, s
