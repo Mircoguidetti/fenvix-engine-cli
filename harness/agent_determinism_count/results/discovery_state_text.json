@@ -1298,6 +1298,87 @@
    "prepass_total": 42353,
    "stack": []
   },
+  "is:public created:>=2024-01-01 unstable \"model output\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 17702,
+   "leaves": 29,
+   "nodes": 56,
+   "prepass_total": 17673,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 unstable anthropic test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 27939,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 27903,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 unstable claude test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 171862,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 171271,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 unstable eval test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 110654,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 110537,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 unstable gemini test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 26488,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 26445,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 unstable gpt test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 28433,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 28358,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 unstable langchain test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 7384,
+   "leaves": 11,
+   "nodes": 20,
+   "prepass_total": 7379,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 unstable langgraph test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 3363,
+   "leaves": 6,
+   "nodes": 12,
+   "prepass_total": 5396,
+   "stack": [
+    [
+     "2026-08-19",
+     "2026-09-20"
+    ],
+    [
+     "2026-09-21",
+     "2026-11-25"
+    ]
+   ]
+  },
   "is:public created:>=2024-01-01 unstable llm test": {
    "capped": true,
    "done": true,
@@ -1305,6 +1386,24 @@
    "leaves": 1,
    "nodes": 1,
    "prepass_total": 46013,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 unstable openai test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 39053,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 39015,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 unstable prompt test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 153063,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 152834,
    "stack": []
   },
   "is:public created:>=2024-01-01 xfail \"ai sdk\" test": {
@@ -1472,13 +1571,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 1782
+  "issues": 2201
  },
  "search_stats": {
-  "429": 4,
+  "429": 5,
   "limit": 30,
-  "remaining": 27,
-  "reset": 1795636973
+  "remaining": 14,
+  "reset": 1795638767
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
