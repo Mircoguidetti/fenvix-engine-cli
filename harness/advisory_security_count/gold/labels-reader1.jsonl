@@ -1,0 +1,6 @@
+{"ghsa_id": "G1", "inclusion": "excluded", "reason": "not-web", "class": null, "subclass": null, "quote": "A process inside the container can swap the path for a symlink between the check and the mount", "reader": "session", "batch": "gold"}
+{"ghsa_id": "G2", "inclusion": "excluded", "reason": "one-principal", "class": null, "subclass": null, "quote": "the caller's proxy credentials are sent to the new origin", "reader": "session", "batch": "gold"}
+{"ghsa_id": "G3", "inclusion": "included", "reason": null, "class": "read-the-code", "subclass": null, "quote": "changing a user's password does not invalidate the user's existing sessions", "reader": "session", "batch": "gold"}
+{"ghsa_id": "G4", "inclusion": "included", "reason": null, "class": "ours", "subclass": "O5-time", "quote": "stored in UTC but compared with the server's local time", "reader": "session", "batch": "gold"}
+{"ghsa_id": "G5", "inclusion": "included", "reason": null, "class": "ours", "subclass": "O3-concurrency", "quote": "sending several checkout requests in parallel", "reader": "session", "batch": "gold"}
+{"ghsa_id": "G6", "inclusion": "included", "reason": null, "class": "read-the-code", "subclass": null, "quote": "the application never checks whether the coupon was already used", "reader": "session", "batch": "gold"}
