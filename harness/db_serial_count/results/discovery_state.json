@@ -9,6 +9,23 @@
    "root_total": 22560,
    "stack": []
   },
+  "postgres \"make test\"": {
+   "done": false,
+   "leaves": 0,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 5568,
+   "stack": [
+    [
+     0,
+     200000
+    ],
+    [
+     200001,
+     400000
+    ]
+   ]
+  },
   "postgres \"manage.py\"": {
    "done": true,
    "leaves": 24,
@@ -34,49 +51,12 @@
    "stack": []
   },
   "postgres \"pnpm test\"": {
-   "done": false,
-   "leaves": 8,
-   "nodes": 24,
+   "done": true,
+   "leaves": 26,
+   "nodes": 51,
    "root_incomplete": false,
    "root_total": 14400,
-   "stack": [
-    [
-     2345,
-     2735
-    ],
-    [
-     2736,
-     3125
-    ],
-    [
-     3126,
-     6250
-    ],
-    [
-     6251,
-     12500
-    ],
-    [
-     12501,
-     25000
-    ],
-    [
-     25001,
-     50000
-    ],
-    [
-     50001,
-     100000
-    ],
-    [
-     100001,
-     200000
-    ],
-    [
-     200001,
-     400000
-    ]
-   ]
+   "stack": []
   },
   "postgres \"rails test\"": {
    "done": true,
