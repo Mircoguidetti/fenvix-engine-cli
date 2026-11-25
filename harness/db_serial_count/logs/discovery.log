@@ -432,3 +432,5 @@
 2026-11-25T04:29:09+00:00 postgres "make test"     size:6251..12500 tc=1022 leaf=False read=- inc=- req=548
 2026-11-25T04:34:08+00:00 postgres "make test"     size:6251..9375 tc=589 leaf=True read=546 inc=False req=560
 2026-11-25T04:36:55+00:00 postgres "make test"     size:9376..12500 tc=301 leaf=True read=338 inc=False req=568
+--- restarted 2026-11-25T04:38:57Z (planned 113-min stop)
+2026-11-25T04:41:10+00:00 postgres "make test"     size:12501..25000 tc=451 leaf=True read=500 inc=False req=9

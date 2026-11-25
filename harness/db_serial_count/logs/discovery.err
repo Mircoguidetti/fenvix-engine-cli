@@ -1194,3 +1194,8 @@ Traceback (most recent call last):
     time.sleep(min(sl, 3700))
     ~~~~~~~~~~^^^^^^^^^^^^^^^
 KeyboardInterrupt
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A12501..: sleeping 3s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A12501..: sleeping 4s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A12501..: sleeping 23s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A12501..: sleeping 65s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A25001..: sleeping 30s
