@@ -178,7 +178,9 @@ def main():
                 pass
     repo_dir = os.path.join(POOL, o.repo)
     cwd = os.path.join(repo_dir, pre['cwd']) if pre['cwd'] else repo_dir
-    env = {k: v for k, v in os.environ.items() if k not in ('CI', 'GITHUB_ACTIONS', 'DETJS', 'NODE_OPTIONS')}
+    # NODE_PATH: this container's global module folder (its own tools update themselves between runs, which changed
+    # the runtime identity's NODE_PATH root on drydock); CI runners have none and the pool repositories do not use it
+    env = {k: v for k, v in os.environ.items() if k not in ('CI', 'GITHUB_ACTIONS', 'DETJS', 'NODE_OPTIONS', 'NODE_PATH')}
     env['PATH'] = f"{NODE_BIN[pre['node']]}:{env['PATH']}"
     env.update({k: os.path.expandvars(v) for k, v in pre.get('env', {}).items() if k != 'PATH'})
     timeout = 3 * (pre['plain_wall_s_median_A'] or 300) + 900
