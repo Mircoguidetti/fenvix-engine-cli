@@ -2,6 +2,24 @@
  "budget_end": "2026-11-26T10:54:28+00:00",
  "finished": null,
  "queries": {
+  "is:public created:>=2024-01-01 \"api costs\" test (llm OR openai OR agent)": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 113199,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 112945,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 \"expensive tests\" (llm OR openai OR agent)": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 28627,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 28546,
+   "stack": []
+  },
   "is:public created:>=2024-01-01 \"fails randomly\" \"ai sdk\" test": {
    "capped": false,
    "done": true,
@@ -162,6 +180,42 @@
    "leaves": 1,
    "nodes": 1,
    "prepass_total": 538,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 \"live llm\" (llm OR openai OR agent)": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 133849,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 133394,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 \"llm tests\" (llm OR openai OR agent)": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 404122,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 403141,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 \"mock llm\" (llm OR openai OR agent)": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 88424,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 88202,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 \"mock the llm\" (llm OR openai OR agent)": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 32760,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 32680,
    "stack": []
   },
   "is:public created:>=2024-01-01 \"non deterministic\" \"ai sdk\" test": {
@@ -649,6 +703,73 @@
    "nodes": 1,
    "prepass_total": 543,
    "stack": []
+  },
+  "is:public created:>=2024-01-01 \"real llm\" test (llm OR openai OR agent)": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 161734,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 161235,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 \"record and replay\" llm (llm OR openai OR agent)": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 15602,
+   "leaves": 26,
+   "nodes": 50,
+   "prepass_total": 15537,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 \"skip llm\" (llm OR openai OR agent)": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 107574,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 107469,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 \"tests are expensive\" (llm OR openai OR agent)": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 3188,
+   "leaves": 5,
+   "nodes": 8,
+   "prepass_total": 3185,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 \"token cost\" test (llm OR openai OR agent)": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 444019,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 442234,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 cassette llm (llm OR openai OR agent)": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 1178,
+   "leaves": 2,
+   "nodes": 5,
+   "prepass_total": 9176,
+   "stack": [
+    [
+     "2026-03-06",
+     "2026-05-11"
+    ],
+    [
+     "2026-05-12",
+     "2026-07-16"
+    ],
+    [
+     "2026-07-17",
+     "2026-11-25"
+    ]
+   ]
   },
   "is:public created:>=2024-01-01 flakiness \"ai sdk\" test": {
    "capped": false,
@@ -1298,6 +1419,15 @@
    "prepass_total": 42353,
    "stack": []
   },
+  "is:public created:>=2024-01-01 rerun \"ai sdk\" test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 20717,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 20586,
+   "stack": []
+  },
   "is:public created:>=2024-01-01 rerun \"llama-index\" test": {
    "capped": false,
    "done": true,
@@ -1318,21 +1448,21 @@
   },
   "is:public created:>=2024-01-01 rerun \"pydantic-ai\" test": {
    "capped": false,
-   "done": false,
-   "leaf_total": 350,
-   "leaves": 2,
-   "nodes": 4,
+   "done": true,
+   "leaf_total": 3185,
+   "leaves": 6,
+   "nodes": 10,
    "prepass_total": 3172,
-   "stack": [
-    [
-     "2026-03-06",
-     "2026-07-16"
-    ],
-    [
-     "2026-07-17",
-     "2026-11-25"
-    ]
-   ]
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 rerun agent test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 1356939,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 1349796,
+   "stack": []
   },
   "is:public created:>=2024-01-01 rerun anthropic test": {
    "capped": true,
@@ -1940,13 +2070,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 3502
+  "issues": 3893
  },
  "search_stats": {
-  "429": 12,
+  "429": 16,
   "limit": 30,
-  "remaining": 11,
-  "reset": 1795644197
+  "remaining": 16,
+  "reset": 1795646021
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
