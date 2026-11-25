@@ -27,6 +27,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+import parts as PT  # noqa: E402
 import rules as R  # noqa: E402
 
 RES = HERE / "results"
@@ -258,7 +259,8 @@ def run(family: str, route: str, max_minutes: float, deadline: str | None) -> in
             if kids:
                 qs["stack"] = kids + qs["stack"]
             else:
-                with gzip.open(DISC / f"leaves_{family}.jsonl.gz", "at") as f:
+                PT.part_path(family, DISC).parent.mkdir(parents=True, exist_ok=True)
+                with gzip.open(PT.part_path(family, DISC), "at") as f:
                     f.write(json.dumps(rec, sort_keys=True) + "\n")
                 qs["leaves"] += 1
                 qs["leaf_total"] += rec.get("total_count") or 0
@@ -305,10 +307,15 @@ def population(route: str) -> int:
 def read_leaves() -> list[dict]:
     recs = []
     for fam in ("code", "text"):
-        p = DISC / f"leaves_{fam}.jsonl.gz"
-        if p.exists():
+        # the leaf files are outside git (parts.py; ``parts.py fetch`` first); the single pre-parts file if present
+        legacy = DISC / f"leaves_{fam}.jsonl.gz"
+        for p in ([legacy] if legacy.exists() else []) + PT.part_files(fam, DISC):
             with gzip.open(p, "rt") as f:
-                recs += [json.loads(x) for x in f if x.strip()]
+                for x in f:
+                    try:
+                        recs.append(json.loads(x))
+                    except json.JSONDecodeError:  # a line cut by a stopped job
+                        pass
     by = {}
     for r in recs:  # a leaf re-run after an interruption: the last record per (query, a, b)
         by[(r["query"], str(r["a"]), str(r["b"]))] = r

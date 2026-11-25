@@ -39,7 +39,11 @@ def main() -> int:
         return rc
     if req.get("discovery"):  # {"discovery": "text", "max_minutes": 300}: pre-pass, then bisection (resumable)
         import discover
+        import parts
         fam = req["discovery"]
+        if parts.restore(fam) != 0:  # state of an earlier run kept in its artifact (results/discovery/restore_*.json)
+            print("restore failed: discovery not run; the request stays pending")
+            return 1
         rc = discover.prepass(fam, "workflow")
         if rc == 0:
             rc = discover.run(fam, "workflow", float(req.get("max_minutes", 300)), None)

@@ -906,3 +906,118 @@ def test_search_hits_of_other_repositories_dropped():
     other = dict(own, url="https://github.com/x/y/issues/2", repo="x/y")
     tx = T.member_texts("acme/agent", [], {"queries": [], "hits": [own, other]})
     assert [t["url"] for t in tx] == [own["url"]]
+
+
+# ====================================================================================== leaf files outside git (parts.py)
+
+def _parts_env(tmp_path, monkeypatch):
+    import parts
+    monkeypatch.setattr(parts, "RES", tmp_path)
+    monkeypatch.setattr(parts, "DISC", tmp_path / "discovery")
+    monkeypatch.setattr(parts, "CACHE", tmp_path / ".artifacts")
+    monkeypatch.setattr(discover, "RES", tmp_path)
+    monkeypatch.setattr(discover, "DISC", tmp_path / "discovery")
+    monkeypatch.setenv("GITHUB_RUN_ID", "77")
+    (tmp_path / "discovery").mkdir()
+    (tmp_path / ".artifacts").mkdir()
+    return parts
+
+
+def _gz_lines(recs):
+    import io
+    b = io.BytesIO()
+    with gzip.open(b, "wt") as f:
+        for r in recs:
+            f.write(json.dumps(r) + "\n")
+    return b.getvalue()
+
+
+def _leaf(q, a):
+    return {"query": q, "stratum": "S2", "a": a, "b": a, "items": [{"repo": f"o/{a}", "url": f"u{a}"}]}
+
+
+def test_leaf_parts_index_and_read(tmp_path, monkeypatch):
+    """protects=leaf files outside git: leaves are written per run under leaves_<family>/, the committed index holds
+    their sha256 and line count, and the build reads the parts plus the pre-parts single file (a cut last line is
+    skipped); fails_when=a leaf is written to the single file that outgrew GitHub's 100 MB limit, or a part is not read;
+    no_claim=artifact retention."""
+    parts = _parts_env(tmp_path, monkeypatch)
+    assert parts.part_path("text", tmp_path / "discovery").name == "text-77.jsonl.gz"
+    (tmp_path / "discovery" / "leaves_text.jsonl.gz").write_bytes(_gz_lines([_leaf("q", "1")]))
+    p = parts.part_path("text", tmp_path / "discovery")
+    p.parent.mkdir(parents=True)
+    p.write_bytes(_gz_lines([_leaf("q", "1"), _leaf("q", "2")]) + gzip.compress(b'{"query": "q", "cut'))
+    ix = parts.index("text")
+    e = ix["text-77.jsonl.gz"]
+    assert e["run_id"] == "77" and e["artifact"] == "agent-determinism-count-leaves-77" and e["lines"] >= 2
+    assert e["sha256"] == hashlib.sha256(p.read_bytes()).hexdigest()
+    assert json.loads((tmp_path / "discovery" / "leaf_parts_text.json").read_text()) == ix
+    got = sorted(lf["a"] for lf in discover.read_leaves())
+    assert got == ["1", "2"]  # deduplicated per (query, a, b); the cut line is dropped
+
+
+def _zip(path, members):
+    import zipfile
+    with zipfile.ZipFile(path, "w") as z:
+        for n, b in members.items():
+            z.writestr(n, b)
+
+
+def test_restore_from_results_artifact(tmp_path, monkeypatch):
+    """protects=no lost discovery work: a run whose leaf file could not be pushed is resumed from its results
+    artifact (state, splits, pre-pass and leaves together), once, and never over a local state that is further;
+    fails_when=the next run resumes from an older committed state, mixes state and leaves of different times, or
+    restores twice; no_claim=the Actions API itself (downloads are faked by a cached zip)."""
+    parts = _parts_env(tmp_path, monkeypatch)
+    st = {"queries": {"q": {"nodes": 5, "stack": []}}, "started": "s"}
+    _zip(tmp_path / ".artifacts" / "agent-determinism-count-results-9.zip", {
+        "discovery_state_text.json": json.dumps(st), "discovery/splits_text.jsonl": "{}\n",
+        "prepass_text.json": "{}", "discovery/leaves_text.jsonl.gz": _gz_lines([_leaf("q", "1")])})
+    (tmp_path / "discovery_state_text.json").write_text(json.dumps({"queries": {"q": {"nodes": 2}}}))
+    (tmp_path / "discovery" / "restore_text.json").write_text(json.dumps({"run_id": 9}))
+    assert parts.restore("text") == 0
+    assert json.loads((tmp_path / "discovery_state_text.json").read_text()) == st
+    leaf = tmp_path / "discovery" / "leaves_text" / "text-9.jsonl.gz"
+    ix = json.loads((tmp_path / "discovery" / "leaf_parts_text.json").read_text())
+    assert ix["text-9.jsonl.gz"]["artifact"] == "agent-determinism-count-results-9"
+    assert ix["text-9.jsonl.gz"]["artifact_path"] == "discovery/leaves_text.jsonl.gz" and leaf.exists()
+    spec = json.loads((tmp_path / "discovery" / "restore_text.json").read_text())
+    assert spec["restored_at"] and spec["nodes"] == 5 and spec["leaves"] == 1
+    (tmp_path / "discovery_state_text.json").write_text("{}")
+    assert parts.restore("text") == 0 and (tmp_path / "discovery_state_text.json").read_text() == "{}"  # once
+    # a local state further than the artifact is never replaced
+    (tmp_path / "discovery" / "restore_text.json").write_text(json.dumps({"run_id": 9}))
+    (tmp_path / "discovery_state_text.json").write_text(json.dumps({"queries": {"q": {"nodes": 8}}}))
+    assert parts.restore("text") == 1
+    assert json.loads((tmp_path / "discovery_state_text.json").read_text())["queries"]["q"]["nodes"] == 8
+
+
+def test_fetch_parts_checks_sha(tmp_path, monkeypatch):
+    """protects=the build reads exactly the leaves the runs wrote: every indexed part missing here is taken from its
+    artifact and its sha256 checked; fails_when=a changed or missing part is read silently; no_claim=network."""
+    parts = _parts_env(tmp_path, monkeypatch)
+    body = _gz_lines([_leaf("q", "1")])
+    _zip(tmp_path / ".artifacts" / "agent-determinism-count-leaves-5.zip", {"text-5.jsonl.gz": body})
+    ixp = tmp_path / "discovery" / "leaf_parts_text.json"
+    e = {"run_id": "5", "artifact": "agent-determinism-count-leaves-5", "artifact_path": "text-5.jsonl.gz",
+         "sha256": hashlib.sha256(body).hexdigest(), "bytes": len(body), "lines": 1}
+    ixp.write_text(json.dumps({"text-5.jsonl.gz": e}))
+    assert parts.fetch("text") == 0
+    assert (tmp_path / "discovery" / "leaves_text" / "text-5.jsonl.gz").read_bytes() == body
+    (tmp_path / "discovery" / "leaves_text" / "text-5.jsonl.gz").unlink()
+    ixp.write_text(json.dumps({"text-5.jsonl.gz": {**e, "sha256": "0" * 64}}))
+    assert parts.fetch("text") == 1
+
+
+def test_leaf_files_never_committed():
+    """protects=checkpoint commits stay under GitHub's 100 MB file limit; fails_when=the commit step adds a leaf file
+    or the results artifact re-uploads earlier runs' leaf parts; no_claim=sizes of other result files."""
+    import yaml
+    script = (HERE / "commit_results.sh").read_text()
+    own = [ln for ln in script.splitlines() if ln.strip().startswith('own="')][0]
+    assert "leaves_" not in own and "leaf_parts_text.json" in own and "parts.py index" in script
+    wf = yaml.safe_load((HERE.parent.parent / ".github/workflows/agent-determinism-count.yml").read_text())
+    assert wf["permissions"] == {"contents": "write", "actions": "read"}
+    ups = [s["with"] for s in wf["jobs"]["chunk"]["steps"] if str(s.get("uses", "")).startswith("actions/upload")]
+    assert "!harness/agent_determinism_count/results/discovery/leaves_*/" in ups[0]["path"]
+    assert ups[1]["path"].endswith("leaves_*/*-${{ github.run_id }}.jsonl.gz")
