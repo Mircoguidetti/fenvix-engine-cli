@@ -277,6 +277,7 @@ class ProofSession {
     this.misses = new Map(); // nodeid -> why
     this.notCached = new Map(); // nodeid -> why
     this.reusedFiles = new Map(); // key -> {fileId, project, tests, duration}
+    this.reusedEntries = new Map(); // verify mode: nodeid -> the entry that would be reused (its recorded inputs)
     this.decided = false;
     this.disabled = null; // reason the cache is off for this session
     this.uncacheableProjects = new Map(); // project name -> reason
@@ -574,6 +575,13 @@ class ProofSession {
       receipts.push([nid, rc]);
     }
     for (const [, rc] of receipts) rc.why = reuseReason(rc, this.epochMs, tests.length);
+    // verify mode: the entries that would be reused, as recorded (their inputs), taken before this session records
+    // over them, so that a mismatch can name what the reused result was keyed on (verify_mismatch_inputs)
+    if (this.verify) {
+      for (const [nid] of receipts) {
+        try { this.reusedEntries.set(nid, JSON.parse(this.store.entry(nid) || 'null')); } catch { /* named as missing */ }
+      }
+    }
     return { ok: true, receipts, tests, duration: entry.duration || 0 };
   }
 
@@ -819,6 +827,17 @@ class ProofSession {
       verified_tests: verified.filter((v) => v.nodeid.includes('::')).length,
       verify_mismatches_tests: verified.filter((v) => !v.same && v.nodeid.includes('::')).length,
       verify_mismatches: verified.filter((v) => !v.same),
+      // per mismatch, the inputs the would-be-reused entry was recorded with (files, env, clock epoch, config and
+      // runtime digests; the runtime's parts are runtime_parts / packages), so a wrong reuse can be traced to the
+      // input that changed without the key changing (cache measurement B, B1 step 1)
+      verify_mismatch_inputs: Object.fromEntries(verified.filter((v) => !v.same)
+        .map((v) => [v.nodeid, this.reusedEntries.has(v.nodeid) ? this.reusedEntries.get(v.nodeid) : null])),
+      // verify mode: results the decision would reuse that the fresh run never compared (the file's capture did not
+      // reach detjs, or a reused test was not in it): not checked, so never counted as verified
+      verify_unchecked: this.verify ? (() => {
+        const seen = new Set(verified.map((v) => v.nodeid));
+        return [...this.hits.keys()].filter((nid) => !seen.has(nid));
+      })() : [],
       receipts: this.receiptsPath,
       cache_dir: this.dir,
       error: this.error || null,
