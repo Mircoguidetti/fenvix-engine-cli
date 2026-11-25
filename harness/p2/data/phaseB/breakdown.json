@@ -1,0 +1,1649 @@
+[
+ {
+  "repo": "nestjs-pino",
+  "baseline": {
+   "PS": 21.26,
+   "S": 27.2,
+   "PP_best": 8.01,
+   "PP_w": 4,
+   "E_best": 10.7,
+   "E_w": 4,
+   "E_PP": 1.3358302122347065,
+   "PS_E": 1.9869158878504676,
+   "meets": false
+  },
+  "run": {
+   "wall_s": 7.99,
+   "exit": 0,
+   "workers": 4,
+   "container_boot": "406fde79-1c6f-4677-b3b5-66a6805f695d",
+   "outcome_counts": {
+    "passed": 269
+   },
+   "launch_s": 0.069,
+   "cpuprof_wall_s": 21.62
+  },
+  "passes": {
+   "1": {
+    "workers": 4,
+    "files": 25,
+    "processes": 25,
+    "pre_s": 0.537,
+    "window_s": 6.8,
+    "post_s": 0.536,
+    "deps_hash_s": 0.263,
+    "trace_write_s": 0.027,
+    "plan_s": 0.001,
+    "file_sum_s": 20.375,
+    "ideal_s": 5.094,
+    "io_release": 0,
+    "held_s": 0.0,
+    "stack_captures": 50439,
+    "uncontrolled_io": 10,
+    "start_t": 1795644982670,
+    "exit_t": 1795644990543,
+    "idle_s": 1.706,
+    "files_top": [
+     {
+      "file": "__tests__/microservice.spec.ts",
+      "s": 1.359,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "__tests__/native-logger.spec.ts",
+      "s": 1.271,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "__tests__/levels.spec.ts",
+      "s": 1.207,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "__tests__/global-prefix.spec.ts",
+      "s": 1.198,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "__tests__/errors.spec.ts",
+      "s": 1.104,
+      "held_s": 0.0,
+      "io_release": 0
+     }
+    ]
+   }
+  },
+  "rerun_one_lane": [],
+  "cpuprof": {
+   "profiles": 2,
+   "total_s": 42.436,
+   "engine_self_s": 0.152,
+   "top_engine": [
+    {
+     "function": "depsInput file:///home/user/fx-branch/node/src/loaded.js:30",
+     "self_s": 0.044,
+     "share": 0.001
+    },
+    {
+     "function": "phases.span.part file:///home/user/fx-branch/node/src/session.js:526",
+     "self_s": 0.024,
+     "share": 0.0006
+    },
+    {
+     "function": "projectFrame file:///home/user/fx-branch/node/src/controls.js:203",
+     "self_s": 0.017,
+     "share": 0.0004
+    },
+    {
+     "function": "(anonymous) file:///home/user/fx-branch/node/src/repro.js:156",
+     "self_s": 0.008,
+     "share": 0.0002
+    },
+    {
+     "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:593",
+     "self_s": 0.005,
+     "share": 0.0001
+    },
+    {
+     "function": "(anonymous) file:///home/user/fx-branch/node/src/parallel-rerun.js:92",
+     "self_s": 0.005,
+     "share": 0.0001
+    },
+    {
+     "function": "walk file:///home/user/fx-branch/node/src/loaded.js:15",
+     "self_s": 0.004,
+     "share": 0.0001
+    },
+    {
+     "function": "(anonymous) file:///home/user/fx-branch/node/src/loaded.js:38",
+     "self_s": 0.003,
+     "share": 0.0001
+    }
+   ],
+   "top": [
+    {
+     "function": "spawnSync node:internal/child_process:1105",
+     "self_s": 20.976,
+     "share": 0.4943
+    },
+    {
+     "function": "(idle) :0",
+     "self_s": 9.046,
+     "share": 0.2132
+    },
+    {
+     "function": "read :0",
+     "self_s": 4.918,
+     "share": 0.1159
+    },
+    {
+     "function": "dlopen :0",
+     "self_s": 4.112,
+     "share": 0.0969
+    },
+    {
+     "function": "readPackageJSON :0",
+     "self_s": 1.134,
+     "share": 0.0267
+    },
+    {
+     "function": "readFileUtf8 :0",
+     "self_s": 0.304,
+     "share": 0.0072
+    },
+    {
+     "function": "(garbage collector) :0",
+     "self_s": 0.22,
+     "share": 0.0052
+    },
+    {
+     "function": "getNearestParentPackageJSONType :0",
+     "self_s": 0.166,
+     "share": 0.0039
+    }
+   ]
+  }
+ },
+ {
+  "repo": "agentsys",
+  "baseline": {
+   "PS": 15.13,
+   "S": 23.04,
+   "PP_best": 6.88,
+   "PP_w": 4,
+   "E_best": 18.59,
+   "E_w": 4,
+   "E_PP": 2.70203488372093,
+   "PS_E": 0.8138784292630447,
+   "meets": false
+  },
+  "run": {
+   "wall_s": 17.04,
+   "exit": 1,
+   "workers": 4,
+   "container_boot": "406fde79-1c6f-4677-b3b5-66a6805f695d",
+   "outcome_counts": {
+    "passed": 2183,
+    "failed": 1,
+    "skipped": 40
+   },
+   "launch_s": 0.429,
+   "cpuprof_wall_s": 27.32
+  },
+  "passes": {
+   "1": {
+    "workers": 4,
+    "files": 51,
+    "processes": 4,
+    "pre_s": 0.689,
+    "window_s": 8.408,
+    "post_s": 1.103,
+    "deps_hash_s": 0.112,
+    "trace_write_s": 0.141,
+    "plan_s": 0.001,
+    "file_sum_s": 23.719,
+    "ideal_s": 5.93,
+    "io_release": 0,
+    "held_s": 0.0,
+    "stack_captures": 241352,
+    "uncontrolled_io": 4,
+    "start_t": 1795645032720,
+    "exit_t": 1795645042920,
+    "idle_s": 2.478,
+    "files_top": [
+     {
+      "file": "__tests__/fetch-plugin-pins.test.js",
+      "s": 4.063,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "__tests__/dev-cli.test.js",
+      "s": 1.707,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "__tests__/cli-enhancers.test.js",
+      "s": 1.598,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "__tests__/platform-adapter-install.test.js",
+      "s": 1.586,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "__tests__/preflight.test.js",
+      "s": 1.256,
+      "held_s": 0.0,
+      "io_release": 0
+     }
+    ]
+   },
+   "2": {
+    "workers": 1,
+    "files": 8,
+    "processes": 1,
+    "pre_s": 0.41,
+    "window_s": 5.388,
+    "post_s": 0.253,
+    "deps_hash_s": 0.162,
+    "trace_write_s": 0.031,
+    "plan_s": 0.0,
+    "file_sum_s": 5.334,
+    "ideal_s": 5.334,
+    "io_release": 0,
+    "held_s": 0.0,
+    "stack_captures": 58163,
+    "uncontrolled_io": 1,
+    "start_t": 1795645043132,
+    "exit_t": 1795645049183,
+    "idle_s": 0.054,
+    "files_top": [
+     {
+      "file": "__tests__/fetch-plugin-pins.test.js",
+      "s": 2.107,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "__tests__/dev-cli.test.js",
+      "s": 1.425,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "__tests__/script-failure-hooks.test.js",
+      "s": 0.528,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "__tests__/ten-plugins-removed.test.js",
+      "s": 0.403,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "__tests__/validator.test.js",
+      "s": 0.304,
+      "held_s": 0.0,
+      "io_release": 0
+     }
+    ]
+   }
+  },
+  "rerun_one_lane": [
+   {
+    "count": 8,
+    "s": 6.225
+   }
+  ],
+  "between_passes_s": 0.212,
+  "cpuprof": {
+   "profiles": 46,
+   "total_s": 116.795,
+   "engine_self_s": 8.468,
+   "top_engine": [
+    {
+     "function": "resolveDepth file:///home/user/fx-branch/node/src/sites.js:125",
+     "self_s": 2.484,
+     "share": 0.0213
+    },
+    {
+     "function": "hazards file:///home/user/fx-branch/node/src/parallel.js:546",
+     "self_s": 0.794,
+     "share": 0.0068
+    },
+    {
+     "function": "wrapExports file:///home/user/fx-branch/node/src/jest/environment.js:132",
+     "self_s": 0.785,
+     "share": 0.0067
+    },
+    {
+     "function": "testReader file:///home/user/fx-branch/node/src/envview.js:21",
+     "self_s": 0.279,
+     "share": 0.0024
+    },
+    {
+     "function": "wait file:///home/user/fx-branch/node/src/clock.js:876",
+     "self_s": 0.266,
+     "share": 0.0023
+    },
+    {
+     "function": "getOwnPropertyDescriptor file:///home/user/fx-branch/node/src/cache/capture.js:1606",
+     "self_s": 0.236,
+     "share": 0.002
+    },
+    {
+     "function": "STATE.onEnvRead file:///home/user/fx-branch/node/src/controls.js:222",
+     "self_s": 0.163,
+     "share": 0.0014
+    },
+    {
+     "function": "flush file:///home/user/fx-branch/node/src/state.js:82",
+     "self_s": 0.158,
+     "share": 0.0013
+    }
+   ],
+   "top": [
+    {
+     "function": "(idle) :0",
+     "self_s": 36.269,
+     "share": 0.3105
+    },
+    {
+     "function": "spawnSync node:internal/child_process:1105",
+     "self_s": 34.968,
+     "share": 0.2994
+    },
+    {
+     "function": "rmdir :0",
+     "self_s": 7.361,
+     "share": 0.063
+    },
+    {
+     "function": "(garbage collector) :0",
+     "self_s": 2.725,
+     "share": 0.0233
+    },
+    {
+     "function": "unlink :0",
+     "self_s": 2.72,
+     "share": 0.0233
+    },
+    {
+     "function": "resolveDepth file:///home/user/fx-branch/node/src/sites.js:125",
+     "self_s": 2.484,
+     "share": 0.0213
+    },
+    {
+     "function": "readFileUtf8 :0",
+     "self_s": 1.7,
+     "share": 0.0146
+    },
+    {
+     "function": "readPackageJSON :0",
+     "self_s": 1.691,
+     "share": 0.0145
+    }
+   ]
+  }
+ },
+ {
+  "repo": "alakajam",
+  "baseline": {
+   "PS": 36.97,
+   "S": 75.38,
+   "PP_best": 9.67,
+   "PP_w": 4,
+   "E_best": 54.6,
+   "E_w": 2,
+   "E_PP": 5.646328852119959,
+   "PS_E": 0.677106227106227,
+   "meets": false
+  },
+  "run": {
+   "wall_s": 76.73,
+   "exit": 1,
+   "workers": 2,
+   "container_boot": "406fde79-1c6f-4677-b3b5-66a6805f695d",
+   "outcome_counts": {
+    "passed": 105,
+    "skipped": 4,
+    "failed": 112
+   },
+   "launch_s": 0.108,
+   "cpuprof_wall_s": 120.02
+  },
+  "passes": {
+   "1": {
+    "workers": 2,
+    "files": 27,
+    "processes": 27,
+    "pre_s": 0.407,
+    "window_s": 33.3,
+    "post_s": 0.75,
+    "deps_hash_s": 0.579,
+    "trace_write_s": 0.025,
+    "plan_s": 0.001,
+    "file_sum_s": 47.019,
+    "ideal_s": 23.51,
+    "io_release": 0,
+    "held_s": 0.0,
+    "stack_captures": 118532,
+    "uncontrolled_io": 0,
+    "start_t": 1795645176767,
+    "exit_t": 1795645211224,
+    "idle_s": 9.79,
+    "files_top": [
+     {
+      "file": "server/entry/team/team.service.spec.ts",
+      "s": 5.952,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "server/user/user.service.spec.ts",
+      "s": 4.084,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "server/core/security.spec.ts",
+      "s": 3.358,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "server/post/like/like.service.spec.ts",
+      "s": 3.26,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "server/post/post.service.spec.ts",
+      "s": 3.032,
+      "held_s": 0.0,
+      "io_release": 0
+     }
+    ]
+   },
+   "2": {
+    "workers": 1,
+    "files": 11,
+    "processes": 11,
+    "pre_s": 0.456,
+    "window_s": 40.905,
+    "post_s": 0.674,
+    "deps_hash_s": 0.501,
+    "trace_write_s": 0.027,
+    "plan_s": 0.0,
+    "file_sum_s": 39.468,
+    "ideal_s": 39.468,
+    "io_release": 0,
+    "held_s": 0.0,
+    "stack_captures": 94804,
+    "uncontrolled_io": 0,
+    "start_t": 1795645211307,
+    "exit_t": 1795645253342,
+    "idle_s": 1.437,
+    "files_top": [
+     {
+      "file": "server/entry/team/team.service.spec.ts",
+      "s": 8.828,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "server/user/user.service.spec.ts",
+      "s": 6.019,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "server/entry/entry.service.spec.ts",
+      "s": 4.725,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "server/core/security.spec.ts",
+      "s": 3.112,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "server/post/like/like.service.spec.ts",
+      "s": 3.031,
+      "held_s": 0.0,
+      "io_release": 0
+     }
+    ]
+   }
+  },
+  "rerun_one_lane": [
+   {
+    "count": 11,
+    "s": 42.109
+   }
+  ],
+  "between_passes_s": 0.083,
+  "cpuprof": {
+   "profiles": 3,
+   "total_s": 239.761,
+   "engine_self_s": 0.475,
+   "top_engine": [
+    {
+     "function": "depsInput file:///home/user/fx-branch/node/src/loaded.js:30",
+     "self_s": 0.127,
+     "share": 0.0005
+    },
+    {
+     "function": "walk file:///home/user/fx-branch/node/src/loaded.js:15",
+     "self_s": 0.051,
+     "share": 0.0002
+    },
+    {
+     "function": "phases.span.part file:///home/user/fx-branch/node/src/session.js:526",
+     "self_s": 0.048,
+     "share": 0.0002
+    },
+    {
+     "function": "projectFrame file:///home/user/fx-branch/node/src/controls.js:203",
+     "self_s": 0.041,
+     "share": 0.0002
+    },
+    {
+     "function": "finishRerun file:///home/user/fx-branch/node/src/parallel-rerun.js:355",
+     "self_s": 0.03,
+     "share": 0.0001
+    },
+    {
+     "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:520",
+     "self_s": 0.026,
+     "share": 0.0001
+    },
+    {
+     "function": "(anonymous) file:///home/user/fx-branch/node/src/repro.js:156",
+     "self_s": 0.014,
+     "share": 0.0001
+    },
+    {
+     "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:593",
+     "self_s": 0.013,
+     "share": 0.0001
+    }
+   ],
+   "top": [
+    {
+     "function": "spawnSync node:internal/child_process:1105",
+     "self_s": 119.881,
+     "share": 0.5
+    },
+    {
+     "function": "(idle) :0",
+     "self_s": 97.98,
+     "share": 0.4087
+    },
+    {
+     "function": "read :0",
+     "self_s": 12.55,
+     "share": 0.0523
+    },
+    {
+     "function": "dlopen :0",
+     "self_s": 1.975,
+     "share": 0.0082
+    },
+    {
+     "function": "readPackageJSON :0",
+     "self_s": 1.418,
+     "share": 0.0059
+    },
+    {
+     "function": "readFileUtf8 :0",
+     "self_s": 1.124,
+     "share": 0.0047
+    },
+    {
+     "function": "(garbage collector) :0",
+     "self_s": 0.58,
+     "share": 0.0024
+    },
+    {
+     "function": "open :0",
+     "self_s": 0.464,
+     "share": 0.0019
+    }
+   ]
+  }
+ },
+ {
+  "repo": "agentlang",
+  "baseline": {
+   "PS": 84.35,
+   "S": 95.71,
+   "PP_best": 28.67,
+   "PP_w": 4,
+   "E_best": 90.37,
+   "E_w": 2,
+   "E_PP": 3.152075340076735,
+   "PS_E": 0.933384972889233,
+   "meets": false
+  },
+  "run": {
+   "wall_s": 67.31,
+   "exit": 1,
+   "workers": 2,
+   "container_boot": "406fde79-1c6f-4677-b3b5-66a6805f695d",
+   "outcome_counts": {
+    "passed": 437,
+    "failed": 2
+   },
+   "launch_s": 0.139,
+   "cpuprof_wall_s": 101.56
+  },
+  "passes": {
+   "1": {
+    "workers": 1,
+    "files": 25,
+    "processes": 25,
+    "pre_s": 0.351,
+    "window_s": 65.754,
+    "post_s": 1.021,
+    "deps_hash_s": 0.608,
+    "trace_write_s": 0.165,
+    "plan_s": 0.0,
+    "file_sum_s": 62.569,
+    "ideal_s": 62.569,
+    "io_release": 0,
+    "held_s": 0.0,
+    "stack_captures": 294171,
+    "uncontrolled_io": 1,
+    "start_t": 1795645362292,
+    "exit_t": 1795645429418,
+    "idle_s": 3.185,
+    "files_top": [
+     {
+      "file": "test/runtime/basic.test.ts",
+      "s": 8.248,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "example/knowledge/test/core.test.ts",
+      "s": 5.58,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "test/runtime/expr-attr.test.ts",
+      "s": 4.77,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "test/runtime/relationships.test.ts",
+      "s": 4.239,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "test/runtime/database-sqljs.test.ts",
+      "s": 3.255,
+      "held_s": 0.0,
+      "io_release": 0
+     }
+    ]
+   }
+  },
+  "rerun_one_lane": [],
+  "cpuprof": {
+   "profiles": 2,
+   "total_s": 202.926,
+   "engine_self_s": 0.4,
+   "top_engine": [
+    {
+     "function": "phases.span.part file:///home/user/fx-branch/node/src/session.js:526",
+     "self_s": 0.116,
+     "share": 0.0006
+    },
+    {
+     "function": "depsInput file:///home/user/fx-branch/node/src/loaded.js:30",
+     "self_s": 0.063,
+     "share": 0.0003
+    },
+    {
+     "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:593",
+     "self_s": 0.037,
+     "share": 0.0002
+    },
+    {
+     "function": "(anonymous) file:///home/user/fx-branch/node/src/repro.js:156",
+     "self_s": 0.034,
+     "share": 0.0002
+    },
+    {
+     "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:339",
+     "self_s": 0.031,
+     "share": 0.0002
+    },
+    {
+     "function": "(anonymous) file:///home/user/fx-branch/node/src/parallel-rerun.js:92",
+     "self_s": 0.026,
+     "share": 0.0001
+    },
+    {
+     "function": "(anonymous) file:///home/user/fx-branch/node/src/cache/capture.js:1701",
+     "self_s": 0.015,
+     "share": 0.0001
+    },
+    {
+     "function": "projectFrame file:///home/user/fx-branch/node/src/controls.js:203",
+     "self_s": 0.014,
+     "share": 0.0001
+    }
+   ],
+   "top": [
+    {
+     "function": "spawnSync node:internal/child_process:1105",
+     "self_s": 101.458,
+     "share": 0.5
+    },
+    {
+     "function": "(idle) :0",
+     "self_s": 81.739,
+     "share": 0.4028
+    },
+    {
+     "function": "read :0",
+     "self_s": 13.165,
+     "share": 0.0649
+    },
+    {
+     "function": "readFileUtf8 :0",
+     "self_s": 1.444,
+     "share": 0.0071
+    },
+    {
+     "function": "readPackageJSON :0",
+     "self_s": 1.143,
+     "share": 0.0056
+    },
+    {
+     "function": "(garbage collector) :0",
+     "self_s": 0.624,
+     "share": 0.0031
+    },
+    {
+     "function": "readdir :0",
+     "self_s": 0.31,
+     "share": 0.0015
+    },
+    {
+     "function": "open :0",
+     "self_s": 0.309,
+     "share": 0.0015
+    }
+   ]
+  }
+ },
+ {
+  "repo": "yalc",
+  "baseline": {
+   "PS": 92.28,
+   "S": 106.26,
+   "PP_best": 33.62,
+   "PP_w": 4,
+   "E_best": 63.75,
+   "E_w": 4,
+   "E_PP": 1.8961927424152292,
+   "PS_E": 1.447529411764706,
+   "meets": false
+  },
+  "run": {
+   "wall_s": 85.99,
+   "exit": 1,
+   "workers": 4,
+   "container_boot": "406fde79-1c6f-4677-b3b5-66a6805f695d",
+   "outcome_counts": {
+    "passed": 1468,
+    "failed": 7,
+    "skipped": 8
+   },
+   "launch_s": 0.318,
+   "cpuprof_wall_s": 107.96
+  },
+  "passes": {
+   "1": {
+    "workers": 4,
+    "files": 165,
+    "processes": 165,
+    "pre_s": 1.402,
+    "window_s": 38.094,
+    "post_s": 0.714,
+    "deps_hash_s": 0.28,
+    "trace_write_s": 0.044,
+    "plan_s": 0.001,
+    "file_sum_s": 75.192,
+    "ideal_s": 18.798,
+    "io_release": 0,
+    "held_s": 0.0,
+    "stack_captures": 50313,
+    "uncontrolled_io": 1,
+    "start_t": 1795645544592,
+    "exit_t": 1795645584802,
+    "idle_s": 19.296,
+    "files_top": [
+     {
+      "file": "src/__tests__/server-spa-mount.test.ts",
+      "s": 7.054,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "src/__tests__/web-bundle-build.test.ts",
+      "s": 6.815,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "src/__tests__/archetype-competitor-audience-mining.test.ts",
+      "s": 1.61,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "src/__tests__/visualize-route.test.ts",
+      "s": 1.45,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "src/__tests__/visualize-skill.test.ts",
+      "s": 1.403,
+      "held_s": 0.0,
+      "io_release": 0
+     }
+    ]
+   },
+   "2": {
+    "workers": 1,
+    "files": 64,
+    "processes": 64,
+    "pre_s": 1.467,
+    "window_s": 43.463,
+    "post_s": 0.394,
+    "deps_hash_s": 0.246,
+    "trace_write_s": 0.019,
+    "plan_s": 0.0,
+    "file_sum_s": 34.324,
+    "ideal_s": 34.324,
+    "io_release": 0,
+    "held_s": 0.0,
+    "stack_captures": 31884,
+    "uncontrolled_io": 1,
+    "start_t": 1795645584890,
+    "exit_t": 1795645630214,
+    "idle_s": 9.139,
+    "files_top": [
+     {
+      "file": "src/__tests__/archetype-competitor-audience-mining.test.ts",
+      "s": 1.147,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "src/__tests__/keys-save-api.test.ts",
+      "s": 1.039,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "src/__tests__/gates-api.test.ts",
+      "s": 1.038,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "src/__tests__/visualize-route.test.ts",
+      "s": 0.97,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "src/__tests__/human-gate-engine.test.ts",
+      "s": 0.957,
+      "held_s": 0.0,
+      "io_release": 0
+     }
+    ]
+   }
+  },
+  "rerun_one_lane": [
+   {
+    "count": 62,
+    "s": 45.386
+   }
+  ],
+  "between_passes_s": 0.088,
+  "cpuprof": {
+   "profiles": 29,
+   "total_s": 273.019,
+   "engine_self_s": 0.659,
+   "top_engine": [
+    {
+     "function": "hazards file:///home/user/fx-branch/node/src/parallel.js:546",
+     "self_s": 0.125,
+     "share": 0.0005
+    },
+    {
+     "function": "(anonymous) file:///home/user/fx-branch/node/src/cache/capture.js:1701",
+     "self_s": 0.079,
+     "share": 0.0003
+    },
+    {
+     "function": "depsInput file:///home/user/fx-branch/node/src/loaded.js:30",
+     "self_s": 0.078,
+     "share": 0.0003
+    },
+    {
+     "function": "phases.span.part file:///home/user/fx-branch/node/src/session.js:526",
+     "self_s": 0.052,
+     "share": 0.0002
+    },
+    {
+     "function": "finishRerun file:///home/user/fx-branch/node/src/parallel-rerun.js:355",
+     "self_s": 0.041,
+     "share": 0.0002
+    },
+    {
+     "function": "projectFrame file:///home/user/fx-branch/node/src/controls.js:203",
+     "self_s": 0.035,
+     "share": 0.0001
+    },
+    {
+     "function": "collect file:///home/user/fx-branch/node/src/parallel.js:593",
+     "self_s": 0.023,
+     "share": 0.0001
+    },
+    {
+     "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:339",
+     "self_s": 0.017,
+     "share": 0.0001
+    }
+   ],
+   "top": [
+    {
+     "function": "(idle) :0",
+     "self_s": 121.104,
+     "share": 0.4436
+    },
+    {
+     "function": "spawnSync node:internal/child_process:1105",
+     "self_s": 111.114,
+     "share": 0.407
+    },
+    {
+     "function": "read :0",
+     "self_s": 3.845,
+     "share": 0.0141
+    },
+    {
+     "function": "(garbage collector) :0",
+     "self_s": 2.935,
+     "share": 0.0107
+    },
+    {
+     "function": "spawn node:internal/child_process:354",
+     "self_s": 1.581,
+     "share": 0.0058
+    },
+    {
+     "function": "dlopen :0",
+     "self_s": 1.554,
+     "share": 0.0057
+    },
+    {
+     "function": "runCallSync file:///root/pm/repos/YALC-the-GTM-operating-system/node_modules/.pnpm/esbuild@0.19.12/node_modules/esbuild/lib/main.js:2325",
+     "self_s": 0.817,
+     "share": 0.003
+    },
+    {
+     "function": "readFileUtf8 :0",
+     "self_s": 0.743,
+     "share": 0.0027
+    }
+   ]
+  }
+ },
+ {
+  "repo": "codex-multi-auth",
+  "baseline": {
+   "PS": 403.44,
+   "S": 490.88,
+   "PP_best": 111.53,
+   "PP_w": 4,
+   "E_best": 182.92,
+   "E_w": 4,
+   "E_PP": 1.640096834932305,
+   "PS_E": 2.205554340695386,
+   "meets": false
+  },
+  "run": {
+   "wall_s": 297.6,
+   "exit": 1,
+   "workers": 4,
+   "container_boot": "406fde79-1c6f-4677-b3b5-66a6805f695d",
+   "outcome_counts": {
+    "passed": 8578,
+    "failed": 72,
+    "skipped": 12
+   },
+   "launch_s": 1.794,
+   "cpuprof_wall_s": 330.67
+  },
+  "passes": {
+   "1": {
+    "workers": 4,
+    "files": 459,
+    "processes": 459,
+    "pre_s": 0.512,
+    "window_s": 281.992,
+    "post_s": 11.065,
+    "deps_hash_s": 0.161,
+    "trace_write_s": 0.766,
+    "plan_s": 0.002,
+    "file_sum_s": 382.761,
+    "ideal_s": 95.69,
+    "io_release": 12,
+    "held_s": 0.398,
+    "stack_captures": 1839942,
+    "uncontrolled_io": 860,
+    "start_t": 1795645973163,
+    "exit_t": 1795646266732,
+    "idle_s": 186.302,
+    "files_top": [
+     {
+      "file": "test/codex-bin-wrapper.test.ts",
+      "s": 80.123,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "test/runtime-rotation-proxy.test.ts",
+      "s": 43.712,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "test/model-inventory-cancellation.test.ts",
+      "s": 25.701,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "test/zz-stress-helper-lifecycle.test.ts",
+      "s": 13.135,
+      "held_s": 0.398,
+      "io_release": 12
+     },
+     {
+      "file": "test/json-store-lock.test.ts",
+      "s": 12.979,
+      "held_s": 0.0,
+      "io_release": 0
+     }
+    ]
+   },
+   "2": {
+    "workers": 1,
+    "files": 4,
+    "processes": 4,
+    "pre_s": 0.437,
+    "window_s": 1.213,
+    "post_s": 0.266,
+    "deps_hash_s": 0.187,
+    "trace_write_s": 0.003,
+    "plan_s": 0.0,
+    "file_sum_s": 0.723,
+    "ideal_s": 0.723,
+    "io_release": 0,
+    "held_s": 0.0,
+    "stack_captures": 2410,
+    "uncontrolled_io": 1,
+    "start_t": 1795646267002,
+    "exit_t": 1795646268918,
+    "idle_s": 0.49,
+    "files_top": [
+     {
+      "file": "test/runtime-policy-cache.test.ts",
+      "s": 0.25,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "test/oauth-server.integration.test.ts",
+      "s": 0.198,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "test/oauth-server-port-conflict.test.ts",
+      "s": 0.164,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "test/transactions.test.ts",
+      "s": 0.111,
+      "held_s": 0.0,
+      "io_release": 0
+     }
+    ]
+   }
+  },
+  "rerun_one_lane": [
+   {
+    "count": 4,
+    "s": 1.978
+   }
+  ],
+  "between_passes_s": 0.27,
+  "cpuprof": {
+   "profiles": 959,
+   "total_s": 1306.643,
+   "engine_self_s": 299.867,
+   "top_engine": [
+    {
+     "function": "wait file:///home/user/fx-branch/node/src/clock.js:876",
+     "self_s": 271.95,
+     "share": 0.2081
+    },
+    {
+     "function": "hazards file:///home/user/fx-branch/node/src/parallel.js:546",
+     "self_s": 9.103,
+     "share": 0.007
+    },
+    {
+     "function": "resolveDepth file:///home/user/fx-branch/node/src/sites.js:125",
+     "self_s": 5.218,
+     "share": 0.004
+    },
+    {
+     "function": "stackOf file:///home/user/fx-branch/node/src/deadline.js:24",
+     "self_s": 0.812,
+     "share": 0.0006
+    },
+    {
+     "function": "finishRerun file:///home/user/fx-branch/node/src/parallel-rerun.js:355",
+     "self_s": 0.481,
+     "share": 0.0004
+    },
+    {
+     "function": "phases.span.part file:///home/user/fx-branch/node/src/session.js:526",
+     "self_s": 0.422,
+     "share": 0.0003
+    },
+    {
+     "function": "nodeInternal file:///home/user/fx-branch/node/src/ioorder.js:153",
+     "self_s": 0.337,
+     "share": 0.0003
+    },
+    {
+     "function": "flush file:///home/user/fx-branch/node/src/state.js:82",
+     "self_s": 0.319,
+     "share": 0.0002
+    }
+   ],
+   "top": [
+    {
+     "function": "(idle) :0",
+     "self_s": 514.052,
+     "share": 0.3934
+    },
+    {
+     "function": "spawnSync node:internal/child_process:1105",
+     "self_s": 333.111,
+     "share": 0.2549
+    },
+    {
+     "function": "wait file:///home/user/fx-branch/node/src/clock.js:876",
+     "self_s": 271.95,
+     "share": 0.2081
+    },
+    {
+     "function": "(garbage collector) :0",
+     "self_s": 13.208,
+     "share": 0.0101
+    },
+    {
+     "function": "(program) :0",
+     "self_s": 11.351,
+     "share": 0.0087
+    },
+    {
+     "function": "hazards file:///home/user/fx-branch/node/src/parallel.js:546",
+     "self_s": 9.103,
+     "share": 0.007
+    },
+    {
+     "function": "compileSourceTextModule node:internal/modules/esm/utils:344",
+     "self_s": 8.065,
+     "share": 0.0062
+    },
+    {
+     "function": "wrapSafe node:internal/modules/cjs/loader:1671",
+     "self_s": 5.449,
+     "share": 0.0042
+    }
+   ]
+  }
+ },
+ {
+  "repo": "drydock",
+  "baseline": {
+   "PS": 564.85,
+   "S": 545.22,
+   "PP_best": 162.78,
+   "PP_w": 4,
+   "E_best": 235.14000000000001,
+   "E_w": 4,
+   "E_PP": 1.444526354589016,
+   "PS_E": 2.4021859317853194,
+   "meets": false
+  },
+  "run": {
+   "wall_s": 194.3,
+   "exit": 1,
+   "workers": 4,
+   "container_boot": "406fde79-1c6f-4677-b3b5-66a6805f695d",
+   "outcome_counts": {
+    "passed": 21484,
+    "failed": 93,
+    "skipped": 1
+   },
+   "launch_s": 0.341,
+   "cpuprof_wall_s": 232.33
+  },
+  "passes": {
+   "1": {
+    "workers": 4,
+    "files": 651,
+    "processes": 651,
+    "pre_s": 0.681,
+    "window_s": 190.616,
+    "post_s": 2.596,
+    "deps_hash_s": 0.415,
+    "trace_write_s": 0.563,
+    "plan_s": 0.008,
+    "file_sum_s": 380.087,
+    "ideal_s": 95.022,
+    "io_release": 0,
+    "held_s": 0.0,
+    "stack_captures": 790918,
+    "uncontrolled_io": 292,
+    "start_t": 1795646518560,
+    "exit_t": 1795646712453,
+    "idle_s": 95.594,
+    "files_top": [
+     {
+      "file": "api/icons.test.ts",
+      "s": 15.6,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "api/totp-factor-management.integration.test.ts",
+      "s": 15.354,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "authentications/providers/basic/Basic.test.ts",
+      "s": 9.331,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "store/container.test.ts",
+      "s": 9.06,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "authentications/providers/oidc/Oidc.test.ts",
+      "s": 7.758,
+      "held_s": 0.0,
+      "io_release": 0
+     }
+    ]
+   }
+  },
+  "rerun_one_lane": [],
+  "cpuprof": {
+   "profiles": 9,
+   "total_s": 474.013,
+   "engine_self_s": 3.395,
+   "top_engine": [
+    {
+     "function": "wait file:///home/user/fx-branch/node/src/clock.js:876",
+     "self_s": 0.687,
+     "share": 0.0014
+    },
+    {
+     "function": "phases.span.part file:///home/user/fx-branch/node/src/session.js:526",
+     "self_s": 0.395,
+     "share": 0.0008
+    },
+    {
+     "function": "resolveDepth file:///home/user/fx-branch/node/src/sites.js:125",
+     "self_s": 0.31,
+     "share": 0.0007
+    },
+    {
+     "function": "w file:///home/user/fx-branch/node/src/sqlvirt.js:149",
+     "self_s": 0.189,
+     "share": 0.0004
+    },
+    {
+     "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:339",
+     "self_s": 0.156,
+     "share": 0.0003
+    },
+    {
+     "function": "(anonymous) file:///home/user/fx-branch/node/src/parallel-rerun.js:92",
+     "self_s": 0.152,
+     "share": 0.0003
+    },
+    {
+     "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:593",
+     "self_s": 0.144,
+     "share": 0.0003
+    },
+    {
+     "function": "(anonymous) file:///home/user/fx-branch/node/src/repro.js:156",
+     "self_s": 0.139,
+     "share": 0.0003
+    }
+   ],
+   "top": [
+    {
+     "function": "spawnSync node:internal/child_process:1176",
+     "self_s": 231.023,
+     "share": 0.4874
+    },
+    {
+     "function": "(idle) :0",
+     "self_s": 190.251,
+     "share": 0.4014
+    },
+    {
+     "function": "read :0",
+     "self_s": 5.808,
+     "share": 0.0123
+    },
+    {
+     "function": "spawn node:internal/child_process:385",
+     "self_s": 4.685,
+     "share": 0.0099
+    },
+    {
+     "function": "writeBuffer :0",
+     "self_s": 4.426,
+     "share": 0.0093
+    },
+    {
+     "function": "(garbage collector) :0",
+     "self_s": 3.014,
+     "share": 0.0064
+    },
+    {
+     "function": "jsonParseAst file:///root/pm/fr/CodesWhat_drydock/app/node_modules/rolldown/dist/shared/parse-B7LUicIJ.mjs:25",
+     "self_s": 1.576,
+     "share": 0.0033
+    },
+    {
+     "function": "(program) :0",
+     "self_s": 1.49,
+     "share": 0.0031
+    }
+   ]
+  }
+ },
+ {
+  "repo": "lerna-lite",
+  "baseline": {
+   "PS": 616.93,
+   "S": 605.02,
+   "PP_best": 283.32,
+   "PP_w": 4,
+   "E_best": 606.25,
+   "E_w": 2,
+   "E_PP": 2.1398065791331358,
+   "PS_E": 1.0176164948453608,
+   "meets": false
+  },
+  "run": {
+   "wall_s": 1128.05,
+   "exit": 0,
+   "workers": 2,
+   "container_boot": "406fde79-1c6f-4677-b3b5-66a6805f695d",
+   "outcome_counts": {
+    "passed": 107
+   },
+   "launch_s": 0.091,
+   "cpuprof_wall_s": 1144.62
+  },
+  "passes": {
+   "1": {
+    "workers": 2,
+    "files": 12,
+    "processes": 12,
+    "pre_s": 0.356,
+    "window_s": 526.766,
+    "post_s": 3.658,
+    "deps_hash_s": 0.302,
+    "trace_write_s": 0.026,
+    "plan_s": 0.001,
+    "file_sum_s": 598.156,
+    "ideal_s": 299.078,
+    "io_release": 0,
+    "held_s": 0.0,
+    "stack_captures": 37783,
+    "uncontrolled_io": 7,
+    "start_t": 1795647881982,
+    "exit_t": 1795648412762,
+    "idle_s": 227.688,
+    "files_top": [
+     {
+      "file": "e2e/publish/publish-npmrc-auth.spec.ts",
+      "s": 282.074,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "e2e/publish/publish-verdaccio.spec.ts",
+      "s": 211.462,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "e2e/watch/watch.spec.ts",
+      "s": 48.026,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "e2e/run/run.spec.ts",
+      "s": 13.335,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "e2e/watch/watch-lifecycle.spec.ts",
+      "s": 11.069,
+      "held_s": 0.0,
+      "io_release": 0
+     }
+    ]
+   },
+   "2": {
+    "workers": 1,
+    "files": 12,
+    "processes": 12,
+    "pre_s": 0.407,
+    "window_s": 596.23,
+    "post_s": 0.413,
+    "deps_hash_s": 0.312,
+    "trace_write_s": 0.028,
+    "plan_s": 0.0,
+    "file_sum_s": 594.65,
+    "ideal_s": 594.65,
+    "io_release": 0,
+    "held_s": 0.0,
+    "stack_captures": 56552,
+    "uncontrolled_io": 7,
+    "start_t": 1795648412838,
+    "exit_t": 1795649009888,
+    "idle_s": 1.58,
+    "files_top": [
+     {
+      "file": "e2e/publish/publish-npmrc-auth.spec.ts",
+      "s": 282.11,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "e2e/publish/publish-verdaccio.spec.ts",
+      "s": 211.526,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "e2e/watch/watch.spec.ts",
+      "s": 48.051,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "e2e/run/run.spec.ts",
+      "s": 11.865,
+      "held_s": 0.0,
+      "io_release": 0
+     },
+     {
+      "file": "e2e/watch/watch-lifecycle.spec.ts",
+      "s": 10.251,
+      "held_s": 0.0,
+      "io_release": 0
+     }
+    ]
+   }
+  },
+  "rerun_one_lane": [
+   {
+    "count": 12,
+    "s": 597.118
+   }
+  ],
+  "between_passes_s": 0.076,
+  "cpuprof": {
+   "profiles": 595,
+   "total_s": 3523.041,
+   "engine_self_s": 3.431,
+   "top_engine": [
+    {
+     "function": "hazards file:///home/user/fx-branch/node/src/parallel.js:546",
+     "self_s": 3.012,
+     "share": 0.0009
+    },
+    {
+     "function": "depsInput file:///home/user/fx-branch/node/src/loaded.js:30",
+     "self_s": 0.092,
+     "share": 0.0
+    },
+    {
+     "function": "phases.span.part file:///home/user/fx-branch/node/src/session.js:526",
+     "self_s": 0.037,
+     "share": 0.0
+    },
+    {
+     "function": "projectFrame file:///home/user/fx-branch/node/src/controls.js:203",
+     "self_s": 0.035,
+     "share": 0.0
+    },
+    {
+     "function": "(anonymous) file:///home/user/fx-branch/node/src/vitest/cli.js:289",
+     "self_s": 0.026,
+     "share": 0.0
+    },
+    {
+     "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:520",
+     "self_s": 0.025,
+     "share": 0.0
+    },
+    {
+     "function": "collect file:///home/user/fx-branch/node/src/parallel.js:593",
+     "self_s": 0.023,
+     "share": 0.0
+    },
+    {
+     "function": "finishRerun file:///home/user/fx-branch/node/src/parallel-rerun.js:355",
+     "self_s": 0.022,
+     "share": 0.0
+    }
+   ],
+   "top": [
+    {
+     "function": "(idle) :0",
+     "self_s": 2246.36,
+     "share": 0.6376
+    },
+    {
+     "function": "spawnSync node:internal/child_process:1105",
+     "self_s": 1145.327,
+     "share": 0.3251
+    },
+    {
+     "function": "compileSourceTextModule node:internal/modules/esm/utils:344",
+     "self_s": 12.118,
+     "share": 0.0034
+    },
+    {
+     "function": "wrapSafe node:internal/modules/cjs/loader:1671",
+     "self_s": 9.44,
+     "share": 0.0027
+    },
+    {
+     "function": "(garbage collector) :0",
+     "self_s": 7.877,
+     "share": 0.0022
+    },
+    {
+     "function": "(program) :0",
+     "self_s": 6.568,
+     "share": 0.0019
+    },
+    {
+     "function": "__require file:///opt/node-tools/node_modules/pnpm/dist/pnpm.cjs:11",
+     "self_s": 6.213,
+     "share": 0.0018
+    },
+    {
+     "function": "read :0",
+     "self_s": 5.296,
+     "share": 0.0015
+    }
+   ]
+  }
+ }
+]
