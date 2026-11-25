@@ -4,3 +4,5 @@
 {"counts": true, "excerpt": "const workerId = Number(process.env.JEST_WORKER_ID);", "path": "backend/jest.setup.ts", "repo": "Abrechen2/TravStats", "status": 200, "term": "JEST_WORKER_ID"}
 {"counts": true, "excerpt": "expect(name).toMatch(new RegExp(`_w${process.env.JEST_WORKER_ID}$`));", "path": "backend/src/__tests__/testHarness.test.ts", "repo": "Abrechen2/TravStats", "status": 200, "term": "JEST_WORKER_ID"}
 {"counts": true, "excerpt": "* than copied from the run's database: `CREATE DATABASE \u2026 TEMPLATE` refuses a source with open", "path": "backend/src/services/sharing/federation/__tests__/peerDatabase.ts", "repo": "Abrechen2/TravStats", "status": 200, "term": "\"CREATE DATABASE\" TEMPLATE"}
+{"counts": false, "excerpt": "describe('Database.updateBalances (parallelized) @unit @regression', function () {", "path": "test/unit/db/update_address_balance.test.js", "repo": "XChain-Platform/xchain-indexer", "status": 200, "term": "parallelize"}
+{"counts": false, "excerpt": "github.com/testcontainers/testcontainers-go v0.44.0 // indirect", "path": "integration-tests/go.mod", "repo": "smartcontractkit/chainlink-aptos", "status": 200, "term": "testcontainers"}
