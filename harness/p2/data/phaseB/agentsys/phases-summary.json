@@ -1,0 +1,249 @@
+{
+ "source": "phases-agentsys.jsonl.phases.jsonl",
+ "main": {
+  "deps_hash_s": 0.274,
+  "plan_s": 0.001,
+  "trace_write_s": 0.173,
+  "start_at_s": [
+   0.148,
+   10.56
+  ],
+  "workers_spawn_at_s": [
+   0.285,
+   10.699
+  ],
+  "exit_at_s": [
+   10.348,
+   16.611
+  ],
+  "start_uptime_s": [
+   0.142,
+   0.144
+  ],
+  "exit_uptime_s": [
+   10.342,
+   1.0
+  ]
+ },
+ "workers": [
+  {
+   "worker": "4340:0",
+   "pass": "1",
+   "files": 13,
+   "ready_after_spawn_s": 0.552,
+   "wall_s": 8.392,
+   "file_s": 6.968,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 89082,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "4334:0",
+   "pass": "1",
+   "files": 13,
+   "ready_after_spawn_s": 0.57,
+   "wall_s": 8.314,
+   "file_s": 5.86,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 43887,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "4353:0",
+   "pass": "1",
+   "files": 12,
+   "ready_after_spawn_s": 0.623,
+   "wall_s": 8.298,
+   "file_s": 4.688,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 51385,
+   "uncontrolled_io": 3
+  },
+  {
+   "worker": "4346:0",
+   "pass": "1",
+   "files": 13,
+   "ready_after_spawn_s": 0.591,
+   "wall_s": 8.369,
+   "file_s": 6.202,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 56998,
+   "uncontrolled_io": 1
+  },
+  {
+   "worker": "5601:0",
+   "pass": "2",
+   "files": 8,
+   "ready_after_spawn_s": 0.271,
+   "wall_s": 5.388,
+   "file_s": 5.334,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 58163,
+   "uncontrolled_io": 1
+  }
+ ],
+ "rerun_one_lane": [
+  {
+   "count": 8,
+   "s": 6.225
+  }
+ ],
+ "passes": [
+  "1",
+  "2",
+  "None"
+ ],
+ "files_top": [
+  {
+   "file": "__tests__/fetch-plugin-pins.test.js",
+   "s": 4.063,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 69119
+  },
+  {
+   "file": "__tests__/fetch-plugin-pins.test.js",
+   "s": 2.107,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 33627
+  },
+  {
+   "file": "__tests__/dev-cli.test.js",
+   "s": 1.707,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2179
+  },
+  {
+   "file": "__tests__/cli-enhancers.test.js",
+   "s": 1.598,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 21843
+  },
+  {
+   "file": "__tests__/platform-adapter-install.test.js",
+   "s": 1.586,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 18868
+  },
+  {
+   "file": "__tests__/dev-cli.test.js",
+   "s": 1.425,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2659
+  },
+  {
+   "file": "__tests__/preflight.test.js",
+   "s": 1.256,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 9266
+  },
+  {
+   "file": "__tests__/atomic-write.test.js",
+   "s": 1.002,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 22542
+  },
+  {
+   "file": "__tests__/cli-subcommands.test.js",
+   "s": 0.934,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1636
+  },
+  {
+   "file": "__tests__/script-failure-hooks.test.js",
+   "s": 0.669,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 11184
+  },
+  {
+   "file": "__tests__/bump-version.test.js",
+   "s": 0.638,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 268
+  },
+  {
+   "file": "__tests__/cache-manager.test.js",
+   "s": 0.638,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 585
+  },
+  {
+   "file": "__tests__/adapter-namespace-strip.test.js",
+   "s": 0.63,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 185
+  },
+  {
+   "file": "__tests__/context-optimizer.test.js",
+   "s": 0.596,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 330
+  },
+  {
+   "file": "__tests__/cross-platform.test.js",
+   "s": 0.551,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 18496
+  },
+  {
+   "file": "__tests__/script-failure-hooks.test.js",
+   "s": 0.528,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 11446
+  },
+  {
+   "file": "__tests__/pipeline.test.js",
+   "s": 0.483,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 6951
+  },
+  {
+   "file": "__tests__/ten-plugins-removed.test.js",
+   "s": 0.428,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 3432
+  },
+  {
+   "file": "__tests__/scaffold.test.js",
+   "s": 0.417,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 6630
+  },
+  {
+   "file": "__tests__/validator.test.js",
+   "s": 0.414,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2573
+  }
+ ],
+ "totals": {
+  "io_release": 0,
+  "stack_captures": 299515,
+  "uncontrolled_io": 5,
+  "held_s": 0.0
+ }
+}
