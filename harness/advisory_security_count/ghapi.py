@@ -6,13 +6,15 @@ Rules (PREREG "Access rules"): GET only, User-Agent fenvix-research, sleep until
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-LOG = HERE / "data" / "requests.jsonl"
+LOG = HERE / os.environ.get("ASC_REQLOG", "data/requests.jsonl")
+ROUTE = os.environ.get("ASC_ROUTE", "session")
 UA = "fenvix-research"
 MIN_REMAINING = 500
 
@@ -68,7 +70,7 @@ def get(path: str, params: dict | None = None, retries: int = 4) -> tuple[int, d
             status, headers, body = parse_response(raw)
         except (IndexError, ValueError):
             status, headers, body = 0, {}, raw + p.stderr
-        _log({"t": _now(), "method": "GET", "path": path, "params": params or {}, "status": status,
+        _log({"t": _now(), "route": ROUTE, "method": "GET", "path": path, "params": params or {}, "status": status,
               "remaining": headers.get("x-ratelimit-remaining")})
         if status in (0, 502, 503, 504) and attempt < retries:
             time.sleep(5 * 2 ** attempt)

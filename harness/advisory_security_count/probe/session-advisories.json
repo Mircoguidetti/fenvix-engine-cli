@@ -1,0 +1,19 @@
+{
+ "route": "session",
+ "path": "/advisories",
+ "params": {
+  "type": "reviewed",
+  "ecosystem": "npm",
+  "published": "2024-01-01..2024-01-31",
+  "per_page": "5"
+ },
+ "status": 403,
+ "headers": {
+  "content-type": "application/json; charset=utf-8"
+ },
+ "t": "2026-11-25T07:26:31Z",
+ "body": {
+  "message": "This GitHub API path is not available: sessions are bound to their configured repositories. Use repository-scoped endpoints (repos/{owner}/{repo}/...).",
+  "documentation_url": "https://docs.anthropic.com/en/docs/claude-code/github-actions"
+ }
+}

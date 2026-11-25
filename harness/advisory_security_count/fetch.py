@@ -44,11 +44,11 @@ def read_jsonl(p: Path) -> list[dict]:
 
 # ---------------------------------------------------------------- probe
 
-def probe() -> None:
+def probe(route: str = "session") -> None:
     out = HERE / "probe"
     out.mkdir(exist_ok=True)
     budget = DATA / "budget.json"
-    if not budget.exists():
+    if route == "session" and not budget.exists():
         DATA.mkdir(exist_ok=True)
         budget.write_text(json.dumps({"first_data_request": now(), "budget_hours": 48}, indent=1) + "\n")
     calls = [
@@ -63,15 +63,15 @@ def probe() -> None:
         except ValueError:
             parsed = body
         keep = {k: v for k, v in headers.items() if k.startswith("x-ratelimit") or k in ("link", "content-type")}
-        (out / f"session-{name}.json").write_text(json.dumps(
-            {"route": "session", "path": path, "params": params, "status": status, "headers": keep, "t": now(),
+        (out / f"{route}-{name}.json").write_text(json.dumps(
+            {"route": route, "path": path, "params": params, "status": status, "headers": keep, "t": now(),
              "body": parsed}, indent=1) + "\n")
         print(name, status)
 
 
 # ---------------------------------------------------------------- listing
 
-def list_all() -> None:
+def list_all(build: bool = True) -> None:
     list_date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     meta = {"list_started": now(), "list_date": list_date, "published": f"{FIRST_DAY}..{list_date}", "pages": {}}
     for eco in R.ECOSYSTEMS:
@@ -88,7 +88,8 @@ def list_all() -> None:
         print(eco, pages, len(rows), flush=True)
     meta["list_finished"] = now()
     (DATA / "listing_meta.json").write_text(json.dumps(meta, indent=1) + "\n")
-    build_frame()
+    if build:
+        build_frame()
 
 
 def load_listing() -> dict[str, list[dict]]:
@@ -168,8 +169,8 @@ def material_for(adv: dict) -> dict:
     }
 
 
-def material(start: int, count: int) -> None:
-    order = json.loads((DATA / "order.json").read_text())
+def material(start: int, count: int, order: list[str] | None = None) -> None:
+    order = order if order is not None else json.loads((DATA / "order.json").read_text())
     advs = advisories_by_id()
     rows = []
     for i in range(start, min(start + count, len(order))):

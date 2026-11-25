@@ -1,0 +1,84 @@
+name: advisory-security-count
+
+# Advisory security count (harness/advisory_security_count/): GitHub's global advisory listing and fix commits of
+# public repositories, read with this workflow's GITHUB_TOKEN (GET only, read-only on every other repository). A job
+# starts when a push to this branch adds a request file harness/advisory_security_count/requests/<n>.json; results
+# are committed back to this branch only (a push made with GITHUB_TOKEN does not start another workflow run).
+
+on:
+  push:
+    branches: [claude/advisory-security-count]
+    paths:
+      - harness/advisory_security_count/requests/**
+      - .github/workflows/advisory-security-count.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: advisory-security-count
+  cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
+  ASC_BRANCH: claude/advisory-security-count
+
+jobs:
+  chunk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Request files added by this push
+        id: req
+        run: |
+          mkdir -p "$RUNNER_TEMP/req"
+          before="${{ github.event.before }}"
+          if [ -z "$before" ] || [ "$before" = "0000000000000000000000000000000000000000" ]; then
+            echo "no previous commit (branch creation): no request files"; exit 0
+          fi
+          git diff --name-only --diff-filter=A "$before" "${{ github.sha }}" -- harness/advisory_security_count/requests/ \
+            | sort | while read -r f; do cp "$f" "$RUNNER_TEMP/req/"; echo "request: $f"; done
+          ls -1 "$RUNNER_TEMP/req"
+      - name: Latest checkpoint
+        run: |
+          git fetch -q origin "$ASC_BRANCH"
+          git checkout -q -B asc "origin/$ASC_BRANCH"
+          git log --oneline -1
+      - name: Chunks
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ASC_ROUTE: workflow
+          ASC_REQLOG: data/requests-wf-${{ github.run_id }}.jsonl
+        run: |
+          for f in $(ls -1 "$RUNNER_TEMP/req" | sort -n); do
+            echo "== $f"; cat "$RUNNER_TEMP/req/$f"
+            python3 harness/advisory_security_count/wf_job.py --request "$RUNNER_TEMP/req/$f"
+          done
+      - name: Commit results to this branch
+        if: always()
+        run: |
+          git config user.name "advisory-security-count-bot"
+          git config user.email "advisory-security-count-bot@users.noreply.github.com"
+          d=harness/advisory_security_count
+          # only paths the session never writes: workflow probe files, listing, material chunks, workflow request logs
+          out=$(cd "$d" && ls -d probe/workflow-*.json data/listing data/listing_meta.json data/material/m*.jsonl.gz data/requests-wf-*.jsonl 2>/dev/null | sed "s|^|$d/|")
+          [ -n "$out" ] || exit 0
+          for i in 1 2 3 4 5 6 7 8; do
+            git fetch -q origin "$ASC_BRANCH" && git reset -q --soft "origin/$ASC_BRANCH" && git reset -q
+            git add -f $out && git commit -q -m "advisory-security-count: results (run ${{ github.run_id }})" || exit 0
+            git push -q origin "HEAD:$ASC_BRANCH" && exit 0
+            sleep $((5 + RANDOM % 20))
+          done
+          exit 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: advisory-security-count-${{ github.run_id }}
+          path: |
+            harness/advisory_security_count/data/
+            harness/advisory_security_count/probe/
+          if-no-files-found: ignore
