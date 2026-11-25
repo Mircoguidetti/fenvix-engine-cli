@@ -33,3 +33,47 @@ head 5: 1 passed in 22.50s
 base 6: 1 passed in 24.39s
 head 6: 1 passed in 25.12s
 ## verdict: head 8/9, base 9/9 alone; the one head failure was the slowest run (42 s vs 20-27 s); the code under test is byte-identical on both trees: load-dependent, not a B1 change. No new failure.
+
+# Coordinator check: alone, nothing else running (load < 2 on 4 CPUs), 20x per tree interleaved, head 4e29a060 vs base 6e79a62c
+base 1: 1 passed in 20.67s | leaked straces +3 | load 0.71
+head 1: 1 passed in 13.09s | leaked straces +0 | load 0.98
+base 2: 1 passed in 14.24s | leaked straces +1 | load 1.04
+head 2: 1 passed in 13.62s | leaked straces +0 | load 1.04
+base 3: 1 passed in 14.25s | leaked straces +0 | load 1.43
+head 3: 1 passed in 14.50s | leaked straces +0 | load 1.54
+base 4: 1 passed in 13.88s | leaked straces +0 | load 1.62
+head 4: 1 passed in 15.90s | leaked straces +2 | load 1.54
+base 5: 1 passed in 14.20s | leaked straces +0 | load 1.62
+head 5: 1 passed in 15.17s | leaked straces +1 | load 1.61
+base 6: 1 passed in 14.50s | leaked straces +0 | load 1.74
+head 6: 1 passed in 14.15s | leaked straces +0 | load 1.79
+base 7: 1 passed in 14.89s | leaked straces +1 | load 1.74
+head 7: 1 passed in 15.26s | leaked straces +1 | load 1.78
+base 8: 1 passed in 15.91s | leaked straces +1 | load 1.81
+head 8: 1 passed in 16.64s | leaked straces +2 | load 1.51
+base 9: 1 passed in 15.68s | leaked straces +1 | load 1.60
+head 9: 1 passed in 15.33s | leaked straces +1 | load 1.59
+base 10: 1 passed in 15.60s | leaked straces +1 | load 1.66
+head 10: 1 passed in 14.57s | leaked straces +0 | load 1.58
+base 11: 1 passed in 14.23s | leaked straces +0 | load 1.66
+head 11: 1 passed in 15.50s | leaked straces +1 | load 1.78
+base 12: 1 passed in 14.78s | leaked straces +0 | load 1.61
+head 12: 1 passed in 16.77s | leaked straces +2 | load 1.28
+base 13: 1 passed in 14.60s | leaked straces +0 | load 1.56
+head 13: 1 passed in 14.30s | leaked straces +0 | load 1.64
+base 14: 1 passed in 15.79s | leaked straces +1 | load 1.70
+head 14: 1 passed in 16.84s | leaked straces +1 | load 1.75
+base 15: 1 passed in 14.49s | leaked straces +0 | load 1.58
+head 15: 1 passed in 15.58s | leaked straces +1 | load 1.41
+base 16: 1 passed in 16.29s | leaked straces +2 | load 1.24
+head 16: 1 passed in 16.52s | leaked straces +2 | load 1.39
+base 17: 1 passed in 14.11s | leaked straces +0 | load 1.58
+head 17: 1 passed in 15.25s | leaked straces +1 | load 1.58
+base 18: 1 passed in 13.88s | leaked straces +0 | load 1.65
+head 18: 1 passed in 14.37s | leaked straces +0 | load 1.71
+base 19: 1 passed in 14.98s | leaked straces +0 | load 1.76
+head 19: 1 passed in 16.57s | leaked straces +1 | load 1.93
+base 20: 1 passed in 14.48s | leaked straces +0 | load 1.72
+head 20: 1 passed in 14.12s | leaked straces +0 | load 1.64
+## base 20/20 pass, head 20/20 pass: no regression.
+## Pre-existing, both trees: the test leaves stopped (state t) strace processes, ppid 1, in its deleted tmp folder (base 11, head 16 over 20 runs; none use CPU). Killed after the check.
