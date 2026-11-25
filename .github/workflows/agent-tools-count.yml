@@ -1,0 +1,78 @@
+name: agent-tools-count
+
+# Agent tools count (harness/agent_tools_count/): per-commit CI results of third-party agent pull requests (Count A)
+# and competing agent pull requests per closed issue (Count B), read with this workflow's GITHUB_TOKEN (GET only,
+# read-only on every other repository). A chunk starts when a push to this branch adds a request file
+# harness/agent_tools_count/requests/<n>.json; results are committed back to this branch only.
+
+on:
+  push:
+    branches: [claude/agent-tools-count]
+    paths:
+      - harness/agent_tools_count/requests/**
+      - .github/workflows/agent-tools-count.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: agent-tools-count
+  cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
+  ATC_BRANCH: claude/agent-tools-count
+
+jobs:
+  chunk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Request files added by this push
+        id: req
+        run: |
+          mkdir -p "$RUNNER_TEMP/req"
+          before="${{ github.event.before }}"
+          if [ -z "$before" ] || [ "$before" = "0000000000000000000000000000000000000000" ]; then
+            echo "no previous commit (branch creation): no request files"; exit 0
+          fi
+          git diff --name-only --diff-filter=A "$before" "${{ github.sha }}" -- harness/agent_tools_count/requests/ \
+            | sort | while read -r f; do cp "$f" "$RUNNER_TEMP/req/"; echo "request: $f"; done
+          ls -1 "$RUNNER_TEMP/req"
+      - name: Latest checkpoint
+        run: |
+          git fetch -q origin "$ATC_BRANCH"
+          git checkout -q -B atc "origin/$ATC_BRANCH"
+          git log --oneline -1
+      - name: Chunks
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for f in $(ls -1 "$RUNNER_TEMP/req" | sort -n); do
+            echo "== $f"; cat "$RUNNER_TEMP/req/$f"
+            python3 harness/agent_tools_count/job.py --request "$RUNNER_TEMP/req/$f"
+          done
+      - name: Commit results to this branch
+        if: always()
+        run: |
+          git config user.name "agent-tools-count-bot"
+          git config user.email "agent-tools-count-bot@users.noreply.github.com"
+          out=harness/agent_tools_count/results
+          [ -d "$out" ] || exit 0
+          for i in 1 2 3 4 5 6 7 8; do
+            git fetch -q origin "$ATC_BRANCH" && git reset -q --soft "origin/$ATC_BRANCH" && git reset -q
+            git add -f "$out" && git commit -q -m "agent-tools-count: results (run ${{ github.run_id }})" || exit 0
+            git push -q origin "HEAD:$ATC_BRANCH" && exit 0
+            sleep $((5 + RANDOM % 20))
+          done
+          exit 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: atc-results-${{ github.run_id }}
+          path: harness/agent_tools_count/results/
+          if-no-files-found: ignore
