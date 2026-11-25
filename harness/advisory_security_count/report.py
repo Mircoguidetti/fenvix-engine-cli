@@ -235,8 +235,8 @@ def render(v: dict) -> str:
           f"{k(v, 'route_b')} (of which CWE-79 {k(v, 'route_b_cwe79')}, CWE-352 {k(v, 'route_b_cwe352')}), (c) no "
           f"CWE + broad regex {k(v, 'route_c')}. Memberships: (a) {k(v, 'member_a')}, (b) {k(v, 'member_b')}, "
           f"(c) {k(v, 'member_c')}.", "",
-          f"Read in the seeded order: {k(v, 'read')} rows; the 300th included row is reading position "
-          f"{k(v, 'cp_rows')} (count of rows up to and including it). Checkpoint scope: {k(v, 'cp_read')} read → "
+          f"Read in the seeded order: {k(v, 'read')} rows; the 300th included row is the last of the first "
+          f"{k(v, 'cp_rows')} rows of the reading order (zero-based position one less). Checkpoint scope: {k(v, 'cp_read')} read → "
           f"{k(v, 'included')} included, {k(v, 'excluded')} excluded.", "",
           "| exclusion reason | rows |", "|---|---|"]
     for reason in sorted(R.EXCLUSION_REASONS):
