@@ -744,11 +744,13 @@ def test_workflow_trigger_and_owned_files():
     discovery state); no_claim=GitHub's runner behaviour."""
     import yaml
     wf = (HERE.parent.parent / ".github/workflows/agent-determinism-count.yml").read_text()
+    assert "commit_results.sh" in wf
+    script = (HERE / "commit_results.sh").read_text()
     d = yaml.safe_load(wf)
     on = d[True]
     assert list(on) == ["push"] and on["push"]["branches"] == ["claude/agent-determinism-count"]
     assert on["push"]["paths"] == ["harness/agent_determinism_count/requests/**"]
-    own = [ln for ln in wf.splitlines() if ln.strip().startswith('own="')][0]
+    own = [ln for ln in script.splitlines() if ln.strip().startswith('own="')][0]
     for session_file in ("reads.jsonl", "texts_search.jsonl ", "discovery_state_code", "leaves_code", "prepass_code",
                          "search_budget_free", "handcheck", "probe_session", "probe_decisions", "candidates"):
         assert session_file not in own

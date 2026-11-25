@@ -47,29 +47,21 @@ jobs:
           # every request file without a results/requests_done/<name> marker (not only this push's files: a newer
           # push cancels a pending run of the same concurrency group, and a stopped request is resumed)
           d=harness/agent_determinism_count
+          git config user.name "agent-determinism-count-bot"
+          git config user.email "agent-determinism-count-bot@users.noreply.github.com"
+          # checkpoint commits every 30 minutes (resumable state visible to the work session)
+          ( while sleep 1800; do bash "$d/commit_results.sh" "checkpoint run ${{ github.run_id }}" || true; done ) &
+          cp=$!
           for f in $(ls -1 "$d/requests" 2>/dev/null | sort -V); do
             if [ -e "$d/results/requests_done/$f" ]; then continue; fi
             if [ "$(date +%s)" -gt "$(( ADC_DEADLINE - 900 ))" ]; then echo "deadline: $f left for the next run"; break; fi
             echo "== $f"; cat "$d/requests/$f"
             python3 "$d/job.py" --request "$d/requests/$f"
           done
+          kill "$cp" 2>/dev/null || true
       - name: Commit results to this branch
         if: always()
-        run: |
-          git config user.name "agent-determinism-count-bot"
-          git config user.email "agent-determinism-count-bot@users.noreply.github.com"
-          out=harness/agent_determinism_count/results
-          [ -d "$out" ] || exit 0
-          # only the files this workflow writes (the work session writes the others; never overwrite them)
-          own="rows.jsonl raw chunks.jsonl chunk_errors.jsonl requests_done texts_search_wf.jsonl texts_raw_wf comments.jsonl comments_raw probe_workflow.json probe_workflow_text.json prepass_text.json launch.json discovery_state_text.json discovery/leaves_text.jsonl.gz discovery/splits_text.jsonl debug"
-          for i in 1 2 3 4 5 6 7 8; do
-            git fetch -q origin "$ADC_BRANCH" && git reset -q --soft "origin/$ADC_BRANCH" && git reset -q
-            for p in $own; do if [ -e "$out/$p" ]; then git add -f "$out/$p"; fi; done
-            git commit -q -m "agent-determinism-count: results (run ${{ github.run_id }})" || exit 0
-            git push -q origin "HEAD:$ADC_BRANCH" && exit 0
-            sleep $((5 + RANDOM % 20))
-          done
-          exit 1
+        run: bash harness/agent_determinism_count/commit_results.sh "run ${{ github.run_id }}"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
