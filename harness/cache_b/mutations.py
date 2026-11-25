@@ -8,6 +8,7 @@ unmutated scratch tree passes.
   mutations.py [--only a,b,...]
 """
 import argparse
+import hashlib
 import json
 import os
 import shutil
@@ -79,7 +80,10 @@ MUTATIONS = {
 
 
 def run(cmd, cwd, timeout=3600):
-    p = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, timeout=timeout)
+    try:
+        p = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, timeout=timeout)
+    except subprocess.TimeoutExpired as e:
+        return 'timeout', f'{e.stdout or ""}{e.stderr or ""}'
     return p.returncode, p.stdout + p.stderr
 
 
@@ -100,7 +104,13 @@ def main():
     o = ap.parse_args()
     head = subprocess.run(['git', '-C', REPO, 'rev-parse', 'HEAD'], capture_output=True, text=True).stdout.strip()
     only = [x for x in o.only.split(',') if x] or list(MUTATIONS)
-    results = {'engine_commit': head, 'ts': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()), 'channels': {}}
+    # the native addon is copied from this checkout: the result names its digest, and the Rust sources must be the
+    # commit's (the addon is built from them)
+    if subprocess.run(['git', '-C', REPO, 'status', '--porcelain', '--', 'crates', 'node/src'], capture_output=True, text=True).stdout.strip():
+        sys.exit('crates/ or node/src has uncommitted changes: the results would not describe HEAD')
+    addon = os.path.join(REPO, 'node', 'detjs.linux-x64.node')
+    results = {'engine_commit': head, 'ts': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+               'addon_sha256': hashlib.sha256(open(addon, 'rb').read()).hexdigest(), 'channels': {}}
     for ch in [None, *only]:
         sc = o.scratch
         subprocess.run(['git', '-C', REPO, 'worktree', 'remove', '--force', sc], capture_output=True)
@@ -125,7 +135,7 @@ def main():
         diff = subprocess.run(['git', '-C', sc, 'diff', '--stat'], capture_output=True, text=True).stdout.strip()
         results['channels'][key] = {'tests': files, 'exit': rc, 'pass': p, 'fail': f, 'diff': diff,
                                     'expected': 'pass' if ch is None else 'fail',
-                                    'as_expected': (rc == 0 and f == 0) if ch is None else (rc != 0 and (f or 0) > 0)}
+                                    'as_expected': (rc == 0 and f == 0) if ch is None else (rc not in (0, 'timeout') and (f or 0) > 0)}
         print(f"{key}: exit {rc} pass {p} fail {f} -> {'as expected' if results['channels'][key]['as_expected'] else 'NOT AS EXPECTED'}", flush=True)
         subprocess.run(['git', '-C', REPO, 'worktree', 'remove', '--force', sc], capture_output=True)
     out = os.path.join(HERE, 'data', f'mutations-{head[:12]}.json')

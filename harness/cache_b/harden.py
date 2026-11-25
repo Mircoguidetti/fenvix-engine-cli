@@ -83,7 +83,9 @@ def git_checkpoint(out_dir, name, message):
                 paths.append(os.path.join(d, n))
         if not paths:
             return
-        subprocess.run(['git', '-C', repo, 'add', '--', *paths], capture_output=True)
+        a = subprocess.run(['git', '-C', repo, 'add', '--', *paths], capture_output=True, text=True)
+        if a.returncode != 0:
+            print(f'checkpoint: git add failed: {a.stderr.strip()[-300:]}', file=sys.stderr)
         r = subprocess.run(['git', '-C', repo, 'commit', '-q', '-m', message, '--', *paths], capture_output=True, text=True)
         if r.returncode == 0:
             for i in range(4):
@@ -91,6 +93,10 @@ def git_checkpoint(out_dir, name, message):
                 if p.returncode == 0:
                     break
                 time.sleep(2 ** (i + 1))
+            else:
+                print(f'checkpoint: push failed 4 times, rows only on this machine: {p.stderr.strip()[-300:]}', file=sys.stderr)
+        elif 'nothing' not in (r.stdout + r.stderr):
+            print(f'checkpoint: git commit failed: {(r.stdout + r.stderr).strip()[-300:]}', file=sys.stderr)
 
 
 class Service:
@@ -119,6 +125,9 @@ class Service:
                 break
             except OSError:
                 time.sleep(0.1)
+        else:
+            self.stop()
+            sys.exit(f'cache service did not start on port {self.port} (see {self.log.name})')
         self.url = f'http://127.0.0.1:{self.port}/{repo}'
 
     def stop(self):
@@ -136,18 +145,27 @@ def plain_cmd(r, file):
     return ['npx', '--no-install', 'jest', *r['args'], '--runInBand', '--runTestsByPath', file]
 
 
-def classify(r, cwd, env, file, rundir, timeout):
-    """B1.3: 10 plain runs of the test file at this state on this machine."""
-    fails = 0
+def classify(r, repo_dir, cwd, env, file, rundir, timeout):
+    """B1.3: 10 plain runs of the test file at this state on this machine. The tracked tree is restored before each
+    run (files a run writes cannot make the next one differ; ignored files such as node_modules and builds stay). A
+    run that times out is neither a pass nor a fail: with any timeout the file is `unresolved` (reported, for a human),
+    never `instability`, so one hang cannot turn a wrong reuse into an instability."""
+    fails = timeouts = 0
     exits = []
     for i in range(10):
+        sh('git checkout -q -f HEAD -- . && git clean -fdq', repo_dir, env, 600)
         rc, _, _ = sh(plain_cmd(r, file), cwd, env, timeout, log=os.path.join(rundir, f'plain-{re.sub(r"[^A-Za-z0-9]", "_", file)[-80:]}-{i}.log'))
         exits.append(rc)
-        if rc != 0:
+        if rc == 'timeout':
+            timeouts += 1
+        elif rc != 0:
             fails += 1
-    cls = 'instability' if 0 < fails < 10 else 'wrong-reuse'
-    return {'file': file, 'plain_fails': fails, 'plain_runs': 10, 'exits': exits, 'class': cls,
-            'kind': None if cls == 'instability' else ('plain fails' if fails == 10 else 'engine only')}
+    if timeouts:
+        cls = 'unresolved'
+    else:
+        cls = 'instability' if 0 < fails < 10 else 'wrong-reuse'
+    return {'file': file, 'plain_fails': fails, 'plain_timeouts': timeouts, 'plain_runs': 10, 'exits': exits, 'class': cls,
+            'kind': None if cls != 'wrong-reuse' else ('plain fails' if fails == 10 else 'engine only')}
 
 
 def main():
@@ -160,6 +178,8 @@ def main():
     ap.add_argument('--out', default='/home/runner/work/cacheb/rows')
     ap.add_argument('--max-seconds', type=float, default=6000, help='stop cleanly before this (tracked task < 2 h)')
     ap.add_argument('--checkpoint', action='store_true', help='commit and push the rows every 30 minutes')
+    ap.add_argument('--retry-env', action='store_true', help='rerun states whose row is ENV (checkout or install failed, '
+                    'so the cache was never touched)')
     o = ap.parse_args()
     t_start = time.time()
     pre = json.load(open(os.path.join(HERE, 'prereg.json')))['repos'][o.repo]
@@ -173,13 +193,38 @@ def main():
     out_dir = os.path.join(o.out, e12)
     os.makedirs(out_dir, exist_ok=True)
     rows_path = os.path.join(out_dir, f'{o.repo}.jsonl')
+    # one process per repository: two would share the checkout, the store, the service data and the rows file
+    lock = open(os.path.join(o.work, e12, f'{o.repo}.lock'), 'w')
+    try:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        sys.exit(f'{o.repo}: another harden.py holds {lock.name}')
     done = set()
+    seed_status = None
     if os.path.exists(rows_path):
         for line in open(rows_path):
             try:
-                done.add(json.loads(line)['i'])
-            except (ValueError, KeyError):
-                pass
+                r0 = json.loads(line)
+            except ValueError:
+                continue
+            if 'i' not in r0 or (o.retry_env and r0.get('status') == 'ENV'):
+                continue
+            done.add(r0['i'])
+            if r0['i'] == 0:
+                seed_status = r0.get('status')
+    # a state whose detjs run started but whose row was never written (killed during the run or the classification)
+    # has already recorded over the store and pushed: verifying it again would compare it with its own results and
+    # could hide a mismatch. The repository must restart from the seed (B1.4) with a new work folder.
+    inflight = os.path.join(out_dir, f'{o.repo}.inflight')
+    if os.path.exists(inflight):
+        k = int(open(inflight).read().strip() or -1)
+        if k not in done:
+            write_row(rows_path, {'repo': o.repo, 'i': k, 'engine_commit': engine_commit, 'status': 'INTERRUPTED',
+                                  'ts': now(), 'error': 'the run touched the cache and its row was never written; '
+                                  'restart this repository from the seed'})
+            sys.exit(f'{o.repo}: state {k} was interrupted after its run touched the cache: restart from the seed '
+                     f'(remove {work} and {rows_path})')
+        os.remove(inflight)
     repo_dir = os.path.join(POOL, o.repo)
     cwd = os.path.join(repo_dir, pre['cwd']) if pre['cwd'] else repo_dir
     # NODE_PATH: this container's global module folder (its own tools update themselves between runs, which changed
@@ -203,11 +248,14 @@ def main():
             os.makedirs(rundir)
             row = {'repo': o.repo, 'i': i, 'n_states': len(states), 'sha': st['sha'], 'kind': st['kind'],
                    'pr': st.get('pr'), 'engine_commit': engine_commit, 'mode': o.mode, 'node': pre['node'],
-                   'role': 'seed' if i == 0 else 'verify', 'ts': now(), 'nproc': os.cpu_count()}
+                   'role': 'seed' if i == 0 else 'verify', 'ts': now(), 'nproc': os.cpu_count(),
+                   'seed_status': seed_status}
             rc, dt, out = sh(f"git checkout -q -f --detach {st['sha']} && git clean -fdxq -e node_modules", repo_dir, env, 600)
             if rc != 0:
                 row.update(status='ENV', error=f'checkout: {out.strip()[-500:]}')
                 write_row(rows_path, row)
+                if i == 0:
+                    seed_status = 'ENV'
                 continue
             rc, dt, out = sh(INSTALL[o.repo], repo_dir, env, 1800, log=os.path.join(rundir, 'install.log'))
             row.update(install_rc=rc, install_s=dt)
@@ -216,6 +264,8 @@ def main():
                 first = next((l for l in lines if re.search(r' error: |ERR_|ERR!|npm error code|ENOENT|EBADENGINE', l)), None)
                 row.update(status='ENV', error=f'install: {(first or (lines[-1] if lines else "")).strip()[:400]}')
                 write_row(rows_path, row)
+                if i == 0:
+                    seed_status = 'ENV'
                 continue
             # runner caches inside the tree start empty (git clean keeps node_modules)
             sh("find . -path '*/node_modules/.vite*' -prune -exec rm -rf {} + ; find . -path '*/node_modules/.vitest*' -prune -exec rm -rf {} +",
@@ -237,6 +287,8 @@ def main():
                 cmd.append(f'--cacheDirectory={jc}')
             if i > 0:
                 cmd.append('--det-cache-verify')
+            with open(inflight, 'w') as f:
+                f.write(str(i))
             rc, dt, out = sh(cmd, cwd, renv, timeout, log=os.path.join(rundir, 'run.log'))
             row.update(exit=rc, wall_s=dt, cmd=' '.join(cmd))
             try:
@@ -246,6 +298,9 @@ def main():
             if s is None:
                 row.update(status='NO-SUMMARY', error=[l for l in out.splitlines() if l.strip()][-5:])
                 write_row(rows_path, row)
+                os.remove(inflight)
+                if i == 0:
+                    seed_status = 'NO-SUMMARY'
                 continue
             mism = s.get('verify_mismatches') or []
             row.update(status='ok', reused_files=s.get('reused_files'), reused_tests=s.get('reused_tests'),
@@ -255,14 +310,22 @@ def main():
                        miss_reasons=s.get('miss_reasons'), not_cached=s.get('not_cached'), disabled=s.get('disabled'),
                        remote={k: (s.get('remote') or {}).get(k) for k in ('error', 'requests', 'pull_proven', 'pull_files_with_candidates', 'push_entry_docs_new', 'push_entries_unresolved')} if s.get('remote') else None,
                        error=s.get('error'))
-            files = sorted({m['nodeid'].split('::', 1)[0].split('@@', 1)[0] for m in mism if m.get('cached') == 'passed'})
+            # the cache off or the shared cache failing is not a clean state (nothing reused, nothing verified)
+            if s.get('disabled') or s.get('error') or (s.get('remote') or {}).get('error'):
+                row['status'] = 'CACHE-OFF'
+            # a would-be-reused result the fresh run never compared is a verify gap, never a clean state
+            elif s.get('verify_unchecked'):
+                row['status'] = 'VERIFY-GAP'
+            # B1.3 classifies mismatches whose cached outcome is `passed`; others are listed for the report
+            row['mismatches_not_classified'] = [m.get('nodeid') for m in mism if m.get('cached') != 'passed']
+            files = sorted({(m.get('nodeid') or '').split('::', 1)[0].split('@@', 1)[0] for m in mism if m.get('cached') == 'passed'})
             row['mismatch_inputs_file'] = None
             if mism:
                 keep = os.path.join(out_dir, f'{o.repo}-{i:02d}-mismatch-inputs.json')
                 with open(keep, 'w') as f:
                     json.dump(s.get('verify_mismatch_inputs'), f)
                 row['mismatch_inputs_file'] = os.path.relpath(keep, HERE)
-            row['classified'] = [classify(pre, cwd, env, f, rundir, timeout) for f in files]
+            row['classified'] = [classify(pre, repo_dir, cwd, env, f, rundir, timeout) for f in files]
             row['wrong_reuse'] = sum(c['class'] == 'wrong-reuse' for c in row['classified'])
             # traces are large: kept only for a state with a mismatch or a verify gap
             if not mism and not row.get('verify_unchecked'):
@@ -272,8 +335,11 @@ def main():
                     except OSError:
                         pass
             write_row(rows_path, row)
+            os.remove(inflight)
+            if i == 0:
+                seed_status = row['status']
             print(f"{o.repo} [{i}/{len(states)}] {st['sha'][:10]} exit {rc} {dt}s reused {row['reused_files']} "
-                  f"mismatches {len(mism)} wrong {row['wrong_reuse']} unchecked {len(row.get('verify_unchecked') or [])}", file=sys.stderr)
+                  f"mismatches {len(mism)} wrong {row['wrong_reuse']} unchecked {len(row.get('verify_unchecked') or [])} status {row['status']}", file=sys.stderr)
             if o.checkpoint and time.time() - last_ckpt > CHECKPOINT_S:
                 git_checkpoint(out_dir, o.repo, f'cache B1 harden checkpoint: {o.repo} through state {i} (engine {e12})')
                 last_ckpt = time.time()

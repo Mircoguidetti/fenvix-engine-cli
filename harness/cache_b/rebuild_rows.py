@@ -7,6 +7,7 @@ as they are.
 
   rebuild_rows.py <rows.jsonl> <work/<engine12>/<repo>> <campaign log>
 """
+import fcntl
 import json
 import os
 import re
@@ -16,7 +17,19 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 
 def main(rows_path, work, log):
-    rows = [json.loads(l) for l in open(rows_path)] if os.path.exists(rows_path) else []
+    # the lock harden.py holds for this repository: never rewrite rows a running process is appending to
+    lock = open(os.path.join(os.path.dirname(work.rstrip('/')), f"{os.path.basename(work.rstrip('/'))}.lock"), 'w')
+    try:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        sys.exit(f'{lock.name} is held: a harden.py process is running for this repository')
+    rows = []
+    if os.path.exists(rows_path):
+        for l in open(rows_path):
+            try:
+                rows.append(json.loads(l))
+            except ValueError:
+                pass  # a torn last line, as harden.py tolerates
     have = {r['i'] for r in rows}
     repo = os.path.basename(work.rstrip('/'))
     engine12 = os.path.basename(os.path.dirname(work.rstrip('/')))
@@ -37,10 +50,12 @@ def main(rows_path, work, log):
         assert st['sha'].startswith(sha10), (i, sha10, st['sha'])
         s = json.load(open(sp))
         mism = s.get('verify_mismatches') or []
+        # a mismatch in a rebuilt row was never classified: the row says so, it is not a clean state
         rows.append({'repo': repo, 'i': i, 'n_states': len(pre['harden']), 'sha': st['sha'], 'kind': st['kind'],
                      'pr': st.get('pr'), 'engine_commit_prefix': engine12, 'mode': 'url', 'node': pre['node'],
                      'role': 'seed' if i == 0 else 'verify', 'reconstructed': True,
-                     'exit': int(ex) if ex.lstrip('-').isdigit() else ex, 'wall_s': wall, 'status': 'ok',
+                     'exit': int(ex) if ex.lstrip('-').isdigit() else ex, 'wall_s': wall,
+                     'status': 'UNCLASSIFIED' if mism else 'ok',
                      'reused_files': s.get('reused_files'), 'reused_tests': s.get('reused_tests'),
                      'ran_files': len(s.get('ran_files') or {}), 'recorded': s.get('recorded'),
                      'verified': s.get('verified'), 'verified_tests': s.get('verified_tests'),
@@ -51,9 +66,11 @@ def main(rows_path, work, log):
                      'error': s.get('error'), 'classified': [], 'wrong_reuse': 0 if not mism else None})
         added += 1
     rows.sort(key=lambda r: r['i'])
-    with open(rows_path, 'w') as f:
+    tmp = rows_path + '.tmp'
+    with open(tmp, 'w') as f:
         for r in rows:
             f.write(json.dumps(r) + '\n')
+    os.replace(tmp, rows_path)
     print(f'{repo}: {added} rows rebuilt, {len(rows)} rows')
 
 
