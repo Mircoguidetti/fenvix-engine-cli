@@ -237,7 +237,7 @@ def main():
                        verified_tests=s.get('verified_tests'), verify_mismatches_tests=s.get('verify_mismatches_tests'),
                        verify_mismatches=mism, verify_unchecked=s.get('verify_unchecked'),
                        miss_reasons=s.get('miss_reasons'), not_cached=s.get('not_cached'), disabled=s.get('disabled'),
-                       remote={k: (s.get('remote') or {}).get(k) for k in ('error', 'requests', 'pull_proven', 'pull_files_with_candidates', 'push_entry_docs_new')} if s.get('remote') else None,
+                       remote={k: (s.get('remote') or {}).get(k) for k in ('error', 'requests', 'pull_proven', 'pull_files_with_candidates', 'push_entry_docs_new', 'push_entries_unresolved')} if s.get('remote') else None,
                        error=s.get('error'))
             files = sorted({m['nodeid'].split('::', 1)[0].split('@@', 1)[0] for m in mism if m.get('cached') == 'passed'})
             row['mismatch_inputs_file'] = None
