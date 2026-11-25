@@ -2,6 +2,68 @@
  "budget_end": "2026-11-26T10:54:28+00:00",
  "finished": null,
  "queries": {
+  "committer-date:>=2024-01-01 flaky anthropic test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 313340,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 311794,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 flaky claude test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 350720,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 349908,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 flaky gemini test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 10557,
+   "leaves": 21,
+   "nodes": 44,
+   "prepass_total": 18548,
+   "stack": [
+    [
+     "2026-06-14",
+     "2026-06-22"
+    ],
+    [
+     "2026-06-23",
+     "2026-06-30"
+    ],
+    [
+     "2026-07-01",
+     "2026-07-16"
+    ],
+    [
+     "2026-07-17",
+     "2026-11-25"
+    ]
+   ]
+  },
+  "committer-date:>=2024-01-01 flaky llm test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 31666,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 31678,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 flaky openai test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 33535,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 33655,
+   "stack": []
+  },
   "is:public created:>=2024-01-01 \"api costs\" test (llm OR openai OR agent)": {
    "capped": true,
    "done": true,
@@ -751,25 +813,12 @@
   },
   "is:public created:>=2024-01-01 cassette llm (llm OR openai OR agent)": {
    "capped": false,
-   "done": false,
-   "leaf_total": 1178,
-   "leaves": 2,
-   "nodes": 5,
+   "done": true,
+   "leaf_total": 9220,
+   "leaves": 13,
+   "nodes": 24,
    "prepass_total": 9176,
-   "stack": [
-    [
-     "2026-03-06",
-     "2026-05-11"
-    ],
-    [
-     "2026-05-12",
-     "2026-07-16"
-    ],
-    [
-     "2026-07-17",
-     "2026-11-25"
-    ]
-   ]
+   "stack": []
   },
   "is:public created:>=2024-01-01 flakiness \"ai sdk\" test": {
    "capped": false,
@@ -1905,6 +1954,15 @@
    "prepass_total": 152834,
    "stack": []
   },
+  "is:public created:>=2024-01-01 vcr openai (llm OR openai OR agent)": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 6648,
+   "leaves": 11,
+   "nodes": 20,
+   "prepass_total": 6635,
+   "stack": []
+  },
   "is:public created:>=2024-01-01 xfail \"ai sdk\" test": {
    "capped": false,
    "done": true,
@@ -2070,13 +2128,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 3893
+  "issues": 2
  },
  "search_stats": {
-  "429": 16,
+  "429": 0,
   "limit": 30,
-  "remaining": 16,
-  "reset": 1795646021
+  "remaining": 27,
+  "reset": 1795647882
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
