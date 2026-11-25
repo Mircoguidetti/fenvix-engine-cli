@@ -1,5 +1,7 @@
 'use strict';
 const volatile = require('./volatile');
+// P2 Phase B timing (DETJS_PHASES=1): loaded before any control is installed (real fs and clock captured)
+const phases = require('./phases');
 // Installation of the Level 0 controls and per-file / per-test lifecycle,
 // shared by the Vitest and Jest shells.
 const fs = require('node:fs');
@@ -333,6 +335,7 @@ function openFile(fileId, project) {
   STATE.fileScopeLabel = label;
   STATE.testIndex = 0;
   STATE.begun = new Set();
+  phases.fileStart(label);
   if (c.controls.has('seeds')) seeds.seedFile(label);
   // the virtual pid of the file's test code (P1 C, src/facts.js), seeded like the file's generators
   if (c.controls.has('seeds')) require('./facts').startFile(label);
@@ -356,6 +359,7 @@ function closeFile() {
     STATE.recorder = null;
   }
   if (STATE.netMode === 'record') network.saveRecordings();
+  phases.fileEnd();
 }
 
 /**

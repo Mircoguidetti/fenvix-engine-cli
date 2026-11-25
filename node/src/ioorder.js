@@ -21,6 +21,7 @@ const fs = require('node:fs');
 const net = require('node:net');
 const { STATE } = require('./state');
 const sites = require('./sites');
+const phases = require('./phases'); // P2 Phase B counters (written only with DETJS_PHASES=1)
 const sched = require('./sched');
 const concur = require('./concur');
 const { AsyncLocalStorage } = require('node:async_hooks');
@@ -156,6 +157,7 @@ function nodeInternal() {
   const h = {};
   E.prepareStackTrace = STRUCTURED;
   E.stackTraceLimit = 12;
+  phases.C.stack_captures++;
   try { E.captureStackTrace(h, nodeInternal); /* eslint-disable-next-line no-unused-expressions */ h.stack; } finally { E.prepareStackTrace = pp; E.stackTraceLimit = lim; }
   for (const cs of Array.isArray(h.stack) ? h.stack : []) {
     const f = (cs.getFileName && cs.getFileName()) || '';
@@ -224,7 +226,7 @@ function complete(op, deliver) {
     try { deliver(); } finally { if (held.length) REAL_SET_IMMEDIATE(concur.bind(drain)); }
     return;
   }
-  held.push({ op, deliver });
+  held.push({ op, deliver, t: phases.on() ? phases.now() : 0 });
   sched.setHeld(held.length);
   if (holdTimer === null) {
     holdTimer = REAL_SET_TIMEOUT(concur.bind(() => { holdTimer = null; releaseAll(true); }), HOLD_MAX_MS);
@@ -257,6 +259,8 @@ function releaseAll(record) {
     if (i >= 0) undelivered.splice(i, 1);
     if (record && STATE.testId === h.op.test) {
       STATE.recordAt('other', 'io.release', h.op.site, `${h.op.kind}#${h.op.n}`);
+      phases.C.io_release++;
+      if (h.t) phases.C.held_ms += phases.now() - h.t;
       if (STATE.onRealClock) STATE.onRealClock('a file operation was delivered out of start order (real time decided)');
     }
     end(h.op);

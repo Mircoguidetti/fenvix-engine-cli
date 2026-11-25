@@ -1,6 +1,7 @@
 'use strict';
 // Process-wide state shared by the controls and the runner shells.
 const native = require('./native');
+const PHASES = require('./phases').C; // P2 Phase B counters (written only with DETJS_PHASES=1)
 const sites = require('./sites');
 const { wire } = require('./wire');
 const concur = require('./concur');
@@ -72,6 +73,7 @@ class State {
 
   /** Record with an explicit site (used by detjs itself). */
   recordAt(source, op, site, value) {
+    if (op === 'uncontrolled.io' && this.testId !== null && this.recorder !== null) PHASES.uncontrolled_io++;
     if (this.onEvent !== null && this.quietDepth === 0) this.onEvent(source, value, op);
     if (this.testId === null || this.recorder === null) return;
     this.buffer.push(source + FS + op + FS + site + FS + value);

@@ -131,7 +131,10 @@ function readReplay(file) {
  * Returns { workers, lanes: [[label]], digest, inputs_digest, sticky, loads, makespan, lpt_makespan, costs_known,
  * groups (together-edges used), replayed, dispatch: [label] }.
  */
-function makePlan(root, keysIn, workers, { replay = null } = {}) {
+/** The plan, timed as the `plan` phase with DETJS_PHASES=1 (P2 Phase B, src/phases.js). */
+function makePlan(...a) { return require('./phases').span('plan', () => planOf(...a)); }
+
+function planOf(root, keysIn, workers, { replay = null } = {}) {
   const n = native();
   const keys = [...new Set(keysIn)];
   const state = loadState(root);

@@ -1,5 +1,7 @@
 'use strict';
 const volatile = require('./volatile');
+// P2 Phase B timing (DETJS_PHASES=1, off by default): loaded first, before anything patches fs or the clock
+const phases = require('./phases');
 // Main-process side of a --det run, shared by `detjs vitest` and `detjs jest`:
 // option parsing, environment for the workers, merge of the per-file trace
 // parts into one trace (same format as the Python shell), comparison report.
@@ -250,6 +252,7 @@ function prepare(opts, root, runner) {
   delete process.env.DETJS_CAPTURE_LOADER;
   const cfg = config.fromEnv(process.env);
   const run = { dir, cassette, netMode, cfg, tracePath: path.resolve(root, opts.trace || path.join('.detjs', 'trace.jsonl')) };
+  phases.startRun(run.tracePath);
   if (netMode === 'replay') cassetteStaleness(run, opts);
   // the main process (globalSetup, start-up code): external connections closed, recorded or replayed (G-1419)
   if (cfg.active && cfg.controls.has('net')) {
@@ -519,8 +522,8 @@ function finish(run, opts, files, meta) {
   };
   try { full.inputs = runInputs(run, meta); } catch (e) { full.inputs_error = String(e && e.message); }
   // the installed dependencies of the project (src/loaded.js, review R-055 V5)
-  try { const d = require('./loaded').depsInput(run.dir); if (d && full.inputs) full.inputs.deps = d; } catch (e) { full.inputs_error = String(e && e.message); }
-  const res = native.mergeTraces(all, run.tracePath, JSON.stringify(full), order);
+  try { const d = phases.span('deps_hash', () => require('./loaded').depsInput(run.dir)); if (d && full.inputs) full.inputs.deps = d; } catch (e) { full.inputs_error = String(e && e.message); }
+  const res = phases.span('trace_write', () => native.mergeTraces(all, run.tracePath, JSON.stringify(full), order), { part: 'merge' });
   // P0 big trace: a worker part the merge could not read is missing from the trace with its tests (and their
   // failures): the run's status is unknown, exit 2, never green
   if (res.skipped.length) exitStatus.recordUnknown(`unreadable trace parts, their tests are not counted: ${res.skipped.join('; ')}`);
@@ -530,7 +533,7 @@ function finish(run, opts, files, meta) {
   // GB trace with failed tests ended 0)
   let status = null;
   try {
-    status = stampStatus(run.tracePath);
+    status = phases.span('trace_write', () => stampStatus(run.tracePath), { part: 'stamp' });
     if (!status) exitStatus.recordUnknown(`the trace ${run.tracePath} could not be read back`);
   } catch (e) {
     exitStatus.recordUnknown(`the trace ${run.tracePath} could not be read back or stamped: ${e && e.message}`);
@@ -566,6 +569,7 @@ function finish(run, opts, files, meta) {
     }
   }
   lines.push(...reproLines);
+  phases.finishRun();
   return { lines, result: res };
 }
 

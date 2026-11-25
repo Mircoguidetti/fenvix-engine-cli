@@ -217,6 +217,7 @@ async function main(argv) {
   // Not awaited: an awaiting caller would appear as an extra `at async main`
   // frame in the async stack traces the tests see (found on babel: stack-trace
   // inline snapshots); Jest's own bin does not await run() either.
+  require('../phases').mark('workers_spawn', { workers: par.workers });
   return new Promise((resolve, reject) => {
     jestCli.run([...stripWorkerArgs(rest), ...extra], undefined).then(async () => {
       collectParallel();

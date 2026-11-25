@@ -4,6 +4,7 @@
 // (vitest, jest, tinypool, ...) are infrastructure and are not recorded, like
 // the pytest/detpy frames in the Python shell.
 const path = require('node:path');
+const PHASES = require('./phases').C; // P2 Phase B counters (written only with DETJS_PHASES=1)
 
 const SHELL_DIR = path.resolve(__dirname) + path.sep; // node/src/
 const INFRA = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:vitest|@vitest|vite|vite-node|tinypool|playwright|playwright-core|@playwright|tinyspy|jest-[a-z0-9-]+|@jest|jest|expect|babel-jest|ts-jest|@swc|source-map-support|pretty-format|mocha|tap|@tapjs|tap-parser|tap-yaml|tcompare|async-hook-domain|ava|@ava|emittery|p-map|currently-unhandled|jasmine|jasmine-core|@jasminejs|uvu|sade|kleur)[\\/]/;
@@ -84,6 +85,7 @@ function runnerLookup() {
   E.prepareStackTrace = structured;
   E.stackTraceLimit = 40;
   const holder = {};
+  PHASES.stack_captures++;
   try {
     E.captureStackTrace(holder, runnerLookup);
     return Array.isArray(holder.stack) && holder.stack.some((cs) => (cs.getFunctionName && cs.getFunctionName()) === 'findSiblingsWithFileExtension');
@@ -129,6 +131,7 @@ function resolveDepth(depth) {
   E.prepareStackTrace = structured;
   E.stackTraceLimit = depth;
   const holder = {};
+  PHASES.stack_captures++;
   try {
     E.captureStackTrace(holder, resolveDepth);
     // eslint-disable-next-line no-unused-expressions

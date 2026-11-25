@@ -299,6 +299,7 @@ async function main(argv) {
     }, 250);
     par.poll.unref();
   }
+  require('../phases').mark('workers_spawn', { workers: par.workers });
   try {
     await ctx.start(filters);
   } catch (e) {

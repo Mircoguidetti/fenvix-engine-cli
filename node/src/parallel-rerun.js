@@ -226,6 +226,13 @@ async function main(cmd, argv) {
   const root = process.cwd();
   // the trace the user asked for; the shells' own default when they did not (src/isolate.js uses the same one)
   const tracePath = path.resolve(root, opts.trace || path.join('.detjs', 'trace.jsonl'));
+  // P2 Phase B timing (DETJS_PHASES=1): both passes append to the phases file of the user's trace
+  const phases = require('./phases');
+  if (process.env.DETJS_PHASES === '1') {
+    process.env.DETJS_PHASES_FILE = `${tracePath}.phases.jsonl`;
+    fs.rmSync(process.env.DETJS_PHASES_FILE, { force: true });
+    phases.mark('wrapper_start');
+  }
   const childEnv = { ...process.env, DETJS_HAZARD_RERUN: '1' };
   // which pass a child is (src/session.js: pass 2, and pass 1 when it found a hazard, do not print the status line;
   // the merged trace this wrapper writes is then the final one and the wrapper prints it -- B7)
@@ -293,7 +300,9 @@ async function main(cmd, argv) {
     ? [...process.execArgv, BIN, cmd, 'run', ...(['run', 'watch', 'dev'].includes(kept[0]) ? kept.slice(1) : kept),
       '--det-workers=1', `--det-trace=${t2path}`, ...fileArgs]
     : [...process.execArgv, BIN, cmd, ...kept, '--det-workers=1', `--det-trace=${t2path}`, ...fileArgs];
+  const r0 = phases.now();
   const p2 = spawnSync(process.execPath, args2, { cwd: root, env: env2, stdio: 'inherit' });
+  phases.mark('rerun_one_lane', { count: affected.length, ms: phases.now() - r0 });
   if (p2.signal) { fs.rmSync(work, { recursive: true, force: true }); return { signal: p2.signal }; }
   const status2 = p2.status ?? 1;
   try {
