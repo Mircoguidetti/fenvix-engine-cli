@@ -277,7 +277,7 @@ class ProofSession {
     this.misses = new Map(); // nodeid -> why
     this.notCached = new Map(); // nodeid -> why
     this.reusedFiles = new Map(); // key -> {fileId, project, tests, duration}
-    this.reusedEntries = new Map(); // verify mode: nodeid -> the entry that would be reused (its recorded inputs)
+    this.reusedEntries = new Map(); // verify mode: nodeid -> the stored text of the entry that would be reused
     this.decided = false;
     this.disabled = null; // reason the cache is off for this session
     this.uncacheableProjects = new Map(); // project name -> reason
@@ -579,10 +579,19 @@ class ProofSession {
     // over them, so that a mismatch can name what the reused result was keyed on (verify_mismatch_inputs)
     if (this.verify) {
       for (const [nid] of receipts) {
-        try { this.reusedEntries.set(nid, JSON.parse(this.store.entry(nid) || 'null')); } catch { /* named as missing */ }
+        // kept as the stored text (parsed only for a mismatch, in summary()): a parsed entry of every hit costs about
+        // twice the memory (adversarial review finding 8, performance finding)
+        try { this.reusedEntries.set(nid, this.store.entry(nid) || null); } catch { /* named as missing */ }
       }
     }
     return { ok: true, receipts, tests, duration: entry.duration || 0 };
+  }
+
+  /** Verify mode: the would-be-reused entry of `nodeid` as recorded (parsed), or null when none was taken. */
+  reusedEntryInputs(nodeid) {
+    const s = this.reusedEntries.get(nodeid);
+    if (s == null) return null;
+    try { return JSON.parse(s); } catch { return null; }
   }
 
   /** The miss text, with the configuration parts that changed named (audit G-1399). */
@@ -831,7 +840,7 @@ class ProofSession {
       // runtime digests; the runtime's parts are runtime_parts / packages), so a wrong reuse can be traced to the
       // input that changed without the key changing (cache measurement B, B1 step 1)
       verify_mismatch_inputs: Object.fromEntries(verified.filter((v) => !v.same)
-        .map((v) => [v.nodeid, this.reusedEntries.has(v.nodeid) ? this.reusedEntries.get(v.nodeid) : null])),
+        .map((v) => [v.nodeid, this.reusedEntryInputs(v.nodeid)])),
       // verify mode: results the decision would reuse that the fresh run never compared (the file's capture did not
       // reach detjs, or a reused test was not in it): not checked, so never counted as verified
       verify_unchecked: this.verify ? (() => {

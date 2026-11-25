@@ -263,9 +263,12 @@ class Docs {
 function expandEntry(e, store) {
   const chunks = store.chunks || {};
   const groups = store.groups || {};
+  // as Rust: `Entry.data` / `Entry.env` have no default (a missing or non-list field rejects the entry) and a pair is
+  // two strings (`Item::Pair(Str, Str)`); never fewer dependencies than the local store holds
+  const isPair = (x) => Array.isArray(x) && x.length === 2 && typeof x[0] === 'string' && typeof x[1] === 'string';
   const expand = (list) => {
-    if (!Array.isArray(list)) return [];
-    if (list.every((x) => Array.isArray(x))) return list;
+    if (!Array.isArray(list)) return null;
+    if (list.every((x) => Array.isArray(x))) return list.every(isPair) ? list : null;
     if (!list.every((x) => typeof x === 'string')) return null;
     const out = [];
     for (const a of list) {
@@ -273,7 +276,7 @@ function expandEntry(e, store) {
       if (!Array.isArray(addrs)) return null;
       for (const c of addrs) {
         const pairs = chunks[c];
-        if (!Array.isArray(pairs)) return null;
+        if (!Array.isArray(pairs) || !pairs.every(isPair)) return null;
         out.push(...pairs);
       }
     }
@@ -582,7 +585,7 @@ function pushSync(client) {
   try { Object.assign(client.stats, JSON.parse(r.stdout).stats || {}); } catch { client.fail('push', new ServiceError(`push process: ${(r.stderr || '').slice(-500)}`)); }
 }
 
-module.exports = { RemoteCache, canonical, docId, lookupKey, pyFloat, Docs, ownFile, pushSync };
+module.exports = { RemoteCache, canonical, docId, lookupKey, pyFloat, Docs, ownFile, pushSync, expandEntry };
 
 if (require.main === module && process.argv[2] === '--push') {
   const job = JSON.parse(fs.readFileSync(0, 'utf8'));
