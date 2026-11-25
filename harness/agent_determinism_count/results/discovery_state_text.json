@@ -1298,6 +1298,60 @@
    "prepass_total": 42353,
    "stack": []
   },
+  "is:public created:>=2024-01-01 unstable llm test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 46084,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 46013,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 xfail \"ai sdk\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 1362,
+   "leaves": 4,
+   "nodes": 6,
+   "prepass_total": 1359,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 xfail \"llama-index\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 184,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 184,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 xfail \"model output\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 5293,
+   "leaves": 10,
+   "nodes": 18,
+   "prepass_total": 5284,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 xfail \"pydantic-ai\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 1470,
+   "leaves": 4,
+   "nodes": 6,
+   "prepass_total": 1469,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 xfail agent test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 50516,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 50306,
+   "stack": []
+  },
   "is:public created:>=2024-01-01 xfail anthropic test": {
    "capped": false,
    "done": true,
@@ -1305,6 +1359,15 @@
    "leaves": 12,
    "nodes": 22,
    "prepass_total": 7000,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 xfail autogen test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 266,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 266,
    "stack": []
   },
   "is:public created:>=2024-01-01 xfail claude test": {
@@ -1316,19 +1379,68 @@
    "prepass_total": 70514,
    "stack": []
   },
+  "is:public created:>=2024-01-01 xfail crewai test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 188,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 186,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 xfail eval test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 12180,
+   "leaves": 19,
+   "nodes": 36,
+   "prepass_total": 12136,
+   "stack": []
+  },
   "is:public created:>=2024-01-01 xfail gemini test": {
    "capped": false,
-   "done": false,
-   "leaf_total": 3716,
-   "leaves": 7,
-   "nodes": 13,
+   "done": true,
+   "leaf_total": 4306,
+   "leaves": 8,
+   "nodes": 14,
    "prepass_total": 4293,
-   "stack": [
-    [
-     "2026-11-10",
-     "2026-11-25"
-    ]
-   ]
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 xfail gpt test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 7235,
+   "leaves": 13,
+   "nodes": 24,
+   "prepass_total": 7217,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 xfail langchain test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 3681,
+   "leaves": 5,
+   "nodes": 8,
+   "prepass_total": 3681,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 xfail langgraph test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 1683,
+   "leaves": 5,
+   "nodes": 8,
+   "prepass_total": 1679,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 xfail llamaindex test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 99,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 99,
+   "stack": []
   },
   "is:public created:>=2024-01-01 xfail llm test": {
    "capped": false,
@@ -1347,17 +1459,26 @@
    "nodes": 24,
    "prepass_total": 9523,
    "stack": []
+  },
+  "is:public created:>=2024-01-01 xfail prompt test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 49487,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 49403,
+   "stack": []
   }
  },
  "search_requests": {
   "code": 0,
-  "issues": 1334
+  "issues": 1782
  },
  "search_stats": {
-  "429": 3,
+  "429": 4,
   "limit": 30,
-  "remaining": 25,
-  "reset": 1795635178
+  "remaining": 27,
+  "reset": 1795636973
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
