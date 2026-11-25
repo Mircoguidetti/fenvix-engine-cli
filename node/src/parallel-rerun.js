@@ -79,13 +79,55 @@ function labelFile(label) {
   return bar >= 0 ? s.slice(bar + 1) : s;
 }
 
+/**
+ * A trace, streamed (P0 big trace: a 1.2 GB trace does not fit in one JavaScript string): the header in full, and per
+ * test only `{nodeid, outcome, never_started, offset, length}` -- `never_started`: its events hold a
+ * `sched.never_started` event (B5); `offset`/`length`: its raw line in the file, so a record is copied byte for byte
+ * (writeRecordParts) instead of being kept in memory. THROWS when the file cannot be read or a line is not JSON;
+ * returns null when it has no header.
+ */
 function readTrace(p) {
+  let header = null;
+  const tests = [];
+  require('./trace-lines').forEachLine(p, (line, i, offset, length) => {
+    if (!line) return;
+    const o = JSON.parse(line);
+    if (o.type === 'header') { if (!header) header = o; return; }
+    if (o.type !== 'test') return;
+    const neverStarted = (o.events || []).some((e) => e && e.o === 'sched.never_started');
+    tests.push({ nodeid: o.nodeid, outcome: o.outcome, never_started: neverStarted, offset, length });
+  });
+  if (!header) return null;
+  return { header, tests };
+}
+
+/** readTrace, with null for a trace that cannot be read (pass 2: today's rule, NOT PROVEN, exit 1). */
+function readTraceOrNull(p) {
+  try { return readTrace(p); } catch { return null; }
+}
+
+/**
+ * Write each record as a one-record part under `pdir` for native.mergeTraces: the header line, then the record's
+ * raw line copied byte for byte from its trace (`r.src`: 1 = t1Path, 2 = t2Path; `r.offset`, `r.length` from
+ * readTrace). Returns the part paths in order.
+ */
+function writeRecordParts(records, t1Path, t2Path, pdir) {
+  const { readLineBytes } = require('./trace-lines');
+  fs.mkdirSync(pdir, { recursive: true });
+  const fds = { 1: fs.openSync(t1Path, 'r'), 2: t2Path && fs.existsSync(t2Path) ? fs.openSync(t2Path, 'r') : null };
+  const head = Buffer.from(`${JSON.stringify({ type: 'header', format: 'detpy-trace', version: 1, encoding: 2, meta: {}, order: [] })}\n`);
+  const nl = Buffer.from('\n');
   try {
-    const lines = fs.readFileSync(p, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l));
-    const header = lines.find((l) => l.type === 'header');
-    if (!header) return null;
-    return { header, tests: lines.filter((l) => l.type === 'test') };
-  } catch { return null; }
+    return records.map((r, i) => {
+      const p = path.join(pdir, `${String(i).padStart(6, '0')}.jsonl`);
+      const fd = fds[r.src];
+      if (fd === null || fd === undefined) throw new Error(`detjs: parallel: record ${r.nodeid} has no source trace (${r.src})`);
+      fs.writeFileSync(p, Buffer.concat([head, readLineBytes(fd, r.offset, r.length), nl]));
+      return p;
+    });
+  } finally {
+    for (const fd of Object.values(fds)) if (fd !== null) fs.closeSync(fd);
+  }
 }
 
 /** Whether this command should be wrapped at all: a `--det` run of a runner that uses lanes, not already a pass. */
@@ -127,7 +169,9 @@ function accountRerun(firstTests, rerunTests, files) {
   const set = new Set(files);
   const want = (firstTests || []).filter((r) => set.has(fileOf(r.nodeid))).map((r) => r.nodeid);
   // a record detjs wrote for a test that never started (B5, controls.recordNeverStarted) is not a re-run of it
-  const ran = (r) => !((r.events || []).some((e) => e && e.o === 'sched.never_started'));
+  // (readTrace computes it while streaming: `never_started`; a record with its events, as the unit tests give, is
+  // read the same way)
+  const ran = (r) => !(r.never_started || (r.events || []).some((e) => e && e.o === 'sched.never_started'));
   const got = new Set((rerunTests || []).filter(ran).map((r) => r.nodeid));
   const unaccounted = want.filter((id) => !got.has(id));
   const complete = Array.isArray(rerunTests) && unaccounted.length === 0;
@@ -199,16 +243,24 @@ async function main(cmd, argv) {
   // a trace pass 1 did not write (it stopped before writing one, and an earlier run's is still there) is not read:
   // its hazards and failures are another run's, and clearing pass 1's red with them would be a false green
   const after = traceStamp(tracePath);
-  const t1 = after !== null && after !== before ? readTrace(tracePath) : null;
-  const affected = t1 ? hazardFiles(t1.header) : [];
-  if (!t1 && after !== null) {
-    // pass 1 left a trace this process cannot read (malformed, too large): no re-run, its code forwarded as it is
-    process.stderr.write(`detjs: parallel: the first run's trace ${path.relative(root, tracePath)} could not be read back; no one-lane re-run, its exit code ${status1} stands\n`);
+  let t1 = null;
+  if (after !== null && after !== before) {
+    let why = 'it has no header';
+    try { t1 = readTrace(tracePath); } catch (e) { why = e && e.message; }
+    if (!t1) {
+      // P0 big trace: pass 1 wrote a trace this process cannot read (malformed, a line over the limit, a read
+      // error): its hazards and failures are unknown, so the run is NOT PROVEN, exit 2 (before: no re-run, and pass
+      // 1's code stood -- 0 on agentic-qe with 275 failed tests in the trace)
+      exitStatus.recordUnknown(`the first run's trace ${path.relative(root, tracePath)} could not be read back: ${why}`);
+      return { status: exitStatus.runExit({ internalError: true }) };
+    }
+  } else if (after !== null) {
+    process.stderr.write(`detjs: parallel: the trace ${path.relative(root, tracePath)} was not written by this run; no one-lane re-run, its exit code ${status1} stands\n`);
   }
+  const affected = t1 ? hazardFiles(t1.header) : [];
   if (!affected.length) return { status: status1 }; // the ordinary case: nothing re-run, nothing changed
 
   // ---- a hazard was reported: the files it names run again, together, in one lane ----
-  const bad1 = t1.tests.filter((r) => !PASSED.has(r.outcome));
   process.stderr.write(`detjs: parallel: ${affected.length} file(s) named by a cross-worker hazard run again in one lane, `
     + `because a placement must never decide an outcome: ${affected.join(', ')}\n`);
 
@@ -246,7 +298,67 @@ async function main(cmd, argv) {
   const p2 = spawnSync(process.execPath, args2, { cwd: root, env: env2, stdio: 'inherit' });
   if (p2.signal) { fs.rmSync(work, { recursive: true, force: true }); return { signal: p2.signal }; }
   const status2 = p2.status ?? 1;
-  const t2 = readTrace(t2path);
+  try {
+    const { status } = finishRerun({ t1Path: tracePath, t2Path: t2path, status1, status2, affected, tracePath, root, t1 });
+    return { status };
+  } finally {
+    fs.rmSync(work, { recursive: true, force: true });
+  }
+}
+
+/**
+ * The merged records of a complete re-run: the first pass's records, each hazard file's replaced at its first position
+ * by the re-run's (one record per nodeid: the first the re-run wrote), then hazard files only the re-run reported.
+ */
+function spliceRecords(firstTests, rerunTests, affected) {
+  const set = new Set(affected);
+  const byFile = new Map();
+  // one record per nodeid: the first the re-run wrote. A runner that ran a file twice (see dropPatterns above)
+  // must not put two records of one test in the merged trace, whatever the argument handling did.
+  const seen = new Set();
+  for (const r of rerunTests) {
+    if (seen.has(r.nodeid)) continue;
+    seen.add(r.nodeid);
+    const f = fileOf(r.nodeid);
+    if (!byFile.has(f)) byFile.set(f, []);
+    byFile.get(f).push(r);
+  }
+  const spliced = new Set();
+  const records = [];
+  for (const r of firstTests) {
+    const f = fileOf(r.nodeid);
+    if (!set.has(f)) { records.push(r); continue; }
+    if (spliced.has(f)) continue; // its records went in at the file's first position
+    spliced.add(f);
+    for (const x of byFile.get(f) || []) records.push(x); // one push per record: a spread overflows above ~100 000
+  }
+  // a file the re-run reports that the first pass never did (it died in its lane before recording)
+  // (only hazard files: a file the runner's own filters made pass 2 run as well is already in the first pass's
+  // records, and a second copy would count it twice)
+  for (const [f, rs] of byFile) if (!spliced.has(f) && set.has(f)) for (const x of rs) records.push(x);
+  return records;
+}
+
+/**
+ * Everything after the one-lane re-run (split out of main so it can be tested on its own, P0 big trace criterion 3):
+ * read the re-run's trace, account for the affected tests, write the merged trace to `tracePath` (records copied
+ * byte for byte from t1 or t2) and decide the status. `t1` is t1Path already read with readTrace (read here when
+ * absent). Returns {status, res}: `res` is native.mergeTraces' result.
+ */
+function finishRerun({ t1Path, t2Path, status1, status2, affected, tracePath, root, t1 }) {
+  if (!t1) {
+    let why = 'it has no header';
+    try { t1 = readTrace(t1Path); } catch (e) { why = e && e.message; }
+    if (!t1) {
+      exitStatus.recordUnknown(`the first run's trace ${path.relative(root, t1Path)} could not be read back: ${why}`);
+      return { status: exitStatus.runExit({ internalError: true }), res: null };
+    }
+  }
+  const bad1 = t1.tests.filter((r) => !PASSED.has(r.outcome));
+  // pass 2 unchanged: a missing or unreadable re-run trace is NOT PROVEN (wrapperRunnerCode: exit 1)
+  const t2 = readTraceOrNull(t2Path);
+  for (const r of t1.tests) r.src = 1;
+  if (t2) for (const r of t2.tests) r.src = 2;
 
   // ---- the re-run's records replace the first pass's for those files, and are what gets reported ----
   const set = new Set(affected);
@@ -257,72 +369,55 @@ async function main(cmd, argv) {
 
   let records;
   if (complete) {
-    const byFile = new Map();
-    // one record per nodeid: the first the re-run wrote. A runner that ran a file twice (see dropPatterns above)
-    // must not put two records of one test in the merged trace, whatever the argument handling did.
-    const seen = new Set();
-    for (const r of t2.tests) {
-      if (seen.has(r.nodeid)) continue;
-      seen.add(r.nodeid);
-      const f = fileOf(r.nodeid);
-      if (!byFile.has(f)) byFile.set(f, []);
-      byFile.get(f).push(r);
-    }
-    const spliced = new Set();
-    records = [];
-    for (const r of t1.tests) {
-      const f = fileOf(r.nodeid);
-      if (!set.has(f)) { records.push(r); continue; }
-      if (spliced.has(f)) continue; // its records went in at the file's first position
-      spliced.add(f);
-      records.push(...(byFile.get(f) || []));
-    }
-    // a file the re-run reports that the first pass never did (it died in its lane before recording)
-    // (only hazard files: a file the runner's own filters made pass 2 run as well is already in the first pass's
-    // records, and a second copy would count it twice)
-    for (const [f, rs] of byFile) if (!spliced.has(f) && set.has(f)) records.push(...rs);
+    records = spliceRecords(t1.tests, t2.tests, affected);
   } else {
     records = t1.tests;
     process.stderr.write(`detjs: parallel: the one-lane re-run could not account for ${t2 ? `${unaccounted.length} test(s) of the affected files` : 'its own trace'}`
       + `; the first run's records stay, nothing was cleared, and its unaccounted tests are NOT PROVEN${t2 && unaccounted.length ? ` (first: ${unaccounted[0]})` : ''}\n`);
   }
-  for (const { cause } of acc.notProvenFiles) {
-    process.stderr.write(`detjs: parallel: NOT PROVEN ${cause}: the one-lane re-run did not account for its tests\n`);
+  for (const { file, cause } of acc.notProvenFiles) {
+    process.stderr.write(`detjs: parallel: NOT PROVEN ${file}: the one-lane re-run did not account for its tests (${cause})\n`);
   }
   // B7: the counts of the final trace, in its header and on one status line, and the exit decision on them
   const status = exitStatus.countStatus(records, acc.notProven);
 
-  // the merged trace, written where the user asked for it
+  // the merged trace, written where the user asked for it; each record's line copied byte for byte from its trace
   const order = records.map((r) => r.nodeid);
-  const pdir = path.join(work, 'parts');
-  fs.mkdirSync(pdir, { recursive: true });
-  const parts = records.map((r, i) => {
-    const p = path.join(pdir, `${String(i).padStart(6, '0')}.jsonl`);
-    fs.writeFileSync(p, `${JSON.stringify({ type: 'header', format: 'detpy-trace', version: 1, encoding: 2, meta: {}, order: [] })}\n${JSON.stringify(r)}\n`);
-    return p;
-  });
-  const meta = { ...(t1.header.meta || {}) };
-  // what was done and why, so the trace says it and `verify` and the reviewer can see it
-  meta.hazard_rerun = {
-    files: affected,
-    // the first pass's tests of the hazard files: what the one-lane re-run had to account for (the runner's
-    // proof.rerun_one_lane)
-    tests: want.length,
-    hazards: ((t1.header.meta && t1.header.meta.parallel && t1.header.meta.parallel.hazards) || [])
-      .map((h) => ({ kind: h.kind, what: h.what, a: h.a, b: h.b })),
-    reported: complete ? 'one-lane re-run' : 'first run (the re-run was not complete)',
-    complete,
-    unaccounted,
-    not_proven: acc.notProvenFiles,
-    first_run_failed: bad1.map((r) => r.nodeid),
-  };
-  meta.status = status;
   fs.mkdirSync(path.dirname(tracePath), { recursive: true });
-  const res = native.mergeTraces(parts, tracePath, JSON.stringify(meta), order);
+  const work = fs.mkdtempSync(path.join(path.dirname(tracePath), '.detjs-merge-'));
+  let res;
+  try {
+    const parts = writeRecordParts(records, t1Path, t2Path, path.join(work, 'parts'));
+    const meta = { ...(t1.header.meta || {}) };
+    // what was done and why, so the trace says it and `verify` and the reviewer can see it
+    meta.hazard_rerun = {
+      files: affected,
+      // the first pass's tests of the hazard files: what the one-lane re-run had to account for (the runner's
+      // proof.rerun_one_lane)
+      tests: want.length,
+      hazards: ((t1.header.meta && t1.header.meta.parallel && t1.header.meta.parallel.hazards) || [])
+        .map((h) => ({ kind: h.kind, what: h.what, a: h.a, b: h.b })),
+      reported: complete ? 'one-lane re-run' : 'first run (the re-run was not complete)',
+      complete,
+      unaccounted,
+      not_proven: acc.notProvenFiles,
+      first_run_failed: bad1.map((r) => r.nodeid),
+    };
+    meta.status = status;
+    res = native.mergeTraces(parts, tracePath, JSON.stringify(meta), order);
+  } finally {
+    fs.rmSync(work, { recursive: true, force: true });
+  }
+  // P0 big trace: a part the merge could not read is missing from the trace with its tests: status unknown, exit 2
+  if (res.skipped.length) {
+    exitStatus.recordUnknown(`unreadable trace parts, their tests are not counted: ${res.skipped.join('; ')}`);
+    return { status: exitStatus.runExit({ internalError: true }), res };
+  }
 
   process.stderr.write(`${exitStatus.statusLine(status)}\n`);
   const badFinal = records.filter((r) => !PASSED.has(r.outcome));
-  const cleared = bad1.filter((r) => set.has(fileOf(r.nodeid)) && !badFinal.some((x) => x.nodeid === r.nodeid));
+  const badIds = new Set(badFinal.map((r) => r.nodeid));
+  const cleared = bad1.filter((r) => set.has(fileOf(r.nodeid)) && !badIds.has(r.nodeid));
   process.stdout.write(`detjs: trace ${path.relative(root, tracePath)}: ${res.nTests} tests, order digest ${res.orderDigest}`
     + ` (${affected.length} file(s) re-run in one lane)\n`);
   if (complete) {
@@ -330,7 +425,6 @@ async function main(cmd, argv) {
       + ` ${badFinal.filter((r) => set.has(fileOf(r.nodeid))).length} failed of ${want.length} test(s)`
       + `${cleared.length ? `; ${cleared.length} failure(s) of the first run did not recur in one lane (the exit code is not lowered): ${cleared.slice(0, 5).map((r) => r.nodeid).join(', ')}${cleared.length > 5 ? ` (+${cleared.length - 5})` : ''}` : ''}\n`);
   }
-  fs.rmSync(work, { recursive: true, force: true });
 
   // The status (B1, src/exit-status.js). A green is only ever given when the re-run accounted for everything: an
   // unaccounted test is NOT PROVEN, which is exit 1.
@@ -338,7 +432,7 @@ async function main(cmd, argv) {
     process.stderr.write(`detjs: parallel: the one-lane re-run of the hazard files passed, but the first run's exit code ${status1}`
       + ' stands: a re-run never turns a red into a green (src/parallel-rerun.js wrapperRunnerCode)\n');
   }
-  return { status: exitStatus.runExit({ ...status, runnerCode: wrapperRunnerCode(status1, status2, Boolean(t2)) }) };
+  return { status: exitStatus.runExit({ ...status, runnerCode: wrapperRunnerCode(status1, status2, Boolean(t2)) }), res };
 }
 
-module.exports = { main, shouldWrap, hazardFiles, rerunArgs, fileOf, labelFile, accountRerun, wrapperRunnerCode };
+module.exports = { main, finishRerun, spliceRecords, readTrace, writeRecordParts, shouldWrap, hazardFiles, rerunArgs, fileOf, labelFile, accountRerun, wrapperRunnerCode };

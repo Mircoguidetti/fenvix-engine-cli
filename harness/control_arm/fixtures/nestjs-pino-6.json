@@ -1,0 +1,428 @@
+{
+ "source": "harness/control_arm/data/nestjs-pino (recorded 9 runs, first 6 test ids, first 6 file times)",
+ "runs": {
+  "S1": {
+   "row": {
+    "run": "S1",
+    "kind": "S",
+    "seed": null,
+    "exit": 0,
+    "wall_s": 15.68,
+    "tests": 269,
+    "timed_out": false,
+    "crashed": false,
+    "overlapping_file_pairs": 0
+   },
+   "outcomes": {
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::in request context": "passed",
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::out of request context": "passed",
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::response log": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::in request context": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::out of request context": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::response log": "passed"
+   },
+   "file_times": {
+    "/tmp/pm/repos/nestjs-pino/__tests__/assign.spec.ts": [
+     1795436519329,
+     1795436519478.4253
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/default-routes.spec.ts": [
+     1795436522439,
+     1795436522616.7537
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/direct-calls.spec.ts": [
+     1795436515972,
+     1795436515985.4155
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/errors.spec.ts": [
+     1795436516370,
+     1795436516593.5225
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/extending.spec.ts": [
+     1795436523066,
+     1795436523222.4412
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/get-logger-token.spec.ts": [
+     1795436527487,
+     1795436527584.0715
+    ]
+   }
+  },
+  "S2": {
+   "row": {
+    "run": "S2",
+    "kind": "S",
+    "seed": null,
+    "exit": 0,
+    "wall_s": 16.9,
+    "tests": 269,
+    "timed_out": false,
+    "crashed": false,
+    "overlapping_file_pairs": 0
+   },
+   "outcomes": {
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::in request context": "passed",
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::out of request context": "passed",
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::response log": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::in request context": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::out of request context": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::response log": "passed"
+   },
+   "file_times": {
+    "/tmp/pm/repos/nestjs-pino/__tests__/assign.spec.ts": [
+     1795436535927,
+     1795436536095.6978
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/default-routes.spec.ts": [
+     1795436539141,
+     1795436539319.624
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/direct-calls.spec.ts": [
+     1795436531696,
+     1795436531709.42
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/errors.spec.ts": [
+     1795436532172,
+     1795436532458.1675
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/extending.spec.ts": [
+     1795436539770,
+     1795436539924.0264
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/get-logger-token.spec.ts": [
+     1795436544378,
+     1795436544503.7056
+    ]
+   }
+  },
+  "SS1": {
+   "row": {
+    "run": "SS1",
+    "kind": "SS",
+    "seed": 1,
+    "exit": 0,
+    "wall_s": 15.78,
+    "tests": 269,
+    "timed_out": false,
+    "crashed": false,
+    "overlapping_file_pairs": 0
+   },
+   "outcomes": {
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::in request context": "passed",
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::out of request context": "passed",
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::response log": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::in request context": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::out of request context": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::response log": "passed"
+   },
+   "file_times": {
+    "/tmp/pm/repos/nestjs-pino/__tests__/assign.spec.ts": [
+     1795436552148,
+     1795436552323.868
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/default-routes.spec.ts": [
+     1795436553770,
+     1795436553935.1252
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/direct-calls.spec.ts": [
+     1795436548990,
+     1795436549001.3638
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/errors.spec.ts": [
+     1795436555393,
+     1795436555654.4297
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/extending.spec.ts": [
+     1795436559280,
+     1795436559426.6128
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/get-logger-token.spec.ts": [
+     1795436549281,
+     1795436549372.7458
+    ]
+   }
+  },
+  "SS2": {
+   "row": {
+    "run": "SS2",
+    "kind": "SS",
+    "seed": 2,
+    "exit": 0,
+    "wall_s": 15.99,
+    "tests": 269,
+    "timed_out": false,
+    "crashed": false,
+    "overlapping_file_pairs": 0
+   },
+   "outcomes": {
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::in request context": "passed",
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::out of request context": "passed",
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::response log": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::in request context": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::out of request context": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::response log": "passed"
+   },
+   "file_times": {
+    "/tmp/pm/repos/nestjs-pino/__tests__/assign.spec.ts": [
+     1795436569135,
+     1795436569304.6714
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/default-routes.spec.ts": [
+     1795436570745,
+     1795436570920.9724
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/direct-calls.spec.ts": [
+     1795436563718,
+     1795436563731.4448
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/errors.spec.ts": [
+     1795436572046,
+     1795436572299.6257
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/extending.spec.ts": [
+     1795436575668,
+     1795436575801.7058
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/get-logger-token.spec.ts": [
+     1795436563292,
+     1795436563391.6577
+    ]
+   }
+  },
+  "P1": {
+   "row": {
+    "run": "P1",
+    "kind": "P",
+    "seed": 1,
+    "exit": 0,
+    "wall_s": 6.19,
+    "tests": 269,
+    "timed_out": false,
+    "crashed": false,
+    "overlapping_file_pairs": 21
+   },
+   "outcomes": {
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::in request context": "passed",
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::out of request context": "passed",
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::response log": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::in request context": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::out of request context": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::response log": "passed"
+   },
+   "file_times": {
+    "/tmp/pm/repos/nestjs-pino/__tests__/assign.spec.ts": [
+     1795436579648,
+     1795436579852.9956
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/default-routes.spec.ts": [
+     1795436580321,
+     1795436580557.98
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/direct-calls.spec.ts": [
+     1795436578429,
+     1795436578442.4329
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/errors.spec.ts": [
+     1795436580618,
+     1795436580940.373
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/extending.spec.ts": [
+     1795436581872,
+     1795436582055.0154
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/get-logger-token.spec.ts": [
+     1795436578614,
+     1795436578760.0728
+    ]
+   }
+  },
+  "P2": {
+   "row": {
+    "run": "P2",
+    "kind": "P",
+    "seed": 2,
+    "exit": 0,
+    "wall_s": 6.14,
+    "tests": 269,
+    "timed_out": false,
+    "crashed": false,
+    "overlapping_file_pairs": 19
+   },
+   "outcomes": {
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::in request context": "passed",
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::out of request context": "passed",
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::response log": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::in request context": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::out of request context": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::response log": "passed"
+   },
+   "file_times": {
+    "/tmp/pm/repos/nestjs-pino/__tests__/assign.spec.ts": [
+     1795436586241,
+     1795436586433.2654
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/default-routes.spec.ts": [
+     1795436586956,
+     1795436587219.204
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/direct-calls.spec.ts": [
+     1795436584497,
+     1795436584512.4092
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/errors.spec.ts": [
+     1795436587187,
+     1795436587492.1128
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/extending.spec.ts": [
+     1795436588597,
+     1795436588743.473
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/get-logger-token.spec.ts": [
+     1795436583918,
+     1795436584025.4749
+    ]
+   }
+  },
+  "P3": {
+   "row": {
+    "run": "P3",
+    "kind": "P",
+    "seed": 3,
+    "exit": 0,
+    "wall_s": 6.18,
+    "tests": 269,
+    "timed_out": false,
+    "crashed": false,
+    "overlapping_file_pairs": 18
+   },
+   "outcomes": {
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::in request context": "passed",
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::out of request context": "passed",
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::response log": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::in request context": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::out of request context": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::response log": "passed"
+   },
+   "file_times": {
+    "/tmp/pm/repos/nestjs-pino/__tests__/assign.spec.ts": [
+     1795436592033,
+     1795436592266.8225
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/default-routes.spec.ts": [
+     1795436593262,
+     1795436593501.7544
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/direct-calls.spec.ts": [
+     1795436590963,
+     1795436590978.295
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/errors.spec.ts": [
+     1795436593623,
+     1795436593924.658
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/extending.spec.ts": [
+     1795436593014,
+     1795436593232.6826
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/get-logger-token.spec.ts": [
+     1795436594886,
+     1795436594983.5886
+    ]
+   }
+  },
+  "P4": {
+   "row": {
+    "run": "P4",
+    "kind": "P",
+    "seed": 4,
+    "exit": 0,
+    "wall_s": 6.48,
+    "tests": 269,
+    "timed_out": false,
+    "crashed": false,
+    "overlapping_file_pairs": 18
+   },
+   "outcomes": {
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::in request context": "passed",
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::out of request context": "passed",
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::response log": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::in request context": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::out of request context": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::response log": "passed"
+   },
+   "file_times": {
+    "/tmp/pm/repos/nestjs-pino/__tests__/assign.spec.ts": [
+     1795436598204,
+     1795436598407.611
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/default-routes.spec.ts": [
+     1795436599661,
+     1795436599882.9458
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/direct-calls.spec.ts": [
+     1795436596408,
+     1795436596422.4136
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/errors.spec.ts": [
+     1795436600177,
+     1795436600498.489
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/extending.spec.ts": [
+     1795436599658,
+     1795436599848.889
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/get-logger-token.spec.ts": [
+     1795436596373,
+     1795436596528.061
+    ]
+   }
+  },
+  "P5": {
+   "row": {
+    "run": "P5",
+    "kind": "P",
+    "seed": 5,
+    "exit": 0,
+    "wall_s": 6.87,
+    "tests": 269,
+    "timed_out": false,
+    "crashed": false,
+    "overlapping_file_pairs": 22
+   },
+   "outcomes": {
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::in request context": "passed",
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::out of request context": "passed",
+    "__tests__/assign.spec.ts::assign::ExpressAdapter::response log": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::in request context": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::out of request context": "passed",
+    "__tests__/assign.spec.ts::assign::FastifyAdapter::response log": "passed"
+   },
+   "file_times": {
+    "/tmp/pm/repos/nestjs-pino/__tests__/assign.spec.ts": [
+     1795436605161,
+     1795436605458.2444
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/default-routes.spec.ts": [
+     1795436606975,
+     1795436607282.3496
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/direct-calls.spec.ts": [
+     1795436603642,
+     1795436603656.4058
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/errors.spec.ts": [
+     1795436607075,
+     1795436607442.778
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/extending.spec.ts": [
+     1795436606758,
+     1795436606951.9836
+    ],
+    "/tmp/pm/repos/nestjs-pino/__tests__/get-logger-token.spec.ts": [
+     1795436604204,
+     1795436604336.9875
+    ]
+   }
+  }
+ }
+}

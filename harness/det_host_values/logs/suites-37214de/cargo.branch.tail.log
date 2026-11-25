@@ -1,0 +1,60 @@
+test verify::tests::value_divergence_is_located_exactly ... ok
+test verify::tests::uncontrolled_sources_are_never_identical ... ok
+test shared::tests::concurrent_writers_lose_nothing ... ok
+test proof::tests::shard_is_written_by_chunk_and_loads_the_same_entries ... ok
+
+test result: ok. 199 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.35s
+
+     Running tests/golden_verify.rs (target/debug/deps/golden_verify-199e34725d96a991)
+
+running 1 test
+test every_golden_case_gives_the_pre_refactor_report_in_memory_and_from_files ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.29s
+
+     Running tests/r058_empty_fingerprint.rs (target/debug/deps/r058_empty_fingerprint-340cb87835b5c85b)
+
+running 3 tests
+test an_empty_fingerprint_does_not_prove_a_parallel_result_equal_to_the_serial_one ... ok
+test a_test_with_no_recorded_fingerprint_is_not_reported_identical ... ok
+test two_fully_cached_runs_with_every_control_off_are_not_reported_identical ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/r058_false_identical.rs (target/debug/deps/r058_false_identical-36fd596a9fdf6eb0)
+
+running 1 test
+test two_runs_that_observed_different_values_are_not_reported_identical ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/r058_stdin_and_truncation.rs (target/debug/deps/r058_stdin_and_truncation-0a8dac326d1666ca)
+
+running 3 tests
+test survived_truncation_does_not_collapse_two_executions_onto_one_fingerprint ... ok
+test survived_truncation_does_not_hide_a_mark_or_an_unaccounted_entry ... ok
+test a_reported_standard_input_read_is_not_proven ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/r058_unknown_sensor_fails_open.rs (target/debug/deps/r058_unknown_sensor_fails_open-2e2eda46fb5c35f0)
+
+running 3 tests
+test a_known_sensor_still_needs_its_controls ... ok
+test a_sensor_the_core_has_never_heard_of_is_not_provable ... ok
+test the_cache_reuse_sensor_does_not_pass_with_every_control_switched_off ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/detpy_node-b9fad13a639ea1d6)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests detpy_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

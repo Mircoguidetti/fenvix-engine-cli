@@ -1,0 +1,74 @@
+{
+  "labels": [
+    "run0",
+    "run1",
+    "run2"
+  ],
+  "order_digests": [
+    "83dc55ccddb68bf3cf487468c2681a52",
+    "83dc55ccddb68bf3cf487468c2681a52",
+    "83dc55ccddb68bf3cf487468c2681a52"
+  ],
+  "complete": [
+    false,
+    false,
+    false
+  ],
+  "summary": {
+    "runs": 3,
+    "tests": 1,
+    "stable": 0,
+    "diverged": 1,
+    "missing": 0,
+    "outcome_unstable": 0,
+    "order_identical": true,
+    "reasons": {
+      "time": 1
+    },
+    "inputs_recorded": false,
+    "identical": 0,
+    "input_differs": 0,
+    "not_proven": 0
+  },
+  "tests": [
+    {
+      "nodeid": "x",
+      "status": "diverged",
+      "fingerprints": [
+        "ad34a2a530790da587c4a41ac6eb6904",
+        "ad34a2a530790da587c4a41ac6eb6904",
+        "ebc270cbf420d315d35a4cd34f224d41"
+      ],
+      "outcomes": [
+        "passed",
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 2,
+      "outcome_stable": true,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 2,
+        "index": 0,
+        "window": null,
+        "event_a": {
+          "t": 0,
+          "s": "time",
+          "o": "time.time",
+          "at": "t.py:1",
+          "v": "1"
+        },
+        "event_b": {
+          "t": 0,
+          "s": "time",
+          "o": "time.time",
+          "at": "t.py:1",
+          "v": "2"
+        },
+        "reason": "time",
+        "description": "event #0: time.time @ t.py:1 returned different values: \"1\" vs \"2\""
+      }
+    }
+  ],
+  "input_differences": []
+}

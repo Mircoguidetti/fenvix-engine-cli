@@ -100,12 +100,12 @@ function needsEarly(argv) {
   return PRELOAD.test(process.env.NODE_OPTIONS || '') || process.execArgv.some((a) => PRELOAD.test(a));
 }
 
-// Time zone and locale (audit G-0139, G-0140; review P1 #7): under --det they are pinned for the runner and every
-// process it starts, whatever the machine or the job's environment sets: `TZ=UTC`, `LC_ALL`/`LANG=C.UTF-8`
-// (`LANGUAGE` removed), as the Python shell does. A job keeps its own value only explicitly, `--det-tz=ZONE|keep` /
-// `--det-locale=LOC|keep`; that value is recorded in the trace header, keyed by the cache and named by verify. A
-// detjs started by a pinned one keeps the choice made at the top (DETJS_PINNED). The locale of ICU is chosen when
-// Node starts: detjs starts itself again with the pinned environment.
+// Time zone and locale (audit G-0139, G-0140; review P1 #7; spec "--det uses the machine's values by default",
+// 2026-11-23): by default the run keeps the machine's `TZ`, `LC_ALL` and `LANG` (`keep`); they are recorded in the
+// trace header, keyed by the cache and named by verify. `--det-tz=ZONE` / `--det-locale=LOC` pin them for the runner
+// and every process it starts (`--det-tz=UTC --det-locale=C.UTF-8` is the earlier default; a pinned locale removes
+// `LANGUAGE`). A detjs started by a pinned one keeps the choice made at the top (DETJS_PINNED). The locale of ICU is
+// chosen when Node starts: detjs starts itself again with the pinned environment.
 const RUNNERS_ALL = new Set(['vitest', 'jest', 'bun-test', 'deno-test', 'node-test', 'mocha', ...RUNNER_SHELLS]);
 function pinned(argv) {
   if (!RUNNERS_ALL.has(argv[0])) return null;
@@ -119,10 +119,10 @@ function pinned(argv) {
     }
     return v;
   };
-  // default: UTC / C.UTF-8 whatever the environment says; under a pinned detjs, the choice made there
+  // default: the machine's values (keep); under a pinned detjs, the choice made there
   const top = /^tz=([^;]*);locale=(.*)$/.exec(process.env.DETJS_PINNED || '');
-  const tz = opt('--det-tz', top ? (top[1] === 'keep' ? 'keep' : top[1]) : 'UTC');
-  const loc = opt('--det-locale', top ? (top[2] === 'keep' ? 'keep' : top[2]) : 'C.UTF-8');
+  const tz = opt('--det-tz', top ? (top[1] === 'keep' ? 'keep' : top[1]) : 'keep');
+  const loc = opt('--det-locale', top ? (top[2] === 'keep' ? 'keep' : top[2]) : 'keep');
   const env = {};
   if (tz !== 'keep') env.TZ = tz;
   if (loc !== 'keep') { env.LC_ALL = loc; env.LANG = loc; }
@@ -134,6 +134,28 @@ function pinEnv(pin, base) {
   if (pin.loc !== 'keep') delete env.LANGUAGE;
   return env;
 }
+
+// One epoch per run (spec "--det uses the machine's values by default"): the outermost detjs picks it
+// (src/session.js resolveEpoch: --det-epoch, the cache's virtual day, the --det-compare/--det-plan trace's, else the
+// machine's time) and exports it with the mark DETJS_EPOCH_RUN=1, so that every session the run starts (its restart
+// below, the one-lane re-run's passes, --det-isolate's per-test sessions, the repro driver's runs) uses the same one.
+function pickEpoch(argv) {
+  const repro = argv[0] === 'repro' || argv[0] === 'explore' || argv[0] === 'replay';
+  if (!repro && !RUNNERS_ALL.has(argv[0]) && argv[0] !== 'playwright') return;
+  if (!repro) {
+    const det = argv.includes('--det') || process.env.DETJS === '1' || process.env.DETJS === 'true'
+      || argv.some((a) => a === '--det-isolate' || a === '--det-isolate=1' || a === '--det-isolate=true'); // implies --det (src/isolate.js)
+    if (!det || argv.includes('--no-det') || argv.includes('--det-help')) return;
+  }
+  try {
+    const session = require('../src/session');
+    const opts = repro ? { epochExplicit: false } : session.parseArgs(argv.slice(1)).opts;
+    const epoch = repro ? session.resolveEpoch(opts) : opts.epoch;
+    process.env.DETJS_EPOCH = epoch;
+    process.env.DETJS_EPOCH_RUN = '1';
+  } catch { /* a bad option: the session reports it */ }
+}
+pickEpoch(process.argv.slice(2));
 
 const PIN = pinned(process.argv.slice(2));
 const PIN_NEEDS_RESTART = PIN && process.env.DETJS_PINNED === undefined && (

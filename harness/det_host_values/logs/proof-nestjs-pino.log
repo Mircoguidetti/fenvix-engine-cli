@@ -1,0 +1,12 @@
+== nestjs-pino trunk f67be4a31f1a9cf4d4e048ab8b5ec2d58b8e0055 2026-11-23T20:57:57Z
+{"repo": "nestjs-pino", "kind": "plain", "rep": 1, "workers": 1, "exit": 0, "wall_s": 22.0, "busy_before_pct": 1.0}
+{"repo": "nestjs-pino", "kind": "serial", "rep": 1, "workers": 1, "exit": 0, "wall_s": 25.45, "busy_before_pct": 1.0}
+{"repo": "nestjs-pino", "kind": "par", "rep": 1, "workers": 4, "exit": 0, "wall_s": 8.51, "busy_before_pct": 0.7}
+{"repo": "nestjs-pino", "kind": "verify", "rep": 1, "workers": 4, "exit": 1, "wall_s": 0.76, "busy_before_pct": 0.2}
+exit 0 2026-11-23T20:58:58Z
+== nestjs-pino branch 702bf4890c4b2827db4250e9872f31562bb76012 2026-11-23T20:58:58Z
+{"repo": "nestjs-pino", "kind": "plain", "rep": 1, "workers": 1, "exit": 0, "wall_s": 17.61, "busy_before_pct": 0.3}
+{"repo": "nestjs-pino", "kind": "serial", "rep": 1, "workers": 1, "exit": 0, "wall_s": 21.22, "busy_before_pct": 0.0}
+{"repo": "nestjs-pino", "kind": "par", "rep": 1, "workers": 4, "exit": 0, "wall_s": 8.57, "busy_before_pct": 0.2}
+{"repo": "nestjs-pino", "kind": "verify", "rep": 1, "workers": 4, "exit": 1, "wall_s": 0.18, "busy_before_pct": 0.0}
+exit 0 2026-11-23T20:59:50Z

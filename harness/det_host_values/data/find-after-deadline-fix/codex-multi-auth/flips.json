@@ -1,0 +1,1119 @@
+{
+ "repo": "codex-multi-auth",
+ "engine_commit": "a8e3f85391f46adbe84a611f619c1d1c0078848c+modified",
+ "plain_counts": [
+  {
+   "passed": 8644,
+   "failed": 6,
+   "skipped": 12
+  },
+  {
+   "passed": 8644,
+   "failed": 6,
+   "skipped": 12
+  }
+ ],
+ "det_counts": [
+  {
+   "passed": 8575,
+   "failed": 75,
+   "skipped": 12
+  },
+  {
+   "passed": 8568,
+   "failed": 82,
+   "skipped": 12
+  }
+ ],
+ "plain_both_passed": 8642,
+ "det_both_passed": 8566,
+ "flips": [
+  "test/api-model-runtime.test.ts::does not hold native model discovery open while probes run, then updates the served catalog",
+  "test/api-model-runtime.test.ts::returns fresh capabilities to an explicit check even when another refresh supersedes its cache entry",
+  "test/api-probe-slot-cancellation.test.ts::cancels daily probe granted without leaking shared permits",
+  "test/api-probe-slot-cancellation.test.ts::cancels daily probe queued without leaking shared permits",
+  "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with EBUSY",
+  "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with EPERM",
+  "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with undefined",
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::force-stops an app helper that ignores SIGTERM (#647)",
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::forwards an explicit loopback upstream through the interactive helper proxy",
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::injects rotation helper args before a `--` on the resume path (#673)",
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps a native openai rollout visible while routing its resumed requests through rotation",
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::removes its owner file on exit and sweeps dead helpers' metadata on the next launch",
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::resolves the resume provider from a bounded prefix of a large rollout",
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::starts an automatic helper and retries transient app-server shim file operations",
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::starts detached app helpers against the real Codex home instead of a compatibility shadow",
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::stress: metadata stays bounded across many launch/exit cycles",
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::sweeps stale app-server shim directories when a helper starts",
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for `fork` runtime routing (#647)",
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for `resume` runtime routing (#647)",
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for a TUI launch with a `--`-forced prompt that spells a command name (#673)",
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for a TUI launch with a prompt after a greedy multi-image option (#673)",
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for a TUI launch with a prompt after value-consuming options (#673)",
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for interactive TUI runtime routing",
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::waits for fresh orphaned shadow sync locks to become stale before stealing",
+  "test/codex-bin-wrapper.test.ts::stale shadow-home sweep::keeps a shadow home whose owner died while its forwarded child still runs",
+  "test/codex-bin-wrapper.test.ts::stale shadow-home sweep::reaps a shadow home whose owner PID was recycled by another process",
+  "test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill after the WAL flush: journal holds the intent, primary stays committed, torn primary recovers via WAL",
+  "test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill after the temp file is durable: orphaned temp holds the full payload, primary stays committed",
+  "test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill at the rename boundary: primary is untouched, WAL + temp still recoverable",
+  "test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill immediately after the atomic rename commits: primary carries the new store",
+  "test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill while holding the write lock: dead owner is reclaimed, store untouched",
+  "test/crash-mid-write.test.ts::SIGKILL mid-write recovery::torn primary with no WAL recovers through the rotated .bak",
+  "test/health-check.test.ts::checks usable accounts concurrently while committing results in account order",
+  "test/json-store-lock.test.ts::never lets a stale takeover unlink a live lock owned by another process",
+  "test/local-bridge.test.ts::propagates a disconnected Decisions caller to upstream cancellation",
+  "test/model-inventory-cancellation.test.ts::cancels inventory lock contention before its owner releases (daily=true)",
+  "test/model-inventory-cancellation.test.ts::does not publish an inventory temp file after cancellation during its write",
+  "test/model-inventory-cancellation.test.ts::retries exhausted preparation errors shortly without repeating claimed routes",
+  "test/persisted-api-capabilities.test.ts::caps paid probes across independent routes at four",
+  "test/persisted-api-capabilities.test.ts::does not overwrite unrelated evidence updated at the same timestamp",
+  "test/persisted-api-capabilities.test.ts::does not put non-probing inference metadata behind a paid probe lease",
+  "test/persisted-api-capabilities.test.ts::returns documentation without paid probes when another lease times out",
+  "test/property/rotation.property.test.ts::HealthScoreTracker property tests::score is always in [0, 100] range after any operation",
+  "test/property/rotation.property.test.ts::TokenBucketTracker property tests::tokens never go negative",
+  "test/property/rotation.property.test.ts::TokenBucketTracker property tests::tryConsume returns false when bucket is empty",
+  "test/runtime-policy-cache.test.ts::runtime policy cache::never caches a store read raced by a concurrent rewrite",
+  "test/runtime-policy-cache.test.ts::runtime policy cache::re-reads a same-size rewrite that pins mtime back",
+  "test/runtime-policy-cache.test.ts::runtime policy cache::re-resolves the project key when a worktree .git pointer is retargeted",
+  "test/runtime-policy-cache.test.ts::runtime policy cache::re-resolves when a project marker appears in a previously rootless dir",
+  "test/runtime-rotation-proxy.test.ts::Luna Reserve fallback::reconsiders a Luna capability-rejected workspace after switching to Reserve",
+  "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type application/json",
+  "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type null",
+  "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type text/event-stream",
+  "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type text/plain",
+  "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type null",
+  "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type text/event-stream",
+  "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type text/plain",
+  "test/runtime-rotation-proxy.test.ts::does not dispatch for a pinned client that disconnected during the reset check",
+  "test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted api streams as cancellation",
+  "test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted psp streams as cancellation",
+  "test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted zdr streams as cancellation",
+  "test/runtime-rotation-proxy.test.ts::explicit API model routes::uses sniffed SSE for zdr usage and completion (response.completed)",
+  "test/runtime-rotation-proxy.test.ts::explicit API model routes::uses sniffed SSE for zdr usage and completion (response.created)",
+  "test/runtime-rotation-proxy.test.ts::keeps session affinity when the client disconnects mid-stream",
+  "test/runtime-rotation-proxy.test.ts::learns a stale subscription model entitlement and retries another eligible account",
+  "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::evicts oldest local thread goal fallbacks when capacity is exceeded",
+  "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::rotates accounts after native quota rejection without using sibling workspaces",
+  "test/storage-file-lock.test.ts::reclaims a killed waiter's populated candidate without touching a live writer",
+  "test/storage-file-lock.test.ts::recovers a killed writer without relying on a lease expiry"
+ ],
+ "n_flips": 69,
+ "absent_in_det": [],
+ "n_absent_in_det": 0,
+ "skipped_in_det": [],
+ "n_skipped_in_det": 0,
+ "mixed_in_det": [
+  {
+   "id": "test/app-bind.test.ts::Codex app runtime rotation bind::validates legacy router timestamps and command identity before stopping",
+   "det1": "passed",
+   "det2": "failed"
+  },
+  {
+   "id": "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes",
+   "det1": "passed",
+   "det2": "failed"
+  },
+  {
+   "id": "test/codex-bin-wrapper.test.ts::codex bin wrapper::scopes `resume --last` to sessions recorded in the current directory",
+   "det1": "passed",
+   "det2": "failed"
+  },
+  {
+   "id": "test/persisted-api-capabilities.test.ts::keeps only fresh matching retained evidence after write then read failure: fresh",
+   "det1": "passed",
+   "det2": "failed"
+  },
+  {
+   "id": "test/persisted-api-capabilities.test.ts::preserves unreadable EACCES cache without paid probes",
+   "det1": "passed",
+   "det2": "failed"
+  },
+  {
+   "id": "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes",
+   "det1": "passed",
+   "det2": "failed"
+  },
+  {
+   "id": "test/persisted-api-capabilities.test.ts::returns completed evidence after ENOSPC and avoids immediate duplicate probes",
+   "det1": "passed",
+   "det2": "failed"
+  }
+ ],
+ "n_mixed_in_det": 7,
+ "ids_only_in_det": [
+  "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 27056",
+  "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 7285",
+  "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Wed, 23 Dec 2026 23:24:43 GMT at fifteen minutes",
+  "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Wed, 23 Dec 2026 23:32:02 GMT at fifteen minutes"
+ ],
+ "n_ids_only_in_det": 4,
+ "flip_exceptions": {
+  "test/api-model-runtime.test.ts::does not hold native model discovery open while probes run, then updates the served catalog": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/api-model-runtime.test.ts:320"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/api-model-runtime.test.ts:320"
+   ]
+  ],
+  "test/api-model-runtime.test.ts::returns fresh capabilities to an explicit check even when another refresh supersedes its cache entry": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/api-model-runtime.test.ts:358"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/api-model-runtime.test.ts:358"
+   ]
+  ],
+  "test/api-probe-slot-cancellation.test.ts::cancels daily probe granted without leaking shared permits": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/api-probe-slot-cancellation.test.ts:9"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/api-probe-slot-cancellation.test.ts:9"
+   ]
+  ],
+  "test/api-probe-slot-cancellation.test.ts::cancels daily probe queued without leaking shared permits": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/api-probe-slot-cancellation.test.ts:9"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/api-probe-slot-cancellation.test.ts:9"
+   ]
+  ],
+  "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with EBUSY": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/automatic-api-checks.test.ts:164"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/automatic-api-checks.test.ts:164"
+   ]
+  ],
+  "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with EPERM": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/automatic-api-checks.test.ts:164"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/automatic-api-checks.test.ts:164"
+   ]
+  ],
+  "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with undefined": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/automatic-api-checks.test.ts:164"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/automatic-api-checks.test.ts:164"
+   ]
+  ],
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::force-stops an app helper that ignores SIGTERM (#647)": [
+   [
+    "AssertionError",
+    "call",
+    "expected true to be false // Object.is equality",
+    "test/codex-bin-wrapper.test.ts:5884"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected true to be false // Object.is equality",
+    "test/codex-bin-wrapper.test.ts:5884"
+   ]
+  ],
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::forwards an explicit loopback upstream through the interactive helper proxy": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/codex-bin-wrapper.test.ts:1743"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/codex-bin-wrapper.test.ts:1743"
+   ]
+  ],
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::injects rotation helper args before a `--` on the resume path (#673)": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/codex-bin-wrapper.test.ts:5520"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/codex-bin-wrapper.test.ts:5520"
+   ]
+  ],
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps a native openai rollout visible while routing its resumed requests through rotation": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/codex-bin-wrapper.test.ts:5383"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/codex-bin-wrapper.test.ts:5383"
+   ]
+  ],
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::removes its owner file on exit and sweeps dead helpers' metadata on the next launch": [
+   [
+    "Error",
+    "call",
+    "helper metadata did not settle: owners=[\"runtime-rotation-app-helper-owner.29776.json\"] statuses=[\"runtime-rotation-app-helper.29776.json\"]",
+    "test/codex-bin-wrapper.test.ts:4769"
+   ],
+   [
+    "Error",
+    "call",
+    "helper metadata did not settle: owners=[\"runtime-rotation-app-helper-owner.17111.json\"] statuses=[\"runtime-rotation-app-helper.17111.json\"]",
+    "test/codex-bin-wrapper.test.ts:4769"
+   ]
+  ],
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::resolves the resume provider from a bounded prefix of a large rollout": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/codex-bin-wrapper.test.ts:5476"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/codex-bin-wrapper.test.ts:5476"
+   ]
+  ],
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::starts an automatic helper and retries transient app-server shim file operations": [
+   [
+    "AssertionError",
+    "call",
+    "expected 'start:http://127.0.0.1:4567\\n' to be 'start:http://127.0.0.1:4567\\nclose\\n' // Object.is equality",
+    "test/codex-bin-wrapper.test.ts:3481"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 'start:http://127.0.0.1:4567\\n' to be 'start:http://127.0.0.1:4567\\nclose\\n' // Object.is equality",
+    "test/codex-bin-wrapper.test.ts:3481"
+   ]
+  ],
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::starts detached app helpers against the real Codex home instead of a compatibility shadow": [
+   [
+    "AssertionError",
+    "call",
+    "expected 'codex-home-env:/tmp/pm-codex-multi-au\u2026' to contain 'close\\n'",
+    "test/codex-bin-wrapper.test.ts:4931"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 'codex-home-env:/tmp/pm-codex-multi-au\u2026' to contain 'close\\n'",
+    "test/codex-bin-wrapper.test.ts:4931"
+   ]
+  ],
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::stress: metadata stays bounded across many launch/exit cycles": [
+   [
+    "AssertionError",
+    "call",
+    "expected 13 to be less than 5",
+    "test/codex-bin-wrapper.test.ts:9374"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 12 to be less than 5",
+    "test/codex-bin-wrapper.test.ts:9374"
+   ]
+  ],
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::sweeps stale app-server shim directories when a helper starts": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/codex-bin-wrapper.test.ts:3634"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/codex-bin-wrapper.test.ts:3634"
+   ]
+  ],
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for `fork` runtime routing (#647)": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/codex-bin-wrapper.test.ts:5316"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/codex-bin-wrapper.test.ts:5316"
+   ]
+  ],
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for `resume` runtime routing (#647)": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/codex-bin-wrapper.test.ts:5316"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/codex-bin-wrapper.test.ts:5316"
+   ]
+  ],
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for a TUI launch with a `--`-forced prompt that spells a command name (#673)": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/codex-bin-wrapper.test.ts:5078"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/codex-bin-wrapper.test.ts:5078"
+   ]
+  ],
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for a TUI launch with a prompt after a greedy multi-image option (#673)": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/codex-bin-wrapper.test.ts:5078"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/codex-bin-wrapper.test.ts:5078"
+   ]
+  ],
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for a TUI launch with a prompt after value-consuming options (#673)": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/codex-bin-wrapper.test.ts:5078"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/codex-bin-wrapper.test.ts:5078"
+   ]
+  ],
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for interactive TUI runtime routing": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/codex-bin-wrapper.test.ts:4934"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/codex-bin-wrapper.test.ts:4934"
+   ]
+  ],
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::waits for fresh orphaned shadow sync locks to become stale before stealing": [
+   [
+    "AssertionError",
+    "call",
+    "expected 0 to be greater than or equal to 1500",
+    "test/codex-bin-wrapper.test.ts:7078"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 0 to be greater than or equal to 1500",
+    "test/codex-bin-wrapper.test.ts:7078"
+   ]
+  ],
+  "test/codex-bin-wrapper.test.ts::stale shadow-home sweep::keeps a shadow home whose owner died while its forwarded child still runs": [
+   [
+    "AssertionError",
+    "call",
+    "expected false to be true // Object.is equality",
+    "test/codex-bin-wrapper.test.ts:10029"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected false to be true // Object.is equality",
+    "test/codex-bin-wrapper.test.ts:10029"
+   ]
+  ],
+  "test/codex-bin-wrapper.test.ts::stale shadow-home sweep::reaps a shadow home whose owner PID was recycled by another process": [
+   [
+    "AssertionError",
+    "call",
+    "expected false to be true // Object.is equality",
+    "test/codex-bin-wrapper.test.ts:10089"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected false to be true // Object.is equality",
+    "test/codex-bin-wrapper.test.ts:10089"
+   ]
+  ],
+  "test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill after the WAL flush: journal holds the intent, primary stays committed, torn primary recovers via WAL": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"Error: Storage is busy with another live \u2026 { code: '\u2026' }\" instead of resolving",
+    "test/crash-mid-write.test.ts:240"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"Error: Storage is busy with another live \u2026 { code: '\u2026' }\" instead of resolving",
+    "test/crash-mid-write.test.ts:240"
+   ]
+  ],
+  "test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill after the temp file is durable: orphaned temp holds the full payload, primary stays committed": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"Error: Storage is busy with another live \u2026 { code: '\u2026' }\" instead of resolving",
+    "test/crash-mid-write.test.ts:240"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"Error: Storage is busy with another live \u2026 { code: '\u2026' }\" instead of resolving",
+    "test/crash-mid-write.test.ts:240"
+   ]
+  ],
+  "test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill at the rename boundary: primary is untouched, WAL + temp still recoverable": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"Error: Storage is busy with another live \u2026 { code: '\u2026' }\" instead of resolving",
+    "test/crash-mid-write.test.ts:240"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"Error: Storage is busy with another live \u2026 { code: '\u2026' }\" instead of resolving",
+    "test/crash-mid-write.test.ts:240"
+   ]
+  ],
+  "test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill immediately after the atomic rename commits: primary carries the new store": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"Error: Storage is busy with another live \u2026 { code: '\u2026' }\" instead of resolving",
+    "test/crash-mid-write.test.ts:240"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"Error: Storage is busy with another live \u2026 { code: '\u2026' }\" instead of resolving",
+    "test/crash-mid-write.test.ts:240"
+   ]
+  ],
+  "test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill while holding the write lock: dead owner is reclaimed, store untouched": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"Error: Storage is busy with another live \u2026 { code: '\u2026' }\" instead of resolving",
+    "test/crash-mid-write.test.ts:240"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"Error: Storage is busy with another live \u2026 { code: '\u2026' }\" instead of resolving",
+    "test/crash-mid-write.test.ts:240"
+   ]
+  ],
+  "test/crash-mid-write.test.ts::SIGKILL mid-write recovery::torn primary with no WAL recovers through the rotated .bak": [
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"Error: Storage is busy with another live \u2026 { code: '\u2026' }\" instead of resolving",
+    "test/crash-mid-write.test.ts:240"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise rejected \"Error: Storage is busy with another live \u2026 { code: '\u2026' }\" instead of resolving",
+    "test/crash-mid-write.test.ts:240"
+   ]
+  ],
+  "test/health-check.test.ts::checks usable accounts concurrently while committing results in account order": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/health-check.test.ts:328"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/health-check.test.ts:328"
+   ]
+  ],
+  "test/json-store-lock.test.ts::never lets a stale takeover unlink a live lock owned by another process": [
+   [
+    "Error",
+    "call",
+    "Lock worker failed in round 1: fail:ELOCKTIMEOUT",
+    "test/json-store-lock.test.ts:288"
+   ],
+   [
+    "Error",
+    "call",
+    "Lock worker failed in round 1: fail:ELOCKTIMEOUT",
+    "test/json-store-lock.test.ts:288"
+   ]
+  ],
+  "test/local-bridge.test.ts::propagates a disconnected Decisions caller to upstream cancellation": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/local-bridge.test.ts:355"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/local-bridge.test.ts:355"
+   ]
+  ],
+  "test/model-inventory-cancellation.test.ts::cancels inventory lock contention before its owner releases (daily=true)": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/model-inventory-cancellation.test.ts:46"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/model-inventory-cancellation.test.ts:46"
+   ]
+  ],
+  "test/model-inventory-cancellation.test.ts::does not publish an inventory temp file after cancellation during its write": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/model-inventory-cancellation.test.ts:85"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/model-inventory-cancellation.test.ts:85"
+   ]
+  ],
+  "test/model-inventory-cancellation.test.ts::retries exhausted preparation errors shortly without repeating claimed routes": [
+   [
+    "Error",
+    "call",
+    "Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\".",
+    "test/model-inventory-cancellation.test.ts:13"
+   ],
+   [
+    "Error",
+    "call",
+    "Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\".",
+    "test/model-inventory-cancellation.test.ts:13"
+   ]
+  ],
+  "test/persisted-api-capabilities.test.ts::caps paid probes across independent routes at four": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/persisted-api-capabilities.test.ts:267"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/persisted-api-capabilities.test.ts:267"
+   ]
+  ],
+  "test/persisted-api-capabilities.test.ts::does not overwrite unrelated evidence updated at the same timestamp": [
+   [
+    "Error",
+    "call",
+    "Cannot reset active API capability checks",
+    "lib/runtime/persisted-api-capabilities.ts:50"
+   ],
+   [
+    "Error",
+    "call",
+    "Cannot reset active API capability checks",
+    "lib/runtime/persisted-api-capabilities.ts:50"
+   ]
+  ],
+  "test/persisted-api-capabilities.test.ts::does not put non-probing inference metadata behind a paid probe lease": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/persisted-api-capabilities.test.ts:227"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/persisted-api-capabilities.test.ts:227"
+   ]
+  ],
+  "test/persisted-api-capabilities.test.ts::returns documentation without paid probes when another lease times out": [
+   [
+    "Error",
+    "call",
+    "Cannot reset active API capability checks",
+    "lib/runtime/persisted-api-capabilities.ts:50"
+   ],
+   [
+    "Error",
+    "call",
+    "Cannot reset active API capability checks",
+    "lib/runtime/persisted-api-capabilities.ts:50"
+   ]
+  ],
+  "test/property/rotation.property.test.ts::HealthScoreTracker property tests::score is always in [0, 100] range after any operation": [
+   [
+    "Error",
+    "call",
+    "Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 52 time(s) / Skipped 10001 time(s)",
+    "test/property/rotation.property.test.ts:21"
+   ],
+   [
+    "Error",
+    "call",
+    "Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 52 time(s) / Skipped 10001 time(s)",
+    "test/property/rotation.property.test.ts:21"
+   ]
+  ],
+  "test/property/rotation.property.test.ts::TokenBucketTracker property tests::tokens never go negative": [
+   [
+    "Error",
+    "call",
+    "Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 10 time(s) / Skipped 10001 time(s)",
+    "test/property/rotation.property.test.ts:136"
+   ],
+   [
+    "Error",
+    "call",
+    "Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 10 time(s) / Skipped 10001 time(s)",
+    "test/property/rotation.property.test.ts:136"
+   ]
+  ],
+  "test/property/rotation.property.test.ts::TokenBucketTracker property tests::tryConsume returns false when bucket is empty": [
+   [
+    "Error",
+    "call",
+    "Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 94 time(s) / Skipped 10001 time(s)",
+    "test/property/rotation.property.test.ts:155"
+   ],
+   [
+    "Error",
+    "call",
+    "Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 94 time(s) / Skipped 10001 time(s)",
+    "test/property/rotation.property.test.ts:155"
+   ]
+  ],
+  "test/runtime-policy-cache.test.ts::runtime policy cache::never caches a store read raced by a concurrent rewrite": [
+   [
+    "AssertionError",
+    "call",
+    "expected 1 to be 9 // Object.is equality",
+    "test/runtime-policy-cache.test.ts:238"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 1 to be 9 // Object.is equality",
+    "test/runtime-policy-cache.test.ts:238"
+   ]
+  ],
+  "test/runtime-policy-cache.test.ts::runtime policy cache::re-reads a same-size rewrite that pins mtime back": [
+   [
+    "AssertionError",
+    "call",
+    "expected [ 'alpha' ] to deeply equal [ 'gamma' ]",
+    "test/runtime-policy-cache.test.ts:197"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected [ 'alpha' ] to deeply equal [ 'gamma' ]",
+    "test/runtime-policy-cache.test.ts:197"
+   ]
+  ],
+  "test/runtime-policy-cache.test.ts::runtime policy cache::re-resolves the project key when a worktree .git pointer is retargeted": [
+   [
+    "AssertionError",
+    "call",
+    "expected 'repo-a-6249a9d982b0' to be 'repo-b-72c413ae94ef' // Object.is equality",
+    "test/runtime-policy-cache.test.ts:438"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 'repo-a-6249a9d982b0' to be 'repo-b-72c413ae94ef' // Object.is equality",
+    "test/runtime-policy-cache.test.ts:438"
+   ]
+  ],
+  "test/runtime-policy-cache.test.ts::runtime policy cache::re-resolves when a project marker appears in a previously rootless dir": [
+   [
+    "AssertionError",
+    "call",
+    "expected null to be '/tmp/pm-codex-multi-auth/codex-policy\u2026' // Object.is equality",
+    "test/runtime-policy-cache.test.ts:390"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected null to be '/tmp/pm-codex-multi-auth/codex-policy\u2026' // Object.is equality",
+    "test/runtime-policy-cache.test.ts:390"
+   ]
+  ],
+  "test/runtime-rotation-proxy.test.ts::Luna Reserve fallback::reconsiders a Luna capability-rejected workspace after switching to Reserve": [
+   [
+    "AssertionError",
+    "call",
+    "expected [ [ 'acc_2', 'gpt-6-luna' ], \u2026(1) ] to deeply equal [ [ 'acc_1', 'gpt-6-luna' ], \u2026(2) ]",
+    "test/runtime-rotation-proxy.test.ts:8398"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected [ [ 'acc_2', 'gpt-6-luna' ], \u2026(1) ] to deeply equal [ [ 'acc_1', 'gpt-6-luna' ], \u2026(2) ]",
+    "test/runtime-rotation-proxy.test.ts:8398"
+   ]
+  ],
+  "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type application/json": [
+   [
+    "AssertionError",
+    "call",
+    "expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual)",
+    "test/runtime-rotation-proxy.test.ts:6193"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual)",
+    "test/runtime-rotation-proxy.test.ts:6193"
+   ]
+  ],
+  "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type null": [
+   [
+    "AssertionError",
+    "call",
+    "expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual)",
+    "test/runtime-rotation-proxy.test.ts:6193"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual)",
+    "test/runtime-rotation-proxy.test.ts:6193"
+   ]
+  ],
+  "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type text/event-stream": [
+   [
+    "AssertionError",
+    "call",
+    "expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual)",
+    "test/runtime-rotation-proxy.test.ts:6193"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual)",
+    "test/runtime-rotation-proxy.test.ts:6193"
+   ]
+  ],
+  "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type text/plain": [
+   [
+    "AssertionError",
+    "call",
+    "expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual)",
+    "test/runtime-rotation-proxy.test.ts:6193"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual)",
+    "test/runtime-rotation-proxy.test.ts:6193"
+   ]
+  ],
+  "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type null": [
+   [
+    "AssertionError",
+    "call",
+    "expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual)",
+    "test/runtime-rotation-proxy.test.ts:6211"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual)",
+    "test/runtime-rotation-proxy.test.ts:6211"
+   ]
+  ],
+  "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type text/event-stream": [
+   [
+    "AssertionError",
+    "call",
+    "expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual)",
+    "test/runtime-rotation-proxy.test.ts:6211"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual)",
+    "test/runtime-rotation-proxy.test.ts:6211"
+   ]
+  ],
+  "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type text/plain": [
+   [
+    "AssertionError",
+    "call",
+    "expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual)",
+    "test/runtime-rotation-proxy.test.ts:6211"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual)",
+    "test/runtime-rotation-proxy.test.ts:6211"
+   ]
+  ],
+  "test/runtime-rotation-proxy.test.ts::does not dispatch for a pinned client that disconnected during the reset check": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/runtime-rotation-proxy.test.ts:588"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/runtime-rotation-proxy.test.ts:588"
+   ]
+  ],
+  "test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted api streams as cancellation": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/runtime-rotation-proxy.test.ts:7050"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/runtime-rotation-proxy.test.ts:7050"
+   ]
+  ],
+  "test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted psp streams as cancellation": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/runtime-rotation-proxy.test.ts:7050"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/runtime-rotation-proxy.test.ts:7050"
+   ]
+  ],
+  "test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted zdr streams as cancellation": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/runtime-rotation-proxy.test.ts:7050"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/runtime-rotation-proxy.test.ts:7050"
+   ]
+  ],
+  "test/runtime-rotation-proxy.test.ts::explicit API model routes::uses sniffed SSE for zdr usage and completion (response.completed)": [
+   [
+    "AssertionError",
+    "call",
+    "expected { version: 1, \u2026(14) } to match object { outcome: 'success', \u2026(2) } / (14 matching properties omitted from actual)",
+    "test/runtime-rotation-proxy.test.ts:7095"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected { version: 1, \u2026(14) } to match object { outcome: 'success', \u2026(2) } / (14 matching properties omitted from actual)",
+    "test/runtime-rotation-proxy.test.ts:7095"
+   ]
+  ],
+  "test/runtime-rotation-proxy.test.ts::explicit API model routes::uses sniffed SSE for zdr usage and completion (response.created)": [
+   [
+    "AssertionError",
+    "call",
+    "expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(2) } / (14 matching properties omitted from actual)",
+    "test/runtime-rotation-proxy.test.ts:7095"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(2) } / (14 matching properties omitted from actual)",
+    "test/runtime-rotation-proxy.test.ts:7095"
+   ]
+  ],
+  "test/runtime-rotation-proxy.test.ts::keeps session affinity when the client disconnects mid-stream": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/runtime-rotation-proxy.test.ts:7658"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/runtime-rotation-proxy.test.ts:7658"
+   ]
+  ],
+  "test/runtime-rotation-proxy.test.ts::learns a stale subscription model entitlement and retries another eligible account": [
+   [
+    "AssertionError",
+    "call",
+    "expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ]",
+    "test/runtime-rotation-proxy.test.ts:7278"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ]",
+    "test/runtime-rotation-proxy.test.ts:7278"
+   ]
+  ],
+  "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::evicts oldest local thread goal fallbacks when capacity is exceeded": [
+   [
+    "AssertionError",
+    "call",
+    "expected 503 to be 200 // Object.is equality",
+    "test/runtime-rotation-proxy.test.ts:3722"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 503 to be 200 // Object.is equality",
+    "test/runtime-rotation-proxy.test.ts:3722"
+   ]
+  ],
+  "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::rotates accounts after native quota rejection without using sibling workspaces": [
+   [
+    "AssertionError",
+    "call",
+    "expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ]",
+    "test/runtime-rotation-proxy.test.ts:2752"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ]",
+    "test/runtime-rotation-proxy.test.ts:2752"
+   ]
+  ],
+  "test/storage-file-lock.test.ts::reclaims a killed waiter's populated candidate without touching a live writer": [
+   [
+    "AssertionError",
+    "call",
+    "expected [ Array(1) ] to deeply equal []",
+    "test/storage-file-lock.test.ts:231"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected [ Array(1) ] to deeply equal []",
+    "test/storage-file-lock.test.ts:231"
+   ]
+  ],
+  "test/storage-file-lock.test.ts::recovers a killed writer without relying on a lease expiry": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/storage-file-lock.test.ts:75"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/storage-file-lock.test.ts:75"
+   ]
+  ]
+ }
+}

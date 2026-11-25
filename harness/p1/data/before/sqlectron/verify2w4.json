@@ -1,0 +1,241 @@
+{
+ "labels": [
+  "/tmp/pm-p1/p1-before/sqlectron/S2.jsonl",
+  "/tmp/pm-p1/p1-before/sqlectron/P2w4.jsonl"
+ ],
+ "order_digests": [
+  "c6bc45db456dbf42c718b3559c3066e4",
+  "c6bc45db456dbf42c718b3559c3066e4"
+ ],
+ "complete": [
+  true,
+  true
+ ],
+ "summary": {
+  "runs": 2,
+  "tests": 14,
+  "stable": 14,
+  "diverged": 0,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {},
+  "inputs_recorded": true,
+  "identical": 14,
+  "input_differs": 0,
+  "not_proven": 0
+ },
+ "tests": [
+  {
+   "nodeid": "test/browser/utils.test.ts::utils::.getConfigPath::use of SQLECTRON_HOME::should get config from process.env.SQLECTRON_HOME",
+   "status": "stable",
+   "fingerprints": [
+    "c6d0ae4118d5c1a555608b989cf36092",
+    "c6d0ae4118d5c1a555608b989cf36092"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "test/common/utils/string.test.ts::titlize::should convert test to Test",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "test/common/utils/string.test.ts::titlize::should convert TEST to Test",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "test/common/utils/string.test.ts::titlize::should convert Test to Test",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "test/renderer/components/checkbox.test.tsx::<Checkbox />::should have input with name and label elements",
+   "status": "stable",
+   "fingerprints": [
+    "de3eb0587958a4b444903a6b6efd5101",
+    "de3eb0587958a4b444903a6b6efd5101"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "test/renderer/components/checkbox.test.tsx::<Checkbox />::should be checked",
+   "status": "stable",
+   "fingerprints": [
+    "774be8f9040d2601920f89d68134c124",
+    "774be8f9040d2601920f89d68134c124"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "test/renderer/components/checkbox.test.tsx::<Checkbox />::should be unchecked",
+   "status": "stable",
+   "fingerprints": [
+    "774be8f9040d2601920f89d68134c124",
+    "774be8f9040d2601920f89d68134c124"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "test/renderer/components/checkbox.test.tsx::<Checkbox />::should trigger onChecked for checked event",
+   "status": "stable",
+   "fingerprints": [
+    "31efea673c958c322c7b2a1600cfcf41",
+    "31efea673c958c322c7b2a1600cfcf41"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "test/renderer/components/checkbox.test.tsx::<Checkbox />::should trigger onUnchecked for unchecked event",
+   "status": "stable",
+   "fingerprints": [
+    "06a4e5feda4262df7c83f4da43811eac",
+    "06a4e5feda4262df7c83f4da43811eac"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "test/renderer/utils/regexp.test.ts::escapeRegExpString::should escape regexp string: a",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "test/renderer/utils/regexp.test.ts::escapeRegExpString::should escape regexp string: [",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "test/renderer/utils/regexp.test.ts::escapeRegExpString::should escape regexp string: ]",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "test/renderer/utils/regexp.test.ts::escapeRegExpString::should escape regexp string: (",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  },
+  {
+   "nodeid": "test/renderer/utils/regexp.test.ts::escapeRegExpString::should escape regexp string: )",
+   "status": "stable",
+   "fingerprints": [
+    "31af55e422bc4accd412eab03c7f8ad0",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "outcomes": [
+    "passed",
+    "passed"
+   ],
+   "distinct_fingerprints": 1,
+   "outcome_stable": true,
+   "divergence": null
+  }
+ ],
+ "input_differences": []
+}

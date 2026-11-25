@@ -24,7 +24,9 @@ function assertSomeFail(r, what) {
 }
 
 /** Golden fixtures: baseline run 2 differs from run 1; --det runs 1 and 2 agree. */
-function goldenCheck(runner, dir, detArgs = []) {
+// --det-epoch=fixed: opt-out of the host-values default (spec 2026-11-23): two separate runs are verified, and with
+// the host epoch each run has its own epoch, a run input that differs
+function goldenCheck(runner, dir, detArgs = ['--det-epoch=fixed']) {
   resetGolden(dir);
   const b1 = run(runner, dir, ['--maxWorkers=2']);
   assert.ok(Object.keys(b1.outcomes).length > 0, `baseline run 1: no results\n${b1.stderr}`);
@@ -211,8 +213,8 @@ for (const runner of RUNNERS) {
         assertAllPass(run(runner, dir, [], { env }), 'baseline run 1');
         assertSomeFail(run(runner, dir, [], { env }), 'baseline run 2');
         resetGolden(dir);
-        // --det without cassette: closed
-        const blocked = run(runner, dir, ['--det'], { env });
+        // --det without cassette, network closed (opt-out of the open default, spec 2026-11-23)
+        const blocked = run(runner, dir, ['--det', '--det-net=closed'], { env });
         assert.equal(failed(blocked).length, 2);
         assert.match(JSON.stringify(blocked.trace.tests), /blocked/);
         resetGolden(dir);

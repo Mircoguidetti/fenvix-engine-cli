@@ -24,7 +24,7 @@ Conventions used below (unchanged from today's traces):
 
 | field | type | written by | meaning | verify rule |
 |---|---|---|---|---|
-| `files_read_outside_tests` | array of `{"path": <path>, "digest": <content digest or stat value>}`, sorted by `path`, then `digest` | both | every file the project's code read while no test was running: module scope of a test file, `conftest.py` / setup files at import, a project module at import, hooks outside a test, `process.loadEnvFile` outside a test. One entry per distinct (path, digest); a file read twice with the same bytes is one entry. A metadata call outside a test (section 2, `fs.stat`) is an entry with `"digest": "stat:<stat value>"`. The module loader's own reads of source files are not entries (they are covered by `inputs.code` and `inputs.deps`). | if the set of entries differs between two runs, **every test diverges**, reason `fs`, and the description names the first differing path (`file read outside any test differs: <path>`). Same rule as a differing non-env run input. Traces without the field compare as an empty set only against each other; a run with the field against a run without it is `fs`-divergent for every test. |
+| `files_read_outside_tests` | array of `{"path": <path>, "digest": <content digest or stat value>}`, sorted by `path`, then `digest` | both | every file the project's code read while no test was running: module scope of a test file, `conftest.py` / setup files at import, a project module at import, hooks outside a test, `process.loadEnvFile` outside a test. One entry per distinct (path, digest); a file read twice with the same bytes is one entry. A metadata call outside a test (section 2, `fs.stat`) is an entry with `"digest": "stat:<stat value>"`. The module loader's own reads of source files are not entries (they are covered by `inputs.code` and `inputs.deps`). | if the set of entries differs between two runs, **every test diverges**, reason `fs`, and the description names the first differing path (`file read outside any test differs: <path>`). Same rule as a differing non-env run input. Traces without the field compare as an empty set only against each other; a run with the field against a run without it is `fs`-divergent for every test. **Scope (P1 B1):** the Node shell adds `"file": <test file>` to an entry read while a test file was open (its module scope, its hooks, the runner's per-file setup files), and the header field `files_outside_scope` is `"file"` when the runner isolates test files from one another (Vitest when every file runs in a fresh worker: `isolate`, the `forks` or `threads` pool, no `singleFork` / `singleThread`), `"run"` otherwise. Jest writes `"run"` (fail-safe of 2026-11-24: its worker process keeps state across files that is not tracked per file yet; the per-file scope for Jest is a follow-up). When every run says `"file"`, an entry carrying `file` is compared for the tests of that file only (`input.file:<path>`, reason `fs`, "read outside any test by the test's own file …"); entries without `file`, and every entry when any run says `"run"` or nothing, keep the run-wide rule. **Not an entry (P1 B2, Node shell):** a `stat:missing` answer for a path inside a directory the same process created with `mkdtemp` while no child process or worker thread has been started by that process since the directory was created (the answer is the process's own work: the name is random, nothing else can have written there). Any other answer about such a path (`present`, `file`, `dir`) stays an entry, so a path that exists in one run and is missing in the other still makes the entry sets differ. |
 | `inputs.deps` | string `"<n> files <digest>"` | both | the installed dependencies the run loaded: Node, every file under the project's `node_modules/` that the module system loaded (CJS `require` and ESM `import`), by relative path and content digest; Python, every module file loaded from outside the project (site-packages, dist-packages, `.pth` targets), by its path relative to its `sys.path` entry and its content digest. Digest = `digest` of the lines `<relpath>\t<content digest>\n`, sorted. Taken when the header is written (the end of the run). | a run input: a differing value makes **every test diverge**, reason `deps`. |
 | `inputs.code` | string `"<n> files <digest>"` | both | the project's own source the run loaded (test files, project modules, `conftest.py`, setup files, the runner config file), same digest form as `deps`, paths relative to the project root. This catches an uncommitted edit (same git HEAD). | a run input: differing → every test diverges, reason `code`. |
 | `env_read_outside_tests` | array of names (unchanged) | both | as today. A variable set by `process.loadEnvFile` and then read outside a test is listed too. | as today. |
@@ -54,7 +54,17 @@ to any run (Rust rule, V13: `"<random>"` never compares equal, even to itself): 
 | file read by C code (V7) | `uncontrolled.native` | `file:<path>` | Python: sqlite3 `connect` to a file outside the project, best effort. |
 
 A read outside any test of a volatile or proxy variable goes in `not_proven_outside_tests` as `env:<NAME>`, not in
-`env_read_outside_tests`.
+`env_read_outside_tests`. The Node shell writes `env:<NAME>=<digest>` (P1 A1, docs/DESIGN-P1.md section A): the
+first 16 hex digits of the digest of `NAME=value` (of the sorted `NAME=value` lines of the environment without the
+engine's and the runner's per-process variables, for an enumeration `env:*`). `verify` discharges these entries for
+a comparison in which, for every test file, every run has the same set of digests for `<NAME>` (P1 A1 exact fix,
+2026-11-25): a read made while a test file's code ran (its module scope, its hooks) is written
+`env:<NAME>=<digest>@<file>` (`<file>` the file's label, with its project), so two files whose values swap between
+the runs are not discharged and a serial run compares with a parallel one; an entry without `@<file>` (a read while
+no file was open) is one more key and is discharged only with a single value in every run. The value was no run
+input, but the runs saw the same one per file. A different value, a read in some runs only, an entry without a digest (Python,
+older traces) and every entry of another kind keep the rule of section 4. The cache, which has no second run, keeps
+refusing such a test.
 
 Note: the existing marks (`uncontrolled.thread`, `uncontrolled.child`, `uncontrolled.io`, `uncontrolled.native`,
 `uncontrolled.net`) keep their op and value.
@@ -62,7 +72,8 @@ Note: the existing marks (`uncontrolled.thread`, `uncontrolled.child`, `uncontro
 ## 4. Verdict (Rust; for the shells' information)
 
 - New test status `not-proven` (`Status::NotProven`), summary counter `summary.not_proven`. A test with any mark in
-  any run, or any entry in `not_proven_outside_tests`, and no other difference, is `not-proven`: never `stable`,
+  any run, or any entry in `not_proven_outside_tests` not discharged (section 3: an `env:<NAME>=<digest>` entry
+  with the same digests per file in every run), and no other difference, is `not-proven`: never `stable`,
   never counted in `summary.identical`. A test whose events or inputs also differ stays `diverged` / `input-differs`.
 - Headline: `IDENTICAL` only when every test is `stable`. Otherwise `DIVERGENT` if any test is `diverged` or
   `missing`, else `INPUT DIFFERS` if any is `input-differs`, else `NOT PROVEN` (D1: unchanged runs of a test that

@@ -1,0 +1,302 @@
+{
+ "test/oc-chatgpt-target-detection.test.ts::oc-chatgpt target detection::resolves relative explicit roots before target detection": {
+  "parallel": [
+   {
+    "at": "lib/storage/paths.ts:342",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": ".git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:291",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": ".git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:296",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": ".git|dir"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode/oc-codex-multi-auth-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode/oc-codex-multi-auth-accounts.json.wal|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode/openai-codex-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode/openai-codex-accounts.json.wal|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:225",
+    "o": "fs.readdirSync",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode|1|8cc7fe42fd4349fceabc66d0553b8535"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:251",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode/backups/oc-codex-multi-auth-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:251",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode/backups/openai-codex-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:225",
+    "o": "fs.readdirSync",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode/backups|0|af1349b9f5f9a1a6a0404dea36dcc949"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:276",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode/backups|present"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|d32f0e4c17f21dd0bd5f01406df96c3a"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override|1|390484a1c86e9167ce66b6894ae7b843"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode|1|8cc7fe42fd4349fceabc66d0553b8535"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode/backups|dir"
+   }
+  ],
+  "serial": [
+   {
+    "at": "lib/storage/paths.ts:342",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": ".git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:291",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": ".git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:296",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": ".git|dir"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode/oc-codex-multi-auth-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode/oc-codex-multi-auth-accounts.json.wal|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode/openai-codex-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode/openai-codex-accounts.json.wal|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:225",
+    "o": "fs.readdirSync",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode|1|8cc7fe42fd4349fceabc66d0553b8535"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:251",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode/backups/oc-codex-multi-auth-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:251",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode/backups/openai-codex-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:225",
+    "o": "fs.readdirSync",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode/backups|0|af1349b9f5f9a1a6a0404dea36dcc949"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:276",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode/backups|present"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|d32f0e4c17f21dd0bd5f01406df96c3a"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override|1|390484a1c86e9167ce66b6894ae7b843"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode|1|8cc7fe42fd4349fceabc66d0553b8535"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/relative-override/.opencode/backups|dir"
+   }
+  ]
+ }
+}

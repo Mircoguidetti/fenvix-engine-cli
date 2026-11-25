@@ -1,0 +1,54 @@
+engine: a8e3f85391f46adbe84a611f619c1d1c0078848c
+reproduced at V0 on the trunk (det_pins results.jsonl): 48
+cleared at V0 with the branch engine (passed in both runs): 38 of 48 (threshold 35)
+
+| test | branch V0 runs | cleared | first failure line (run 1) |
+|---|---|---|---|
+| `test/api-model-runtime.test.ts::answers an API pool whose credentials all return 401 with 503, not an auth status` | passed/passed | yes | `` |
+| `test/api-model-runtime.test.ts::does not hold native model discovery open while probes run, then updates the served cata` | failed/failed | no | `Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with "` |
+| `test/api-model-runtime.test.ts::keeps responses failover within the selected credential region` | passed/passed | yes | `` |
+| `test/api-model-runtime.test.ts::learns a model rejection and moves to the next priority within the same privacy pool` | passed/passed | yes | `` |
+| `test/api-model-runtime.test.ts::preserves a bounded non-retryable upstream error code for client recovery` | passed/passed | yes | `` |
+| `test/api-model-runtime.test.ts::preserves the final sanitized setting rejection after trying every ZDR credential` | passed/passed | yes | `` |
+| `test/app-bind.test.ts::app bind upstream proxy (#753)::accepts only numeric loopback HTTP upstreams with an explicit por` | passed/passed | yes | `` |
+| `test/app-bind.test.ts::macOS LaunchAgent lifecycle (#748)::unloads the job before stopping the router, and reports a rou` | passed/passed | yes | `` |
+| `test/app-bind.test.ts::orphaned app-bind recovery (#614)::is a no-op for an already-clean config` | passed/passed | yes | `` |
+| `test/app-bind.test.ts::orphaned app-bind recovery (#614)::reports unmanagedBind when config is bound but no state file e` | passed/passed | yes | `` |
+| `test/app-bind.test.ts::reviewed provider transitions::allows a mode change with a dead recorded router` | passed/passed | yes | `` |
+| `test/app-bind.test.ts::validates persisted WebSocket admission diagnostics: {"stored":{"at":123,"reason":"capacity","sta` | passed/passed | yes | `` |
+| `test/automatic-api-checks.test.ts::honors the newest plausible observed legacy visibility-order claim (future)` | passed/passed | yes | `` |
+| `test/automatic-api-checks.test.ts::migrates legacy ownership before claiming the daily check (discovery writes=false)` | passed/passed | yes | `` |
+| `test/automatic-api-checks.test.ts::prepares a newly observed legacy snapshot before writing its daily claim` | passed/passed | yes | `` |
+| `test/automatic-api-checks.test.ts::preserves the original raw-order legacy claim when observation reorders visibility` | passed/passed | yes | `` |
+| `test/automatic-api-checks.test.ts::still rejects a true visibility change at route read 2` | passed/passed | yes | `` |
+| `test/automatic-api-checks.test.ts::still rejects a true visibility change at route read 3` | passed/passed | yes | `` |
+| `test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with EBUSY` | failed/failed | no | `Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with "` |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::classifies the hidden `execpolicy` subcommand as a command, not a pro` | passed/passed | yes | `` |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::derives cmd.exe from SystemRoot when ComSpec is unavailable` | passed/passed | yes | `` |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::force-stops an app helper that ignores SIGTERM (#647)` | failed/failed | no | `AssertionError: expected true to be false // Object.is equality [call @ test/codex-bin-wrapper.test.ts:5884]` |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::forwards the `a` apply alias without starting the rotation transport ` | passed/passed | yes | `` |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::propagates numeric-string multi-auth exit codes` | passed/passed | yes | `` |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::rejects a Windows root-relative CODEX_MULTI_AUTH_REAL_CODEX_BIN overr` | passed/passed | yes | `` |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::retries GPT-5.6 Sol after access-denied style model errors` | passed/passed | yes | `` |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::retries retired Codex aliases with their replacement after unsupporte` | passed/passed | yes | `` |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::rewrites config reasoning effort when the model supports xhigh but re` | passed/passed | yes | `` |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::skips native codex candidates inside the wrapper's own directory (def` | passed/passed | yes | `` |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::skips startup update-notice loading for pure long help commands` | passed/passed | yes | `` |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::skips startup update-notice loading for pure short help commands` | passed/passed | yes | `` |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::starts detached app helpers against the real Codex home instead of a ` | failed/failed | no | `AssertionError: expected 'codex-home-env:/tmp/pm-codex-multi-au…' to contain 'close\n' [call @ test/codex-bin-wrapper.test.ts:4931]` |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::stress: a launcher sweeps a directory already holding hundreds of sta` | passed/passed | yes | `` |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::syncs copied shadow directories back before cleanup` | passed/passed | yes | `` |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::treats invalid multi-auth exit codes as failure` | passed/passed | yes | `` |
+| `test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill after the temp file is durable: orphaned temp holds the f` | failed/failed | no | `AssertionError: promise rejected "Error: Storage is busy with another live … { code: '…' }" instead of resolving [call @ test/crash-mid-writ` |
+| `test/json-store-lock.test.ts::never lets a stale takeover unlink a live lock owned by another process` | failed/failed | no | `Error: Lock worker failed in round 1: fail:ELOCKTIMEOUT [call @ test/json-store-lock.test.ts:288]` |
+| `test/property/rotation.property.test.ts::HealthScoreTracker property tests::score is always in [0, 100] range after any ` | failed/failed | no | `Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 52 time(s) / Skipped 10001 time(s) [call ` |
+| `test/property/rotation.property.test.ts::TokenBucketTracker property tests::tokens never go negative` | failed/failed | no | `Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 10 time(s) / Skipped 10001 time(s) [call ` |
+| `test/runtime-rotation-proxy.test.ts::Luna Reserve fallback::does not treat a coded transient 429 as quota just because i` | passed/passed | yes | `` |
+| `test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with` | failed/failed | no | `AssertionError: expected { version: 1, …(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [` |
+| `test/runtime-rotation-proxy.test.ts::earned reset last-resort integration::does not report a reserved emergency account ` | passed/passed | yes | `` |
+| `test/runtime-rotation-proxy.test.ts::explicit API model routes::uses sniffed SSE for api usage and completion (response.` | passed/passed | yes | `` |
+| `test/runtime-rotation-proxy.test.ts::independent review catalog regressions::retains catalog cache and backoff across cl` | passed/passed | yes | `` |
+| `test/runtime-rotation-proxy.test.ts::independent review catalog regressions::retains catalog cache and backoff across cl` | passed/passed | yes | `` |
+| `test/runtime-rotation-proxy.test.ts::pre-dispatch eligibility re-read::routes an account with no stored account id throu` | passed/passed | yes | `` |
+| `test/runtime-rotation-proxy.test.ts::request-level capability rejections::reports a 429 that follows a capability reject` | passed/passed | yes | `` |
+| `test/runtime-rotation-proxy.test.ts::runtime rotation proxy::evicts oldest local thread goal fallbacks when capacity is ` | failed/failed | no | `AssertionError: expected 503 to be 200 // Object.is equality [call @ test/runtime-rotation-proxy.test.ts:3722]` |

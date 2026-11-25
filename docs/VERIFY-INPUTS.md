@@ -49,10 +49,10 @@ never identical. Which tests read it is what the channels below establish.
 |---|---|---|
 | wall clock, monotonic clock, timers | virtual under `--det`: the same values in every run | py `time`; node `time` |
 | seeded generators | `random`, `Math.random`, numpy... seeded: the same values | node `Math.random` |
-| OS entropy | Python: controlled by default (`--det-entropy=observe` leaves it real, and each read is an `[entropy]` event); Node: `crypto.randomBytes` & co. observed unless `--det-urandom`, each read an event | py `entropy`, `entropy-observed`; node `entropy (crypto.randomBytes)` |
+| OS entropy | Python: controlled by default (`--det-entropy=observe` leaves it real, and each read is an `[entropy]` event); Node: `crypto.randomBytes` & co. controlled by default (P1 D; `--det-urandom=off` leaves them real and observed), each read an event | py `entropy`, `entropy-observed`; node `entropy (crypto.randomBytes)` |
 | host name | pinned to `localhost` | py `hostname`; node `hostname` |
 | CPU count | pinned to 2 (the engine keeps the real one) | py `cpu-count`; node `cpu count` |
-| time zone, locale | pinned (`--det-tz=UTC`, `--det-locale=C.UTF-8`), or with `keep` a run input | py `time-zone`, `locale`; node `time zone` |
+| time zone, locale | pinned (`--det-tz=UTC`, `--det-locale=C.UTF-8`; Python default), or with `keep` (Node default) a run input | py `time-zone`, `locale`; node `time zone` |
 
 ## Network
 

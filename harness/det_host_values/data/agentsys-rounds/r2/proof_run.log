@@ -1,0 +1,12 @@
+== agentsys trunk 8bb687b4ee94c0879de999293fb5951cacc802e3 2026-11-24T15:23:09Z
+{"repo": "agentsys", "kind": "plain", "rep": 1, "workers": 1, "exit": 1, "wall_s": 14.7, "busy_before_pct": 4.7}
+{"repo": "agentsys", "kind": "serial", "rep": 1, "workers": 1, "exit": 1, "wall_s": 19.52, "busy_before_pct": 0.0}
+{"repo": "agentsys", "kind": "par", "rep": 1, "workers": 4, "exit": 1, "wall_s": 22.46, "busy_before_pct": 0.5}
+{"repo": "agentsys", "kind": "verify", "rep": 1, "workers": 4, "exit": 1, "wall_s": 0.49, "busy_before_pct": 0.0}
+exit 0 2026-11-24T15:24:11Z
+== agentsys branch f52504d19fbc76c3da87f9af14a937dccd10bdc1 2026-11-24T15:24:11Z
+{"repo": "agentsys", "kind": "plain", "rep": 1, "workers": 1, "exit": 1, "wall_s": 14.64, "busy_before_pct": 0.0}
+{"repo": "agentsys", "kind": "serial", "rep": 1, "workers": 1, "exit": 1, "wall_s": 21.84, "busy_before_pct": 0.2}
+{"repo": "agentsys", "kind": "par", "rep": 1, "workers": 4, "exit": 1, "wall_s": 24.03, "busy_before_pct": 0.0}
+{"repo": "agentsys", "kind": "verify", "rep": 1, "workers": 4, "exit": 1, "wall_s": 0.46, "busy_before_pct": 0.0}
+exit 0 2026-11-24T15:25:16Z

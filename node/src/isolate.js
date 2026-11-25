@@ -32,10 +32,18 @@ function escapeRe(s) {
   return s.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
 }
 
+/** {header, tests} of a trace, streamed (P0 big trace); null when it cannot be read or a line is not JSON. */
 function readTrace(p) {
   try {
-    const lines = fs.readFileSync(p, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l));
-    return { header: lines.find((l) => l.type === 'header'), tests: lines.filter((l) => l.type === 'test') };
+    let header;
+    const tests = [];
+    require('./trace-lines').forEachLine(p, (l) => {
+      if (!l) return;
+      const o = JSON.parse(l);
+      if (o.type === 'header' && header === undefined) header = o;
+      else if (o.type === 'test') tests.push(o);
+    });
+    return { header, tests };
   } catch { return null; }
 }
 
@@ -80,7 +88,7 @@ async function main(runner, argv) {
     if (OWN.test(a)) { if (OWN_VALUE.has(a)) i++; continue; }
     det.push(a);
     if (!a.includes('=') && ['--det-seed', '--det-cache', '--det-epoch', '--det-disable', '--det-cassette', '--det-allow-host', '--det-tick',
-      '--det-tick-adapt', '--det-timers', '--det-timer-budget', '--det-max-events', '--det-sites', '--det-cache-max-age', '--det-tz', '--det-locale'].includes(a) && i + 1 < argv.length) det.push(argv[++i]);
+      '--det-tick-adapt', '--det-timers', '--det-timer-budget', '--det-max-events', '--det-sites', '--det-cache-max-age', '--det-tz', '--det-locale', '--det-net'].includes(a) && i + 1 < argv.length) det.push(argv[++i]);
   }
   if (!det.includes('--det') && !opts.det) det.unshift('--det');
   const runnerArgs = runner === 'vitest' && ['run', 'watch', 'dev'].includes(rest[0]) ? rest.slice(1) : rest;
@@ -221,6 +229,8 @@ async function main(runner, argv) {
   exitStatus.record(status);
   fs.mkdirSync(path.dirname(tracePath), { recursive: true });
   const res = native.mergeTraces(parts, tracePath, JSON.stringify(meta), order);
+  // P0 big trace: a part the merge could not read is missing from the trace: the status is unknown (exit 2)
+  if (res.skipped.length) exitStatus.recordUnknown(`unreadable trace parts, their tests are not counted: ${res.skipped.join('; ')}`);
   process.stdout.write(`detjs: trace ${path.relative(root, tracePath)}: ${res.nTests} tests, order digest ${res.orderDigest}\n`);
   process.stderr.write(`${exitStatus.statusLine(status)}\n`);
   if (det.some((a) => a.startsWith('--det-cache'))) {

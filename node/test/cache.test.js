@@ -270,7 +270,8 @@ for (const runner of RUNNERS) {
         ...tfile(runner, 'tzp', "test('tzp', () => { expect(new Date(0).getHours()).toBe(0); });"),
       });
       const files = [F(runner, 'tzp')];
-      cycle(runner, dir, files, () => {}, [], { env: { TZ: 'UTC' }, env3: { TZ: 'Asia/Tokyo' } });
+      // opt-out of the host-values default (spec 2026-11-23): this test checks the pinned zone
+      cycle(runner, dir, files, () => {}, [], { args: ['--det-tz=UTC', '--det-locale=C.UTF-8'], env: { TZ: 'UTC' }, env3: { TZ: 'Asia/Tokyo' } });
     });
 
     test('configuration: runner configuration, detjs options and tsconfig changes', T, () => {
@@ -317,8 +318,10 @@ for (const runner of RUNNERS) {
         ...tfile(runner, 'plain', "test('p', () => { expect(1).toBe(1); });"),
       });
       const files = ['spawn', 'git', 'worker', 'loopback', 'entropy', 'plain'].map((n) => F(runner, n));
-      crun(runner, dir);
-      const r2 = crun(runner, dir);
+      // OS entropy is real only with --det-urandom=off since P1 D (by default it is a seeded stream, and a test that
+      // draws from it is reusable as it was with --det-urandom); the rule under test is about real entropy
+      crun(runner, dir, ['--det-urandom=off']);
+      const r2 = crun(runner, dir, ['--det-urandom=off']);
       assert.deepEqual(ran(r2, files), files.filter((f) => !f.includes('plain')).sort(), show(r2));
       const nc = JSON.stringify(r2.summary.not_cached_detail);
       for (const why of ['subprocess', 'worker thread', 'network connection', 'os entropy']) assert.match(nc, new RegExp(why), `${why}\n${nc}`);

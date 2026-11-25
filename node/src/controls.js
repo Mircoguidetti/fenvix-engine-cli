@@ -34,8 +34,6 @@ function installProcess() {
   processInstalled = true;
   if (c.controls.has('seeds')) seeds.installProcess(PATCHER, c);
   if (c.controls.has('time')) clock.installProcess(PATCHER, c);
-  if (c.controls.has('fs')) fsorder.installProcess(PATCHER, c);
-  if (c.controls.has('fs')) require('./outside').installProcess(PATCHER); // files outside the project: recorded (R-050 N1)
   if (c.controls.has('net')) STATE.netMode = network.installProcess(PATCHER, c);  // design A (2026-11-20): CI-volatile variables pinned, and the host name (each runner has its own)
   volatile.pinEnv();
   PATCHER.set(require('node:os'), 'hostname', () => volatile.PINNED_HOSTNAME);
@@ -49,9 +47,19 @@ function installProcess() {
   require('./envview').install();
   // machine and process facts, native key generation, mkdtemp names (src/facts.js)
   require('./facts').installProcess(PATCHER);
+  // P1 C: a virtual pid leaving the process through a /proc path or os.get/setPriority is the real one (src/facts.js).
+  // Below the fs controls (installed before them): src/fstime.js keeps its Stats mapping the outermost wrapper and
+  // retires a wrapper found below another one, so a wrapper over it made every stat of a test unmapped (MEASURED:
+  // ironcurtain test/ca.test.ts 2 -> 32 failed, lstatSync and fstatSync disagreeing on the virtual inode).
+  require('./facts').installPidBoundaries(PATCHER);
   // completion order of a test's concurrent asynchronous I/O (src/ioorder.js); Level 1: timers against I/O
   require('./sched').installProcess(PATCHER);
   require('./ioorder').installProcess(PATCHER);
+  // Above ioorder (P1 E, docs/DESIGN-P1.md section E): the directory listings and the file reads and metadata they
+  // record are written when ioorder delivers each completion, in the order the test started the calls, not in the
+  // order the thread pool completed them (two runs with the same calls recorded them in different orders).
+  if (c.controls.has('fs')) fsorder.installProcess(PATCHER, c);
+  if (c.controls.has('fs')) require('./outside').installProcess(PATCHER); // files outside the project: recorded (R-050 N1)
   // file times, inode and device numbers, fs.watch events (src/fstime.js); Buffer.allocUnsafe (src/realmx.js)
   if (c.controls.has('time')) require('./fstime').installProcess(PATCHER);
   require('./realmx').installProcess(PATCHER);
@@ -100,7 +108,7 @@ function unproven(name, realEnv) {
   if (name === '*') return Object.keys(realEnv || process.env).some((n) => unproven(n));
   if (KEPT.has(name)) return true;
   const c = STATE.config;
-  return volatile.PROXY_ENV.has(name) && !!c && c.controls.has('net') && String(STATE.netMode) !== 'record';
+  return volatile.PROXY_ENV.has(name) && !!c && c.controls.has('net') && String(STATE.netMode) !== 'record' && String(STATE.netMode) !== 'open';
 }
 function projectSite() {
   const c = STATE.config;
@@ -121,12 +129,42 @@ function noteNotProven(entry) {
     fs.appendFileSync(path.join(dir, `${process.pid}.txt`), `${entry}\n`);
   } catch { /* the run directory is gone (the run ended) */ } finally { STATE.quietDepth--; }
 }
-function noteOutside(op, k) {
+/**
+ * P1 A1 (docs/DESIGN-P1.md section A): the digest of what a read outside any test saw, so that `verify` can tell two
+ * runs that saw the same value from two that did not (crates/detpy-core/src/verify.rs `undischarged_outside`). For an
+ * enumeration, the sorted NAME=value lines without detjs' own variables and the engine's and runner's per-process
+ * ones (volatile.patterns() prefixes: DETJS_, VITEST_, JEST_WORKER, ...), the exclusion runInputs (src/session.js)
+ * applies to run inputs: otherwise every worker process would have its own digest.
+ */
+const CREDENTIALS = /:\/\/[^/@\s]*:[^/@\s]*@/;
+function outsideDigest(name, realEnv) {
+  const env = realEnv || process.env;
+  let text;
+  if (name === '*') {
+    const { prefixes } = volatile.patterns();
+    text = Object.keys(env).filter((n) => !OWN_ENV.test(n) && !prefixes.some((x) => n.startsWith(x))).sort()
+      .map((n) => `${n}=${env[n]}`).join('\u0000');
+  } else {
+    text = Object.prototype.hasOwnProperty.call(env, name) ? `${name}=${env[name]}` : `${name}\u0000<unset>`;
+  }
+  return native.digest(Buffer.from(text)).slice(0, 16);
+}
+function noteOutside(op, k, realEnv) {
   if (STATE.quietDepth > 0) return;
   const name = op === 'env.list' ? '*' : String(k);
   if (name !== '*' && OWN_ENV.test(name)) return;
-  // only the project's own code (not the runner copying the environment for a test file, not a package)
-  if (STATE.quiet(() => unproven(name) && projectSite())) noteNotProven(`env:${name}`);
+  // only the project's own code (not the runner copying the environment for a test file, not a package); the entry
+  // carries the value's digest (P1 A1)
+  if (STATE.quiet(() => unproven(name, realEnv) && projectSite())) {
+    // a value carrying URL credentials (`scheme://user:pass@host`) gets no digest: a short unkeyed hash of a password
+    // in the trace header can be reversed offline (review 2026-11-24). The bare name is never discharged by verify.
+    const v = name === '*' ? '' : String((realEnv || process.env)[name] ?? '');
+    // the file whose code made the read (its module scope, its hooks), so verify compares the values per file: two
+    // files whose values swap between runs are not discharged, and a serial run compares with a parallel one
+    // (founder decision D2 = A of 2026-11-25); no file open: no suffix
+    const at = STATE.fileScopeLabel ? `@${STATE.fileScopeLabel}` : '';
+    noteNotProven(CREDENTIALS.test(v) ? `env:${name}` : `env:${name}=${STATE.quiet(() => outsideDigest(name, realEnv))}${at}`);
+  }
   if (outsideSeen.has(name)) return;
   const c = cfg();
   if (!c || !c.dir) return;
@@ -180,7 +218,7 @@ function installEnvRecord(proc) {
     STATE.__envHooked = true;
     STATE.onTestStart.push(() => { envSeen = new Set(); });
     STATE.onEnvRead = (op, k, realEnv) => {
-      if (STATE.testId === null) { noteOutside(op, k); return; }
+      if (STATE.testId === null) { noteOutside(op, k, realEnv); return; }
       if (STATE.quietDepth > 0 || STATE.recorder === null) return;
       if (k !== '*' && OWN_ENV.test(k)) return;
       const key = `${op}\u0000${k}`;
@@ -288,9 +326,16 @@ function openFile(fileId, project) {
     STATE.recorder = null;
   }
   STATE.fileId = fileId;
+  // the test file whose code runs outside its tests now (module scope, hooks): reads made there are scoped to it
+  // (P1 B1, src/outside.js noteFile)
+  STATE.fileScope = fileId;
+  // the same file's label (with its project) for the outside-test env reads it makes (P1 A1, noteOutside)
+  STATE.fileScopeLabel = label;
   STATE.testIndex = 0;
   STATE.begun = new Set();
   if (c.controls.has('seeds')) seeds.seedFile(label);
+  // the virtual pid of the file's test code (P1 C, src/facts.js), seeded like the file's generators
+  if (c.controls.has('seeds')) require('./facts').startFile(label);
   if (c.controls.has('net')) network.startFile(label);
   if (c.controls.has('time')) {
     clock.DRIVER.takeBaseline();
@@ -301,6 +346,9 @@ function openFile(fileId, project) {
 
 function closeFile() {
   if (STATE.testId !== null) STATE.endTest('interrupted');
+  STATE.fileScope = null;
+  STATE.fileScopeLabel = null;
+  require('./facts').endFile();
   // (Timers left pending by a test were released to real time when it ended.)
   if (STATE.recorder) {
     STATE.flush();

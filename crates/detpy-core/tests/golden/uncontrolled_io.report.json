@@ -1,0 +1,69 @@
+{
+  "labels": [
+    "run0",
+    "run1"
+  ],
+  "order_digests": [
+    "83dc55ccddb68bf3cf487468c2681a52",
+    "83dc55ccddb68bf3cf487468c2681a52"
+  ],
+  "complete": [
+    false,
+    false
+  ],
+  "summary": {
+    "runs": 2,
+    "tests": 1,
+    "stable": 0,
+    "diverged": 0,
+    "missing": 0,
+    "outcome_unstable": 0,
+    "order_identical": true,
+    "reasons": {
+      "io": 1
+    },
+    "inputs_recorded": false,
+    "identical": 0,
+    "input_differs": 0,
+    "not_proven": 1
+  },
+  "tests": [
+    {
+      "nodeid": "x",
+      "status": "not-proven",
+      "fingerprints": [
+        "83bf570867812df7fe75433dffe83c71",
+        "83bf570867812df7fe75433dffe83c71"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 0,
+        "index": 1,
+        "window": null,
+        "event_a": {
+          "t": 0,
+          "s": "other",
+          "o": "uncontrolled.io",
+          "at": "t.py:3",
+          "v": "x"
+        },
+        "event_b": {
+          "t": 0,
+          "s": "other",
+          "o": "uncontrolled.io",
+          "at": "t.py:3",
+          "v": "x"
+        },
+        "reason": "io",
+        "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ t.py:3) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)"
+      }
+    }
+  ],
+  "input_differences": []
+}

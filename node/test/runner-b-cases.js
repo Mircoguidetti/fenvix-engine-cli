@@ -405,11 +405,12 @@ function controlCases(runner) {
         ...tf('ctl_b', "test('uuid', () => { expect(typeof require('node:crypto').randomUUID()).toBe('string'); });\ntest('timers', async () => { let n = 0; await new Promise((r) => { const h = setInterval(() => { n++; if (n === 50) { clearInterval(h); r(); } }, 1000); }); expect(n).toBe(50); });"),
       });
       const t0 = Date.now();
-      const r1 = crun(runner, dir, { cache: false });
+      // opt-out of the host-values defaults (spec 2026-11-23): the case checks the 2025 epoch and the closed network
+      const r1 = crun(runner, dir, { cache: false, det: ['--det-epoch=fixed', '--det-net=closed'] });
       assert.equal(r1.status, 0, show(r1));
       const tr1 = readTrace(dir);
       fs.copyFileSync(path.join(dir, '.detjs', 'trace.jsonl'), path.join(dir, 'trace1.jsonl'));
-      const r2 = crun(runner, dir, { cache: false });
+      const r2 = crun(runner, dir, { cache: false, det: ['--det-epoch=fixed', '--det-net=closed'] });
       assert.equal(r2.status, 0, show(r2));
       assert.ok(Date.now() - t0 < 120000, 'virtual timers: 2 x (5 s + 50 s) of timers must not run in real time');
       const tr2 = readTrace(dir);

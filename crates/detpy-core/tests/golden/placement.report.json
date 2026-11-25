@@ -1,0 +1,87 @@
+{
+  "labels": [
+    "run0",
+    "run1"
+  ],
+  "order_digests": [
+    "3976e4714862c8c31a02b13221992d69",
+    "3976e4714862c8c31a02b13221992d69"
+  ],
+  "complete": [
+    false,
+    false
+  ],
+  "summary": {
+    "runs": 2,
+    "tests": 2,
+    "stable": 1,
+    "diverged": 1,
+    "missing": 0,
+    "outcome_unstable": 0,
+    "order_identical": true,
+    "reasons": {
+      "placement": 1
+    },
+    "inputs_recorded": false,
+    "identical": 1,
+    "input_differs": 0,
+    "not_proven": 0
+  },
+  "tests": [
+    {
+      "nodeid": "p",
+      "status": "stable",
+      "fingerprints": [
+        "d15a785cac8377e654a2ef91ba15dc38",
+        "d15a785cac8377e654a2ef91ba15dc38"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": null
+    },
+    {
+      "nodeid": "v",
+      "status": "diverged",
+      "fingerprints": [
+        "0db4a16fca5f64f8aff8aec96348baa5",
+        "239e96d25fe93fe007ffb752c53fcff6"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 2,
+      "outcome_stable": true,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 1,
+        "index": 0,
+        "window": null,
+        "event_a": {
+          "t": 0,
+          "s": "random",
+          "o": "random.random",
+          "at": "t.py:1",
+          "v": "2"
+        },
+        "event_b": {
+          "t": 0,
+          "s": "time",
+          "o": "time.time",
+          "at": "t.py:1",
+          "v": "3"
+        },
+        "reason": "placement",
+        "description": "placement: ran in worker gw1 without 1 of its serial predecessors (first difference: event #0: [random] random.random @ t.py:1 = 2  <>  [time] time.time @ t.py:1 = 3)",
+        "lost_predecessors": [
+          "p"
+        ]
+      }
+    }
+  ],
+  "input_differences": []
+}

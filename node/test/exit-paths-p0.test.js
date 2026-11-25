@@ -74,7 +74,8 @@ test('re-exec path: the same through the TZ/locale restart', T, () => {
     // marker of the restart: the pinned TZ reaches the test although the environment had none
     'c.test.mjs': "test('sees the pinned TZ', () => { fs.writeFileSync(path.join(process.cwd(), 'tz.txt'), String(process.env.TZ)); });",
   });
-  const r = run(dir, ['--det-workers=1'], {});
+  // the restart happens only for a pinned zone/locale: opt-out of the keep default (spec 2026-11-23)
+  const r = run(dir, ['--det-workers=1', '--det-tz=UTC', '--det-locale=C.UTF-8'], {});
   assert.equal(fs.readFileSync(path.join(dir, 'tz.txt'), 'utf8'), 'UTC', r.show);
   assertOneFailed(r, { passed: 2 });
 });

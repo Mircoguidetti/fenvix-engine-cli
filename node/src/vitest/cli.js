@@ -81,7 +81,7 @@ async function main(argv) {
   const executed = [];
   let projectsRef = [];
   let ctxRef = null;
-  const info = { pool: null, isolate: null, projects: [], userRunners: [] };
+  const info = { pool: null, isolate: null, projects: [], userRunners: [], fileScope: true };
   const composed = new Map();
   const ownRunners = new Map(); // project config -> the project's own runner file
   const cfg = run.cfg;
@@ -95,6 +95,8 @@ async function main(argv) {
           info.pool = project.config.pool;
           info.isolate = project.config.isolate;
         }
+        // P1 B1: every file of the run in a fresh worker of its own (isolate, forks or threads, not one shared fork)
+        if (!isolatedFiles(configOf(f))) info.fileScope = false;
         return { f, fileId, project: name, key: name ? `${name}|${fileId}` : fileId };
       });
       keyed.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
@@ -182,6 +184,7 @@ async function main(argv) {
     const { lines } = session.finish(run, opts, executed, {
       runner: 'vitest', runner_version: pkg.version, isolation, serial: !par.plan,
       pool: info.pool, isolate: info.isolate, projects: info.projects, cli_args: args, parallel: par.result.meta,
+      files_outside_scope: info.fileScope ? 'file' : 'run',
     });
     for (const l of lines) fs.writeSync(1, `${l}\n`); // sync: the runner may be exiting
   };
@@ -378,6 +381,18 @@ function addPreload(c, file) {
 function configOf(f) {
   const project = Array.isArray(f) ? f[0] : f.project;
   return project && (project.config || (project.getConfig && project.getConfig()));
+}
+
+/**
+ * Each file of this project runs in a fresh worker (P1 B1): Vitest's isolate with the forks or threads pool and not
+ * one shared fork / thread. vm pools share the process (and its environment), browser mode is another world: no.
+ */
+function isolatedFiles(c) {
+  if (!c || (c.browser && c.browser.enabled)) return false;
+  const pool = c.pool || 'forks';
+  if (pool !== 'forks' && pool !== 'threads') return false;
+  const po = (c.poolOptions && c.poolOptions[pool]) || {};
+  return c.isolate !== false && po.isolate !== false && !po.singleFork && !po.singleThread;
 }
 
 function notIsolated(c) {

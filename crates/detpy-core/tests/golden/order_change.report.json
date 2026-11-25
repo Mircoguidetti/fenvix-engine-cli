@@ -1,0 +1,105 @@
+{
+  "labels": [
+    "run0",
+    "run1"
+  ],
+  "order_digests": [
+    "3976e4714862c8c31a02b13221992d69",
+    "eeb456a8557b1911fbd8339500ebfe04"
+  ],
+  "complete": [
+    false,
+    false
+  ],
+  "summary": {
+    "runs": 2,
+    "tests": 2,
+    "stable": 0,
+    "diverged": 2,
+    "missing": 0,
+    "outcome_unstable": 0,
+    "order_identical": false,
+    "reasons": {
+      "order": 2
+    },
+    "inputs_recorded": false,
+    "identical": 0,
+    "input_differs": 0,
+    "not_proven": 0
+  },
+  "tests": [
+    {
+      "nodeid": "p",
+      "status": "diverged",
+      "fingerprints": [
+        "31af55e422bc4accd412eab03c7f8ad0",
+        "31af55e422bc4accd412eab03c7f8ad0"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 1,
+        "index": null,
+        "window": null,
+        "event_a": {
+          "t": 0,
+          "s": "other",
+          "o": "order.predecessor",
+          "at": "<run>",
+          "v": "<none>"
+        },
+        "event_b": {
+          "t": 0,
+          "s": "other",
+          "o": "order.predecessor",
+          "at": "<run>",
+          "v": "v"
+        },
+        "reason": "order",
+        "description": "before the test started: it ran after different tests in its process: [] vs [v] (first difference at position 0: <none> vs v)"
+      }
+    },
+    {
+      "nodeid": "v",
+      "status": "diverged",
+      "fingerprints": [
+        "31af55e422bc4accd412eab03c7f8ad0",
+        "31af55e422bc4accd412eab03c7f8ad0"
+      ],
+      "outcomes": [
+        "passed",
+        "passed"
+      ],
+      "distinct_fingerprints": 1,
+      "outcome_stable": true,
+      "divergence": {
+        "run_a": 0,
+        "run_b": 1,
+        "index": null,
+        "window": null,
+        "event_a": {
+          "t": 0,
+          "s": "other",
+          "o": "order.predecessor",
+          "at": "<run>",
+          "v": "p"
+        },
+        "event_b": {
+          "t": 0,
+          "s": "other",
+          "o": "order.predecessor",
+          "at": "<run>",
+          "v": "<none>"
+        },
+        "reason": "order",
+        "description": "before the test started: it ran after different tests in its process: [p] vs [] (first difference at position 0: p vs <none>)"
+      }
+    }
+  ],
+  "input_differences": []
+}

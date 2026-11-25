@@ -1,0 +1,12 @@
+== claudekit trunk f67be4a31f1a9cf4d4e048ab8b5ec2d58b8e0055 2026-11-23T21:02:07Z
+{"repo": "claudekit", "kind": "plain", "rep": 1, "workers": 1, "exit": 0, "wall_s": 10.89, "busy_before_pct": 0.5}
+{"repo": "claudekit", "kind": "serial", "rep": 1, "workers": 1, "exit": 0, "wall_s": 26.65, "busy_before_pct": 0.5}
+{"repo": "claudekit", "kind": "par", "rep": 1, "workers": 4, "exit": 0, "wall_s": 20.89, "busy_before_pct": 0.0}
+{"repo": "claudekit", "kind": "verify", "rep": 1, "workers": 4, "exit": 1, "wall_s": 0.14, "busy_before_pct": 0.0}
+exit 0 2026-11-23T21:03:10Z
+== claudekit branch 702bf4890c4b2827db4250e9872f31562bb76012 2026-11-23T21:03:10Z
+{"repo": "claudekit", "kind": "plain", "rep": 1, "workers": 1, "exit": 0, "wall_s": 6.36, "busy_before_pct": 0.2}
+{"repo": "claudekit", "kind": "serial", "rep": 1, "workers": 1, "exit": 0, "wall_s": 21.25, "busy_before_pct": 0.2}
+{"repo": "claudekit", "kind": "par", "rep": 1, "workers": 4, "exit": 0, "wall_s": 21.38, "busy_before_pct": 0.2}
+{"repo": "claudekit", "kind": "verify", "rep": 1, "workers": 4, "exit": 1, "wall_s": 0.14, "busy_before_pct": 0.0}
+exit 0 2026-11-23T21:04:03Z

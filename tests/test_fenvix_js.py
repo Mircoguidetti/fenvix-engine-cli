@@ -304,6 +304,10 @@ def test_run_dependent_id_is_reproduced_by_its_stable_id(runner, env, monkeypatc
     ext = SUITE[runner]["ext"]
     (d / "tests" / f"c{ext}").write_text(SUITE[runner]["head"] + STAMPED_FILE)
     monkeypatch.chdir(d)
+    # opt-out of the host epoch (spec 2026-11-23, det-host-values): the test compares ids across two separate
+    # sessions (its own collect, the adapter's repro), which share the fixed epoch only when it is set for both
+    monkeypatch.setenv("DETJS_EPOCH", "2025-01-01T00:00:00Z")
+    monkeypatch.setenv("DETJS_EPOCH_RUN", "1")
     a = fenvix_js.ADAPTERS[runner]
     r = fenvix_js.DetjsRunner(cwd=d, workdir=d / "w", runner=runner)
     ids = [t for t in r.collect() if t.startswith(f"tests/c{ext}::stamped ")]
@@ -355,3 +359,24 @@ def test_detjs_found_from_the_working_directory(monkeypatch, tmp_path):
     (proj / "node_modules" / ".bin").mkdir(parents=True)
     (proj / "node_modules" / ".bin" / "detjs").write_text("")
     assert fenvix_js.detjs_command() == [str(proj / "node_modules" / ".bin" / "detjs")]
+
+
+def test_bundle_keeps_the_epoch_of_the_failing_run_and_replay_uses_it(monkeypatch, tmp_path):
+    """/review of det-host-values (2026-11-24): a repro bundle records the epoch its failing run had (the machine's
+    time when the repro started), its detjs command line names it, and `replay` runs on that epoch, not on the time
+    of the replay: a test that reads the clock fails on replay as it failed in the repro."""
+    monkeypatch.delenv("DETJS_EPOCH", raising=False)
+    monkeypatch.delenv("DETJS_EPOCH_RUN", raising=False)
+    runner = fenvix_js.DetjsRunner(cwd=tmp_path, workdir=tmp_path / "w", runner="vitest", epoch="2026-03-04T05:06:07Z")
+    bdir = tmp_path / "out" / _repro._slug("tests/a.test.ts::t")
+    bdir.mkdir(parents=True)
+    b = {"status": "reproduced", "test": "tests/a.test.ts::t", "config": "3", "order": ["tests/a.test.ts::t"]}
+    (bdir / "bundle.json").write_text(json.dumps(b))
+    out = fenvix_js.finish_bundle(dict(b), tmp_path / "out", runner)
+    assert out["epoch"] == "2026-03-04T05:06:07Z", out
+    assert "--det-epoch=2026-03-04T05:06:07Z" in out["command"], out["command"]
+    seen = []
+    monkeypatch.setattr(fenvix_js.DetjsRunner, "run", lambda self, config, order, name: seen.append(self.epoch) or {})
+    monkeypatch.setattr(fenvix_js._core, "repro_replay_verdict", lambda data, rs, runs: {"runs": len(rs)})
+    fenvix_js.ADAPTERS["vitest"].replay(bdir, 2)
+    assert seen == ["2026-03-04T05:06:07Z"] * 2, seen

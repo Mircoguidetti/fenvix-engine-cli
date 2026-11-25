@@ -8,9 +8,10 @@
 // * `crypto.getRandomValues` and `crypto.randomUUID` (global Web Crypto and
 //   `node:crypto`) draw from a second stream derived from the same key.
 // * `crypto.randomBytes`, `randomFillSync`, `randomFill`, `randomInt`, `pseudoRandomBytes` are OS
-//   entropy: observed (digest in the fingerprint), not controlled, unless
-//   `--det-urandom` is given (the Python shell's contract: os.urandom observed, --det-urandom controls it; audit
-//   G-1426). Never silently: each draw is an `entropy` event and the run ends with the list of tests that drew it.
+//   entropy: by default (P1 D, decision of 2026-11-23) a per-test deterministic stream, drawn at the call (an
+//   asynchronous call too, in call order); `--det-urandom=off` leaves them real and observed (digest in the
+//   fingerprint; audit G-1426), and so are draws made before the first test or file seeds the streams. Never
+//   silently: each draw is an `entropy` event; real draws are listed at the end of the run.
 // * Protocol nonces drawn through them are controlled whatever the option (G-1421): the WebSocket handshake key
 //   (`Sec-WebSocket-Key`) and the frame masks of the global `WebSocket` (undici) and of the `ws` package. They are
 //   not secrets (RFC 6455 uses them against proxy cache poisoning), and real ones made every WebSocket test differ
@@ -82,7 +83,14 @@ const NONCE = new Xoshiro128();
 const INFRA_MATH = new Xoshiro128();
 const INFRA_CRYPTO = new Xoshiro128();
 
+// whether the streams were seeded in this process (a test, or a file's module scope / hooks: seedFile). Before that
+// (a runner's or a library's start-up) the controlled entropy stream is not used: an unseeded xoshiro state is all
+// zeros and gives zero bytes, the same bytes on every draw (Playwright's in-process start-up then made the same
+// dispatcher GUID twice and its worker exited). Such draws stay real and observed, as with --det-urandom=off.
+let SEEDED = false;
+
 function reseed(key) {
+  SEEDED = true;
   const base = STATE.config.seed;
   const [h1, l1] = native.deriveSeedWords(base, key);
   MATH.seed(h1, l1);
@@ -208,10 +216,18 @@ function randomUUID(options) {
   return uuid;
 }
 
-// OS entropy: observed, controlled only with --det-urandom.
+// OS entropy: a per-test deterministic stream by default (P1 D), observed only with --det-urandom=off.
 function randomBytes(size, cb) {
-  if (!STATE.config.urandom && typeof cb !== 'function' && protocolNonce()) return nonce('crypto.randomBytes', real.randomBytes(size));
+  // a protocol nonce (WebSocket key / mask) keeps its own seeded stream whatever --det-urandom says (P1 D)
+  if (typeof cb !== 'function' && protocolNonce()) return nonce('crypto.randomBytes', real.randomBytes(size));
   if (typeof cb === 'function') {
+    // controlled: drawn now, in call order, and delivered on a later tick (as randomFill); drawn in the callback,
+    // concurrent calls were served in the thread pool's completion order (review 2026-11-24, rule 3)
+    if (STATE.config.urandom && SEEDED) {
+      const buf = observe('crypto.randomBytes', real.randomBytes(size));
+      process.nextTick(cb, null, buf);
+      return undefined;
+    }
     return real.randomBytes(size, (err, buf) => {
       if (!err) observe('crypto.randomBytes', buf);
       cb(err, buf);
@@ -225,7 +241,7 @@ function randomFillSync(buf, offset, size) {
   const view = ArrayBuffer.isView(buf) ? Buffer.from(buf.buffer, buf.byteOffset, buf.byteLength) : Buffer.from(buf);
   const start = offset === undefined ? 0 : offset * (ArrayBuffer.isView(buf) ? buf.BYTES_PER_ELEMENT || 1 : 1);
   const len = size === undefined ? view.length - start : size * (ArrayBuffer.isView(buf) ? buf.BYTES_PER_ELEMENT || 1 : 1);
-  if (!STATE.config.urandom && protocolNonce()) nonce('crypto.randomFillSync', view.subarray(start, start + len));
+  if (protocolNonce()) nonce('crypto.randomFillSync', view.subarray(start, start + len));
   else observe('crypto.randomFillSync', view.subarray(start, start + len));
   return out;
 }
@@ -240,7 +256,7 @@ function randomInt(min, max, cb) {
     process.nextTick(cb, null, v);
     return undefined;
   }
-  if (STATE.config.urandom) {
+  if (STATE.config.urandom && SEEDED) {
     if (max === undefined) { max = min; min = 0; }
     const range = max - min;
     const v = min + Math.floor(ENTROPY.nextDouble() * range);
@@ -261,7 +277,7 @@ function randomFill(buf, offset, size, cb) {
 }
 
 function observe(op, buf) {
-  if (STATE.config.urandom) ENTROPY.fill(buf);
+  if (STATE.config.urandom && SEEDED) ENTROPY.fill(buf);
   STATE.record('entropy', op, `${buf.length}:${native.digest(Buffer.from(buf.buffer, buf.byteOffset, buf.byteLength))}`);
   return buf;
 }

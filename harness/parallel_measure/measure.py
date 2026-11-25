@@ -19,6 +19,7 @@ Usage: measure.py --spec specs.json --name REPO [--reps 3] [--workers N] --out D
 from __future__ import annotations
 
 import argparse
+import datetime
 import json
 import os
 import shutil
@@ -108,6 +109,20 @@ def trace_tests(path):
             elif j.get("type") == "test":
                 tests[j["nodeid"]] = (j.get("outcome"), j.get("fingerprint"), j.get("worker"))
     return header, tests
+
+
+def epoch_args(trace):
+    """`--det-epoch=<ISO>` from a trace header's `meta.epoch_ns` (spec 2026-11-23, det-host-values: the default epoch
+    is the host time, so the runs compared with S_i get S_i's epoch); [] when the trace has none."""
+    try:
+        with open(trace) as f:
+            meta = json.loads(f.readline()).get("meta") or {}
+        ns = int(meta["epoch_ns"])
+    except (OSError, ValueError, KeyError, TypeError):
+        return []
+    ms = ns // 1_000_000
+    t = datetime.datetime.fromtimestamp(ms / 1000, tz=datetime.timezone.utc)
+    return [f"--det-epoch={t.strftime('%Y-%m-%dT%H:%M:%S')}.{ms % 1000:03d}Z"]
 
 
 def outcomes_file(path):
@@ -391,12 +406,13 @@ def main():
                 r, text = run(cmd, cwd, env, log, o.timeout)
                 record("plain_par", i, cmd, r, workers=n, outcome_counts=summary_counts(text))
         if "serial" not in skip:
-            cmd = serial(i)
+            # S_2.. get S_1's epoch (S_1 vs S_2 is the serial noise, the same epoch as the trunk's fixed one)
+            cmd = serial(i) + (epoch_args(f"{out}/S1.jsonl") if i > 1 else [])
             r, _ = engine_run("serial", 1, cmd)
             _, t = trace_tests(f"{out}/S{i}.jsonl")
             record("serial", i, cmd, r, tests=len(t), outcome_counts=counts({k: v[0] for k, v in t.items()}))
         for n in ([] if "par" in skip else wlist):
-            cmd = par(i, n)
+            cmd = par(i, n) + epoch_args(f"{out}/S{i}.jsonl")
             r, _ = engine_run("par", n, cmd)
             h, t = trace_tests(f"{out}/P{i}w{n}.jsonl")
             seen = sorted({v[2] for v in t.values() if v[2]})

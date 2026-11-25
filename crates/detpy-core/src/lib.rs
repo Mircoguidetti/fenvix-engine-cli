@@ -31,6 +31,7 @@ pub mod order;
 pub mod proof;
 pub mod provable;
 pub mod record;
+pub mod record_source;
 pub mod recorder;
 // rust-hotpaths-2: repro / reexec decisions
 pub mod reexec;

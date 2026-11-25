@@ -1,0 +1,158 @@
+{
+ "sqlectron": {
+  "A_only_via_enumeration": 0,
+  "B_abs_top20": [],
+  "F_detail": {
+   "not-proven uncontrolled.io": 8
+  },
+  "also_not_identical_serial_vs_serial": {
+   "A": 30,
+   "B-abs": 0,
+   "B-tmp": 0,
+   "C": 0,
+   "D": 5,
+   "E": 0,
+   "F": 8,
+   "noise": 0,
+   "other": 0
+  },
+  "counts": {
+   "A": 30,
+   "B-abs": 0,
+   "B-tmp": 0,
+   "C": 0,
+   "D": 5,
+   "E": 0,
+   "F": 8,
+   "noise": 0,
+   "other": 0
+  },
+  "engine_commit": [
+   "e7338950262acc4bd24ed6d3af6a59e3f765a3af"
+  ],
+  "env_read_outside_tests": 21,
+  "examples": {
+   "A": [
+    {
+     "at": null,
+     "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution",
+     "nodeid": "test/browser/config.test.ts::config::.prepare::should include id for those servers without it",
+     "op": null,
+     "reason": "native",
+     "status": "not-proven"
+    },
+    {
+     "at": null,
+     "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution",
+     "nodeid": "test/browser/utils.test.ts::utils::.getConfigPath::use of SQLECTRON_HOME::should get config from process.env.SQLECTRON_HOME",
+     "op": null,
+     "reason": "native",
+     "status": "not-proven"
+    },
+    {
+     "at": null,
+     "description": "outside any test the run read sources that are not controlled (native:/tmp/pm-p1/repos/sqlectron/node_modules/sqlite3/build/Release/node_sqlite3.node): every test may have observed them, so identical fingerprints are no evidence of an identical execution",
+     "nodeid": "test/browser/validators/server.test.ts::validators/server::validate::should validate server 0",
+     "op": null,
+     "reason": "native",
+     "status": "not-proven"
+    }
+   ],
+   "D": [
+    {
+     "at": "<deps>/uuid/dist/rng.js:18",
+     "description": "event #11: crypto.randomFillSync @ <deps>/uuid/dist/rng.js:18 returned different values: \"256:3e889cfec7bffc4ae4f315c7db6042e2\" vs \"256:39037088d8c44eee85b6419f34bf712f\"",
+     "nodeid": "test/browser/servers.test.ts::servers::.add::should add new server",
+     "op": "crypto.randomFillSync",
+     "reason": "entropy",
+     "status": "diverged"
+    },
+    {
+     "at": "src/browser/core/crypto.ts:16",
+     "description": "event #11: crypto.randomBytes @ src/browser/core/crypto.ts:16 returned different values: \"16:0d025776a166b9242f3a5b5ef858bcfd\" vs \"16:75c6aeb7870169db1816670b28d22c27\"",
+     "nodeid": "test/browser/servers.test.ts::servers::.add::should add new server with ssh",
+     "op": "crypto.randomBytes",
+     "reason": "entropy",
+     "status": "diverged"
+    },
+    {
+     "at": "src/browser/core/crypto.ts:16",
+     "description": "event #11: crypto.randomBytes @ src/browser/core/crypto.ts:16 returned different values: \"16:12993357fe9308b6143d703fda20a4e1\" vs \"16:4bd6e8081615b51858907842a2c9ef0d\"",
+     "nodeid": "test/browser/servers.test.ts::servers::.update::should update existing server",
+     "op": "crypto.randomBytes",
+     "reason": "entropy",
+     "status": "diverged"
+    }
+   ],
+   "F": [
+    {
+     "at": "src/browser/core/utils/index.ts:47",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ src/browser/core/utils/index.ts:47) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "nodeid": "test/browser/servers.test.ts::servers::.getAll::should load servers from file",
+     "op": "uncontrolled.io",
+     "reason": "io",
+     "status": "not-proven"
+    },
+    {
+     "at": "src/browser/core/utils/index.ts:47",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ src/browser/core/utils/index.ts:47) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "nodeid": "test/browser/servers.test.ts::servers::should not update password when password is already encrypted",
+     "op": "uncontrolled.io",
+     "reason": "io",
+     "status": "not-proven"
+    },
+    {
+     "at": "src/browser/core/utils/index.ts:47",
+     "description": "the test waited for I/O readiness: the order in which ready I/O is delivered (uncontrolled.io @ src/browser/core/utils/index.ts:47) is not controlled by this release, so identical fingerprints are no evidence of an identical execution (uncontrolled: io)",
+     "nodeid": "test/browser/servers.test.ts::servers::.remove::should remove an existing server",
+     "op": "uncontrolled.io",
+     "reason": "io",
+     "status": "not-proven"
+    }
+   ]
+  },
+  "identical": 0,
+  "input_differences": [],
+  "noise_file": "sqlectron/verify_serial_noise2w1.json",
+  "noise_pair_not_identical": 43,
+  "noise_whose_serial_pair_verdict_is_A_F": {},
+  "noise_whose_serial_pair_verdict_is_A_F_by_reason": {},
+  "not_identical": 43,
+  "other_by_reason": {},
+  "repo": "sqlectron",
+  "run_level": 0,
+  "run_level_first_input": {},
+  "status_by_category": {
+   "A": {
+    "not-proven": 30
+   },
+   "D": {
+    "diverged": 5
+   },
+   "F": {
+    "not-proven": 8
+   }
+  },
+  "summary": {
+   "diverged": 5,
+   "identical": 0,
+   "input_differs": 0,
+   "inputs_recorded": true,
+   "missing": 0,
+   "not_proven": 38,
+   "order_identical": true,
+   "outcome_unstable": 0,
+   "reasons": {
+    "entropy": 5,
+    "io": 8,
+    "native": 30
+   },
+   "runs": 2,
+   "stable": 0,
+   "tests": 43
+  },
+  "tests": 43,
+  "verify_cmd": "/tmp/pm-p1/venv/networkx/bin/python -m detpy.fenvix verify /tmp/pm-p1/p1-before-sqlrebuilt/sqlectron/S1.jsonl /tmp/pm-p1/p1-before-sqlrebuilt/sqlectron/P1w4.jsonl --json",
+  "verify_file": "sqlectron/verify1w4.json"
+ }
+}

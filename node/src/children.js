@@ -19,6 +19,7 @@ const path = require('node:path');
 const { STATE } = require('./state');
 const sites = require('./sites');
 const native = require('./native');
+const { toRealPidArgs } = require('./facts');
 
 const WORKER_PRELOAD = path.join(__dirname, 'worker-preload.js');
 let seen = new Set();
@@ -59,12 +60,14 @@ function installWorkers(patcher) {
   if (!Real || Real.__detjsLevel0) return;
   const W = new Proxy(Real, {
     construct(target, args, nt) {
+      require('./outside').noteChild(); // P1 B2: a worker can write into this process's directories
       const at = STATE.testId !== null ? site() : null;
       if (at === null) return Reflect.construct(target, args, nt === W ? target : nt);
       const [file, opts0] = args;
       const opts = opts0 && typeof opts0 === 'object' ? opts0 : {};
       const key = `${STATE.testId}\u001fworker${workers++}`; // an environment value: no NUL byte (a NUL made every Worker constructor throw)
-      const env = opts.env === wt.SHARE_ENV ? opts.env : { ...(opts.env || process.env), DETJS_WORKER_KEY: key };
+      const vpid = require('./facts').currentVpid(); // P1 C: the worker sees the test's pid (same process)
+      const env = opts.env === wt.SHARE_ENV ? opts.env : { ...(opts.env || process.env), DETJS_WORKER_KEY: key, ...(vpid !== null ? { DETJS_WORKER_VPID: String(vpid) } : {}) };
       const withPreload = { ...opts, env, execArgv: [...(opts.execArgv !== undefined ? opts.execArgv : process.execArgv), '--require', WORKER_PRELOAD] };
       let w;
       try {
@@ -95,7 +98,9 @@ function installChildren(patcher) {
     if (typeof real !== 'function') continue;
     const w = function (...a) {
       const at = STATE.testId !== null ? site() : null;
-      const child = real.apply(this, a);
+      require('./outside').noteChild(); // P1 B2: a child can write into this process's directories
+      // a virtual pid in the command, its arguments or environment is the real one for the child (P1 C)
+      const child = real.apply(this, toRealPidArgs(a));
       if (at !== null) {
         mark('child', `${n} ${argvOf(a[0], a[1])}`, at);
         const test = STATE.testId;
@@ -113,6 +118,8 @@ function installChildren(patcher) {
     if (typeof real !== 'function') continue;
     const w = function (...a) {
       const at = STATE.testId !== null ? site() : null;
+      require('./outside').noteChild(); // P1 B2
+      a = toRealPidArgs(a); // P1 C: as for the asynchronous forms
       if (at === null) return real.apply(this, a);
       mark('child', `${n} ${argvOf(a[0], Array.isArray(a[1]) ? a[1] : [])}`, at);
       let r;

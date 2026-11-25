@@ -1,0 +1,8326 @@
+{
+ "test/codex-app-router.test.ts::codex app router daemon::rejects non-loopback hosts before starting the proxy": {
+  "parallel": [
+   {
+    "at": "test/codex-app-router.test.ts:212",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/status.json|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|4|3859a5b448a1521ad9d301c2834fb3d1"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/package.json|file size=23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/state.json|file size=160"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist|1|7b97ab9f4caded92ea611929635d0b48"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts|1|ec080b4893c85cf7f29353bee4c98183"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts/codex-app-router.js|file size=14219"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib|1|61994372212869d06305a854d02959fb"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib/runtime-rotation-proxy.js|file size=1401"
+   }
+  ],
+  "serial": [
+   {
+    "at": "test/codex-app-router.test.ts:212",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/status.json|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|4|3859a5b448a1521ad9d301c2834fb3d1"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/package.json|file size=23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/state.json|file size=160"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts|1|ec080b4893c85cf7f29353bee4c98183"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist|1|7b97ab9f4caded92ea611929635d0b48"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts/codex-app-router.js|file size=14219"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib|1|61994372212869d06305a854d02959fb"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib/runtime-rotation-proxy.js|file size=1401"
+   }
+  ]
+ },
+ "test/credential-probe-leases.test.ts::old holder and candidate cleanup preserve a replacement lease with Windows path spelling": {
+  "parallel": [
+   {
+    "at": "lib/storage/file-lock.ts:121",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks|0|af1349b9f5f9a1a6a0404dea36dcc949"
+   },
+   {
+    "at": "lib/storage/file-lock.ts:121",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks|1|d10d36f19e8f25e8306df1abfbb3cc78"
+   },
+   {
+    "at": "lib/storage/file-lock.ts:121",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|1|a455ed2bf0f73c6f1cf240d3db288579"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-routes.json|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-routes.json|missing"
+   },
+   {
+    "at": "lib/storage/credential-sidecars.ts:26",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks|dir"
+   },
+   {
+    "at": "lib/storage/file-lock.ts:121",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|1|16568a00a5057e16c93ce9b7ac4e4978"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/reset-credits.json|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/reset-credits.json|missing"
+   },
+   {
+    "at": "lib/storage/file-lock.ts:121",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|1|16568a00a5057e16c93ce9b7ac4e4978"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-capability-probes.json|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-capability-probes.json|missing"
+   },
+   {
+    "at": "lib/storage/file-lock.ts:121",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|1|16568a00a5057e16c93ce9b7ac4e4978"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/automatic-api-checks.json|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/automatic-api-checks.json|missing"
+   },
+   {
+    "at": "lib/storage/credential-sidecars.ts:52",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|1|16568a00a5057e16c93ce9b7ac4e4978"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks.wiped-68e4dbf4-0f4c-4bb4-b7c3-f8f338e3ec30|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks.wiped-68e4dbf4-0f4c-4bb4-b7c3-f8f338e3ec30|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks.wiped-68e4dbf4-0f4c-4bb4-b7c3-f8f338e3ec30|2|bc73bc43323b3d8a2658d6c564085f43"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks.wiped-68e4dbf4-0f4c-4bb4-b7c3-f8f338e3ec30/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.write-lock|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks.wiped-68e4dbf4-0f4c-4bb4-b7c3-f8f338e3ec30/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.write-lock.candidate-AX8wRD|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks.wiped-68e4dbf4-0f4c-4bb4-b7c3-f8f338e3ec30/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.write-lock|1|1126b93e5a7f090cbf8fa56852ceb48f"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks.wiped-68e4dbf4-0f4c-4bb4-b7c3-f8f338e3ec30/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.write-lock/49960de5880e8c68.1162123008.21b63502-4ad5-4cce-ad61-fddfe2de70cd|file size=0"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks.wiped-68e4dbf4-0f4c-4bb4-b7c3-f8f338e3ec30/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.write-lock.candidate-AX8wRD|1|87cfc92592511f3a29965c9bc996b6cf"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks.wiped-68e4dbf4-0f4c-4bb4-b7c3-f8f338e3ec30/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.write-lock.candidate-AX8wRD/49960de5880e8c68.1162123008.d5d0c0d9-7e00-46a9-b9c5-97e4ff66c7a8|file size=0"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/inference-activity|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/inference-activity|missing"
+   },
+   {
+    "at": "test/credential-probe-leases.test.ts:64",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks|missing"
+   },
+   {
+    "at": "lib/storage/file-lock.ts:121",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks|0|af1349b9f5f9a1a6a0404dea36dcc949"
+   },
+   {
+    "at": "test/credential-probe-leases.test.ts:66",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.write-lock|1|5fd3d1fbb8347044024efe0fb8ad88bf"
+   },
+   {
+    "at": "test/credential-probe-leases.test.ts:69",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.write-lock|1|5fd3d1fbb8347044024efe0fb8ad88bf"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|1|a455ed2bf0f73c6f1cf240d3db288579"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks|dir"
+   }
+  ],
+  "serial": [
+   {
+    "at": "lib/storage/file-lock.ts:121",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks|0|af1349b9f5f9a1a6a0404dea36dcc949"
+   },
+   {
+    "at": "lib/storage/file-lock.ts:121",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks|1|d10d36f19e8f25e8306df1abfbb3cc78"
+   },
+   {
+    "at": "lib/storage/file-lock.ts:121",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|1|a455ed2bf0f73c6f1cf240d3db288579"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-routes.json|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-routes.json|missing"
+   },
+   {
+    "at": "lib/storage/credential-sidecars.ts:26",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks|dir"
+   },
+   {
+    "at": "lib/storage/file-lock.ts:121",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|1|16568a00a5057e16c93ce9b7ac4e4978"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/reset-credits.json|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/reset-credits.json|missing"
+   },
+   {
+    "at": "lib/storage/file-lock.ts:121",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|1|16568a00a5057e16c93ce9b7ac4e4978"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-capability-probes.json|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-capability-probes.json|missing"
+   },
+   {
+    "at": "lib/storage/file-lock.ts:121",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|1|16568a00a5057e16c93ce9b7ac4e4978"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/automatic-api-checks.json|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/automatic-api-checks.json|missing"
+   },
+   {
+    "at": "lib/storage/credential-sidecars.ts:52",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|1|16568a00a5057e16c93ce9b7ac4e4978"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks.wiped-68e4dbf4-0f4c-4bb4-b7c3-f8f338e3ec30|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks.wiped-68e4dbf4-0f4c-4bb4-b7c3-f8f338e3ec30|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks.wiped-68e4dbf4-0f4c-4bb4-b7c3-f8f338e3ec30|2|bc73bc43323b3d8a2658d6c564085f43"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks.wiped-68e4dbf4-0f4c-4bb4-b7c3-f8f338e3ec30/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.write-lock|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks.wiped-68e4dbf4-0f4c-4bb4-b7c3-f8f338e3ec30/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.write-lock.candidate-AX8wRD|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks.wiped-68e4dbf4-0f4c-4bb4-b7c3-f8f338e3ec30/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.write-lock|1|1126b93e5a7f090cbf8fa56852ceb48f"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks.wiped-68e4dbf4-0f4c-4bb4-b7c3-f8f338e3ec30/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.write-lock.candidate-AX8wRD|1|87cfc92592511f3a29965c9bc996b6cf"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks.wiped-68e4dbf4-0f4c-4bb4-b7c3-f8f338e3ec30/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.write-lock/49960de5880e8c68.1162123008.21b63502-4ad5-4cce-ad61-fddfe2de70cd|file size=0"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks.wiped-68e4dbf4-0f4c-4bb4-b7c3-f8f338e3ec30/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.write-lock.candidate-AX8wRD/49960de5880e8c68.1162123008.d5d0c0d9-7e00-46a9-b9c5-97e4ff66c7a8|file size=0"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/inference-activity|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/inference-activity|missing"
+   },
+   {
+    "at": "test/credential-probe-leases.test.ts:64",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks|missing"
+   },
+   {
+    "at": "lib/storage/file-lock.ts:121",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks|0|af1349b9f5f9a1a6a0404dea36dcc949"
+   },
+   {
+    "at": "test/credential-probe-leases.test.ts:66",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.write-lock|1|5fd3d1fbb8347044024efe0fb8ad88bf"
+   },
+   {
+    "at": "test/credential-probe-leases.test.ts:69",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.write-lock|1|5fd3d1fbb8347044024efe0fb8ad88bf"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|1|a455ed2bf0f73c6f1cf240d3db288579"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/api-probe-locks|dir"
+   }
+  ]
+ },
+ "test/gitignore.test.ts::gitignore helper::adds .codex entry when missing": {
+  "parallel": [
+   {
+    "at": "lib/storage/gitignore.ts:19",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project/.git|present"
+   },
+   {
+    "at": "lib/storage/gitignore.ts:26",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project/.gitignore|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|1|ad99a238dc08e2988248408b1395f579"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project|3|386fc80678fe2b7ca51cee2101629da4"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project/.codex|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project/.gitignore|file size=8"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project/.codex|1|a46fdc087197e6d0837bf759d2c11fd2"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project/.codex/multi-auth|dir"
+   }
+  ],
+  "serial": [
+   {
+    "at": "lib/storage/gitignore.ts:19",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project/.git|present"
+   },
+   {
+    "at": "lib/storage/gitignore.ts:26",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project/.gitignore|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|1|ad99a238dc08e2988248408b1395f579"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project|3|386fc80678fe2b7ca51cee2101629da4"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project/.codex|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project/.gitignore|file size=8"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project/.codex|1|a46fdc087197e6d0837bf759d2c11fd2"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project/.codex/multi-auth|dir"
+   }
+  ]
+ },
+ "test/oc-chatgpt-target-detection.test.ts::oc-chatgpt target detection::accepts OC_CODEX_MULTI_AUTH_DIR as the canonical override, preferring it over the legacy name": {
+  "parallel": [
+   {
+    "at": "lib/storage/paths.ts:342",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": ".git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:291",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": ".git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:296",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": ".git|dir"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root/oc-codex-multi-auth-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root/oc-codex-multi-auth-accounts.json.wal|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root/openai-codex-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root/openai-codex-accounts.json.wal|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:225",
+    "o": "fs.readdirSync",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root|1|8cc7fe42fd4349fceabc66d0553b8535"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:251",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root/backups/oc-codex-multi-auth-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:251",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root/backups/openai-codex-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:225",
+    "o": "fs.readdirSync",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root/backups|0|af1349b9f5f9a1a6a0404dea36dcc949"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:276",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root/backups|present"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|3|020e3e8118a3dab59c186e1401e5274b"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/legacy-override-root|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root|1|8cc7fe42fd4349fceabc66d0553b8535"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/legacy-override-root|1|8cc7fe42fd4349fceabc66d0553b8535"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root/backups|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/legacy-override-root/backups|dir"
+   }
+  ],
+  "serial": [
+   {
+    "at": "lib/storage/paths.ts:342",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": ".git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:291",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": ".git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:296",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": ".git|dir"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root/oc-codex-multi-auth-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root/oc-codex-multi-auth-accounts.json.wal|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root/openai-codex-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root/openai-codex-accounts.json.wal|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:225",
+    "o": "fs.readdirSync",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root|1|8cc7fe42fd4349fceabc66d0553b8535"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:251",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root/backups/oc-codex-multi-auth-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:251",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root/backups/openai-codex-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:225",
+    "o": "fs.readdirSync",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root/backups|0|af1349b9f5f9a1a6a0404dea36dcc949"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:276",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root/backups|present"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|3|020e3e8118a3dab59c186e1401e5274b"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/legacy-override-root|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root|1|8cc7fe42fd4349fceabc66d0553b8535"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-override-root/backups|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/legacy-override-root|1|8cc7fe42fd4349fceabc66d0553b8535"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/legacy-override-root/backups|dir"
+   }
+  ]
+ },
+ "test/preuninstall.test.ts::runPreuninstallCleanup::preserves bun.lock when other plugins remain after removal": {
+  "parallel": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|cc70f884a75f112f3532659d653a2830"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache|1|b5f776e1804de58bce470e0ee93a5c46"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config|1|b5f776e1804de58bce470e0ee93a5c46"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config/Codex|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex|1|2c45ac8517d58aa55b12264fc3f117e3"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config/Codex|1|dd7cd2288f577150aba83a553599eee0"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/bun.lock|file size=4"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config/Codex/Codex.json|file size=31"
+   }
+  ],
+  "serial": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|cc70f884a75f112f3532659d653a2830"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache|1|b5f776e1804de58bce470e0ee93a5c46"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config|1|b5f776e1804de58bce470e0ee93a5c46"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config/Codex|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex|1|2c45ac8517d58aa55b12264fc3f117e3"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/bun.lock|file size=4"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config/Codex|1|dd7cd2288f577150aba83a553599eee0"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config/Codex/Codex.json|file size=31"
+   }
+  ]
+ },
+ "test/repo-hygiene.test.ts::repo-hygiene script::cleans allowlisted root trash while preserving source directories": {
+  "parallel": [
+   {
+    "at": "test/repo-hygiene.test.ts:121",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/lib/keep.ts|file size=26"
+   },
+   {
+    "at": "test/repo-hygiene.test.ts:122",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/coverage|missing"
+   },
+   {
+    "at": "test/repo-hygiene.test.ts:123",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/tmp-pr4-unresolved-audit.txt|missing"
+   },
+   {
+    "at": "test/repo-hygiene.test.ts:124",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/test/tmp|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|4|3dcae2fdace00f796d3b84a5cc4d79ca"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.gitignore|file size=119"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/lib|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/test|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|8|084f16d2f21ab550db33302cadc63176"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/lib|1|a52efc311956221603e71e1b1d717442"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/HEAD|file size=23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/branches|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/config|file size=92"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/description|file size=73"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/lib/keep.ts|file size=26"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|2|639f462b0845fabce953f3eec9e1dfff"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|2|6de3413034b9977839a28b6ff3365bc3"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|1|1f211b0620e13a97cc41fdf3a4d02d42"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|14|107b6b46b1599b90b397a7edbfc4c1d7"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/pack|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/heads|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/tags|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info/exclude|file size=240"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/applypatch-msg.sample|file size=478"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/commit-msg.sample|file size=896"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/fsmonitor-watchman.sample|file size=4726"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/post-update.sample|file size=189"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-applypatch.sample|file size=424"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-commit.sample|file size=1643"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-merge-commit.sample|file size=416"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-push.sample|file size=1374"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-rebase.sample|file size=4898"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-receive.sample|file size=544"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/prepare-commit-msg.sample|file size=1492"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/push-to-checkout.sample|file size=2783"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/sendemail-validate.sample|file size=2308"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/update.sample|file size=3650"
+   }
+  ],
+  "serial": [
+   {
+    "at": "test/repo-hygiene.test.ts:121",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/lib/keep.ts|file size=26"
+   },
+   {
+    "at": "test/repo-hygiene.test.ts:122",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/coverage|missing"
+   },
+   {
+    "at": "test/repo-hygiene.test.ts:123",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/tmp-pr4-unresolved-audit.txt|missing"
+   },
+   {
+    "at": "test/repo-hygiene.test.ts:124",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/test/tmp|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|4|3dcae2fdace00f796d3b84a5cc4d79ca"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.gitignore|file size=119"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/lib|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/test|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|8|084f16d2f21ab550db33302cadc63176"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/lib|1|a52efc311956221603e71e1b1d717442"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/HEAD|file size=23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/branches|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/config|file size=92"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/description|file size=73"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/lib/keep.ts|file size=26"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|1|1f211b0620e13a97cc41fdf3a4d02d42"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|2|639f462b0845fabce953f3eec9e1dfff"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|14|107b6b46b1599b90b397a7edbfc4c1d7"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|2|6de3413034b9977839a28b6ff3365bc3"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info/exclude|file size=240"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/pack|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/applypatch-msg.sample|file size=478"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/commit-msg.sample|file size=896"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/fsmonitor-watchman.sample|file size=4726"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/post-update.sample|file size=189"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-applypatch.sample|file size=424"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-commit.sample|file size=1643"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-merge-commit.sample|file size=416"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-push.sample|file size=1374"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-rebase.sample|file size=4898"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-receive.sample|file size=544"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/prepare-commit-msg.sample|file size=1492"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/push-to-checkout.sample|file size=2783"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/sendemail-validate.sample|file size=2308"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/update.sample|file size=3650"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/heads|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/tags|dir"
+   }
+  ]
+ },
+ "test/repo-hygiene.test.ts::repo-hygiene script::fails check when git is unavailable for ls-files": {
+  "parallel": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|165c53e942d6fe18ba5448742e77a088"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.gitignore|file size=119"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|8|084f16d2f21ab550db33302cadc63176"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/HEAD|file size=23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/branches|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/config|file size=92"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/description|file size=73"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|14|107b6b46b1599b90b397a7edbfc4c1d7"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|1|1f211b0620e13a97cc41fdf3a4d02d42"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|2|639f462b0845fabce953f3eec9e1dfff"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|2|6de3413034b9977839a28b6ff3365bc3"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/applypatch-msg.sample|file size=478"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/commit-msg.sample|file size=896"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/fsmonitor-watchman.sample|file size=4726"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/post-update.sample|file size=189"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-applypatch.sample|file size=424"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-commit.sample|file size=1643"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-merge-commit.sample|file size=416"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-push.sample|file size=1374"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-rebase.sample|file size=4898"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-receive.sample|file size=544"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/prepare-commit-msg.sample|file size=1492"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/push-to-checkout.sample|file size=2783"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/sendemail-validate.sample|file size=2308"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/update.sample|file size=3650"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info/exclude|file size=240"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/pack|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/heads|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/tags|dir"
+   }
+  ],
+  "serial": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|165c53e942d6fe18ba5448742e77a088"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.gitignore|file size=119"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|8|084f16d2f21ab550db33302cadc63176"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/HEAD|file size=23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/branches|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/config|file size=92"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/description|file size=73"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|1|1f211b0620e13a97cc41fdf3a4d02d42"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|14|107b6b46b1599b90b397a7edbfc4c1d7"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|2|6de3413034b9977839a28b6ff3365bc3"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|2|639f462b0845fabce953f3eec9e1dfff"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info/exclude|file size=240"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/applypatch-msg.sample|file size=478"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/commit-msg.sample|file size=896"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/fsmonitor-watchman.sample|file size=4726"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/post-update.sample|file size=189"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-applypatch.sample|file size=424"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-commit.sample|file size=1643"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-merge-commit.sample|file size=416"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-push.sample|file size=1374"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-rebase.sample|file size=4898"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-receive.sample|file size=544"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/prepare-commit-msg.sample|file size=1492"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/push-to-checkout.sample|file size=2783"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/sendemail-validate.sample|file size=2308"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/update.sample|file size=3650"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/heads|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/tags|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/pack|dir"
+   }
+  ]
+ },
+ "test/repo-hygiene.test.ts::repo-hygiene script::fails check when required .gitignore patterns are missing": {
+  "parallel": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|165c53e942d6fe18ba5448742e77a088"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.gitignore|file size=14"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|8|084f16d2f21ab550db33302cadc63176"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/HEAD|file size=23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/branches|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/config|file size=92"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/description|file size=73"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|14|107b6b46b1599b90b397a7edbfc4c1d7"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|2|639f462b0845fabce953f3eec9e1dfff"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|1|1f211b0620e13a97cc41fdf3a4d02d42"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|2|6de3413034b9977839a28b6ff3365bc3"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/applypatch-msg.sample|file size=478"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/commit-msg.sample|file size=896"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/fsmonitor-watchman.sample|file size=4726"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/post-update.sample|file size=189"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-applypatch.sample|file size=424"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-commit.sample|file size=1643"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-merge-commit.sample|file size=416"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-push.sample|file size=1374"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-rebase.sample|file size=4898"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-receive.sample|file size=544"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/prepare-commit-msg.sample|file size=1492"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/push-to-checkout.sample|file size=2783"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/sendemail-validate.sample|file size=2308"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/update.sample|file size=3650"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/pack|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info/exclude|file size=240"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/heads|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/tags|dir"
+   }
+  ],
+  "serial": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|165c53e942d6fe18ba5448742e77a088"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.gitignore|file size=14"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|8|084f16d2f21ab550db33302cadc63176"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/HEAD|file size=23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/config|file size=92"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/description|file size=73"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/branches|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|14|107b6b46b1599b90b397a7edbfc4c1d7"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|1|1f211b0620e13a97cc41fdf3a4d02d42"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|2|639f462b0845fabce953f3eec9e1dfff"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|2|6de3413034b9977839a28b6ff3365bc3"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/applypatch-msg.sample|file size=478"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/commit-msg.sample|file size=896"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/post-update.sample|file size=189"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/fsmonitor-watchman.sample|file size=4726"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-applypatch.sample|file size=424"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-commit.sample|file size=1643"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-merge-commit.sample|file size=416"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-push.sample|file size=1374"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-rebase.sample|file size=4898"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-receive.sample|file size=544"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/prepare-commit-msg.sample|file size=1492"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/push-to-checkout.sample|file size=2783"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/sendemail-validate.sample|file size=2308"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/update.sample|file size=3650"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info/exclude|file size=240"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/pack|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/heads|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/tags|dir"
+   }
+  ]
+ },
+ "test/repo-hygiene.test.ts::repo-hygiene script::fails check when tracked scratch files are committed": {
+  "parallel": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|3|f98db5d2e8c760c39a92e69a9f9513a0"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.gitignore|file size=119"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/task_plan.md|file size=10"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|9|04c693e99bb735353a841245e88cbe05"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/HEAD|file size=23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/branches|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/config|file size=92"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/description|file size=73"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/index|file size=192"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|14|107b6b46b1599b90b397a7edbfc4c1d7"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|1|1f211b0620e13a97cc41fdf3a4d02d42"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|4|33d4557425dbec55a309d4291434df23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|2|6de3413034b9977839a28b6ff3365bc3"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/applypatch-msg.sample|file size=478"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/commit-msg.sample|file size=896"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/fsmonitor-watchman.sample|file size=4726"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/post-update.sample|file size=189"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-applypatch.sample|file size=424"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-commit.sample|file size=1643"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-merge-commit.sample|file size=416"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-push.sample|file size=1374"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-rebase.sample|file size=4898"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-receive.sample|file size=544"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/prepare-commit-msg.sample|file size=1492"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/push-to-checkout.sample|file size=2783"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/sendemail-validate.sample|file size=2308"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/update.sample|file size=3650"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info/exclude|file size=240"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/02|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/pack|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/heads|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/tags|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/02|1|37cdeb5f40f0c31be94bb94f4f6a8928"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9|1|e094e985f726959221336c06a18cb8e0"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/02/16fbe50b0f25337dca48cecd324e1208213894|file size=26"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9/005ca8169640e21787caea69f05b231883a5cd|file size=106"
+   }
+  ],
+  "serial": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|3|f98db5d2e8c760c39a92e69a9f9513a0"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.gitignore|file size=119"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/task_plan.md|file size=10"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|9|04c693e99bb735353a841245e88cbe05"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/HEAD|file size=23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/branches|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/config|file size=92"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/description|file size=73"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/index|file size=192"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|14|107b6b46b1599b90b397a7edbfc4c1d7"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|4|33d4557425dbec55a309d4291434df23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|1|1f211b0620e13a97cc41fdf3a4d02d42"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|2|6de3413034b9977839a28b6ff3365bc3"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/applypatch-msg.sample|file size=478"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/commit-msg.sample|file size=896"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/fsmonitor-watchman.sample|file size=4726"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/post-update.sample|file size=189"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-applypatch.sample|file size=424"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-commit.sample|file size=1643"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-merge-commit.sample|file size=416"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-push.sample|file size=1374"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-rebase.sample|file size=4898"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-receive.sample|file size=544"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/prepare-commit-msg.sample|file size=1492"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/push-to-checkout.sample|file size=2783"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/sendemail-validate.sample|file size=2308"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/update.sample|file size=3650"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/02|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/pack|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info/exclude|file size=240"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/heads|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/tags|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/02|1|37cdeb5f40f0c31be94bb94f4f6a8928"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9|1|e094e985f726959221336c06a18cb8e0"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/02/16fbe50b0f25337dca48cecd324e1208213894|file size=26"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9/005ca8169640e21787caea69f05b231883a5cd|file size=106"
+   }
+  ]
+ },
+ "test/repo-hygiene.test.ts::repo-hygiene script::flags nested tracked scratch files regardless of path separators": {
+  "parallel": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|3|643448de1abc5f924c8972f9bd411a34"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.gitignore|file size=119"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/nested|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|9|04c693e99bb735353a841245e88cbe05"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/nested|1|e2d79b627bd4963d2c1ad0ac1cd0907f"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/HEAD|file size=23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/branches|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/config|file size=92"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/description|file size=73"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/index|file size=200"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/nested/task_plan.md|file size=10"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|14|107b6b46b1599b90b397a7edbfc4c1d7"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|1|1f211b0620e13a97cc41fdf3a4d02d42"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|4|33d4557425dbec55a309d4291434df23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|2|6de3413034b9977839a28b6ff3365bc3"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/applypatch-msg.sample|file size=478"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/commit-msg.sample|file size=896"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/fsmonitor-watchman.sample|file size=4726"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/post-update.sample|file size=189"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-applypatch.sample|file size=424"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-commit.sample|file size=1643"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-merge-commit.sample|file size=416"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-push.sample|file size=1374"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-rebase.sample|file size=4898"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-receive.sample|file size=544"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/prepare-commit-msg.sample|file size=1492"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/push-to-checkout.sample|file size=2783"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/sendemail-validate.sample|file size=2308"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/update.sample|file size=3650"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info/exclude|file size=240"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/02|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/pack|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/heads|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/tags|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/02|1|37cdeb5f40f0c31be94bb94f4f6a8928"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9|1|e094e985f726959221336c06a18cb8e0"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/02/16fbe50b0f25337dca48cecd324e1208213894|file size=26"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9/005ca8169640e21787caea69f05b231883a5cd|file size=106"
+   }
+  ],
+  "serial": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|3|643448de1abc5f924c8972f9bd411a34"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.gitignore|file size=119"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/nested|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|9|04c693e99bb735353a841245e88cbe05"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/nested|1|e2d79b627bd4963d2c1ad0ac1cd0907f"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/HEAD|file size=23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/branches|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/config|file size=92"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/description|file size=73"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/index|file size=200"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/nested/task_plan.md|file size=10"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|1|1f211b0620e13a97cc41fdf3a4d02d42"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|14|107b6b46b1599b90b397a7edbfc4c1d7"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|4|33d4557425dbec55a309d4291434df23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|2|6de3413034b9977839a28b6ff3365bc3"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info/exclude|file size=240"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/applypatch-msg.sample|file size=478"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/commit-msg.sample|file size=896"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/fsmonitor-watchman.sample|file size=4726"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/post-update.sample|file size=189"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-applypatch.sample|file size=424"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-commit.sample|file size=1643"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-merge-commit.sample|file size=416"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-push.sample|file size=1374"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-rebase.sample|file size=4898"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-receive.sample|file size=544"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/prepare-commit-msg.sample|file size=1492"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/push-to-checkout.sample|file size=2783"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/sendemail-validate.sample|file size=2308"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/update.sample|file size=3650"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/02|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/pack|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/heads|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/tags|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/02|1|37cdeb5f40f0c31be94bb94f4f6a8928"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9|1|e094e985f726959221336c06a18cb8e0"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/02/16fbe50b0f25337dca48cecd324e1208213894|file size=26"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9/005ca8169640e21787caea69f05b231883a5cd|file size=106"
+   }
+  ]
+ },
+ "test/repo-hygiene.test.ts::repo-hygiene script::handles CRLF git ls-files output in tracked scratch detection": {
+  "parallel": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|3|f98db5d2e8c760c39a92e69a9f9513a0"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.gitignore|file size=130"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/task_plan.md|file size=11"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|9|04c693e99bb735353a841245e88cbe05"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/HEAD|file size=23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/branches|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/config|file size=109"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/description|file size=73"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/index|file size=192"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|14|107b6b46b1599b90b397a7edbfc4c1d7"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|1|1f211b0620e13a97cc41fdf3a4d02d42"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|4|33d4557425dbec55a309d4291434df23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|2|6de3413034b9977839a28b6ff3365bc3"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/applypatch-msg.sample|file size=478"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/commit-msg.sample|file size=896"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/fsmonitor-watchman.sample|file size=4726"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/post-update.sample|file size=189"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-applypatch.sample|file size=424"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-commit.sample|file size=1643"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-merge-commit.sample|file size=416"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-push.sample|file size=1374"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-rebase.sample|file size=4898"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-receive.sample|file size=544"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/prepare-commit-msg.sample|file size=1492"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/push-to-checkout.sample|file size=2783"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/sendemail-validate.sample|file size=2308"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/update.sample|file size=3650"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info/exclude|file size=240"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/02|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/pack|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/heads|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/tags|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/02|1|37cdeb5f40f0c31be94bb94f4f6a8928"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9|1|e094e985f726959221336c06a18cb8e0"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/02/16fbe50b0f25337dca48cecd324e1208213894|file size=26"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9/005ca8169640e21787caea69f05b231883a5cd|file size=106"
+   }
+  ],
+  "serial": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|3|f98db5d2e8c760c39a92e69a9f9513a0"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.gitignore|file size=130"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/task_plan.md|file size=11"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|9|04c693e99bb735353a841245e88cbe05"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/HEAD|file size=23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/branches|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/config|file size=109"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/description|file size=73"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/index|file size=192"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|14|107b6b46b1599b90b397a7edbfc4c1d7"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|1|1f211b0620e13a97cc41fdf3a4d02d42"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|4|33d4557425dbec55a309d4291434df23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|2|6de3413034b9977839a28b6ff3365bc3"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/commit-msg.sample|file size=896"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/applypatch-msg.sample|file size=478"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/fsmonitor-watchman.sample|file size=4726"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/post-update.sample|file size=189"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-applypatch.sample|file size=424"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-commit.sample|file size=1643"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-merge-commit.sample|file size=416"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-push.sample|file size=1374"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-rebase.sample|file size=4898"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-receive.sample|file size=544"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/prepare-commit-msg.sample|file size=1492"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/push-to-checkout.sample|file size=2783"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/sendemail-validate.sample|file size=2308"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/update.sample|file size=3650"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info/exclude|file size=240"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/02|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/pack|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/heads|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/tags|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/02|1|37cdeb5f40f0c31be94bb94f4f6a8928"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9|1|e094e985f726959221336c06a18cb8e0"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/02/16fbe50b0f25337dca48cecd324e1208213894|file size=26"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9/005ca8169640e21787caea69f05b231883a5cd|file size=106"
+   }
+  ]
+ },
+ "test/repo-hygiene.test.ts::repo-hygiene script::passes check for clean repo fixtures": {
+  "parallel": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|165c53e942d6fe18ba5448742e77a088"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.gitignore|file size=119"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|9|04c693e99bb735353a841245e88cbe05"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/HEAD|file size=23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/branches|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/config|file size=92"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/description|file size=73"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/index|file size=112"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|14|107b6b46b1599b90b397a7edbfc4c1d7"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|1|1f211b0620e13a97cc41fdf3a4d02d42"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|3|6210bf0eae07a6b58d0bc8a9485c413e"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|2|6de3413034b9977839a28b6ff3365bc3"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/applypatch-msg.sample|file size=478"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/commit-msg.sample|file size=896"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/fsmonitor-watchman.sample|file size=4726"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/post-update.sample|file size=189"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-applypatch.sample|file size=424"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-commit.sample|file size=1643"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-merge-commit.sample|file size=416"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-push.sample|file size=1374"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-rebase.sample|file size=4898"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-receive.sample|file size=544"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/prepare-commit-msg.sample|file size=1492"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/push-to-checkout.sample|file size=2783"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/sendemail-validate.sample|file size=2308"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/update.sample|file size=3650"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info/exclude|file size=240"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/pack|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/heads|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/tags|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9|1|e094e985f726959221336c06a18cb8e0"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9/005ca8169640e21787caea69f05b231883a5cd|file size=106"
+   }
+  ],
+  "serial": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|165c53e942d6fe18ba5448742e77a088"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.gitignore|file size=119"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|9|04c693e99bb735353a841245e88cbe05"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/HEAD|file size=23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/branches|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/config|file size=92"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/description|file size=73"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/index|file size=112"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|1|1f211b0620e13a97cc41fdf3a4d02d42"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|3|6210bf0eae07a6b58d0bc8a9485c413e"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|2|6de3413034b9977839a28b6ff3365bc3"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info/exclude|file size=240"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/pack|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/heads|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/tags|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|14|107b6b46b1599b90b397a7edbfc4c1d7"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/applypatch-msg.sample|file size=478"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/commit-msg.sample|file size=896"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/fsmonitor-watchman.sample|file size=4726"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/post-update.sample|file size=189"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-applypatch.sample|file size=424"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-commit.sample|file size=1643"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-merge-commit.sample|file size=416"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-push.sample|file size=1374"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-rebase.sample|file size=4898"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-receive.sample|file size=544"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/prepare-commit-msg.sample|file size=1492"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/push-to-checkout.sample|file size=2783"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/sendemail-validate.sample|file size=2308"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/update.sample|file size=3650"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9|1|e094e985f726959221336c06a18cb8e0"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/e9/005ca8169640e21787caea69f05b231883a5cd|file size=106"
+   }
+  ]
+ },
+ "test/repo-hygiene.test.ts::repo-hygiene script::supports dry-run cleanup without deleting files": {
+  "parallel": [
+   {
+    "at": "test/repo-hygiene.test.ts:103",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.tmp-audit.json|file size=2"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|3|35108d3f5c05e03c16ca75ae26acc952"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.gitignore|file size=119"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.tmp-audit.json|file size=2"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|8|084f16d2f21ab550db33302cadc63176"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/HEAD|file size=23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/branches|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/config|file size=92"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/description|file size=73"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|14|107b6b46b1599b90b397a7edbfc4c1d7"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|1|1f211b0620e13a97cc41fdf3a4d02d42"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|2|639f462b0845fabce953f3eec9e1dfff"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|2|6de3413034b9977839a28b6ff3365bc3"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/applypatch-msg.sample|file size=478"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/commit-msg.sample|file size=896"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/fsmonitor-watchman.sample|file size=4726"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/post-update.sample|file size=189"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-applypatch.sample|file size=424"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-commit.sample|file size=1643"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-merge-commit.sample|file size=416"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-push.sample|file size=1374"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-rebase.sample|file size=4898"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-receive.sample|file size=544"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/prepare-commit-msg.sample|file size=1492"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/push-to-checkout.sample|file size=2783"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/sendemail-validate.sample|file size=2308"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/update.sample|file size=3650"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info/exclude|file size=240"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/pack|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/heads|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/tags|dir"
+   }
+  ],
+  "serial": [
+   {
+    "at": "test/repo-hygiene.test.ts:103",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.tmp-audit.json|file size=2"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|3|35108d3f5c05e03c16ca75ae26acc952"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.gitignore|file size=119"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.tmp-audit.json|file size=2"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git|8|084f16d2f21ab550db33302cadc63176"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/HEAD|file size=23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/branches|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/config|file size=92"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/description|file size=73"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info|1|1f211b0620e13a97cc41fdf3a4d02d42"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks|14|107b6b46b1599b90b397a7edbfc4c1d7"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects|2|639f462b0845fabce953f3eec9e1dfff"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs|2|6de3413034b9977839a28b6ff3365bc3"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/info/exclude|file size=240"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/applypatch-msg.sample|file size=478"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/commit-msg.sample|file size=896"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/fsmonitor-watchman.sample|file size=4726"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/post-update.sample|file size=189"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-applypatch.sample|file size=424"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-commit.sample|file size=1643"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-merge-commit.sample|file size=416"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-push.sample|file size=1374"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-rebase.sample|file size=4898"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/pre-receive.sample|file size=544"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/prepare-commit-msg.sample|file size=1492"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/push-to-checkout.sample|file size=2783"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/sendemail-validate.sample|file size=2308"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/hooks/update.sample|file size=3650"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/info|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/objects/pack|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/heads|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.git/refs/tags|dir"
+   }
+  ]
+ },
+ "test/runtime-policy-cache.test.ts::runtime policy cache::re-resolves the project key when a worktree .git pointer is retargeted": {
+  "parallel": [
+   {
+    "at": "lib/storage/paths.ts:342",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:291",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:296",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|file size=86"
+   },
+   {
+    "at": "lib/storage/paths.ts:138",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a/.git/worktrees/wt-a/gitdir|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:79",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a/.git/worktrees/wt-a/commondir|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:323",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a/.git|present"
+   },
+   {
+    "at": "lib/policy/runtime-policy-cache.ts:289",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|present"
+   },
+   {
+    "at": "lib/policy/runtime-policy-cache.ts:139",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|file size=86"
+   },
+   {
+    "at": "lib/policy/runtime-policy-cache.ts:139",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a|dir"
+   },
+   {
+    "at": "lib/policy/runtime-policy-cache.ts:139",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/routing-profiles.json|missing"
+   },
+   {
+    "at": "lib/policy/runtime-policy-cache.ts:139",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/routing-profiles.json|missing"
+   },
+   {
+    "at": "lib/routing-profiles.ts:162",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/routing-profiles.json|missing"
+   },
+   {
+    "at": "lib/policy/runtime-policy-cache.ts:139",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/routing-profiles.json|missing"
+   },
+   {
+    "at": "lib/policy/runtime-policy-cache.ts:139",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|file size=86"
+   },
+   {
+    "at": "lib/storage/paths.ts:342",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:291",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:296",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|file size=86"
+   },
+   {
+    "at": "lib/storage/paths.ts:138",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b/.git/worktrees/wt-b/gitdir|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:79",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b/.git/worktrees/wt-b/commondir|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:323",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b/.git|present"
+   },
+   {
+    "at": "lib/policy/runtime-policy-cache.ts:289",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|present"
+   },
+   {
+    "at": "lib/policy/runtime-policy-cache.ts:139",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|file size=86"
+   },
+   {
+    "at": "lib/policy/runtime-policy-cache.ts:139",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a|dir"
+   },
+   {
+    "at": "lib/policy/runtime-policy-cache.ts:139",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/routing-profiles.json|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|5|d27cd678ea70bd621949cd1aa8191843"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a|1|9e6d6e0b9958693c76b154e1f8b48051"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project|1|1dcce81e5a8ca679d1fbb12335a4177c"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a|1|9e6d6e0b9958693c76b154e1f8b48051"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|file size=86"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project/package.json|file size=2"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b|1|9e6d6e0b9958693c76b154e1f8b48051"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a/.git|1|a0e085fedab35b839fae603e7afc93b3"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b/.git|1|a0e085fedab35b839fae603e7afc93b3"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a/.git/worktrees|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b/.git/worktrees|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a/.git/worktrees|1|c956e9c796e9fcd8a44df47beb57afb9"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b/.git/worktrees|1|7d7b640c9fba6b2f6339ca6f4f016bdc"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a/.git/worktrees/wt-a|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b/.git/worktrees/wt-b|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a/.git/worktrees/wt-a|2|ccd9c2b263f3f435aec80bd8966e99ab"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b/.git/worktrees/wt-b|2|ccd9c2b263f3f435aec80bd8966e99ab"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a/.git/worktrees/wt-a/commondir|file size=6"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a/.git/worktrees/wt-a/gitdir|file size=67"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b/.git/worktrees/wt-b/commondir|file size=6"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b/.git/worktrees/wt-b/gitdir|file size=67"
+   }
+  ],
+  "serial": [
+   {
+    "at": "lib/storage/paths.ts:342",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:291",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:296",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|file size=86"
+   },
+   {
+    "at": "lib/storage/paths.ts:138",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a/.git/worktrees/wt-a/gitdir|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:79",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a/.git/worktrees/wt-a/commondir|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:323",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a/.git|present"
+   },
+   {
+    "at": "lib/policy/runtime-policy-cache.ts:289",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|present"
+   },
+   {
+    "at": "lib/policy/runtime-policy-cache.ts:139",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|file size=86"
+   },
+   {
+    "at": "lib/policy/runtime-policy-cache.ts:139",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a|dir"
+   },
+   {
+    "at": "lib/policy/runtime-policy-cache.ts:139",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/routing-profiles.json|missing"
+   },
+   {
+    "at": "lib/policy/runtime-policy-cache.ts:139",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/routing-profiles.json|missing"
+   },
+   {
+    "at": "lib/routing-profiles.ts:162",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/routing-profiles.json|missing"
+   },
+   {
+    "at": "lib/policy/runtime-policy-cache.ts:139",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/routing-profiles.json|missing"
+   },
+   {
+    "at": "lib/policy/runtime-policy-cache.ts:139",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|file size=86"
+   },
+   {
+    "at": "lib/storage/paths.ts:342",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:291",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:296",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|file size=86"
+   },
+   {
+    "at": "lib/storage/paths.ts:138",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b/.git/worktrees/wt-b/gitdir|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:79",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b/.git/worktrees/wt-b/commondir|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:323",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b/.git|present"
+   },
+   {
+    "at": "lib/policy/runtime-policy-cache.ts:289",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|present"
+   },
+   {
+    "at": "lib/policy/runtime-policy-cache.ts:139",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|file size=86"
+   },
+   {
+    "at": "lib/policy/runtime-policy-cache.ts:139",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a|dir"
+   },
+   {
+    "at": "lib/policy/runtime-policy-cache.ts:139",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/routing-profiles.json|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|5|d27cd678ea70bd621949cd1aa8191843"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project|1|1dcce81e5a8ca679d1fbb12335a4177c"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a|1|9e6d6e0b9958693c76b154e1f8b48051"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b|1|9e6d6e0b9958693c76b154e1f8b48051"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a|1|9e6d6e0b9958693c76b154e1f8b48051"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project/package.json|file size=2"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worktree-a/.git|file size=86"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a/.git|1|a0e085fedab35b839fae603e7afc93b3"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b/.git|1|a0e085fedab35b839fae603e7afc93b3"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a/.git/worktrees|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b/.git/worktrees|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a/.git/worktrees|1|c956e9c796e9fcd8a44df47beb57afb9"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b/.git/worktrees|1|7d7b640c9fba6b2f6339ca6f4f016bdc"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a/.git/worktrees/wt-a|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b/.git/worktrees/wt-b|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a/.git/worktrees/wt-a|2|ccd9c2b263f3f435aec80bd8966e99ab"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b/.git/worktrees/wt-b|2|ccd9c2b263f3f435aec80bd8966e99ab"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a/.git/worktrees/wt-a/commondir|file size=6"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-a/.git/worktrees/wt-a/gitdir|file size=67"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b/.git/worktrees/wt-b/commondir|file size=6"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/repo-b/.git/worktrees/wt-b/gitdir|file size=67"
+   }
+  ]
+ },
+ "test/storage-file-lock.test.ts::retries EBUSY while publishing the storage lease": {
+  "parallel": [
+   {
+    "at": "lib/storage/file-lock.ts:121",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|7|a291083ea35aff209c337f4d59acecda"
+   },
+   {
+    "at": "test/storage-file-lock.test.ts:174",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|7|a291083ea35aff209c337f4d59acecda"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|7|a291083ea35aff209c337f4d59acecda"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/fs-retry.js|file size=3504"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/file-lock.js|file size=9064"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/logger.js|file size=33"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/package.json|file size=17"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/store.json|file size=43"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/transactions.js|file size=3554"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worker.mjs|file size=746"
+   }
+  ],
+  "serial": [
+   {
+    "at": "lib/storage/file-lock.ts:121",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|7|a291083ea35aff209c337f4d59acecda"
+   },
+   {
+    "at": "test/storage-file-lock.test.ts:174",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|7|a291083ea35aff209c337f4d59acecda"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|7|a291083ea35aff209c337f4d59acecda"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/file-lock.js|file size=9064"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/fs-retry.js|file size=3504"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/logger.js|file size=33"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/package.json|file size=17"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/store.json|file size=43"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/transactions.js|file size=3554"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worker.mjs|file size=746"
+   }
+  ]
+ },
+ "test/storage-file-lock.test.ts::retries EPERM while publishing the storage lease": {
+  "parallel": [
+   {
+    "at": "lib/storage/file-lock.ts:121",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|7|a291083ea35aff209c337f4d59acecda"
+   },
+   {
+    "at": "lib/storage/file-lock.ts:177",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/store.json.write-lock|missing"
+   },
+   {
+    "at": "test/storage-file-lock.test.ts:174",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|7|a291083ea35aff209c337f4d59acecda"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|7|a291083ea35aff209c337f4d59acecda"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/file-lock.js|file size=9064"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/fs-retry.js|file size=3504"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/logger.js|file size=33"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/package.json|file size=17"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/store.json|file size=43"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/transactions.js|file size=3554"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worker.mjs|file size=746"
+   }
+  ],
+  "serial": [
+   {
+    "at": "lib/storage/file-lock.ts:121",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|7|a291083ea35aff209c337f4d59acecda"
+   },
+   {
+    "at": "lib/storage/file-lock.ts:177",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/store.json.write-lock|missing"
+   },
+   {
+    "at": "test/storage-file-lock.test.ts:174",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|7|a291083ea35aff209c337f4d59acecda"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|7|a291083ea35aff209c337f4d59acecda"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/file-lock.js|file size=9064"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/logger.js|file size=33"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/package.json|file size=17"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/transactions.js|file size=3554"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/fs-retry.js|file size=3504"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/store.json|file size=43"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/worker.mjs|file size=746"
+   }
+  ]
+ },
+ "test/storage-recovery-paths.test.ts::storage recovery paths::prefers the newest valid discovered snapshot in backup metadata": {
+  "parallel": [
+   {
+    "at": "lib/storage.ts:319",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|a1f4df26298a9b44dfa8e480b4090f4b"
+   },
+   {
+    "at": "lib/storage/account-snapshot.ts:14",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-accounts.json|missing"
+   },
+   {
+    "at": "lib/storage/account-snapshot.ts:14",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-accounts.json.wal|missing"
+   },
+   {
+    "at": "lib/storage/account-snapshot.ts:14",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-accounts.json.bak|missing"
+   },
+   {
+    "at": "lib/storage/account-snapshot.ts:14",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-accounts.json.bak.1|missing"
+   },
+   {
+    "at": "lib/storage/account-snapshot.ts:14",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-accounts.json.bak.2|missing"
+   },
+   {
+    "at": "lib/storage/account-snapshot.ts:14",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-accounts.json.manual-newer|file size=120"
+   },
+   {
+    "at": "lib/storage/account-snapshot.ts:14",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-accounts.json.manual-older|file size=120"
+   },
+   {
+    "at": "lib/storage.ts:319",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|a1f4df26298a9b44dfa8e480b4090f4b"
+   },
+   {
+    "at": "lib/storage/account-snapshot.ts:14",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-flagged-accounts.json|missing"
+   },
+   {
+    "at": "lib/storage/account-snapshot.ts:14",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-flagged-accounts.json.bak|missing"
+   },
+   {
+    "at": "lib/storage/account-snapshot.ts:14",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-flagged-accounts.json.bak.1|missing"
+   },
+   {
+    "at": "lib/storage/account-snapshot.ts:14",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-flagged-accounts.json.bak.2|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|a1f4df26298a9b44dfa8e480b4090f4b"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-accounts.json.manual-newer|file size=120"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-accounts.json.manual-older|file size=120"
+   }
+  ],
+  "serial": [
+   {
+    "at": "lib/storage.ts:319",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|a1f4df26298a9b44dfa8e480b4090f4b"
+   },
+   {
+    "at": "lib/storage/account-snapshot.ts:14",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-accounts.json|missing"
+   },
+   {
+    "at": "lib/storage/account-snapshot.ts:14",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-accounts.json.wal|missing"
+   },
+   {
+    "at": "lib/storage/account-snapshot.ts:14",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-accounts.json.bak|missing"
+   },
+   {
+    "at": "lib/storage/account-snapshot.ts:14",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-accounts.json.bak.1|missing"
+   },
+   {
+    "at": "lib/storage/account-snapshot.ts:14",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-accounts.json.bak.2|missing"
+   },
+   {
+    "at": "lib/storage/account-snapshot.ts:14",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-accounts.json.manual-newer|file size=120"
+   },
+   {
+    "at": "lib/storage/account-snapshot.ts:14",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-accounts.json.manual-older|file size=120"
+   },
+   {
+    "at": "lib/storage.ts:319",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|a1f4df26298a9b44dfa8e480b4090f4b"
+   },
+   {
+    "at": "lib/storage/account-snapshot.ts:14",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-flagged-accounts.json|missing"
+   },
+   {
+    "at": "lib/storage/account-snapshot.ts:14",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-flagged-accounts.json.bak|missing"
+   },
+   {
+    "at": "lib/storage/account-snapshot.ts:14",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-flagged-accounts.json.bak.1|missing"
+   },
+   {
+    "at": "lib/storage/account-snapshot.ts:14",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-flagged-accounts.json.bak.2|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|a1f4df26298a9b44dfa8e480b4090f4b"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-accounts.json.manual-older|file size=120"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/openai-codex-accounts.json.manual-newer|file size=120"
+   }
+  ]
+ },
+ "test/storage.test.ts::storage::clearAccounts error handling::throws but leaves the reset marker in place when the wal file cannot be removed (AUDIT-M04)": {
+  "parallel": [
+   {
+    "at": "lib/storage/file-lock.ts:121",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|360915e06057e908e9dba6d24f659046"
+   },
+   {
+    "at": "lib/storage.ts:319",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|3|3cd63a2463cebef4be0a23231fc3e1b2"
+   },
+   {
+    "at": "test/storage.test.ts:3152",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/accounts.json.reset-intent|present"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|3|3cd63a2463cebef4be0a23231fc3e1b2"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/accounts.json|file size=2"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/accounts.json.wal|file size=2"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/accounts.json.write-lock|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/accounts.json.write-lock|1|6376e22e4678c596e0e27d921ce39784"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/accounts.json.write-lock/49960de5880e8c68.1636559684.992adf37-5a52-42b8-8062-2e33aeab61f4|file size=0"
+   }
+  ],
+  "serial": [
+   {
+    "at": "lib/storage/file-lock.ts:121",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|360915e06057e908e9dba6d24f659046"
+   },
+   {
+    "at": "lib/storage.ts:319",
+    "o": "fs.promises.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|3|3cd63a2463cebef4be0a23231fc3e1b2"
+   },
+   {
+    "at": "test/storage.test.ts:3152",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/accounts.json.reset-intent|present"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|3|3cd63a2463cebef4be0a23231fc3e1b2"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/accounts.json|file size=2"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/accounts.json.write-lock|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/accounts.json.wal|file size=2"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/accounts.json.write-lock|1|6376e22e4678c596e0e27d921ce39784"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/accounts.json.write-lock/49960de5880e8c68.1636559684.992adf37-5a52-42b8-8062-2e33aeab61f4|file size=0"
+   }
+  ]
+ },
+ "test/uninstall-command.test.ts::runUninstallCommand::removes plugin entry from Codex.json and clears node_modules cache": {
+  "parallel": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules/codex-multi-auth|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules/codex-multi-auth|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules/codex-multi-auth|1|4877b294dc08ac80df78f96c98b2d61c"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<deps>/@ndycode/codex-multi-auth|1|e16eaa5ec162bf1e337584b09baac03a"
+   },
+   {
+    "at": "test/uninstall-command.test.ts:325",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules/codex-multi-auth|missing"
+   },
+   {
+    "at": "test/uninstall-command.test.ts:328",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/bun.lock|present"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|cc70f884a75f112f3532659d653a2830"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache|1|b5f776e1804de58bce470e0ee93a5c46"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config|1|b5f776e1804de58bce470e0ee93a5c46"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config/Codex|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex|2|d6adde67140eb9e98460548c8648e69a"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/bun.lock|file size=4"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config/Codex|1|dd7cd2288f577150aba83a553599eee0"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config/Codex/Codex.json|file size=38"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules|1|a419b6acefa7fff1ea92ec64c4ed8065"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules/@ndycode|dir"
+   }
+  ],
+  "serial": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules/codex-multi-auth|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules/codex-multi-auth|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules/codex-multi-auth|1|4877b294dc08ac80df78f96c98b2d61c"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<deps>/@ndycode/codex-multi-auth|1|e16eaa5ec162bf1e337584b09baac03a"
+   },
+   {
+    "at": "test/uninstall-command.test.ts:325",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules/codex-multi-auth|missing"
+   },
+   {
+    "at": "test/uninstall-command.test.ts:328",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/bun.lock|present"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|cc70f884a75f112f3532659d653a2830"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache|1|b5f776e1804de58bce470e0ee93a5c46"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config|1|b5f776e1804de58bce470e0ee93a5c46"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config/Codex|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex|2|d6adde67140eb9e98460548c8648e69a"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config/Codex|1|dd7cd2288f577150aba83a553599eee0"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/bun.lock|file size=4"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config/Codex/Codex.json|file size=38"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules|1|a419b6acefa7fff1ea92ec64c4ed8065"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules/@ndycode|dir"
+   }
+  ]
+ },
+ "test/zz-stress-helper-lifecycle.test.ts::stress: the shared filename contract::round-trips every plausible PID through both path builders": {
+  "parallel": [
+   {
+    "at": "lib/runtime/app-bind.ts:560",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<abs>/codex-app-router.js|missing"
+   },
+   {
+    "at": "lib/runtime/app-bind.ts:560",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "scripts/codex-app-router.js|present"
+   },
+   {
+    "at": "test/zz-stress-helper-lifecycle.test.ts:735",
+    "o": "fs.readdirSync",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth|16|199e148d3f24a1e13b2e806ac606dfa4"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|1|a46fdc087197e6d0837bf759d2c11fd2"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth|16|199e148d3f24a1e13b2e806ac606dfa4"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper-owner.1.json|file size=131"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper-owner.1234.json|file size=134"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper-owner.2.json|file size=131"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper-owner.2147483647.json|file size=140"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper-owner.4194304.json|file size=137"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper-owner.65535.json|file size=135"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper-owner.7.json|file size=131"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper-owner.99.json|file size=132"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper.1.json|file size=182"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper.1234.json|file size=185"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper.2.json|file size=182"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper.2147483647.json|file size=191"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper.4194304.json|file size=188"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper.65535.json|file size=186"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper.7.json|file size=182"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper.99.json|file size=183"
+   }
+  ],
+  "serial": [
+   {
+    "at": "lib/runtime/app-bind.ts:560",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<abs>/codex-app-router.js|missing"
+   },
+   {
+    "at": "lib/runtime/app-bind.ts:560",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "scripts/codex-app-router.js|present"
+   },
+   {
+    "at": "test/zz-stress-helper-lifecycle.test.ts:735",
+    "o": "fs.readdirSync",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth|16|199e148d3f24a1e13b2e806ac606dfa4"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|1|a46fdc087197e6d0837bf759d2c11fd2"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth|16|199e148d3f24a1e13b2e806ac606dfa4"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper-owner.1.json|file size=131"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper-owner.1234.json|file size=134"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper-owner.2.json|file size=131"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper-owner.2147483647.json|file size=140"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper-owner.4194304.json|file size=137"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper-owner.65535.json|file size=135"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper-owner.7.json|file size=131"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper-owner.99.json|file size=132"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper.1234.json|file size=185"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper.1.json|file size=182"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper.2.json|file size=182"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper.2147483647.json|file size=191"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper.4194304.json|file size=188"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper.65535.json|file size=186"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper.7.json|file size=182"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/multi-auth/runtime-rotation-app-helper.99.json|file size=183"
+   }
+  ]
+ }
+}
