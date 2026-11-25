@@ -255,6 +255,36 @@ class Docs {
   }
 }
 
+/**
+ * An entry of the on-disk store with its `data` and `env` as (key, dependency) pairs: an address (a group "g..." of
+ * chunk addresses, or a chunk address) is replaced by the pairs of `store.groups` / `store.chunks`. Null when an
+ * address does not resolve (a torn store: the entry is not pushed, as `Store::load` drops it).
+ */
+function expandEntry(e, store) {
+  const chunks = store.chunks || {};
+  const groups = store.groups || {};
+  const expand = (list) => {
+    if (!Array.isArray(list)) return [];
+    if (list.every((x) => Array.isArray(x))) return list;
+    if (!list.every((x) => typeof x === 'string')) return null;
+    const out = [];
+    for (const a of list) {
+      const addrs = a.startsWith('g') ? groups[a] : [a];
+      if (!Array.isArray(addrs)) return null;
+      for (const c of addrs) {
+        const pairs = chunks[c];
+        if (!Array.isArray(pairs)) return null;
+        out.push(...pairs);
+      }
+    }
+    return out;
+  };
+  const data = expand(e.data);
+  const env = expand(e.env);
+  if (data === null || env === null) return null;
+  return { ...e, data, env };
+}
+
 class RemoteCache {
   constructor(url, session) {
     this.url = url;
@@ -461,7 +491,11 @@ class RemoteCache {
     const ds = new Docs(store);
     const entryDocs = new Map();
     const rows = [];
-    for (const [nid, e] of Object.entries(store.tests || {})) {
+    for (const [nid, e0] of Object.entries(store.tests || {})) {
+      // the store file lists an entry's data and environment as chunk (or chunk-group) addresses (store version 2,
+      // py-cache item 4); a document carries the pairs themselves, or no other machine can check it
+      const e = expandEntry(e0, store);
+      if (!e) { st.push_entries_unresolved = (st.push_entries_unresolved || 0) + 1; continue; }
       const doc = ds.entry(nid, e);
       const did = docId(doc);
       if (journal.has(did)) continue;
