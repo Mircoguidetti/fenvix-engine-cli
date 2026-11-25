@@ -151,8 +151,10 @@ def decide(session: list[dict], workflow: list[dict], registries: list[dict]) ->
     text_route = "session" if text_ok["session"] else ("workflow" if text_ok["workflow"] else None)
     T = S if text_route == "session" else W
     nested = any(p.count("/") >= 2 and "/cassettes/" in f"/{p}" for p in (C.get("a1") or {}).get("paths") or [])
-    issues_or_ok = tc(T.get("or-issues-AB")) >= max(tc(T.get("or-issues-A")), tc(T.get("or-issues-B")))
-    commits_or_ok = tc(T.get("or-commits-AB")) >= max(tc(T.get("or-commits-A")), tc(T.get("or-commits-B")))
+    def or_ok(k):  # a probe that errored never counts as "OR works": the queries are split instead
+        rs = [T.get(f"or-{k}-{x}") for x in ("A", "B", "AB")]
+        return all(ok(r) for r in rs) and tc(rs[2]) >= max(tc(rs[0]), tc(rs[1]))
+    issues_or_ok, commits_or_ok = or_ok("issues"), or_ok("commits")
     plain = T.get("type-plain") or {}
     type_split = plain.get("status") == 422 and ok(T.get("type-issue")) and ok(T.get("type-pr"))
     dropped, fixes = [], []
@@ -183,10 +185,10 @@ def decide(session: list[dict], workflow: list[dict], registries: list[dict]) ->
               "b-r-commits-model"):
         r = T.get(i) or {}
         text_shapes[i] = {"status": r.get("status"), "total_count": r.get("total_count")}
-        if not ok(r) or (tc(r) == 0 and not i.startswith("b-r-")):
+        if not ok(r) or tc(r) == 0:
             fixes.append(f"text shape {i}: status {r.get('status')} total {tc(r)} -> needs a fix (coordinator)")
-    repo_shapes_ok = all(ok(T.get(i)) for i in ("b-r-issues-pain", "b-r-issues-model", "b-r-commits-pain",
-                                                  "b-r-commits-model"))
+    repo_shapes_ok = all(ok(T.get(i)) and tc(T.get(i)) > 0 for i in ("b-r-issues-pain", "b-r-issues-model",
+                                                                     "b-r-commits-pain", "b-r-commits-model"))
     return {"blocked": False, "code_route": code_route, "code_totals": {"session": cs, "workflow": cw},
             "text_route": text_route, "nested_path_ok": nested, "issues_or_ok": issues_or_ok,
             "commits_or_ok": commits_or_ok, "issues_type_split": type_split, "dropped": sorted(set(dropped)),

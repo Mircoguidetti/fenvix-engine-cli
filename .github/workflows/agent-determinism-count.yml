@@ -3,8 +3,8 @@ name: agent-determinism-count
 # Agent-determinism count (harness/agent_determinism_count/): reads public repository trees, manifests, workflow files,
 # Actions run/job metadata, commit dates and issue comments with this workflow's GITHUB_TOKEN (GET only; read-only on
 # every other repository). A chunk starts when a push to this branch adds a request file
-# harness/agent_determinism_count/requests/<n>.json; only request files added by the push are processed
-# (git diff --diff-filter=A before..sha). Results are committed back to this branch only (a push made with
+# harness/agent_determinism_count/requests/<n>.json; every request file without a results/requests_done/ marker is
+# processed (a job-wide deadline stops it cleanly; the rest waits for the next push). Results are committed back to this branch only (a push made with
 # GITHUB_TOKEN does not start another workflow run).
 
 on:
@@ -34,18 +34,9 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
       - run: pip install -r harness/agent_determinism_count/requirements.txt
-      - name: Request files added by this push
-        run: |
-          mkdir -p "$RUNNER_TEMP/req"
-          before="${{ github.event.before }}"
-          if [ -z "$before" ] || [ "$before" = "0000000000000000000000000000000000000000" ]; then
-            echo "no previous commit (branch creation): no request files"; exit 0
-          fi
-          git diff --name-only --diff-filter=A "$before" "${{ github.sha }}" -- harness/agent_determinism_count/requests/ \
-            | sort | while read -r f; do cp "$f" "$RUNNER_TEMP/req/"; echo "request: $f"; done
-          ls -1 "$RUNNER_TEMP/req"
       - name: Latest checkpoint
         run: |
+          echo "ADC_DEADLINE=$(( $(date +%s) + 320 * 60 ))" >> "$GITHUB_ENV"
           git fetch -q origin "$ADC_BRANCH"
           git checkout -q -B adc "origin/$ADC_BRANCH"
           git log --oneline -1
@@ -53,9 +44,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          for f in $(ls -1 "$RUNNER_TEMP/req" | sort -V); do
-            echo "== $f"; cat "$RUNNER_TEMP/req/$f"
-            python3 harness/agent_determinism_count/job.py --request "$RUNNER_TEMP/req/$f"
+          # every request file without a results/requests_done/<name> marker (not only this push's files: a newer
+          # push cancels a pending run of the same concurrency group, and a stopped request is resumed)
+          d=harness/agent_determinism_count
+          for f in $(ls -1 "$d/requests" 2>/dev/null | sort -V); do
+            if [ -e "$d/results/requests_done/$f" ]; then continue; fi
+            if [ "$(date +%s)" -gt "$(( ADC_DEADLINE - 900 ))" ]; then echo "deadline: $f left for the next run"; break; fi
+            echo "== $f"; cat "$d/requests/$f"
+            python3 "$d/job.py" --request "$d/requests/$f"
           done
       - name: Commit results to this branch
         if: always()
@@ -65,7 +61,7 @@ jobs:
           out=harness/agent_determinism_count/results
           [ -d "$out" ] || exit 0
           # only the files this workflow writes (the work session writes the others; never overwrite them)
-          own="rows.jsonl raw chunks.jsonl texts_search_wf.jsonl texts_raw_wf comments.jsonl comments_raw probe_workflow.json debug"
+          own="rows.jsonl raw chunks.jsonl chunk_errors.jsonl requests_done texts_search_wf.jsonl texts_raw_wf comments.jsonl comments_raw probe_workflow.json debug"
           for i in 1 2 3 4 5 6 7 8; do
             git fetch -q origin "$ADC_BRANCH" && git reset -q --soft "origin/$ADC_BRANCH" && git reset -q
             for p in $own; do if [ -e "$out/$p" ]; then git add -f "$out/$p"; fi; done

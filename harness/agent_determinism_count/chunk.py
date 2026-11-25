@@ -17,7 +17,6 @@ import datetime as dt
 import gzip
 import json
 import time
-import traceback
 from pathlib import Path
 
 import discover
@@ -32,11 +31,22 @@ probe_config = discover.probe_config
 
 
 def read_jsonl(p: Path) -> list[dict]:
+    """JSON lines; a truncated last line or gzip member (a job killed mid-write) is dropped."""
     if not p.exists():
         return []
     op = gzip.open if p.suffix == ".gz" else open
-    with op(p, "rt") as f:
-        return [json.loads(x) for x in f if x.strip()]
+    out = []
+    try:
+        with op(p, "rt") as f:
+            for x in f:
+                if x.strip():
+                    try:
+                        out.append(json.loads(x))
+                    except json.JSONDecodeError:
+                        pass
+    except (EOFError, OSError):
+        pass
+    return out
 
 
 def now() -> str:
@@ -62,41 +72,60 @@ def _append(p: Path, rec: dict) -> None:
             f.write(json.dumps(rec, sort_keys=True) + "\n")
 
 
-def text_pass(client, row: dict, cand: dict, chunk, cfg: dict, out: Path, search: bool) -> None:
-    """§3.2 for one member: repository searches (when ``search``) then the comment pass."""
+def text_pass(client, row: dict, cand: dict, chunk, cfg: dict, out: Path, search: bool,
+              searches: dict | None = None) -> None:
+    """§3.2 for one member: repository searches (when ``search``) then the comment pass. ``searches``: repo ->
+    latest search record (session route). An error leaves no record (pain at most unknown: texts-missing /
+    comments-missing) and is logged in chunk_errors.jsonl; a later request resumes the member."""
     repo = (row.get("meta") or {}).get("full_name") or row["repo"]
-    if search:
-        src = pipeline.LiveSource(client)
-        res = T.run_searches(src, repo, cfg)
-        rec = {"repo": row["repo"], "query_repo": repo, "chunk": chunk, "route": "workflow", "at": now(), **res}
-        _append(out / "texts_search_wf.jsonl", rec)
-        _append(out / "texts_raw_wf" / f"{chunk}.jsonl.gz",
-                {"repo": row["repo"], "at": rec["at"], "cfg": cfg, "responses": src.responses})
-    else:
-        rec = search_record(row["repo"])
-    if rec is None:
-        return
-    tx = T.member_texts(repo, cand.get("hits") or [], rec)
-    used = row.get("core_requests") or 0
-    src = pipeline.LiveSource(client, used=used)
-    cr = T.comments_pass(src, repo, tx)
-    at = now()
-    _append(out / "comments.jsonl", {"repo": row["repo"], "chunk": chunk, "at": at, "used": used, **cr})
-    _append(out / "comments_raw" / f"{chunk}.jsonl.gz",
-            {"repo": row["repo"], "at": at, "used": used, "responses": src.responses})
+    try:
+        if search:
+            src = pipeline.LiveSource(client)
+            res = T.run_searches(src, repo, cfg)
+            rec = {"repo": row["repo"], "query_repo": repo, "chunk": chunk, "route": "workflow", "at": now(), **res}
+            _append(out / "texts_raw_wf" / f"{chunk}.jsonl.gz",
+                    {"repo": row["repo"], "at": rec["at"], "cfg": cfg, "responses": src.responses})
+            _append(out / "texts_search_wf.jsonl", rec)
+        else:
+            rec = (searches or {}).get(row["repo"].lower())
+        if rec is None:
+            return
+        tx = T.member_texts(repo, cand.get("hits") or [], rec)
+        used = row.get("core_requests") or 0
+        src = pipeline.LiveSource(client, used=used)
+        cr = T.comments_pass(src, repo, tx)
+        at = now()
+        _append(out / "comments_raw" / f"{chunk}.jsonl.gz",
+                {"repo": row["repo"], "at": at, "used": used, "search_at": rec["at"], "responses": src.responses})
+        _append(out / "comments.jsonl", {"repo": row["repo"], "chunk": chunk, "at": at, "used": used,
+                                          "search_at": rec["at"], **cr})
+    except ghapi.DeadlineReached:
+        raise
+    except Exception as e:
+        _append(out / "chunk_errors.jsonl", {"repo": row["repo"], "chunk": chunk, "at": now(), "stage": "texts",
+                                              "error": f"{type(e).__name__}: {str(e)[:200]}"})
 
 
-def search_record(repo: str):
-    recs = [r for f in ("texts_search.jsonl", "texts_search_wf.jsonl") for r in read_jsonl(RES / f)
-            if r["repo"].lower() == repo.lower()]
-    return recs[-1] if recs else None
+def search_records() -> dict:
+    out = {}
+    for f in ("texts_search.jsonl", "texts_search_wf.jsonl"):
+        for r in read_jsonl(RES / f):
+            out[r["repo"].lower()] = r
+    return out
 
 
 def needs_texts(row: dict) -> bool:
     return row.get("cls") == "member" and not (row.get("recordings") or {}).get("yes")
 
 
-def run_chunk(req: dict) -> int:
+def mark_done(name: str, rec: dict) -> None:
+    """Request marker (results/requests_done/<name>): the workflow runs every request file without one."""
+    p = RES / "requests_done" / name
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps(rec, sort_keys=True) + "\n")
+
+
+def run_chunk(req: dict, name: str | None = None) -> int:
     chunk = req["chunk"]
     maxm = float(req.get("max_minutes", 300))
     cfg = probe_config()
@@ -107,60 +136,71 @@ def run_chunk(req: dict) -> int:
     client.log = log
     t0 = time.time()
     n, stopped, per_cand = 0, None, []
-    if req.get("comments") is not None:
-        cands = candidates()
-        done = {r["repo"].lower() for r in read_jsonl(RES / "comments.jsonl")}
-        for row in read_jsonl(RES / "rows.jsonl"):
-            if str(row.get("chunk")) != str(req["comments"]) or not needs_texts(row) or row["repo"].lower() in done:
-                continue
-            if (time.time() - t0) / 60 > maxm:
-                stopped = f"time limit {maxm} min"
-                break
-            text_pass(client, row, cands[row["idx"]], req["comments"], cfg, RES, search=False)
-            n += 1
-    else:
-        if debug:
-            cands = {i: {"idx": i, "repo": r, "html_url": f"https://github.com/{r}", "stratum": "debug", "hits": []}
-                     for i, r in enumerate(req["repos"])}
-            order, done = list(cands), set()
-        else:
+
+    def over() -> bool:
+        return (time.time() - t0) / 60 > maxm or bool(client.deadline and time.time() > client.deadline - 600)
+    try:
+        if req.get("comments") is not None:
             cands = candidates()
-            order = req["candidates"]
-            done = {r["idx"] for r in read_jsonl(RES / "rows.jsonl")}
-        wf_text = req.get("text_route") == "workflow"
-        for idx in order:
-            if idx in done:
-                continue
-            if (time.time() - t0) / 60 > maxm:
-                stopped = f"time limit {maxm} min"
-                break
-            src = pipeline.LiveSource(client)
-            r0 = client.n_requests
-            opts = {**opts_of(cfg), "no_exclude": debug}
-            try:
+            done = {r["repo"].lower() for r in read_jsonl(RES / "comments.jsonl")}
+            searches = search_records()
+            for row in read_jsonl(RES / "rows.jsonl"):
+                if str(row.get("chunk")) != str(req["comments"]) or not needs_texts(row) \
+                        or row["repo"].lower() in done:
+                    continue
+                if over():
+                    stopped = "time limit"
+                    break
+                text_pass(client, row, cands[row["idx"]], req["comments"], cfg, RES, False, searches)
+                n += 1
+        else:
+            if debug:
+                cands = {i: {"idx": i, "repo": r, "html_url": f"https://github.com/{r}", "stratum": "debug",
+                             "hits": []} for i, r in enumerate(req["repos"])}
+                order = list(cands)
+            else:
+                cands = candidates()
+                order = req["candidates"]
+            rows = {r["idx"]: r for r in read_jsonl(out / "rows.jsonl")}
+            wf_text = req.get("text_route") == "workflow"
+            searched = {r["repo"].lower() for r in read_jsonl(out / "texts_search_wf.jsonl")}
+            for idx in order:
+                if over():
+                    stopped = "time limit"
+                    break
+                if idx in rows:  # resume: a member whose text pass did not run
+                    row = rows[idx]
+                    if wf_text and needs_texts(row) and row["repo"].lower() not in searched:
+                        text_pass(client, row, cands[idx], chunk, cfg, out, True)
+                    continue
+                src = pipeline.LiveSource(client)
+                r0 = client.n_requests
+                opts = {**opts_of(cfg), "no_exclude": debug}
                 row = pipeline.run_candidate(src, cands[idx], opts)
-            except Exception as e:
-                row = {"idx": idx, "repo": cands[idx]["repo"], "html_url": cands[idx].get("html_url"),
-                       "stratum": cands[idx].get("stratum"), "cls": "uncertain", "stage": "error",
-                       "error": f"{type(e).__name__}: {str(e)[:200]}", "trace": traceback.format_exc()[-800:],
-                       "core_requests": src.core}
-            row["chunk"] = chunk
-            row["requests"] = client.n_requests - r0
-            row["read_at"] = now()
-            per_cand.append(row["requests"])
-            _append(out / "raw" / f"{chunk}.jsonl.gz",
-                    {"idx": idx, "repo": row["repo"], "opts": opts, "responses": src.responses})
-            _append(out / "rows.jsonl", row)
-            if wf_text and needs_texts(row):
-                text_pass(client, row, cands[idx], chunk, cfg, out, search=True)
-            n += 1
-            print(f"{idx} {row['repo']}: {row.get('cls')} {row.get('stage')} ({row['requests']} req)", flush=True)
-    _append(out / "chunks.jsonl", {
-        "chunk": chunk, "items": n, "requests": client.n_requests, "search_requests": client.n_search,
-        "requests_per_candidate": sorted(per_cand), "methods": sorted({x["method"] for x in log}),
-        "rate_limit": client.limit, "remaining": client.remaining, "minutes": round((time.time() - t0) / 60, 1),
-        "stopped": stopped, "at": now()})
-    print(f"chunk {chunk}: {n} items, {client.n_requests} requests, methods {sorted({x['method'] for x in log})}, "
+                row["chunk"] = chunk
+                row["requests"] = client.n_requests - r0
+                row["read_at"] = now()
+                per_cand.append(row["requests"])
+                # raw first, then the row: a kill in between leaves a raw record without a row (ignored by
+                # verify; the candidate is read again and its last raw record kept)
+                _append(out / "raw" / f"{chunk}.jsonl.gz",
+                        {"idx": idx, "repo": row["repo"], "opts": opts, "responses": src.responses})
+                _append(out / "rows.jsonl", row)
+                if wf_text and needs_texts(row):
+                    text_pass(client, row, cands[idx], chunk, cfg, out, True)
+                n += 1
+                print(f"{idx} {row['repo']}: {row.get('cls')} {row.get('stage')} ({row['requests']} req)",
+                      flush=True)
+    except ghapi.DeadlineReached as e:
+        stopped = f"deadline: {e}"
+    rec = {"chunk": chunk, "items": n, "requests": client.n_requests, "search_requests": client.n_search,
+           "requests_per_candidate": sorted(per_cand), "methods": sorted({x["method"] for x in log}),
+           "rate_limit": client.limit, "remaining": client.remaining, "minutes": round((time.time() - t0) / 60, 1),
+           "stopped": stopped, "at": now(), "request": name}
+    _append(out / "chunks.jsonl", rec)
+    if name and not stopped:
+        mark_done(name, rec)
+    print(f"chunk {chunk}: {n} items, {client.n_requests} requests, methods {rec['methods']}, stopped {stopped}, "
           f"remaining {client.remaining}")
     return 0
 

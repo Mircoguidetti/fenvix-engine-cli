@@ -36,25 +36,29 @@ def check_rows(res: Path) -> list[str]:
     rows = {r["idx"]: r for r in report._jsonl(res / "rows.jsonl")}
     cands = {c["idx"]: c for c in report._jsonl(res / "candidates.jsonl.gz")}
     seen = set()
+    last_raw = {}  # a candidate read again after a killed job: its last raw record matches its kept row
     for raw in sorted((res / "raw").glob("*.jsonl.gz")) if (res / "raw").exists() else []:
         for rec in report._jsonl(raw):
-            idx = rec["idx"]
-            seen.add(idx)
-            if idx not in rows:
-                errs.append(f"raw {raw.name} idx {idx}: no row")
-                continue
-            cand = cands.get(idx) or {"idx": idx, "repo": rec["repo"], "html_url": rows[idx].get("html_url"),
-                                      "stratum": rows[idx].get("stratum")}
-            try:
-                again = pipeline.run_candidate(pipeline.ReplaySource(rec["responses"]), cand, rec.get("opts") or {})
-            except pipeline.Missing as e:
-                errs.append(f"{rec['repo']}: raw response missing for {e}")
-                continue
-            a = {k: v for k, v in _norm(rows[idx]).items() if k not in VOLATILE}
-            b = {k: v for k, v in _norm(again).items() if k not in VOLATILE}
-            if a != b:
-                errs.append(f"{rec['repo']}: row differs from its replay in "
-                            f"{sorted(k for k in set(a) | set(b) if a.get(k) != b.get(k))}")
+            last_raw[rec["idx"]] = rec
+    for idx, rec in sorted(last_raw.items()):
+        if idx not in rows:
+            continue  # raw written, row not (job killed in between): the candidate is read again
+        seen.add(idx)
+        cand = cands.get(idx) or {"idx": idx, "repo": rec["repo"], "html_url": rows[idx].get("html_url"),
+                                  "stratum": rows[idx].get("stratum")}
+        try:
+            again = pipeline.run_candidate(pipeline.ReplaySource(rec["responses"]), cand, rec.get("opts") or {})
+        except pipeline.Missing as e:
+            errs.append(f"{rec['repo']}: raw response missing for {e}")
+            continue
+        except Exception as e:
+            errs.append(f"{rec['repo']}: replay raised {type(e).__name__}: {str(e)[:120]}")
+            continue
+        a = {k: v for k, v in _norm(rows[idx]).items() if k not in VOLATILE}
+        b = {k: v for k, v in _norm(again).items() if k not in VOLATILE}
+        if a != b:
+            errs.append(f"{rec['repo']}: row differs from its replay in "
+                        f"{sorted(k for k in set(a) | set(b) if a.get(k) != b.get(k))}")
     for idx in rows:
         if idx not in seen:
             errs.append(f"row idx {idx}: no raw responses")
@@ -75,7 +79,7 @@ def check_rows(res: Path) -> list[str]:
                 if _norm({k: x[k] for k in ("queries", "hits")}) != _norm(again):
                     errs.append(f"texts {rr['repo']}: record differs from its replay")
     crecs = {(r["repo"].lower(), r["at"]): r for r in report._jsonl(res / "comments.jsonl")}
-    search = {r["repo"].lower(): r for f in ("texts_search.jsonl", "texts_search_wf.jsonl")
+    search = {(r["repo"].lower(), r["at"]): r for f in ("texts_search.jsonl", "texts_search_wf.jsonl")
               for r in report._jsonl(res / f)}
     d = res / "comments_raw"
     for raw in sorted(d.glob("*.jsonl.gz")) if d.exists() else []:
@@ -86,7 +90,8 @@ def check_rows(res: Path) -> list[str]:
                 errs.append(f"comments raw {rr['repo']}: no record or row")
                 continue
             repo = (row.get("meta") or {}).get("full_name") or row["repo"]
-            tx = T.member_texts(repo, (cands.get(row["idx"]) or {}).get("hits") or [], search.get(rr["repo"].lower()))
+            tx = T.member_texts(repo, (cands.get(row["idx"]) or {}).get("hits") or [],
+                                search.get((rr["repo"].lower(), rr.get("search_at"))))
             try:
                 again = T.comments_pass(pipeline.ReplaySource(rr["responses"], used=rr["used"]), repo, tx)
             except pipeline.Missing as e:

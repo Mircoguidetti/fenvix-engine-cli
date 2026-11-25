@@ -29,7 +29,9 @@ repositories with pain `yes` (all strata) and the AC4 hand check passing.
 ## Constants
 
 `WINDOW_START = 2026-01-01`, `HISTORY_START = 2024-01-01`, `QUERY_CAP = 20,000`, `TEXT_CAP = 40`, request cap 300
-per candidate, recording files fetched per repository 200, manifests read per repository 100 (`MANIFEST_CAP`), runs
+per candidate, recording files fetched per repository 200, manifests read per repository 100 (`MANIFEST_CAP`),
+blobs read as text at most 2,000,000 bytes (larger manifest/workflow/script -> API error), recording blobs at most
+5,000,000 bytes (larger -> `recording-unread`), runs
 inspected per test workflow 20, comments fetched for the first 40 non-candidate hits per member, repository-search
 results read 100 per query, first-phase reads 300 per stratum, chunk size 150, hard stop `2026-12-14T12:00:00Z`,
 reading budget 24 h, discovery budget 24 h, pre-pass stop above 20 h, code search <= 9 requests/min, issues and
@@ -61,7 +63,8 @@ commits search together <= 25 requests/min, z = 1.96 (z² = 3.8416). Seeds: cand
   (`configparser`: `[options] install_requires`, `[options.extras_require]`), `Pipfile` (`[packages]` runtime,
   `[dev-packages]` dev/test), `environment.yml` (conda names and the `pip:` list, runtime), `package.json`
   (`dependencies` and `peerDependencies` runtime, `devDependencies` dev/test, `optionalDependencies`
-  optional/extras). A requirements file whose basename contains `dev`, `test`, `lint`, `ci` or `doc` is dev/test,
+  optional/extras). A manifest with an unexpected shape (e.g. a list where a table is expected) is a
+`manifest-error`. A requirements file whose basename contains `dev`, `test`, `lint`, `ci` or `doc` is dev/test,
   else runtime. A manifest that does not parse (TOML, JSON, YAML, INI) -> `manifest-error`. Manifests are read in
   order of depth then path, at most 100 (`MANIFEST_CAP`); more than 100 without a library found -> `uncertain`
   (implementation rule fixed here).
@@ -105,7 +108,9 @@ the session writes that file (time and quote) when the message arrives. Probes (
   split into single terms; if it fails on commits, the §3.2 commits queries are split into single terms; the
   `is:issue`/`is:pr` check: when the plain query answers 422 and both typed ones answer 200, every issues query runs
   twice (with `is:issue` and with `is:pr`) and the pre-pass counts both. A shape answered 422, an error, or
-  `total_count` 0 is fixed (listed in CHANGES.md) or dropped before discovery and listed, never recorded as 0: a
+  `total_count` 0 is fixed (listed in CHANGES.md) or dropped before discovery and listed, never recorded as 0 (an
+  OR probe that did not answer 200 counts as a failed OR check; a §3.2 shape answering 0 on the known repository
+  counts as dropped): a
   dropped §1 shape goes under "not covered"; a dropped §3.2 shape makes every member's pain at most `unknown` unless
   `yes`.
 - (c) one §1.B issues query and one §1.C commits query from both routes: issues/commits search uses the session
@@ -177,29 +182,37 @@ matching `google/adk-*` and `anthropics/claude-agent-sdk-*`; the §0.2d recordin
    `|` outside quotes; install commands (`INSTALL_RE`) and `--help`/`--version` dropped; prefixes stripped
    (`STRIP_RES`) with runner matching before and after stripping (gate note 7); scripts resolved up to 3 levels
    (npm/yarn/pnpm/bun `package.json` scripts in the step's working directory, make targets with prerequisites and
-   `-C`, and tox/nox, which already match `RUNNER_RE`). A step is a test step when a command matches `RUNNER_RE`,
+   `-C`, and tox/nox, which already match `RUNNER_RE`). A `run:` or `name:` that is not a scalar is never converted
+   to text (YAML alias expansion): such a `run:` is not a test step and such a job is named by its key. A step is
+   a test step when a command matches `RUNNER_RE`,
    `PM_RE` or `STRIPPED_RUNNER_RE` or resolves to one, or it `uses:` an action whose name (before `@`) contains
    `pytest` or `test` and none of `report`, `summary`, `publish`, `coverage` (case-insensitive). A
    `workflow_call` workflow runs through its local callers (job name `<caller> / <callee>`) and itself when it has
-   other triggers; without a caller and other triggers -> `uncertain` flag. For each workflow file running a test
+   other triggers; without a caller and other triggers -> `uncertain` flag; a caller that itself has only
+   `workflow_call` is not followed further -> `uncertain` flag. An `on:` that is not a string, list or mapping ->
+   `uncertain` flag (whatever the file contains). For each workflow file running a test
    job: `GET actions/workflows/{file}/runs?created=>=2026-01-01&per_page=100`, newest first, inspect at most 20 runs
    (jobs API, `per_page=100`, paginated). `ci-tests = yes` when an inspected run has the test job (`job_matches`)
    with `conclusion` `success` or `failure` and a test step (`pick_api_step`) whose conclusion is neither `skipped`
    nor null. A workflow with none in its 20 inspected runs while more exist -> `uncertain`; a workflow where the
    job concluded but no test step was found among its API steps -> `uncertain`; runs listing 404 -> no runs. Any
-   workflow yes -> yes (stop); else any uncertain or flag -> `uncertain`; else `no-ci-tests` (non-member).
+   workflow yes -> yes (stop); else any uncertain or flag -> `uncertain`; else, when the tree was truncated
+   (subdirectory scripts not fetched) -> `uncertain`; else `no-ci-tests` (non-member).
 4. Request cap: at most 300 distinct core REST paths per candidate (membership, recordings and the later comment
    pass together; a blob read both as text and as a recording counts twice). Cap during membership ->
-   `uncertain`; during the pain read -> pain `unknown` unless already `yes`. An API error after one retry: during
-   membership -> `uncertain`; during the pain read -> pain `unknown` unless `yes`.
+   `uncertain`; during the pain read -> pain `unknown` unless already `yes`. An API error after one retry, or any
+   unexpected response shape (the same row live and in replay): during membership -> `uncertain`; during the pain
+   read -> pain `unknown` unless `yes`.
 5. Class: `member`, `non-member` (`no-agent-lib`, `no-ci-tests`), `uncertain`, `excluded` (not read).
 
 ## §3 Pain read (members)
 
 1. **Recordings:** the tree's recording candidates sorted by path, the first 200 fetched (blob API; more ->
    `recording-capped`); each that meets the path or shape rule and holds a host gets its last-commit date; the first
-   dated >= `HISTORY_START` -> pain `yes` (`recording`); earlier hits are kept and the next file is checked. Then
-   manifests declaring a model-answer recording package (dated by the manifest's last commit).
+   dated >= `HISTORY_START` -> pain `yes` (`recording`); earlier hits are kept and the next file is checked; a hit
+   whose last commit cannot be dated -> `recording-undated`; a file above the size cap or returned without text ->
+   `recording-unread` (both: pain at most `unknown`). Then manifests declaring a model-answer recording package
+   (dated by the manifest's last commit; undated -> `recording-undated`).
 2. **Repository texts** (members without a recording `yes`): `search/issues` `repo:<r> created:>=2024-01-01 (flaky
    OR nondeterministic OR "non-deterministic" OR intermittent OR unstable)` and, for m in {`llm`, `openai`,
    `agent`, `model`, `prompt`}, `repo:<r> created:>=2024-01-01 <m> (skip OR disable OR expensive OR cost OR mock)`;
@@ -240,7 +253,9 @@ matching `google/adk-*` and `anthropics/claude-agent-sdk-*`; the §0.2d recordin
 3. Pain per member: `yes` (a recording, or a text with final label `confirmed`, within the first 40 in order);
    `unknown` (not `yes`, and any of: an `unclear` or `pending` text within the first 40, more than 40 candidates,
    `text-error`, `text-capped`, `texts-missing`, `comments-missing`, `comments-incomplete`, `tree-truncated`,
-   `recording-capped`, `request-cap`, `api-error`); `no` otherwise. **Interpretation:** "a text candidate not yet
+   `recording-capped`, `recording-unread`, `recording-undated`, `request-cap`, `api-error`,
+   `text-shape-dropped` (§0.2b: a §3.2 probe shape not answering 200 with hits), `recording-handcheck-failed` (an
+   AC4-failed recording: later files and texts were never read)); `no` otherwise. **Interpretation:** "a text candidate not yet
    read twice" is read as a text whose second read is required (first `confirmed` or `unclear`) and missing; a
    `rejected` first read outside the sample is final.
 
@@ -260,7 +275,11 @@ pain `no` (texts and tree re-checked) and every recording-package hit; a failure
 a recording; text -> second label rejected) and counts recomputed; more than 3 failed -> stop, fix the rule once as
 a listed change and re-run it; a second failure -> NO DECISION.
 
-Execution: discovery in the work session (harness-tracked background task, two families in parallel, checkpoints
+Execution: every workflow request file without a `results/requests_done/<name>` marker runs (a newer push cancels
+a pending run of the same concurrency group; a request stopped at the job-wide deadline, 320 minutes after the job
+starts, is resumed by the next push; a rate-limit sleep that would pass the deadline stops the request cleanly). A
+row is written after its raw record; verify ignores a raw record without a row and replays the last raw record per
+candidate. Discovery in the work session (harness-tracked background task, two families in parallel, checkpoints
 `results/discovery_state_<family>.json` committed every 30 minutes); §2-§3.1 and the REST part of §3.2 in workflow
 chunks of up to 150 candidates; repository searches on the route §0.2c chose. The session sleeps on the observed
 `X-RateLimit-Remaining` (< 50 -> until reset); User-Agent `fenvix-research`.

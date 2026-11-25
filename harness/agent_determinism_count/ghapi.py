@@ -46,12 +46,17 @@ class SearchRefused(RuntimeError):
     pass
 
 
+class DeadlineReached(RuntimeError):
+    pass
+
+
 class Client:
     def __init__(self, token: str | None = None, use_gh: bool = False, pace: float = 0.4, log=None):
         self.token, self.use_gh, self.pace = token, use_gh, pace
         self.remaining, self.limit, self.reset = {}, {}, {}
         self.n_requests = 0
         self.n_search = {"code": 0, "issues": 0}
+        self.deadline = float(os.environ.get("ADC_DEADLINE") or 0)  # epoch seconds; 0 = none
         self.log = log  # optional list: every request (method, path, status, time) for AC5
         self._last = 0.0
         self._last_search = {"code": 0.0, "issues": 0.0}
@@ -63,6 +68,12 @@ class Client:
             self.remaining[res] = int(h["x-ratelimit-remaining"])
             self.limit[res] = int(h.get("x-ratelimit-limit") or 0)
             self.reset[res] = int(h.get("x-ratelimit-reset") or 0)
+
+    def _sleep(self, sl: float) -> None:
+        """Sleep, unless it would pass the job deadline (``deadline``, epoch seconds): then stop cleanly."""
+        if self.deadline and time.time() + sl > self.deadline:
+            raise DeadlineReached(f"a {sl:.0f}s rate-limit sleep would pass the job deadline")
+        time.sleep(sl)
 
     def _wait(self, search: str | None) -> None:
         if search:
@@ -80,7 +91,7 @@ class Client:
         if rem is not None and rem < 50 and not (search and self.limit.get(res, 0) <= 50):
             sl = max(self.reset.get(res, 0) - time.time(), 0) + 3
             sys.stderr.write(f"rate limit {res} remaining {rem}: sleeping {sl:.0f}s\n")
-            time.sleep(min(sl, 3700))
+            self._sleep(min(sl, 3700))
 
     def _once(self, path: str) -> tuple[int, dict, object]:
         if self.use_gh:
@@ -145,7 +156,7 @@ class Client:
             if st == 429 or (st == 403 and ("rate limit" in msg or "abuse" in msg or "retry-after" in h)):
                 sl = retry_seconds(msg, h)
                 sys.stderr.write(f"rate limited ({st}) on {path[:90]}: sleeping {sl:.0f}s\n")
-                time.sleep(min(sl, 3700))
+                self._sleep(min(sl, 3700))
                 continue
             if st == 0 or st >= 500:
                 time.sleep(5 * (attempt + 1))

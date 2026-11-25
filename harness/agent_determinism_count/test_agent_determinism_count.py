@@ -725,3 +725,144 @@ def test_workflow_trigger_and_owned_files():
     for session_file in ("reads.jsonl", "texts_search.jsonl ", "discovery_state", "search_budget_free", "handcheck",
                          "probe_session", "candidates"):
         assert session_file not in own
+
+
+# ====================================================================================== review fixes (/review cycle 1)
+
+def test_undated_recording_hit_is_unknown():
+    """protects=rules that could hide pain go to unknown (a host hit whose last commit cannot be dated);
+    fails_when=an undated cassette hit leaves pain no; no_claim=why GitHub returns no commit."""
+    p = "tests/cassettes/a.yaml"
+    f = member_fake({p: vcr_yaml()})
+    f.raw["repos/acme/agent/commits?" + urllib.parse.urlencode({"path": p, "sha": "main", "per_page": 1})] = []
+    row, _ = run(f)
+    assert "recording-undated" in row["pain_flags"]
+    assert R.member_pain(None, row["pain_flags"], [], {})["pain"] == "unknown"
+
+
+def test_oversize_recording_unread_is_unknown(monkeypatch):
+    """protects=blob size cap without hiding pain; fails_when=a recording too large to fetch is fetched or leaves
+    pain no; no_claim=the cap value."""
+    monkeypatch.setattr(R, "RECORDING_MAX", 10)
+    row, _ = run(member_fake({"tests/cassettes/big.yaml": vcr_yaml()}))
+    assert row["recordings"]["fetched"] == 0 and "recording-unread" in row["pain_flags"]
+
+
+def test_step_unmatched_is_uncertain():
+    """protects=§2.3: a concluded job whose test step is not found among the API steps -> uncertain;
+    fails_when=a renamed step makes the repository a non-member; no_claim=step renames are rare."""
+    f = Fake({"requirements.txt": REQ, ".github/workflows/ci.yml": CI_PY})
+    f.runs("ci.yml", [ok_run(step="Renamed")])
+    row, _ = run(f)
+    assert row["cls"] == "uncertain" and "uncertain-step-unmatched" in row["why"]
+
+
+def test_pain_stage_cap_and_api_error_unknown():
+    """protects=§2.4 in the pain read: cap or API error -> pain unknown; fails_when=either flag is dropped;
+    no_claim=nothing about which file would have hit."""
+    extra = {f"tests/cassettes/c{i}.yaml": vcr_yaml("api.github.com") for i in range(5)}
+    f = member_fake(extra)
+    _, src = run(member_fake())
+    row, _ = run(f, cap=src.core + 2)
+    assert row["cls"] == "member" and "request-cap" in row["pain_flags"]
+    f2 = member_fake(extra)
+    sha = f2.sha("tests/cassettes/c0.yaml", {"tests/cassettes/c0.yaml": vcr_yaml("api.github.com")})
+    del f2.raw[f"repos/acme/agent/git/blobs/{sha}"]
+    f2.raw = dict(f2.raw)
+    row2, _ = run(f2)
+    assert "api-error" in row2["pain_flags"]
+    assert R.member_pain(None, row2["pain_flags"], [], {})["pain"] == "unknown"
+
+
+def test_unexpected_manifest_shape_is_manifest_error():
+    """protects=replayable rows: a manifest with an unexpected shape is a manifest-error, not a crash;
+    fails_when=optional-dependencies as a list raises; no_claim=every malformed shape."""
+    with pytest.raises(R.ManifestError):
+        R.parse_manifest("pyproject.toml", '[project]\noptional-dependencies = ["x"]\n')
+    row, _ = run(Fake({"pyproject.toml": '[project]\noptional-dependencies = ["x"]\n'}))
+    assert row["cls"] == "uncertain"
+
+
+def test_unexpected_exception_row_replays():
+    """protects=AC3 replay of error rows; fails_when=an unexpected response shape crashes the chunk or the replay
+    differs; no_claim=which shapes GitHub sends."""
+    f = member_fake()
+    f.raw["repos/acme/agent"]["default_branch"] = None
+    src = P.LiveSource(f)
+    row = P.run_candidate(src, {"idx": 0, "repo": "acme/agent", "stratum": "S1"}, {})
+    assert row["cls"] == "uncertain" and row["stage"] == "error"
+    again = P.run_candidate(P.ReplaySource(src.responses), {"idx": 0, "repo": "acme/agent", "stratum": "S1"}, {})
+    assert again == row
+
+
+def test_nested_workflow_call_and_truncated_no_ci_uncertain():
+    """protects=§2.3 conservative paths; fails_when=a callee called only by another reusable workflow, or a
+    truncated tree without CI evidence, gives no-ci-tests; no_claim=multi-level resolution."""
+    callee = CI_PY.replace("on: [push, pull_request]", "on: workflow_call")
+    mid = "on: workflow_call\njobs:\n  call:\n    uses: ./.github/workflows/callee.yml\n"
+    f = Fake({"requirements.txt": REQ, ".github/workflows/callee.yml": callee, ".github/workflows/mid.yml": mid})
+    row, _ = run(f)
+    assert row["cls"] == "uncertain"
+    f2 = Fake({"requirements.txt": REQ}, truncated=True,
+              listing={"": ["requirements.txt"], ".github/workflows": []})
+    row2, _ = run(f2)
+    assert row2["cls"] == "uncertain" and "tree-truncated" in row2["why"]
+
+
+def test_on_unparsed_flag_without_test_word():
+    """protects=PREREG §2.3: an on: that is not a string/list/mapping -> uncertain unconditionally;
+    fails_when=it is dropped when the file lacks 'test'; no_claim=YAML errors without 'test' (still ignored)."""
+    wf = "on: 5\njobs:\n  ci:\n    runs-on: x\n    steps:\n      - run: make check\n"
+    row, _ = run(Fake({"requirements.txt": REQ, ".github/workflows/ci.yml": wf}))
+    assert row["cls"] == "uncertain"
+
+
+def test_empty_stratum_counts_and_shape_dropped(tmp_path):
+    """protects=§5 B_s for an empty stratum (count 0, so the statistical DROP can fire) and the §0.2b dropped
+    §3.2 shape -> unknown; fails_when=S3 is undefined with no candidates, or a dropped shape allows pain no;
+    no_claim=nothing about non-empty strata."""
+    res = _write_results(tmp_path)
+    x = report.compute(report.load(res))
+    assert x["strata"]["S3"]["how"] == "count" and x["strata"]["S3"]["B"] == 0.0
+    (res / "probe_decisions.json").write_text(json.dumps({"repo_text_shapes_ok": False}))
+    (res / "reads.jsonl").unlink()
+    x = report.compute(report.load(res))
+    m = [m for m in x["members"] if m["row"]["repo"] == "b/text"][0]
+    assert "text-shape-dropped" in m["pain"]["why"] and m["pain"]["pain"] == "unknown"
+
+
+def test_probe_or_check_requires_answers():
+    """protects=§0.2b never recorded as 0: an errored OR probe splits the queries; fails_when=missing OR probes
+    give or_ok True or a 0-hit repository shape counts as fine; no_claim=GitHub's semantics."""
+    import probe
+    S = [{"id": i, "status": 200, "total_count": 5} for i in ("a1", "c-issues", "c-commits", "b-code-cassette",
+                                                              "b-code-recordings", "b-code-vcr")]
+    S += [{"id": "b-r-issues-pain", "status": 200, "total_count": 0}]
+    d = probe.decide(S, [], [])
+    assert d["issues_or_ok"] is False and d["commits_or_ok"] is False and d["repo_text_shapes_ok"] is False
+
+
+def test_readers_tolerate_truncated_files_and_verify_last_raw(tmp_path):
+    """protects=a job killed mid-write: a partial last line is dropped, a raw record without a row is ignored and
+    the last raw record per candidate is replayed; fails_when=readers raise or verify reports a mismatch;
+    no_claim=gzip corruption in the middle of a file."""
+    p = tmp_path / "x.jsonl"
+    p.write_text('{"a": 1}\n{"a": ')
+    assert report._jsonl(p) == [{"a": 1}]
+    res = _write_results(tmp_path)
+    with gzip.open(res / "raw" / "1.jsonl.gz", "at") as fh:
+        fh.write(json.dumps({"idx": 99, "repo": "z/z", "opts": {}, "responses": {}}) + "\n")
+    text, _ = report.render(report.load(res))
+    (tmp_path / "REPORT.md").write_text(text)
+    assert verify.main(["--res", str(res), "--report", str(tmp_path / "REPORT.md")]) == 0
+
+
+def test_rate_sleep_past_deadline_stops(monkeypatch, tmp_path):
+    """protects=the job-wide deadline: a rate-limit sleep that would pass it raises DeadlineReached instead of
+    sleeping into the job timeout; fails_when=the client sleeps; no_claim=GitHub's reset times."""
+    import time as _t
+    c = ghapi.Client(token="x")
+    c.deadline = _t.time() + 10
+    monkeypatch.setattr(_t, "sleep", lambda s: pytest.fail("slept"))
+    with pytest.raises(ghapi.DeadlineReached):
+        c._sleep(600)

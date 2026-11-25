@@ -178,7 +178,9 @@ class Repo:
     def read(self, path: str):
         if not path or path not in self.files:
             return None
-        sha = self.files[path][0]
+        sha, size = self.files[path]
+        if (size or 0) > R.BLOB_TEXT_MAX:
+            raise ApiError(f"blob {path}: {size} bytes > {R.BLOB_TEXT_MAX}")
         st, d = self.src.get(f"repos/{self.repo}/git/blobs/{sha}", kind="text")
         if st != 200:
             raise ApiError(f"blob {path}: HTTP {st}")
@@ -274,6 +276,11 @@ def check_libraries(rp: Repo, opts: dict) -> dict:
 
 # ---------------------------------------------------------------------------------------------- §2.3 CI tests
 
+def job_name(job: dict, key) -> str:
+    n = job.get("name")
+    return str(n) if isinstance(n, (str, int, float)) else str(key)
+
+
 def workflow_targets(rp: Repo) -> tuple[dict, list[str]]:
     """{run_file: [target]} of jobs with a test step, and the reasons for `uncertain` met while parsing."""
     wfs = sorted(p for p in rp.files if posixpath.dirname(p) == ".github/workflows" and p.endswith((".yml", ".yaml")))
@@ -282,10 +289,14 @@ def workflow_targets(rp: Repo) -> tuple[dict, list[str]]:
         text = rp.read(p)
         try:
             wf = R.load_yaml(text)
-            parsed[p] = (wf, R.triggers(wf), text)
         except Exception as e:
             if re.search(r"(?i)test", text or ""):
                 flags.append(f"workflow-parse:{p}:{type(e).__name__}")
+            continue
+        try:
+            parsed[p] = (wf, R.triggers(wf), text)
+        except ValueError:
+            flags.append(f"on-unparsed:{p}")
     callers: dict[str, list] = {}
     for p, (wf, _, _) in parsed.items():
         jobs = wf.get("jobs") if isinstance(wf.get("jobs"), dict) else {}
@@ -293,8 +304,7 @@ def workflow_targets(rp: Repo) -> tuple[dict, list[str]]:
             if isinstance(job, dict) and isinstance(job.get("uses"), str):
                 u = job["uses"].split("@")[0]
                 if u.startswith("./.github/workflows/"):
-                    callers.setdefault(u[2:], []).append((p, str(job.get("name") if job.get("name") is not None
-                                                                  else jk)))
+                    callers.setdefault(u[2:], []).append((p, job_name(job, jk)))
     out: dict[str, list] = {}
     for p, (wf, trig, text) in sorted(parsed.items()):
         jobs = wf.get("jobs") if isinstance(wf.get("jobs"), dict) else {}
@@ -306,10 +316,13 @@ def workflow_targets(rp: Repo) -> tuple[dict, list[str]]:
                     if isinstance(s, dict) and R.is_test_step(s, R.working_dir(s, job, wf), rp.read)]
             if not idxs:
                 continue
-            jname = str(job.get("name") if job.get("name") is not None else jk)
+            jname = job_name(job, jk)
             via = []
             if "workflow_call" in trig:
-                via += [(cp, cname) for cp, cname in callers.get(p, [])]
+                for cp, cname in callers.get(p, []):
+                    if parsed[cp][1] <= {"workflow_call"}:  # a caller that is itself only called: not followed
+                        flags.append(f"workflow_call-nested:{p}")
+                    via.append((cp, cname))
                 if trig - {"workflow_call"}:
                     via.append((p, None))
                 if not via:
@@ -373,16 +386,25 @@ def check_ci(src, rp: Repo) -> dict:
 def check_recordings(rp: Repo, libs: dict) -> dict:
     cands = sorted(p for p in rp.files if R.recording_file(p))
     out = {"files": len(cands), "capped": len(cands) > R.RECORDING_FILE_CAP, "hits_before_history": [],
-           "fetched": 0, "general_hosts": []}
+           "fetched": 0, "unread": [], "undated": []}
     for p in cands[:R.RECORDING_FILE_CAP]:
         kind = R.recording_file(p)
+        if (rp.files[p][1] or 0) > R.RECORDING_MAX:
+            out["unread"].append(p)  # too large to fetch: pain at most unknown
+            continue
         st, facts = rp.src.get(f"repos/{rp.repo}/git/blobs/{rp.files[p][0]}", kind="rec")
         if st != 200:
             raise ApiError(f"blob {p}: HTTP {st}")
         out["fetched"] += 1
+        if not facts.get("text"):
+            out["unread"].append(p)
+            continue
         if not R.recording_hit(kind, facts):
             continue
         date, url = rp.last_commit_date(p)
+        if date is None:
+            out["undated"].append(p)
+            continue
         hit = {"path": p, "rule": kind, "hosts": facts["hosts"], "date": date, "commit_url": url,
                "snippet": facts.get("snippet"),
                "url": f"https://github.com/{rp.repo}/blob/{urllib.parse.quote(rp.ref)}/{q(p)}"}
@@ -398,6 +420,9 @@ def check_recordings(rp: Repo, libs: dict) -> dict:
         if date and date >= R.HISTORY_START:
             out["yes"] = hit
             return out
+        if date is None:
+            out["undated"].append(rp_hit["file"])
+            continue
         out["hits_before_history"].append(hit)
     return out
 
@@ -435,6 +460,9 @@ def run_candidate(src, cand: dict, opts: dict | None = None) -> dict:
             return row
         ci = check_ci(src, rp)
         row["ci"] = ci
+        if ci["ci"] == "no-ci-tests" and truncated:  # subdirectory scripts were not fetched
+            ci["ci"] = "uncertain"
+            ci["flags"].append("tree-truncated")
         if ci["ci"] == "no-ci-tests":
             row.update(cls="non-member", stage="no-ci-tests")
             return row
@@ -448,8 +476,9 @@ def run_candidate(src, cand: dict, opts: dict | None = None) -> dict:
         row["pain_flags"] = ["tree-truncated"] if truncated else []
         rec = check_recordings(rp, libs)
         row["recordings"] = rec
-        if rec["capped"]:
-            row["pain_flags"] = sorted(row["pain_flags"] + ["recording-capped"])
+        row["pain_flags"] = sorted(row["pain_flags"] + ["recording-capped"] * rec["capped"]
+                                   + ["recording-unread"] * bool(rec["unread"])
+                                   + ["recording-undated"] * bool(rec["undated"]))
         return row
     except CapReached:
         if stage == "membership":
@@ -457,12 +486,15 @@ def run_candidate(src, cand: dict, opts: dict | None = None) -> dict:
         else:
             row["pain_flags"] = sorted(set((row.get("pain_flags") or []) + ["request-cap"]))
         return row
-    except ApiError as e:
+    except Missing:
+        raise
+    except Exception as e:  # ApiError, or an unexpected response shape: same row live and in replay
+        err = str(e)[:200] if isinstance(e, ApiError) else f"{type(e).__name__}: {str(e)[:200]}"
         if stage == "membership":
-            row.update(cls="uncertain", stage="error", error=str(e)[:200])
+            row.update(cls="uncertain", stage="error", error=err)
         else:
             row["pain_flags"] = sorted(set((row.get("pain_flags") or []) + ["api-error"]))
-            row["pain_error"] = str(e)[:200]
+            row["pain_error"] = err
         return row
     finally:
         row["core_requests"] = src.core

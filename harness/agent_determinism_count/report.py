@@ -29,11 +29,22 @@ STRATA = ("S1", "S2", "S3")
 
 
 def _jsonl(p: Path) -> list[dict]:
+    """JSON lines; a truncated last line or gzip member (a job killed mid-write) is dropped."""
     if not p.exists():
         return []
     op = gzip.open if p.suffix == ".gz" else open
-    with op(p, "rt") as f:
-        return [json.loads(x) for x in f if x.strip()]
+    out = []
+    try:
+        with op(p, "rt") as f:
+            for x in f:
+                if x.strip():
+                    try:
+                        out.append(json.loads(x))
+                    except json.JSONDecodeError:
+                        pass
+    except (EOFError, OSError):
+        pass
+    return out
 
 
 def _json(p: Path, default=None):
@@ -80,17 +91,24 @@ def apply_handcheck_reads(reads: dict, hc: dict) -> dict:
     return out
 
 
-def member_record(row: dict, cand: dict, search: dict | None, comments: dict | None, reads: dict, hc: dict) -> dict:
+def member_record(row: dict, cand: dict, search: dict | None, comments: dict | None, reads: dict, hc: dict,
+                  cfg: dict | None = None) -> dict:
+    cfg = cfg or {}
     repo = (row.get("meta") or {}).get("full_name") or row["repo"]
     rec = (row.get("recordings") or {}).get("yes")
-    if rec and ((hc.get("items") or {}).get(f"rec:{row['repo'].lower()}") or {}).get("ok") is False:
-        rec = None
+    hc_failed = bool(rec) and ((hc.get("items") or {}).get(f"rec:{row['repo'].lower()}") or {}).get("ok") is False
+    if hc_failed:
+        rec = None  # later recording files and the texts were never read: pain at most unknown
     texts = T.member_texts(repo, cand.get("hits") or [], search)
     cm = T.comment_map(comments)
     cands, filt = T.candidates_of(texts, cm)
     flags = list(row.get("pain_flags") or [])
     if not rec:
         flags += T.search_flags(search) + T.comment_flags(texts, comments)
+        if hc_failed:
+            flags.append("recording-handcheck-failed")
+        if cfg.get("repo_text_shapes_ok") is False:  # §0.2b: a dropped §3.2 shape -> at most unknown
+            flags.append("text-shape-dropped")
     pain = R.member_pain(rec, sorted(set(flags)), cands, reads)
     return {"row": row, "texts": texts, "candidates": cands, "filtered": filt, "pain": pain, "comments": cm}
 
@@ -98,7 +116,9 @@ def member_record(row: dict, cand: dict, search: dict | None, comments: dict | N
 def compute(d: dict) -> dict:
     rows = list(_last(d["rows"], lambda r: r["idx"]).values())
     cands = {c["idx"]: c for c in d["candidates"]}
-    search = _last(d["search"], lambda r: r["repo"].lower())
+    search = {}
+    for r in d["search"]:
+        search.setdefault(r["repo"].lower(), {})[r["at"]] = r
     comments = _last(d["comments"], lambda r: r["repo"].lower())
     reads = apply_handcheck_reads(reads_map(d["reads"]), d["handcheck"])
     counted = [r for r in rows if r.get("cls") != "excluded"]
@@ -107,8 +127,8 @@ def compute(d: dict) -> dict:
     for r in counted:
         if r.get("cls") == "member":
             k = r["repo"].lower()
-            members.append(member_record(r, cands.get(r["idx"]) or {}, search.get(k), comments.get(k), reads,
-                                         d["handcheck"]))
+            members.append(member_record(r, cands.get(r["idx"]) or {}, search_for(k, comments.get(k), search),
+                                         comments.get(k), reads, d["handcheck"], d["cfg"]))
     pain_of = {m["row"]["idx"]: m["pain"] for m in members}
     pool = d["pool"] or {s: {"candidates": 0, "N": 0, "missing": 0, "truncated_leaves": 0, "incomplete_leaves": 0,
                              "capped_queries": [], "unfinished": []} for s in STRATA}
@@ -119,7 +139,7 @@ def compute(d: dict) -> dict:
                                                                   pain_of[r["idx"]]["pain"] in ("yes", "unknown")))
         ids = set((d["orders"] or {}).get(s) or [])
         seen = {r["idx"] for r in rows}
-        all_read = bool(ids) and ids <= seen
+        all_read = s in (d["orders"] or {}) and ids <= seen  # an empty stratum is fully read
         b = R.stratum_bound(A, len(rs), pool[s]["N"], all_read, pool[s]["truncated_leaves"] > 0,
                             pool[s]["incomplete_leaves"] > 0)
         st[s] = {"read": len(rs), "A": A, "all_read": all_read, **b,
@@ -147,6 +167,14 @@ def compute(d: dict) -> dict:
             "text_of": lambda t, m=None: T.text_of(t, (m or {}).get("comments") if m else _comments_for(members, t))}
 
 
+def search_for(repo_key: str, comments: dict | None, search: dict) -> dict | None:
+    """The search record the comment pass used (its ``search_at``), else the member's latest search record."""
+    recs = search.get(repo_key) or {}
+    if comments and comments.get("search_at") in recs:
+        return recs[comments["search_at"]]
+    return recs[max(recs)] if recs else None
+
+
 def _comments_for(members, t):
     for m in members:
         if t["url"] in m["comments"]:
@@ -163,7 +191,7 @@ def handcheck_status(hc: dict, yes: list[dict]) -> dict:
     missing = [k for k in req if k not in items]
     failed = [k for k, v in items.items() if v.get("ok") is False and k.startswith(("rec:", "text:"))]
     samples_ok = bool(hc.get("samples_done"))
-    ok = bool(yes or hc.get("samples_done")) and not missing and len(failed) <= 3 and samples_ok
+    ok = samples_ok and not missing and len(failed) <= 3
     return {"ok": ok, "required": len(req), "missing": missing, "failed": failed, "samples_done": samples_ok}
 
 
@@ -404,7 +432,8 @@ def render(d: dict) -> tuple[str, dict]:
         L += ["## Information", ""] + [f"- {i}" for i in info] + [""]
     L += ["## Limits", "", "Default branches only for files; search coverage limited to the listed queries (1,000 "
           "results per leaf, best-match order on capped queries); truncated leaves are counted in N_s; texts are the "
-          "first 100 results of each repository search; comments fetched for the first 40 non-candidate hits.", ""]
+          f"first {R.TEXT_SEARCH_CAP} results of each repository search; comments fetched for the first "
+          f"{R.COMMENT_CAP} non-candidate hits.", ""]
     return "\n".join(L), n.vals
 
 

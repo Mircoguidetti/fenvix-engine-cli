@@ -28,13 +28,6 @@ LABELS = ("confirmed", "rejected", "unclear")
 REASONS = ("varying-output", "provider-errors", "cost")
 
 
-def reads_map(recs: list[dict]) -> dict:
-    out: dict[str, dict] = {}
-    for r in recs:
-        out.setdefault(r["url"], {})[r["reader"]] = r
-    return out
-
-
 def member_queue(cands: list[dict], reads: dict) -> list[dict]:
     """The texts of one member still needing a first read, in order, up to TEXT_CAP, none once a text is confirmed by
     both readers or a confirmed first read awaits its second read."""
@@ -74,7 +67,7 @@ def main(argv=None) -> int:
     ap.add_argument("--reader", default="first", choices=["first", "second"])
     a = ap.parse_args(argv)
     d = report.load()
-    reads = reads_map(d["reads"])
+    reads = report.reads_map(d["reads"])
     if a.cmd == "label":
         if a.label in ("confirmed", "unclear") and a.reader == "first" and not a.quote:
             sys.exit("a confirmed or unclear first read needs --quote")

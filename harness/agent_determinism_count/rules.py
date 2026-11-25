@@ -32,6 +32,8 @@ TEXT_CAP = 40
 REQUEST_CAP = 300
 RECORDING_FILE_CAP = 200
 MANIFEST_CAP = 100
+BLOB_TEXT_MAX = 2_000_000
+RECORDING_MAX = 5_000_000
 RUNS_CAP = 20
 COMMENT_CAP = 40
 TEXT_SEARCH_CAP = 100
@@ -261,7 +263,17 @@ def _poetry_table(tbl, kind: str) -> list[tuple[str, str]]:
 
 
 def parse_manifest(path: str, text: str) -> list[tuple[str, str]]:
-    """(dependency name, kind) pairs. Raises ManifestError when the manifest does not parse."""
+    """(dependency name, kind) pairs. Raises ManifestError when the manifest does not parse or has an unexpected
+    shape (any other exception while reading it is turned into ManifestError)."""
+    try:
+        return _parse_manifest(path, text)
+    except ManifestError:
+        raise
+    except Exception as e:
+        raise ManifestError(f"{type(e).__name__}: {str(e)[:100]}")
+
+
+def _parse_manifest(path: str, text: str) -> list[tuple[str, str]]:
     kind = manifest_kind(path)
     if kind == "requirements":
         return [(n, _req_kind(path)) for n in (req_name(ln) for ln in text.splitlines()) if n]
@@ -616,7 +628,7 @@ def is_test_step(step: dict, wd: str, read) -> bool:
         name = uses.split("@")[0]
         return bool(ACTION_TEST_RE.search(name)) and not ACTION_NOT_RE.search(name)
     run = step.get("run")
-    if run is None:
+    if not isinstance(run, (str, int, float)):  # never str() a parsed list/mapping (YAML alias expansion)
         return False
     return any(resolves_to_runner(c, wd, read) for c in kept_commands(str(run)))
 
@@ -669,7 +681,7 @@ def job_matches(api_name: str, yaml_name: str, caller: str | None = None) -> boo
 
 
 def step_key(step: dict) -> tuple[str, str]:
-    if step.get("name") is not None:
+    if isinstance(step.get("name"), (str, int, float)):
         return "name", str(step["name"])
     if step.get("uses") is not None:
         return "prefix", "Run " + str(step["uses"])[:40]

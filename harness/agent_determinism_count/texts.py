@@ -6,7 +6,7 @@ Usage: texts.py search --route session|workflow --chunk N      (repository searc
        (the comment pass runs in the workflow: request {"chunk": "Nc", "comments": N})
 
 Records: results/texts_search{,_wf}.jsonl ({repo, chunk, route, at, queries, hits}) with raw responses in
-results/texts_raw{,_wf}/<chunk>.jsonl.gz; results/comments.jsonl ({repo, chunk, at, fetched: {url: [comments]}})
+results/texts_raw{,_wf}/<chunk>.jsonl.gz; results/comments.jsonl ({repo, chunk, at, used, search_at, targets, fetched: {url: [comments]}, capped})
 with raw responses in results/comments_raw/<chunk>.jsonl.gz. ``verify.py`` replays both.
 """
 from __future__ import annotations
@@ -185,11 +185,11 @@ def main(argv=None) -> int:
         repo = (r.get("meta") or {}).get("full_name") or r["repo"]
         out = run_searches(src, repo, cfg)
         rec = {"repo": r["repo"], "query_repo": repo, "chunk": r.get("chunk"), "route": a.route, "at": now(), **out}
-        with open(RES / f"texts_search{sfx}.jsonl", "a") as f:
-            f.write(json.dumps(rec, sort_keys=True) + "\n")
         with gzip.open(RES / f"texts_raw{sfx}" / f"{a.chunk}.jsonl.gz", "at") as f:
             f.write(json.dumps({"repo": r["repo"], "at": rec["at"], "cfg": cfg, "responses": src.responses},
                                sort_keys=True) + "\n")
+        with open(RES / f"texts_search{sfx}.jsonl", "a") as f:
+            f.write(json.dumps(rec, sort_keys=True) + "\n")
         n += 1
         print(f"{r['repo']}: {len(out['queries'])} queries, {len(out['hits'])} hits, flags {search_flags(rec)}",
               flush=True)
