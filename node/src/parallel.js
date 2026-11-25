@@ -669,8 +669,13 @@ function collect(root, dir, keysIn, plan, { shared, planned, write = true } = {}
           lines.push(`detjs: serial run: ${durs.length} files, ${r3(total)} s of test-file time (MEASURED); with --det-workers=${cpus} (this machine's CPUs) about ${r3(est)} s (ESTIMATED: a plan over these durations, worker start-up not counted)`);
         }
       } else {
-        const t0 = Math.min(...keys.map((k) => markers.get(k)).filter(Boolean).map((m) => m.start));
-        const t1 = Math.max(...keys.map((k) => markers.get(k)).filter(Boolean).map((m) => m.end));
+        // C3 (spec "false greens on release-1"): over the markers whose start and end are both numbers, as `durs`; a
+        // marker without them (its file's leave() did not run) made this NaN, written null, which the runner reads as
+        // "proof incomplete" on a clean run. A timing field only: completeness is the outcome records' (exit-status
+        // countStatus: a test with no record is `missing`, failed) and the hazard re-run's accounting
+        const timed = keys.map((k) => markers.get(k)).filter((m) => m && typeof m.start === 'number' && typeof m.end === 'number');
+        const t0 = Math.min(...timed.map((m) => m.start));
+        const t1 = Math.max(...timed.map((m) => m.end));
         meta.timing = { files: durs.length, test_file_seconds: r3(total), lanes_wall_seconds: r3((t1 - t0) / 1000) };
         lines.push(`detjs: parallel: ${r3(total)} s of test-file time ran in ${r3((t1 - t0) / 1000)} s across ${plan.workers} lanes (MEASURED, first file start to last file end, worker start-up included)`);
       }
