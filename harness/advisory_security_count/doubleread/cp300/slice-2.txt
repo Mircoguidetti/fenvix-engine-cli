@@ -1,0 +1,595 @@
+=== GHSA-8jhh-jcqg-mj5p sev=medium pkgs=['npm:openclaw']
+src=https://github.com/openclaw/openclaw cwes=['CWE-639', 'CWE-862']
+SUMMARY: OpenClaw: Channel commands could bypass account-scoped `configWrites` restrictions
+DESC: ## Summary In affected versions of `openclaw`, channel-initiated config mutations were authorized against the originating account's `configWrites` policy but did not consistently re-check the targeted account scope. An authorized sender on one account could mutate protected sibling-account configuration when the target account had `configWrites: false`. ## Impact This is an account-scoped policy bypass inside a single gateway deployment. Channel commands such as `/config set channels.<provider>.accounts.<id>...` and config-backed `/allowlist ... --config --account <id>` could modify protected sibling-account configuration. ## Affected Packages and Versions - Package: `openclaw` (npm) - Affected versions: `<= 2026.3.8` - Fixed in: `2026.3.11` ## Technical Details The mutation path validated the origin account scope but did not consistently authorize every resolved target scope. Ambiguous collection and root writes under `channels` and `channels.<provider>.accounts` could therefore reach protected account configuration from channel command surfaces. ## Fix OpenClaw now authorizes config mutations against both the origin scope and each resolved target scope, and it rejects ambiguous root and collection writes from channel commands unless the caller is an internal gateway client with `operator.admin`. The fix shipped in `openclaw@2026.3.11`. ## Workarounds Upgrade to `2026.3.11` or later.
+
+=== GHSA-f23p-vx2j-j53r sev=medium pkgs=['npm:hono']
+src=https://github.com/honojs/hono cwes=['CWE-488']
+SUMMARY: Hono: `memo()` retains SSR output across requests, leading to cross-user data disclosure
+DESC: ### Summary `memo()` from `hono/jsx` retains the result of a server-side render and reuses it for later renders with comparator-equal props. Request-scoped values read inside the component take no part in that comparison, so a response can contain HTML rendered for another user's request. ### Details Components wrapped with `memo()` are compared by props alone. Values read implicitly during rendering do not participate: JSX Context through `createContext()` and `useContext()`, `useRequestContext()` from `hono/jsx-renderer`, and `getContext()` from `hono/context-storage`. The retained result lives as long as the wrapped component, so it outlives the request that produced it. Per-request context isolation is not what fails: the current request's values are established correctly, but the memoized component is skipped before anything reads them. This issue arises when a component wrapped in `memo()` obtains user- or request-specific data from an ambient context instead of through props. ### Impact A user may receive a response containing HTML rendered for another user, when both render the same memoized component with comparator-equal props on the same warm instance. This may lead to: - Disclosure of another user's account or profile data - Disclosure of request-scoped secrets embedded in HTML, such as CSRF tokens - Exposure of role-specific content to users who should not receive it Exploitation depends on the order in which renders populate the retained value and on both requests reaching the same warm instance. This issue affects applications that render with `hono/jsx` on the server and wrap a component reading ambient request state in `memo()`. Applications that pass all request-specific values through props, or that do not use `memo()`, are unaffected. Client-side rendering is unaffected.
+FIX commit https://github.com/honojs/hono/commit/0c45036d6b0ddf42ab2fa44639dc8710825d5c0f status=200
+  MSG: Merge commit from fork
+  FILE src/jsx/base.ts
+    -  let computed: ReturnType<FC<T>> = null
+    -  let prevProps: T | undefined = undefined
+    -  const wrapper: MemorableFC<T> = ((props: T) => {
+    -    if (prevProps && !propsAreEqual(prevProps, props)) {
+    -      computed = null
+    -    }
+    -    prevProps = props
+    -    return (computed ||= component(props))
+    -  }) as MemorableFC<T>
+    +  const wrapper: MemorableFC<T> = ((props: T) => component(props)) as MemorableFC<T>
+  FILE src/jsx/index.test.tsx
+    +import { DOM_MEMO } from './constants'
+    -  it('memoized', () => {
+    +  it('does not reuse the result of a previous render', () => {
+    -      '<html><head><title>Test Site 0</title></head><body><span>1</span></body></html>'
+    +      '<html><head><title>Test Site 1</title></head><body><span>1</span></body></html>'
+    +  it('does not carry a context value into a later render', () => {
+    +    const NameContext = createContext('anonymous')
+    +    const Panel = memo(() => <p>{useContext(NameContext)}</p>)
+    +    const render = (name: string) =>
+    +      (
+    +        <NameContext.Provider value={name}>
+    +          <Panel />
+    +        </NameContext.Provider>
+    +      ).toString()
+    +    expect(render('alice')).toBe('<p>alice</p>')
+    +    expect(render('bob')).toBe('<p>bob</p>')
+    +  })
+    -  it('custom propsAreEqual', () => {
+    -    const Body = memo(
+    -      ({ counter }: { counter: number; refresh?: boolean }) => <span>{counter}</span>,
+
+=== GHSA-6q7m-p8cc-998r sev=high pkgs=['go:github.com/mattermost/mattermost-server', 'go:github.com/mattermost/mattermost/server/v8']
+src=https://github.com/mattermost/mattermost cwes=['CWE-862']
+SUMMARY: Mattermost has a Missing Authorization vulnerability
+DESC: Mattermost versions 10.11.x <= 10.11.1, 10.10.x <= 10.10.2, 10.5.x <= 10.5.10 fail to verify a user has permission to join a Mattermost team using the original invite token which allows any attacked to join any team on a Mattermost server regardless of restrictions via manipulating the OAuth state.
+FIX commit https://github.com/mattermost/mattermost/commit/2096f975b2c0ebe95fb1078c3b1a527da574796d status=200
+  MSG: [MM-65015] Restore Mobile redirection on oauth login (#33626) (#33634) Automatic Merge
+  FILE server/channels/web/oauth.go
+    +	"slices"
+    +const (
+    +	callbackHost = "callback"
+    +)
+    -	redirectURL = fullyQualifiedRedirectURL(c.GetSiteURLHeader(), redirectURL)
+    +	redirectURL = fullyQualifiedRedirectURL(c.GetSiteURLHeader(), redirectURL, c.App.Config().NativeAppSettings.AppCustomURLSchemes)
+    -func fullyQualifiedRedirectURL(siteURLPrefix, targetURL string) string {
+    +func fullyQualifiedRedirectURL(siteURLPrefix, targetURL string, otherValidSchemes []string) string {
+    -	// Check if the targetURL is a valid URL and is within the siteURLPrefix
+    +	// mobile access
+    +	if slices.Contains(otherValidSchemes, fmt.Sprintf("%v://", parsed.Scheme)) &&
+    +		parsed.Host == callbackHost &&
+    +		parsed.Path == "" &&
+    +		parsed.RawQuery == "" &&
+    +		parsed.Fragment == "" {
+    +		return targetURL
+    +	}
+    +	// Check if the targetURL is valid and within the siteURLPrefix, excluding native app schemes like mmauth://
+  FILE server/channels/web/oauth_test.go
+    +		"mmauth://callback":                    "mmauth://callback",
+    +		"mmauth://xxx.yyy/mm":                  siteURL, // invalid mobile URL (wrong host)
+    -			require.Equal(t, expected, fullyQualifiedRedirectURL(siteURL, target))
+    +			require.Equal(t, expected, fullyQualifiedRedirectURL(siteURL, target, []string{"mmauth://"}))
+  FILE server/channels/web/saml.go
+    -	redirectURL = fullyQualifiedRedirectURL(c.GetSiteURLHeader(), redirectURL)
+    +	redirectURL = fullyQualifiedRedirectURL(c.GetSiteURLHeader(), redirectURL, c.App.Config().NativeAppSettings.AppCustomURLSchemes)
+FIX commit https://github.com/mattermost/mattermost/commit/39bd251fe4f66b7e847fc6d653221886347ff160 status=200
+  MSG: [MM-65015] Restore Mobile redirection on oauth login (#33626) (#33637) Automatic Merge
+  FILE server/channels/web/oauth.go
+    +	"slices"
+    +const (
+    +	callbackHost = "callback"
+    +)
+    -	redirectURL = fullyQualifiedRedirectURL(c.GetSiteURLHeader(), redirectURL)
+    +	redirectURL = fullyQualifiedRedirectURL(c.GetSiteURLHeader(), redirectURL, c.App.Config().NativeAppSettings.AppCustomURLSchemes)
+    -func fullyQualifiedRedirectURL(siteURLPrefix, targetURL string) string {
+    +func fullyQualifiedRedirectURL(siteURLPrefix, targetURL string, otherValidSchemes []string) string {
+    -	// Check if the targetURL is a valid URL and is within the siteURLPrefix
+    +	// mobile access
+    +	if slices.Contains(otherValidSchemes, fmt.Sprintf("%v://", parsed.Scheme)) &&
+    +		parsed.Host == callbackHost &&
+    +		parsed.Path == "" &&
+    +		parsed.RawQuery == "" &&
+    +		parsed.Fragment == "" {
+    +		return targetURL
+    +	}
+    +	// Check if the targetURL is valid and within the siteURLPrefix, excluding native app schemes like mmauth://
+  FILE server/channels/web/oauth_test.go
+    +		"mmauth://callback":                    "mmauth://callback",
+    +		"mmauth://xxx.yyy/mm":                  siteURL, // invalid mobile URL (wrong host)
+    -			require.Equal(t, expected, fullyQualifiedRedirectURL(siteURL, target))
+    +			require.Equal(t, expected, fullyQualifiedRedirectURL(siteURL, target, []string{"mmauth://"}))
+  FILE server/channels/web/saml.go
+    -	redirectURL = fullyQualifiedRedirectURL(c.GetSiteURLHeader(), redirectURL)
+    +	redirectURL = fullyQualifiedRedirectURL(c.GetSiteURLHeader(), redirectURL, c.App.Config().NativeAppSettings.AppCustomURLSchemes)
+FIX commit https://github.com/mattermost/mattermost/commit/e14175eb65393bebc16dbb68a8105b3094b0f0dd status=200
+  MSG: [MM-65015] Restore Mobile redirection on oauth login (#33626) (#33633)
+  FILE server/channels/web/oauth.go
+    +	"slices"
+    +const (
+    +	callbackHost = "callback"
+    +)
+    -	redirectURL = fullyQualifiedRedirectURL(c.GetSiteURLHeader(), redirectURL)
+    +	redirectURL = fullyQualifiedRedirectURL(c.GetSiteURLHeader(), redirectURL, c.App.Config().NativeAppSettings.AppCustomURLSchemes)
+    -func fullyQualifiedRedirectURL(siteURLPrefix, targetURL string) string {
+    +func fullyQualifiedRedirectURL(siteURLPrefix, targetURL string, otherValidSchemes []string) string {
+    -	// Check if the targetURL is a valid URL and is within the siteURLPrefix
+    +	// mobile access
+    +	if slices.Contains(otherValidSchemes, fmt.Sprintf("%v://", parsed.Scheme)) &&
+    +		parsed.Host == callbackHost &&
+    +		parsed.Path == "" &&
+    +		parsed.RawQuery == "" &&
+    +		parsed.Fragment == "" {
+    +		return targetURL
+    +	}
+    +	// Check if the targetURL is valid and within the siteURLPrefix, excluding native app schemes like mmauth://
+  FILE server/channels/web/oauth_test.go
+    +		"mmauth://callback":                    "mmauth://callback",
+    +		"mmauth://xxx.yyy/mm":                  siteURL, // invalid mobile URL (wrong host)
+    -			require.Equal(t, expected, fullyQualifiedRedirectURL(siteURL, target))
+    +			require.Equal(t, expected, fullyQualifiedRedirectURL(siteURL, target, []string{"mmauth://"}))
+  FILE server/channels/web/saml.go
+    -	redirectURL = fullyQualifiedRedirectURL(c.GetSiteURLHeader(), redirectURL)
+    +	redirectURL = fullyQualifiedRedirectURL(c.GetSiteURLHeader(), redirectURL, c.App.Config().NativeAppSettings.AppCustomURLSchemes)
+
+=== GHSA-f9ff-5x35-7gfw sev=high pkgs=['npm:@grackle-ai/auth', 'npm:@grackle-ai/mcp', 'npm:@grackle-ai/plugin-core']
+src=https://github.com/nick-pape/grackle cwes=['CWE-613', 'CWE-639', 'CWE-862']
+SUMMARY: Grackle: Fail-open authorization in the MCP tool layer lets scoped agents perform cross-task and cross-session mutations (IDOR)
+DESC: ## Summary Authorization for scoped (agent) MCP callers is enforced **inline, per tool**, and is applied inconsistently — several mutating tools silently omit the ancestry/workspace check that their siblings perform. Because the MCP server authenticates all outbound gRPC with the full server API key and the backend gRPC handlers perform **no caller-based authorization**, the MCP tool layer is the *sole* authorization boundary. A malicious or prompt-injected scoped agent can therefore perform cross-task and cross-session operations it should not be allowed to (an IDOR / privilege-boundary bypass). This advisory bundles the audit's **Systemic Pattern A** findings: **F2, F6, F7, F12** (and the duplicate F19). ## Affected versions `@grackle-ai/mcp` (with `@grackle-ai/plugin-core` / `@grackle-ai/auth`) at **0.132.1** and earlier. ## Root cause - `mcp-server.ts:111-127` (`createGrpcClients`) sets `Authorization: Bearer ${apiKey}` (the full server key) on every outbound gRPC call. - Backend handlers (`updateTask`, `deleteTask`, `resumeTask`, `killAgent`, `getTask` in `plugin-core`) take only the request message — no `AuthContext` — and act on whatever ID is passed. - Therefore scope must be enforced in each MCP tool handler. Some call `assertCallerIsAncestor` (`task_complete`, `task_start`, `session_attach`, `session_send_input`); their destructive siblings do not. New tools that forget the check **fail open**. ## F2 — task_update / task_delete / task_resume bypass ancestry (High) **Location:** `packages/mcp/src/tools/task.ts:226` (task_update), `:393` (task_delete), `:465` (task_resume). These accept an arbitrary `taskId` with only a `ROOT_TASK_ID` special-case and no `assertCallerIsAncestor`. The central dispatcher hardcodes its workspace gate to `name === "task_show"`, and these tools' Zod schemas have no `workspaceId` field (so the blanket injection is stripped). They are not in `DEFAULT_SCOPED_MCP_TOOLS` but **are** in the shipped `ORCHESTRATOR_MCP_TOOLS` / `ADMIN_MCP_TOOLS` presets. **Exploit:** a scoped agent under the orchestrator persona learns a sibling/parent/cross-workspace task ID (via `task_list`/`task_search`), then `task_delete {taskId: <victim>}` (permanently destroys another agent's or the human parent's work) or `task_update` to flip a sibling to `complete`/`failed` or rewrite its dependency DAG and budgets. ## F6 — session_kill / session_resume bypass ancestry (Medium) **Location:** `packages/mcp/src/tools/session.ts:95` (session_resume), `:178` (session_kill). Call `client.killAgent` / `client.resumeAgent` directly with no auth context, unlike `session_attach`/`session_send_input`. `session_kill` is in the orchestrator preset. **Exploit:** cross-session SIGKILL DoS against a sibling agent or the root orchestrator; foreign session resume. ## F7 — Workspaceless scoped token fails open to all workspaces (Medium) **Location:** `packages/mcp/src/mcp-server.ts:565-600`. The per-task cross-workspace check (`task_show` block) is gated on `authContext.workspaceId` being truthy. A task created without a workspace (a supported config) mints a scoped token with `pid: ""` → `workspaceId: undefined`, so the check is skipped and the injected `workspaceId` becomes `""`, which the backend treats as "all workspaces." **Exploit:** a malicious agent in a workspaceless session calls `task_list` (no args) → reads every task in every workspace, then `task_show {taskId}` cross-workspace (title/description/branch/review-notes). `schedule_show` (in the default scoped allowlist) resolves by ID with no workspace check. Read-only cross-workspace disclosure. ## F12 — Scoped-token revocation is dead code (Low) **Location:** `packages/auth/src/scoped-token.ts:23,142-149`. The consuming check is wired (`auth-middleware.ts:90-92`), but `revokeTask()` is **never called outside tests** — no task-abort/stop flow invokes it — and the backing `revokedTasks` Map is in-memory only (lost on restart). A compromised agent that exfiltrated its scoped token keeps authenticating for the full 24h TTL regardless of task lifecycle. ## Remediation - **Systemic fix:** enforce scope **centrally** in the `CallToolRequest` dispatcher (`mcp-server.ts`) via a per-tool `targetTaskIdArg` / `targetSessionIdArg` descriptor so any tool that targets a task/session **fails closed** unless the caller is an ancestor (or self). - Immediately, add `assertCallerIsAncestor` (or self-or-ancestor) to `task_update`, `task_delete`, `task_resume`, `session_kill`, `session_resume`, mirroring `task_complete`/`task_start`. - F7: do **not** fail open on empty `workspaceId` — treat a scoped non-root caller with no workspace as having access to *no* workspace; apply the `task_show` membership check whenever the caller is scoped and not `ROOT_TASK_ID`; add a per-id membership check to `schedule_show`. - F12: wire `revokeTask()` into task-abort/stop flows with SQLite-backed persistence (like channel-grant revocation), or remove the dead API and document the 24h window. - Add regression tests mirroring the existing `task_complete` ancestor tests for each mutator. ## CWEs CWE-862 (Missing Authorization), CWE-639 (Authorization Bypass Through User-Controlled Key / IDOR), CWE-613 (Insufficient Session Expiration).
+
+=== GHSA-f3r2-88mq-9v4g sev=medium pkgs=['composer:auth0/symfony']
+src=https://github.com/auth0/symfony cwes=['CWE-345', 'CWE-863', 'CWE-1395']
+SUMMARY: Auth0 Symfony SDK has Improper Audience Validation via Auth0-PHP SDK
+DESC: ### Description In applications built with the Auth0-PHP SDK, the audience validation in access tokens is performed improperly. Without proper validation, affected applications may accept ID tokens as Access tokens. ### Affected product and versions Projects are affected if they meet the following preconditions: - Applications using the Auth0 Symfony SDK with versions between 5.0.0 and 5.5.0 - Auth0 Symfony SDK uses the Auth0-PHP SDK with versions between 8.0.0 and 8.17.0. ### Resolution Upgrade Auth0/symfony to version 5.6.0 or greater. ### Acknowledgement Okta would like to thank Jafar Sadiq (iaf4r) for their discovery and responsible disclosure.
+FIX commit https://github.com/auth0/symfony/commit/0103d6f8dcef6996653fad1f823d1c167f472479 status=200
+  MSG: fix(deps) : Update auth0/auth0-php for security fix
+  FILE composer.json
+    -    "auth0/auth0-php": "^8.17",
+    +    "auth0/auth0-php": "^8.18",
+
+=== GHSA-99h5-pjcv-gr6v sev=high pkgs=['npm:better-auth']
+src=https://github.com/better-auth/better-auth cwes=['CWE-285', 'CWE-306']
+SUMMARY: Better Auth: Unauthenticated API key creation through api-key plugin
+DESC: ### **Summary** A critical authentication bypass was identified in the API key creation and update endpoints. An attacker could create or modify API keys for arbitrary users by supplying a victim’s user ID in the request body. Due to a flaw in how the authenticated user was derived, the endpoints could treat attacker-controlled input as an authenticated user object under certain conditions. ### **Details** The vulnerability originated from fallback logic used when determining the current user. When no session was present, the handler incorrectly allowed request-body data to populate the user context used for authorization decisions. Because server-side validation only executed when authentication was required, privileged fields were not properly protected. As a result, the API accepted unauthenticated requests that targeted other users. This same pattern affected both the API key creation and update routes. ### **Impact** Unauthenticated attackers could generate or modify API keys belonging to any user. This granted full authenticated access as the targeted user and, depending on the user’s privileges, could lead to account compromise, access to sensitive data, or broader application takeover.
+FIX commit https://github.com/better-auth/better-auth/commit/556085067609c508f8c546ceef9003ee8c607d39 status=200
+  MSG: fix: [security] api keys should properly check if a request is from client or server
+  FILE packages/better-auth/src/plugins/api-key/api-key.test.ts
+    +	it("should fail to create api keys from the client if user id is provided", async () => {
+    +		const { headers, user } = await signInWithTestUser();
+    +		const response = await client.apiKey.create({
+    +			userId: user.id,
+    +		});
+    +		expect(response.error?.status).toBe(401);
+    +		const newUser = await auth.api.signUpEmail({
+    +			body: {
+    +				email: "new-email@email.com",
+    +				password: "password",
+    +				name: "test-name",
+    +			},
+    +		});
+    +		const response2 = await client.apiKey.create(
+    +			{
+    +				userId: newUser.user.id,
+    +			},
+    +			{
+    +				headers,
+    +			},
+    +		);
+    +		expect(response2.error?.status).toBe(401);
+    +	});
+    -			const apiKeyResult = await auth.api.createApiKey({
+    +			await auth.api.createApiKey({
+    -			headers,
+    -			headers,
+  FILE packages/better-auth/src/plugins/api-key/routes/create-api-key.ts
+    -			const authRequired = (ctx.request || ctx.headers) && !ctx.body.userId;
+    +			const authRequired = ctx.request || ctx.headers;
+    -				session?.user ?? (authRequired ? null : { id: ctx.body.userId });
+
+=== GHSA-q986-4x7x-gx39 sev=high pkgs=['pip:scbe-aethermoore']
+src=https://github.com/issdandavis/SCBE-AETHERMOORE cwes=['CWE-306']
+SUMMARY: SCBE-AETHERMOORE Unauthenticated AetherBrowser Ops API Exposes Operator Email Digests
+DESC: ### Summary The AetherBrowser API server (`scripts/aetherbrowser/api_server.py`) exposes the `POST /api/ops/check-email` endpoint without any authentication. Any remote attacker can call this endpoint and trigger execution of the `email_reader.py` subprocess, which connects to configured ProtonMail or Gmail accounts via IMAP and returns email metadata (sender, subject, body snippet) in the JSON response. The server binds to `0.0.0.0:8100` by default with CORS set to `allow_origins=["*"]`, making it reachable from any network or browser origin. This constitutes a critical information-disclosure vulnerability. ### Details `scripts/aetherbrowser/api_server.py` registers the following route at line 3008 (report excerpt references line 2987; the actual line is 3008): ```python @app.post("/api/ops/check-email") async def ops_check_email(): script = ROOT / "scripts" / "apollo" / "email_reader.py" result = await asyncio.to_thread( _run_subprocess, [sys.executable, str(script)], timeout=30, ) return { "output": result.get("stdout", "")[:2000], ... } ``` No `Depends()` guard, middleware check, or API-key validation is applied. The decorator is a plain `@app.post(...)`, so FastAPI registers the route with zero access control. The server is bound to all interfaces (line 4065/4070): ```python uvicorn.run(app, host="0.0.0.0", port=port) # default port 8100 ``` CORS middleware is configured to allow any origin (lines 486–492): ```python app.add_middleware( CORSMiddleware, allow_origins=["*"], ... ) ``` When the endpoint is called, `email_reader.py` is executed as a subprocess. It loads mail credentials from `config/connector_oauth/.env.connector.oauth` (line 29–34 of `email_reader.py`): ```python # loads PROTONMAIL_BRIDGE_PASSWORD, GMAIL_APP_PASSWORD, etc. ``` With credentials present, the script connects via IMAP, fetches full RFC822 messages, and prints sender, subject, and a body snippet to stdout (lines 273–299). The API then returns the first 2000 characters of that stdout to the unauthenticated caller as JSON. **Complete data-flow path:** 1. `api_server.py:4065+4070` — server starts on `0.0.0.0:8100` 2. `api_server.py:486–492` — CORS `allow_origins=["*"]` permits cross-origin requests 3. `api_server.py:3008` — `POST /api/ops/check-email` registered without auth 4. `api_server.py:3011–3023` — `_run_subprocess([sys.executable, str(script)])` invoked; stdout captured 5. `email_reader.py:29–34` — connector env file loaded, credentials extracted 6. `email_reader.py:378–394` — IMAP login using `PROTONMAIL_BRIDGE_PASSWORD` / `GMAIL_APP_PASSWORD` 7. `email_reader.py:273–299` — RFC822 messages fetched; sender, subject, snippet printed to stdout 8. `api_server.py:3023` — `stdout[:2000]` returned in JSON response to caller Even without credentials configured, the subprocess executes and returns its banner output, confirming the unauthenticated code path reaches the sensitive subprocess invocation. ### PoC **Prerequisites:** - Docker installed on the attacker or test machine. - Repository source available under `repo/` within the build context. **Step 1 — Build the Docker image:** ```bash docker build -t vuln001-aetherbrowser -f vuln-001/Dockerfile . ``` The Dockerfile (`vuln-001/Dockerfile`) installs `fastapi`, `uvicorn`, and `pydantic`, copies the repository source, and starts `scripts/aetherbrowser/api_server.py` on port 8100. **Step 2 — Start the container:** ```bash docker run --rm -d --name vuln001-test -p 8100:8100 vuln001-aetherbrowser ``` **Step 3 — Run the PoC script:** ```bash python3 vuln-001/poc.py --host 127.0.0.1 --port 8100 ``` Or send the request manually with no authentication headers: ```bash curl -s -X POST http://127.0.0.1:8100/api/ops/check-email \ -H 'Content-Type: application/json' \ -d '{}' ``` **Expected result (no credentials configured):** ```json { "output": "APOLLO EMAIL READER\n============================================================\n [ProtonMail] No PROTONMAIL_BRIDGE_PASSWORD set\n [Gmail] No GMAIL_APP_PASSWORD set\n\nNo emails found.\n", "exit_code": 0, "errors": null } ``` HTTP status 200 is returned with no `401` or `403`, and the subprocess stdout appears in the response. In a production deployment with `PROTONMAIL_BRIDGE_PASSWORD` or `GMAIL_APP_PASSWORD` set, the response would contain real email metadata (senders, subjects, body snippets). **Dynamic test result (Phase 2):** The Phase 2 dynamic test confirmed HTTP 200 with the `APOLLO EMAIL READER` banner in the response body. Server access log showed `"POST /api/ops/check-email HTTP/1.1" 200 OK` from an unauthenticated source. The subprocess was executed without any authentication gate being triggered. **Remediation:** Add a mandatory API-key dependency to all `/api/ops/*` routes: ```diff -from fastapi import FastAPI, HTTPException, Query, Request +from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request, status +def require_ops_api_key(x_api_key: Optional[str] = Header(default=None)) -> None: + expected = os.environ.get("AETHERBROWSER_OPS_API_KEY", "").strip() + if not expected: + raise HTTPException( + status_code=status.HTTP_503_SERVICE_UNAVAILABLE, + detail="ops endpoints disabled: AETHERBROWSER_OPS_API_KEY is not configured", + ) + if not x_api_key or not hmac.compare_digest(x_api_key, expected): + raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid ops API key") -@app.post("/api/ops/check-email") +@app.post("/api/ops/check-email", dependencies=[Depends(require_ops_api_key)]) async def ops_check_email(): ``` Additionally, the server should default to `127.0.0.1` instead of `0.0.0.0`, and stdout from operational subprocesses should never be returned verbatim to callers. ### Impact An unauthenticated remote attacker who can reach port 8100 of a deployed SCBE-AETHERMOORE instance can: 1. **Exfiltrate operator email metadata**: sender addresses, email subjects, and body snippets from the operator's ProtonMail or Gmail inbox are disclosed in the response. 2. **Enumerate m [...]
+FIX pull https://github.com/issdandavis/SCBE-AETHERMOORE/pull/2287 status=200
+  PR: security: fix GHSA email-leak, encrypt billing keys, stop secret echo | Fixes the three **real** code-scanning / advisory findings (the rest are false-positives / test-only — see below). ## 1. GHSA-q986-4x7x-gx39 (HIGH, externally reported) — unauthenticated operator API The AetherBrowser `/api/ops/*` endpoints (`check-email`, `run-tests`, `git-status`, `tor-sweep`, momentum, chessboard…) and `/api/cli/*` ran **local subprocesses and returned their output with no auth
+  MSG: security: fix GHSA email-leak + encrypt billing keys + stop secret echo (#2287) Three real code-scanning / advisory findings: 1. GHSA-q986-4x7x-gx39 (HIGH, external report): the AetherBrowser /api/ops
+  FILE scripts/aetherbrowser/api_server.py
+    -from fastapi.responses import FileResponse, Response
+    +from fastapi.responses import FileResponse, JSONResponse, Response
+    +# Operator endpoints (/api/ops/*, /api/cli/*) run local subprocesses (email
+    +# reader, pytest, git, tor sweep, CLI) and return their output, behind wide-open
+    +# CORS. Without a guard they were unauthenticated remote-exec / data-leak
+    +# surfaces (GHSA-q986-4x7x-gx39: the /api/ops/check-email digest leak). They are
+    +# DISABLED unless an admin token is configured, and then require a matching
+    +# X-Admin-Token header — fail closed, same pattern as /runtime-gate/checkpoint.
+    +_OPERATOR_PREFIXES = ("/api/ops/", "/api/cli/")
+    +@app.middleware("http")
+    +async def _guard_operator_endpoints(request: Request, call_next):
+    +    if request.method != "OPTIONS" and any(request.url.path.startswith(p) for p in _OPERATOR_PREFIXES):
+    +        token = (
+    +            os.environ.get("SCBE_OPS_ADMIN_TOKEN", "").strip()
+    +            or os.environ.get("SCBE_RUNTIME_GATE_ADMIN_TOKEN", "").strip()
+    +        )
+    +        if not token:
+    +            return JSONResponse(
+    +                {"detail": "operator endpoints disabled (set SCBE_OPS_ADMIN_TOKEN to enable)"},
+    +                status_code=403,
+    +            )
+    +        if not hmac.compare_digest(request.headers.get("x-admin-token", ""), token):
+    +            return JSONResponse({"detail": "invalid or missing X-Admin-Token"}, status_code=401)
+    +    return await call_next(request)
+  FILE scripts/hooks/pre-commit
+    -        for path, name, preview in secrets:
+    -            print(f"  [{name}] {path}: {preview}")
+    +        for path, name, _preview in secrets:
+    +            # Do NOT echo the matched secret value — report only where + what type.
+    +            print(f"  [{name}] {path}")
+  FILE src/api/stripe_billing.py
+    +def _billing_cipher():
+FIX commit https://github.com/issdandavis/SCBE-AETHERMOORE/commit/ca833795e01eab060e92572e5f667c0c136b8c1e status=200
+  MSG: feat: AetherBrowser API server + frontend wiring (13 endpoints) FastAPI server at localhost:8100 with full tab coverage: - Browse: /trust-check reads trusted_external_sites.json - Chat: /chat classifi
+  FILE kindle-app/www/aetherbrowser.html
+    -            <div class="card-subtitle">Operational commands -- backend wired in V2</div>
+    +            <div class="card-subtitle">Operational commands -- wired to localhost:8100</div>
+    -   AetherBrowser Mobile V1 — Controller
+    -   PWA shell logic. Backend calls are stubbed for V2 wiring.
+    +   AetherBrowser Mobile V2 — Controller
+    +   Backend wired to http://localhost:8100/api/*
+    +   (scripts/aetherbrowser/api_server.py)
+    +const API_BASE = 'http://localhost:8100/api';
+    +  function _applyTrustResult(result) {
+    +    var level = result.trust_level || result.level || 'UNKNOWN';
+    +    var domain = result.domain || '';
+    +    var tier = result.tier || 'UNKNOWN';
+    +    var color = result.color || 'unknown';
+    +    var governance = result.governance_decision || 'QUARANTINE';
+    +    var fillMap = { CORE: 100, TRUSTED: 75, PROVISIONAL: 50, QUARANTINE: 25, UNKNOWN: 10, BLOCKED: 0 };
+    +    state.currentTrust = level;
+    +    document.getElementById('browseDomainLabel').textContent = domain;
+    +    var badge = document.getElementById('browseTrustBadge');
+    +    badge.className = 'trust-badge ' + color;
+    +    document.getElementById('browseTrustLevel').textContent = level;
+    +    document.getElementById('browseTrustFill').style.width = (fillMap[level] || 10) + '%';
+    +    document.getElementById('browseTrustFill').style.background = 'var(--trust-' + color + ')';
+    +    document.getElementById('browseTierLabel').textContent = 'Tier: ' + tier;
+    +    var govLabel = document.getElementById('browseGovernanceLabel');
+    +    govLabel.textContent = 'Governance: ' + governance;
+    +    var govColorMap = { ALLOW: 'var(--mint)', DENY: 'var(--red)', ESCALATE: 'var(--orange)', QUARANTINE: 'var(--gold)' };
+    +    govLabel.style.color = govColorMap[governance] || 'var(--muted)';
+    +    var wv = document.getElementById('browseWebview');
+    +    if (level === 'BLOCKED') {
+    +      wv.innerHTML = '<div class="wv-icon" style="background:rgba(255,107,107,0.15);">&#128683;</div><div style="color:var(--red);">BLOCKED: ' + domain + '</di
+  FILE scripts/aetherbrowser/__init__.py
+  FILE scripts/aetherbrowser/api_server.py
+FIX commit https://github.com/issdandavis/SCBE-AETHERMOORE/commit/de7779b722c501dbcf4eae95dd51bb3984506fb1 status=200
+  (same commit message as a fix above; diff not repeated)
+
+=== GHSA-x628-457g-2pw9 sev=high pkgs=['composer:admidio/admidio']
+src=https://github.com/Admidio/admidio cwes=['CWE-639', 'CWE-863']
+SUMMARY: Admidio has IDOR in `documents-files.php` `mode=move_save` that lets any folder-uploader exfiltrate files from private folders
+DESC: ## Summary `modules/documents-files.php` gates state-changing modes by checking that the actor has `hasUploadRight()` on the URL parameter `folder_uuid`. The `move_save` handler then operates on a *separate* URL parameter `file_uuid` and calls `File::moveToFolder($destFolderUUID)`. `File::moveToFolder()` checks the upload right on the **destination** folder but never on the **source** folder containing the file. As a result, any user who can upload to any single folder can move any file from any other folder — including private folders to which they have no view rights — into a folder they control, and then download it. Confidentiality is broken (private file contents leak) and integrity is broken (the file is removed from the original location). ## Details ### Vulnerable Code `modules/documents-files.php:79-89` — top-level rights check binds to URL `folder_uuid`: ```php if ($getMode != 'list' && $getMode != 'download') { // check the rights of the current folder // user must be administrator or must have the right to upload files $folder = new Folder($gDb); $folder->getFolderForDownload($getFolderUUID); if (!$folder->hasUploadRight()) { $gMessage->show($gL10n->get('SYS_NO_RIGHTS')); // => EXIT } } ``` `modules/documents-files.php:187-204` — the `move_save` branch loads the file by UUID without revalidating the file's actual parent folder: ```php case 'move_save': $documentsFilesMoveForm = $gCurrentSession->getFormObject($_POST['adm_csrf_token']); $formValues = $documentsFilesMoveForm->validate($_POST); if ($getFileUUID !== '') { $file = new File($gDb); $file->readDataByUuid($getFileUUID); // <-- no permission check on the file's source folder $file->moveToFolder($formValues['adm_destination_folder_uuid']); } else { $folder = new Folder($gDb); $folder->readDataByUuid($getFolderUUID); $folder->moveToFolder($formValues['adm_destination_folder_uuid']); } $gNavigation->deleteLastUrl(); echo json_encode(array('status' => 'success', 'url' => $gNavigation->getUrl())); break; ``` `src/Documents/Entity/File.php:212-223` — `moveToFolder` checks only the destination: ```php public function moveToFolder(string $destFolderUUID) { $folder = new Folder($this->db); $folder->readDataByUuid($destFolderUUID); if ($folder->hasUploadRight()) { // <-- destination only FileSystemUtils::moveFile($this->getFullFilePath(), $folder->getFullFolderPath() . '/' . $this->getValue('fil_name')); $this->setValue('fil_fol_id', $folder->getValue('fol_id')); $this->save(); } } ``` There is no check that the actor has any right (view, edit, upload) on the folder that *currently* contains the file. The `file_uuid` URL parameter is independent of `folder_uuid`, so an attacker can pass `folder_uuid=<a folder I can upload to>` together with `file_uuid=<a file in a folder I cannot read>`. The top-level rights check passes; the destination check passes; the file is moved. ### Exploitation Primitive 1. Attacker user `lowuser` holds `folder_upload` on a single Documents folder `public_uploadable` (UUID `c41a99c0-…`). They have no view or edit rights on `private_admin_only` (UUID `db1f71b9-…`, which is a role-restricted folder containing `private_to_delete.txt`, UUID `559ed352-…`). 2. Render the move form with mismatched UUIDs to register a form key in the session: `GET /modules/documents-files.php?mode=move&folder_uuid=c41a99c0-…&file_uuid=559ed352-…` 3. Submit `move_save` with the same mismatch: `POST /modules/documents-files.php?mode=move_save&folder_uuid=c41a99c0-…&file_uuid=559ed352-…` with `adm_csrf_token=<from step 2>` and `adm_destination_folder_uuid=c41a99c0-…`. Server replies `{"status":"success"}`. The `private_to_delete.txt` row in `adm_files` now has `fil_fol_id` pointing at the public-uploadable folder. 4. Download the file from its new (publicly-accessible) location: `GET /modules/documents-files.php?mode=download&file_uuid=559ed352-…` returns the bytes of `private_to_delete.txt`. ## PoC Tested live on HEAD `c5cde53`. The trace below is the agent-captured run; I verified the code paths against the source listed above. ``` # 0. starting state — lowuser has upload right ONLY on c41a99c0-… (public_uploadable) $ curl -sb $cookie http://127.0.0.1:8085/modules/documents-files.php?folder_uuid=db1f71b9-… "You do not have the required permission to perform this action." # 1. render the move form using the public folder UUID (where lowuser has upload right) # paired with the PRIVATE file UUID $ curl -sb $cookie \ "http://127.0.0.1:8085/modules/documents-files.php?mode=move&folder_uuid=c41a99c0-…&file_uuid=559ed352-…" # form rendered, CSRF token X is now in session # 2. submit move_save with the same param mismatch $ curl -sb $cookie -X POST \ "http://127.0.0.1:8085/modules/documents-files.php?mode=move_save&folder_uuid=c41a99c0-…&file_uuid=559ed352-…" \ -d "adm_csrf_token=X&adm_destination_folder_uuid=c41a99c0-…" {"status":"success", "url":"…"} # 3. download the leaked file $ curl -sb $cookie \ "http://127.0.0.1:8085/modules/documents-files.php?mode=download&file_uuid=559ed352-…" private_to_delete_data ``` The DB record for the file now points at the attacker's folder (`fil_fol_id` updated), and the file has been physically moved on disk by `FileSystemUtils::moveFile`. ## Impact Any user with `folder_upload` right on a single Documents folder gains: * **Read access** to every file in private folders — admin-only documents, board-only files, leader-only resources, role-restricted attachments — by moving them into a folder the attacker owns and then downloading. * **Write/destruction primitive** — the file is no longer in its original folder. Users who depended on the file at its legitimate location can no longer find it. The moved file's permissions are now those of the destination, so previously-restricted content can be exposed to other low-privilege users (whoever else has view rights on the destination folder). In multi-tenant Admidio installations where one shared deployment hosts multiple groups (e.g., a federation of assoc [...]
+
+=== GHSA-pmjj-h5jm-vxh4 sev=low pkgs=['pip:pretix']
+src=https://github.com/pretix/pretix cwes=['CWE-639']
+SUMMARY: pretix has Broken Access Control Allowing Cross-User File Access via UUID
+DESC: An API endpoint allowed access to sensitive files from other users by knowing the UUID of the file that were not intended to be accessible by UUID only.
+FIX commit https://github.com/pretix/pretix/commit/4b5651862c57c6e384822d1d23292342126c479a status=200
+  MSG: [SECURITY] Prevent access to arbitrary cached files by UUID (CVE-2025-14881)
+  FILE src/pretix/api/views/exporters.py
+    +        if not cf.allowed_for_session(self.request, "exporters-api"):
+    +            return Response(
+    +                {'status': 'failed', 'message': 'Unknown file ID or export failed'},
+    +                status=status.HTTP_410_GONE
+    +            )
+    -        cf = CachedFile(web_download=False)
+    +        cf = CachedFile(web_download=True)
+    +        cf.bind_to_session(self.request, "exporters-api")
+  FILE src/pretix/base/models/base.py
+    +    def session_key_for_request(self, request, salt=None):
+    +        from ...api.models import OAuthAccessToken, OAuthApplication
+    +        from .devices import Device
+    +        from .organizer import TeamAPIToken
+    +        if hasattr(request, "auth") and isinstance(request.auth, OAuthAccessToken):
+    +            k = f'app:{request.auth.application.pk}'
+    +        elif hasattr(request, "auth") and isinstance(request.auth, OAuthApplication):
+    +            k = f'app:{request.auth.pk}'
+    +        elif hasattr(request, "auth") and isinstance(request.auth, TeamAPIToken):
+    +            k = f'token:{request.auth.pk}'
+    +        elif hasattr(request, "auth") and isinstance(request.auth, Device):
+    +            k = f'device:{request.auth.pk}'
+    +        elif request.session.session_key:
+    +            k = request.session.session_key
+    +        else:
+    +            raise ValueError("No auth method found to bind to")
+    +        if salt:
+    +            k = f"{k}!{salt}"
+    +        return k
+    +    def allowed_for_session(self, request, salt=None):
+    +        return (
+    +            not self.session_key or
+  FILE src/pretix/base/views/cachedfiles.py
+  FILE src/pretix/control/views/modelimport.py
+  FILE src/pretix/control/views/pdf.py
+  FILE src/pretix/control/views/shredder.py
+
+=== GHSA-j48m-h7xq-2xpj sev=medium pkgs=['go:goshs.de/goshs/v2']
+src=https://github.com/patrickhener/goshs cwes=['CWE-362']
+SUMMARY: goshs: Share-link ?token=… redemption races past download limit
+DESC: # Share-link `?token=…` redemption races past download limit **Ecosystem:** Go **Package:** `goshs.de/goshs/v2` (`github.com/patrickhener/goshs`) **Affected:** `<= v2.0.9` (every release that shipped the share-link feature) ## Summary `ShareHandler` reads the share token's `DownloadLimit` under `RLock`, releases the lock, serves the file, then re-acquires the lock to increment the counter. Concurrent requests all read the same `Downloaded`/`DownloadLimit` snapshot, all pass the check, and all are served — exceeding the operator's intended cap. ## Details [`httpserver/handler.go:968-1018`](https://github.com/patrickhener/goshs/blob/v2.0.9/httpserver/handler.go#L968-L1018): ```go fs.sharedLinksMu.RLock() entry, ok := fs.SharedLinks[token] fs.sharedLinksMu.RUnlock() // <-- released here if entry.DownloadLimit > 0 || entry.DownloadLimit == -1 { // ...serve file... // <-- whole transfer happens unlocked } fs.sharedLinksMu.Lock() // <-- re-acquired only now current.Downloaded++ if current.Downloaded >= current.DownloadLimit { delete(fs.SharedLinks, token) } fs.sharedLinksMu.Unlock() ``` Between line 978 (`RUnlock`) and line 1008 (`Lock`), any number of goroutines can interleave and each observes the same pre-increment limit. ## Proof of concept ```bash goshs -p 18000 -d /tmp/r -b admin:pw & echo data > /tmp/r/f.txt # operator issues a one-shot share SHARE=$(curl -su admin:pw "http://localhost:18000/f.txt?share&limit=1") TK=$(echo "$SHARE" | sed -n 's/.*token=\([^"]*\)".*/\1/p') # attacker races two redemptions curl -so /dev/null -w "%{http_code}\n" "http://localhost:18000/?token=$TK" & \ curl -so /dev/null -w "%{http_code}\n" "http://localhost:18000/?token=$TK" & \ wait # observed: 200 / 200 (both succeed) -> limit=1 redeemed twice ``` Reproduced 5/5 times in a row on a 2026-era M-series Mac during verification. ## Impact A "single-use" share intended to deliver a one-shot secret can be redeemed N times by N concurrent clients. Combined with any token-leak vector (mail forwarding, browser history, intercepted link, etc.) this multiplies the exfiltration window. ## Suggested fix Reserve under the write lock *before* serving — refund only if the serve fails: ```go fs.sharedLinksMu.Lock() entry, ok := fs.SharedLinks[token] if !ok || time.Now().After(entry.Expires) || (entry.DownloadLimit != -1 && entry.Downloaded >= entry.DownloadLimit) { fs.sharedLinksMu.Unlock(); http.NotFound(w, r); return } entry.Downloaded++ if entry.DownloadLimit != -1 && entry.Downloaded >= entry.DownloadLimit { delete(fs.SharedLinks, token) } else { fs.SharedLinks[token] = entry } fs.sharedLinksMu.Unlock() // ...serve... ``` Add a regression test that races two requests against a `limit=1` token and asserts exactly one `200`. Reporter: Nishant Verma. Reproduced against `goshs v2.0.9` (commit `8fc1e91`) on 2026-05-27.
+
+=== GHSA-5r3p-6rj5-7937 sev=medium pkgs=['go:github.com/bytebase/bytebase']
+src=https://github.com/bytebase/bytebase cwes=['CWE-287']
+SUMMARY: Bytebase vulnerable to Improper Authentication
+DESC: ### Impact - GitLab login allows login by any user. - JWT auth token can be derived as long as the server isn't rebooted. - Developers can assign issues to non-admin/DBA users.
+FIX commit https://github.com/bytebase/bytebase/commit/a578ed58e478ba5c2dadf8d538ec5c3d39c28461 status=200
+  MSG: fix: fixed a security issue caused by fake VCS (#834) * fix: fixed a security issue caused by fake VCS * chore: rename Former-commit-id: a40b66a785170f9bdcde2172549ee9893c387236 Former-commit-id: 4732
+  FILE api/auth.go
+    +	ID            int      `jsonapi:"attr,id"`
+    -	InstanceURL   string `jsonapi:"attr,instanceUrl"`
+    -	ApplicationID string `jsonapi:"attr,applicationId"`
+    -	Secret        string `jsonapi:"attr,secret"`
+    -	AccessToken   string `jsonapi:"attr,accessToken"`
+    +	ID          int    `jsonapi:"attr,id"`
+    +	Name        string `jsonapi:"attr,name"`
+    +	AccessToken string `jsonapi:"attr,accessToken"`
+  FILE frontend/src/types/auth.ts
+    +import { VCSId } from "./id";
+    +  id: VCSId;
+    +  id: 0,
+    -  applicationId: string;
+    -  secret: string;
+    -  instanceUrl: string;
+    +  id: VCSId;
+    +  name: string;
+  FILE frontend/src/views/auth/Signin.vue
+    -            applicationId: state.activeAuthProvider!.applicationId,
+    -            secret: state.activeAuthProvider.secret,
+    -            instanceUrl: state.activeAuthProvider.instanceUrl,
+    +            id: state.activeAuthProvider.id,
+    +            name: state.activeAuthProvider.name,
+  FILE server/auth.go
+    +	"github.com/bytebase/bytebase/plugin/vcs"
+    +				ID:            vcs.ID,
+    -				gitlabUserInfo, err := vcsPlugin.Get("GITLAB_SELF_HOST", vcsPlugin.ProviderConfig{Logger: s.l}).TryLogin(ctx,
+    +				findVCS := &api.VCSFind{ID: &gitlabLogin.ID}
+    +				vcsFound, err := s.VCSService.FindVCS(ctx, findVCS)
+    +				if err != nil {
+    +					return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("Failed to fetch vcs, name: %v, ID: %v", gitlabLogin.Name, gitlabLogin.Name)).SetInte
+    +				}
+    +				if vcsFound == nil {
+
+=== GHSA-q6f4-qqrg-jv6x sev=high pkgs=['npm:@angular/common']
+src=https://github.com/angular/angular cwes=['CWE-524']
+SUMMARY: @angular/common: Information Leak via Default Caching of Credentialed Requests in HttpTransferCache
+DESC: A vulnerability was discovered in `@angular/common` when Server-Side Rendering (SSR) and hydration are enabled. The `HttpTransferCache` utility optimizes hydration by caching outgoing HTTP requests performed during SSR and transferring the cached state to the client-side application via `TransferState`. However, the caching mechanism fails to inspect the `withCredentials` flag or the `Cookie` header of outgoing requests. As a result, credentialed, user-specific responses may be cached by default in the shared `TransferState` payload. When these responses are serialized into the HTML, any caching layer (such as a CDN, reverse proxy, or shared server cache) that caches the SSR-rendered HTML page could inadvertently cache and leak one user's private data to other users, leading to a high-severity information disclosure vulnerability. ### Impact Successful exploitation allows an unauthenticated attacker to obtain sensitive, user-specific information of other authenticated users. This occurs when: * The SSR-rendered HTML containing the cached private data is stored in a shared cache (e.g., CDN, reverse proxy). * Subsequent requests for the same page receive the cached HTML containing the first user's private data. ### Attack Preconditions * **SSR and Hydration Enabled:** The Angular application must be configured to use Server-Side Rendering and hydration (e.g., using `provideClientHydration()`). * **Credentialed Requests during SSR:** The application must perform HTTP requests that require user-specific authentication (using cookies or `withCredentials: true`) during the initial server-side render. * **Shared Caching:** The application's HTML responses must be cached by a shared caching layer (CDN, reverse proxy, or server-side cache) without proper cache-control headers to distinguish authenticated users. ### Patches - 22.0.0-rc.2 - 21.2.15 - 20.3.22 - 19.2.23
+FIX pull https://github.com/angular/angular/pull/67964 status=200
+  PR: fix(http): skip TransferCache for cookie-bearing requests by default | ## What does this PR do? This change makes TransferCache skip requests with a `Cookie` header by default. Today, TransferCache already avoids caching requests with authorization headers unless the application explicitly opts in with `includeRequestsWithAuthHeaders`. This change treats cookie-bearing requests the same way, since those responses can also vary by user context. The explicit opt-in pat
+  MSG: fix(http): exclude withCredentials requests from transfer cache Update the transfer cache check to safely exclude all requests sent with the `withCredentials` flag. By default, the HTTP transfer cache
+  FILE adev/src/content/guide/ssr.md
+    -By default, `HttpClient` caches all `HEAD` and `GET` requests which don't contain `Authorization`, `Proxy-Authorization`, or `Cookie` headers. You can override
+    +By default, `HttpClient` caches all `HEAD` and `GET` requests which don't contain `Authorization`, `Proxy-Authorization`, or `Cookie` headers and are not sent 
+    -By default, these are excluded to prevent caching user‑specific responses.
+    +By default, these are excluded to prevent caching user‑specific responses. Requests sent with `withCredentials` are also excluded by default.
+  FILE packages/common/http/src/transfer_cache.ts
+    - *     caching.
+    + *     caching. Requests sent using `withCredentials` are also excluded by default.
+    +    // Do not cache requests sent with credentials.
+    +    req.withCredentials ||
+  FILE packages/common/http/test/transfer_cache_spec.ts
+    +  withCredentials?: boolean;
+    +    it('should not cache requests with credentials', async () => {
+    +      makeRequestAndExpectOne('/test-auth', 'foo', {
+    +        withCredentials: true,
+    +      });
+    +      makeRequestAndExpectOne('/test-auth', 'foo', {
+    +        withCredentials: true,
+    +      });
+    +    });
+    +      it(`should not cache requests with credentials when 'includeRequestsWithAuthHeaders' is 'true'`, async () => {
+    +        makeRequestAndExpectOne('/test-auth', 'foo', {
+    +          withCredentials: true,
+    +        });
+    +        makeRequestAndExpectOne('/test-auth', 'foo', {
+    +          withCredentials: true,
+    +        });
+    +      });
+
+=== GHSA-hj78-p4h7-m5fv sev=medium pkgs=['composer:causal/oidc']
+src= cwes=['CWE-288', 'CWE-348', 'CWE-639']
+SUMMARY: TYPO3-EXT-SA-2025-001: Account Takeover in extension "OpenID Connect Authentication" (oidc)
+DESC: ## Problem Description A vulnerability in the account linking logic of the extension allows a pre-hijacking attack leading to Account Takeover. The attack can only be exploited if the following requirements are met: - An attacker can anticipate the email address of the user. - An attacker can register a public frontend user account using that email address before the user's first OIDC login. - The IDP returns the field email containing the email address of the user ## Solution An updated versions 4.0.0 is available from the TYPO3 extension manager, packagist and at https://extensions.typo3.org/extension/download/oidc/4.0.0/zip Users of the extension are advised to update the extension as soon as possible.
+
+=== GHSA-vw82-7fv8-r6gp sev=critical pkgs=['go:github.com/obot-platform/obot']
+src=https://github.com/obot-platform/obot cwes=['CWE-284']
+SUMMARY: Obot has an authorization bypass in /mcp-connect/{id} that allows any authenticated user to use any registered MCP server
+DESC: ## Summary If you have the MCP Server ID, you can connect to the MCP server even if you don't have permissions to the server. The MCP gateway endpoint `/mcp-connect/{mcp_id}` does not enforce Access Control Rules (ACRs). Any authenticated Obot user who possesses an MCP Server ID can connect to that server through the gateway — including making tool calls — regardless of whether they are a member of any MCP Registry that grants access to the server. In practice this means any User can fully use MCP servers that the administrator believed were restricted to specific groups. ## Severity Reporter estimate: **Critical**. | CVSS 3.1 metric | Value | |---|---| | Attack Vector | Network | | Attack Complexity | Low | | Privileges Required | Low (authenticated Obot user, any role ≥ Basic) | | User Interaction | None | | Scope | Changed (Obot authorization bypass enables access to data and operations on an upstream third-party service via Obot's stored OAuth credentials) | | Confidentiality | High | | Integrity | High (many MCP servers expose write tools — e.g. `updateEmployee`, `submitTimeoffRequest`, ticket creation, file writes) | | Availability | None | | **Vector** | `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:N` | | **Score** | **9.3 / Critical** | The upstream impact depends on which MCP servers are deployed and what scope their stored credentials hold; the bound is "everything the platform's stored OAuth/API credentials can reach." ## Affected Versions Confirmed on `obot v0.21.0`. ## Vulnerability Details The intended flow is that a user's authorization is checked during the OAuth process with Obot. 1. The user connects to an MCP URL through Obot. 2. During the callback, after the user logs into Obot, Obot checks that the user has access to the provided resource (the `/mcp-connect` URL in this case). Obot correctly determines the user's authorization during this flow. 3. However, another authorization check (the UI authorizer, in this case) was erroneously providing access. ## Reproduction Tested on `obot v0.21.0`. **Setup:** 1. Configure a multi-user MCP server connected to a sensitive backend — e.g. an HR system, ticketing system, or any service whose stored OAuth token grants broad read/write access. Note its ID. 4. Create an MCP Registry / Access Control Rule that grants this server **only** to a small group (e.g. two HR employees). Remove the `everyone` group from the relevant rule. 5. Create or identify a Basic User who is **not** a member of any registry granting access to this server. **Exploit:** 6. Sign in as the Basic User. 7. Verify the UI does not list the server in any connector picker (it does not — that path is correctly gated). 8. Manually craft and call the gateway URL: ``` POST https://<obot>/mcp-connect/<mcp_server_id> Authorization: <session cookie or API key> Content-Type: application/json {"jsonrpc":"2.0","id":1,"method":"tools/list"} ``` 9. Observe a successful response listing the server's tools. 10. Issue an actual tool call: ```json {"jsonrpc":"2.0","id":2,"method":"tools/call", "params":{"name":"<sensitive_tool>","arguments":{...}}} ``` 11. Observe the call succeeds, returning data scoped only by the **upstream** MCP server's OAuth credentials — not by Obot's ACRs. The exploit works equally well via Claude Desktop / Claude Code / any MCP-aware client by configuring the gateway URL as a remote MCP endpoint with the user's API key.
+
+=== GHSA-xg36-8c2v-jpxh sev=medium pkgs=['composer:magento/community-edition']
+src=https://github.com/magento/magento2 cwes=['CWE-863']
+SUMMARY: Magento Open Source Incorrect Authorization vulnerability
+DESC: Magento Open Source versions 2.4.7-p2, 2.4.6-p7, 2.4.5-p9, 2.4.4-p10 and earlier are affected by an Incorrect Authorization vulnerability that could result in a security feature bypass. A low-privileged attacker could exploit this vulnerability to have a low impact on integrity. Exploitation of this issue does not require user interaction.
+
+=== GHSA-hwr4-mq23-wcv5 sev=high pkgs=['go:github.com/dunglas/mercure']
+src=https://github.com/dunglas/mercure cwes=['CWE-1289']
+SUMMARY: mercure has Topic Selector Cache Key Collision
+DESC: ### Impact A cache key collision vulnerability in `TopicSelectorStore` allows an attacker to poison the match result cache, potentially causing private updates to be delivered to unauthorized subscribers or blocking delivery to authorized ones. The cache key was constructed by concatenating the topic selector and topic with an underscore separator: ```go k = "m_" + topicSelector + "_" + topic ``` Because both topic selectors and topics can contain underscores, two distinct pairs can produce the same key: ``` selector="foo_bar" topic="baz" → key: "m_foo_bar_baz" selector="foo" topic="bar_baz" → key: "m_foo_bar_baz" ``` An attacker who can subscribe to the hub or publish updates with crafted topic names can exploit this to bypass authorization checks on private updates. ### Patches The vulnerability is fixed by replacing string-encoded cache keys with typed Go struct keys that are inherently collision-free: ```go type matchCacheKey struct { topicSelector string topic string } ``` The internal `TopicSelectorStoreCache` interface and sharded cache abstraction have also been removed in favor of a single typed otter cache. Users should upgrade to version **0.22.0** or later. ### Workarounds Disable the topic selector cache by setting `topic_selector_cache` to `-1` in the Caddyfile, or by passing a cache size of `0` when using the library directly. This eliminates the vulnerability at the cost of reduced performance.
+FIX commit https://github.com/dunglas/mercure/commit/4964a69be904fd61e35b5f1e691271663b6fdd64 status=200
+  MSG: Merge commit from fork Replace string-encoded cache keys with typed Go struct keys to prevent cache poisoning via crafted topic names containing underscore separators. Also removes the redundant shard
+  FILE caddy/mercure.go
+    -	MaxEntriesPerShard int    `json:"max_entries_per_shard,omitempty"`
+    -	ShardCount         uint64 `json:"shard_count,omitempty"`
+    +	// Deprecated: use Size instead.
+    +	MaxEntriesPerShard int `json:"max_entries_per_shard,omitempty"`
+    +	// Deprecated: no longer used.
+    +	ShardCount uint64 `json:"shard_count,omitempty"`
+    +	// Size is the maximum number of entries in the cache.
+    +	Size int `json:"size,omitempty"`
+    -	maxEntriesPerShard := mercure.DefaultTopicSelectorStoreCacheMaxEntriesPerShard
+    -	shardCount := mercure.DefaultTopicSelectorStoreCacheShardCount
+    +	cacheSize := mercure.DefaultTopicSelectorStoreCacheSize
+    -		maxEntriesPerShard = m.TopicSelectorCache.MaxEntriesPerShard
+    -		shardCount = m.TopicSelectorCache.ShardCount
+    -	}
+    +		switch {
+    +		case m.TopicSelectorCache.Size > 0:
+    +			cacheSize = m.TopicSelectorCache.Size
+    +		case m.TopicSelectorCache.MaxEntriesPerShard > 0:
+    +			// Backward compat: convert old per-shard config
+    +			shardCount := m.TopicSelectorCache.ShardCount
+    +			if shardCount == 0 {
+    +				shardCount = 256
+    +			}
+    -	if shardCount == 0 {
+    -		shardCount = mercure.DefaultTopicSelectorStoreCacheShardCount
+    +			cacheSize = m.TopicSelectorCache.MaxEntriesPerShard * int(shardCount)
+    +		case m.TopicSelectorCache.MaxEntriesPerShard < 0:
+    +			cacheSize = 0
+    +		}
+    -	var tss *mercure.TopicSelectorStore
+  FILE config_deprecated.go
+  FILE hub.go
+  FILE hub_test.go
+  FILE topicselector.go
+  FILE topicselector_test.go
+  FILE topicselectorcache.go
+  FILE topicselectorcache_test.go
+
+=== GHSA-5c3f-6486-3g7g sev=medium pkgs=['go:gogs.io/gogs']
+src=https://github.com/gogs/gogs cwes=['CWE-324', 'CWE-613']
+SUMMARY: Gogs's password-reset tokens use account-activation lifetime, ignoring RESET_PASSWORD_CODE_LIVES
+DESC: ## Summary Password-reset tokens are generated using `conf.Auth.ActivateCodeLives` (the account-activation lifetime), not `conf.Auth.ResetPasswordCodeLives`. The token lifetime is baked into the token itself at generation time and is re-extracted from the token at verification time, making `RESET_PASSWORD_CODE_LIVES` irrelevant to actual enforcement. When an administrator configures a shorter reset window (e.g., 10 minutes) for compliance or security reasons, reset tokens remain exploitable for the full activation lifetime instead, while the reset email falsely advertises the shorter expiry. ## Severity **Medium** (CVSS 3.1: 6.8) `CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:N` - **Attack Vector:** Network — the reset endpoint is reachable over HTTP/S. - **Attack Complexity:** High — successful exploitation requires (1) the instance to be configured with `RESET_PASSWORD_CODE_LIVES < ACTIVATE_CODE_LIVES`, AND (2) the attacker to have intercepted the victim's reset token (e.g., from a compromised or shared email inbox). - **Privileges Required:** None — no Gogs account is required. - **User Interaction:** Required — the victim must have triggered a password-reset request. - **Scope:** Unchanged — the impact is confined to the victim's Gogs account. - **Confidentiality Impact:** High — successful exploitation leads to account takeover, exposing all private repositories and data. - **Integrity Impact:** High — the attacker can change the victim's password and gain full write access. - **Availability Impact:** None. ## Affected component - `internal/userx/userx.go` — `GenerateActivateCode()` (line 39) - `internal/email/email.go` — `SendResetPasswordMail()` (line 132) - `internal/route/user/auth.go` — `verifyUserActiveCode()` (lines 426–439) and `ResetPasswdPost()` (line 621) ## CWE - **CWE-324**: Use of a Key Past Its Expiration Date - **CWE-613**: Insufficient Session Expiration ## Description ### The reset token lifetime is hardcoded to `ActivateCodeLives` at generation `GenerateActivateCode` (called for both account activation and password reset) bakes `conf.Auth.ActivateCodeLives` — not `ResetPasswordCodeLives` — into the token as a 6-digit field: ```go // internal/userx/userx.go:36-46 func GenerateActivateCode(userID int64, email, name, password, rands string) string { code := tool.CreateTimeLimitCode( fmt.Sprintf("%d%s%s%s%s", userID, email, strings.ToLower(name), password, rands), conf.Auth.ActivateCodeLives, // ← always ActivateCodeLives, never ResetPasswordCodeLives nil, ) code += hex.EncodeToString([]byte(strings.ToLower(name))) return code } ``` `CreateTimeLimitCode` embeds the `minutes` value at positions 12–17 of the token: ``` Token format: YYYYMMDDHHMM (12) | 000180 (6-digit lives) | SHA1 (40) | hex-username ``` `SendResetPasswordMail` calls `u.GenerateEmailActivateCode(u.Email())` — which resolves to `GenerateActivateCode` — with no option to pass a different lifetime: ```go // internal/email/email.go:131-132 func SendResetPasswordMail(c *macaron.Context, u User) error { return SendUserMail(c, u, tmplAuthResetPassword, u.GenerateEmailActivateCode(u.Email()), ...) } ``` ### `ResetPasswordCodeLives` is used only for display, not enforcement `VerifyTimeLimitCode` discards the `minutes` argument and re-extracts the lifetime directly from the token itself: ```go // internal/tool/tool.go:62-86 func VerifyTimeLimitCode(data string, minutes int, code string) bool { start := code[:12] lives := code[12:18] if d, err := strconv.Atoi(lives); err == nil { minutes = d // ← argument overridden by value baked into the token } retCode := CreateTimeLimitCode(data, minutes, start) if retCode == code && minutes > 0 { before, _ := time.ParseInLocation("200601021504", start, time.Local) if before.Add(time.Minute * time.Duration(minutes)).Unix() > now.Unix() { return true } } return false } ``` The `verifyUserActiveCode` caller passes `conf.Auth.ActivateCodeLives` as `minutes`, but it makes no difference: ```go // internal/route/user/auth.go:426-439 func verifyUserActiveCode(code string) (user *database.User) { minutes := conf.Auth.ActivateCodeLives // passed to VerifyTimeLimitCode but immediately overridden if user = parseUserFromCode(code); user != nil { prefix := code[:tool.TimeLimitCodeLength] data := strconv.FormatInt(user.ID, 10) + user.Email + user.LowerName + user.Password + user.Rands if tool.VerifyTimeLimitCode(data, minutes, prefix) { return user } } return nil } ``` `ResetPasswdPost` validates the reset token through `verifyUserActiveCode`, so it inherits the same flaw: ```go // internal/route/user/auth.go:621 if u := verifyUserActiveCode(code); u != nil { ``` `ResetPasswordCodeLives` appears only in email template data and in the admin config display — it has zero effect on actual token validation: ```go // internal/email/email.go:109 — template data only, not used to generate the token "ResetPwdCodeLives": conf.Auth.ResetPasswordCodeLives / 60, ``` ### Full execution chain 1. **Victim requests reset**: `POST /user/forget_password` → `SendResetPasswordMail` generates a token embedding `ActivateCodeLives = 180` at bytes 12–17. 2. **Email delivered**: The reset email says "link valid for 10 minutes" (from `ResetPwdCodeLives` in the template) but the embedded lifetime is 180. 3. **`RESET_PASSWORD_CODE_LIVES` window closes**: After 10 minutes the victim believes the link has expired. 4. **Attacker submits the token**: `POST /user/reset_password?code=<TOKEN>` → `ResetPasswdPost` → `verifyUserActiveCode` → `VerifyTimeLimitCode` extracts `000180` from the token → confirms the token has not yet reached the 180-minute mark → returns the user object → password is updated. 5. **Account takeover**: Attacker sets a new password and authenticates as the victim. ## Proof of Concept ```ini # app.ini configuration that exposes the bug: [auth] ACTIVATE_CODE_LIVES = 180 RESET_PASSWORD_CODE_LIVES = 10 ``` ```bash # 1) Request password reset for victim account curl -i -X POST -d 'email=victim@example.com' htt [...]
+FIX pull https://github.com/gogs/gogs/pull/8328 status=200
+  PR: security: enforce RESET_PASSWORD_CODE_LIVES on reset tokens | Password reset tokens were generated with `conf.Auth.ActivateCodeLives` instead of `conf.Auth.ResetPasswordCodeLives`. The lifetime is baked into the token at generation and re-extracted at verification, so the configured reset window was advertised in the email but never enforced. This change introduces `GenerateResetPasswordCode` in `internal/userx` and routes `SendResetPasswordMail` through it 
+  MSG: security: enforce RESET_PASSWORD_CODE_LIVES on reset tokens (#8328)
+  FILE CHANGELOG.md
+    +- _Security:_ Password reset tokens stayed valid for the account-activation lifetime, ignoring `[auth] RESET_PASSWORD_CODE_LIVES`. [#8328](https://github.com/g
+  FILE internal/database/issue_mail.go
+    +func (mu mailerUser) GenerateEmailResetPasswordCode(email string) string {
+    +	return userx.GenerateResetPasswordCode(
+    +		mu.user.ID,
+    +		email,
+    +		mu.user.Name,
+    +		mu.user.Password,
+    +		mu.user.Rands,
+    +	)
+    +}
+  FILE internal/email/email.go
+    +	GenerateEmailResetPasswordCode(string) string
+    -	return SendUserMail(t, u, tmplAuthResetPassword, u.GenerateEmailActivateCode(u.Email()), t.Tr("mail.reset_password"), "reset password")
+    +	return SendUserMail(t, u, tmplAuthResetPassword, u.GenerateEmailResetPasswordCode(u.Email()), t.Tr("mail.reset_password"), "reset password")
+  FILE internal/email/email_test.go
+    -func (testDoer) ID() int64                               { return 1 }
+    -func (testDoer) DisplayName() string                     { return "alice" }
+    -func (testDoer) Email() string                           { return "alice@example.test" }
+    -func (testDoer) GenerateEmailActivateCode(string) string { return "abc" }
+    +func (testDoer) ID() int64                                    { return 1 }
+    +func (testDoer) DisplayName() string                          { return "alice" }
+    +func (testDoer) Email() string                                { return "alice@example.test" }
+    +func (testDoer) GenerateEmailActivateCode(string) string      { return "abc" }
+    +func (testDoer) GenerateEmailResetPasswordCode(string) string { return "abc" }
+  FILE internal/userx/userx.go
+    +	return generateTimeLimitedUserCode(userID, email, name, password, rands, conf.Auth.ActivateCodeLives)
+    +}
+    +// GenerateResetPasswordCode generates a password-reset code based on user
+    +// information and the given email. The token's lifetime is bound to
+    +// [conf.AuthOpts.ResetPasswordCodeLives].
+    +func GenerateResetPasswordCode(userID int64, email, name, password, rands string) string {
+    +	return generateTimeLimitedUserCode(userID, email, name, password, rands, conf.Auth.ResetPasswordCodeLives)
+    +}
+FIX commit https://github.com/gogs/gogs/commit/187e9c557930eb4a8b9b1502ee45cccf3255ee7f status=200
+  (same commit message as a fix above; diff not repeated)
+
+=== GHSA-3m2g-v7jf-7fxc sev=high pkgs=['pip:apache-superset']
+src=https://github.com/apache/superset cwes=['CWE-863']
+SUMMARY: Apache Superset Improper Authorization allows low-privileged users to bypass access controls 
+DESC: An Improper Authorization vulnerability exists in Apache Superset that allows a low-privileged user to bypass data access controls. When creating a dataset, Superset enforces permission checks to prevent users from querying unauthorized data. However, an authenticated attacker with permissions to write datasets and read charts can bypass these checks by overwriting the SQL query of an existing dataset. This issue affects Apache Superset: before 6.0.0. Users are recommended to upgrade to version 6.0.0, which fixes the issue.
+
+=== GHSA-gv46-4xfq-jv58 sev=critical pkgs=['npm:openclaw']
+src=https://github.com/openclaw/openclaw cwes=['CWE-20', 'CWE-441', 'CWE-863']
+SUMMARY: OpenClaw Vulnerable to Remote Code Execution via Node Invoke Approval Bypass in Gateway
+DESC: ### Summary A remote code execution (RCE) vulnerability in the gateway-to-node invocation path allowed an authenticated gateway client to bypass node-host exec approvals by injecting internal control fields into `node.invoke` parameters. ### Affected Component - Gateway method: `node.invoke` for node command `system.run` - Node host runner: exec approval gating for `system.run` ### Impact If an attacker can authenticate to a gateway (for example via a leaked/shared gateway token or a paired device token with `operator.write`), they could execute arbitrary commands on connected node hosts that support `system.run`. This can lead to full compromise of developer workstations, CI runners, and servers running the node host. ### Technical Details The gateway forwarded user-controlled `params` to node hosts without sanitizing internal approval fields. The node host treated `params.approved === true` and/or `params.approvalDecision` as sufficient to skip the approval workflow. ### Fix Patched in **OpenClaw `2026.2.14`**. - Commits: - `318379cdb8d045da0009b0051bd0e712e5c65e2d` - `a7af646fdab124a7536998db6bd6ad567d2b06b0` - `c1594627421f95b6bc4ad7c606657dc75b5ad0ce` - `0af76f5f0e93540efbdf054895216c398692afcd` - Gateway strips untrusted approval control fields from `system.run` user input. - Gateway only re-attaches approval flags when `params.runId` references a valid `exec.approval.request` record and the request context matches. Approval IDs are bound to the requesting device identity (stable across reconnects), preventing replay by other clients. - Gateway forwards only an allowlisted set of `system.run` parameters, preventing future control-field smuggling. ### Mitigations - Upgrade to `2026.2.14` or later. - Restrict access to the gateway (do not expose it to untrusted networks/users). - Rotate gateway credentials if you suspect token/password exposure. - Disable remote command execution on nodes by blocking `system.run` at the gateway (`gateway.nodes.denyCommands`) and/or by configuring node exec security to `deny`. ### Credits OpenClaw thanks @222n5 for reporting this issue.
+FIX commit https://github.com/openclaw/openclaw/commit/0af76f5f0e93540efbdf054895216c398692afcd status=200
+  MSG: refactor(gateway): centralize node.invoke param sanitization
+  FILE src/gateway/node-invoke-sanitize.ts
+    +import type { ExecApprovalManager } from "./exec-approval-manager.js";
+    +import type { GatewayClient } from "./server-methods/types.js";
+    +import { sanitizeSystemRunParamsForForwarding } from "./node-invoke-system-run-approval.js";
+    +export function sanitizeNodeInvokeParamsForForwarding(opts: {
+    +  command: string;
+    +  rawParams: unknown;
+    +  client: GatewayClient | null;
+    +  execApprovalManager?: ExecApprovalManager;
+    +}):
+    +  | { ok: true; params: unknown }
+    +  | { ok: false; message: string; details?: Record<string, unknown> } {
+    +  if (opts.command === "system.run") {
+    +    return sanitizeSystemRunParamsForForwarding({
+    +      rawParams: opts.rawParams,
+    +      client: opts.client,
+    +      execApprovalManager: opts.execApprovalManager,
+    +    });
+    +  }
+    +  return { ok: true, params: opts.rawParams };
+    +}
+  FILE src/gateway/server-methods/nodes.ts
+    -import { sanitizeSystemRunParamsForForwarding } from "../node-invoke-system-run-approval.js";
+    +import { sanitizeNodeInvokeParamsForForwarding } from "../node-invoke-sanitize.js";
+    -      const forwardedParams =
+    -        command === "system.run"
+    -          ? sanitizeSystemRunParamsForForwarding({
+    -              rawParams: p.params,
+    -              client,
+    -              execApprovalManager: context.execApprovalManager,
+    -            })
+    -          : ({ ok: true, params: p.params } as const);
+  FILE src/gateway/server.node-invoke-approval-bypass.e2e.test.ts
+FIX commit https://github.com/openclaw/openclaw/commit/318379cdb8d045da0009b0051bd0e712e5c65e2d status=422
+FIX commit https://github.com/openclaw/openclaw/commit/a7af646fdab124a7536998db6bd6ad567d2b06b0 status=422
+
+=== GHSA-r77c-2cmr-7p47 sev=low pkgs=['npm:openclaw']
+src=https://github.com/openclaw/openclaw cwes=['CWE-862']
+SUMMARY: OpenClaw: Delivery queue recovery could lose group tool-policy context for media replay
+DESC: ## Summary Delivery queue recovery could lose group tool-policy context for media replay. ## Affected Packages / Versions - Package: `openclaw` - Ecosystem: npm - Affected versions: `>= 2026.4.10 < 2026.4.14` - Patched versions: `>= 2026.4.14` ## Impact Recovered queued outbound media could be replayed without the original session context needed to enforce group tool policy, weakening channel media restrictions after restart/recovery. ## Technical Details The fix persists and replays the relevant session context with delivery queue entries so recovered media dispatch goes through the same policy checks. ## Fix The issue was fixed in #66025. The first stable tag containing the fix is `v2026.4.14`, and `openclaw@2026.4.14` includes the fix. ## Fix Commit(s) - `48aae82bbc19ba8b0741e61a08063eb0d1df464e` - PR: #66025 ## Release Process Note Users should upgrade to `openclaw` 2026.4.14 or newer. The latest npm release, `2026.4.14`, already includes the fix. ## Credits Thanks to @zsxsoft, with sponsorship from @KeenSecurityLab and @qclawer for reporting this issue.
+FIX pull https://github.com/openclaw/openclaw/pull/66025 status=200
+  PR: fix(outbound): replay queued session context | ## Summary - Preserve outbound session context when write-ahead queue entries are replayed after restart - Keep queued outbound media policy evaluation aligned with the original delivery context ## Changes - Persist the optional outbound `session` object in queued delivery entries - Replay the stored `session` object during queue recovery delivery - Add storage and recovery regression tests coveri
+  MSG: fix(outbound): replay queued session context (#66025) * fix(outbound): preserve replay session context * fix(outbound): remove user work log * changelog: note outbound session-context replay fix (#660
+  FILE CHANGELOG.md
+    +- Outbound/delivery-queue: persist the originating outbound `session` context on queued delivery entries and replay it during recovery, so write-ahead-queued s
+  FILE src/infra/outbound/deliver.ts
+    +        session: params.session,
+  FILE src/infra/outbound/delivery-queue-recovery.ts
+    +    session: entry.session,
+  FILE src/infra/outbound/delivery-queue-storage.ts
+    +import type { OutboundSessionContext } from "./session-context.js";
+    +  /** Session context needed to preserve outbound media policy on recovery. */
+    +  session?: OutboundSessionContext;
+    +    session: params.session,
+  FILE src/infra/outbound/delivery-queue.recovery.test.ts
+    +        session: {
+    +          key: "agent:main:main",
+    +          agentId: "agent-main",
+    +          requesterAccountId: "acct-1",
+    +          requesterSenderId: "sender-1",
+    +          requesterSenderName: "Sender One",
+    +          requesterSenderUsername: "sender.one",
+    +          requesterSenderE164: "+15551234567",
+    +        },
+    +        session: {
+    +          key: "agent:main:main",
+    +          agentId: "agent-main",
+    +          requesterAccountId: "acct-1",
+    +          requesterSenderId: "sender-1",
+    +          requesterSenderName: "Sender One",
+    +          requesterSenderUsername: "sender.one",
+    +          requesterSenderE164: "+15551234567",
+    +        },
+  FILE src/infra/outbound/delivery-queue.storage.test.ts
+    +          session: {
+    +            key: "agent:main:main",
+    +            agentId: "agent-main",
+    +            requesterAccountId: "acct-1",
+    +            requesterSenderId: "sender-1",
+FIX commit https://github.com/openclaw/openclaw/commit/48aae82bbc19ba8b0741e61a08063eb0d1df464e status=200
+  (same commit message as a fix above; diff not repeated)

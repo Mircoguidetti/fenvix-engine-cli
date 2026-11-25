@@ -1,0 +1,55 @@
+=== GHSA-8m9v-xpgf-g99m sev=medium pkgs=['npm:openclaw']
+src=https://github.com/openclaw/openclaw cwes=['CWE-863']
+SUMMARY: OpenClaw has an unauthorized sender bypass in its stop triggers and /models command authorization
+DESC: ### Summary Unauthorized senders could trigger two command paths without sender authorization checks: 1. stop-like natural-language abort triggers 2. `/models` command output ### Impact An unauthorized sender could disrupt active sessions and view model/auth metadata that should be authorization-gated. ### Fix Sender authorization is now enforced for stop-like abort triggers and `/models` listings. ### Affected and Patched Versions - Affected: `<= 2026.2.26` - Patched: `2026.3.1`
+
+=== GHSA-4m3h-wp5w-5hqh sev=high pkgs=['pip:apache-airflow']
+src=https://github.com/apache/airflow cwes=['CWE-732']
+SUMMARY: Apache Airflow: Wildcard DagVersion Listing Bypasses Per‑DAG RBAC and Leaks Metadata
+DESC: Apache Airflow versions 3.0.0 through 3.1.7 FastAPI DagVersion listing API does not apply per-DAG authorization filtering when the request is made with dag_id set to "~" (wildcard for all DAGs). As a result, version metadata of DAGs that the requester is not authorized to access is returned. Users are recommended to upgrade to Apache Airflow 3.1.8 or later, which resolves this issue.
+FIX pull https://github.com/apache/airflow/pull/61675 status=200
+  PR: Fix list dag versions permissions | Fix list dag versions permissions. Even when passing `~` dag versions returned should be based on readable dags permissions.
+  MSG: Fix list dag versions permissions (#61675) * Fix list dag versions permissions * Add a test * Address review comments
+  FILE airflow-core/src/airflow/api_fastapi/core_api/routes/public/dag_versions.py
+    -from airflow.api_fastapi.core_api.security import requires_access_dag
+    +from airflow.api_fastapi.core_api.security import (
+    +    ReadableDagVersionsFilterDep,
+    +    requires_access_dag,
+    +)
+    +    readable_dag_versions_filter: ReadableDagVersionsFilterDep,
+    -        filters=[version_number, bundle_name, bundle_version],
+    +        filters=[version_number, bundle_name, bundle_version, readable_dag_versions_filter],
+  FILE airflow-core/src/airflow/api_fastapi/core_api/security.py
+    +from airflow.models.dag_version import DagVersion
+    +class PermittedDagVersionFilter(PermittedDagFilter):
+    +    """A parameter that filters the permitted dag versions for the user."""
+    +    def to_orm(self, select: Select) -> Select:
+    +        return select.where(DagVersion.dag_id.in_(self.value or set()))
+    +ReadableDagVersionsFilterDep = Annotated[
+    +    PermittedDagVersionFilter, Depends(permitted_dag_filter_factory("GET", PermittedDagVersionFilter))
+    +]
+  FILE airflow-core/tests/unit/api_fastapi/core_api/routes/public/test_dag_versions.py
+    -                2,
+    +                3,
+    -                4,
+    +                5,
+    +    @pytest.mark.usefixtures("make_dag_with_multiple_versions")
+    +    @mock.patch(
+    +        "airflow.api_fastapi.auth.managers.base_auth_manager.BaseAuthManager.get_authorized_dag_ids",
+    +        return_value={"dag_with_multiple_versions"},
+    +    )
+    +    def test_get_dag_versions_permission_filtering(self, _, test_client):
+    +        """Test that listing all DAG versions with ~ only returns versions for permitted DAGs."""
+    +        with assert_queries_count(4):
+    +            response = test_client.get("/dags/~/dagVersions")
+    +        assert response.status_code == 200
+
+=== GHSA-w2fm-25vw-vh7f sev=high pkgs=['npm:mcp-handler']
+src=https://github.com/vercel/mcp-handler cwes=['CWE-362', 'CWE-1395']
+SUMMARY: mcp-handler has a tool response leak across concurrent client sessions ('Race Condition')
+DESC: `mcp-handler` versions prior to 1.1.0 accepted `@modelcontextprotocol/sdk` < 1.26.0 as a peer dependency. That SDK version contains a vulnerability [[CVE-2026-25536](https://nvd.nist.gov/vuln/detail/CVE-2026-25536)] that causes concurrent requests from different clients to share server-side state including authentication context and tool execution results when a `StreamableHTTPServerTransport` instance is reused across requests. **Note:** This is _not_ a vulnerability in `mcp-handler` itself. The root cause is in the peer dependency `@modelcontextprotocol/sdk`. ### Impact A low-privileged attacker making concurrent requests to an `mcp-handler` endpoint can read another client's session data, including authentication information and tool execution state. This is a confidentiality breach with potential for limited integrity impact. **Root Cause:** [CVE-2026-25536](https://nvd.nist.gov/vuln/detail/CVE-2026-25536) in `@modelcontextprotocol/sdk` < 1.26.0. The SDK did not prevent reuse of stateless transports across client connections. ### Patches Upgrade to `mcp-handler@1.1.0`. This release raises the minimum peer dependency to `@modelcontextprotocol/sdk@>=1.26.0`, which contains the fix for CVE-2026-25536. ### Workarounds - Upgrade `@modelcontextprotocol/sdk` to `>=1.26.0` (note: the SDK will throw on transport reuse, which will break `mcp-handler` < 1.1.0 which effectively forces the upgrade) - Alternatively, manually create fresh `McpServer` and transport instances per request in your handler code
+
+=== GHSA-j6jp-78w8-34x6 sev=medium pkgs=['go:github.com/forceu/gokapi']
+src=https://github.com/Forceu/Gokapi cwes=['CWE-863']
+SUMMARY: Gokapi vulnerable to Privilege Escalation in File Replace
+DESC: ## Summary An insufficient authorization check in the file replace API allows a user with only list visibility permission (`UserPermListOtherUploads`) to delete another user's file by abusing the `deleteNewFile` flag, bypassing the requirement for `UserPermDeleteOtherUploads`. ### Impact Any authenticated user with `PERM_REPLACE` (replace own files) and `PERM_LIST` (view other users' uploads) can delete any other user's file without needing `PERM_DELETE`.
