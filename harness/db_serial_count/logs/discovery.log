@@ -411,3 +411,16 @@
 2026-11-25T03:44:10+00:00 postgres "pnpm test"     size:100001..200000 tc=63 leaf=True read=63 inc=False req=425
 2026-11-25T03:44:17+00:00 postgres "pnpm test"     size:200001..400000 tc=9 leaf=True read=9 inc=False req=426
 2026-11-25T03:44:26+00:00 postgres "make test"     size:0..400000 tc=5568 leaf=False read=- inc=- req=427
+2026-11-25T03:45:55+00:00 postgres "make test"     size:0..200000 tc=5568 leaf=False read=- inc=- req=429
+2026-11-25T03:47:38+00:00 postgres "make test"     size:0..100000 tc=5472 leaf=False read=- inc=- req=431
+2026-11-25T03:48:25+00:00 postgres "make test"     size:0..50000 tc=5504 leaf=False read=- inc=- req=433
+2026-11-25T03:49:02+00:00 postgres "make test"     size:0..25000 tc=5392 leaf=False read=- inc=- req=435
+2026-11-25T03:50:07+00:00 postgres "make test"     size:0..12500 tc=5080 leaf=False read=- inc=- req=437
+2026-11-25T03:50:46+00:00 postgres "make test"     size:0..6250 tc=4360 leaf=False read=- inc=- req=439
+2026-11-25T03:51:24+00:00 postgres "make test"     size:0..3125 tc=2964 leaf=False read=- inc=- req=441
+2026-11-25T03:52:16+00:00 postgres "make test"     size:0..1562 tc=1892 leaf=False read=- inc=- req=443
+2026-11-25T03:53:42+00:00 postgres "make test"     size:0..781 tc=120 leaf=True read=126 inc=False req=447
+2026-11-25T03:54:25+00:00 postgres "make test"     size:782..1562 tc=1792 leaf=False read=- inc=- req=449
+2026-11-25T04:02:03+00:00 postgres "make test"     size:782..1172 tc=998 leaf=True read=1000 inc=False req=469
+2026-11-25T04:08:53+00:00 postgres "make test"     size:1173..1562 tc=936 leaf=True read=931 inc=False req=489
+2026-11-25T04:09:08+00:00 postgres "make test"     size:1563..3125 tc=1358 leaf=False read=- inc=- req=491
