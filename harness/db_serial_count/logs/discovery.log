@@ -544,3 +544,18 @@
 2026-11-25T06:08:11+00:00 mysql "make test"        size:50001..100000 tc=74 leaf=True read=74 inc=False req=572
 2026-11-25T06:08:19+00:00 mysql "make test"        size:100001..200000 tc=7 leaf=True read=7 inc=False req=573
 2026-11-25T06:08:34+00:00 mysql "make test"        size:200001..400000 tc=1 leaf=True read=1 inc=False req=575
+2026-11-25T06:10:15+00:00 mariadb jest             size:0..400000 tc=141 leaf=True read=159 inc=False req=579
+2026-11-25T06:11:58+00:00 mariadb vitest           size:0..400000 tc=330 leaf=True read=331 inc=False req=587
+2026-11-25T06:12:43+00:00 mariadb mocha            size:0..400000 tc=36 leaf=True read=36 inc=False req=589
+2026-11-25T06:13:39+00:00 mariadb "node --test"    size:0..400000 tc=261 leaf=True read=247 inc=False req=594
+2026-11-25T06:17:14+00:00 mariadb pytest           size:0..400000 tc=964 leaf=True read=924 inc=False req=614
+2026-11-25T06:17:40+00:00 mariadb tox              size:0..400000 tc=147 leaf=True read=175 inc=False req=617
+2026-11-25T06:18:06+00:00 mariadb nox              size:0..400000 tc=12 leaf=True read=12 inc=False req=619
+2026-11-25T06:18:42+00:00 mariadb "manage.py"      size:0..400000 tc=174 leaf=True read=179 inc=False req=623
+2026-11-25T06:19:08+00:00 mariadb rspec            size:0..400000 tc=68 leaf=True read=68 inc=False req=625
+2026-11-25T06:19:23+00:00 mariadb "rails test"     size:0..400000 tc=19 leaf=True read=19 inc=False req=627
+2026-11-25T06:20:55+00:00 mariadb rake             size:0..400000 tc=117 leaf=True read=119 inc=False req=631
+2026-11-25T06:24:25+00:00 mariadb "go test"        size:0..400000 tc=721 leaf=True read=800 inc=False req=647
+2026-11-25T06:27:13+00:00 mariadb "npm test"       size:0..400000 tc=674 leaf=True read=700 inc=False req=661
+2026-11-25T06:29:01+00:00 mariadb "yarn test"      size:0..400000 tc=116 leaf=True read=135 inc=False req=665
+2026-11-25T06:29:55+00:00 mariadb "pnpm test"      size:0..400000 tc=187 leaf=True read=200 inc=False req=669

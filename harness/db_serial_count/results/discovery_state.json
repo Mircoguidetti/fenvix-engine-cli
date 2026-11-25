@@ -1,6 +1,126 @@
 {
  "finished": null,
  "queries": {
+  "mariadb \"go test\"": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 721,
+   "stack": []
+  },
+  "mariadb \"manage.py\"": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 174,
+   "stack": []
+  },
+  "mariadb \"node --test\"": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 261,
+   "stack": []
+  },
+  "mariadb \"npm test\"": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 674,
+   "stack": []
+  },
+  "mariadb \"pnpm test\"": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 187,
+   "stack": []
+  },
+  "mariadb \"rails test\"": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 19,
+   "stack": []
+  },
+  "mariadb \"yarn test\"": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 116,
+   "stack": []
+  },
+  "mariadb jest": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 141,
+   "stack": []
+  },
+  "mariadb mocha": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 36,
+   "stack": []
+  },
+  "mariadb nox": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 12,
+   "stack": []
+  },
+  "mariadb pytest": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 964,
+   "stack": []
+  },
+  "mariadb rake": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 117,
+   "stack": []
+  },
+  "mariadb rspec": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 68,
+   "stack": []
+  },
+  "mariadb tox": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 147,
+   "stack": []
+  },
+  "mariadb vitest": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 330,
+   "stack": []
+  },
   "mysql \"go test\"": {
    "done": true,
    "leaves": 9,
