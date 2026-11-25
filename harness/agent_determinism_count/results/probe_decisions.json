@@ -1,0 +1,77 @@
+{
+ "blocked": false,
+ "code_pending": true,
+ "code_route": null,
+ "code_totals": {
+  "session": -1,
+  "workflow": -1
+ },
+ "commits_or_ok": true,
+ "commits_route": "workflow",
+ "dropped": [],
+ "excluded_repos": [
+  "beyhangl/evalcraft",
+  "cendorhq/cendor-libs",
+  "dmallya93/llmreplay",
+  "mikiships/pytest-agentcontract"
+ ],
+ "fixes": [],
+ "issues_or_ok": true,
+ "issues_route": "workflow",
+ "issues_type_split": false,
+ "nested_path_ok": false,
+ "recording_packages": [
+  "cendor-cassette",
+  "coding-agent-vcr",
+  "evalcraft",
+  "pytest-agentcontract"
+ ],
+ "repo_text_shapes_ok": true,
+ "text_route": "workflow",
+ "text_shapes": {
+  "b-commits-cost": {
+   "status": 200,
+   "total_count": 4
+  },
+  "b-commits-cost-model": {
+   "status": 200,
+   "total_count": 8469
+  },
+  "b-commits-pm": {
+   "status": 200,
+   "total_count": 31703
+  },
+  "b-commits-quoted": {
+   "status": 200,
+   "total_count": 920
+  },
+  "b-issues-cost": {
+   "status": 200,
+   "total_count": 107448
+  },
+  "b-issues-pm": {
+   "status": 200,
+   "total_count": 145951
+  },
+  "b-issues-quoted": {
+   "status": 200,
+   "total_count": 19909
+  },
+  "b-r-commits-model": {
+   "status": 200,
+   "total_count": 741
+  },
+  "b-r-commits-pain": {
+   "status": 200,
+   "total_count": 82
+  },
+  "b-r-issues-model": {
+   "status": 200,
+   "total_count": 4238
+  },
+  "b-r-issues-pain": {
+   "status": 200,
+   "total_count": 191
+  }
+ }
+}

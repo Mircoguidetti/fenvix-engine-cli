@@ -892,3 +892,14 @@ def test_rate_sleep_past_deadline_stops(monkeypatch, tmp_path):
     monkeypatch.setattr(_t, "sleep", lambda s: pytest.fail("slept"))
     with pytest.raises(ghapi.DeadlineReached):
         c._sleep(600)
+
+
+def test_search_hits_of_other_repositories_dropped():
+    """protects=§3.2 texts are the member's own (probe p1 showed repo: scope leaking around parentheses);
+    fails_when=a repository-search hit from another repository becomes a text candidate of the member;
+    no_claim=GitHub's parser."""
+    own = {"kind": "issue", "url": "https://github.com/acme/agent/issues/1", "repo": "Acme/Agent", "number": 1,
+           "title": "flaky LLM test", "body": "", "created_at": "2025-01-01T00:00:00Z"}
+    other = dict(own, url="https://github.com/x/y/issues/2", repo="x/y")
+    tx = T.member_texts("acme/agent", [], {"queries": [], "hits": [own, other]})
+    assert [t["url"] for t in tx] == [own["url"]]

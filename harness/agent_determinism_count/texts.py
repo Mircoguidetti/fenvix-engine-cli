@@ -89,6 +89,9 @@ def member_texts(repo: str, discovery_hits: list[dict], search_rec: dict | None)
         if h.get("stratum") in ("S2", "S3") and h.get("url"):
             by.setdefault(h["url"], {**h, "discovery": True})
     for h in (search_rec or {}).get("hits") or []:
+        # a hit of another repository (the §0.2b probe saw repo: scope leak around parentheses) is not this member's
+        if (h.get("repo") or "").lower() != repo.lower():
+            continue
         if h.get("url") and h["url"] not in by:
             by[h["url"]] = {**h, "discovery": False}
     texts = [t for t in by.values() if (t.get("created_at") or "") >= R.HISTORY_START]

@@ -8,3 +8,9 @@
    unchanged. The issues and commits routes are chosen separately: if search/commits does not answer 200 on the
    workflow route, S3 waits for the second message. Implemented by scopes in results/search_budget_free.json that
    ghapi.py enforces. Reason: market-direction's code-search discovery shares this account's session budget.
+2. 2026-11-25, before any repository search (probe p1, `paren`: `repo:langchain-ai/langchain (flaky OR
+   nondeterministic) llm` answered 8,918 against 101 and 7 for its parts, i.e. the repo: scope leaks when a term
+   follows the parentheses): repository-search hits whose repository is not the member are dropped from the
+   member's texts (`texts.member_texts`). No query shape changes: no §1 or §3.2 query has a term after its
+   parentheses, and the OR check (`flaky OR nondeterministic` 108 >= 101, 7) passed. Reason: §Definitions, a text is
+   a commit, pull request or issue of the repository.
