@@ -36,22 +36,28 @@ def order() -> list[str]:
     return json.loads((F.DATA / "order.json").read_text())
 
 
-def compact(m: dict, desc_chars: int = 1500, diff_lines: int = 40) -> str:
+def compact(m: dict, desc_chars: int = 1100, diff_lines: int = 18) -> str:
     out = [f"=== {m['ghsa_id']} pos={m.get('pos')} sev={m.get('severity')} "
            f"pkgs={sorted({(p['ecosystem'] or '') + ':' + (p['name'] or '') for p in m.get('packages') or []})}",
            f"src={m.get('source_code_location')} cwes={[c['cwe_id'] for c in m.get('cwes') or []]}",
            f"SUMMARY: {m.get('summary')}"]
     d = " ".join((m.get("description") or "").split())
     out.append("DESC: " + d[:desc_chars] + (" [...]" if len(d) > desc_chars else ""))
+    seen: set[str] = set()
     for fx in m.get("fixes") or []:
         out.append(f"FIX {fx['ref']['kind']} {fx['ref']['url']} status={fx.get('status')}")
+        key = " ".join(((fx.get("commits") or [{}])[0].get("message") or "").split())[:80]
+        if key and key in seen:
+            out.append("  (same commit message as a fix above; diff not repeated)")
+            continue
+        seen.add(key)
         if fx.get("title"):
             out.append("  PR: " + " ".join(fx["title"].split()) + " | " + " ".join((fx.get("body") or "").split())[:400])
         if fx.get("message"):
             out.append("  MSGS: " + " ".join(fx["message"].split())[:400])
         for c in fx.get("commits") or []:
             if c.get("message"):
-                out.append("  MSG: " + " ".join(c["message"].split())[:300])
+                out.append("  MSG: " + " ".join(c["message"].split())[:200])
             n = 0
             for f in c.get("files") or []:
                 out.append(f"  FILE {f['filename']}")
