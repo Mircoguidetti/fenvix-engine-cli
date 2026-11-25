@@ -19,11 +19,9 @@ merge ordered by the coordinator, not by this session):
 B2 is narrower than the design (rule 3, section B), and one codex-multi-auth run-level entry of another kind is left
 open (a proposal in section B). Ready for the coordinator's `/review`; merge only on the founder's authorization.
 
-**Fail-safes before the merge (founder decision D1 = C of 2026-11-24, section 3.1).** The identical counts above
-were measured BEFORE the three fail-safes, on S1 vs P1w4 pairs (one worker against four). The A1 fail-safe
-discharges an `env:` entry only when every compared run used one worker, and Jest is now compared run-wide
-(`files_outside_scope: "run"`), so the A1 gain on agentsys (Jest; A 1,540 → 0, identical 0 → 1,542) is expected
-not to hold on S1 vs P1w4 pairs. **Not re-measured**: no figure after the fail-safes is given here.
+**After the fail-safes and the A1 exact fix (c1789f1, section 3.3): 2,591 identical in round 1, 2,603 in round 2**
+(944e86a before them: 2,593 / 2,587). agentsys keeps its A1 gain: 1,542 (1,553) identical, A 0 (944e86a: 1,542 /
+1,538, A 0; trunk 0, A 1,540). Re-measured 2026-11-25 with the same harness and flags.
 
 ## 1. How it was measured
 
@@ -384,6 +382,36 @@ Not covered: which test inside one file saw which value (a file's tests are one 
 depends on the lane (`<worker>…` of a worker thread, Playwright's `playwright-worker-N`) makes per-file keys differ
 between serial and parallel runs, so such entries stay NOT PROVEN (fail-safe direction).
 
+### 3.3 Re-measure after the fail-safes and the A1 exact fix (engine c1789f1, 2026-11-25)
+
+Same harness and flags as every earlier round: worktree `/tmp/pm-p1/wt-d2` at c1789f1, addon built there, judge
+wheel built from it into `$PM_WORK/venv/engine`; `python3 measure.py --spec specs.json --name $r --reps 2 --workers 4
+--skip plain_par --timeout 7200 --out $PM_WORK/p1-d2`, agentsys first, then codex-multi-auth, ironcurtain,
+nestjs-pino, claudekit, sqlectron (06:38-07:31 UTC), nothing else running; counts by `tally.py` (round 1 =
+S1 vs P1w4, round 2 = S2 vs P2w4). Data: `harness/p1/a1x-c1789f1*.json`, `harness/p1/data/a1x-c1789f1/`.
+
+| repository (runner) | tests | trunk e7338950 identical r1 (r2) | 944e86a, before the fail-safes | **c1789f1** | A: trunk / 944e86a / c1789f1 (r1) |
+|---|---|---|---|---|---|
+| agentsys (jest) | 2,224 | 0 (0) | 1,542 (1,538) | **1,542 (1,553)** | 1,540 / 0 / 0 |
+| codex-multi-auth (vitest) | 8,662 | 0 (0) | 0 (0) | **0 (0)** | 0 / 0 / 6,914 |
+| ironcurtain (vitest) | 7,033 | 0 (0) | 0 (0) | **0 (0)** | 0 / 5,599 / 5,624 |
+| nestjs-pino (vitest) | 269 | 223 (222) | 258 (257) | **258 (258)** | 0 / 0 / 0 |
+| claudekit (vitest) | 814 | 555 (555) | 793 (792) | **791 (792)** | 0 / 0 / 0 |
+| sqlectron (vitest, sqlite3 rebuilt) | 43 | 0 | 0 (0) | **0 (0)** | — / 43 / 43 |
+| **total** | | 778 | 2,593 (2,587) | **2,591 (2,603)** | |
+
+* agentsys (Jest, so also under the B1 Jest fail-safe): the A1 gain holds with the per-file comparison; every
+  module-scope read is now compared per file and discharged in S1 vs P1w4.
+* codex-multi-auth: A 0 → 6,914 is not a loss (identical 0 on both engines). On 944e86a every test was hidden by the
+  run-level input `<tmp>/api-routes.json` (B-tmp 8,662, the open entry of section B); in this measurement that entry
+  did not occur, so the causes below it show: `api:process.reallyExit` outside any test (A3, open; verify's reason count
+  `api`: 6,946) and the enumeration `env:*`, whose per-file digest differs between S1 and P1w4 in all 40 files that
+  read it (a real difference: the environment those files saw differs; the run-wide rule would not have discharged it
+  either, the sets of 40 digests differ).
+* claudekit 793 → 791 in round 1 and 792 → 792 in round 2; nestjs-pino 258 / 257 → 258 / 258: within the rounds'
+  spread (round 1 vs round 2 differ by up to 11 on agentsys).
+* Serial pair (S1 vs S2, `a1x-c1789f1-serial-pair.json`): agentsys 1,895, claudekit 791, nestjs-pino 258.
+
 ## 4. Test changes (each on its own line, with its reason)
 
 - `node/test/p1-f-nested-io.test.js`: the concurrency guard uses `mkdtempSync` instead of `fs.promises.mkdtemp`, so it holds on the trunk too (there an awaited `fs.promises.mkdtemp` before the reads made node:test cancel the test).
@@ -467,7 +495,8 @@ Node failures on both heads: (b) timers; jest parallel lanes (3 cancelled); repr
 
 ## 7. For the coordinator
 
-* Fail-safes of 2026-11-24 (section 3.1) are in; the exact fixes (per-worker A1 comparison, per-file Jest state,
+* A1: the exact per-file fix replaced its fail-safe (section 3.2, re-measured in 3.3). B1 Jest and F: fail-safes of
+  2026-11-24 (section 3.1) are in; their exact fixes (per-file Jest state,
   tracking the I/O of the test's own callbacks inside an operation) are for a follow-up branch after the merge queue.
   The 5 gate-edit hunks stay under decision D option 3.
 * Merge: not done by this session (coordinator's instruction). The branch contains the trunk up to f67be4a (merge
