@@ -1,0 +1,35 @@
+# Python shared suite (release-1.yml LIGHT: 'shared' files, 4 shards in one serial run, CI's one --deselect), Python venv 3.13, this container
+# base 6e79a62c vs head 26cdf8b4 (git diff 6e79a62c 26cdf8b4 -- python crates tests release: empty)
+## base: python rc=1
+FAILED tests/test_packaging.py::test_gate_runs_on_pull_requests_and_trunk_only_and_cancels_only_superseded_pr_runs
+FAILED tests/test_py_cache.py::test_g2214_a_test_that_crashes_its_worker_is_a_record_of_the_merged_trace
+FAILED tests/test_py_cache.py::test_the_virtual_clocks_own_probe_of_threads_is_not_the_tests_read
+3 failed, 1019 passed, 39 skipped, 4 warnings in 3714.87s (1:01:54)
+## head: python rc=1
+FAILED tests/test_clock_rust.py::test_cache_matches_reference - AssertionErro...
+FAILED tests/test_packaging.py::test_gate_runs_on_pull_requests_and_trunk_only_and_cancels_only_superseded_pr_runs
+FAILED tests/test_py_cache.py::test_g2214_a_test_that_crashes_its_worker_is_a_record_of_the_merged_trace
+FAILED tests/test_py_cache.py::test_the_virtual_clocks_own_probe_of_threads_is_not_the_tests_read
+4 failed, 1018 passed, 39 skipped, 4 warnings in 3737.57s (1:02:17)
+## new on head: tests/test_clock_rust.py::test_cache_matches_reference (3 tests NOT PROVEN by the sensor; ran with 3 harden processes on 4 CPUs)
+## alone, 3x per tree:
+1 passed in 20.13s	  <- head run 1
+1 failed in 42.10s	  <- head run 2
+1 passed in 21.84s	  <- head run 3
+1 passed in 24.24s	  <- base run 1
+1 passed in 22.95s	  <- base run 2
+1 passed in 24.16s	  <- base run 3
+## alone, interleaved, 6x per tree:
+base 1: 1 passed in 25.06s
+head 1: 1 passed in 23.90s
+base 2: 1 passed in 23.81s
+head 2: 1 passed in 26.83s
+base 3: 1 passed in 26.07s
+head 3: 1 passed in 27.01s
+base 4: 1 passed in 22.80s
+head 4: 1 passed in 23.22s
+base 5: 1 passed in 23.73s
+head 5: 1 passed in 22.50s
+base 6: 1 passed in 24.39s
+head 6: 1 passed in 25.12s
+## verdict: head 8/9, base 9/9 alone; the one head failure was the slowest run (42 s vs 20-27 s); the code under test is byte-identical on both trees: load-dependent, not a B1 change. No new failure.
