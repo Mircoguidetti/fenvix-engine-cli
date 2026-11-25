@@ -66,19 +66,23 @@ def sh(cmd, cwd, env, timeout, log=None):
     return rc, round(time.time() - t0, 2), out if isinstance(out, str) else str(out)
 
 
-def git_checkpoint(paths, message):
-    """Copy the result rows into the repository, then commit and push them (one process at a time: the campaign
-    runs several repositories at once)."""
+def git_checkpoint(out_dir, name, message):
+    """Copy this repository's result files (<name>.jsonl, <name>-*) into the repository, then commit and push them
+    (one process at a time: the campaign runs several repositories at once). Only this process's own files are
+    copied: copying the whole rows folder overwrote other processes' rows (slice 1, rebuilt by rebuild_rows.py)."""
     repo = os.path.abspath(os.path.join(HERE, '..', '..'))
     os.makedirs(os.path.dirname(GIT_LOCK), exist_ok=True)
     with open(GIT_LOCK, 'w') as lk:
         fcntl.flock(lk, fcntl.LOCK_EX)
-        dest = []
-        for src in paths:
-            d = os.path.join(HERE, 'data', 'harden', os.path.basename(src.rstrip('/')))
-            shutil.copytree(src, d, dirs_exist_ok=True)
-            dest.append(d)
-        paths = dest
+        d = os.path.join(HERE, 'data', 'harden', os.path.basename(out_dir.rstrip('/')))
+        os.makedirs(d, exist_ok=True)
+        paths = []
+        for n in sorted(os.listdir(out_dir)):
+            if n == f'{name}.jsonl' or n.startswith(f'{name}-'):
+                shutil.copy2(os.path.join(out_dir, n), os.path.join(d, n))
+                paths.append(os.path.join(d, n))
+        if not paths:
+            return
         subprocess.run(['git', '-C', repo, 'add', '--', *paths], capture_output=True)
         r = subprocess.run(['git', '-C', repo, 'commit', '-q', '-m', message, '--', *paths], capture_output=True, text=True)
         if r.returncode == 0:
@@ -271,13 +275,13 @@ def main():
             print(f"{o.repo} [{i}/{len(states)}] {st['sha'][:10]} exit {rc} {dt}s reused {row['reused_files']} "
                   f"mismatches {len(mism)} wrong {row['wrong_reuse']} unchecked {len(row.get('verify_unchecked') or [])}", file=sys.stderr)
             if o.checkpoint and time.time() - last_ckpt > CHECKPOINT_S:
-                git_checkpoint([out_dir], f'cache B1 harden checkpoint: {o.repo} through state {i} (engine {e12})')
+                git_checkpoint(out_dir, o.repo, f'cache B1 harden checkpoint: {o.repo} through state {i} (engine {e12})')
                 last_ckpt = time.time()
     finally:
         if svc:
             svc.stop()
         if o.checkpoint:
-            git_checkpoint([out_dir], f'cache B1 harden checkpoint: {o.repo} (engine {e12})')
+            git_checkpoint(out_dir, o.repo, f'cache B1 harden checkpoint: {o.repo} (engine {e12})')
 
 
 def write_row(path, row):
