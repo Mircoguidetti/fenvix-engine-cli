@@ -474,6 +474,7 @@ class SearchFake:
 
     def __init__(self, hot: str):
         self.hot, self.n_search, self.paths = hot, {"code": 0, "issues": 0}, []
+        self.n_429, self.limit, self.remaining, self.reset = 0, {}, {}, {}
 
     def get(self, path, search=None):
         self.paths.append(path)
@@ -681,14 +682,39 @@ def test_unknown_counts_in_A(tmp_path):
 
 
 def test_no_search_before_budget_free(tmp_path, monkeypatch):
-    """protects=rule 9 / AC1: no search request before the coordinator's message; fails_when=a search (code, issues,
-    commits) reaches the transport while results/search_budget_free.json is missing; no_claim=nothing about REST."""
+    """protects=rule 9 / AC1 and the coordinator's split budget (D1 = A): no search before the message, code search
+    and session-token search refused until freed; fails_when=a search reaches the transport outside the freed
+    scopes; no_claim=nothing about REST."""
     monkeypatch.setattr(ghapi, "BUDGET_FREE", tmp_path / "missing.json")
     c = ghapi.Client(token="x")
     monkeypatch.setattr(c, "_once", lambda path: pytest.fail("transport reached"))
     for path, kind in (("search/code?q=a", "code"), ("search/issues?q=a", "issues"), ("search/commits?q=a", "issues")):
         with pytest.raises(ghapi.SearchRefused):
             c.get(path, search=kind)
+    bf = tmp_path / "bf.json"
+    bf.write_text(json.dumps({"scopes": ["text-workflow"]}))
+    monkeypatch.setattr(ghapi, "BUDGET_FREE", bf)
+    with pytest.raises(ghapi.SearchRefused):
+        c.get("search/code?q=a", search="code")
+    g = ghapi.Client(use_gh=True)
+    monkeypatch.setattr(g, "_once", lambda path: pytest.fail("transport reached"))
+    with pytest.raises(ghapi.SearchRefused):
+        g.get("search/issues?q=a", search="issues")
+    monkeypatch.setattr(c, "_once", lambda path: (200, {}, {"total_count": 0, "items": []}))
+    monkeypatch.setattr(c, "_wait", lambda search: None)
+    assert c.get("search/commits?q=a", search="issues")[0] == 200
+
+
+def test_probe_decide_text_only_and_commits_gate():
+    """protects=partial probes (D1 = A): workflow-only issues/commits probes give the workflow text route and no
+    BLOCKED while code search is pending; a failing commits probe holds S3 back; fails_when=decide blocks or keeps
+    S3; no_claim=GitHub answers."""
+    import probe
+    W = [{"id": "c-issues", "status": 200, "total_count": 3}, {"id": "c-commits", "status": 422}]
+    d = probe.decide([], W, [])
+    assert not d["blocked"] and d["code_pending"] and d["issues_route"] == "workflow"
+    assert d["commits_route"] is None
+    assert not any(q["family"] == "commits" for q in discover.family_queries("text", d))
 
 
 def test_get_only_and_retry_seconds(monkeypatch, tmp_path):
@@ -722,8 +748,8 @@ def test_workflow_trigger_and_owned_files():
     assert list(on) == ["push"] and on["push"]["branches"] == ["claude/agent-determinism-count"]
     assert on["push"]["paths"] == ["harness/agent_determinism_count/requests/**"]
     own = [ln for ln in wf.splitlines() if ln.strip().startswith('own="')][0]
-    for session_file in ("reads.jsonl", "texts_search.jsonl ", "discovery_state", "search_budget_free", "handcheck",
-                         "probe_session", "candidates"):
+    for session_file in ("reads.jsonl", "texts_search.jsonl ", "discovery_state_code", "leaves_code", "prepass_code",
+                         "search_budget_free", "handcheck", "probe_session", "probe_decisions", "candidates"):
         assert session_file not in own
 
 

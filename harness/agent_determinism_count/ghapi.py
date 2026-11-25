@@ -56,6 +56,7 @@ class Client:
         self.remaining, self.limit, self.reset = {}, {}, {}
         self.n_requests = 0
         self.n_search = {"code": 0, "issues": 0}
+        self.n_429 = 0
         self.deadline = float(os.environ.get("ADC_DEADLINE") or 0)  # epoch seconds; 0 = none
         self.log = log  # optional list: every request (method, path, status, time) for AC5
         self._last = 0.0
@@ -68,6 +69,21 @@ class Client:
             self.remaining[res] = int(h["x-ratelimit-remaining"])
             self.limit[res] = int(h.get("x-ratelimit-limit") or 0)
             self.reset[res] = int(h.get("x-ratelimit-reset") or 0)
+
+    def _check_scope(self, kind: str) -> None:
+        """Rule 9 / AC1 and the coordinator's split budget: results/search_budget_free.json lists the scopes freed so
+        far: "text-workflow" (issues and commits search through the workflow's GITHUB_TOKEN), "code" (code search),
+        "session" (search through the work session's gh token). A search outside them is refused."""
+        if not BUDGET_FREE.exists():
+            raise SearchRefused("results/search_budget_free.json is missing: no search before the coordinator's "
+                                "'search budget free' message")
+        scopes = set(json.loads(BUDGET_FREE.read_text()).get("scopes") or [])
+        if kind == "code" and "code" not in scopes:
+            raise SearchRefused("code search is not freed yet (coordinator's second message)")
+        if kind == "issues" and "text-workflow" not in scopes and "text" not in scopes:
+            raise SearchRefused("issues/commits search is not freed")
+        if self.use_gh and "session" not in scopes:
+            raise SearchRefused("search through the session token is not freed (workflow route only)")
 
     def _sleep(self, sl: float) -> None:
         """Sleep, unless it would pass the job deadline (``deadline``, epoch seconds): then stop cleanly."""
@@ -136,9 +152,8 @@ class Client:
         attempts."""
         if search not in (None, "code", "issues"):
             raise ValueError(search)
-        if (search or path.startswith("search/")) and not BUDGET_FREE.exists():
-            raise SearchRefused("results/search_budget_free.json is missing: no search before the coordinator's "
-                                "'search budget free' message")
+        if search or path.startswith("search/"):
+            self._check_scope("code" if path.startswith("search/code") else "issues")
         last = (0, None, {})
         for attempt in range(6):
             self._wait(search)
@@ -154,6 +169,7 @@ class Client:
             msg = json.dumps(data)[:600].lower() if data is not None else ""
             h = {k.lower(): v for k, v in hd.items()}
             if st == 429 or (st == 403 and ("rate limit" in msg or "abuse" in msg or "retry-after" in h)):
+                self.n_429 += 1
                 sl = retry_seconds(msg, h)
                 sys.stderr.write(f"rate limited ({st}) on {path[:90]}: sleeping {sl:.0f}s\n")
                 self._sleep(min(sl, 3700))

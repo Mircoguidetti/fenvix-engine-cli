@@ -75,11 +75,13 @@ def probe_queries() -> list[dict]:
     return qs
 
 
-def run_github(route: str) -> list[dict]:
+def run_github(route: str, kinds: tuple = ("code", "issues", "commits")) -> list[dict]:
     import ghapi
     c = ghapi.Client(use_gh=True) if route == "session" else ghapi.from_env()
     out = []
     for p in probe_queries():
+        if p["kind"] not in kinds:
+            continue
         path = f"search/{p['kind']}?" + urllib.parse.urlencode({"q": p["q"], "per_page": 100})
         st, d, hd = c.get(path, search="code" if p["kind"] == "code" else "issues")
         rec = {**p, "route": route, "status": st, "at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
@@ -140,15 +142,18 @@ def decide(session: list[dict], workflow: list[dict], registries: list[dict]) ->
 
     def tc(r):
         return (r or {}).get("total_count") or 0
+    code_probed = any(i in x for x in (S, W) for i in ("a1", "a2"))
     code_ok = {rt: any(ok(x.get(i)) for i in ("a1", "a2")) for rt, x in (("session", S), ("workflow", W))}
-    if not any(code_ok.values()):
+    if code_probed and not any(code_ok.values()):
         return {"blocked": True, "why": "no code-search route answers 200"}
     cs = max(tc(S.get("a1")), tc(S.get("a2"))) if code_ok["session"] else -1
     cw = max(tc(W.get("a1")), tc(W.get("a2"))) if code_ok["workflow"] else -1
-    code_route = "session" if cs >= cw else "workflow"
+    code_route = ("session" if cs >= cw else "workflow") if code_probed else None
     C = S if code_route == "session" else W
-    text_ok = {rt: ok(x.get("c-issues")) and ok(x.get("c-commits")) for rt, x in (("session", S), ("workflow", W))}
-    text_route = "session" if text_ok["session"] else ("workflow" if text_ok["workflow"] else None)
+    # issues and commits routes chosen separately (coordinator D1 = A: commits waits when the route fails)
+    issues_route = "session" if ok(S.get("c-issues")) else ("workflow" if ok(W.get("c-issues")) else None)
+    commits_route = "session" if ok(S.get("c-commits")) else ("workflow" if ok(W.get("c-commits")) else None)
+    text_route = issues_route
     T = S if text_route == "session" else W
     nested = any(p.count("/") >= 2 and "/cassettes/" in f"/{p}" for p in (C.get("a1") or {}).get("paths") or [])
     def or_ok(k):  # a probe that errored never counts as "OR works": the queries are split instead
@@ -160,7 +165,7 @@ def decide(session: list[dict], workflow: list[dict], registries: list[dict]) ->
     dropped, fixes = [], []
     shape_ids = {"b-code-cassette": "path:cassette", "b-code-recordings": "path:recordings",
                  "b-code-vcr": "path:vcr", "a1": "path:cassettes"}
-    for i, shape in shape_ids.items():
+    for i, shape in shape_ids.items() if code_probed else []:
         r = C.get(i)
         if not ok(r) or tc(r) == 0:
             dropped += [f"{h} {shape}" for h in R.HOST_TERMS]
@@ -174,7 +179,7 @@ def decide(session: list[dict], workflow: list[dict], registries: list[dict]) ->
             if r:
                 excluded_repos.append(r)
     for i, fn in (("b-code-pyproject", "filename:pyproject.toml"), ("b-code-requirements", "filename:requirements.txt"),
-                  ("b-code-packagejson", "filename:package.json")):
+                  ("b-code-packagejson", "filename:package.json")) if code_probed else []:
         r = C.get(i)
         if not ok(r) or tc(r) == 0:
             dropped += [f"{p} {fn}" for p in recording]
@@ -190,16 +195,31 @@ def decide(session: list[dict], workflow: list[dict], registries: list[dict]) ->
     repo_shapes_ok = all(ok(T.get(i)) and tc(T.get(i)) > 0 for i in ("b-r-issues-pain", "b-r-issues-model",
                                                                      "b-r-commits-pain", "b-r-commits-model"))
     return {"blocked": False, "code_route": code_route, "code_totals": {"session": cs, "workflow": cw},
-            "text_route": text_route, "nested_path_ok": nested, "issues_or_ok": issues_or_ok,
+            "code_pending": not code_probed, "text_route": text_route, "issues_route": issues_route,
+            "commits_route": commits_route, "nested_path_ok": nested, "issues_or_ok": issues_or_ok,
             "commits_or_ok": commits_or_ok, "issues_type_split": type_split, "dropped": sorted(set(dropped)),
             "recording_packages": sorted(recording), "excluded_repos": sorted(set(excluded_repos)),
             "text_shapes": text_shapes, "repo_text_shapes_ok": repo_shapes_ok, "fixes": fixes}
+
+
+def load_records(res: Path = RES) -> tuple[list, list, list]:
+    """(session results, workflow results, registry pages) from every committed probe file."""
+    def rd(n):
+        return json.loads((res / n).read_text()) if (res / n).exists() else {}
+    ses, wf, wft = rd("probe_session.json"), rd("probe_workflow.json"), rd("probe_workflow_text.json")
+    return ((ses.get("results") or []), (wf.get("results") or []) + (wft.get("results") or []),
+            (ses.get("registries") or []) + (wft.get("registries") or []))
 
 
 def main(argv=None) -> int:
     argv = argv if argv is not None else sys.argv[1:]
     RES.mkdir(exist_ok=True)
     mode = argv[0] if argv else "session"
+    if mode == "workflow-text":  # coordinator D1 = A: issues/commits probes and registries, workflow route only
+        doc = {"route": "workflow", "results": run_github("workflow", ("issues", "commits")),
+               "registries": run_registries()}
+        (RES / "probe_workflow_text.json").write_text(json.dumps(doc, indent=1, sort_keys=True) + "\n")
+        return 0
     if mode in ("session", "workflow"):
         recs = run_github(mode)
         doc = {"route": mode, "results": recs}
@@ -207,9 +227,7 @@ def main(argv=None) -> int:
             doc["registries"] = run_registries()
         (RES / f"probe_{mode}.json").write_text(json.dumps(doc, indent=1, sort_keys=True) + "\n")
         return 0
-    s = json.loads((RES / "probe_session.json").read_text()) if (RES / "probe_session.json").exists() else {}
-    w = json.loads((RES / "probe_workflow.json").read_text()) if (RES / "probe_workflow.json").exists() else {}
-    d = decide(s.get("results") or [], w.get("results") or [], s.get("registries") or [])
+    d = decide(*load_records())
     (RES / "probe_decisions.json").write_text(json.dumps(d, indent=1, sort_keys=True) + "\n")
     print(json.dumps(d, indent=1, sort_keys=True))
     return 0

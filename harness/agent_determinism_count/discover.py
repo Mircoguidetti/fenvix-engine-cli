@@ -63,7 +63,8 @@ def launch_date() -> str:
 
 
 def family_queries(family: str, cfg: dict) -> list[dict]:
-    fams = ("code",) if family == "code" else ("issues", "commits")
+    fams = ("code",) if family == "code" else ("issues",) + (("commits",) if cfg.get("commits_route", True)
+                                                              else ())
     return [d for d in R.discovery_queries(cfg) if d["family"] in fams]
 
 
@@ -195,11 +196,24 @@ def run(family: str, route: str, max_minutes: float, deadline: str | None) -> in
     cfg = probe_config()
     pp = load_prepass()
     proj = projection(pp)
-    if proj["stop"] and not (RES / "prepass_stop_lifted.json").exists():
-        sys.exit(f"pre-pass stop: projected discovery {proj['hours']:.1f} h > {R.PREPASS_MAX_H} h")
+    if proj[family]["hours"] > R.PREPASS_MAX_H and not (RES / f"prepass_stop_lifted_{family}.json").exists():
+        st0 = _json(RES / f"discovery_state_{family}.json", {}) or {}
+        st0["prepass_stop"] = {"hours": proj[family]["hours"], "at": now()}
+        _save(RES / f"discovery_state_{family}.json", st0)
+        print(f"pre-pass stop: projected {family} discovery {proj[family]['hours']:.1f} h > {R.PREPASS_MAX_H} h")
+        return 3
     launch = launch_date()
     sp = RES / f"discovery_state_{family}.json"
     st = _json(sp, {"started": now(), "finished": None, "queries": {}})
+    st.setdefault("started", now())
+    st.setdefault("queries", {})
+    # each family's own 24 h discovery budget runs from its own first request (coordinator, D1 = A)
+    first = (_json(RES / f"prepass_{family}.json", {}) or {}).values()
+    t_first = min([v["at"] for v in first if v.get("at")] + [st["started"]])
+    budget_end = (dt.datetime.fromisoformat(t_first) + dt.timedelta(hours=R.DISCOVERY_BUDGET_H)).isoformat(
+        timespec="seconds")
+    st["budget_end"] = budget_end
+    deadline = min(deadline, budget_end) if deadline else budget_end
     c = _client(route)
     t0 = time.time()
     for d in family_queries(family, cfg):
@@ -214,6 +228,11 @@ def run(family: str, route: str, max_minutes: float, deadline: str | None) -> in
                                        "prepass_total": tc0, "nodes": 0, "leaves": 0, "leaf_total": 0}
         qs = st["queries"][d["key"]]
         while qs["stack"]:
+            if now() >= budget_end:
+                st["budget_reached"] = now()
+                _save(sp, st)
+                print("family discovery budget (24 h) reached: unfinished queries enter N_s as truncated leaves")
+                return 0
             if (time.time() - t0) / 60 > max_minutes or (deadline and now() >= deadline):
                 _save(sp, st)
                 print(f"stopping (time limit / deadline); resumable from {sp.name}")
@@ -245,6 +264,9 @@ def run(family: str, route: str, max_minutes: float, deadline: str | None) -> in
                 f.write(json.dumps({k: v for k, v in rec.items() if k != "items"}, sort_keys=True) + "\n")
             qs["nodes"] += 1
             st["search_requests"] = c.n_search
+            st["search_stats"] = {"429": c.n_429, "limit": c.limit.get("search") or c.limit.get("code_search"),
+                                  "remaining": c.remaining.get("search", c.remaining.get("code_search")),
+                                  "reset": c.reset.get("search", c.reset.get("code_search"))}
             _save(sp, st)
             print(f"{now()} {d['key'][:70]:<70} {a}..{b} tc={rec['total_count']} leaf={rec['leaf']} "
                   f"read={rec.get('read', '-')} inc={rec.get('incomplete', '-')}", flush=True)
