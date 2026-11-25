@@ -1,0 +1,43 @@
+== agentlang w2: hazards 0, files re-run 0, re-run complete None
+== agentlang w4: hazards 0, files re-run 0, re-run complete None
+== agentsys w2: hazards 6, files re-run 7, re-run complete True
+== agentsys w4: hazards 8, files re-run 9, re-run complete True
+== alakajam w2: hazards 122, files re-run 27, re-run complete False
+   recursive-write 98 root data/tmp
+== alakajam w4: hazards 183, files re-run 27, re-run complete False
+   recursive-write 145 root data/tmp
+== codex-multi-auth w2: hazards 82, files re-run 83, re-run complete True
+   recursive-write 71 root /tmp
+   recursive-write 1 root /tmp/pm-codex-multi-auth/codex-multi-auth-account-clear-tests
+   recursive-write 1 root /tmp/pm-codex-multi-auth/codex-account-policy-6wrqft
+   recursive-write 1 root /tmp/pm-codex-multi-auth/codex-multi-auth-mirror-B1VG7Z
+   recursive-write 1 root /tmp/pm-codex-multi-auth/codex-multi-auth-writer-1vhCcs
+== codex-multi-auth w4: hazards 120, files re-run 122, re-run complete True
+   recursive-write 107 root /tmp
+   recursive-write 1 root /tmp/pm-codex-multi-auth/codex-multi-auth-account-clear-tests
+   recursive-write 1 root /tmp/pm-codex-multi-auth/codex-account-policy-6wrqft
+   recursive-write 1 root /tmp/pm-codex-multi-auth/codex-multi-auth-mirror-B1VG7Z
+   recursive-write 1 root /tmp/pm-codex-multi-auth/codex-multi-auth-writer-1vhCcs
+== drydock w2: hazards 1, files re-run 2, re-run complete True
+== drydock w4: hazards 37, files re-run 38, re-run complete True
+   recursive-write 36 root /tmp/pm-drydock
+== ironcurtain w2: hazards 191, files re-run 105, re-run complete False
+   recursive-write 87 root /tmp
+   recursive-write 4 root /tmp/ironcurtain-sandbox
+   recursive-write 1 root /tmp/pm-ironcurtain/ironcurtain-config-dispatch-158Ucp
+   recursive-write 1 root /tmp/pm-ironcurtain/audit-err-4pCAzX
+   recursive-write 1 root /tmp/pm-ironcurtain/audit-tailer-test-2o9t0r
+== ironcurtain w4: hazards 278, files re-run 184, re-run complete False
+   recursive-write 135 root /tmp
+   recursive-write 6 root /tmp/ironcurtain-sandbox
+   recursive-write 2 root /root/.ironcurtain/run/testsessioni
+   recursive-write 1 root /tmp/pm-ironcurtain/ironcurtain-config-dispatch-158Ucp
+   recursive-write 1 root /tmp/pm-ironcurtain/audit-err-4pCAzX
+== lerna-lite w2: hazards 36, files re-run 12, re-run complete True
+== lerna-lite w4: hazards 54, files re-run 12, re-run complete True
+== nestjs-pino w2: hazards 0, files re-run 0, re-run complete None
+== nestjs-pino w4: hazards 0, files re-run 0, re-run complete None
+== yalc w2: hazards 3449, files re-run 165, re-run complete False
+   recursive-write 2817 root .
+== yalc w4: hazards 5198, files re-run 165, re-run complete False
+   recursive-write 4278 root .
