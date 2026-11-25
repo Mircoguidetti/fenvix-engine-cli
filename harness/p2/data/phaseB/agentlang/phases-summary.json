@@ -1,0 +1,478 @@
+{
+ "source": "phases-agentlang.jsonl.phases.jsonl",
+ "main": {
+  "deps_hash_s": 0.608,
+  "plan_s": 0.0,
+  "trace_write_s": 0.165,
+  "start_at_s": [
+   0.045
+  ],
+  "workers_spawn_at_s": [
+   0.235
+  ],
+  "exit_at_s": [
+   67.171
+  ],
+  "start_uptime_s": [
+   0.039
+  ],
+  "exit_uptime_s": [
+   67.165
+  ]
+ },
+ "workers": [
+  {
+   "worker": "8313:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 0.161,
+   "wall_s": 5.58,
+   "file_s": 5.58,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 36867,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8330:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 5.864,
+   "wall_s": 0.209,
+   "file_s": 0.209,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 449,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8342:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 6.2,
+   "wall_s": 2.218,
+   "file_s": 2.218,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4119,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8354:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 8.56,
+   "wall_s": 2.16,
+   "file_s": 2.16,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1174,
+   "uncontrolled_io": 1
+  },
+  {
+   "worker": "8366:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 10.865,
+   "wall_s": 0.425,
+   "file_s": 0.425,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 52,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8374:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 11.419,
+   "wall_s": 2.322,
+   "file_s": 2.322,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 3758,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8387:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 13.883,
+   "wall_s": 2.737,
+   "file_s": 2.737,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 5365,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8399:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 16.736,
+   "wall_s": 2.24,
+   "file_s": 2.24,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2786,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8411:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 19.101,
+   "wall_s": 2.122,
+   "file_s": 2.122,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1243,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8424:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 21.344,
+   "wall_s": 8.248,
+   "file_s": 8.248,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 56497,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8436:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 29.714,
+   "wall_s": 3.255,
+   "file_s": 3.255,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 40920,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8451:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 33.114,
+   "wall_s": 2.011,
+   "file_s": 2.011,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 7367,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8463:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 35.277,
+   "wall_s": 1.884,
+   "file_s": 1.884,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 689,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8475:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 37.28,
+   "wall_s": 4.77,
+   "file_s": 4.77,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 24197,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8487:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 42.205,
+   "wall_s": 2.812,
+   "file_s": 2.812,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 9719,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8499:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 45.174,
+   "wall_s": 2.24,
+   "file_s": 2.24,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4082,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8511:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 47.552,
+   "wall_s": 1.815,
+   "file_s": 1.815,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 446,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8523:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 49.494,
+   "wall_s": 0.031,
+   "file_s": 0.031,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8531:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 49.649,
+   "wall_s": 2.212,
+   "file_s": 2.212,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2798,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8543:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 51.999,
+   "wall_s": 2.019,
+   "file_s": 2.019,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1825,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8555:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 54.133,
+   "wall_s": 2.248,
+   "file_s": 2.248,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 14244,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8567:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 56.526,
+   "wall_s": 2.202,
+   "file_s": 2.202,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 3900,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8579:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 58.865,
+   "wall_s": 2.231,
+   "file_s": 2.231,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 3773,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8591:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 61.212,
+   "wall_s": 4.239,
+   "file_s": 4.239,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 67848,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8606:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 65.577,
+   "wall_s": 0.338,
+   "file_s": 0.338,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 52,
+   "uncontrolled_io": 0
+  }
+ ],
+ "rerun_one_lane": [],
+ "passes": [
+  "1",
+  "None"
+ ],
+ "files_top": [
+  {
+   "file": "test/runtime/basic.test.ts",
+   "s": 8.248,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 56497
+  },
+  {
+   "file": "example/knowledge/test/core.test.ts",
+   "s": 5.58,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 36867
+  },
+  {
+   "file": "test/runtime/expr-attr.test.ts",
+   "s": 4.77,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 24197
+  },
+  {
+   "file": "test/runtime/relationships.test.ts",
+   "s": 4.239,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 67848
+  },
+  {
+   "file": "test/runtime/database-sqljs.test.ts",
+   "s": 3.255,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 40920
+  },
+  {
+   "file": "test/runtime/fixes01.test.ts",
+   "s": 2.812,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 9719
+  },
+  {
+   "file": "test/parsing/syntax.test.ts",
+   "s": 2.737,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 5365
+  },
+  {
+   "file": "test/parsing/parsing.test.ts",
+   "s": 2.322,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 3758
+  },
+  {
+   "file": "test/runtime/migration-validation.test.ts",
+   "s": 2.248,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 14244
+  },
+  {
+   "file": "test/runtime/agent-rbac.test.ts",
+   "s": 2.24,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2786
+  },
+  {
+   "file": "test/runtime/harness.test.ts",
+   "s": 2.24,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4082
+  },
+  {
+   "file": "test/runtime/rbac.test.ts",
+   "s": 2.231,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 3773
+  },
+  {
+   "file": "test/api/http.test.ts",
+   "s": 2.218,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4119
+  },
+  {
+   "file": "test/runtime/llm-service.test.ts",
+   "s": 2.212,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2798
+  },
+  {
+   "file": "test/runtime/query.test.ts",
+   "s": 2.202,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 3900
+  },
+  {
+   "file": "test/api/mcp.test.ts",
+   "s": 2.16,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1174
+  },
+  {
+   "file": "test/runtime/agents.test.ts",
+   "s": 2.122,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1243
+  },
+  {
+   "file": "test/runtime/loader.test.ts",
+   "s": 2.019,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1825
+  },
+  {
+   "file": "test/runtime/error-messages.test.ts",
+   "s": 2.011,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 7367
+  },
+  {
+   "file": "test/runtime/execg.test.ts",
+   "s": 1.884,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 689
+  }
+ ],
+ "totals": {
+  "io_release": 0,
+  "stack_captures": 294171,
+  "uncontrolled_io": 1,
+  "held_s": 0.0
+ }
+}
