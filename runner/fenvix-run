@@ -33,8 +33,11 @@ replaces ``pytest_args``.
 **What the engine proves for Node.** In a parallel run, a test is *proven* when the footprints the engine recorded
 show no unresolved conflict between lanes in what the test touched (paths, ports, network), or when its file ran
 again alone in one lane after a conflict. The engine does not compare each test with a real serial run. The sentence
-the customer reads: "Proven: no conflict between parallel lanes in what each test touched; files in conflict ran
-again in one lane." NOT PROVEN comes from a hazard re-run that did not account for every test
+the customer reads: "Proven: no conflict between parallel lanes in what the engine recorded for each test; files in
+conflict ran again in one lane." The App shows the known limits next to it (not recorded, so not ruled out): shared
+local services (a database or cache the tests connect to), recursive directory operations, a cache directory at the
+project root, module reads through Vitest's main process, writes by child processes, native addons or worker threads
+(founder decision 2026-11-25). NOT PROVEN comes from a hazard re-run that did not account for every test
 (node/src/parallel-rerun.js ``accountRerun``) and from the two run-level signals below.
 
 **``proof``** (vitest, jest, node:test; mocha always runs in one lane under ``--det``): written when the final trace
