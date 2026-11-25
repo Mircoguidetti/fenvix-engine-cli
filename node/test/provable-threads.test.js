@@ -23,6 +23,13 @@ if (!wt.isMainThread && process.env.C2_FAULT) {
   let first = false;
   try { fs.closeSync(fs.openSync(${JSON.stringify(path.join(dir, 'first-thread'))}, 'wx')); first = true; } catch { /* another thread was first */ }
   if (first && process.env.C2_FAULT === 'absent') process.env.FENVIX_NO_PROVABLE_SENSOR = '1'; // this thread's env only
+  if (first && process.env.C2_FAULT === 'noran') {
+    const orig = fs.writeFileSync;
+    fs.writeFileSync = function (p, ...rest) {
+      if (/[\\\\/]prov[\\\\/][^\\\\/]+\\.ran$/.test(String(p))) throw Object.assign(new Error('injected: ENOSPC'), { code: 'ENOSPC' });
+      return orig.call(this, p, ...rest);
+    };
+  }
   if (first && process.env.C2_FAULT === 'silent') {
     const orig = fs.writeFileSync;
     fs.writeFileSync = function (p, ...rest) {
@@ -74,6 +81,15 @@ test('protects=a worker thread that installed the engine\'s test hooks and wrote
   assert.ok(r.meta, r.show);
   assert.equal(r.meta.provable, undefined, JSON.stringify(r.meta.provable));
   assert.match(String(r.meta.provable_absent), /installed the test hooks and declared no sensor/, r.show);
+});
+
+test('protects=a worker thread whose test-hook marker (.ran) cannot be written declares absent, so the run declares no sensor (founder decision 2026-11-25: fail closed); fails_when=the part is invisible and the other parts\' ok is taken as the run\'s (this branch at ca0bbb9c); no_claim=why the write failed in the field (forced: ENOSPC on .ran only)', T, () => {
+  const dir = project('noran');
+  const r = run(dir, 'noran');
+  assert.ok(r.injected, `the fault was injected into a worker thread\n${r.show}`);
+  assert.ok(r.meta, r.show);
+  assert.equal(r.meta.provable, undefined, JSON.stringify(r.meta.provable));
+  assert.match(String(r.meta.provable_absent), /marker could not be written: injected: ENOSPC/, r.show);
 });
 
 test('protects=positive control (gate note 1): a clean two-thread Vitest run keeps provable and is green; fails_when=the per-thread files or the .ran markers make a clean run lose its sensor; no_claim=the forks pool (one thread per process: unchanged path)', T, () => {

@@ -315,7 +315,8 @@ function declare() {
     STATE.quietDepth++;
     try {
       fs.mkdirSync(dir, { recursive: true });
-      const line = active ? `ok ${native.provableHeader(SENSOR, runtimeKey())}` : `absent ${reason || 'unknown'}`;
+      const line = ranFailed ? `absent ${ranFailed}`
+        : active ? `ok ${native.provableHeader(SENSOR, runtimeKey())}` : `absent ${reason || 'unknown'}`;
       // keyed by process AND thread: Vitest's pool=threads workers share one pid, and a file per pid let the last
       // thread's line overwrite another's (an `absent` replaced by `ok`: review of claude/runner-proof, C2)
       // appended, never overwritten (/review F1): a recycled pid with the same threadId adds its line to an earlier
@@ -343,8 +344,13 @@ function markRan(dir) {
   try {
     fs.mkdirSync(path.join(dir, 'prov'), { recursive: true });
     fs.writeFileSync(path.join(dir, 'prov', `${partId()}.ran`), '');
-  } catch { /* the run directory is gone */ } finally { STATE.quietDepth--; }
+  } catch (e) {
+    // the marker could not be written (ENOSPC, EMFILE, ...): this part would be invisible to session.js, so its
+    // own declaration says absent instead (founder decision 2026-11-25: a markRan write failure fails closed)
+    ranFailed = `the part's test-hook marker could not be written: ${e && e.message}`;
+  } finally { STATE.quietDepth--; }
 }
+let ranFailed = null;
 
 /**
  * `meta.provable` for the trace header, or null when there is no sensor to declare.
