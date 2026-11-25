@@ -2,6 +2,105 @@
  "budget_end": "2026-11-26T10:54:28+00:00",
  "finished": null,
  "queries": {
+  "committer-date:>=2024-01-01 flakiness anthropic test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 313599,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 312833,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 flakiness claude test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 351009,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 350093,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 flakiness gemini test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 3648,
+   "leaves": 7,
+   "nodes": 14,
+   "prepass_total": 18551,
+   "stack": [
+    [
+     "2026-02-01",
+     "2026-03-05"
+    ],
+    [
+     "2026-03-06",
+     "2026-11-25"
+    ]
+   ]
+  },
+  "committer-date:>=2024-01-01 flakiness llm test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 31673,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 31727,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 flakiness openai test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 33538,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 33655,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 flaky \"ai sdk\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 1439,
+   "leaves": 4,
+   "nodes": 6,
+   "prepass_total": 1439,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 flaky \"llama-index\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 57,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 57,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 flaky \"model output\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 1042,
+   "leaves": 2,
+   "nodes": 2,
+   "prepass_total": 1038,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 flaky \"pydantic-ai\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 313,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 313,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 flaky agent test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 131034,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 130585,
+   "stack": []
+  },
   "committer-date:>=2024-01-01 flaky anthropic test": {
    "capped": true,
    "done": true,
@@ -11,6 +110,15 @@
    "prepass_total": 311794,
    "stack": []
   },
+  "committer-date:>=2024-01-01 flaky autogen test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 279,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 279,
+   "stack": []
+  },
   "committer-date:>=2024-01-01 flaky claude test": {
    "capped": true,
    "done": true,
@@ -18,6 +126,24 @@
    "leaves": 1,
    "nodes": 1,
    "prepass_total": 349908,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 flaky crewai test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 331,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 331,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 flaky eval test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 23395,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 23367,
    "stack": []
   },
   "committer-date:>=2024-01-01 flaky gemini test": {
@@ -31,25 +157,39 @@
   },
   "committer-date:>=2024-01-01 flaky gpt test": {
    "capped": false,
-   "done": false,
-   "leaf_total": 5726,
-   "leaves": 9,
-   "nodes": 19,
+   "done": true,
+   "leaf_total": 13495,
+   "leaves": 21,
+   "nodes": 40,
    "prepass_total": 13486,
-   "stack": [
-    [
-     "2026-05-12",
-     "2026-06-13"
-    ],
-    [
-     "2026-06-14",
-     "2026-07-16"
-    ],
-    [
-     "2026-07-17",
-     "2026-11-25"
-    ]
-   ]
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 flaky langchain test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 3384,
+   "leaves": 5,
+   "nodes": 8,
+   "prepass_total": 3398,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 flaky langgraph test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 1811,
+   "leaves": 4,
+   "nodes": 6,
+   "prepass_total": 1813,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 flaky llamaindex test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 112,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 112,
+   "stack": []
   },
   "committer-date:>=2024-01-01 flaky llm test": {
    "capped": true,
@@ -67,6 +207,15 @@
    "leaves": 1,
    "nodes": 1,
    "prepass_total": 33655,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 flaky prompt test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 62097,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 62054,
    "stack": []
   },
   "is:public created:>=2024-01-01 \"api costs\" test (llm OR openai OR agent)": {
@@ -2133,13 +2282,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 175
+  "issues": 331
  },
  "search_stats": {
-  "429": 7,
+  "429": 13,
   "limit": 30,
-  "remaining": 19,
-  "reset": 1795648885
+  "remaining": 15,
+  "reset": 1795650732
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
