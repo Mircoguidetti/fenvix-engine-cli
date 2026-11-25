@@ -1,0 +1,541 @@
+[
+ {
+  "family": "copilot",
+  "endpoint": "pulls/{n}",
+  "path": "repos/lxndrp/lzug/pulls/254",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "copilot",
+  "endpoint": "pulls/{n}/commits",
+  "path": "repos/lxndrp/lzug/pulls/254/commits?per_page=100",
+  "status": 200,
+  "n": 4
+ },
+ {
+  "family": "copilot",
+  "endpoint": "pulls/{n}/files",
+  "path": "repos/lxndrp/lzug/pulls/254/files?per_page=20",
+  "status": 200,
+  "n": 1
+ },
+ {
+  "family": "copilot",
+  "endpoint": "pulls/{n}/reviews",
+  "path": "repos/lxndrp/lzug/pulls/254/reviews?per_page=100",
+  "status": 200,
+  "n": 1
+ },
+ {
+  "family": "copilot",
+  "endpoint": "issues/{n}/timeline",
+  "path": "repos/lxndrp/lzug/issues/254/timeline?per_page=100&page=1",
+  "status": 200,
+  "n": 13
+ },
+ {
+  "family": "copilot",
+  "endpoint": "commits/{sha}/check-runs",
+  "path": "repos/lxndrp/lzug/commits/1305941108ca314518a8155a2410902b8883dec7/check-runs?per_page=100&page=1",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "copilot",
+  "endpoint": "commits/{sha}/status",
+  "path": "repos/lxndrp/lzug/commits/1305941108ca314518a8155a2410902b8883dec7/status",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "copilot",
+  "endpoint": "actions/runs?head_sha=",
+  "path": "repos/lxndrp/lzug/actions/runs?head_sha=1305941108ca314518a8155a2410902b8883dec7&per_page=100",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "copilot",
+  "endpoint": "actions/runs/{id}/jobs",
+  "path": "repos/lxndrp/lzug/actions/runs/31224295832/jobs?per_page=100",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "copilot",
+  "endpoint": "actions/runs/{id}",
+  "path": "repos/lxndrp/lzug/actions/runs/31224295832",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "copilot",
+  "endpoint": "check-runs/{id}",
+  "path": "repos/lxndrp/lzug/check-runs/93015552735",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "copilot",
+  "endpoint": "check-runs/{id}/annotations",
+  "path": "repos/lxndrp/lzug/check-runs/93015552735/annotations?per_page=100",
+  "status": 200,
+  "n": 1
+ },
+ {
+  "family": "copilot",
+  "endpoint": "commits/{sha}",
+  "path": "repos/lxndrp/lzug/commits/1305941108ca314518a8155a2410902b8883dec7",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "copilot",
+  "endpoint": "git/trees/{sha}?recursive=1",
+  "path": "repos/lxndrp/lzug/git/trees/1305941108ca314518a8155a2410902b8883dec7?recursive=1",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "copilot",
+  "endpoint": "contents",
+  "path": "repos/lxndrp/lzug/contents/.github/ISSUE_TEMPLATE/bug_report.yml?ref=1305941108ca314518a8155a2410902b8883dec7",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "devin",
+  "endpoint": "pulls/{n}",
+  "path": "repos/colombo-labs/movicol-frontend/pulls/23",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "devin",
+  "endpoint": "pulls/{n}/commits",
+  "path": "repos/colombo-labs/movicol-frontend/pulls/23/commits?per_page=100",
+  "status": 200,
+  "n": 1
+ },
+ {
+  "family": "devin",
+  "endpoint": "pulls/{n}/files",
+  "path": "repos/colombo-labs/movicol-frontend/pulls/23/files?per_page=20",
+  "status": 200,
+  "n": 1
+ },
+ {
+  "family": "devin",
+  "endpoint": "pulls/{n}/reviews",
+  "path": "repos/colombo-labs/movicol-frontend/pulls/23/reviews?per_page=100",
+  "status": 200,
+  "n": 1
+ },
+ {
+  "family": "devin",
+  "endpoint": "issues/{n}/timeline",
+  "path": "repos/colombo-labs/movicol-frontend/issues/23/timeline?per_page=100&page=1",
+  "status": 200,
+  "n": 6
+ },
+ {
+  "family": "devin",
+  "endpoint": "commits/{sha}/check-runs",
+  "path": "repos/colombo-labs/movicol-frontend/commits/43fce27590cc477d95578ba182f7bf791056eb84/check-runs?per_page=100&page=1",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "devin",
+  "endpoint": "commits/{sha}/status",
+  "path": "repos/colombo-labs/movicol-frontend/commits/43fce27590cc477d95578ba182f7bf791056eb84/status",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "devin",
+  "endpoint": "actions/runs?head_sha=",
+  "path": "repos/colombo-labs/movicol-frontend/actions/runs?head_sha=43fce27590cc477d95578ba182f7bf791056eb84&per_page=100",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "devin",
+  "endpoint": "actions/runs/{id}/jobs",
+  "path": "repos/colombo-labs/movicol-frontend/actions/runs/28204134656/jobs?per_page=100",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "devin",
+  "endpoint": "actions/runs/{id}",
+  "path": "repos/colombo-labs/movicol-frontend/actions/runs/28204134656",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "devin",
+  "endpoint": "check-runs/{id}",
+  "path": "repos/colombo-labs/movicol-frontend/check-runs/83550747017",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "devin",
+  "endpoint": "check-runs/{id}/annotations",
+  "path": "repos/colombo-labs/movicol-frontend/check-runs/83550747017/annotations?per_page=100",
+  "status": 200,
+  "n": 0
+ },
+ {
+  "family": "devin",
+  "endpoint": "commits/{sha}",
+  "path": "repos/colombo-labs/movicol-frontend/commits/43fce27590cc477d95578ba182f7bf791056eb84",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "devin",
+  "endpoint": "git/trees/{sha}?recursive=1",
+  "path": "repos/colombo-labs/movicol-frontend/git/trees/43fce27590cc477d95578ba182f7bf791056eb84?recursive=1",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "devin",
+  "endpoint": "contents",
+  "path": "repos/colombo-labs/movicol-frontend/contents/.agents/skills/testing-planificar-viaje/SKILL.md?ref=43fce27590cc477d95578ba182f7bf791056eb84",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "jules",
+  "endpoint": "pulls/{n}",
+  "path": "repos/takaraflow/drive-collector-js/pulls/383",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "jules",
+  "endpoint": "pulls/{n}/commits",
+  "path": "repos/takaraflow/drive-collector-js/pulls/383/commits?per_page=100",
+  "status": 200,
+  "n": 1
+ },
+ {
+  "family": "jules",
+  "endpoint": "pulls/{n}/files",
+  "path": "repos/takaraflow/drive-collector-js/pulls/383/files?per_page=20",
+  "status": 200,
+  "n": 3
+ },
+ {
+  "family": "jules",
+  "endpoint": "pulls/{n}/reviews",
+  "path": "repos/takaraflow/drive-collector-js/pulls/383/reviews?per_page=100",
+  "status": 200,
+  "n": 0
+ },
+ {
+  "family": "jules",
+  "endpoint": "issues/{n}/timeline",
+  "path": "repos/takaraflow/drive-collector-js/issues/383/timeline?per_page=100&page=1",
+  "status": 200,
+  "n": 13
+ },
+ {
+  "family": "jules",
+  "endpoint": "commits/{sha}/check-runs",
+  "path": "repos/takaraflow/drive-collector-js/commits/e9a4fd762b9e5b88ee8e7c76aee1a439917df59b/check-runs?per_page=100&page=1",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "jules",
+  "endpoint": "commits/{sha}/status",
+  "path": "repos/takaraflow/drive-collector-js/commits/e9a4fd762b9e5b88ee8e7c76aee1a439917df59b/status",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "jules",
+  "endpoint": "actions/runs?head_sha=",
+  "path": "repos/takaraflow/drive-collector-js/actions/runs?head_sha=e9a4fd762b9e5b88ee8e7c76aee1a439917df59b&per_page=100",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "jules",
+  "endpoint": "actions/runs/{id}/jobs",
+  "path": "repos/takaraflow/drive-collector-js/actions/runs/31049009632/jobs?per_page=100",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "jules",
+  "endpoint": "actions/runs/{id}",
+  "path": "repos/takaraflow/drive-collector-js/actions/runs/31049009632",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "jules",
+  "endpoint": "check-runs/{id}",
+  "path": "repos/takaraflow/drive-collector-js/check-runs/92452258348",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "jules",
+  "endpoint": "check-runs/{id}/annotations",
+  "path": "repos/takaraflow/drive-collector-js/check-runs/92452258348/annotations?per_page=100",
+  "status": 200,
+  "n": 0
+ },
+ {
+  "family": "jules",
+  "endpoint": "commits/{sha}",
+  "path": "repos/takaraflow/drive-collector-js/commits/e9a4fd762b9e5b88ee8e7c76aee1a439917df59b",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "jules",
+  "endpoint": "git/trees/{sha}?recursive=1",
+  "path": "repos/takaraflow/drive-collector-js/git/trees/e9a4fd762b9e5b88ee8e7c76aee1a439917df59b?recursive=1",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "jules",
+  "endpoint": "contents",
+  "path": "repos/takaraflow/drive-collector-js/contents/.Jules/palette.md?ref=e9a4fd762b9e5b88ee8e7c76aee1a439917df59b",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "codex",
+  "endpoint": "pulls/{n}",
+  "path": "repos/pawelekbyra/polutek-pl/pulls/1281",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "codex",
+  "endpoint": "pulls/{n}/commits",
+  "path": "repos/pawelekbyra/polutek-pl/pulls/1281/commits?per_page=100",
+  "status": 200,
+  "n": 2
+ },
+ {
+  "family": "codex",
+  "endpoint": "pulls/{n}/files",
+  "path": "repos/pawelekbyra/polutek-pl/pulls/1281/files?per_page=20",
+  "status": 200,
+  "n": 7
+ },
+ {
+  "family": "codex",
+  "endpoint": "pulls/{n}/reviews",
+  "path": "repos/pawelekbyra/polutek-pl/pulls/1281/reviews?per_page=100",
+  "status": 200,
+  "n": 0
+ },
+ {
+  "family": "codex",
+  "endpoint": "issues/{n}/timeline",
+  "path": "repos/pawelekbyra/polutek-pl/issues/1281/timeline?per_page=100&page=1",
+  "status": 200,
+  "n": 6
+ },
+ {
+  "family": "codex",
+  "endpoint": "commits/{sha}/check-runs",
+  "path": "repos/pawelekbyra/polutek-pl/commits/361848012fe56e28bb3aa53b8ec47015007cfe1d/check-runs?per_page=100&page=1",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "codex",
+  "endpoint": "commits/{sha}/status",
+  "path": "repos/pawelekbyra/polutek-pl/commits/361848012fe56e28bb3aa53b8ec47015007cfe1d/status",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "codex",
+  "endpoint": "actions/runs?head_sha=",
+  "path": "repos/pawelekbyra/polutek-pl/actions/runs?head_sha=361848012fe56e28bb3aa53b8ec47015007cfe1d&per_page=100",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "codex",
+  "endpoint": "actions/runs/{id}/jobs",
+  "path": "repos/pawelekbyra/polutek-pl/actions/runs/28481497639/jobs?per_page=100",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "codex",
+  "endpoint": "actions/runs/{id}",
+  "path": "repos/pawelekbyra/polutek-pl/actions/runs/28481497639",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "codex",
+  "endpoint": "check-runs/{id}",
+  "path": "repos/pawelekbyra/polutek-pl/check-runs/84418670573",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "codex",
+  "endpoint": "check-runs/{id}/annotations",
+  "path": "repos/pawelekbyra/polutek-pl/check-runs/84418670573/annotations?per_page=100",
+  "status": 200,
+  "n": 4
+ },
+ {
+  "family": "codex",
+  "endpoint": "commits/{sha}",
+  "path": "repos/pawelekbyra/polutek-pl/commits/361848012fe56e28bb3aa53b8ec47015007cfe1d",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "codex",
+  "endpoint": "git/trees/{sha}?recursive=1",
+  "path": "repos/pawelekbyra/polutek-pl/git/trees/361848012fe56e28bb3aa53b8ec47015007cfe1d?recursive=1",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "codex",
+  "endpoint": "contents",
+  "path": "repos/pawelekbyra/polutek-pl/contents/.env.example?ref=361848012fe56e28bb3aa53b8ec47015007cfe1d",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "claude_code",
+  "endpoint": "pulls/{n}",
+  "path": "repos/paiml/aprender/pulls/1339",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "claude_code",
+  "endpoint": "pulls/{n}/commits",
+  "path": "repos/paiml/aprender/pulls/1339/commits?per_page=100",
+  "status": 200,
+  "n": 2
+ },
+ {
+  "family": "claude_code",
+  "endpoint": "pulls/{n}/files",
+  "path": "repos/paiml/aprender/pulls/1339/files?per_page=20",
+  "status": 200,
+  "n": 2
+ },
+ {
+  "family": "claude_code",
+  "endpoint": "pulls/{n}/reviews",
+  "path": "repos/paiml/aprender/pulls/1339/reviews?per_page=100",
+  "status": 200,
+  "n": 0
+ },
+ {
+  "family": "claude_code",
+  "endpoint": "issues/{n}/timeline",
+  "path": "repos/paiml/aprender/issues/1339/timeline?per_page=100&page=1",
+  "status": 200,
+  "n": 9
+ },
+ {
+  "family": "claude_code",
+  "endpoint": "commits/{sha}/check-runs",
+  "path": "repos/paiml/aprender/commits/eea81f20266d5b1eefb8f995ac0d450100247f50/check-runs?per_page=100&page=1",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "claude_code",
+  "endpoint": "commits/{sha}/status",
+  "path": "repos/paiml/aprender/commits/eea81f20266d5b1eefb8f995ac0d450100247f50/status",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "claude_code",
+  "endpoint": "actions/runs?head_sha=",
+  "path": "repos/paiml/aprender/actions/runs?head_sha=eea81f20266d5b1eefb8f995ac0d450100247f50&per_page=100",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "claude_code",
+  "endpoint": "actions/runs/{id}/jobs",
+  "path": "repos/paiml/aprender/actions/runs/25721396867/jobs?per_page=100",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "claude_code",
+  "endpoint": "actions/runs/{id}",
+  "path": "repos/paiml/aprender/actions/runs/25721396867",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "claude_code",
+  "endpoint": "check-runs/{id}",
+  "path": "repos/paiml/aprender/check-runs/75558526146",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "claude_code",
+  "endpoint": "check-runs/{id}/annotations",
+  "path": "repos/paiml/aprender/check-runs/75558526146/annotations?per_page=100",
+  "status": 200,
+  "n": 1
+ },
+ {
+  "family": "claude_code",
+  "endpoint": "commits/{sha}",
+  "path": "repos/paiml/aprender/commits/eea81f20266d5b1eefb8f995ac0d450100247f50",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "claude_code",
+  "endpoint": "git/trees/{sha}?recursive=1",
+  "path": "repos/paiml/aprender/git/trees/eea81f20266d5b1eefb8f995ac0d450100247f50?recursive=1",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "claude_code",
+  "endpoint": "contents",
+  "path": "repos/paiml/aprender/contents/.bashrsignore?ref=eea81f20266d5b1eefb8f995ac0d450100247f50",
+  "status": 200,
+  "n": null
+ },
+ {
+  "family": "repo",
+  "endpoint": "repos/{r}/issues?state=closed&since=",
+  "path": "repos/lxndrp/lzug/issues?state=closed&since=2026-08-27T00:00:00Z&sort=updated&direction=desc&per_page=100",
+  "status": 200,
+  "n": 100
+ },
+ {
+  "family": "repo",
+  "endpoint": "repos/{r}/pulls",
+  "path": "repos/lxndrp/lzug/pulls?state=all&sort=created&direction=desc&per_page=100",
+  "status": 200,
+  "n": 100
+ }
+]
