@@ -1,1 +1,9 @@
-{"next_chunk": 3, "running": "chunk 2 (A, items 753-1499) run 45619485266, in progress", "budget_start": "2026-11-25T07:40:22Z", "updated": "2026-11-25T15:00Z", "chunk1": "753 PRs, 10807 requests, 14.35/PR, 19241 s (7832 s rate-limit sleep)", "hand_a": "chunk 1 wasted PRs read (5 -> 4 wasted)"}
+{
+ "next_chunk": 5,
+ "running": "chunk 4 (B, all 1,171 repositories in b_order) run 45677406268, started 18:39:38Z, cap 320 min",
+ "budget_start": "2026-11-25T07:40:22Z",
+ "updated": "2026-11-25T20:43Z",
+ "count_a": "done: chunks 1-3, 1,500 items; change 2 applied offline (7745c6d); Rate A 15/115",
+ "after_chunk4": "restore results/a_rows.jsonl and results/a_rows_rule1.jsonl from 7745c6d; verify; push request 5 within 15 min",
+ "hand_a": "done (handread_a.jsonl 20 PRs, handread_a_sample.jsonl 19 rows)"
+}
