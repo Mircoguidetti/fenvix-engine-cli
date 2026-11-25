@@ -122,7 +122,7 @@ class Client:
             h = {k.lower(): v for k, v in hd.items()}
             if st == 429 or (st == 403 and ("rate limit" in msg or "abuse" in msg or "retry-after" in h)):
                 sl = retry_seconds(msg, h)
-                sys.stderr.write(f"rate limited ({st}) on {path[:90]}: sleeping {sl:.0f}s\n")
+                sys.stderr.write(f"rate limited ({st}) on {path[:90]}: sleeping {sl:.0f}s (retry-after={h.get('retry-after')} msg={msg[:120]})\n")
                 time.sleep(min(sl, 3700))
                 continue
             if st == 0 or st >= 500:
