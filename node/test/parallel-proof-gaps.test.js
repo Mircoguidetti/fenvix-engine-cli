@@ -230,6 +230,7 @@ const fs = require('node:fs'); const parallel = require(${JSON.stringify(path.jo
 parallel.installFootprint(process.cwd());
 parallel.enter('f');
 fs.cpSync('src', 'dst', { recursive: true }); fs.rmSync('gone', { recursive: true, force: true }); fs.mkdirSync('deep/a/b', { recursive: true });
+fs.mkdirSync('src/a', { recursive: true }); fs.mkdirSync(process.cwd(), { recursive: true }); fs.mkdirSync('src/a/new/x', { recursive: true });
 fs.readdirSync('src', { recursive: true }); fs.renameSync('mv', 'moved'); fs.renameSync('plain.txt', 'plain2.txt'); fs.mkdirSync('flat'); fs.readdirSync('deep');
 parallel.leave('f');
 process.stdout.write(fs.readFileSync(fs.readdirSync(process.env.DETJS_DIR + '/lanes').filter((n) => n.endsWith('.json')).map((n) => process.env.DETJS_DIR + '/lanes/' + n)[0], 'utf8'));`;
@@ -239,10 +240,13 @@ process.stdout.write(fs.readFileSync(fs.readdirSync(process.env.DETJS_DIR + '/la
   };
 
   test('recursive cp, rm, mkdir, readdir and a directory rename record wr / lr roots; plain calls do not', () => {
-    // protects=what hazards() matches is what the wrappers record; fails_when=a recursive call records no root, or a
-    // file rename / plain mkdir / plain readdir records one; no_claim=fs.promises and callback forms share the wrappers
+    // protects=what hazards() matches is what the wrappers record; a recursive mkdir records its root at the first
+    // directory it creates (founder decision 2026-11-25, D1 = A) and none when the target exists (mkdir -p of an
+    // existing dir changes nothing on disk); fails_when=a recursive call records no root, a recursive mkdir records
+    // the target instead of its first missing ancestor or records an existing dir, or a file rename / plain mkdir /
+    // plain readdir records one; no_claim=fs.promises and callback forms share the wrappers
     const fp = record();
-    assert.deepEqual(fp.wr, ['deep/a/b', 'dst', 'gone', 'moved', 'mv']);
+    assert.deepEqual(fp.wr, ['deep', 'dst', 'gone', 'moved', 'mv', 'src/a/new']);
     assert.deepEqual(fp.lr, ['src']);
     for (const k of ['dst', 'gone', 'deep/a/b', 'flat', 'mv', 'moved']) assert.ok(fp.w.includes(k), `${k} in ${fp.w}`);
   });
@@ -322,13 +326,38 @@ for (const runner of RUNNERS) {
       assertHazard(runner, det(runner, dir), 'recursive-write', 'tmp');
     });
 
-    test('(b4) mkdir -p of a dir in one lane, a write deeper inside it in the other: recursive-write hazard', T, () => {
-      // protects=mkdirSync(d,{recursive}) conflicts with writes under d; fails_when=proven with no hazard; no_claim=none beyond protects
+    test('(b4) mkdir -p creating a new subtree in one lane, a write inside it in the other: recursive-write hazard', T, () => {
+      // protects=mkdirSync(d,{recursive}) conflicts with writes inside the subtree it creates, rooted at the first
+      // directory it creates (data/new); fails_when=proven with no hazard, or the root is the target (data/new/deep);
+      // no_claim=the write may fail (its directory may not exist yet): the key is recorded before the call
       const dir = project(runner, 'b4',
+        "test('mkdir', () => { fs.mkdirSync(path.join(process.cwd(), 'data', 'new', 'deep'), { recursive: true }); expect(1).toBe(1); });",
+        "test('write', () => { try { fs.writeFileSync(path.join(process.cwd(), 'data', 'new', 'x.txt'), 'y'); } catch { /* not created yet */ } expect(1).toBe(1); });",
+        { extra: { 'data/.keep': '' } });
+      assertHazard(runner, det(runner, dir), 'recursive-write', 'data/new');
+    });
+
+    test('(b4-parent) mkdir -p creating a new subtree in one lane, a listing of its parent in the other: recursive-write hazard', T, () => {
+      // protects=a listing of the parent sees the created subtree appear; fails_when=proven with no hazard (the plain
+      // w key data/new/deep is no direct child of data, so list-write alone misses it); no_claim=none beyond protects
+      const dir = project(runner, 'b4p',
+        "test('mkdir', () => { fs.mkdirSync(path.join(process.cwd(), 'data', 'new', 'deep'), { recursive: true }); expect(1).toBe(1); });",
+        "test('list', () => { fs.readdirSync(path.join(process.cwd(), 'data')); expect(1).toBe(1); });",
+        { extra: { 'data/.keep': '' } });
+      assertHazard(runner, det(runner, dir), 'recursive-write', 'data/new');
+    });
+
+    test('(b4-neg) mkdir -p of a dir that exists in one lane, a write inside it in the other: no hazard', T, () => {
+      // protects=mkdir -p of an existing directory (a common setup step, e.g. of os.tmpdir() or the project root)
+      // changes nothing on disk and does not send the files to the one-lane re-run (founder decision 2026-11-25,
+      // D1 = A; step M: /tmp, the tmpdir and the project root roots cost up to +120 % wall time); fails_when=a
+      // recursive-write hazard on data/a; no_claim=a dir removed and re-created by another lane in between (then
+      // that lane's rm / mkdir records its own root)
+      const dir = project(runner, 'b4n',
         "test('mkdir', () => { fs.mkdirSync(path.join(process.cwd(), 'data', 'a'), { recursive: true }); expect(1).toBe(1); });",
         "test('write', () => { fs.writeFileSync(path.join(process.cwd(), 'data', 'a', 'b', 'x.txt'), 'y'); expect(1).toBe(1); });",
         { extra: { 'data/a/b/.keep': '' } });
-      assertHazard(runner, det(runner, dir), 'recursive-write', 'data/a');
+      assertNoHazard(det(runner, dir));
     });
 
     if (runner === 'vitest') {
