@@ -12,3 +12,6 @@
 {"counts": true, "excerpt": "`CREATE DATABASE \"${name}\" TEMPLATE template0 ENCODING 'UTF8'`,", "path": "scripts/recovery-transfer-journal-postgres.test.ts", "repo": "DupeisTaken/shbs-peer-tutoring-website", "status": 200, "term": "\"CREATE DATABASE\" TEMPLATE"}
 {"counts": true, "excerpt": "\"    Path(__file__).with_suffix('.' + name).write_text(os.environ['PYTEST_XDIST_WORKER'])\\n\"", "path": "backend/apps/tests/test_parallel.py", "repo": "moisturicer/IRIS", "status": 200, "term": "PYTEST_XDIST_WORKER"}
 {"counts": false, "excerpt": "- [x] 2.2 Create database client singleton in `src/db/client.ts`", "path": "docs/fee_register_port/reference/original_spec/tasks.md", "repo": "zmadon8/Quill", "status": 200, "term": "\"CREATE DATABASE\" TEMPLATE"}
+{"counts": false, "excerpt": "can_parallelize,", "path": "tests/agent/test_tool_batch.py", "repo": "chaw1/datakeel", "status": 200, "term": "parallelize"}
+{"counts": true, "excerpt": "connection.execute(text(f'CREATE DATABASE \"{name}\" TEMPLATE \"{source}\"'))", "path": "tests/db_templates.py", "repo": "chaw1/datakeel", "status": 200, "term": "\"CREATE DATABASE\" TEMPLATE"}
+{"counts": true, "excerpt": "f\"CREATE DATABASE \\\"{name}\\\" TEMPLATE template0 ENCODING 'UTF8' \"", "path": "tests/dataset_store/test_version_order.py", "repo": "chaw1/datakeel", "status": 200, "term": "\"CREATE DATABASE\" TEMPLATE"}
