@@ -1,0 +1,369 @@
+{
+ "profiles": 2,
+ "total_s": 202.926,
+ "top": [
+  {
+   "function": "spawnSync node:internal/child_process:1105",
+   "self_s": 101.458,
+   "share": 0.5
+  },
+  {
+   "function": "(idle) :0",
+   "self_s": 81.739,
+   "share": 0.4028
+  },
+  {
+   "function": "read :0",
+   "self_s": 13.165,
+   "share": 0.0649
+  },
+  {
+   "function": "readFileUtf8 :0",
+   "self_s": 1.444,
+   "share": 0.0071
+  },
+  {
+   "function": "readPackageJSON :0",
+   "self_s": 1.143,
+   "share": 0.0056
+  },
+  {
+   "function": "(garbage collector) :0",
+   "self_s": 0.624,
+   "share": 0.0031
+  },
+  {
+   "function": "readdir :0",
+   "self_s": 0.31,
+   "share": 0.0015
+  },
+  {
+   "function": "open :0",
+   "self_s": 0.309,
+   "share": 0.0015
+  },
+  {
+   "function": "dlopen :0",
+   "self_s": 0.153,
+   "share": 0.0008
+  },
+  {
+   "function": "spawn node:internal/child_process:354",
+   "self_s": 0.138,
+   "share": 0.0007
+  },
+  {
+   "function": "phases.span.part file:///home/user/fx-branch/node/src/session.js:526",
+   "self_s": 0.116,
+   "share": 0.0006
+  },
+  {
+   "function": "(program) :0",
+   "self_s": 0.087,
+   "share": 0.0004
+  },
+  {
+   "function": "writeBuffer :0",
+   "self_s": 0.076,
+   "share": 0.0004
+  },
+  {
+   "function": "depsInput file:///home/user/fx-branch/node/src/loaded.js:30",
+   "self_s": 0.063,
+   "share": 0.0003
+  },
+  {
+   "function": "internalModuleStat :0",
+   "self_s": 0.062,
+   "share": 0.0003
+  },
+  {
+   "function": "compileSourceTextModule node:internal/modules/esm/utils:344",
+   "self_s": 0.057,
+   "share": 0.0003
+  },
+  {
+   "function": "close :0",
+   "self_s": 0.055,
+   "share": 0.0003
+  },
+  {
+   "function": "parseChannelMessages node:internal/child_process/serialization:61",
+   "self_s": 0.046,
+   "share": 0.0002
+  },
+  {
+   "function": "fstat :0",
+   "self_s": 0.04,
+   "share": 0.0002
+  },
+  {
+   "function": "decode file:///root/pm/repos/agentlang/node_modules/.pnpm/vite@7.3.1_@types+node@25.2.1/node_modules/vite/dist/node/chunks/config.js:258",
+   "self_s": 0.04,
+   "share": 0.0002
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:593",
+   "self_s": 0.037,
+   "share": 0.0002
+  },
+  {
+   "function": "existsSync :0",
+   "self_s": 0.037,
+   "share": 0.0002
+  },
+  {
+   "function": "addUneditedChunk file:///root/pm/repos/agentlang/node_modules/.pnpm/vite@7.3.1_@types+node@25.2.1/node_modules/vite/dist/node/chunks/config.js:3064",
+   "self_s": 0.035,
+   "share": 0.0002
+  },
+  {
+   "function": "channel.onread node:internal/child_process:613",
+   "self_s": 0.035,
+   "share": 0.0002
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/repro.js:156",
+   "self_s": 0.034,
+   "share": 0.0002
+  },
+  {
+   "function": "encode$1 file:///root/pm/repos/agentlang/node_modules/.pnpm/vite@7.3.1_@types+node@25.2.1/node_modules/vite/dist/node/chunks/config.js:313",
+   "self_s": 0.031,
+   "share": 0.0002
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:339",
+   "self_s": 0.031,
+   "share": 0.0002
+  },
+  {
+   "function": "originalPositionFor$1 file:///root/pm/repos/agentlang/node_modules/.pnpm/vite@7.3.1_@types+node@25.2.1/node_modules/vite/dist/node/chunks/config.js:888",
+   "self_s": 0.031,
+   "share": 0.0002
+  },
+  {
+   "function": "visit file:///root/pm/repos/agentlang/node_modules/.pnpm/vite@7.3.1_@types+node@25.2.1/node_modules/vite/dist/node/chunks/config.js:15259",
+   "self_s": 0.03,
+   "share": 0.0001
+  },
+  {
+   "function": "isInt32 node:internal/validators:46",
+   "self_s": 0.029,
+   "share": 0.0001
+  },
+  {
+   "function": "ChildProcessDeserializer node:internal/child_process/serialization:39",
+   "self_s": 0.029,
+   "share": 0.0001
+  },
+  {
+   "function": "traceMappings file:///root/pm/repos/agentlang/node_modules/.pnpm/vite@7.3.1_@types+node@25.2.1/node_modules/vite/dist/node/chunks/config.js:864",
+   "self_s": 0.028,
+   "share": 0.0001
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/parallel-rerun.js:92",
+   "self_s": 0.026,
+   "share": 0.0001
+  },
+  {
+   "function": "slice node:buffer:640",
+   "self_s": 0.026,
+   "share": 0.0001
+  },
+  {
+   "function": "runMicrotasks :0",
+   "self_s": 0.026,
+   "share": 0.0001
+  },
+  {
+   "function": "normalize node:path:1308",
+   "self_s": 0.025,
+   "share": 0.0001
+  },
+  {
+   "function": "writeChannelMessage node:internal/child_process/serialization:109",
+   "self_s": 0.025,
+   "share": 0.0001
+  },
+  {
+   "function": "unlink :0",
+   "self_s": 0.025,
+   "share": 0.0001
+  },
+  {
+   "function": "enter file:///root/pm/repos/agentlang/node_modules/.pnpm/vite@7.3.1_@types+node@25.2.1/node_modules/vite/dist/node/chunks/config.js:15570",
+   "self_s": 0.023,
+   "share": 0.0001
+  },
+  {
+   "function": "handleMessage node:internal/child_process:959",
+   "self_s": 0.02,
+   "share": 0.0001
+  }
+ ],
+ "top_engine": [
+  {
+   "function": "phases.span.part file:///home/user/fx-branch/node/src/session.js:526",
+   "self_s": 0.116,
+   "share": 0.0006
+  },
+  {
+   "function": "depsInput file:///home/user/fx-branch/node/src/loaded.js:30",
+   "self_s": 0.063,
+   "share": 0.0003
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:593",
+   "self_s": 0.037,
+   "share": 0.0002
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/repro.js:156",
+   "self_s": 0.034,
+   "share": 0.0002
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:339",
+   "self_s": 0.031,
+   "share": 0.0002
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/parallel-rerun.js:92",
+   "self_s": 0.026,
+   "share": 0.0001
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/cache/capture.js:1701",
+   "self_s": 0.015,
+   "share": 0.0001
+  },
+  {
+   "function": "projectFrame file:///home/user/fx-branch/node/src/controls.js:203",
+   "self_s": 0.014,
+   "share": 0.0001
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:660",
+   "self_s": 0.013,
+   "share": 0.0001
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:520",
+   "self_s": 0.013,
+   "share": 0.0001
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/loaded.js:38",
+   "self_s": 0.011,
+   "share": 0.0001
+  },
+  {
+   "function": "walk file:///home/user/fx-branch/node/src/loaded.js:15",
+   "self_s": 0.003,
+   "share": 0.0
+  },
+  {
+   "function": "stampStatus file:///home/user/fx-branch/node/src/session.js:587",
+   "self_s": 0.002,
+   "share": 0.0
+  },
+  {
+   "function": "parseArgs file:///home/user/fx-branch/node/src/session.js:74",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:521",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "main file:///home/user/fx-branch/node/src/vitest/cli.js:34",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "finish file:///home/user/fx-branch/node/src/session.js:466",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "pinned file:///home/user/fx-branch/node/bin/detjs.js:110",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "installLevel0Env file:///home/user/fx-branch/node/src/cache/capture.js:1638",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/cache/capture.js:1",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "partOrder file:///home/user/fx-branch/node/src/session.js:323",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "envReadOutside file:///home/user/fx-branch/node/src/session.js:389",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "partIds file:///home/user/fx-branch/node/src/session.js:337",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/controls.js:210",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "get file:///home/user/fx-branch/node/src/cache/capture.js:1596",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/bin/detjs.js:1",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "readMarkers file:///home/user/fx-branch/node/src/parallel.js:535",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "isolatedFiles file:///home/user/fx-branch/node/src/vitest/cli.js:391",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "ownKeys file:///home/user/fx-branch/node/src/cache/capture.js:1611",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/native.js:1",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "afterMerge file:///home/user/fx-branch/node/src/repro.js:211",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:525",
+   "self_s": 0.001,
+   "share": 0.0
+  }
+ ],
+ "engine_self_s": 0.4
+}
