@@ -1522,3 +1522,7 @@ Traceback (most recent call last):
     time.sleep(min(sl, 3700))
     ~~~~~~~~~~^^^^^^^^^^^^^^^
 KeyboardInterrupt
+rate limited (429) on search/code?q=mariadb+%22make+test%22+path%3A.github%2Fworkflows+size%3A0..40000: sleeping 46s
+rate limited (429) on search/code?q=mariadb+%22make+test%22+path%3A.github%2Fworkflows+size%3A0..40000: sleeping 8s
+rate limited (429) on search/code?q=mariadb+%22make+test%22+path%3A.github%2Fworkflows+size%3A0..40000: sleeping 7s
+rate limited (429) on search/code?q=mongo+jest+path%3A.github%2Fworkflows+size%3A0..400000&per_page=10: sleeping 107s
