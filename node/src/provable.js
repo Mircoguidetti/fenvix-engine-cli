@@ -318,7 +318,9 @@ function declare() {
       const line = active ? `ok ${native.provableHeader(SENSOR, runtimeKey())}` : `absent ${reason || 'unknown'}`;
       // keyed by process AND thread: Vitest's pool=threads workers share one pid, and a file per pid let the last
       // thread's line overwrite another's (an `absent` replaced by `ok`: review of claude/runner-proof, C2)
-      fs.writeFileSync(path.join(dir, `${partId()}.txt`), `${line}\n`);
+      // appended, never overwritten (/review F1): a recycled pid with the same threadId adds its line to an earlier
+      // part's instead of replacing it, so an `absent` line is never lost
+      fs.appendFileSync(path.join(dir, `${partId()}.txt`), `${line}\n`);
     } finally { STATE.quietDepth--; }
   } catch { /* the run directory is gone */ }
 }
@@ -358,4 +360,4 @@ function header() {
 // No startTest hook: `report` keys its set by STATE.testId, so the set resets itself at the first gap of each
 // test and there is nothing for the session to remember to call. An exported hook nobody calls is how the
 // per-test set came to be never cleared in the first place.
-module.exports = { install, header, runtimeKey, declare, markRan, partId, SENSOR, get reason() { return reason; } };
+module.exports = { install, header, runtimeKey, declare, markRan, SENSOR, get reason() { return reason; } };

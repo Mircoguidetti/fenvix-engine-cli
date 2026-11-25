@@ -135,7 +135,12 @@ function mergeSessionMeta(metas, labels = [], cliArgs = null, requiredControls =
       const same = (i) => ['contract', 'surface', 'runtime'].every((k) => canon(decl(i)[k]) === canon(decl(ref)[k]));
       const bad = reuseIdx.filter((i) => !same(i));
       const notReused = reuseIdx.filter((i) => !((metas[i] || {}).reused_tests || []).length);
-      const need = [...new Set([...requiredControls(CACHE_REUSE), ...requiredControls(decl(ref).sensor)])];
+      let need;
+      try {
+        need = [...new Set([...requiredControls(CACHE_REUSE), ...requiredControls(decl(ref).sensor)])];
+      } catch (e) {
+        need = [`<the required controls could not be named: ${e && e.message}>`]; // no session has it on: fails closed
+      }
       const off = metas.map((m, i) => i).filter((i) => {
         const on = Array.isArray((metas[i] || {}).controls) ? metas[i].controls : [];
         return need.some((c) => !on.includes(c));

@@ -188,7 +188,9 @@ async function main(runner, argv) {
     const r = runSession({ det: [`--det-trace=${tr}`, `--det-cache-receipts=${rc}`, `--det-cache-summary=${sm}`] },
       [...fileArg, '-t', `^${g.pattern}$`], { DETJS_CACHE_SCOPE: scope });
     const t = readTrace(tr);
-    if (t && t.header) { sessionMetas.push(t.header.meta || {}); sessionLabels.push(g.ids[0]); }
+    // a trace with records but no header line still counts its tests: its meta is then empty, so the merge finds
+    // no sensor for that session and fails closed (/review F2)
+    if (t) { sessionMetas.push((t.header && t.header.meta) || {}); sessionLabels.push(g.ids[0]); }
     const mine = t ? t.tests.filter((x) => g.ids.includes(x.nodeid)) : [];
     const outcomes = g.ids.map((id) => { const x = mine.find((m) => m.nodeid === id); return x ? x.outcome : 'missing'; });
     const s = readJson(sm);

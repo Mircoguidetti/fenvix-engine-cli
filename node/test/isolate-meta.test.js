@@ -100,3 +100,20 @@ test('protects=a run whose sessions were all reused keeps cache-reuse/1; fails_w
   assert.deepEqual(meta.provable, REUSE);
   assert.equal(meta.provable_absent, undefined);
 });
+
+test('protects=the merge\'s other fail-closed branches (/review): a configuration key present in one session and absent from another, a signal list that is not a list, a session with test records and no header (its meta is empty), an engine that cannot name the required controls; and inputs_error is carried with the count; fails_when=absence is taken for agreement, a malformed list is dropped silently, or an unknown list of controls passes; no_claim=none beyond protects', () => {
+  const noEpoch = base(); delete noEpoch.epoch_ns;
+  const missing = mergeSessionMeta([base(), noEpoch], ['a', 'b']).meta;
+  assert.equal(missing.provable, undefined);
+  assert.match(missing.provable_absent, /differ in epoch_ns \(b\)/);
+  const notList = mergeSessionMeta([base(), base({ notes: 'x' })], ['a', 'b']).meta;
+  assert.equal(notList.provable, undefined);
+  assert.match(notList.provable_absent, /notes is not a list/);
+  const headerless = mergeSessionMeta([base(), {}], ['a', 'b']).meta;
+  assert.equal(headerless.provable, undefined, 'a session without a header declares no sensor');
+  const thrower = () => { throw new Error('no engine'); };
+  const noList = mergeSessionMeta([reusedSession(), base()], ['a', 'b'], null, (s) => (s === 'cache-reuse/1' ? thrower() : ['time'])).meta;
+  assert.equal(noList.provable, undefined, 'a required-controls lookup that throws is not a pass');
+  const errs = mergeSessionMeta([base({ inputs_error: 'e1' }), base({ inputs_error: 'e2' })], ['a', 'b']).meta;
+  assert.equal(errs.inputs_error, 'e1 (+1 more sessions)');
+});

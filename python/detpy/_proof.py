@@ -585,9 +585,12 @@ class Capture(_core.CaptureCore):
             except ImportError:  # pragma: no cover - not POSIX
                 posix = None
             real = getattr(posix, name, None) if posix is not None else None
-            if real is not None and getattr(real, "__code__", None) is None:
+            # wrapped whatever it is (another tool's replacement too, /review F5), unless it is already this wrapper
+            if real is not None and not getattr(real, "_detpy_posix_recorded", False):
                 self._stat_saved.append((posix, name, real))
-                setattr(posix, name, make(real, True))
+                w = make(real, True)
+                w._detpy_posix_recorded = True
+                setattr(posix, name, w)
 
         real_stat, real_lstat = os.stat, os.lstat
         for name in ("stat", "lstat", "access", "readlink", "fstat"):
@@ -658,6 +661,34 @@ class Capture(_core.CaptureCore):
         scandir.__wrapped__ = orig_scandir
         self._stat_saved.append((os, "scandir", orig_scandir))
         os.scandir = scandir
+        # W3 (review R-056; /review red team): ``posix.scandir`` called directly gave plain entries whose ``stat()``
+        # was not recorded (a file's size changed and the test was reused). Its binding in ``posix`` wraps the same
+        # way, around the builtin it replaces; the import machinery's own calls stay plain.
+        try:
+            import posix
+        except ImportError:  # pragma: no cover - not POSIX
+            return
+        real = getattr(posix, "scandir", None)
+        if real is None or getattr(real, "_detpy_posix_recorded", False):
+            return
+
+        def posix_scandir(path=".", *args, **kwargs):
+            it = real(path, *args, **kwargs)
+            if isinstance(path, int) or cap._in_stat or _getframe(1).f_globals.get("__name__") in _IMPORT_MACHINERY:
+                return it
+            try:
+                if not _reaches_user(_getframe(1)):
+                    return it
+            except Exception:
+                return it
+            return _ScandirIter(it, cap)
+
+        posix_scandir.__name__ = "scandir"
+        posix_scandir.__doc__ = real.__doc__
+        posix_scandir.__wrapped__ = real
+        posix_scandir._detpy_posix_recorded = True
+        self._stat_saved.append((posix, "scandir", real))
+        posix.scandir = posix_scandir
 
     def _installed(self, p: str) -> bool:
         """Whether a distribution's RECORD lists ``p`` (an installed wheel's library in an environment that lives
@@ -855,6 +886,37 @@ def _patch_posix_environ() -> None:
         def _listed(self):
             _note_env("*")
             return base._listed(self)
+
+        # whole-environment and destructive reads that the C dict slots serve without the methods above (/review F6)
+        def __len__(self):
+            _note_env("*")
+            return base.__len__(self)
+
+        def __repr__(self):
+            _note_env("*")
+            return base.__repr__(self)
+
+        def __eq__(self, other):
+            _note_env("*")
+            return base.__eq__(self, other)
+
+        def __ne__(self, other):
+            _note_env("*")
+            return base.__ne__(self, other)
+
+        __hash__ = None
+
+        def pop(self, key, *default):
+            _note_env(key)
+            return base.pop(self, key, *default)
+
+        def setdefault(self, key, default=None):
+            _note_env(key)
+            return base.setdefault(self, key, default)
+
+        def popitem(self):
+            _note_env("*")
+            return base.popitem(self)
 
     rec = _CacheRecorded(dict.items(data))
     for owner, attr in ((os.environ, "_data"), (getattr(os, "environb", None), "_data"), (posix, "environ")):

@@ -56,6 +56,11 @@ def test_w3_posix_stat_lstat_access_are_recorded_and_import_probes_are_not(tmp_p
         size = posix.stat(p).st_size
         posix.lstat(p)
         posix.access(p, posix.F_OK)
+        os.symlink(p, p + ".l")
+        posix.readlink(p + ".l")
+        fd = posix.open(p, posix.O_RDONLY)
+        fst = type(posix.fstat(fd)).__name__
+        posix.close(fd)
         user = list(cap.calls)
         cap.calls.clear()
         # the import system's own probe: a frame whose module is importlib._bootstrap_external
@@ -64,13 +69,14 @@ def test_w3_posix_stat_lstat_access_are_recorded_and_import_probes_are_not(tmp_p
         wrapped = posix.stat is not keep[0]
         for obj, name, v in reversed(cap._stat_saved):
             setattr(obj, name, v)
-        print(json.dumps({{"user": user, "machinery": machinery, "size": size, "wrapped": wrapped,
+        print(json.dumps({{"user": user, "machinery": machinery, "size": size, "wrapped": wrapped, "fstat": fst,
                           "restored": posix.stat is keep[0]}}))
     """, tmp_path)
     p = str(tmp_path / "data.txt")
     assert out["wrapped"] and out["restored"]
     assert out["size"] == 4, "the real builtin answers"
-    assert out["user"] == [p, p, p], out
+    assert out["user"] == [p, p, p, p + ".l"], out
+    assert out["fstat"] == "_TimedStat", "posix.fstat on a descriptor goes through the recording wrapper"
     assert out["machinery"] == [], out
 
 
@@ -92,15 +98,22 @@ def test_w4_reads_through_posix_environ_are_noted_like_os_environ(tmp_path):
         posix.environ[b"PATH"]
         b"HOME" in posix.environ
         list(posix.environ)
+        after_list = len(noted)
+        len(posix.environ)
+        repr(posix.environ)
+        posix.environ.pop(b"R1FG_ABSENT", None)
+        whole = noted[after_list:]
         same = os.environ._data is posix.environ and os.environb._data is posix.environ
         os.environ["R1FG_W4"] = "x"
         seen = posix.environ.get(b"R1FG_W4")
         print(json.dumps({"noted": [n if isinstance(n, str) else n.decode() for n in noted], "same": same,
+                          "whole": [n if isinstance(n, str) else n.decode() for n in whole],
                           "seen": seen.decode() if seen else None}))
     """, tmp_path)
     assert out["same"] and out["seen"] == "x"
     for name in ("PWD", "PATH", "HOME", "*"):
         assert name in out["noted"], out
+    assert out["whole"] == ["*", "*", "R1FG_ABSENT"], "len, repr and pop are reads too (/review F6)"
 
 
 def test_w5_the_kernel_is_part_of_the_process_key(monkeypatch):
@@ -147,3 +160,57 @@ def test_w8_an_unseeded_c_generator_is_a_gap_and_controlled_ones_are_not():
     assert not gap(_random.Random, 42)
     assert not gap(random.Random, missing) and not gap(OwnPy, missing) and not gap(random.SystemRandom, missing)
     assert not gap(int, missing) and not gap(dict, None)
+    reseed = provable._c_random_reseed
+    c_gen, py_gen = _random.Random(0), random.Random(0)
+    assert reseed(_random.Random.seed, c_gen), "r.seed(...) on a C generator: the method descriptor, the instance"
+    assert reseed(c_gen.seed, None) and reseed(c_gen.seed, missing) and not reseed(c_gen.seed, 7)
+    assert not reseed(_random.Random.seed, py_gen) and not reseed(py_gen.seed, None), "--det controls random.Random"
+
+
+def _cache_vs_uncached(root, files, change, test_id):
+    """Cold cached run, ``change(root)``, warm cached run and uncached --det: the outcomes of ``test_id``."""
+    for rel, text in {"pytest.ini": "[pytest]\npythonpath = .\n", **files}.items():
+        (root / rel).parent.mkdir(parents=True, exist_ok=True)
+        (root / rel).write_text(text)
+    env = {k: v for k, v in os.environ.items() if k not in ("PYTEST_ADDOPTS", "DETPY_CACHE_IN_PROCESS")}
+
+    def run(*args):
+        p = subprocess.run([sys.executable, "-m", "pytest", "-q", "-rA", "-s", "-p", "no:cacheprovider", "-p",
+                            "no:randomly", *args, "tests"], cwd=root, capture_output=True, text=True, env=env,
+                           timeout=600)
+        out = {ln.split()[1]: ln.split()[0].lower() for ln in p.stdout.splitlines()
+               if ln.startswith(("PASSED ", "FAILED "))}
+        return out.get(test_id), p.stdout
+
+    cache = f"--det-cache={root / '.c'}"
+    run("--det", cache)
+    change(root)
+    cached, log = run("--det", cache)
+    uncached, _ = run("--det")
+    return cached, uncached, log
+
+
+def test_w3_entry_stat_through_posix_scandir_is_not_reused_after_the_file_changed(tmp_path):
+    """protects=a file's size read through ``posix.scandir(d)`` entries is an input of the cached test (/review red
+    team, W3 family); fails_when=the warm cached run reuses the pass after the file grew while uncached --det fails it
+    (this branch before the fix: MEASURED ``reused 1 result(s) with proof``); no_claim=other ``posix`` calls than
+    those named in docs and tests."""
+    (tmp_path / "d").mkdir()
+    (tmp_path / "d" / "data.txt").write_text("abcd")
+    body = ("import posix\n\ndef test_v():\n    s = [e.stat().st_size for e in posix.scandir('d') if e.name == 'data.txt']"
+            "\n    assert s == [4]\n")
+    cached, uncached, log = _cache_vs_uncached(tmp_path, {"tests/test_v.py": body},
+                                               lambda r: (r / "d" / "data.txt").write_text("abcdefgh"),
+                                               "tests/test_v.py::test_v")
+    assert uncached == "failed"
+    assert cached == "failed", log[-1500:]
+
+
+def test_w8_reseeding_a_c_generator_from_entropy_is_never_reused(tmp_path):
+    """protects=``_random.Random(0).seed()`` (a reseed from OS entropy in C, /review security finding) makes the test
+    NOT PROVEN and never reused, like an unseeded construction (founder decision W8 = refuse); fails_when=the warm
+    cached run reuses it while fresh --det runs read different values (this branch before the fix: MEASURED);
+    no_claim=seeds other than None (a seeded ``r.seed(42)`` called as a method is refused too: stricter, not tested)."""
+    body = "import _random\n\ndef test_e():\n    r = _random.Random(0)\n    r.seed()\n    print('VALUE', r.random())\n"
+    _, _, log = _cache_vs_uncached(tmp_path, {"tests/test_e.py": body}, lambda r: None, "tests/test_e.py::test_e")
+    assert not any(ln.startswith("reused 1 ") for ln in log.splitlines()), log[-1500:]

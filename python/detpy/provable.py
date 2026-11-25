@@ -46,13 +46,18 @@ is declared rather than hidden:
 
 from __future__ import annotations
 
+import _random
 import os
+import random
 import sys
-import weakref
 
 from . import _core, _sites, _state
 
 _mon = getattr(sys, "monitoring", None)
+_MISSING = getattr(_mon, "MISSING", object())
+_C_RANDOM = _random.Random
+_PY_RANDOM = random.Random
+_C_SEED = _random.Random.seed  # the method descriptor (W8)
 
 #: Name and version of this sensor, as the trace header declares it. The core refuses a trace whose sensor it
 #: does not know, so this string and the contract version travel together.
@@ -261,14 +266,14 @@ class Sensor:
             f = getattr(c, "__func__", None)  # a bound Python method, a classmethod
             if f is not None and getattr(f, "__code__", None) is not None:
                 return None
-            if isinstance(c, type) and _unseeded_c_random(c, arg0):
+            if (isinstance(c, type) and _unseeded_c_random(c, arg0)) or _c_random_reseed(c, arg0):
                 # Spec "false greens on release-1", W8 (founder decision 2026-11-25: refuse). The C generator
                 # `_random.Random()` built without a seed seeds itself from OS entropy inside C: --det controls
                 # `random.Random` (its Python `seed`, src: seeds.py), not this, so fresh --det runs see different
                 # values. A gap: the test is NOT PROVEN and the cache neither stores nor reuses it.
                 site = _sites.resolve(_CALLER)
                 if site is not None:
-                    self._report("api", f"{getattr(c, '__module__', '?')}.{getattr(c, '__qualname__', '?')}() "
+                    self._report("api", f"{getattr(c, '__module__', None) or '_random'}.{getattr(c, '__qualname__', '?')}() "
                                         "without a seed (C generator seeded from OS entropy)", site or _site(code, offset))
             mod = getattr(c, "__module__", None)
             qual = getattr(c, "__qualname__", None) or getattr(c, "__name__", None)
@@ -455,29 +460,32 @@ class Sensor:
         return json.loads(_core.provable_header(SENSOR, runtime_key()))
 
 
-# type -> whether it is a C generator --det does not seed (W8), per type, once; weak: a test's own classes are not
-# kept alive by the sensor
-_C_RANDOM_TYPES = weakref.WeakKeyDictionary()
-
-
 def _unseeded_c_random(c, arg0) -> bool:
     """W8: is calling ``c`` with first argument ``arg0`` the construction of ``_random.Random`` (or a subclass that
     does not go through ``random.Random``, whose ``seed`` --det controls) without a seed? A seed of None is none.
-    Asked for every type the tests call (the sensor's hot path): the type's answer is computed once."""
-    is_c = _C_RANDOM_TYPES.get(c)
-    if is_c is None:
-        try:
-            import _random
-            import random
+    Asked for every type the tests call (the sensor's hot path): one C-level ``issubclass`` for almost every type,
+    no allocation (/review: a cache keyed by the type cost more and raised for unhashable metaclasses)."""
+    try:
+        if not issubclass(c, _C_RANDOM) or issubclass(c, _PY_RANDOM):
+            return False
+    except TypeError:
+        return False
+    return arg0 is None or arg0 is _MISSING
 
-            is_c = issubclass(c, _random.Random) and not issubclass(c, random.Random)
-        except (ImportError, TypeError):
-            is_c = False
-        try:
-            _C_RANDOM_TYPES[c] = is_c
-        except TypeError:  # pragma: no cover - a type that takes no weak reference
-            pass
-    return is_c and (arg0 is None or arg0 is getattr(_mon, "MISSING", object()))
+
+def _c_random_reseed(c, arg0) -> bool:
+    """W8 (/review security finding): a reseed of an existing C generator from OS entropy, ``r.seed()`` /
+    ``r.seed(None)`` on a ``_random.Random`` that is not a ``random.Random`` (whose Python ``seed`` --det
+    controls). Called as a method, the event shows the descriptor and the instance (``arg0``), not the seed: such a
+    call is a gap whatever its seed (stricter than needed for ``r.seed(42)``, never looser). Called as a bound method,
+    ``arg0`` is the seed."""
+    if c is _C_SEED:
+        return isinstance(arg0, _C_RANDOM) and not isinstance(arg0, _PY_RANDOM)
+    s = getattr(c, "__self__", None)
+    if s is not None and getattr(c, "__name__", None) == "seed" and isinstance(s, _C_RANDOM) \
+            and not isinstance(s, _PY_RANDOM):
+        return arg0 is None or arg0 is _MISSING
+    return False
 
 
 def _site(code, offset) -> str:

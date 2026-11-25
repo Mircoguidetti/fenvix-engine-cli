@@ -394,9 +394,10 @@ function envReadOutside(dir) {
   return [...names].sort();
 }
 
-/** The lines of every <run dir>/<sub>/*.txt, deduplicated. */
 /**
- * `meta.provable` for the run, assembled from what every process declared (`prov/<pid>.txt`).
+ * `meta.provable` for the run, assembled from what every process and thread declared (`prov/<pid>-<threadId>.txt`);
+ * a part that installed the engine's test hooks (`prov/<pid>-<threadId>.ran`) and declared nothing makes the run
+ * declare none.
  *
  * The run declares a sensor only when every part declared the same one. A part that could not start a sensor, or
  * a part that wrote nothing, makes the run declare none -- and then the verifier reports every test NOT PROVEN,
@@ -462,6 +463,7 @@ function provParts(dir) {
   return parts;
 }
 
+/** The lines of every <run dir>/<sub>/*.txt, deduplicated. */
 function runLines(dir, sub) {
   const out = new Set();
   const d = path.join(dir, sub);
@@ -696,4 +698,4 @@ function realEntropyTests(tracePath, urandom) {
   return out;
 }
 
-module.exports = { realEntropyTests, parseArgs, resolveEpoch, traceEpochNs, prepare, header, finish, partIds, partOrder, stampStatus, printsStatus, HELP, VERSION };
+module.exports = { realEntropyTests, parseArgs, resolveEpoch, traceEpochNs, prepare, header, finish, partIds, partOrder, provableField, stampStatus, printsStatus, HELP, VERSION };
