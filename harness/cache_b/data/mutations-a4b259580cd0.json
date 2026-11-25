@@ -1,0 +1,90 @@
+{
+ "engine_commit": "a4b259580cd016a9eb7ee2b269e802196d355a63",
+ "ts": "2026-11-25T20:27:31Z",
+ "addon_sha256": "2588c2641f074090734fbeb189143227dabb8d62e28105a85e19d47e5a748264",
+ "channels": {
+  "unmutated": {
+   "tests": [
+    "cache-fault-clock.test.js",
+    "cache-fault-config.test.js",
+    "cache-fault-env.test.js",
+    "cache-fault-negative.test.js",
+    "cache-fault-node-modules.test.js",
+    "cache-fault-outside.test.js",
+    "cache-fault-repo-file.test.js"
+   ],
+   "exit": 0,
+   "pass": 14,
+   "fail": 0,
+   "diff": "",
+   "expected": "pass",
+   "as_expected": true
+  },
+  "a": {
+   "tests": [
+    "cache-fault-repo-file.test.js"
+   ],
+   "exit": 1,
+   "pass": 0,
+   "fail": 2,
+   "diff": "node/src/cache/capture.js | 1 +\n 1 file changed, 1 insertion(+)",
+   "expected": "fail",
+   "as_expected": true
+  },
+  "b": {
+   "tests": [
+    "cache-fault-env.test.js"
+   ],
+   "exit": 1,
+   "pass": 0,
+   "fail": 2,
+   "diff": "node/src/cache/capture.js | 1 +\n 1 file changed, 1 insertion(+)",
+   "expected": "fail",
+   "as_expected": true
+  },
+  "c": {
+   "tests": [
+    "cache-fault-outside.test.js"
+   ],
+   "exit": 1,
+   "pass": 0,
+   "fail": 2,
+   "diff": "node/src/cache/capture.js | 1 +\n 1 file changed, 1 insertion(+)",
+   "expected": "fail",
+   "as_expected": true
+  },
+  "d": {
+   "tests": [
+    "cache-fault-node-modules.test.js"
+   ],
+   "exit": 1,
+   "pass": 0,
+   "fail": 2,
+   "diff": "node/src/cache/runtime-id.js | 4 ++--\n 1 file changed, 2 insertions(+), 2 deletions(-)",
+   "expected": "fail",
+   "as_expected": true
+  },
+  "e": {
+   "tests": [
+    "cache-fault-config.test.js"
+   ],
+   "exit": 1,
+   "pass": 0,
+   "fail": 2,
+   "diff": "node/src/cache/capture.js | 4 ++--\n node/src/cache/proof.js   | 7 +++----\n 2 files changed, 5 insertions(+), 6 deletions(-)",
+   "expected": "fail",
+   "as_expected": true
+  },
+  "f": {
+   "tests": [
+    "cache-fault-clock.test.js"
+   ],
+   "exit": 1,
+   "pass": 0,
+   "fail": 2,
+   "diff": "node/src/cache/capture.js | 2 +-\n 1 file changed, 1 insertion(+), 1 deletion(-)",
+   "expected": "fail",
+   "as_expected": true
+  }
+ }
+}
