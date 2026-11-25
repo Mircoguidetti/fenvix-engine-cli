@@ -38,7 +38,7 @@ again in one lane." NOT PROVEN comes from a hazard re-run that did not account f
 (node/src/parallel-rerun.js ``accountRerun``) and from the two run-level signals below.
 
 **``proof``** (vitest, jest, node:test; mocha always runs in one lane under ``--det``): written when the final trace
-header's ``meta.parallel`` is an object whose ``workers`` is an integer above 1 and at least one test ran in lanes
+header has ``meta.parallel`` with ``workers`` other than 1 and at least one test ran in lanes
 (``ran_executed``: outcomes not reused and not ``skipped``/``todo``). From the final trace (the wrapper's, after a
 hazard re-run):
 
@@ -58,13 +58,16 @@ hazard re-run):
                              then cause; a cause is cut to 500 UTF-16 code units; past 50 groups, the first 49 and one
                              "other causes"
 
-Fail closed: with tests run in lanes, a missing or malformed ``workers``, ``status.not_proven``, ``status.passed``,
+Fail closed: with tests run in lanes, a ``meta.parallel`` that is not an object, a missing or malformed ``workers``
+(or below 1), ``parallel.hazards`` not a list, hazards recorded but no ``hazard_rerun`` (the re-run was skipped), a
+missing or malformed ``status.not_proven``, ``status.passed``,
 ``status.failed``, ``timing.lanes_wall_seconds``, ``hazard_rerun.tests`` (when there was a re-run), any
 ``hazard_rerun.not_proven[].tests`` or ``.cause``, or a ``proven`` below 0: no ``proof``, top-level ``not_proven`` at
 least 1, ``proof incomplete: <field>`` in the log, and exit 1 when it was 0.
 
 **Two run-level signals**, on every Node summary (parallel or not): ``provable_absent`` (the header's, or null: the
-run could not watch what tests touched) and ``not_proven_outside`` (the number of ``meta.not_proven_outside_tests``:
+run could not watch what tests touched; also set when the header declares no sensor, ``meta.provable``, and gives no
+reason) and ``not_proven_outside`` (the number of ``meta.not_proven_outside_tests``:
 uncontrolled reads outside the tests, such as ``env:<name>``; not a count of tests). Either one firing makes the
 top-level ``not_proven`` at least 1 and the exit 1 when it was 0. Known limit: after a hazard re-run the merged header
 keeps the first pass's meta, so a signal raised only in the re-run is not seen.
@@ -686,14 +689,16 @@ def node_proof(meta: dict, footer: dict | None, outcomes: dict, reused_outcomes:
     due (no lanes, one worker, nothing ran in lanes); (None, field) when it is due but ``field`` is missing or
     malformed (fail closed)."""
     par = meta.get("parallel")
-    if not isinstance(par, dict):
-        return None, None
-    workers = par.get("workers")
-    if isinstance(workers, int) and not isinstance(workers, bool) and workers <= 1:
+    if par is None:
         return None, None
     if ran_executed_of(outcomes, reused_outcomes) == 0:
         return None, None
-    if not _whole(workers):
+    if not isinstance(par, dict):
+        return None, "parallel"
+    workers = par.get("workers")
+    if isinstance(workers, int) and not isinstance(workers, bool) and workers == 1:
+        return None, None
+    if not _whole(workers) or workers < 1:
         return None, "workers"
     status = meta.get("status") if isinstance(meta.get("status"), dict) else {}
     for k in ("not_proven", "passed", "failed"):
@@ -702,13 +707,20 @@ def node_proof(meta: dict, footer: dict | None, outcomes: dict, reused_outcomes:
     timing = par.get("timing") if isinstance(par.get("timing"), dict) else {}
     if not _seconds(timing.get("lanes_wall_seconds")):
         return None, "timing.lanes_wall_seconds"
+    hazards = par.get("hazards", [])
+    if not isinstance(hazards, list):
+        return None, "parallel.hazards"
     hr = meta.get("hazard_rerun")
+    # lanes in conflict and no one-lane re-run (detjs skips it when DETJS_HAZARD_RERUN=1 is already set): unresolved
+    if hazards and hr is None:
+        return None, "hazard_rerun"
     rerun, causes = 0, []
     if hr is not None:
         if not isinstance(hr, dict) or not _whole(hr.get("tests")):
             return None, "hazard_rerun.tests"
         rerun = hr["tests"]
-        np_ = hr.get("not_proven") or []
+        np_ = hr.get("not_proven")
+        np_ = [] if np_ is None else np_
         if not isinstance(np_, list):
             return None, "hazard_rerun.not_proven"
         for e in np_:
@@ -740,6 +752,12 @@ def engine_signals(meta: dict) -> tuple[str | None, int]:
     pa = meta.get("provable_absent")
     if pa is not None and not isinstance(pa, str):
         pa = json.dumps(pa)  # an unexpected shape still fires: never green on it
+    elif pa == "":
+        pa = "the run gave no reason"
+    elif pa is None and not isinstance(meta.get("provable"), dict):
+        # neither a sensor nor a reason (node/src/session.js provableField returns {} when no process declared one):
+        # the run cannot show what tests touched
+        pa = "the run declared no sensor"
     npo = meta.get("not_proven_outside_tests")
     n = len(npo) if isinstance(npo, list) else (1 if npo else 0)
     return pa, n

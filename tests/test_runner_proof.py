@@ -40,6 +40,8 @@ OUT4 = {"a.test.js::1": "passed", "a.test.js::2": "passed", "b.test.js::1": "pas
 def meta(**over) -> dict:
     """A parallel final trace header: 2 workers, 4 tests passed, no hazard."""
     m = {
+        # every real header declares its sensor (node/src/session.js provableField); without it the run is NOT PROVEN
+        "provable": {"sensor": "node-surface/1"},
         "status": {"passed": 4, "failed": 0, "not_proven": 0, "skipped": 0},
         "parallel": {"workers": 2, "hazards": [], "timing": {"files": 2, "test_file_seconds": 1.5, "lanes_wall_seconds": 0.9}},
     }
@@ -158,7 +160,7 @@ def test_serial_run_has_no_proof():
     m["parallel"]["workers"] = 1
     assert proof(m) == (None, None)
     assert proof({"status": meta()["status"]}) == (None, None)
-    assert proof(meta(parallel="x")) == (None, None)
+    # a meta.parallel that is not an object now fails closed (review 2026-11-25): test_review_fail_closed_shapes
 
 
 def test_nothing_ran_in_lanes_has_no_proof_and_is_not_not_proven():
@@ -192,6 +194,37 @@ def test_each_fail_closed_field(field, edit):
     m = meta()
     edit(m)
     assert proof(m) == (None, field)
+
+
+@pytest.mark.parametrize("field,edit", [
+    # review 2026-11-25: hazards recorded but no one-lane re-run (DETJS_HAZARD_RERUN=1 already in the job environment
+    # makes detjs skip it): the conflicts were never resolved, so nothing is proven
+    ("hazard_rerun", lambda m: m["parallel"].__setitem__("hazards", [{"kind": "path", "a": "a.test.js", "b": "b.test.js"}])),
+    ("parallel.hazards", lambda m: m["parallel"].__setitem__("hazards", "x")),
+    ("parallel", lambda m: m.__setitem__("parallel", "x")),
+    ("workers", lambda m: m["parallel"].__setitem__("workers", 0)),
+    ("workers", lambda m: m["parallel"].__setitem__("workers", -2)),
+    ("hazard_rerun.not_proven", lambda m: m.__setitem__("hazard_rerun", {"tests": 2, "not_proven": "x"})),
+    ("hazard_rerun.not_proven", lambda m: m.__setitem__("hazard_rerun", {"tests": 2, "not_proven": 0})),
+    ("hazard_rerun.not_proven[].cause", lambda m: m.__setitem__("hazard_rerun", {"tests": 2, "not_proven": [{"tests": 1}]})),
+    ("hazard_rerun.not_proven[].cause", lambda m: m.__setitem__("hazard_rerun", {"tests": 2, "not_proven": [{"tests": 1, "cause": ""}]})),
+])
+def test_review_fail_closed_shapes(field, edit):
+    """protects=hazards without a re-run, a non-object meta.parallel, workers below 1, a non-list not_proven and a
+    missing or empty cause all fail closed and name the field; fails_when=any of them gives a proof or "no proof due"
+    (a green check); no_claim=why the engine wrote that shape."""
+    m = meta()
+    edit(m)
+    assert proof(m) == (None, field)
+
+
+def test_hazards_with_a_rerun_still_give_a_proof():
+    """protects=the normal hazard path (hazards and a complete re-run) keeps its proof; fails_when=the new hazard
+    check fails it closed too; no_claim=the re-run's correctness."""
+    m = meta(hazard_rerun={"files": ["a.test.js", "b.test.js"], "tests": 4, "not_proven": [], "complete": True})
+    m["parallel"]["hazards"] = [{"kind": "path", "a": "a.test.js", "b": "b.test.js"}]
+    p, why = proof(m)
+    assert why is None and p["rerun_one_lane"] == 4
 
 
 def test_proven_below_zero_fails_closed():
@@ -415,9 +448,19 @@ def test_wrapper_signal_fires_exit_1_and_summary_agrees(stubjob, extra, why):
     assert s["proof"]["not_proven"] == 0  # the proof itself stays the engine's; the run is NOT PROVEN by the signal
 
 
+def test_engine_signals_fire_without_a_declared_sensor():
+    """protects=a header with neither `provable` nor `provable_absent` (node/src/session.js provableField returns {}
+    when no process declared a sensor) and an empty provable_absent both fire; fails_when=either reads as "watched";
+    no_claim=why the sensor was missing."""
+    assert W.engine_signals({"status": {}})[0] == "the run declared no sensor"
+    assert W.engine_signals({"provable": "x"})[0] == "the run declared no sensor"
+    assert W.engine_signals({"provable_absent": ""})[0] == "the run gave no reason"
+    assert W.engine_signals({"provable": {"sensor": "node-surface/1"}}) == (None, 0)
+
+
 def test_engine_signals_shapes():
     """protects=the signal fields' shapes (string or null; a whole number); fails_when=a non-string provable_absent
     is dropped (would read as no signal); no_claim=the engine's wording."""
-    assert W.engine_signals({}) == (None, 0)
+    assert W.engine_signals({"provable": {"sensor": "s"}}) == (None, 0)
     assert W.engine_signals({"provable_absent": "x", "not_proven_outside_tests": ["env:A"]}) == ("x", 1)
     assert W.engine_signals({"provable_absent": True})[0] == "true"
