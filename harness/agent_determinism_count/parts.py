@@ -132,7 +132,13 @@ def artifact_zip(run: str, name: str) -> Path:
     if not hit:
         raise SystemExit(f"artifact {name} of run {run} not found")
     _get(hit[0]["archive_download_url"], True, z)
+    meta = CACHE / f"{name}.json"
+    meta.write_text(json.dumps({k: hit[0].get(k) for k in ("id", "name", "size_in_bytes", "created_at", "expires_at")}))
     return z
+
+
+def artifact_meta(name: str) -> dict:
+    return _load(CACHE / f"{name}.json", {})
 
 
 def _extract(z: Path, member: str, dest: Path) -> bool:
@@ -202,7 +208,8 @@ def restore(family: str) -> int:
     shutil.move(str(tmp / "leaves.jsonl.gz"), leaf)
     ix = _load(index_path(family), {})
     ix[leaf.name] = {"run_id": run, "artifact": f"agent-determinism-count-results-{run}",
-                     "artifact_path": f"discovery/leaves_{family}.jsonl.gz", **file_facts(leaf)}
+                     "artifact_path": f"discovery/leaves_{family}.jsonl.gz", **file_facts(leaf),
+                     "expires_at": artifact_meta(f"agent-determinism-count-results-{run}").get("expires_at")}
     _save(index_path(family), ix)
     import datetime as dt
     spec["restored_at"] = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
