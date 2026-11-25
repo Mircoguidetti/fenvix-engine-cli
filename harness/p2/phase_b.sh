@@ -13,7 +13,6 @@ checkpoint() {
   ( cd "$REPOROOT" && git add -A "$OUT" 2>/dev/null
     git commit -q -m "P2 checkpoint: phaseB $REPO ($1)
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01YAF6DhJzRTSxmDKxqkVCm3" -- "$OUT" >/dev/null 2>&1
     for i in 1 2 3 4; do git push -q origin claude/p2-speed 2>/dev/null && break; sleep $((2**i)); done )
 }
