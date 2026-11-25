@@ -208,7 +208,9 @@ def main():
             rc, dt, out = sh(INSTALL[o.repo], repo_dir, env, 1800, log=os.path.join(rundir, 'install.log'))
             row.update(install_rc=rc, install_s=dt)
             if rc != 0:
-                row.update(status='ENV', error=f'install: {[l for l in out.splitlines() if l.strip()][-1:]}')
+                lines = [l for l in out.splitlines() if l.strip()]
+                first = next((l for l in lines if re.search(r' error: |ERR_|ERR!|npm error code|ENOENT|EBADENGINE', l)), None)
+                row.update(status='ENV', error=f'install: {(first or (lines[-1] if lines else "")).strip()[:400]}')
                 write_row(rows_path, row)
                 continue
             # runner caches inside the tree start empty (git clean keeps node_modules)
