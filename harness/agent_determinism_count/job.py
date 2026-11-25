@@ -56,9 +56,14 @@ def main() -> int:
         if parts.restore(fam) != 0:  # state of an earlier run kept in its artifact (results/discovery/restore_*.json)
             print("restore failed: discovery not run; the request stays pending")
             return 1
-        rc = discover.prepass(fam, "workflow")
-        if rc == 0:
-            rc = discover.run(fam, "workflow", float(req.get("max_minutes", 300)), None)
+        import ghapi
+        try:
+            rc = discover.prepass(fam, "workflow")
+            if rc == 0:
+                rc = discover.run(fam, "workflow", float(req.get("max_minutes", 300)), None)
+        except ghapi.DeadlineReached as e:  # state is saved after every node: the request stays pending and resumes
+            print(f"job deadline: {e}; discovery {fam} resumes in the next run")
+            return 0
         chunk.mark_done(name, {"discovery": fam, "rc": rc, "at": chunk.now()})  # the next request resumes
         return 0
     if req.get("probe"):
