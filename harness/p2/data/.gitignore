@@ -1,0 +1,12 @@
+# P2 (gate rev 4 note 2): traces, engine state, raw CPU profiles and raw logs stay out of git.
+# results.jsonl (timed rows) and fixed.jsonl (fixed-epoch rows) are always committed.
+*.jsonl
+!results.jsonl
+!fixed.jsonl
+state-*/
+*.cpuprofile
+runs.log
+# raw per-run JSON (the committed forms are verify*.json.gz and tests-*.jsonl.gz)
+verify*.json
+plain*.runner.json
+plain*.ids.json
