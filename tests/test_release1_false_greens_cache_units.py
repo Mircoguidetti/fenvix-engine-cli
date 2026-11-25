@@ -392,3 +392,23 @@ def test_w8_a_seeded_c_generator_stays_reusable_through_the_controlled_class(tmp
                                                "tests/test_e.py::test_e")
     assert uncached == "passed" and cached == "passed", log[-1500:]
     assert any(ln.startswith("reused 1 ") for ln in log.splitlines()), log[-1500:]
+
+
+@pytest.mark.parametrize("call", ["posix.statvfs('.').f_bavail", "posix.fstatvfs(0).f_bavail"],
+                         ids=["statvfs", "fstatvfs"])
+def test_posix_statvfs_is_recorded_like_os_statvfs(tmp_path, call):
+    """protects=a disk measurement read through ``posix.statvfs`` / ``posix.fstatvfs`` (the builtins ``os.statvfs`` is,
+    reached without ``os``) is recorded in the trace like ``os.statvfs`` (osstate control, /review red team, W3 family,
+    4bd560da); fails_when=``posix`` keeps the unwrapped builtin and the read leaves no record (release-1 24962a94),
+    so a test whose outcome depends on free space compares equal across runs; no_claim=what the verifier does with
+    the record (the existing os.statvfs tests)."""
+    (tmp_path / "pytest.ini").write_text("[pytest]\npythonpath = .\n")
+    (tmp_path / "tests").mkdir()
+    (tmp_path / "tests" / "test_v.py").write_text(f"import posix\n\ndef test_v():\n    assert {call} >= 0\n")
+    env = {k: v for k, v in os.environ.items() if k not in ("PYTEST_ADDOPTS",)}
+    p = subprocess.run([sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider", "-p", "no:randomly", "--det",
+                        "tests"], cwd=tmp_path, capture_output=True, text=True, env=env, timeout=600)
+    assert p.returncode == 0, p.stdout[-1500:] + p.stderr[-1500:]
+    trace = (tmp_path / ".detpy" / "trace.jsonl").read_text()
+    name = call.split("(")[0].replace("posix.", "os.")
+    assert f'"{name}"' in trace, trace[-2000:]
