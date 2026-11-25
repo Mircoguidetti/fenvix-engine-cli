@@ -301,7 +301,9 @@ elif mode != "no-outcomes":
     json.dump({"order": ["a.test.js::t"], "outcomes": {"a.test.js::t": outcome}}, open(opt["--det-outcomes"], "w"))
 st = {"failed": int(outcome == "failed"), "not_proven": 0, "passed": int(outcome == "passed"), "skipped": 0}
 with open(opt["--det-trace"], "w") as fh:
-    fh.write(json.dumps({"type": "header", "meta": {"status": st, "epoch_ns": "1795392000000000000"}}) + "\n")
+    # a sensor, as every real header declares one (node/src/session.js provableField; fenvix-run engine_signals)
+    fh.write(json.dumps({"type": "header", "meta": {"status": st, "epoch_ns": "1795392000000000000",
+                                                    "provable": {"sensor": "node-surface/1"}}}) + "\n")
 sys.exit(0)
 """
 
@@ -373,3 +375,31 @@ def test_bad_detjs_command_is_exit_2(tmp_path):
 ])
 def test_keep_runner_args(extra, kept):
     assert _load_wrapper()._keep_runner_args(extra) == kept
+
+
+@pytest.fixture(scope="module")
+def hazard_project(tmp_path_factory):
+    """tests/fixtures/runner-node/vitest-hazard, copied and installed: two files writing one temp path."""
+    d = tmp_path_factory.mktemp("proj-hazard") / "vitest-hazard"
+    shutil.copytree(FIXTURES / "vitest-hazard", d)
+    r = subprocess.run(["npm", "ci", "--no-audit", "--no-fund"], cwd=d, capture_output=True, text=True, timeout=600)
+    assert r.returncode == 0, f"npm ci in the vitest-hazard fixture failed:\n{r.stdout}\n{r.stderr}"
+    return d
+
+
+def test_parallel_hazard_run_sends_a_proof_with_the_one_lane_rerun(hazard_project, detjs, tmp_path):
+    """protects=a real detjs run in 2 lanes with a cross-lane hazard: the wrapper's summary carries `proof` from the
+    engine's own header (the fields fenvix-run reads: meta.parallel.workers, timing, hazards, hazard_rerun.tests),
+    every test proven after the one-lane re-run, exit 0; fails_when=the engine renames or drops a field the runner
+    reads (the proof fails closed, exit 1), or the re-run is not reported; no_claim=a hazard the engine does not see."""
+    code, s, md, log = job(tmp_path, hazard_project, "hz", detjs, "--no-rerun", "--", "--det-workers=2",
+                           env={"DETJS_PLAN_STATE": str(tmp_path / "plan-state.json")})
+    header = json.loads(Path(s["trace_file"]).read_text().splitlines()[0])["meta"]
+    assert header["parallel"]["hazards"], f"the fixture raised no hazard:\n{log}"
+    assert code == 0 and s["exit"] == 0, log
+    p = s.get("proof")
+    assert p is not None, log
+    assert p["workers"] == 2 and p["not_proven"] == 0 and p["not_proven_causes"] == []
+    assert p["rerun_one_lane"] == 4 and p["proven"] == 4, p
+    assert s["provable_absent"] is None and s["not_proven_outside"] == 0
+    record("vitest-hazard", "proof", p)

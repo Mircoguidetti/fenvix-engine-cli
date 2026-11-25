@@ -31,7 +31,8 @@ test('B3: a hazard file with 0 matching re-run tests yields its first-pass tests
   const r = accountRerun(first, rerun, ['a.test.js', 'b.test.js']);
   assert.equal(r.complete, false);
   assert.deepEqual(r.notProven, ['a.test.js::1', 'a.test.js::2']);
-  assert.deepEqual(r.notProvenFiles, [{ file: 'a.test.js', cause: 'it ran 0 of its 2 test(s)' }]);
+  // changed (proof to the customer, B1): the cause names the file and the one-lane re-run, and says how many tests
+  assert.deepEqual(r.notProvenFiles, [{ file: 'a.test.js', cause: 'a.test.js: the one-lane re-run ran 0 of its 2 test(s)', tests: 2 }]);
 });
 
 test('B3: a missing re-run trace makes every first-pass test of the hazard files NOT PROVEN', () => {
@@ -40,7 +41,9 @@ test('B3: a missing re-run trace makes every first-pass test of the hazard files
   assert.equal(r.complete, false);
   assert.deepEqual(r.notProven, ['a.test.js::1', 'b.test.js::1']);
   assert.deepEqual(r.notProvenFiles.map((x) => x.file), ['a.test.js', 'b.test.js']);
-  assert.ok(r.notProvenFiles.every((x) => x.cause === 'its trace is missing'));
+  // changed (proof to the customer, B1): the cause names the file and the one-lane re-run
+  assert.deepEqual(r.notProvenFiles.map((x) => x.cause), ['a.test.js: the one-lane re-run left no trace', 'b.test.js: the one-lane re-run left no trace']);
+  assert.deepEqual(r.notProvenFiles.map((x) => x.tests), [1, 1]);
 });
 
 test('appendix 4: a partly accounted re-run makes the unaccounted tests NOT PROVEN', () => {
@@ -48,7 +51,8 @@ test('appendix 4: a partly accounted re-run makes the unaccounted tests NOT PROV
   const r = accountRerun(first, [rec('a.test.js::2')], ['a.test.js']);
   assert.equal(r.complete, false);
   assert.deepEqual(r.notProven, ['a.test.js::1', 'a.test.js::3']);
-  assert.deepEqual(r.notProvenFiles, [{ file: 'a.test.js', cause: 'it ran 1 of its 3 test(s)' }]);
+  // changed (proof to the customer, B1): the cause names the file and the one-lane re-run, and says how many tests
+  assert.deepEqual(r.notProvenFiles, [{ file: 'a.test.js', cause: 'a.test.js: the one-lane re-run ran 1 of its 3 test(s)', tests: 2 }]);
 });
 
 test('the bfaf70b4 defect: a project-qualified id is wanted, and with no re-run record of it is NOT PROVEN', () => {
@@ -95,4 +99,16 @@ test('isolate namePattern: " #n" stripped only for a real duplicate, "::" inside
   assert.equal(m('f::d::x #2', 'd x'), true); // the duplicate runs under its shared name
   assert.equal(m('f::Parser::parse throws', 'Parser::parse throws'), true); // a test named with '::'
   assert.equal(m('f::Parser::parse throws', 'Parser parse throws'), true); // or a describe 'Parser'
+});
+
+// protects=each NOT PROVEN file entry carries how many of its tests are NOT PROVEN, and those counts add up to the
+// unaccounted tests (the runner sums them into proof.not_proven_causes); fails_when=a count is missing, off, or the
+// sum differs; no_claim=the re-run itself (main(), see the parallel-p041 tests).
+test('B1: notProvenFiles[].tests sum to the unaccounted tests, one entry per file, want.length counts the hazard files only', () => {
+  const first = [rec('a.test.js::1'), rec('a.test.js::2'), rec('b.test.js::1'), rec('b.test.js::2'), rec('b.test.js::3'), rec('c.test.js::1')];
+  const r = accountRerun(first, [rec('a.test.js::2')], ['a.test.js', 'b.test.js']);
+  assert.equal(r.want.length, 5); // what main() writes as meta.hazard_rerun.tests
+  assert.deepEqual(r.notProvenFiles.map((x) => [x.file, x.tests]), [['a.test.js', 1], ['b.test.js', 3]]);
+  assert.equal(r.notProvenFiles.reduce((a, x) => a + x.tests, 0), r.unaccounted.length);
+  assert.match(r.notProvenFiles[1].cause, /^b\.test\.js: the one-lane re-run ran 0 of its 3 test\(s\)$/);
 });
