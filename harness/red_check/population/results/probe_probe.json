@@ -1,0 +1,35 @@
+{
+ "as_of": "2026-11-25",
+ "jobs": [
+  {
+   "age_days": 9.08,
+   "api_status": 302,
+   "blob_status": 200,
+   "body_bytes": 920764,
+   "class": "ok",
+   "completed_at": "2026-11-15T22:01:33Z",
+   "first_200": "\ufeff2026-11-15T21:59:18.8684250Z Current runner version: '2.338.2'\n2026-11-15T21:59:18.8699470Z ##[group]Runner Image Provisioner\n2026-11-15T21:59:18.8700080Z Hosted Compute Agent\n2026-11-15T21:59:18.870",
+   "job_id": 132973304825,
+   "repo": "xikimay/nirux",
+   "requests": 2,
+   "source": "count2 raw check-run, https://github.com/xikimay/nirux/pull/551"
+  },
+  {
+   "age_days": 9.15,
+   "api_status": 302,
+   "blob_status": 200,
+   "body_bytes": 169933,
+   "class": "ok",
+   "completed_at": "2026-11-15T20:21:03Z",
+   "first_200": "\ufeff2026-11-15T19:49:03.1602033Z Current runner version: '2.338.2'\n2026-11-15T19:49:03.1637879Z ##[group]Runner Image Provisioner\n2026-11-15T19:49:03.1639288Z Hosted Compute Agent\n2026-11-15T19:49:03.164",
+   "job_id": 132869934598,
+   "repo": "nikolay-e/diffctx",
+   "requests": 2,
+   "source": "count2 raw check-run, https://github.com/nikolay-e/diffctx/pull/762"
+  }
+ ],
+ "rate_limit": 5000,
+ "rate_remaining": 47,
+ "requests": 4,
+ "verdict": "works"
+}
