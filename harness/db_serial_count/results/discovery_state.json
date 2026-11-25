@@ -1,6 +1,22 @@
 {
  "finished": null,
  "queries": {
+  "mysql \"go test\"": {
+   "done": true,
+   "leaves": 9,
+   "nodes": 17,
+   "root_incomplete": false,
+   "root_total": 3308,
+   "stack": []
+  },
+  "mysql \"manage.py\"": {
+   "done": true,
+   "leaves": 8,
+   "nodes": 15,
+   "root_incomplete": false,
+   "root_total": 1428,
+   "stack": []
+  },
   "mysql \"node --test\"": {
    "done": true,
    "leaves": 1,
@@ -9,29 +25,25 @@
    "root_total": 868,
    "stack": []
   },
-  "mysql jest": {
-   "done": true,
-   "leaves": 1,
-   "nodes": 1,
-   "root_incomplete": false,
-   "root_total": 746,
-   "stack": []
-  },
-  "mysql mocha": {
-   "done": true,
-   "leaves": 1,
-   "nodes": 1,
-   "root_incomplete": false,
-   "root_total": 132,
-   "stack": []
-  },
-  "mysql pytest": {
+  "mysql \"npm test\"": {
    "done": false,
-   "leaves": 6,
-   "nodes": 16,
+   "leaves": 2,
+   "nodes": 11,
    "root_incomplete": false,
-   "root_total": 4168,
+   "root_total": 4528,
    "stack": [
+    [
+     2345,
+     3125
+    ],
+    [
+     3126,
+     6250
+    ],
+    [
+     6251,
+     12500
+    ],
     [
      12501,
      25000
@@ -53,6 +65,70 @@
      400000
     ]
    ]
+  },
+  "mysql \"rails test\"": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 174,
+   "stack": []
+  },
+  "mysql jest": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 746,
+   "stack": []
+  },
+  "mysql mocha": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 132,
+   "stack": []
+  },
+  "mysql nox": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 81,
+   "stack": []
+  },
+  "mysql pytest": {
+   "done": true,
+   "leaves": 11,
+   "nodes": 21,
+   "root_incomplete": false,
+   "root_total": 4168,
+   "stack": []
+  },
+  "mysql rake": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 966,
+   "stack": []
+  },
+  "mysql rspec": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 813,
+   "stack": []
+  },
+  "mysql tox": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 390,
+   "stack": []
   },
   "mysql vitest": {
    "done": true,
