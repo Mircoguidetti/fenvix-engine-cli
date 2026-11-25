@@ -89,29 +89,38 @@ def main(repo: str) -> int:
     for p in pairs:
         if p["stage"] != "ge_10":
             continue
-        step_name = None
-        for s in p.get("steps", []):
-            if s.get("status") == "serial" and s.get("key") and s["key"][0] == "name":
-                step_name = s["key"][1]
-        print(f"\n## recomputed step durations for job '{p['job']}' step '{step_name}'")
-        durs = []
-        for k, v in sorted(raw.items()):
-            if "/jobs?" not in k:
+        for st in p.get("steps", []):
+            if st.get("status") != "serial" or not st.get("key"):
                 continue
-            for j in (v.get("data") or {}).get("jobs", []):
-                name = j.get("name") or ""
-                disp = re.sub(r"\\\$\\\{\\\{.*?\\\}\\\}", ".*", re.escape(DISPLAY.get(p["job"], p["job"])))
-                if not (re.fullmatch(disp + r"( \(.*\))?", name) or re.fullmatch(disp, name)):
+            kind, val = st["key"][0], st["key"][1]
+            step_name = val if kind == "name" else None
+            prefix = val if kind == "prefix" else None
+            print(f"\n## recomputed step durations for job '{p['job']}' step '{val}'")
+            durs = []
+            for k, v in sorted(raw.items()):
+                if "/jobs?" not in k:
                     continue
-                for s in j.get("steps") or []:
-                    sn = s.get("name") or ""
-                    base = re.sub(r"\\\$\\\{\\\{.*?\\\}\\\}", ".*", re.escape(step_name or ""))
-                    if step_name and re.fullmatch(base, sn) and s.get("conclusion") == "success":
-                        d = (ts(s["completed_at"]) - ts(s["started_at"])).total_seconds()
-                        durs.append((k.split("/runs/")[1].split("/")[0], name, sn, d))
-        for x in durs:
-            print("   ", x)
-        print(f"   matched legs: {len(durs)}")
+                for j in (v.get("data") or {}).get("jobs", []):
+                    name = j.get("name") or ""
+                    disp = re.sub(r"\\\$\\\{\\\{.*?\\\}\\\}", ".*", re.escape(DISPLAY.get(p["job"], p["job"])))
+                    if not (re.fullmatch(disp + r"( \(.*\))?", name) or re.fullmatch(disp, name)):
+                        continue
+                    for s in j.get("steps") or []:
+                        sn = s.get("name") or ""
+                        base = re.sub(r"\\\$\\\{\\\{.*?\\\}\\\}", ".*", re.escape(step_name or ""))
+                        ok = (step_name and re.fullmatch(base, sn)) or (prefix and sn.startswith(prefix))
+                        if ok and s.get("conclusion") == "success":
+                            d = (ts(s["completed_at"]) - ts(s["started_at"])).total_seconds()
+                            durs.append((int(k.split("/runs/")[1].split("/")[0]), name, sn, d))
+            for x in durs:
+                print("   ", x)
+            per_run: dict = {}
+            for rid, _, _, d in durs:
+                per_run[rid] = max(per_run.get(rid, 0), d)
+            last = [per_run[r] for r in sorted(per_run)[-10:]]
+            srt = sorted(last)
+            med = (srt[4] + srt[5]) / 2 if len(srt) == 10 else None
+            print(f"   matched legs: {len(durs)}; longest leg per run, 10 newest runs: {srt}; median {med}")
     return 0
 
 
