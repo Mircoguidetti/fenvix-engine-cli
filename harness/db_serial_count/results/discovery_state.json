@@ -26,12 +26,52 @@
    "stack": []
   },
   "postgres \"npm test\"": {
-   "done": false,
-   "leaves": 75,
-   "nodes": 150,
+   "done": true,
+   "leaves": 76,
+   "nodes": 151,
    "root_incomplete": false,
    "root_total": 48832,
+   "stack": []
+  },
+  "postgres \"pnpm test\"": {
+   "done": false,
+   "leaves": 8,
+   "nodes": 24,
+   "root_incomplete": false,
+   "root_total": 14400,
    "stack": [
+    [
+     2345,
+     2735
+    ],
+    [
+     2736,
+     3125
+    ],
+    [
+     3126,
+     6250
+    ],
+    [
+     6251,
+     12500
+    ],
+    [
+     12501,
+     25000
+    ],
+    [
+     25001,
+     50000
+    ],
+    [
+     50001,
+     100000
+    ],
+    [
+     100001,
+     200000
+    ],
     [
      200001,
      400000
@@ -44,6 +84,14 @@
    "nodes": 17,
    "root_incomplete": false,
    "root_total": 1840,
+   "stack": []
+  },
+  "postgres \"yarn test\"": {
+   "done": true,
+   "leaves": 9,
+   "nodes": 17,
+   "root_incomplete": false,
+   "root_total": 2052,
    "stack": []
   },
   "postgres jest": {
