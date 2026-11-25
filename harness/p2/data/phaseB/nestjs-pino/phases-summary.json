@@ -1,0 +1,478 @@
+{
+ "source": "phases-nestjs-pino.jsonl.phases.jsonl",
+ "main": {
+  "deps_hash_s": 0.263,
+  "plan_s": 0.001,
+  "trace_write_s": 0.027,
+  "start_at_s": [
+   0.048
+  ],
+  "workers_spawn_at_s": [
+   0.322
+  ],
+  "exit_at_s": [
+   7.921
+  ],
+  "start_uptime_s": [
+   0.043
+  ],
+  "exit_uptime_s": [
+   7.916
+  ]
+ },
+ "workers": [
+  {
+   "worker": "1212:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 0.265,
+   "wall_s": 0.882,
+   "file_s": 0.882,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1531,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1206:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 0.297,
+   "wall_s": 0.949,
+   "file_s": 0.949,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2029,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1199:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 0.263,
+   "wall_s": 1.207,
+   "file_s": 1.207,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 6079,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1223:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 0.306,
+   "wall_s": 1.198,
+   "file_s": 1.198,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 3832,
+   "uncontrolled_io": 2
+  },
+  {
+   "worker": "1253:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 1.435,
+   "wall_s": 0.435,
+   "file_s": 0.435,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 119,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1277:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 1.711,
+   "wall_s": 0.388,
+   "file_s": 0.388,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 41,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1242:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 1.473,
+   "wall_s": 0.755,
+   "file_s": 0.755,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 545,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1266:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 1.688,
+   "wall_s": 0.774,
+   "file_s": 0.774,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1011,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1314:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 2.464,
+   "wall_s": 0.542,
+   "file_s": 0.542,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 303,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1326:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 2.679,
+   "wall_s": 0.63,
+   "file_s": 0.63,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 540,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1302:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 2.279,
+   "wall_s": 1.104,
+   "file_s": 1.104,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4795,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1290:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 2.239,
+   "wall_s": 1.359,
+   "file_s": 1.359,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2082,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1354:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 3.484,
+   "wall_s": 0.402,
+   "file_s": 0.402,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 263,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1342:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 3.601,
+   "wall_s": 0.846,
+   "file_s": 0.846,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1011,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1365:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 3.565,
+   "wall_s": 1.096,
+   "file_s": 1.096,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 8429,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1374:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 3.847,
+   "wall_s": 1.008,
+   "file_s": 1.008,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 3654,
+   "uncontrolled_io": 2
+  },
+  {
+   "worker": "1386:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 4.455,
+   "wall_s": 0.558,
+   "file_s": 0.558,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 203,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1402:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 4.619,
+   "wall_s": 0.8,
+   "file_s": 0.8,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 975,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1414:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 4.85,
+   "wall_s": 0.772,
+   "file_s": 0.772,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1639,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1434:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 5.2,
+   "wall_s": 0.785,
+   "file_s": 0.785,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 949,
+   "uncontrolled_io": 3
+  },
+  {
+   "worker": "1446:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 5.583,
+   "wall_s": 0.743,
+   "file_s": 0.743,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 905,
+   "uncontrolled_io": 1
+  },
+  {
+   "worker": "1422:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 5.062,
+   "wall_s": 1.271,
+   "file_s": 1.271,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 7251,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1458:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 5.812,
+   "wall_s": 0.82,
+   "file_s": 0.82,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 609,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1486:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 6.524,
+   "wall_s": 0.326,
+   "file_s": 0.326,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 153,
+   "uncontrolled_io": 2
+  },
+  {
+   "worker": "1470:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 6.339,
+   "wall_s": 0.724,
+   "file_s": 0.724,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1491,
+   "uncontrolled_io": 0
+  }
+ ],
+ "rerun_one_lane": [],
+ "passes": [
+  "1",
+  "None"
+ ],
+ "files_top": [
+  {
+   "file": "__tests__/microservice.spec.ts",
+   "s": 1.359,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2082
+  },
+  {
+   "file": "__tests__/native-logger.spec.ts",
+   "s": 1.271,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 7251
+  },
+  {
+   "file": "__tests__/levels.spec.ts",
+   "s": 1.207,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 6079
+  },
+  {
+   "file": "__tests__/global-prefix.spec.ts",
+   "s": 1.198,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 3832
+  },
+  {
+   "file": "__tests__/errors.spec.ts",
+   "s": 1.104,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4795
+  },
+  {
+   "file": "__tests__/native-logger-comparison.spec.ts",
+   "s": 1.096,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 8429
+  },
+  {
+   "file": "__tests__/module.spec.ts",
+   "s": 1.008,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 3654
+  },
+  {
+   "file": "__tests__/default-routes.spec.ts",
+   "s": 0.949,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2029
+  },
+  {
+   "file": "__tests__/assign.spec.ts",
+   "s": 0.882,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1531
+  },
+  {
+   "file": "__tests__/no-context.spec.ts",
+   "s": 0.846,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1011
+  },
+  {
+   "file": "__tests__/run-in-context.spec.ts",
+   "s": 0.82,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 609
+  },
+  {
+   "file": "__tests__/response-headers.spec.ts",
+   "s": 0.8,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 975
+  },
+  {
+   "file": "__tests__/runtime-update.spec.ts",
+   "s": 0.785,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 949
+  },
+  {
+   "file": "__tests__/extending.spec.ts",
+   "s": 0.774,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1011
+  },
+  {
+   "file": "__tests__/routing.spec.ts",
+   "s": 0.772,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1639
+  },
+  {
+   "file": "__tests__/logger-error-interceptor.spec.ts",
+   "s": 0.755,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 545
+  },
+  {
+   "file": "__tests__/use-existing.spec.ts",
+   "s": 0.743,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 905
+  },
+  {
+   "file": "__tests__/rename-context.spec.ts",
+   "s": 0.724,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1491
+  },
+  {
+   "file": "__tests__/logger-instance.spec.ts",
+   "s": 0.63,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 540
+  },
+  {
+   "file": "__tests__/root-logger.spec.ts",
+   "s": 0.558,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 203
+  }
+ ],
+ "totals": {
+  "io_release": 0,
+  "stack_captures": 50439,
+  "uncontrolled_io": 10,
+  "held_s": 0.0
+ }
+}
