@@ -1,0 +1,77 @@
+'use strict';
+// Unit tests of the --det-isolate header merge (src/isolate-meta.js; spec "false greens on release-1", Phase B).
+const { test } = require('node:test');
+const assert = require('node:assert/strict');
+const { mergeSessionMeta, EQUAL, UNION, OWN, SENSOR, OTHER } = require('../src/isolate-meta');
+
+const SENS = { contract: 1, runtime: 'node22', sensor: 'node-surface/1', surface: 'abc' };
+const base = (extra = {}) => ({
+  runner: 'vitest', seed: 0, epoch_ns: '1', inputs: { env: { 'env:A': '1' } }, provable: SENS,
+  not_proven_outside_tests: [], env_read_outside_tests: ['X'], files_read_outside_tests: [], notes: [],
+  parallel: { workers: 4, requested: null, plan: { workers: 4 }, placement: { deviations: [], processes: [['f']] }, hazards: [], timing: { files: 1, test_file_seconds: 0.1, lanes_wall_seconds: 0.1 } },
+  files: ['f'], cli_args: ['f', '-t', 'x'], isolation: 'one session', status: { failed: 0 }, unordered_parts: 0, cassette_oldest_days: null,
+  ...extra,
+});
+
+test('protects=a read outside any test in a LATER session reaches the final header (not_proven_outside_tests, env_read_outside_tests); fails_when=only the first session\'s lists are kept; no_claim=how the sessions record the reads (integration: isolate-signals.test.js)', () => {
+  const { meta, failClosed } = mergeSessionMeta([
+    base({ not_proven_outside_tests: [], env_read_outside_tests: ['X'] }),
+    base({ not_proven_outside_tests: ['env:GITHUB_WORKSPACE=d@tests/b.test.mjs'], env_read_outside_tests: ['FOO', 'X'] }),
+    base({ not_proven_outside_tests: ['env:GITHUB_WORKSPACE=d@tests/b.test.mjs', 'env:RUNNER_TEMP=e@c'] }),
+  ], ['a', 'b', 'c']);
+  assert.deepEqual(failClosed, []);
+  assert.deepEqual(meta.not_proven_outside_tests, ['env:GITHUB_WORKSPACE=d@tests/b.test.mjs', 'env:RUNNER_TEMP=e@c'], 'union, first appearance, deduplicated');
+  assert.deepEqual(meta.env_read_outside_tests, ['X', 'FOO']);
+  assert.deepEqual(meta.provable, SENS, 'the same sensor in every session: kept');
+  assert.equal(meta.provable_absent, undefined);
+});
+
+test('protects=a later session whose sensor is absent removes provable from the run; fails_when=the first session\'s provable is kept; no_claim=none beyond protects', () => {
+  const { meta } = mergeSessionMeta([base(), base({ provable: undefined, provable_absent: 'switched off' }), base({ provable: undefined, provable_absent: 'other' })], ['a', 'b', 'c']);
+  assert.equal(meta.provable, undefined);
+  assert.equal(meta.provable_absent, 'switched off (+1 more sessions)');
+});
+
+test('protects=a session that declared nothing, or another sensor, removes provable and is named; fails_when=a missing or different declaration is ignored; no_claim=which sensors the core knows (provable::judge)', () => {
+  const missing = mergeSessionMeta([base(), base({ provable: undefined })], ['a', 'b']).meta;
+  assert.equal(missing.provable, undefined);
+  assert.match(missing.provable_absent, /no sensor declared by b/);
+  const differ = mergeSessionMeta([base(), base({ provable: { ...SENS, surface: 'zzz' } })], ['a', 'b']).meta;
+  assert.equal(differ.provable, undefined);
+  assert.match(differ.provable_absent, /different sensors \(b differ from a\)/);
+  const none = mergeSessionMeta([], []).meta;
+  assert.equal(none.provable, undefined);
+  assert.match(none.provable_absent, /no per-test session wrote a trace/);
+});
+
+test('protects=run configuration that differs between sessions, and a key the merge has no rule for, fail closed; fails_when=the first session\'s value is taken as the run\'s; no_claim=that every such key exists in real sessions (the list: harness/release1_false_greens/isolate-meta-keys.md)', () => {
+  const r = mergeSessionMeta([base(), base({ epoch_ns: '2' })], ['a', 'b']);
+  assert.equal(r.meta.provable, undefined);
+  assert.match(r.meta.provable_absent, /differ in epoch_ns \(b\)/);
+  const u = mergeSessionMeta([base(), base({ brand_new_signal: true })], ['a', 'b']);
+  assert.equal(u.meta.provable, undefined);
+  assert.match(u.meta.provable_absent, /brand_new_signal, which the --det-isolate merge has no rule for/);
+  assert.equal(u.meta.brand_new_signal, undefined);
+});
+
+test('protects=the run as a whole has no parallel lanes and no session\'s timing: parallel is {workers: 1, isolate: true}; fails_when=the first session\'s plan and lanes timing are reported as the run\'s; no_claim=the runner\'s reading of it (runner-proof node_proof: workers 1 is no proof due)', () => {
+  const { meta, failClosed } = mergeSessionMeta([base(), base()], ['a', 'b'], ['--det', '--det-isolate']);
+  assert.deepEqual(meta.parallel, { workers: 1, isolate: true });
+  assert.deepEqual(failClosed, []);
+  assert.deepEqual(meta.cli_args, ['--det', '--det-isolate']);
+  const hz = mergeSessionMeta([base(), base({ parallel: { workers: 4, hazards: [{ kind: 'path' }] } })], ['a', 'b']);
+  assert.equal(hz.meta.provable, undefined, 'a session with hazards fails closed');
+  const rr = mergeSessionMeta([base(), base({ hazard_rerun: { files: [] } })], ['a', 'b']);
+  assert.equal(rr.meta.provable, undefined, 'a session with a one-lane re-run fails closed');
+});
+
+test('protects=every key of a session header has exactly one rule; fails_when=a key is in two rule sets (its merge would be ambiguous); no_claim=none beyond protects', () => {
+  const all = [EQUAL, UNION, OWN, SENSOR, OTHER].flatMap((s) => [...s]);
+  assert.equal(new Set(all).size, all.length);
+});
+
+test('protects=the documented gap of the strict sensor rule under --det-cache: a session whose tests were all reused declares cache-reuse/1, one that ran declares node-surface/1, and the run declares none; fails_when=the rule changes without the coordinator\'s decision; no_claim=whether that is the wanted behavior (reported to the coordinator)', () => {
+  const { meta } = mergeSessionMeta([base({ provable: { ...SENS, sensor: 'cache-reuse/1' } }), base()], ['a', 'b']);
+  assert.equal(meta.provable, undefined);
+  assert.match(meta.provable_absent, /different sensors/);
+});

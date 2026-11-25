@@ -1,0 +1,205 @@
+TAP version 13
+# Subtest: protects=a module-top-level read of a CI-volatile variable (not_proven_outside_tests) and of an ordinary variable (env_read_outside_tests) in the SECOND per-test session is in the final header; fails_when=the final header is the first session's, empty of both reads (release-1 6e79a62c); no_claim=the verifier's use of the entries (crates/detpy-core/src/verify.rs) and the runner's (runner-proof)
+not ok 1 - protects=a module-top-level read of a CI-volatile variable (not_proven_outside_tests) and of an ordinary variable (env_read_outside_tests) in the SECOND per-test session is in the final header; fails_when=the final header is the first session's, empty of both reads (release-1 6e79a62c); no_claim=the verifier's use of the entries (crates/detpy-core/src/verify.rs) and the runner's (runner-proof)
+  ---
+  duration_ms: 1654.067948
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-fenvix-engine-cli/9263695f-2638-5db3-9e41-f4a6f5e42481/scratchpad/red-b/isolate-signals.test.js:46:1'
+  failureType: 'testCodeFailure'
+  error: '[]'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-fenvix-engine-cli/9263695f-2638-5db3-9e41-f4a6f5e42481/scratchpad/red-b/isolate-signals.test.js:51:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: protects=a second per-test session whose sensor is absent makes the final header carry provable_absent and no provable; fails_when=the first session's provable is kept (release-1 6e79a62c); no_claim=how a sensor fails to start in the field (forced: FENVIX_NO_PROVABLE_SENSOR in that session only)
+not ok 2 - protects=a second per-test session whose sensor is absent makes the final header carry provable_absent and no provable; fails_when=the first session's provable is kept (release-1 6e79a62c); no_claim=how a sensor fails to start in the field (forced: FENVIX_NO_PROVABLE_SENSOR in that session only)
+  ---
+  duration_ms: 1528.900985
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-fenvix-engine-cli/9263695f-2638-5db3-9e41-f4a6f5e42481/scratchpad/red-b/isolate-signals.test.js:55:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"contract":1,"runtime":"node22","sensor":"node-surface/1","surface":"1c76bbb0040d64255f76cbe7426cf7d4"}
+    + actual - expected
+    
+    + {
+    +   contract: 1,
+    +   runtime: 'node22',
+    +   sensor: 'node-surface/1',
+    +   surface: '1c76bbb0040d64255f76cbe7426cf7d4'
+    + }
+    - undefined
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+    contract: 1
+    runtime: 'node22'
+    sensor: 'node-surface/1'
+    surface: '1c76bbb0040d64255f76cbe7426cf7d4'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-fenvix-engine-cli/9263695f-2638-5db3-9e41-f4a6f5e42481/scratchpad/red-b/isolate-signals.test.js:59:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: protects=positive control (gate note 1): a clean two-session run (no read outside tests, the same sensor in both) keeps provable, gets parallel {workers: 1, isolate: true} and is green; fails_when=the merge loses provable or turns a clean run red; no_claim=a run with --det-cache (a fully reused session declares cache-reuse/1: isolate-meta.test.js)
+not ok 3 - protects=positive control (gate note 1): a clean two-session run (no read outside tests, the same sensor in both) keeps provable, gets parallel {workers: 1, isolate: true} and is green; fails_when=the merge loses provable or turns a clean run red; no_claim=a run with --det-cache (a fully reused session declares cache-reuse/1: isolate-meta.test.js)
+  ---
+  duration_ms: 1634.120021
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-fenvix-engine-cli/9263695f-2638-5db3-9e41-f4a6f5e42481/scratchpad/red-b/isolate-signals.test.js:63:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   hazards: [],
+    +   placement: {
+    +     deviations: [],
+    +     processes: [
+    +       [
+    +         'tests/a.test.mjs'
+    +       ]
+    +     ],
+    +     spans: {
+    +       'tests/a.test.mjs': [
+    +         0,
+    +         19
+    +       ]
+    +     },
+    +     waited_seconds: 0
+    +   },
+    +   plan: {
+    +     costs: {
+    +       'tests/a.test.mjs': null
+    +     },
+    +     costs_known: 0,
+    +     digest: 'a03e0a9bdca195dbaef726207631b3c5',
+    +     dispatch: [
+    +       'tests/a.test.mjs'
+    +     ],
+    +     inputs_digest: '1e428cc163102b5f5fdbf5a08c7f2f07',
+    +     lanes: [
+    +       [
+    +         'tests/a.test.mjs'
+    +       ],
+    +       [],
+    +       [],
+    +       []
+    +     ],
+    +     loads: [
+    +       1,
+    +       0,
+    +       0,
+    +       0
+    +     ],
+    +     lpt_makespan: 1,
+    +     makespan: 1,
+    +     mode: 'vitest',
+    +     replayed: false,
+    +     shared_process: false,
+    +     sticky: false,
+    +     together: [],
+    +     workers: 4
+    +   },
+    +   requested: {
+    +     refused: null,
+    +     source: "default (this machine's CPUs)",
+    +     workers: 4
+    +   },
+    +   timing: {
+    +     files: 1,
+    +     lanes_wall_seconds: 0.019,
+    +     test_file_seconds: 0.019
+    +   },
+    +   workers: 4
+    -   isolate: true,
+    -   workers: 1
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    workers: 1
+    isolate: true
+  actual:
+    hazards:
+    placement:
+      deviations:
+      processes:
+        0:
+          0: 'tests/a.test.mjs'
+      spans:
+        tests/a.test.mjs:
+          0: 0
+          1: 19
+      waited_seconds: 0
+    plan:
+      costs:
+        tests/a.test.mjs: ~
+      costs_known: 0
+      digest: 'a03e0a9bdca195dbaef726207631b3c5'
+      dispatch:
+        0: 'tests/a.test.mjs'
+      inputs_digest: '1e428cc163102b5f5fdbf5a08c7f2f07'
+      lanes:
+        0:
+          0: 'tests/a.test.mjs'
+        1:
+        2:
+        3:
+      loads:
+        0: 1
+        1: 0
+        2: 0
+        3: 0
+      lpt_makespan: 1
+      makespan: 1
+      mode: 'vitest'
+      replayed: false
+      shared_process: false
+      sticky: false
+      together:
+      workers: 4
+    requested:
+      refused: ~
+      source: "default (this machine's CPUs)"
+      workers: 4
+    timing:
+      files: 1
+      lanes_wall_seconds: 0.019
+      test_file_seconds: 0.019
+    workers: 4
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-fenvix-engine-cli/9263695f-2638-5db3-9e41-f4a6f5e42481/scratchpad/red-b/isolate-signals.test.js:71:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 0
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4878.444487
