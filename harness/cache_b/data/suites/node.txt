@@ -66,3 +66,32 @@ test at test/runner-node-test.test.js:258:3
 ℹ pass 2 ℹ fail 0  <- base run 4
 ℹ pass 2 ℹ fail 0  <- base run 5
 ## verdict: scheduling-dependent baseline check, passes 5/5 on head and on base; not touched by the B1 diff (proof.js verify summary, remote.js push). No new failure.
+
+# Rerun on the final head a4b25958 (engine 26cdf8b4, after fix 2), same command
+## head: node rc=1
+ℹ tests 1129
+ℹ pass 1119
+ℹ fail 6
+ℹ cancelled 3
+ℹ skipped 1
+test at test/customer-nodetest.test.js:196:1
+✖ a flaky (order-dependent) test becomes a defect with a replay command (42.276581ms)
+test at test/host-values-timers.test.js:20:1
+✖ (b) a test waiting on real work is not timed out by the virtual clock (2082.448438ms)
+test at test/parallel-p041.test.js:163:5
+✖ the plan is identical across runs, recorded in the trace and replayed from it; lanes overlap in time
+test at test/parallel-p041.test.js:190:7
+✖ parallel fingerprints equal the serial ones (workers)
+test at test/parallel-p041.test.js:211:5
+✖ cache: recorded in parallel, reused serially; recorded serially, reused in parallel
+test at test/parallel-p041.test.js:141:3
+✖ jest: parallel lanes (8108.174901ms)
+test at test/parallel-p041.test.js:450:7
+✖ jsdom environment: results are recorded and reused, serially and in lanes (2207.845009ms)
+test at test/repro-p041.test.js:125:5
+✖ --det-order: exactly the listed tests, in the listed order (files by first listed test), across describe blocks (1754.053669ms)
+test at test/runner-bun.test.js:46:3
+✖ two --det runs give identical fingerprints; the controls are active inside bun test (583.173697ms)
+test at test/runner-node-test.test.js:258:3
+✖ a file another test file wrote: not cacheable (1245.403177ms)
+## verdict: the failing tests are exactly base's (6 failed, 3 cancelled on both); head's 23 more tests (the B1 tests) pass. No new failure.
