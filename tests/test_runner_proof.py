@@ -43,7 +43,9 @@ def meta(**over) -> dict:
         # every real header declares its sensor (node/src/session.js provableField); without it the run is NOT PROVEN
         "provable": {"sensor": "node-surface/1"},
         "status": {"passed": 4, "failed": 0, "not_proven": 0, "skipped": 0},
-        "parallel": {"workers": 2, "hazards": [], "timing": {"files": 2, "test_file_seconds": 1.5, "lanes_wall_seconds": 0.9}},
+        # every real parallel header carries the observed placement (node/src/parallel.js collect)
+        "parallel": {"workers": 2, "hazards": [], "placement": {"deviations": []},
+                     "timing": {"files": 2, "test_file_seconds": 1.5, "lanes_wall_seconds": 0.9}},
     }
     m.update(over)
     return m
@@ -362,11 +364,13 @@ def stubjob(tmp_path):
     (proj / "package.json").write_text(json.dumps({"devDependencies": {"vitest": "5.1.0"}}))
 
     def run(m: dict, outcomes: dict | None = None, receipts: list | None = None, footer: dict | None = None,
-            name: str = "j") -> tuple[int, dict, str]:
+            name: str = "j", job_env: dict | None = None, exit_code: int = 0) -> tuple[int, dict, str]:
         out = tmp_path / name
-        env = {**os.environ, "FENVIX_CACHE_ROOT": str(tmp_path / "cache"), "STUB_META": json.dumps(m),
-               "STUB_OUTCOMES": json.dumps(outcomes if outcomes is not None else OUT4),
-               "STUB_RECEIPTS": json.dumps(receipts or []), "STUB_FOOTER": json.dumps(footer) if footer else ""}
+        env = {k: v for k, v in os.environ.items() if not k.startswith("DETJS_")}
+        env.update({"FENVIX_CACHE_ROOT": str(tmp_path / "cache"), "STUB_META": json.dumps(m),
+                    "STUB_OUTCOMES": json.dumps(outcomes if outcomes is not None else OUT4),
+                    "STUB_RECEIPTS": json.dumps(receipts or []), "STUB_FOOTER": json.dumps(footer) if footer else "",
+                    "STUB_EXIT": str(exit_code), **(job_env or {})})
         env.pop("GITHUB_STEP_SUMMARY", None)
         r = subprocess.run([sys.executable, str(WRAPPER), "node", "--project", str(proj), "--detjs", str(p),
                             "--out", str(out), "--no-rerun"], capture_output=True, text=True, env=env)
@@ -497,3 +501,61 @@ def test_engine_signals_shapes():
     assert W.engine_signals({"provable": {"sensor": "s"}}) == (None, 0)
     assert W.engine_signals({"provable_absent": "x", "not_proven_outside_tests": ["env:A"]}) == ("x", 1)
     assert W.engine_signals({"provable_absent": True})[0] == "true"
+
+
+# ---------------------------------------------------------------- review 2026-11-25, pass 3
+
+
+@pytest.mark.parametrize("field,edit", [
+    ("parallel.placement", lambda m: m["parallel"].pop("placement")),
+    ("parallel.placement", lambda m: m["parallel"].__setitem__("placement", "x")),
+    ("parallel.placement.deviations", lambda m: m["parallel"]["placement"].pop("deviations")),
+    ("parallel.placement.deviations", lambda m: m["parallel"]["placement"].__setitem__("deviations", "x")),
+    ("parallel.placement.deviations", lambda m: m["parallel"]["placement"].__setitem__(
+        "deviations", [{"file": "b.test.js", "what": "no marker (the file did not run or its process died)"}])),
+    ("parallel.carried", lambda m: m["parallel"].__setitem__("carried", "x")),
+    ("parallel.carried", lambda m: m["parallel"].__setitem__("carried", [{"file": "b.test.js", "state": [{"key": "k"}]}])),
+])
+def test_placement_and_carried_state_fail_closed(field, edit):
+    """protects=a file the engine could not place as planned (no marker: no footprint, so no hazard could involve it;
+    another worker or predecessors than the plan's) or that ran with state an earlier file of its process changed is
+    not reported proven; fails_when=a proof with every test proven; no_claim=how often runners deviate from the plan
+    (a deviation makes the run NOT PROVEN, never a wrong green)."""
+    m = meta()
+    edit(m)
+    assert proof(m) == (None, field)
+
+
+def test_an_empty_carried_list_keeps_the_proof():
+    """protects=carried [] (nothing carried) is not a failure; fails_when=it fails closed; no_claim=other fields."""
+    m = meta()
+    m["parallel"]["carried"] = []
+    assert proof(m)[1] is None and proof(m)[0]["proven"] == 4
+
+
+@pytest.mark.parametrize("name,value", [
+    ("DETJS_FOOTPRINT_SKIP_DIRS", "/"),
+    ("DETJS_CACHE_SKIP_DIRS", "/"),
+    ("DETJS_HAZARD_RERUN", "1"),
+    ("DETJS_HAZARD_PASS", "1"),
+    ("DETJS_EPOCH_RUN", "1"),
+    ("DETJS_ISOLATE_CHILD", "1"),
+    ("DETJS_DIR", "/tmp/x"),
+    ("DETJS_DISABLE", "clock"),
+])
+def test_wrapper_job_env_that_steers_the_engine_fails_closed(stubjob, name, value):
+    """protects=a job environment that hides paths from the footprint recorder, turns the engine into one of its own
+    child passes or turns controls off gives no proof, not_proven >= 1 and exit 1; fails_when=a proof is written (the
+    trace alone cannot show the variable); no_claim=the variables the engine reads for other purposes."""
+    code, s, log = stubjob(meta(), job_env={name: value})
+    assert code == 1 and s["exit"] == 1, log
+    assert "proof" not in s and s["not_proven"] >= 1
+    assert f"proof incomplete: environment {name}" in log
+
+
+def test_wrapper_exit_2_writes_no_proof(stubjob):
+    """protects=when the engine could not establish the run's outcome (exit 2) the summary has no proof; fails_when=a
+    full proof object sits next to exit 2; no_claim=the counts the engine wrote."""
+    code, s, log = stubjob(meta(), exit_code=2)
+    assert code == 2 and s["exit"] == 2, log
+    assert "proof" not in s

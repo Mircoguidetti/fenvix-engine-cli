@@ -63,8 +63,12 @@ Fail closed: with tests run in lanes, a ``meta.parallel`` that is not an object,
 a re-run that accounted for 0 tests, a
 missing or malformed ``status.not_proven``, ``status.passed``,
 ``status.failed``, ``timing.lanes_wall_seconds``, ``hazard_rerun.tests`` (when there was a re-run), any
-``hazard_rerun.not_proven[].tests`` or ``.cause``, or a ``proven`` below 0: no ``proof``, top-level ``not_proven`` at
-least 1, ``proof incomplete: <field>`` in the log, and exit 1 when it was 0.
+``hazard_rerun.not_proven[].tests`` or ``.cause``, a ``hazard_rerun`` that is not an object or a ``not_proven``
+that is not a list, a ``parallel.placement`` that is not an object, ``placement.deviations`` not a list or not empty
+(a file not placed as planned), ``parallel.carried`` not a list or not empty, a job environment that sets one of
+``PROOF_ENV`` (``environment <name>``), or a ``proven`` below 0: no ``proof``, top-level ``not_proven`` at least 1,
+``proof incomplete: <field>`` in the log, and exit 1 when it was 0. On exit 2 (the run's outcome could not be
+established) no ``proof`` is written.
 
 **Two run-level signals**, on every Node summary (parallel or not): ``provable_absent`` (the header's, or null: the
 run could not watch what tests touched; also set when the header declares no sensor, ``meta.provable``, and gives no
@@ -711,6 +715,18 @@ def node_proof(meta: dict, footer: dict | None, outcomes: dict, reused_outcomes:
     hazards = par.get("hazards", [])
     if not isinstance(hazards, list):
         return None, "parallel.hazards"
+    # a file not placed as planned (no marker, so no footprint and no hazard can involve it; another worker or other
+    # in-process predecessors than the plan's): the hazards, computed over the planned lanes, do not cover it
+    placement = par.get("placement")
+    if not isinstance(placement, dict):
+        return None, "parallel.placement"
+    deviations = placement.get("deviations")
+    if not isinstance(deviations, list) or deviations:
+        return None, "parallel.placement.deviations"
+    # a file that ran with process-wide state an earlier file of its lane changed: its outcome depends on placement
+    carried = par.get("carried", [])
+    if not isinstance(carried, list) or carried:
+        return None, "parallel.carried"
     hr = meta.get("hazard_rerun")
     # lanes in conflict and no one-lane re-run (detjs skips it when DETJS_HAZARD_RERUN=1 is already set): unresolved
     if hazards and hr is None:
@@ -750,6 +766,18 @@ def node_proof(meta: dict, footer: dict | None, outcomes: dict, reused_outcomes:
         "order_digest": digest if isinstance(digest, str) and digest else None,
         "not_proven_causes": group_causes(causes),
     }, None
+
+
+# Job variables that steer what detjs records: a hidden footprint (skip dirs), the engine acting as one of its own child
+# passes (it then skips the one-lane re-run and the hazard accounting), another marker directory, controls turned off.
+# The trace does not show them, so a proof under any of them is not given.
+PROOF_ENV = ("DETJS_FOOTPRINT_SKIP_DIRS", "DETJS_CACHE_SKIP_DIRS", "DETJS_HAZARD_RERUN", "DETJS_HAZARD_PASS",
+             "DETJS_EPOCH_RUN", "DETJS_ISOLATE_CHILD", "DETJS_DIR", "DETJS_DISABLE")
+
+
+def proof_env(env: dict) -> str | None:
+    """The first PROOF_ENV variable the job sets (non-empty), else None."""
+    return next((k for k in PROOF_ENV if env.get(k)), None)
 
 
 def engine_signals(meta: dict) -> tuple[str | None, int]:
@@ -1026,6 +1054,11 @@ def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
     # built, so summary["exit"] is the exit status.
     not_proven = int(status.get("not_proven") or 0) if status else None
     proof, incomplete = node_proof(meta, read_footer(trace_p), outcomes, reused_outcomes)
+    steered = proof_env(os.environ)
+    if proof is not None and steered:
+        proof, incomplete = None, f"environment {steered}"
+    if code == 2:
+        proof = None  # the engine could not establish the run's outcome: its counts prove nothing
     if incomplete:
         log(f"proof incomplete: {incomplete}: the run is NOT PROVEN")
         not_proven = max(not_proven or 0, 1)
