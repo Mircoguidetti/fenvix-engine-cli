@@ -93,7 +93,8 @@ for (const runner of RUNNERS) {
     assert.ok(fs.existsSync(`${c}.phases.jsonl`), 'flag on: phases file written');
     assert.deepEqual(normalised(c), normalised(a));
     const text = fs.readFileSync(c, 'utf8');
-    assert.equal(text.includes('phases'), false, 'the phases file is named in the trace');
+    // (the fixture path itself contains "p2-phases", so look for the file suffix and the variables)
+    for (const s of ['.phases.jsonl', 'DETJS_PHASES']) assert.equal(text.includes(s), false, `${s} is named in the trace`);
   });
 
   test(`${runner}: DETJS_PHASES=1 phase lines are well formed`, T, () => {

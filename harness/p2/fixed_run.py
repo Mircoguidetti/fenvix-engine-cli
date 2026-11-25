@@ -108,8 +108,9 @@ def main(argv=None):
     out_repo = os.path.join(out, o.name)
     os.makedirs(out_repo, exist_ok=True)
     trace = trace_path(out_repo, o.label, o.trace_name)
-    if os.path.exists(trace):
-        os.remove(trace)
+    for stale in (trace, trace + ".phases.jsonl"):  # a DETJS_PHASES run appends to <trace>.phases.jsonl
+        if os.path.exists(stale):
+            os.remove(stale)
     cmd = build_cmd(spec, o.engine, trace, o.workers, o.epoch)
     env, added = build_env(spec, o.name, o.env, o.node_options)
     log = os.path.join(out_repo, "runs.log")
