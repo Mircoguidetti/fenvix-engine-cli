@@ -1,0 +1,409 @@
+{
+ "profiles": 46,
+ "total_s": 116.795,
+ "top": [
+  {
+   "function": "(idle) :0",
+   "self_s": 36.269,
+   "share": 0.3105
+  },
+  {
+   "function": "spawnSync node:internal/child_process:1105",
+   "self_s": 34.968,
+   "share": 0.2994
+  },
+  {
+   "function": "rmdir :0",
+   "self_s": 7.361,
+   "share": 0.063
+  },
+  {
+   "function": "(garbage collector) :0",
+   "self_s": 2.725,
+   "share": 0.0233
+  },
+  {
+   "function": "unlink :0",
+   "self_s": 2.72,
+   "share": 0.0233
+  },
+  {
+   "function": "resolveDepth file:///home/user/fx-branch/node/src/sites.js:125",
+   "self_s": 2.484,
+   "share": 0.0213
+  },
+  {
+   "function": "readFileUtf8 :0",
+   "self_s": 1.7,
+   "share": 0.0146
+  },
+  {
+   "function": "readPackageJSON :0",
+   "self_s": 1.691,
+   "share": 0.0145
+  },
+  {
+   "function": "copyFile :0",
+   "self_s": 1.208,
+   "share": 0.0103
+  },
+  {
+   "function": "hazards file:///home/user/fx-branch/node/src/parallel.js:546",
+   "self_s": 0.794,
+   "share": 0.0068
+  },
+  {
+   "function": "wrapExports file:///home/user/fx-branch/node/src/jest/environment.js:132",
+   "self_s": 0.785,
+   "share": 0.0067
+  },
+  {
+   "function": "cloneCallSite file:///root/pm/repos/agentsys/node_modules/@jest/source-map/build/index.js:441",
+   "self_s": 0.782,
+   "share": 0.0067
+  },
+  {
+   "function": "wrapSafe node:internal/modules/cjs/loader:1671",
+   "self_s": 0.711,
+   "share": 0.0061
+  },
+  {
+   "function": "read :0",
+   "self_s": 0.698,
+   "share": 0.006
+  },
+  {
+   "function": "spawn node:internal/child_process:354",
+   "self_s": 0.658,
+   "share": 0.0056
+  },
+  {
+   "function": "(program) :0",
+   "self_s": 0.528,
+   "share": 0.0045
+  },
+  {
+   "function": "mkdir :0",
+   "self_s": 0.514,
+   "share": 0.0044
+  },
+  {
+   "function": "internalModuleStat :0",
+   "self_s": 0.435,
+   "share": 0.0037
+  },
+  {
+   "function": "__require file:///opt/node-tools/node_modules/pnpm/dist/pnpm.cjs:11",
+   "self_s": 0.369,
+   "share": 0.0032
+  },
+  {
+   "function": "wrapCallSite file:///root/pm/repos/agentsys/node_modules/@jest/source-map/build/index.js:473",
+   "self_s": 0.364,
+   "share": 0.0031
+  },
+  {
+   "function": "writeUtf8String :0",
+   "self_s": 0.333,
+   "share": 0.0028
+  },
+  {
+   "function": "readdir :0",
+   "self_s": 0.325,
+   "share": 0.0028
+  },
+  {
+   "function": "sortTranspositions file:///opt/node-tools/node_modules/pnpm/dist/pnpm.cjs:65359",
+   "self_s": 0.295,
+   "share": 0.0025
+  },
+  {
+   "function": "testReader file:///home/user/fx-branch/node/src/envview.js:21",
+   "self_s": 0.279,
+   "share": 0.0024
+  },
+  {
+   "function": "wait file:///home/user/fx-branch/node/src/clock.js:876",
+   "self_s": 0.266,
+   "share": 0.0023
+  },
+  {
+   "function": "open :0",
+   "self_s": 0.255,
+   "share": 0.0022
+  },
+  {
+   "function": "internalCompileFunction node:internal/vm:124",
+   "self_s": 0.254,
+   "share": 0.0022
+  },
+  {
+   "function": "Script node:vm:85",
+   "self_s": 0.251,
+   "share": 0.0022
+  },
+  {
+   "function": "getOwnPropertyDescriptor file:///home/user/fx-branch/node/src/cache/capture.js:1606",
+   "self_s": 0.236,
+   "share": 0.002
+  },
+  {
+   "function": "compileForInternalLoader node:internal/bootstrap/realm:385",
+   "self_s": 0.228,
+   "share": 0.0019
+  },
+  {
+   "function": "readFileSync node:fs:433",
+   "self_s": 0.212,
+   "share": 0.0018
+  },
+  {
+   "function": "clone.<computed> file:///root/pm/repos/agentsys/node_modules/@jest/source-map/build/index.js:447",
+   "self_s": 0.19,
+   "share": 0.0016
+  },
+  {
+   "function": "expect file:///root/pm/repos/agentsys/node_modules/expect/build/index.js:2102",
+   "self_s": 0.19,
+   "share": 0.0016
+  },
+  {
+   "function": "Promise.finally.completed file:///root/pm/repos/agentsys/node_modules/jest-circus/build/jestAdapterInit.js:1774",
+   "self_s": 0.189,
+   "share": 0.0016
+  },
+  {
+   "function": "lstat :0",
+   "self_s": 0.179,
+   "share": 0.0015
+  },
+  {
+   "function": "STATE.onEnvRead file:///home/user/fx-branch/node/src/controls.js:222",
+   "self_s": 0.163,
+   "share": 0.0014
+  },
+  {
+   "function": "flush file:///home/user/fx-branch/node/src/state.js:82",
+   "self_s": 0.158,
+   "share": 0.0013
+  },
+  {
+   "function": "normalizeSpawnArguments node:child_process:566",
+   "self_s": 0.147,
+   "share": 0.0013
+  },
+  {
+   "function": "projectFrame file:///home/user/fx-branch/node/src/controls.js:203",
+   "self_s": 0.144,
+   "share": 0.0012
+  },
+  {
+   "function": "defaultPrepareStackTrace node:internal/errors:94",
+   "self_s": 0.142,
+   "share": 0.0012
+  }
+ ],
+ "top_engine": [
+  {
+   "function": "resolveDepth file:///home/user/fx-branch/node/src/sites.js:125",
+   "self_s": 2.484,
+   "share": 0.0213
+  },
+  {
+   "function": "hazards file:///home/user/fx-branch/node/src/parallel.js:546",
+   "self_s": 0.794,
+   "share": 0.0068
+  },
+  {
+   "function": "wrapExports file:///home/user/fx-branch/node/src/jest/environment.js:132",
+   "self_s": 0.785,
+   "share": 0.0067
+  },
+  {
+   "function": "testReader file:///home/user/fx-branch/node/src/envview.js:21",
+   "self_s": 0.279,
+   "share": 0.0024
+  },
+  {
+   "function": "wait file:///home/user/fx-branch/node/src/clock.js:876",
+   "self_s": 0.266,
+   "share": 0.0023
+  },
+  {
+   "function": "getOwnPropertyDescriptor file:///home/user/fx-branch/node/src/cache/capture.js:1606",
+   "self_s": 0.236,
+   "share": 0.002
+  },
+  {
+   "function": "STATE.onEnvRead file:///home/user/fx-branch/node/src/controls.js:222",
+   "self_s": 0.163,
+   "share": 0.0014
+  },
+  {
+   "function": "flush file:///home/user/fx-branch/node/src/state.js:82",
+   "self_s": 0.158,
+   "share": 0.0013
+  },
+  {
+   "function": "projectFrame file:///home/user/fx-branch/node/src/controls.js:203",
+   "self_s": 0.144,
+   "share": 0.0012
+  },
+  {
+   "function": "phases.span.part file:///home/user/fx-branch/node/src/session.js:526",
+   "self_s": 0.142,
+   "share": 0.0012
+  },
+  {
+   "function": "rawFile file:///home/user/fx-branch/node/src/sites.js:102",
+   "self_s": 0.129,
+   "share": 0.0011
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/jest/environment.js:139",
+   "self_s": 0.127,
+   "share": 0.0011
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/facts.js:220",
+   "self_s": 0.121,
+   "share": 0.001
+  },
+  {
+   "function": "byProjectOutside file:///home/user/fx-branch/node/src/outside.js:63",
+   "self_s": 0.116,
+   "share": 0.001
+  },
+  {
+   "function": "mapStats file:///home/user/fx-branch/node/src/fstime.js:169",
+   "self_s": 0.116,
+   "share": 0.001
+  },
+  {
+   "function": "finishRerun file:///home/user/fx-branch/node/src/parallel-rerun.js:355",
+   "self_s": 0.114,
+   "share": 0.001
+  },
+  {
+   "function": "get file:///home/user/fx-branch/node/src/cache/capture.js:1596",
+   "self_s": 0.105,
+   "share": 0.0009
+  },
+  {
+   "function": "endTest file:///home/user/fx-branch/node/src/state.js:130",
+   "self_s": 0.101,
+   "share": 0.0009
+  },
+  {
+   "function": "normPath file:///home/user/fx-branch/node/src/sites.js:21",
+   "self_s": 0.092,
+   "share": 0.0008
+  },
+  {
+   "function": "ownKeys file:///home/user/fx-branch/node/src/cache/capture.js:1611",
+   "self_s": 0.088,
+   "share": 0.0008
+  },
+  {
+   "function": "add file:///home/user/fx-branch/node/src/parallel.js:394",
+   "self_s": 0.057,
+   "share": 0.0005
+  },
+  {
+   "function": "reseed file:///home/user/fx-branch/node/src/seeds.js:92",
+   "self_s": 0.057,
+   "share": 0.0005
+  },
+  {
+   "function": "looksLikeEnv file:///home/user/fx-branch/node/src/jest/environment.js:29",
+   "self_s": 0.054,
+   "share": 0.0005
+  },
+  {
+   "function": "unproven file:///home/user/fx-branch/node/src/controls.js:109",
+   "self_s": 0.051,
+   "share": 0.0004
+  },
+  {
+   "function": "dig file:///home/user/fx-branch/node/src/facts.js:23",
+   "self_s": 0.051,
+   "share": 0.0004
+  },
+  {
+   "function": "_load file:///home/user/fx-branch/node/src/jest/environment.js:166",
+   "self_s": 0.049,
+   "share": 0.0004
+  },
+  {
+   "function": "snapshotShared file:///home/user/fx-branch/node/src/parallel.js:459",
+   "self_s": 0.046,
+   "share": 0.0004
+  },
+  {
+   "function": "mapEnv file:///home/user/fx-branch/node/src/facts.js:232",
+   "self_s": 0.044,
+   "share": 0.0004
+  },
+  {
+   "function": "keyOf file:///home/user/fx-branch/node/src/parallel.js:375",
+   "self_s": 0.042,
+   "share": 0.0004
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/parallel-rerun.js:92",
+   "self_s": 0.042,
+   "share": 0.0004
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:593",
+   "self_s": 0.04,
+   "share": 0.0003
+  },
+  {
+   "function": "w file:///home/user/fx-branch/node/src/parallel.js:406",
+   "self_s": 0.034,
+   "share": 0.0003
+  },
+  {
+   "function": "resolveFormatted file:///home/user/fx-branch/node/src/sites.js:46",
+   "self_s": 0.033,
+   "share": 0.0003
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/provable.js:256",
+   "self_s": 0.033,
+   "share": 0.0003
+  },
+  {
+   "function": "beginTest file:///home/user/fx-branch/node/src/state.js:107",
+   "self_s": 0.031,
+   "share": 0.0003
+  },
+  {
+   "function": "stackOf file:///home/user/fx-branch/node/src/deadline.js:24",
+   "self_s": 0.031,
+   "share": 0.0003
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:339",
+   "self_s": 0.031,
+   "share": 0.0003
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/repro.js:156",
+   "self_s": 0.029,
+   "share": 0.0002
+  },
+  {
+   "function": "diffShared file:///home/user/fx-branch/node/src/parallel.js:492",
+   "self_s": 0.026,
+   "share": 0.0002
+  },
+  {
+   "function": "statSync file:///home/user/fx-branch/node/src/outside.js:217",
+   "self_s": 0.026,
+   "share": 0.0002
+  }
+ ],
+ "engine_self_s": 8.468
+}
