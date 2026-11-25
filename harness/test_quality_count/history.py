@@ -2,18 +2,12 @@
 search (§4.3). Every request goes through ``pipeline.Counting`` with the 300-request cap per repository."""
 from __future__ import annotations
 
-import posixpath
 import urllib.parse
 
 import rules as R
 
 SINCE = f"{R.HISTORY_START}T00:00:00Z"
 ISSUE_OR = "(slow OR timeout OR minutes OR hours OR expensive)"
-
-
-def _counting(src, cap):
-    import pipeline
-    return pipeline.Counting(src, cap)
 
 
 def watched_paths(row: dict) -> tuple[list[str], list[str]]:
@@ -25,7 +19,7 @@ def watched_paths(row: dict) -> tuple[list[str], list[str]]:
 
 def run_history(src, repo: str, row: dict, cap: int = 300) -> dict:
     import pipeline
-    B = _counting(src, cap)
+    B = pipeline.Counting(src, cap)
     configs, scripts = watched_paths(row)
     out = {"paths": [".github/workflows"] + configs + scripts, "changes": [], "candidates": [], "errors": [],
            "commits": 0, "done": False, "capped": False}
@@ -42,7 +36,10 @@ def run_history(src, repo: str, row: dict, cap: int = 300) -> dict:
                     break
                 for c in d:
                     commits.setdefault(c["sha"], {"sha": c["sha"], "date": c.get("date"), "paths": set()})["paths"].add(p)
-                if len(d) < 100 or page >= 10:
+                if len(d) < 100:
+                    break
+                if page >= 10:
+                    out["errors"].append(f"commits {p}: more than 1,000 commits (listing stopped)")
                     break
                 page += 1
         out["commits"] = len(commits)
@@ -146,13 +143,9 @@ def _tools_overlap(a, b) -> bool:
 def _cross(B, repo, per: list[dict], errors: list) -> None:
     """Removed mutation jobs: moved-off-change when added to a scheduled/manual workflow in the same commit or pull
     request; disabled when not added anywhere in the same commit or pull request."""
-    import pipeline
     for x in per:
         if x["kinds"] or x["removed"] or x["added"]:
-            try:
-                st, d = B.get(f"repos/{repo}/commits/{x['sha']}/pulls")
-            except pipeline.Counting.Capped:
-                raise
+            st, d = B.get(f"repos/{repo}/commits/{x['sha']}/pulls")
             x["prs"] = d if st == 200 and isinstance(d, list) else []
             if st not in (200, 404, 409, 422):
                 errors.append(f"pulls {x['sha'][:7]}: HTTP {st}")

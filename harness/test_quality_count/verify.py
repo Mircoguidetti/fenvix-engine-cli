@@ -5,7 +5,8 @@
    ``pipeline.ReplaySource``; every issues record from results/issues_raw/. Fields that describe the run itself
    (chunk, requests, read_at) are not compared.
 2. REPORT.md is re-printed by ``report.render`` and compared byte for byte.
-3. The decision counts are recounted by a separate loop (no report code) and checked against the decision line.
+3. The decision counts (read, running, uncertain, pain yes/unknown) are recounted by a separate loop over the rows
+   (it shares rules.pain_of and report.apply_handcheck with the report) and compared with report.compute.
 """
 from __future__ import annotations
 
@@ -57,14 +58,17 @@ def check_rows(res: Path) -> list[str]:
     for idx in rows:
         if idx not in seen:
             errs.append(f"row idx {idx}: no raw responses")
+    # each raw issues record is replayed against the issues record written in the same run (same repo and `at`)
     issues = {}
-    for x in report._jsonl(res / "issues.jsonl"):
-        issues[x["repo"].lower()] = x
-    for raw in sorted((res / "issues_raw").glob("*.jsonl.gz")) if (res / "issues_raw").exists() else []:
+    for f in ("issues.jsonl", "issues_wf.jsonl"):
+        for x in report._jsonl(res / f):
+            issues[(x["repo"].lower(), x.get("at"))] = x
+    raws = [p for d in ("issues_raw", "issues_raw_wf") if (res / d).exists() for p in sorted((res / d).glob("*.jsonl.gz"))]
+    for raw in raws:
         for rec in report._jsonl(raw):
-            x = issues.get(rec["repo"].lower())
+            x = issues.get((rec["repo"].lower(), rec.get("at")))
             if x is None:
-                errs.append(f"issues raw {rec['repo']}: no record")
+                errs.append(f"issues raw {rec['repo']} at {rec.get('at')}: no record")
                 continue
             again = history.run_issues(pipeline.ReplaySource(rec["responses"]),
                                        x.get("query_repo") or rec["repo"],

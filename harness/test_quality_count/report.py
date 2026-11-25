@@ -41,7 +41,7 @@ def load(res: Path = RES) -> dict:
     for r in _jsonl(res / "rows.jsonl"):
         rows_by[r["idx"]] = r
     issues = {}
-    for x in _jsonl(res / "issues.jsonl"):
+    for x in sorted(_jsonl(res / "issues.jsonl") + _jsonl(res / "issues_wf.jsonl"), key=lambda z: z.get("at") or ""):
         issues[x["repo"].lower()] = x
     rows = []
     for idx in sorted(rows_by):

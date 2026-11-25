@@ -51,8 +51,10 @@ def _b64(d: dict):
     return None
 
 
-def _patch_kept(name: str) -> bool:
-    return bool(name.startswith(".github/workflows/") or TREE_KEEP.search(name) or R.is_config_path(name))
+def _patch_kept(name: str, patch: str | None = None) -> bool:
+    if name.startswith(".github/workflows/") or TREE_KEEP.search(name) or R.is_config_path(name):
+        return True
+    return bool(patch) and R.patch_touches(patch, False)
 
 
 def trim(path: str, d):
@@ -100,7 +102,7 @@ def trim(path: str, d):
                 "files": [{"filename": f.get("filename"), "status": f.get("status"),
                            "previous_filename": f.get("previous_filename"),
                            "patch": (f.get("patch")[:30000] if f.get("patch") is not None else None)
-                           if _patch_kept(f.get("filename") or "") else None,
+                           if _patch_kept(f.get("filename") or "", f.get("patch")) else None,
                            "has_patch": f.get("patch") is not None}
                           for f in d.get("files") or []]}
     if p.endswith("/commits") and isinstance(d, list):
@@ -192,8 +194,9 @@ class Repo:
         if path.startswith("..") or path.startswith("/"):
             return None
         if self.tree is not None:
-            if path not in self.tree:
+            if path not in self.tree and TREE_KEEP.search(path):
                 return None
+            # a path the trimmed tree does not keep (e.g. an extensionless script) is fetched directly: 404 = absent
         else:
             names = self.listdir(posixpath.dirname(path))
             if names is None or posixpath.basename(path) not in names:
@@ -211,7 +214,7 @@ class Repo:
 def inspect_runs(src, repo: str, run_file: str, targets: list[dict], schedule_only: bool) -> None:
     """Fill each target {job_name, caller, yaml_steps, mut_idx, timeout} with runs evidence and values."""
     for t in targets:
-        t.update(inspected=0, evidence=None, values=[], more=False, total_runs=None)
+        t.update(inspected=0, evidence=None, values=[], more=False, total_runs=None, jobs_truncated=False)
     q = {"created": f">={R.WINDOW_START}", "per_page": 100}
     if schedule_only:
         q["event"] = "schedule"
@@ -232,7 +235,11 @@ def inspect_runs(src, repo: str, run_file: str, targets: list[dict], schedule_on
             if stj != 200:
                 raise ApiError(f"jobs {run['id']}: HTTP {stj}")
             jobs += dj.get("jobs") or []
-            if len(jobs) >= (dj.get("total_count") or 0) or not dj.get("jobs") or jp >= 5:
+            if len(jobs) >= (dj.get("total_count") or 0) or not dj.get("jobs"):
+                break
+            if jp >= 5:
+                for t in targets:
+                    t["jobs_truncated"] = True
                 break
             jp += 1
         for t in targets:
@@ -262,13 +269,42 @@ def inspect_runs(src, repo: str, run_file: str, targets: list[dict], schedule_on
         t["more"] = total > t["inspected"]
         if t["evidence"]:
             t["status"] = "running"
-        elif t["inspected"] >= RUNS_CAP and t["more"]:
+        elif (t["inspected"] >= RUNS_CAP and t["more"]) or t.get("jobs_truncated"):
             t["status"] = "uncertain"
         else:
             t["status"] = "configured-not-running"
 
 
 # ---------------------------------------------------------------------------------------------- candidate
+
+def caller_chains(p: str, callers: dict, parsed: dict, depth: int = 0, seen: frozenset = frozenset()) -> list:
+    """Every caller chain of a called workflow up to a workflow that is not only `workflow_call`:
+    [(root file, [caller job names from the root down], events reaching it, if-complex flag)]; None = unsupported."""
+    out = []
+    if depth > 4:
+        return [None]
+    for cp, cjk, cjob in callers.get(p, []):
+        if cp in seen:
+            continue
+        try:
+            cev = R.events(parsed[cp])
+        except R.OnError:
+            out.append(None)
+            continue
+        own = cev - {"workflow_call"}
+        fev, cx = R.if_filter(cjob.get("if"), own)
+        if own:
+            out.append((cp, [_named(cjob, cjk)], fev, cx))
+        if "workflow_call" in cev:
+            for up in caller_chains(cp, callers, parsed, depth + 1, seen | {p}):
+                if up is None:
+                    out.append(None)
+                    continue
+                root, names, uev, ux = up
+                fev2, cx2 = R.if_filter(cjob.get("if"), uev)
+                out.append((root, names + [_named(cjob, cjk)], fev2, ux or cx2))
+    return out
+
 
 def _named(job: dict, jk) -> str:
     return str(job.get("name") if job.get("name") is not None else jk)
@@ -329,7 +365,7 @@ def analyze(src, repo: str, branch: str, row: dict, cand: dict) -> None:
         tree = set(tr.get("paths") or [])
     elif st not in (200, 404, 409):
         raise ApiError(f"tree: HTTP {st}")
-    row["tree_truncated"] = tree is None
+    row["tree_unavailable"] = None if tree is not None else ("truncated" if st == 200 else f"http-{st}")
     rp = Repo(src, repo, branch, tree)
     ctx = R.Ctx(rp.read, sorted(tree) if tree is not None else None, cand.get("files") or [])
     if tree is None:  # gate note 4: contents fallback for the root files
@@ -399,16 +435,17 @@ def analyze(src, repo: str, branch: str, row: dict, cand: dict) -> None:
                 jobs_out.append(jr)
                 continue
             if "workflow_call" in evs:
-                for cp, cjk, cjob in callers.get(p, []):
-                    try:
-                        cev = R.events(parsed[cp])
-                    except R.OnError:
-                        continue
-                    cev, cx = R.if_filter(cjob.get("if"), cev)
+                chains = caller_chains(p, callers, parsed)
+                if any(ch is None for ch in chains):
+                    jr.update(status="unsupported", why="reusable workflow chain deeper than 4 or a caller "
+                                                        "whose on: does not parse")
+                    jobs_out.append(jr)
+                    continue
+                for root, names, cev, cx in chains:
                     cev, jx = R.if_filter(job.get("if"), cev)
                     if cx or jx:
                         jr["flags"].append("if-complex")
-                    routes.append((cp, _named(cjob, cjk), cev))
+                    routes.append((root, " / ".join(names), cev))
                 own = evs - {"workflow_call"}
                 if own:
                     oev, jx = R.if_filter(job.get("if"), own)
@@ -486,6 +523,9 @@ def analyze(src, repo: str, branch: str, row: dict, cand: dict) -> None:
 
 def duration(jobs: list[dict]) -> dict:
     meds, too_few, cap_few = [], False, False
+    other_uncertain = any(j.get("status") in ("uncertain", "unsupported") or
+                          any(t.get("status") in ("uncertain", "error") for t in j.get("targets") or [])
+                          for j in jobs)
     for j in jobs:
         if j.get("status") != "running":
             continue
@@ -506,7 +546,8 @@ def duration(jobs: list[dict]) -> dict:
                              "n": len(vals), "freq": t["freq"], "tools": j["tools"], "wrapped": j["wrapped"]})
     best = max(meds, key=lambda m: m["median_min"]) if meds else None
     return {"max_median_min": best["median_min"] if best else None, "best": best, "medians": meds,
-            "pain": bool(best and best["median_min"] >= PAIN_MIN), "too_few_runs": too_few, "runs_cap_few": cap_few}
+            "pain": bool(best and best["median_min"] >= PAIN_MIN), "too_few_runs": too_few, "runs_cap_few": cap_few,
+            "other_uncertain": other_uncertain}
 
 
 def row_tools(row: dict) -> list[str]:

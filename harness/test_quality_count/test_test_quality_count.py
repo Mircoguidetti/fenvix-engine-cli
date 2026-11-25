@@ -87,7 +87,11 @@ class FakeGH:
             return 404, {"message": "Not Found"}
         if p.endswith("/runs"):
             f = p.split("/workflows/", 1)[1].split("/")[0]
+            if self.runs.get(f) == "error":
+                return 500, {"message": "Server Error"}
             rs = self.runs.get(f, [])
+            if "event" in qs:
+                rs = [r for r in rs if r.get("event") == qs["event"][0]]
             return 200, {"total_count": len(rs), "workflow_runs": rs[:100]}
         if p.endswith("/jobs"):
             rid = int(p.split("/runs/", 1)[1].split("/")[0])
@@ -132,7 +136,8 @@ def cand(**kw):
     ("npx stryker run", "stryker"), ("dotnet stryker", "stryker"),
     ("XDEBUG_MODE=coverage ./vendor/bin/infection --threads=4", "infection"),
     ("cargo mutants --in-diff x.diff", "cargo-mutants"), ("./gradlew pitest", "pitest"),
-    ("cosmic-ray exec cfg.toml session.sqlite", "cosmic-ray"), ("bundle exec mutant run", "mutant")])
+    ("cosmic-ray exec cfg.toml session.sqlite", "cosmic-ray"), ("bundle exec mutant run", "mutant"),
+    ("php -d memory_limit=-1 vendor/bin/infection --threads=max", "infection")])
 def test_mutation_commands_match(cmd, tool):
     """protects=§2.3 table rows for each tool; fails_when=a real mutation command of the spec fixtures is not
     recognised; no_claim=coverage of every flag combination a project may use."""
@@ -179,7 +184,7 @@ def test_maven_plugin_management_only_is_unresolved():
     pom = """<project><build><pluginManagement><plugins><plugin><artifactId>pitest-maven</artifactId></plugin>
       </plugins></pluginManagement></build></project>"""
     tools, unres, _ = mut("mvn verify", {"pom.xml": pom})
-    assert tools == [] and unres == ["pitest-maven in pluginManagement"]
+    assert tools == [] and unres == ["pitest in pluginManagement"] and R.has_term(unres[0], name=True)
 
 
 @pytest.mark.parametrize("cmd", ["poetry run mutmut run", "python -m mutmut run", "npx -y stryker run",
@@ -274,12 +279,29 @@ def test_gradle_check_with_pitest_dependency_is_unresolved():
 
 
 def test_stryker_conf_with_unknown_binary_step_is_uncertain():
-    """protects=§2.6 tool-present-unlinked / unresolved; fails_when=a repository with stryker.conf.js and a step named
-    `Mutation tests` running an unknown binary is not-running; no_claim=what the binary does."""
+    """protects=§2.6 tool-present-unlinked via a step name; fails_when=a repository with stryker.conf.js and a step
+    named `Mutation tests` running an unknown binary is not-running; no_claim=tool config files as a term source (they
+    are not one: without the step name the row is no-mutation)."""
     wf = ("on: [push]\njobs:\n  t:\n    runs-on: x\n    steps:\n      - name: Mutation tests\n"
           "        run: ./tools/mut-runner --all\n")
-    row, _ = _row_for(wf, {"stryker.conf.js": "module.exports = {mutate: ['src/**']}"})
-    assert row["mclass"] in ("tool-present-unlinked", "unresolved") and row["cls"] == "uncertain"
+    files = {"stryker.conf.js": "module.exports = {mutate: ['src/**']}"}
+    row, _ = _row_for(wf, files)
+    assert row["mclass"] == "tool-present-unlinked" and row["cls"] == "uncertain"
+    assert row["term_hits"][0]["kind"] == "step-name"
+    row2, _ = _row_for(wf.replace("Mutation tests", "Checks"), files)
+    assert row2["mclass"] == "no-mutation"
+
+
+def test_conditional_terms_infection_composer_and_ruby_mutant():
+    """protects=§2.5 conditional terms (infection anywhere in a composer.json script, mutant only with a Gemfile naming
+    it); fails_when=either gate is removed or inverted; no_claim=other files."""
+    wf = "on: [push]\njobs:\n  t:\n    runs-on: x\n    steps:\n      - run: composer qa\n"
+    comp = json.dumps({"scripts": {"qa": ["phpstan", "echo infection skipped"]}})
+    row, _ = _row_for(wf, {"composer.json": comp})
+    assert row["mclass"] == "tool-present-unlinked"
+    wf2 = "on: [push]\njobs:\n  t:\n    runs-on: x\n    steps:\n      - run: echo mutant later\n"
+    assert _row_for(wf2)[0]["mclass"] == "no-mutation"
+    assert _row_for(wf2, {"Gemfile": "gem 'mutant-rspec'\n"})[0]["mclass"] == "tool-present-unlinked"
 
 
 def test_stryker_only_in_package_json_is_no_mutation():
@@ -388,13 +410,16 @@ def test_job_wall_time_not_step_time():
 
 
 def test_cancelled_at_timeout_gives_value_expression_timeout_does_not():
-    """protects=§3 lower-bound values; fails_when=a leg cancelled at its 60-minute timeout is dropped, or a leg with a
-    `${{ }}` timeout gives a value; no_claim=step-level timeouts that do not cancel the job."""
+    """protects=§3 lower-bound values and CHANGES.md 9 (stopped at timeout = running evidence, timed_out like
+    cancelled); fails_when=a leg cancelled at its 60-minute timeout is dropped, a job always killed at its timeout
+    reads configured-not-running, or a `${{ }}` timeout gives a value; no_claim=step-level timeouts."""
     leg = api_job("mutation", 60, conclusion="cancelled", steps=[("Run mutation", "cancelled", 60)])
     st = [leg["steps"][0]]
     ev = R.leg_eval(leg, st, 60.0)
-    assert ev["value_s"] == 3600 and ev["lower_bound"] and not ev["evidence"]
-    assert R.leg_eval(leg, st, None)["value_s"] is None
+    assert ev["value_s"] == 3600 and ev["lower_bound"] and ev["evidence"]
+    to = api_job("mutation", 60, conclusion="timed_out", steps=[("Run mutation", "cancelled", 60)])
+    assert R.leg_eval(to, [to["steps"][0]], 60.0)["value_s"] == 3600
+    assert R.leg_eval(leg, st, None)["value_s"] is None and not R.leg_eval(leg, st, None)["evidence"]
     assert R.timeout_of({}, {"timeout-minutes": "${{ inputs.t }}"}) is None
     assert R.timeout_of({"timeout-minutes": 45}, {"timeout-minutes": 90}) == 45
     assert R.timeout_of({}, {}) == 360
@@ -758,3 +783,222 @@ def test_verify_replays_rows_and_report(tmp_path, monkeypatch):
     (res / "rows.jsonl").write_text(json.dumps(row, sort_keys=True) + "\n")
     rp.write_text(rp.read_text().replace("running 1", "running 2", 1))
     assert verify.main(res, rp) == 1
+
+
+# ============================================================================================== review fixes (pass 1)
+
+@pytest.mark.parametrize("cmd", ["npm --prefix web run test:mutation", "yarn --cwd web test:mutation",
+                                 "pnpm -C web run test:mutation", "npm run --prefix=web test:mutation"])
+def test_pm_options_with_values_before_subcommand(cmd):
+    """protects=§2.4 npm/yarn/pnpm resolution with leading value options; fails_when=`--prefix web` hides the script
+    (row no-mutation); no_claim=every package-manager option."""
+    files = {"web/package.json": json.dumps({"scripts": {"test:mutation": "stryker run"}})}
+    assert mut(cmd, files)[0] == ["stryker"]
+
+
+def test_pm_filter_is_monorepo_unresolved():
+    """protects=§2.6 conservative monorepo handling; fails_when=`pnpm --filter web test:mutation` reads no-mutation;
+    no_claim=resolution across workspace packages."""
+    tools, unres, _ = mut("pnpm --filter web test:mutation", {"package.json": json.dumps({"scripts": {}})})
+    assert tools == [] and unres == ["test:mutation"]
+
+
+def test_maven_errors_flag_takes_no_value():
+    """protects=§2.3 Maven option parsing; fails_when=`mvn -B -e verify` skips the phase after -e; no_claim=other
+    options."""
+    pom = """<project><build><plugins><plugin><artifactId>pitest-maven</artifactId><executions><execution>
+      <goals><goal>mutationCoverage</goal></goals></execution></executions></plugin></plugins></build></project>"""
+    assert mut("mvn -B -e verify", {"pom.xml": pom})[0] == ["pitest"]
+
+
+def test_maven_profile_with_activation_is_unresolved():
+    """protects=CHANGES.md 10 (profile activated by default/property); fails_when=a pitest execution in an
+    activeByDefault profile reads no-mutation; no_claim=whether the profile is active on CI."""
+    pom = """<project><profiles><profile><id>pit</id><activation><activeByDefault>true</activeByDefault></activation>
+      <build><plugins><plugin><artifactId>pitest-maven</artifactId><executions><execution><goals>
+      <goal>mutationCoverage</goal></goals></execution></executions></plugin></plugins></build></profile></profiles>
+      </project>"""
+    tools, unres, _ = mut("mvn verify", {"pom.xml": pom})
+    assert tools == [] and unres == ["pitest in maven profile pit"] and R.has_term(unres[0], name=True)
+
+
+def test_gradle_multiline_wiring_is_unresolved():
+    """protects=§2.3 Gradle wiring across a line break; fails_when=`check.dependsOn(\n 'pitest')` is missed;
+    no_claim=wiring in buildSrc."""
+    files = {"build.gradle.kts": "tasks.check {\n  dependsOn(\n    \"pitest\"\n  )\n}\n"}
+    assert len(mut("./gradlew check", files)[1]) == 1
+
+
+def test_extensionless_script_outside_trimmed_tree_is_read():
+    """protects=Repo.read fallback for paths the trimmed tree drops; fails_when=`bash ci/mutate` (no .sh) reads as
+    missing and the row is no-mutation; no_claim=binary files."""
+    wf = "on: [push]\njobs:\n  m:\n    runs-on: x\n    steps:\n      - name: Run mutation\n        run: bash ci/mutate\n"
+    gh = FakeGH({".github/workflows/ci.yml": wf}, runs={"ci.yml": runs_of(1)}, jobs={1: [api_job("m", 5)]})
+    orig = gh.get
+
+    def get(path, search=None):
+        if "/git/trees/" in path:
+            return 200, {"truncated": False, "paths": [".github/workflows/ci.yml"]}  # trimmed: ci/mutate dropped
+        if path.startswith("repos/o/r/contents/ci%2Fmutate?") or path.startswith("repos/o/r/contents/ci/mutate?"):
+            return 200, {"type": "file", "path": "ci/mutate", "text": "npx stryker run\n"}
+        return orig(path, search)
+    gh.get = get
+    row = pipeline.run_candidate(gh, cand(), {"no_history": True})
+    assert row["cls"] == "running"
+
+
+def test_nested_reusable_workflow_chain():
+    """protects=§2.6 workflow_call followed to the root caller (two levels); fails_when=runs are listed on the middle
+    workflow and the row reads not-running; no_claim=remote reusable workflows."""
+    top = "on: [push]\njobs:\n  ci:\n    uses: ./.github/workflows/mid.yml\n"
+    mid = "on: [workflow_call]\njobs:\n  m:\n    uses: ./.github/workflows/mut.yml\n"
+    mutw = ("on: [workflow_call]\njobs:\n  mut:\n    runs-on: x\n    steps:\n      - name: Run mutation\n"
+            "        run: npx stryker run\n")
+    runs = runs_of(3)
+    gh = FakeGH({".github/workflows/top.yml": top, ".github/workflows/mid.yml": mid,
+                 ".github/workflows/mut.yml": mutw}, runs={"top.yml": runs},
+                jobs={r["id"]: [api_job("ci / m / mut", 40)] for r in runs})
+    row = pipeline.run_candidate(gh, cand(), {"no_history": True})
+    assert row["cls"] == "running" and row["duration"]["max_median_min"] == 40
+    assert row["jobs"][0]["targets"][0]["run_file"] == ".github/workflows/top.yml"
+
+
+def test_configured_not_running_with_unlinked_item_is_uncertain():
+    """protects=gate note 2 (configured-not-running + unresolved/unlinked item -> uncertain); fails_when=the extra
+    clause is dropped; no_claim=which item hides the run."""
+    jobs = {1: [api_job("mutation", 3, steps=[("Run mutation", "skipped", 0)])]}
+    wf = WF_MUT + "  legacy:\n    runs-on: x\n    steps:\n      - name: mutation tests (legacy)\n        run: ./tools/mut-runner\n"
+    row, _ = _row_for(wf, runs={"ci.yml": runs_of(1)}, jobs=jobs)
+    assert row["status"] == "uncertain" and row["cls"] == "uncertain"
+
+
+@pytest.mark.parametrize("case", ["yaml", "runs500", "on"])
+def test_error_paths_are_uncertain(case):
+    """protects=§5 uncertain for API/YAML errors and unparsable on:; fails_when=any of them reads not-running;
+    no_claim=the error's cause."""
+    if case == "yaml":
+        row, _ = _row_for("jobs:\n  mutation-tests:\n    steps: [\n      - run: npm run test:mutation\n")
+    elif case == "runs500":
+        row, _ = _row_for(WF_MUT, runs={"ci.yml": "error"})
+    else:
+        row, _ = _row_for(WF_MUT.replace("on: [push]", "on: [1, 2]"))
+    assert row["cls"] == "uncertain"
+
+
+def test_schedule_only_job_lists_schedule_runs_push_schedule_does_not():
+    """protects=§2.8 `event=schedule` only when the job is reachable only by schedule; fails_when=a push+schedule
+    job lists only scheduled runs; no_claim=other events."""
+    wf = WF_MUT.replace("on: [push]", "on: [push, schedule]")
+    runs = runs_of(3, event="push")
+    row, gh = _row_for(wf, runs={"ci.yml": runs}, jobs={r["id"]: [api_job("mutation", 5)] for r in runs})
+    assert row["cls"] == "running" and not any("event=schedule" in c for c in gh.calls)
+    wf2 = WF_MUT.replace("on: [push]", "on:\n  schedule:\n    - cron: '0 1 * * *'")
+    _, gh2 = _row_for(wf2, runs={"ci.yml": runs})
+    assert any("event=schedule" in c for c in gh2.calls)
+
+
+def test_other_mutation_job_uncertain_makes_pain_unknown():
+    """protects=§4.5 conservative pain when a second mutation job could not be read; fails_when=pain is `no` while a
+    second (possibly long) job failed or hit the runs cap; no_claim=its real duration."""
+    other = ("on: [push]\njobs:\n  slow:\n    runs-on: x\n    steps:\n      - name: Run mutation\n"
+             "        run: npx stryker run --all\n")
+    runs = runs_of(3)
+    gh = FakeGH({".github/workflows/ci.yml": WF_MUT, ".github/workflows/nightly.yml": other},
+                runs={"ci.yml": runs, "nightly.yml": "error"},
+                jobs={r["id"]: [api_job("mutation", 3)] for r in runs})
+    row = pipeline.run_candidate(gh, cand(), {"no_history": True})
+    assert row["cls"] == "running" and row["duration"]["other_uncertain"]
+    row["history"] = {"done": True, "candidates": []}
+    row["issues"] = {"done": True, "candidates": []}
+    assert R.pain_of(row, {}) == ("unknown", ["another mutation job uncertain"])
+
+
+def test_pain_unknown_reasons_and_case():
+    """protects=§4.5 unknown reasons (history-error, issues not run) and case-insensitive hand-read keys;
+    fails_when=a history error or a missing issues search gives pain no, or `O/R` misses its verdict;
+    no_claim=reason wording."""
+    base = {"repo": "o/r", "cls": "running", "duration": {"pain": False},
+            "history": {"done": True, "candidates": [], "errors": ["commit abc: HTTP 502"]},
+            "issues": {"done": True, "candidates": []}}
+    assert R.pain_of(base, {})[0] == "unknown"
+    no_issues = dict(base, history={"done": True, "candidates": []})
+    no_issues.pop("issues")
+    assert R.pain_of(no_issues, {}) == ("unknown", ["issues search not run"])
+    upper = dict(base, repo="O/R", history={"done": True, "candidates": []},
+                 issues={"done": True, "candidates": [{"id": "issue:5", "date": "2025-01-01"}]})
+    assert R.pain_of(upper, {("o/r", "issue:5"): {"verdict": "confirmed"}})[0] == "yes"
+
+
+def test_decision_guards():
+    """protects=§5 guards (DROP b needs >= 300 read and no incomplete leaf; DROP a needs no incomplete leaf; budget ->
+    NO DECISION); fails_when=any guard is dropped; no_claim=the thresholds' choice."""
+    assert R.decide(_c(read=299, N=1000))["kind"] == "KEEP READING"
+    assert R.decide(_c(read=300, N=1000, any_incomplete=True))["kind"] != "DROP"
+    assert R.decide(_c(read=50, all_read=True, any_incomplete=True, N=60))["kind"] != "DROP"
+    assert R.decide(_c(N=9000, budget_over=True))["kind"] == "NO DECISION"
+
+
+def test_all_read_needs_every_candidate(tmp_path):
+    """protects=§5 DROP (a) `every candidate read`; fails_when=all_read is true with a candidate unread;
+    no_claim=excluded handling."""
+    res = tmp_path / "results"
+    res.mkdir()
+    (res / "candidates.jsonl").write_text(json.dumps({"idx": 0, "repo": "a/x"}) + "\n" +
+                                          json.dumps({"idx": 1, "repo": "b/y"}) + "\n")
+    (res / "rows.jsonl").write_text(json.dumps({"idx": 0, "repo": "a/x", "cls": "not-running"}) + "\n")
+    assert report.compute(report.load(res))["c"]["all_read"] is False
+
+
+def test_handcheck_stop_rule_and_override():
+    """protects=AC4 (>2 of 20 random running fail -> rule fix; reclassification applied); fails_when=the threshold or
+    the override is lost; no_claim=sample choice."""
+    smp = {"running": ["a/1", "a/2", "a/3"], "not-running": []}
+    hc = {("a/1", "running"): {"ok": False}, ("a/2", "running"): {"ok": False}, ("a/3", "running"): {"ok": True}}
+    assert report.handcheck_status(smp, hc)["stop"] is False
+    hc[("a/3", "running")] = {"ok": False}
+    assert report.handcheck_status(smp, hc)["stop"] is True
+    rows = [{"repo": "a/1", "cls": "running"}]
+    out = report.apply_handcheck(rows, {("a/1", "pain-yes"): {"ok": False, "reclass": {"pain": "no"}}})
+    assert report.pain(out[0], {}) == ("no", ["hand check"])
+
+
+def _hist_row(files, details, at_ref, commits_path=".github/workflows", extra=None):
+    runs = runs_of(3)
+    gh = FakeGH(files, runs={"ci.yml": runs}, jobs={r["id"]: [api_job("mutation", 10)] for r in runs},
+                commits={commits_path: [{"sha": k, "date": v["date"]} for k, v in details.items()], **(extra or {})},
+                details=details, at_ref=at_ref)
+    return pipeline.run_candidate(gh, cand())
+
+
+def test_history_removed_job_is_disabled():
+    """protects=§4.1 `disabled` by removal (not added elsewhere); fails_when=deleting the mutation job is no change;
+    no_claim=the reason (recall filter)."""
+    s_, parent = "d" * 40, "e" * 40
+    after = "on: [push, pull_request]\njobs:\n  test:\n    runs-on: x\n    steps:\n      - run: npm test\n"
+    files = {".github/workflows/ci.yml": WF_MUT}
+    det = {s_: _commit(s_, [(".github/workflows/ci.yml", "modified", "-        run: npx stryker run")],
+                       message="drop mutation job, too slow", parent=parent)}
+    row = _hist_row(files, det, {parent: {".github/workflows/ci.yml": BASE}, s_: {".github/workflows/ci.yml": after}})
+    ch = row["history"]["changes"]
+    assert ch and ch[0]["kinds"] == ["disabled"] and row["history"]["candidates"]
+
+
+def test_history_script_file_change_is_seen():
+    """protects=gate note 8 (script files reached in §2.4 are history paths); fails_when=a removed mutation command in
+    ci/mutate.sh is not seen; no_claim=script semantics."""
+    wf = WF_MUT.replace("npx stryker run", "bash ci/mutate.sh")
+    files = {".github/workflows/ci.yml": wf, "ci/mutate.sh": "npx stryker run --incremental\n"}
+    s_ = "f" * 40
+    det = {s_: _commit(s_, [("ci/mutate.sh", "modified", "-mutmut run\n+echo skipped")], message="mutation too slow")}
+    row = _hist_row(files, det, {}, commits_path="ci/mutate.sh")
+    assert "ci/mutate.sh" in row["history"]["paths"]
+    assert row["history"]["changes"][0]["kinds"] == ["disabled"]
+
+
+def test_chunk_with_workflow_issues_route_needs_budget_free(tmp_path, monkeypatch):
+    """protects=AC1 for the chunk path (issues searches from the workflow); fails_when=a chunk request with
+    issues_route=workflow can run before the budget-free file; no_claim=session-route chunks (no search)."""
+    import chunk as CH
+    monkeypatch.setattr(discover, "BUDGET_FREE", tmp_path / "missing.json")
+    with pytest.raises(SystemExit):
+        CH.run_chunk({"chunk": 1, "candidates": [], "issues_route": "workflow"})

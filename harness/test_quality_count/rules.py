@@ -122,6 +122,7 @@ def strip_prefixes(cmd: str, scripts: set | None = None) -> str:
         for rx in STRIP_RES:
             c = rx.sub("", c, count=1).strip()
         c = re.sub(r"^cargo \+\S+\s+", "cargo ", c)
+        c = re.sub(r"^php\s+((-d\s*\S+|-n|-dmemory_limit=\S+)\s+)+", "php ", c)  # CHANGES.md 13
         c = re.sub(r"^php \./", "php ", c)
         m = re.match(r"^yarn\s+(\S+)", c)
         if m and m.group(1) not in YARN_BUILTINS and not m.group(1).startswith("-") \
@@ -153,7 +154,7 @@ MVN_RE = re.compile(r"^mvnw?\b")
 GRADLE_RE = re.compile(r"^gradlew?\b")
 PIT_GOAL_RE = re.compile(r"^(pitest:(scm)?[mM]utationCoverage|org\.pitest:pitest-maven(:[\w.-]+)?:(scm)?[mM]utationCoverage)$")
 PIT_TASK_RE = re.compile(r"^(:[\w-]+)*:?pitest\w*$")
-GRADLE_WIRE_RE = re.compile(r"dependsOn.*pitest|finalizedBy.*pitest")
+GRADLE_WIRE_RE = re.compile(r"(dependsOn|finalizedBy)[^\n]*pitest|(dependsOn|finalizedBy)\s*[(\[]\s*\n[^)\]]*pitest")
 LIFECYCLE = ["validate", "initialize", "generate-sources", "process-sources", "generate-resources",
              "process-resources", "compile", "process-classes", "generate-test-sources", "process-test-sources",
              "generate-test-resources", "process-test-resources", "test-compile", "process-test-classes", "test",
@@ -161,7 +162,7 @@ LIFECYCLE = ["validate", "initialize", "generate-sources", "process-sources", "g
              "verify", "install", "deploy"]
 MVN_VALUE_OPTS = {"-f", "--file", "-P", "--activate-profiles", "-pl", "--projects", "-s", "--settings", "-T",
                   "--threads", "-rf", "--resume-from", "-gs", "--global-settings", "-t", "--toolchains", "-b",
-                  "--builder", "-l", "--log-file", "-e"}
+                  "--builder", "-l", "--log-file"}
 GRADLE_VALUE_OPTS = {"-p", "--project-dir", "-c", "--settings-file", "-b", "--build-file", "-I", "--init-script",
                      "-g", "--gradle-user-home", "--console", "--warning-mode", "--max-workers"}
 
@@ -215,8 +216,13 @@ def _has_pit(plugins_el) -> bool:
 
 def pom_info(root, profiles: set) -> dict:
     """Executions in build/plugins (and active profiles), pluginManagement executions, modules, parent path."""
-    execs, pm, pm_execs, modules = [], False, [], []
+    execs, pm, pm_execs, modules, auto = [], False, [], [], []
     blocks = [root] + [p for p in root.findall("profiles/profile") if (p.findtext("id") or "").strip() in profiles]
+    for p in root.findall("profiles/profile"):
+        pid = (p.findtext("id") or "").strip()
+        if pid not in profiles and p.find("activation") is not None and \
+                (_pit_execs(p.find("build/plugins")) or _has_pit(p.find("build/plugins"))):
+            auto.append(pid)  # activated by default / by a property: cannot tell from the command
     for b in blocks:
         execs += _pit_execs(b.find("build/plugins"))
         pmp = b.find("build/pluginManagement/plugins")
@@ -229,7 +235,7 @@ def pom_info(root, profiles: set) -> dict:
     if parent is not None:
         rel = parent.findtext("relativePath")
         rel = "../pom.xml" if rel is None else rel.strip()
-    return {"execs": execs, "pm": pm, "pm_execs": pm_execs, "modules": modules,
+    return {"execs": execs, "pm": pm, "pm_execs": pm_execs, "modules": modules, "auto_profiles": auto,
             "parent": parent is not None, "parent_rel": rel}
 
 
@@ -272,7 +278,7 @@ def match_maven(cmd: str, wd: str, ctx) -> dict | None:
         raise Unresolved("pom.xml", f"{pom_path} does not parse")
     info = pom_info(root, profiles)
     base = posixpath.dirname(pom_path)
-    execs, pm_execs = list(info["execs"]), list(info["pm_execs"])
+    execs, pm_execs, auto = list(info["execs"]), list(info["pm_execs"]), list(info["auto_profiles"])
     seen = {pom_path}
     stack = [(base, m, 1) for m in info["modules"]]
     while stack:
@@ -288,12 +294,15 @@ def match_maven(cmd: str, wd: str, ctx) -> dict | None:
         mi = pom_info(mr, profiles)
         execs += mi["execs"]
         pm_execs += mi["pm_execs"]
+        auto += mi["auto_profiles"]
         stack += [(posixpath.dirname(mp), x, depth + 1) for x in mi["modules"]]
     for ph in execs:
         if ph in LIFECYCLE and top >= LIFECYCLE.index(ph):
             return {"tool": "pitest", "how": f"phase {LIFECYCLE[top]} >= {ph}", "wrapped": True}
+    if auto and top >= LIFECYCLE.index("verify"):
+        raise Unresolved(f"pitest in maven profile {auto[0]}", "pitest-maven in a profile with <activation> (default or property)")
     if any(ph in LIFECYCLE and top >= LIFECYCLE.index(ph) for ph in pm_execs):
-        raise Unresolved("pitest-maven in pluginManagement", "execution only in <pluginManagement>")
+        raise Unresolved("pitest in pluginManagement", "pitest-maven execution only in <pluginManagement>")
     if info["parent"] and top >= LIFECYCLE.index("verify"):
         rel = info["parent_rel"]
         ppath = jpath(base, rel if rel.endswith(".xml") else jpath(rel, "pom.xml")) if rel else None
@@ -418,6 +427,7 @@ COMPOSER_BUILTINS = {"install", "update", "require", "remove", "dump-autoload", 
                      "create-project", "check-platform-reqs", "why", "depends", "why-not", "prohibits", "licenses",
                      "archive", "init", "search", "status", "fund", "bump", "reinstall", "list", "help", "clear-cache",
                      "run-script", "run", "exec"}
+PM_VALUE_OPTS = {"--prefix", "-C", "--cwd", "--dir", "--filter", "-F", "-w", "--workspace", "--loglevel"}
 MONO_RE = re.compile(r"(^|\s)(-w|--workspaces?|--workspace=\S+|-r|--recursive|--filter|-F)(\s|=|$)")
 
 
@@ -508,19 +518,30 @@ class Resolver:
             return self._shell(t, wd, level, via, res)
         return False
 
+    @staticmethod
+    def _pm_opts(args: list, wd: str) -> tuple[str, list, list]:
+        """Consume leading options (and their values) of a package-manager command: (wd, option names, rest)."""
+        flags, i = [], 0
+        while i < len(args) and args[i].startswith("-") and args[i] != "--":
+            key, eq, val = args[i].partition("=")
+            if not eq and key in PM_VALUE_OPTS and i + 1 < len(args):
+                val, i = args[i + 1], i + 1
+            if key in ("--prefix", "-C", "--cwd", "--dir") and val:
+                wd = jpath(wd, val)
+            flags.append(key)
+            i += 1
+        return wd, flags, list(args[i:])
+
     def _pm(self, mgr, rest, c, wd, level, via, res) -> bool:
-        flags = [x for x in rest if x.startswith("-")]
-        rest_nf = list(rest)
-        while rest_nf and rest_nf[0].startswith("-") and rest_nf[0] != "--":
-            rest_nf = rest_nf[1:]
+        wd, flags, rest_nf = self._pm_opts(rest, wd)
+        flags += [x for x in rest_nf if x.startswith("-")]
         if not rest_nf:
             return False
         sub = rest_nf[0]
         if_present = "--if-present" in rest
         if sub in ("run", "run-script"):
-            args = rest_nf[1:]
-            while args and args[0].startswith("-") and args[0] != "--":
-                args = args[1:]
+            wd, more, args = self._pm_opts(rest_nf[1:], wd)
+            flags += more
             if not args:
                 return False
             name, extra, explicit = args[0], args[1:], True
@@ -528,6 +549,9 @@ class Resolver:
             name, extra, explicit = "test", rest_nf[1:], True
         elif mgr in ("yarn", "pnpm", "bun") and sub not in PM_BUILTINS and not sub.startswith("-"):
             if sub not in self._pkg_scripts(wd):
+                if MONO_RE.search(" ".join(flags)):
+                    res.unresolved.append({"name": sub, "why": "monorepo command", "via": via, "cmd": _short(c)})
+                    return True
                 return False  # `yarn stryker run`: the binary, matched after stripping
             name, extra, explicit = sub, rest_nf[1:], False
         else:
@@ -1331,7 +1355,9 @@ def leg_eval(leg: dict, mut_api_steps: list, timeout_min) -> dict:
         out["evidence"] = True
         out["value_s"] = wall
         out["lower_bound"] = concl == "failure" and at_timeout
-    elif concl == "cancelled" and at_timeout:
+    elif concl in ("cancelled", "timed_out") and at_timeout:
+        # CHANGES.md 9: a leg stopped at its timeout with the mutation step started ran the mutation job
+        out["evidence"] = True
         out["value_s"] = wall
         out["lower_bound"] = True
     return out
@@ -1555,6 +1581,8 @@ def pain_of(row: dict, handreads: dict) -> tuple[str, list[str]]:
         reasons.append("too_few_runs")
     if dur.get("runs_cap_few"):
         reasons.append("runs cap with < 3 values")
+    if dur.get("other_uncertain"):
+        reasons.append("another mutation job uncertain")
     if hist.get("errors") or (row.get("issues") or {}).get("errors"):
         reasons.append("history-error")
     if hist.get("capped") or (row.get("issues") or {}).get("capped"):

@@ -50,6 +50,9 @@ def run_chunk(req: dict) -> int:
         cands = {c["idx"]: c for c in read_jsonl(RES / "candidates.jsonl")}
         order = req["candidates"]
         done = {r["idx"] for r in read_jsonl(RES / "rows.jsonl")}
+    if opts_of(req)["issues_route"] == "workflow":
+        import discover
+        discover.require_budget_free()  # the chunk would send issues searches
     (out / "raw").mkdir(parents=True, exist_ok=True)
     log: list = []
     client = ghapi.from_env()

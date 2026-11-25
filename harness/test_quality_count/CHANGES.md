@@ -20,3 +20,34 @@ search request, probe or candidate read (no data existed); none changes the deci
    is `total_count` > runs inspected. A runs request that fails after one retry makes the job `uncertain` (error).
 7. Pre-data clarification (§0, AC1): discovery, probes and the issues search refuse to start unless
    `results/search_budget_free.json` (time and text of the coordinator's message) is committed.
+8. Pre-data fix after /review (§2.4): leading package-manager options that take a value (`npm --prefix web run x`,
+   `yarn --cwd web x`, `pnpm -C web run x`, `npm run --prefix=web x`) change the directory instead of hiding the
+   script; `--filter`/`-w`/`--workspace`/`-r` with a script not in the root package.json is an unresolved item named
+   after the script. Maven `-e` no longer swallows the next argument. Files the trimmed tree does not keep (e.g. an
+   extensionless `bash ci/mutate`) are fetched directly (404 = absent). Justification: each hid a real mutation run
+   as `no-mutation` in a reviewer's reproduction.
+9. Rule change before any data (§2.8, §3): a leg `cancelled` or `timed_out` at its timeout (wall time >= timeout - 1
+   min) with the mutation step found and not skipped is running evidence as well as a lower-bound value (PREREG §2.8
+   named only `success`/`failure`). Justification: a mutation job always killed at its timeout ran the mutation job
+   and is the strongest time-pain case; the old wording made it `configured-not-running`.
+10. Rule change before any data (§2.3 Maven): a `pitest-maven` execution in a profile with `<activation>` (active by
+    default or by a property) that the command does not name with `-P` is an unresolved item `pitest in maven profile
+    <id>` (counted: it contains a tool term); Gradle `dependsOn(`/`finalizedBy(` followed by `pitest` on the next line
+    also counts as wiring. Unresolved names for pluginManagement now read `pitest in pluginManagement` (the old name
+    `pitest-maven ...` was not word-bounded and did not count). Justification: these hid a possible PIT run as
+    `no-mutation`.
+11. Rule change before any data (§4.5): pain is `unknown` (reason `another mutation job uncertain`) when a running
+    repository also has a mutation job or caller route that is `uncertain`, `unsupported` or errored. Justification:
+    that job's duration (possibly >= 30 min) is unknown, so pain `no` could hide time pain.
+12. Pre-data fix (§2.6): `workflow_call` chains are followed recursively (up to 4 levels) to a caller that is not
+    only `workflow_call`; runs are listed on that root file and the job name is `<root job> / ... / <job>`; a deeper
+    chain or a caller whose `on:` does not parse makes the job `unsupported`. Jobs pages beyond 5 (500 jobs) and
+    commit listings beyond 1,000 commits per path are recorded (`uncertain` / `history-error`) instead of read as
+    complete.
+13. Rule change before any data (§2.3 Infection): `php -d <ini>` / `php -n` options are stripped before matching
+    (`php -d memory_limit=-1 vendor/bin/infection` is the documented way to run Infection). Justification: the PREREG
+    regex `^(php )?...` would miss the common form.
+14. Pre-data fix (operations): a chunk with `issues_route: workflow` refuses to start without
+    `results/search_budget_free.json`; the workflow processes every request file without a chunk record (a queued run
+    cancelled by GitHub loses nothing) and commits only the files a chunk writes (`rows.jsonl`, `chunks.jsonl`,
+    `raw/`, `probe_workflow.json`, `issues_wf.jsonl`, `issues_raw_wf/`, `debug/`), never the session's files.

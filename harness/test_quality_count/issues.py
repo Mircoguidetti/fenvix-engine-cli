@@ -38,13 +38,15 @@ def main(argv=None) -> int:
     ap.add_argument("--repo", action="append", default=[])
     a = ap.parse_args(argv)
     discover.require_budget_free()
-    have = {r["repo"].lower() for r in CH.read_jsonl(RES / "issues.jsonl") if r.get("done")}
+    sfx = "_wf" if a.route == "workflow" else ""  # the workflow never writes the session's files
+    have = {r["repo"].lower() for f in ("issues.jsonl", "issues_wf.jsonl") for r in CH.read_jsonl(RES / f)
+            if r.get("done")}
     rows = [r for r in CH.read_jsonl(RES / "rows.jsonl") if str(r.get("chunk")) == str(a.chunk)]
     if a.repo:
         rows = [r for r in rows if r["repo"].lower() in {x.lower() for x in a.repo}]
     todo = [r for r in rows if needs_issues(r, have)]
     c = ghapi.Client(use_gh=True) if a.route == "session" else ghapi.from_env()
-    (RES / "issues_raw").mkdir(parents=True, exist_ok=True)
+    (RES / f"issues_raw{sfx}").mkdir(parents=True, exist_ok=True)
     for r in todo:
         src = pipeline.LiveSource(c)
         left = 300 - ((r.get("history") or {}).get("requests") or 0)
@@ -53,10 +55,11 @@ def main(argv=None) -> int:
         rec = {"repo": r["repo"], "query_repo": repo, "chunk": r.get("chunk"), "route": a.route,
                "at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "cap_left": left,
                "tools": pipeline.row_tools(r), **out}
-        with open(RES / "issues.jsonl", "a") as f:
+        with open(RES / f"issues{sfx}.jsonl", "a") as f:
             f.write(json.dumps(rec, sort_keys=True) + "\n")
-        with gzip.open(RES / "issues_raw" / f"{a.chunk}.jsonl.gz", "at") as f:
-            f.write(json.dumps({"repo": r["repo"], "responses": src.responses}, sort_keys=True) + "\n")
+        with gzip.open(RES / f"issues_raw{sfx}" / f"{a.chunk}.jsonl.gz", "at") as f:
+            f.write(json.dumps({"repo": r["repo"], "at": rec["at"], "responses": src.responses},
+                               sort_keys=True) + "\n")
         print(f"{r['repo']}: {len(out['queries'])} queries, {len(out['candidates'])} hits, "
               f"errors {len(out['errors'])}, capped {out['capped']}", flush=True)
     print(f"issues chunk {a.chunk}: {len(todo)} repositories, {c.n_search['issues']} issues searches")

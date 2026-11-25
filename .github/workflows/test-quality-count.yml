@@ -2,9 +2,10 @@ name: test-quality-count
 
 # Test-quality count (harness/test_quality_count/): reads public workflow files, configs, Actions run/job metadata and
 # commit history with this workflow's GITHUB_TOKEN (GET only; read-only on every other repository). A chunk starts
-# when a push to this branch adds a request file harness/test_quality_count/requests/<n>.json; only request files
-# added by the push are processed (git diff --diff-filter=A before..sha). Results are committed back to this branch
-# only (a push made with GITHUB_TOKEN does not start another workflow run).
+# when a push to this branch adds a request file harness/test_quality_count/requests/<n>.json. Every request file
+# without a record in results/chunks.jsonl (or probe_workflow.json) is processed, so a queued run that GitHub cancels
+# loses nothing. Only the files a chunk writes are committed back, to this branch only (a push made with
+# GITHUB_TOKEN does not start another workflow run); files the work session writes are never staged.
 
 on:
   push:
@@ -33,28 +34,18 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
       - run: pip install -r harness/test_quality_count/requirements.txt
-      - name: Request files added by this push
-        run: |
-          mkdir -p "$RUNNER_TEMP/req"
-          before="${{ github.event.before }}"
-          if [ -z "$before" ] || [ "$before" = "0000000000000000000000000000000000000000" ]; then
-            before=$(git rev-list --max-parents=0 HEAD | tail -1)
-          fi
-          git diff --name-only --diff-filter=A "$before" "${{ github.sha }}" -- harness/test_quality_count/requests/ \
-            | sort | while read -r f; do cp "$f" "$RUNNER_TEMP/req/"; echo "request: $f"; done
-          ls -1 "$RUNNER_TEMP/req"
       - name: Latest checkpoint
         run: |
           git fetch -q origin "$TQC_BRANCH"
           git checkout -q -B tqc "origin/$TQC_BRANCH"
           git log --oneline -1
-      - name: Chunks
+      - name: Chunks (every request without a chunk record)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          for f in $(ls -1 "$RUNNER_TEMP/req" | sort -n); do
-            echo "== $f"; cat "$RUNNER_TEMP/req/$f"
-            python3 harness/test_quality_count/job.py --request "$RUNNER_TEMP/req/$f"
+          for f in $(ls -1 harness/test_quality_count/requests/*.json 2>/dev/null | sort -V); do
+            echo "== $f"; cat "$f"
+            python3 harness/test_quality_count/job.py --request "$f" --skip-done
           done
       - name: Commit results to this branch
         if: always()
@@ -63,9 +54,15 @@ jobs:
           git config user.email "test-quality-count-bot@users.noreply.github.com"
           out=harness/test_quality_count/results
           [ -d "$out" ] || exit 0
+          # only the files a chunk writes (the work session never writes these; one chunk runs at a time)
+          paths=""
+          for p in rows.jsonl chunks.jsonl raw probe_workflow.json issues_wf.jsonl issues_raw_wf debug; do
+            [ -e "$out/$p" ] && paths="$paths $out/$p"
+          done
+          [ -n "$paths" ] || exit 0
           for i in 1 2 3 4 5 6 7 8; do
             git fetch -q origin "$TQC_BRANCH" && git reset -q --soft "origin/$TQC_BRANCH" && git reset -q
-            git add -f "$out" && git commit -q -m "test-quality-count: results (run ${{ github.run_id }})" || exit 0
+            git add -f $paths && git commit -q -m "test-quality-count: results (run ${{ github.run_id }})" || exit 0
             git push -q origin "HEAD:$TQC_BRANCH" && exit 0
             sleep $((5 + RANDOM % 20))
           done
