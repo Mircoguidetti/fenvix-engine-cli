@@ -1,0 +1,409 @@
+{
+ "profiles": 29,
+ "total_s": 273.019,
+ "top": [
+  {
+   "function": "(idle) :0",
+   "self_s": 121.104,
+   "share": 0.4436
+  },
+  {
+   "function": "spawnSync node:internal/child_process:1105",
+   "self_s": 111.114,
+   "share": 0.407
+  },
+  {
+   "function": "read :0",
+   "self_s": 3.845,
+   "share": 0.0141
+  },
+  {
+   "function": "(garbage collector) :0",
+   "self_s": 2.935,
+   "share": 0.0107
+  },
+  {
+   "function": "spawn node:internal/child_process:354",
+   "self_s": 1.581,
+   "share": 0.0058
+  },
+  {
+   "function": "dlopen :0",
+   "self_s": 1.554,
+   "share": 0.0057
+  },
+  {
+   "function": "runCallSync file:///root/pm/repos/YALC-the-GTM-operating-system/node_modules/.pnpm/esbuild@0.19.12/node_modules/esbuild/lib/main.js:2325",
+   "self_s": 0.817,
+   "share": 0.003
+  },
+  {
+   "function": "readFileUtf8 :0",
+   "self_s": 0.743,
+   "share": 0.0027
+  },
+  {
+   "function": "writeBuffer :0",
+   "self_s": 0.739,
+   "share": 0.0027
+  },
+  {
+   "function": "wrapSafe node:internal/modules/cjs/loader:1671",
+   "self_s": 0.668,
+   "share": 0.0024
+  },
+  {
+   "function": "(program) :0",
+   "self_s": 0.61,
+   "share": 0.0022
+  },
+  {
+   "function": "_visit file:///root/pm/repos/YALC-the-GTM-operating-system/web/node_modules/.pnpm/terser@5.46.2/node_modules/terser/dist/bundle.min.js:6958",
+   "self_s": 0.464,
+   "share": 0.0017
+  },
+  {
+   "function": "(anonymous) file:///root/pm/repos/YALC-the-GTM-operating-system/web/node_modules/.pnpm/terser@5.46.2/node_modules/terser/dist/bundle.min.js:7126",
+   "self_s": 0.428,
+   "share": 0.0016
+  },
+  {
+   "function": "__require file:///opt/node-tools/node_modules/pnpm/dist/pnpm.cjs:11",
+   "self_s": 0.382,
+   "share": 0.0014
+  },
+  {
+   "function": "wrappedHook file:///root/pm/repos/YALC-the-GTM-operating-system/node_modules/.pnpm/rolldown@1.0.0-rc.12_@emnapi+core@1.9.1_@emnapi+runtime@1.9.1/node_modules/rolldown/dist/shared/normalize-string-or-regex-CCT059Zu.mjs:17",
+   "self_s": 0.362,
+   "share": 0.0013
+  },
+  {
+   "function": "compileSourceTextModule node:internal/modules/esm/utils:344",
+   "self_s": 0.312,
+   "share": 0.0011
+  },
+  {
+   "function": "get exports node:internal/modules/package_json_reader:86",
+   "self_s": 0.304,
+   "share": 0.0011
+  },
+  {
+   "function": "compileForInternalLoader node:internal/bootstrap/realm:385",
+   "self_s": 0.295,
+   "share": 0.0011
+  },
+  {
+   "function": "(anonymous) file:///root/pm/repos/YALC-the-GTM-operating-system/web/node_modules/.pnpm/terser@5.46.2/node_modules/terser/dist/bundle.min.js:12159",
+   "self_s": 0.287,
+   "share": 0.0011
+  },
+  {
+   "function": "#build file:///root/pm/repos/YALC-the-GTM-operating-system/node_modules/.pnpm/rolldown@1.0.0-rc.12_@emnapi+core@1.9.1_@emnapi+runtime@1.9.1/node_modules/rolldown/dist/shared/rolldown-build-CPrIX9V6.mjs:3303",
+   "self_s": 0.278,
+   "share": 0.001
+  },
+  {
+   "function": "transformSync file:///root/pm/repos/YALC-the-GTM-operating-system/node_modules/.pnpm/rolldown@1.0.0-rc.12_@emnapi+core@1.9.1_@emnapi+runtime@1.9.1/node_modules/rolldown/dist/shared/resolve-tsconfig-DJjTYbYr.mjs:82",
+   "self_s": 0.268,
+   "share": 0.001
+  },
+  {
+   "function": "jsonParseAst file:///root/pm/repos/YALC-the-GTM-operating-system/node_modules/.pnpm/rolldown@1.0.0-rc.12_@emnapi+core@1.9.1_@emnapi+runtime@1.9.1/node_modules/rolldown/dist/shared/parse-BGipdujE.mjs:24",
+   "self_s": 0.251,
+   "share": 0.0009
+  },
+  {
+   "function": "open :0",
+   "self_s": 0.237,
+   "share": 0.0009
+  },
+  {
+   "function": "internalModuleStat :0",
+   "self_s": 0.23,
+   "share": 0.0008
+  },
+  {
+   "function": "readPackageJSON :0",
+   "self_s": 0.203,
+   "share": 0.0007
+  },
+  {
+   "function": "stat :0",
+   "self_s": 0.176,
+   "share": 0.0006
+  },
+  {
+   "function": "before file:///root/pm/repos/YALC-the-GTM-operating-system/web/node_modules/.pnpm/terser@5.46.2/node_modules/terser/dist/bundle.min.js:16052",
+   "self_s": 0.175,
+   "share": 0.0006
+  },
+  {
+   "function": "push file:///root/pm/repos/YALC-the-GTM-operating-system/web/node_modules/.pnpm/terser@5.46.2/node_modules/terser/dist/bundle.min.js:6974",
+   "self_s": 0.164,
+   "share": 0.0006
+  },
+  {
+   "function": "(anonymous) file:///root/pm/repos/YALC-the-GTM-operating-system/web/node_modules/.pnpm/terser@5.46.2/node_modules/terser/dist/bundle.min.js:15970",
+   "self_s": 0.158,
+   "share": 0.0006
+  },
+  {
+   "function": "(anonymous) file:///root/pm/repos/YALC-the-GTM-operating-system/web/node_modules/.pnpm/terser@5.46.2/node_modules/terser/dist/bundle.min.js:17311",
+   "self_s": 0.147,
+   "share": 0.0005
+  },
+  {
+   "function": "scan file:///root/pm/repos/YALC-the-GTM-operating-system/web/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/_tsc.js:9382",
+   "self_s": 0.145,
+   "share": 0.0005
+  },
+  {
+   "function": "(anonymous) file:///root/pm/repos/YALC-the-GTM-operating-system/web/node_modules/.pnpm/terser@5.46.2/node_modules/terser/dist/bundle.min.js:19585",
+   "self_s": 0.14,
+   "share": 0.0005
+  },
+  {
+   "function": "hazards file:///home/user/fx-branch/node/src/parallel.js:546",
+   "self_s": 0.125,
+   "share": 0.0005
+  },
+  {
+   "function": "before file:///root/pm/repos/YALC-the-GTM-operating-system/web/node_modules/.pnpm/terser@5.46.2/node_modules/terser/dist/bundle.min.js:19546",
+   "self_s": 0.124,
+   "share": 0.0005
+  },
+  {
+   "function": "readdir :0",
+   "self_s": 0.117,
+   "share": 0.0004
+  },
+  {
+   "function": "(anonymous) file:///root/pm/repos/YALC-the-GTM-operating-system/web/node_modules/.pnpm/terser@5.46.2/node_modules/terser/dist/bundle.min.js:12344",
+   "self_s": 0.116,
+   "share": 0.0004
+  },
+  {
+   "function": "_walk file:///root/pm/repos/YALC-the-GTM-operating-system/web/node_modules/.pnpm/terser@5.46.2/node_modules/terser/dist/bundle.min.js:3934",
+   "self_s": 0.114,
+   "share": 0.0004
+  },
+  {
+   "function": "extract_candidates file:///root/pm/repos/YALC-the-GTM-operating-system/web/node_modules/.pnpm/terser@5.46.2/node_modules/terser/dist/bundle.min.js:17680",
+   "self_s": 0.113,
+   "share": 0.0004
+  },
+  {
+   "function": "bind file:///root/pm/repos/YALC-the-GTM-operating-system/web/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/_tsc.js:44122",
+   "self_s": 0.112,
+   "share": 0.0004
+  },
+  {
+   "function": "visit file:///root/pm/repos/YALC-the-GTM-operating-system/node_modules/.pnpm/vite@8.0.3_@emnapi+core@1.9.1_@emnapi+runtime@1.9.1_@types+node@20.19.35_esbuild@0.19.12_tsx@4.21.0/node_modules/vite/dist/node/chunks/node.js:10956",
+   "self_s": 0.105,
+   "share": 0.0004
+  }
+ ],
+ "top_engine": [
+  {
+   "function": "hazards file:///home/user/fx-branch/node/src/parallel.js:546",
+   "self_s": 0.125,
+   "share": 0.0005
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/cache/capture.js:1701",
+   "self_s": 0.079,
+   "share": 0.0003
+  },
+  {
+   "function": "depsInput file:///home/user/fx-branch/node/src/loaded.js:30",
+   "self_s": 0.078,
+   "share": 0.0003
+  },
+  {
+   "function": "phases.span.part file:///home/user/fx-branch/node/src/session.js:526",
+   "self_s": 0.052,
+   "share": 0.0002
+  },
+  {
+   "function": "finishRerun file:///home/user/fx-branch/node/src/parallel-rerun.js:355",
+   "self_s": 0.041,
+   "share": 0.0002
+  },
+  {
+   "function": "projectFrame file:///home/user/fx-branch/node/src/controls.js:203",
+   "self_s": 0.035,
+   "share": 0.0001
+  },
+  {
+   "function": "collect file:///home/user/fx-branch/node/src/parallel.js:593",
+   "self_s": 0.023,
+   "share": 0.0001
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:339",
+   "self_s": 0.017,
+   "share": 0.0001
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:593",
+   "self_s": 0.016,
+   "share": 0.0001
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/parallel-rerun.js:92",
+   "self_s": 0.015,
+   "share": 0.0001
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/repro.js:156",
+   "self_s": 0.013,
+   "share": 0.0
+  },
+  {
+   "function": "get file:///home/user/fx-branch/node/src/cache/capture.js:1596",
+   "self_s": 0.011,
+   "share": 0.0
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:520",
+   "self_s": 0.009,
+   "share": 0.0
+  },
+  {
+   "function": "main file:///home/user/fx-branch/node/src/vitest/cli.js:34",
+   "self_s": 0.006,
+   "share": 0.0
+  },
+  {
+   "function": "sorted file:///home/user/fx-branch/node/src/parallel.js:106",
+   "self_s": 0.006,
+   "share": 0.0
+  },
+  {
+   "function": "resolveDepth file:///home/user/fx-branch/node/src/sites.js:125",
+   "self_s": 0.006,
+   "share": 0.0
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/loaded.js:38",
+   "self_s": 0.006,
+   "share": 0.0
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/session.js:660",
+   "self_s": 0.005,
+   "share": 0.0
+  },
+  {
+   "function": "addH file:///home/user/fx-branch/node/src/parallel.js:557",
+   "self_s": 0.005,
+   "share": 0.0
+  },
+  {
+   "function": "arm file:///home/user/fx-branch/node/src/provable.js:175",
+   "self_s": 0.005,
+   "share": 0.0
+  },
+  {
+   "function": "walk file:///home/user/fx-branch/node/src/loaded.js:15",
+   "self_s": 0.005,
+   "share": 0.0
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/src/sites.js:1",
+   "self_s": 0.005,
+   "share": 0.0
+  },
+  {
+   "function": "finish file:///home/user/fx-branch/node/src/session.js:466",
+   "self_s": 0.003,
+   "share": 0.0
+  },
+  {
+   "function": "parseEpoch file:///home/user/fx-branch/node/src/config.js:10",
+   "self_s": 0.003,
+   "share": 0.0
+  },
+  {
+   "function": "getOwnPropertyDescriptor file:///home/user/fx-branch/node/src/cache/capture.js:1606",
+   "self_s": 0.003,
+   "share": 0.0
+  },
+  {
+   "function": "stampStatus file:///home/user/fx-branch/node/src/session.js:587",
+   "self_s": 0.003,
+   "share": 0.0
+  },
+  {
+   "function": "stableName file:///home/user/fx-branch/node/src/parallel.js:39",
+   "self_s": 0.002,
+   "share": 0.0
+  },
+  {
+   "function": "pickEpoch file:///home/user/fx-branch/node/bin/detjs.js:142",
+   "self_s": 0.002,
+   "share": 0.0
+  },
+  {
+   "function": "native file:///home/user/fx-branch/node/src/parallel.js:38",
+   "self_s": 0.002,
+   "share": 0.0
+  },
+  {
+   "function": "STATE.onEnvRead file:///home/user/fx-branch/node/src/controls.js:222",
+   "self_s": 0.002,
+   "share": 0.0
+  },
+  {
+   "function": "fileOf file:///home/user/fx-branch/node/src/parallel-rerun.js:68",
+   "self_s": 0.002,
+   "share": 0.0
+  },
+  {
+   "function": "accountRerun file:///home/user/fx-branch/node/src/parallel-rerun.js:166",
+   "self_s": 0.002,
+   "share": 0.0
+  },
+  {
+   "function": "planOf file:///home/user/fx-branch/node/src/parallel.js:137",
+   "self_s": 0.002,
+   "share": 0.0
+  },
+  {
+   "function": "STATE.onEnvRead file:///home/user/fx-branch/node/src/controls.js:194",
+   "self_s": 0.002,
+   "share": 0.0
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-branch/node/bin/detjs.js:1",
+   "self_s": 0.002,
+   "share": 0.0
+  },
+  {
+   "function": "load file:///home/user/fx-branch/node/src/native.js:29",
+   "self_s": 0.002,
+   "share": 0.0
+  },
+  {
+   "function": "readSide file:///home/user/fx-branch/node/src/repro.js:146",
+   "self_s": 0.002,
+   "share": 0.0
+  },
+  {
+   "function": "endTest file:///home/user/fx-branch/node/src/state.js:130",
+   "self_s": 0.002,
+   "share": 0.0
+  },
+  {
+   "function": "keyOf file:///home/user/fx-branch/node/src/parallel.js:375",
+   "self_s": 0.002,
+   "share": 0.0
+  },
+  {
+   "function": "markDone file:///home/user/fx-branch/node/src/parallel.js:335",
+   "self_s": 0.002,
+   "share": 0.0
+  }
+ ],
+ "engine_self_s": 0.659
+}
