@@ -91,7 +91,9 @@ for (const runner of Object.keys(HEADS)) {
   test(`real ${runner} sessions: the Rust policy equals the JavaScript one`, { timeout: 900000 }, () => {
     const dir = project(runner);
     const dump = path.join(TMP, `dump-${runner}`);
-    session(runner, dir, dump);                                   // record
+    // since P1 D the default is --det-urandom (entropy from a seeded stream): the first session records with real
+    // entropy (--det-urandom=off), the second is the other configuration (entropy allowed)
+    session(runner, dir, dump, ['--det-urandom=off']);            // record
     session(runner, dir, dump, ['--det-urandom']);                // another configuration: entropy allowed
     session(runner, dir, dump, ['--det-cache-verify']);           // verify mode: hits compared with the fresh run
     const inputs = fs.readdirSync(dump).sort().map((n) => JSON.parse(fs.readFileSync(path.join(dump, n), 'utf8')));

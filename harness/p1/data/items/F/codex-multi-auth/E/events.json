@@ -1,0 +1,2144 @@
+{
+ "test/codex-app-router.test.ts::codex app router daemon::rejects non-loopback hosts before starting the proxy": {
+  "parallel": [
+   {
+    "at": "test/codex-app-router.test.ts:212",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/status.json|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|4|3859a5b448a1521ad9d301c2834fb3d1"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/package.json|file size=23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/state.json|file size=160"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist|1|7b97ab9f4caded92ea611929635d0b48"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts|1|ec080b4893c85cf7f29353bee4c98183"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts/codex-app-router.js|file size=14219"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib|1|61994372212869d06305a854d02959fb"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib/runtime-rotation-proxy.js|file size=1401"
+   }
+  ],
+  "serial": [
+   {
+    "at": "test/codex-app-router.test.ts:212",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/status.json|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|4|3859a5b448a1521ad9d301c2834fb3d1"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/package.json|file size=23"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/state.json|file size=160"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist|1|7b97ab9f4caded92ea611929635d0b48"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts|1|ec080b4893c85cf7f29353bee4c98183"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts/codex-app-router.js|file size=14219"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib|1|61994372212869d06305a854d02959fb"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib/runtime-rotation-proxy.js|file size=1401"
+   }
+  ]
+ },
+ "test/native-wrapper-binding.test.ts::forwards native launches even when auth-store persistence fails with EBUSY": {
+  "parallel": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|6|11106270a8022f8366a1f7e6b6eec92d"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-fixture.js|file size=50"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/config.toml|file size=149"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/package.json|file size=17"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/writer-called|file size=6"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist|1|7b97ab9f4caded92ea611929635d0b48"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts|3|cc0f55f2f1863ad1ef3ca1899853502d"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts/codex-bin-resolver.js|file size=10179"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts/codex-routing.js|file size=1148"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts/codex.js|file size=240788"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib|1|9942d376a0a184137434c47d555f6397"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib/codex-cli|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib/codex-cli|1|f6d7e9c8c7e3fd8126c7fbeebe4c3c24"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib/codex-cli/writer.js|file size=422"
+   }
+  ],
+  "serial": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|6|11106270a8022f8366a1f7e6b6eec92d"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-fixture.js|file size=50"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/config.toml|file size=149"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/package.json|file size=17"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/writer-called|file size=6"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist|1|7b97ab9f4caded92ea611929635d0b48"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts|3|cc0f55f2f1863ad1ef3ca1899853502d"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts/codex-bin-resolver.js|file size=10179"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts/codex-routing.js|file size=1148"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts/codex.js|file size=240788"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib|1|9942d376a0a184137434c47d555f6397"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib/codex-cli|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib/codex-cli|1|f6d7e9c8c7e3fd8126c7fbeebe4c3c24"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib/codex-cli/writer.js|file size=422"
+   }
+  ]
+ },
+ "test/native-wrapper-binding.test.ts::forwards native launches even when auth-store persistence fails with EPERM": {
+  "parallel": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|6|11106270a8022f8366a1f7e6b6eec92d"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-fixture.js|file size=50"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/config.toml|file size=149"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/package.json|file size=17"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/writer-called|file size=6"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist|1|7b97ab9f4caded92ea611929635d0b48"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts|3|cc0f55f2f1863ad1ef3ca1899853502d"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts/codex-bin-resolver.js|file size=10179"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts/codex-routing.js|file size=1148"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts/codex.js|file size=240788"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib|1|9942d376a0a184137434c47d555f6397"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib/codex-cli|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib/codex-cli|1|f6d7e9c8c7e3fd8126c7fbeebe4c3c24"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib/codex-cli/writer.js|file size=422"
+   }
+  ],
+  "serial": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|6|11106270a8022f8366a1f7e6b6eec92d"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-fixture.js|file size=50"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/config.toml|file size=149"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/package.json|file size=17"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/writer-called|file size=6"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist|1|7b97ab9f4caded92ea611929635d0b48"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts|3|cc0f55f2f1863ad1ef3ca1899853502d"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts/codex-bin-resolver.js|file size=10179"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts/codex-routing.js|file size=1148"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts/codex.js|file size=240788"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib|1|9942d376a0a184137434c47d555f6397"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib/codex-cli|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib/codex-cli|1|f6d7e9c8c7e3fd8126c7fbeebe4c3c24"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib/codex-cli/writer.js|file size=422"
+   }
+  ]
+ },
+ "test/native-wrapper-binding.test.ts::forwards native launches even when auth-store persistence fails with null": {
+  "parallel": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|6|11106270a8022f8366a1f7e6b6eec92d"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-fixture.js|file size=50"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/config.toml|file size=185"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/package.json|file size=17"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/writer-called|file size=6"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist|1|7b97ab9f4caded92ea611929635d0b48"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts|3|cc0f55f2f1863ad1ef3ca1899853502d"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts/codex-bin-resolver.js|file size=10179"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts/codex-routing.js|file size=1148"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts/codex.js|file size=240788"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib|1|9942d376a0a184137434c47d555f6397"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib/codex-cli|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib/codex-cli|1|f6d7e9c8c7e3fd8126c7fbeebe4c3c24"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib/codex-cli/writer.js|file size=416"
+   }
+  ],
+  "serial": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|6|11106270a8022f8366a1f7e6b6eec92d"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/config.toml|file size=185"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/codex-fixture.js|file size=50"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/package.json|file size=17"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/writer-called|file size=6"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist|1|7b97ab9f4caded92ea611929635d0b48"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts|3|cc0f55f2f1863ad1ef3ca1899853502d"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts/codex-bin-resolver.js|file size=10179"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts/codex-routing.js|file size=1148"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/scripts/codex.js|file size=240788"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib|1|9942d376a0a184137434c47d555f6397"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib/codex-cli|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib/codex-cli|1|f6d7e9c8c7e3fd8126c7fbeebe4c3c24"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/dist/lib/codex-cli/writer.js|file size=416"
+   }
+  ]
+ },
+ "test/oc-chatgpt-target-detection.test.ts::oc-chatgpt target detection::returns ambiguous when both global and project accounts exist": {
+  "parallel": [
+   {
+    "at": "lib/storage/paths.ts:291",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-beta/.git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:296",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-beta/.git|dir"
+   },
+   {
+    "at": "lib/storage/paths.ts:291",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-beta/.git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:296",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-beta/.git|dir"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/oc-codex-multi-auth-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/oc-codex-multi-auth-accounts.json.wal|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/openai-codex-accounts.json|present"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-beta-861fa70a178b/oc-codex-multi-auth-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-beta-861fa70a178b/oc-codex-multi-auth-accounts.json.wal|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-beta-861fa70a178b/openai-codex-accounts.json|present"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|fc6679d78dc315680e4dbc50ee7509bd"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-beta|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-beta|1|9e6d6e0b9958693c76b154e1f8b48051"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home|1|390484a1c86e9167ce66b6894ae7b843"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-beta/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode|2|3635c9c38595aa2d18adc27c2d85e92f"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/openai-codex-accounts.json|file size=2"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects|1|24a0ac882276ce93ef5f653004985bda"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-beta-861fa70a178b|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-beta-861fa70a178b|1|75891f92f50fee649285b183dd31fa05"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-beta-861fa70a178b/openai-codex-accounts.json|file size=2"
+   }
+  ],
+  "serial": [
+   {
+    "at": "lib/storage/paths.ts:291",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-beta/.git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:296",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-beta/.git|dir"
+   },
+   {
+    "at": "lib/storage/paths.ts:291",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-beta/.git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:296",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-beta/.git|dir"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/oc-codex-multi-auth-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/oc-codex-multi-auth-accounts.json.wal|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/openai-codex-accounts.json|present"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-beta-861fa70a178b/oc-codex-multi-auth-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-beta-861fa70a178b/oc-codex-multi-auth-accounts.json.wal|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-beta-861fa70a178b/openai-codex-accounts.json|present"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|fc6679d78dc315680e4dbc50ee7509bd"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-beta|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home|1|390484a1c86e9167ce66b6894ae7b843"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-beta|1|9e6d6e0b9958693c76b154e1f8b48051"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-beta/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode|2|3635c9c38595aa2d18adc27c2d85e92f"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/openai-codex-accounts.json|file size=2"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects|1|24a0ac882276ce93ef5f653004985bda"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-beta-861fa70a178b|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-beta-861fa70a178b|1|75891f92f50fee649285b183dd31fa05"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-beta-861fa70a178b/openai-codex-accounts.json|file size=2"
+   }
+  ]
+ },
+ "test/oc-chatgpt-target-detection.test.ts::oc-chatgpt target detection::returns project-scoped target when only project account storage exists": {
+  "parallel": [
+   {
+    "at": "lib/storage/paths.ts:291",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-alpha/.git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:296",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-alpha/.git|dir"
+   },
+   {
+    "at": "lib/storage/paths.ts:291",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-alpha/.git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:296",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-alpha/.git|dir"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/oc-codex-multi-auth-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/oc-codex-multi-auth-accounts.json.wal|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/openai-codex-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/openai-codex-accounts.json.wal|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:225",
+    "o": "fs.readdirSync",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode|1|aef282e269d4e90ac2ae3667668d996e"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:251",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/backups/oc-codex-multi-auth-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:251",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/backups/openai-codex-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:276",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/backups|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:277",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects|present"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-alpha-58e04e929431/oc-codex-multi-auth-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-alpha-58e04e929431/oc-codex-multi-auth-accounts.json.wal|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-alpha-58e04e929431/openai-codex-accounts.json|present"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|b38db35d34c1bc3706adfe94e7d0c692"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-alpha|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home|1|390484a1c86e9167ce66b6894ae7b843"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-alpha|1|9e6d6e0b9958693c76b154e1f8b48051"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-alpha/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode|1|aef282e269d4e90ac2ae3667668d996e"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects|1|9cec6af10b06c8c713222f1b6733b4f2"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-alpha-58e04e929431|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-alpha-58e04e929431|1|75891f92f50fee649285b183dd31fa05"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-alpha-58e04e929431/openai-codex-accounts.json|file size=2"
+   }
+  ],
+  "serial": [
+   {
+    "at": "lib/storage/paths.ts:291",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-alpha/.git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:296",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-alpha/.git|dir"
+   },
+   {
+    "at": "lib/storage/paths.ts:291",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-alpha/.git|present"
+   },
+   {
+    "at": "lib/storage/paths.ts:296",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-alpha/.git|dir"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/oc-codex-multi-auth-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/oc-codex-multi-auth-accounts.json.wal|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/openai-codex-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/openai-codex-accounts.json.wal|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:225",
+    "o": "fs.readdirSync",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode|1|aef282e269d4e90ac2ae3667668d996e"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:251",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/backups/oc-codex-multi-auth-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:251",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/backups/openai-codex-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:276",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/backups|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:277",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects|present"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-alpha-58e04e929431/oc-codex-multi-auth-accounts.json|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-alpha-58e04e929431/oc-codex-multi-auth-accounts.json.wal|missing"
+   },
+   {
+    "at": "lib/oc-chatgpt-target-detection.ts:199",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-alpha-58e04e929431/openai-codex-accounts.json|present"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|b38db35d34c1bc3706adfe94e7d0c692"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-alpha|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home|1|390484a1c86e9167ce66b6894ae7b843"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-alpha|1|9e6d6e0b9958693c76b154e1f8b48051"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/project-alpha/.git|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode|1|aef282e269d4e90ac2ae3667668d996e"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects|1|9cec6af10b06c8c713222f1b6733b4f2"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-alpha-58e04e929431|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-alpha-58e04e929431|1|75891f92f50fee649285b183dd31fa05"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/home/.opencode/projects/project-alpha-58e04e929431/openai-codex-accounts.json|file size=2"
+   }
+  ]
+ },
+ "test/preuninstall.test.ts::runPreuninstallCleanup::removes current and legacy caches with transient retryable failures": {
+  "parallel": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules/codex-multi-auth|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules/codex-multi-auth|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules/codex-multi-auth|1|488c5c88e92e3942f63edeef9279c73e"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<deps>/@ndycode/codex-multi-auth|1|883e823a0972c4422065edaf0fe26a8e"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/bun.lock|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/bun.lock|missing"
+   },
+   {
+    "at": "test/preuninstall.test.ts:123",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules/codex-multi-auth|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|cc70f884a75f112f3532659d653a2830"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache|1|b5f776e1804de58bce470e0ee93a5c46"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config|1|b5f776e1804de58bce470e0ee93a5c46"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config/Codex|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex|1|a97df14b88582c26aedfb725dadef6ea"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config/Codex|1|dd7cd2288f577150aba83a553599eee0"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config/Codex/Codex.json|file size=19"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules|1|a419b6acefa7fff1ea92ec64c4ed8065"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules/@ndycode|dir"
+   }
+  ],
+  "serial": [
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules/codex-multi-auth|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules/codex-multi-auth|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules/codex-multi-auth|1|488c5c88e92e3942f63edeef9279c73e"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<deps>/@ndycode/codex-multi-auth|1|883e823a0972c4422065edaf0fe26a8e"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/bun.lock|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/bun.lock|missing"
+   },
+   {
+    "at": "test/preuninstall.test.ts:123",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules/codex-multi-auth|missing"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/|2|cc70f884a75f112f3532659d653a2830"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache|1|b5f776e1804de58bce470e0ee93a5c46"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config|1|b5f776e1804de58bce470e0ee93a5c46"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config/Codex|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config/Codex|1|dd7cd2288f577150aba83a553599eee0"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex|1|a97df14b88582c26aedfb725dadef6ea"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.config/Codex/Codex.json|file size=19"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules|dir"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.readdir",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules|1|a419b6acefa7fff1ea92ec64c4ed8065"
+   },
+   {
+    "at": "<node>",
+    "o": "fs.stat",
+    "s": "fs",
+    "t": 0,
+    "v": "<tmp>/.cache/Codex/node_modules/@ndycode|dir"
+   }
+  ]
+ }
+}

@@ -58,17 +58,20 @@ function readdir(p, options, cb) {
   if (typeof options === 'function') { cb = options; options = undefined; }
   if (typeof cb !== 'function') return real.readdir.call(fs, p, options, cb); // native error
   const site = STATE.callSite();
+  // a step of Node's recursive removal is not the test's listing (P1 E, src/outside.js rmStep)
+  const step = require('./outside').rmStep();
   return real.readdir.call(fs, p, options, (err, list) => {
-    if (!err) { sortEntries(list); event('fs.readdir', p, list, site); }
+    if (!err) { sortEntries(list); if (!step) event('fs.readdir', p, list, site); }
     cb(err, list);
   });
 }
 
 function pReaddir(p, options) {
   const site = STATE.callSite();
+  const step = require('./outside').rmStep();
   return real.pReaddir.call(fs.promises, p, options).then((list) => {
     sortEntries(list);
-    event('fs.promises.readdir', p, list, site);
+    if (!step) event('fs.promises.readdir', p, list, site);
     return list;
   });
 }
@@ -173,6 +176,9 @@ function pGlob(...a) {
 }
 
 function installProcess(patcher) {
+  // the functions installed now (src/ioorder.js' ordered delivery, P1 E), not the ones loaded at require time
+  Object.assign(real, { readdir: fs.readdir, readdirSync: fs.readdirSync, pReaddir: fs.promises.readdir,
+    opendir: fs.opendir, opendirSync: fs.opendirSync, pOpendir: fs.promises.opendir });
   if (typeof fs.glob === 'function') { real.glob = fs.glob; patcher.set(fs, 'glob', glob); }
   if (typeof fs.promises.glob === 'function') { real.pGlob = fs.promises.glob; patcher.set(fs.promises, 'glob', pGlob); }
   patcher.set(fs, 'readdirSync', readdirSync);

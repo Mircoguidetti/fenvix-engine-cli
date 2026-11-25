@@ -40,9 +40,11 @@ const HELP = `detjs options (all others are passed to the test runner):
   --det-timers=real        timers wait for real (default: virtual, fast while no I/O is pending)
   --det-timer-budget=N     fast timer firings per test before falling back to real waits (default 100000)
   --det-disable=LIST       controls to turn off: ${config.CONTROLS.join(',')}
-  --det-urandom[=on|off]   on: also make crypto.randomBytes/randomFillSync/randomInt deterministic (NOT for crypto
-                           tests); off (default): observed only, recorded as entropy events and reported at the end
-                           (the WebSocket handshake keys and frame masks are deterministic either way)
+  --det-urandom[=on|off]   on (default): crypto.randomBytes/randomFillSync/randomInt return a per-test deterministic
+                           stream, recorded as entropy events; NOT for tests of cryptography: an IV, a key or a token
+                           the test draws this way is the same in every run. off: real OS entropy, observed only,
+                           reported at the end. The WebSocket handshake keys and frame masks keep their own seeded
+                           stream either way; native key generation (generateKeyPair*) stays real (observed)
   --det-max-events=N       events stored verbatim per test (default 10000)
   --det-sites=off          do not resolve call sites (faster; runner frames are then not told apart)
   --det-cache=DIR|URL      cache with proof: skip test files whose every recorded input is unchanged
@@ -72,7 +74,7 @@ function parseArgs(argv, env = process.env) {
     det: env.DETJS === '1' || env.DETJS === 'true',
     seed: null, trace: null, compare: null, record: false, cassette: null, allowHosts: [],
     epoch: null, tick: 1000, tickAdapt: 1000, timers: 'virtual', timerBudget: 100000,
-    disable: '', urandom: false, cassetteMaxAge: 0, maxEvents: 10000, sites: true,
+    disable: '', urandom: true, cassetteMaxAge: 0, maxEvents: 10000, sites: true,
     cache: null, cacheVerify: false, cacheReceipts: null, cacheSummary: null, cacheRealClock: false, epochExplicit: false,
     net: 'open',
     workers: null, plan: null,
@@ -300,7 +302,7 @@ function header(run, opts, extra) {
   const order = shuffleSeed !== null ? `shuffled with seed ${shuffleSeed}${opts.orderSeed !== null ? ` (--det-order-seed; generators: seed ${opts.seed ?? 0})` : ''}` : 'fixed (sorted files, declaration order)';
   return [
     `detjs ${VERSION}: Level 0 active; runner=${extra.runner} ${extra.runnerVersion}; controls=${[...c.controls].sort().join(',')}; order ${order}`,
-    `detjs: ${extra.parallel || 'serial execution'} (${extra.isolation}); network=${run.netMode}; timers=${c.timers}; entropy=${c.urandom ? 'controlled (--det-urandom)' : 'observed (--det-urandom to control)'}; node ${process.version}`,
+    `detjs: ${extra.parallel || 'serial execution'} (${extra.isolation}); network=${run.netMode}; timers=${c.timers}; entropy=${c.urandom ? 'controlled (--det-urandom=off to observe it instead)' : 'observed (--det-urandom=off)'}; node ${process.version}`,
   ];
 }
 
@@ -448,9 +450,13 @@ function runLines(dir, sub) {
 function filesReadOutside(dir) {
   const out = [];
   for (const l of runLines(dir, 'filesout')) {
-    try { const e = JSON.parse(l); if (e && typeof e.path === 'string' && typeof e.digest === 'string') out.push({ path: e.path, digest: e.digest }); } catch { /* torn line */ }
+    try {
+      const e = JSON.parse(l);
+      if (e && typeof e.path === 'string' && typeof e.digest === 'string') out.push(typeof e.file === 'string' ? { path: e.path, digest: e.digest, file: e.file } : { path: e.path, digest: e.digest });
+    } catch { /* torn line */ }
   }
-  return out.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : a.digest < b.digest ? -1 : a.digest > b.digest ? 1 : 0));
+  const cmp = (x, y) => (x < y ? -1 : x > y ? 1 : 0);
+  return out.sort((a, b) => cmp(a.path, b.path) || cmp(a.digest, b.digest) || cmp(a.file || '', b.file || ''));
 }
 
 /** Merge the parts of the run into the final trace. `files`: [{fileId, part}] in execution order. */
@@ -490,6 +496,9 @@ function finish(run, opts, files, meta) {
     env_read_outside_tests: envReadOutside(run.dir),
     // review R-055 (docs/VERIFY-CONTRACT.md): files read and uncontrolled variables read while no test ran
     files_read_outside_tests: filesReadOutside(run.dir),
+    // P1 B1: "file" when the runner isolates test files from one another (no module state, globals or environment
+    // carried from one file to the next): an entry carrying `file` is then compared for that file's tests only
+    files_outside_scope: meta && meta.files_outside_scope === 'file' ? 'file' : 'run',
     not_proven_outside_tests: [...runLines(run.dir, 'npout')].sort(),
     // The general rule (crates/detpy-core/src/provable.rs): what this run watched. The verifier reports a test
     // IDENTICAL only when the run declared a sensor it knows, so leaving this out is not a cosmetic omission --
@@ -539,7 +548,7 @@ function finish(run, opts, files, meta) {
   let ent = [];
   try { ent = realEntropyTests(run.tracePath, run.cfg.urandom); } catch (e) { lines.push(`detjs: the entropy check could not read the trace: ${e && e.message}`); }
   if (ent.length) {
-    lines.push(`detjs: ${ent.length} test(s) used real OS entropy, observed but not controlled (${[...new Set(ent.flatMap((e) => e.ops))].sort().join(', ')}): their results can differ between runs${run.cfg.urandom ? ' (native key generation)' : '; --det-urandom makes crypto.randomBytes & co. deterministic (not for tests of cryptography)'}, e.g. ${ent[0].nodeid}`);
+    lines.push(`detjs: ${ent.length} test(s) used real OS entropy, observed but not controlled (${[...new Set(ent.flatMap((e) => e.ops))].sort().join(', ')}): their results can differ between runs${run.cfg.urandom ? ' (native key generation)' : '; without --det-urandom=off, crypto.randomBytes & co. are deterministic (not for tests of cryptography)'}, e.g. ${ent[0].nodeid}`);
   }
   if (opts.compare) {
     try {
@@ -637,7 +646,8 @@ function printsStatus(meta, env = process.env) {
   return true;
 }
 
-// OS entropy Level 0 only observes: crypto.randomBytes & co. without --det-urandom, native key generation always
+// OS entropy Level 0 only observes: crypto.randomBytes & co. with --det-urandom=off (or drawn before the streams are
+// seeded), native key generation always
 const URANDOM_OPS = /^crypto\.(?:randomBytes|randomFillSync|randomFill|randomInt|pseudoRandomBytes)$/;
 /** Tests of the merged trace that drew real OS entropy: [{nodeid, ops}] (G-1426: the default is never silent). */
 function realEntropyTests(tracePath, urandom) {

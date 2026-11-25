@@ -199,7 +199,8 @@ def test_entropy_is_named_by_verify(project, detjs, tmp_path):
     (node/src/session.js:478): what the plain run prints and returns is recorded, not asserted."""
     runner, proj = project
     env = {"FENVIX_FIXTURE_ENTROPY": "1"}
-    code1, s, md1, log1 = job(tmp_path, proj, "entropy", detjs, env=env)
+    # real OS entropy is `--det-urandom=off` since P1 D (by default detjs draws it from a per-test seeded stream)
+    code1, s, md1, log1 = job(tmp_path, proj, "entropy", detjs, "--", "--det-urandom=off", env=env)
     status_line = [x for x in log1.splitlines() if x.startswith("detjs: status:")]
     code2, v, md2, log2 = job(tmp_path, proj, "entropy-verify", detjs, "verify", "--summary",
                               str(tmp_path / "entropy" / "summary.json"), env=env)

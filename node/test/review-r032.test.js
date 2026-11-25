@@ -106,9 +106,10 @@ for (const [R, { file, head }] of Object.entries(RUNNERS)) {
     ]) {
       test(`N8 entropy (${name}) makes the file not cached`, T, () => {
         const dir = proj(R, `entropy-${name}`, tf('r', `test('r', () => { assert.ok(${expr} >= 0); });`));
-        const r1 = crun(R, dir, []);
+        // real entropy: --det-urandom=off since P1 D (the default is a seeded stream, reusable as with --det-urandom)
+        const r1 = crun(R, dir, ['--det-urandom=off']);
         assert.equal(r1.status, 0, show(r1));
-        const r2 = crun(R, dir, []);
+        const r2 = crun(R, dir, ['--det-urandom=off']);
         assert.ok(!reused(r2).includes(file('r')), `a test that drew real entropy was reused\n${show(r2)}`);
       });
     }

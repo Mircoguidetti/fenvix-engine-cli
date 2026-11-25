@@ -23,8 +23,61 @@ const { STATE } = require('./state');
 const sites = require('./sites');
 const sched = require('./sched');
 const concur = require('./concur');
+const { AsyncLocalStorage } = require('node:async_hooks');
 
 const HOLD_MAX_MS = 200;
+// The tracked operation whose own work is running (P1 F, docs/DESIGN-P1.md): its synchronous call and every
+// continuation of what that call started (Node's callback writeFile calling fs.open, then fs.write / fs.close from
+// their callbacks; detjs' own mkdtemp awaiting fs.promises.mkdir; graceful-fs's global fs.close wrapper called from
+// inside writeFile). An operation begun there is a step of that operation, not an operation of the test: tracking it
+// made one awaited call look like concurrent I/O (`uncontrolled.io`, NOT PROVEN) and queued a step behind its own
+// parent until the hold released it (`io.release`). The test's own callback and promise settlement are delivered
+// outside it (`PARENT.exit`), so the test's next operation is tracked again.
+const PARENT = new AsyncLocalStorage();
+function insideOperation() {
+  const p = PARENT.getStore();
+  return p !== undefined && !p.user && !p.done && p.test === STATE.testId;
+}
+// Fail-safe (founder decision D1 = C of 2026-11-24, eng review of the P1 merge): some operations run the test's own
+// code inside them -- the `filter` of fs.cp, the iterable fs.promises.writeFile / appendFile draws its data from. A
+// file operation that code starts is the test's, not a step of the copy or the write; it is not tracked yet (the exact
+// fix is a follow-up), so it marks the test `uncontrolled.io` (NOT PROVEN) instead of passing as a step.
+function insideUserCallback() {
+  const p = PARENT.getStore();
+  return p !== undefined && p.user === true && p.test === STATE.testId;
+}
+function userScope(fn) {
+  return function (...a) { return PARENT.run({ user: true, test: STATE.testId }, () => fn.apply(this, a)); };
+}
+/** The arguments of `fs.<name>` with the test's own callbacks run in a user scope (see insideUserCallback). */
+function userArgs(name, a, promise) {
+  if (name === 'cp') {
+    const i = a.findIndex((x, k) => k >= 2 && x && typeof x === 'object' && typeof x.filter === 'function');
+    if (i >= 0) { const out = a.slice(); out[i] = { ...a[i], filter: userScope(a[i].filter) }; return out; }
+    return a;
+  }
+  // only the promise forms draw data from an iterable (the callback forms take a string or bytes)
+  if (promise && (name === 'writeFile' || name === 'appendFile')) {
+    const d = a[1];
+    if (!d || typeof d !== 'object' || ArrayBuffer.isView(d) || d instanceof ArrayBuffer) return a;
+    const make = typeof d[Symbol.asyncIterator] === 'function' ? () => d[Symbol.asyncIterator]()
+      : typeof d[Symbol.iterator] === 'function' ? () => d[Symbol.iterator]() : null;
+    if (make === null || typeof d.pipe === 'function') return a; // a Readable stream: Node's stream code reads it
+    const wrapped = {
+      [Symbol.asyncIterator]() {
+        const it = userScope(make)();
+        const out = { next: userScope((...x) => it.next(...x)) };
+        if (typeof it.return === 'function') out.return = userScope((...x) => it.return(...x));
+        if (typeof it.throw === 'function') out.throw = userScope((...x) => it.throw(...x));
+        return out;
+      },
+    };
+    const out = a.slice();
+    out[1] = wrapped;
+    return out;
+  }
+  return a;
+}
 let clock = null; // src/clock.js (set at installation)
 let REAL_SET_IMMEDIATE = setImmediate;
 let REAL_SET_TIMEOUT = setTimeout;
@@ -107,7 +160,9 @@ function nodeInternal() {
   for (const cs of Array.isArray(h.stack) ? h.stack : []) {
     const f = (cs.getFileName && cs.getFileName()) || '';
     if (!f || f.startsWith(SRC_DIR)) continue;
-    return f.startsWith('node:internal/fs/') || f.startsWith('internal/fs/');
+    // node:fs itself (lib/fs.js: callback writeFile calls the exported fs.open / fs.write / fs.close) is part of the
+    // operation that called into it, like node:internal/fs/
+    return f === 'node:fs' || f.startsWith('node:internal/fs/') || f.startsWith('internal/fs/');
   }
   return false;
 }
@@ -115,7 +170,15 @@ function nodeInternal() {
 /** A new operation of the running test (null when outside tests or started by the runner). */
 function begin(kind) {
   if (STATE.testId === null || STATE.quietDepth > 0) return null;
-  if (nodeInternal()) return null;
+  if (insideUserCallback()) {
+    if (!marked) {
+      marked = true;
+      const site = STATE.config && STATE.config.sites ? STATE.quiet(() => sites.resolve()) || '' : '';
+      STATE.recordAt('other', 'uncontrolled.io', site, 'file I/O in the test\'s own callback inside a file operation (fs.cp filter, writeFile data iterable)');
+    }
+    return null;
+  }
+  if (insideOperation() || nodeInternal()) return null;
   let site = '';
   if (STATE.config && STATE.config.sites) {
     site = STATE.quiet(() => sites.resolve());
@@ -207,11 +270,12 @@ function wrapCallback(name, real) {
     if (i < 0 || typeof a[i] !== 'function') return real.apply(this, a);
     const op = begin(`fs.${name}`);
     if (op === null) return real.apply(this, a);
+    a = userArgs(name, a, false);
     const cb = a[i];
-    a[i] = function (...r) { const self = this; complete(op, () => cb.apply(self, r)); };
+    a[i] = function (...r) { const self = this; complete(op, () => PARENT.exit(() => cb.apply(self, r))); };
     track(op);
     try {
-      return real.apply(this, a);
+      return PARENT.run(op, () => real.apply(this, a));
     } catch (e) {
       const j = undelivered.indexOf(op);
       if (j >= 0) undelivered.splice(j, 1);
@@ -226,12 +290,13 @@ function wrapCallback(name, real) {
 function wrapPromise(name, real) {
   return function (...a) {
     const op = begin(`fs.${name}`);
+    if (op !== null) a = userArgs(name, a, true);
     let p;
-    try { p = real.apply(this, a); } catch (e) { end(op); throw e; }
+    try { p = op === null ? real.apply(this, a) : PARENT.run(op, () => real.apply(this, a)); } catch (e) { end(op); throw e; }
     if (op === null || !p || typeof p.then !== 'function') { end(op); return p; }
     track(op);
     return new Promise((resolve, reject) => {
-      p.then((v) => complete(op, () => resolve(v)), (e) => complete(op, () => reject(e)));
+      p.then((v) => complete(op, () => PARENT.exit(() => resolve(v))), (e) => complete(op, () => PARENT.exit(() => reject(e))));
     });
   };
 }

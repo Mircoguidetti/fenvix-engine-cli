@@ -82,15 +82,19 @@ function byProjectOutside(where, stat = false) {
   // configuration lookup and the runner's transform cache run while transforming, in some runs only
   return !stat && site.startsWith('<deps>/') && typeof where === 'string' && !where.startsWith('<') && LOADING.test(stack);
 }
+// P1 B1 (docs/DESIGN-P1.md section B): an entry read while a test file is open (its module scope, its hooks, the
+// runner's per-file setup files) carries that file; when the run's runner isolates test files from one another
+// (header `files_outside_scope: "file"`, set by the shell), verify compares it for that file's tests only.
 function noteFile(where, digest) {
-  const key = `${where}\u0000${digest}`;
+  const file = STATE.fileScope || null;
+  const key = `${where}\u0000${digest}\u0000${file || ''}`;
   if (filesSeen.has(key)) return;
   filesSeen.add(key);
   STATE.quietDepth++;
   try {
     const dir = path.join(STATE.config.dir, 'filesout');
     fs.mkdirSync(dir, { recursive: true });
-    fs.appendFileSync(path.join(dir, `${process.pid}.txt`), `${JSON.stringify({ path: where, digest })}\n`);
+    fs.appendFileSync(path.join(dir, `${process.pid}.txt`), `${JSON.stringify(file ? { path: where, digest, file } : { path: where, digest })}\n`);
   } catch { /* the run directory is gone (the run ended) */ } finally { STATE.quietDepth--; }
 }
 /** A read of `where` (bytes `data`): an event of the test, or an entry of the run when no test runs. */
@@ -120,11 +124,56 @@ function statValue(st) {
   CAPTURE.busy++;
   try { return `${t} size=${st.size}`; } catch { return t; } finally { CAPTURE.busy--; }
 }
+// P1 E (docs/DESIGN-P1.md section E): a call made by Node's own recursive removal (`fs.rm` / `fs.promises.rm` with
+// `recursive`, node:internal/fs/rimraf) is a step of that call, not an observation of the test: the test sees only its
+// result. Its lstat / readdir steps run concurrently and are not ordered by src/ioorder.js (they are part of the rm
+// operation), so recording them recorded the thread pool's completion order. Decided at the call, from the stack.
+const STRUCTURED_STACK = (_e, cs) => cs;
+function rmStep() {
+  const E = Error;
+  const pp = E.prepareStackTrace;
+  const lim = E.stackTraceLimit;
+  const h = {};
+  E.prepareStackTrace = STRUCTURED_STACK;
+  E.stackTraceLimit = 12;
+  try { E.captureStackTrace(h, rmStep); /* eslint-disable-next-line no-unused-expressions */ h.stack; } finally { E.prepareStackTrace = pp; E.stackTraceLimit = lim; }
+  for (const cs of Array.isArray(h.stack) ? h.stack : []) {
+    const f = (cs.getFileName && cs.getFileName()) || '';
+    if (!f || f.startsWith(sites.SHELL_DIR)) continue;
+    return f === 'node:internal/fs/rimraf' || f === 'internal/fs/rimraf';
+  }
+  return false;
+}
+
+// P1 B2 (docs/DESIGN-P1.md section B, the process's own work): a `missing` answer, outside any test, for a path inside a
+// directory this process created with mkdtemp, while no child process or worker thread has been started since, says
+// nothing about the world outside the run: the directory's name is random (no other process knows it), nothing
+// but this process can have put a file there, and whatever this process did is the run's own work. Such an answer is
+// no run input. Anything else stays an entry: an answer `file` / `dir` / `present` (its bytes or size can come from
+// a source nothing records outside a test), a directory created with mkdir (a fixed name another process or an
+// earlier run can know), a directory a child or a worker could have written into. Why a real difference is still
+// seen: a run where the path exists records the entry and a run where it is missing does not, so their entries
+// differ and verify reports it for the tests in the entry's scope.
+const OWN_DIRS = []; // { dir: absolute path + separator, gen: CHILD_GEN when it was created }
+let CHILD_GEN = 0;
+/** A child process or a worker thread was started by this process (src/children.js). */
+function noteChild() { CHILD_GEN++; }
+function noteOwnDir(p) {
+  if (typeof p !== 'string') return;
+  try { OWN_DIRS.push({ dir: path.resolve(p) + path.sep, gen: CHILD_GEN }); } catch { /* keep */ }
+}
+function ownMissing(p) {
+  let abs;
+  try { abs = path.resolve(typeof p === 'string' ? p : Buffer.isBuffer(p) ? p.toString() : require('node:url').fileURLToPath(p)); } catch { return false; }
+  return OWN_DIRS.some((d) => d.gen === CHILD_GEN && abs.startsWith(d.dir));
+}
+
 function onStat(p, value) {
   if (typeof p === 'number') return;
   const where = outsidePath(p);
   if (!where) return;
   if (byTest()) STATE.record('fs', 'fs.stat', `${where}|${value}`);
+  else if (value === 'missing' && ownMissing(p)) return; // P1 B2
   else if (byProjectOutside(where, true)) noteFile(where, `stat:${value}`);
 }
 
@@ -179,7 +228,7 @@ function installProcess(patcher) {
   for (const n of ['stat', 'lstat', 'access']) {
     w(fs, n, (real) => function stat(p, ...a) {
       const cb = a[a.length - 1];
-      if (typeof cb === 'function' && STATE.quietDepth === 0 && typeof p !== 'number') {
+      if (typeof cb === 'function' && STATE.quietDepth === 0 && typeof p !== 'number' && !rmStep()) {
         const id = STATE.testId;
         a[a.length - 1] = function done(e, st) {
           if (STATE.testId === id) onStat(p, e ? 'missing' : n === 'access' ? 'present' : statValue(st));
@@ -189,7 +238,7 @@ function installProcess(patcher) {
       return real.call(this, p, ...a);
     });
     w(fs.promises, n, (real) => async function stat(p, ...a) {
-      const watch = STATE.quietDepth === 0 && typeof p !== 'number';
+      const watch = STATE.quietDepth === 0 && typeof p !== 'number' && !rmStep();
       const id = STATE.testId;
       let r;
       try { r = await real.call(this, p, ...a); } catch (e) { if (watch && STATE.testId === id) onStat(p, 'missing'); throw e; }
@@ -197,6 +246,14 @@ function installProcess(patcher) {
       return r;
     });
   }
+  // P1 B2: the directories this process creates with mkdtemp (any caller: the answer about them is this process's own)
+  w(fs, 'mkdtempSync', (real) => function mkdtempSync(...a) { const r = real.apply(this, a); noteOwnDir(r); return r; });
+  w(fs, 'mkdtemp', (real) => function mkdtemp(...a) {
+    const cb = a[a.length - 1];
+    if (typeof cb === 'function') a[a.length - 1] = function done(e, d) { if (!e) noteOwnDir(d); return cb.apply(this, arguments); };
+    return real.apply(this, a);
+  });
+  w(fs.promises, 'mkdtemp', (real) => async function mkdtemp(...a) { const r = await real.apply(this, a); noteOwnDir(r); return r; });
   // process.loadEnvFile (V16): C++ reads the file; its bytes are a read like readFileSync's, and the variables it
   // sets were no run input (src/controls.js records a digest of their values)
   if (typeof process.loadEnvFile === 'function') {
@@ -262,4 +319,4 @@ function installProcess(patcher) {
   });
 }
 
-module.exports = { installProcess, outsidePath, ENV_LOADED };
+module.exports = { installProcess, outsidePath, ENV_LOADED, rmStep, noteChild };

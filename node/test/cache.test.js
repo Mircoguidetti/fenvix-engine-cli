@@ -318,8 +318,10 @@ for (const runner of RUNNERS) {
         ...tfile(runner, 'plain', "test('p', () => { expect(1).toBe(1); });"),
       });
       const files = ['spawn', 'git', 'worker', 'loopback', 'entropy', 'plain'].map((n) => F(runner, n));
-      crun(runner, dir);
-      const r2 = crun(runner, dir);
+      // OS entropy is real only with --det-urandom=off since P1 D (by default it is a seeded stream, and a test that
+      // draws from it is reusable as it was with --det-urandom); the rule under test is about real entropy
+      crun(runner, dir, ['--det-urandom=off']);
+      const r2 = crun(runner, dir, ['--det-urandom=off']);
       assert.deepEqual(ran(r2, files), files.filter((f) => !f.includes('plain')).sort(), show(r2));
       const nc = JSON.stringify(r2.summary.not_cached_detail);
       for (const why of ['subprocess', 'worker thread', 'network connection', 'os entropy']) assert.match(nc, new RegExp(why), `${why}\n${nc}`);

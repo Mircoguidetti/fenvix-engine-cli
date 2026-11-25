@@ -380,13 +380,17 @@ const RANDOM_HASHSEED: &str = "<random>";
 
 /// The run inputs of a trace for comparison: `meta.inputs` plus one `file:<path>` input per file read outside any
 /// test (`meta.files_read_outside_tests`, its digests joined in order). None when the trace records no inputs.
-fn compared_inputs(header: &Header, footer: Option<&Footer>) -> Option<BTreeMap<String, String>> {
+/// `scoped`: entries that carry the test file they were read for (`file`) are left out (P1 B1: [`scoped_inputs`]).
+fn compared_inputs(header: &Header, footer: Option<&Footer>, scoped: bool) -> Option<BTreeMap<String, String>> {
     let mut m = run_inputs_of(header, footer)?;
     let has = header.meta.get("files_read_outside_tests").is_some()
         || late(footer).is_some_and(|l| l.get("files_read_outside_tests").is_some());
     if has {
         let mut by: BTreeMap<String, Vec<String>> = BTreeMap::new();
         for f in meta_array(header, footer, "files_read_outside_tests") {
+            if scoped && f.get("file").and_then(|v| v.as_str()).is_some() {
+                continue;
+            }
             let (Some(p), Some(d)) = (f.get("path").and_then(|v| v.as_str()), f.get("digest").and_then(|v| v.as_str())) else { continue };
             by.entry(p.to_string()).or_default().push(d.to_string());
         }
@@ -398,6 +402,64 @@ fn compared_inputs(header: &Header, footer: Option<&Footer>) -> Option<BTreeMap<
         m.insert("files_read_outside_tests".into(), "recorded".into());
     }
     Some(m)
+}
+
+/// Whether the files read outside any test are compared per test file (P1 B1, docs/VERIFY-CONTRACT.md section 1):
+/// every run declares `files_outside_scope: "file"` (its runner isolates test files from one another, so what one
+/// file's module scope or hooks read can reach that file's tests only).
+fn files_scoped<S: RecordSource>(traces: &[S]) -> bool {
+    !traces.is_empty()
+        && traces.iter().all(|t| t.header().meta.get("files_outside_scope").and_then(|v| v.as_str()) == Some("file"))
+}
+
+/// P1 B1: the entries of `files_read_outside_tests` that carry the test file they were read for, as `file:<path>`
+/// inputs per test file (the file path, without a Vitest project).
+fn scoped_inputs(header: &Header, footer: Option<&Footer>) -> BTreeMap<String, BTreeMap<String, String>> {
+    let mut by: BTreeMap<String, BTreeMap<String, Vec<String>>> = BTreeMap::new();
+    for f in meta_array(header, footer, "files_read_outside_tests") {
+        let (Some(p), Some(d), Some(file)) = (
+            f.get("path").and_then(|v| v.as_str()),
+            f.get("digest").and_then(|v| v.as_str()),
+            f.get("file").and_then(|v| v.as_str()),
+        ) else {
+            continue;
+        };
+        by.entry(file.to_string()).or_default().entry(format!("{FILE_INPUT_PREFIX}{p}")).or_default().push(d.to_string());
+    }
+    by.into_iter()
+        .map(|(file, m)| {
+            let m = m
+                .into_iter()
+                .map(|(k, mut ds)| {
+                    ds.sort();
+                    ds.dedup();
+                    (k, ds.join(","))
+                })
+                .collect();
+            (file, m)
+        })
+        .collect()
+}
+
+/// The test file of a test id: before the first `::`, without a Vitest project (`@@<name>`).
+fn test_file(id: &str) -> &str {
+    let head = id.split("::").next().unwrap_or(id);
+    head.split("@@").next().unwrap_or(head)
+}
+
+/// P1 B1: the test's own file read something outside any test that differs between run 0 and another run.
+fn scoped_divergence(id: &str, scoped: &[BTreeMap<String, BTreeMap<String, String>>]) -> Option<Divergence> {
+    let empty = BTreeMap::new();
+    let file = test_file(id);
+    let base = scoped.first()?.get(file).unwrap_or(&empty);
+    (1..scoped.len()).find_map(|j| {
+        let diffs = diff_inputs(Some(base), Some(scoped[j].get(file).unwrap_or(&empty)), 0, j);
+        (!diffs.is_empty()).then(|| {
+            let mut d = input_divergence(&diffs);
+            d.description = format!("{} (read outside any test by the test's own file {file})", d.description);
+            d
+        })
+    })
 }
 
 /// Differing inputs between two runs (empty when equal, or when neither run recorded inputs).
@@ -514,6 +576,72 @@ fn order_divergence(id: &str, a: &Predecessors, b: &Predecessors, run_a: usize, 
         ),
         lost_predecessors: Vec::new(),
     })
+}
+
+/// The `not_proven_outside_tests` entries of the runs that still make every test NOT PROVEN in this comparison,
+/// sorted and deduplicated.
+///
+/// P1 A1 (docs/DESIGN-P1.md section A, docs/VERIFY-CONTRACT.md section 1): the Node shell writes an uncontrolled
+/// variable read outside any test as `env:<NAME>=<digest of NAME=value>` (`*` for an enumeration). Its value is no
+/// run input (it differs between machines, so the cache never reuses such a test), but two runs that saw the same
+/// value did not differ through it: when every run has entries for `<NAME>` and they all carry the same set of
+/// digests, those entries are discharged for this comparison. A different value, a read in some runs only, an entry
+/// without a digest (older traces, the Python shell) and every non-`env` entry stay: every test is NOT PROVEN.
+///
+/// Per file (founder decision D2 = A of 2026-11-25, replacing the one-worker fail-safe of 2026-11-24): a read made
+/// while a test file's code ran (its module scope, its hooks) is written `env:<NAME>=<digest>@<file>`, and the digests
+/// are compared per file, so two files whose values swap between the runs are not discharged although the run-wide
+/// sets are equal, and a serial run compares with a parallel one. An entry without `@<file>` (a read while no file was
+/// open, or an older trace) is one more key, `""`, and is discharged only with one value in every run: several values
+/// read with no file open cannot be tied to the tests that saw them.
+fn undischarged_outside<S: RecordSource>(traces: &[S]) -> Vec<String> {
+    let per_run: Vec<BTreeSet<String>> = traces
+        .iter()
+        .map(|t| meta_array(t.header(), t.footer(), "not_proven_outside_tests").filter_map(|v| v.as_str().map(str::to_string)).collect())
+        .collect();
+    // `env:<NAME>[=<digest>][@<file>]` -> (name, digest or None, file or "")
+    fn parse(e: &str) -> Option<(&str, Option<&str>, &str)> {
+        let rest = e.strip_prefix("env:")?;
+        let (head, file) = match rest.split_once('=') {
+            Some((n, dr)) => {
+                let (d, f) = dr.split_once('@').unwrap_or((dr, ""));
+                return Some((n, Some(d), f));
+            }
+            None => rest.split_once('@').unwrap_or((rest, "")),
+        };
+        Some((head, None, file))
+    }
+    // name -> file -> digests, per run; None when the run has an `env:<NAME>` entry without a digest
+    type PerFile = BTreeMap<String, BTreeSet<String>>;
+    let by_file = |run: &BTreeSet<String>, name: &str| -> Option<PerFile> {
+        let mut out = PerFile::new();
+        for e in run {
+            match parse(e) {
+                Some((n, Some(d), f)) if n == name => {
+                    out.entry(f.to_string()).or_default().insert(d.to_string());
+                }
+                Some((n, None, _)) if n == name => return None,
+                _ => {}
+            }
+        }
+        Some(out)
+    };
+    let names: BTreeSet<String> = per_run.iter().flatten().filter_map(|e| parse(e).map(|(n, _, _)| n.to_string())).collect();
+    let discharged: BTreeSet<String> = names
+        .into_iter()
+        .filter(|name| {
+            let maps: Vec<Option<PerFile>> = per_run.iter().map(|r| by_file(r, name)).collect();
+            // at least two runs: a value is discharged only when another run saw the same one (one run has nothing
+            // to compare it with: review 2026-11-24)
+            traces.len() > 1
+                && maps.iter().all(|m| {
+                    m.as_ref().is_some_and(|m| !m.is_empty() && m.get("").is_none_or(|d| d.len() == 1))
+                })
+                && maps.windows(2).all(|w| w[0] == w[1])
+        })
+        .collect();
+    let all: BTreeSet<String> = per_run.into_iter().flatten().collect();
+    all.into_iter().filter(|e| !parse(e).is_some_and(|(n, _, _)| discharged.contains(n))).collect()
 }
 
 /// Every test of runs that read an uncontrolled source outside any test (`not_proven_outside_tests`).
@@ -829,8 +957,11 @@ pub fn verify_sources<S: RecordSource>(traces: &[S], labels: &[String]) -> std::
         traces.iter().map(|t| (0..t.len()).map(|i| (t.slim(i).nodeid.as_str(), i)).collect()).collect();
 
     let preds: Vec<Predecessors> = traces.iter().map(Predecessors::of).collect();
+    let scoped = files_scoped(traces);
     let inputs: Vec<Option<BTreeMap<String, String>>> =
-        traces.iter().map(|t| compared_inputs(t.header(), t.footer())).collect();
+        traces.iter().map(|t| compared_inputs(t.header(), t.footer(), scoped)).collect();
+    let scoped_files: Vec<BTreeMap<String, BTreeMap<String, String>>> =
+        if scoped { traces.iter().map(|t| scoped_inputs(t.header(), t.footer())).collect() } else { Vec::new() };
     // what each run declared about its wide sensor (`meta.provable`): the general rule needs it per run, because
     // a run without one cannot have any of its tests reported identical
     let provable_meta: Vec<Option<serde_json::Value>> =
@@ -880,14 +1011,7 @@ pub fn verify_sources<S: RecordSource>(traces: &[S], labels: &[String]) -> std::
         .collect();
     // uncontrolled reads outside any test (a CI-volatile or proxy variable at module scope, ...): every test is
     // not proven (docs/VERIFY-CONTRACT.md section 1)
-    let not_proven_outside: Vec<String> = {
-        let s: BTreeSet<String> = traces
-            .iter()
-            .flat_map(|t| meta_array(t.header(), t.footer(), "not_proven_outside_tests"))
-            .filter_map(|v| v.as_str().map(str::to_string))
-            .collect();
-        s.into_iter().collect()
-    };
+    let not_proven_outside: Vec<String> = undischarged_outside(traces);
     let mut summary = Summary { runs: n, inputs_recorded: n > 0 && inputs.iter().all(|i| i.is_some()), ..Default::default() };
     let mut tests = Vec::with_capacity(ordered.len());
     for id in ordered {
@@ -923,6 +1047,9 @@ pub fn verify_sources<S: RecordSource>(traces: &[S], labels: &[String]) -> std::
             let mut all = other_diffs.clone();
             all.extend(env_diffs.iter().cloned());
             (Status::Diverged, Some(input_divergence(&all)))
+        } else if let Some(d) = scoped_divergence(id, &scoped_files) {
+            // P1 B1: what the test's own file read outside any test differs
+            (Status::Diverged, Some(d))
         } else if let Some(d) = (1..n).find_map(|j| order_divergence(id, &preds[0], &preds[j], 0, j)) {
             (Status::Diverged, Some(d))
         } else if distinct.len() <= 1 {
@@ -1152,7 +1279,8 @@ fn check_headers(headers: &[&Header], labels: &[String]) -> Result<(), TraceErro
 pub const HINTS: &[(&str, &str)] = &[
     ("entropy", "the test reads OS entropy (os.urandom, uuid4, secrets) and the runs did not control it alike: \
                  Python controls it by default under --det (--det-entropy=observe leaves it real); Node controls \
-                 crypto.randomBytes & co. with --det-urandom (not for tests of cryptography)"),
+                 crypto.randomBytes & co. by default (--det-urandom=off leaves them real; not for tests of \
+                 cryptography)"),
     ("env", "an environment variable differs between the runs; give both runs the same environment, or declare it \
              irrelevant with --ignore-env NAME"),
     ("tz", "the runs used different time zones; keep the default --det-tz=UTC (or the same zone in both runs)"),
@@ -1855,6 +1983,143 @@ mod tests {
         assert_eq!(r.tests[0].status, Status::NotProven);
         assert!(r.tests[0].divergence.as_ref().unwrap().description.contains("env:HTTPS_PROXY"));
     }
+
+    /// P1 B1 (docs/DESIGN-P1.md section B). protects=a file read outside any test by one test file's module scope or
+    /// hooks diverges that file's tests only, when every run's runner isolates files; fails_when=another file's test
+    /// diverges for it, the reading file's test is stable although the bytes differ, or an unscoped entry, a run
+    /// without `files_outside_scope: "file"` or a missing entry stops diverging every test; no_claim=the shells decide
+    /// isolation (`files_outside_scope`), not exercised here.
+    #[test]
+    fn p1_b1_file_read_outside_tests_scoped_to_its_test_file() {
+        let mk = |entries: serde_json::Value, scope: &str| {
+            let t = with_inputs(
+                trace(vec![rec("a.test.js::a1", &[t("1")], "passed", 10), rec("b.test.js::b1", &[t("2")], "passed", 10), rec("c.test.mjs@@web::c1", &[t("3")], "passed", 10)]),
+                &BASE,
+            );
+            meta_extra(meta_extra(t, "files_read_outside_tests", entries), "files_outside_scope", serde_json::json!(scope))
+        };
+        let e = |d: &str, file: Option<&str>| match file {
+            Some(f) => serde_json::json!([{"path": "<tmp>/x", "digest": d, "file": f}]),
+            None => serde_json::json!([{"path": "<tmp>/x", "digest": d}]),
+        };
+        let st = |r: &Report| r.tests.iter().map(|t| (t.nodeid.clone(), t.status)).collect::<Vec<_>>();
+        // scoped: only a's test diverges
+        let r = verify(&[mk(e("1:aa", Some("a.test.js")), "file"), mk(e("1:bb", Some("a.test.js")), "file")], &[]);
+        assert_eq!(st(&r), vec![("a.test.js::a1".into(), Status::Diverged), ("b.test.js::b1".into(), Status::Stable), ("c.test.mjs@@web::c1".into(), Status::Stable)]);
+        assert!(r.tests[0].divergence.as_ref().unwrap().description.contains("file:<tmp>/x"));
+        // a Vitest project's test is matched by its file
+        let r = verify(&[mk(e("1:aa", Some("c.test.mjs")), "file"), mk(e("1:bb", Some("c.test.mjs")), "file")], &[]);
+        assert_eq!(r.tests[2].status, Status::Diverged);
+        assert_eq!((r.tests[0].status, r.tests[1].status), (Status::Stable, Status::Stable));
+        // read in one run only: the file's tests diverge
+        let r = verify(&[mk(e("1:aa", Some("a.test.js")), "file"), mk(serde_json::json!([]), "file")], &[]);
+        assert_eq!((r.tests[0].status, r.tests[1].status), (Status::Diverged, Status::Stable));
+        // equal: nothing differs
+        let r = verify(&[mk(e("1:aa", Some("a.test.js")), "file"), mk(e("1:aa", Some("a.test.js")), "file")], &[]);
+        assert_eq!(r.summary.stable, 3);
+        // an entry without a file (main process, globalSetup): every test, as before
+        let r = verify(&[mk(e("1:aa", None), "file"), mk(e("1:bb", None), "file")], &[]);
+        assert_eq!(r.summary.diverged, 3);
+        // a run whose runner does not isolate files: every test, as before
+        let r = verify(&[mk(e("1:aa", Some("a.test.js")), "run"), mk(e("1:bb", Some("a.test.js")), "file")], &[]);
+        assert_eq!(r.summary.diverged, 3);
+        let r = verify(&[mk(e("1:aa", Some("a.test.js")), "run"), mk(e("1:bb", Some("a.test.js")), "run")], &[]);
+        assert_eq!(r.summary.diverged, 3);
+    }
+
+    /// P1 A1 (docs/DESIGN-P1.md section A). protects=an uncontrolled variable read outside any test with the same
+    /// value in every run no longer makes every test NOT PROVEN; fails_when=equal `env:<NAME>=<digest>` entries leave a
+    /// test NOT PROVEN, or different digests, a digest in one run only, an entry without a digest or a non-env entry
+    /// let a test be stable; no_claim=the cache's own judgement (one run) is not exercised here.
+    #[test]
+    fn p1_a1_env_read_outside_tests_compared_by_value() {
+        let mk = |entries: serde_json::Value| {
+            meta_extra(with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10), rec("y", &[t("2")], "passed", 10)]), &BASE), "not_proven_outside_tests", entries)
+        };
+        let j = |v: &[&str]| serde_json::json!(v);
+        // the same value in both runs: discharged, nothing differs
+        let r = verify(&[mk(j(&["env:*=1111", "env:TMPDIR=aaaa"])), mk(j(&["env:*=1111", "env:TMPDIR=aaaa"]))], &[]);
+        assert_eq!((r.summary.stable, r.summary.not_proven), (2, 0), "{:?}", r.tests);
+        // several values in one file (the variable was changed): the same set in both runs (with no file open, several
+        // values are never discharged: p1_a1_env_outside_compared_per_file)
+        let r = verify(&[mk(j(&["env:TMPDIR=aaaa@a.js", "env:TMPDIR=bbbb@a.js"])), mk(j(&["env:TMPDIR=bbbb@a.js", "env:TMPDIR=aaaa@a.js"]))], &[]);
+        assert_eq!(r.summary.stable, 2);
+        // a different value: every test NOT PROVEN, the variable named
+        let r = verify(&[mk(j(&["env:TMPDIR=aaaa"])), mk(j(&["env:TMPDIR=bbbb"]))], &[]);
+        assert_eq!((r.summary.stable, r.summary.not_proven), (0, 2));
+        assert!(r.tests[0].divergence.as_ref().unwrap().description.contains("env:TMPDIR"), "{:?}", r.tests[0]);
+        // read outside any test in one run only
+        let r = verify(&[mk(j(&["env:TMPDIR=aaaa"])), mk(j(&[]))], &[]);
+        assert_eq!(r.summary.stable, 0);
+        let r = verify(&[mk(j(&["env:TMPDIR=aaaa", "env:*=1111"])), mk(j(&["env:TMPDIR=aaaa"]))], &[]);
+        assert_eq!(r.summary.stable, 0);
+        // an entry without a digest (older traces, the Python shell): today's verdict
+        let r = verify(&[mk(j(&["env:TMPDIR"])), mk(j(&["env:TMPDIR=aaaa"]))], &[]);
+        assert_eq!(r.summary.stable, 0);
+        let r = verify(&[mk(j(&["env:TMPDIR"])), mk(j(&["env:TMPDIR"]))], &[]);
+        assert_eq!(r.summary.stable, 0);
+        // a non-env entry is never discharged
+        let r = verify(&[mk(j(&["api:process.reallyExit", "env:TMPDIR=aaaa"])), mk(j(&["api:process.reallyExit", "env:TMPDIR=aaaa"]))], &[]);
+        assert_eq!((r.summary.stable, r.summary.not_proven), (0, 2));
+        let d = r.tests[0].divergence.as_ref().unwrap().description.clone();
+        assert!(d.contains("api:process.reallyExit") && !d.contains("env:TMPDIR"), "{d}");
+        // three runs: discharged only if all agree
+        let r = verify(&[mk(j(&["env:TMPDIR=aaaa"])), mk(j(&["env:TMPDIR=aaaa"])), mk(j(&["env:TMPDIR=cccc"]))], &[]);
+        assert_eq!(r.summary.stable, 0);
+        // one run: nothing to compare the value with, nothing discharged (review 2026-11-24)
+        let r = verify(&[mk(j(&["env:TMPDIR=aaaa"]))], &[]);
+        assert_eq!((r.summary.stable, r.summary.not_proven), (0, 2), "{:?}", r.tests);
+    }
+
+    /// P1 A1 exact fix (founder decision D2 = A of 2026-11-25, replacing the one-worker fail-safe): the Node shell
+    /// writes an outside-test read made while a test file's code ran as `env:<NAME>=<digest>@<file>`, and verify
+    /// compares the digests per file. protects=an entry is discharged when every file saw the same value(s) in every
+    /// run, whatever the worker counts (serial S1 vs parallel P1w4); fails_when=two files whose values swap between
+    /// the runs are discharged (the run-wide sets are equal, red on 1ae9265 for one-worker runs), equal per-file
+    /// values in a one-worker vs four-worker comparison stay NOT PROVEN (red on 1ae9265), a read in one run only or a
+    /// file present in one run only is discharged, or several values read while no file was open are discharged;
+    /// no_claim=which test of a file saw which value inside the file (the file's tests are one unit here).
+    #[test]
+    fn p1_a1_env_outside_compared_per_file() {
+        let mkw = |entries: &[&str], workers: u64| {
+            let t0 = meta_extra(with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10), rec("y", &[t("2")], "passed", 10)]), &BASE), "not_proven_outside_tests", serde_json::json!(entries));
+            meta_extra(t0, "parallel", serde_json::json!({ "workers": workers }))
+        };
+        let ok = |r: &Report| (r.summary.stable, r.summary.not_proven) == (2, 0);
+        let np = |r: &Report| (r.summary.stable, r.summary.not_proven) == (0, 2);
+        // the swapped-values case: file a saw aaaa and b saw bbbb in one run, the other way round in the other
+        let r = verify(&[mkw(&["env:TMPDIR=aaaa@tests/a.test.js", "env:TMPDIR=bbbb@tests/b.test.js"], 1), mkw(&["env:TMPDIR=bbbb@tests/a.test.js", "env:TMPDIR=aaaa@tests/b.test.js"], 1)], &[]);
+        assert!(np(&r), "swapped values discharged: {:?}", r.tests);
+        assert!(r.tests[0].divergence.as_ref().unwrap().description.contains("env:TMPDIR"), "{:?}", r.tests[0]);
+        // equal per file: discharged in serial vs parallel (one worker vs four)
+        let same = ["env:TMPDIR=aaaa@tests/a.test.js", "env:TMPDIR=bbbb@tests/b.test.js", "env:*=1111@tests/a.test.js"];
+        let r = verify(&[mkw(&same, 1), mkw(&same, 4)], &[]);
+        assert!(ok(&r), "equal per file, S1 vs P1w4: {:?}", r.tests);
+        let r = verify(&[mkw(&same, 4), mkw(&same, 4)], &[]);
+        assert!(ok(&r), "{:?}", r.tests);
+        // several values in one file (the variable changed in its module scope): the same set per file
+        let r = verify(&[mkw(&["env:TMPDIR=aaaa@tests/a.test.js", "env:TMPDIR=bbbb@tests/a.test.js"], 1), mkw(&["env:TMPDIR=bbbb@tests/a.test.js", "env:TMPDIR=aaaa@tests/a.test.js"], 4)], &[]);
+        assert!(ok(&r), "{:?}", r.tests);
+        // a file that read the variable in one run only
+        let r = verify(&[mkw(&["env:TMPDIR=aaaa@tests/a.test.js", "env:TMPDIR=aaaa@tests/b.test.js"], 1), mkw(&["env:TMPDIR=aaaa@tests/a.test.js"], 4)], &[]);
+        assert!(np(&r), "{:?}", r.tests);
+        // a per-file read in one run, a read with no file open in the other
+        let r = verify(&[mkw(&["env:TMPDIR=aaaa@tests/a.test.js"], 1), mkw(&["env:TMPDIR=aaaa"], 4)], &[]);
+        assert!(np(&r), "{:?}", r.tests);
+        // reads with no file open: one value in every run is discharged, whatever the worker counts
+        let r = verify(&[mkw(&["env:TMPDIR=aaaa"], 1), mkw(&["env:TMPDIR=aaaa"], 4)], &[]);
+        assert!(ok(&r), "{:?}", r.tests);
+        // several values with no file open: no test can be tied to one, kept even when the sets are equal
+        let r = verify(&[mkw(&["env:TMPDIR=aaaa", "env:TMPDIR=bbbb"], 4), mkw(&["env:TMPDIR=aaaa", "env:TMPDIR=bbbb"], 4)], &[]);
+        assert!(np(&r), "{:?}", r.tests);
+        // a different value in one file
+        let r = verify(&[mkw(&["env:TMPDIR=aaaa@tests/a.test.js"], 1), mkw(&["env:TMPDIR=cccc@tests/a.test.js"], 1)], &[]);
+        assert!(np(&r), "{:?}", r.tests);
+        // a credential-bearing value (no digest) in one file: never discharged
+        let r = verify(&[mkw(&["env:HTTPS_PROXY@tests/a.test.js"], 1), mkw(&["env:HTTPS_PROXY@tests/a.test.js"], 1)], &[]);
+        assert!(np(&r), "{:?}", r.tests);
+    }
+
     // ---- golden corpus (P0 big trace, criterion 6) ----
     //
     // `golden_corpus_generate` writes every case below to tests/golden/ (`<case>.runN.jsonl`) with the report the

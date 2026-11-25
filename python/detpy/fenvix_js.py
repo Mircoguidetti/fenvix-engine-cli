@@ -257,7 +257,7 @@ def runner_command(runner: str, config: str, order_file: str, args: list, epoch:
 
 def uncontrolled_of(trace: Path, test: str) -> list:
     """Sources the test used that Level 0 does not control in this run: ``child`` / ``thread`` (``uncontrolled.*``
-    events), ``entropy`` (crypto.randomBytes & co. observed, not controlled without --det-urandom)."""
+    events), ``entropy`` (crypto.randomBytes & co. observed: run with --det-urandom=off; controlled by default)."""
     out: list = []
     try:
         text = Path(trace).read_text()
@@ -279,7 +279,7 @@ def uncontrolled_of(trace: Path, test: str) -> list:
             if op.startswith("uncontrolled.") and op.split(".", 1)[1] not in kinds():
                 out.append(f"{op.split('.', 1)[1]} ({str(e.get('v'))[:80]})")
             elif e.get("s") == "entropy" and not header.get("urandom_controlled") and "entropy" not in kinds():
-                out.append(f"entropy ({op}; controlled only with --det-urandom)")
+                out.append(f"entropy ({op}; real: --det-urandom=off; controlled by default without it)")
         for k in r.get("uncontrolled") or []:  # verifier-cli's recorder: kinds kept even when events are truncated
             if k not in kinds():
                 out.append(k)
