@@ -2,21 +2,12 @@
  "finished": null,
  "queries": {
   "postgres \"go test\"": {
-   "done": false,
-   "leaves": 35,
-   "nodes": 71,
+   "done": true,
+   "leaves": 37,
+   "nodes": 73,
    "root_incomplete": false,
    "root_total": 22560,
-   "stack": [
-    [
-     100001,
-     200000
-    ],
-    [
-     200001,
-     400000
-    ]
-   ]
+   "stack": []
   },
   "postgres \"manage.py\"": {
    "done": true,
@@ -33,6 +24,55 @@
    "root_incomplete": false,
    "root_total": 7440,
    "stack": []
+  },
+  "postgres \"npm test\"": {
+   "done": false,
+   "leaves": 6,
+   "nodes": 21,
+   "root_incomplete": false,
+   "root_total": 48832,
+   "stack": [
+    [
+     1271,
+     1367
+    ],
+    [
+     1368,
+     1562
+    ],
+    [
+     1563,
+     3125
+    ],
+    [
+     3126,
+     6250
+    ],
+    [
+     6251,
+     12500
+    ],
+    [
+     12501,
+     25000
+    ],
+    [
+     25001,
+     50000
+    ],
+    [
+     50001,
+     100000
+    ],
+    [
+     100001,
+     200000
+    ],
+    [
+     200001,
+     400000
+    ]
+   ]
   },
   "postgres \"rails test\"": {
    "done": true,
