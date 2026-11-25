@@ -474,7 +474,8 @@ function installFootprint(root) {
   const w1 = (a) => H.add('w', a[1]);
   const l0 = (a) => H.add('l', a[0]);
   const open = (a) => { const f = a[1]; if (f !== undefined && f !== null && (typeof f === 'number' ? (f & 3) !== 0 || (f & fs.constants.O_CREAT) : WRITE_FLAGS.test(String(f)))) H.add('w', a[0]); else H.add('r', a[0]); };
-  // recursive operations (spec parallel-proof-gaps (b)): the target of a recursive rm / rmdir / mkdir, the destination
+  // recursive operations (spec parallel-proof-gaps (b)): the target of a recursive rm / rmdir, the first directory a
+  // recursive mkdir creates (below), the destination
   // of a recursive cp and both paths of a directory rename are recursive WRITE roots (`wr`): they conflict with every
   // key of another lane inside them and with listings of their ancestors; the source of a recursive cp and a recursive
   // readdir / opendir are recursive READ roots (`lr`): they conflict with every write of another lane inside them.
@@ -484,12 +485,38 @@ function installFootprint(root) {
   const lstat = fs.lstatSync;
   const isDir = (p) => { const x = toPath(p); if (x === null) return false; try { const st = lstat(x, { throwIfNoEntry: false }); return Boolean(st && st.isDirectory()); } catch { return false; } };
   const wRec = (a) => { H.add('w', a[0]); if (recursive && rec(a[1])) H.add('wr', a[0]); };
+  // a recursive mkdir creates only the missing directories of its path: its root is the first of them (the nearest
+  // missing ancestor of the target, checked before the call); when the target exists it creates nothing and has no
+  // root (founder decision 2026-11-25, D1 = A: mkdir -p of /tmp, the tmpdir or the project root sent whole suites to
+  // the one-lane re-run). A path component that cannot be checked counts as missing (a higher root: more hazards).
+  const firstMissing = (p) => {
+    let x = toPath(p);
+    if (x === null) return null;
+    x = path.resolve(x);
+    let missing = null;
+    for (;;) {
+      let st = null;
+      try { st = lstat(x, { throwIfNoEntry: false }); } catch { st = null; }
+      if (st) return missing;
+      missing = x;
+      const up = path.dirname(x);
+      if (up === x) return missing;
+      x = up;
+    }
+  };
+  const mkRec = (a) => {
+    H.add('w', a[0]);
+    if (!recursive || !rec(a[1])) return;
+    const m = firstMissing(a[0]);
+    if (m !== null) H.add('wr', m);
+  };
   const lRec = (a) => { H.add('l', a[0]); if (recursive && rec(a[1])) H.add('lr', a[0]); };
   for (const o of [fs, P]) {
     for (const n of ['readFile', 'readFileSync', 'createReadStream', 'exists', 'existsSync', 'stat', 'statSync', 'lstat', 'lstatSync', 'access', 'accessSync', 'readlink', 'readlinkSync', 'realpath', 'realpathSync', 'openAsBlob']) wrap(o, n, r0);
     for (const n of ['readdir', 'readdirSync', 'opendir', 'opendirSync']) wrap(o, n, lRec);
     for (const n of ['writeFile', 'writeFileSync', 'appendFile', 'appendFileSync', 'createWriteStream', 'unlink', 'unlinkSync', 'truncate', 'truncateSync', 'chmod', 'chmodSync', 'utimes', 'utimesSync', 'lchown', 'chown', 'chownSync']) wrap(o, n, w0);
-    for (const n of ['mkdir', 'mkdirSync', 'rm', 'rmSync', 'rmdir', 'rmdirSync']) wrap(o, n, wRec);
+    for (const n of ['rm', 'rmSync', 'rmdir', 'rmdirSync']) wrap(o, n, wRec);
+    for (const n of ['mkdir', 'mkdirSync']) wrap(o, n, mkRec);
     for (const n of ['rename', 'renameSync']) {
       wrap(o, n, (a) => {
         H.add('w', a[0]); H.add('w', a[1]); H.add('r', a[0]);
