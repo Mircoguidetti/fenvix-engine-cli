@@ -163,7 +163,9 @@ def prepass(family: str, route: str) -> int:
         st, data = fetch(c, d, a, b, 1)
         pp[d["key"]] = {"family": d["family"], "stratum": d["stratum"], "status": st, "at": now(),
                         "total_count": data.get("total_count"), "incomplete": data.get("incomplete_results"),
-                        "route": route}
+                        "route": route, "search_429": c.n_429,
+                        "rate": {"limit": c.limit.get("search") or c.limit.get("code_search"),
+                                 "remaining": c.remaining.get("search", c.remaining.get("code_search"))}}
         _save(p, pp)
         print(f"{now()} prepass {d['key']}: {st} tc={data.get('total_count')}", flush=True)
     return 0
