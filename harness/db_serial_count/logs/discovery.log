@@ -657,3 +657,14 @@
 2026-11-25T07:27:34+00:00 mongo "npm test"         size:3126..4688 tc=1380 leaf=False read=- inc=- req=424
 2026-11-25T07:29:26+00:00 mongo "npm test"         size:3126..3907 tc=727 leaf=True read=698 inc=False req=439
 2026-11-25T07:30:49+00:00 mongo "npm test"         size:3908..4688 tc=583 leaf=True read=532 inc=False req=449
+2026-11-25T07:32:27+00:00 mongo "npm test"         size:4689..6250 tc=676 leaf=True read=676 inc=False req=462
+2026-11-25T07:34:35+00:00 mongo "npm test"         size:6251..12500 tc=882 leaf=True read=900 inc=False req=480
+2026-11-25T07:35:18+00:00 mongo "npm test"         size:12501..25000 tc=277 leaf=True read=289 inc=False req=486
+2026-11-25T07:35:32+00:00 mongo "npm test"         size:25001..50000 tc=84 leaf=True read=84 inc=False req=488
+2026-11-25T07:35:39+00:00 mongo "npm test"         size:50001..100000 tc=32 leaf=True read=32 inc=False req=489
+2026-11-25T07:35:45+00:00 mongo "npm test"         size:100001..200000 tc=8 leaf=True read=8 inc=False req=490
+2026-11-25T07:35:52+00:00 mongo "npm test"         size:200001..400000 tc=3 leaf=True read=3 inc=False req=491
+2026-11-25T07:39:06+00:00 mongo "yarn test"        size:0..400000 tc=730 leaf=True read=787 inc=False req=506
+2026-11-25T07:41:06+00:00 mongo "pnpm test"        size:0..400000 tc=763 leaf=True read=800 inc=False req=522
+2026-11-25T07:46:27+00:00 mongo "make test"        size:0..400000 tc=472 leaf=True read=500 inc=False req=532
+discovery finished

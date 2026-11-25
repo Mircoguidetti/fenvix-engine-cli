@@ -1,5 +1,5 @@
 {
- "finished": null,
+ "finished": "2026-11-25T07:46:27+00:00",
  "queries": {
   "mariadb \"go test\"": {
    "done": true,
@@ -137,6 +137,14 @@
    "root_total": 1764,
    "stack": []
   },
+  "mongo \"make test\"": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 472,
+   "stack": []
+  },
   "mongo \"manage.py\"": {
    "done": true,
    "leaves": 1,
@@ -154,41 +162,20 @@
    "stack": []
   },
   "mongo \"npm test\"": {
-   "done": false,
-   "leaves": 10,
-   "nodes": 26,
+   "done": true,
+   "leaves": 17,
+   "nodes": 33,
    "root_incomplete": false,
    "root_total": 9552,
-   "stack": [
-    [
-     4689,
-     6250
-    ],
-    [
-     6251,
-     12500
-    ],
-    [
-     12501,
-     25000
-    ],
-    [
-     25001,
-     50000
-    ],
-    [
-     50001,
-     100000
-    ],
-    [
-     100001,
-     200000
-    ],
-    [
-     200001,
-     400000
-    ]
-   ]
+   "stack": []
+  },
+  "mongo \"pnpm test\"": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 763,
+   "stack": []
   },
   "mongo \"rails test\"": {
    "done": true,
@@ -196,6 +183,14 @@
    "nodes": 1,
    "root_incomplete": false,
    "root_total": 15,
+   "stack": []
+  },
+  "mongo \"yarn test\"": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 730,
    "stack": []
   },
   "mongo jest": {
