@@ -361,3 +361,34 @@ def test_a_stat_in_another_thread_is_recorded_while_one_thread_is_inside_the_rec
     """, tmp_path)
     b = str(tmp_path / "b.txt")
     assert out["calls"].count(b) == 2, out
+
+
+@pytest.mark.parametrize("build", ["list(map(_random.Random, [None]))[0]", "functools.partial(_random.Random)()",
+                                   "type.__call__(_random.Random)"],
+                         ids=["map", "functools.partial", "type.__call__"])
+def test_w8_a_c_generator_built_from_c_code_is_never_reused(tmp_path, build):
+    """protects=an unseeded C generator constructed where C code calls the type (``map``, ``functools.partial``,
+    ``type.__call__``: no CALL event names ``_random.Random``) is the W8 gap, NOT PROVEN and never reused (founder
+    decision 2026-11-25, /plan-eng-review D1 = A: ``_random.Random`` is replaced with a controlled subclass while the
+    sensor runs); fails_when=the warm cached run reuses it with proof while fresh --det runs read different values
+    (this branch at 3c9d2b09: MEASURED for map, /review red team for all three); no_claim=the class reached through
+    ``random.Random.__mro__`` or bound before the sensor started (docs/LIMITS.md section 10)."""
+    body = f"import _random, functools\n\ndef test_e():\n    r = {build}\n    print('VALUE', r.random())\n"
+    cached, _, log = _cache_vs_uncached(tmp_path, {"tests/test_e.py": body}, lambda r: None, "tests/test_e.py::test_e")
+    assert cached == "passed", log[-1500:]
+    assert "not cacheable" in log, log[-1500:]
+    assert not any(ln.startswith("reused 1 ") for ln in log.splitlines()), log[-1500:]
+
+
+def test_w8_a_seeded_c_generator_stays_reusable_through_the_controlled_class(tmp_path):
+    """protects=positive control of the controlled ``_random.Random``: a generator seeded with an int, built directly
+    and through ``map``, is reused with proof, and ``type(r) is _random.Random`` and ``isinstance`` still hold for the
+    test; fails_when=the controlled class's own reseed through the C slot is reported as a gap (a false red), or it
+    breaks the type the test sees; no_claim=other seed types (``_entropy_or_address_seed``: the unit tests above)."""
+    body = ("import _random\n\ndef test_e():\n    a = _random.Random(5)\n    b = list(map(_random.Random, [5]))[0]\n"
+            "    assert type(a) is _random.Random and isinstance(b, _random.Random)\n"
+            "    assert a.random() == b.random()\n    print('VALUE', a.random())\n")
+    cached, uncached, log = _cache_vs_uncached(tmp_path, {"tests/test_e.py": body}, lambda r: None,
+                                               "tests/test_e.py::test_e")
+    assert uncached == "passed" and cached == "passed", log[-1500:]
+    assert any(ln.startswith("reused 1 ") for ln in log.splitlines()), log[-1500:]

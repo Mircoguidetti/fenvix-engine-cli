@@ -207,6 +207,14 @@ was reused). The opposite direction, a cached run that passes such a test where 
 in principle and would be a false green of the same kind (an outcome, not a reuse); it was not observed. `tests/test_review_r056_pycache.py::test_w11_object_addresses_match_uncached_det`
 stays in the suite, failing (no xfail, no skip).
 
+**The C generator reached around the controlled class (W8; founder decision 2026-11-25, /plan-eng-review D1 = A).**
+While the sensor runs, the module attribute `_random.Random` is a controlled subclass (`provable._ControlledCRandom`):
+every construction or `__init__` through it without a seed (or with one that hashes by address) is a gap, also where C
+code calls the type (`map`, `functools.partial`, `type.__call__`). The original C type is still reachable as
+`random.Random.__mro__[1]` / `random.Random.__bases__[0]`, or through a reference bound before the sensor started
+(`from _random import Random` at import time, S3): a construction through it is seen only where Python calls it
+directly (the CALL-event rule), not from C code. Not covered; no known library does this.
+
 ## 10. Parallel lanes (`--det-workers=N`, and the default since G-1044): cross-file state on a first run
 
 Since row JS-07 (gap G-1044) a `--det` run of the JavaScript runners uses this machine's CPUs as lanes unless the
