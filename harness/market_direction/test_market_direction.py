@@ -12,6 +12,8 @@ import random
 import sys
 from pathlib import Path
 
+import time
+
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -391,3 +393,36 @@ def test_retry_seconds_parses_seconds_and_milliseconds():
     assert ghapi.retry_seconds("", {"retry-after": "30"}) == 30
     assert ghapi.retry_seconds("", {"x-ratelimit-remaining": "0", "x-ratelimit-reset": "1100"}, now=1000) == 103
     assert ghapi.retry_seconds("", {}) == 60
+
+
+class _FakeSearch:
+    """total_count = width of the size range * 10 (so a range of <= 100 sizes is a leaf)."""
+    def get(self, path, kind="core"):
+        import urllib.parse as up
+        q = up.unquote(path.split("q=")[1].split("&")[0])
+        a, b = map(int, q.split("size:")[1].split(".."))
+        return 200, {"total_count": (b - a + 1) * 10, "incomplete_results": False, "items": []}, {}
+
+
+def _discover(tmp_path, monkeypatch):
+    import discover
+    monkeypatch.setattr(discover, "D", tmp_path)
+    monkeypatch.setattr(discover, "STATE", tmp_path / "state.json")
+    monkeypatch.setattr(discover, "MAX_SIZE", 399)
+    return discover
+
+
+def test_bisect_stops_at_amendment2_deadline(tmp_path, monkeypatch):
+    discover = _discover(tmp_path, monkeypatch)
+    state = {"forms": {"AGENTS.md": "a"}}
+    assert discover.bisect(_FakeSearch(), state, deadline=time.time() - 1) is False
+    assert state["bisection_truncated_by_budget"] and "bisected" not in state
+    assert state["queue"]["AGENTS.md"] == [[0, 399]]  # nothing popped: resumable
+
+
+def test_bisect_completes_before_deadline(tmp_path, monkeypatch):
+    discover = _discover(tmp_path, monkeypatch)
+    state = {"forms": {"AGENTS.md": "a"}}
+    assert discover.bisect(_FakeSearch(), state, deadline=time.time() + 60) is True
+    assert state["bisected"] == ["AGENTS.md"]
+    assert sorted((x["a"], x["b"]) for x in state["leaves"]) == [(0, 99), (100, 199), (200, 299), (300, 399)]

@@ -71,11 +71,17 @@ def split_count(c, F, form, a, b, leaf_retry: bool):
             return {"status": st, "total_count": best, "incomplete": inc, "tries": tries}
 
 
-def bisect(c, state):
+def bisect(c, state, deadline: float | None = None) -> bool:
+    """Returns False if the deadline (amendment 2: 24 h bisection budget) stopped it before completion."""
     for F, form in state["forms"].items():
         q = state.setdefault("queue", {}).setdefault(F, [[0, MAX_SIZE]]) if F not in state.get("bisected", []) \
             else []
         while q:
+            if deadline is not None and time.time() > deadline:
+                state["bisection_truncated_by_budget"] = True
+                save(state)
+                print("bisection budget reached", flush=True)
+                return False
             a, b = q[0]
             r = split_count(c, F, form, a, b, leaf_retry=True)
             leaf = (r["total_count"] or 0) <= 1000 or a == b
@@ -94,6 +100,7 @@ def bisect(c, state):
             save(state)
         state.setdefault("bisected", []).append(F) if F not in state.get("bisected", []) else None
         save(state)
+    return True
 
 
 def fetch_leaves(c, state, deadline: float):
@@ -161,6 +168,7 @@ def frame(state):
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--code-per-min", type=float, default=4)
+    ap.add_argument("--amendment2", action="store_true", help="PREREG amendment 2 budgets (set once in state)")
     args = ap.parse_args()
     D.mkdir(exist_ok=True)
     state = json.loads(STATE.read_text()) if STATE.exists() else {}
@@ -170,9 +178,26 @@ def main() -> int:
                  "started": now(), "deadline": time.time() + 24 * 3600}
         save(state)
     c = ghapi.Client(use_gh=True, code_per_min=args.code_per_min)
-    bisect(c, state)
+    a2 = state.get("amendment2")
+    if a2 is None and args.amendment2:
+        # PREREG amendment 2: fresh 24 h bisection budget from the first resumed search request
+        a2 = state["amendment2"] = {"resumed": now(), "bisect_deadline": time.time() + 24 * 3600}
+        save(state)
+    if a2 is not None:
+        if not bisect(c, state, a2["bisect_deadline"]):
+            return 3
+        if "bisect_end" not in a2:
+            a2["bisect_end"] = now()
+            a2["leaf_deadline"] = time.time() + 24 * 3600
+            save(state)
+            print(f"bisection ended {a2['bisect_end']}: {len(state['leaves'])} leaves, "
+                  f"{sum(x['total_count'] or 0 for x in state['leaves'])} files in leaves", flush=True)
+        deadline = a2["leaf_deadline"]
+    else:
+        bisect(c, state)
+        deadline = state["deadline"]
     if not state.get("leaves_done"):
-        fetch_leaves(c, state, state["deadline"])
+        fetch_leaves(c, state, deadline)
     frame(state)
     return 0
 

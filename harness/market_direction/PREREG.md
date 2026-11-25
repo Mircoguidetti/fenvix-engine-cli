@@ -377,3 +377,27 @@ shuffled once with `random.Random(1)`) are fetched in that order, **page 1 only*
 best-match order); hits with `path` == F are kept; candidates = distinct repositories over those pages, sorted by
 `html_url`, then `random.Random(1).shuffle` once. The 24 h discovery budget still applies. Limit printed in REPORT:
 within a leaf, only the 100 best-match hits are in the frame (page-1 bias).
+
+## Amendment 2 (2026-11-25, before the first resumed search request): discovery paused, fresh budgets
+
+Approved change (rule 3), founder decision D3 = A (gstack /plan-eng-review R2, recorded in new-brain
+gstack/projects/Mircoguidetti-new-brain/main-eng-review-market-frame-20261124-185500.md, approved 2026-11-25 05:44
+UTC). Coordinator resume order of 2026-11-25 07:47 UTC, verbatim: "Resume market Part 1 discovery from your checkpoint
+86a6d19 now: 1. Code search at most 9 requests/min. db-serial-count still sends a few code searches per chunk (≤9/min,
+occasional): on any 429, wait as f2e649b retry_seconds and continue; never raise your rate to catch up. 2. Fresh 24 h
+discovery budget starting at your first resumed search request; then your own 24 h leaf-reading budget starting when
+discovery ends. 3. Record this as PREREG amendment 2 (date, reason: founder D3 = A, budgets above) in a commit before
+the first resumed search request. 4. When discovery ends, message @parent at once with the pool line and end time
+(test-quality-count waits for it), then continue reading."
+
+Reason: at 4/min, with db-serial-count discovery at 9/min on the same account, GitHub's secondary limit returned
+repeated 429s with waits of about 734 s; from 01:50 to 05:44 UTC no split completed (385 splits, 167 leaves at the
+pause, commit 86a6d19). Discovery was paused at 05:44 UTC on the coordinator's order and resumed after db-serial-count
+discovery ended (2026-11-25T07:46:27Z).
+
+Rules replacing §1.1's budget and the rate in §1.0 for discovery: code search at most 9 requests/min; a 429 waits as
+`ghapi.retry_seconds` and the rate is never raised to catch up. Bisection resumes from the saved state with a fresh
+24 h budget starting at the first resumed search request. Leaf page-1 reading (Amendment 1) has its own 24 h budget
+starting when bisection ends. If bisection reaches its 24 h budget before it is complete, discovery stops and the
+coordinator is asked before any leaf page is read (this case is not covered by the decision). Everything else stays as
+pre-registered.
