@@ -202,8 +202,11 @@ def render(v: dict) -> str:
         L.append(f"CONTINUE: {k(v, 'share')} ours ({k(v, 'ours')} of {k(v, 'included')} included).")
     elif d == "DROP":
         L.append(f"DROP: {k(v, 'share')} ours ({k(v, 'ours')} of {k(v, 'included')} included).")
-    else:
+    elif v.get("budget_over"):
         L.append(f"NO DECISION: budget reached; {k(v, 'share')} ours ({k(v, 'ours')} of {k(v, 'included')}).")
+    else:
+        L.append(f"NO DECISION yet (double read incomplete or failed, or no checkpoint); {k(v, 'share')} ours "
+                 f"({k(v, 'ours')} of {k(v, 'included')}).")
     L += ["", f"Wilson 95% interval: {k(v, 'wilson_lo')} to {k(v, 'wilson_hi')}. The `ours` count is a lower bound "
           "for the frame (only `ours` rows confirmed by the independent double read are counted; disputed rows are "
           "`unclear`).", ""]
