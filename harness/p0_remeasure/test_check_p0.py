@@ -129,6 +129,22 @@ def test_not_proven_log_line(tmp_path):
     assert r["C1"] == 1 and r["not_proven_files"][0]["file"] == "b.test.ts"
 
 
+def test_not_proven_log_line_with_the_engine_cause(tmp_path):
+    """protects=the log's NOT PROVEN line as the engine writes it since the runner sends summary.proof (cause
+    "<file>: the one-lane re-run ran N of its M test(s)" inside the parentheses) is still read, file and cause;
+    fails_when=the new cause text breaks NP_RE; no_claim=the meta source (test_exit0_not_proven_in_meta_only)."""
+    fx = Fx(tmp_path)
+    fx.plain(TWO)
+    fx.run(kind="par", workers=2, output=[
+        "detjs: parallel: NOT PROVEN b.test.ts: the one-lane re-run did not account for its tests"
+        " (b.test.ts: the one-lane re-run ran 0 of its 2 test(s))",
+        STATUS.format(0, 0, 2, 0)])
+    r = one(fx.check())
+    assert r["C1"] == 1
+    assert r["not_proven_files"] == [{"file": "b.test.ts", "cause": "b.test.ts: the one-lane re-run ran 0 of its 2 test(s)",
+                                      "source": "log"}]
+
+
 def test_status_sum_below_plain(tmp_path):
     """protects=C2 counts tests the user report leaves out; fails_when=a status that reports fewer tests than the
     plain run passes; no_claim=-"""

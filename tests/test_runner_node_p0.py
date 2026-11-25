@@ -28,7 +28,8 @@ if a[:1] == ["verify"]:
     print(json.dumps({"status": "identical", "summary": {"tests": 1, "identical": 1}, "tests": []})); sys.exit(0)
 opt = {x.split("=", 1)[0]: x.split("=", 1)[1] for x in a if x.startswith("--det-") and "=" in x}
 json.dump({"order": ["a.test.js::t"], "outcomes": {"a.test.js::t": "passed"}}, open(opt["--det-outcomes"], "w"))
-meta = {"epoch_ns": "1795392000000000000"}
+# a sensor, as every real header declares one (node/src/session.js provableField; fenvix-run engine_signals)
+meta = {"epoch_ns": "1795392000000000000", "provable": {"sensor": "node-surface/1"}}
 if mode != "no-status":
     meta["status"] = {"failed": 0, "not_proven": 0, "passed": 1, "skipped": 0}
 with open(opt["--det-trace"], "w") as fh:
