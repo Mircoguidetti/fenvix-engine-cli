@@ -67,11 +67,18 @@ def sh(cmd, cwd, env, timeout, log=None):
 
 
 def git_checkpoint(paths, message):
-    """Commit and push the result rows (one process at a time: the campaign runs several repositories at once)."""
+    """Copy the result rows into the repository, then commit and push them (one process at a time: the campaign
+    runs several repositories at once)."""
     repo = os.path.abspath(os.path.join(HERE, '..', '..'))
     os.makedirs(os.path.dirname(GIT_LOCK), exist_ok=True)
     with open(GIT_LOCK, 'w') as lk:
         fcntl.flock(lk, fcntl.LOCK_EX)
+        dest = []
+        for src in paths:
+            d = os.path.join(HERE, 'data', 'harden', os.path.basename(src.rstrip('/')))
+            shutil.copytree(src, d, dirs_exist_ok=True)
+            dest.append(d)
+        paths = dest
         subprocess.run(['git', '-C', repo, 'add', '--', *paths], capture_output=True)
         r = subprocess.run(['git', '-C', repo, 'commit', '-q', '-m', message, '--', *paths], capture_output=True, text=True)
         if r.returncode == 0:
@@ -145,7 +152,8 @@ def main():
     ap.add_argument('--engine', required=True, help='engine checkout (a worktree at a fixed commit, addon built)')
     ap.add_argument('--mode', choices=['url', 'dir'], default='url')
     ap.add_argument('--work', default='/home/runner/work/cacheb')
-    ap.add_argument('--out', default=os.path.join(HERE, 'data', 'harden'))
+    # rows are written outside the repository and copied into harness/cache_b/data/harden at each checkpoint
+    ap.add_argument('--out', default='/home/runner/work/cacheb/rows')
     ap.add_argument('--max-seconds', type=float, default=6000, help='stop cleanly before this (tracked task < 2 h)')
     ap.add_argument('--checkpoint', action='store_true', help='commit and push the rows every 30 minutes')
     o = ap.parse_args()
