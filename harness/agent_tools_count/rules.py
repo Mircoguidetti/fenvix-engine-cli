@@ -168,24 +168,38 @@ def is_agent_commit(family: str, commit: dict, pr_author: str | None, head_ref: 
 
 # ================================================================ Count A: wasted commits (§1.7)
 
-FIX_MSG_RE = re.compile(
+# Rule (ii) as pre-registered (kept for the record; replaced after the §1.9 sample hand read, change 2).
+FIX_MSG_RE_V1 = re.compile(
     r"\b(fix(e[sd])?|repair(ed)?|resolve[sd]?)\b[^.\n]{0,30}\b(failing|broken|flaky|red)?\s*(tests?|ci|build|checks?|pipeline|lint)\b",
     re.IGNORECASE)
+# Change 2 (rule (ii)): a fix verb anywhere in the message and a CI term anywhere in the message.
+FIX_VERB_RE = re.compile(r"\b(fix(e[sd]|ing)?|repair(s|ed|ing)?|resolv(e[sd]?|ing)|unbreak\w*|unblock\w*)\b",
+                         re.IGNORECASE)
+CI_TERM_RE = re.compile(
+    r"\b(ci|builds?|tests?|checks?|pipelines?|lint\w*|clippy|workflows?|e2e|compil(e[sdr]?|ation)|type-?check\w*|"
+    r"rustdoc)\b", re.IGNORECASE)
 
 
-def wasted_reasons(commit: dict, x: dict, new_red_before: bool) -> list[str]:
-    """Rules (i)-(iii) for one agent commit inside X's window.
+def fix_message(msg: str) -> bool:
+    return bool(FIX_VERB_RE.search(msg) and CI_TERM_RE.search(msg))
+
+
+def wasted_reasons(commit: dict, x: dict, new_red_before: bool, turns_green: bool = False) -> list[str]:
+    """Rules (i)-(iv) for one agent commit inside X's window.
 
     commit: {message, files: [filename, ...]}; x: {failure_files: [...], workflow_paths: [...]};
-    new_red_before: a NEW_RED check failed on the latest earlier commit that has check results."""
+    new_red_before: a NEW_RED check failed on the latest earlier commit that has check results;
+    turns_green: X passes at this commit (it is the window end and X's state there is ``pass``; change 2)."""
     files = set(commit.get("files") or [])
     r = []
     if files & set(x.get("failure_files") or []):
         r.append("i")
-    if FIX_MSG_RE.search(commit.get("message") or "") and not new_red_before:
+    if fix_message(commit.get("message") or "") and not new_red_before:
         r.append("ii")
     if files & set(x.get("workflow_paths") or []):
         r.append("iii")
+    if turns_green:
+        r.append("iv")
     return r
 
 

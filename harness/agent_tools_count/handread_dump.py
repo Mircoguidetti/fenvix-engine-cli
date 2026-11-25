@@ -56,8 +56,10 @@ def main():
             if r.get("result") == R.WASTED:
                 show_a(r)
     elif mode == "a-sample":
-        by = {r["url"]: r for r in rows}
-        for u in stats.sample_a(rows):
+        import verify as V
+        srows = V.sample_rows(rows)
+        by = {r["url"]: r for r in srows}
+        for u in stats.sample_a(srows):
             show_a(by[u])
     elif mode == "b":
         brows = J.read_jsonl(HERE / "results" / "b_rows.jsonl")

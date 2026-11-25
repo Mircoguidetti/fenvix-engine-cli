@@ -657,7 +657,8 @@ def count_a(src, pr: dict) -> dict:
             wpaths = ([caller] if caller else []) + (wf["callees"] or [])
             reasons = R.wasted_reasons({"message": c["message"], "files": fnames},
                                        {"failure_files": ev_k["files"], "workflow_paths": wpaths},
-                                       new_red_before(c["pos"]))
+                                       new_red_before(c["pos"]),
+                                       c["pos"] == end and states.get(k_, {}).get(end) == "pass")
             rec = {"pos": c["pos"], "sha": c["sha"], "message": c["message"][:600], "reasons": reasons,
                    "files": [{"filename": x_["filename"], "status": x_["status"],
                               "patch_head": "\n".join((x_.get("patch") or "").splitlines()[:12])}

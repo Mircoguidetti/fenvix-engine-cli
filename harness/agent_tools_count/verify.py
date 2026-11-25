@@ -104,6 +104,26 @@ def replay_b(rows: list[dict]) -> None:
         err("B rows: repositories read are not a prefix of the seeded order")
 
 
+def sample_rows(arows: list[dict]) -> list[dict]:
+    """Rows the §1.9 sample is drawn from: the pre-change rows when change 2 re-ran Count A, else the rows."""
+    p = HERE / "results" / "a_rows_rule1.jsonl"
+    return J.read_jsonl(p) if p.exists() else arows
+
+
+def check_rule1(arows: list[dict]) -> None:
+    """Change 2 re-ran every row offline: the pre-change rows must be the same items, and every row the change
+    turned into ``wasted`` must have been ``not-wasted`` (the change only adds rules)."""
+    p = HERE / "results" / "a_rows_rule1.jsonl"
+    if not p.exists():
+        return
+    old = J.read_jsonl(p)
+    if [r["item"] for r in old] != [r["item"] for r in arows]:
+        err("a_rows_rule1: items differ from a_rows")
+    for o, r in zip(old, arows):
+        if o["result"] != r["result"] and not (o["result"] == R.NOT_WASTED and r["result"] == R.WASTED):
+            err(f"a_rows_rule1 {o['url']}: {o['result']} -> {r['result']} is not an added rule hit")
+
+
 def load_hand():
     ha = {h["url"]: h for h in J.read_jsonl(HERE / "handread_a.jsonl")}
     hs = J.read_jsonl(HERE / "handread_a_sample.jsonl")
@@ -126,8 +146,9 @@ def check_hand(arows, brows, ha, hs, hb) -> None:
         for c in h.get("commits", []):
             if not c.get("codes") or any(x not in R.W_CODES | R.R_CODES for x in c["codes"]):
                 err(f"hand A {u} commit {c.get('pos')}: bad codes {c.get('codes')}")
-    want = stats.sample_a(arows)
-    # the sample is drawn from the automatic not-wasted rows (rows the hand read turns into not-wasted are excluded)
+    want = stats.sample_a(sample_rows(arows))
+    # the sample is drawn from the automatic not-wasted rows (rows the hand read turns into not-wasted are excluded),
+    # of the rows before change 2 when that change was made (results/a_rows_rule1.jsonl)
     if [s["url"] for s in hs] != want:
         err("hand A sample: not random.Random(3).sample(sorted(not-wasted urls), 30)")
     for s in hs:
@@ -209,6 +230,7 @@ def main() -> int:
     arows = J.read_jsonl(res / "a_rows.jsonl")
     brows = J.read_jsonl(res / "b_rows.jsonl")
     replay_a(arows)
+    check_rule1(arows)
     replay_b(brows)
     ha, hs, hb = load_hand()
     check_hand(arows, brows, ha, hs, hb)

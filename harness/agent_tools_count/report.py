@@ -78,7 +78,7 @@ def main() -> None:
                      f"{k(p + 'a_not_wasted')} | {k(p + 'a_no_later')} | {k(p + 'a_uncertain')} | {k(p + 'a_rate')} | "
                      f"{k(p + 'a_lo')} to {k(p + 'a_hi')} | {k(p + 'a_files_share')} |")
         L += ["", f"Automatic `wasted` before the hand read: {k('a_auto_wasted')} (rules hit, pull requests: (i) "
-                  f"{k('a_reason_i')}, (ii) {k('a_reason_ii')}, (iii) {k('a_reason_iii')}). Hand read: "
+                  f"{k('a_reason_i')}, (ii) {k('a_reason_ii')}, (iii) {k('a_reason_iii')}, (iv) {k('a_reason_iv')}). Hand read: "
                   f"{k('a_hand_n')} pull requests; codes W-file {k('a_code_w_file')}, W-msg {k('a_code_w_msg')}, "
                   f"W-ci {k('a_code_w_ci')}, R-product {k('a_code_r_product')}, R-own {k('a_code_r_own')}, R-sync "
                   f"{k('a_code_r_sync')}; {k('a_hand_to_not')} became `not-wasted`. Sample of {k('a_sample_n')} "

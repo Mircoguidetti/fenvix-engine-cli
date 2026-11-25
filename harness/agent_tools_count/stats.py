@@ -94,7 +94,7 @@ def compute_a(rows: list[dict], hand: dict[str, dict], sample: list[dict]) -> di
             rs = {x_ for x in r["xs"] for c in x["window"] for x_ in c["reasons"]}
             for x_ in rs:
                 reasons[x_] += 1
-    for k in ("i", "ii", "iii"):
+    for k in ("i", "ii", "iii", "iv"):
         v[f"a_reason_{k}"] = str(reasons[k])
     codes = Counter(c for h in hand.values() for wc in h.get("commits", []) for c in wc["codes"])
     for k in sorted(R.W_CODES | R.R_CODES):

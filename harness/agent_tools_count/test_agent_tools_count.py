@@ -141,7 +141,7 @@ def test_already_red_at_commit_two_of_four_then_green_is_rateable():
     assert out["xs"][0]["end"] == 4
     assert out["result"] in R.RATEABLE_A
     assert out["result"] == R.WASTED
-    assert out["xs"][0]["wasted_commits"] == [3]
+    assert out["xs"][0]["wasted_commits"] == [3, 4]  # 3 by rule (ii), 4 by rule (iv) (change 2: X passes there)
     assert out["force_pushes"] == 1
 
 
@@ -229,13 +229,14 @@ def test_evidence_pipeline_files_and_none():
 # ================================================================ window and merges (§1.7)
 
 def test_commit_after_x_passes_again_not_counted():
-    """protects=the window ends at the first commit where X passes; fails_when=later commits are judged;
-    no_claim=-."""
+    """protects=the window ends at the first commit where X passes, and the agent commit at which X passes is
+    rule (iv) (change 2); fails_when=later commits are judged, or (iv) is dropped; no_claim=-."""
     src, pr = build([{}, {}, {}, {"message": "fix failing tests"}],
                     ["failure", "failure", "success", "failure"], files={4: ["src/orders.test.ts"]}, ann=FAIL_ANN)
     out = P.count_a(src, pr)
     x = out["xs"][0]
-    assert x["end"] == 3 and x["wasted_commits"] == [] and out["result"] == R.NOT_WASTED
+    assert x["end"] == 3 and x["wasted_commits"] == [3] and out["result"] == R.WASTED
+    assert [c["reasons"] for c in x["window"]] == [[], ["iv"]]
 
 
 def test_merge_commit_touching_failure_file_not_wasted():
@@ -306,14 +307,27 @@ X = {"failure_files": ["src/orders.test.ts"], "workflow_paths": [".github/workfl
 
 
 def test_wasted_rules():
-    """protects=rules (i), (ii), (iii) and the NEW_RED guard of (ii); fails_when=a rule or regex changes;
-    no_claim=a matching commit is truly wasted (the hand read decides)."""
+    """protects=rules (i), (ii), (iii), (iv) and the NEW_RED guard of (ii) (rule (ii) and (iv) as of change 2);
+    fails_when=a rule or regex changes; no_claim=a matching commit is truly wasted (the hand read decides)."""
     assert R.wasted_reasons({"message": "wip", "files": ["src/orders.test.ts"]}, X, False) == ["i"]
     assert R.wasted_reasons({"message": "Fix failing tests", "files": []}, X, False) == ["ii"]
     assert R.wasted_reasons({"message": "Make the button blue and add unit tests", "files": ["src/b.ts"]}, X,
                             False) == []
     assert R.wasted_reasons({"message": "fix tests", "files": []}, X, True) == []
     assert R.wasted_reasons({"message": "ci tweak", "files": [".github/workflows/ci.yml"]}, X, False) == ["iii"]
+    assert R.wasted_reasons({"message": "wip", "files": []}, X, False, True) == ["iv"]
+
+
+def test_fix_message_change_2():
+    """protects=change 2 of rule (ii): a fix verb and a CI term anywhere in the message, the sample misses it was
+    fixed for; fails_when=the verb or term lists shrink or the 30-character gap comes back; no_claim=precision."""
+    assert R.fix_message("Fixes `TS2322` compilation error during Docker build.")
+    assert R.fix_message("Palette: Fix E2E port mismatch and improve Sidebar UX")
+    assert R.fix_message("Hardening Determinism & Fixing Portal Build")
+    assert R.fix_message("fix(proto): two rustdoc links\n\nCI runs -D rustdoc::broken_intra_doc_links")
+    assert not R.fix_message("feat: add a fixture loader")
+    assert not R.fix_message("Bump the build number")
+    assert not R.FIX_MSG_RE_V1.search("Fixes `TS2322` compilation error during Docker build.")
 
 
 def test_wasted_iii_through_pipeline():
