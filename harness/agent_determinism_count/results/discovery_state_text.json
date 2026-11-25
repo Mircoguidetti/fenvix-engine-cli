@@ -22,22 +22,27 @@
   },
   "committer-date:>=2024-01-01 flaky gemini test": {
    "capped": false,
-   "done": false,
-   "leaf_total": 10557,
-   "leaves": 21,
-   "nodes": 44,
+   "done": true,
+   "leaf_total": 18496,
+   "leaves": 34,
+   "nodes": 66,
    "prepass_total": 18548,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 flaky gpt test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 5726,
+   "leaves": 9,
+   "nodes": 19,
+   "prepass_total": 13486,
    "stack": [
     [
+     "2026-05-12",
+     "2026-06-13"
+    ],
+    [
      "2026-06-14",
-     "2026-06-22"
-    ],
-    [
-     "2026-06-23",
-     "2026-06-30"
-    ],
-    [
-     "2026-07-01",
      "2026-07-16"
     ],
     [
@@ -2128,13 +2133,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 2
+  "issues": 175
  },
  "search_stats": {
-  "429": 0,
+  "429": 7,
   "limit": 30,
-  "remaining": 27,
-  "reset": 1795647882
+  "remaining": 19,
+  "reset": 1795648885
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
