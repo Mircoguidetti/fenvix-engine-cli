@@ -1,0 +1,34 @@
+{
+ "engine_commit": "a870281181b21655d3046a0aa14752afbe7a7131",
+ "ts": "2026-11-25T11:27:37Z",
+ "channels": {
+  "unmutated": {
+   "tests": [
+    "cache-fault-clock.test.js",
+    "cache-fault-config.test.js",
+    "cache-fault-env.test.js",
+    "cache-fault-negative.test.js",
+    "cache-fault-node-modules.test.js",
+    "cache-fault-outside.test.js",
+    "cache-fault-repo-file.test.js"
+   ],
+   "exit": 0,
+   "pass": 14,
+   "fail": 0,
+   "diff": "",
+   "expected": "pass",
+   "as_expected": true
+  },
+  "e": {
+   "tests": [
+    "cache-fault-config.test.js"
+   ],
+   "exit": 1,
+   "pass": 0,
+   "fail": 2,
+   "diff": "node/src/cache/capture.js | 4 ++--\n node/src/cache/proof.js   | 7 +++----\n 2 files changed, 5 insertions(+), 6 deletions(-)",
+   "expected": "fail",
+   "as_expected": true
+  }
+ }
+}
