@@ -1144,3 +1144,53 @@ rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fwo
 rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A1563..2: sleeping 51s
 rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A1563..2: sleeping 33s
 rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A1563..2: sleeping 35s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A1563..2: sleeping 27s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A2345..3: sleeping 33s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A2345..3: sleeping 42s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A2345..3: sleeping 46s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A2345..3: sleeping 35s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A3126..6: sleeping 38s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A3126..4: sleeping 36s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A3126..4: sleeping 33s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A3126..4: sleeping 29s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A3126..4: sleeping 47s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A3126..4: sleeping 34s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A3126..4: sleeping 23s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A3126..4: sleeping 32s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A4689..6: sleeping 28s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A4689..6: sleeping 30s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A4689..6: sleeping 44s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A4689..6: sleeping 41s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A4689..6: sleeping 31s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A6251..1: sleeping 22s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A6251..9: sleeping 53s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A6251..9: sleeping 37s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A6251..9: sleeping 49s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A6251..9: sleeping 31s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A6251..9: sleeping 38s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A6251..9: sleeping 51s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A9376..1: sleeping 3s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A9376..1: sleeping 41s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A9376..1: sleeping 39s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A9376..1: sleeping 51s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A12501..: sleeping 22s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A12501..: sleeping 35s
+rate limited (429) on search/code?q=postgres+%22make+test%22+path%3A.github%2Fworkflows+size%3A12501..: sleeping 43s
+Traceback (most recent call last):
+  File "/home/user/fenvix-engine-cli/harness/db_serial_count/discover.py", line 245, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/user/fenvix-engine-cli/harness/db_serial_count/discover.py", line 241, in main
+    return run(a.route, a.max_minutes)
+  File "/home/user/fenvix-engine-cli/harness/db_serial_count/discover.py", line 143, in run
+    rec = run_node(c, qd, a, b)
+  File "/home/user/fenvix-engine-cli/harness/db_serial_count/discover.py", line 107, in run_node
+    stp, dp, _ = fetch(c, qd["q"], a, b, p)
+                 ~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/fenvix-engine-cli/harness/db_serial_count/discover.py", line 67, in fetch
+    st, data, hd = c.get(path, search=True)
+                   ~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/home/user/fenvix-engine-cli/harness/db_serial_count/ghapi.py", line 116, in get
+    time.sleep(min(sl, 3700))
+    ~~~~~~~~~~^^^^^^^^^^^^^^^
+KeyboardInterrupt
