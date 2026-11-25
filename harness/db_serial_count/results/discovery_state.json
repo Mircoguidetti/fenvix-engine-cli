@@ -129,6 +129,14 @@
    "root_total": 330,
    "stack": []
   },
+  "mongo \"go test\"": {
+   "done": true,
+   "leaves": 8,
+   "nodes": 15,
+   "root_incomplete": false,
+   "root_total": 1764,
+   "stack": []
+  },
   "mongo \"manage.py\"": {
    "done": true,
    "leaves": 1,
@@ -144,6 +152,43 @@
    "root_incomplete": false,
    "root_total": 451,
    "stack": []
+  },
+  "mongo \"npm test\"": {
+   "done": false,
+   "leaves": 10,
+   "nodes": 26,
+   "root_incomplete": false,
+   "root_total": 9552,
+   "stack": [
+    [
+     4689,
+     6250
+    ],
+    [
+     6251,
+     12500
+    ],
+    [
+     12501,
+     25000
+    ],
+    [
+     25001,
+     50000
+    ],
+    [
+     50001,
+     100000
+    ],
+    [
+     100001,
+     200000
+    ],
+    [
+     200001,
+     400000
+    ]
+   ]
   },
   "mongo \"rails test\"": {
    "done": true,
@@ -183,6 +228,14 @@
    "nodes": 23,
    "root_incomplete": false,
    "root_total": 5232,
+   "stack": []
+  },
+  "mongo rake": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 236,
    "stack": []
   },
   "mongo rspec": {

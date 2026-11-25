@@ -615,3 +615,45 @@
 2026-11-25T07:01:25+00:00 mongo "manage.py"        size:0..400000 tc=239 leaf=True read=246 inc=False req=215
 2026-11-25T07:01:45+00:00 mongo rspec              size:0..400000 tc=179 leaf=True read=192 inc=False req=218
 2026-11-25T07:02:02+00:00 mongo "rails test"       size:0..400000 tc=15 leaf=True read=15 inc=False req=220
+2026-11-25T07:03:05+00:00 mongo rake               size:0..400000 tc=236 leaf=True read=291 inc=False req=226
+2026-11-25T07:03:18+00:00 mongo "go test"          size:0..400000 tc=1764 leaf=False read=- inc=- req=228
+2026-11-25T07:03:32+00:00 mongo "go test"          size:0..200000 tc=1764 leaf=False read=- inc=- req=230
+2026-11-25T07:03:39+00:00 mongo "go test"          size:0..100000 tc=1760 leaf=False read=- inc=- req=231
+2026-11-25T07:03:52+00:00 mongo "go test"          size:0..50000 tc=1732 leaf=False read=- inc=- req=233
+2026-11-25T07:03:59+00:00 mongo "go test"          size:0..25000 tc=1658 leaf=False read=- inc=- req=234
+2026-11-25T07:04:13+00:00 mongo "go test"          size:0..12500 tc=1480 leaf=False read=- inc=- req=236
+2026-11-25T07:04:20+00:00 mongo "go test"          size:0..6250 tc=1110 leaf=False read=- inc=- req=237
+2026-11-25T07:06:14+00:00 mongo "go test"          size:0..3125 tc=734 leaf=True read=800 inc=False req=252
+2026-11-25T07:07:10+00:00 mongo "go test"          size:3126..6250 tc=379 leaf=True read=400 inc=False req=260
+2026-11-25T07:07:54+00:00 mongo "go test"          size:6251..12500 tc=272 leaf=True read=268 inc=False req=266
+2026-11-25T07:08:14+00:00 mongo "go test"          size:12501..25000 tc=175 leaf=True read=170 inc=False req=269
+2026-11-25T07:08:28+00:00 mongo "go test"          size:25001..50000 tc=87 leaf=True read=87 inc=False req=271
+2026-11-25T07:08:35+00:00 mongo "go test"          size:50001..100000 tc=48 leaf=True read=48 inc=False req=272
+2026-11-25T07:08:42+00:00 mongo "go test"          size:100001..200000 tc=24 leaf=True read=24 inc=False req=273
+2026-11-25T07:08:48+00:00 mongo "go test"          size:200001..400000 tc=3 leaf=True read=3 inc=False req=274
+2026-11-25T07:08:55+00:00 mongo "npm test"         size:0..400000 tc=9552 leaf=False read=- inc=- req=275
+2026-11-25T07:09:02+00:00 mongo "npm test"         size:0..200000 tc=9552 leaf=False read=- inc=- req=276
+2026-11-25T07:09:09+00:00 mongo "npm test"         size:0..100000 tc=9552 leaf=False read=- inc=- req=277
+2026-11-25T07:09:16+00:00 mongo "npm test"         size:0..50000 tc=9408 leaf=False read=- inc=- req=278
+2026-11-25T07:09:22+00:00 mongo "npm test"         size:0..25000 tc=9312 leaf=False read=- inc=- req=279
+2026-11-25T07:09:36+00:00 mongo "npm test"         size:0..12500 tc=9120 leaf=False read=- inc=- req=281
+2026-11-25T07:09:43+00:00 mongo "npm test"         size:0..6250 tc=8480 leaf=False read=- inc=- req=282
+2026-11-25T07:09:49+00:00 mongo "npm test"         size:0..3125 tc=6320 leaf=False read=- inc=- req=283
+2026-11-25T07:10:03+00:00 mongo "npm test"         size:0..1562 tc=3872 leaf=False read=- inc=- req=285
+2026-11-25T07:12:21+00:00 mongo "npm test"         size:0..781 tc=836 leaf=True read=900 inc=False req=301
+2026-11-25T07:12:35+00:00 mongo "npm test"         size:782..1562 tc=2696 leaf=False read=- inc=- req=303
+2026-11-25T07:12:49+00:00 mongo "npm test"         size:782..1172 tc=1232 leaf=False read=- inc=- req=305
+2026-11-25T07:14:32+00:00 mongo "npm test"         size:782..977 tc=620 leaf=True read=700 inc=False req=318
+2026-11-25T07:16:45+00:00 mongo "npm test"         size:978..1172 tc=726 leaf=True read=800 inc=False req=334
+2026-11-25T07:17:00+00:00 mongo "npm test"         size:1173..1562 tc=1326 leaf=False read=- inc=- req=336
+2026-11-25T07:18:56+00:00 mongo "npm test"         size:1173..1367 tc=760 leaf=True read=728 inc=False req=351
+2026-11-25T07:20:29+00:00 mongo "npm test"         size:1368..1562 tc=672 leaf=True read=700 inc=False req=364
+2026-11-25T07:20:44+00:00 mongo "npm test"         size:1563..3125 tc=2560 leaf=False read=- inc=- req=366
+2026-11-25T07:20:57+00:00 mongo "npm test"         size:1563..2344 tc=1672 leaf=False read=- inc=- req=368
+2026-11-25T07:23:12+00:00 mongo "npm test"         size:1563..1953 tc=928 leaf=True read=1000 inc=False req=387
+2026-11-25T07:25:10+00:00 mongo "npm test"         size:1954..2344 tc=724 leaf=True read=712 inc=False req=403
+2026-11-25T07:27:07+00:00 mongo "npm test"         size:2345..3125 tc=891 leaf=True read=900 inc=False req=420
+2026-11-25T07:27:21+00:00 mongo "npm test"         size:3126..6250 tc=2028 leaf=False read=- inc=- req=422
+2026-11-25T07:27:34+00:00 mongo "npm test"         size:3126..4688 tc=1380 leaf=False read=- inc=- req=424
+2026-11-25T07:29:26+00:00 mongo "npm test"         size:3126..3907 tc=727 leaf=True read=698 inc=False req=439
+2026-11-25T07:30:49+00:00 mongo "npm test"         size:3908..4688 tc=583 leaf=True read=532 inc=False req=449
