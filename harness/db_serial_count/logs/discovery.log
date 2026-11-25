@@ -338,3 +338,5 @@
 2026-11-25T02:39:43+00:00 postgres "npm test"      size:25001..50000 tc=1258 leaf=False read=- inc=- req=674
 2026-11-25T02:42:37+00:00 postgres "npm test"      size:25001..37500 tc=896 leaf=True read=900 inc=False req=692
 2026-11-25T02:44:11+00:00 postgres "npm test"      size:37501..50000 tc=430 leaf=True read=485 inc=False req=702
+--- restarted 2026-11-25T02:45:37Z (planned 113-min stop)
+2026-11-25T02:46:35+00:00 postgres "npm test"      size:50001..100000 tc=464 leaf=True read=492 inc=False req=8
