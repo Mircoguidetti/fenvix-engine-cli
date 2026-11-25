@@ -1,0 +1,129 @@
+{
+ "budget_end": "2026-11-26T10:54:28+00:00",
+ "finished": null,
+ "queries": {
+  "is:public created:>=2024-01-01 flaky \"model output\" test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 52842,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 52828,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 flaky anthropic test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 87176,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 87151,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 flaky claude test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 950177,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 949648,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 flaky eval test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 155414,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 155370,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 flaky gemini test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 112537,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 112518,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 flaky gpt test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 90105,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 90035,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 flaky langchain test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 21430,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 21427,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 flaky langgraph test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 6240,
+   "leaves": 11,
+   "nodes": 23,
+   "prepass_total": 12113,
+   "stack": [
+    [
+     "2026-07-01",
+     "2026-07-08"
+    ],
+    [
+     "2026-07-09",
+     "2026-07-16"
+    ],
+    [
+     "2026-07-17",
+     "2026-11-25"
+    ]
+   ]
+  },
+  "is:public created:>=2024-01-01 flaky llm test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 145988,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 145954,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 flaky openai test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 121445,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 121412,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 flaky prompt test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 643341,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 643170,
+   "stack": []
+  }
+ },
+ "search_requests": {
+  "code": 0,
+  "issues": 181
+ },
+ "search_stats": {
+  "429": 1,
+  "limit": 30,
+  "remaining": 17,
+  "reset": 1795609284
+ },
+ "started": "2026-11-25T12:06:45+00:00"
+}
