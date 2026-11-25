@@ -384,6 +384,9 @@ def test_wrapper_serial_run_writes_no_proof_but_the_signals(stubjob):
     ("timing.lanes_wall_seconds", lambda m: m["parallel"]["timing"].pop("lanes_wall_seconds")),
     ("hazard_rerun.tests", lambda m: m.__setitem__("hazard_rerun", {"files": ["a.test.js"], "not_proven": []})),
     ("hazard_rerun.not_proven[].tests", lambda m: m.__setitem__("hazard_rerun", {"tests": 2, "not_proven": [{"cause": "c", "tests": None}]})),
+    # review 2026-11-25: hazards recorded, the one-lane re-run skipped; a meta.parallel that is not an object
+    ("hazard_rerun", lambda m: m["parallel"].__setitem__("hazards", [{"kind": "path", "a": "a.test.js", "b": "b.test.js"}])),
+    ("parallel", lambda m: m.__setitem__("parallel", "x")),
 ])
 def test_wrapper_fails_closed_on_each_missing_field(stubjob, field, edit):
     """protects=an incomplete proof is never green: no proof, not_proven >= 1, exit 1, summary exit 1, the field in
@@ -430,6 +433,17 @@ def test_wrapper_warm_run_proven_excludes_reused_tests(stubjob):
     assert code == 0, log
     assert s["reused_with_proof"] == 2 and s["proof"]["proven"] == 4
     assert s["proof"]["proven"] + s["proof"]["not_proven"] == W.ran_executed_of(s["outcomes"], s["reused_outcomes"])
+
+
+def test_wrapper_header_without_a_sensor_is_not_proven(stubjob):
+    """protects=a header that declares no sensor and gives no reason makes the job NOT PROVEN through the whole
+    wrapper (exit 1, summary exit 1, provable_absent named); fails_when=it reads as watched and the job is green;
+    no_claim=why the engine declared none."""
+    m = meta()
+    del m["provable"]
+    code, s, log = stubjob(m)
+    assert code == 1 and s["exit"] == 1 and s["not_proven"] == 1, log
+    assert s["provable_absent"] == "the run declared no sensor" and "could not watch" in log
 
 
 @pytest.mark.parametrize("extra,why", [
