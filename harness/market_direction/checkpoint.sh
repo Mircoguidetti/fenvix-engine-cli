@@ -7,7 +7,6 @@ snap() {
   git add harness/market_direction/discovery harness/market_direction/logs
   git commit -q -m "market-direction: discovery checkpoint ($1)
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01YAF6DkSUDXwQikH19ZCnEu" && \
   git pull -q --no-rebase --no-edit origin claude/market-direction-check && git push -q origin claude/market-direction-check
   cd harness/market_direction
