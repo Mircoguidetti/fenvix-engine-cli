@@ -1,0 +1,60 @@
+{
+ "engine_commit": "26cdf8b41289",
+ "source": "runs/*/summary.json remote stats of the URL-form exit pass; push_entries_unresolved is set only when above 0, so an absent key with push stats present is 0",
+ "repos": {
+  "agentlang": {
+   "summaries": 13,
+   "with_push_stats": 13,
+   "push_entry_docs_new": 879,
+   "push_entries_unresolved": 0
+  },
+  "agentsys": {
+   "summaries": 20,
+   "with_push_stats": 20,
+   "push_entry_docs_new": 48207,
+   "push_entries_unresolved": 0
+  },
+  "alakajam": {
+   "summaries": 0,
+   "with_push_stats": 0,
+   "push_entry_docs_new": 0,
+   "push_entries_unresolved": 0
+  },
+  "codex-multi-auth": {
+   "summaries": 20,
+   "with_push_stats": 20,
+   "push_entry_docs_new": 117162,
+   "push_entries_unresolved": 0
+  },
+  "drydock": {
+   "summaries": 18,
+   "with_push_stats": 18,
+   "push_entry_docs_new": 235988,
+   "push_entries_unresolved": 0
+  },
+  "ironcurtain": {
+   "summaries": 15,
+   "with_push_stats": 15,
+   "push_entry_docs_new": 78773,
+   "push_entries_unresolved": 0
+  },
+  "lerna-lite": {
+   "summaries": 14,
+   "with_push_stats": 14,
+   "push_entry_docs_new": 0,
+   "push_entries_unresolved": 0
+  },
+  "nestjs-pino": {
+   "summaries": 10,
+   "with_push_stats": 10,
+   "push_entry_docs_new": 720,
+   "push_entries_unresolved": 0
+  },
+  "yalc": {
+   "summaries": 6,
+   "with_push_stats": 6,
+   "push_entry_docs_new": 1208,
+   "push_entries_unresolved": 0
+  }
+ }
+}
