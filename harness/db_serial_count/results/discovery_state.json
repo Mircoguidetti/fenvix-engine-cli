@@ -1,21 +1,41 @@
 {
  "finished": null,
  "queries": {
-  "postgres \"go test\"": {
+  "mysql \"node --test\"": {
    "done": true,
-   "leaves": 37,
-   "nodes": 73,
+   "leaves": 1,
+   "nodes": 1,
    "root_incomplete": false,
-   "root_total": 22560,
+   "root_total": 868,
    "stack": []
   },
-  "postgres \"make test\"": {
-   "done": false,
-   "leaves": 10,
-   "nodes": 23,
+  "mysql jest": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
    "root_incomplete": false,
-   "root_total": 5568,
+   "root_total": 746,
+   "stack": []
+  },
+  "mysql mocha": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 132,
+   "stack": []
+  },
+  "mysql pytest": {
+   "done": false,
+   "leaves": 6,
+   "nodes": 16,
+   "root_incomplete": false,
+   "root_total": 4168,
    "stack": [
+    [
+     12501,
+     25000
+    ],
     [
      25001,
      50000
@@ -33,6 +53,30 @@
      400000
     ]
    ]
+  },
+  "mysql vitest": {
+   "done": true,
+   "leaves": 5,
+   "nodes": 9,
+   "root_incomplete": false,
+   "root_total": 1108,
+   "stack": []
+  },
+  "postgres \"go test\"": {
+   "done": true,
+   "leaves": 37,
+   "nodes": 73,
+   "root_incomplete": false,
+   "root_total": 22560,
+   "stack": []
+  },
+  "postgres \"make test\"": {
+   "done": true,
+   "leaves": 14,
+   "nodes": 27,
+   "root_incomplete": false,
+   "root_total": 5568,
+   "stack": []
   },
   "postgres \"manage.py\"": {
    "done": true,
