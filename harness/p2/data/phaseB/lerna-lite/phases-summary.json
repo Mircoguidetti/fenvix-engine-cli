@@ -1,0 +1,477 @@
+{
+ "source": "phases-lerna-lite.jsonl.phases.jsonl",
+ "main": {
+  "deps_hash_s": 0.614,
+  "plan_s": 0.001,
+  "trace_write_s": 0.054,
+  "start_at_s": [
+   0.053,
+   530.909
+  ],
+  "workers_spawn_at_s": [
+   0.266,
+   531.147
+  ],
+  "exit_at_s": [
+   530.833,
+   1127.959
+  ],
+  "start_uptime_s": [
+   0.048,
+   0.044
+  ],
+  "exit_uptime_s": [
+   530.828,
+   597.094
+  ]
+ },
+ "workers": [
+  {
+   "worker": "2733:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 0.149,
+   "wall_s": 0.844,
+   "file_s": 0.844,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 773,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "2732:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 0.143,
+   "wall_s": 4.169,
+   "file_s": 4.169,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4227,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "3156:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 4.476,
+   "wall_s": 3.071,
+   "file_s": 3.071,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2375,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "2907:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 4.34,
+   "wall_s": 4.396,
+   "file_s": 4.396,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2454,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "3982:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 8.859,
+   "wall_s": 7.627,
+   "file_s": 7.627,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 5152,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "3846:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 8.739,
+   "wall_s": 211.462,
+   "file_s": 211.462,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 880,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "4694:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 220.342,
+   "wall_s": 7.011,
+   "file_s": 7.011,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4343,
+   "uncontrolled_io": 4
+  },
+  {
+   "worker": "4561:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 220.224,
+   "wall_s": 13.335,
+   "file_s": 13.335,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 3051,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "5498:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 233.575,
+   "wall_s": 5.071,
+   "file_s": 5.071,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2209,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "6322:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 238.797,
+   "wall_s": 48.026,
+   "file_s": 48.026,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 5793,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "5823:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 233.741,
+   "wall_s": 282.074,
+   "file_s": 282.074,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1857,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7078:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 515.839,
+   "wall_s": 11.069,
+   "file_s": 11.069,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4669,
+   "uncontrolled_io": 3
+  },
+  {
+   "worker": "7714:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 0.169,
+   "wall_s": 4.482,
+   "file_s": 4.482,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4227,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8051:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 4.8,
+   "wall_s": 0.79,
+   "file_s": 0.79,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 763,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8130:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 5.744,
+   "wall_s": 4.382,
+   "file_s": 4.382,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2728,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8711:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 10.304,
+   "wall_s": 2.928,
+   "file_s": 2.928,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2284,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "8957:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 13.367,
+   "wall_s": 7.782,
+   "file_s": 7.782,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4849,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "9481:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 21.285,
+   "wall_s": 5.638,
+   "file_s": 5.638,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4062,
+   "uncontrolled_io": 4
+  },
+  {
+   "worker": "9873:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 27.077,
+   "wall_s": 282.11,
+   "file_s": 282.11,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1748,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "10199:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 309.333,
+   "wall_s": 211.526,
+   "file_s": 211.526,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1338,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "10389:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 521.01,
+   "wall_s": 11.865,
+   "file_s": 11.865,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 20597,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "11135:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 533.006,
+   "wall_s": 4.844,
+   "file_s": 4.844,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 3499,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "11582:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 537.98,
+   "wall_s": 10.251,
+   "file_s": 10.251,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 5005,
+   "uncontrolled_io": 3
+  },
+  {
+   "worker": "12021:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 548.348,
+   "wall_s": 48.051,
+   "file_s": 48.051,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 5452,
+   "uncontrolled_io": 0
+  }
+ ],
+ "rerun_one_lane": [
+  {
+   "count": 12,
+   "s": 597.118
+  }
+ ],
+ "passes": [
+  "1",
+  "2",
+  "None"
+ ],
+ "files_top": [
+  {
+   "file": "e2e/publish/publish-npmrc-auth.spec.ts",
+   "s": 282.11,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1748
+  },
+  {
+   "file": "e2e/publish/publish-npmrc-auth.spec.ts",
+   "s": 282.074,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1857
+  },
+  {
+   "file": "e2e/publish/publish-verdaccio.spec.ts",
+   "s": 211.526,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1338
+  },
+  {
+   "file": "e2e/publish/publish-verdaccio.spec.ts",
+   "s": 211.462,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 880
+  },
+  {
+   "file": "e2e/watch/watch.spec.ts",
+   "s": 48.051,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 5452
+  },
+  {
+   "file": "e2e/watch/watch.spec.ts",
+   "s": 48.026,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 5793
+  },
+  {
+   "file": "e2e/run/run.spec.ts",
+   "s": 13.335,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 3051
+  },
+  {
+   "file": "e2e/run/run.spec.ts",
+   "s": 11.865,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 20597
+  },
+  {
+   "file": "e2e/watch/watch-lifecycle.spec.ts",
+   "s": 11.069,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4669
+  },
+  {
+   "file": "e2e/watch/watch-lifecycle.spec.ts",
+   "s": 10.251,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 5005
+  },
+  {
+   "file": "e2e/publish/publish-dirty-tree.spec.ts",
+   "s": 7.782,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4849
+  },
+  {
+   "file": "e2e/publish/publish-dirty-tree.spec.ts",
+   "s": 7.627,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 5152
+  },
+  {
+   "file": "e2e/publish/publish-dry-run.spec.ts",
+   "s": 7.011,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4343
+  },
+  {
+   "file": "e2e/publish/publish-dry-run.spec.ts",
+   "s": 5.638,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4062
+  },
+  {
+   "file": "e2e/version/version.spec.ts",
+   "s": 5.071,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2209
+  },
+  {
+   "file": "e2e/version/version.spec.ts",
+   "s": 4.844,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 3499
+  },
+  {
+   "file": "e2e/changed/changed.spec.ts",
+   "s": 4.482,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4227
+  },
+  {
+   "file": "e2e/exec/exec.spec.ts",
+   "s": 4.396,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2454
+  },
+  {
+   "file": "e2e/exec/exec.spec.ts",
+   "s": 4.382,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2728
+  },
+  {
+   "file": "e2e/changed/changed.spec.ts",
+   "s": 4.169,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4227
+  }
+ ],
+ "totals": {
+  "io_release": 0,
+  "stack_captures": 94335,
+  "uncontrolled_io": 14,
+  "held_s": 0.0
+ }
+}
