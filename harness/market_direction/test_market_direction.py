@@ -426,3 +426,17 @@ def test_bisect_completes_before_deadline(tmp_path, monkeypatch):
     assert discover.bisect(_FakeSearch(), state, deadline=time.time() + 60) is True
     assert state["bisected"] == ["AGENTS.md"]
     assert sorted((x["a"], x["b"]) for x in state["leaves"]) == [(0, 99), (100, 199), (200, 299), (300, 399)]
+
+
+def test_truncation_reports_size_bound_per_form(tmp_path, monkeypatch):
+    discover = _discover(tmp_path, monkeypatch)
+    state = {"forms": {"AGENTS.md": "a", "CLAUDE.md": "a"}, "bisected": ["AGENTS.md"],
+             "queue": {"AGENTS.md": [], "CLAUDE.md": [[1027, 1051], [1052, 1100]]}}
+    assert discover.truncation(state) == {"AGENTS.md": "complete", "CLAUDE.md": "sizes 0..1026"}
+    state["queue"]["CLAUDE.md"] = [[0, 399]]
+    assert discover.truncation(state)["CLAUDE.md"] == "not started"
+
+
+def test_amendment3_hard_stop_is_six_hours_after_amendment2():
+    import discover
+    assert discover.A3_HARD_STOP == dt.datetime(2026, 11, 26, 7, 48, 26, tzinfo=dt.timezone.utc).timestamp() + 6 * 3600

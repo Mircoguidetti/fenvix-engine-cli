@@ -401,3 +401,20 @@ Rules replacing §1.1's budget and the rate in §1.0 for discovery: code search 
 starting when bisection ends. If bisection reaches its 24 h budget before it is complete, discovery stops and the
 coordinator is asked before any leaf page is read (this case is not covered by the decision). Everything else stays as
 pre-registered.
+
+## Amendment 3 (2026-11-25, during bisection): discovery hard stop extended by 6 h; truncated frame allowed
+
+Approved change (rule 3), founder decision D1 = A (/plan-eng-review). Coordinator message of 2026-11-25 19:20 UTC,
+verbatim: "Discovery budget extended by at most 6 h: hard stop 2026-11-26 13:48 UTC (instead of 07:48). If bisection
+ends earlier, start leaf reading at once with its own 24 h (as amendment 2). If not finished at 13:48: discover.py
+stops; read what was found; print the frame as truncated with the size bound reached for each query form. No need to
+ask me again at 13:48 for that case. Nothing else changes: rate stays 9/min, same order, same stop rules."
+
+Reason: the 429 rate rose again after 15:55 UTC (about 1.75 completed splits/min); about 2,000 CLAUDE.md splits
+remained at 17:55 UTC, which did not fit the amendment-2 budget.
+
+Rules replacing amendment 2's bisection budget: bisection hard stop 2026-11-26T13:48:26Z (the amendment-2 deadline
+plus 6 h). If bisection completes earlier, leaf page-1 reading (Amendment 1) starts at once with its own 24 h. If it is
+not complete at the hard stop, bisection stops, the leaves found so far are read (page 1, Random(1) order, own 24 h
+budget), and REPORT prints the frame as truncated with, per query form, the size bound below which every size is in a
+leaf ("complete", "sizes 0..N" or "not started"). This replaces amendment 2's "stop and ask" case.

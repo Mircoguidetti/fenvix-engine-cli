@@ -71,6 +71,21 @@ def split_count(c, F, form, a, b, leaf_retry: bool):
             return {"status": st, "total_count": best, "incomplete": inc, "tries": tries}
 
 
+A3_HARD_STOP = dt.datetime(2026, 11, 26, 13, 48, 26, tzinfo=dt.timezone.utc).timestamp()
+
+
+def truncation(state) -> dict:
+    """Per query form: 'complete', or the size bound below which every size is in a leaf ('sizes 0..N')."""
+    out = {}
+    for F in state["forms"]:
+        if F in state.get("bisected", []):
+            out[F] = "complete"
+        else:
+            q = state.get("queue", {}).get(F)
+            out[F] = "not started" if q is None or q == [[0, MAX_SIZE]] else f"sizes 0..{q[0][0] - 1}"
+    return out
+
+
 def bisect(c, state, deadline: float | None = None) -> bool:
     """Returns False if the deadline (amendment 2: 24 h bisection budget) stopped it before completion."""
     for F, form in state["forms"].items():
@@ -168,6 +183,7 @@ def frame(state):
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--code-per-min", type=float, default=4)
+    ap.add_argument("--amendment3", action="store_true", help="PREREG amendment 3 hard stop (set once in state)")
     ap.add_argument("--amendment2", action="store_true", help="PREREG amendment 2 budgets (set once in state)")
     args = ap.parse_args()
     D.mkdir(exist_ok=True)
@@ -183,9 +199,19 @@ def main() -> int:
         # PREREG amendment 2: fresh 24 h bisection budget from the first resumed search request
         a2 = state["amendment2"] = {"resumed": now(), "bisect_deadline": time.time() + 24 * 3600}
         save(state)
+    if a2 is not None and args.amendment3 and "amendment3" not in state:
+        # PREREG amendment 3: bisection hard stop 2026-11-26T13:48:26Z (amendment-2 deadline + 6 h)
+        state["amendment3"] = {"set": now(), "old_bisect_deadline": a2["bisect_deadline"]}
+        a2["bisect_deadline"] = A3_HARD_STOP
+        save(state)
     if a2 is not None:
         if not bisect(c, state, a2["bisect_deadline"]):
-            return 3
+            if "amendment3" not in state:
+                return 3  # amendment 2: stop and ask the coordinator
+            # amendment 3: read what was found; the frame is truncated at the size bound reached per form
+            state["frame_truncated"] = truncation(state)
+            save(state)
+            print(f"bisection stopped at hard stop: {state['frame_truncated']}", flush=True)
         if "bisect_end" not in a2:
             a2["bisect_end"] = now()
             a2["leaf_deadline"] = time.time() + 24 * 3600
