@@ -59,6 +59,8 @@ jobs:
             echo "== $f"; cat "$d/requests/$f"
             python3 "$d/job.py" --request "$d/requests/$f"
           done
+          # the loop's running `sleep 1800` keeps the step open unless it is killed too (run 45603465040)
+          pkill -P "$cp" 2>/dev/null || true
           kill "$cp" 2>/dev/null || true
       - name: Commit results to this branch
         if: always()
