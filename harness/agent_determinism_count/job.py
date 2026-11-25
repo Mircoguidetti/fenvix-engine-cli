@@ -22,6 +22,15 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 
+def paused(family: str) -> bool:
+    """A coordinator pause (results/pause_<family>.json with ``start`` and no ``end``) stops discovery requests."""
+    p = HERE / "results" / f"pause_{family}.json"
+    if not p.exists():
+        return False
+    d = json.loads(p.read_text())
+    return bool(d.get("start")) and not d.get("end")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--request", required=True)
@@ -38,6 +47,9 @@ def main() -> int:
             chunk.mark_done(name, {"probe_text": True, "at": chunk.now()})
         return rc
     if req.get("discovery"):  # {"discovery": "text", "max_minutes": 300}: pre-pass, then bisection (resumable)
+        if paused(req["discovery"]):
+            print(f"discovery {req['discovery']} paused (results/pause_{req['discovery']}.json): request left pending")
+            return 0
         import discover
         import parts
         fam = req["discovery"]

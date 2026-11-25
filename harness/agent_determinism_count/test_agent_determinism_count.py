@@ -1021,3 +1021,17 @@ def test_leaf_files_never_committed():
     ups = [s["with"] for s in wf["jobs"]["chunk"]["steps"] if str(s.get("uses", "")).startswith("actions/upload")]
     assert "!harness/agent_determinism_count/results/discovery/leaves_*/" in ups[0]["path"]
     assert ups[1]["path"].endswith("leaves_*/*-${{ github.run_id }}.jsonl.gz")
+
+
+def test_discovery_pause(tmp_path, monkeypatch):
+    """protects=the coordinator's market-protection pause: a discovery request does nothing while
+    results/pause_<family>.json has a start and no end; fails_when=a paused family sends a search or marks its request
+    done; no_claim=pauses of chunk requests."""
+    import job
+    monkeypatch.setattr(job, "HERE", tmp_path)
+    (tmp_path / "results").mkdir()
+    assert not job.paused("text")
+    (tmp_path / "results" / "pause_text.json").write_text(json.dumps({"start": "2026-11-25T16:00:00Z"}))
+    assert job.paused("text")
+    (tmp_path / "results" / "pause_text.json").write_text(json.dumps({"start": "a", "end": "b"}))
+    assert not job.paused("text")
