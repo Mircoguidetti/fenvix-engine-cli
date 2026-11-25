@@ -588,55 +588,60 @@ fn order_divergence(id: &str, a: &Predecessors, b: &Predecessors, run_a: usize, 
 /// digests, those entries are discharged for this comparison. A different value, a read in some runs only, an entry
 /// without a digest (older traces, the Python shell) and every non-`env` entry stay: every test is NOT PROVEN.
 ///
-/// Fail-safe (founder decision D1 = C of 2026-11-24): a run's entries are one set for the whole run, so in a run with
-/// several workers the set does not say which worker saw which value. Entries are discharged only when every compared
-/// run says it used one worker (`meta.parallel.workers` 1); a run with more, or one that does not say, keeps them.
+/// Per file (founder decision D2 = A of 2026-11-25, replacing the one-worker fail-safe of 2026-11-24): a read made
+/// while a test file's code ran (its module scope, its hooks) is written `env:<NAME>=<digest>@<file>`, and the digests
+/// are compared per file, so two files whose values swap between the runs are not discharged although the run-wide
+/// sets are equal, and a serial run compares with a parallel one. An entry without `@<file>` (a read while no file was
+/// open, or an older trace) is one more key, `""`, and is discharged only with one value in every run: several values
+/// read with no file open cannot be tied to the tests that saw them.
 fn undischarged_outside<S: RecordSource>(traces: &[S]) -> Vec<String> {
-    let one_worker = traces.iter().all(|t| {
-        t.header().meta.get("parallel").and_then(|p| p.get("workers")).and_then(|w| w.as_u64()) == Some(1)
-    });
     let per_run: Vec<BTreeSet<String>> = traces
         .iter()
         .map(|t| meta_array(t.header(), t.footer(), "not_proven_outside_tests").filter_map(|v| v.as_str().map(str::to_string)).collect())
         .collect();
-    // name -> digests, per run; None when the run has an `env:<NAME>` entry without a digest
-    let digests = |run: &BTreeSet<String>, name: &str| -> Option<BTreeSet<String>> {
-        let mut out = BTreeSet::new();
+    // `env:<NAME>[=<digest>][@<file>]` -> (name, digest or None, file or "")
+    fn parse(e: &str) -> Option<(&str, Option<&str>, &str)> {
+        let rest = e.strip_prefix("env:")?;
+        let (head, file) = match rest.split_once('=') {
+            Some((n, dr)) => {
+                let (d, f) = dr.split_once('@').unwrap_or((dr, ""));
+                return Some((n, Some(d), f));
+            }
+            None => rest.split_once('@').unwrap_or((rest, "")),
+        };
+        Some((head, None, file))
+    }
+    // name -> file -> digests, per run; None when the run has an `env:<NAME>` entry without a digest
+    type PerFile = BTreeMap<String, BTreeSet<String>>;
+    let by_file = |run: &BTreeSet<String>, name: &str| -> Option<PerFile> {
+        let mut out = PerFile::new();
         for e in run {
-            let Some(rest) = e.strip_prefix("env:") else { continue };
-            match rest.split_once('=') {
-                Some((n, d)) if n == name => {
-                    out.insert(d.to_string());
+            match parse(e) {
+                Some((n, Some(d), f)) if n == name => {
+                    out.entry(f.to_string()).or_default().insert(d.to_string());
                 }
-                None if rest == name => return None,
+                Some((n, None, _)) if n == name => return None,
                 _ => {}
             }
         }
         Some(out)
     };
-    let names: BTreeSet<String> = per_run
-        .iter()
-        .flatten()
-        .filter_map(|e| e.strip_prefix("env:").and_then(|r| r.split_once('=')).map(|(n, _)| n.to_string()))
-        .collect();
+    let names: BTreeSet<String> = per_run.iter().flatten().filter_map(|e| parse(e).map(|(n, _, _)| n.to_string())).collect();
     let discharged: BTreeSet<String> = names
         .into_iter()
         .filter(|name| {
-            let sets: Vec<Option<BTreeSet<String>>> = per_run.iter().map(|r| digests(r, name)).collect();
+            let maps: Vec<Option<PerFile>> = per_run.iter().map(|r| by_file(r, name)).collect();
             // at least two runs: a value is discharged only when another run saw the same one (one run has nothing
             // to compare it with: review 2026-11-24)
             traces.len() > 1
-                && one_worker
-                && sets.iter().all(|s| s.as_ref().is_some_and(|s| !s.is_empty()))
-                && sets.windows(2).all(|w| w[0] == w[1])
+                && maps.iter().all(|m| {
+                    m.as_ref().is_some_and(|m| !m.is_empty() && m.get("").is_none_or(|d| d.len() == 1))
+                })
+                && maps.windows(2).all(|w| w[0] == w[1])
         })
         .collect();
     let all: BTreeSet<String> = per_run.into_iter().flatten().collect();
-    all.into_iter()
-        .filter(|e| {
-            !e.strip_prefix("env:").and_then(|r| r.split_once('=')).is_some_and(|(n, _)| discharged.contains(n))
-        })
-        .collect()
+    all.into_iter().filter(|e| !parse(e).is_some_and(|(n, _, _)| discharged.contains(n))).collect()
 }
 
 /// Every test of runs that read an uncontrolled source outside any test (`not_proven_outside_tests`).
@@ -2028,18 +2033,16 @@ mod tests {
     /// let a test be stable; no_claim=the cache's own judgement (one run) is not exercised here.
     #[test]
     fn p1_a1_env_read_outside_tests_compared_by_value() {
-        // every run here is a one-worker run (`meta.parallel.workers` 1): the fail-safe below discharges nothing else
-        let mkw = |entries: serde_json::Value, parallel: Option<serde_json::Value>| {
-            let t0 = meta_extra(with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10), rec("y", &[t("2")], "passed", 10)]), &BASE), "not_proven_outside_tests", entries);
-            match parallel { Some(p) => meta_extra(t0, "parallel", p), None => t0 }
+        let mk = |entries: serde_json::Value| {
+            meta_extra(with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10), rec("y", &[t("2")], "passed", 10)]), &BASE), "not_proven_outside_tests", entries)
         };
-        let mk = |entries: serde_json::Value| mkw(entries, Some(serde_json::json!({ "workers": 1 })));
         let j = |v: &[&str]| serde_json::json!(v);
         // the same value in both runs: discharged, nothing differs
         let r = verify(&[mk(j(&["env:*=1111", "env:TMPDIR=aaaa"])), mk(j(&["env:*=1111", "env:TMPDIR=aaaa"]))], &[]);
         assert_eq!((r.summary.stable, r.summary.not_proven), (2, 0), "{:?}", r.tests);
-        // several values in one run (the variable was changed): the same set in both runs
-        let r = verify(&[mk(j(&["env:TMPDIR=aaaa", "env:TMPDIR=bbbb"])), mk(j(&["env:TMPDIR=bbbb", "env:TMPDIR=aaaa"]))], &[]);
+        // several values in one file (the variable was changed): the same set in both runs (with no file open, several
+        // values are never discharged: p1_a1_env_outside_compared_per_file)
+        let r = verify(&[mk(j(&["env:TMPDIR=aaaa@a.js", "env:TMPDIR=bbbb@a.js"])), mk(j(&["env:TMPDIR=bbbb@a.js", "env:TMPDIR=aaaa@a.js"]))], &[]);
         assert_eq!(r.summary.stable, 2);
         // a different value: every test NOT PROVEN, the variable named
         let r = verify(&[mk(j(&["env:TMPDIR=aaaa"])), mk(j(&["env:TMPDIR=bbbb"]))], &[]);
@@ -2068,35 +2071,53 @@ mod tests {
         assert_eq!((r.summary.stable, r.summary.not_proven), (0, 2), "{:?}", r.tests);
     }
 
-    /// P1 A1 fail-safe (founder decision D1 = C of 2026-11-24, eng review of the P1 merge): a run's entries are one set
-    /// for the whole run, so with several workers the set does not say which worker (which files) saw which value; the
-    /// same set in two runs does not prove each file saw the same value. protects=an `env:<NAME>=<digest>` entry is
-    /// discharged only when every compared run used a single worker; fails_when=a run with two workers, or a run whose
-    /// trace does not say its worker count, has an equal entry discharged; no_claim=the exact per-worker comparison
-    /// (a follow-up branch).
+    /// P1 A1 exact fix (founder decision D2 = A of 2026-11-25, replacing the one-worker fail-safe): the Node shell
+    /// writes an outside-test read made while a test file's code ran as `env:<NAME>=<digest>@<file>`, and verify
+    /// compares the digests per file. protects=an entry is discharged when every file saw the same value(s) in every
+    /// run, whatever the worker counts (serial S1 vs parallel P1w4); fails_when=two files whose values swap between
+    /// the runs are discharged (the run-wide sets are equal, red on 1ae9265 for one-worker runs), equal per-file
+    /// values in a one-worker vs four-worker comparison stay NOT PROVEN (red on 1ae9265), a read in one run only or a
+    /// file present in one run only is discharged, or several values read while no file was open are discharged;
+    /// no_claim=which test of a file saw which value inside the file (the file's tests are one unit here).
     #[test]
-    fn p1_a1_discharged_only_when_every_run_used_one_worker() {
-        let mkw = |entries: serde_json::Value, parallel: Option<serde_json::Value>| {
-            let t0 = meta_extra(with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10), rec("y", &[t("2")], "passed", 10)]), &BASE), "not_proven_outside_tests", entries);
-            match parallel { Some(p) => meta_extra(t0, "parallel", p), None => t0 }
+    fn p1_a1_env_outside_compared_per_file() {
+        let mkw = |entries: &[&str], workers: u64| {
+            let t0 = meta_extra(with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10), rec("y", &[t("2")], "passed", 10)]), &BASE), "not_proven_outside_tests", serde_json::json!(entries));
+            meta_extra(t0, "parallel", serde_json::json!({ "workers": workers }))
         };
-        let e = || serde_json::json!(["env:TMPDIR=aaaa"]);
-        let one = || Some(serde_json::json!({ "workers": 1 }));
-        let two = || Some(serde_json::json!({ "workers": 2 }));
-        // both runs one worker: discharged
-        let r = verify(&[mkw(e(), one()), mkw(e(), one())], &[]);
-        assert_eq!((r.summary.stable, r.summary.not_proven), (2, 0), "{:?}", r.tests);
-        // one run with two workers: the entry stays, every test NOT PROVEN, the variable named
-        let r = verify(&[mkw(e(), one()), mkw(e(), two())], &[]);
-        assert_eq!((r.summary.stable, r.summary.not_proven), (0, 2), "{:?}", r.tests);
+        let ok = |r: &Report| (r.summary.stable, r.summary.not_proven) == (2, 0);
+        let np = |r: &Report| (r.summary.stable, r.summary.not_proven) == (0, 2);
+        // the swapped-values case: file a saw aaaa and b saw bbbb in one run, the other way round in the other
+        let r = verify(&[mkw(&["env:TMPDIR=aaaa@tests/a.test.js", "env:TMPDIR=bbbb@tests/b.test.js"], 1), mkw(&["env:TMPDIR=bbbb@tests/a.test.js", "env:TMPDIR=aaaa@tests/b.test.js"], 1)], &[]);
+        assert!(np(&r), "swapped values discharged: {:?}", r.tests);
         assert!(r.tests[0].divergence.as_ref().unwrap().description.contains("env:TMPDIR"), "{:?}", r.tests[0]);
-        let r = verify(&[mkw(e(), two()), mkw(e(), two())], &[]);
-        assert_eq!((r.summary.stable, r.summary.not_proven), (0, 2), "{:?}", r.tests);
-        // a run that does not say how many workers it used: the entry stays
-        let r = verify(&[mkw(e(), one()), mkw(e(), None)], &[]);
-        assert_eq!((r.summary.stable, r.summary.not_proven), (0, 2), "{:?}", r.tests);
-        let r = verify(&[mkw(e(), one()), mkw(e(), Some(serde_json::json!({ "workers": "1" })))], &[]);
-        assert_eq!((r.summary.stable, r.summary.not_proven), (0, 2), "{:?}", r.tests);
+        // equal per file: discharged in serial vs parallel (one worker vs four)
+        let same = ["env:TMPDIR=aaaa@tests/a.test.js", "env:TMPDIR=bbbb@tests/b.test.js", "env:*=1111@tests/a.test.js"];
+        let r = verify(&[mkw(&same, 1), mkw(&same, 4)], &[]);
+        assert!(ok(&r), "equal per file, S1 vs P1w4: {:?}", r.tests);
+        let r = verify(&[mkw(&same, 4), mkw(&same, 4)], &[]);
+        assert!(ok(&r), "{:?}", r.tests);
+        // several values in one file (the variable changed in its module scope): the same set per file
+        let r = verify(&[mkw(&["env:TMPDIR=aaaa@tests/a.test.js", "env:TMPDIR=bbbb@tests/a.test.js"], 1), mkw(&["env:TMPDIR=bbbb@tests/a.test.js", "env:TMPDIR=aaaa@tests/a.test.js"], 4)], &[]);
+        assert!(ok(&r), "{:?}", r.tests);
+        // a file that read the variable in one run only
+        let r = verify(&[mkw(&["env:TMPDIR=aaaa@tests/a.test.js", "env:TMPDIR=aaaa@tests/b.test.js"], 1), mkw(&["env:TMPDIR=aaaa@tests/a.test.js"], 4)], &[]);
+        assert!(np(&r), "{:?}", r.tests);
+        // a per-file read in one run, a read with no file open in the other
+        let r = verify(&[mkw(&["env:TMPDIR=aaaa@tests/a.test.js"], 1), mkw(&["env:TMPDIR=aaaa"], 4)], &[]);
+        assert!(np(&r), "{:?}", r.tests);
+        // reads with no file open: one value in every run is discharged, whatever the worker counts
+        let r = verify(&[mkw(&["env:TMPDIR=aaaa"], 1), mkw(&["env:TMPDIR=aaaa"], 4)], &[]);
+        assert!(ok(&r), "{:?}", r.tests);
+        // several values with no file open: no test can be tied to one, kept even when the sets are equal
+        let r = verify(&[mkw(&["env:TMPDIR=aaaa", "env:TMPDIR=bbbb"], 4), mkw(&["env:TMPDIR=aaaa", "env:TMPDIR=bbbb"], 4)], &[]);
+        assert!(np(&r), "{:?}", r.tests);
+        // a different value in one file
+        let r = verify(&[mkw(&["env:TMPDIR=aaaa@tests/a.test.js"], 1), mkw(&["env:TMPDIR=cccc@tests/a.test.js"], 1)], &[]);
+        assert!(np(&r), "{:?}", r.tests);
+        // a credential-bearing value (no digest) in one file: never discharged
+        let r = verify(&[mkw(&["env:HTTPS_PROXY@tests/a.test.js"], 1), mkw(&["env:HTTPS_PROXY@tests/a.test.js"], 1)], &[]);
+        assert!(np(&r), "{:?}", r.tests);
     }
 
     // ---- golden corpus (P0 big trace, criterion 6) ----

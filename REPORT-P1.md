@@ -351,7 +351,7 @@ and passes after (red logs `/tmp/pm-p1/failsafe/a1-red.log`, `b1-red.log`, `f-re
 
 | risk | fail-safe | test (red on 0358ea4) |
 |---|---|---|
-| A1: a run's `env:<NAME>=<digest>` entries are one set; with several workers they do not say which worker saw which value | `verify.rs` `undischarged_outside`: discharged only when every compared run says `meta.parallel.workers` 1; a run with more, or without the field, keeps the entry (NOT PROVEN) | `verify.rs` `p1_a1_discharged_only_when_every_run_used_one_worker`; `node/test/p1-a-env-outside.test.js` first case (one-worker vs two-worker: every test `not-proven`, vitest and jest) |
+| A1: a run's `env:<NAME>=<digest>` entries are one set; with several workers they do not say which worker saw which value | **replaced 2026-11-25 by the exact fix (section 3.2)**; the one-worker fail-safe (ce9e51c) is gone | see section 3.2 |
 | B1 on Jest: its worker process keeps state across files that is not tracked per file | `src/jest/cli.js`: `files_outside_scope: "run"` always | `node/test/p1-b-outside-scope.test.js`, jest: header `"run"`, the other file's tests not stable |
 | F: the test's own code run inside a file operation (`fs.cp` filter, the iterable `fs.promises.writeFile` / `appendFile` draws from) was a step of that operation, its I/O hidden | `src/ioorder.js`: that code runs in a user scope; a file operation it starts marks the test `uncontrolled.io` (NOT PROVEN) | `node/test/p1-f-nested-io.test.js`, 4 "fail-safe" cases (promise and callback `cp` filter, `writeFile` and `appendFile` from an async iterable); 2 no-false-alarm cases (a filter / iterable without I/O) |
 
@@ -364,6 +364,25 @@ cases fail (`/tmp/pm-p1/mut/mut.log`).
 Shell-level test added (it was missing): `node/test/p1-b-outside-scope.test.js`, Vitest default writes
 `files_outside_scope: "file"`, `isolate: false` and `poolOptions.forks.singleFork` write `"run"`.
 Not covered by the F fail-safe: a Readable stream passed as the data (Node's stream code reads it), `fs.cpSync`.
+
+### 3.2 A1 exact fix: values compared per file (founder decision D2 = A, 2026-11-25)
+
+Replaces the A1 fail-safe of section 3.1 (the B1 Jest and F fail-safes are unchanged). The Node shell writes an
+outside-test env read made while a test file's code ran (module scope, hooks) as `env:<NAME>=<digest>@<file>`
+(`src/controls.js` `noteOutside`, the file label with its project); a read while no file is open keeps
+`env:<NAME>=<digest>`. `verify.rs` `undischarged_outside` compares, per variable, the map file → set of digests: the
+entry is discharged only when the maps are equal in every run (at least two runs, every entry with a digest), whatever
+the worker counts; the no-file key is discharged only with one value in every run.
+
+| test | what | red on |
+|---|---|---|
+| `verify.rs` `p1_a1_env_outside_compared_per_file` | swapped per-file values not discharged; equal per-file values discharged one worker vs four; a file in one run only, per-file vs no-file, several no-file values, a different value, a credential entry: kept | 1ae9265 (the serial-vs-parallel case) |
+| `node/test/p1-a-env-outside.test.js` "values swap between the runs" (vitest, jest) | each file sets TMPDIR from its lane and reads it at module scope; two two-worker runs replay plans with the lanes swapped (`--det-plan`): the run-wide sets are equal, every test must be `not-proven` naming `env:TMPDIR` | **0358ea4** (both tests called `stable`, `/tmp/pm-p1/failsafe/a1-swap-red-0358.log`); on 1ae9265 the one-worker fail-safe already kept these two-worker runs |
+| `node/test/p1-a-env-outside.test.js` first case (vitest, jest) | equal values per file, one-worker vs two-worker: all stable, the entry carries `@<file>` | 1ae9265 (`/tmp/pm-p1/failsafe/a1x-red.log`) |
+
+Not covered: which test inside one file saw which value (a file's tests are one unit); a pseudo-file label that
+depends on the lane (`<worker>…` of a worker thread, Playwright's `playwright-worker-N`) makes per-file keys differ
+between serial and parallel runs, so such entries stay NOT PROVEN (fail-safe direction).
 
 ## 4. Test changes (each on its own line, with its reason)
 
@@ -379,7 +398,9 @@ Not covered by the F fail-safe: a Readable stream passed as the data (Node's str
 - `tests/test_runner_node.py::test_entropy_is_named_by_verify` (shared Python test, from the trunk merge f67be4a; 4 runners): the recorded run passes `-- --det-urandom=off`. Reason: its fixture "reads real OS entropy", which since D needs that option (by default the draw is seeded and both runs are identical); the assertions (verify exits 1 and names the test NOT PROVEN or DIVERGED `entropy`) are unchanged.
 - `node/test/p1-d-entropy-default.test.js`: seventh case added (a draw made before any seeding is not a constant), with the follow-up fix below.
 - Six P1 test files (`p1-a-env-outside`, `p1-b-outside-scope`, `p1-b2-own-dir`, `p1-c-pid-boundaries`, `p1-c-virtual-pid`, `p1-d-entropy-default`): their two-run cases add `--det-epoch=fixed` when a `--det` run names no epoch. Reason: the merge of release-1 9ac63d6 (det-host-values) gives each run the host epoch, so two separate runs differ on the clock input; `--det-epoch=fixed` is the documented opt-out the trunk's own two-run tests use. The assertions are unchanged.
-- `node/test/p1-a-env-outside.test.js` first case: it compared a one-worker run with a two-worker run and expected every test stable; it now expects two one-worker runs stable and one-worker vs two-worker `not-proven`. Reason: the A1 fail-safe (section 3.1) deliberately keeps the entry when a run used several workers; this narrows what is called stable, it relaxes no proof.
+- `node/test/p1-a-env-outside.test.js` first case: changed twice. The fail-safe (ce9e51c) made it expect one-worker vs two-worker `not-proven`; the exact fix (section 3.2) restores the original expectation (one-worker vs two-worker, all stable) and adds that the entry carries its file (`@tests/a...`). Net against 0358ea4: the same expectation plus one assertion.
+- `verify.rs` `p1_a1_env_read_outside_tests_compared_by_value`, "several values in one run": the equal-set case now uses entries with a file (`@a.js`). Reason: several values read while no file was open are now kept (section 3.2: they cannot be tied to the tests that saw them); the same case inside one file is still discharged. The one-worker header the fail-safe added to this test is removed.
+- `verify.rs` `p1_a1_discharged_only_when_every_run_used_one_worker` (the fail-safe's test) is replaced by `p1_a1_env_outside_compared_per_file`.
 - `node/test/p1-b-outside-scope.test.js` both B1 cases: on Jest the other file's tests were expected stable; they are now expected not stable, and the header `"run"`. Reason: the B1 Jest fail-safe (section 3.1); Vitest expectations unchanged.
 - No test was skipped, weakened or quarantined; no CI step, timeout or threshold changed.
 

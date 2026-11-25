@@ -159,7 +159,11 @@ function noteOutside(op, k, realEnv) {
     // a value carrying URL credentials (`scheme://user:pass@host`) gets no digest: a short unkeyed hash of a password
     // in the trace header can be reversed offline (review 2026-11-24). The bare name is never discharged by verify.
     const v = name === '*' ? '' : String((realEnv || process.env)[name] ?? '');
-    noteNotProven(CREDENTIALS.test(v) ? `env:${name}` : `env:${name}=${STATE.quiet(() => outsideDigest(name, realEnv))}`);
+    // the file whose code made the read (its module scope, its hooks), so verify compares the values per file: two
+    // files whose values swap between runs are not discharged, and a serial run compares with a parallel one
+    // (founder decision D2 = A of 2026-11-25); no file open: no suffix
+    const at = STATE.fileScopeLabel ? `@${STATE.fileScopeLabel}` : '';
+    noteNotProven(CREDENTIALS.test(v) ? `env:${name}` : `env:${name}=${STATE.quiet(() => outsideDigest(name, realEnv))}${at}`);
   }
   if (outsideSeen.has(name)) return;
   const c = cfg();
@@ -325,6 +329,8 @@ function openFile(fileId, project) {
   // the test file whose code runs outside its tests now (module scope, hooks): reads made there are scoped to it
   // (P1 B1, src/outside.js noteFile)
   STATE.fileScope = fileId;
+  // the same file's label (with its project) for the outside-test env reads it makes (P1 A1, noteOutside)
+  STATE.fileScopeLabel = label;
   STATE.testIndex = 0;
   STATE.begun = new Set();
   if (c.controls.has('seeds')) seeds.seedFile(label);
@@ -341,6 +347,7 @@ function openFile(fileId, project) {
 function closeFile() {
   if (STATE.testId !== null) STATE.endTest('interrupted');
   STATE.fileScope = null;
+  STATE.fileScopeLabel = null;
   require('./facts').endFile();
   // (Timers left pending by a test were released to real time when it ended.)
   if (STATE.recorder) {

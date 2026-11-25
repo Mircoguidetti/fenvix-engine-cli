@@ -57,9 +57,12 @@ A read outside any test of a volatile or proxy variable goes in `not_proven_outs
 `env_read_outside_tests`. The Node shell writes `env:<NAME>=<digest>` (P1 A1, docs/DESIGN-P1.md section A): the
 first 16 hex digits of the digest of `NAME=value` (of the sorted `NAME=value` lines of the environment without the
 engine's and the runner's per-process variables, for an enumeration `env:*`). `verify` discharges these entries for
-a comparison in which every run has entries for `<NAME>` with the same set of digests and every run says it used one
-worker (`meta.parallel.workers` 1; fail-safe of 2026-11-24: the entries are one set per run, so with several workers
-they do not say which worker saw which value): the value was no run input, but the two runs saw the same one. A different value, a read in some runs only, an entry without a digest (Python,
+a comparison in which, for every test file, every run has the same set of digests for `<NAME>` (P1 A1 exact fix,
+2026-11-25): a read made while a test file's code ran (its module scope, its hooks) is written
+`env:<NAME>=<digest>@<file>` (`<file>` the file's label, with its project), so two files whose values swap between
+the runs are not discharged and a serial run compares with a parallel one; an entry without `@<file>` (a read while
+no file was open) is one more key and is discharged only with a single value in every run. The value was no run
+input, but the runs saw the same one per file. A different value, a read in some runs only, an entry without a digest (Python,
 older traces) and every entry of another kind keep the rule of section 4. The cache, which has no second run, keeps
 refusing such a test.
 
@@ -70,7 +73,7 @@ Note: the existing marks (`uncontrolled.thread`, `uncontrolled.child`, `uncontro
 
 - New test status `not-proven` (`Status::NotProven`), summary counter `summary.not_proven`. A test with any mark in
   any run, or any entry in `not_proven_outside_tests` not discharged (section 3: an `env:<NAME>=<digest>` entry
-  with the same digests in every run, every run with one worker), and no other difference, is `not-proven`: never `stable`,
+  with the same digests per file in every run), and no other difference, is `not-proven`: never `stable`,
   never counted in `summary.identical`. A test whose events or inputs also differ stays `diverged` / `input-differs`.
 - Headline: `IDENTICAL` only when every test is `stable`. Otherwise `DIVERGENT` if any test is `diverged` or
   `missing`, else `INPUT DIFFERS` if any is `input-differs`, else `NOT PROVEN` (D1: unchanged runs of a test that

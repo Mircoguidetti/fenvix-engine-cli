@@ -7,9 +7,10 @@
 //
 // protects=a variable read outside any test with the same value in both runs no longer makes every test NOT PROVEN,
 //   and a different value is never called identical;
-// fails_when=two one-worker runs with the same environment leave a test NOT PROVEN for an `env:` entry, a one-worker
-//   run compared with a two-worker run is called stable through one (fail-safe of 2026-11-24), or two
-//   runs whose TMPDIR differs (read at module scope, written by the test) report every test stable;
+// fails_when=a one-worker and a two-worker run with the same environment leave a test NOT PROVEN for an `env:`
+//   entry, two runs in which two files' values swap are called stable (the run-wide sets are equal: per-file
+//   comparison of 2026-11-25), or two runs whose TMPDIR differs (read at module scope, written by the test) report
+//   every test stable;
 // no_claim=the cache (one run, no second to compare with) keeps refusing such tests; non-env entries
 //   (`api:`, `native:`) are unchanged.
 // Red on the trunk (e7338950): the first test reports every test not-proven.
@@ -47,11 +48,10 @@ function trace(r, dir, name) {
 }
 
 for (const runner of RUNNERS) {
-  // fail-safe of 2026-11-24 (founder decision D1 = C, eng review of the P1 merge): the entries are one set per run, so
-  // a run with several workers does not say which worker saw which value; the entry is discharged only when every
-  // compared run used one worker (fails_when also: a serial run compared with a two-worker run is called stable
-  // through an `env:` entry; red on 0358ea4, where it was)
-  test(`P1 A1 ${runner}: TMPDIR and the environment read at module scope, same values: two one-worker runs all stable, one-worker vs two-worker NOT PROVEN`, T, () => {
+  // exact fix of 2026-11-25 (founder decision D2 = A, replacing the one-worker fail-safe of 2026-11-24): the entries
+  // carry the file whose code read the variable and verify compares them per file, so a one-worker run compares with
+  // a two-worker run (red on 1ae9265, where the fail-safe kept the entry: every test not-proven)
+  test(`P1 A1 ${runner}: TMPDIR and the environment read at module scope, same values per file: one-worker = two-worker, all stable`, T, () => {
     const dir = project(runner, 'p1a-same', files(runner));
     const tmp = path.join(OUT, `${runner}-same`);
     fs.mkdirSync(tmp, { recursive: true });
@@ -59,22 +59,16 @@ for (const runner of RUNNERS) {
     const s = run(runner, dir, ['--det', '--det-workers=1'], { env });
     assert.equal(s.status, 0, s.stdout + s.stderr);
     const ts = trace(s, dir, 'serial');
-    const s2 = run(runner, dir, ['--det', '--det-workers=1'], { env });
-    assert.equal(s2.status, 0, s2.stdout + s2.stderr);
-    const ts2 = trace(s2, dir, 'serial2');
     const p = run(runner, dir, ['--det', '--det-workers=2'], { env });
     assert.equal(p.status, 0, p.stdout + p.stderr);
     const tp = trace(p, dir, 'par');
     const np = s.trace.header.meta.not_proven_outside_tests || [];
-    assert.ok(np.some((e) => e.startsWith('env:TMPDIR')), `the module-scope read is recorded: ${JSON.stringify(np)}`);
-    const rep = JSON.parse(native.verify([ts, ts2]));
+    assert.ok(np.some((e) => e.startsWith('env:TMPDIR=') && e.endsWith(`@tests/a${runner === 'vitest' ? '.test.mjs' : '.test.js'}`)),
+      `the module-scope read is recorded with its file: ${JSON.stringify(np)}`);
+    const rep = JSON.parse(native.verify([ts, tp]));
     const bad = rep.tests.filter((t) => t.status !== 'stable').map((t) => `${t.nodeid}: ${t.status}: ${t.divergence && t.divergence.description}`);
-    assert.deepEqual(bad, [], 'same values in two one-worker runs: nothing differs');
+    assert.deepEqual(bad, [], 'same values per file in both runs: nothing differs');
     assert.equal(rep.summary.stable, 4);
-    const mixed = JSON.parse(native.verify([ts, tp]));
-    const st = mixed.tests.map((t) => `${t.nodeid}: ${t.status}`);
-    assert.ok(mixed.tests.every((t) => t.status === 'not-proven'), `one-worker vs two-worker: every test NOT PROVEN: ${st}`);
-    assert.ok(mixed.tests[0].divergence.description.includes('env:TMPDIR'), mixed.tests[0].divergence.description);
   });
 
   // acceptance 2: the value really differs between the two runs
@@ -123,5 +117,38 @@ test('c1', () => { expect(P.length > 0 && Q.length > 0).toBe(true); });` });
     }
     const rep = JSON.parse(native.verify(traces));
     assert.equal(rep.tests.find((t) => t.nodeid.endsWith('c1')).status, 'not-proven');
+  });
+}
+
+// The swapped-values case (founder decision D2 = A of 2026-11-25): each file sets TMPDIR from its lane
+// (VITEST_POOL_ID / JEST_WORKER_ID) and reads it at module scope; two two-worker runs replay plans with the lanes
+// swapped (--det-plan), so file a sees lane 1's value in one run and lane 2's in the other, and file b the reverse.
+// The run-wide value sets are equal and nothing else differs. protects=per-file values that swap between runs are
+// never discharged; fails_when=such runs are called stable (red on 0358ea4, which compared the run-wide sets; on
+// 1ae9265 the one-worker fail-safe already kept the entry for two-worker runs); no_claim=which test inside a file saw
+// which value.
+for (const runner of RUNNERS) {
+  test(`P1 A1 ${runner}: two files read TMPDIR at module scope and their values swap between the runs: NOT PROVEN`, T, () => {
+    const ext = runner === 'vitest' ? '.test.mjs' : '.test.js';
+    const lane = runner === 'vitest' ? 'VITEST_POOL_ID' : 'JEST_WORKER_ID';
+    const body = (id) => `process.env.TMPDIR = '/p1a-lane-' + process.env.${lane}; const SEEN = String(process.env.TMPDIR);
+test('${id}', () => { expect(SEEN.length > 0).toBe(true); });`;
+    const dir = project(runner, 'p1a-swap', { a: body('a1'), b: body('b1') });
+    const traces = [];
+    const seen = [];
+    for (const [i, lanes] of [[[`tests/a${ext}`], [`tests/b${ext}`]], [[`tests/b${ext}`], [`tests/a${ext}`]]].entries()) {
+      fs.writeFileSync(path.join(dir, 'plan.json'), JSON.stringify({ lanes }));
+      const r = run(runner, dir, ['--det', '--det-workers=2', '--det-plan=plan.json']);
+      assert.equal(r.status, 0, r.stdout + r.stderr);
+      assert.deepEqual(r.trace.header.meta.parallel.plan.lanes, lanes);
+      seen.push((r.trace.header.meta.not_proven_outside_tests || []).filter((e) => e.startsWith('env:TMPDIR')));
+      traces.push(trace(r, dir, `swap${i}`));
+    }
+    const digests = (list) => list.map((e) => e.replace(/^env:TMPDIR=/, '').replace(/@.*$/, '')).sort();
+    assert.deepEqual(digests(seen[0]), digests(seen[1]), `the run-wide value sets are equal: ${JSON.stringify(seen)}`);
+    assert.equal(new Set(digests(seen[0])).size, 2, `two different values were read: ${JSON.stringify(seen)}`);
+    const rep = JSON.parse(native.verify(traces));
+    const st = rep.tests.map((t) => `${t.nodeid}: ${t.status}: ${t.divergence && t.divergence.description}`);
+    assert.ok(rep.tests.length === 2 && rep.tests.every((t) => t.status === 'not-proven' && t.divergence.description.includes('env:TMPDIR')), st.join('\n'));
   });
 }
