@@ -26,7 +26,7 @@ sys.path.append(os.path.join(HERE, "..", "det_pins"))
 sys.path.append(os.path.join(HERE, "..", "parallel_measure"))
 import measure  # noqa: E402
 import pins  # noqa: E402
-from cases import norm  # noqa: E402
+from cases import norm, shape  # noqa: E402
 
 DETJS = measure.DETJS
 DATA = os.path.join(HERE, "data")
@@ -490,14 +490,34 @@ def net_trigger(case):
 
 
 def neutral(o):
-    """Gate rev 5 note 1: the harness config, default order, whole suite: per-id outcomes must equal plain run 1 of A."""
+    """Gate rev 5 note 1: the harness config, default order, whole suite: per-id outcomes must equal plain run 1 of A.
+    `neutral_strict` is that rule; `neutral` (used by classify.py) leaves out the ids whose outcome differs between
+    plain runs 1 and 2 of A themselves (interpretation sent to the coordinator at the end of A). --reuse: recompute
+    from the recorded run instead of running again."""
     ctx = Ctx(o)
-    r = ctx.plain("neutral.default", None)
+    if o.reuse:
+        d = os.path.join(ctx.work, "runs")
+        row = [json.loads(x) for x in open(os.path.join(ctx.work, "runs.jsonl")) if '"neutral.default"' in x][-1]
+        r = {"cmd": row["cmd"], "exit": row["exit"], "wall_s": row["wall_s"],
+             "outcomes": {k: norm(v) for k, v in measure.runner_outcomes(f"{d}/neutral.default.runner.json", ctx.cwd).items()},
+             "applied": open(f"{d}/neutral.default.applied.txt").read().split()}
+    else:
+        r = ctx.plain("neutral.default", None)
     base = {k: norm(v) for k, v in measure.runner_outcomes(f"{ctx.find}/plain1.runner.json", ctx.cwd).items()}
     diff = sorted(k for k in set(base) | set(r["outcomes"]) if base.get(k) != r["outcomes"].get(k))
+    base2 = {k: norm(v) for k, v in measure.runner_outcomes(f"{ctx.find}/plain2.runner.json", ctx.cwd).items()}
+    # ids whose outcome already differs between plain runs 1 and 2 of A (plain flaky, or an unstable id missing from
+    # one of them) cannot tell a neutral config from a non-neutral one: listed, and the second verdict leaves them out
+    variable = {k for k in set(base) | set(base2) if base.get(k) != base2.get(k)}
+    # an unstable id (its name embeds a pid or a wall-clock date) gets a new name in every run: one whose
+    # digits-to-# shape is that of a plain-variable id counts as plain-variable too
+    vshape = {shape(k) for k in variable if shape(k) != k}
+    rest = [k for k in diff if k not in variable and shape(k) not in vshape]
     out = {"repo": ctx.repo, "cmd": r["cmd"], "exit": r["exit"], "wall_s": r["wall_s"], "n_plain1": len(base),
            "n_harness": len(r["outcomes"]), "n_differ": len(diff), "differ": [[k, base.get(k), r["outcomes"].get(k)] for k in diff],
-           "applied_n": len(r["applied"] or []), "neutral": not diff}
+           "applied_n": len(r["applied"] or []), "neutral_strict": not diff,
+           "n_differ_outside_plain_variable": len(rest), "neutral_outside_plain_variable": not rest,
+           "neutral": not rest}
     os.makedirs(os.path.join(DATA, ctx.repo), exist_ok=True)
     with open(os.path.join(DATA, ctx.repo, "neutral.json"), "w") as f:
         json.dump(out, f, indent=1)
@@ -516,6 +536,7 @@ def main():
     ap.add_argument("--repo", required=True)
     ap.add_argument("--find", default="/tmp/pm-p3/find")
     ap.add_argument("--file")
+    ap.add_argument("--reuse", action="store_true")
     o = ap.parse_args()
     {"file": do_file, "neutral": neutral, "files": files_cmd}[o.phase](o)
 

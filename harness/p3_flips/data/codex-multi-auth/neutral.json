@@ -1,0 +1,36 @@
+{
+ "repo": "codex-multi-auth",
+ "cmd": "npx --no-install vitest run --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/neutral.default.runner.json",
+ "exit": 1,
+ "wall_s": 383.5,
+ "n_plain1": 8662,
+ "n_harness": 8662,
+ "n_differ": 4,
+ "differ": [
+  [
+   "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 29065",
+   null,
+   "passed"
+  ],
+  [
+   "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 7900",
+   "passed",
+   null
+  ],
+  [
+   "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, 25 Dec 2026 21:27:20 GMT at fifteen minutes",
+   "passed",
+   null
+  ],
+  [
+   "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, 25 Dec 2026 22:00:48 GMT at fifteen minutes",
+   null,
+   "passed"
+  ]
+ ],
+ "applied_n": 460,
+ "neutral_strict": false,
+ "n_differ_outside_plain_variable": 0,
+ "neutral_outside_plain_variable": true,
+ "neutral": true
+}

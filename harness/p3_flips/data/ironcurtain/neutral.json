@@ -1,0 +1,21 @@
+{
+ "repo": "ironcurtain",
+ "cmd": "npx --no-install vitest run --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/neutral.default.runner.json",
+ "exit": 1,
+ "wall_s": 217.22,
+ "n_plain1": 7033,
+ "n_harness": 7033,
+ "n_differ": 1,
+ "differ": [
+  [
+   "test/docker-workload/apple-vm-egress-relay.test.ts@@main::purpose-built Apple VM egress relay::bounds package lifetime without preempting a reused registry connection in one profile",
+   "failed",
+   "passed"
+  ]
+ ],
+ "applied_n": 397,
+ "neutral_strict": false,
+ "n_differ_outside_plain_variable": 0,
+ "neutral_outside_plain_variable": true,
+ "neutral": true
+}

@@ -1,0 +1,345 @@
+{
+ "repo": "ironcurtain",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "plain_counts": [
+  {
+   "passed": 6899,
+   "skipped": 113,
+   "failed": 21
+  },
+  {
+   "passed": 6900,
+   "skipped": 113,
+   "failed": 20
+  }
+ ],
+ "det_counts": [
+  {
+   "passed": 6874,
+   "skipped": 123,
+   "failed": 36
+  },
+  {
+   "passed": 6872,
+   "skipped": 123,
+   "failed": 38
+  }
+ ],
+ "plain_both_passed": 6899,
+ "det_both_passed": 6871,
+ "flips": [
+  "test/ca.test.ts@@main::loadOrCreateCA::publishes one authority under concurrent first-use creator/loaders",
+  "test/docker-workload/watchdog-sigkill.integration.test.ts@@main::resource watchdog supervisor across a coordinator SIGKILL::outlives the coordinator and revokes a post-mortem hard-threshold breach",
+  "test/docker/docker-workload-admission.test.ts@@main::secure nested Docker resolved-variant admission::pins Docker Desktop agent identity for 'packages' without Apple archive transport",
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'CONNECT' authorization follows add/remove/re-add (uppercase=false)",
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'CONNECT' authorization follows add/remove/re-add (uppercase=true)",
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'WebSocket' authorization follows add/remove/re-add (uppercase=false)",
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'WebSocket' authorization follows add/remove/re-add (uppercase=true)",
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'stop' ('decline')",
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::decodes gzip for observation while forwarding the original compressed bytes unchanged",
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::finalizes once when the client aborts a live upstream stream",
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::keeps large compressed SSE observable and byte-identical with trajectory capture on and off",
+  "test/docker/outbound-transport.test.ts@@main::direct destination-bound transport::destroys idle pooled upstream sockets without waiting for their timeout",
+  "test/docker/qualification-evidence.test.ts@@main::qualification evidence::retains both output streams and exact live-gate execution metadata",
+  "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps timed-out retention single-flight until its late lease cleanup settles",
+  "test/llm-metrics-query-safety.test.ts@@main::LLM statistics query output safety::rejects grouped summaries with high-cardinality maximum-length identifiers",
+  "test/llm-metrics-query-safety.test.ts@@main::LLM statistics query output safety::yields to the event loop between expensive aggregation operations"
+ ],
+ "n_flips": 16,
+ "absent_in_det": [],
+ "n_absent_in_det": 0,
+ "skipped_in_det": [
+  {
+   "id": "test/argument-validation.integration.test.ts@@main::argument name validation -- real filesystem server::rejects snake_case parameter names with an actionable error",
+   "det1": "skipped",
+   "det2": "skipped"
+  },
+  {
+   "id": "test/argument-validation.integration.test.ts@@main::argument name validation -- real filesystem server::rejects when mixing valid and invalid parameter names",
+   "det1": "skipped",
+   "det2": "skipped"
+  },
+  {
+   "id": "test/argument-validation.integration.test.ts@@main::argument name validation -- real filesystem server::succeeds with correct parameter names after correction",
+   "det1": "skipped",
+   "det2": "skipped"
+  },
+  {
+   "id": "test/argument-validation.integration.test.ts@@main::argument name validation -- real filesystem server::uses real inputSchema from server (has properties field)",
+   "det1": "skipped",
+   "det2": "skipped"
+  },
+  {
+   "id": "test/mcp-roots-race.integration.test.ts@@main::MCP roots-expansion race -- handleCallTool retry::escalates and succeeds for a file outside the sandbox (exercises retry logic)",
+   "det1": "skipped",
+   "det2": "skipped"
+  },
+  {
+   "id": "test/mcp-roots-race.integration.test.ts@@main::MCP roots-expansion race -- handleCallTool retry::exported ROOTS_RACE_RETRY_DELAY_MS is a positive number",
+   "det1": "skipped",
+   "det2": "skipped"
+  },
+  {
+   "id": "test/mcp-roots-race.integration.test.ts@@main::MCP roots-expansion race -- handleCallTool retry::reads a file inside the sandbox without escalation",
+   "det1": "skipped",
+   "det2": "skipped"
+  },
+  {
+   "id": "test/roots-expansion-bridging.integration.test.ts@@main::Roots expansion bridges across the relay subprocess::denies (no roots expansion) when the human declines the escalation",
+   "det1": "skipped",
+   "det2": "skipped"
+  },
+  {
+   "id": "test/roots-expansion-bridging.integration.test.ts@@main::Roots expansion bridges across the relay subprocess::escalates and succeeds for a file outside the sandbox via the relay",
+   "det1": "skipped",
+   "det2": "skipped"
+  },
+  {
+   "id": "test/roots-expansion-bridging.integration.test.ts@@main::Roots expansion bridges across the relay subprocess::reads a file inside the sandbox without escalation",
+   "det1": "skipped",
+   "det2": "skipped"
+  }
+ ],
+ "n_skipped_in_det": 10,
+ "mixed_in_det": [
+  {
+   "id": "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'disconnect' ('hold')",
+   "det1": "passed",
+   "det2": "failed"
+  },
+  {
+   "id": "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'stop' ('hold')",
+   "det1": "passed",
+   "det2": "failed"
+  }
+ ],
+ "n_mixed_in_det": 2,
+ "ids_only_in_det": [],
+ "n_ids_only_in_det": 0,
+ "flip_exceptions": {
+  "test/ca.test.ts@@main::loadOrCreateCA::publishes one authority under concurrent first-use creator/loaders": [
+   [
+    "AssertionError",
+    "call",
+    "expected '-----BEGIN CERTIFICATE-----\\r\\nMIIDLD\u2026' to be '-----BEGIN CERTIFICATE-----\\r\\nMIIDLD\u2026' // Object.is equality",
+    "test/ca.test.ts:462"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected '-----BEGIN CERTIFICATE-----\\r\\nMIIDLD\u2026' to be '-----BEGIN CERTIFICATE-----\\r\\nMIIDLD\u2026' // Object.is equality",
+    "test/ca.test.ts:462"
+   ]
+  ],
+  "test/docker-workload/watchdog-sigkill.integration.test.ts@@main::resource watchdog supervisor across a coordinator SIGKILL::outlives the coordinator and revokes a post-mortem hard-threshold breach": [
+   [
+    "Error",
+    "call",
+    "watchdog supervisor never closed after the breach (state=revoking)",
+    "test/docker-workload/watchdog-sigkill.integration.test.ts:408"
+   ],
+   [
+    "Error",
+    "call",
+    "watchdog supervisor never closed after the breach (state=revoking)",
+    "test/docker-workload/watchdog-sigkill.integration.test.ts:408"
+   ]
+  ],
+  "test/docker/docker-workload-admission.test.ts@@main::secure nested Docker resolved-variant admission::pins Docker Desktop agent identity for 'packages' without Apple archive transport": [
+   [
+    "Error",
+    "call",
+    "Docker Desktop nested Docker packages mode requires at least 1216 MiB and 1.25 CPU in dockerWorkload.resources",
+    "src/docker/docker-infrastructure.ts:2466"
+   ],
+   [
+    "Error",
+    "call",
+    "Docker Desktop nested Docker packages mode requires at least 1216 MiB and 1.25 CPU in dockerWorkload.resources",
+    "src/docker/docker-infrastructure.ts:2466"
+   ]
+  ],
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'CONNECT' authorization follows add/remove/re-add (uppercase=false)": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-domain-model.test.ts:196"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-domain-model.test.ts:196"
+   ]
+  ],
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'CONNECT' authorization follows add/remove/re-add (uppercase=true)": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-domain-model.test.ts:196"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-domain-model.test.ts:196"
+   ]
+  ],
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'WebSocket' authorization follows add/remove/re-add (uppercase=false)": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-domain-model.test.ts:196"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-domain-model.test.ts:196"
+   ]
+  ],
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'WebSocket' authorization follows add/remove/re-add (uppercase=true)": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-domain-model.test.ts:196"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-domain-model.test.ts:196"
+   ]
+  ],
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'stop' ('decline')": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-domain-model.test.ts:277"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-domain-model.test.ts:277"
+   ]
+  ],
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::decodes gzip for observation while forwarding the original compressed bytes unchanged": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-llm-metrics.test.ts:449"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-llm-metrics.test.ts:449"
+   ]
+  ],
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::finalizes once when the client aborts a live upstream stream": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-llm-metrics.test.ts:605"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-llm-metrics.test.ts:605"
+   ]
+  ],
+  "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::keeps large compressed SSE observable and byte-identical with trajectory capture on and off": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 60000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-llm-metrics.test.ts:563"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 60000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/mitm-llm-metrics.test.ts:563"
+   ]
+  ],
+  "test/docker/outbound-transport.test.ts@@main::direct destination-bound transport::destroys idle pooled upstream sockets without waiting for their timeout": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/outbound-transport.test.ts:41"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "test/docker/outbound-transport.test.ts:41"
+   ]
+  ],
+  "test/docker/qualification-evidence.test.ts@@main::qualification evidence::retains both output streams and exact live-gate execution metadata": [
+   [
+    "Error",
+    "call",
+    "smoke process group 15893 survived SIGKILL",
+    "scripts/qualification-evidence.ts:153"
+   ],
+   [
+    "Error",
+    "call",
+    "smoke process group 21275 survived SIGKILL",
+    "scripts/qualification-evidence.ts:153"
+   ]
+  ],
+  "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps timed-out retention single-flight until its late lease cleanup settles": [
+   [
+    "AssertionError",
+    "call",
+    "promise resolved \"{ status: 'complete', \u2026(4) }\" instead of rejecting",
+    "test/llm-metrics-persistence.test.ts:813"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "promise resolved \"{ status: 'complete', \u2026(4) }\" instead of rejecting",
+    "test/llm-metrics-persistence.test.ts:813"
+   ]
+  ],
+  "test/llm-metrics-query-safety.test.ts@@main::LLM statistics query output safety::rejects grouped summaries with high-cardinality maximum-length identifiers": [
+   [
+    "AssertionError",
+    "call",
+    "expected [Function] to throw error including 'Statistics response exceeds the outpu\u2026' but got 'Statistics query exceeds the aggregat\u2026'",
+    "test/llm-metrics-query-safety.test.ts:358"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected [Function] to throw error including 'Statistics response exceeds the outpu\u2026' but got 'Statistics query exceeds the aggregat\u2026'",
+    "test/llm-metrics-query-safety.test.ts:358"
+   ]
+  ],
+  "test/llm-metrics-query-safety.test.ts@@main::LLM statistics query output safety::yields to the event loop between expensive aggregation operations": [
+   [
+    "AssertionError",
+    "call",
+    "expected 0 to be greater than 0",
+    "test/llm-metrics-query-safety.test.ts:126"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 0 to be greater than 0",
+    "test/llm-metrics-query-safety.test.ts:126"
+   ]
+  ]
+ }
+}

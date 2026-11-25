@@ -1,0 +1,479 @@
+{
+ "counts": {
+  "flip": 16,
+  "mixed": 2,
+  "absent": 0,
+  "skipped-in-det": 10,
+  "det-only": 0,
+  "reverse": 0,
+  "other": 1
+ },
+ "n_cases": 29,
+ "n_unstable": 0,
+ "cases": [
+  {
+   "id": "test/argument-validation.integration.test.ts@@main::argument name validation -- real filesystem server::rejects snake_case parameter names with an actionable error",
+   "kind": "skipped-in-det",
+   "results": [
+    "passed",
+    "passed",
+    "skipped",
+    "skipped"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: spawn mcp-server-filesystem ENOENT [setup @ ]",
+    "Error: spawn mcp-server-filesystem ENOENT [setup @ ]"
+   ]
+  },
+  {
+   "id": "test/argument-validation.integration.test.ts@@main::argument name validation -- real filesystem server::rejects when mixing valid and invalid parameter names",
+   "kind": "skipped-in-det",
+   "results": [
+    "passed",
+    "passed",
+    "skipped",
+    "skipped"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: spawn mcp-server-filesystem ENOENT [setup @ ]",
+    "Error: spawn mcp-server-filesystem ENOENT [setup @ ]"
+   ]
+  },
+  {
+   "id": "test/argument-validation.integration.test.ts@@main::argument name validation -- real filesystem server::succeeds with correct parameter names after correction",
+   "kind": "skipped-in-det",
+   "results": [
+    "passed",
+    "passed",
+    "skipped",
+    "skipped"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: spawn mcp-server-filesystem ENOENT [setup @ ]",
+    "Error: spawn mcp-server-filesystem ENOENT [setup @ ]"
+   ]
+  },
+  {
+   "id": "test/argument-validation.integration.test.ts@@main::argument name validation -- real filesystem server::uses real inputSchema from server (has properties field)",
+   "kind": "skipped-in-det",
+   "results": [
+    "passed",
+    "passed",
+    "skipped",
+    "skipped"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: spawn mcp-server-filesystem ENOENT [setup @ ]",
+    "Error: spawn mcp-server-filesystem ENOENT [setup @ ]"
+   ]
+  },
+  {
+   "id": "test/ca.test.ts@@main::loadOrCreateCA::publishes one authority under concurrent first-use creator/loaders",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected '-----BEGIN CERTIFICATE-----\\r\\nMIIDLD\u2026' to be '-----BEGIN CERTIFICATE-----\\r\\nMIIDLD\u2026' // Object.is equality [call @ test/ca.test.ts:462]",
+    "AssertionError: expected '-----BEGIN CERTIFICATE-----\\r\\nMIIDLD\u2026' to be '-----BEGIN CERTIFICATE-----\\r\\nMIIDLD\u2026' // Object.is equality [call @ test/ca.test.ts:462]"
+   ]
+  },
+  {
+   "id": "test/docker-workload/apple-vm-egress-relay.test.ts@@main::purpose-built Apple VM egress relay::bounds package lifetime without preempting a reused registry connection in one profile",
+   "kind": "other",
+   "results": [
+    "failed",
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "test/docker-workload/watchdog-sigkill.integration.test.ts@@main::resource watchdog supervisor across a coordinator SIGKILL::outlives the coordinator and revokes a post-mortem hard-threshold breach",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: watchdog supervisor never closed after the breach (state=revoking) [call @ test/docker-workload/watchdog-sigkill.integration.test.ts:408]",
+    "Error: watchdog supervisor never closed after the breach (state=revoking) [call @ test/docker-workload/watchdog-sigkill.integration.test.ts:408]"
+   ]
+  },
+  {
+   "id": "test/docker/docker-workload-admission.test.ts@@main::secure nested Docker resolved-variant admission::pins Docker Desktop agent identity for 'packages' without Apple archive transport",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Docker Desktop nested Docker packages mode requires at least 1216 MiB and 1.25 CPU in dockerWorkload.resources [call @ src/docker/docker-infrastructure.ts:2466]",
+    "Error: Docker Desktop nested Docker packages mode requires at least 1216 MiB and 1.25 CPU in dockerWorkload.resources [call @ src/docker/docker-infrastructure.ts:2466]"
+   ]
+  },
+  {
+   "id": "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'CONNECT' authorization follows add/remove/re-add (uppercase=false)",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]",
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]"
+   ]
+  },
+  {
+   "id": "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'CONNECT' authorization follows add/remove/re-add (uppercase=true)",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]",
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]"
+   ]
+  },
+  {
+   "id": "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'WebSocket' authorization follows add/remove/re-add (uppercase=false)",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]",
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]"
+   ]
+  },
+  {
+   "id": "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'WebSocket' authorization follows add/remove/re-add (uppercase=true)",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]",
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]"
+   ]
+  },
+  {
+   "id": "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'disconnect' ('hold')",
+   "kind": "mixed",
+   "results": [
+    "passed",
+    "passed",
+    "passed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    null,
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:277]"
+   ]
+  },
+  {
+   "id": "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'stop' ('decline')",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:277]",
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:277]"
+   ]
+  },
+  {
+   "id": "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'stop' ('hold')",
+   "kind": "mixed",
+   "results": [
+    "passed",
+    "passed",
+    "passed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    null,
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:277]"
+   ]
+  },
+  {
+   "id": "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::decodes gzip for observation while forwarding the original compressed bytes unchanged",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-llm-metrics.test.ts:449]",
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-llm-metrics.test.ts:449]"
+   ]
+  },
+  {
+   "id": "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::finalizes once when the client aborts a live upstream stream",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-llm-metrics.test.ts:605]",
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-llm-metrics.test.ts:605]"
+   ]
+  },
+  {
+   "id": "test/docker/mitm-llm-metrics.test.ts@@main::MITM LLM metrics integration::keeps large compressed SSE observable and byte-identical with trajectory capture on and off",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 60000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-llm-metrics.test.ts:563]",
+    "Error: Test timed out in 60000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-llm-metrics.test.ts:563]"
+   ]
+  },
+  {
+   "id": "test/docker/outbound-transport.test.ts@@main::direct destination-bound transport::destroys idle pooled upstream sockets without waiting for their timeout",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/outbound-transport.test.ts:41]",
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/outbound-transport.test.ts:41]"
+   ]
+  },
+  {
+   "id": "test/docker/qualification-evidence.test.ts@@main::qualification evidence::retains both output streams and exact live-gate execution metadata",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: smoke process group 15893 survived SIGKILL [call @ scripts/qualification-evidence.ts:153]",
+    "Error: smoke process group 21275 survived SIGKILL [call @ scripts/qualification-evidence.ts:153]"
+   ]
+  },
+  {
+   "id": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps timed-out retention single-flight until its late lease cleanup settles",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: promise resolved \"{ status: 'complete', \u2026(4) }\" instead of rejecting [call @ test/llm-metrics-persistence.test.ts:813]",
+    "AssertionError: promise resolved \"{ status: 'complete', \u2026(4) }\" instead of rejecting [call @ test/llm-metrics-persistence.test.ts:813]"
+   ]
+  },
+  {
+   "id": "test/llm-metrics-query-safety.test.ts@@main::LLM statistics query output safety::rejects grouped summaries with high-cardinality maximum-length identifiers",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected [Function] to throw error including 'Statistics response exceeds the outpu\u2026' but got 'Statistics query exceeds the aggregat\u2026' [call @ test/llm-metrics-query-safety.test.ts:358]",
+    "AssertionError: expected [Function] to throw error including 'Statistics response exceeds the outpu\u2026' but got 'Statistics query exceeds the aggregat\u2026' [call @ test/llm-metrics-query-safety.test.ts:358]"
+   ]
+  },
+  {
+   "id": "test/llm-metrics-query-safety.test.ts@@main::LLM statistics query output safety::yields to the event loop between expensive aggregation operations",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected 0 to be greater than 0 [call @ test/llm-metrics-query-safety.test.ts:126]",
+    "AssertionError: expected 0 to be greater than 0 [call @ test/llm-metrics-query-safety.test.ts:126]"
+   ]
+  },
+  {
+   "id": "test/mcp-roots-race.integration.test.ts@@main::MCP roots-expansion race -- handleCallTool retry::escalates and succeeds for a file outside the sandbox (exercises retry logic)",
+   "kind": "skipped-in-det",
+   "results": [
+    "passed",
+    "passed",
+    "skipped",
+    "skipped"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: spawn mcp-server-filesystem ENOENT [setup @ ]",
+    "Error: spawn mcp-server-filesystem ENOENT [setup @ ]"
+   ]
+  },
+  {
+   "id": "test/mcp-roots-race.integration.test.ts@@main::MCP roots-expansion race -- handleCallTool retry::exported ROOTS_RACE_RETRY_DELAY_MS is a positive number",
+   "kind": "skipped-in-det",
+   "results": [
+    "passed",
+    "passed",
+    "skipped",
+    "skipped"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: spawn mcp-server-filesystem ENOENT [setup @ ]",
+    "Error: spawn mcp-server-filesystem ENOENT [setup @ ]"
+   ]
+  },
+  {
+   "id": "test/mcp-roots-race.integration.test.ts@@main::MCP roots-expansion race -- handleCallTool retry::reads a file inside the sandbox without escalation",
+   "kind": "skipped-in-det",
+   "results": [
+    "passed",
+    "passed",
+    "skipped",
+    "skipped"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: spawn mcp-server-filesystem ENOENT [setup @ ]",
+    "Error: spawn mcp-server-filesystem ENOENT [setup @ ]"
+   ]
+  },
+  {
+   "id": "test/roots-expansion-bridging.integration.test.ts@@main::Roots expansion bridges across the relay subprocess::denies (no roots expansion) when the human declines the escalation",
+   "kind": "skipped-in-det",
+   "results": [
+    "passed",
+    "passed",
+    "skipped",
+    "skipped"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "McpError: MCP error -32000: Connection closed [setup @ ]",
+    "McpError: MCP error -32000: Connection closed [setup @ ]"
+   ]
+  },
+  {
+   "id": "test/roots-expansion-bridging.integration.test.ts@@main::Roots expansion bridges across the relay subprocess::escalates and succeeds for a file outside the sandbox via the relay",
+   "kind": "skipped-in-det",
+   "results": [
+    "passed",
+    "passed",
+    "skipped",
+    "skipped"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "McpError: MCP error -32000: Connection closed [setup @ ]",
+    "McpError: MCP error -32000: Connection closed [setup @ ]"
+   ]
+  },
+  {
+   "id": "test/roots-expansion-bridging.integration.test.ts@@main::Roots expansion bridges across the relay subprocess::reads a file inside the sandbox without escalation",
+   "kind": "skipped-in-det",
+   "results": [
+    "passed",
+    "passed",
+    "skipped",
+    "skipped"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "McpError: MCP error -32000: Connection closed [setup @ ]",
+    "McpError: MCP error -32000: Connection closed [setup @ ]"
+   ]
+  }
+ ]
+}
