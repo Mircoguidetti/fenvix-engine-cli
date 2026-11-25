@@ -1,0 +1,89 @@
+name: red-check-population
+
+# C5.3 (harness/red_check/population/): choose the 6 measurement repositories from public data, read with this
+# workflow's GITHUB_TOKEN (read-only on every other repository). A chunk starts when a push to this branch adds a
+# request file harness/red_check/population/requests/<name>.json; results are committed back to this branch only
+# (a push made with GITHUB_TOKEN does not start another workflow run). Full job logs are kept only as the artifact
+# red-check-population-logs (never in git).
+
+on:
+  push:
+    branches: [claude/red-check-c53]
+    paths:
+      - harness/red_check/population/requests/**
+  workflow_dispatch:
+    inputs:
+      request:
+        description: "request file path (relative to the repository root)"
+        required: true
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: red-check-population
+  cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
+  RC_BRANCH: claude/red-check-c53
+  RC_DIR: harness/red_check/population
+
+jobs:
+  chunk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install pyyaml==6.0.2
+      - name: Request files of this run
+        run: |
+          mkdir -p "$RUNNER_TEMP/req"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            cp "${{ github.event.inputs.request }}" "$RUNNER_TEMP/req/"; ls -1 "$RUNNER_TEMP/req"; exit 0
+          fi
+          before="${{ github.event.before }}"
+          if [ -z "$before" ] || [ "$before" = "0000000000000000000000000000000000000000" ]; then
+            echo "no previous commit (branch creation): no request files"; exit 0
+          fi
+          git diff --name-only --diff-filter=A "$before" "${{ github.sha }}" -- "$RC_DIR/requests/" \
+            | sort | while read -r f; do cp "$f" "$RUNNER_TEMP/req/"; echo "request: $f"; done
+          ls -1 "$RUNNER_TEMP/req"
+      - name: Latest checkpoint
+        run: |
+          git fetch -q origin "$RC_BRANCH"
+          git checkout -q -B rc "origin/$RC_BRANCH"
+          git log --oneline -1
+      - name: Chunks
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for f in $(ls -1 "$RUNNER_TEMP/req" | sort); do
+            echo "== $f"; cat "$RUNNER_TEMP/req/$f"; echo
+            python3 "$RC_DIR/run_request.py" "$RUNNER_TEMP/req/$f"
+          done
+      - name: Commit results to this branch
+        if: always()
+        run: |
+          git config user.name "red-check-population-bot"
+          git config user.email "red-check-population-bot@users.noreply.github.com"
+          out="$RC_DIR/results"
+          [ -d "$out" ] || exit 0
+          for i in 1 2 3 4 5 6 7 8; do
+            git fetch -q origin "$RC_BRANCH" && git reset -q --soft "origin/$RC_BRANCH" && git reset -q
+            git add -f "$out" && git commit -q -m "red-check-population: results (run ${{ github.run_id }})" || exit 0
+            git push -q origin "HEAD:$RC_BRANCH" && exit 0
+            sleep $((5 + RANDOM % 20))
+          done
+          exit 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: red-check-population-logs
+          path: ${{ env.RC_DIR }}/logs/
+          retention-days: 90
+          if-no-files-found: ignore
