@@ -144,6 +144,19 @@ def outcomes_file(path):
 
 
 NPROC = os.cpu_count()
+def _read1(path):
+    try:
+        with open(path) as f:
+            return f.read().strip() or "UNKNOWN"
+    except OSError:
+        return "UNKNOWN"
+
+
+# P2 spec "Same machine" (recording only): the container a row was measured in; table.py (harness/p2) refuses to
+# compare rows whose cpu_model, host or container_boot differ
+HOST = _read1("/etc/hostname")
+CONTAINER_BOOT = _read1("/proc/sys/kernel/random/boot_id")
+
 try:
     CPU_MODEL = next(l.split(":", 1)[1].strip() for l in open("/proc/cpuinfo") if l.startswith("model name"))
 except (OSError, StopIteration):
@@ -338,7 +351,7 @@ def main():
     def record(kind, i, cmd, r, workers=1, **extra):
         line = {"repo": o.name, "commit": spec.get("commit"), "runner": runner, "kind": kind, "rep": i,
                 "workers": workers, "engine_commit": commit, "cpus": os.cpu_count(), "nproc": NPROC,
-                "cpu_model": CPU_MODEL, "ci_parallel": ci_parallel, "tree_reset": TREE_RESET, **last_build,
+                "cpu_model": CPU_MODEL, "host": HOST, "container_boot": CONTAINER_BOOT, "ci_parallel": ci_parallel, "tree_reset": TREE_RESET, **last_build,
                 "cmd": " ".join(cmd), "cwd": cwd, "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), **r, **extra}
         with open(results, "a") as f:
             f.write(json.dumps(line) + "\n")
