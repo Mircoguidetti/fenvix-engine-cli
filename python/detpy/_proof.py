@@ -516,59 +516,78 @@ class Capture(_core.CaptureCore):
 
             own = name in ("lstat", "readlink")
 
-            def checked(path, *args, **kwargs):
-                if cap._in_stat or kwargs.get("dir_fd") is not None:
-                    return orig(path, *args, **kwargs)
-                try:
-                    # review R-023c E2: whatever frames are between (tarfile, pytest's LocalPath, Path.stat), the
-                    # status goes to user code or it does not
-                    user = _reaches_user(_getframe(1))
-                except Exception:
-                    user = True  # cannot tell: the default is an input
-                if not user:
-                    return orig(path, *args, **kwargs)
-                fd = isinstance(path, int)
-                nolink = own or kwargs.get("follow_symlinks") is False
-                kind = sized = False
-                if not fd:
-                    cap._in_stat = True
+            def make(orig, direct):
+                # `direct`: the binding in ``posix`` itself (spec "false greens on release-1", W3), which the import
+                # system's finders call for their own probes (``_bootstrap_external._path_stat``): those stay theirs
+                def checked(path, *args, **kwargs):
+                    if cap._in_stat or kwargs.get("dir_fd") is not None:
+                        return orig(path, *args, **kwargs)
+                    if direct and _getframe(1).f_globals.get("__name__") in _IMPORT_MACHINERY:
+                        return orig(path, *args, **kwargs)
                     try:
-                        if name == "access":
-                            # the path's metadata (kind, permission bits), and (review R-023c E4) the owner and the
-                            # other status fields when a permission is asked
-                            cap.stat_check(path, nolink, True, False, True)
-                            mode = args[0] if args else kwargs.get("mode", os.F_OK)
-                            if mode != os.F_OK:
-                                cap.fields_check(path, nolink)
-                        elif name == "readlink":
-                            cap.stat_check(path, True, True, False, True)
-                        else:
-                            # an existence or kind check of the standard library (exists, isfile, is_dir, glob,
-                            # realpath) sees the kind; os.stat asked for its own sake the path's metadata (kind, size,
-                            # permission bits, modification time: proof::probe_now)
-                            kind = _kind_check_caller()
-                            sized = name in ("stat", "fstat") and not nolink and not kind
-                            cap.stat_check(path, nolink, not kind, False, True)
-                            helper = _time_helper_caller()
-                            if helper == "getatime":
-                                cap.flag(cap._cur(), "mtime", os.fsdecode(os.fspath(path)))
-                            elif helper:
-                                # os.path.getmtime & co.: the time is read inside the helper, for its caller
-                                cap.time_check(path)
-                                kind = True
+                        # review R-023c E2: whatever frames are between (tarfile, pytest's LocalPath, Path.stat), the
+                        # status goes to user code or it does not
+                        user = _reaches_user(_getframe(1))
                     except Exception:
-                        pass
-                    finally:
-                        cap._in_stat = False
-                r = orig(path, *args, **kwargs)
-                if name in ("access", "readlink") or kind:
-                    return r  # a boolean, a link's target, a kind check's / time helper's own use (recorded above)
-                return _TimedStat(r, cap, path, nolink, sized)
+                        user = True  # cannot tell: the default is an input
+                    if not user:
+                        return orig(path, *args, **kwargs)
+                    fd = isinstance(path, int)
+                    nolink = own or kwargs.get("follow_symlinks") is False
+                    kind = sized = False
+                    if not fd:
+                        cap._in_stat = True
+                        try:
+                            if name == "access":
+                                # the path's metadata (kind, permission bits), and (review R-023c E4) the owner and the
+                                # other status fields when a permission is asked
+                                cap.stat_check(path, nolink, True, False, True)
+                                mode = args[0] if args else kwargs.get("mode", os.F_OK)
+                                if mode != os.F_OK:
+                                    cap.fields_check(path, nolink)
+                            elif name == "readlink":
+                                cap.stat_check(path, True, True, False, True)
+                            else:
+                                # an existence or kind check of the standard library (exists, isfile, is_dir, glob,
+                                # realpath) sees the kind; os.stat asked for its own sake the path's metadata (kind, size,
+                                # permission bits, modification time: proof::probe_now)
+                                kind = _kind_check_caller()
+                                sized = name in ("stat", "fstat") and not nolink and not kind
+                                cap.stat_check(path, nolink, not kind, False, True)
+                                helper = _time_helper_caller()
+                                if helper == "getatime":
+                                    cap.flag(cap._cur(), "mtime", os.fsdecode(os.fspath(path)))
+                                elif helper:
+                                    # os.path.getmtime & co.: the time is read inside the helper, for its caller
+                                    cap.time_check(path)
+                                    kind = True
+                        except Exception:
+                            pass
+                        finally:
+                            cap._in_stat = False
+                    r = orig(path, *args, **kwargs)
+                    if name in ("access", "readlink") or kind:
+                        return r  # a boolean, a link's target, a kind check's / time helper's own use (recorded above)
+                    return _TimedStat(r, cap, path, nolink, sized)
 
-            checked.__name__ = orig.__name__
-            checked.__doc__ = orig.__doc__
-            checked.__wrapped__ = orig
-            rebind(os, name, orig, checked)
+                checked.__name__ = orig.__name__
+                checked.__doc__ = orig.__doc__
+                checked.__wrapped__ = orig
+                return checked
+
+            rebind(os, name, orig, make(orig, False))
+            # W3 (review R-056): ``posix.stat`` & co. called directly were the unwrapped builtins, so a test that read
+            # a file's size, mtime or existence through them was not recorded. Their binding in ``posix`` records too,
+            # and calls the builtin it replaces (not the os.* chain: a direct posix call sees what uncached --det's
+            # does). Other modules' references to the builtin were rebound above.
+            try:
+                import posix
+            except ImportError:  # pragma: no cover - not POSIX
+                posix = None
+            real = getattr(posix, name, None) if posix is not None else None
+            if real is not None and getattr(real, "__code__", None) is None:
+                self._stat_saved.append((posix, name, real))
+                setattr(posix, name, make(real, True))
 
         real_stat, real_lstat = os.stat, os.lstat
         for name in ("stat", "lstat", "access", "readlink", "fstat"):
@@ -752,6 +771,11 @@ class Capture(_core.CaptureCore):
     # child_ignored, child_read, collect_children, _credit_child: Rust (CaptureCore)
 
 
+#: Modules whose calls of ``posix.stat`` & co. are the import system's own probes (W3: not a test's input).
+_IMPORT_MACHINERY = frozenset({"importlib._bootstrap_external", "importlib._bootstrap", "_frozen_importlib_external",
+                               "_frozen_importlib", "zipimport"})
+
+
 # ---------------------------------------------------------------------------
 # environment reads: the recorded os.environ calls _note_env (Rust: CaptureCore.note_env of the capture set by
 # _core.cap_set_env_capture)
@@ -790,6 +814,52 @@ def _patch_environ() -> None:
                 o.__class__ = make(type(o))
             except TypeError:
                 pass
+    _patch_posix_environ()
+
+
+def _patch_posix_environ() -> None:
+    """Spec "false greens on release-1", W4 (review R-056): ``posix.environ`` is the dict behind ``os.environ`` (its
+    ``_data``, bytes keys), and a test that reads it directly bypassed the recorded ``os.environ`` above, so a
+    variable outside the process key (``PWD``, ``ENV_ALLOWLIST``) read that way was in no key and no record. Its reads
+    are recorded here too, through ``_note_env``, which decodes the bytes name and counts only a read whose first
+    caller outside detpy is user code: ``os.environ``'s own methods (``os.py``) and the engine's reads are not counted
+    again. The object stays the one ``os.environ._data`` and ``os.environb._data`` hold (envobs' ``_RecData`` when
+    the env control installed it first: the recording subclass takes its place in the same three slots, and envobs
+    leaves a ``_RecData`` alone)."""
+    try:
+        import posix
+    except ImportError:  # pragma: no cover - not POSIX
+        return
+    data = posix.environ
+    if not isinstance(data, dict) or getattr(type(data), "_detpy_cache_recorded", False):
+        return
+    from . import envobs
+
+    base = type(data) if isinstance(data, envobs._RecData) else envobs._RecData
+
+    class _CacheRecorded(base):
+        _detpy_cache_recorded = True
+
+        def __getitem__(self, key):
+            _note_env(key)
+            return base.__getitem__(self, key)
+
+        def get(self, key, default=None):
+            _note_env(key)
+            return base.get(self, key, default)
+
+        def __contains__(self, key):
+            _note_env(key)
+            return base.__contains__(self, key)
+
+        def _listed(self):
+            _note_env("*")
+            return base._listed(self)
+
+    rec = _CacheRecorded(dict.items(data))
+    for owner, attr in ((os.environ, "_data"), (getattr(os, "environb", None), "_data"), (posix, "environ")):
+        if owner is not None and getattr(owner, attr, None) is data:
+            setattr(owner, attr, rec)
 
 
 # ---------------------------------------------------------------------------
@@ -944,6 +1014,16 @@ def process_identity() -> dict:
         d["host"] = posix.uname().nodename
     except (ImportError, AttributeError):
         d["host"] = platform.node()
+    # spec "false greens on release-1", W5 (review R-056): the kernel a test can read (``platform.release()``,
+    # ``posix.uname().release``, ``os.uname()``), with the rest of uname: not pinned by --det, so it is an input of
+    # every test of the session, like the host name above. Cost: one cold cache per kernel change.
+    try:
+        import posix
+
+        u = posix.uname()
+        d["kernel"] = [u.sysname, u.release, u.version, u.machine]
+    except (ImportError, AttributeError):
+        d["kernel"] = [platform.system(), platform.release(), platform.version(), platform.machine()]
     d["warnoptions"] = list(sys.warnoptions)
     d["xoptions"] = sorted((str(k), str(v)) for k, v in getattr(sys, "_xoptions", {}).items())
     d["flags"] = repr(sys.flags)

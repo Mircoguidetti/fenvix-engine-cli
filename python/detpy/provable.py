@@ -48,6 +48,7 @@ from __future__ import annotations
 
 import os
 import sys
+import weakref
 
 from . import _core, _sites, _state
 
@@ -260,6 +261,15 @@ class Sensor:
             f = getattr(c, "__func__", None)  # a bound Python method, a classmethod
             if f is not None and getattr(f, "__code__", None) is not None:
                 return None
+            if isinstance(c, type) and _unseeded_c_random(c, arg0):
+                # Spec "false greens on release-1", W8 (founder decision 2026-11-25: refuse). The C generator
+                # `_random.Random()` built without a seed seeds itself from OS entropy inside C: --det controls
+                # `random.Random` (its Python `seed`, src: seeds.py), not this, so fresh --det runs see different
+                # values. A gap: the test is NOT PROVEN and the cache neither stores nor reuses it.
+                site = _sites.resolve(_CALLER)
+                if site is not None:
+                    self._report("api", f"{getattr(c, '__module__', '?')}.{getattr(c, '__qualname__', '?')}() "
+                                        "without a seed (C generator seeded from OS entropy)", site or _site(code, offset))
             mod = getattr(c, "__module__", None)
             qual = getattr(c, "__qualname__", None) or getattr(c, "__name__", None)
             if mod is None or qual is None:
@@ -443,6 +453,31 @@ class Sensor:
         import json
 
         return json.loads(_core.provable_header(SENSOR, runtime_key()))
+
+
+# type -> whether it is a C generator --det does not seed (W8), per type, once; weak: a test's own classes are not
+# kept alive by the sensor
+_C_RANDOM_TYPES = weakref.WeakKeyDictionary()
+
+
+def _unseeded_c_random(c, arg0) -> bool:
+    """W8: is calling ``c`` with first argument ``arg0`` the construction of ``_random.Random`` (or a subclass that
+    does not go through ``random.Random``, whose ``seed`` --det controls) without a seed? A seed of None is none.
+    Asked for every type the tests call (the sensor's hot path): the type's answer is computed once."""
+    is_c = _C_RANDOM_TYPES.get(c)
+    if is_c is None:
+        try:
+            import _random
+            import random
+
+            is_c = issubclass(c, _random.Random) and not issubclass(c, random.Random)
+        except (ImportError, TypeError):
+            is_c = False
+        try:
+            _C_RANDOM_TYPES[c] = is_c
+        except TypeError:  # pragma: no cover - a type that takes no weak reference
+            pass
+    return is_c and (arg0 is None or arg0 is getattr(_mon, "MISSING", object()))
 
 
 def _site(code, offset) -> str:

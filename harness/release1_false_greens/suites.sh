@@ -26,15 +26,15 @@ for p in $parts; do
     py[0-3])
       s=${p#py}
       files=$(python3 release/shard.py 4 $s tests 'test_*.py' '**/test_*.py' '*_test.py' '**/*_test.py')
-      python3 -m pytest -q -p no:randomly $files \
+      "${PY:-python3}" -m pytest -q -p no:randomly $files \
         --deselect tests/test_review_r017.py::test_h2_report_says_ci_never_sees_tmp_name_exhaustion_but_p8_does \
         -rfE > "$out/py-s$s.log" 2>&1; rc=$?
       grep -E "^(FAILED|ERROR) " "$out/py-s$s.log" | sed 's/ - .*//' | sort -u > "$out/py-s$s.failures" ;;
     attacks-py)
-      python3 tests/attacks.py --only python > "$out/attacks-py.log" 2>&1; rc=$?
+      "${PY:-python3}" tests/attacks.py --only python > "$out/attacks-py.log" 2>&1; rc=$?
       grep -E "^(FAILED|ERROR) " "$out/attacks-py.log" | sed 's/ - .*//' | sort -u > "$out/attacks-py.failures" ;;
     attacks-node)
-      python3 tests/attacks.py --only node > "$out/attacks-node.log" 2>&1; rc=$?
+      "${PY:-python3}" tests/attacks.py --only node > "$out/attacks-node.log" 2>&1; rc=$?
       grep -E "^✖ " "$out/attacks-node.log" | sort -u > "$out/attacks-node.failures" ;;
     *) echo "unknown part $p"; rc=2 ;;
   esac
