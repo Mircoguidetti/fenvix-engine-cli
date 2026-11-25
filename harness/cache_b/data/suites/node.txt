@@ -1,0 +1,68 @@
+# Node suite (node --test --test-concurrency=1 test/*.test.js, Node 24, this container), base 6e79a62c vs head 149a52f7
+## base: node rc=1
+ℹ tests 1106
+ℹ pass 1096
+ℹ fail 6
+ℹ cancelled 3
+ℹ skipped 1
+test at test/customer-nodetest.test.js:196:1
+✖ a flaky (order-dependent) test becomes a defect with a replay command (72.034975ms)
+test at test/host-values-timers.test.js:20:1
+✖ (b) a test waiting on real work is not timed out by the virtual clock (4399.23578ms)
+test at test/parallel-p041.test.js:163:5
+✖ the plan is identical across runs, recorded in the trace and replayed from it; lanes overlap in time
+test at test/parallel-p041.test.js:190:7
+✖ parallel fingerprints equal the serial ones (workers)
+test at test/parallel-p041.test.js:211:5
+✖ cache: recorded in parallel, reused serially; recorded serially, reused in parallel
+test at test/parallel-p041.test.js:141:3
+✖ jest: parallel lanes (9045.169389ms)
+test at test/parallel-p041.test.js:450:7
+✖ jsdom environment: results are recorded and reused, serially and in lanes (2378.340223ms)
+test at test/repro-p041.test.js:125:5
+✖ --det-order: exactly the listed tests, in the listed order (files by first listed test), across describe blocks (1977.546724ms)
+test at test/runner-bun.test.js:46:3
+✖ two --det runs give identical fingerprints; the controls are active inside bun test (724.811587ms)
+test at test/runner-node-test.test.js:258:3
+✖ a file another test file wrote: not cacheable (1527.150236ms)
+## head: node rc=1
+ℹ tests 1124
+ℹ pass 1113
+ℹ fail 7
+ℹ cancelled 3
+ℹ skipped 1
+test at test/controls.test.js:236:5
+✖ isolation: parallel workers interleave, --det runs files serially (3801.255433ms)
+test at test/customer-nodetest.test.js:196:1
+✖ a flaky (order-dependent) test becomes a defect with a replay command (28.304277ms)
+test at test/host-values-timers.test.js:20:1
+✖ (b) a test waiting on real work is not timed out by the virtual clock (2230.902645ms)
+test at test/parallel-p041.test.js:163:5
+✖ the plan is identical across runs, recorded in the trace and replayed from it; lanes overlap in time
+test at test/parallel-p041.test.js:190:7
+✖ parallel fingerprints equal the serial ones (workers)
+test at test/parallel-p041.test.js:211:5
+✖ cache: recorded in parallel, reused serially; recorded serially, reused in parallel
+test at test/parallel-p041.test.js:141:3
+✖ jest: parallel lanes (8405.527393ms)
+test at test/parallel-p041.test.js:450:7
+✖ jsdom environment: results are recorded and reused, serially and in lanes (2546.010693ms)
+test at test/repro-p041.test.js:125:5
+✖ --det-order: exactly the listed tests, in the listed order (files by first listed test), across describe blocks (2240.29044ms)
+test at test/runner-bun.test.js:46:3
+✖ two --det runs give identical fingerprints; the controls are active inside bun test (647.058134ms)
+test at test/runner-node-test.test.js:258:3
+✖ a file another test file wrote: not cacheable (1260.436436ms)
+## new on head: test/controls.test.js:236 jest > isolation: parallel workers interleave (baseline run without --det: 'expected failures, got passed' - the two plain Jest workers did not interleave)
+## rerun in isolation, 5x per tree:
+ℹ pass 2 ℹ fail 0  <- head run 1
+ℹ pass 2 ℹ fail 0  <- head run 2
+ℹ pass 2 ℹ fail 0  <- head run 3
+ℹ pass 2 ℹ fail 0  <- head run 4
+ℹ pass 2 ℹ fail 0  <- head run 5
+ℹ pass 2 ℹ fail 0  <- base run 1
+ℹ pass 2 ℹ fail 0  <- base run 2
+ℹ pass 2 ℹ fail 0  <- base run 3
+ℹ pass 2 ℹ fail 0  <- base run 4
+ℹ pass 2 ℹ fail 0  <- base run 5
+## verdict: scheduling-dependent baseline check, passes 5/5 on head and on base; not touched by the B1 diff (proof.js verify summary, remote.js push). No new failure.
