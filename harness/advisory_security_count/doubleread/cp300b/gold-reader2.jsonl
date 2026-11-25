@@ -1,0 +1,6 @@
+{"ghsa_id": "G1", "inclusion": "excluded", "reason": "not-web", "class": null, "subclass": null, "quote": null, "reader": "independent-b1", "batch": "gold"}
+{"ghsa_id": "G2", "inclusion": "excluded", "reason": "one-principal", "class": null, "subclass": null, "quote": null, "reader": "independent-b1", "batch": "gold"}
+{"ghsa_id": "G3", "inclusion": "included", "reason": null, "class": "read-the-code", "subclass": null, "quote": "changing a user's password does not invalidate the user's existing sessions", "reader": "independent-b1", "batch": "gold"}
+{"ghsa_id": "G4", "inclusion": "included", "reason": null, "class": "ours", "subclass": "O5-time", "quote": "expiry is stored in UTC but compared with the server's local time", "reader": "independent-b1", "batch": "gold"}
+{"ghsa_id": "G5", "inclusion": "included", "reason": null, "class": "ours", "subclass": "O3-concurrency", "quote": "a single-use coupon can be redeemed more than once by sending several checkout requests in parallel", "reader": "independent-b1", "batch": "gold"}
+{"ghsa_id": "G6", "inclusion": "included", "reason": null, "class": "read-the-code", "subclass": null, "quote": "the application never checks whether the coupon was already used", "reader": "independent-b1", "batch": "gold"}

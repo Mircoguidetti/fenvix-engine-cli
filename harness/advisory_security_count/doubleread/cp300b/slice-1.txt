@@ -1,0 +1,443 @@
+=== GHSA-58c8-vvqw-cm7m sev=medium pkgs=['composer:concrete5/concrete5']
+src=https://github.com/concretecms/concretecms cwes=['CWE-862']
+SUMMARY: Concrete CMS is vulnerable to IDOR combined with a missing authentication gate
+DESC: Concrete CMS 9.5.0 and below is vulnerable to IDOR combined with a missing authentication gate. The endpoint /ccm/system/dialogs/file/usage/{fID} accepts an integer file ID in the URL and returns internal site structure data (page IDs, versions, URL paths) to anyone who sends a GET request.
+
+=== GHSA-q62f-h9x2-gcqc sev=high pkgs=['maven:org.springframework.ai:spring-ai-advisors-vector-store', 'maven:org.springframework.ai:spring-ai-client-chat', 'maven:org.springframework.ai:spring-ai-model']
+src= cwes=['CWE-276']
+SUMMARY: Spring AI: ChatMemory DEFAULT_CONVERSATION_ID causes unintended cross-user data leakage
+DESC: Spring AI's chat memory component contained a problematic default that, when not explicitly overridden, could result in unintended data exposure between users.
+
+=== GHSA-4hp7-3wxg-cv9q sev=medium pkgs=['composer:statamic/cms']
+src=https://github.com/statamic/cms cwes=['CWE-862']
+SUMMARY: Statamic allows unauthorized content access through missing authorization in its revision controllers 
+DESC: ### Impact Authenticated Control Panel users could view entry revisions for any collection with revisions enabled, regardless of whether they had the required collection permissions. This bypasses the authorization checks that the main entry controllers enforce, exposing entry field values and blueprint data. Users could also create entry revisions without edit permission, though this only snapshots the existing content state and does not affect published content. ### Patches This has been fixed in 5.73.16 and 6.7.2.
+
+=== GHSA-j48m-h7xq-2xpj sev=medium pkgs=['go:goshs.de/goshs/v2']
+src=https://github.com/patrickhener/goshs cwes=['CWE-362']
+SUMMARY: goshs: Share-link ?token=… redemption races past download limit
+DESC: # Share-link `?token=…` redemption races past download limit **Ecosystem:** Go **Package:** `goshs.de/goshs/v2` (`github.com/patrickhener/goshs`) **Affected:** `<= v2.0.9` (every release that shipped the share-link feature) ## Summary `ShareHandler` reads the share token's `DownloadLimit` under `RLock`, releases the lock, serves the file, then re-acquires the lock to increment the counter. Concurrent requests all read the same `Downloaded`/`DownloadLimit` snapshot, all pass the check, and all are served — exceeding the operator's intended cap. ## Details [`httpserver/handler.go:968-1018`](https://github.com/patrickhener/goshs/blob/v2.0.9/httpserver/handler.go#L968-L1018): ```go fs.sharedLinksMu.RLock() entry, ok := fs.SharedLinks[token] fs.sharedLinksMu.RUnlock() // <-- released here if entry.DownloadLimit > 0 || entry.DownloadLimit == -1 { // ...serve file... // <-- whole transfer happens unlocked } fs.sharedLinksMu.Lock() // <-- re-acquired only now current.Downloaded++ if current.Downloaded >= current.DownloadLimit { delete(fs.SharedLinks, token) } fs.sharedLinksMu.Unlock() ``` Between line 978 (`RUnlock`) and line 1008 (`Lock`), any number of goroutines can interleave and each observes the same pre-increment limit. ## Proof of concept ```bash goshs -p 18000 -d /tmp/r -b admin:pw & echo data > /tmp/r/f.txt # operator issues a one-shot share SHARE=$(curl -su admin:pw "http://localhost:18000/f.txt?share&limit=1") TK=$(echo "$SHARE" | sed -n 's/.*token=\([^"]*\)".*/\1/p') # attacker races two redemptions curl -so /dev/null -w "%{http_code}\n" "http://localhost:18000/?token=$TK" & \ curl -so /dev/null -w "%{http_code}\n" "http://localhost:18000/?token=$TK" & \ wait # observed: 200 / 200 (both succeed) -> limit=1 redeemed twice ``` Reproduced 5/5 times in a row on a 2026-era M-series Mac during verification. ## Impact A "single-use" share intended to deliver a one-shot secret can be redeemed N times by N concurrent clients. Combined with any token-leak vector (mail forwarding, browser history, intercepted link, etc.) this multiplies the exfiltration window. ## Suggested fix Reserve under the write lock *before* serving — refund only if the serve fails: ```go fs.sharedLinksMu.Lock() entry, ok := fs.SharedLinks[token] if !ok || time.Now().After(entry.Expires) || (entry.DownloadLimit != -1 && entry.Downloaded >= entry.DownloadLimit) { fs.sharedLinksMu.Unlock(); http.NotFound(w, r); return } entry.Downloaded++ if entry.DownloadLimit != -1 && entry.Downloaded >= entry.DownloadLimit { delete(fs.SharedLinks, token) } else { fs.SharedLinks[token] = entry } fs.sharedLinksMu.Unlock() // ...serve... ``` Add a regression test that races two requests against a `limit=1` token and asserts exactly one `200`. Reporter: Nishant Verma. Reproduced against `goshs v2.0.9` (commit `8fc1e91`) on 2026-05-27.
+
+=== GHSA-r864-28pw-8682 sev=high pkgs=['go:github.com/goharbor/harbor', 'go:github.com/goharbor/harbor/src']
+src=https://github.com/goharbor/harbor cwes=['CWE-285']
+SUMMARY: Harbor fails to validate the user permissions when updating p2p preheat policies
+DESC: Harbor fails to validate the user permissions when updating p2p preheat policies. By sending a request to update a p2p preheat policy with an id that belongs to a project that the currently authenticated user doesn't have access to, the attacker could modify p2p preheat policies configured in other projects.
+
+=== GHSA-f899-4mr4-fqpv sev=low pkgs=['go:github.com/apache/incubator-answer']
+src=https://github.com/apache/incubator-answer cwes=['CWE-362']
+SUMMARY: Apache Answer Race Condition vulnerability
+DESC: Concurrent Execution using Shared Resource with Improper Synchronization ('Race Condition') vulnerability in Apache Answer. This issue affects Apache Answer: through 1.2.0. Under normal circumstances, a user can only bookmark a question once, and will only increase the number of questions bookmarked once. However, repeat submissions through the script can increase the number of collection of the question many times. Users are recommended to upgrade to version [1.2.1], which fixes the issue.
+
+=== GHSA-cv22-72px-f4gh sev=medium pkgs=['go:gogs.io/gogs']
+src=https://github.com/gogs/gogs cwes=['CWE-284']
+SUMMARY: Gogs has an Authorization Bypass Allows Cross-Repository Label Modification in Gogs
+DESC: ### **Summary** A broken access control vulnerability in Gogs allows authenticated users with write access to any repository to modify labels belonging to other repositories. The `UpdateLabel` function in the Web UI (`internal/route/repo/issue.go`) fails to verify that the label being modified belongs to the repository specified in the URL path, enabling cross-repository label tampering attacks. ### **Details** The vulnerability exists in the Web UI's label update endpoint `POST /:username/:reponame/labels/edit`. The handler function `UpdateLabel` uses an incorrect database query function that bypasses repository ownership validation: **Vulnerable Code** (`internal/route/repo/issue.go:1040-1054`): ```plain func UpdateLabel(c *context.Context, f form.CreateLabel) { l, err := database.GetLabelByID(f.ID) // ❌ No repository validation if err != nil { c.NotFoundOrError(err, "get label by ID") return } // ❌ Missing validation: l.RepoID != c.Repo.Repository.ID l.Name = f.Title l.Color = f.Color if err := database.UpdateLabel(l); err != nil { c.Error(err, "update label") return } c.RawRedirect(c.Repo.MakeURL("labels")) } ``` **Root Cause**: 1. The function calls `database.GetLabelByID(f.ID)` which internally passes `repoID=0` to the ORM layer 2. According to code comments in `internal/database/issue_label.go:147-166`, passing `repoID=0` causes the ORM to ignore repository restrictions 3. No validation checks whether `l.RepoID == c.Repo.Repository.ID` before updating 4. The middleware `reqRepoWriter()` only validates write access to the repository in the URL path, not the label's actual repository **Inconsistency with Other Functions**: + `NewLabel`: Correctly sets `RepoID = c.Repo.Repository.ID` + `DeleteLabel`: Correctly uses `database.DeleteLabel(c.Repo.Repository.ID, id)` + API `EditLabel`: Correctly uses `database.GetLabelOfRepoByID(c.Repo.Repository.ID, id)` - ****Only `UpdateLabel` in ****Web UI**** uses the vulnerable pattern**** ### **PoC** **Prerequisites**: + Two user accounts: Alice (attacker) and Bob (victim) + alice has written access to repo-a + Bob owns repo-b with labels **Step 1: Identify Target Label ID** 1. Login as bob, navigate to bob/repo-b/labels 2. Open browser DevTools (F12) → Network tab 3. Click edit on any label 4. Observe the form data: id=<LABEL_ID> 5. Example: id=1 **Step 2: Execute Attack** ```plain # Login as alice, get session cookie # Open DevTools → Application → Cookies → i_like_gogs # Copy the cookie value # Send malicious request curl -X POST "http://localhost:3000/alice/repo-a/labels/edit" \ -H "Cookie: i_like_gogs=<ALICE_SESSION_COOKIE>" \ -H "Content-Type: application/x-www-form-urlencoded" \ -d "id=1&title=HACKED-BY-ALICE&color=%23000000" # Expected response: 302 Found (redirect) ``` **Step 3: Verify Impact** 1. Login as bob 2. Navigate to bob/repo-b/labels 3. Observe: Label "P0-Critical" is now "HACKED-BY-ALICE" with black color ### **Impact** 1. **Issue Classification Disruption**: Modify critical labels (e.g., "P0-Critical" → "P3-Low") causing urgent issues to be deprioritized 2. **Security Issue Concealment**: Change "security" labels to "documentation" to hide vulnerability reports from security teams 3. **Workflow**** Sabotage**: Alter labels used in CI/CD automation, breaking deployment pipelines 4. **Mass Disruption**: Batch modifies all labels across multiple repositories using ID enumeration **Recommended Fix**: ```plain func UpdateLabel(c *context.Context, f form.CreateLabel) { l, err := database.GetLabelOfRepoByID(c.Repo.Repository.ID, f.ID) if err != nil { c.NotFoundOrError(err, "get label of repository by ID") return } // Now label ownership is validated at database layer l.Name = f.Title l.Color = f.Color if err := database.UpdateLabel(l); err != nil { c.Error(err, "update label") return } c.RawRedirect(c.Repo.MakeURL("labels")) } ```
+FIX commit https://github.com/gogs/gogs/commit/643a6d6353cb6a182a4e1f0720228727f30a3ad2 status=200
+  MSG: repo: improve authz for resources
+  FILE internal/route/api/v1/repo/issue_comment.go
+    +	issue, err := database.GetIssueByID(comment.IssueID)
+    +	if err != nil {
+    +		c.NotFoundOrError(err, "get issue by ID")
+    +		return
+    +	}
+    +	if issue.RepoID != c.Repo.Repository.ID {
+    +		c.NotFound()
+    +		return
+    +	}
+    +	issue, err := database.GetIssueByID(comment.IssueID)
+    +	if err != nil {
+    +		c.NotFoundOrError(err, "get issue by ID")
+    +		return
+    +	}
+    +	if issue.RepoID != c.Repo.Repository.ID {
+    +		c.NotFound()
+    +		return
+    +	}
+  FILE internal/route/api/v1/repo/key.go
+    +	if key.RepoID != c.Repo.Repository.ID {
+    +		c.NotFound()
+    +		return
+    +	}
+    -	if err := database.DeleteDeployKey(c.User, c.ParamsInt64(":id")); err != nil {
+    +	key, err := database.GetDeployKeyByID(c.ParamsInt64(":id"))
+    +	if err != nil {
+    +		c.NotFoundOrError(err, "get deploy key by ID")
+    +		return
+    +	}
+    +	if key.RepoID != c.Repo.Repository.ID {
+    +		c.NotFound()
+  FILE internal/route/repo/issue.go
+
+=== GHSA-5c3f-6486-3g7g sev=medium pkgs=['go:gogs.io/gogs']
+src=https://github.com/gogs/gogs cwes=['CWE-324', 'CWE-613']
+SUMMARY: Gogs's password-reset tokens use account-activation lifetime, ignoring RESET_PASSWORD_CODE_LIVES
+DESC: ## Summary Password-reset tokens are generated using `conf.Auth.ActivateCodeLives` (the account-activation lifetime), not `conf.Auth.ResetPasswordCodeLives`. The token lifetime is baked into the token itself at generation time and is re-extracted from the token at verification time, making `RESET_PASSWORD_CODE_LIVES` irrelevant to actual enforcement. When an administrator configures a shorter reset window (e.g., 10 minutes) for compliance or security reasons, reset tokens remain exploitable for the full activation lifetime instead, while the reset email falsely advertises the shorter expiry. ## Severity **Medium** (CVSS 3.1: 6.8) `CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:N` - **Attack Vector:** Network — the reset endpoint is reachable over HTTP/S. - **Attack Complexity:** High — successful exploitation requires (1) the instance to be configured with `RESET_PASSWORD_CODE_LIVES < ACTIVATE_CODE_LIVES`, AND (2) the attacker to have intercepted the victim's reset token (e.g., from a compromised or shared email inbox). - **Privileges Required:** None — no Gogs account is required. - **User Interaction:** Required — the victim must have triggered a password-reset request. - **Scope:** Unchanged — the impact is confined to the victim's Gogs account. - **Confidentiality Impact:** High — successful exploitation leads to account takeover, exposing all private repositories and data. - **Integrity Impact:** High — the attacker can change the victim's password and gain full write access. - **Availability Impact:** None. ## Affected component - `internal/userx/userx.go` — `GenerateActivateCode()` (line 39) - `internal/email/email.go` — `SendResetPasswordMail()` (line 132) - `internal/route/user/auth.go` — `verifyUserActiveCode()` (lines 426–439) and `ResetPasswdPost()` (line 621) ## CWE - **CWE-324**: Use of a Key Past Its Expiration Date - **CWE-613**: Insufficient Session Expiration ## Description ### The reset token lifetime is hardcoded to `ActivateCodeLives` at generation `GenerateActivateCode` (called for both account activation and password reset) bakes `conf.Auth.ActivateCodeLives` — not `ResetPasswordCodeLives` — into the token as a 6-digit field: ```go // internal/userx/userx.go:36-46 func GenerateActivateCode(userID int64, email, name, password, rands string) string { code := tool.CreateTimeLimitCode( fmt.Sprintf("%d%s%s%s%s", userID, email, strings.ToLower(name), password, rands), conf.Auth.ActivateCodeLives, // ← always ActivateCodeLives, never ResetPasswordCodeLives nil, ) code += hex.EncodeToString([]byte(strings.ToLower(name))) return code } ``` `CreateTimeLimitCode` embeds the `minutes` value at positions 12–17 of the token: ``` Token format: YYYYMMDDHHMM (12) | 000180 (6-digit lives) | SHA1 (40) | hex-username ``` `SendResetPasswordMail` calls `u.GenerateEmailActivateCode(u.Email())` — which resolves to `GenerateActivateCode` — with no option to pass a different lifetime: ```go // internal/email/email.go:131-132 func SendResetPasswordMail(c *macaron.Context, u User) error { return SendUserMail(c, u, tmplAuthResetPassword, u.GenerateEmailActivateCode(u.Email()), ...) } ``` ### `ResetPasswordCodeLives` is used only for display, not enforcement `VerifyTimeLimitCode` discards the `minutes` argument and re-extracts the lifetime directly from the token itself: ```go // internal/tool/tool.go:62-86 func VerifyTimeLimitCode(data string, minutes int, code string) bool { start := code[:12] lives := code[12:18] if d, err := strconv.Atoi(lives); err == nil { minutes = d // ← argument overridden by value baked into the token } retCode := CreateTimeLimitCode(data, minutes, start) if retCode == code && minutes > 0 { before, _ := time.ParseInLocation("200601021504", start, time.Local) if before.Add(time.Minute * time.Duration(minutes)).Unix() > now.Unix() { return true } } return false } ``` The `verifyUserActiveCode` caller passes `conf.Auth.ActivateCodeLives` as `minutes`, but it makes no difference: ```go // internal/route/user/auth.go:426-439 func verifyUserActiveCode(code string) (user *database.User) { minutes := conf.Auth.ActivateCodeLives // passed to VerifyTimeLimitCode but immediately overridden if user = parseUserFromCode(code); user != nil { prefix := code[:tool.TimeLimitCodeLength] data := strconv.FormatInt(user.ID, 10) + user.Email + user.LowerName + user.Password + user.Rands if tool.VerifyTimeLimitCode(data, minutes, prefix) { return user } } return nil } ``` `ResetPasswdPost` validates the reset token through `verifyUserActiveCode`, so it inherits the same flaw: ```go // internal/route/user/auth.go:621 if u := verifyUserActiveCode(code); u != nil { ``` `ResetPasswordCodeLives` appears only in email template data and in the admin config display — it has zero effect on actual token validation: ```go // internal/email/email.go:109 — template data only, not used to generate the token "ResetPwdCodeLives": conf.Auth.ResetPasswordCodeLives / 60, ``` ### Full execution chain 1. **Victim requests reset**: `POST /user/forget_password` → `SendResetPasswordMail` generates a token embedding `ActivateCodeLives = 180` at bytes 12–17. 2. **Email delivered**: The reset email says "link valid for 10 minutes" (from `ResetPwdCodeLives` in the template) but the embedded lifetime is 180. 3. **`RESET_PASSWORD_CODE_LIVES` window closes**: After 10 minutes the victim believes the link has expired. 4. **Attacker submits the token**: `POST /user/reset_password?code=<TOKEN>` → `ResetPasswdPost` → `verifyUserActiveCode` → `VerifyTimeLimitCode` extracts `000180` from the token → confirms the token has not yet reached the 180-minute mark → returns the user object → password is updated. 5. **Account takeover**: Attacker sets a new password and authenticates as the victim. ## Proof of Concept ```ini # app.ini configuration that exposes the bug: [auth] ACTIVATE_CODE_LIVES = 180 RESET_PASSWORD_CODE_LIVES = 10 ``` ```bash # 1) Request password reset for victim account curl -i -X POST -d 'email=victim@example.com' htt [...]
+FIX pull https://github.com/gogs/gogs/pull/8328 status=200
+  PR: security: enforce RESET_PASSWORD_CODE_LIVES on reset tokens | Password reset tokens were generated with `conf.Auth.ActivateCodeLives` instead of `conf.Auth.ResetPasswordCodeLives`. The lifetime is baked into the token at generation and re-extracted at verification, so the configured reset window was advertised in the email but never enforced. This change introduces `GenerateResetPasswordCode` in `internal/userx` and routes `SendResetPasswordMail` through it 
+  MSG: security: enforce RESET_PASSWORD_CODE_LIVES on reset tokens (#8328)
+  FILE CHANGELOG.md
+    +- _Security:_ Password reset tokens stayed valid for the account-activation lifetime, ignoring `[auth] RESET_PASSWORD_CODE_LIVES`. [#8328](https://github.com/g
+  FILE internal/database/issue_mail.go
+    +func (mu mailerUser) GenerateEmailResetPasswordCode(email string) string {
+    +	return userx.GenerateResetPasswordCode(
+    +		mu.user.ID,
+    +		email,
+    +		mu.user.Name,
+    +		mu.user.Password,
+    +		mu.user.Rands,
+    +	)
+    +}
+  FILE internal/email/email.go
+    +	GenerateEmailResetPasswordCode(string) string
+    -	return SendUserMail(t, u, tmplAuthResetPassword, u.GenerateEmailActivateCode(u.Email()), t.Tr("mail.reset_password"), "reset password")
+    +	return SendUserMail(t, u, tmplAuthResetPassword, u.GenerateEmailResetPasswordCode(u.Email()), t.Tr("mail.reset_password"), "reset password")
+  FILE internal/email/email_test.go
+    -func (testDoer) ID() int64                               { return 1 }
+    -func (testDoer) DisplayName() string                     { return "alice" }
+    -func (testDoer) Email() string                           { return "alice@example.test" }
+    -func (testDoer) GenerateEmailActivateCode(string) string { return "abc" }
+    +func (testDoer) ID() int64                                    { return 1 }
+    +func (testDoer) DisplayName() string                          { return "alice" }
+    +func (testDoer) Email() string                                { return "alice@example.test" }
+    +func (testDoer) GenerateEmailActivateCode(string) string      { return "abc" }
+    +func (testDoer) GenerateEmailResetPasswordCode(string) string { return "abc" }
+  FILE internal/userx/userx.go
+    +	return generateTimeLimitedUserCode(userID, email, name, password, rands, conf.Auth.ActivateCodeLives)
+    +}
+    +// GenerateResetPasswordCode generates a password-reset code based on user
+    +// information and the given email. The token's lifetime is bound to
+    +// [conf.AuthOpts.ResetPasswordCodeLives].
+    +func GenerateResetPasswordCode(userID int64, email, name, password, rands string) string {
+    +	return generateTimeLimitedUserCode(userID, email, name, password, rands, conf.Auth.ResetPasswordCodeLives)
+    +}
+FIX commit https://github.com/gogs/gogs/commit/187e9c557930eb4a8b9b1502ee45cccf3255ee7f status=200
+  (same commit message as a fix above; diff not repeated)
+
+=== GHSA-2237-5r9w-vm8j sev=high pkgs=['composer:opensource-workshop/connect-cms']
+src=https://github.com/opensource-workshop/connect-cms cwes=['CWE-200']
+SUMMARY: Connect-CMS information that is restricted to viewing is visible
+DESC: ### Impact - Information that is restricted from viewing in the search results of site searches (※) can still be viewed via the main text (a feature added in v1.8.0). - Impact by version - v1.8.0 ~ v1.8.3: It will be displayed in the text. - v1.8.0 and earlier: It will not be displayed in the body of the text, but the title (frame name) will be displayed with a link. - Target viewing restriction function - Frame publishing function (private, limited publishing) - IP Restriction Page - Password setting page ### Patches (fixed version) - Apply v1.8.4. ### Workarounds - Remove the site search (e.g. hide frames).。 ### References none
+
+=== GHSA-75vq-qvhr-7ffr sev=medium pkgs=['nuget:Umbraco.Cms.Api.Delivery']
+src=https://github.com/umbraco/Umbraco-CMS cwes=['CWE-200']
+SUMMARY: Umbraco Delivery API allows for cached requests to be returned with an invalid API key
+DESC: ### Impact Umbraco's [content delivery API](https://docs.umbraco.com/umbraco-cms/reference/content-delivery-api) can be restricted from public access such that an API key must be provided in a header to authorize the request. It's also possible to configure output caching, such that the delivery API outputs will be cached for a period of time, improving performance. There's an issue when these two things are used together though in that the caching doesn't vary by the header that contains the API key. As such it's possible for a user without a valid API key to retrieve a response for a given path and query if it has recently been requested and cached by request with a valid key. ### Patches Patches will be available in 13.9.3, 15.4.4 and 16.1.1. ### Workarounds Workaround is to remove or reduce the time period of the output caching or to provide other restrictions to access the delivery API such as by IP. ### References Content delivery API documentation: https://docs.umbraco.com/umbraco-cms/reference/content-delivery-api
+FIX commit https://github.com/umbraco/Umbraco-CMS/commit/7e82c258eebaa595eadc9b000461e27d02bc030e status=200
+  MSG: Merge commit from fork Co-authored-by: kjac <kja@umbraco.dk>
+  FILE src/Umbraco.Cms.Api.Delivery/Caching/DeliveryApiOutputCachePolicy.cs
+    -        context.EnableOutputCaching = requestPreviewService.IsPreview() is false;
+    +        IApiAccessService apiAccessService = context
+    +            .HttpContext
+    +            .RequestServices
+    +            .GetRequiredService<IApiAccessService>();
+    +        context.EnableOutputCaching = requestPreviewService.IsPreview() is false && apiAccessService.HasPublicAccess();
+FIX commit https://github.com/umbraco/Umbraco-CMS/commit/9f37db18d11c8ba4e3ecdeb35291af30ebee7cd0 status=200
+  (same commit message as a fix above; diff not repeated)
+FIX commit https://github.com/umbraco/Umbraco-CMS/commit/da43086017e1e318f6b5373391d78421efebce3a status=200
+  (same commit message as a fix above; diff not repeated)
+
+=== GHSA-8m3c-c723-h4p4 sev=medium pkgs=['pip:django-allauth']
+src=https://codeberg.org/allauth/django-allauth cwes=['CWE-287']
+SUMMARY: django-allauth's Okta and NetIQ implementations used a mutable identifier for authorization decisions
+DESC: An issue was discovered in allauth-django before 65.13.0. Both Okta and NetIQ were using preferred_username as the identifier for third-party provider accounts. That value may be mutable and should therefore be avoided for authorization decisions. The providers are now using sub instead.
+
+=== GHSA-4xgg-rw35-7mv5 sev=medium pkgs=['composer:magento/community-edition', 'composer:magento/project-community-edition']
+src=https://github.com/magento/magento2 cwes=['CWE-285']
+SUMMARY: Magento Improper Authorization leads to Security feature bypass
+DESC: Magento versions 2.4.7-p1, 2.4.6-p6, 2.4.5-p8, 2.4.4-p9 and earlier are affected by an Improper Authorization vulnerability that could result in a Security feature bypass. A low-privileged attacker could leverage this vulnerability to bypass security measures and disclose minor information. Exploitation of this issue does not require user interaction.
+
+=== GHSA-3h9f-r86x-qvjx sev=low pkgs=['pip:django']
+src=https://github.com/django/django cwes=['CWE-524']
+SUMMARY: Django: cache middleware may expose private responses when unrelated request cookies are present
+DESC: An issue was discovered in Django 6.0 before 6.0.7 and 5.2 before 5.2.16. `UpdateCacheMiddleware` and the `cache_page()` decorator cache responses that vary on cookies when the incoming request carries unrelated cookies, which allows remote attackers to read private data from the shared cache. Earlier, unsupported Django series (such as 5.0.x, 4.1.x, and 3.2.x) were not evaluated and may also be affected. Django would like to thank Chris Whyland for reporting this issue.
+FIX commit https://github.com/django/django/commit/64f9a2b2283fde3ec69fb0dfe441cf0f6f411ba3 status=200
+  MSG: [6.0.x] Fixed CVE-2026-48588 -- Prevented caching of responses that set cookies and vary on Cookie. `UpdateCacheMiddleware` skipped caching `Set-Cookie` responses that vary on `Cookie` only when the r
+  FILE django/middleware/cache.py
+    -        # sensitive) cookie in response to a cookie-less request.
+    -        if (
+    -            not request.COOKIES
+    -            and response.cookies
+    -            and has_vary_header(response, "Cookie")
+    -        ):
+    +        # sensitive) cookie while varying on Cookie.
+    +        if response.cookies and has_vary_header(response, "Cookie"):
+  FILE docs/releases/5.2.16.txt
+    +CVE-2026-48588: Potential exposure of private data via cached ``Set-Cookie`` response
+    +=====================================================================================
+    +:class:`~django.middleware.cache.UpdateCacheMiddleware` and
+    +:func:`~django.views.decorators.cache.cache_page` avoided caching responses
+    +that set a cookie while varying on ``Cookie`` only when the incoming request
+    +contained no cookies at all. When the request already carried an unrelated
+    +cookie (such as a language or theme preference cookie), the protection did not
+    +apply, allowing a response that sets a session or other sensitive cookie to be
+    +stored in Django's shared cache.
+    +This issue has severity "low" according to the :ref:`Django security policy
+    +<severity-levels>`.
+  FILE docs/releases/6.0.7.txt
+    +CVE-2026-48588: Potential exposure of private data via cached ``Set-Cookie`` response
+    +=====================================================================================
+    +:class:`~django.middleware.cache.UpdateCacheMiddleware` and
+    +:func:`~django.views.decorators.cache.cache_page` avoided caching responses
+    +that set a cookie while varying on ``Cookie`` only when the incoming request
+    +contained no cookies at all. When the request already carried an unrelated
+    +cookie (such as a language or theme preference cookie), the protection did not
+    +apply, allowing a response that sets a session or other sensitive cookie to be
+    +stored in Django's shared cache.
+    +This issue has severity "low" according to the :ref:`Django security policy
+    +<severity-levels>`.
+  FILE tests/cache/tests.py
+FIX commit https://github.com/django/django/commit/6e365f8d01f2ba0bbd90968d76a42600fb8bc4b1 status=200
+  MSG: Fixed CVE-2026-48588 -- Prevented caching of responses that set cookies and vary on Cookie. `UpdateCacheMiddleware` skipped caching `Set-Cookie` responses that vary on `Cookie` only when the request h
+  FILE django/middleware/cache.py
+    -        # sensitive) cookie in response to a cookie-less request.
+    -        if (
+    -            not request.COOKIES
+    -            and response.cookies
+    -            and has_vary_header(response, "Cookie")
+    -        ):
+    +        # sensitive) cookie while varying on Cookie.
+    +        if response.cookies and has_vary_header(response, "Cookie"):
+  FILE docs/releases/5.2.16.txt
+    +CVE-2026-48588: Potential exposure of private data via cached ``Set-Cookie`` response
+    +=====================================================================================
+    +:class:`~django.middleware.cache.UpdateCacheMiddleware` and
+    +:func:`~django.views.decorators.cache.cache_page` avoided caching responses
+    +that set a cookie while varying on ``Cookie`` only when the incoming request
+    +contained no cookies at all. When the request already carried an unrelated
+    +cookie (such as a language or theme preference cookie), the protection did not
+    +apply, allowing a response that sets a session or other sensitive cookie to be
+    +stored in Django's shared cache.
+    +This issue has severity "low" according to the :ref:`Django security policy
+    +<severity-levels>`.
+  FILE docs/releases/6.0.7.txt
+    +CVE-2026-48588: Potential exposure of private data via cached ``Set-Cookie`` response
+    +=====================================================================================
+    +:class:`~django.middleware.cache.UpdateCacheMiddleware` and
+    +:func:`~django.views.decorators.cache.cache_page` avoided caching responses
+    +that set a cookie while varying on ``Cookie`` only when the incoming request
+    +contained no cookies at all. When the request already carried an unrelated
+    +cookie (such as a language or theme preference cookie), the protection did not
+    +apply, allowing a response that sets a session or other sensitive cookie to be
+    +stored in Django's shared cache.
+    +This issue has severity "low" according to the :ref:`Django security policy
+    +<severity-levels>`.
+  FILE tests/cache/tests.py
+FIX commit https://github.com/django/django/commit/721685aa7799cc9327bd202cd1f70bd012ca95a7 status=200
+  MSG: [5.2.x] Fixed CVE-2026-48588 -- Prevented caching of responses that set cookies and vary on Cookie. `UpdateCacheMiddleware` skipped caching `Set-Cookie` responses that vary on `Cookie` only when the r
+  FILE django/middleware/cache.py
+    -        # sensitive) cookie in response to a cookie-less request.
+    -        if (
+    -            not request.COOKIES
+    -            and response.cookies
+    -            and has_vary_header(response, "Cookie")
+    -        ):
+    +        # sensitive) cookie while varying on Cookie.
+    +        if response.cookies and has_vary_header(response, "Cookie"):
+  FILE docs/releases/5.2.16.txt
+    +CVE-2026-48588: Potential exposure of private data via cached ``Set-Cookie`` response
+    +=====================================================================================
+    +:class:`~django.middleware.cache.UpdateCacheMiddleware` and
+    +:func:`~django.views.decorators.cache.cache_page` avoided caching responses
+    +that set a cookie while varying on ``Cookie`` only when the incoming request
+    +contained no cookies at all. When the request already carried an unrelated
+    +cookie (such as a language or theme preference cookie), the protection did not
+    +apply, allowing a response that sets a session or other sensitive cookie to be
+    +stored in Django's shared cache.
+    +This issue has severity "low" according to the :ref:`Django security policy
+    +<severity-levels>`.
+  FILE tests/cache/tests.py
+    -        Django must prevent caching of responses that set a user-specific (and
+    -        maybe security sensitive) cookie in response to a cookie-less request.
+    +        Responses that set a new cookie not present in the request are not
+    +        cached, regardless of whether the request already had other cookies.
+    -        request = self.factory.get("/view/")
+    -        csrf_middleware = CsrfViewMiddleware(csrf_view)
+    -        csrf_middleware.process_view(request, csrf_view, (), {})
+    -        cache_middleware = CacheMiddleware(csrf_middleware)
+    +        for headers in ({}, {"HTTP_COOKIE": "unrelated=value"}):
+    +            with self.subTest(headers=headers):
+    +                request = self.factory.get("/view/", **headers)
+
+=== GHSA-chcp-g9j5-3xxx sev=high pkgs=['composer:winter/wn-dusk-plugin']
+src=https://github.com/wintercms/wn-dusk-plugin cwes=['CWE-269', 'CWE-863']
+SUMMARY: Dusk plugin may allow unfettered user authentication in misconfigured installs
+DESC: The Dusk plugin provides some special routes as part of its testing framework to allow a browser environment (such as headless Chrome) to act as a user in the Backend or User plugin without having to go through authentication. This route is `[[URL]]/_dusk/login/[[USER ID]]/[[MANAGER]]` - where `[[URL]]` is the base URL of the site, `[[USER ID]]` is the ID of the user account and `[[MANAGER]]` is the authentication manager (either `backend` for Backend, or `user` for the User plugin). If a configuration of a site using the Dusk plugin is set up in such a way that the Dusk plugin is available publicly and the test cases in Dusk are run with live data, this route may potentially be used to gain access to any user account in either the Backend or User plugin without authentication. As indicated in the [README](https://github.com/wintercms/wn-dusk-plugin/blob/main/README.md), this plugin should only be used in development and should *NOT* be used in a production instance. It is specifically recommended that the plugin be installed as a development dependency only in Composer. In order to remediate this issue, the special routes used above will now no longer be registered unless the `APP_ENV` environment variable is specifically set to `dusk`. Since Winter by default does not use this environment variable and it is not populated by default, it will only exist if Dusk's automatic configuration is used (which won't exhibit this vulnerability) or if a developer manually specifies it in their configuration. The automatic configuration performed by the Dusk plugin has also been hardened by default to use sane defaults and not allow external environment variables to leak into this configuration. ### Impact Low. This will only affect users in which the Winter CMS installation meets ALL the following criteria: - The Dusk plugin is installed in the Winter CMS instance. - The application is in production mode (ie. the `debug` config value is set to `true` in `config/app.php`). - The Dusk plugin's automatic configuration has been overridden, either by providing a custom `.env.dusk` file or by providing custom configuration in the `config/dusk` folder, or by providing configuration environment variables externally. - The environment has been configured to use production data in the database for testing, and not the temporary SQLite database that Dusk uses by default. - The application is connectable via the web. ### Patches Issue has been fixed in v2.1.0. ### For more information If you have any questions or comments about this advisory: - Email us at [hello@wintercms.com](mailto:hello@wintercms.com)
+
+=== GHSA-xh32-c9wx-phrp sev=low pkgs=['maven:org.keycloak:keycloak-services']
+src=https://github.com/keycloak/keycloak cwes=['CWE-359']
+SUMMARY: Keycloak: Information disclosure of disabled user attributes via administrative endpoint
+DESC: A flaw was found in Keycloak. An authenticated user with the view-users role could exploit a vulnerability in the UserResource component. By accessing a specific administrative endpoint, this user could improperly retrieve user attributes that were configured to be hidden. This unauthorized information disclosure could expose sensitive user data.
+FIX pull https://github.com/keycloak/keycloak/pull/46923 status=200
+  PR: Do not return managed attribute as unmanaged if admin has no view permission | Closes #46922 <!--- Please read https://github.com/keycloak/keycloak/blob/main/CONTRIBUTING.md and follow these guidelines when contributing to Keycloak -->
+  MSG: Do not return managed attribute as unmanaged if admin has no view permission Closes #46922 Signed-off-by: Pedro Igor <pigor.craveiro@gmail.com>
+  FILE services/src/main/java/org/keycloak/services/resources/admin/UserResource.java
+    -        Map<String, List<String>> managedAttributes = profile.getAttributes().getReadable();
+    -        Map<String, List<String>> unmanagedAttributes = profile.getAttributes().getUnmanagedAttributes();
+    -        managedAttributes.entrySet().removeAll(unmanagedAttributes.entrySet());
+    -        Map<String, List<String>> attributes = new HashMap<>(user.getAttributes());
+    -        attributes.entrySet().removeAll(managedAttributes.entrySet());
+    -        attributes.remove(UserModel.USERNAME);
+    -        attributes.remove(UserModel.EMAIL);
+    -        return attributes.entrySet().stream()
+    +        return profile.getAttributes().getUnmanagedAttributes().entrySet().stream()
+  FILE tests/base/src/test/java/org/keycloak/tests/admin/user/UserProfileTest.java
+    +import java.util.Map;
+    +import jakarta.ws.rs.core.Response;
+    +import org.keycloak.representations.userprofile.config.UPConfig.UnmanagedAttributePolicy;
+    +import org.keycloak.testframework.util.ApiUtil;
+    +    @Test
+    +    public void testGetUnmanagedAttributes() {
+    +        UserProfileResource upResource = managedRealm.admin().users().userProfile();
+    +        UPConfig upConfig = upResource.getConfiguration();
+    +        upConfig.addOrReplaceAttribute(createAttributeMetadata("aName"));
+    +        upResource.update(upConfig);
+    +        try {
+    +            UsersResource users = managedRealm.admin().users();
+    +            UserRepresentation user = UserConfigBuilder.create().username("test-user").attribute("aName", "aValue").build();
+    +            try (Response response = users.create(user)) {
+    +                user.setId(ApiUtil.getCreatedId(response));
+    +            }
+    +            Map<String, List<String>> unmanagedAttributes = users.get(user.getId()).getUnmanagedAttributes();
+    +            assertTrue(unmanagedAttributes.isEmpty());
+    +            upConfig.setUnmanagedAttributePolicy(UnmanagedAttributePolicy.ENABLED);
+    +            upResource.update(upConfig);
+    +            user.getAttributes().put("unmanaged", List.of("value"));
+  FILE tests/base/src/test/java/org/keycloak/tests/workflow/WorkflowScheduleTest.java
+FIX commit https://github.com/keycloak/keycloak/commit/215bc1e27230f2a66670ed70262248b5f5254eb9 status=200
+  (same commit message as a fix above; diff not repeated)
+
+=== GHSA-rx66-hj7g-28h7 sev=medium pkgs=['maven:org.keycloak:keycloak-services']
+src=https://github.com/keycloak/keycloak cwes=['CWE-653']
+SUMMARY: Keycloak: Replay of action tokens via improper handling of single-use entries
+DESC: A flaw was found in Keycloak. The SingleUseObjectProvider, a global key-value store, lacks proper type and namespace isolation. This vulnerability allows an attacker to delete arbitrary single-use entries, which can enable the replay of consumed action tokens, such as password reset links. This could lead to unauthorized access or account compromise.
+FIX commit https://github.com/keycloak/keycloak/commit/9046f201125a6fd6be9c116b99d348509d99d4a5 status=200
+  MSG: Adding namespaces for single-use cache entries for PAR and OAuth code (#471) closes CVE-2026-4282 closes CVE-2026-4325 Signed-off-by: mposolda <mposolda@gmail.com>
+  FILE server-spi/src/main/java/org/keycloak/models/DefaultActionTokenKey.java
+    +import org.keycloak.common.util.SecretGenerator;
+    -        this.actionVerificationNonce = actionVerificationNonce == null ? UUID.randomUUID() : actionVerificationNonce;
+    +        this.actionVerificationNonce = actionVerificationNonce == null ? SecretGenerator.getInstance().generateSecureUUID() : actionVerificationNonce;
+  FILE services/src/main/java/org/keycloak/protocol/oidc/par/endpoints/ParEndpoint.java
+    -import java.util.UUID;
+    +import org.keycloak.common.util.SecretGenerator;
+    -    private static final String REQUEST_URI_PREFIX = "urn:ietf:params:oauth:request_uri:";
+    +    public static final String REQUEST_URI_PREFIX = "urn:ietf:params:oauth:request_uri:";
+    +    public static final String CACHE_KEY_PREFIX = "par:";
+    -        String key = UUID.randomUUID().toString();
+    +        String key = SecretGenerator.getInstance().generateSecureID();
+    -        singleUseStore.put(key, expiresIn, params);
+    +        singleUseStore.put(CACHE_KEY_PREFIX + key, expiresIn, params);
+  FILE services/src/main/java/org/keycloak/protocol/oidc/par/endpoints/request/AuthzEndpointParParser.java
+    +import static org.keycloak.protocol.oidc.par.endpoints.ParEndpoint.CACHE_KEY_PREFIX;
+    -        Map<String, String> retrievedRequest = singleUseStore.remove(key);
+    +        Map<String, String> retrievedRequest = singleUseStore.remove(CACHE_KEY_PREFIX + key);
+  FILE services/src/main/java/org/keycloak/protocol/oidc/utils/OAuth2Code.java
+    -    private static final String ID_NOTE = "id";
+    -    private static final String EXPIRATION_NOTE = "exp";
+    +    public static final String ID_NOTE = "id";
+    +    public static final String EXPIRATION_NOTE = "exp";
+    -    private static final String USER_SESSION_ID_NOTE = "user_session_id";
+    +    public static final String USER_SESSION_ID_NOTE = "user_session_id";
+  FILE services/src/main/java/org/keycloak/protocol/oidc/utils/OAuth2CodeParser.java
+    +    private static final String CACHE_KEY_PREFIX = "code:";
+    -        codeStore.put(key, clientSession.getUserSession().getRealm().getAccessCodeLifespan(), serialized);
+    +        codeStore.put(CACHE_KEY_PREFIX + key, clientSession.getUserSession().getRealm().getAccessCodeLifespan(), serialized);
+    -        Map<String, String> codeData = codeStore.remove(codeUUID);
+    +        Map<String, String> codeData = codeStore.remove(CACHE_KEY_PREFIX + codeUUID);
+  FILE services/src/main/java/org/keycloak/services/clientpolicy/executor/SecureParContentsExecutor.java
+    -        Map<String, String> requestParametersFromPAR = singleUseStore.get(key);
+    +        Map<String, String> requestParametersFromPAR = singleUseStore.get(ParEndpoint.CACHE_KEY_PREFIX + key);
+    -                singleUseStore.remove(key);
+    +                singleUseStore.remove(ParEndpoint.CACHE_KEY_PREFIX + key);
+  FILE testsuite/integration-arquillian/tests/base/src/test/java/org/keycloak/testsuite/forms/ResetPasswordTest.java
+  FILE testsuite/integration-arquillian/tests/base/src/test/java/org/keycloak/testsuite/oauth/par/ParTest.java
+
+=== GHSA-8fc2-fhh6-f6m5 sev=critical pkgs=['composer:alextselegidis/easyappointments']
+src=https://github.com/alextselegidis/easyappointments cwes=['CWE-269', 'CWE-307']
+SUMMARY: Easy!Appointments Improper Restriction of Excessive Authentication Attempts 
+DESC: An issue in Alex Tselegidis EasyAppointments v.1.5.0 allows a remote attacker to escalate privileges via the index.php file.
+
+=== GHSA-hwr4-mq23-wcv5 sev=high pkgs=['go:github.com/dunglas/mercure']
+src=https://github.com/dunglas/mercure cwes=['CWE-1289']
+SUMMARY: mercure has Topic Selector Cache Key Collision
+DESC: ### Impact A cache key collision vulnerability in `TopicSelectorStore` allows an attacker to poison the match result cache, potentially causing private updates to be delivered to unauthorized subscribers or blocking delivery to authorized ones. The cache key was constructed by concatenating the topic selector and topic with an underscore separator: ```go k = "m_" + topicSelector + "_" + topic ``` Because both topic selectors and topics can contain underscores, two distinct pairs can produce the same key: ``` selector="foo_bar" topic="baz" → key: "m_foo_bar_baz" selector="foo" topic="bar_baz" → key: "m_foo_bar_baz" ``` An attacker who can subscribe to the hub or publish updates with crafted topic names can exploit this to bypass authorization checks on private updates. ### Patches The vulnerability is fixed by replacing string-encoded cache keys with typed Go struct keys that are inherently collision-free: ```go type matchCacheKey struct { topicSelector string topic string } ``` The internal `TopicSelectorStoreCache` interface and sharded cache abstraction have also been removed in favor of a single typed otter cache. Users should upgrade to version **0.22.0** or later. ### Workarounds Disable the topic selector cache by setting `topic_selector_cache` to `-1` in the Caddyfile, or by passing a cache size of `0` when using the library directly. This eliminates the vulnerability at the cost of reduced performance.
+FIX commit https://github.com/dunglas/mercure/commit/4964a69be904fd61e35b5f1e691271663b6fdd64 status=200
+  MSG: Merge commit from fork Replace string-encoded cache keys with typed Go struct keys to prevent cache poisoning via crafted topic names containing underscore separators. Also removes the redundant shard
+  FILE caddy/mercure.go
+    -	MaxEntriesPerShard int    `json:"max_entries_per_shard,omitempty"`
+    -	ShardCount         uint64 `json:"shard_count,omitempty"`
+    +	// Deprecated: use Size instead.
+    +	MaxEntriesPerShard int `json:"max_entries_per_shard,omitempty"`
+    +	// Deprecated: no longer used.
+    +	ShardCount uint64 `json:"shard_count,omitempty"`
+    +	// Size is the maximum number of entries in the cache.
+    +	Size int `json:"size,omitempty"`
+    -	maxEntriesPerShard := mercure.DefaultTopicSelectorStoreCacheMaxEntriesPerShard
+    -	shardCount := mercure.DefaultTopicSelectorStoreCacheShardCount
+    +	cacheSize := mercure.DefaultTopicSelectorStoreCacheSize
+    -		maxEntriesPerShard = m.TopicSelectorCache.MaxEntriesPerShard
+    -		shardCount = m.TopicSelectorCache.ShardCount
+    -	}
+    +		switch {
+    +		case m.TopicSelectorCache.Size > 0:
+    +			cacheSize = m.TopicSelectorCache.Size
+    +		case m.TopicSelectorCache.MaxEntriesPerShard > 0:
+    +			// Backward compat: convert old per-shard config
+    +			shardCount := m.TopicSelectorCache.ShardCount
+    +			if shardCount == 0 {
+    +				shardCount = 256
+    +			}
+    -	if shardCount == 0 {
+    -		shardCount = mercure.DefaultTopicSelectorStoreCacheShardCount
+    +			cacheSize = m.TopicSelectorCache.MaxEntriesPerShard * int(shardCount)
+    +		case m.TopicSelectorCache.MaxEntriesPerShard < 0:
+    +			cacheSize = 0
+    +		}
+    -	var tss *mercure.TopicSelectorStore
+  FILE config_deprecated.go
+  FILE hub.go
+  FILE hub_test.go
+  FILE topicselector.go
+  FILE topicselector_test.go
+  FILE topicselectorcache.go
+  FILE topicselectorcache_test.go
+
+=== GHSA-8hp8-9fhr-pfm9 sev=high pkgs=['go:code.vikunja.io/api']
+src=https://github.com/go-vikunja/vikunja cwes=['CWE-285']
+SUMMARY: Vikjuna: Link Share Hash Disclosure via ReadAll Endpoint Enables Permission Escalation
+DESC: ## Summary The `LinkSharing.ReadAll()` method allows link share authenticated users to list all link shares for a project, including their secret hashes. While `LinkSharing.CanRead()` correctly blocks link share users from reading individual shares via `ReadOne`, the `ReadAllWeb` handler bypasses this check by never calling `CanRead()`. An attacker with a read-only link share can retrieve hashes for write or admin link shares on the same project and authenticate with them, escalating to full admin access. ## Details The vulnerability arises from an inconsistency between the `ReadOneWeb` and `ReadAllWeb` generic handlers and the `LinkSharing` permission model. **`LinkSharing.CanRead()` correctly blocks link share users** (`pkg/models/link_sharing_permissions.go:25-29`): ```go func (share *LinkSharing) CanRead(s *xorm.Session, a web.Auth) (bool, int, error) { if _, is := a.(*LinkSharing); is { return false, 0, nil // Blocks link share users } // ... } ``` **`ReadOneWeb` calls `CanRead()` before returning data** (`pkg/web/handler/read_one.go:64`): ```go canRead, maxPermission, err := currentStruct.CanRead(s, currentAuth) if !canRead { return echo.NewHTTPError(http.StatusForbidden, ...) } ``` **`ReadAllWeb` does NOT call `CanRead()`** (`pkg/web/handler/read_all.go:106`): ```go // Directly calls ReadAll without permission check result, resultCount, numberOfItems, err := currentStruct.ReadAll(s, currentAuth, search, pageNumber, perPageNumber) ``` **`LinkSharing.ReadAll()` only checks project-level read access** (`pkg/models/link_sharing.go:228-236`): ```go func (share *LinkSharing) ReadAll(s *xorm.Session, a web.Auth, ...) (...) { project := &Project{ID: share.ProjectID} can, _, err := project.CanRead(s, a) // Link share users pass this! if !can { return nil, 0, 0, ErrGenericForbidden{} } // Returns all shares with hashes... ``` **`Project.CanRead()` allows link share users** (`pkg/models/project_permissions.go:105-108`): ```go shareAuth, ok := a.(*LinkSharing) if ok { return p.ID == shareAuth.ProjectID && (shareAuth.Permission == PermissionRead || ...), ... } ``` The `Hash` field is exposed in JSON serialization (`pkg/models/link_sharing.go:50`): ```go Hash string `xorm:"varchar(40) not null unique" json:"hash" param:"hash"` ``` While the `Password` field is cleared at line 276, the `Hash` — which is the secret token used to authenticate — is returned in full. ## PoC **Prerequisites:** A project with multiple link shares at different permission levels (common scenario: a read-only share for public access and a write/admin share for collaborators). **Step 1: Authenticate with a read-only link share** ```bash # Authenticate with a read-only link share hash curl -s -X POST http://localhost:3456/api/v1/shares/READ_ONLY_HASH/auth \ | jq '.token' # Returns: JWT token with permission=0 (read) ``` **Step 2: List all link shares for the project (hash disclosure)** ```bash # Use the read-only JWT to list ALL shares including their hashes curl -s -H "Authorization: Bearer <read-only-jwt>" \ http://localhost:3456/api/v1/projects/PROJECT_ID/shares \ | jq '.[].hash, .[].permission' # Returns ALL shares with their hashes and permission levels: # "READ_ONLY_HASH" permission: 0 # "ADMIN_HASH" permission: 2 <-- leaked! ``` **Step 3: Escalate to admin using the leaked hash** ```bash # Authenticate with the admin link share hash curl -s -X POST http://localhost:3456/api/v1/shares/ADMIN_HASH/auth \ | jq '.token' # Returns: JWT token with permission=2 (admin) ``` **Step 4: Exercise admin privileges** ```bash # Delete the project (admin-only operation) curl -s -X DELETE -H "Authorization: Bearer <admin-jwt>" \ http://localhost:3456/api/v1/projects/PROJECT_ID # Success — full admin access achieved from a read-only share ``` ## Impact - **Permission escalation:** An attacker with any link share URL (including read-only) can escalate to the highest permission level of any other link share on the same project - **Credential disclosure:** All link share hashes for a project are exposed, which are effectively bearer tokens - **No account required:** Link shares are designed for unauthenticated access — the attacker only needs a link share URL that was shared publicly or forwarded to them - **Common scenario:** Projects with both read-only (public) and write/admin (collaborator) link shares are the standard use case for tiered sharing - **Password-protected shares:** Even password-protected share hashes are leaked, though exploitation requires knowing/brute-forcing the password ## Recommended Fix Add a link share user check at the beginning of `LinkSharing.ReadAll()`, mirroring the check in `CanRead()`: ```go // In pkg/models/link_sharing.go, at the start of ReadAll(): func (share *LinkSharing) ReadAll(s *xorm.Session, a web.Auth, search string, page int, perPage int) (result interface{}, resultCount int, totalItems int64, err error) { // Don't allow link share users to list link shares if _, is := a.(*LinkSharing); is { return nil, 0, 0, ErrGenericForbidden{} } project := &Project{ID: share.ProjectID} // ... rest of method unchanged ``` Alternatively, as a defense-in-depth measure, exclude the `Hash` field from JSON serialization for list responses by using `json:"-"` and only returning it on creation. However, the primary fix should be the authorization check since the hash is needed in the creation response.
+FIX commit https://github.com/go-vikunja/vikunja/commit/9efe1fadba817923c7c7f5953c3e9e9c5683bbf3 status=200
+  MSG: fix: block link share users from listing link shares in ReadAll Link share authenticated users could call ReadAll on link shares, which leaked hash credentials for other shares on the same project. Th
+  FILE pkg/models/link_sharing.go
+    +	// Don't allow link share authenticated users to list link shares
+    +	if _, is := a.(*LinkSharing); is {
+    +		return nil, 0, 0, ErrGenericForbidden{}
+    +	}
+  FILE pkg/webtests/link_sharing_test.go
+    -				rec, err := testHandlerLinkShareReadOnly.testReadAllWithLinkShare(nil, map[string]string{"project": "1"})
+    -				require.NoError(t, err)
+    -				assert.Contains(t, rec.Body.String(), `"hash":"test"`)
+    +				_, err := testHandlerLinkShareReadOnly.testReadAllWithLinkShare(nil, map[string]string{"project": "1"})
+    +				require.Error(t, err)
+    +				assert.Contains(t, getHTTPErrorMessage(err), `Forbidden`)
+    -				rec, err := testHandlerLinkShareWrite.testReadAllWithLinkShare(nil, map[string]string{"project": "2"})
+    -				require.NoError(t, err)
+    -				assert.Contains(t, rec.Body.String(), `"hash":"test2"`)
+    +				_, err := testHandlerLinkShareWrite.testReadAllWithLinkShare(nil, map[string]string{"project": "2"})
+    +				require.Error(t, err)
+    +				assert.Contains(t, getHTTPErrorMessage(err), `Forbidden`)
+    -				rec, err := testHandlerLinkShareAdmin.testReadAllWithLinkShare(nil, map[string]string{"project": "3"})
+    -				require.NoError(t, err)
+    -				assert.Contains(t, rec.Body.String(), `"hash":"test3"`)
+    +				_, err := testHandlerLinkShareAdmin.testReadAllWithLinkShare(nil, map[string]string{"project": "3"})
+    +				require.Error(t, err)
+    +				assert.Contains(t, getHTTPErrorMessage(err), `Forbidden`)
+
+=== GHSA-f3r2-88mq-9v4g sev=medium pkgs=['composer:auth0/symfony']
+src=https://github.com/auth0/symfony cwes=['CWE-345', 'CWE-863', 'CWE-1395']
+SUMMARY: Auth0 Symfony SDK has Improper Audience Validation via Auth0-PHP SDK
+DESC: ### Description In applications built with the Auth0-PHP SDK, the audience validation in access tokens is performed improperly. Without proper validation, affected applications may accept ID tokens as Access tokens. ### Affected product and versions Projects are affected if they meet the following preconditions: - Applications using the Auth0 Symfony SDK with versions between 5.0.0 and 5.5.0 - Auth0 Symfony SDK uses the Auth0-PHP SDK with versions between 8.0.0 and 8.17.0. ### Resolution Upgrade Auth0/symfony to version 5.6.0 or greater. ### Acknowledgement Okta would like to thank Jafar Sadiq (iaf4r) for their discovery and responsible disclosure.
+FIX commit https://github.com/auth0/symfony/commit/0103d6f8dcef6996653fad1f823d1c167f472479 status=200
+  MSG: fix(deps) : Update auth0/auth0-php for security fix
+  FILE composer.json
+    -    "auth0/auth0-php": "^8.17",
+    +    "auth0/auth0-php": "^8.18",

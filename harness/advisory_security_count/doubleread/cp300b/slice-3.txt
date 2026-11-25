@@ -1,0 +1,670 @@
+=== GHSA-vgxm-h9gx-h9w7 sev=medium pkgs=['pip:django-cms']
+src=https://github.com/django-cms/django-cms cwes=['CWE-285', 'CWE-862']
+SUMMARY: django CMS: Structure endpoint bypasses page-view permission
+DESC: ### Summary The structure-board endpoint (`render_object_structure`) renders a page's plugin structure without verifying that the requesting user is allowed to view the page. The edit and preview endpoints enforce this via `render_page()`, but the structure endpoint does not, allowing a low-privileged staff user to read the plugin structure of a view-restricted page. ### Details `render_object_structure` (in `cms/views.py`) loads the `PageContent` object and renders `cms/toolbar/structure.html` directly. Unlike `render_object_endpoint` (used by edit/preview), which renders through `render_pagecontent` → `render_page` and calls `user_can_view_page(request.user, page)` (returning 404 when the user may not view the page), the structure endpoint performs no page-level authorization. The rendered structure board includes each plugin's `get_short_description()` (e.g. link names/URLs, text snippets), so the content of a restricted page is disclosed, not just its shape. ### Impact A staff user (any account with `is_staff=True`) who lacks view permission on a view-restricted page can retrieve that page's plugin structure and short descriptions by requesting the structure endpoint with the page's content-type id and object id. This only applies when `CMS_PERMISSION=True` and the page has view restrictions (or `CMS_PUBLIC_FOR='staff'`). Sites without per-page view restrictions are not affected. ### Patches Fixed in 5.0.8: the structure endpoint now enforces `user_can_view_page()` for `PageContent` objects, matching edit/preview. ### Workarounds None other than restricting staff access. Upgrade is recommended. ### Credits Reported by the security team at the University of Sydney ([@reporter]).
+FIX pull https://github.com/django-cms/django-cms/pull/8645 status=200
+  PR: fix: Enforce authorization on structure, move and clipboard endpoints (#8644) | ## Summary by Sourcery Harden placeholder and structure-related endpoints to prevent unauthorized content access and unsafe plugin moves. Bug Fixes: - Prevent cyclic reparenting of plugins by rejecting moves that would place a plugin inside itself or any of its descendants. - Ensure copying a plugin or an entire placeholder to the clipboard checks source-side placeholder permissions to avoid conte
+  MSG: fix: Enforce authorization on structure, move and clipboard endpoints (#8644) (#8645) * Merge commit from fork * Add 'change_example1' permission for staff user
+  FILE cms/admin/placeholderadmin.py
+    +        source_placeholder = source_plugin.placeholder
+    +        # Check source-side permission as well: copying reads the source
+    +        # plugins, so a user without access to the source placeholder must not
+    +        # be able to exfiltrate its content into their clipboard.
+    +        if not source_placeholder.has_add_plugins_permission(request.user, old_plugins):
+    +            message = _('You do not have permission to copy these plugins.')
+    +            raise PermissionDenied(message)
+    +        if not source_placeholder.check_source(request.user):
+    +            message = _('You do not have permission to copy these plugins.')
+    +            raise PermissionDenied(message)
+    +        # Check source-side permission as well: copying reads the source
+    +        # plugins, so a user without access to the source placeholder must not
+    +        # be able to exfiltrate its content into their clipboard.
+    +        if not source_placeholder.has_add_plugins_permission(request.user, old_plugins):
+    +            message = _('You do not have permission to copy this placeholder.')
+    +            raise PermissionDenied(message)
+    +        if not source_placeholder.check_source(request.user):
+    +            message = _('You do not have permission to copy this placeholder.')
+    +            raise PermissionDenied(message)
+    +        # Reparenting an existing plugin under itself or one of its own
+    +        # descendants would create a cycle in the plugin tree. The recursive
+    +        # descendant/ancestor queries would then loop indefinitely, stalling
+    +        # request handling (denial of service). Reject such moves.
+    +        # (Copies and cut-to-clipboard create new plugins, so they are safe.)
+    +        if (
+    +            target_parent
+    +            and not move_a_copy
+    +            and not move_to_clipboard
+    +            and (
+    +                target_parent.pk == plugin.pk
+  FILE cms/tests/test_placeholder_admin.py
+  FILE cms/tests/test_placeholder_app_admin.py
+  FILE cms/tests/test_views.py
+  FILE cms/views.py
+FIX commit https://github.com/django-cms/django-cms/commit/7642a98ab3170793c0b27b4125dd1f3d318b8a1c status=200
+  (same commit message as a fix above; diff not repeated)
+
+=== GHSA-9623-mj7j-p9v4 sev=medium pkgs=['maven:io.quarkus:quarkus-vertx']
+src=https://github.com/quarkusio/quarkus cwes=['CWE-668']
+SUMMARY: Quarkus potentially leaks data when duplicating a duplicated context
+DESC: ### Impact Vert.x 4.5.12 has changed the semantics of the duplication of duplicated context. Duplicated context is an object used to propagate data through a processing (synchronous or asynchronous). Each "transaction" or "processing" runs on its own isolated duplicated context. Initially, duplicating a duplicated context was creating a fresh (empty) new context, meaning that the new duplicated context can be used to managed a separated transaction. In Vert.x 4.5.12, this semantics has changed, and since the content of the parent duplicated context is copied into the new one, potentially leaking data. This CVE is especially for Quarkus as Quarkus extensively uses the Vert.x duplicated context to implement context propagation. With the new semantic data from one transaction can leak to the data from another transaction. From a Vert.x point of view, this new semantic clarifies the behavior. A significant amount of data is stored in the duplicated context, including request scope, security details, and metadata. Duplicating a duplicated context is rather rare and is only done in a few places: - Quarkus REST Client when using OTel (but it's the same transaction, so no leak) - Quarkus Messaging connectors - Quarkus SmallRye Health (same transaction, so no leak) ### Patches After discussion with the Vert.x team, the change will be rolled back in Vert.x 4.x. A new API will be added to Vert.x 5 do distinguish the 2 cases. ### Workarounds When duplicating a duplicated context, the following code can be done to avoid the potential leak: ```java ((ContextInternal) VertxContext.getRootContext(ctx)).duplicate() ``` This workaround would not be required once the Vert.x version containing the fix will be included. Note that the workaround would still work. ### References This issue have been reported in https://github.com/quarkusio/quarkus/issues/48227.
+FIX commit https://github.com/quarkusio/quarkus/commit/2b58f59f4bf0bae7d35b1abb585b65f2a66787d1 status=200
+  MSG: Merge pull request #48486 from jponge/deps/mutiny-vertx-3.19.1-vertx-4.5.16 Version bumps for Vert.x 4.5.16
+  FILE bom/application/pom.xml
+    -        <smallrye-common.version>2.12.0</smallrye-common.version>
+    +        <smallrye-common.version>2.12.2</smallrye-common.version>
+    -        <smallrye-mutiny-vertx-binding.version>3.19.0</smallrye-mutiny-vertx-binding.version>
+    +        <smallrye-mutiny-vertx-binding.version>3.19.1</smallrye-mutiny-vertx-binding.version>
+    -        <vertx.version>4.5.14</vertx.version>
+    +        <vertx.version>4.5.16</vertx.version>
+  FILE docs/src/main/asciidoc/messaging.adoc
+    -<<internal-channels>> however do propagate the context, as they are part of the same application and the context is not lost.
+    +=== Context Propagation with Emitters
+    -For example, you might want to propagate the caller context from an incoming HTTP request to the message processing stage.
+    -For emitters, it is recommended to use the `MutinyEmitter`, as it exposes methods such as `sendAndAwait` that makes sure to wait until a message processing is 
+    +When using messaging emitters, the context is not propagated by default.
+    -[WARNING]
+    -====
+    -The execution context to which the RequestScoped context is bound, in the previous example the REST call, controls the lifecycle of the context.
+    -This means that when the REST call is completed the RequestScoped context is destroyed.
+    -Therefore, you need to make sure that your processing or message dispatch is completed before the REST call completes.
+    +In some scenarios, you might want to propagate the caller context to the message processing stage, using <<internal-channels,internal channels>>.
+    -For more information check the xref:context-propagation.adoc#context-propagation-for-cdi[Context Propagation] guide.
+    -====
+    +Quarkus provides `ContextualEmitter`, a drop in replacement for `MutinyEmitter` and `Emitter`, that allows you to propagate the context when sending messages.
+    +You can use the context propagation annotation `@CurrentThreadContext` to configure the contexts that will be propagated from an _emitter_ method.
+    +The annotation configures the contexts that will be captured and propagated from that method,
+    +and needs to be present on the propagator method, i.e. the caller of the emitter, not the processing method.
+    -For example, let `RequestScopedBean` a request-scoped bean, `MutinyEmitter` can be used to dispatch messages locally through the internal channel `app`:
+    +Let `RequestScopedBean` a request-scoped bean, `ContextualEmitter` can be used to dispatch messages locally through the internal channel `app`:
+    -import io.smallrye.reactive.messaging.MutinyEmitter;
+    -import io.smallrye.mutiny.Uni;
+    -import io.vertx.core.Context;
+    -import io.vertx.core.Vertx;
+    +import io.quarkus.smallrye.reactivemessaging.runtime.ContextualEmitter;
+  FILE extensions/smallrye-reactive-messaging/runtime/src/main/java/io/quarkus/smallrye/reactivemessaging/runtime/ContextualEmitterImpl.java
+  FILE extensions/vertx-http/runtime/src/main/java/io/quarkus/vertx/http/runtime/filters/AbstractResponseWrapper.java
+  FILE independent-projects/resteasy-reactive/pom.xml
+  FILE independent-projects/vertx-utils/pom.xml
+  FILE integration-tests/reactive-messaging-context-propagation/src/test/java/io/quarkus/it/kafka/KafkaContextPropagationTest.java
+FIX pull https://github.com/quarkusio/quarkus/pull/48486 status=200
+  (same commit message as a fix above; diff not repeated)
+FIX commit https://github.com/quarkusio/quarkus/commit/31e8a3bfcf4e223788615d5ce25eb929ca251275 status=200
+  MSG: Backport of #48486 on 3.20 Also include Mutiny and Netty alignments.
+  FILE bom/application/pom.xml
+    -        <smallrye-common.version>2.12.0</smallrye-common.version>
+    +        <smallrye-common.version>2.12.2</smallrye-common.version>
+    -        <smallrye-mutiny-vertx-binding.version>3.18.1</smallrye-mutiny-vertx-binding.version>
+    -        <smallrye-reactive-messaging.version>4.27.0</smallrye-reactive-messaging.version>
+    +        <smallrye-mutiny-vertx-binding.version>3.19.1</smallrye-mutiny-vertx-binding.version>
+    +        <smallrye-reactive-messaging.version>4.28.0</smallrye-reactive-messaging.version>
+    -        <vertx.version>4.5.14</vertx.version>
+    +        <vertx.version>4.5.16</vertx.version>
+    -        <netty.version>4.1.119.Final</netty.version>
+    +        <netty.version>4.1.121.Final</netty.version>
+    -        <mutiny.version>2.8.0</mutiny.version>
+    +        <mutiny.version>2.9.2</mutiny.version>
+  FILE extensions/vertx-http/runtime/src/main/java/io/quarkus/vertx/http/runtime/filters/AbstractResponseWrapper.java
+    +    @Override
+    +    public Future<Void> writeHead() {
+    +        return delegate.writeHead();
+    +    }
+  FILE independent-projects/arc/pom.xml
+    -        <version.mutiny>2.8.0</version.mutiny>
+    +        <version.mutiny>2.9.2</version.mutiny>
+  FILE independent-projects/qute/pom.xml
+    -        <version.smallrye-mutiny>2.8.0</version.smallrye-mutiny>
+    +        <version.smallrye-mutiny>2.9.2</version.smallrye-mutiny>
+  FILE independent-projects/resteasy-reactive/pom.xml
+    -        <mutiny.version>2.8.0</mutiny.version>
+    +        <mutiny.version>2.9.2</mutiny.version>
+    -        <vertx.version>4.5.14</vertx.version>
+    +        <vertx.version>4.5.16</vertx.version>
+    -        <awaitility.version>4.2.2</awaitility.version>
+    -        <smallrye-mutiny-vertx-core.version>3.18.1</smallrye-mutiny-vertx-core.version>
+    +        <awaitility.version>4.3.0</awaitility.version>
+    +        <smallrye-mutiny-vertx-core.version>3.19.1</smallrye-mutiny-vertx-core.version>
+  FILE independent-projects/vertx-utils/pom.xml
+    -        <vertx.version>4.5.14</vertx.version>
+    +        <vertx.version>4.5.16</vertx.version>
+
+=== GHSA-c7xh-gjv4-4jgv sev=medium pkgs=['go:github.com/kcp-dev/kcp']
+src=https://github.com/kcp-dev/kcp cwes=['CWE-285']
+SUMMARY: kcp's impersonation allows access to global administrative groups
+DESC: ### Impact [Impersonation](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#user-impersonation) is a feature of the Kubernetes API, allowing to override user information. As downstream project, kcp inherits this feature. As per the linked documentation a specific level of privilege (usually assigned to cluster admins) is required for impersonation. The vulnerability in kcp affects kcp installations in which users are granted the `cluster-admin` ClusterRole (or comparably high permission levels that grant impersonation access; the verb in question is `impersonate`) within their respective workspaces. As kcp builds around self-service confined within workspaces, most installations would likely grant such workspace access to their users. Such users can impersonate special global administrative groups, which circumvent parts of the authorizer chains, e.g. [maximal permission policies](https://docs.kcp.io/kcp/v0.26/concepts/apis/exporting-apis/#maximal-permission-policy). ### Patches The problem has been patched in #3206 and is available in kcp 0.26.1 and higher. ### Workarounds - Not assigning the `cluster-admin` role (or any other role granting blanket impersonation permissions) to users. - A reverse proxy between users and kcp to check for the `Impersonate-Group` header and reject requests that impersonate global administrative groups. ### References See the pull request (#3206).
+FIX pull https://github.com/kcp-dev/kcp/pull/3206 status=200
+  PR: :bug: Fix impersonation for non-system users | <!-- Thanks for creating a pull request! If this is your first time, please make sure to review CONTRIBUTING.MD. Please copy the appropriate `:text:` or icon to the beginning of your PR title: :sparkles: ✨ feature :bug: 🐛 bug fix :book: 📖 docs :memo: 📝 proposal :warning: ⚠️ breaking change :seedling: 🌱 other/misc :question: ❓ requires manual review/categorization --> ## Summary This is an attempt 
+  MSG: Merge pull request #3206 from mjudeikis/mjudeikis/impersonate.fix :bug: Fix impersonation for non-system users
+  FILE go.mod
+    -	k8s.io/api => github.com/kcp-dev/kubernetes/staging/src/k8s.io/api v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/apiextensions-apiserver => github.com/kcp-dev/kubernetes/staging/src/k8s.io/apiextensions-apiserver v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/apimachinery => github.com/kcp-dev/kubernetes/staging/src/k8s.io/apimachinery v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/apiserver => github.com/kcp-dev/kubernetes/staging/src/k8s.io/apiserver v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/cli-runtime => github.com/kcp-dev/kubernetes/staging/src/k8s.io/cli-runtime v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/client-go => github.com/kcp-dev/kubernetes/staging/src/k8s.io/client-go v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/cloud-provider => github.com/kcp-dev/kubernetes/staging/src/k8s.io/cloud-provider v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/cluster-bootstrap => github.com/kcp-dev/kubernetes/staging/src/k8s.io/cluster-bootstrap v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/code-generator => github.com/kcp-dev/kubernetes/staging/src/k8s.io/code-generator v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/component-base => github.com/kcp-dev/kubernetes/staging/src/k8s.io/component-base v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/component-helpers => github.com/kcp-dev/kubernetes/staging/src/k8s.io/component-helpers v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/controller-manager => github.com/kcp-dev/kubernetes/staging/src/k8s.io/controller-manager v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/cri-api => github.com/kcp-dev/kubernetes/staging/src/k8s.io/cri-api v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/cri-client => github.com/kcp-dev/kubernetes/staging/src/k8s.io/cri-client v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/csi-translation-lib => github.com/kcp-dev/kubernetes/staging/src/k8s.io/csi-translation-lib v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/dynamic-resource-allocation => github.com/kcp-dev/kubernetes/staging/src/k8s.io/dynamic-resource-allocation v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/endpointslice => github.com/kcp-dev/kubernetes/staging/src/k8s.io/endpointslice v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/kms => github.com/kcp-dev/kubernetes/staging/src/k8s.io/kms v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/kube-aggregator => github.com/kcp-dev/kubernetes/staging/src/k8s.io/kube-aggregator v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/kube-controller-manager => github.com/kcp-dev/kubernetes/staging/src/k8s.io/kube-controller-manager v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/kube-proxy => github.com/kcp-dev/kubernetes/staging/src/k8s.io/kube-proxy v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/kube-scheduler => github.com/kcp-dev/kubernetes/staging/src/k8s.io/kube-scheduler v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/kubectl => github.com/kcp-dev/kubernetes/staging/src/k8s.io/kubectl v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/kubelet => github.com/kcp-dev/kubernetes/staging/src/k8s.io/kubelet v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/kubernetes => github.com/kcp-dev/kubernetes v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/legacy-cloud-providers => github.com/kcp-dev/kubernetes/staging/src/k8s.io/legacy-cloud-providers v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/metrics => github.com/kcp-dev/kubernetes/staging/src/k8s.io/metrics v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/mount-utils => github.com/kcp-dev/kubernetes/staging/src/k8s.io/mount-utils v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/pod-security-admission => github.com/kcp-dev/kubernetes/staging/src/k8s.io/pod-security-admission v0.0.0-20240918143026-ab5c3a6448cb
+    -	k8s.io/sample-apiserver => github.com/kcp-dev/kubernetes/staging/src/k8s.io/sample-apiserver v0.0.0-20240918143026-ab5c3a6448cb
+  FILE pkg/authorization/bootstrap/policy.go
+  FILE pkg/cache/server/config.go
+  FILE pkg/proxy/config.go
+  FILE pkg/server/config.go
+  FILE pkg/server/handler.go
+  FILE pkg/server/handler_test.go
+  FILE test/e2e/authorizer/impersonate_test.go
+FIX commit https://github.com/kcp-dev/kcp/commit/24ab5d4dc35ddff98a2e5fdc236e1681f03283ec status=200
+  (same commit message as a fix above; diff not repeated)
+
+=== GHSA-36v8-mpjm-8j5r sev=high pkgs=['go:github.com/siyuan-note/siyuan/kernel']
+src=https://github.com/siyuan-note/siyuan cwes=['CWE-862']
+SUMMARY: SiYuan: Cross-boundary content disclosure via getBacklinkDoc/getBackmentionDoc (publish mode): reader-reachable rendered DOM of publish-forbidden docs; sibling list endpoints are filtered
+DESC: **CVE:** This vulnerability corresponds to [CVE-2026-68586](https://nvd.nist.gov/vuln/detail/CVE-2026-68586). ### Summary The backlink API splits into list endpoints (which documents reference a block) and content endpoints (the rendered text of those referencing blocks). The list endpoints apply a publish-access filter, the content endpoints do not. As a result, `/api/ref/getBacklinkDoc` and `/api/ref/getBackmentionDoc` return the rendered DOM of blocks belonging to a publish-forbidden document to an anonymous reader, with no access check. Both content endpoints are gated by `CheckAuth` only, reachable by the publish `RoleReader` token and by the anonymous account when `Publish.Auth.Enable` is `false`. ### Details The asymmetry between the list and content sides is the tell that this is an oversight, not intended behavior: | Endpoint | Returns | Publish-access filter | Route | |---|---|---|---| | `getBacklink` | list (`*Path`) | `FilterPathsByPublishAccess` - present | `CheckAuth` | | `getBacklink2` | list (`*Path`) | `FilterPathsByPublishAccess` - present | `CheckAuth` | | `getBacklinkDoc` | rendered DOM | none | `CheckAuth` | | `getBackmentionDoc` | rendered DOM | none | `CheckAuth` | `model/backlink.go` contains no publish-access reference anywhere, and `Backlink.DOM` is the rendered HTML of the referencing blocks. `getBacklinkDoc(defID, refTreeID)` returns the rendered content of blocks in `refTreeID` - including a publish-forbidden, publish-disabled, or password-protected document with no access check. The filtered list siblings (`getBacklink`/`getBacklink2`) demonstrate that the publish boundary is meant to apply to this data; the content endpoints simply omit it. A reader is not limited to the filtered backlink list, they call `getBacklinkDoc` directly with any `refTreeID`. This also yields a reference-existence oracle: the response reveals whether the forbidden document `refTreeID` references the block `defID`. ### Proof of Concept Reproduced on a local instance (SiYuan running locally, publish mode enabled on port 6808, publish Basic Auth disabled). Setup: a publish-forbidden document `D` (`REFTREEID`) whose body contains the unique marker `SECRET_MARKER_77` and which references a block `DEFID` in a separate known document. **1. Mark the target document publish-forbidden (admin action, the boundary that should block reads):** ``` POST http://127.0.0.1:6806/api/filetree/setPublishAccess Authorization: Token <admin-token> {"id":"REFTREEID","visible":false,"password":"","disable":true} ``` **2. Baseline: the list endpoint correctly hides the forbidden doc from the reader (anonymous, port 6808):** ``` POST http://127.0.0.1:6808/api/ref/getBacklink2 {"id":"DEFID","k":"","mk":""} ``` The returned backlinks do not include the forbidden document `D`, the list side is filtered. **3. Disclosure: the content endpoint returns the forbidden doc's blocks anyway (anonymous, port 6808):** ``` POST http://127.0.0.1:6808/api/ref/getBacklinkDoc {"defID":"DEFID","refTreeID":"REFTREEID","keyword":""} ``` Returns HTTP 200; `data.backlinks[].dom` contains `SECRET_MARKER_77`, the rendered content of the publish-forbidden document, returned to an anonymous reader. `getBackmentionDoc` behaves identically for mention-type references. ### Impact An anonymous reader (publish mode with auth disabled) or any publish `RoleReader`, can read the rendered content of a publish-forbidden document's referencing blocks, defeating a boundary the administrator explicitly configured, and can determine whether a forbidden document references a given block (a reference-existence oracle). **Precondition (stated honestly):** the request requires `refTreeID` (the forbidden document's ID) and `defID` (a block it references). `defID` may be any published/known block, so if the forbidden document references any public content, `defID` is known and only `refTreeID` need be supplied. Block/document IDs for forbidden documents are also obtainable from other `CheckAuth`-only endpoints that lack the publish-access filter (reported separately). This endpoint alone does not enumerate arbitrary documents; it discloses content once an ID is known. Impact is confidentiality-only: content disclosure plus a reference-existence oracle, no modification. No admin role, CSRF token, or write permission is required. Encrypted notebooks are out of scope. ### Suggested fix Apply the same publish-access check the list siblings use. In `getBacklinkDoc`/`getBackmentionDoc`, filter each `Backlink` by its source document's box/path via `CheckPathAccessableByPublishIgnore` plus the publish-password cookie check consistent with `FilterPathsByPublishAccess` in `getBacklink`/`getBacklink2`. Any endpoint returning rendered block DOM should enforce the same publish boundary as the corresponding list endpoint.
+FIX commit https://github.com/siyuan-note/siyuan/commit/f45749a7ef6e385f6e2af6b7dd12429d56d46f32 status=200
+  MSG: :lock: Restrict backlink document content by publish access https://github.com/siyuan-note/siyuan/security/advisories/GHSA-36v8-mpjm-8j5r
+  FILE kernel/api/ref.go
+    +func isBacklinkDocAccessible(c *gin.Context, refTreeID string) bool {
+    +	if !model.IsReadOnlyRoleContext(c) {
+    +		return true
+    +	}
+    +	return model.CheckBlockIdAccessableByPublishAccess(c, model.GetPublishAccess(), refTreeID)
+    +}
+    +	if !isBacklinkDocAccessible(c, refTreeID) {
+    +		ret.Data = map[string]any{
+    +			"backmentions": []*model.Backlink{},
+    +			"keywords":     []string{},
+    +		}
+    +		return
+    +	}
+    +	if !isBacklinkDocAccessible(c, refTreeID) {
+    +		ret.Data = map[string]any{
+    +			"backlinks": []*model.Backlink{},
+    +			"keywords":  []string{},
+    +		}
+    +		return
+    +	}
+  FILE kernel/model/publish_access.go
+    -	publishIgnore := GetDisablePublishAccess(publishAccess)
+    +	return checkBlockTreeAccessableByPublishAccess(c, publishAccess, bt)
+    +}
+    +func checkBlockTreeAccessableByPublishAccess(c *gin.Context, publishAccess PublishAccess, bt *treenode.BlockTree) bool {
+    +	publishIgnore := GetDisablePublishAccess(publishAccess)
+  FILE kernel/model/publish_access_test.go
+    +	"github.com/siyuan-note/siyuan/kernel/treenode"
+    +func TestCheckBlockTreeAccessableByPublishAccess(t *testing.T) {
+    +	const (
+    +		boxID             = "20260721000000-boxid01"
+    +		docID             = "20260721000001-docid01"
+
+=== GHSA-2v2f-mvfg-ph56 sev=high pkgs=['pip:meta-ads-mcp']
+src=https://github.com/pipeboard-co/meta-ads-mcp cwes=['CWE-287']
+SUMMARY: meta-ads-mcp: X-Pipeboard-Token Header Auth Bypass Reuses Operator Meta Token
+DESC: ## X-Pipeboard-Token Header Auth Bypass Reuses Operator Meta Token ### Summary `AuthInjectionMiddleware` in `meta-ads-mcp` rejects HTTP MCP requests only when **both** `auth_token` and `pipeboard_token` are absent. Because `extract_token_from_headers()` does not recognise the `X-Pipeboard-Token` header, an attacker who sends that header with any arbitrary value produces `auth_token = None` and `pipeboard_token = <attacker value>`, making the guard condition evaluate to `False` and passing the request through. No authentication context is set; the token getter falls back to the server operator's `META_ACCESS_TOKEN` environment variable. Every subsequent MCP tool call executes with the operator's Meta credentials, allowing an unauthenticated network caller to read and write the operator's Meta Ads data. ### Details The vulnerable condition is at `meta_ads_mcp/core/http_auth_integration.py:259`: ```python # http_auth_integration.py:255-260 auth_token = FastMCPAuthIntegration.extract_token_from_headers(dict(request.headers)) pipeboard_token = FastMCPAuthIntegration.extract_pipeboard_token_from_headers(dict(request.headers)) if not auth_token and not pipeboard_token: # ← bypass condition return Response(..., status_code=401) ``` `extract_token_from_headers()` (lines 77–95) recognises only `Authorization: Bearer`, `X-META-ACCESS-TOKEN`, and `X-PIPEBOARD-API-TOKEN`. It does **not** recognise `X-Pipeboard-Token`, so that header never populates `auth_token`. `extract_pipeboard_token_from_headers()` (line 108) **does** recognise `X-Pipeboard-Token`, so sending that header alone produces: ``` auth_token = None # not set → guard reads False for left operand pipeboard_token = "<anything>" # truthy → guard reads False for right operand → (not None) and (not "<anything>") = True and False = False → 401 never returned ``` After the bypass, `set_auth_token()` is never called (lines 283–291 only run when `auth_token` is truthy). The patched token getter at lines 163–168 resolves `get_auth_token() = None`, then delegates to `original_get_current_access_token()`. The fallback chain in `auth.py:446–453` returns `META_ACCESS_TOKEN` from the server environment: ```python # auth.py:443-453 env_token = os.environ.get("META_ACCESS_TOKEN") if env_token: return env_token ``` `@meta_api_tool` at `api.py:390–396` injects this operator token into every tool's `access_token` kwarg. The sink at `api.py:225–235` forwards it to the Meta Graph API via `httpx.AsyncClient`. Verified with `accounts.py:42–62` (`get_ad_accounts`): the operator's ad account data is returned for valid tokens; for invalid tokens the Meta Graph API responds with an `OAuthException`, confirming the token traversed the full path. Full data flow: | Step | Location | Description | |------|----------|-------------| | 1 | `http_auth_integration.py:255–257` | Middleware extracts attacker-controlled headers | | 2 | `http_auth_integration.py:259` | Bypass: `X-Pipeboard-Token` alone satisfies guard | | 3 | `http_auth_integration.py:288–291` | `auth_token` is `None`; auth context never set | | 4 | `http_auth_integration.py:163–168` | Token getter falls back to original accessor | | 5 | `auth.py:446–453` | `META_ACCESS_TOKEN` env var returned as access token | | 6 | `api.py:390–396` | Operator token injected into tool kwargs | | 7 | `accounts.py:42–62` | Tool invokes Meta Graph API with operator token | | 8 | `api.py:225–235` | `httpx.AsyncClient` sends privileged HTTP request | **Recommended fix:** ```diff --- a/meta_ads_mcp/core/http_auth_integration.py +++ b/meta_ads_mcp/core/http_auth_integration.py - if not auth_token and not pipeboard_token: + if not auth_token: ``` `X-Pipeboard-Token` should be treated as a supplementary service token only; it must not serve as a standalone authentication credential for MCP tool calls. ### PoC **Prerequisites** - Docker installed and the `meta-ads-mcp` repository available locally. - The server must be started in `streamable-http` mode (documented in `STREAMABLE_HTTP_SETUP.md` as a supported production deployment). **Step 1 — Build the Docker image** ```bash docker build \ -t vuln001-meta-ads-mcp \ -f /path/to/vuln-001/Dockerfile \ /path/to/meta-ads-mcp-repo/ ``` The `Dockerfile` installs the package from source, sets `META_ACCESS_TOKEN=FAKE_OPERATOR_META_TOKEN_ABCDEF1234567890`, and starts the server on port 8080. **Step 2 — Run the container** ```bash docker run -d -p 8081:8080 --name vuln001-test vuln001-meta-ads-mcp ``` **Step 3 — Confirm the middleware is active (no-auth → 401)** ```bash curl -i -X POST http://127.0.0.1:8081/mcp \ -H 'Content-Type: application/json' \ -H 'Accept: application/json, text/event-stream' \ -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' # Expected: HTTP/1.1 401 {"error":"Unauthorized",...} ``` **Step 4 — Trigger the bypass (X-Pipeboard-Token only → 200)** ```bash curl -i -X POST http://127.0.0.1:8081/mcp \ -H 'Content-Type: application/json' \ -H 'Accept: application/json, text/event-stream' \ -H 'X-Pipeboard-Token: attacker-controlled-not-validated' \ -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' # Expected: HTTP/1.1 200 {"jsonrpc":"2.0","result":{"tools":[...]}} (37 tools listed) ``` **Step 5 — Confirm operator token is forwarded to Meta Graph API** ```bash curl -i -X POST http://127.0.0.1:8081/mcp \ -H 'Content-Type: application/json' \ -H 'Accept: application/json, text/event-stream' \ -H 'X-Pipeboard-Token: attacker-controlled-not-validated' \ -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"get_ad_accounts","arguments":{"limit":1}}}' # Expected: HTTP 200 + Meta OAuthException (code 190) proving FAKE_OPERATOR_META_TOKEN # was forwarded to Meta. With a real operator token, ad account data is returned. ``` **Automated PoC script** ```bash python3 /path/to/vuln-001/poc.py http://127.0.0.1:8081/mcp ``` The script performs Tests 1–3 and prints `RESULT: PASS — VULN-001 reproduced` on success. **Observed output (dynamic reproduction)**  [...]
+
+=== GHSA-58f6-6rj2-3v8r sev=high pkgs=['nuget:Steeltoe.Management.Endpoint', 'nuget:Steeltoe.Management.EndpointCore']
+src=https://github.com/SteeltoeOSS/steeltoe cwes=['CWE-288', 'CWE-639']
+SUMMARY: Steeltoe vulnerable to management-port isolation bypass via spoofed Host header
+DESC: ### Summary When Steeltoe management endpoints are configured to listen on an alternate port (`Management:Endpoints:Port` is configured), the middleware responsible for restricting access to the endpoints uses the `Host` HTTP header rather than the actual network socket port. ### Impact An unauthenticated remote attacker can reach every actuator endpoint using a specially crafted HTTP request. ### Affected configuration - The application's public port is accessible over from the network. - `Management:Endpoints:Port` is configured to a value different from the application's main listener port. - The request scheme matches `Management:Endpoints:SslEnabled`. For example, `http` when `SslEnabled` is `false` (the default), or `https` when `SslEnabled` is `true`. ### Mitigations If an immediate upgrade to a patched version is not possible: - Add explicit ASP.NET Core authorization (`RequireAuthorization`) to all sensitive actuator endpoints as a defense-in-depth measure independent of port isolation. - Configure the reverse proxy or load balancer to enforce the `Host` header value and prevent clients from setting an arbitrary port.
+FIX commit https://github.com/SteeltoeOSS/Steeltoe/commit/4cbc352fe89ac2e6c609554e435ab28996fec5e9 status=200
+  MSG: Fix management port isolation bypass * Use HttpContext.Connection.LocalPort when evaluating management port
+  FILE src/Management/src/EndpointCore/ManagementPort/ManagementPortMiddleware.cs
+    -            allowRequest = allowRequest || (context.Request.Host.Port.ToString() == _managementOptions.Port && isManagementPath);
+    -            allowRequest = allowRequest || (context.Request.Host.Port.ToString() != _managementOptions.Port && !isManagementPath);
+    +            allowRequest = allowRequest || (context.Connection.LocalPort.ToString() == _managementOptions.Port && isManagementPath);
+    +            allowRequest = allowRequest || (context.Connection.LocalPort.ToString() != _managementOptions.Port && !isManagementPath);
+    -            string errorMessage = $"Access denied to {context.Request.Path} on port {context.Request.Host.Port} since Management Port is set to {managementPort
+    +            string errorMessage = $"Access denied to {context.Request.Path} on port {context.Connection.LocalPort} since Management Port is set to {managementP
+  FILE src/Management/test/EndpointCore.Test/ManagementEndpointServedOndifferentPort.cs
+    +using FluentAssertions;
+    +    private class LocalPortStartupFilter : IStartupFilter
+    +    {
+    +        public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next)
+    +        {
+    +            return app =>
+    +            {
+    +                app.Use(async (context, nextMiddleware) =>
+    +                {
+    +                    if (context.Connection.LocalPort == 0)
+    +                    {
+    +                        context.Connection.LocalPort = context.Request.Host.Port ?? 80;
+    +                    }
+    +                    await nextMiddleware();
+    +                });
+    +                next(app);
+    +            };
+    +        }
+    +    }
+    +        hostBuilder.Services.AddSingleton<IStartupFilter, LocalPortStartupFilter>();
+    +        hostBuilder.Services.AddSingleton<IStartupFilter, LocalPortStartupFilter>();
+    +        hostBuilder.Services.AddSingleton<IStartupFilter, LocalPortStartupFilter>();
+    +                webhostBuilder.ConfigureServices(svc => svc.AddSingleton<IStartupFilter, LocalPortStartupFilter>());
+    +            webhostBuilder.ConfigureServices(svc => svc.AddSingleton<IStartupFilter, LocalPortStartupFilter>());
+FIX commit https://github.com/SteeltoeOSS/Steeltoe/commit/b7ca93c510aaa08d7e4ebec40ce20c5811c2c4b6 status=200
+  (same commit message as a fix above; diff not repeated)
+
+=== GHSA-f7q4-9gwv-6774 sev=critical pkgs=['composer:magento/community-edition']
+src=https://github.com/magento/magento2 cwes=['CWE-287']
+SUMMARY: Magento Open Source Improper Authentication vulnerability
+DESC: Adobe Commerce versions 2.4.7, 2.4.6-p5, 2.4.5-p7, 2.4.4-p8 and earlier are affected by an Improper Authentication vulnerability that could result in privilege escalation. An attacker could exploit this vulnerability to gain unauthorized access or elevated privileges within the application. Exploitation of this issue does not require user interaction, but attack complexity is high.
+FIX commit https://github.com/magento/magento2/commit/30877fce83b793f71421c47347885cf076e81799 status=200
+  MSG: Magento Release 2.4.4-p9
+  FILE app/code/Magento/AdminAnalytics/ViewModel/Metadata.php
+    +use Magento\Csp\Helper\CspNonceProvider;
+    +use Magento\Framework\App\ObjectManager;
+    +    /**
+    +     * @var string
+    +     */
+    +    private $nonce;
+    +    /**
+    +     * @var CspNonceProvider
+    +     */
+    +    private $nonceProvider;
+    +     * @param CspNonceProvider|null $nonceProvider
+    -        ScopeConfigInterface $config
+    +        ScopeConfigInterface $config,
+    +        CspNonceProvider $nonceProvider = null
+    +        $this->nonceProvider = $nonceProvider ?: ObjectManager::getInstance()->get(CspNonceProvider::class);
+    +        $this->nonce = $this->nonceProvider->generateNonce();
+    +    /**
+    +     * Get a random nonce for each request.
+    +     *
+    +     * @return string
+    +     */
+    +    public function getNonce(): string
+    +    {
+    +        return $this->nonce;
+    +    }
+  FILE app/code/Magento/AdminAnalytics/composer.json
+    +    "type": "magento2-module",
+    +    "license": [
+    +        "OSL-3.0",
+    +        "AFL-3.0"
+    +    ],
+  FILE app/code/Magento/AdminAnalytics/view/adminhtml/templates/tracking.phtml
+  FILE app/code/Magento/AdminNotification/composer.json
+  FILE app/code/Magento/AdvancedPricingImportExport/composer.json
+  FILE app/code/Magento/AdvancedSearch/composer.json
+  FILE app/code/Magento/Amqp/composer.json
+  FILE app/code/Magento/AmqpStore/composer.json
+  FILE app/code/Magento/Analytics/Test/Mftf/ActionGroup/AssertAdminAdvancedReportingPageUrlActionGroup.xml
+  FILE app/code/Magento/Analytics/composer.json
+  FILE app/code/Magento/AsynchronousOperations/composer.json
+  FILE app/code/Magento/Authorization/composer.json
+  FILE app/code/Magento/AwsS3/composer.json
+  FILE app/code/Magento/Backend/Block/System/Store/Grid/Render/Group.php
+  FILE app/code/Magento/Backend/composer.json
+  FILE app/code/Magento/Backend/etc/adminhtml/system.xml
+  FILE app/code/Magento/Backup/composer.json
+  FILE app/code/Magento/Bundle/Test/Mftf/ActionGroup/StoreFrontAddProductToCartFromBundleActionGroup.xml
+  FILE app/code/Magento/Bundle/composer.json
+  FILE app/code/Magento/Bundle/view/frontend/templates/catalog/product/view/type/bundle/option/radio.phtml
+FIX commit https://github.com/magento/magento2/commit/a3c6d6e5e95e63031e4df26cfcf76feace7549c2 status=200
+  MSG: Magento Release 2.4.5-p8
+  FILE app/code/Magento/AdminAdobeIms/Controller/Adminhtml/OAuth/ImsCallback.php
+    +use Magento\Framework\App\ActionInterface;
+    +use Magento\Framework\App\RequestInterface;
+    +use Magento\Framework\App\ResponseInterface;
+    +/**
+    + * Class ImsCallback is responsible to get the Access Token, User Profile,
+    + * check if the assigned organization is valid, And Check if user exists and then do the login
+    + *
+    + * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+    + */
+    +    /**
+    +     * Validate IMS state is valid
+    +     *
+    +     * @param RequestInterface $request
+    +     * @return ResponseInterface
+    +     */
+    +    public function dispatch(RequestInterface $request)
+    +    {
+    +        $request->setParam('form_key', $request->getParam('state', null));
+    +        if (!$this->_formKeyValidator->validate($request)) {
+    +            $this->logger->critical(__('Invalid state returned in callback from IMS.'));
+    +            $this->imsErrorMessage(
+    +                'Error signing in',
+    +                'Something went wrong and we could not sign you in. ' .
+    +                'Please try again or contact your administrator.'
+    +            );
+    +            $this->_actionFlag->set('', ActionInterface::FLAG_NO_DISPATCH, true);
+    +            return $this->_redirect($this->_helper->getHomePageUrl());
+    +        }
+    +        return parent::dispatch($request);
+    +    }
+  FILE app/code/Magento/AdminAdobeIms/Controller/Adminhtml/OAuth/ImsReauthCallback.php
+  FILE app/code/Magento/AdminAdobeIms/Model/ImsConnection.php
+  FILE app/code/Magento/AdminAdobeIms/Model/LogOut.php
+  FILE app/code/Magento/AdminAdobeIms/Service/ImsConfig.php
+  FILE app/code/Magento/AdminAdobeIms/Service/ImsOrganizationService.php
+  FILE app/code/Magento/AdminAdobeIms/Test/Unit/Controller/Adminhtml/OAuth/ImsCallbackTest.php
+  FILE app/code/Magento/AdminAdobeIms/Test/Unit/Controller/Adminhtml/OAuth/ImsReauthCallbackTest.php
+  FILE app/code/Magento/AdminAdobeIms/Test/Unit/Model/ImsConnectionTest.php
+  FILE app/code/Magento/AdminAdobeIms/Test/Unit/Model/LogOutTest.php
+  FILE app/code/Magento/AdminAdobeIms/composer.json
+  FILE app/code/Magento/AdminAdobeIms/etc/config.xml
+  FILE app/code/Magento/AdminAdobeIms/etc/di.xml
+  FILE app/code/Magento/AdminAdobeIms/i18n/en_US.csv
+  FILE app/code/Magento/AdminAnalytics/ViewModel/Metadata.php
+  FILE app/code/Magento/AdminAnalytics/composer.json
+  FILE app/code/Magento/AdminAnalytics/view/adminhtml/templates/tracking.phtml
+  FILE app/code/Magento/AdminNotification/composer.json
+  FILE app/code/Magento/AdobeIms/Model/Config.php
+  FILE app/code/Magento/AdobeIms/Model/LogOut.php
+FIX commit https://github.com/magento/magento2/commit/c5c538810b87449886f4669cb8abbe8e5593c83c status=200
+  MSG: Magento Release 2.4.6-p6
+  FILE app/code/Magento/AdminAnalytics/ViewModel/Metadata.php
+    +use Magento\Csp\Helper\CspNonceProvider;
+    +use Magento\Framework\App\ObjectManager;
+    +    /**
+    +     * @var string
+    +     */
+    +    private $nonce;
+    +    /**
+    +     * @var CspNonceProvider
+    +     */
+    +    private $nonceProvider;
+    +     * @param CspNonceProvider|null $nonceProvider
+    -        ScopeConfigInterface $config
+    +        ScopeConfigInterface $config,
+    +        CspNonceProvider $nonceProvider = null
+    +        $this->nonceProvider = $nonceProvider ?: ObjectManager::getInstance()->get(CspNonceProvider::class);
+    +        $this->nonce = $this->nonceProvider->generateNonce();
+    +    /**
+    +     * Get a random nonce for each request.
+    +     *
+    +     * @return string
+    +     */
+    +    public function getNonce(): string
+    +    {
+    +        return $this->nonce;
+    +    }
+  FILE app/code/Magento/AdminAnalytics/composer.json
+    +    "type": "magento2-module",
+    +    "license": [
+    +        "OSL-3.0",
+    +        "AFL-3.0"
+    +    ],
+  FILE app/code/Magento/AdminAnalytics/view/adminhtml/templates/tracking.phtml
+  FILE app/code/Magento/AdminNotification/composer.json
+  FILE app/code/Magento/AdvancedPricingImportExport/composer.json
+  FILE app/code/Magento/AdvancedSearch/composer.json
+  FILE app/code/Magento/Amqp/composer.json
+  FILE app/code/Magento/Analytics/Test/Mftf/Test/AdminConfigurationPermissionTest.xml
+  FILE app/code/Magento/Analytics/composer.json
+  FILE app/code/Magento/AsynchronousOperations/composer.json
+  FILE app/code/Magento/Authorization/composer.json
+  FILE app/code/Magento/AwsS3/Test/Mftf/Test/AwsS3AdminCreateDownloadableProductWithLinkTest.xml
+  FILE app/code/Magento/AwsS3/composer.json
+  FILE app/code/Magento/Backend/Test/Mftf/ActionGroup/AdminLoginActionGroup.xml
+  FILE app/code/Magento/Backend/Test/Mftf/ActionGroup/SetAdminAccountActionGroup.xml
+  FILE app/code/Magento/Backend/Test/Mftf/Section/AdminMessagesSection.xml
+  FILE app/code/Magento/Backend/Test/Mftf/Test/AdminAttributeTextSwatchesCanBeFiledTest.xml
+  FILE app/code/Magento/Backend/Test/Mftf/Test/AdminCheckDashboardWithChartsTest.xml
+  FILE app/code/Magento/Backend/Test/Mftf/Test/AdminDashboardWithChartsTest.xml
+  FILE app/code/Magento/Backend/Test/Mftf/Test/AdminLoginFailedTest.xml
+
+=== GHSA-w24r-5266-9c3c sev=high pkgs=['npm:@clerk/astro', 'npm:@clerk/backend', 'npm:@clerk/chrome-extension', 'npm:@clerk/clerk-expo', 'npm:@clerk/clerk-js', 'npm:@clerk/clerk-react', 'npm:@clerk/expo', 'npm:@clerk/express', 'npm:@clerk/fastify', 'npm:@clerk/hono', 'npm:@clerk/nextjs', 'npm:@clerk/nuxt', 'npm:@clerk/react', 'npm:@clerk/react-router', 'npm:@clerk/shared', 'npm:@clerk/tanstack-react-start', 'npm:@clerk/vue']
+src=https://github.com/clerk/javascript cwes=['CWE-754', 'CWE-863']
+SUMMARY: Clerk has an authorization bypass when combining organization, billing, or reverification checks
+DESC: ### Summary `has()`, `auth.protect()`, and related authorization predicates in `@clerk/shared`, `@clerk/nextjs`, `@clerk/backend`, and other framework SDKs can return true for certain combined authorization checks when the result should be false, allowing a gated action to proceed for a user who does not satisfy the full set of requested conditions. Sessions are not compromised and no existing user can be impersonated. The bypass is limited to the authorization decision returned by the predicate. `clerkMiddleware` continues to authenticate requests correctly, `auth()` reflects the real authentication state, and token verification is unaffected. ### Who is affected All apps that combine more than one authorization dimension in a single `has()` or `auth.protect()` call should upgrade to the patched versions. Patches are drop-in with no API changes. The information below describes the scope of the bypass and helps developers understand whether their apps are potentially affected, but is not a reason to delay the upgrade. This call shape can be bypassed if certain conditions are met: a `has()` or `auth.protect()` call that combines a `reverification` check with any of `role`, `permission`, `feature`, or `plan`, or that combines a billing check (`feature` or `plan`) with a role or permission check. ```ts // Reverification combined with role / permission / feature / plan await auth.protect({ permission: 'org:settings:delete', reverification: 'strict' }); const canAct = has({ role: 'org:admin', reverification: 'strict' }); // Billing (feature / plan) combined with role / permission const canAct = has({ permission: 'org:admin', feature: 'premium' }); ``` Single-condition checks are not affected and continue to fail closed as expected: ```ts await auth.protect({ permission: 'org:settings:delete' }); has({ reverification: 'strict' }); ``` The callback form of `auth.protect` is not affected unless the callback itself invokes one of the affected shapes: ```ts await auth.protect(has => has({ permission: 'org:X' }) && has({ reverification: 'strict' })); ``` App patterns that rely only on single-condition checks, or that combine them via the callback form, are unaffected. Authentication, session state, and token verification continue to work correctly regardless of this bypass. `@clerk/shared` is usually not imported directly in application code, but the fix lives there and reaches an app through its framework package. If developers import `createCheckAuthorization` from `@clerk/shared` directly, their apps are also affected. Run `npm why @clerk/shared` (or the app's package manager's equivalent) to check the installed version. ### Additional `auth.protect()` bypass A second, related bypass lives in `@clerk/nextjs`: `auth.protect()` silently discarded authorization params (`role`, `permission`, `feature`, `plan`, `reverification`) whenever the same argument object also contained `unauthenticatedUrl`, `unauthorizedUrl`, or `token`. ### Recommended actions Upgrade to the latest patch release of the consuming app's framework package on its current major. Both Core 2 and Core 3 release lines have patches. See the "Affected packages" section above for the exact vulnerable ranges and patched versions per package. If a consuming app pins `@clerk/clerk-js` directly, upgrade it to the patched version. Most apps load `@clerk/clerk-js` from Clerk's CDN through their framework package and will receive the fix automatically, with no upgrade step required. ### Workaround If developers cannot upgrade immediately, split combined `has()` or `auth.protect()` calls into sequential single-condition checks: ```ts // Replace await auth.protect({ permission: 'org:X', reverification: 'strict' }); // With await auth.protect({ reverification: 'strict' }); await auth.protect({ permission: 'org:X' }); ``` Each single-condition check fails closed as expected, so evaluating them independently and denying if either fails produces the correct result. ### Timeline This issue was reported on 18 APR 2026, patched on 22 APR 2026, and publicly disclosed on 22 APR 2026. Thanks to AISafe for the responsible disclosure of this vulnerability.
+
+=== GHSA-h8cp-697h-8c8p sev=critical pkgs=['go:github.com/smallstep/certificates']
+src=https://github.com/smallstep/certificates cwes=['CWE-306']
+SUMMARY: Step CA Has Authorization Bypass in ACME and SCEP Provisioners
+DESC: ## Summary A security fix is now available for Step CA that resolves a vulnerability affecting deployments configured with ACME and/or SCEP provisioners. All operators running these provisioners should upgrade to the latest release (`v0.29.0`) immediately. The issue was discovered and disclosed by a research team during a security review. There is no evidence of active exploitation. To limit exploitation risk during a coordinated disclosure window, we are withholding detailed technical information for now. A full write-up will be published in several weeks. --- ## Embargo List If your organization runs Step CA in production and would like advance, embargoed notification of future security updates, visit https://u.step.sm/disclosure to request inclusion on our embargo list. --- ## Acknowledgements This issue was identified and reported by Stephen Kubik of the Cisco Advanced Security Initiatives Group (ASIG) --- Stay safe, and thank you for helping us keep the ecosystem secure.
+FIX commit https://github.com/smallstep/certificates/commit/1011f5f5408b470a636f583bf74c0d7bbaf75d72 status=200
+  MSG: Improve validation in authorization path
+  FILE acme/challenge.go
+    +	// Update challenge with the payload
+    +	ch.Payload = payload
+    -	ch.Payload = payload
+  FILE acme/challenge_test.go
+    -						assert.Nil(t, updch.Payload)
+    +						assert.Equal(t, payload, updch.Payload)
+    -							assert.Nil(t, updch.Payload)
+    +							assert.Equal(t, errorPayload, updch.Payload)
+    -							assert.Nil(t, updch.Payload)
+    +							assert.Equal(t, errorBase64Payload, updch.Payload)
+    -							assert.Nil(t, updch.Payload)
+    +							assert.Equal(t, emptyPayload, updch.Payload)
+    -							assert.Nil(t, updch.Payload)
+    +							assert.Equal(t, emptyObjectPayload, updch.Payload)
+    -							assert.Nil(t, updch.Payload)
+    +							assert.Equal(t, errorNonWellformedCBORPayload, updch.Payload)
+    -							assert.Nil(t, updch.Payload)
+    +							assert.Equal(t, errorUnsupportedFormat, updch.Payload)
+    -							assert.Nil(t, updch.Payload)
+    +							assert.Equal(t, payload, updch.Payload)
+    -							assert.Nil(t, updch.Payload)
+    +							assert.Equal(t, payload, updch.Payload)
+    -							assert.Nil(t, updch.Payload)
+    +							assert.Equal(t, payload, updch.Payload)
+    -							assert.Nil(t, updch.Payload)
+    +							assert.Equal(t, payload, updch.Payload)
+    -							assert.Nil(t, updch.Payload)
+    +							assert.Equal(t, payload, updch.Payload)
+    -							assert.Nil(t, updch.Payload)
+    +							assert.Equal(t, payload, updch.Payload)
+    -							assert.Nil(t, updch.Payload)
+  FILE api/renew.go
+  FILE api/revoke.go
+  FILE api/sshRevoke.go
+  FILE authority/authority_test.go
+  FILE authority/authorize.go
+  FILE authority/authorize_test.go
+  FILE authority/provisioner/acme.go
+  FILE authority/provisioner/acme_test.go
+  FILE authority/provisioner/collection.go
+  FILE authority/provisioner/collection_test.go
+  FILE authority/provisioner/k8sSA.go
+  FILE authority/provisioner/nebula.go
+  FILE authority/provisioner/nebula_test.go
+  FILE authority/provisioner/provisioner.go
+  FILE authority/provisioner/scep.go
+  FILE authority/provisioner/scep_test.go
+  FILE authority/provisioner/sshpop.go
+  FILE authority/provisioner/sshpop_test.go
+
+=== GHSA-8jhh-jcqg-mj5p sev=medium pkgs=['npm:openclaw']
+src=https://github.com/openclaw/openclaw cwes=['CWE-639', 'CWE-862']
+SUMMARY: OpenClaw: Channel commands could bypass account-scoped `configWrites` restrictions
+DESC: ## Summary In affected versions of `openclaw`, channel-initiated config mutations were authorized against the originating account's `configWrites` policy but did not consistently re-check the targeted account scope. An authorized sender on one account could mutate protected sibling-account configuration when the target account had `configWrites: false`. ## Impact This is an account-scoped policy bypass inside a single gateway deployment. Channel commands such as `/config set channels.<provider>.accounts.<id>...` and config-backed `/allowlist ... --config --account <id>` could modify protected sibling-account configuration. ## Affected Packages and Versions - Package: `openclaw` (npm) - Affected versions: `<= 2026.3.8` - Fixed in: `2026.3.11` ## Technical Details The mutation path validated the origin account scope but did not consistently authorize every resolved target scope. Ambiguous collection and root writes under `channels` and `channels.<provider>.accounts` could therefore reach protected account configuration from channel command surfaces. ## Fix OpenClaw now authorizes config mutations against both the origin scope and each resolved target scope, and it rejects ambiguous root and collection writes from channel commands unless the caller is an internal gateway client with `operator.admin`. The fix shipped in `openclaw@2026.3.11`. ## Workarounds Upgrade to `2026.3.11` or later.
+
+=== GHSA-38f7-945m-qr2g sev=high pkgs=['npm:effect']
+src=https://github.com/Effect-TS/effect cwes=['CWE-362']
+SUMMARY: Effect `AsyncLocalStorage` context lost/contaminated inside Effect fibers under concurrent load with RPC
+DESC: ## Versions - `effect`: 3.19.15 - `@effect/rpc`: 0.72.1 - `@effect/platform`: 0.94.2 - Node.js: v22.20.0 - Vercel runtime with Fluid compute - Next.js: 16 (App Router) - `@clerk/nextjs`: 6.x ## Root cause Effect's `MixedScheduler` batches fiber continuations and drains them inside a **single** microtask or timer callback. The `AsyncLocalStorage` context active during that callback belongs to whichever request first triggered the scheduler's drain cycle — **not** the request that owns the fiber being resumed. ### Detailed mechanism #### 1. Scheduler batching (`effect/src/Scheduler.ts`, `MixedScheduler`) ```typescript // MixedScheduler.starve() — called once when first task is scheduled private starve(depth = 0) { if (depth >= this.maxNextTickBeforeTimer) { setTimeout(() => this.starveInternal(0), 0) // timer queue } else { Promise.resolve(void 0).then(() => this.starveInternal(depth + 1)) // microtask queue } } // MixedScheduler.starveInternal() — drains ALL accumulated tasks in one call private starveInternal(depth: number) { const tasks = this.tasks.buckets this.tasks.buckets = [] for (const [_, toRun] of tasks) { for (let i = 0; i < toRun.length; i++) { toRun[i]() // ← Every fiber continuation runs in the SAME ALS context } } // ... } ``` `scheduleTask` only calls `starve()` when `running` is `false`. Subsequent tasks accumulate in `this.tasks` until `starveInternal` drains them all. The `Promise.then()` (or `setTimeout`) callback inherits the ALS context from whichever call site created it — i.e., whichever request's fiber first set `running = true`. **Result:** Under concurrent load, fiber continuations from Request A and Request B execute inside the same `starveInternal` call, sharing a single ALS context. If Request A triggered `starve()`, then Request B's fiber reads Request A's ALS context. #### 2. `toWebHandlerRuntime` does not propagate ALS (`@effect/platform/src/HttpApp.ts:211-240`) ```typescript export const toWebHandlerRuntime = <R>(runtime: Runtime.Runtime<R>) => { const httpRuntime: Types.Mutable<Runtime.Runtime<R>> = Runtime.make(runtime) const run = Runtime.runFork(httpRuntime) return <E>(self: Default<E, R | Scope.Scope>, middleware?) => { return (request: Request, context?): Promise<Response> => new Promise((resolve) => { // Per-request Effect context is correctly set via contextMap: const contextMap = new Map<string, any>(runtime.context.unsafeMap) const httpServerRequest = ServerRequest.fromWeb(request) contextMap.set(ServerRequest.HttpServerRequest.key, httpServerRequest) httpRuntime.context = Context.unsafeMake(contextMap) // But the fiber is forked without any ALS propagation: const fiber = run(httpApp as any) // ← ALS context is NOT captured or restored }) } } ``` Effect's own `Context` (containing `HttpServerRequest`) is correctly set per-request. But the **Node.js ALS context** — which frameworks like Next.js, Clerk, and OpenTelemetry rely on — is not captured at fork time or restored when the fiber's continuations execute. #### 3. The dangerous pattern this enables ```typescript // RPC handler — runs inside an Effect fiber const handler = Effect.gen(function*() { // This calls auth() from @clerk/nextjs/server, which reads from ALS const { userId } = yield* Effect.tryPromise({ try: async () => auth(), // ← may read WRONG user's session catch: () => new UnauthorizedError({ message: "Auth failed" }) }) return yield* repository.getUser(userId) }) ``` The `async () => auth()` thunk executes when the fiber continuation is scheduled by `MixedScheduler`. At that point, the ALS context belongs to an arbitrary concurrent request. ## Reproduction scenario ``` Timeline (two concurrent requests to the same toWebHandler endpoint): T0: Request A arrives → POST handler → webHandler(requestA) → Promise executor runs synchronously → httpRuntime.context set to A's context → fiber A forked, runs first ops synchronously → fiber A yields (e.g., at Effect.tryPromise boundary) → scheduler.scheduleTask(fiberA_continuation) → running=false → starve() called → Promise.resolve().then(drain) ↑ ALS context captured = Request A's context T1: Request B arrives → POST handler → webHandler(requestB) → Promise executor runs synchronously → httpRuntime.context set to B's context → fiber B forked, runs first ops synchronously → fiber B yields → scheduler.scheduleTask(fiberB_continuation) → running=true → task queued, no new starve() T2: Microtask fires → starveInternal() runs → Drains fiberA_continuation → auth() reads ALS → gets A's context ✓ → Drains fiberB_continuation → auth() reads ALS → gets A's context ✗ ← WRONG USER ``` ## Minimal reproduction ```typescript import { AsyncLocalStorage } from "node:async_hooks" import { Effect, Layer } from "effect" import { RpcServer, RpcSerialization, Rpc, RpcGroup } from "@effect/rpc" import { HttpServer } from "@effect/platform" import * as S from "effect/Schema" // Simulate a framework's ALS (like Next.js / Clerk) const requestStore = new AsyncLocalStorage<{ userId: string }>() class GetUser extends Rpc.make("GetUser", { success: S.Struct({ userId: S.String, alsUserId: S.String }), failure: S.Never, payload: {} }) {} const MyRpc = RpcGroup.make("MyRpc").add(GetUser) const MyRpcLive = MyRpc.toLayer( RpcGroup.toHandlers(MyRpc, { GetUser: () => Effect.gen(function*() { // Simulate calling an ALS-dependent API inside an Effect fiber const alsResult = yield* Effect.tryPromise({ try: async () => { const store = requestStore.getStore() return store?.userId ?? "NONE" }, catch: () => { throw new Error("impossible") } }) return { userId: "from-effect-context", alsUserId: alsResult } }) }) ) const RpcLayer = MyRpcLive.pipe( Layer.provideMerge(RpcSerialization.layerJson), Layer.provideMerge(HttpServer.layerContext) ) const { handler } = RpcServer.toWebHandler(MyRpc, { layer: RpcLayer }) // Simulate two concurrent requests with different ALS contexts async function main() { const results = await Promise.all([ requestStore.run({ userId: "user-A" }, () => handler(mak [...]
+
+=== GHSA-g776-759r-pf6x sev=medium pkgs=['composer:typo3/cms-core']
+src=https://github.com/TYPO3-CMS/core cwes=['CWE-863']
+SUMMARY: TYPO3 Broken Access Control in Import Module
+DESC: It has been discovered that the Import/Export module is susceptible to broken access control. Regular backend users have access to import functionality which usually only is available to admin users or users having User TSconfig setting options.impexp.enableImportForNonAdminUser explicitly enabled. Database content to be imported however was correctly checked against users’ permissions and not affected. However it was possible to upload files by-passing restrictions of the file abstraction layer (FAL) - however this did not affect executable files which have been correctly secured by fileDenyPattern. Currently the only known vulnerability is to directly inject *.form.yaml files which could be used to trigger the vulnerability of TYPO3-CORE-SA-2018-003 (privilege escalation & SQL injection) - which requires the Form Framework (ext:form) being available on an according website. CVSSv3 scoring is based on this scenario. A valid backend user account is needed in order to exploit this vulnerability.
+
+=== GHSA-vf85-8ff2-3r9w sev=medium pkgs=['pip:django-filer']
+src=https://github.com/django-cms/django-filer cwes=['CWE-285', 'CWE-639', 'CWE-862']
+SUMMARY: django-filer: Missing per-object authorization on `discard` and `edit_redirect` version transitions
+DESC: ## Summary When django-filer's optional per-folder permission system is enabled (`FILER_ENABLE_PERMISSIONS=True`), the "Delete files and/or folders" admin action does **not** enforce per-folder edit permissions the way every other mutating action does. A staff user who is scoped **read-only** on a folder via `FolderPermission` (`can_edit = DENY`), but who holds the global Django model-level `delete_*` permission, can delete files and entire subfolders inside that folder — even though their move, rename, copy, and resize actions on the same folder are correctly denied. This is an integrity / edit-control gap (unauthorized deletion). It is **not** a read-confidentiality issue: filer files are world-downloadable by design, so no confidentiality claim is made. ## Affected versions - django-filer `<= 3.4.4` (verified end-to-end on 3.4.4 and on `master` prior to the fix). Only installations running with `FILER_ENABLE_PERMISSIONS = True` (the optional per-folder `FolderPermission` system) are affected. Deployments that leave permissions disabled (the default) rely solely on Django model-level permissions and are not impacted by this specific gap. ## Patched versions - Fixed in PR [#1605](https://github.com/django-cms/django-filer/pull/1605). Upgrade to the first release containing that commit (`3.5.0` or later). ## Details The `delete_files_or_folders` admin action in `filer/admin/folderadmin.py` authorized deletion using only: 1. `self.has_delete_permission(request)` — which returns `True` for `obj=None`, and 2. the Django model-level `delete_file` / `delete_folder` / `delete_image` permission (enforced downstream by the admin delete machinery). It never called `check_folder_edit_permissions` or `check_files_edit_permissions`. Every sibling mutating action — move, rename, copy, resize — *does* call these helpers, which walk the selected objects (and their descendants) and enforce the per-folder `can_edit` grant from `FolderPermission`. Because `FolderPermission` has no dedicated `can_delete` field, deletion is treated as an edit/management operation and is gated elsewhere on `can_edit`. The delete action's omission therefore let a folder-scoped read-only user bypass the per-folder control that constrains all their other write operations. ### Precondition The attacker must hold the Django model-level `delete_file` / `delete_folder` / `delete_image` permission. A purely read-only user (no model-level delete perm) receives `403` and cannot exploit this. This precondition matches the standard folder-scoped-staff deployment model, where staff hold model-level permissions and are further constrained per-folder by `FolderPermission`. ## Mitigation - Upgrade to the patched release. - Until upgrading, avoid granting the model-level `delete_file` / `delete_folder` / `delete_image` permission to staff who are meant to be read-only on specific folders via `FolderPermission`. ## Credit Reported through coordinated disclosure. Fixed in PR #1605.
+FIX pull https://github.com/django-cms/django-filer/pull/1605 status=200
+  PR: fix: Delete folder action failed to check all permissions | ## Summary by Sourcery Ensure bulk delete actions respect per-folder edit permissions and add regression coverage for permission checks. Bug Fixes: - Prevent users with only read access and model-level delete permission from deleting folders and files via the bulk delete action. Tests: - Add a regression test verifying that delete actions require edit permission when folder-level permissions are e
+  MSG: fix: Delete folder action failed to check all permissions (#1605) * fix: Delete folder action failed to check all permissions * Potential fix for pull request finding 'CodeQL / File is not always clos
+  FILE filer/admin/folderadmin.py
+    +        # Check that the user has per-folder edit permission on every selected
+    +        # file and folder (and their descendants). Without this, a user with
+    +        # only read access to a folder could delete its contents when the
+    +        # optional per-folder permission system is enabled.
+    +        check_files_edit_permissions(request, files_queryset)
+    +        check_folder_edit_permissions(request, folders_queryset)
+  FILE tests/test_permissions.py
+    +    def test_delete_action_requires_edit_permission(self):
+    +        # A staff user with only read access to a folder (can_read=ALLOW,
+    +        # can_edit=DENY) plus the model-level delete permissions must NOT be
+    +        # able to delete files/folders through the bulk delete action.
+    +        old_setting = filer_settings.FILER_ENABLE_PERMISSIONS
+    +        target_file = None
+    +        try:
+    +            filer_settings.FILER_ENABLE_PERMISSIONS = True
+    +            # Grant the model-level delete permissions to test_user1.
+    +            delete_perms = Permission.objects.filter(
+    +                codename__in=("delete_folder", "delete_file", "delete_image")
+    +            )
+    +            self.test_user1.user_permissions.add(*delete_perms)
+    +            # Read allowed / edit denied on *all* folders. Using an "everybody"
+    +            # permission means no FolderPermission row is attached to the target
+    +            # folder itself, so the only thing that can block the deletion is
+    +            # the missing edit permission (which is what we are testing).
+    +            FolderPermission.objects.create(
+    +                type=FolderPermission.ALL, everybody=True,
+    +                can_edit=FolderPermission.DENY,
+    +                can_read=FolderPermission.ALLOW,
+    +                can_add_children=FolderPermission.DENY,
+    +            )
+    +            # A folder (owned by someone else) containing a file. test_user1 can
+FIX commit https://github.com/django-cms/django-filer/commit/29d20ec0de13d7f77fa2cea93166f8d50a3f508d status=200
+  MSG: fix: Delete folder action failed to check all permissions
+  FILE filer/admin/folderadmin.py
+    +        # Check that the user has per-folder edit permission on every selected
+    +        # file and folder (and their descendants). Without this, a user with
+    +        # only read access to a folder could delete its contents when the
+    +        # optional per-folder permission system is enabled.
+    +        check_files_edit_permissions(request, files_queryset)
+    +        check_folder_edit_permissions(request, folders_queryset)
+  FILE tests/test_permissions.py
+    +    def test_delete_action_requires_edit_permission(self):
+    +        # A staff user with only read access to a folder (can_read=ALLOW,
+    +        # can_edit=DENY) plus the model-level delete permissions must NOT be
+    +        # able to delete files/folders through the bulk delete action.
+    +        old_setting = filer_settings.FILER_ENABLE_PERMISSIONS
+    +        target_file = None
+    +        try:
+    +            filer_settings.FILER_ENABLE_PERMISSIONS = True
+    +            # Grant the model-level delete permissions to test_user1.
+    +            delete_perms = Permission.objects.filter(
+    +                codename__in=("delete_folder", "delete_file", "delete_image")
+    +            )
+    +            self.test_user1.user_permissions.add(*delete_perms)
+    +            # Read allowed / edit denied on *all* folders. Using an "everybody"
+    +            # permission means no FolderPermission row is attached to the target
+    +            # folder itself, so the only thing that can block the deletion is
+    +            # the missing edit permission (which is what we are testing).
+    +            FolderPermission.objects.create(
+    +                type=FolderPermission.ALL, everybody=True,
+    +                can_edit=FolderPermission.DENY,
+    +                can_read=FolderPermission.ALLOW,
+    +                can_add_children=FolderPermission.DENY,
+    +            )
+    +            # A folder (owned by someone else) containing a file. test_user1 can
+FIX commit https://github.com/django-cms/django-filer/commit/742ba4c3094dd75e586ca3a05e6ad2703de4553b status=200
+  (same commit message as a fix above; diff not repeated)
+
+=== GHSA-3492-cvg7-9mr2 sev=high pkgs=['pip:djust']
+src=https://github.com/djust-org/djust cwes=['CWE-636', 'CWE-862']
+SUMMARY: djust: Multi-tenant isolation fails open on the WebSocket/SSE path, disclosing other tenants' data
+DESC: ### Impact `djust.tenants` isolation was enforced only on the HTTP path. The current tenant was stored in `threading.local()` and set exclusively by the HTTP-only `TenantMiddleware`, so on the live (WebSocket/SSE) path `get_current_tenant()` was always `None` during mount and every event handler — and the tenant-aware `QuerySet` manager failed **OPEN** (returned the unfiltered queryset, ignoring `STRICT_MODE`), disclosing **every** tenant's rows to whoever held the socket. `threading.local` was additionally shared across connections on the `sync_to_async` executor thread. ### Patches Fixed in **djust 1.0.7**. Tenant storage moved to a `contextvars.ContextVar` (per async task); the resolved tenant is bound around WS/SSE mount and every dispatch; both managers scope the base queryset once and fail **CLOSED** (`.none()` under the default `STRICT_MODE`); and system check **S006** warns when `STRICT_MODE=False`. ### Workarounds No workaround on the live path short of upgrading.
+
+=== GHSA-2xp7-rpvc-pjwc sev=medium pkgs=['composer:concrete5/concrete5']
+src=https://github.com/concretecms/concretecms cwes=['CWE-862']
+SUMMARY: Concrete CMS is vulnerable to IDOR
+DESC: Concrete CMS 9.5.0 and below is vulnerable to IDOR. The '/ccm/frontend/conversations/get_rating' endpoint confirms existence and returns rating score for any message by ID.
+
+=== GHSA-jrhc-9qg9-4qfq sev=high pkgs=['pip:open-webui']
+src=https://github.com/open-webui/open-webui cwes=['CWE-821', 'CWE-862']
+SUMMARY: Open WebUI Allows Arbitrary File Reading and Deletion
+DESC: An improper access control vulnerability in open-webui/open-webui v0.3.8 allows attackers to view and delete any files. The application does not verify whether the attacker is an administrator, allowing the attacker to directly call the GET /api/v1/files/ interface to retrieve information on all files uploaded by users, which includes the ID values. The attacker can then use the GET /api/v1/files/{file_id} interface to obtain information on any file and the DELETE /api/v1/files/{file_id} interface to delete any file.
+FIX commit https://github.com/open-webui/open-webui/commit/4519ddd0e97b33114d5ad0d012ed4523937f55c7 status=200
+  MSG: refac: files rbac
+  FILE backend/apps/webui/models/files.py
+    +    def get_files_by_user_id(self, user_id: str) -> list[FileModel]:
+    +        with get_db() as db:
+    +            return [
+    +                FileModel.model_validate(file)
+    +                for file in db.query(File).filter_by(user_id=user_id).all()
+    +            ]
+  FILE backend/apps/webui/routers/files.py
+    -    files = Files.get_files()
+    +    if user.role == "admin":
+    +        files = Files.get_files()
+    +    else:
+    +        files = Files.get_files_by_user_id(user.id)
+    -    if file:
+    +    if file and (file.user_id == user.id or user.role == "admin"):
+    -    if file:
+    +    if file and (file.user_id == user.id or user.role == "admin"):
+    -    if file:
+    +    if file and (file.user_id == user.id or user.role == "admin"):
+    -    if file:
+    +    if file and (file.user_id == user.id or user.role == "admin"):
+
+=== GHSA-8m7c-hm88-2p97 sev=medium pkgs=['composer:moodle/moodle']
+src=https://github.com/moodle/moodle cwes=['CWE-862']
+SUMMARY: Moodle shows hidden grades to users without permission on some grade reports
+DESC: A flaw has been identified in Moodle where insufficient capability checks in certain grade reports allowed users without the necessary permissions to access hidden grades.
+
+=== GHSA-4hfh-6x8g-gwpp sev=medium pkgs=['maven:org.springframework:spring-webflux']
+src=https://github.com/spring-projects/spring-framework cwes=['CWE-384']
+SUMMARY: Spring Framework Escalation via Session Fixation in WebFlux
+DESC: A WebFlux application with a compromised subdomain (for example, compromised via cross-site scripting (XSS)) is vulnerable to an escalation attack exchanging a known session ID for that of an authenticated user. Affected versions: Spring Framework 7.0.0 through 7.0.7; 6.2.0 through 6.2.18; 6.1.0 through 6.1.27; 5.3.0 through 5.3.48.
+FIX commit https://github.com/spring-projects/spring-framework/commit/b8ddd2c690fe3f00bb5e3d9f913a37504aab49a0 status=200
+  MSG: Avoid race in InMemoryWebSession Closes gh-36742
+  FILE spring-web/src/main/java/org/springframework/web/server/WebSession.java
+    -	/**
+    -	 * Generate a new id for the session and update the underlying session
+    -	 * storage to reflect the new id. After a successful call {@link #getId()}
+    -	 * reflects the new session id.
+    -	 * @return completion notification (success or error)
+    -	 */
+    -	Mono<Void> changeSessionId();
+    -	/**
+    -	 * Invalidate the current session and clear session storage.
+    -	 * @return completion notification (success or error)
+    -	 */
+    -	Mono<Void> invalidate();
+    +	/**
+    +	 * Generate a new id for the session and update the underlying session
+    +	 * storage to reflect the new id. After a successful call {@link #getId()}
+    +	 * reflects the new session id.
+    +	 * @return completion notification (success or error)
+    +	 */
+    +	Mono<Void> changeSessionId();
+    +	/**
+    +	 * Invalidate the current session and clear session storage.
+    +	 * @return completion notification (success or error)
+    +	 */
+    +	Mono<Void> invalidate();
+  FILE spring-web/src/main/java/org/springframework/web/server/session/InMemoryWebSessionStore.java
+    +		private final Lock lock = new ReentrantLock();
+    -		@Override
+    -		public Mono<Void> changeSessionId() {
+    -			return Mono.<Void>defer(() -> {
+    -						String currentId = this.id.get();
+    -						InMemoryWebSessionStore.this.sessions.remove(currentId);
+FIX commit https://github.com/spring-projects/spring-framework/commit/d72da90d3a562632e2b565113813f7b4a31f8717 status=200
+  (same commit message as a fix above; diff not repeated)
+
+=== GHSA-79pf-vx4x-7jmm sev=critical pkgs=['go:github.com/filebrowser/filebrowser/v2']
+src=https://github.com/filebrowser/filebrowser cwes=['CWE-284', 'CWE-732']
+SUMMARY: File Browser's TUS Delete Endpoint Bypasses Delete Permission Check
+DESC: ### Summary A broken access control vulnerability in the TUS protocol DELETE endpoint allows authenticated users with only Create permission to delete arbitrary files and directories within their scope, bypassing the intended Delete permission restriction. Any multi-user deployment where administrators explicitly restrict file deletion for certain users is affected. ### Details The tusDeleteHandler function in http/tus_handlers.go incorrectly gates the DELETE operation behind Perm.Create instead of Perm.Delete: ```go // http/tus_handlers.go - tusDeleteHandler (VULNERABLE) func tusDeleteHandler(cache UploadCache) handleFunc { return withUser(func(_ http.ResponseWriter, r *http.Request, d *data) (int, error) { if r.URL.Path == "/" || !d.user.Perm.Create { // ← Wrong permission checked return http.StatusForbidden, nil } // ... err = d.user.Fs.RemoveAll(r.URL.Path) // File is deleted ``` The correct resourceDeleteHandler in http/resource.go properly checks Perm.Delete: ```go // http/resource.go - resourceDeleteHandler (CORRECT) func resourceDeleteHandler(fileCache FileCache) handleFunc { return withUser(func(_ http.ResponseWriter, r *http.Request, d *data) (int, error) { if r.URL.Path == "/" || !d.user.Perm.Delete { // ← Correct permission return http.StatusForbidden, nil } ``` This inconsistency means that DELETE /api/tus/{path} and DELETE /api/resources/{path} enforce entirely different permission models for the same underlying filesystem operation. The TUS endpoint was introduced to support resumable uploads (http/tus_handlers.go) and its DELETE handler is intended to cancel in-progress uploads -however, the RemoveAll call permanently removes the file from the filesystem regardless of how the upload was initiated. ### Proposed fix: ```go // http/tus_handlers.go - if r.URL.Path == "/" || !d.user.Perm.Create { + if r.URL.Path == "/" || !d.user.Perm.Delete { ``` ### PoC - filebrowser built from latest master (git clone https://github.com/filebrowser/filebrowser) - Tested on: Kali Linux, go version go1.23+ ### Setup section ```bash # Build and initialize git clone https://github.com/filebrowser/filebrowser cd filebrowser go build -o filebrowser . ./filebrowser config init # Create a test user with Create=true but Delete=false ./filebrowser users add testuser SuperSecurePassword1234 \ --perm.create=true \ --perm.delete=false # Start server ./filebrowser & ``` ### POC script steps 1. Confirm the Delete permission is correctly enforced on the standard endpoint: ```bash TOKEN=$(curl -s -X POST localhost:8080/api/login \ -H "Content-Type: application/json" \ -d '{"username":"testuser","password":"SuperSecurePassword1234"}') # Attempt deletion via the standard resource endpoint → should be blocked curl -s -X DELETE "localhost:8080/api/resources/target.txt" \ -H "X-Auth: $TOKEN" \ -w "HTTP Status: %{http_code}\n" # Expected: HTTP Status: 403 ``` 2. Bypass via the TUS Delete endpoint: ```bash # Initiate a TUS upload to register the file in the upload cache curl -s -X POST "localhost:8080/api/tus/target.txt" \ -H "X-Auth: $TOKEN" \ -H "Upload-Length: 18" \ -w "HTTP Status: %{http_code}\n" # Expected: HTTP Status: 201 # Now delete via the TUS endpoint - Perm.Delete is NOT checked curl -s -X DELETE "localhost:8080/api/tus/target.txt" \ -H "X-Auth: $TOKEN" \ -w "HTTP Status: %{http_code}\n" # Expected: HTTP Status: 204 ← File deleted despite Perm.Delete=false ``` **Observed results:** ``` DELETE /api/resources/target.txt --> 403 Forbidden ( permission enforced ) DELETE /api/tus/target.txt --> 204 No Content ( permission bypassed ) ``` ### Impact This is a broken access control vulnerability (IDOR / permission model bypass). It affects any filebrowser deployment where: - Multiple users share a single instance, and - An administrator has explicitly set Perm.Delete=false for one or more users to restrict destructive operations An attacker (authenticated user with Perm.Create=true) can permanently delete any file or directory within their assigned scope-including files they did not create - by initiating a TUS upload against the target path and immediately issuing a TUS DELETE request. This completely undermines the intended access control model, as administrators have no reliable way to prevent file deletion for users who retain upload rights.
+FIX commit https://github.com/filebrowser/filebrowser/commit/7ed1425115be602c2b23236c410098ea2d74b42f status=200
+  MSG: fix: check for correct permission in TUS Delete
+  FILE http/tus_handlers.go
+    -		if r.URL.Path == "/" || !d.user.Perm.Create {
+    +		if r.URL.Path == "/" || !d.user.Perm.Delete {

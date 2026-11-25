@@ -20,7 +20,8 @@ import fetch as F  # noqa: E402
 import reading as RD  # noqa: E402
 import rules as R  # noqa: E402
 
-CHECKPOINT = "cp300"
+CHECKPOINT = "cp300b"  # repeated after round 1 at cp300 failed (prereg_changes.md, change 1)
+ROUND1 = "cp300"
 
 
 def pct(k: int, n: int) -> str:
@@ -135,6 +136,13 @@ def compute() -> dict:
         v["dr_confirmed_share"] = pct(dr["confirmed"], dr["ours_first"])
         v["dr_second_only"] = len(dr["second_only_ours"])
         v["dr_ok"] = "yes" if dr["ok"] else "no"
+    r1 = json.loads((DR.cp_dir(ROUND1) / "stats.json").read_text())
+    v["r1_sample"], v["r1_kappa"] = r1["sample"], f"{r1['kappa']:.2f}"
+    v["r1_confirmed"], v["r1_ours_first"] = r1["confirmed"], r1["ours_first"]
+    v["r1_confirmed_share"] = pct(r1["confirmed"], r1["ours_first"])
+    v["r1_gold_ok"] = gold_score(DR.cp_dir(ROUND1) / "gold-reader2.jsonl")[0]
+    rr = read_jsonl(HERE / "reread" / "cp300b.jsonl")
+    v["reread_rows"], v["reread_changed"] = len(rr), sum(r["new"] != "unchanged" for r in rr)
     gs = gold_score(HERE / "gold" / "labels-reader2-pre.jsonl")
     v["gold_pre_ok"], v["gold_n"] = gs[0], gs[1]
     gd = gold_score(DR.cp_dir(CHECKPOINT) / "gold-reader2.jsonl")
@@ -199,10 +207,17 @@ def render(v: dict) -> str:
     L += ["", f"Wilson 95% interval: {k(v, 'wilson_lo')} to {k(v, 'wilson_hi')}. The `ours` count is a lower bound "
           "for the frame (only `ours` rows confirmed by the independent double read are counted; disputed rows are "
           "`unclear`).", ""]
-    L += ["## PREREG changes", "",
-          "- None to rules, lists, regexes, seeds, budget or decision line. Interpretations recorded in PREREG.md "
-          "before data (quote check after whitespace collapsing; gate rev 3 notes 5, 8, 9 applied).",
-          "- First-reader label corrections before the double read are listed in `corrections.md`.", ""]
+    L += ["## PREREG changes (listed before the result)", "",
+          "- Change 1 (`prereg_changes.md`): class-rule clarifications C1 (principal), C2 (O1 limited to in-memory "
+          "or caching layers), C3 (O4 versus a precondition the attacker creates), C4 (tie-break reminder), made "
+          f"because the double read at the first 300th included row failed (kappa {k(v, 'r1_kappa')}, confirmed "
+          f"{k(v, 'r1_confirmed')} of {k(v, 'r1_ours_first')} = {k(v, 'r1_confirmed_share')} < 80%). Every included "
+          f"row was re-read ({k(v, 'reread_rows')} rows, {k(v, 'reread_changed')} labels changed, `reread/cp300b.jsonl`); "
+          "reading resumed in the same order to a new 300th included row (checkpoint `cp300b`) and the double read "
+          "was repeated with fresh subagents. Thresholds, lists, regexes, seeds, budget and decision line unchanged.",
+          "- Interpretations recorded in PREREG.md before data: quote check after whitespace collapsing; gate rev 3 "
+          "notes 5, 8, 9 applied.",
+          "- First-reader label correction before any double read: `corrections.md`.", ""]
     L += ["## Route (§0)", "",
           "Session route: both probe calls answered 403 from the session proxy (`probe/session-*.json`). Workflow "
           "route (`.github/workflows/advisory-security-count.yml`, `wf_job.py`): both answered 200 "
@@ -250,7 +265,11 @@ def render(v: dict) -> str:
     L += ["", "## Calibration and double read", "",
           f"Gold set (6 unlabeled cases, `gold/input.jsonl`): first reader {k(v, 'gold_first_ok')} of "
           f"{k(v, 'gold_n')} (not blind); independent reader before any real row {k(v, 'gold_pre_ok')} of 6; "
-          f"first double-read subagent before its rows {k(v, 'gold_dr_ok')} of 6.", ""]
+          f"first double-read subagent of round 1 before its rows {k(v, 'r1_gold_ok')} of 6; first double-read "
+          f"subagent of round 2 before its rows {k(v, 'gold_dr_ok')} of 6.", "",
+          f"Round 1 (checkpoint `cp300`, before change 1): sample {k(v, 'r1_sample')}, kappa {k(v, 'r1_kappa')}, "
+          f"confirmed {k(v, 'r1_confirmed')} of {k(v, 'r1_ours_first')} ({k(v, 'r1_confirmed_share')}): failed; no "
+          "decision taken there (`doubleread/cp300/stats.json`).", ""]
     if v.get("_dr"):
         L += [f"Checkpoint `{CHECKPOINT}`: sample {k(v, 'dr_sample')} rows (every first-reader `ours` plus "
               f"`random.Random(6).sample` of 40 not-`ours` included rows), second labels {k(v, 'dr_read')}. Cohen's "
