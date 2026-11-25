@@ -1298,6 +1298,15 @@
    "prepass_total": 42353,
    "stack": []
   },
+  "is:public created:>=2024-01-01 retry \"llama-index\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 4376,
+   "leaves": 6,
+   "nodes": 10,
+   "prepass_total": 4369,
+   "stack": []
+  },
   "is:public created:>=2024-01-01 retry \"model output\" test": {
    "capped": true,
    "done": true,
@@ -1307,6 +1316,28 @@
    "prepass_total": 283268,
    "stack": []
   },
+  "is:public created:>=2024-01-01 retry \"pydantic-ai\" test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 16989,
+   "leaves": 24,
+   "nodes": 49,
+   "prepass_total": 19080,
+   "stack": [
+    [
+     "2026-11-10",
+     "2026-11-13"
+    ],
+    [
+     "2026-11-14",
+     "2026-11-17"
+    ],
+    [
+     "2026-11-18",
+     "2026-11-25"
+    ]
+   ]
+  },
   "is:public created:>=2024-01-01 retry anthropic test": {
    "capped": true,
    "done": true,
@@ -1314,6 +1345,15 @@
    "leaves": 1,
    "nodes": 1,
    "prepass_total": 385477,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 retry autogen test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 9551,
+   "leaves": 14,
+   "nodes": 26,
+   "prepass_total": 9537,
    "stack": []
   },
   "is:public created:>=2024-01-01 retry claude test": {
@@ -1377,6 +1417,15 @@
    "leaves": 1,
    "nodes": 1,
    "prepass_total": 36734,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 retry llamaindex test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 3766,
+   "leaves": 6,
+   "nodes": 10,
+   "prepass_total": 3750,
    "stack": []
   },
   "is:public created:>=2024-01-01 retry llm test": {
@@ -1733,13 +1782,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 2647
+  "issues": 3064
  },
  "search_stats": {
-  "429": 6,
+  "429": 9,
   "limit": 30,
-  "remaining": 21,
-  "reset": 1795640597
+  "remaining": 27,
+  "reset": 1795642429
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
