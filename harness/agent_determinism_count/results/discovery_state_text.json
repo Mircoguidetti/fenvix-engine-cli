@@ -2,6 +2,59 @@
  "budget_end": "2026-11-26T10:54:28+00:00",
  "finished": null,
  "queries": {
+  "is:public created:>=2024-01-01 flakiness llm test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 20348,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 20340,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 flakiness openai test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 11152,
+   "leaves": 15,
+   "nodes": 32,
+   "prepass_total": 16448,
+   "stack": [
+    [
+     "2026-08-19",
+     "2026-08-27"
+    ],
+    [
+     "2026-08-28",
+     "2026-09-04"
+    ],
+    [
+     "2026-09-05",
+     "2026-09-20"
+    ],
+    [
+     "2026-09-21",
+     "2026-11-25"
+    ]
+   ]
+  },
+  "is:public created:>=2024-01-01 flaky \"ai sdk\" test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 34158,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 34125,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 flaky \"llama-index\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 1571,
+   "leaves": 3,
+   "nodes": 4,
+   "prepass_total": 1571,
+   "stack": []
+  },
   "is:public created:>=2024-01-01 flaky \"model output\" test": {
    "capped": true,
    "done": true,
@@ -9,6 +62,24 @@
    "leaves": 1,
    "nodes": 1,
    "prepass_total": 52828,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 flaky \"pydantic-ai\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 6764,
+   "leaves": 11,
+   "nodes": 20,
+   "prepass_total": 6761,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 flaky agent test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 1160009,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 1159483,
    "stack": []
   },
   "is:public created:>=2024-01-01 flaky anthropic test": {
@@ -20,6 +91,15 @@
    "prepass_total": 87151,
    "stack": []
   },
+  "is:public created:>=2024-01-01 flaky autogen test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 3014,
+   "leaves": 4,
+   "nodes": 6,
+   "prepass_total": 3015,
+   "stack": []
+  },
   "is:public created:>=2024-01-01 flaky claude test": {
    "capped": true,
    "done": true,
@@ -27,6 +107,15 @@
    "leaves": 1,
    "nodes": 1,
    "prepass_total": 949648,
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 flaky crewai test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 1795,
+   "leaves": 4,
+   "nodes": 6,
+   "prepass_total": 1795,
    "stack": []
   },
   "is:public created:>=2024-01-01 flaky eval test": {
@@ -67,25 +156,21 @@
   },
   "is:public created:>=2024-01-01 flaky langgraph test": {
    "capped": false,
-   "done": false,
-   "leaf_total": 6240,
-   "leaves": 11,
-   "nodes": 23,
+   "done": true,
+   "leaf_total": 12116,
+   "leaves": 21,
+   "nodes": 40,
    "prepass_total": 12113,
-   "stack": [
-    [
-     "2026-07-01",
-     "2026-07-08"
-    ],
-    [
-     "2026-07-09",
-     "2026-07-16"
-    ],
-    [
-     "2026-07-17",
-     "2026-11-25"
-    ]
-   ]
+   "stack": []
+  },
+  "is:public created:>=2024-01-01 flaky llamaindex test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 813,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 813,
+   "stack": []
   },
   "is:public created:>=2024-01-01 flaky llm test": {
    "capped": true,
@@ -117,13 +202,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 181
+  "issues": 582
  },
  "search_stats": {
-  "429": 1,
+  "429": 2,
   "limit": 30,
-  "remaining": 17,
-  "reset": 1795609284
+  "remaining": 16,
+  "reset": 1795611105
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
