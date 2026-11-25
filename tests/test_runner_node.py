@@ -301,9 +301,12 @@ elif mode != "no-outcomes":
     json.dump({"order": ["a.test.js::t"], "outcomes": {"a.test.js::t": outcome}}, open(opt["--det-outcomes"], "w"))
 st = {"failed": int(outcome == "failed"), "not_proven": 0, "passed": int(outcome == "passed"), "skipped": 0}
 with open(opt["--det-trace"], "w") as fh:
-    # a sensor, as every real header declares one (node/src/session.js provableField; fenvix-run engine_signals)
-    fh.write(json.dumps({"type": "header", "meta": {"status": st, "epoch_ns": "1795392000000000000",
-                                                    "provable": {"sensor": "node-surface/1"}}}) + "\n")
+    # a sensor and the controls it rests on, as every real header declares them (node/src/session.js provableField;
+    # fenvix-run engine_signals and sensor_refusal: a sensor without contract, audited runtime or its controls is refused)
+    sensor = {"sensor": "node-surface/1", "contract": 1, "runtime": "node22", "surface": "stub"}
+    fh.write(json.dumps({"type": "header", "meta": {"status": st, "epoch_ns": "1795392000000000000", "provable": sensor,
+                                                    "controls": ["fs", "isolation", "net", "order", "seeds", "time",
+                                                                 "timers"]}}) + "\n")
 sys.exit(0)
 """
 
@@ -326,6 +329,7 @@ def test_detjs_exit_0_without_proof_is_red(stub, tmp_path, mode):
     code, s, md, log = job(tmp_path, proj, "j", detjs, "--no-rerun", env={"STUB_MODE": mode})
     assert code == 1, log
     assert s["exit"] == 1
+    assert s.get("provable_absent") is None, f"red for the stub header, not for {mode}: {log}"
 
 
 def test_verify_counts_a_wrong_reuse_and_keeps_detjs_exit(stub, tmp_path):
