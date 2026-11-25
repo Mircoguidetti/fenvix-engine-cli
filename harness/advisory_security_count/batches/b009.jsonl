@@ -1,0 +1,20 @@
+{"ghsa_id": "GHSA-v782-xr4w-3vqx", "reader": "session", "batch": 9, "inclusion": "included", "reason": null, "class": "ours", "subclass": "O4-order", "quote": "whenever the object storing the password is deleted"}
+{"ghsa_id": "GHSA-8m9v-xpgf-g99m", "reader": "session", "batch": 9, "inclusion": "included", "reason": null, "class": "read-the-code", "subclass": null, "quote": "without sender authorization checks"}
+{"ghsa_id": "GHSA-4hgg-c4rr-6h7f", "reader": "session", "batch": 9, "inclusion": "included", "reason": null, "class": "read-the-code", "subclass": null, "quote": "without filtering based on the requesting user's ownership"}
+{"ghsa_id": "GHSA-xg36-8c2v-jpxh", "reader": "session", "batch": 9, "inclusion": "included", "reason": null, "class": "unclear", "subclass": null, "quote": "Incorrect Authorization vulnerability that could result in a security feature bypass"}
+{"ghsa_id": "GHSA-r5vf-grcx-5vqp", "reader": "session", "batch": 9, "inclusion": "included", "reason": null, "class": "read-the-code", "subclass": null, "quote": "fail to validate the OAuth token scope on the callback"}
+{"ghsa_id": "GHSA-w93q-cq9w-58p7", "reader": "session", "batch": 9, "inclusion": "excluded", "reason": "xss", "class": null, "subclass": null, "quote": null}
+{"ghsa_id": "GHSA-92mm-2pjq-r785", "reader": "session", "batch": 9, "inclusion": "excluded", "reason": "not-web", "class": null, "subclass": null, "quote": "may allow arbitrary file reads on the file system during certain git operations"}
+{"ghsa_id": "GHSA-q986-4x7x-gx39", "reader": "session", "batch": 9, "inclusion": "included", "reason": null, "class": "read-the-code", "subclass": null, "quote": "exposes the `POST /api/ops/check-email` endpoint without any authentication"}
+{"ghsa_id": "GHSA-85g9-8j9g-p486", "reader": "session", "batch": 9, "inclusion": "included", "reason": null, "class": "read-the-code", "subclass": null, "quote": "experimental interface lacks permission checks"}
+{"ghsa_id": "GHSA-gvv6-33j7-884g", "reader": "session", "batch": 9, "inclusion": "excluded", "reason": "xss", "class": null, "subclass": null, "quote": null}
+{"ghsa_id": "GHSA-ff64-7w26-62rf", "reader": "session", "batch": 9, "inclusion": "excluded", "reason": "not-web", "class": null, "subclass": null, "quote": "Claude Code's bubblewrap sandboxing mechanism failed to properly protect"}
+{"ghsa_id": "GHSA-q433-mp6c-8v4f", "reader": "session", "batch": 9, "inclusion": "excluded", "reason": "injection", "class": null, "subclass": null, "quote": null}
+{"ghsa_id": "GHSA-3x6r-wxxg-53vv", "reader": "session", "batch": 9, "inclusion": "excluded", "reason": "dos", "class": null, "subclass": null, "quote": null}
+{"ghsa_id": "GHSA-qg35-44qx-7vrr", "reader": "session", "batch": 9, "inclusion": "excluded", "reason": "path-traversal", "class": null, "subclass": null, "quote": null}
+{"ghsa_id": "GHSA-rgg9-956j-3378", "reader": "session", "batch": 9, "inclusion": "excluded", "reason": "not-web", "class": null, "subclass": null, "quote": "never checks `t_invalid`"}
+{"ghsa_id": "GHSA-q4xf-7fw5-4x8v", "reader": "session", "batch": 9, "inclusion": "included", "reason": null, "class": "read-the-code", "subclass": null, "quote": "the cookie would remain valid for a long period of time, even after the true owner of the account reset their password"}
+{"ghsa_id": "GHSA-x35m-3gp4-4fh5", "reader": "session", "batch": 9, "inclusion": "included", "reason": null, "class": "read-the-code", "subclass": null, "quote": "to bypass RBAC authorization checks"}
+{"ghsa_id": "GHSA-6mrr-q3pj-h53w", "reader": "session", "batch": 9, "inclusion": "included", "reason": null, "class": "read-the-code", "subclass": null, "quote": "the base updater is anonymously accessible for control panel requests"}
+{"ghsa_id": "GHSA-mhf6-pp52-8wqj", "reader": "session", "batch": 9, "inclusion": "excluded", "reason": "xss", "class": null, "subclass": null, "quote": null}
+{"ghsa_id": "GHSA-vc7v-qv4w-wrv8", "reader": "session", "batch": 9, "inclusion": "included", "reason": null, "class": "ours", "subclass": "O1-shared-state", "quote": "function can be keyed incorrectly even when its inner"}
