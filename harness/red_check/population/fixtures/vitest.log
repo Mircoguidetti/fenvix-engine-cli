@@ -1,0 +1,9 @@
+﻿2026-11-20T10:00:00.1234567Z ##[group]Run npx vitest run
+2026-11-20T10:00:01.1234567Z  RUN  v2.1.8 /home/runner/work/app/app
+2026-11-20T10:00:02.1234567Z 
+2026-11-20T10:00:03.1234567Z  [31m❯[39m src/sum.test.ts [2m([22m[2m3 tests[22m [2m|[22m [31m1 failed[39m[2m)[22m
+2026-11-20T10:00:04.1234567Z [2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m3 passed[39m[22m[90m (4)[39m
+2026-11-20T10:00:05.1234567Z [2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m11 passed[39m[22m[90m (12)[39m
+2026-11-20T10:00:06.1234567Z [2m   Start at [22m 10:00:01
+2026-11-20T10:00:07.1234567Z [2m   Duration [22m 1.42s
+2026-11-20T10:00:08.1234567Z ##[error]Process completed with exit code 1.

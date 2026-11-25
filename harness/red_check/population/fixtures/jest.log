@@ -1,0 +1,10 @@
+﻿2026-11-20T10:00:00.1234567Z ##[group]Run npx jest --ci
+2026-11-20T10:00:01.1234567Z FAIL src/sum.test.js
+2026-11-20T10:00:02.1234567Z   ● sum › adds
+2026-11-20T10:00:03.1234567Z 
+2026-11-20T10:00:04.1234567Z Test Suites: 1 failed, 2 passed, 3 total
+2026-11-20T10:00:05.1234567Z Tests:       1 failed, 10 passed, 11 total
+2026-11-20T10:00:06.1234567Z Snapshots:   0 total
+2026-11-20T10:00:07.1234567Z Time:        2.514 s
+2026-11-20T10:00:08.1234567Z Ran all test suites.
+2026-11-20T10:00:09.1234567Z ##[error]Process completed with exit code 1.
