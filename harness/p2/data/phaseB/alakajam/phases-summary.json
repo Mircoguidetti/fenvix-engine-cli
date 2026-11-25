@@ -1,0 +1,645 @@
+{
+ "source": "phases-alakajam.jsonl.phases.jsonl",
+ "main": {
+  "deps_hash_s": 1.08,
+  "plan_s": 0.001,
+  "trace_write_s": 0.052,
+  "start_at_s": [
+   0.047,
+   34.587
+  ],
+  "workers_spawn_at_s": [
+   0.294,
+   34.873
+  ],
+  "exit_at_s": [
+   34.504,
+   76.622
+  ],
+  "start_uptime_s": [
+   0.042,
+   0.047
+  ],
+  "exit_uptime_s": [
+   34.499,
+   42.083
+  ]
+ },
+ "workers": [
+  {
+   "worker": "7167:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 0.16,
+   "wall_s": 0.852,
+   "file_s": 0.852,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1388,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7166:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 0.161,
+   "wall_s": 3.358,
+   "file_s": 3.358,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 10470,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7182:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 3.535,
+   "wall_s": 0.681,
+   "file_s": 0.681,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1279,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7194:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 3.66,
+   "wall_s": 0.68,
+   "file_s": 0.68,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1227,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7210:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 4.496,
+   "wall_s": 0.174,
+   "file_s": 0.174,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 142,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7202:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 4.363,
+   "wall_s": 0.427,
+   "file_s": 0.427,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 620,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7234:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 4.905,
+   "wall_s": 0.413,
+   "file_s": 0.413,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 496,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7222:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 4.811,
+   "wall_s": 5.952,
+   "file_s": 5.952,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 9808,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7242:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 10.767,
+   "wall_s": 0.209,
+   "file_s": 0.209,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 35,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7265:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 11.095,
+   "wall_s": 1.629,
+   "file_s": 1.629,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4584,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7257:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 10.921,
+   "wall_s": 2.342,
+   "file_s": 2.342,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 6389,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7277:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 13.272,
+   "wall_s": 0.365,
+   "file_s": 0.365,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 513,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7285:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 13.413,
+   "wall_s": 1.601,
+   "file_s": 1.601,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4394,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7293:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 13.78,
+   "wall_s": 1.824,
+   "file_s": 1.824,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4599,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7305:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 15.143,
+   "wall_s": 2.553,
+   "file_s": 2.553,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 5800,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7313:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 15.722,
+   "wall_s": 2.351,
+   "file_s": 2.351,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 5809,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7329:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 17.866,
+   "wall_s": 2.598,
+   "file_s": 2.598,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 5799,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7337:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 18.224,
+   "wall_s": 2.431,
+   "file_s": 2.431,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 5800,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7361:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 20.802,
+   "wall_s": 0.186,
+   "file_s": 0.186,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 39,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7353:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 20.594,
+   "wall_s": 3.26,
+   "file_s": 3.26,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 13704,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7381:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 24.001,
+   "wall_s": 1.706,
+   "file_s": 1.706,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4686,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7369:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 23.86,
+   "wall_s": 3.032,
+   "file_s": 3.032,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 8919,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7399:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 26.899,
+   "wall_s": 1.726,
+   "file_s": 1.726,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4472,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7407:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 27.055,
+   "wall_s": 1.866,
+   "file_s": 1.866,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4701,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7427:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 29.07,
+   "wall_s": 0.168,
+   "file_s": 0.168,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 33,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7419:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 28.751,
+   "wall_s": 0.553,
+   "file_s": 0.553,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4002,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7435:0",
+   "pass": "1",
+   "files": 1,
+   "ready_after_spawn_s": 29.376,
+   "wall_s": 4.084,
+   "file_s": 4.084,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 8824,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7470:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 0.17,
+   "wall_s": 2.174,
+   "file_s": 2.174,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 6390,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7482:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 2.453,
+   "wall_s": 3.112,
+   "file_s": 3.112,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 11079,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7497:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 5.714,
+   "wall_s": 0.419,
+   "file_s": 0.419,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 617,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7509:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 6.267,
+   "wall_s": 4.725,
+   "file_s": 4.725,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 8494,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7522:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 11.163,
+   "wall_s": 2.68,
+   "file_s": 2.68,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 6287,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7534:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 14.016,
+   "wall_s": 8.828,
+   "file_s": 8.828,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 9864,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7547:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 23.005,
+   "wall_s": 2.791,
+   "file_s": 2.791,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 8441,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7559:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 25.947,
+   "wall_s": 2.861,
+   "file_s": 2.861,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 11824,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7571:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 28.961,
+   "wall_s": 3.031,
+   "file_s": 3.031,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 13687,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7583:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 32.116,
+   "wall_s": 2.827,
+   "file_s": 2.827,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 9318,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "7599:0",
+   "pass": "2",
+   "files": 1,
+   "ready_after_spawn_s": 35.056,
+   "wall_s": 6.019,
+   "file_s": 6.019,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 8803,
+   "uncontrolled_io": 0
+  }
+ ],
+ "rerun_one_lane": [
+  {
+   "count": 11,
+   "s": 42.109
+  }
+ ],
+ "passes": [
+  "1",
+  "2",
+  "None"
+ ],
+ "files_top": [
+  {
+   "file": "server/entry/team/team.service.spec.ts",
+   "s": 8.828,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 9864
+  },
+  {
+   "file": "server/user/user.service.spec.ts",
+   "s": 6.019,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 8803
+  },
+  {
+   "file": "server/entry/team/team.service.spec.ts",
+   "s": 5.952,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 9808
+  },
+  {
+   "file": "server/entry/entry.service.spec.ts",
+   "s": 4.725,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 8494
+  },
+  {
+   "file": "server/user/user.service.spec.ts",
+   "s": 4.084,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 8824
+  },
+  {
+   "file": "server/core/security.spec.ts",
+   "s": 3.358,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 10470
+  },
+  {
+   "file": "server/post/like/like.service.spec.ts",
+   "s": 3.26,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 13704
+  },
+  {
+   "file": "server/core/security.spec.ts",
+   "s": 3.112,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 11079
+  },
+  {
+   "file": "server/post/post.service.spec.ts",
+   "s": 3.032,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 8919
+  },
+  {
+   "file": "server/post/like/like.service.spec.ts",
+   "s": 3.031,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 13687
+  },
+  {
+   "file": "server/post/comment/comment.service.spec.ts",
+   "s": 2.861,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 11824
+  },
+  {
+   "file": "server/post/post.service.spec.ts",
+   "s": 2.827,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 9318
+  },
+  {
+   "file": "server/event/tournament/tournament.service.spec.ts",
+   "s": 2.791,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 8441
+  },
+  {
+   "file": "server/entry/highscore/highscore.service.spec.ts",
+   "s": 2.68,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 6287
+  },
+  {
+   "file": "server/post/comment/comment.service.spec.ts",
+   "s": 2.598,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 5799
+  },
+  {
+   "file": "server/event/tournament/tournament.service.spec.ts",
+   "s": 2.553,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 5800
+  },
+  {
+   "file": "server/entry/highscore/highscore.service.spec.ts",
+   "s": 2.431,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 5800
+  },
+  {
+   "file": "server/entry/entry.service.spec.ts",
+   "s": 2.351,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 5809
+  },
+  {
+   "file": "server/core/migration-0047-node-table.spec.ts",
+   "s": 2.342,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 6389
+  },
+  {
+   "file": "server/core/migration-0047-node-table.spec.ts",
+   "s": 2.174,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 6390
+  }
+ ],
+ "totals": {
+  "io_release": 0,
+  "stack_captures": 213336,
+  "uncontrolled_io": 0,
+  "held_s": 0.0
+ }
+}
