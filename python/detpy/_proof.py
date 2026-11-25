@@ -284,15 +284,15 @@ class _ScandirEntry:
 
     def _check(self, meta: bool, follow: bool = True) -> None:
         cap = self._cap
-        if cap._in_stat:
+        if _stat_busy():
             return
-        cap._in_stat = True
+        _stat_set(True)
         try:
             cap.stat_check(self._e.path, not follow, meta)
         except Exception:
             pass
         finally:
-            cap._in_stat = False
+            _stat_set(False)
 
     def stat(self, *, follow_symlinks=True):
         self._check(True, follow_symlinks)
@@ -480,7 +480,7 @@ class Capture(_core.CaptureCore):
 
         cap = self
         self._stat_saved = []
-        self._in_stat = False
+        _stat_set(False)
 
         def rebind(owner, name, orig, new):
             self._stat_saved.append((owner, name, orig))
@@ -499,15 +499,15 @@ class Capture(_core.CaptureCore):
                             pass
 
         def note(path, link, meta):
-            if cap._in_stat or isinstance(path, int):
+            if _stat_busy() or isinstance(path, int):
                 return
-            cap._in_stat = True
+            _stat_set(True)
             try:
                 cap.stat_check(path, link, meta)
             except Exception:
                 pass
             finally:
-                cap._in_stat = False
+                _stat_set(False)
 
         def wrap(name):
             orig = getattr(os, name, None)
@@ -520,9 +520,9 @@ class Capture(_core.CaptureCore):
                 # `direct`: the binding in ``posix`` itself (spec "false greens on release-1", W3), which the import
                 # system's finders call for their own probes (``_bootstrap_external._path_stat``): those stay theirs
                 def checked(path, *args, **kwargs):
-                    if cap._in_stat or kwargs.get("dir_fd") is not None:
+                    if _stat_busy() or kwargs.get("dir_fd") is not None:
                         return orig(path, *args, **kwargs)
-                    if direct and _getframe(1).f_globals.get("__name__") in _IMPORT_MACHINERY:
+                    if direct and _import_system_probe(_getframe(1)):
                         return orig(path, *args, **kwargs)
                     try:
                         # review R-023c E2: whatever frames are between (tarfile, pytest's LocalPath, Path.stat), the
@@ -536,7 +536,7 @@ class Capture(_core.CaptureCore):
                     nolink = own or kwargs.get("follow_symlinks") is False
                     kind = sized = False
                     if not fd:
-                        cap._in_stat = True
+                        _stat_set(True)
                         try:
                             if name == "access":
                                 # the path's metadata (kind, permission bits), and (review R-023c E4) the owner and the
@@ -564,7 +564,7 @@ class Capture(_core.CaptureCore):
                         except Exception:
                             pass
                         finally:
-                            cap._in_stat = False
+                            _stat_set(False)
                     r = orig(path, *args, **kwargs)
                     if name in ("access", "readlink") or kind:
                         return r  # a boolean, a link's target, a kind check's / time helper's own use (recorded above)
@@ -647,7 +647,7 @@ class Capture(_core.CaptureCore):
 
         def scandir(path=".", *args, **kwargs):
             it = orig_scandir(path, *args, **kwargs)
-            if isinstance(path, int) or cap._in_stat:
+            if isinstance(path, int) or _stat_busy():
                 return it
             try:
                 if not _reaches_user(_getframe(1)):  # review R-023c E2
@@ -674,7 +674,7 @@ class Capture(_core.CaptureCore):
 
         def posix_scandir(path=".", *args, **kwargs):
             it = real(path, *args, **kwargs)
-            if isinstance(path, int) or cap._in_stat or _getframe(1).f_globals.get("__name__") in _IMPORT_MACHINERY:
+            if isinstance(path, int) or _stat_busy() or _import_system_probe(_getframe(1)):
                 return it
             try:
                 if not _reaches_user(_getframe(1)):
@@ -722,15 +722,15 @@ class Capture(_core.CaptureCore):
         class _LookupFinder:
             @staticmethod
             def find_spec(fullname, path=None, target=None):
-                if cap._in_stat:
+                if _stat_busy():
                     return None
-                cap._in_stat = True
+                _stat_set(True)
                 try:
                     cap.lookup(fullname.rpartition(".")[2], sys.path if path is None else path, suffixes)
                 except Exception:
                     pass
                 finally:
-                    cap._in_stat = False
+                    _stat_set(False)
                 return None
 
             @staticmethod
@@ -802,9 +802,43 @@ class Capture(_core.CaptureCore):
     # child_ignored, child_read, collect_children, _credit_child: Rust (CaptureCore)
 
 
+# The capture's "inside a stat record" flag, per thread (founder decision 2026-11-25): it was an attribute of the
+# capture, shared by every thread, so while one thread was inside stat_check another thread's os.stat / posix.stat /
+# scandir passed unrecorded (MEASURED by the thread test in tests/test_release1_false_greens_cache_units.py).
+import threading as _threading
+
+_STAT_TLS = _threading.local()
+
+
+def _stat_busy() -> bool:
+    return getattr(_STAT_TLS, "busy", False)
+
+
+def _stat_set(v: bool) -> None:
+    _STAT_TLS.busy = v
+
+
 #: Modules whose calls of ``posix.stat`` & co. are the import system's own probes (W3: not a test's input).
 _IMPORT_MACHINERY = frozenset({"importlib._bootstrap_external", "importlib._bootstrap", "_frozen_importlib_external",
                                "_frozen_importlib", "zipimport"})
+
+#: The import system's own entry points (an ``import`` statement, ``importlib.import_module``, ``__import__``): their
+#: lookups go through sys.meta_path, where the capture's module-lookup finder records them.
+_IMPORT_ENTRIES = frozenset({"_find_and_load", "_find_and_load_unlocked", "_gcd_import", "__import__", "_handle_fromlist",
+                             "_load", "_load_unlocked", "_find_spec"})
+
+
+def _import_system_probe(f) -> bool:
+    """Whether a ``posix.stat`` & co. call made by frame ``f`` is the import system's own probe (not a test input).
+    Spec "false greens on release-1", founder decision 2026-11-25: the machinery's frames alone are not enough -- a
+    test that builds ``importlib.machinery.FileFinder`` (or calls ``PathFinder.find_spec``) on a directory outside
+    sys.path probes it through the same frames, and that probe is the test's input (MEASURED: reused after a module
+    appeared there). So the walk out of the machinery must pass through an import entry point."""
+    while f is not None and f.f_globals.get("__name__") in _IMPORT_MACHINERY:
+        if f.f_code.co_name in _IMPORT_ENTRIES:
+            return True
+        f = f.f_back
+    return False
 
 
 # ---------------------------------------------------------------------------

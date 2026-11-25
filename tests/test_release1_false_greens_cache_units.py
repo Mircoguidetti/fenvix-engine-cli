@@ -63,13 +63,20 @@ def test_w3_posix_stat_lstat_access_are_recorded_and_import_probes_are_not(tmp_p
         posix.close(fd)
         user = list(cap.calls)
         cap.calls.clear()
-        # the import system's own probe: a frame whose module is importlib._bootstrap_external
-        exec("posix.stat(p)", {{"__name__": "importlib._bootstrap_external", "posix": posix, "p": p}})
+        # the import system's own probe: machinery frames under an import entry point (_find_and_load)
+        g = {{"__name__": "importlib._bootstrap_external", "posix": posix, "p": p}}
+        exec("def _path_stat(x):\\n    return posix.stat(x)\\n"
+             "def _find_and_load(x):\\n    return _path_stat(x)\\n", g)
+        g["_find_and_load"](p)
         machinery = list(cap.calls)
+        cap.calls.clear()
+        # the same machinery frames called by the test itself (FileFinder.find_spec): an input
+        g["_path_stat"](p)
+        direct_api = list(cap.calls)
         wrapped = posix.stat is not keep[0]
         for obj, name, v in reversed(cap._stat_saved):
             setattr(obj, name, v)
-        print(json.dumps({{"user": user, "machinery": machinery, "size": size, "wrapped": wrapped, "fstat": fst,
+        print(json.dumps({{"user": user, "machinery": machinery, "direct_api": direct_api, "size": size, "wrapped": wrapped, "fstat": fst,
                           "restored": posix.stat is keep[0]}}))
     """, tmp_path)
     p = str(tmp_path / "data.txt")
@@ -78,6 +85,7 @@ def test_w3_posix_stat_lstat_access_are_recorded_and_import_probes_are_not(tmp_p
     assert out["user"] == [p, p, p, p + ".l"], out
     assert out["fstat"] == "_TimedStat", "posix.fstat on a descriptor goes through the recording wrapper"
     assert out["machinery"] == [], out
+    assert out["direct_api"] == [p], "a machinery API the test calls itself is recorded"
 
 
 def test_w4_reads_through_posix_environ_are_noted_like_os_environ(tmp_path):
@@ -214,3 +222,85 @@ def test_w8_reseeding_a_c_generator_from_entropy_is_never_reused(tmp_path):
     body = "import _random\n\ndef test_e():\n    r = _random.Random(0)\n    r.seed()\n    print('VALUE', r.random())\n"
     _, _, log = _cache_vs_uncached(tmp_path, {"tests/test_e.py": body}, lambda r: None, "tests/test_e.py::test_e")
     assert not any(ln.startswith("reused 1 ") for ln in log.splitlines()), log[-1500:]
+
+
+def test_import_machinery_api_called_by_a_test_is_an_input(tmp_path):
+    """protects=a test that builds ``importlib.machinery.FileFinder`` on a directory outside sys.path and asks it for a
+    module is rerun when the directory gains that module (founder decision 2026-11-25: close the import-machinery
+    bypass for APIs a test calls itself); fails_when=the stat probes through ``_bootstrap_external`` pass as the
+    import system's own and the cached pass is reused while uncached --det fails (this branch at 44069221: MEASURED);
+    no_claim=``import`` statements and importlib.util.find_spec (recorded by the module-lookup finder, unchanged)."""
+    (tmp_path / "lib2").mkdir()
+    body = ("import importlib.machinery as M, os\n\ndef test_v():\n"
+            "    f = M.FileFinder(os.path.abspath('lib2'), (M.SourceFileLoader, ['.py']))\n"
+            "    assert f.find_spec('opt') is None\n")
+    cached, uncached, log = _cache_vs_uncached(tmp_path, {"tests/test_v.py": body},
+                                               lambda r: (r / "lib2" / "opt.py").write_text("X = 1\n"),
+                                               "tests/test_v.py::test_v")
+    assert uncached == "failed"
+    assert cached == "failed", log[-1500:]
+
+
+def test_w8_a_c_generator_seeded_by_an_object_hash_is_a_gap():
+    """protects=``_random.Random(obj)`` and ``r.seed(obj)`` on a C generator with a seed whose hash may be an address
+    (any type but int, bool, float, str, bytes: ``_random`` seeds from ``hash(obj)``) are a gap (founder decision
+    2026-11-25); fails_when=only None counts as unseeded (this branch at 44069221); no_claim=the Python
+    ``random.Random`` (it refuses such seed types itself: TypeError)."""
+    import _random
+
+    from detpy import provable
+
+    missing = getattr(sys.monitoring, "MISSING")
+    gap, reseed = provable._unseeded_c_random, provable._c_random_reseed
+    for seed in (object(), (1, 2), frozenset({1})):
+        assert gap(_random.Random, seed), seed
+        assert reseed(_random.Random(0).seed, seed), seed
+    for seed in (0, 7, True, 1.5, "s", b"b"):
+        assert not gap(_random.Random, seed), seed
+        assert not reseed(_random.Random(0).seed, seed), seed
+    assert gap(_random.Random, missing) and gap(_random.Random, None)
+
+
+def test_a_stat_in_another_thread_is_recorded_while_one_thread_is_inside_the_record(tmp_path):
+    """protects=while thread A is inside the capture's stat record (stat_check), thread B's ``posix.stat`` and
+    ``os.stat`` are still recorded (founder decision 2026-11-25: the in-record flag was the capture's, shared by every
+    thread); fails_when=B's reads pass unrecorded because A holds the flag (release-1 and this branch at 44069221);
+    no_claim=the capture's own locking in Rust."""
+    (tmp_path / "a.txt").write_text("a")
+    (tmp_path / "b.txt").write_text("b")
+    out = _child(f"""
+        import json, os, posix, sys, threading
+        from detpy import _proof
+
+        inside, release = threading.Event(), threading.Event()
+
+        class Stub:
+            def __init__(self):
+                self.calls = []
+            def stat_check(self, path, *a):
+                name = os.fsdecode(os.fspath(path))
+                self.calls.append(name)
+                if name.endswith("a.txt"):
+                    inside.set()
+                    release.wait(10)
+            def fields_check(self, *a): pass
+            def time_check(self, *a): pass
+            def flag(self, *a): pass
+            def _cur(self): return 0
+
+        cap = Stub()
+        _proof.Capture._patch_stat(cap)
+        a, b = {repr(str(tmp_path / "a.txt"))}, {repr(str(tmp_path / "b.txt"))}
+        t = threading.Thread(target=lambda: posix.stat(a))
+        t.start()
+        inside.wait(10)
+        posix.stat(b)
+        os.stat(b)
+        release.set()
+        t.join(10)
+        for obj, name, v in reversed(cap._stat_saved):
+            setattr(obj, name, v)
+        print(json.dumps({{"calls": cap.calls}}))
+    """, tmp_path)
+    b = str(tmp_path / "b.txt")
+    assert out["calls"].count(b) == 2, out

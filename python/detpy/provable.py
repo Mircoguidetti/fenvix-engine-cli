@@ -470,7 +470,16 @@ def _unseeded_c_random(c, arg0) -> bool:
             return False
     except TypeError:
         return False
-    return arg0 is None or arg0 is _MISSING
+    return _entropy_or_address_seed(arg0)
+
+
+def _entropy_or_address_seed(arg0) -> bool:
+    """A seed for the C generator that does not give the same state in every --det run: none (OS entropy), or one
+    ``_random`` reduces with ``hash()`` whose hash may be an object address (founder decision 2026-11-25). int and
+    bool seed the state directly; float, str and bytes hash the same under --det (``hashseed`` pinned)."""
+    if arg0 is None or arg0 is _MISSING:
+        return True
+    return type(arg0) not in (int, bool, float, str, bytes)
 
 
 def _c_random_reseed(c, arg0) -> bool:
@@ -484,7 +493,7 @@ def _c_random_reseed(c, arg0) -> bool:
     s = getattr(c, "__self__", None)
     if s is not None and getattr(c, "__name__", None) == "seed" and isinstance(s, _C_RANDOM) \
             and not isinstance(s, _PY_RANDOM):
-        return arg0 is None or arg0 is _MISSING
+        return _entropy_or_address_seed(arg0)
     return False
 
 
