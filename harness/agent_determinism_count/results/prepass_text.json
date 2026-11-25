@@ -1,4 +1,652 @@
 {
+ "committer-date:>=2024-01-01 \"fails randomly\" \"ai sdk\" test": {
+  "at": "2026-11-25T11:43:37+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 1
+ },
+ "committer-date:>=2024-01-01 \"fails randomly\" \"llama-index\" test": {
+  "at": "2026-11-25T11:43:32+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 0
+ },
+ "committer-date:>=2024-01-01 \"fails randomly\" \"model output\" test": {
+  "at": "2026-11-25T11:42:10+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 0
+ },
+ "committer-date:>=2024-01-01 \"fails randomly\" \"pydantic-ai\" test": {
+  "at": "2026-11-25T11:43:34+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 0
+ },
+ "committer-date:>=2024-01-01 \"fails randomly\" agent test": {
+  "at": "2026-11-25T11:44:45+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 188
+ },
+ "committer-date:>=2024-01-01 \"fails randomly\" anthropic test": {
+  "at": "2026-11-25T11:40:59+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 574
+ },
+ "committer-date:>=2024-01-01 \"fails randomly\" autogen test": {
+  "at": "2026-11-25T11:43:27+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 19
+ },
+ "committer-date:>=2024-01-01 \"fails randomly\" claude test": {
+  "at": "2026-11-25T11:41:03+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 613
+ },
+ "committer-date:>=2024-01-01 \"fails randomly\" crewai test": {
+  "at": "2026-11-25T11:43:25+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 0
+ },
+ "committer-date:>=2024-01-01 \"fails randomly\" eval test": {
+  "at": "2026-11-25T11:43:19+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 72
+ },
+ "committer-date:>=2024-01-01 \"fails randomly\" gemini test": {
+  "at": "2026-11-25T11:42:05+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 8
+ },
+ "committer-date:>=2024-01-01 \"fails randomly\" gpt test": {
+  "at": "2026-11-25T11:42:08+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 17
+ },
+ "committer-date:>=2024-01-01 \"fails randomly\" langchain test": {
+  "at": "2026-11-25T11:43:19+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 0
+ },
+ "committer-date:>=2024-01-01 \"fails randomly\" langgraph test": {
+  "at": "2026-11-25T11:43:22+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 1
+ },
+ "committer-date:>=2024-01-01 \"fails randomly\" llamaindex test": {
+  "at": "2026-11-25T11:43:29+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 0
+ },
+ "committer-date:>=2024-01-01 \"fails randomly\" llm test": {
+  "at": "2026-11-25T11:40:51+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 28
+ },
+ "committer-date:>=2024-01-01 \"fails randomly\" openai test": {
+  "at": "2026-11-25T11:40:52+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 6
+ },
+ "committer-date:>=2024-01-01 \"fails randomly\" prompt test": {
+  "at": "2026-11-25T11:42:15+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 55
+ },
+ "committer-date:>=2024-01-01 \"non deterministic\" \"ai sdk\" test": {
+  "at": "2026-11-25T11:32:30+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 225
+ },
+ "committer-date:>=2024-01-01 \"non deterministic\" \"llama-index\" test": {
+  "at": "2026-11-25T11:32:23+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 8
+ },
+ "committer-date:>=2024-01-01 \"non deterministic\" \"model output\" test": {
+  "at": "2026-11-25T11:30:56+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 918
+ },
+ "committer-date:>=2024-01-01 \"non deterministic\" \"pydantic-ai\" test": {
+  "at": "2026-11-25T11:32:26+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 37
+ },
+ "committer-date:>=2024-01-01 \"non deterministic\" agent test": {
+  "at": "2026-11-25T11:32:34+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 14695
+ },
+ "committer-date:>=2024-01-01 \"non deterministic\" anthropic test": {
+  "at": "2026-11-25T11:29:42+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 33996
+ },
+ "committer-date:>=2024-01-01 \"non deterministic\" autogen test": {
+  "at": "2026-11-25T11:32:19+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 35
+ },
+ "committer-date:>=2024-01-01 \"non deterministic\" claude test": {
+  "at": "2026-11-25T11:30:45+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 44006
+ },
+ "committer-date:>=2024-01-01 \"non deterministic\" crewai test": {
+  "at": "2026-11-25T11:32:16+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 52
+ },
+ "committer-date:>=2024-01-01 \"non deterministic\" eval test": {
+  "at": "2026-11-25T11:32:05+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 5728
+ },
+ "committer-date:>=2024-01-01 \"non deterministic\" gemini test": {
+  "at": "2026-11-25T11:30:50+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 2620
+ },
+ "committer-date:>=2024-01-01 \"non deterministic\" gpt test": {
+  "at": "2026-11-25T11:30:53+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 1375
+ },
+ "committer-date:>=2024-01-01 \"non deterministic\" langchain test": {
+  "at": "2026-11-25T11:32:09+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 190
+ },
+ "committer-date:>=2024-01-01 \"non deterministic\" langgraph test": {
+  "at": "2026-11-25T11:32:13+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 199
+ },
+ "committer-date:>=2024-01-01 \"non deterministic\" llamaindex test": {
+  "at": "2026-11-25T11:32:21+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 33
+ },
+ "committer-date:>=2024-01-01 \"non deterministic\" llm test": {
+  "at": "2026-11-25T11:28:33+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 7934
+ },
+ "committer-date:>=2024-01-01 \"non deterministic\" openai test": {
+  "at": "2026-11-25T11:29:37+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 3779
+ },
+ "committer-date:>=2024-01-01 \"non deterministic\" prompt test": {
+  "at": "2026-11-25T11:32:01+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 10080
+ },
+ "committer-date:>=2024-01-01 \"non-deterministic\" \"ai sdk\" test": {
+  "at": "2026-11-25T11:28:24+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 225
+ },
+ "committer-date:>=2024-01-01 \"non-deterministic\" \"llama-index\" test": {
+  "at": "2026-11-25T11:28:15+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 8
+ },
+ "committer-date:>=2024-01-01 \"non-deterministic\" \"model output\" test": {
+  "at": "2026-11-25T11:26:43+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 920
+ },
+ "committer-date:>=2024-01-01 \"non-deterministic\" \"pydantic-ai\" test": {
+  "at": "2026-11-25T11:28:19+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 37
+ },
+ "committer-date:>=2024-01-01 \"non-deterministic\" agent test": {
+  "at": "2026-11-25T11:28:29+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 14695
+ },
+ "committer-date:>=2024-01-01 \"non-deterministic\" anthropic test": {
+  "at": "2026-11-25T11:25:25+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 34038
+ },
+ "committer-date:>=2024-01-01 \"non-deterministic\" autogen test": {
+  "at": "2026-11-25T11:28:11+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 35
+ },
+ "committer-date:>=2024-01-01 \"non-deterministic\" claude test": {
+  "at": "2026-11-25T11:25:30+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 44155
+ },
+ "committer-date:>=2024-01-01 \"non-deterministic\" crewai test": {
+  "at": "2026-11-25T11:28:09+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 52
+ },
+ "committer-date:>=2024-01-01 \"non-deterministic\" eval test": {
+  "at": "2026-11-25T11:26:54+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 5728
+ },
+ "committer-date:>=2024-01-01 \"non-deterministic\" gemini test": {
+  "at": "2026-11-25T11:26:35+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 2620
+ },
+ "committer-date:>=2024-01-01 \"non-deterministic\" gpt test": {
+  "at": "2026-11-25T11:26:39+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 1375
+ },
+ "committer-date:>=2024-01-01 \"non-deterministic\" langchain test": {
+  "at": "2026-11-25T11:27:00+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 190
+ },
+ "committer-date:>=2024-01-01 \"non-deterministic\" langgraph test": {
+  "at": "2026-11-25T11:28:06+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 199
+ },
+ "committer-date:>=2024-01-01 \"non-deterministic\" llamaindex test": {
+  "at": "2026-11-25T11:28:14+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 33
+ },
+ "committer-date:>=2024-01-01 \"non-deterministic\" llm test": {
+  "at": "2026-11-25T11:24:15+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 7949
+ },
+ "committer-date:>=2024-01-01 \"non-deterministic\" openai test": {
+  "at": "2026-11-25T11:25:20+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 3801
+ },
+ "committer-date:>=2024-01-01 \"non-deterministic\" prompt test": {
+  "at": "2026-11-25T11:26:49+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 10087
+ },
+ "committer-date:>=2024-01-01 \"randomly fails\" \"ai sdk\" test": {
+  "at": "2026-11-25T11:39:41+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 2
+ },
+ "committer-date:>=2024-01-01 \"randomly fails\" \"llama-index\" test": {
+  "at": "2026-11-25T11:39:36+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 0
+ },
+ "committer-date:>=2024-01-01 \"randomly fails\" \"model output\" test": {
+  "at": "2026-11-25T11:37:14+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 4
+ },
+ "committer-date:>=2024-01-01 \"randomly fails\" \"pydantic-ai\" test": {
+  "at": "2026-11-25T11:39:39+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 0
+ },
+ "committer-date:>=2024-01-01 \"randomly fails\" agent test": {
+  "at": "2026-11-25T11:39:48+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 240
+ },
+ "committer-date:>=2024-01-01 \"randomly fails\" anthropic test": {
+  "at": "2026-11-25T11:36:03+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 513
+ },
+ "committer-date:>=2024-01-01 \"randomly fails\" autogen test": {
+  "at": "2026-11-25T11:39:32+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 0
+ },
+ "committer-date:>=2024-01-01 \"randomly fails\" claude test": {
+  "at": "2026-11-25T11:37:08+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 631
+ },
+ "committer-date:>=2024-01-01 \"randomly fails\" crewai test": {
+  "at": "2026-11-25T11:39:29+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 7
+ },
+ "committer-date:>=2024-01-01 \"randomly fails\" eval test": {
+  "at": "2026-11-25T11:38:23+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 52
+ },
+ "committer-date:>=2024-01-01 \"randomly fails\" gemini test": {
+  "at": "2026-11-25T11:37:09+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 5
+ },
+ "committer-date:>=2024-01-01 \"randomly fails\" gpt test": {
+  "at": "2026-11-25T11:37:12+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 9
+ },
+ "committer-date:>=2024-01-01 \"randomly fails\" langchain test": {
+  "at": "2026-11-25T11:39:24+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 0
+ },
+ "committer-date:>=2024-01-01 \"randomly fails\" langgraph test": {
+  "at": "2026-11-25T11:39:26+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 0
+ },
+ "committer-date:>=2024-01-01 \"randomly fails\" llamaindex test": {
+  "at": "2026-11-25T11:39:34+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 0
+ },
+ "committer-date:>=2024-01-01 \"randomly fails\" llm test": {
+  "at": "2026-11-25T11:35:55+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 57
+ },
+ "committer-date:>=2024-01-01 \"randomly fails\" openai test": {
+  "at": "2026-11-25T11:35:57+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 7
+ },
+ "committer-date:>=2024-01-01 \"randomly fails\" prompt test": {
+  "at": "2026-11-25T11:38:19+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 70
+ },
  "committer-date:>=2024-01-01 flakiness \"ai sdk\" test": {
   "at": "2026-11-25T11:20:17+00:00",
   "family": "commits",
@@ -322,6 +970,663 @@
   "status": 200,
   "stratum": "S3",
   "total_count": 62054
+ },
+ "committer-date:>=2024-01-01 intermittent \"ai sdk\" test": {
+  "at": "2026-11-25T11:35:48+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 405
+ },
+ "committer-date:>=2024-01-01 intermittent \"llama-index\" test": {
+  "at": "2026-11-25T11:35:39+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 23
+ },
+ "committer-date:>=2024-01-01 intermittent \"model output\" test": {
+  "at": "2026-11-25T11:34:09+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 781
+ },
+ "committer-date:>=2024-01-01 intermittent \"pydantic-ai\" test": {
+  "at": "2026-11-25T11:35:44+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 72
+ },
+ "committer-date:>=2024-01-01 intermittent agent test": {
+  "at": "2026-11-25T11:35:53+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 41307
+ },
+ "committer-date:>=2024-01-01 intermittent anthropic test": {
+  "at": "2026-11-25T11:32:48+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 126549
+ },
+ "committer-date:>=2024-01-01 intermittent autogen test": {
+  "at": "2026-11-25T11:35:36+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 78
+ },
+ "committer-date:>=2024-01-01 intermittent claude test": {
+  "at": "2026-11-25T11:33:53+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 141567
+ },
+ "committer-date:>=2024-01-01 intermittent crewai test": {
+  "at": "2026-11-25T11:35:33+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 94
+ },
+ "committer-date:>=2024-01-01 intermittent eval test": {
+  "at": "2026-11-25T11:34:18+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 6465
+ },
+ "committer-date:>=2024-01-01 intermittent gemini test": {
+  "at": "2026-11-25T11:33:59+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 6775
+ },
+ "committer-date:>=2024-01-01 intermittent gpt test": {
+  "at": "2026-11-25T11:34:03+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 7854
+ },
+ "committer-date:>=2024-01-01 intermittent langchain test": {
+  "at": "2026-11-25T11:34:23+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 284
+ },
+ "committer-date:>=2024-01-01 intermittent langgraph test": {
+  "at": "2026-11-25T11:34:27+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 267
+ },
+ "committer-date:>=2024-01-01 intermittent llamaindex test": {
+  "at": "2026-11-25T11:35:38+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 30
+ },
+ "committer-date:>=2024-01-01 intermittent llm test": {
+  "at": "2026-11-25T11:32:39+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 10715
+ },
+ "committer-date:>=2024-01-01 intermittent openai test": {
+  "at": "2026-11-25T11:32:43+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 14943
+ },
+ "committer-date:>=2024-01-01 intermittent prompt test": {
+  "at": "2026-11-25T11:34:13+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 23885
+ },
+ "committer-date:>=2024-01-01 nondeterministic \"ai sdk\" test": {
+  "at": "2026-11-25T11:24:03+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 39
+ },
+ "committer-date:>=2024-01-01 nondeterministic \"llama-index\" test": {
+  "at": "2026-11-25T11:23:56+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 3
+ },
+ "committer-date:>=2024-01-01 nondeterministic \"model output\" test": {
+  "at": "2026-11-25T11:22:27+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 255
+ },
+ "committer-date:>=2024-01-01 nondeterministic \"pydantic-ai\" test": {
+  "at": "2026-11-25T11:24:00+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 31
+ },
+ "committer-date:>=2024-01-01 nondeterministic agent test": {
+  "at": "2026-11-25T11:24:09+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 6729
+ },
+ "committer-date:>=2024-01-01 nondeterministic anthropic test": {
+  "at": "2026-11-25T11:22:05+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 15091
+ },
+ "committer-date:>=2024-01-01 nondeterministic autogen test": {
+  "at": "2026-11-25T11:23:53+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 5
+ },
+ "committer-date:>=2024-01-01 nondeterministic claude test": {
+  "at": "2026-11-25T11:22:10+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 19826
+ },
+ "committer-date:>=2024-01-01 nondeterministic crewai test": {
+  "at": "2026-11-25T11:23:49+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 8
+ },
+ "committer-date:>=2024-01-01 nondeterministic eval test": {
+  "at": "2026-11-25T11:22:40+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 1885
+ },
+ "committer-date:>=2024-01-01 nondeterministic gemini test": {
+  "at": "2026-11-25T11:22:16+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 422
+ },
+ "committer-date:>=2024-01-01 nondeterministic gpt test": {
+  "at": "2026-11-25T11:22:22+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 1935
+ },
+ "committer-date:>=2024-01-01 nondeterministic langchain test": {
+  "at": "2026-11-25T11:22:45+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 81
+ },
+ "committer-date:>=2024-01-01 nondeterministic langgraph test": {
+  "at": "2026-11-25T11:22:47+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 39
+ },
+ "committer-date:>=2024-01-01 nondeterministic llamaindex test": {
+  "at": "2026-11-25T11:23:54+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 7
+ },
+ "committer-date:>=2024-01-01 nondeterministic llm test": {
+  "at": "2026-11-25T11:21:54+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 2410
+ },
+ "committer-date:>=2024-01-01 nondeterministic openai test": {
+  "at": "2026-11-25T11:22:00+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 2556
+ },
+ "committer-date:>=2024-01-01 nondeterministic prompt test": {
+  "at": "2026-11-25T11:22:34+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 4018
+ },
+ "committer-date:>=2024-01-01 retry llm test": {
+  "at": "2026-11-25T11:51:20+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 273065
+ },
+ "committer-date:>=2024-01-01 unstable \"ai sdk\" test": {
+  "at": "2026-11-25T11:50:09+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 843
+ },
+ "committer-date:>=2024-01-01 unstable \"llama-index\" test": {
+  "at": "2026-11-25T11:50:00+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 44
+ },
+ "committer-date:>=2024-01-01 unstable \"model output\" test": {
+  "at": "2026-11-25T11:48:29+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 316
+ },
+ "committer-date:>=2024-01-01 unstable \"pydantic-ai\" test": {
+  "at": "2026-11-25T11:50:04+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 49
+ },
+ "committer-date:>=2024-01-01 unstable agent test": {
+  "at": "2026-11-25T11:51:14+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 21879
+ },
+ "committer-date:>=2024-01-01 unstable anthropic test": {
+  "at": "2026-11-25T11:47:09+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 52961
+ },
+ "committer-date:>=2024-01-01 unstable autogen test": {
+  "at": "2026-11-25T11:48:55+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 116
+ },
+ "committer-date:>=2024-01-01 unstable claude test": {
+  "at": "2026-11-25T11:48:12+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 60520
+ },
+ "committer-date:>=2024-01-01 unstable crewai test": {
+  "at": "2026-11-25T11:48:48+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 31
+ },
+ "committer-date:>=2024-01-01 unstable eval test": {
+  "at": "2026-11-25T11:48:39+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 8069
+ },
+ "committer-date:>=2024-01-01 unstable gemini test": {
+  "at": "2026-11-25T11:48:17+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 4725
+ },
+ "committer-date:>=2024-01-01 unstable gpt test": {
+  "at": "2026-11-25T11:48:23+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 3064
+ },
+ "committer-date:>=2024-01-01 unstable langchain test": {
+  "at": "2026-11-25T11:48:43+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 432
+ },
+ "committer-date:>=2024-01-01 unstable langgraph test": {
+  "at": "2026-11-25T11:48:47+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 271
+ },
+ "committer-date:>=2024-01-01 unstable llamaindex test": {
+  "at": "2026-11-25T11:49:57+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 15
+ },
+ "committer-date:>=2024-01-01 unstable llm test": {
+  "at": "2026-11-25T11:46:59+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 4934
+ },
+ "committer-date:>=2024-01-01 unstable openai test": {
+  "at": "2026-11-25T11:47:03+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 5833
+ },
+ "committer-date:>=2024-01-01 unstable prompt test": {
+  "at": "2026-11-25T11:48:35+00:00",
+  "family": "commits",
+  "incomplete": true,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 13177
+ },
+ "committer-date:>=2024-01-01 xfail \"ai sdk\" test": {
+  "at": "2026-11-25T11:46:49+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 15
+ },
+ "committer-date:>=2024-01-01 xfail \"llama-index\" test": {
+  "at": "2026-11-25T11:46:43+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 27
+ },
+ "committer-date:>=2024-01-01 xfail \"model output\" test": {
+  "at": "2026-11-25T11:45:14+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 253
+ },
+ "committer-date:>=2024-01-01 xfail \"pydantic-ai\" test": {
+  "at": "2026-11-25T11:46:47+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 112
+ },
+ "committer-date:>=2024-01-01 xfail agent test": {
+  "at": "2026-11-25T11:46:53+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 15527
+ },
+ "committer-date:>=2024-01-01 xfail anthropic test": {
+  "at": "2026-11-25T11:44:58+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 69888
+ },
+ "committer-date:>=2024-01-01 xfail autogen test": {
+  "at": "2026-11-25T11:46:39+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 134
+ },
+ "committer-date:>=2024-01-01 xfail claude test": {
+  "at": "2026-11-25T11:45:01+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 75030
+ },
+ "committer-date:>=2024-01-01 xfail crewai test": {
+  "at": "2026-11-25T11:46:34+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 68
+ },
+ "committer-date:>=2024-01-01 xfail eval test": {
+  "at": "2026-11-25T11:45:23+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 5161
+ },
+ "committer-date:>=2024-01-01 xfail gemini test": {
+  "at": "2026-11-25T11:45:05+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 1913
+ },
+ "committer-date:>=2024-01-01 xfail gpt test": {
+  "at": "2026-11-25T11:45:09+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 1580
+ },
+ "committer-date:>=2024-01-01 xfail langchain test": {
+  "at": "2026-11-25T11:45:27+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 822
+ },
+ "committer-date:>=2024-01-01 xfail langgraph test": {
+  "at": "2026-11-25T11:46:31+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 343
+ },
+ "committer-date:>=2024-01-01 xfail llamaindex test": {
+  "at": "2026-11-25T11:46:40+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 25
+ },
+ "committer-date:>=2024-01-01 xfail llm test": {
+  "at": "2026-11-25T11:44:50+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 5352
+ },
+ "committer-date:>=2024-01-01 xfail openai test": {
+  "at": "2026-11-25T11:44:54+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 2801
+ },
+ "committer-date:>=2024-01-01 xfail prompt test": {
+  "at": "2026-11-25T11:45:18+00:00",
+  "family": "commits",
+  "incomplete": false,
+  "route": "workflow",
+  "status": 200,
+  "stratum": "S3",
+  "total_count": 9975
  },
  "is:public created:>=2024-01-01 \"api costs\" test (llm OR openai OR agent)": {
   "at": "2026-11-25T11:11:16+00:00",
