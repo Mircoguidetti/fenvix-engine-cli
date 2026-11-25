@@ -9,6 +9,14 @@
    "root_total": 3308,
    "stack": []
   },
+  "mysql \"make test\"": {
+   "done": true,
+   "leaves": 7,
+   "nodes": 13,
+   "root_incomplete": false,
+   "root_total": 1134,
+   "stack": []
+  },
   "mysql \"manage.py\"": {
    "done": true,
    "leaves": 8,
@@ -26,37 +34,20 @@
    "stack": []
   },
   "mysql \"npm test\"": {
-   "done": false,
-   "leaves": 5,
-   "nodes": 15,
+   "done": true,
+   "leaves": 11,
+   "nodes": 21,
    "root_incomplete": false,
    "root_total": 4528,
-   "stack": [
-    [
-     6251,
-     12500
-    ],
-    [
-     12501,
-     25000
-    ],
-    [
-     25001,
-     50000
-    ],
-    [
-     50001,
-     100000
-    ],
-    [
-     100001,
-     200000
-    ],
-    [
-     200001,
-     400000
-    ]
-   ]
+   "stack": []
+  },
+  "mysql \"pnpm test\"": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 804,
+   "stack": []
   },
   "mysql \"rails test\"": {
    "done": true,
@@ -64,6 +55,14 @@
    "nodes": 1,
    "root_incomplete": false,
    "root_total": 174,
+   "stack": []
+  },
+  "mysql \"yarn test\"": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 355,
    "stack": []
   },
   "mysql jest": {
