@@ -660,3 +660,22 @@ def test_sensor_refusal_parity_with_the_core_judge(tmp_path, real_record, name, 
     core_watched = rep["summary"]["identical"] == 1
     runner_watched = W.sensor_refusal(meta_) is None
     assert runner_watched == core_watched, (name, W.sensor_refusal(meta_), rep["summary"], rep["tests"][0])
+
+
+# ---------------------------------------------------------------- C5 (spec "false greens on release-1")
+
+
+@pytest.mark.parametrize("status", [
+    {"passed": 4, "failed": "x", "not_proven": 0, "skipped": 0},
+    {"passed": 4, "failed": 0, "not_proven": "1", "skipped": 0},
+    {"passed": 4, "failed": 1.5, "not_proven": 0, "skipped": 0},
+], ids=["failed-x", "not_proven-str", "failed-float"])
+def test_wrapper_non_numeric_status_writes_the_summary_and_exits_2(stubjob, status):
+    """protects=a trace header whose status counts are not whole numbers gives a summary.json with a clear
+    status_error and exit 2 (the run's outcome is unknown), never a traceback; fails_when=int() raises (no summary,
+    a Python traceback) or the job reads green; no_claim=how the engine came to write such a header (it does not)."""
+    code, s, log = stubjob(meta(status=status))
+    assert code == 2 and s["exit"] == 2, log
+    assert "Traceback" not in log, log
+    assert s["status_error"] and "not whole numbers" in s["status_error"], s
+    assert "proof" not in s

@@ -1028,6 +1028,17 @@ def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
             or not isinstance(cs, dict):
         log(f"error: unreadable detjs output ({outcomes_p}, {trace_p} or {csum_p}): exit 2")
         return 2
+    # C5 (spec "false greens on release-1"): counts that are not whole numbers ("status": {"failed": "x"}) made
+    # int(...) below raise, a traceback and no summary.json. The run's outcome is then unknown: exit 2, written in the
+    # summary (status_error), the malformed counts never read
+    bad = {k: status[k] for k in ("failed", "not_proven", "passed", "skipped") if k in status and not _whole(status[k])}
+    status_error = None
+    if bad:
+        status_error = (f"the trace header's status counts are not whole numbers "
+                        f"({', '.join(f'{k}={v!r}' for k, v in bad.items())}): the run's outcome is unknown")
+        log(f"error: {status_error}: exit 2")
+        code = 2
+        status = {}
     outcomes: dict[str, str] = res.get("outcomes", {})
     rec = read_receipts(receipts)
     # per-test rows (`file::test`) count the tests; file rows (and a shared-process unit) carry the recorded time
@@ -1133,6 +1144,7 @@ def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
         "failed": real,
         "not_proven": not_proven,
         "status": status or None,
+        "status_error": status_error,
         "provable_absent": provable_absent,
         "not_proven_outside": np_outside,
         "flaky": [{"nodeid": n, "replay": f"{c}  # alone, without the cache: passes",
