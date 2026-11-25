@@ -160,7 +160,9 @@ def is_agent_commit(family: str, commit: dict, pr_author: str | None, head_ref: 
     if family == "claude_code":
         return bool(CLAUDE_COMMIT_RE.search(commit.get("message") or "")) or login == CLAUDE_BOT
     if family == "codex":
-        return bool(head_ref and head_ref.startswith("codex/") and login and login == pr_author)
+        # Change before chunk 1 (probe): Codex commits carry no linked author login (null); on a codex/ head ref
+        # a commit without a linked login counts as the agent's, as does one by the pull request author.
+        return bool(head_ref and head_ref.startswith("codex/") and (login is None or login == pr_author))
     return False
 
 

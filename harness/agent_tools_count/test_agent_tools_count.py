@@ -288,6 +288,8 @@ def test_agent_commits():
     assert not R.is_agent_commit("claude_code", {"author_login": "bob", "message": "x"}, "bob", "b")
     assert R.is_agent_commit("codex", {"author_login": "dev", "message": "x"}, "dev", "codex/fix-tests")
     assert not R.is_agent_commit("codex", {"author_login": "dev", "message": "x"}, "dev", "feature/x")
+    assert R.is_agent_commit("codex", {"author_login": None, "message": "x"}, "dev", "codex/x")  # probe finding
+    assert not R.is_agent_commit("codex", {"author_login": "other", "message": "x"}, "dev", "codex/x")
     assert R.is_agent_commit("devin", {"author_login": "devin-ai-integration[bot]"}, "x", "y")
 
 
@@ -523,7 +525,7 @@ def test_trim_keeps_fields():
     assert (pull["user_login"], pull["head_ref"], pull["body"], pull["commits"]) == ("Copilot", "copilot/x", "b", 3)
     c = P.trim("repos/o/r/pulls/7/commits?per_page=100", [{"sha": "a", "author": {"login": "x"}, "parents": [
         {"sha": "p1"}, {"sha": "p2"}], "commit": {"message": "m", "committer": {"date": "d"}}}])
-    assert c == [{"sha": "a", "author_login": "x", "message": "m", "date": "d", "parents": ["p1", "p2"]}]
+    assert c == [{"sha": "a", "author_login": "x", "author_name": None, "message": "m", "date": "d", "parents": ["p1", "p2"]}]
     r = P.trim("repos/o/r/actions/runs?head_sha=a&per_page=100", {"workflow_runs": [{"id": 1, "path": "p"}]})
     assert r["workflow_runs"][0]["path"] == "p"
     cr = P.trim("repos/o/r/check-runs/5", {"id": 5, "name": "n", "output": {"title": "t", "text": "x"}})

@@ -93,6 +93,7 @@ def trim(path: str, d):
                 "merged_at": d.get("merged_at"), "closed_at": d.get("closed_at"), "commits": d.get("commits")}
     if re.search(r"/pulls/\d+/commits$", p):
         return [{"sha": c["sha"], "author_login": _login(c.get("author")),
+                 "author_name": ((c.get("commit") or {}).get("author") or {}).get("name"),
                  "message": (c.get("commit") or {}).get("message"),
                  "date": ((c.get("commit") or {}).get("committer") or {}).get("date"),
                  "parents": [x["sha"] for x in c.get("parents") or []]} for c in d]
