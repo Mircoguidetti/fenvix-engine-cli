@@ -358,21 +358,78 @@ function skipDirs(dirs) {
   process.env.DETJS_FOOTPRINT_SKIP_DIRS = cur.join(path.delimiter);
 }
 
+/** The real path of `d` (symlinks resolved); a path that does not exist: its nearest existing ancestor's real path + the rest. */
+function realDir(d) {
+  try { return fs.realpathSync.native(d); } catch {
+    const parent = path.dirname(d);
+    return parent === d ? d : path.join(realDir(parent), path.basename(d));
+  }
+}
+
+const isUnder = (p, d) => p === d || p.startsWith(d.endsWith(path.sep) ? d : d + path.sep);
+
+/** Every directory the footprint would leave out: runner and tool caches set by the shells or the environment. */
+function footprintSkipCandidates() {
+  const tmp = os.tmpdir();
+  const uid = typeof process.getuid === 'function' ? process.getuid() : '';
+  return [...(process.env.DETJS_CACHE_SKIP_DIRS || '').split(path.delimiter), ...(process.env.DETJS_FOOTPRINT_SKIP_DIRS || '').split(path.delimiter),
+    path.join(tmp, 'jiti'), path.join(tmp, 'node-jiti'), path.join(tmp, `tsx-${uid}`), path.join(tmp, `v8-compile-cache-${uid}`),
+    path.join(tmp, 'v8-compile-cache'), path.join(tmp, `swc-node-${uid}`)].filter(Boolean);
+}
+
+/**
+ * Which candidate skip dirs the footprint honours (spec parallel-proof-gaps (c), gate note 3): a dir is left out of
+ * the footprint ONLY if it lies under a `node_modules/` directory or strictly under `os.tmpdir()` outside the project,
+ * and never if it is the project root or contains it. Any other location (the root, a parent, an in-repo `.cache/`,
+ * `fixtures/`, `test-data/`) is ignored -- its paths are recorded like any others -- and listed with the reason.
+ * Relative dirs resolve against `root`. Returns { skip: [real dir + sep], ignored: [{dir, reason}] }.
+ * (The test file list is not available in the lanes' processes when the recorder is installed, so the location rule
+ * alone applies, as gate note 8 allows; every test file of the run lies under the root, which is never skipped.)
+ */
+function footprintSkip(root, dirs) {
+  const rootR = realDir(path.resolve(root));
+  const tmpR = realDir(os.tmpdir());
+  const skip = []; const ignored = []; const seen = new Set();
+  for (const d0 of dirs) {
+    if (typeof d0 !== 'string' || !d0) continue;
+    const d = realDir(path.resolve(rootR, d0));
+    if (seen.has(d)) continue;
+    seen.add(d);
+    let reason = null;
+    if (isUnder(rootR, d)) reason = 'contains the project root';
+    else if (!(d.split(path.sep).includes('node_modules') || (d !== tmpR && isUnder(d, tmpR) && !isUnder(d, rootR)))) reason = 'outside node_modules and tmpdir';
+    if (reason) ignored.push({ dir: d, reason }); else skip.push(d + path.sep);
+  }
+  return { skip, ignored };
+}
+
 /** Install the footprint recorder in this process (once): fs reads, listings, writes; fixed ports. */
 function installFootprint(root) {
   if (PROC.hazard) return;
-  const rootSep = path.resolve(root) + path.sep;
+  // keys are real paths (gate note 7): `path.resolve`, then the real path of the parent directory (memoized) + the
+  // name; under the (real) root they are root-relative with `/` separators (the root itself is '.'), else absolute
+  const rootR = realDir(path.resolve(root));
+  const rootSep = rootR + path.sep;
   // runner and tool caches whose content is a function of their key (Jest's cacheDirectory, Vite's cacheDir and
-  // temporary directories: set by the shells; jiti, tsx, swc-node, v8-compile-cache): every lane writes and reads them
-  const tmp = os.tmpdir();
-  const uid = typeof process.getuid === 'function' ? process.getuid() : '';
-  const skip = [...(process.env.DETJS_CACHE_SKIP_DIRS || '').split(path.delimiter), ...(process.env.DETJS_FOOTPRINT_SKIP_DIRS || '').split(path.delimiter),
-    path.join(tmp, 'jiti'), path.join(tmp, 'node-jiti'), path.join(tmp, `tsx-${uid}`), path.join(tmp, `v8-compile-cache-${uid}`),
-    path.join(tmp, 'v8-compile-cache'), path.join(tmp, `swc-node-${uid}`)].filter(Boolean).map((d) => path.resolve(d) + path.sep);
-  const keyOf = (abs) => {
-    if (abs.startsWith('/proc/') || abs.startsWith('/dev/') || abs.startsWith('/sys/')) return null;
-    if (abs.includes(`${path.sep}node_modules${path.sep}`) || abs.endsWith(`${path.sep}node_modules`)) return null;
+  // temporary directories: set by the shells; jiti, tsx, swc-node, v8-compile-cache): every lane writes and reads them.
+  // Only those under node_modules or the temporary directory are left out (footprintSkip).
+  const { skip } = footprintSkip(rootR, footprintSkipCandidates());
+  const dirMemo = new Map();
+  const realOf = (abs) => {
+    const dir = path.dirname(abs);
+    if (dir === abs) return abs;
+    let r = dirMemo.get(dir);
+    if (r === undefined) { r = realDir(dir); if (dirMemo.size > 50000) dirMemo.clear(); dirMemo.set(dir, r); }
+    return path.join(r, path.basename(abs));
+  };
+  const nm = (abs) => abs.includes(`${path.sep}node_modules${path.sep}`) || abs.endsWith(`${path.sep}node_modules`);
+  const keyOf = (abs0) => {
+    if (abs0.startsWith('/proc/') || abs0.startsWith('/dev/') || abs0.startsWith('/sys/')) return null;
+    if (nm(abs0)) return null;
+    const abs = realOf(abs0);
+    if (abs !== abs0 && (nm(abs) || abs.startsWith('/proc/') || abs.startsWith('/dev/') || abs.startsWith('/sys/'))) return null;
     for (const d of skip) if (abs.startsWith(d)) return null;
+    if (abs === rootR) return '.';
     if (abs.startsWith(rootSep)) {
       const r = abs.slice(rootSep.length).split(path.sep).join('/');
       if (r === '.detjs' || r.startsWith('.detjs/') || r.startsWith('coverage/')) return null;
@@ -382,11 +439,11 @@ function installFootprint(root) {
   };
   let cur = null;
   const H = {
-    begin(label) { cur = { label, w: new Set(), r: new Set(), l: new Set(), listen: new Set(), connect: new Set() }; },
+    begin(label) { cur = { label, w: new Set(), r: new Set(), l: new Set(), wr: new Set(), lr: new Set(), listen: new Set(), connect: new Set() }; },
     end(label) {
       if (!cur || cur.label !== label) return null;
       const c = cur; cur = null;
-      return { w: [...c.w].sort(), r: [...c.r].sort(), l: [...c.l].sort(), listen: [...c.listen].sort(), connect: [...c.connect].sort() };
+      return { w: [...c.w].sort(), r: [...c.r].sort(), l: [...c.l].sort(), wr: [...c.wr].sort(), lr: [...c.lr].sort(), listen: [...c.listen].sort(), connect: [...c.connect].sort() };
     },
     add(set, p) {
       if (!cur) return;
@@ -574,6 +631,14 @@ function hazards(markers, laneOf) {
   return [...out.values()].sort((x, y) => (x.a < y.a ? -1 : x.a > y.a ? 1 : x.b < y.b ? -1 : x.b > y.b ? 1 : 0));
 }
 
+/** The footprint's skip dirs as the lanes applied them: effective (root-relative under the root) and ignored, with why. */
+function skipMeta(root) {
+  const rootR = realDir(path.resolve(root));
+  const { skip, ignored } = footprintSkip(rootR, footprintSkipCandidates());
+  const rel = (d) => (d.startsWith(rootR + path.sep) ? d.slice(rootR.length + 1).split(path.sep).join('/') : d);
+  return { skip_dirs: skip.map((d) => rel(d.slice(0, -path.sep.length))), skip_dirs_ignored: ignored };
+}
+
 /** Real start and end of each file (ms after the first start): how the lanes overlapped. */
 function spansOf(markers, keys) {
   const ms = keys.map((k) => markers.get(k)).filter((m) => m && typeof m.start === 'number');
@@ -643,6 +708,7 @@ function collect(root, dir, keysIn, plan, { shared, planned, write = true } = {}
       },
       placement: { processes: [...procs.values()], deviations, waited_seconds: Math.round(waited * 1000) / 1000, spans: spansOf(markers, keys) },
       hazards: hz,
+      ...skipMeta(root),
     });
     lines.push(`detjs: parallel: ${plan.workers} lanes, plan ${plan.digest}${plan.replayed ? ' (replayed)' : plan.sticky ? ' (sticky)' : ''}; `
       + `${keys.length} files; ${deviations.length} placement deviations; ${hz.length} cross-worker hazards; ${carried.length} files with carried state`);
@@ -682,6 +748,6 @@ function collect(root, dir, keysIn, plan, { shared, planned, write = true } = {}
 }
 
 module.exports = {
-  PLACEMENT_VARS, workerCount, defaultWorkers, resolveWorkers, makePlan, readReplay, writeRunPlan, enter, leave, markDone, installFootprint, skipDirs,
+  PLACEMENT_VARS, workerCount, defaultWorkers, resolveWorkers, makePlan, readReplay, writeRunPlan, enter, leave, markDone, installFootprint, skipDirs, footprintSkip,
   carriedBefore, carriedAfter, collect, loadState, statePath, hazards,
 };

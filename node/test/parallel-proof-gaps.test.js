@@ -1,0 +1,419 @@
+'use strict';
+// Three gaps of the parallel proof's hazard model (spec "parallel-proof-gaps", 2026-11-25): before these fixes a
+// two-lane run reported no hazard, and so proven, when
+//   (a) two lanes connect to the same local service (a database on 5432, a unix socket) that no lane listens on,
+//   (b) a lane removes / copies / creates / lists / renames a directory recursively and another lane touches a
+//       path inside it,
+//   (c) a runner's cache directory from the project's configuration covers the project (`cacheDir: '.'`, `'..'`,
+//       an in-repo `.cache/vite`, Jest `cacheDirectory: '<rootDir>'`): every path under it was invisible.
+// Every integration test forces the two files into two lanes with an explicit plan (`--det-plan`), so the hazard
+// does not depend on the planner, and checks the trace: the hazard (kind, path, both files) and the one-lane re-run
+// of exactly the named files. Overlap in time is not needed: hazards come from footprints, not from timing.
+const { test, describe, before, after } = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const net = require('node:net');
+const { spawnSync, spawn } = require('node:child_process');
+const { BIN, TMP, readTrace } = require('./helpers');
+
+const T = { timeout: 600000 };
+const RUNNERS = (process.env.DETJS_TEST_RUNNERS || 'vitest,jest').split(',');
+const EXT = { vitest: '.test.mjs', jest: '.test.js' };
+const HEAD = {
+  vitest: "import { test, expect } from 'vitest'; import fs from 'node:fs'; import path from 'node:path'; import net from 'node:net';",
+  jest: "const fs = require('node:fs'); const path = require('node:path'); const net = require('node:net');",
+};
+const BASE = path.join(TMP, 'gaps');
+
+function write(dir, files) {
+  for (const [name, body] of Object.entries(files)) {
+    const p = path.join(dir, name);
+    fs.mkdirSync(path.dirname(p), { recursive: true });
+    fs.writeFileSync(p, body);
+  }
+}
+
+/** A project with two test files `x` and `y` forced into two lanes. `config`: extra top-level Vite / Jest keys. */
+function project(runner, name, x, y, { config = {}, extra = {} } = {}) {
+  const dir = path.join(BASE, runner, name);
+  fs.rmSync(dir, { recursive: true, force: true });
+  fs.mkdirSync(dir, { recursive: true });
+  write(dir, { 'package.json': JSON.stringify({ name: `gaps-${name}`, private: true }) });
+  if (runner === 'vitest') write(dir, { 'vitest.config.mjs': `export default ${JSON.stringify({ ...config, test: { include: ['tests/**/*.test.mjs'] } })};\n` });
+  else write(dir, { 'jest.config.js': `module.exports = ${JSON.stringify({ testMatch: ['**/tests/**/*.test.js'], testEnvironment: 'node', ...config })};\n` });
+  const ext = EXT[runner];
+  write(dir, {
+    [`tests/x${ext}`]: `${HEAD[runner]}\n${x}\n`,
+    [`tests/y${ext}`]: `${HEAD[runner]}\n${y}\n`,
+    'plan.json': JSON.stringify({ lanes: [[`tests/x${ext}`], [`tests/y${ext}`]] }),
+    ...extra,
+  });
+  return dir;
+}
+
+function cleanEnv(extra = {}) {
+  const env = { ...process.env };
+  for (const k of ['CI', 'GITHUB_ACTIONS', 'DETJS', 'NODE_OPTIONS', 'NODE_TEST_CONTEXT', 'DETJS_SEED', 'DETJS_CACHE_DIR', 'JEST_WORKER_ID', 'VITEST_POOL_ID', 'VITEST_WORKER_ID',
+    'DETJS_FOOTPRINT_SKIP_DIRS', 'DETJS_CACHE_SKIP_DIRS', 'DETJS_HAZARD_RERUN', 'DETJS_HAZARD_RECURSIVE', 'DETJS_HAZARD_SHARED_SERVICE']) delete env[k];
+  return { ...env, ...extra };
+}
+
+/** One `detjs <runner> --det --det-plan=plan.json` run (two lanes). Jest gets no --cacheDirectory: the config's counts. */
+function det(runner, dir, { env = {}, args = [] } = {}) {
+  fs.rmSync(path.join(dir, '.detjs', 'trace.jsonl'), { force: true });
+  fs.rmSync(path.join(dir, '.detjs', 'plan-state.json'), { force: true });
+  const runnerArgs = runner === 'vitest' ? ['run'] : [];
+  const r = spawnSync(process.execPath, [BIN, runner, ...runnerArgs, '--det', '--det-epoch=fixed', '--det-plan=plan.json', ...args],
+    { cwd: dir, encoding: 'utf8', env: cleanEnv(env), timeout: 300000 });
+  let trace = null;
+  try { trace = readTrace(path.join(dir, '.detjs', 'trace.jsonl')); } catch { /* none */ }
+  return { status: r.status, stdout: r.stdout || '', stderr: r.stderr || '', trace };
+}
+
+const show = (r) => `status=${r.status}\nstdout=${r.stdout.slice(-2000)}\nstderr=${r.stderr.slice(-3000)}`;
+const par = (r) => (r.trace && r.trace.header.meta.parallel) || {};
+
+/** The run names a hazard of `kind` on `what` between the two files, and re-runs exactly those files in one lane. */
+function assertHazard(runner, r, kind, what) {
+  assert.ok(r.trace, `no trace: ${show(r)}`);
+  const ext = EXT[runner];
+  const files = [`tests/x${ext}`, `tests/y${ext}`];
+  assert.equal(par(r).workers, 2, `the run must be in two lanes: ${show(r)}`);
+  const hz = par(r).hazards || [];
+  const hit = hz.find((h) => h.kind === kind && (what instanceof RegExp ? what.test(h.what) : h.what === what));
+  assert.ok(hit, `expected a ${kind} hazard on ${what}; hazards=${JSON.stringify(hz)}\n${show(r)}`);
+  assert.deepEqual([hit.a, hit.b].sort(), files, JSON.stringify(hit));
+  const hr = r.trace.header.meta.hazard_rerun;
+  assert.ok(hr, `the hazard files must run again in one lane: ${show(r)}`);
+  assert.deepEqual(hr.files.slice().sort(), files, show(r));
+  assert.equal(hr.complete, true, show(r));
+}
+
+function assertNoHazard(r) {
+  assert.ok(r.trace, `no trace: ${show(r)}`);
+  assert.equal(par(r).workers, 2, `the run must be in two lanes: ${show(r)}`);
+  assert.deepEqual(par(r).hazards, [], show(r));
+  assert.equal(r.trace.header.meta.hazard_rerun, undefined, show(r));
+  assert.equal(r.status, 0, show(r));
+  assert.ok(r.trace.tests.length >= 2 && r.trace.tests.every((t) => t.outcome === 'passed'), show(r));
+}
+
+// -- unit: hazards() on synthetic footprints ------------------------------------------------------------------
+
+describe('hazards() unit: recursive roots, shared services', () => {
+  const { hazards } = require('../src/parallel');
+  const fp = (o) => ({ footprint: { w: [], r: [], l: [], listen: [], connect: [], ...o } });
+  const run = (a, b) => hazards(new Map([['A', fp(a)], ['B', fp(b)]]), new Map([['A', 0], ['B', 1]]));
+  const kinds = (h) => h.map((x) => `${x.kind} ${x.what}`);
+
+  test('rm/rename/cp-dest recursive root D conflicts with a read, write or listing under D', () => {
+    // protects=a recursive write root conflicts with everything inside; fails_when=a read of tmp/x.json in the other
+    // lane is not a hazard; no_claim=synthetic footprints, not what the fs wrappers record (integration tests do)
+    assert.deepEqual(kinds(run({ wr: ['tmp'] }, { r: ['tmp/x.json'] })), ['recursive-write tmp']);
+    assert.deepEqual(kinds(run({ wr: ['tmp'] }, { w: ['tmp/a/b/c'] })), ['recursive-write tmp']);
+    assert.deepEqual(kinds(run({ wr: ['tmp'] }, { l: ['tmp/a'] })), ['recursive-write tmp']);
+    assert.deepEqual(kinds(run({ wr: ['tmp'] }, { r: ['tmp'] })), ['recursive-write tmp']);
+    assert.deepEqual(kinds(run({ wr: ['tmp'] }, { wr: ['tmp/sub'] })), ['recursive-write tmp']);
+    assert.deepEqual(kinds(run({ wr: ['tmp/sub'] }, { lr: ['tmp'] })).length, 1);
+  });
+
+  test('a listing of an ancestor of a recursive write root conflicts (the root appears or disappears)', () => {
+    // protects=list of the parent vs rm -r of a child dir; fails_when=readdir('.')/('a') misses rm -r a/b; no_claim=synthetic
+    assert.deepEqual(kinds(run({ wr: ['a/b'] }, { l: ['a'] })), ['recursive-write a/b']);
+    assert.deepEqual(kinds(run({ wr: ['a/b/c'] }, { lr: ['a'] })).length, 1);
+    // a plain read of the parent is not a listing
+    assert.deepEqual(run({ wr: ['a/b'] }, { r: ['a'] }), []);
+  });
+
+  test('a recursive read root D (cp source, readdir recursive) conflicts with a write under D', () => {
+    // protects=recursive read vs writes two levels down; fails_when=cp src / readdir -r vs write inside is missed; no_claim=synthetic
+    assert.deepEqual(kinds(run({ lr: ['tree'] }, { w: ['tree/a/b/x.txt'] })), ['recursive-read tree']);
+    assert.deepEqual(kinds(run({ lr: ['tree'] }, { w: ['tree'] })), ['recursive-read tree']);
+    // two recursive reads do not conflict; a read inside a recursive read root does not either
+    assert.deepEqual(run({ lr: ['tree'] }, { lr: ['tree'], r: ['tree/a'] }), []);
+  });
+
+  test('prefix matching is by path component: tmp does not match tmpdir/x (b-neg)', () => {
+    // protects=no false hazard between siblings with a common prefix; fails_when=bare startsWith; no_claim=synthetic
+    assert.deepEqual(run({ wr: ['tmp'] }, { r: ['tmpdir/x'], w: ['tmpdir/y'], l: ['tmpdir'] }), []);
+    assert.deepEqual(run({ lr: ['tmp'] }, { w: ['tmpdir/x'] }), []);
+    // keys of different forms never match: a root-relative key is not a prefix of an absolute one
+    assert.deepEqual(run({ wr: ['tmp'] }, { r: ['/tmp/x'] }), []);
+  });
+
+  test('the same file in one lane: no hazard, whatever it touches', () => {
+    // protects=hazards are cross-lane only; fails_when=a file conflicts with a file of its own lane; no_claim=synthetic
+    const h = hazards(new Map([['A', fp({ wr: ['tmp'] })], ['B', fp({ r: ['tmp/x'] })]]), new Map([['A', 0], ['B', 0]]));
+    assert.deepEqual(h, []);
+  });
+
+  test('two lanes connecting to one local port, unix socket or remote host:port: shared-service (a1, a2, a3)', () => {
+    // protects=a shared database / service is a hazard even when no lane listens; fails_when=connect matched only to
+    // listeners; no_claim=synthetic keys (the connect wrapper's keys are checked by the integration tests)
+    assert.deepEqual(kinds(run({ connect: ['5432'] }, { connect: ['5432'] })), ['shared-service 5432']);
+    assert.deepEqual(kinds(run({ connect: ['unix:/run/pg/.s.PGSQL.5432'] }, { connect: ['unix:/run/pg/.s.PGSQL.5432'] })), ['shared-service unix:/run/pg/.s.PGSQL.5432']);
+    assert.deepEqual(kinds(run({ connect: ['tcp:db.example.com:5432'] }, { connect: ['tcp:db.example.com:5432'] })), ['shared-service tcp:db.example.com:5432']);
+  });
+
+  test('different ports, sockets or hosts: no shared-service hazard; listen rules unchanged', () => {
+    // protects=no false hazard; fails_when=any two connects conflict; no_claim=synthetic
+    assert.deepEqual(run({ connect: ['5432'] }, { connect: ['6379'] }), []);
+    assert.deepEqual(run({ connect: ['unix:/a.sock'] }, { connect: ['unix:/b.sock'] }), []);
+    assert.deepEqual(run({ connect: ['tcp:a.example.com:5432'] }, { connect: ['tcp:b.example.com:5432'] }), []);
+    assert.deepEqual(run({ connect: ['tcp:a.example.com:5432'] }, { connect: ['5432'] }), []);
+    assert.deepEqual(kinds(run({ listen: ['4000'] }, { connect: ['4000'] })), ['port 4000']);
+    assert.deepEqual(kinds(run({ listen: ['4000'] }, { listen: ['4000'] })), ['port 4000']);
+  });
+
+  test('footprints without the new sets (older markers) still work', () => {
+    // protects=markers of an older engine do not crash collect; fails_when=f.wr undefined throws; no_claim=synthetic
+    const old = (o) => ({ footprint: { w: [], r: [], l: [], listen: [], connect: [], ...o } });
+    assert.deepEqual(hazards(new Map([['A', old({ w: ['x'] })], ['B', old({ r: ['x'] })]]), new Map([['A', 0], ['B', 1]])).map((h) => h.kind), ['read-write']);
+  });
+
+  test('scale: 400 files x 300 keys each match in well under a second', () => {
+    // protects=prefix matching stays fast on big suites; fails_when=quadratic blow-up; no_claim=one synthetic shape
+    const m = new Map(); const lanes = new Map();
+    for (let i = 0; i < 400; i++) {
+      const keys = Array.from({ length: 300 }, (_, j) => `src/f${i}/m${j}.js`);
+      m.set(`t${i}`, fp({ r: keys, w: [`out/${i}/a.txt`], l: [`src/f${i}`], wr: [`tmp/${i}`], lr: [`fixtures/${i}`] }));
+      lanes.set(`t${i}`, i % 4);
+    }
+    const t0 = process.hrtime.bigint();
+    const h = hazards(m, lanes);
+    const ms = Number(process.hrtime.bigint() - t0) / 1e6;
+    assert.deepEqual(h, []);
+    assert.ok(ms < 1500, `hazards() took ${ms} ms`);
+  });
+});
+
+describe('footprint skip dirs unit: only node_modules and tmpdir (c)', () => {
+  const os = require('node:os');
+  const { footprintSkip } = require('../src/parallel');
+  const root = path.join(BASE, 'unit-root', 'proj');
+  before(() => fs.mkdirSync(path.join(root, '.cache', 'vite'), { recursive: true }));
+  const reasons = (dirs) => Object.fromEntries(footprintSkip(root, dirs).ignored.map((x) => [x.dir, x.reason]));
+
+  test('the project root, its parent, a dir inside the project: ignored with a reason', () => {
+    // protects=a config cache dir cannot hide project paths; fails_when=root/parent/.cache honoured; no_claim=the rule only (integration tests run it)
+    const r = reasons([root, path.dirname(root), path.join(root, '.cache', 'vite'), path.join(root, 'fixtures')]);
+    assert.equal(r[root], 'contains the project root');
+    assert.equal(r[path.dirname(root)], 'contains the project root');
+    assert.equal(r[path.join(root, '.cache', 'vite')], 'outside node_modules and tmpdir');
+    assert.equal(r[path.join(root, 'fixtures')], 'outside node_modules and tmpdir');
+  });
+
+  test('a dir under node_modules (in the project) is honoured', () => {
+    // protects=the safe default Vite cacheDir stays skipped; fails_when=node_modules/.vite ignored; no_claim=rule only
+    const s = footprintSkip(root, [path.join(root, 'node_modules', '.vite-custom')]);
+    assert.deepEqual(s.ignored, []);
+    assert.ok(s.skip.includes(path.join(root, 'node_modules', '.vite-custom') + path.sep));
+  });
+
+  test('a dir under os.tmpdir() outside the project is honoured; tmpdir itself is not', () => {
+    // protects=Jest's default /tmp/jest_* stays skipped, a cacheDir of /tmp itself does not hide all of /tmp;
+    // fails_when=tmpdir honoured; no_claim=a tmpdir cache that tests also use for shared data stays a known limit
+    const tmp = fs.realpathSync.native(os.tmpdir());
+    const s = footprintSkip(root, [path.join(tmp, 'jest_rs'), tmp]);
+    assert.ok(s.skip.includes(path.join(tmp, 'jest_rs') + path.sep));
+    assert.deepEqual(s.ignored, [{ dir: tmp, reason: 'outside node_modules and tmpdir' }]);
+  });
+
+  test('a project that itself lives under tmpdir: its own dirs are still ignored', () => {
+    // protects=fixtures in /tmp do not make every in-project cache dir safe; fails_when=tmpdir rule wins over project rule; no_claim=rule only
+    const proj = fs.mkdtempSync(path.join(os.tmpdir(), 'gaps-proj-'));
+    try {
+      const r = Object.fromEntries(footprintSkip(proj, [path.join(proj, '.cache'), proj]).ignored.map((x) => [x.dir, x.reason]));
+      assert.equal(r[fs.realpathSync.native(path.join(proj))], 'contains the project root');
+      assert.equal(r[path.join(fs.realpathSync.native(proj), '.cache')], 'outside node_modules and tmpdir');
+    } finally { fs.rmSync(proj, { recursive: true, force: true }); }
+  });
+
+  test('a relative dir is resolved against the project root, empty entries are dropped', () => {
+    // protects=`cacheDir: '.'` means the root; fails_when=relative dirs resolved against the engine's cwd; no_claim=rule only
+    const r = reasons(['.', '..', '', null]);
+    assert.equal(r[root], 'contains the project root');
+    assert.equal(r[path.dirname(root)], 'contains the project root');
+  });
+});
+
+// -- integration: real two-lane runs ---------------------------------------------------------------------------
+
+const tolerantRead = (p) => `try { fs.readFileSync(path.join(process.cwd(), ${JSON.stringify(p)}), 'utf8'); } catch { /* the other lane may have removed it */ }`;
+
+for (const runner of RUNNERS) {
+  describe(`${runner}: recursive directory operations (b)`, () => {
+    test('(b1) rm -r of a dir in one lane, a read inside it in the other: recursive-write hazard, one-lane re-run', T, () => {
+      // protects=rmSync(dir,{recursive}) conflicts with reads inside; fails_when=the run is proven with no hazard
+      // (release-1: Node's rm walks the tree through public fs calls, so a file that exists at rm time gets its own
+      // unlink key; a path inside that does not exist yet -- created later, or by the other lane -- matched nothing);
+      // no_claim=the read here is of a path absent at rm time; the outcome interleaving itself is not forced
+      const dir = project(runner, 'b1',
+        "test('rm', () => { fs.rmSync(path.join(process.cwd(), 'tmp'), { recursive: true, force: true }); expect(1).toBe(1); });",
+        `test('read', () => { ${tolerantRead('tmp/x.json')} expect(1).toBe(1); });`,
+        { extra: { 'tmp/.keep': '' } });
+      assertHazard(runner, det(runner, dir), 'recursive-write', 'tmp');
+    });
+
+    test('(b4) mkdir -p of a dir in one lane, a write deeper inside it in the other: recursive-write hazard', T, () => {
+      // protects=mkdirSync(d,{recursive}) conflicts with writes under d; fails_when=proven with no hazard; no_claim=none beyond protects
+      const dir = project(runner, 'b4',
+        "test('mkdir', () => { fs.mkdirSync(path.join(process.cwd(), 'data', 'a'), { recursive: true }); expect(1).toBe(1); });",
+        "test('write', () => { fs.writeFileSync(path.join(process.cwd(), 'data', 'a', 'b', 'x.txt'), 'y'); expect(1).toBe(1); });",
+        { extra: { 'data/a/b/.keep': '' } });
+      assertHazard(runner, det(runner, dir), 'recursive-write', 'data/a');
+    });
+
+    if (runner === 'vitest') {
+      test('(b2) cp -r into a dir in one lane, a write inside the destination in the other: recursive-write hazard', T, () => {
+        // protects=cpSync(src,dest,{recursive}) conflicts with writes inside dest; fails_when=proven with no hazard; no_claim=none beyond protects
+        const dir = project(runner, 'b2',
+          "test('cp', () => { fs.cpSync(path.join(process.cwd(), 'fixtures'), path.join(process.cwd(), 'out'), { recursive: true }); expect(1).toBe(1); });",
+          "test('write', () => { fs.writeFileSync(path.join(process.cwd(), 'out', 'b.txt'), 'y'); expect(1).toBe(1); });",
+          { extra: { 'fixtures/a.txt': 'a', 'out/.keep': '' } });
+        assertHazard(runner, det(runner, dir), 'recursive-write', 'out');
+      });
+
+      test('(b3) cp -r from a dir in one lane, a write inside the source in the other: recursive-read hazard', T, () => {
+        // protects=the cp source is read recursively; fails_when=proven with no hazard; no_claim=none beyond protects
+        const dir = project(runner, 'b3',
+          "test('cp', () => { fs.cpSync(path.join(process.cwd(), 'fixtures'), path.join(process.cwd(), 'out'), { recursive: true }); expect(1).toBe(1); });",
+          "test('write', () => { fs.writeFileSync(path.join(process.cwd(), 'fixtures', 'sub', 'new.txt'), 'y'); expect(1).toBe(1); });",
+          { extra: { 'fixtures/a.txt': 'a', 'fixtures/sub/.keep': '' } });
+        assertHazard(runner, det(runner, dir), 'recursive-read', 'fixtures');
+      });
+
+      test('(b5) readdir recursive in one lane, a write two levels down in the other: recursive-read hazard', T, () => {
+        // protects=readdirSync(d,{recursive}) sees deep writes; fails_when=only direct children matched; no_claim=none beyond protects
+        const dir = project(runner, 'b5',
+          "test('list', () => { expect(fs.readdirSync(path.join(process.cwd(), 'tree'), { recursive: true }).length).toBeGreaterThan(0); });",
+          "test('write', () => { fs.writeFileSync(path.join(process.cwd(), 'tree', 'a', 'b', 'x.txt'), 'y'); expect(1).toBe(1); });",
+          { extra: { 'tree/a/b/.keep': '' } });
+        assertHazard(runner, det(runner, dir), 'recursive-read', 'tree');
+      });
+
+      test('(b6) rename of a dir in one lane, a read inside the new name in the other: recursive-write hazard', T, () => {
+        // protects=renameSync of a directory moves everything inside; fails_when=proven with no hazard; no_claim=none beyond protects
+        const dir = project(runner, 'b6',
+          "test('rename', () => { const c = process.cwd(); if (fs.existsSync(path.join(c, 'stage'))) fs.renameSync(path.join(c, 'stage'), path.join(c, 'final')); else fs.renameSync(path.join(c, 'final'), path.join(c, 'stage')); expect(1).toBe(1); });",
+          "test('read', () => { fs.existsSync(path.join(process.cwd(), 'final', 'x.txt')); expect(1).toBe(1); });",
+          { extra: { 'stage/x.txt': 'x' } });
+        assertHazard(runner, det(runner, dir), 'recursive-write', 'final');
+      });
+    }
+  });
+
+  describe(`${runner}: skip dirs from the project configuration (c)`, () => {
+    // (the directory is created by the fixture: a mkdir of the root or of the cache dir would be a conflict of its own)
+    const writeShared = (rel, n) => `test('${n} writes', () => { fs.writeFileSync(path.join(process.cwd(), ${JSON.stringify(rel)}), '${n}'); expect(1).toBe(1); });`;
+    const ignoredDirs = (r) => (par(r).skip_dirs_ignored || []).map((x) => x.dir);
+
+    if (runner === 'vitest') {
+      // MEASURED (Vitest 5.1.0, 2026-11-25): the shell's skip dir is the resolved `vite.config.cacheDir`, which Vitest
+      // nests as `<cacheDir>/vitest/<sha1(project name)>` (the default project's name is '', sha1 da39a3ee...). So
+      // `cacheDir: '.'` hides `<root>/vitest/<hash>/`, `'..'` hides `<parent>/vitest/<hash>/`, `.cache/vite` hides
+      // `.cache/vite/vitest/<hash>/`: the conflict is put there, where release-1 records nothing.
+      const sub = path.posix.join('vitest', require('node:crypto').createHash('sha1').update('').digest('hex'));
+      for (const [name, cacheDir] of [['c1', '.'], ['c2', '..'], ['c3', '.cache/vite']]) {
+        test(`(${name}) cacheDir ${JSON.stringify(cacheDir)}: ignored and recorded, a write-write conflict there is a hazard`, T, () => {
+          // protects=a cacheDir in the project (or above it) does not hide project paths; fails_when=a write-write
+          // conflict under it is invisible and the run proven; no_claim=Vite's own writes to its cache happen in the
+          // main process (not a lane), so the conflict is the test files' own
+          const dir0 = path.join(BASE, runner, name);
+          const cache = path.join(path.resolve(dir0, cacheDir), ...sub.split('/'));
+          const shared = path.join(cache, 'shared.json');
+          const body = (n) => `test('${n} writes', () => { fs.writeFileSync(${JSON.stringify(shared)}, '${n}'); expect(1).toBe(1); });`;
+          const dir = project(runner, name, body('x'), body('y'), { config: { cacheDir } });
+          fs.mkdirSync(cache, { recursive: true });
+          const real = fs.realpathSync.native(shared.slice(0, -'shared.json'.length));
+          const key = real.startsWith(fs.realpathSync.native(dir) + path.sep) ? path.relative(fs.realpathSync.native(dir), real).split(path.sep).join('/') + '/shared.json' : path.join(real, 'shared.json');
+          const r = det(runner, dir);
+          assertHazard(runner, r, 'write-write', key);
+          const ign = par(r).skip_dirs_ignored || [];
+          assert.ok(ignoredDirs(r).includes(real.replace(/\/$/, '')), `skip_dirs_ignored=${JSON.stringify(ign)}`);
+          assert.ok(ign.every((x) => x.reason === 'outside node_modules and tmpdir' || x.reason === 'contains the project root'), JSON.stringify(ign));
+        });
+      }
+
+      test('(c-neg) cacheDir under node_modules stays skipped and is listed as an effective skip dir', T, () => {
+        // protects=the safe location keeps its skip; fails_when=it is ignored or the run loses its proof; no_claim=paths
+        // under node_modules are dropped by the footprint anyway, so the listing is what is checked
+        const dir = project(runner, 'cneg',
+          "test('x', () => { fs.writeFileSync(path.join(process.cwd(), 'x.out'), 'x'); expect(1).toBe(1); });",
+          "test('y', () => { fs.writeFileSync(path.join(process.cwd(), 'y.out'), 'y'); expect(1).toBe(1); });",
+          { config: { cacheDir: 'node_modules/.vite-custom' } });
+        const r = det(runner, dir);
+        assertNoHazard(r);
+        assert.ok((par(r).skip_dirs || []).some((d) => d === 'node_modules/.vite-custom' || d.startsWith('node_modules/.vite-custom/')), JSON.stringify(par(r).skip_dirs));
+        assert.ok(!ignoredDirs(r).some((d) => d.endsWith('.vite-custom')), JSON.stringify(par(r).skip_dirs_ignored));
+      });
+    } else {
+      test('(c4) jest cacheDirectory <rootDir>: ignored and recorded, a write-write conflict in the repo is a hazard', T, () => {
+        // protects=a Jest cache in the project root does not hide the project; fails_when=no hazard, proven; no_claim=
+        // Jest's transform cache writes into the root then also produce hazards (expected: slower, correct)
+        const dir = project(runner, 'c4', writeShared('shared.txt', 'x'), writeShared('shared.txt', 'y'), { config: { cacheDirectory: '<rootDir>' } });
+        const r = det(runner, dir);
+        assert.ok(r.trace, show(r));
+        const hz = par(r).hazards || [];
+        assert.ok(hz.some((h) => h.kind === 'write-write' && h.what === 'shared.txt'), `hazards=${JSON.stringify(hz)}\n${show(r)}`);
+        assert.ok(r.trace.header.meta.hazard_rerun, show(r));
+        assert.ok(ignoredDirs(r).includes(fs.realpathSync.native(dir)), JSON.stringify(par(r).skip_dirs_ignored));
+      });
+    }
+  });
+
+  describe(`${runner}: shared local services (a)`, () => {
+    const servers = [];
+    /** A server outside the lanes (its own process): a TCP port on 127.0.0.1, or a unix socket. */
+    const serve = (where) => new Promise((resolve, reject) => {
+      const code = `const net=require('node:net');const s=net.createServer((c)=>{c.end('hi');});s.listen(${where === null ? "0,'127.0.0.1'" : JSON.stringify(where)},()=>{process.stdout.write(String(s.address().port||'ok')+'\\n');});`;
+      const p = spawn(process.execPath, ['-e', code], { stdio: ['ignore', 'pipe', 'inherit'] });
+      servers.push(p);
+      p.stdout.once('data', (d) => resolve(String(d).trim()));
+      p.once('error', reject);
+    });
+    after(() => { for (const p of servers) p.kill(); });
+    const client = (opt) => `test('talks to the service', async () => {
+  const got = await new Promise((res) => { const s = net.connect(${opt}); let b = ''; s.on('data', (d) => { b += d; }); s.on('end', () => res(b)); s.on('error', (e) => res(String(e.code))); });
+  expect(got).toBe('hi');
+});`;
+
+    test('(a1) two lanes connect to one local TCP port served outside the lanes: shared-service hazard', T, async () => {
+      // protects=a shared database on a fixed port is a hazard; fails_when=connect matched only against lane listeners
+      // and the run proven; no_claim=a toy server stands in for Postgres; whether interleaving changes an outcome is not tested
+      const port = await serve(null);
+      const dir = project(runner, 'a1', client(`{ host: '127.0.0.1', port: ${port} }`), client(`${port}, 'localhost'`));
+      assertHazard(runner, det(runner, dir), 'shared-service', String(port));
+    });
+
+    if (runner === 'vitest') {
+      test('(a2) two lanes connect to one unix socket: shared-service hazard', T, async () => {
+        // protects=unix-socket services (Postgres' default socket) are recorded; fails_when=nothing recorded for {path}
+        // connects; no_claim=a toy server stands in for the service
+        const sock = path.join(fs.mkdtempSync(path.join(BASE, 'sock-')), 's.sock');
+        await serve(sock);
+        const dir = project(runner, 'a2', client(`{ path: ${JSON.stringify(sock)} }`), client(JSON.stringify(sock)));
+        assertHazard(runner, det(runner, dir), 'shared-service', `unix:${fs.realpathSync.native(sock)}`);
+      });
+
+      test('(a-neg) two lanes connect to two different local ports: no hazard, proven', T, async () => {
+        // protects=no false hazard between unrelated services; fails_when=any two connects conflict; no_claim=none beyond protects
+        const p1 = await serve(null); const p2 = await serve(null);
+        const dir = project(runner, 'aneg', client(`{ host: '127.0.0.1', port: ${p1} }`), client(`{ host: '127.0.0.1', port: ${p2} }`));
+        assertNoHazard(det(runner, dir));
+      });
+    }
+  });
+
+  describe(`${runner}: positive control`, () => {
+    test('a clean two-lane run (no shared path, port or socket) keeps its proof', T, () => {
+      // protects=the fixes do not take the proof from an isolated suite; fails_when=a hazard or re-run appears, or the
+      // run fails; no_claim=a tiny suite: no runner caches in the project, no shared modules
+      const dir = project(runner, 'clean',
+        "test('x', () => { fs.writeFileSync(path.join(process.cwd(), 'x.out'), 'x'); fs.rmSync(path.join(process.cwd(), 'xdir'), { recursive: true, force: true }); expect(fs.readdirSync(path.join(process.cwd(), 'tests')).length).toBe(2); });",
+        "test('y', () => { fs.writeFileSync(path.join(process.cwd(), 'y.out'), 'y'); fs.mkdirSync(path.join(process.cwd(), 'ydir', 'a'), { recursive: true }); expect(1).toBe(1); });");
+      assertNoHazard(det(runner, dir));
+    });
+  });
+}
