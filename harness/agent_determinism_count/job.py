@@ -29,6 +29,9 @@ def main() -> int:
     req = json.loads(Path(a.request).read_text())
     import chunk
     name = Path(a.request).name
+    if req.get("noop"):  # a push that only starts a run (pending requests without a marker run before it)
+        chunk.mark_done(name, {"noop": True, "at": chunk.now()})
+        return 0
     if req.get("probe_text"):
         rc = subprocess.call([sys.executable, str(HERE / "probe.py"), "workflow-text"])
         if rc == 0:
