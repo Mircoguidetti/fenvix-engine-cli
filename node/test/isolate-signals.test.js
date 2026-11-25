@@ -71,3 +71,16 @@ test('protects=positive control (gate note 1): a clean two-session run (no read 
   assert.deepEqual(r.meta.parallel, { workers: 1, isolate: true });
   assert.deepEqual(r.meta.files, ['tests/a.test.mjs', 'tests/b.test.mjs']);
 });
+
+test('protects=a real partly reused --det-isolate run (file a reused, file b changed and run) keeps the running sensor and is green (founder decision 2026-11-25); fails_when=a key that differs between a reused and a running session (serial: MEASURED) or the cache-reuse/1 declaration makes the mixed run NOT PROVEN; no_claim=the cache key that decided the reuse', T, () => {
+  const dir = project('mixed-cache', B_CLEAN);
+  const cache = `--det-cache=${path.join(dir, '.c')}`;
+  assert.equal(run(dir, [cache]).status, 0);
+  fs.writeFileSync(path.join(dir, 'tests', 'b.test.mjs'), B_CLEAN.replace('toBe(2)', 'toBe(2) && expect(3).toBe(3)'));
+  const r = run(dir, [cache]);
+  assert.equal(r.status, 0, r.show);
+  assert.match(r.show, /tests\/a\.test\.mjs::a: passed \(reused with proof\)/, 'file a reused');
+  assert.doesNotMatch(r.show, /tests\/b\.test\.mjs::b: passed \(reused/, 'file b ran');
+  assert.equal(r.meta.provable && r.meta.provable.sensor, 'node-surface/1', r.show);
+  assert.equal(r.meta.provable_absent, undefined, r.show);
+});

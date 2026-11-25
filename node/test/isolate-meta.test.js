@@ -6,7 +6,7 @@ const { mergeSessionMeta, EQUAL, UNION, OWN, SENSOR, OTHER } = require('../src/i
 
 const SENS = { contract: 1, runtime: 'node22', sensor: 'node-surface/1', surface: 'abc' };
 const base = (extra = {}) => ({
-  runner: 'vitest', seed: 0, epoch_ns: '1', inputs: { env: { 'env:A': '1' } }, provable: SENS,
+  runner: 'vitest', seed: 0, epoch_ns: '1', controls: ['fs', 'net', 'order', 'seeds', 'time', 'timers'], inputs: { env: { 'env:A': '1' } }, provable: SENS,
   not_proven_outside_tests: [], env_read_outside_tests: ['X'], files_read_outside_tests: [], notes: [],
   parallel: { workers: 4, requested: null, plan: { workers: 4 }, placement: { deviations: [], processes: [['f']] }, hazards: [], timing: { files: 1, test_file_seconds: 0.1, lanes_wall_seconds: 0.1 } },
   files: ['f'], cli_args: ['f', '-t', 'x'], isolation: 'one session', status: { failed: 0 }, unordered_parts: 0, cassette_oldest_days: null,
@@ -70,8 +70,33 @@ test('protects=every key of a session header has exactly one rule; fails_when=a 
   assert.equal(new Set(all).size, all.length);
 });
 
-test('protects=the documented gap of the strict sensor rule under --det-cache: a session whose tests were all reused declares cache-reuse/1, one that ran declares node-surface/1, and the run declares none; fails_when=the rule changes without the coordinator\'s decision; no_claim=whether that is the wanted behavior (reported to the coordinator)', () => {
-  const { meta } = mergeSessionMeta([base({ provable: { ...SENS, sensor: 'cache-reuse/1' } }), base()], ['a', 'b']);
+const REUSE = { ...SENS, sensor: 'cache-reuse/1' };
+const reusedSession = (extra = {}) => base({ provable: REUSE, reused_tests: ['tests/a.test.mjs::a'], ...extra });
+
+test('protects=a partly reused --det-isolate run (one session all reused: cache-reuse/1, one that ran: node-surface/1) keeps the running sensor (founder decision 2026-11-25); fails_when=the mixed run is NOT PROVEN, or takes cache-reuse/1 as the run\'s sensor; no_claim=that the reused entries were recorded under these controls (the cache key\'s job)', () => {
+  const { meta, failClosed } = mergeSessionMeta([reusedSession(), base()], ['a', 'b']);
+  assert.deepEqual(failClosed, []);
+  assert.deepEqual(meta.provable, SENS);
+  assert.equal(meta.provable_absent, undefined);
+});
+
+test('protects=a mixed run with a control the sensors require switched off is NOT PROVEN; fails_when=the cache-reuse/1 session is waved through with timers off; no_claim=the core\'s list itself (read from the engine: provableRequiredControls)', () => {
+  const ctl = ['fs', 'net', 'order', 'seeds', 'time'];
+  const { meta } = mergeSessionMeta([reusedSession({ controls: ctl }), base({ controls: ctl })], ['a', 'b']);
   assert.equal(meta.provable, undefined);
-  assert.match(meta.provable_absent, /different sensors/);
+  assert.match(meta.provable_absent, /a control the sensors require was off \(required: .*timers/);
+});
+
+test('protects=a mixed run whose cache-reuse/1 session carries another runtime key is NOT PROVEN; fails_when=only the sensor name is compared; no_claim=which runtimes the core audited', () => {
+  const { meta } = mergeSessionMeta([reusedSession({ provable: { ...REUSE, runtime: 'node24' } }), base()], ['a', 'b']);
+  assert.equal(meta.provable, undefined);
+  assert.match(meta.provable_absent, /a: cache-reuse\/1 with another contract, accounting table or runtime key/);
+  const notReused = mergeSessionMeta([reusedSession({ reused_tests: undefined }), base()], ['a', 'b']).meta;
+  assert.equal(notReused.provable, undefined, 'cache-reuse/1 from a session that reused nothing');
+});
+
+test('protects=a run whose sessions were all reused keeps cache-reuse/1; fails_when=the all-reused run loses its sensor; no_claim=none beyond protects', () => {
+  const { meta } = mergeSessionMeta([reusedSession(), reusedSession({ reused_tests: ['tests/b.test.mjs::b'] })], ['a', 'b']);
+  assert.deepEqual(meta.provable, REUSE);
+  assert.equal(meta.provable_absent, undefined);
 });

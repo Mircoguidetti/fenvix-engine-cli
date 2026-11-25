@@ -12,7 +12,7 @@
 const EQUAL = new Set([
   'cassette_max_age_days', 'controls', 'detjs', 'entropy', 'env_reads_recorded', 'epoch', 'epoch_ns',
   'files_outside_scope', 'inputs', 'isolate', 'locale', 'network', 'node', 'order_seed', 'pinned', 'platform',
-  'pool', 'projects', 'runner', 'runner_version', 'runtime', 'runtime_version', 'seed', 'serial', 'shuffle',
+  'pool', 'projects', 'runner', 'runner_version', 'runtime', 'runtime_version', 'seed', 'shuffle',
   'tick_adapt', 'tick_ns', 'timers', 'tz', 'urandom_controlled',
 ]);
 /** Run-wide signals: lists, the union over the sessions (deduplicated, in order of first appearance). */
@@ -22,7 +22,13 @@ const OWN = new Set(['files', 'isolation', 'isolate_tests', 'reused_tests', 'sta
 /** Signals of the sensor: their own rule (provable below). */
 const SENSOR = new Set(['provable', 'provable_absent']);
 /** Other keys with their own rule (mergeSessionMeta). */
-const OTHER = new Set(['parallel', 'cassette_oldest_days', 'unordered_parts', 'inputs_error', 'hazard_rerun']);
+const OTHER = new Set(['parallel', 'serial', 'cassette_oldest_days', 'unordered_parts', 'inputs_error', 'hazard_rerun']);
+
+const CACHE_REUSE = 'cache-reuse/1';
+/** The core's list (crates/detpy-core/src/provable.rs required_controls); an unknown answer requires everything. */
+function defaultRequired(sensor) {
+  try { return require('./native').provableRequiredControls(sensor); } catch { return ['<the engine could not name the required controls>']; }
+}
 
 /** JSON with sorted object keys: the identity used for "equal" and for deduplicating list entries. */
 function canon(v) {
@@ -39,7 +45,7 @@ function canon(v) {
  *   cliArgs    the outer run's arguments
  * Returns {meta, failClosed: [reason...]}: when failClosed is not empty, `meta` declares no sensor.
  */
-function mergeSessionMeta(metas, labels = [], cliArgs = null) {
+function mergeSessionMeta(metas, labels = [], cliArgs = null, requiredControls = defaultRequired) {
   const name = (i) => labels[i] || `session ${i + 1}`;
   const meta = {};
   const failClosed = [];
@@ -83,6 +89,9 @@ function mergeSessionMeta(metas, labels = [], cliArgs = null) {
     }
   }
   meta.parallel = { workers: 1, isolate: true };
+  // serial: each session's own (a session with a lane plan says false, a fully reused one, with no plan, true); the
+  // run's sessions ran one after another
+  if (keys.includes('serial')) meta.serial = true;
 
   // hazard_rerun: a one-lane re-run inside a one-file session (cannot happen: no hazards); its accounting would be
   // that session's only: fail closed
@@ -98,22 +107,50 @@ function mergeSessionMeta(metas, labels = [], cliArgs = null) {
   if (errs.length) meta.inputs_error = errs.length > 1 ? `${errs[0]} (+${errs.length - 1} more sessions)` : errs[0];
   if (cliArgs) meta.cli_args = cliArgs;
 
-  // provable: kept only when every session declared it and the declarations are equal
+  // provable: kept only when every session declared one and the declarations agree. A session whose tests all came
+  // from the cache ran no test and declares `cache-reuse/1` (src/session.js provableField); it agrees with the
+  // running sessions' sensor only when it carries the same contract, accounting table and runtime key, every
+  // session had the controls both sensors require on (the core's list: native provableRequiredControls), and the
+  // session really reused its tests (founder decision 2026-11-25, Phase B). A run whose sessions are all
+  // `cache-reuse/1` keeps it.
   const absent = metas.map((m, i) => ({ i, r: (m || {}).provable_absent })).filter((x) => x.r !== undefined);
-  const without = metas.map((m, i) => i).filter((i) => (metas[i] || {}).provable === undefined || (metas[i] || {}).provable === null);
-  const decl = metas.map((m) => (m || {}).provable).find((v) => v !== undefined && v !== null);
-  const differ = metas.map((m, i) => i).filter((i) => !without.includes(i) && canon(metas[i].provable) !== canon(decl));
+  const decl = (i) => (metas[i] || {}).provable;
+  const without = metas.map((m, i) => i).filter((i) => decl(i) === undefined || decl(i) === null || typeof decl(i) !== 'object');
+  const reuseIdx = metas.map((m, i) => i).filter((i) => !without.includes(i) && decl(i).sensor === CACHE_REUSE);
+  const runIdx = metas.map((m, i) => i).filter((i) => !without.includes(i) && decl(i).sensor !== CACHE_REUSE);
+  let chosen;
+  let why;
   if (absent.length) {
-    meta.provable_absent = `${absent[0].r}${absent.length > 1 ? ` (+${absent.length - 1} more sessions)` : ''}`;
+    why = `${absent[0].r}${absent.length > 1 ? ` (+${absent.length - 1} more sessions)` : ''}`;
   } else if (!metas.length) {
-    meta.provable_absent = 'no per-test session wrote a trace';
+    why = 'no per-test session wrote a trace';
   } else if (without.length) {
-    meta.provable_absent = `no sensor declared by ${without.map(name).join(', ')}`;
-  } else if (differ.length) {
-    meta.provable_absent = `the per-test sessions declared different sensors (${differ.map(name).join(', ')} differ from ${name(0)})`;
+    why = `no sensor declared by ${without.map(name).join(', ')}`;
+  } else {
+    const ref = runIdx.length ? runIdx[0] : reuseIdx[0];
+    const differ = (runIdx.length ? runIdx : reuseIdx).filter((i) => canon(decl(i)) !== canon(decl(ref)));
+    if (differ.length) {
+      why = `the per-test sessions declared different sensors (${differ.map(name).join(', ')} differ from ${name(ref)})`;
+    } else if (runIdx.length && reuseIdx.length) {
+      const same = (i) => ['contract', 'surface', 'runtime'].every((k) => canon(decl(i)[k]) === canon(decl(ref)[k]));
+      const bad = reuseIdx.filter((i) => !same(i));
+      const notReused = reuseIdx.filter((i) => !((metas[i] || {}).reused_tests || []).length);
+      const need = [...new Set([...requiredControls(CACHE_REUSE), ...requiredControls(decl(ref).sensor)])];
+      const off = metas.map((m, i) => i).filter((i) => {
+        const on = Array.isArray((metas[i] || {}).controls) ? metas[i].controls : [];
+        return need.some((c) => !on.includes(c));
+      });
+      if (bad.length) why = `${bad.map(name).join(', ')}: cache-reuse/1 with another contract, accounting table or runtime key than ${name(ref)}'s sensor`;
+      else if (notReused.length) why = `${notReused.map(name).join(', ')}: declared cache-reuse/1 and reused no test`;
+      else if (off.length) why = `${off.map(name).join(', ')}: a control the sensors require was off (required: ${need.join(', ')})`;
+      else chosen = decl(ref);
+    } else {
+      chosen = decl(ref);
+    }
   }
+  if (why !== undefined) meta.provable_absent = why;
   if (failClosed.length && meta.provable_absent === undefined) meta.provable_absent = `--det-isolate: ${failClosed[0]}${failClosed.length > 1 ? ` (+${failClosed.length - 1} more)` : ''}`;
-  if (meta.provable_absent === undefined) meta.provable = decl;
+  if (meta.provable_absent === undefined) meta.provable = chosen;
   return { meta, failClosed };
 }
 
