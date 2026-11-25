@@ -213,7 +213,12 @@ def main():
                    *pre['args'], '--det', '--det-workers=1', f'--det-trace={rundir}/trace.jsonl', f'--det-cache={cache}',
                    f'--det-cache-summary={rundir}/summary.json', f'--det-cache-receipts={rundir}/receipts.jsonl']
             if pre['runner'] == 'jest':
-                cmd.append(f'--cacheDirectory={rundir}/jest-cache')
+                # a fixed path, emptied before every run: the engine keys Jest's command-line options, so a
+                # per-run path would change the configuration digest and nothing could ever be reused
+                jc = os.path.join(o.work, 'jest-cache', o.repo)
+                shutil.rmtree(jc, ignore_errors=True)
+                os.makedirs(jc)
+                cmd.append(f'--cacheDirectory={jc}')
             if i > 0:
                 cmd.append('--det-cache-verify')
             rc, dt, out = sh(cmd, cwd, renv, timeout, log=os.path.join(rundir, 'run.log'))
