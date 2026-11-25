@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # B1 exit criterion: the engine's suites on a tree, as release-1.yml runs them (LIGHT: Python 3.13 `shared` files,
 # Node full suite, attacks, cargo go-live crates), serially, on this container. Run once on release-1 6e79a62 and
-# once on the B1 head; compare.py lists the failures that are not on 6e79a62.
+# once on the B1 head; the failing-test lists of the two logs (node: "✖ failing tests", python: FAILED/ERROR lines,
+# attacks: its summary) are compared by hand in data/suites/*.txt.
 #   suites.sh <tree> <out-dir> <part: cargo|node|python|attacks>
 set -u
 tree=$1; out=$2; part=$3

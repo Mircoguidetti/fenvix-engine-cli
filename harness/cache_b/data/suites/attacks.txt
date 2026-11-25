@@ -1,0 +1,38 @@
+# attacks (tests/attacks.py: 12 Python + 5 Node files), base 6e79a62c vs head 26cdf8b4, this container
+## base: attacks rc=1
+=== attacks: python rc=1, node rc=0, 1021s (12 python + 5 node files) ===
+FAILED tests/test_review_r056_pycache.py::test_w11_object_addresses_match_uncached_det
+FAILED tests/test_review_r056_pycache.py::test_w3_file_existence_read_through_posix_access[n2]
+FAILED tests/test_review_r056_pycache.py::test_w3_file_existence_read_through_posix_access[serial]
+FAILED tests/test_review_r056_pycache.py::test_w3_file_mtime_read_through_posix_stat
+FAILED tests/test_review_r056_pycache.py::test_w3_file_size_read_through_posix[posix.lstat('data.txt').st_size == 4-n2]
+FAILED tests/test_review_r056_pycache.py::test_w3_file_size_read_through_posix[posix.lstat('data.txt').st_size == 4-serial]
+FAILED tests/test_review_r056_pycache.py::test_w3_file_size_read_through_posix[posix.stat('data.txt').st_size == 4-n2]
+FAILED tests/test_review_r056_pycache.py::test_w3_file_size_read_through_posix[posix.stat('data.txt').st_size == 4-serial]
+FAILED tests/test_review_r056_pycache.py::test_w4_pwd_read_through_posix_environ
+FAILED tests/test_review_r056_pycache.py::test_w5_kernel_release[platform.release()]
+FAILED tests/test_review_r056_pycache.py::test_w5_kernel_release[posix.uname().release]
+FAILED tests/test_review_r056_pycache.py::test_w8_c_seeded_random_is_controlled_or_refused
+12 failed, 157 passed, 2 skipped in 932.31s (0:15:32)
+ℹ tests 60
+ℹ pass 60
+ℹ fail 0
+## head: attacks rc=1
+=== attacks: python rc=1, node rc=0, 969s (12 python + 5 node files) ===
+FAILED tests/test_review_r056_pycache.py::test_w11_object_addresses_match_uncached_det
+FAILED tests/test_review_r056_pycache.py::test_w3_file_existence_read_through_posix_access[n2]
+FAILED tests/test_review_r056_pycache.py::test_w3_file_existence_read_through_posix_access[serial]
+FAILED tests/test_review_r056_pycache.py::test_w3_file_mtime_read_through_posix_stat
+FAILED tests/test_review_r056_pycache.py::test_w3_file_size_read_through_posix[posix.lstat('data.txt').st_size == 4-n2]
+FAILED tests/test_review_r056_pycache.py::test_w3_file_size_read_through_posix[posix.lstat('data.txt').st_size == 4-serial]
+FAILED tests/test_review_r056_pycache.py::test_w3_file_size_read_through_posix[posix.stat('data.txt').st_size == 4-n2]
+FAILED tests/test_review_r056_pycache.py::test_w3_file_size_read_through_posix[posix.stat('data.txt').st_size == 4-serial]
+FAILED tests/test_review_r056_pycache.py::test_w4_pwd_read_through_posix_environ
+FAILED tests/test_review_r056_pycache.py::test_w5_kernel_release[platform.release()]
+FAILED tests/test_review_r056_pycache.py::test_w5_kernel_release[posix.uname().release]
+FAILED tests/test_review_r056_pycache.py::test_w8_c_seeded_random_is_controlled_or_refused
+12 failed, 157 passed, 2 skipped in 878.12s (0:14:38)
+ℹ tests 60
+ℹ pass 60
+ℹ fail 0
+## verdict: the same 12 Python failures (test_review_r056_pycache.py, pre-existing Python --det-cache attacks) on both trees; Node attacks 60/60 on both. No new failure.
