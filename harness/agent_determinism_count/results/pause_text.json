@@ -1,1 +1,8 @@
-{"requested": "2026-11-25T15:56:21Z", "start": "2026-11-25T16:51:15Z", "reason": "coordinator market-protection rule (option A): market splits/h 300 -> 220 -> 156; S2/S3 idle until the coordinator ends the pause", "note": "start = last S2/S3 search request of run 45603465040 (it finished its request as asked); run 45636205746 cancelled 16:30Z", "end": null}
+{
+ "end": "2026-11-25T18:01:16Z",
+ "end_reason": "coordinator 18:02Z: market splits did not recover with S2/S3 idle (94 splits, 2,965 s 429-sleep vs 118, 2,597 s); pause counts against the S2/S3 budget (ends 2026-11-26 10:54Z)",
+ "note": "start = last S2/S3 search request of run 45603465040 (it finished its request as asked); run 45636205746 cancelled 16:30Z",
+ "reason": "coordinator market-protection rule (option A): market splits/h 300 -> 220 -> 156; S2/S3 idle until the coordinator ends the pause",
+ "requested": "2026-11-25T15:56:21Z",
+ "start": "2026-11-25T16:51:15Z"
+}
