@@ -1,17 +1,45 @@
 {
  "finished": null,
  "queries": {
-  "A stryker": {
-   "done": false,
-   "leaves": 0,
-   "nodes": 6,
+  "A \"cargo mutants\"": {
+   "done": true,
+   "leaves": 6,
+   "nodes": 11,
    "root_incomplete": false,
-   "root_total": 3284,
+   "root_total": 1180,
+   "stack": []
+  },
+  "A cargo-mutants": {
+   "done": true,
+   "leaves": 7,
+   "nodes": 13,
+   "root_incomplete": false,
+   "root_total": 1696,
+   "stack": []
+  },
+  "A cosmic-ray": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 101,
+   "stack": []
+  },
+  "A infection": {
+   "done": true,
+   "leaves": 9,
+   "nodes": 17,
+   "root_incomplete": false,
+   "root_total": 1836,
+   "stack": []
+  },
+  "A mutant": {
+   "done": false,
+   "leaves": 6,
+   "nodes": 17,
+   "root_incomplete": false,
+   "root_total": 8096,
    "stack": [
-    [
-     0,
-     6250
-    ],
     [
      6251,
      12500
@@ -37,6 +65,38 @@
      400000
     ]
    ]
+  },
+  "A mutationCoverage": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 587,
+   "stack": []
+  },
+  "A mutmut": {
+   "done": true,
+   "leaves": 7,
+   "nodes": 13,
+   "root_incomplete": false,
+   "root_total": 1160,
+   "stack": []
+  },
+  "A pitest": {
+   "done": true,
+   "leaves": 10,
+   "nodes": 19,
+   "root_incomplete": false,
+   "root_total": 3456,
+   "stack": []
+  },
+  "A stryker": {
+   "done": true,
+   "leaves": 9,
+   "nodes": 17,
+   "root_incomplete": false,
+   "root_total": 3284,
+   "stack": []
   }
  },
  "rate_limit": {

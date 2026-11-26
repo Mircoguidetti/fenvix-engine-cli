@@ -4,3 +4,107 @@
 2026-11-26T17:29:53+00:00 A stryker                size:0..50000 tc=3164 leaf=False read=- inc=- req=4
 2026-11-26T17:30:00+00:00 A stryker                size:0..25000 tc=3068 leaf=False read=- inc=- req=5
 2026-11-26T17:30:08+00:00 A stryker                size:0..12500 tc=2812 leaf=False read=- inc=- req=6
+2026-11-26T17:30:14+00:00 A stryker                size:0..6250 tc=2084 leaf=False read=- inc=- req=7
+2026-11-26T17:30:20+00:00 A stryker                size:0..3125 tc=1464 leaf=False read=- inc=- req=8
+2026-11-26T17:31:14+00:00 A stryker                size:0..1562 tc=782 leaf=True read=800 inc=False req=16
+2026-11-26T17:32:15+00:00 A stryker                size:1563..3125 tc=807 leaf=True read=900 inc=False req=25
+2026-11-26T17:33:03+00:00 A stryker                size:3126..6250 tc=693 leaf=True read=700 inc=False req=32
+2026-11-26T17:33:43+00:00 A stryker                size:6251..12500 tc=566 leaf=True read=600 inc=False req=38
+2026-11-26T17:34:11+00:00 A stryker                size:12501..25000 tc=362 leaf=True read=400 inc=False req=42
+2026-11-26T17:34:24+00:00 A stryker                size:25001..50000 tc=172 leaf=True read=200 inc=False req=44
+2026-11-26T17:34:37+00:00 A stryker                size:50001..100000 tc=120 leaf=True read=120 inc=False req=46
+2026-11-26T17:34:44+00:00 A stryker                size:100001..200000 tc=18 leaf=True read=18 inc=False req=47
+2026-11-26T17:34:51+00:00 A stryker                size:200001..400000 tc=5 leaf=True read=5 inc=False req=48
+2026-11-26T17:34:58+00:00 A mutmut                 size:0..400000 tc=1160 leaf=False read=- inc=- req=49
+2026-11-26T17:35:05+00:00 A mutmut                 size:0..200000 tc=1156 leaf=False read=- inc=- req=50
+2026-11-26T17:35:12+00:00 A mutmut                 size:0..100000 tc=1148 leaf=False read=- inc=- req=51
+2026-11-26T17:35:18+00:00 A mutmut                 size:0..50000 tc=1128 leaf=False read=- inc=- req=52
+2026-11-26T17:35:25+00:00 A mutmut                 size:0..25000 tc=1112 leaf=False read=- inc=- req=53
+2026-11-26T17:35:32+00:00 A mutmut                 size:0..12500 tc=1042 leaf=False read=- inc=- req=54
+2026-11-26T17:36:33+00:00 A mutmut                 size:0..6250 tc=805 leaf=True read=822 inc=False req=63
+2026-11-26T17:36:53+00:00 A mutmut                 size:6251..12500 tc=204 leaf=True read=215 inc=False req=66
+2026-11-26T17:37:06+00:00 A mutmut                 size:12501..25000 tc=124 leaf=True read=124 inc=False req=68
+2026-11-26T17:37:13+00:00 A mutmut                 size:25001..50000 tc=55 leaf=True read=55 inc=False req=69
+2026-11-26T17:37:20+00:00 A mutmut                 size:50001..100000 tc=28 leaf=True read=28 inc=False req=70
+2026-11-26T17:37:27+00:00 A mutmut                 size:100001..200000 tc=7 leaf=True read=7 inc=False req=71
+2026-11-26T17:37:33+00:00 A mutmut                 size:200001..400000 tc=1 leaf=True read=1 inc=False req=72
+2026-11-26T17:37:47+00:00 A cosmic-ray             size:0..400000 tc=101 leaf=True read=101 inc=False req=74
+2026-11-26T17:37:55+00:00 A pitest                 size:0..400000 tc=3456 leaf=False read=- inc=- req=75
+2026-11-26T17:38:02+00:00 A pitest                 size:0..200000 tc=3456 leaf=False read=- inc=- req=76
+2026-11-26T17:38:08+00:00 A pitest                 size:0..100000 tc=3456 leaf=False read=- inc=- req=77
+2026-11-26T17:38:15+00:00 A pitest                 size:0..50000 tc=3344 leaf=False read=- inc=- req=78
+2026-11-26T17:38:21+00:00 A pitest                 size:0..25000 tc=3272 leaf=False read=- inc=- req=79
+2026-11-26T17:38:29+00:00 A pitest                 size:0..12500 tc=3084 leaf=False read=- inc=- req=80
+2026-11-26T17:38:34+00:00 A pitest                 size:0..6250 tc=2628 leaf=False read=- inc=- req=81
+2026-11-26T17:38:41+00:00 A pitest                 size:0..3125 tc=1836 leaf=False read=- inc=- req=82
+2026-11-26T17:39:49+00:00 A pitest                 size:0..1562 tc=954 leaf=True read=1000 inc=False req=92
+2026-11-26T17:39:56+00:00 A pitest                 size:1563..3125 tc=1006 leaf=False read=- inc=- req=93
+2026-11-26T17:40:43+00:00 A pitest                 size:1563..2344 tc=626 leaf=True read=624 inc=False req=100
+2026-11-26T17:41:10+00:00 A pitest                 size:2345..3125 tc=371 leaf=True read=400 inc=False req=104
+2026-11-26T17:42:11+00:00 A pitest                 size:3126..6250 tc=869 leaf=True read=900 inc=False req=113
+2026-11-26T17:42:45+00:00 A pitest                 size:6251..12500 tc=452 leaf=True read=500 inc=False req=118
+2026-11-26T17:43:06+00:00 A pitest                 size:12501..25000 tc=242 leaf=True read=300 inc=False req=121
+2026-11-26T17:43:25+00:00 A pitest                 size:25001..50000 tc=223 leaf=True read=223 inc=False req=124
+2026-11-26T17:43:33+00:00 A pitest                 size:50001..100000 tc=25 leaf=True read=25 inc=False req=125
+2026-11-26T17:43:39+00:00 A pitest                 size:100001..200000 tc=11 leaf=True read=11 inc=False req=126
+2026-11-26T17:43:45+00:00 A pitest                 size:200001..400000 tc=1 leaf=True read=1 inc=False req=127
+2026-11-26T17:44:27+00:00 A mutationCoverage       size:0..400000 tc=587 leaf=True read=600 inc=False req=133
+2026-11-26T17:44:34+00:00 A cargo-mutants          size:0..400000 tc=1696 leaf=False read=- inc=- req=134
+2026-11-26T17:44:40+00:00 A cargo-mutants          size:0..200000 tc=1696 leaf=False read=- inc=- req=135
+2026-11-26T17:44:47+00:00 A cargo-mutants          size:0..100000 tc=1684 leaf=False read=- inc=- req=136
+2026-11-26T17:44:53+00:00 A cargo-mutants          size:0..50000 tc=1680 leaf=False read=- inc=- req=137
+2026-11-26T17:45:00+00:00 A cargo-mutants          size:0..25000 tc=1672 leaf=False read=- inc=- req=138
+2026-11-26T17:45:07+00:00 A cargo-mutants          size:0..12500 tc=1314 leaf=False read=- inc=- req=139
+2026-11-26T17:46:11+00:00 A cargo-mutants          size:0..6250 tc=885 leaf=True read=900 inc=False req=148
+2026-11-26T17:46:41+00:00 A cargo-mutants          size:6251..12500 tc=453 leaf=True read=419 inc=False req=153
+2026-11-26T17:47:02+00:00 A cargo-mutants          size:12501..25000 tc=272 leaf=True read=270 inc=False req=156
+2026-11-26T17:47:15+00:00 A cargo-mutants          size:25001..50000 tc=112 leaf=True read=125 inc=False req=158
+2026-11-26T17:47:23+00:00 A cargo-mutants          size:50001..100000 tc=66 leaf=True read=66 inc=False req=159
+2026-11-26T17:47:29+00:00 A cargo-mutants          size:100001..200000 tc=16 leaf=True read=16 inc=False req=160
+2026-11-26T17:47:36+00:00 A cargo-mutants          size:200001..400000 tc=2 leaf=True read=2 inc=False req=161
+2026-11-26T17:47:42+00:00 A "cargo mutants"        size:0..400000 tc=1180 leaf=False read=- inc=- req=162
+2026-11-26T17:47:49+00:00 A "cargo mutants"        size:0..200000 tc=1180 leaf=False read=- inc=- req=163
+2026-11-26T17:47:56+00:00 A "cargo mutants"        size:0..100000 tc=1188 leaf=False read=- inc=- req=164
+2026-11-26T17:48:03+00:00 A "cargo mutants"        size:0..50000 tc=1180 leaf=False read=- inc=- req=165
+2026-11-26T17:48:10+00:00 A "cargo mutants"        size:0..25000 tc=1100 leaf=False read=- inc=- req=166
+2026-11-26T17:49:17+00:00 A "cargo mutants"        size:0..12500 tc=920 leaf=True read=1000 inc=False req=176
+2026-11-26T17:49:31+00:00 A "cargo mutants"        size:12501..25000 tc=179 leaf=True read=182 inc=False req=178
+2026-11-26T17:49:37+00:00 A "cargo mutants"        size:25001..50000 tc=82 leaf=True read=82 inc=False req=179
+2026-11-26T17:49:44+00:00 A "cargo mutants"        size:50001..100000 tc=43 leaf=True read=43 inc=False req=180
+2026-11-26T17:49:51+00:00 A "cargo mutants"        size:100001..200000 tc=13 leaf=True read=13 inc=False req=181
+2026-11-26T17:49:57+00:00 A "cargo mutants"        size:200001..400000 tc=1 leaf=True read=1 inc=False req=182
+2026-11-26T17:50:05+00:00 A infection              size:0..400000 tc=1836 leaf=False read=- inc=- req=183
+2026-11-26T17:50:11+00:00 A infection              size:0..200000 tc=1836 leaf=False read=- inc=- req=184
+2026-11-26T17:50:18+00:00 A infection              size:0..100000 tc=1836 leaf=False read=- inc=- req=185
+2026-11-26T17:50:25+00:00 A infection              size:0..50000 tc=1836 leaf=False read=- inc=- req=186
+2026-11-26T17:50:32+00:00 A infection              size:0..25000 tc=1852 leaf=False read=- inc=- req=187
+2026-11-26T17:50:38+00:00 A infection              size:0..12500 tc=1690 leaf=False read=- inc=- req=188
+2026-11-26T17:50:46+00:00 A infection              size:0..6250 tc=1436 leaf=False read=- inc=- req=189
+2026-11-26T17:50:52+00:00 A infection              size:0..3125 tc=1056 leaf=False read=- inc=- req=190
+2026-11-26T17:51:39+00:00 A infection              size:0..1562 tc=611 leaf=True read=696 inc=False req=197
+2026-11-26T17:52:20+00:00 A infection              size:1563..3125 tc=595 leaf=True read=600 inc=False req=203
+2026-11-26T17:52:47+00:00 A infection              size:3126..6250 tc=340 leaf=True read=370 inc=False req=207
+2026-11-26T17:53:14+00:00 A infection              size:6251..12500 tc=322 leaf=True read=362 inc=False req=211
+2026-11-26T17:53:28+00:00 A infection              size:12501..25000 tc=162 leaf=True read=170 inc=False req=213
+2026-11-26T17:53:34+00:00 A infection              size:25001..50000 tc=30 leaf=True read=30 inc=False req=214
+2026-11-26T17:53:41+00:00 A infection              size:50001..100000 tc=7 leaf=True read=7 inc=False req=215
+2026-11-26T17:53:48+00:00 A infection              size:100001..200000 tc=6 leaf=True read=6 inc=False req=216
+2026-11-26T17:53:54+00:00 A infection              size:200001..400000 tc=3 leaf=True read=3 inc=False req=217
+2026-11-26T17:54:02+00:00 A mutant                 size:0..400000 tc=8096 leaf=False read=- inc=- req=218
+2026-11-26T17:54:09+00:00 A mutant                 size:0..200000 tc=8032 leaf=False read=- inc=- req=219
+2026-11-26T17:54:15+00:00 A mutant                 size:0..100000 tc=8096 leaf=False read=- inc=- req=220
+2026-11-26T17:54:23+00:00 A mutant                 size:0..50000 tc=7616 leaf=False read=- inc=- req=221
+2026-11-26T17:54:29+00:00 A mutant                 size:0..25000 tc=7232 leaf=False read=- inc=- req=222
+2026-11-26T17:54:36+00:00 A mutant                 size:0..12500 tc=6360 leaf=False read=- inc=- req=223
+2026-11-26T17:54:42+00:00 A mutant                 size:0..6250 tc=4344 leaf=False read=- inc=- req=224
+2026-11-26T17:54:49+00:00 A mutant                 size:0..3125 tc=2196 leaf=False read=- inc=- req=225
+2026-11-26T17:55:50+00:00 A mutant                 size:0..1562 tc=812 leaf=True read=900 inc=False req=234
+2026-11-26T17:55:57+00:00 A mutant                 size:1563..3125 tc=1638 leaf=False read=- inc=- req=235
+2026-11-26T17:56:58+00:00 A mutant                 size:1563..2344 tc=900 leaf=True read=891 inc=False req=244
+2026-11-26T17:57:52+00:00 A mutant                 size:2345..3125 tc=712 leaf=True read=725 inc=False req=252
+2026-11-26T17:57:58+00:00 A mutant                 size:3126..6250 tc=1928 leaf=False read=- inc=- req=253
+2026-11-26T17:58:05+00:00 A mutant                 size:3126..4688 tc=1164 leaf=False read=- inc=- req=254
+2026-11-26T17:58:52+00:00 A mutant                 size:3126..3907 tc=612 leaf=True read=620 inc=False req=261
+2026-11-26T17:59:27+00:00 A mutant                 size:3908..4688 tc=478 leaf=True read=500 inc=False req=266
+2026-11-26T18:00:21+00:00 A mutant                 size:4689..6250 tc=797 leaf=True read=800 inc=False req=274
+stopping after 30.0 min (resumable)
