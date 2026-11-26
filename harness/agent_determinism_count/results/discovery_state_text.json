@@ -2,6 +2,51 @@
  "budget_end": "2026-11-26T10:54:28+00:00",
  "finished": null,
  "queries": {
+  "committer-date:>=2024-01-01 \"fails randomly\" \"ai sdk\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 1,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 1,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"fails randomly\" \"llama-index\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"fails randomly\" \"model output\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"fails randomly\" \"pydantic-ai\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"fails randomly\" agent test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 191,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 188,
+   "stack": []
+  },
   "committer-date:>=2024-01-01 \"fails randomly\" anthropic test": {
    "capped": false,
    "done": true,
@@ -9,6 +54,87 @@
    "leaves": 1,
    "nodes": 1,
    "prepass_total": 574,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"fails randomly\" autogen test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 19,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 19,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"fails randomly\" claude test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 616,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 613,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"fails randomly\" crewai test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"fails randomly\" eval test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 76,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 72,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"fails randomly\" gemini test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 8,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 8,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"fails randomly\" gpt test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 17,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 17,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"fails randomly\" langchain test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"fails randomly\" langgraph test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 1,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 1,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"fails randomly\" llamaindex test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
    "stack": []
   },
   "committer-date:>=2024-01-01 \"fails randomly\" llm test": {
@@ -27,6 +153,15 @@
    "leaves": 1,
    "nodes": 1,
    "prepass_total": 6,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"fails randomly\" prompt test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 61,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 55,
    "stack": []
   },
   "committer-date:>=2024-01-01 \"non deterministic\" \"ai sdk\" test": {
@@ -1161,6 +1296,33 @@
    "leaves": 11,
    "nodes": 20,
    "prepass_total": 4018,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 xfail anthropic test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 70224,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 69888,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 xfail llm test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 5355,
+   "leaves": 10,
+   "nodes": 18,
+   "prepass_total": 5352,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 xfail openai test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 2800,
+   "leaves": 6,
+   "nodes": 10,
+   "prepass_total": 2801,
    "stack": []
   },
   "is:public created:>=2024-01-01 \"api costs\" test (llm OR openai OR agent)": {
@@ -3227,13 +3389,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 1503
+  "issues": 1698
  },
  "search_stats": {
-  "429": 180,
+  "429": 211,
   "limit": 30,
-  "remaining": 29,
-  "reset": 1795684371
+  "remaining": 24,
+  "reset": 1795686791
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
