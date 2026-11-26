@@ -112,3 +112,21 @@ test('B1: notProvenFiles[].tests sum to the unaccounted tests, one entry per fil
   assert.equal(r.notProvenFiles.reduce((a, x) => a + x.tests, 0), r.unaccounted.length);
   assert.match(r.notProvenFiles[1].cause, /^b\.test\.js: the one-lane re-run ran 0 of its 3 test\(s\)$/);
 });
+
+// founder decision 2026-11-26 ("alakajam A"): alakajam's server/core/rate-limiter.spec.ts is a whole-file describe.skip.
+// Its tests never start in the first pass nor in the one-lane re-run (B5 never-started records both times), and the
+// re-run was NOT PROVEN / incomplete because a never-started re-run record never accounts for a test.
+// protects=a test that never started in the first pass is accounted for by a re-run record of it (never started
+// again); fails_when=such a file makes the re-run incomplete; no_claim=a test the first pass RAN still needs a re-run
+// record that ran (the test above, unchanged)
+test('accountRerun: a test that never started in the first pass is accounted for by its never-started re-run record', () => {
+  const never = (id) => ({ nodeid: id, outcome: 'skipped', never_started: true });
+  const first = [rec('a.test.js::1'), never('a.test.js::skipped 1'), never('a.test.js::skipped 2')];
+  const r = accountRerun(first, [rec('a.test.js::1'), never('a.test.js::skipped 1'), never('a.test.js::skipped 2')], ['a.test.js']);
+  assert.equal(r.complete, true);
+  assert.deepEqual(r.notProven, []);
+  // a never-started first-pass test the re-run does not report at all is still NOT PROVEN
+  const r2 = accountRerun(first, [rec('a.test.js::1'), never('a.test.js::skipped 1')], ['a.test.js']);
+  assert.equal(r2.complete, false);
+  assert.deepEqual(r2.notProven, ['a.test.js::skipped 2']);
+});

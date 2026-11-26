@@ -595,6 +595,47 @@ for (const runner of RUNNERS) {
     }
   });
 
+  describe(`${runner}: the one-lane re-run of a hazard (founder decision 2026-11-26, alakajam A)`, () => {
+    const shared = "fs.writeFileSync(path.join(process.cwd(), 'shared.txt'), 'x');";
+    const reads = "try { fs.readFileSync(path.join(process.cwd(), 'shared.txt'), 'utf8'); } catch { /* not there yet */ }";
+    test('a hazard file with a whole describe.skip block: the re-run is complete, nothing NOT PROVEN', T, () => {
+      // protects=tests that never start in either pass (alakajam's rate-limiter.spec.ts) do not make the re-run
+      // incomplete; fails_when=hazard_rerun.complete is false / not_proven names the file; no_claim=a skipped test
+      // that the first pass ran (not possible for describe.skip)
+      const skip = runner === 'vitest' ? "import { describe } from 'vitest';\ndescribe.skip('off', () => { test('s1', () => {}); test('s2', () => {}); });"
+        : "describe.skip('off', () => { test('s1', () => {}); test('s2', () => {}); });";
+      const dir = project(runner, 'rerun-skip', `test('w', () => { ${shared} });\n${skip}`, `test('r', () => { ${reads} });`);
+      const r = det(runner, dir);
+      assertHazard(runner, r, 'read-write', 'shared.txt');
+      assert.deepEqual(r.trace.header.meta.hazard_rerun.not_proven, [], show(r));
+      assert.equal(r.status, 0, show(r));
+    });
+
+    test('--det-outcomes reports what the trace reports: the re-run outcome of the hazard files', T, () => {
+      // protects=the outcomes file and the merged trace agree (P3b: alakajam par2, outcomes failed / trace passed);
+      // fails_when=the outcomes file keeps the first pass's outcome of a re-run test; no_claim=the test fails on its
+      // first run only (a marker file; a stand-in for a lane-caused failure); the exit stays red (a re-run never
+      // lowers the first pass's code)
+      const once = "const m = path.join(process.cwd(), 'ran-once'); const first = !fs.existsSync(m); fs.writeFileSync(m, '1');";
+      const dir = project(runner, 'rerun-outcomes',
+        `test('w', () => { ${shared} ${once} expect(first).toBe(false); });`, `test('r', () => { ${reads} });`);
+      const out = path.join(dir, 'outcomes.json');
+      fs.rmSync(out, { force: true });
+      const r = det(runner, dir, { args: [`--det-outcomes=${out}`] });
+      assertHazard(runner, r, 'read-write', 'shared.txt');
+      const ext = EXT[runner];
+      const id = `tests/x${ext}::w`;
+      const rec = r.trace.tests.find((t) => t.nodeid === id);
+      assert.equal(rec && rec.outcome, 'passed', show(r));
+      assert.ok(r.trace.header.meta.hazard_rerun.first_run_failed.includes(id), show(r));
+      const o = JSON.parse(fs.readFileSync(out, 'utf8'));
+      assert.equal(o.outcomes[id], 'passed', `outcomes file: ${JSON.stringify(o.outcomes)}\n${show(r)}`);
+      assert.equal(o.exceptions[id], undefined, JSON.stringify(o.exceptions));
+      assert.equal(o.hazard_rerun && o.hazard_rerun.reported, 'one-lane re-run', JSON.stringify(o.hazard_rerun));
+      assert.notEqual(r.status, 0, show(r));
+    });
+  });
+
   describe(`${runner}: positive control`, () => {
     test('a clean two-lane run (no shared path, port or socket) keeps its proof', T, () => {
       // protects=the fixes do not take the proof from an isolated suite; fails_when=a hazard or re-run appears, or the
