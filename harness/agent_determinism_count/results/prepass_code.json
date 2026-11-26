@@ -27,6 +27,62 @@
   "stratum": "S1",
   "total_count": 3
  },
+ "api.groq.com path:cassettes": {
+  "at": "2026-11-26T05:03:10+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 9
+  },
+  "route": "workflow",
+  "search_429": 47,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
+ "api.groq.com path:vcr": {
+  "at": "2026-11-26T05:03:17+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 8
+  },
+  "route": "workflow",
+  "search_429": 47,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
+ "api.mistral.ai path:cassettes": {
+  "at": "2026-11-26T05:02:01+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 9
+  },
+  "route": "workflow",
+  "search_429": 41,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
+ "api.mistral.ai path:vcr": {
+  "at": "2026-11-26T05:02:18+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 8
+  },
+  "route": "workflow",
+  "search_429": 42,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
  "api.openai.com path:cassettes": {
   "at": "2026-11-26T03:49:30+00:00",
   "family": "code",
@@ -55,6 +111,34 @@
   "stratum": "S1",
   "total_count": 7
  },
+ "bedrock-runtime path:cassettes": {
+  "at": "2026-11-26T04:59:13+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 8
+  },
+  "route": "workflow",
+  "search_429": 35,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
+ "bedrock-runtime path:vcr": {
+  "at": "2026-11-26T05:00:50+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 9
+  },
+  "route": "workflow",
+  "search_429": 36,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 3
+ },
  "generativelanguage.googleapis.com path:cassettes": {
   "at": "2026-11-26T04:14:58+00:00",
   "family": "code",
@@ -68,5 +152,47 @@
   "status": 200,
   "stratum": "S1",
   "total_count": 28
+ },
+ "generativelanguage.googleapis.com path:vcr": {
+  "at": "2026-11-26T04:53:42+00:00",
+  "family": "code",
+  "incomplete": null,
+  "rate": {
+   "limit": 10,
+   "remaining": 10
+  },
+  "route": "workflow",
+  "search_429": 20,
+  "status": 429,
+  "stratum": "S1",
+  "total_count": null
+ },
+ "openai.azure.com path:cassettes": {
+  "at": "2026-11-26T04:58:38+00:00",
+  "family": "code",
+  "incomplete": null,
+  "rate": {
+   "limit": 10,
+   "remaining": 10
+  },
+  "route": "workflow",
+  "search_429": 32,
+  "status": 429,
+  "stratum": "S1",
+  "total_count": null
+ },
+ "openai.azure.com path:vcr": {
+  "at": "2026-11-26T04:58:57+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 9
+  },
+  "route": "workflow",
+  "search_429": 34,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
  }
 }
