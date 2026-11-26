@@ -19,8 +19,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 BR = "claude/market-direction-check"
-TRAILER = ("\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n"
-           "Claude-Session: https://claude.ai/code/session_01YAF6DkSUDXwQikH19ZCnEu")
+TRAILER = ("\n\nClaude-Session: https://claude.ai/code/session_01YAF6DkSUDXwQikH19ZCnEu")
 
 
 def sh(*a, check=True):
