@@ -55,6 +55,17 @@ def check(status: str, last_log: str | None, now: str, pending: list[str], stale
     return "no text run in progress or queued and no request pending"
 
 
+def large_files(res: Path = RES, limit_mb: float = 80.0) -> list[tuple[str, float]]:
+    """Results files the workflow commits that are near GitHub's 100 MB limit (run 45894243468: a 106.9 MB file
+    blocked every push; CHANGES.md item 24). The frozen texts_search_wf.jsonl is exempt: it never grows."""
+    out = []
+    for f in res.rglob("*"):
+        if f.is_file() and f.name != "texts_search_wf.jsonl" and "leaves_" not in str(f) \
+                and f.stat().st_size > limit_mb * 1e6:
+            out.append((str(f.relative_to(res)), round(f.stat().st_size / 1e6, 1)))
+    return out
+
+
 def record_gap(start: str, end: str, cause: str, res: Path = RES) -> str:
     note = f"Reading gap {start}-{end}: {cause}"
     p = res / "report_notes.json"
@@ -87,6 +98,7 @@ def main(argv=None) -> int:
     g.add_argument("--end", required=True)
     g.add_argument("--cause", required=True)
     sub.add_parser("queue")
+    sub.add_parser("sizes")
     a = ap.parse_args(argv)
     if a.cmd == "check":
         r = check(a.status, a.last_log, a.now, pending_requests(), a.stale_min)
@@ -95,6 +107,10 @@ def main(argv=None) -> int:
     if a.cmd == "gap":
         print(record_gap(a.start, a.end, a.cause))
         return 0
+    if a.cmd == "sizes":
+        big = large_files()
+        print("ok" if not big else f"near the 100 MB limit: {big}")
+        return 0 if not big else 3
     print(queue_noop())
     return 0
 

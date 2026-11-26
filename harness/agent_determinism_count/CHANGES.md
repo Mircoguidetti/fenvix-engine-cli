@@ -205,3 +205,6 @@
     report.py, verify.py) reads chunk.search_files(): the session file, the frozen file, then the parts in chunk
     order. commit_results.sh commits the new folder. Chunk 12 is read again by the next run, and its done marker
     comes with that run's commit. Test: test_search_records_span_the_frozen_file_and_gzip_parts.
+25. 2026-11-26 23:00Z, a watchdog addition (no rule change). `watchdog.py sizes` lists the results files above 80 MB,
+    leaving out the frozen texts_search_wf.jsonl and the leaf parts. It runs at every watchdog wake, so a file nears
+    GitHub's 100 MB limit long before it can block a push again (item 24).
