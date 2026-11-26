@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import base64
 import json
+import urllib.parse
 import sys
 from pathlib import Path
 
@@ -403,6 +404,32 @@ def test_level_django_without_pytest_django_not_installed(tmp_path):
     """protects=Django project without pytest-django = plugin-not-installed; fails_when=otherwise; no_claim=fixture."""
     t = level_of(tmp_path, "pytest", "pytest -q", {WF: "  - run: pytest -q\n", "requirements.txt": "django\npytest\n"})
     assert t["level"] == "plugin-not-installed" and t["free_off"] == "no"
+
+
+def test_django_named_in_a_comment_is_not_a_dependency(tmp_path):
+    """protects=a dependency file comment naming django does not make a Django project (tina4-python bug); fails_when=
+    the comment counts; no_claim=fixture pyproject."""
+    t = level_of(tmp_path, "pytest", "pytest -q", {WF: "  - run: pytest -q\n",
+                                                   "pyproject.toml": "[project]\n# bottle / django / flask: competitors\n"})
+    assert not t["django_project"] and t["level"] == "none"
+
+
+def test_settings_module_named_in_manage_py_is_fetched(tmp_path):
+    """protects=the settings module named by os.environ.setdefault in manage.py is fetched (Quill bug); fails_when=it
+    stays unfetched; no_claim=fake transport serves the tree and contents."""
+    files = {".github/workflows/ci.yml": "  - run: python manage.py test\n", "requirements.txt": "Django>=5.1\n",
+             "manage.py": 'os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")\n',
+             "config/settings.py": "DEBUG = False\n"}
+
+    def tr(p):
+        name = urllib.parse.unquote(p.split("/contents/")[1].split("?")[0])
+        return 200, {}, b64(files[name]) if name in files else {}
+    c, _ = client()
+    c._transport = lambda p: (tr(p) if "/contents/" in p else (404, {}, {}))
+    tree = {"responses": [{"data": {"tree": [{"path": p, "type": "blob"} for p in files] + [{"path": "config", "type": "tree"}]}}]}
+    row = dict(ROW, kind="django", runner_line="python manage.py test")
+    out = J.Reader(c, tmp_path).s_files("o/r", row, {"default_branch": "main"}, tree)
+    assert out["info"]["settings_module"] == "config/settings.py" and "config/settings.py" in out["paths"]
 
 
 def test_django_detected_by_manage_py_only(tmp_path):

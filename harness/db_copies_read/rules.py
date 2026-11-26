@@ -350,9 +350,14 @@ def dep_names(text: str) -> set[str]:
     return set(m.group(1).lower() for m in re.finditer(r"(?<![\w.-])([A-Za-z][\w.-]*)", text or ""))
 
 
+def strip_comments(text: str) -> str:
+    """Dependency text without ``#`` comments (requirements, TOML, Pipfile, setup.cfg); a comment is not a dependency."""
+    return "\n".join(re.sub(r"(^|\s)#.*$", "", ln) for ln in (text or "").splitlines())
+
+
 def has_dep(texts: list[str], name: str) -> bool:
     pat = re.compile(r"(?<![\w-])" + re.escape(name).replace(r"\-", "[-_]") + r"(?![\w-])", re.I)
-    return any(pat.search(t or "") for t in texts)
+    return any(pat.search(strip_comments(t)) for t in texts)
 
 
 ORMS = ["SQLAlchemy", "Django", "psycopg", "psycopg2", "asyncpg", "Prisma", "TypeORM", "Knex", "Sequelize",
@@ -383,7 +388,7 @@ def has_testcontainers(dep_texts: list[str]) -> bool:
     return any(re.search(r"testcontainers", t or "", re.I) for t in dep_texts)
 
 
-DSM = re.compile(r"DJANGO_SETTINGS_MODULE\s*[:=]\s*['\"]?([\w.]+)")
+DSM = re.compile(r"DJANGO_SETTINGS_MODULE['\"]?\s*[:=,]\s*['\"]?([\w.]+)")
 
 
 def django_project(dep_texts: list[str], dsm_texts: list[str], tree_paths: list[str]) -> tuple[bool, str]:

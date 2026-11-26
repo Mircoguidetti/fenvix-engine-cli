@@ -193,6 +193,20 @@ def pass2_files(row: dict, paths: set[str], dirs_in_tree: set[str], texts: dict[
     return _uniq(out), info
 
 
+def settings_from(text: str, manage_path: str, row: dict, paths: set[str]) -> str | None:
+    m = R.DSM.search(text or "")
+    if not m:
+        return None
+    mod = m.group(1).replace(".", "/")
+    wd = (row.get("wd") or "").strip("/")
+    bases = _uniq([manage_path.rsplit("/", 1)[0] if "/" in manage_path else "", wd, ""])
+    for b in bases:
+        for c in (_join(b, mod + ".py"), _join(b, mod + "/__init__.py")):
+            if c in paths:
+                return c
+    return None
+
+
 def pathcommit_files(row: dict, texts: dict[str, str], settings: str | None) -> list[str]:
     out = [row["file"]]
     names = list(texts)
@@ -281,16 +295,28 @@ class Reader:
             got.append(p)
             fetched[p] = content_text(e)
         p2, info = pass2_files(row, files, dirs, fetched)
-        for p in p2:
+
+        def fetch(p):
             if p in fetched:
-                continue
+                return
             if len(entries) >= budget:
                 not_fetched.append(p)
-                continue
+                return
             e = self.ok(self.get(f"repos/{repo}/contents/{urllib.parse.quote(p)}?ref={br}"))
             entries.append(e)
             got.append(p)
             fetched[p] = content_text(e)
+
+        for p in p2:
+            fetch(p)
+        if info.get("django") and not info.get("settings_module"):
+            # DJANGO_SETTINGS_MODULE named only in the fetched manage.py (os.environ.setdefault)
+            mp = next((p for p in p2 if p.rsplit("/", 1)[-1] == "manage.py"), None)
+            s = settings_from(fetched.get(mp) or "", mp, row, files) if mp else None
+            if s:
+                info["settings_module"] = s
+                info["settings_from"] = mp
+                fetch(s)
         return {"responses": entries, "not_fetched": not_fetched, "info": info, "paths": got}
 
     def s_issues(self, repo, row, meta):
@@ -629,6 +655,17 @@ def main() -> int:
                     print(f"unknown repository in request: {repo}")
                     chunk({"status": "refused", "note": f"unknown repo {repo}"})
                     return 1
+                redo = (req.get("redo") or {}).get(repo) or []
+                if redo:
+                    st = cp["repos"].setdefault(repo, {"stages": {}, "state": "pending"})
+                    for s in redo:
+                        if s not in STAGES or s == "meta":
+                            print(f"bad redo stage {s}")
+                            chunk({"status": "refused", "note": f"bad redo stage {s}"})
+                            return 1
+                        st["stages"][s] = "redo"
+                    st["state"] = "pending"
+                    st.setdefault("redone", []).append({"run": run_id, "stages": redo})
                 if cp["repos"].get(repo, {}).get("state") in ("done", "unavailable"):
                     continue
                 if total() >= bound:
