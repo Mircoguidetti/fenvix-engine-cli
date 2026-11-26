@@ -9,6 +9,9 @@ Request kinds: {"chunk": "probe", "probe": true} (§0.2 workflow route probe), {
 issues/commits probes and the registry pages, workflow route), {"discovery": "text"} (§1 S2/S3 pre-pass and bisection
 in the workflow, resumable; one request per job run), {"chunk": n, "candidates": [...]} and
 {"chunk": "<n>c", "comments": n} and {"chunk": "debug-x", "debug": true, "repos": [...]} (chunk.py).
+S1 (code search, requests_code/, workflow agent-determinism-count-code.yml): {"probe_code": true},
+{"prepass": "code"}, {"population": true}, {"discovery": "code"}; a code request waits while the code route is not
+the workflow route.
 """
 from __future__ import annotations
 
@@ -31,6 +34,11 @@ def paused(family: str) -> bool:
     return bool(d.get("start")) and not d.get("end")
 
 
+def code_route() -> str | None:
+    p = HERE / "results" / "probe_decisions.json"
+    return (json.loads(p.read_text()) if p.exists() else {}).get("code_route")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--request", required=True)
@@ -46,6 +54,31 @@ def main() -> int:
         if rc == 0:
             chunk.mark_done(name, {"probe_text": True, "at": chunk.now()})
         return rc
+    if req.get("probe_code"):  # §0.2a and the code shapes of §0.2b, workflow route (coordinator 2026-11-26 03:05Z)
+        rc = subprocess.call([sys.executable, str(HERE / "probe.py"), "workflow-code"])
+        if rc == 0:
+            chunk.mark_done(name, {"probe_code": True, "at": chunk.now()})
+        return rc
+    fam = req.get("discovery") or req.get("prepass") or ("code" if req.get("population") else None)
+    if fam == "code" and code_route() != "workflow":  # the session route waits for the coordinator (market reading)
+        print(f"code route {code_route()!r} is not the workflow route: {name} left pending")
+        return 0
+    if req.get("population"):  # §1 population counts (information only), code search
+        import discover
+        rc = discover.population("workflow")
+        chunk.mark_done(name, {"population": True, "rc": rc, "at": chunk.now()})
+        return 0
+    if req.get("prepass"):  # {"prepass": "code"}: the pre-pass alone (totals and projected hours for the coordinator)
+        import discover
+        import ghapi
+        try:
+            rc = discover.prepass(req["prepass"], "workflow")
+        except ghapi.DeadlineReached as e:
+            print(f"job deadline: {e}; pre-pass resumes in the next run")
+            return 0
+        print(json.dumps(discover.projection(discover.load_prepass()), sort_keys=True))
+        chunk.mark_done(name, {"prepass": req["prepass"], "rc": rc, "at": chunk.now()})
+        return 0
     if req.get("discovery"):  # {"discovery": "text", "max_minutes": 300}: pre-pass, then bisection (resumable)
         if paused(req["discovery"]):
             print(f"discovery {req['discovery']} paused (results/pause_{req['discovery']}.json): request left pending")

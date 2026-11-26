@@ -1,0 +1,91 @@
+name: agent-determinism-count-code
+
+# Agent-determinism count (harness/agent_determinism_count/): reads public repository trees, manifests, workflow files,
+# Actions run/job metadata, commit dates and issue comments with this workflow's GITHUB_TOKEN (GET only; read-only on
+# every other repository). A chunk starts when a push to this branch adds a request file
+# harness/agent_determinism_count/requests/<n>.json; every request file without a results/requests_done/ marker is
+# processed (a job-wide deadline stops it cleanly; the rest waits for the next push). Results are committed back to this branch only (a push made with
+# GITHUB_TOKEN does not start another workflow run).
+
+# S1 (code search) runs here, beside S2/S3 in agent-determinism-count.yml: its own request directory (requests_code/),
+# its own concurrency group and done markers (results/requests_done_code/), and it commits only the code family's
+# files (commit_results.sh with ADC_FAMILY=code). Coordinator 2026-11-26 03:05Z: code search freed, workflow route.
+
+on:
+  push:
+    branches: [claude/agent-determinism-count]
+    paths:
+      - harness/agent_determinism_count/requests_code/**
+
+permissions:
+  contents: write
+  actions: read   # parts.py: download this repository's own earlier artifacts (discovery leaf files)
+
+concurrency:
+  group: agent-determinism-count-code
+  cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
+  ADC_BRANCH: claude/agent-determinism-count
+  ADC_FAMILY: code
+  ADC_DONE: requests_done_code
+
+jobs:
+  chunk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -r harness/agent_determinism_count/requirements.txt
+      - name: Latest checkpoint
+        run: |
+          echo "ADC_DEADLINE=$(( $(date +%s) + 320 * 60 ))" >> "$GITHUB_ENV"
+          git fetch -q origin "$ADC_BRANCH"
+          git checkout -q -B adc "origin/$ADC_BRANCH"
+          git log --oneline -1
+      - name: Chunks
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # every request file without a results/requests_done/<name> marker (not only this push's files: a newer
+          # push cancels a pending run of the same concurrency group, and a stopped request is resumed)
+          d=harness/agent_determinism_count
+          git config user.name "agent-determinism-count-bot"
+          git config user.email "agent-determinism-count-bot@users.noreply.github.com"
+          # checkpoint commits every 30 minutes (resumable state visible to the work session)
+          ( while sleep 1800; do bash "$d/commit_results.sh" "checkpoint run ${{ github.run_id }}" || true; done ) &
+          cp=$!
+          for f in $(ls -1 "$d/requests_code" 2>/dev/null | sort -V); do
+            if [ -e "$d/results/requests_done_code/$f" ]; then continue; fi
+            if [ "$(date +%s)" -gt "$(( ADC_DEADLINE - 900 ))" ]; then echo "deadline: $f left for the next run"; break; fi
+            echo "== $f"; cat "$d/requests_code/$f"
+            python3 "$d/job.py" --request "$d/requests_code/$f"
+          done
+          # the loop's running `sleep 1800` keeps the step open unless it is killed too (run 45603465040)
+          pkill -P "$cp" 2>/dev/null || true
+          kill "$cp" 2>/dev/null || true
+      - name: Commit results to this branch
+        if: always()
+        run: bash harness/agent_determinism_count/commit_results.sh "run ${{ github.run_id }}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: agent-determinism-count-code-results-${{ github.run_id }}
+          path: |
+            harness/agent_determinism_count/results/
+            !harness/agent_determinism_count/results/discovery/leaves_*/
+          if-no-files-found: ignore
+          retention-days: 90   # covers the final report (hard stop 2026-12-14) + 30 days
+      # this run's discovery leaf files (over GitHub's 100 MB file limit, so outside git; index in leaf_parts_*.json)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: agent-determinism-count-leaves-${{ github.run_id }}
+          path: harness/agent_determinism_count/results/discovery/leaves_*/*-${{ github.run_id }}.jsonl.gz
+          if-no-files-found: ignore
+          retention-days: 90   # covers the final report (hard stop 2026-12-14) + 30 days
+          compression-level: 0

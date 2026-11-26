@@ -754,6 +754,15 @@ def test_workflow_trigger_and_owned_files():
     for session_file in ("reads.jsonl", "texts_search.jsonl ", "discovery_state_code", "leaves_code", "prepass_code",
                          "search_budget_free", "handcheck", "probe_session", "probe_decisions", "candidates"):
         assert session_file not in own
+    # the S1 code workflow: its own requests, group and markers; it never commits the text family's or session files
+    wfc = yaml.safe_load((HERE.parent.parent / ".github/workflows/agent-determinism-count-code.yml").read_text())
+    assert wfc[True]["push"]["paths"] == ["harness/agent_determinism_count/requests_code/**"]
+    assert wfc["concurrency"]["group"] != d["concurrency"]["group"]
+    assert wfc["env"]["ADC_FAMILY"] == "code" and wfc["env"]["ADC_DONE"] == "requests_done_code"
+    own_code = [ln for ln in script.splitlines() if ln.strip().startswith('own_code="')][0]
+    for f in ("_text", "requests_done ", "reads.jsonl", "search_budget_free", "candidates", "leaves_"):
+        assert f not in own_code + " "
+    assert "--ignore-removal" in script
 
 
 # ====================================================================================== review fixes (/review cycle 1)
@@ -1035,3 +1044,50 @@ def test_discovery_pause(tmp_path, monkeypatch):
     assert job.paused("text")
     (tmp_path / "results" / "pause_text.json").write_text(json.dumps({"start": "a", "end": "b"}))
     assert not job.paused("text")
+
+
+def test_code_probe_merge_keeps_text_decisions(tmp_path, monkeypatch):
+    """protects=S2/S3 keep running on the decisions they started with when the S1 code probes arrive;
+    fails_when=merging the code probes changes a text decision or misses the code route; no_claim=GitHub's answers."""
+    import probe
+    old = {"text_route": "workflow", "issues_route": "workflow", "commits_route": "workflow", "issues_or_ok": True,
+           "commits_or_ok": True, "dropped": [], "fixes": [], "code_route": None, "code_pending": True,
+           "recording_packages": ["evalcraft"], "text_shapes": {"b-issues-pm": {"status": 200, "total_count": 5}}}
+    (tmp_path / "probe_decisions.json").write_text(json.dumps(old))
+    recs = [{"id": i, "kind": "code", "status": 200, "total_count": 7, "paths": ["a/tests/cassettes/x.yaml"]}
+            for i in ("a1", "a2", "b-code-cassette", "b-code-recordings", "b-code-vcr", "b-code-pyproject",
+                      "b-code-requirements", "b-code-packagejson")]
+    (tmp_path / "probe_workflow_code.json").write_text(json.dumps({"route": "workflow", "results": recs}))
+    out = probe.merge_code_decisions(tmp_path)
+    assert out["code_route"] == "workflow" and out["code_pending"] is False
+    for k, v in old.items():
+        if k not in probe.CODE_KEYS:
+            assert out[k] == v
+    recs = [dict(r, status=403) for r in recs]
+    (tmp_path / "probe_workflow_code.json").write_text(json.dumps({"route": "workflow", "results": recs}))
+    (tmp_path / "probe_decisions.json").write_text(json.dumps(old))
+    out = probe.merge_code_decisions(tmp_path)
+    assert out["code_route"] is None and out["code_blocked"] and out["text_route"] == "workflow"
+
+
+def test_code_request_waits_without_workflow_route(tmp_path, monkeypatch, capsys):
+    """protects=the coordinator's constraint that S1 uses the workflow route while market reading uses the account
+    token; fails_when=a code request searches or is marked done while the code route is not the workflow route;
+    no_claim=the route GitHub would answer on."""
+    import job
+    import chunk
+    res = tmp_path / "results"
+    res.mkdir()
+    (res / "probe_decisions.json").write_text(json.dumps({"code_route": "session"}))
+    monkeypatch.setattr(job, "HERE", tmp_path)
+    monkeypatch.setattr(chunk, "RES", res)
+    monkeypatch.setenv("ADC_DONE", "requests_done_code")
+    for i, req in enumerate(({"prepass": "code"}, {"population": True}, {"discovery": "code"})):
+        rp = tmp_path / f"c{i}.json"
+        rp.write_text(json.dumps(req))
+        monkeypatch.setattr(sys, "argv", ["job.py", "--request", str(rp)])
+        assert job.main() == 0
+    assert not (res / "requests_done_code").exists()
+    assert "left pending" in capsys.readouterr().out
+    chunk.mark_done("c9.json", {"x": 1})
+    assert (res / "requests_done_code" / "c9.json").exists()

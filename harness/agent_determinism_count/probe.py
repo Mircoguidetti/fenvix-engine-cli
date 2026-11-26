@@ -207,8 +207,33 @@ def load_records(res: Path = RES) -> tuple[list, list, list]:
     def rd(n):
         return json.loads((res / n).read_text()) if (res / n).exists() else {}
     ses, wf, wft = rd("probe_session.json"), rd("probe_workflow.json"), rd("probe_workflow_text.json")
-    return ((ses.get("results") or []), (wf.get("results") or []) + (wft.get("results") or []),
+    wfc = rd("probe_workflow_code.json")
+    return ((ses.get("results") or []), (wf.get("results") or []) + (wft.get("results") or []) +
+            (wfc.get("results") or []),
             (ses.get("registries") or []) + (wft.get("registries") or []))
+
+
+CODE_KEYS = ("code_route", "code_totals", "code_pending", "nested_path_ok")
+
+
+def merge_code_decisions(res: Path = RES) -> dict:
+    """After the code probes: only the code fields of results/probe_decisions.json change (code route, totals, nested
+    path check, the dropped code shapes and their fixes); every text decision S2/S3 already runs on stays as it is."""
+    p = res / "probe_decisions.json"
+    old = json.loads(p.read_text()) if p.exists() else {}
+    new = decide(*load_records(res))
+    out = dict(old)
+    if new.get("blocked"):
+        out.update(code_route=None, code_pending=False, code_blocked=new.get("why"))
+    else:
+        out.update({k: new[k] for k in CODE_KEYS})
+        code_drop = [x for x in new.get("dropped") or [] if x not in (old.get("dropped") or [])]
+        out["dropped"] = sorted(set((old.get("dropped") or []) + code_drop))
+        out["fixes"] = (old.get("fixes") or []) + [f for f in new.get("fixes") or [] if f.startswith("code shape")
+                                                   and f not in (old.get("fixes") or [])]
+    p.write_text(json.dumps(out, indent=1, sort_keys=True) + "\n")
+    print(json.dumps({k: out.get(k) for k in CODE_KEYS + ("code_blocked", "dropped", "fixes")}, sort_keys=True))
+    return out
 
 
 def main(argv=None) -> int:
@@ -219,6 +244,11 @@ def main(argv=None) -> int:
         doc = {"route": "workflow", "results": run_github("workflow", ("issues", "commits")),
                "registries": run_registries()}
         (RES / "probe_workflow_text.json").write_text(json.dumps(doc, indent=1, sort_keys=True) + "\n")
+        return 0
+    if mode == "workflow-code":  # coordinator 2026-11-26 03:05Z: code search freed, workflow route (GITHUB_TOKEN)
+        doc = {"route": "workflow", "results": run_github("workflow", ("code",))}
+        (RES / "probe_workflow_code.json").write_text(json.dumps(doc, indent=1, sort_keys=True) + "\n")
+        merge_code_decisions()
         return 0
     if mode in ("session", "workflow"):
         recs = run_github(mode)

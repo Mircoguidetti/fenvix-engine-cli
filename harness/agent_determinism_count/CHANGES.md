@@ -22,3 +22,11 @@
    sha256, bytes, lines). The next discovery request restores state, splits, pre-pass and leaf file of run
    45603465040 from its results artifact (results/discovery/restore_text.json; only if that state is not behind the
    committed one). `parts.py fetch` downloads every indexed part and checks its sha256 before `discover.py build`.
+4. 2026-11-26 03:05Z, coordinator's second message (code search free; workflow route while market-direction's leaf
+   reading uses the account token): results/search_budget_free.json gains the scope `code`; `session` stays closed.
+   S1 runs in a second workflow (agent-determinism-count-code.yml: requests_code/, its own concurrency group and done
+   markers results/requests_done_code/) beside S2/S3, and commits only the code family's files (commit_results.sh,
+   ADC_FAMILY=code; no file is staged for removal). Requests: c1 the §0.2a and §0.2b code probes (probe.py
+   workflow-code: only the code fields of probe_decisions.json change, every text decision stays), c2 the S1 pre-pass,
+   c3 the population counts, c4 S1 bisection. A code request waits while the code route is not the workflow route.
+   No rule, query or count change; S1's 24 h budget runs from its own first request.

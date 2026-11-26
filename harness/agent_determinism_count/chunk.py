@@ -16,6 +16,7 @@ from __future__ import annotations
 import datetime as dt
 import gzip
 import json
+import os
 import time
 from pathlib import Path
 
@@ -119,8 +120,9 @@ def needs_texts(row: dict) -> bool:
 
 
 def mark_done(name: str, rec: dict) -> None:
-    """Request marker (results/requests_done/<name>): the workflow runs every request file without one."""
-    p = RES / "requests_done" / name
+    """Request marker (results/<ADC_DONE or requests_done>/<name>): the workflow runs every request file without one
+    (the S1 code workflow keeps its own markers in requests_done_code, so neither workflow commits the other's)."""
+    p = RES / (os.environ.get("ADC_DONE") or "requests_done") / name
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(rec, sort_keys=True) + "\n")
 
