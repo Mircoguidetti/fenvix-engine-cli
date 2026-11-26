@@ -1,0 +1,220 @@
+TAP version 13
+# Subtest: D1 revised (prepared): tcp keys pair unless they resolve to public internet addresses
+    # Subtest: two lanes connecting to a name that does not resolve (CI service container `postgres`, here postgres.invalid): shared-service
+    not ok 1 - two lanes connecting to a name that does not resolve (CI service container `postgres`, here postgres.invalid): shared-service
+      ---
+      duration_ms: 190.86695
+      type: 'test'
+      location: '/tmp/claude-0/-home-user-fenvix-engine-cli/daca8f25-c971-5532-8ee7-dfa7d510126b/scratchpad/d1-hostname/parallel-d1-hostname.test.js:76:5'
+      failureType: 'testCodeFailure'
+      error: 'expected a shared-service hazard; connect keys {"kinds":[],"a":["tcp:postgres.invalid:5432"],"b":["tcp:postgres.invalid:5432"]}'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (/tmp/claude-0/-home-user-fenvix-engine-cli/daca8f25-c971-5532-8ee7-dfa7d510126b/scratchpad/d1-hostname/parallel-d1-hostname.test.js:78:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: two lanes connecting to host.docker.internal (does not resolve outside Docker Desktop): shared-service
+    not ok 2 - two lanes connecting to host.docker.internal (does not resolve outside Docker Desktop): shared-service
+      ---
+      duration_ms: 211.00489
+      type: 'test'
+      location: '/tmp/claude-0/-home-user-fenvix-engine-cli/daca8f25-c971-5532-8ee7-dfa7d510126b/scratchpad/d1-hostname/parallel-d1-hostname.test.js:76:5'
+      failureType: 'testCodeFailure'
+      error: 'expected a shared-service hazard; connect keys {"kinds":[],"a":["tcp:host.docker.internal:5432"],"b":["tcp:host.docker.internal:5432"]}'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (/tmp/claude-0/-home-user-fenvix-engine-cli/daca8f25-c971-5532-8ee7-dfa7d510126b/scratchpad/d1-hostname/parallel-d1-hostname.test.js:78:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: two lanes connecting to the machine's own hostname (resolves to a local address): shared-service
+    not ok 3 - two lanes connecting to the machine's own hostname (resolves to a local address): shared-service
+      ---
+      duration_ms: 262.411121
+      type: 'test'
+      location: '/tmp/claude-0/-home-user-fenvix-engine-cli/daca8f25-c971-5532-8ee7-dfa7d510126b/scratchpad/d1-hostname/parallel-d1-hostname.test.js:76:5'
+      failureType: 'testCodeFailure'
+      error: 'expected a shared-service hazard; connect keys {"kinds":[],"a":["tcp:vm:5432"],"b":["tcp:vm:5432"]}'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (/tmp/claude-0/-home-user-fenvix-engine-cli/daca8f25-c971-5532-8ee7-dfa7d510126b/scratchpad/d1-hostname/parallel-d1-hostname.test.js:78:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: two lanes connecting to a private IPv4 address (10/8): shared-service
+    not ok 4 - two lanes connecting to a private IPv4 address (10/8): shared-service
+      ---
+      duration_ms: 112.815774
+      type: 'test'
+      location: '/tmp/claude-0/-home-user-fenvix-engine-cli/daca8f25-c971-5532-8ee7-dfa7d510126b/scratchpad/d1-hostname/parallel-d1-hostname.test.js:76:5'
+      failureType: 'testCodeFailure'
+      error: 'expected a shared-service hazard; connect keys {"kinds":[],"a":["tcp:10.0.0.5:5432"],"b":["tcp:10.0.0.5:5432"]}'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (/tmp/claude-0/-home-user-fenvix-engine-cli/daca8f25-c971-5532-8ee7-dfa7d510126b/scratchpad/d1-hostname/parallel-d1-hostname.test.js:78:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: two lanes connecting to a docker bridge address (172.16/12): shared-service
+    not ok 5 - two lanes connecting to a docker bridge address (172.16/12): shared-service
+      ---
+      duration_ms: 97.825899
+      type: 'test'
+      location: '/tmp/claude-0/-home-user-fenvix-engine-cli/daca8f25-c971-5532-8ee7-dfa7d510126b/scratchpad/d1-hostname/parallel-d1-hostname.test.js:76:5'
+      failureType: 'testCodeFailure'
+      error: 'expected a shared-service hazard; connect keys {"kinds":[],"a":["tcp:172.17.0.2:6379"],"b":["tcp:172.17.0.2:6379"]}'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (/tmp/claude-0/-home-user-fenvix-engine-cli/daca8f25-c971-5532-8ee7-dfa7d510126b/scratchpad/d1-hostname/parallel-d1-hostname.test.js:78:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: two lanes connecting to a 192.168/16 address: shared-service
+    not ok 6 - two lanes connecting to a 192.168/16 address: shared-service
+      ---
+      duration_ms: 108.70587
+      type: 'test'
+      location: '/tmp/claude-0/-home-user-fenvix-engine-cli/daca8f25-c971-5532-8ee7-dfa7d510126b/scratchpad/d1-hostname/parallel-d1-hostname.test.js:76:5'
+      failureType: 'testCodeFailure'
+      error: 'expected a shared-service hazard; connect keys {"kinds":[],"a":["tcp:192.168.1.20:3306"],"b":["tcp:192.168.1.20:3306"]}'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (/tmp/claude-0/-home-user-fenvix-engine-cli/daca8f25-c971-5532-8ee7-dfa7d510126b/scratchpad/d1-hostname/parallel-d1-hostname.test.js:78:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: two lanes connecting to a link-local address (169.254/16): shared-service
+    not ok 7 - two lanes connecting to a link-local address (169.254/16): shared-service
+      ---
+      duration_ms: 80.847431
+      type: 'test'
+      location: '/tmp/claude-0/-home-user-fenvix-engine-cli/daca8f25-c971-5532-8ee7-dfa7d510126b/scratchpad/d1-hostname/parallel-d1-hostname.test.js:76:5'
+      failureType: 'testCodeFailure'
+      error: 'expected a shared-service hazard; connect keys {"kinds":[],"a":["tcp:169.254.169.254:80"],"b":["tcp:169.254.169.254:80"]}'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (/tmp/claude-0/-home-user-fenvix-engine-cli/daca8f25-c971-5532-8ee7-dfa7d510126b/scratchpad/d1-hostname/parallel-d1-hostname.test.js:78:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: two lanes connecting to an IPv6 unique-local address (fc00::/7): shared-service
+    not ok 8 - two lanes connecting to an IPv6 unique-local address (fc00::/7): shared-service
+      ---
+      duration_ms: 78.930915
+      type: 'test'
+      location: '/tmp/claude-0/-home-user-fenvix-engine-cli/daca8f25-c971-5532-8ee7-dfa7d510126b/scratchpad/d1-hostname/parallel-d1-hostname.test.js:76:5'
+      failureType: 'testCodeFailure'
+      error: 'expected a shared-service hazard; connect keys {"kinds":[],"a":["tcp:fd00::1:5432"],"b":["tcp:fd00::1:5432"]}'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (/tmp/claude-0/-home-user-fenvix-engine-cli/daca8f25-c971-5532-8ee7-dfa7d510126b/scratchpad/d1-hostname/parallel-d1-hostname.test.js:78:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: two lanes connecting to a public IP address: no hazard (D1 = A kept for public hosts)
+    ok 9 - two lanes connecting to a public IP address: no hazard (D1 = A kept for public hosts)
+      ---
+      duration_ms: 71.675064
+      type: 'test'
+      ...
+    # Subtest: two lanes connecting to a name that resolves only to public addresses: no hazard
+    ok 10 - two lanes connecting to a name that resolves only to public addresses: no hazard
+      ---
+      duration_ms: 201.428094
+      type: 'test'
+      ...
+    # Subtest: a different private address or port in each lane: no hazard
+    ok 11 - a different private address or port in each lane: no hazard
+      ---
+      duration_ms: 73.883124
+      type: 'test'
+      ...
+    1..11
+not ok 1 - D1 revised (prepared): tcp keys pair unless they resolve to public internet addresses
+  ---
+  duration_ms: 1491.967333
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user-fenvix-engine-cli/daca8f25-c971-5532-8ee7-dfa7d510126b/scratchpad/d1-hostname/parallel-d1-hostname.test.js:61:1'
+  failureType: 'subtestsFailed'
+  error: '8 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 11
+# suites 1
+# pass 3
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1536.552574

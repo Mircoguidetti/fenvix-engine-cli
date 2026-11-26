@@ -175,12 +175,15 @@ describe('hazards() unit: recursive roots, shared services', () => {
     assert.deepEqual(kinds(run({ connect: ['unix:/run/pg/.s.PGSQL.5432'] }, { connect: ['unix:/run/pg/.s.PGSQL.5432'] })), ['shared-service unix:/run/pg/.s.PGSQL.5432']);
   });
 
-  test('a remote host is recorded but never paired; loopback ports and unix sockets are (founder decision D1 = A, 2026-11-26)', () => {
-    // protects=only local services (loopback tcp, unix sockets) pair lanes: two files fetching from one public host
-    // are not a hazard; fails_when=a tcp:<remote host>:<port> key pairs two lanes, or the loopback / unix pairing is
-    // lost with it; no_claim=a remote service two lanes really share (a staging database) is not detected (known limit)
-    assert.deepEqual(run({ connect: ['tcp:raw.githubusercontent.com:443'] }, { connect: ['tcp:raw.githubusercontent.com:443'] }), []);
-    assert.deepEqual(run({ connect: ['tcp:db.example.com:5432'] }, { connect: ['tcp:db.example.com:5432'] }), []);
+  test('a tcp host pairs unless both files found its address public; loopback ports and unix sockets pair (founder decision "nome A", 2026-11-26)', () => {
+    // protects=a service reached by a name or a non-public address is a shared service of the lanes; only an address
+    // both files found public (listed in `pub`) is not paired; fails_when=a tcp key without `pub` is not paired, a key
+    // both files list in `pub` is, or the loopback / unix pairing is lost; no_claim=a public host two lanes really
+    // share (a staging database on a public IP) is not detected (known limit, D1 = A kept for public addresses)
+    const pub = ['tcp:raw.githubusercontent.com:443'];
+    assert.deepEqual(run({ connect: pub, pub }, { connect: pub, pub }), []);
+    assert.deepEqual(kinds(run({ connect: pub, pub }, { connect: pub })), ['shared-service tcp:raw.githubusercontent.com:443']);
+    assert.deepEqual(kinds(run({ connect: ['tcp:db.example.com:5432'] }, { connect: ['tcp:db.example.com:5432'] })), ['shared-service tcp:db.example.com:5432']);
     assert.deepEqual(kinds(run({ connect: ['43105'] }, { connect: ['43105'] })), ['shared-service 43105']);
     assert.deepEqual(kinds(run({ connect: ['unix:/run/docker.sock'] }, { connect: ['unix:/run/docker.sock'] })), ['shared-service unix:/run/docker.sock']);
   });
@@ -333,6 +336,81 @@ parallel.installFootprint(process.cwd());
     assert.deepEqual(run({ l: ['/'] }, { w: ['/x'] }).map((h) => `${h.kind} ${h.what}`), ['list-write /']);
     assert.deepEqual(run({ wr: ['/'] }, { r: ['/x/y'] }).map((h) => `${h.kind} ${h.what}`), ['recursive-write /']);
     assert.deepEqual(run({ lr: ['/'] }, { w: ['/x/y'] }).map((h) => `${h.kind} ${h.what}`), ['recursive-read /']);
+  });
+});
+
+describe('connect wrapper + hazards(): tcp keys pair unless public (founder decision "nome A", 2026-11-26)', () => {
+  const SRC = path.join(__dirname, '..', 'src', 'parallel');
+  const { hazards } = require(SRC);
+  const dns = require('node:dns');
+  const os = require('node:os');
+/** One file of one lane: connect to each [host, port], wait for the socket to settle (<= 1.5 s), return the footprint. */
+function record(connects) {
+  const dir = fs.mkdtempSync(path.join(BASE, 'd1h-'));
+  const code = `
+const net = require('node:net'); const parallel = require(${JSON.stringify(SRC)});
+parallel.installFootprint(process.cwd());
+(async () => {
+  parallel.enter('f');
+  await Promise.all(${JSON.stringify(connects)}.map(([host, port]) => new Promise((res) => {
+    const s = new net.Socket(); const done = () => { clearTimeout(t); s.destroy(); res(); };
+    const t = setTimeout(done, 1500);
+    s.on('error', done); s.on('connect', done); s.on('lookup', () => setTimeout(done, 50));
+    try { s.connect({ host, port }); } catch { done(); }
+  })));
+  parallel.leave('f');
+  const d = process.env.DETJS_DIR + '/lanes';
+  process.stdout.write(require('node:fs').readFileSync(d + '/' + require('node:fs').readdirSync(d).filter((n) => n.endsWith('.json'))[0], 'utf8'));
+})();`;
+  const r = spawnSync(process.execPath, ['-e', code], { cwd: dir, encoding: 'utf8', env: cleanEnv({ DETJS_DIR: path.join(dir, 'run'), DETJS_WORKERS: '2' }), timeout: 30000 });
+  assert.equal(r.status, 0, r.stderr);
+  return JSON.parse(r.stdout);
+}
+
+/** The hazards between a file of lane 0 and a file of lane 1 that both connect to `host:port`. */
+function pair(host, port) {
+  const a = record([[host, port]]);
+  const b = record([[host, port]]);
+  const h = hazards(new Map([['A', a], ['B', b]]), new Map([['A', 0], ['B', 1]]));
+  return { kinds: h.map((x) => x.kind), a: a.footprint.connect, b: b.footprint.connect };
+}
+
+const resolvesPublic = (name) => new Promise((res) => dns.lookup(name, { all: true }, (e, xs) => res(!e && xs.length > 0 && xs.every((x) => !/^(127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|169\.254\.|::1$|f[cd]|fe80)/i.test(x.address)))));
+
+  // protects=a local service reached by a name or a private address (CI service containers, docker-compose names,
+  // host.docker.internal, the machine's own name, a docker bridge IP, link-local metadata) is a shared service of the
+  // lanes; fails_when=only literal loopback forms pair (D1 as of 6ce73906); no_claim=a public host that two lanes
+  // really share (a staging database on a public IP) is still not paired (the founder's D1 = A stays for those)
+  for (const [what, host, port] of [
+    ['a name that does not resolve (CI service container `postgres`, here postgres.invalid)', 'postgres.invalid', 5432],
+    ['host.docker.internal (does not resolve outside Docker Desktop)', 'host.docker.internal', 5432],
+    ["the machine's own hostname (resolves to a local address)", os.hostname(), 5432],
+    ['a private IPv4 address (10/8)', '10.0.0.5', 5432],
+    ['a docker bridge address (172.16/12)', '172.17.0.2', 6379],
+    ['a 192.168/16 address', '192.168.1.20', 3306],
+    ['a link-local address (169.254/16)', '169.254.169.254', 80],
+    ['an IPv6 unique-local address (fc00::/7)', 'fd00::1', 5432],
+  ]) {
+    test(`two lanes connecting to ${what}: shared-service`, { timeout: 60000 }, () => {
+      const r = pair(host, port);
+      assert.ok(r.kinds.includes('shared-service'), `expected a shared-service hazard; connect keys ${JSON.stringify(r)}`);
+    });
+  }
+
+  test('two lanes connecting to a public IP address: no hazard (D1 = A kept for public hosts)', { timeout: 60000 }, () => {
+    const r = pair('185.199.111.133', 443);
+    assert.deepEqual(r.kinds, [], JSON.stringify(r));
+  });
+
+  test('two lanes connecting to a name that resolves only to public addresses: no hazard', { timeout: 60000 }, async (t) => {
+    if (!(await resolvesPublic('raw.githubusercontent.com'))) { t.skip('raw.githubusercontent.com does not resolve publicly here'); return; }
+    const r = pair('raw.githubusercontent.com', 443);
+    assert.deepEqual(r.kinds, [], JSON.stringify(r));
+  });
+
+  test('a different private address or port in each lane: no hazard', { timeout: 60000 }, () => {
+    const a = record([['10.0.0.5', 5432]]); const b = record([['10.0.0.6', 5432]]);
+    assert.deepEqual(hazards(new Map([['A', a], ['B', b]]), new Map([['A', 0], ['B', 1]])), []);
   });
 });
 

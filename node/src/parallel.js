@@ -443,11 +443,11 @@ function installFootprint(root) {
   let cur = null;
   const H = {
     // the real-path memo is per file: a link another file of this process repointed is resolved again (/review F1)
-    begin(label) { dirMemo.clear(); cur = { label, w: new Set(), r: new Set(), l: new Set(), wr: new Set(), lr: new Set(), listen: new Set(), connect: new Set() }; },
+    begin(label) { dirMemo.clear(); cur = { label, w: new Set(), r: new Set(), l: new Set(), wr: new Set(), lr: new Set(), listen: new Set(), connect: new Set(), pub: new Set() }; },
     end(label) {
       if (!cur || cur.label !== label) return null;
       const c = cur; cur = null;
-      return { w: [...c.w].sort(), r: [...c.r].sort(), l: [...c.l].sort(), wr: [...c.wr].sort(), lr: [...c.lr].sort(), listen: [...c.listen].sort(), connect: [...c.connect].sort() };
+      return { w: [...c.w].sort(), r: [...c.r].sort(), l: [...c.l].sort(), wr: [...c.wr].sort(), lr: [...c.lr].sort(), listen: [...c.listen].sort(), connect: [...c.connect].sort(), pub: [...c.pub].sort() };
     },
     add(set, p) {
       if (!cur) return;
@@ -469,7 +469,7 @@ function installFootprint(root) {
     const real = obj && obj[name];
     if (typeof real !== 'function' || real.__detjsFootprint) return;
     const w = !linkChange
-      ? function (...a) { if (cur) { try { fn(a); } catch { /* never break the call */ } } return real.apply(this, a); }
+      ? function (...a) { if (cur) { try { fn(a, this); } catch { /* never break the call */ } } return real.apply(this, a); }
       : function (...a) {
         dirMemo.clear();
         if (cur) { try { fn(a); } catch { /* never break the call */ } }
@@ -592,15 +592,36 @@ function installFootprint(root) {
   }
   // services (spec parallel-proof-gaps (a), gate notes 4 and 7): a TCP connect to a loopback host is keyed by its port
   // (as listeners are), a unix-socket connect by `unix:<path>`, a TCP connect to any other host by
-  // `tcp:<host as given, lower-cased>:<port>`. Two lanes connecting to one loopback port or unix socket share a service:
-  // a hazard (`shared-service`), whether or not a lane listens on it. A remote host key is recorded only, never paired
-  // (founder decision 2026-11-26, D1 = A). DETJS_HAZARD_SHARED_SERVICE=0 records only loopback ports,
-  // as before (measurement only; the runner then gives no proof). UDP / dgram is not recorded (known limit).
+  // `tcp:<host as given, lower-cased>:<port>`. Two lanes connecting to one key share a service: a hazard
+  // (`shared-service`), whether or not a lane listens on it -- except a tcp key whose address is a public, globally
+  // routable internet address (founder decision 2026-11-26 "nome A", replacing D1 = A): such a key is listed in `pub`.
+  // An IP literal is classified at connect, a name at the socket's lookup event; a name that does not resolve, or
+  // resolves after the file's footprint closed, is not listed (it pairs: the safe side). DETJS_HAZARD_SHARED_SERVICE=0
+  // records only loopback ports, as before (measurement only; the runner then gives no proof). UDP / dgram is not
+  // recorded (known limit).
   const sharedService = process.env.DETJS_HAZARD_SHARED_SERVICE !== '0';
   const LOOPBACK = /^(localhost|127\.|::1$|0:0:0:0:0:0:0:1$|\[::1\]$|0\.0\.0\.0$|::$|::ffff:127\.)/;
+  // not public: special-purpose IPv4 ranges (RFC 6890) and, for IPv6, everything outside 2000::/3 plus documentation
+  const NOT_PUBLIC = new net.BlockList();
+  for (const [a, n] of [['0.0.0.0', 8], ['10.0.0.0', 8], ['100.64.0.0', 10], ['127.0.0.0', 8], ['169.254.0.0', 16], ['172.16.0.0', 12],
+    ['192.0.0.0', 24], ['192.0.2.0', 24], ['192.88.99.0', 24], ['192.168.0.0', 16], ['198.18.0.0', 15], ['198.51.100.0', 24],
+    ['203.0.113.0', 24], ['224.0.0.0', 4], ['240.0.0.0', 4]]) NOT_PUBLIC.addSubnet(a, n, 'ipv4');
+  const V6_PUBLIC = new net.BlockList();
+  V6_PUBLIC.addSubnet('2000::', 3, 'ipv6');
+  const V6_DOC = new net.BlockList();
+  V6_DOC.addSubnet('2001:db8::', 32, 'ipv6');
+  const isPublic = (ip) => {
+    let x = String(ip || '').replace(/^\[|\]$/g, '');
+    const mapped = /^::ffff:(\d+\.\d+\.\d+\.\d+)$/i.exec(x);
+    if (mapped) x = mapped[1];
+    const v = net.isIP(x);
+    if (v === 4) return !NOT_PUBLIC.check(x, 'ipv4');
+    if (v === 6) return V6_PUBLIC.check(x, 'ipv6') && !V6_DOC.check(x, 'ipv6');
+    return false;
+  };
   const SockP = net.Socket && net.Socket.prototype;
   if (SockP) {
-    wrap(SockP, 'connect', (a) => {
+    wrap(SockP, 'connect', (a, sock) => {
       if (!cur) return;
       let o = a[0];
       if (Array.isArray(o)) o = o[0];
@@ -610,8 +631,17 @@ function installFootprint(root) {
       if (o && typeof o === 'object') { port = o.port; host = o.host || 'localhost'; } else if (o !== undefined) { port = o; host = typeof a[1] === 'string' ? a[1] : 'localhost'; }
       if (!port || !/^\d+$/.test(String(port))) return;
       const h = String(host).toLowerCase();
-      if (LOOPBACK.test(h)) cur.connect.add(String(Number(port)));
-      else if (sharedService) cur.connect.add(`tcp:${h}:${Number(port)}`);
+      if (LOOPBACK.test(h)) { cur.connect.add(String(Number(port))); return; }
+      if (!sharedService) return;
+      const key = `tcp:${h}:${Number(port)}`;
+      cur.connect.add(key);
+      const bare = h.replace(/^\[|\]$/g, '');
+      if (net.isIP(bare)) { if (isPublic(bare)) cur.pub.add(key); return; }
+      // a name: public only if its lookup returns a public address while this file is still open
+      const file = cur;
+      if (sock && typeof sock.once === 'function') {
+        sock.once('lookup', (err, address) => { if (!err && cur === file && isPublic(address)) file.pub.add(key); });
+      }
     });
   }
   require('node:module').syncBuiltinESMExports();
@@ -747,12 +777,13 @@ function sortedIndex(entries) {
  * key), list-write (a write of a direct child of a listed dir), port (listen-listen, connect to a listener),
  * recursive-write (a recursive write root and any key of the other file inside it, a plain listing of its
  * parent, or a recursive listing of one of its ancestors), recursive-read (a recursive read root and a write inside it), shared-service (two files connecting to
- * the same loopback port or unix socket; a remote host:port is recorded but never paired). One hazard per file pair (the first found).
+ * the same loopback port, unix socket or tcp host:port, unless both found that address public). One hazard per file pair (the first found).
  */
 function hazards(markers, laneOf) {
   const writers = new Map();
   const listeners = new Map();
   const connectors = new Map();
+  const pubOf = new Map(); // label -> tcp keys whose address that file found public
   const plainListers = new Map(); // dir listed by a plain readdir / opendir -> labels
   const recListers = new Map(); // dir listed recursively (readdir {recursive}, cp source) -> labels
   const anyKeys = []; // [key, label] of r, w, l, wr, lr
@@ -767,6 +798,7 @@ function hazards(markers, laneOf) {
     for (const w of S(f, 'wr')) writeKeys.push([w, label]);
     for (const p of S(f, 'listen')) push(listeners, p, label);
     for (const p of S(f, 'connect')) push(connectors, p, label);
+    pubOf.set(label, new Set(S(f, 'pub')));
     for (const d of S(f, 'l')) push(plainListers, d, label);
     for (const d of S(f, 'lr')) push(recListers, d, label);
     for (const n of ['r', 'w', 'l', 'wr', 'lr']) for (const k of S(f, n)) anyKeys.push([k, label]);
@@ -798,10 +830,15 @@ function hazards(markers, laneOf) {
     }
     for (const p of S(f, 'listen')) for (const o of listeners.get(p) || []) addH(label, o, 'port', p);
     for (const p of S(f, 'connect')) for (const o of listeners.get(p) || []) addH(label, o, 'port', p);
-    // a remote host (`tcp:<host>:<port>`) is recorded but never paired: only local services pair lanes (founder
-    // decision 2026-11-26, D1 = A)
+    // a tcp key pairs unless both files found its address public (founder decision 2026-11-26 "nome A"; a footprint
+    // without `pub`, an older marker, pairs: the safe side)
     if (process.env.DETJS_HAZARD_SHARED_SERVICE !== '0') {
-      for (const p of S(f, 'connect')) if (!p.startsWith('tcp:')) for (const o of connectors.get(p) || []) addH(label, o, 'shared-service', p);
+      for (const p of S(f, 'connect')) {
+        for (const o of connectors.get(p) || []) {
+          if (p.startsWith('tcp:') && pubOf.get(label).has(p) && pubOf.get(o) && pubOf.get(o).has(p)) continue;
+          addH(label, o, 'shared-service', p);
+        }
+      }
     }
     for (const d of S(f, 'wr')) {
       for (const [, o] of anyIdx.under(d)) addH(label, o, 'recursive-write', d);
