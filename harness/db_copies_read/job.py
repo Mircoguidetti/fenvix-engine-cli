@@ -3,7 +3,8 @@
 Runs only inside the db-copies-read workflow with its GITHUB_TOKEN. Every GitHub call is a GET through
 ``ghapi.Client`` (search refused, pacing, 600 s cap, 20% rate floor). Outputs go under ``--results``:
 ``raw/<owner>__<repo>/<stage>.json.gz``, ``docs/``, ``requests.log``, ``chunks.jsonl``, ``checkpoint.json``.
-The job never commits; the workflow uploads ``--results`` as an artifact and the session commits it.
+The job itself never commits; after a successful job the workflow commits the results files to this branch under
+its bot name (founder "bot ok", 2026-11-26) and the session pulls them with git.
 
 Request file: ``{"repos": ["owner/name", ...]}`` (optional ``"bound": 2280`` once the coordinator allows reading
 past the 1,500 checkpoint) or ``{"docs": true}``.
@@ -454,8 +455,16 @@ def pullfile_queue(issues_stage: dict) -> list[int]:
 
 
 # ---------------------------------------------------------------------------------------------- checkpoint
-def reference_run(client: ghapi.Client, self_repo: str, current: str) -> str | None:
-    """Last run of the workflow with conclusion success that uploaded an artifact (gate M1)."""
+def results_committed(run_id: str) -> bool:
+    """True when this checkout's history holds the workflow's results commit for ``run_id``."""
+    import subprocess
+    r = subprocess.run(["git", "-C", str(HERE), "log", "--format=%s", "--fixed-strings",
+                        f"--grep=db-copies-read: results (run {run_id})"], capture_output=True, text=True)
+    return r.returncode == 0 and bool(r.stdout.strip())
+
+
+def reference_run(client: ghapi.Client, self_repo: str, current: str, committed=results_committed) -> str | None:
+    """Last run of the workflow with conclusion success that committed its results (gate M1, transport change)."""
     e = client.get(f"repos/{self_repo}/actions/workflows/{WORKFLOW}/runs?branch={urllib.parse.quote(BRANCH)}"
                    f"&status=success&per_page=30")
     runs = (e[1] or {}).get("workflow_runs") or []
@@ -463,10 +472,16 @@ def reference_run(client: ghapi.Client, self_repo: str, current: str) -> str | N
     for r in runs:
         if str(r.get("id")) == str(current) or r.get("conclusion") != "success":
             continue
-        a = client.get(f"repos/{self_repo}/actions/runs/{r['id']}/artifacts")
-        if ((a[1] or {}).get("total_count") or 0) > 0:
+        if committed(str(r["id"])):
             return str(r["id"])
     return None
+
+
+def checkpoint_ok(cp: dict | None, ref: str | None) -> bool:
+    """No checkpoint only before the first reference run; otherwise the checkpoint must come from the reference."""
+    if ref is None:
+        return cp is None
+    return cp is not None and str(cp.get("run_id")) == ref
 
 
 def load_checkpoint(results: Path) -> dict | None:
@@ -582,7 +597,7 @@ def main() -> int:
     client = ghapi.from_env(log=log)
     cp = load_checkpoint(results)
     ref = reference_run(client, self_repo, run_id)
-    if (ref is None and cp is not None) or (ref is not None and (cp is None or str(cp.get("run_id")) != ref)):
+    if not checkpoint_ok(cp, ref):
         msg = f"stale checkpoint: checkpoint run_id {cp and cp.get('run_id')} vs last successful run {ref}"
         print(msg)
         chunk({"status": "refused", "note": msg, "attempts": client.n_requests})

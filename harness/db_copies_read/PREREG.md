@@ -99,3 +99,12 @@ Rules:
 ## 8. Report
 
 `report.py` prints REPORT.md from committed files only, with the sections of spec §7, and fails when a counted quote is not in the stored raw text, an "off" evidence line is not in its stored file, a `plugin-installed` row lacks `pytest-django` or `pytest-xdist` in a stored dependency file, or the per-stack summary does not sum to 20. `lines.py` computes the outcome from `table.jsonl`, `items.jsonl`, `handcheck.jsonl` and `recheck.jsonl`; REPORT copies its output verbatim.
+
+## 9. Transport change (2026-11-26 ~09:55 UTC, before any table row; no rule, line, threshold or cap changes)
+
+Reason: artifact downloads go to a storage host that changes per artifact (`productionresultssa32` for the db-serial-count start check, `productionresultssa1` for request 1), and the session's network allows hosts only one by one. Decision: the founder's "bot ok" (2026-11-26, 09:3x UTC, recorded by the coordinator in DECISIONS.md in the brain repository, relayed to this session by the coordinator at 09:52 UTC): workflow data commits made with `GITHUB_TOKEN` may keep the bot name; founder rule 4 covers commits made by sessions.
+
+Replaces in §3 above:
+- The workflow no longer uploads an artifact. After a successful job it commits `results/raw/`, `results/docs/`, `results/requests.log`, `results/chunks.jsonl` and `results/checkpoint.json` to `claude/db-copies-read` under the name `db-copies-read-bot` with the message `db-copies-read: results (run <run id>)` (permissions `contents: write`, `actions: read`), as `db-serial-count.yml` did. A refused or stopped job commits nothing. The session pulls with git; its own commits stay under the founder identity. `results/transport.log` is no longer written.
+- Checkpoint reference (gate M1): the last run of `db-copies-read.yml` with conclusion `success` whose results commit is in the checkout's history (in place of "that uploaded an artifact"). The rest of the rule is unchanged.
+- The dry run (requests 1 and 2, artifact transport) is re-run with the new transport (request 3, same 2 repositories) before the full read. Request 1's artifact was never downloaded; its job log gives 37 attempts for abhinavrathee/RetryRail and 73 for Ashfaque386/TradingOS-2.0 (110 in all, including 1 runs-listing call).

@@ -171,6 +171,20 @@ def test_client_access_403_is_a_stop():
         c.get("repos/o/r")
 
 
+def test_checkpoint_reference_is_last_committed_success():
+    """protects=gate M1 with the bot-commit transport: the reference is the newest successful run whose results commit
+    is in history, and a checkpoint from any other run is refused; fails_when=a successful run without a results
+    commit becomes the reference, or a stale checkpoint is accepted; no_claim=fake runs listing and commit lookup."""
+    runs = {"workflow_runs": [{"id": 3, "run_number": 3, "conclusion": "success"},
+                              {"id": 2, "run_number": 2, "conclusion": "success"},
+                              {"id": 1, "run_number": 1, "conclusion": "success"}]}
+    c, _ = client([(200, {}, runs)])
+    ref = J.reference_run(c, "me/x", "4", committed=lambda r: r in ("1", "2"))
+    assert ref == "2"
+    assert J.checkpoint_ok({"run_id": "2"}, "2") and not J.checkpoint_ok({"run_id": "1"}, "2")
+    assert not J.checkpoint_ok(None, "2") and J.checkpoint_ok(None, None) and not J.checkpoint_ok({"run_id": "1"}, None)
+
+
 # ============================================================================================ matching (+8)
 def test_db_does_not_match_feedback():
     """protects=whole-word terms; fails_when='db' matches inside 'feedback'; no_claim=none beyond protects."""
