@@ -56,6 +56,33 @@
    "prepass_total": 0,
    "stack": []
   },
+  "api.deepseek.com path:cassettes": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
+  "api.deepseek.com path:recordings": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
+  "api.deepseek.com path:vcr": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
   "api.groq.com path:cassettes": {
    "capped": false,
    "done": true,
@@ -235,17 +262,26 @@
    "nodes": 1,
    "prepass_total": 3,
    "stack": []
+  },
+  "openrouter.ai path:vcr": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
   }
  },
  "search_requests": {
-  "code": 64,
+  "code": 4,
   "issues": 0
  },
  "search_stats": {
-  "429": 38,
+  "429": 0,
   "limit": 10,
-  "remaining": 6,
-  "reset": 1795686343
+  "remaining": 10,
+  "reset": 1795687956
  },
  "started": "2026-11-26T08:43:47+00:00"
 }
