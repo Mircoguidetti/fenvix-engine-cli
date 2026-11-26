@@ -576,7 +576,7 @@ function installFootprint(root) {
       wrap(o, n, (a) => {
         H.add('r', a[0]); H.add('w', a[1]);
         if (recursive && rec(typeof a[2] === 'function' ? null : a[2])) { H.add('lr', a[0]); H.add('wr', a[1]); }
-      });
+      }, true); // cp copies symlinks as symlinks: a link change for the real-path memo (/review delta, finding 1)
     }
     for (const n of ['symlink', 'symlinkSync', 'link', 'linkSync']) wrap(o, n, w1, true);
     for (const n of ['open', 'openSync']) wrap(o, n, open);

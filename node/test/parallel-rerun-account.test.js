@@ -208,3 +208,22 @@ test('mergeOutcomes: an incomplete re-run, or one whose outcomes file cannot be 
   mergeOutcomes(o1, o2, ['a.js'], true);
   assert.equal(fs.readFileSync(o1, 'utf8'), '{corrupt');
 });
+
+test('mergeOutcomes: a complete re-run whose outcomes file lacks a pass-1 test of a hazard file drops that test\'s pass-1 entry (/review delta, finding 3)', () => {
+  // protects=the outcomes file never contradicts the merged trace, which holds the re-run's record of every test of a
+  // complete re-run: a pass-1 value with no re-run counterpart is dropped (absent, not wrong; the trace is the
+  // authority); fails_when=pass 1's 'passed' stays while the trace reports the re-run's 'failed'; no_claim=tests of
+  // files that are not hazard files (kept as pass 1 wrote them)
+  const { mergeOutcomes } = require('../src/parallel-rerun');
+  const fs = require('node:fs'); const os = require('node:os'); const path = require('node:path');
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'mo4-'));
+  const o1 = path.join(d, 'o1.json'); const o2 = path.join(d, 'o2.json');
+  fs.writeFileSync(o1, JSON.stringify({ order: ['a.js::1', 'a.js::2', 'b.js::1'], outcomes: { 'a.js::1': 'passed', 'a.js::2': 'passed', 'b.js::1': 'passed' }, fingerprints: { 'a.js::2': 'f' }, exceptions: {} }));
+  fs.writeFileSync(o2, JSON.stringify({ order: ['a.js::1'], outcomes: { 'a.js::1': 'failed' }, fingerprints: {}, exceptions: {} }));
+  mergeOutcomes(o1, o2, ['a.js'], true);
+  const m = JSON.parse(fs.readFileSync(o1, 'utf8'));
+  assert.equal(m.outcomes['a.js::1'], 'failed');
+  assert.equal(m.outcomes['a.js::2'], undefined, JSON.stringify(m.outcomes));
+  assert.equal(m.fingerprints['a.js::2'], undefined);
+  assert.equal(m.outcomes['b.js::1'], 'passed');
+});

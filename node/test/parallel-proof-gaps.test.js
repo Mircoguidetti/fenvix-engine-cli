@@ -282,6 +282,26 @@ process.stdout.write(JSON.stringify(fs.readdirSync(d).filter((n) => n.endsWith('
     assert.ok(!w2.includes('v1/x'), `v1/x is the old target: ${w2}`);
   });
 
+  test('a recursive cp that creates a link: a read through it afterwards records the real target (/review delta, finding 1)', () => {
+    // protects=fs.cp / cpSync copy symlinks as symlinks, so they change links like symlink() does: the real-path memo
+    // filled before the copy must not key a later read through the copied link by its old (missing) path;
+    // fails_when=the read of out/lnk/f is recorded only as out/lnk/f and not as shared/f, so a lane writing shared/f
+    // pairs with nothing (a wrong identical); no_claim=a link another process creates (LIMITS PG2)
+    const dir = fs.mkdtempSync(path.join(BASE, 'fslink4-'));
+    write(dir, { 'shared/f': 'x', 'src/.keep': '' });
+    fs.symlinkSync(path.join(dir, 'shared'), path.join(dir, 'src', 'lnk'));
+    const code = `
+const fs = require('node:fs'); const parallel = require(${JSON.stringify(path.join(__dirname, '..', 'src', 'parallel'))});
+parallel.installFootprint(process.cwd());
+parallel.enter('f'); fs.existsSync('out/lnk/f'); fs.cpSync('src', 'out', { recursive: true }); fs.readFileSync('out/lnk/f'); parallel.leave('f');
+const d = process.env.DETJS_DIR + '/lanes';
+process.stdout.write(fs.readFileSync(d + '/' + fs.readdirSync(d).filter((n) => n.endsWith('.json'))[0], 'utf8'));`;
+    const r = spawnSync(process.execPath, ['-e', code], { cwd: dir, encoding: 'utf8', env: cleanEnv({ DETJS_DIR: path.join(dir, '.detjs', 'run'), DETJS_WORKERS: '2' }) });
+    assert.equal(r.status, 0, r.stderr);
+    const fp = JSON.parse(r.stdout).footprint;
+    assert.ok(fp.r.includes('shared/f'), `the read through the copied link lands in shared/f: ${fp.r}`);
+  });
+
   test('a link repointed inside one file: the write after it records the new target (second /review pass, finding 2)', () => {
     // protects=the real-path memo is dropped when the file itself changes a link, so a later call through it records the
     // target it really reaches; fails_when=the memo filled by an earlier call of the same file records the old target
@@ -394,7 +414,9 @@ const resolvesPublic = (name) => new Promise((res) => dns.lookup(name, { all: tr
     ['a 6to4 address with a private IPv4 inside (2002::/16; review delta F3)', '2002:c0a8:101::1', 5432],
     ['an IPv6 documentation address in 2000::/3 (3fff::/20; review delta F3)', '3fff::1', 5432],
   ]) {
-    test(`two lanes connecting to ${what}: shared-service`, { timeout: 60000 }, () => {
+    test(`two lanes connecting to ${what}: shared-service`, { timeout: 60000 }, async (t) => {
+      // a machine whose own name resolves only to public addresses (some cloud VMs) is a public host: not this case
+      if (host === os.hostname() && (await resolvesPublic(host))) { t.skip('this hostname resolves to public addresses only'); return; }
       const r = pair(host, port);
       assert.ok(r.kinds.includes('shared-service'), `expected a shared-service hazard; connect keys ${JSON.stringify(r)}`);
     });
@@ -460,7 +482,8 @@ const wait = (s) => new Promise((res) => { const done = () => { clearTimeout(t);
 
   test('a name whose lookup returns after the file closed pairs, even if the address is public (Testing pass)', { timeout: 60000 }, () => {
     // protects=the founder's rule "a name whose class is unknown when the footprint closes pairs"; fails_when=a lookup
-    // event after leave() still marks the key public (the cur === file check removed); no_claim=real DNS timing
+    // event after leave() still marks the key public, e.g. a name counted public until its lookup says otherwise (the
+    // M2b mutation; dropping the cur === file check is an equivalent mutation: the marker is written at leave()); no_claim=real DNS timing
     const r = pairJs(`const s = net.connect({ host: 'late.test', port: 5432, lookup: (h, o, cb) => setTimeout(() => (o && o.all ? cb(null, [{ address: '8.8.8.8', family: 4 }]) : cb(null, '8.8.8.8', 4)), 300) });
     s.on('lookup', () => setImmediate(() => s.destroy())); s.on('error', () => {});`);
     assert.deepEqual(r.pub, [[], []], JSON.stringify(r));
