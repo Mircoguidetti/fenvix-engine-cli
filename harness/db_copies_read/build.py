@@ -34,14 +34,23 @@ def locate(text: str | None, runner_line: str) -> dict | None:
         return None
     toks = runner_line.split()
     lines = text.splitlines()
+    logical = []  # (first physical line index, joined text of a backslash-continued command)
+    i = 0
+    while i < len(lines):
+        start, buf = i, lines[i]
+        while buf.rstrip().endswith("\\") and i + 1 < len(lines):
+            i += 1
+            buf = buf.rstrip()[:-1] + " " + lines[i]
+        logical.append((start, buf))
+        i += 1
     for k in range(len(toks), min(len(toks), 3) - 1, -1):
         pre = " ".join(toks[:k])
         word, _ = R.command_word(pre)
         if not word:
             continue
-        for i, ln in enumerate(lines):
+        for start, ln in logical:
             if pre in _ws(ln):
-                return {"line": i + 1, "text": ln}
+                return {"line": start + 1, "text": lines[start]}
     return None
 
 
@@ -113,7 +122,7 @@ def build_repo(results: Path, row: dict, cp_state: dict | None) -> tuple[dict, l
     cfg = {p: t for p, t in texts.items() if re.search(r"(^|/)(pytest\.ini|pyproject\.toml|setup\.cfg|tox\.ini)$", p)}
     addopts = R.addopts_lines(cfg) + [
         (row["file"], n + 1, ln) for n, ln in enumerate((texts.get(row["file"]) or "").splitlines())
-        if re.search(r"PYTEST_ADDOPTS", ln)]
+        if re.search(r"PYTEST_ADDOPTS", ln) and not ln.lstrip().startswith("#")]
     settings_path = (files.get("info") or {}).get("settings_module")
     st, why = R.state_for(level, row["kind"], row["runner_line"], addopts, texts.get(settings_path) if settings_path else None)
     ev = locate(texts.get(row["runner_src"]), row["runner_line"])
@@ -125,8 +134,9 @@ def build_repo(results: Path, row: dict, cp_state: dict | None) -> tuple[dict, l
             st, why = "unknown", "runner line not found in the stored file"
     on_ev = None
     if st == "on":
-        on_ev = [{"file": a[0], "line": a[1], "text": a[2]} for a in addopts
-                 if any(p == "parallel" for p, _ in R.flag_tokens(a[2]))] or (
+        on_files = {a[0] for a in addopts if any(p == "parallel" for p, _ in R.flag_tokens(R.option_text(
+            " ".join(x[2] for x in addopts if x[0] == a[0]))))}
+        on_ev = [{"file": a[0], "line": a[1], "text": a[2]} for a in addopts if a[0] in on_files] or (
             [{"file": row["runner_src"], "line": ev["line"], "text": ev["text"]}] if ev else [])
     free_off = "yes" if level in ("built-in", "plugin-installed") and st == "off" else "no"
     plugin_dep = None
@@ -230,9 +240,8 @@ def build_items(repo: str, iitems: list[dict], citems: list[dict], stages: dict)
             if not hit and toks and c["sha"] in diffs:
                 ch = R.diff_changes(diffs[c["sha"]])
                 rem = {x["token"] for x in ch["removed_parallel"]}
-                flag = lambda t: t.split(" ")[0]  # noqa: E731
-                readded = {flag(x["token"]) for x in ch["added_parallel"]}
-                hit = bool({t for t in toks & rem if flag(t) not in readded})
+                readded = {R.flag_family(x["token"]) for x in ch["added_parallel"]}
+                hit = bool({t for t in toks & rem if R.flag_family(t) not in readded})
             if hit:
                 rec["rules"] = sorted(set(rec["rules"]) | {"P3-revert"})
                 rec["revert_evidence"] = c["html_url"]

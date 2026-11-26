@@ -752,3 +752,40 @@ def test_run_repo_unavailable_and_incomplete_resume(tmp_path):
     r2 = Fake(tmp_path)
     assert J.run_repo(r2, "o/r", ROW, cp) == "done"
     assert r2.calls[0] == "issues" and "meta" not in r2.calls
+
+
+# ============================================================================================ review cycle 2 (+6)
+def test_multiline_addopts_list_is_on(tmp_path):
+    """protects=a TOML addopts list spread over lines with "-n", "auto" makes state on and cites the addopts line;
+    fails_when=state off; no_claim=fixture pyproject."""
+    py = '[tool.pytest.ini_options]\naddopts = [\n    "-n",\n    "auto",\n]\n'
+    t = level_of(tmp_path, "pytest", "pytest -q", {WF: "  - run: pytest -q\n", "pyproject.toml": py,
+                                                   "requirements.txt": "django\npytest-django\npytest-xdist\n"})
+    assert t["state"] == "on" and t["on_evidence"][0]["file"] == "pyproject.toml"
+
+
+def test_n_after_a_pipe_is_not_pytest():
+    """protects=`pytest -q | tail -n50` has no parallel token; fails_when=tail's -n50 reads as pytest -n;
+    no_claim=none beyond protects."""
+    assert R.flag_tokens("pytest -q | tail -n50") == []
+
+
+@pytest.mark.parametrize("a,b", [("-n auto", "-n4"), ("-n auto", "-nauto"), ("-n 4", "--numprocesses=8")])
+def test_flag_family_same_for_n_forms(a, b):
+    """protects=worker-count and spelling changes stay one flag family (no false P3 revert); fails_when=families
+    differ; no_claim=none beyond protects."""
+    assert R.flag_family(a) == R.flag_family(b) == "-n"
+
+
+def test_commented_pytest_addopts_is_ignored(tmp_path):
+    """protects=a commented-out PYTEST_ADDOPTS line does not make state on; fails_when=it does; no_claim=fixture."""
+    t = level_of(tmp_path, "pytest", "pytest -q", {WF: "# PYTEST_ADDOPTS: -n auto\n  - run: pytest -q\n",
+                                                   "requirements.txt": "django\npytest-django\npytest-xdist\n"})
+    assert t["state"] == "off"
+
+
+def test_locate_follows_backslash_continuation():
+    """protects=a backslash-continued runner command is located at its first line; fails_when=None (would turn an
+    off row into unknown); no_claim=none beyond protects."""
+    text = "steps:\n  run: pytest \\\n    --cov -q tests/\n"
+    assert B.locate(text, "pytest --cov -q tests/") == {"line": 2, "text": "  run: pytest \\"}

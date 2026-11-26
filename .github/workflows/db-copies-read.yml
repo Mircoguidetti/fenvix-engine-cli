@@ -47,6 +47,8 @@ jobs:
           git diff --name-only --diff-filter=A "$before" "${{ github.sha }}" -- harness/db_copies_read/requests/ \
             | sort | while read -r f; do cp "$f" "$RUNNER_TEMP/req/"; echo "request: $f"; done
           ls -1 "$RUNNER_TEMP/req"
+          n=$(ls -1 "$RUNNER_TEMP/req" | wc -l)
+          [ "$n" -le 1 ] || { echo "a push may add one request file; this push adds $n; refusing"; exit 1; }
       - name: Read
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

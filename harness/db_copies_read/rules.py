@@ -75,8 +75,10 @@ def flag_tokens(line: str) -> list[tuple[str, str]]:
     Scopes: ``-n`` pytest lines and ``addopts`` only; ``--parallel`` ``manage.py test`` lines only; ``-w``/``-i``
     Jest lines; ``-p`` ``go test`` lines only; ``--jobs`` mocha lines."""
     out: list[tuple[str, str]] = []
-    if _is_pytest_line(line):
-        for m in re.finditer(L + r"-n(?:" + N + r")?(auto|\d+)" + R, line):
+    for seg in re.split(r"\|\|?|&&|;", line):
+        if not _is_pytest_line(seg):
+            continue
+        for m in re.finditer(L + r"-n(?:" + N + r")?(auto|\d+)" + R, seg):
             v = m.group(1)
             if v == "auto" or (_num(v) or 0) >= 2:
                 out.append(("parallel", m.group(0)))
@@ -398,6 +400,14 @@ def django_project(dep_texts: list[str], dsm_texts: list[str], tree_paths: list[
     return False, ""
 
 
+def flag_family(token: str) -> str:
+    """The flag a token sets, without its value: -n4, -n auto, --numprocesses=4 are all '-n'."""
+    t = token.strip()
+    if re.match(r"-n(?:\d|auto\b|[\s=]|$)|--numprocesses", t):
+        return "-n"
+    return re.split(r"[\s=:(]", t, 1)[0]
+
+
 def option_text(line: str) -> str:
     """An addopts/list line with quotes, brackets and commas removed, so ``["-n", "auto"]`` reads ``-n auto``."""
     return re.sub(r"\s+", " ", re.sub(r"[\[\]\"',]", " ", line))
@@ -414,7 +424,7 @@ def addopts_lines(config_texts: dict[str, str]) -> list[tuple[str, int, str]]:
                 j = i + 1
                 while j < len(lines) and (lines[j].startswith((" ", "\t")) or lines[j].strip().startswith(("\"", "'", "]"))):
                     if lines[j].strip():
-                        out.append((path, j + 1, "addopts " + lines[j]))
+                        out.append((path, j + 1, lines[j]))
                     j += 1
     return out
 
@@ -447,7 +457,11 @@ def state_for(level: str, kind: str, runner_line: str, addopts: list[tuple[str, 
             return "unknown", "settings mention parallel or TEST_RUNNER"
         return "off", "manage.py test without --parallel; no parallel default or TEST_RUNNER in settings"
     on_line = any(p == "parallel" for p, _ in flag_tokens(runner_line))
-    on_cfg = [a for a in addopts if any(p == "parallel" for p, _ in flag_tokens(option_text(a[2])))]
+    by_file: dict[str, list[tuple[str, int, str]]] = {}
+    for a in addopts:
+        by_file.setdefault(a[0], []).append(a)
+    on_cfg = [v[0] for v in by_file.values()
+              if any(p == "parallel" for p, _ in flag_tokens(option_text(" ".join(x[2] for x in v))))]
     if on_line or on_cfg:
         return "on", "-n/--numprocesses present"
     return "off", "no -n/--numprocesses in the timed command or addopts"
