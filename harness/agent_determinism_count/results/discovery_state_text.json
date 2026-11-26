@@ -650,6 +650,15 @@
    "prepass_total": 62054,
    "stack": []
   },
+  "committer-date:>=2024-01-01 intermittent \"model output\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 787,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 781,
+   "stack": []
+  },
   "committer-date:>=2024-01-01 intermittent anthropic test": {
    "capped": true,
    "done": true,
@@ -668,6 +677,24 @@
    "prepass_total": 141567,
    "stack": []
   },
+  "committer-date:>=2024-01-01 intermittent eval test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 4193,
+   "leaves": 7,
+   "nodes": 14,
+   "prepass_total": 6465,
+   "stack": [
+    [
+     "2026-08-19",
+     "2026-09-20"
+    ],
+    [
+     "2026-09-21",
+     "2026-11-25"
+    ]
+   ]
+  },
   "committer-date:>=2024-01-01 intermittent gemini test": {
    "capped": false,
    "done": true,
@@ -679,25 +706,12 @@
   },
   "committer-date:>=2024-01-01 intermittent gpt test": {
    "capped": false,
-   "done": false,
-   "leaf_total": 1633,
-   "leaves": 4,
-   "nodes": 9,
+   "done": true,
+   "leaf_total": 7894,
+   "leaves": 15,
+   "nodes": 28,
    "prepass_total": 7854,
-   "stack": [
-    [
-     "2026-05-29",
-     "2026-06-13"
-    ],
-    [
-     "2026-06-14",
-     "2026-07-16"
-    ],
-    [
-     "2026-07-17",
-     "2026-11-25"
-    ]
-   ]
+   "stack": []
   },
   "committer-date:>=2024-01-01 intermittent llm test": {
    "capped": false,
@@ -715,6 +729,15 @@
    "leaves": 27,
    "nodes": 52,
    "prepass_total": 14943,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 intermittent prompt test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 23950,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 23885,
    "stack": []
   },
   "committer-date:>=2024-01-01 nondeterministic \"ai sdk\" test": {
@@ -2943,13 +2966,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 1145
+  "issues": 1322
  },
  "search_stats": {
-  "429": 121,
+  "429": 141,
   "limit": 30,
   "remaining": 28,
-  "reset": 1795679713
+  "reset": 1795681473
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
