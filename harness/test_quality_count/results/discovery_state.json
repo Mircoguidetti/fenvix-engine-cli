@@ -130,18 +130,22 @@
    "stack": []
   },
   "B stryker filename:stryker.conf": {
-   "done": false,
-   "leaves": 3,
-   "nodes": 15,
+   "done": true,
+   "leaves": 19,
+   "nodes": 37,
    "root_incomplete": false,
    "root_total": 6880,
+   "stack": []
+  },
+  "B stryker filename:stryker.config": {
+   "done": false,
+   "leaves": 5,
+   "nodes": 18,
+   "root_incomplete": false,
+   "root_total": 4504,
    "stack": [
     [
-     391,
-     781
-    ],
-    [
-     782,
+     1173,
      1562
     ],
     [
