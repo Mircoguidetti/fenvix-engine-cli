@@ -1307,6 +1307,33 @@
    "prepass_total": 69888,
    "stack": []
   },
+  "committer-date:>=2024-01-01 xfail claude test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 75401,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 75030,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 xfail gemini test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 0,
+   "leaves": 0,
+   "nodes": 0,
+   "prepass_total": 1913,
+   "stack": [
+    [
+     "2024-01-01",
+     "2025-06-13"
+    ],
+    [
+     "2025-06-14",
+     "2026-11-25"
+    ]
+   ]
+  },
   "committer-date:>=2024-01-01 xfail llm test": {
    "capped": false,
    "done": true,
@@ -3389,13 +3416,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 1698
+  "issues": 1712
  },
  "search_stats": {
-  "429": 211,
+  "429": 213,
   "limit": 30,
-  "remaining": 24,
-  "reset": 1795686791
+  "remaining": 27,
+  "reset": 1795687007
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
