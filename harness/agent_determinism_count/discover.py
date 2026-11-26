@@ -244,7 +244,16 @@ def run(family: str, route: str, max_minutes: float, deadline: str | None) -> in
             s1, first = fetch(c, d, a, b, 1)
             rec = {"query": d["key"], "family": d["family"], "stratum": d["stratum"], "a": a, "b": b, "status": s1,
                    "total_count": first.get("total_count"), "incomplete_results": first.get("incomplete_results"),
-                   "at": now()}
+                   "at": now(), "route": route}
+            # coordinator 09:30Z (route switch): a session-route answer below the workflow route's pre-pass answer
+            # for the same root range stops discovery for a report
+            if route == "session" and s1 == 200 and [a, b] == [a0, b0] \
+                    and (first.get("total_count") or 0) < tc0:
+                st["route_check"] = {"query": d["key"], "session": first.get("total_count"), "workflow": tc0,
+                                     "at": now()}
+                _save(sp, st)
+                print(f"route check: {d['key']} session {first.get('total_count')} < workflow pre-pass {tc0}")
+                return 4
             kids = None
             if s1 != 200:
                 rec.update(leaf=True, error=True, read=0, truncated=True, incomplete=True, items=[])
@@ -310,12 +319,15 @@ def read_leaves() -> list[dict]:
         # the leaf files are outside git (parts.py; ``parts.py fetch`` first); the single pre-parts file if present
         legacy = DISC / f"leaves_{fam}.jsonl.gz"
         for p in ([legacy] if legacy.exists() else []) + PT.part_files(fam, DISC):
-            with gzip.open(p, "rt") as f:
-                for x in f:
-                    try:
-                        recs.append(json.loads(x))
-                    except json.JSONDecodeError:  # a line cut by a stopped job
-                        pass
+            try:
+                with gzip.open(p, "rt") as f:
+                    for x in f:
+                        try:
+                            recs.append(json.loads(x))
+                        except json.JSONDecodeError:  # a line cut by a stopped job
+                            pass
+            except (EOFError, OSError):  # a gzip member cut by a cancelled job: the lines before it are kept
+                pass
     by = {}
     for r in recs:  # a leaf re-run after an interruption: the last record per (query, a, b)
         by[(r["query"], str(r["a"]), str(r["b"]))] = r

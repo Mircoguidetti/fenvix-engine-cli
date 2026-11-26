@@ -1149,3 +1149,50 @@ def test_discovery_time_limit_leaves_request_pending(tmp_path, monkeypatch):
     assert job.main() == 0 and not (res / "requests_done" / "d9.json").exists()
     state.update(budget_reached="2026-11-26T10:54:28+00:00")
     assert job.main() == 0 and (res / "requests_done" / "d9.json").exists()
+
+
+def test_session_route_answer_below_workflow_prepass_stops(tmp_path, monkeypatch):
+    """protects=the route switch (coordinator 09:30Z): S1 resumes on the session route, and a session answer below the
+    workflow route's pre-pass answer for the same root range stops discovery for a report; leaf records carry their
+    route; fails_when=a lower session count is bisected on silently; no_claim=why the indexes differ."""
+    monkeypatch.setattr(discover, "RES", tmp_path)
+    monkeypatch.setattr(discover, "DISC", tmp_path / "discovery")
+    keys = [d["key"] for d in R.discovery_queries() if d["family"] == "code"]
+    pp = {k: {"family": "code", "stratum": "S1", "status": 200, "total_count": 0} for k in keys}
+    (tmp_path / "prepass_code.json").write_text(json.dumps(pp))
+    (tmp_path / "prepass_text.json").write_text(json.dumps({}))
+    (tmp_path / "launch.json").write_text(json.dumps({"launch": "2026-11-26", "at": "x"}))
+    monkeypatch.setattr(discover, "_client", lambda route: SearchFake("none"))
+    assert discover.run("code", "session", 60, None) == 0  # equal answers (0 = 0): runs through
+    assert all(lf["route"] == "session" for lf in discover.read_leaves())
+    (tmp_path / "discovery_state_code.json").unlink()
+    pp[keys[1]]["total_count"] = 5
+    (tmp_path / "prepass_code.json").write_text(json.dumps(pp))
+    assert discover.run("code", "session", 60, None) == 4
+    st = json.loads((tmp_path / "discovery_state_code.json").read_text())
+    assert st["route_check"]["query"] == keys[1] and st["route_check"]["workflow"] == 5
+    assert st["route_check"]["session"] == 0 and not st["queries"][keys[1]]["done"]
+
+
+def test_cut_gzip_member_and_session_part_in_git(tmp_path, monkeypatch):
+    """protects=a cancelled job's leaf file and the work session's committed part: a gzip member cut mid-write keeps
+    the leaves before it, and a session part (ADC_PART_ID) is indexed as committed to git, checked by sha256, never
+    fetched from an artifact; fails_when=the build crashes on a cut member, or fetch looks for a missing artifact;
+    no_claim=network."""
+    parts = _parts_env(tmp_path, monkeypatch)
+    p = parts.part_path("code", tmp_path / "discovery")
+    p.parent.mkdir(parents=True)
+    whole = _gz_lines([_leaf("q", "1")])
+    p.write_bytes(whole + _gz_lines([_leaf("q", "2")])[:15])
+    assert [lf["a"] for lf in discover.read_leaves()] == ["1"]
+    p.unlink()
+    monkeypatch.delenv("GITHUB_RUN_ID")
+    monkeypatch.setenv("ADC_PART_ID", "session")
+    sp = parts.part_path("code", tmp_path / "discovery")
+    assert sp.name == "code-session.jsonl.gz"
+    sp.write_bytes(whole)
+    e = parts.index("code")["code-session.jsonl.gz"]
+    assert e["artifact"] is None and e["in_git"] == "results/discovery/leaves_code/code-session.jsonl.gz"
+    assert parts.fetch("code") == 0
+    sp.write_bytes(whole + whole)
+    assert parts.fetch("code") == 1

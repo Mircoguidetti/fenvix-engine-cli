@@ -50,3 +50,18 @@
    information only, so requests_code/c3.json is renamed c6.json: after the current code run (deadline ~08:25Z) the
    order is c1b, c4, c6. The 27 population answers in population.json are kept and c6 resumes after them. No rule,
    query or threshold change.
+8. 2026-11-26 09:30Z, S1 route switch (coordinator, after "market reading done" at 09:27Z). The §0.2a re-probe on the
+   session route (09:28Z, results/probe_session_code.json): a1 api.openai.com path:cassettes 200 tc=2, a2
+   api.openai.com path:tests/cassettes 200 tc=1394, both in 7.8 s. The workflow route's answers (03:19Z,
+   probe_workflow_code.json) are the same: a1 tc=2, a2 tc=1394. The totals tie, so the spec rule picks the faster
+   route. Session: about 4 s per request, no 429. Workflow, during c4 08:43-09:25Z: 47 code requests in 42 min, 27 of
+   them 429. Route: session. search_budget_free.json gains the scope `session`.
+   Run 45776621427 (c4, workflow route) is stopped after a checkpoint, and S1 bisection resumes from its committed
+   state in the work session (session_run.sh, harness-tracked chunks, checkpoint commits every 30 min). budget_end
+   stays 2026-11-27T03:49:30Z. probe_decisions.json code_route becomes `session`, so the code workflow's requests
+   (c4, c6) wait and the two routes never run at once. The session's leaves go to
+   leaves_code/code-session.jsonl.gz, committed to git; the index marks it in_git, and parts.py fetch checks its
+   sha256 instead of downloading it. Leaf records carry their route. If a session root-range answer is below the
+   workflow pre-pass answer for the same query, discovery stops (state route_check) for a report. The build also
+   keeps the leaves before a gzip member cut by a cancelled job. Tests: test_session_route_answer_below_workflow_prepass_stops,
+   test_cut_gzip_member_and_session_part_in_git (both fail before the change). No rule, query or threshold change.

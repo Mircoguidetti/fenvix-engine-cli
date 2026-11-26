@@ -34,7 +34,9 @@ FAMILIES = ("code", "text")
 
 
 def run_id() -> str:
-    return os.environ.get("GITHUB_RUN_ID") or "local"
+    """GITHUB_RUN_ID in a workflow; ADC_PART_ID (e.g. ``session``) for the work session's own discovery, whose leaf
+    file is committed to git (S1 code leaves are small), not uploaded as an artifact."""
+    return os.environ.get("GITHUB_RUN_ID") or os.environ.get("ADC_PART_ID") or "local"
 
 
 def part_dir(family: str, disc: Path | None = None) -> Path:
@@ -81,6 +83,8 @@ def index(family: str) -> dict:
         e = ix.get(p.name) or {"run_id": p.name[len(family) + 1:-len(".jsonl.gz")],
                                "artifact": f"agent-determinism-count-leaves-{p.name[len(family) + 1:-len('.jsonl.gz')]}",
                                "artifact_path": p.name}
+        if not e["run_id"].isdigit():  # a work-session part: committed to git, no artifact
+            e.update(artifact=None, artifact_path=None, in_git=f"results/discovery/leaves_{family}/{p.name}")
         e.update(file_facts(p))
         ix[p.name] = e
     if ix:
@@ -159,6 +163,10 @@ def fetch(family: str) -> int:
     for fn, e in sorted(_load(index_path(family), {}).items()):
         p = part_dir(family) / fn
         if p.exists() and file_facts(p)["sha256"] == e["sha256"]:
+            continue
+        if e.get("in_git"):
+            print(f"{fn}: committed part {e['in_git']} missing or sha256 differs from the index")
+            bad += 1
             continue
         z = artifact_zip(e["run_id"], e["artifact"])
         if not _extract(z, e["artifact_path"], p):
