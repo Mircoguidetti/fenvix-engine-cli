@@ -1,0 +1,48 @@
+{
+ "finished": null,
+ "queries": {
+  "A stryker": {
+   "done": false,
+   "leaves": 0,
+   "nodes": 6,
+   "root_incomplete": false,
+   "root_total": 3284,
+   "stack": [
+    [
+     0,
+     6250
+    ],
+    [
+     6251,
+     12500
+    ],
+    [
+     12501,
+     25000
+    ],
+    [
+     25001,
+     50000
+    ],
+    [
+     50001,
+     100000
+    ],
+    [
+     100001,
+     200000
+    ],
+    [
+     200001,
+     400000
+    ]
+   ]
+  }
+ },
+ "rate_limit": {
+  "code_search": 10
+ },
+ "requests": 0,
+ "route": "session",
+ "started": "2026-11-26T17:29:32+00:00"
+}
