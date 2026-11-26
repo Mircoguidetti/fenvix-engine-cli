@@ -298,6 +298,33 @@ process.stdout.write(fs.readFileSync(d + '/' + fs.readdirSync(d).filter((n) => n
     assert.ok(w.includes('T2/x'), `the write lands in T2/x: ${w}`);
   });
 
+  test('an async link swap in flight: a call during it does not cache the old target (third /review pass, finding 1)', () => {
+    // protects=fs.promises / callback rename, symlink, unlink, rm change the link later than the call starts: the memo
+    // is bypassed while such a call is pending and dropped when it settles; fails_when=an existsSync during the swap
+    // caches the old target A and the write after the await is recorded as A/z, never B/z; no_claim=another process's swap
+    const dir = fs.mkdtempSync(path.join(BASE, 'fslink3-'));
+    write(dir, { 'A/.keep': '', 'B/.keep': '' });
+    fs.symlinkSync('A', path.join(dir, 'cur'));
+    fs.symlinkSync('B', path.join(dir, 'tmplink'));
+    const code = `
+const fs = require('node:fs'); const parallel = require(${JSON.stringify(path.join(__dirname, '..', 'src', 'parallel'))});
+parallel.installFootprint(process.cwd());
+(async () => {
+  parallel.enter('f');
+  // one threadpool thread, busy with a slow hash: the rename is queued behind it, so the existsSync runs before it
+  const busy = new Promise((res) => require('node:crypto').pbkdf2('x', 'y', 200000, 32, 'sha256', res));
+  const pr = fs.promises.rename('tmplink', 'cur'); fs.existsSync('cur/q'); await busy; await pr; fs.writeFileSync('cur/z', '1');
+  parallel.leave('f');
+  const d = process.env.DETJS_DIR + '/lanes';
+  process.stdout.write(fs.readFileSync(d + '/' + fs.readdirSync(d).filter((n) => n.endsWith('.json'))[0], 'utf8'));
+})();`;
+    const r = spawnSync(process.execPath, ['-e', code], { cwd: dir, encoding: 'utf8', env: cleanEnv({ DETJS_DIR: path.join(dir, '.detjs', 'run'), DETJS_WORKERS: '2', UV_THREADPOOL_SIZE: '1' }) });
+    assert.equal(r.status, 0, r.stderr);
+    const fp = JSON.parse(r.stdout).footprint;
+    assert.ok(fp.r.includes('A/q'), `the existsSync ran before the swap (else this test proves nothing): ${fp.r}`);
+    assert.ok(fp.w.includes('B/z'), `the write lands in B/z: ${fp.w}`);
+  });
+
   test('a listing or a recursive root at / pairs with keys directly under it (F6)', () => {
     // protects=the root directory is matched like any other; fails_when=the prefix of '/' is '//' and nothing is under
     // it; no_claim=synthetic keys
