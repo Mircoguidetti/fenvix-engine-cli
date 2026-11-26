@@ -42,3 +42,11 @@
    done (d1 earlier; d2 at 04:22Z), so run 45726858242 found no pending discovery and S2/S3 sent nothing from
    04:22Z to the next push. job.py now marks a discovery request done only when the family finished or reached its
    24 h budget; d3 resumes S2/S3. Test: test_discovery_time_limit_leaves_request_pending.
+7. 2026-11-26 07:37Z, request order only (coordinator): the code pre-pass c2 finished at 05:30Z with 32 shapes, 30
+   answered and 2 at 429 (generativelanguage.googleapis.com path:vcr, openai.azure.com path:cassettes); earlier
+   status messages that gave "14/52" and "30/52" were wrong (they counted the population answers as pre-pass ones).
+   From 05:31Z the code run worked on c3 (population counts, §1, information only): 27 of 102 queries by 07:35Z at
+   about 13 per hour, so S1 discovery c4 would have started near 13:30Z. Discovery feeds the count and population is
+   information only, so requests_code/c3.json is renamed c6.json: after the current code run (deadline ~08:25Z) the
+   order is c1b, c4, c6. The 27 population answers in population.json are kept and c6 resumes after them. No rule,
+   query or threshold change.
