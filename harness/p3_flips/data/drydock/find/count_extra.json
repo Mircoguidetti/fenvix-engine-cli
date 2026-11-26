@@ -1,0 +1,2960 @@
+{
+ "repo": "drydock",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "serial_counts": {
+  "flip": 82,
+  "mixed": 1,
+  "absent": 0,
+  "skipped-in-det": 0,
+  "det-only": 48,
+  "reverse": 0,
+  "other": 48
+ },
+ "n_unstable": 83,
+ "n_parallel_only": 4,
+ "parallel_only_both_runs": 1,
+ "runs": [
+  {
+   "kind": "plain",
+   "rep": 1,
+   "exit": 0,
+   "wall_s": 506.71,
+   "cmd": "npx --no-install vitest run --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/drydock/plain1.runner.json"
+  },
+  {
+   "kind": "plain",
+   "rep": 2,
+   "exit": 0,
+   "wall_s": 502.05,
+   "cmd": "npx --no-install vitest run --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/drydock/plain2.runner.json"
+  },
+  {
+   "kind": "det",
+   "rep": 1,
+   "exit": 1,
+   "wall_s": 468.0,
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/drydock/det1.outcomes.json --det-trace=/tmp/pm-p3/find/drydock/det1.trace.jsonl"
+  },
+  {
+   "kind": "det",
+   "rep": 2,
+   "exit": 1,
+   "wall_s": 461.24,
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/drydock/det2.outcomes.json --det-trace=/tmp/pm-p3/find/drydock/det2.trace.jsonl"
+  },
+  {
+   "kind": "par",
+   "rep": 1,
+   "exit": 1,
+   "wall_s": 206.11,
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det --det-workers=4 --det-outcomes=/tmp/pm-p3/find/drydock/par1.outcomes.json --det-trace=/tmp/pm-p3/find/drydock/par1.trace.jsonl"
+  },
+  {
+   "kind": "par",
+   "rep": 2,
+   "exit": 1,
+   "wall_s": 206.16,
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det --det-workers=4 --det-outcomes=/tmp/pm-p3/find/drydock/par2.outcomes.json --det-trace=/tmp/pm-p3/find/drydock/par2.trace.jsonl"
+  }
+ ],
+ "serial_cases": [
+  {
+   "id": "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::a failed ordered state frame does not poison the following frame or escape unhandled",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:474]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:474]"
+   ]
+  },
+  {
+   "id": "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::a slow state sync does not block correlated Docker responses",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:443]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:443]"
+   ]
+  },
+  {
+   "id": "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::an ordered frame waiting behind an in-flight sync becomes inert after disconnect",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:490]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:490]"
+   ]
+  },
+  {
+   "id": "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::serializes component sync before the following container sync in wire order",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:410]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:410]"
+   ]
+  },
+  {
+   "id": "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 torn-down adapter inertness regressions::handleContainerSync resolving after a forced disconnect does not resurrect connected state or re-emit agentConnected",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:3345]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:3345]"
+   ]
+  },
+  {
+   "id": "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a disconnected initializer cannot replace the new owner (cleanup throws: false)",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected PortwingDockerBridge{ \u2026(6) } to be undefined [call @ agent/edge-registration-ownership.test.ts:183]",
+    "AssertionError: expected PortwingDockerBridge{ \u2026(6) } to be undefined [call @ agent/edge-registration-ownership.test.ts:183]"
+   ]
+  },
+  {
+   "id": "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a retired remote trigger initializer cannot publish over the replacement",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected false to be true // Object.is equality [call @ agent/edge-registration-ownership.test.ts:258]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:211]"
+   ]
+  },
+  {
+   "id": "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a retired synthetic trigger initializer cannot publish over the replacement",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:211]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:211]"
+   ]
+  },
+  {
+   "id": "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::disconnect during the real inventory seed cannot publish the retired watcher",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:106]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:106]"
+   ]
+  },
+  {
+   "id": "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::wire-ordered repeated syncs replace and clean up the previous live watcher",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:196]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:196]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::a container that first appears through dd:container_added gets a digest check",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::a dd:container_updated event keeps the detected digest update",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::a different image id does not inherit previous digest facts",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::a different image name does not inherit previous digest facts",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::a different image registry does not inherit previous digest facts",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::a different image tag does not inherit previous digest facts",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::a full report of the same image retains controller-derived digest facts",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::an added event resolves digest watching from Swarm deploy labels",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::an event whose container disappeared does not erase the detected digest update",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::an event without a Docker summary ImageID inspects the reported running image",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::an unavailable Docker image does not erase the detected digest update",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::an untrackable Docker summary does not erase the detected digest update",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::control: the scheduled native scan detects the digest update",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::event image facts come from the running image when a local tag has moved",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::failed Swarm service inspection preserves the prior digest verdict before image enrichment",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "api/api-key-auth.test.ts::the failed-attempt budget::bounds the tracked addresses, so the budget map is not the memory a spray exhausts",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected 186 to be 1000 // Object.is equality [call @ api/api-key-auth.test.ts:392]",
+    "AssertionError: expected 186 to be 1000 // Object.is equality [call @ api/api-key-auth.test.ts:392]"
+   ]
+  },
+  {
+   "id": "api/api.test.ts::API Router::should expose openapi document endpoint before auth middleware",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/api.test.ts:268]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/api.test.ts:268]"
+   ]
+  },
+  {
+   "id": "api/api.test.ts::API Router::should lazy-load openapi document module when openapi endpoint is requested",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/api.test.ts:294]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/api.test.ts:294]"
+   ]
+  },
+  {
+   "id": "api/api.test.ts::API Router::should mount all sub-routers",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/api.test.ts:359]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/api.test.ts:359]"
+   ]
+  },
+  {
+   "id": "api/api.test.ts::API Router::should serve identical cached JSON string on repeated openapi.json requests",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/api.test.ts:323]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/api.test.ts:323]"
+   ]
+  },
+  {
+   "id": "api/auth-session.test.ts::auth-session::enforceSessionLimitBeforeLogin should clear stale in-memory lock entries",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/auth-session.test.ts:312]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/auth-session.test.ts:312]"
+   ]
+  },
+  {
+   "id": "api/auth-session.test.ts::auth-session::enforceSessionLimitBeforeLogin should serialize concurrent logins for the same username",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/auth-session.test.ts:284]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/auth-session.test.ts:284]"
+   ]
+  },
+  {
+   "id": "api/auth-session.test.ts::auth-session::testable_withBasicSessionLock should not let stale cleanup from an older lock delete a newer lock",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected \"vi.fn()\" to be called 1 times, but got 0 times [call @ api/auth-session.test.ts:424]",
+    "AssertionError: expected \"vi.fn()\" to be called 1 times, but got 0 times [call @ api/auth-session.test.ts:424]"
+   ]
+  },
+  {
+   "id": "api/container/logs.test.ts::api/container/logs::download response headers::destroys the local Docker stream as soon as the download byte limit is exceeded",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/container/logs.test.ts:420]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/container/logs.test.ts:420]"
+   ]
+  },
+  {
+   "id": "api/container/logs.test.ts::api/container/logs::download response headers::downloads a completed bounded local Docker stream",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/container/logs.test.ts:477]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/container/logs.test.ts:477]"
+   ]
+  },
+  {
+   "id": "api/container/logs.test.ts::api/container/logs::download response headers::handles an error from a bounded local Docker stream",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/container/logs.test.ts:496]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/container/logs.test.ts:496]"
+   ]
+  },
+  {
+   "id": "api/container/logs.test.ts::api/container/logs::download response headers::rejects when a bounded local Docker stream closes before completion",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/container/logs.test.ts:509]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/container/logs.test.ts:509]"
+   ]
+  },
+  {
+   "id": "api/icons.test.ts::Icons Router::should continue when cache base directory scan fails during enforcement",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected \"vi.fn()\" to be called with arguments: [ 'docker.svg', \u2026(1) ] / Number of calls: 0 [call @ api/icons.test.ts:875]",
+    "AssertionError: expected \"vi.fn()\" to be called with arguments: [ 'docker.svg', \u2026(1) ] / Number of calls: 0 [call @ api/icons.test.ts:875]"
+   ]
+  },
+  {
+   "id": "api/icons.test.ts::Icons Router::should deduplicate concurrent fetches for the same icon",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/icons.test.ts:1358]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/icons.test.ts:1358]"
+   ]
+  },
+  {
+   "id": "api/icons.test.ts::Icons Router::should skip full cache scan for consecutive writes within enforcement interval",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/icons.test.ts:727]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/icons.test.ts:727]"
+   ]
+  },
+  {
+   "id": "api/icons.test.ts::Icons Router::should skip non-directory and non-file cache entries during enforcement",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/icons.test.ts:779]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/icons.test.ts:779]"
+   ]
+  },
+  {
+   "id": "api/icons.test.ts::Icons Router::should stat provider cache entries in parallel during enforcement",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/icons.test.ts:565]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/icons.test.ts:565]"
+   ]
+  },
+  {
+   "id": "api/icons/fetch.test.ts::icons/fetch::deduplicates concurrent fetches for the same provider and slug",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/icons/fetch.test.ts:218]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/icons/fetch.test.ts:218]"
+   ]
+  },
+  {
+   "id": "api/icons/fetch.test.ts::icons/fetch::times out fetches and allows a later retry for the same icon",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected \"vi.fn()\" to be called 1 times, but got 2 times [call @ api/icons/fetch.test.ts:292]",
+    "AssertionError: expected \"vi.fn()\" to be called 1 times, but got 2 times [call @ api/icons/fetch.test.ts:292]"
+   ]
+  },
+  {
+   "id": "api/index.test.ts::API Index::real Express: GET /api/auth/methods is no longer registered and is answered by the removed-alias tombstone",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/index.test.ts:1056]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/index.test.ts:1056]"
+   ]
+  },
+  {
+   "id": "api/index.test.ts::API Index::real Express: UI paths return a JSON 404 explaining DD_SERVER_UI_ENABLED=false, while /api/v1 and /health are unaffected",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/index.test.ts:1284]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/index.test.ts:1284]"
+   ]
+  },
+  {
+   "id": "api/index.test.ts::API Index::real Express: a non-GET request to a GET-only /api/v1/* route falls through the tombstone to a 404, not a false 410",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/index.test.ts:1150]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/index.test.ts:1150]"
+   ]
+  },
+  {
+   "id": "api/index.test.ts::API Index::real Express: a non-whitelisted /api/* request returns 410 JSON (not 404, not SPA HTML) when DD_COMPAT_WUDCARD is disabled",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/index.test.ts:938]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/index.test.ts:938]"
+   ]
+  },
+  {
+   "id": "api/label-override.test.ts::PATCH /containers/:id/label-overrides::remove clears one field, and removing the last field deletes the row",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected undefined to match object { before: 'hl:x', after: null } [call @ api/label-override.test.ts:433]",
+    "AssertionError: expected undefined to match object { before: 'hl:x', after: null } [call @ api/label-override.test.ts:433]"
+   ]
+  },
+  {
+   "id": "api/log-stream.test.ts::api/log-stream::a log stream ends when its session is revoked::a socket without a session id of its own is not tracked",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/log-stream.test.ts:188]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/log-stream.test.ts:188]"
+   ]
+  },
+  {
+   "id": "api/log-stream.test.ts::api/log-stream::a log stream ends when its session is revoked::closes the socket with a policy close when its session id is revoked",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/log-stream.test.ts:155]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/log-stream.test.ts:155]"
+   ]
+  },
+  {
+   "id": "api/log-stream.test.ts::api/log-stream::a log stream ends when its session is revoked::closing two sockets of one session closes both",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/log-stream.test.ts:198]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/log-stream.test.ts:198]"
+   ]
+  },
+  {
+   "id": "api/log-stream.test.ts::api/log-stream::a log stream ends when its session is revoked::forgets a socket that closed on its own, so a later revocation finds nothing",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/log-stream.test.ts:179]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/log-stream.test.ts:179]"
+   ]
+  },
+  {
+   "id": "api/log-stream.test.ts::api/log-stream::a log stream ends when its session is revoked::is closed by the session re-check once its session row is gone",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/log-stream.test.ts:167]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/log-stream.test.ts:167]"
+   ]
+  },
+  {
+   "id": "api/openapi-scopes.test.ts::the published document::every documented operation the router serves carries its scope",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/openapi-scopes.test.ts:201]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/openapi-scopes.test.ts:201]"
+   ]
+  },
+  {
+   "id": "api/portwing-ws.test.ts::hello verification \u2014 happy path::an old-shaped hello with no capabilities field still completes the handshake",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1165]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1165]"
+   ]
+  },
+  {
+   "id": "api/portwing-ws.test.ts::hello verification \u2014 happy path::hello version normalisation::splits a plain version into the same base and build",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1240]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1240]"
+   ]
+  },
+  {
+   "id": "api/portwing-ws.test.ts::hello verification \u2014 happy path::hello version normalisation::splits a prerelease version into base and build",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1240]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1240]"
+   ]
+  },
+  {
+   "id": "api/portwing-ws.test.ts::hello verification \u2014 happy path::leaves version and build unset when hello carries no version",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1267]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1267]"
+   ]
+  },
+  {
+   "id": "api/portwing-ws.test.ts::hello verification \u2014 happy path::passes only advertised capability strings to the adapter ([\"edge-request-body-stream\"])",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1139]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1139]"
+   ]
+  },
+  {
+   "id": "api/portwing-ws.test.ts::hello verification \u2014 happy path::passes only advertised capability strings to the adapter (undefined)",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1139]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1139]"
+   ]
+  },
+  {
+   "id": "api/portwing-ws.test.ts::hello verification \u2014 happy path::uses the controller-configured poll interval in the welcome and agent metadata",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1202]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1202]"
+   ]
+  },
+  {
+   "id": "api/portwing-ws.test.ts::hello verification \u2014 happy path::welcome advertises the edge-response-body-b64 capability",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1094]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1094]"
+   ]
+  },
+  {
+   "id": "api/portwing-ws.test.ts::reports the canonical configuration version in the welcome frame",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:338]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:338]"
+   ]
+  },
+  {
+   "id": "api/totp-factor-management.integration.test.ts::TOTP slice 4: factor-management API::the concurrent-session limit counts live sessions only::a sixth live session still evicts the oldest one, and closes its streams",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected 200 to be 401 // Object.is equality [call @ api/totp-factor-management.integration.test.ts:3063]",
+    "AssertionError: expected 200 to be 401 // Object.is equality [call @ api/totp-factor-management.integration.test.ts:3063]"
+   ]
+  },
+  {
+   "id": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get handles unusual env var values without crashing (with seed=-118775523)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get handles unusual env var values without crashing (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get handles unusual env var values without crashing (with seed=-119311091)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get handles unusual env var values without crashing (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get handles unusual env var values without crashing (with seed=-947168224)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get handles unusual env var values without crashing (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get handles unusual env var values without crashing (with seed=888506859)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths and env objects (with seed=-1902158025)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths and env objects (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths and env objects (with seed=-1902671065)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths and env objects (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths and env objects (with seed=215426446)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths and env objects (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths and env objects (with seed=937128621)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths and env objects (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths with empty env (with seed=-1335131969)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths with empty env (with seed=620215897)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths with empty env (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths with empty env (with seed=62028011)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths with empty env (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths with empty env (with seed=620718665)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths with empty env (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get with realistic DD_ env vars never throws (with seed=-169898344)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get with realistic DD_ env vars never throws (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get with realistic DD_ env vars never throws (with seed=-170435960)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get with realistic DD_ env vars never throws (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get with realistic DD_ env vars never throws (with seed=-547943000)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get with realistic DD_ env vars never throws (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get with realistic DD_ env vars never throws (with seed=-896347422)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get with realistic DD_ env vars never throws (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "model/container.fuzz.test.ts::model/container fuzz tests::flatten handles validated containers (with seed=-1692587642)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "model/container.fuzz.test.ts::model/container fuzz tests::flatten handles validated containers (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "model/container.fuzz.test.ts::model/container fuzz tests::flatten handles validated containers (with seed=-1693057642)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "model/container.fuzz.test.ts::model/container fuzz tests::flatten handles validated containers (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "model/container.fuzz.test.ts::model/container fuzz tests::flatten handles validated containers (with seed=-70112800)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "model/container.fuzz.test.ts::model/container fuzz tests::flatten handles validated containers (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "model/container.fuzz.test.ts::model/container fuzz tests::flatten handles validated containers (with seed=1383464745)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "model/container.fuzz.test.ts::model/container fuzz tests::getLink handles arbitrary string pairs for container/tag (with seed=-143157410)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "model/container.fuzz.test.ts::model/container fuzz tests::getLink handles arbitrary string pairs for container/tag (with seed=1460990944)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "model/container.fuzz.test.ts::model/container fuzz tests::getLink handles arbitrary string pairs for container/tag (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "model/container.fuzz.test.ts::model/container fuzz tests::getLink handles arbitrary string pairs for container/tag (with seed=1461463024)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "model/container.fuzz.test.ts::model/container fuzz tests::getLink handles arbitrary string pairs for container/tag (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "model/container.fuzz.test.ts::model/container fuzz tests::getLink handles arbitrary string pairs for container/tag (with seed=631542313)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "model/container.fuzz.test.ts::model/container fuzz tests::getLink handles arbitrary string pairs for container/tag (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "model/container.fuzz.test.ts::model/container fuzz tests::getLink never throws on arbitrary container and tag (with seed=196681738)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "model/container.fuzz.test.ts::model/container fuzz tests::getLink never throws on arbitrary container and tag (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "model/container.fuzz.test.ts::model/container fuzz tests::getLink never throws on arbitrary container and tag (with seed=610341086)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "model/container.fuzz.test.ts::model/container fuzz tests::getLink never throws on arbitrary container and tag (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "model/container.fuzz.test.ts::model/container fuzz tests::getLink never throws on arbitrary container and tag (with seed=610911438)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "model/container.fuzz.test.ts::model/container fuzz tests::getLink never throws on arbitrary container and tag (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "model/container.fuzz.test.ts::model/container fuzz tests::getLink never throws on arbitrary container and tag (with seed=753337667)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "model/container.fuzz.test.ts::model/container fuzz tests::getLink never throws on arbitrary container and tag (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "model/container.fuzz.test.ts::model/container fuzz tests::validate accepts valid container-shaped objects (with seed=-107448372)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "model/container.fuzz.test.ts::model/container fuzz tests::validate accepts valid container-shaped objects (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "model/container.fuzz.test.ts::model/container fuzz tests::validate accepts valid container-shaped objects (with seed=-1929877725)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "model/container.fuzz.test.ts::model/container fuzz tests::validate accepts valid container-shaped objects (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "model/container.fuzz.test.ts::model/container fuzz tests::validate accepts valid container-shaped objects (with seed=-1930382541)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "model/container.fuzz.test.ts::model/container fuzz tests::validate accepts valid container-shaped objects (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "model/container.fuzz.test.ts::model/container fuzz tests::validate accepts valid container-shaped objects (with seed=874565008)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "model/container.fuzz.test.ts::model/container fuzz tests::validate handles arbitrary input without crashing (with seed=-1529023430)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "model/container.fuzz.test.ts::model/container fuzz tests::validate handles arbitrary input without crashing (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "model/container.fuzz.test.ts::model/container fuzz tests::validate handles arbitrary input without crashing (with seed=-1529602006)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "model/container.fuzz.test.ts::model/container fuzz tests::validate handles arbitrary input without crashing (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "model/container.fuzz.test.ts::model/container fuzz tests::validate handles arbitrary input without crashing (with seed=-20929044)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "model/container.fuzz.test.ts::model/container fuzz tests::validate handles arbitrary input without crashing (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "model/container.fuzz.test.ts::model/container fuzz tests::validate handles arbitrary input without crashing (with seed=429637776)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask handles undefined correctly (with seed=-888784933)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask handles undefined correctly (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask handles undefined correctly (with seed=-971774479)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask handles undefined correctly (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask handles undefined correctly (with seed=1848108215)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask handles undefined correctly (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask handles undefined correctly (with seed=1848586407)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask handles undefined correctly (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask never throws on arbitrary strings (with seed=1008804143)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask never throws on arbitrary strings (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask never throws on arbitrary strings (with seed=1009382719)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask never throws on arbitrary strings (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask never throws on arbitrary strings (with seed=628664210)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask never throws on arbitrary strings (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask never throws on arbitrary strings (with seed=687166429)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask never throws on arbitrary strings (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles arbitrary config objects (with seed=1376739206)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles arbitrary config objects (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles arbitrary config objects (with seed=1610005019)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles arbitrary config objects (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles arbitrary config objects (with seed=1610509835)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles arbitrary config objects (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles arbitrary config objects (with seed=1942239109)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles arbitrary config objects (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles dictionary-like configs (with seed=-1353460079)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles dictionary-like configs (with seed=535303671)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles dictionary-like configs (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles dictionary-like configs (with seed=7553654)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles dictionary-like configs (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles dictionary-like configs (with seed=8099430)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles dictionary-like configs (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "registry/index.test.ts::constructComponent should resolve and construct a real provider without calling register or init",
+   "kind": "mixed",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "passed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected \"register\" to not be called at all, but actually been called 1 times / Received: / 1st register call: / Array [ [call @ registry/index.test.ts:310]",
+    null
+   ]
+  },
+  {
+   "id": "registry/index.test.ts::reconcileComponentsWithConfiguration::treats a component present in state but never registered through registerComponent as absent from the current set",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ registry/index.test.ts:2293]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ registry/index.test.ts:2293]"
+   ]
+  },
+  {
+   "id": "registry/index.test.ts::registerComponent should not track raw configuration for an agent-owned component, and reconcile should never see it",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ registry/index.test.ts:222]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ registry/index.test.ts:222]"
+   ]
+  },
+  {
+   "id": "registry/index.test.ts::registerRegistries should register all registries",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected [ 'alicr.public', \u2026(15) ] to deeply equal [ 'alicr.public', \u2026(14) ] [call @ registry/index.test.ts:351]",
+    "AssertionError: expected [ 'alicr.public', \u2026(15) ] to deeply equal [ 'alicr.public', \u2026(14) ] [call @ registry/index.test.ts:351]"
+   ]
+  },
+  {
+   "id": "security/backends/docker.test.ts::createDockerScannerBackend::stops and removes a worker when its scan is aborted",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected Error: Scanner worker timed out after 100\u2026 to be AbortError: worker cancelled // Object.is equality [call @ security/backends/docker.test.ts:572]",
+    "AssertionError: expected Error: Scanner worker timed out after 100\u2026 to be AbortError: worker cancelled // Object.is equality [call @ security/backends/docker.test.ts:572]"
+   ]
+  },
+  {
+   "id": "security/scan.test.ts::runCommand heartbeat::logs every 30 seconds with elapsed time and stops once the scan succeeds",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected [ Array(1) ] to have a length of +0 but got 1 [call @ security/scan.test.ts:3581]",
+    "AssertionError: expected [ Array(1) ] to have a length of +0 but got 1 [call @ security/scan.test.ts:3581]"
+   ]
+  },
+  {
+   "id": "security/scan.test.ts::scanImageForVulnerabilities should not execute queued Trivy work after it is aborted",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:311]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:311]"
+   ]
+  },
+  {
+   "id": "security/scan.test.ts::scanImageForVulnerabilities should terminate a command child and detach abort handling",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:236]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:236]"
+   ]
+  },
+  {
+   "id": "security/scan.test.ts::scanImageWithDedup::aborts the provider when its only scheduled waiter aborts and clears the in-flight entry",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2565]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2565]"
+   ]
+  },
+  {
+   "id": "security/scan.test.ts::scanImageWithDedup::does not downgrade a gate-first shared scan when a scheduler joins",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2437]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2437]"
+   ]
+  },
+  {
+   "id": "security/scan.test.ts::scanImageWithDedup::does not retry a scheduler-only shared scan after a transient failure",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2467]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2467]"
+   ]
+  },
+  {
+   "id": "security/scan.test.ts::scanImageWithDedup::keeps a signal-less waiter alive when the first scheduled waiter aborts",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2494]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2494]"
+   ]
+  },
+  {
+   "id": "security/scan.test.ts::scanImageWithDedup::lets a later scheduled waiter abort without cancelling a signal-less first waiter",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2530]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2530]"
+   ]
+  },
+  {
+   "id": "security/scan.test.ts::scanImageWithDedup::replaces an aborted in-flight scan while its shared warm-up is still pending",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2326]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2326]"
+   ]
+  },
+  {
+   "id": "security/scan.test.ts::scanImageWithDedup::single-flights concurrent scans by digest and clears the in-flight entry after settlement",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2635]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2635]"
+   ]
+  },
+  {
+   "id": "security/scan.test.ts::scanImageWithDedup::upgrades a scheduler-first shared scan when a retrying gate joins before failure",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2407]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2407]"
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::diff never throws on arbitrary version strings (with seed=-1994304747)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "tag/index.fuzz.test.ts::tag/index fuzz tests::diff never throws on arbitrary version strings (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::diff never throws on arbitrary version strings (with seed=-605297389)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "tag/index.fuzz.test.ts::tag/index fuzz tests::diff never throws on arbitrary version strings (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::diff never throws on arbitrary version strings (with seed=-605867773)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "tag/index.fuzz.test.ts::tag/index fuzz tests::diff never throws on arbitrary version strings (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::diff never throws on arbitrary version strings (with seed=-7448575)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "tag/index.fuzz.test.ts::tag/index fuzz tests::diff never throws on arbitrary version strings (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater handles semver-like strings (with seed=-1151637346)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater handles semver-like strings (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater handles semver-like strings (with seed=-893441159)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater handles semver-like strings (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater handles semver-like strings (with seed=-893911191)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater handles semver-like strings (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater handles semver-like strings (with seed=1698270198)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater never throws on arbitrary version strings (with seed=-16029495)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater never throws on arbitrary version strings (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater never throws on arbitrary version strings (with seed=-62232328)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater never throws on arbitrary version strings (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater never throws on arbitrary version strings (with seed=1949586172)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater never throws on arbitrary version strings (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater never throws on arbitrary version strings (with seed=1950123756)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater never throws on arbitrary version strings (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::parse handles version-like strings (with seed=-1969800086)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "tag/index.fuzz.test.ts::tag/index fuzz tests::parse handles version-like strings (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::parse handles version-like strings (with seed=-40034596)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "tag/index.fuzz.test.ts::tag/index fuzz tests::parse handles version-like strings (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::parse handles version-like strings (with seed=1119210017)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "tag/index.fuzz.test.ts::tag/index fuzz tests::parse handles version-like strings (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::parse handles version-like strings (with seed=1119690289)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "tag/index.fuzz.test.ts::tag/index fuzz tests::parse handles version-like strings (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::parse never throws on arbitrary strings (with seed=-1685617391)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "tag/index.fuzz.test.ts::tag/index fuzz tests::parse never throws on arbitrary strings (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::parse never throws on arbitrary strings (with seed=-229999559)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "tag/index.fuzz.test.ts::tag/index fuzz tests::parse never throws on arbitrary strings (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::parse never throws on arbitrary strings (with seed=-230512599)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "tag/index.fuzz.test.ts::tag/index fuzz tests::parse never throws on arbitrary strings (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::parse never throws on arbitrary strings (with seed=2140832328)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::transform either returns a string or throws a regex configuration error (with seed=-1870423358)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::transform either returns a string or throws a regex configuration error (with seed=445099066)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "tag/index.fuzz.test.ts::tag/index fuzz tests::transform either returns a string or throws a regex configuration error (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::transform either returns a string or throws a regex configuration error (with seed=445610026)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "tag/index.fuzz.test.ts::tag/index fuzz tests::transform either returns a string or throws a regex configuration error (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "tag/index.fuzz.test.ts::tag/index fuzz tests::transform either returns a string or throws a regex configuration error (with seed=896482173)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "tag/index.fuzz.test.ts::tag/index fuzz tests::transform either returns a string or throws a regex configuration error (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles a mix of valid and arbitrary image references (with seed=-1188101848)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles a mix of valid and arbitrary image references (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles a mix of valid and arbitrary image references (with seed=-1188571848)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles a mix of valid and arbitrary image references (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles a mix of valid and arbitrary image references (with seed=894132890)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles a mix of valid and arbitrary image references (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles a mix of valid and arbitrary image references (with seed=944101308)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles a mix of valid and arbitrary image references (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles realistic image name patterns (with seed=-222719267)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles realistic image name patterns (with seed=1800407967)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles realistic image name patterns (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles realistic image name patterns (with seed=1800986511)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles realistic image name patterns (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles realistic image name patterns (with seed=599562342)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles realistic image name patterns (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse roundtrips structured image name components (with seed=-2011903835)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse roundtrips structured image name components (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse roundtrips structured image name components (with seed=-2080950302)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse roundtrips structured image name components (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse roundtrips structured image name components (with seed=104087060)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse roundtrips structured image name components (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse roundtrips structured image name components (with seed=104655364)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse roundtrips structured image name components (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name always returns an object with expected fields (with seed=-160580835)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name always returns an object with expected fields (with seed=310812148)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name always returns an object with expected fields (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name always returns an object with expected fields (with seed=311314916)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name always returns an object with expected fields (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name always returns an object with expected fields (with seed=613417725)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name always returns an object with expected fields (with seed=#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name never throws on arbitrary strings (with seed=-1913817883)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    null,
+    "passed"
+   ],
+   "unstable": true,
+   "pattern": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name never throws on arbitrary strings (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name never throws on arbitrary strings (with seed=-1914330891)",
+   "kind": "det-only",
+   "results": [
+    null,
+    null,
+    "passed",
+    null
+   ],
+   "unstable": true,
+   "pattern": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name never throws on arbitrary strings (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name never throws on arbitrary strings (with seed=-2002390329)",
+   "kind": "other",
+   "results": [
+    null,
+    "passed",
+    null,
+    null
+   ],
+   "unstable": true,
+   "pattern": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name never throws on arbitrary strings (with seed=-#)",
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name never throws on arbitrary strings (with seed=1266112582)",
+   "kind": "other",
+   "results": [
+    "passed",
+    null,
+    null,
+    null
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    null,
+    null
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.watch.test.ts::Docker Watcher::Additional Coverage - watchFromCron and getContainers::should limit concurrent effective label resolution during getContainers",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ watchers/providers/docker/Docker.watch.test.ts:1541]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ watchers/providers/docker/Docker.watch.test.ts:1541]"
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.watch.test.ts::Docker Watcher::Additional Coverage - watchFromCron and getContainers::should limit concurrent image-detail enrichment during getContainers",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ watchers/providers/docker/Docker.watch.test.ts:1578]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ watchers/providers/docker/Docker.watch.test.ts:1578]"
+   ]
+  }
+ ],
+ "parallel_only": [
+  {
+   "id": "api/index.test.ts::API Index::real Express: /api/v1/* traffic is never reached by the removed-alias tombstone mounted at /api",
+   "par": [
+    "failed",
+    "passed"
+   ],
+   "first": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/index.test.ts:1104]"
+  },
+  {
+   "id": "registry/index.test.ts::reconcileComponentsWithConfiguration::a component that fails to re-register on change is reported, and ends up absent (no rollback)",
+   "par": [
+    "failed",
+    "failed"
+   ],
+   "first": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ registry/index.test.ts:2214]"
+  },
+  {
+   "id": "registry/index.test.ts::reconcileComponentsWithConfiguration::registers an added trigger",
+   "par": [
+    "passed",
+    "failed"
+   ],
+   "first": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ registry/index.test.ts:2081]"
+  },
+  {
+   "id": "registry/index.test.ts::reconcileComponentsWithConfiguration::registers components outside the request audit actor so armed timers stay actor-free",
+   "par": [
+    "passed",
+    "failed"
+   ],
+   "first": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ registry/index.test.ts:2092]"
+  }
+ ]
+}

@@ -1,0 +1,1903 @@
+{
+ "repo": "alakajam",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "serial_counts": {
+  "flip": 114,
+  "mixed": 1,
+  "absent": 0,
+  "skipped-in-det": 0,
+  "det-only": 0,
+  "reverse": 0,
+  "other": 0
+ },
+ "n_unstable": 0,
+ "n_parallel_only": 0,
+ "parallel_only_both_runs": 0,
+ "runs": [
+  {
+   "kind": "plain",
+   "rep": 1,
+   "exit": 0,
+   "wall_s": 32.26,
+   "cmd": "npx --no-install vitest run --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/alakajam/plain1.runner.json"
+  },
+  {
+   "kind": "plain",
+   "rep": 2,
+   "exit": 0,
+   "wall_s": 29.33,
+   "cmd": "npx --no-install vitest run --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/alakajam/plain2.runner.json"
+  },
+  {
+   "kind": "det",
+   "rep": 1,
+   "exit": 1,
+   "wall_s": 66.16,
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/alakajam/det1.outcomes.json --det-trace=/tmp/pm-p3/find/alakajam/det1.trace.jsonl"
+  },
+  {
+   "kind": "det",
+   "rep": 2,
+   "exit": 1,
+   "wall_s": 70.36,
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/alakajam/det2.outcomes.json --det-trace=/tmp/pm-p3/find/alakajam/det2.trace.jsonl"
+  },
+  {
+   "kind": "par",
+   "rep": 1,
+   "exit": 1,
+   "wall_s": 79.54,
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det --det-workers=4 --det-outcomes=/tmp/pm-p3/find/alakajam/par1.outcomes.json --det-trace=/tmp/pm-p3/find/alakajam/par1.trace.jsonl"
+  },
+  {
+   "kind": "par",
+   "rep": 2,
+   "exit": 1,
+   "wall_s": 65.44,
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det --det-workers=4 --det-outcomes=/tmp/pm-p3/find/alakajam/par2.outcomes.json --det-trace=/tmp/pm-p3/find/alakajam/par2.trace.jsonl"
+  }
+ ],
+ "serial_cases": [
+  {
+   "id": "server/core/security.spec.ts::Security::add user right::should create a role on a post",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:227]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:227]"
+   ]
+  },
+  {
+   "id": "server/core/security.spec.ts::Security::add user right::should not duplicate an existing role",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:257]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:257]"
+   ]
+  },
+  {
+   "id": "server/core/security.spec.ts::Security::add user right::should not grant rights on an entry sharing the same ID as the post",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:265]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:265]"
+   ]
+  },
+  {
+   "id": "server/core/security.spec.ts::Security::add user right::should upgrade an existing role to a higher permission, but never downgrade it",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:241]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:241]"
+   ]
+  },
+  {
+   "id": "server/core/security.spec.ts::Security::comment permissions::should let users read comments on readable nodes",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:179]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:179]"
+   ]
+  },
+  {
+   "id": "server/core/security.spec.ts::Security::comment permissions::should only let the comment author edit it",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "QueryFailedError: SQLITE_BUSY: database is locked [call @ ]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:169]"
+   ]
+  },
+  {
+   "id": "server/core/security.spec.ts::Security::entry permissions::should give all permissions to the entry owner",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:150]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:150]"
+   ]
+  },
+  {
+   "id": "server/core/security.spec.ts::Security::entry permissions::should give write permissions to team members",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:157]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:157]"
+   ]
+  },
+  {
+   "id": "server/core/security.spec.ts::Security::event permissions::should let anyone read events but only mods edit them, and only admins once closed",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:205]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:205]"
+   ]
+  },
+  {
+   "id": "server/core/security.spec.ts::Security::post permissions::should always refuse when no model is given",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:140]",
+    "QueryFailedError: SQLITE_BUSY: database is locked [call @ ]"
+   ]
+  },
+  {
+   "id": "server/core/security.spec.ts::Security::post permissions::should give all permissions to the post author",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:58]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:58]"
+   ]
+  },
+  {
+   "id": "server/core/security.spec.ts::Security::post permissions::should give no write permissions to other users",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:67]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:67]"
+   ]
+  },
+  {
+   "id": "server/core/security.spec.ts::Security::post permissions::should let anyone read published posts by approved users",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:76]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:76]"
+   ]
+  },
+  {
+   "id": "server/core/security.spec.ts::Security::post permissions::should let mods and admins in when allowed",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:109]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:109]"
+   ]
+  },
+  {
+   "id": "server/core/security.spec.ts::Security::post permissions::should only let users with roles read drafts",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:90]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:90]"
+   ]
+  },
+  {
+   "id": "server/core/security.spec.ts::Security::post permissions::should require user roles to be loaded",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:132]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:132]"
+   ]
+  },
+  {
+   "id": "server/core/security.spec.ts::Security::remove user right::should do nothing if the permission does not match exactly",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:291]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:291]"
+   ]
+  },
+  {
+   "id": "server/core/security.spec.ts::Security::remove user right::should not remove roles of a post sharing the same ID as the entry",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:299]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:299]"
+   ]
+  },
+  {
+   "id": "server/core/security.spec.ts::Security::remove user right::should remove a role with the exact permission",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:280]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/core/security.spec.ts:280]"
+   ]
+  },
+  {
+   "id": "server/entry/entry.service.spec.ts::Entry service::create entry::should create an entry with a manage role for its owner",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:31]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:31]"
+   ]
+  },
+  {
+   "id": "server/entry/entry.service.spec.ts::Entry service::create entry::should refuse a second entry for the same event",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:56]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:56]"
+   ]
+  },
+  {
+   "id": "server/entry/entry.service.spec.ts::Entry service::create entry::should support external entries (without event)",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:47]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:47]"
+   ]
+  },
+  {
+   "id": "server/entry/entry.service.spec.ts::Entry service::delete entry::should delete the entry along with its roles and comments",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:219]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:219]"
+   ]
+  },
+  {
+   "id": "server/entry/entry.service.spec.ts::Entry service::delete entry::should detach the entry posts without deleting them",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:235]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:235]"
+   ]
+  },
+  {
+   "id": "server/entry/entry.service.spec.ts::Entry service::delete entry::should leave a post sharing the same ID untouched",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:249]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:249]"
+   ]
+  },
+  {
+   "id": "server/entry/entry.service.spec.ts::Entry service::find entries not reviewed by user::should hide entries commented or owned by the user",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:159]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:159]"
+   ]
+  },
+  {
+   "id": "server/entry/entry.service.spec.ts::Entry service::find entries not reviewed by user::should not hide entries just because the reviewer has a role on a post",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:198]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:198]"
+   ]
+  },
+  {
+   "id": "server/entry/entry.service.spec.ts::Entry service::find entries not reviewed by user::should not hide entries just because the user commented a post sharing the same ID",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:177]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:177]"
+   ]
+  },
+  {
+   "id": "server/entry/entry.service.spec.ts::Entry service::find user entries::should find all entries of a user",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:81]",
+    "QueryFailedError: SQLITE_BUSY: database is locked [call @ ]"
+   ]
+  },
+  {
+   "id": "server/entry/entry.service.spec.ts::Entry service::find user entries::should find entries of a team member",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:96]",
+    "QueryFailedError: SQLITE_BUSY: database is locked [call @ ]"
+   ]
+  },
+  {
+   "id": "server/entry/entry.service.spec.ts::Entry service::find user entries::should find entries through the userId filter",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:114]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:114]"
+   ]
+  },
+  {
+   "id": "server/entry/entry.service.spec.ts::Entry service::find user entries::should find the entry of a user for an event",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:70]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:70]"
+   ]
+  },
+  {
+   "id": "server/entry/entry.service.spec.ts::Entry service::find user entries::should find the latest event entry of a user",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "QueryFailedError: SQLITE_BUSY: database is locked [call @ ]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:106]"
+   ]
+  },
+  {
+   "id": "server/entry/entry.service.spec.ts::Entry service::find user entries::should not find entries through roles on a post sharing the same ID",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:127]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:127]"
+   ]
+  },
+  {
+   "id": "server/entry/highscore/highscore.service.spec.ts::High score service::find user scores::should exclude suspended scores by default (#636)",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/highscore/highscore.service.spec.ts:54]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/highscore/highscore.service.spec.ts:54]"
+   ]
+  },
+  {
+   "id": "server/entry/highscore/highscore.service.spec.ts::High score service::find user scores::should include suspended scores when requested",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/highscore/highscore.service.spec.ts:60]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/highscore/highscore.service.spec.ts:60]"
+   ]
+  },
+  {
+   "id": "server/entry/team/team.service.spec.ts::Team service::find team members::should list the owner, members and invites of an entry",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:31]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:31]"
+   ]
+  },
+  {
+   "id": "server/entry/team/team.service.spec.ts::Team service::find team members::should not list users with roles on a post sharing the same ID",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:90]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:90]"
+   ]
+  },
+  {
+   "id": "server/entry/team/team.service.spec.ts::Team service::find team members::should only list the current user for a new entry",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:73]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:73]"
+   ]
+  },
+  {
+   "id": "server/entry/team/team.service.spec.ts::Team service::search for team members::should ignore roles on posts",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:260]",
+    "QueryFailedError: SQLITE_BUSY: database is locked [call @ ]"
+   ]
+  },
+  {
+   "id": "server/entry/team/team.service.spec.ts::Team service::search for team members::should tell which users already entered the event",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:230]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:230]"
+   ]
+  },
+  {
+   "id": "server/entry/team/team.service.spec.ts::Team service::search for team members::should tell which users are in the external entry",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:246]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:246]"
+   ]
+  },
+  {
+   "id": "server/entry/team/team.service.spec.ts::Team service::set team members::should detach posts of removed members from the entry",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:205]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:205]"
+   ]
+  },
+  {
+   "id": "server/entry/team/team.service.spec.ts::Team service::set team members::should invite new members",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:101]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:101]"
+   ]
+  },
+  {
+   "id": "server/entry/team/team.service.spec.ts::Team service::set team members::should not touch roles of a post sharing the same ID",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:183]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:183]"
+   ]
+  },
+  {
+   "id": "server/entry/team/team.service.spec.ts::Team service::set team members::should only keep the owner on solo entries",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:160]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:160]"
+   ]
+  },
+  {
+   "id": "server/entry/team/team.service.spec.ts::Team service::set team members::should remove members and invites not in the list",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:121]",
+    "QueryFailedError: SQLITE_BUSY: database is locked [call @ ]"
+   ]
+  },
+  {
+   "id": "server/entry/team/team.service.spec.ts::Team service::set team members::should report users who already entered the event with another entry",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:142]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:142]"
+   ]
+  },
+  {
+   "id": "server/entry/team/team.service.spec.ts::Team service::team invites::should clear other invites from the same event and attach the user's posts when accepting",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "QueryFailedError: SQLITE_BUSY: database is locked [call @ ]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:308]"
+   ]
+  },
+  {
+   "id": "server/entry/team/team.service.spec.ts::Team service::team invites::should create a write role when accepting an invite",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:291]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:291]"
+   ]
+  },
+  {
+   "id": "server/entry/team/team.service.spec.ts::Team service::team invites::should delete the invite when declining",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:375]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:375]"
+   ]
+  },
+  {
+   "id": "server/entry/team/team.service.spec.ts::Team service::team invites::should find the invites of a user",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:279]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:279]"
+   ]
+  },
+  {
+   "id": "server/entry/team/team.service.spec.ts::Team service::team invites::should not create a role when accepting an invite to a solo entry",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:350]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:350]"
+   ]
+  },
+  {
+   "id": "server/entry/team/team.service.spec.ts::Team service::team invites::should not create a role without an invite",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:366]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:366]"
+   ]
+  },
+  {
+   "id": "server/entry/team/team.service.spec.ts::Team service::team invites::should only create a role on the entry, not on a post sharing the same ID",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "QueryFailedError: SQLITE_BUSY: database is locked [call @ ]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:386]"
+   ]
+  },
+  {
+   "id": "server/entry/team/team.service.spec.ts::Team service::team invites::should promote an existing role when accepting an invite for a higher permission",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "QueryFailedError: SQLITE_BUSY: database is locked [call @ ]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/team/team.service.spec.ts:335]"
+   ]
+  },
+  {
+   "id": "server/event/tournament/tournament.service.spec.ts::Tournament service::count submitted scores::should count active scores over all tournament games, ignoring suspended and unrelated scores",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/event/tournament/tournament.service.spec.ts:32]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/event/tournament/tournament.service.spec.ts:32]"
+   ]
+  },
+  {
+   "id": "server/event/tournament/tournament.service.spec.ts::Tournament service::count submitted scores::should return nothing for events that are not tournaments",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/event/tournament/tournament.service.spec.ts:73]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/event/tournament/tournament.service.spec.ts:73]"
+   ]
+  },
+  {
+   "id": "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should create anonymous comments on entries allowing them",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:141]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:141]"
+   ]
+  },
+  {
+   "id": "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should not create anonymous comments for users disallowed to",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:163]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:163]"
+   ]
+  },
+  {
+   "id": "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should not create anonymous comments on entries disallowing them",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:155]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:155]"
+   ]
+  },
+  {
+   "id": "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should not create anonymous comments on posts",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:174]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:174]"
+   ]
+  },
+  {
+   "id": "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should only find own anonymous comments of the requested node",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:181]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:181]"
+   ]
+  },
+  {
+   "id": "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should tell that a regular comment is not an own anonymous comment",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:202]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:202]"
+   ]
+  },
+  {
+   "id": "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should tell that an anonymous comment belongs to its author",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:208]",
+    "QueryFailedError: SQLITE_BUSY: database is locked [call @ ]"
+   ]
+  },
+  {
+   "id": "server/post/comment/comment.service.spec.ts::Comment service::comment count::should be refreshable after creating and deleting comments",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:363]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:363]"
+   ]
+  },
+  {
+   "id": "server/post/comment/comment.service.spec.ts::Comment service::create comment::should keep comments of a post and an entry sharing the same ID separate",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:63]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:63]"
+   ]
+  },
+  {
+   "id": "server/post/comment/comment.service.spec.ts::Comment service::delete comment::should delete a post comment",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:112]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:112]"
+   ]
+  },
+  {
+   "id": "server/post/comment/comment.service.spec.ts::Comment service::delete comment::should delete an anonymous entry comment along with its author link",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:125]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:125]"
+   ]
+  },
+  {
+   "id": "server/post/comment/comment.service.spec.ts::Comment service::edit comment::should only allow the comment author to edit it",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:101]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:101]"
+   ]
+  },
+  {
+   "id": "server/post/comment/comment.service.spec.ts::Comment service::edit comment::should update the comment body",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:89]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:89]"
+   ]
+  },
+  {
+   "id": "server/post/comment/comment.service.spec.ts::Comment service::find comments by user::should find all comments of a user on posts and entries, latest first",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:220]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:220]"
+   ]
+  },
+  {
+   "id": "server/post/comment/comment.service.spec.ts::Comment service::find comments by user::should find comments of a user on entries of an event",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:237]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:237]"
+   ]
+  },
+  {
+   "id": "server/post/comment/comment.service.spec.ts::Comment service::find comments by user::should not find event comments made on a post sharing the ID of an event entry",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:257]",
+    "QueryFailedError: SQLITE_BUSY: database is locked [call @ ]"
+   ]
+  },
+  {
+   "id": "server/post/comment/comment.service.spec.ts::Comment service::find comments to user::should find comments made by others on the user's posts and entries",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:274]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:274]"
+   ]
+  },
+  {
+   "id": "server/post/comment/comment.service.spec.ts::Comment service::find comments to user::should find comments mentioning the user",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:303]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:303]"
+   ]
+  },
+  {
+   "id": "server/post/comment/comment.service.spec.ts::Comment service::find comments to user::should find comments on nodes where the user has any role",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:289]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:289]"
+   ]
+  },
+  {
+   "id": "server/post/comment/comment.service.spec.ts::Comment service::find comments to user::should not find comments on an entry sharing the ID of the user's post",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:316]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:316]"
+   ]
+  },
+  {
+   "id": "server/post/comment/comment.service.spec.ts::Comment service::find latest comments::should only return comments on nodes readable by anonymous users",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:337]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/comment/comment.service.spec.ts:337]"
+   ]
+  },
+  {
+   "id": "server/post/like/like.service.spec.ts::Like service::like::should count likes from several users",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:46]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:46]"
+   ]
+  },
+  {
+   "id": "server/post/like/like.service.spec.ts::Like service::like::should like a post and update its counters",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:31]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:31]"
+   ]
+  },
+  {
+   "id": "server/post/like/like.service.spec.ts::Like service::like::should not like twice",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:59]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:59]"
+   ]
+  },
+  {
+   "id": "server/post/like/like.service.spec.ts::Like service::like::should not mix up likes of different posts",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:79]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:79]"
+   ]
+  },
+  {
+   "id": "server/post/like/like.service.spec.ts::Like service::post deletion::should delete the likes of the post",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:159]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:159]"
+   ]
+  },
+  {
+   "id": "server/post/like/like.service.spec.ts::Like service::unlike::should clear like details when the last like is removed",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:106]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:106]"
+   ]
+  },
+  {
+   "id": "server/post/like/like.service.spec.ts::Like service::unlike::should remove the like and update counters",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:90]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:90]"
+   ]
+  },
+  {
+   "id": "server/post/post.service.spec.ts::Post service::attach posts to entry::should attach the user's posts from the same event to the entry",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:275]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:275]"
+   ]
+  },
+  {
+   "id": "server/post/post.service.spec.ts::Post service::attach posts to entry::should be triggered when creating an entry for an event",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:295]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:295]"
+   ]
+  },
+  {
+   "id": "server/post/post.service.spec.ts::Post service::attach posts to entry::should not attach posts when the user only has a role on an entry sharing the same ID",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:304]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:304]"
+   ]
+  },
+  {
+   "id": "server/post/post.service.spec.ts::Post service::create post::should create a post authored by the user, with a manage role",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:37]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:37]"
+   ]
+  },
+  {
+   "id": "server/post/post.service.spec.ts::Post service::create post::should store the event ID on the author role",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:50]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:50]"
+   ]
+  },
+  {
+   "id": "server/post/post.service.spec.ts::Post service::delete post::should delete the post along with its roles, comments and likes",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:228]",
+    "QueryFailedError: SQLITE_BUSY: database is locked [call @ ]"
+   ]
+  },
+  {
+   "id": "server/post/post.service.spec.ts::Post service::delete post::should leave other posts and entries untouched",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:246]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:246]"
+   ]
+  },
+  {
+   "id": "server/post/post.service.spec.ts::Post service::find post by ID::should not load roles of an entry sharing the same ID",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:82]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:82]"
+   ]
+  },
+  {
+   "id": "server/post/post.service.spec.ts::Post service::find post by ID::should return nothing for an unknown ID",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:78]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:78]"
+   ]
+  },
+  {
+   "id": "server/post/post.service.spec.ts::Post service::find post by ID::should return the post with its author, roles, event & entry",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:59]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:59]"
+   ]
+  },
+  {
+   "id": "server/post/post.service.spec.ts::Post service::find posts::should exclude drafts unless allowed",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:135]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:135]"
+   ]
+  },
+  {
+   "id": "server/post/post.service.spec.ts::Post service::find posts::should filter by event and entry",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:160]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:160]"
+   ]
+  },
+  {
+   "id": "server/post/post.service.spec.ts::Post service::find posts::should load user roles of the found posts",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:182]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:182]"
+   ]
+  },
+  {
+   "id": "server/post/post.service.spec.ts::Post service::find posts::should not find posts through roles on an entry sharing the same ID",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:122]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:122]"
+   ]
+  },
+  {
+   "id": "server/post/post.service.spec.ts::Post service::find posts::should only find posts on which the user has write permissions or above",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:101]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:101]"
+   ]
+  },
+  {
+   "id": "server/post/post.service.spec.ts::Post service::refresh comment count::should count the comments of a post",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:196]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:196]"
+   ]
+  },
+  {
+   "id": "server/post/post.service.spec.ts::Post service::refresh comment count::should count the comments of an entry",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:206]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:206]"
+   ]
+  },
+  {
+   "id": "server/post/post.service.spec.ts::Post service::refresh comment count::should not count comments of an entry sharing the same ID",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:214]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/post.service.spec.ts:214]"
+   ]
+  },
+  {
+   "id": "server/user/user.service.spec.ts::User service::approved user::should approve mods",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/user/user.service.spec.ts:267]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/user/user.service.spec.ts:267]"
+   ]
+  },
+  {
+   "id": "server/user/user.service.spec.ts::User service::approved user::should approve team members of an event entry",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/user/user.service.spec.ts:248]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/user/user.service.spec.ts:248]"
+   ]
+  },
+  {
+   "id": "server/user/user.service.spec.ts::User service::approved user::should approve users with an event entry",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/user/user.service.spec.ts:243]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/user/user.service.spec.ts:243]"
+   ]
+  },
+  {
+   "id": "server/user/user.service.spec.ts::User service::approved user::should not approve users with only event posts",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "QueryFailedError: SQLITE_BUSY: database is locked [call @ ]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/user/user.service.spec.ts:260]"
+   ]
+  },
+  {
+   "id": "server/user/user.service.spec.ts::User service::approved user::should not approve users with only external entries",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/user/user.service.spec.ts:255]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/user/user.service.spec.ts:255]"
+   ]
+  },
+  {
+   "id": "server/user/user.service.spec.ts::User service::approved user::should not approve users without entries",
+   "kind": "mixed",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "passed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/user/user.service.spec.ts:239]",
+    null
+   ]
+  },
+  {
+   "id": "server/user/user.service.spec.ts::User service::delete user::should delete comments and roles of other users on the deleted user's posts",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/user/user.service.spec.ts:313]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/user/user.service.spec.ts:313]"
+   ]
+  },
+  {
+   "id": "server/user/user.service.spec.ts::User service::delete user::should delete the user along with their posts, comments, likes and roles",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/user/user.service.spec.ts:281]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/user/user.service.spec.ts:281]"
+   ]
+  },
+  {
+   "id": "server/user/user.service.spec.ts::User service::delete user::should refuse to delete users with entries",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/user/user.service.spec.ts:275]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/user/user.service.spec.ts:275]"
+   ]
+  },
+  {
+   "id": "server/user/user.service.spec.ts::User service::entries count from real nodes::should count entries but not posts",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/user/user.service.spec.ts:204]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/user/user.service.spec.ts:204]"
+   ]
+  },
+  {
+   "id": "server/user/user.service.spec.ts::User service::entries count from real nodes::should not consider users with only posts as having entries",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/user/user.service.spec.ts:223]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/user/user.service.spec.ts:223]"
+   ]
+  }
+ ],
+ "parallel_only": []
+}

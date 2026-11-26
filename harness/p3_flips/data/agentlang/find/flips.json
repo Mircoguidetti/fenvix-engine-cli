@@ -1,0 +1,67 @@
+{
+ "repo": "agentlang",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "plain_counts": [
+  {
+   "passed": 439
+  },
+  {
+   "passed": 439
+  }
+ ],
+ "det_counts": [
+  {
+   "passed": 437,
+   "failed": 2
+  },
+  {
+   "passed": 437,
+   "failed": 2
+  }
+ ],
+ "plain_both_passed": 439,
+ "det_both_passed": 437,
+ "flips": [
+  "test/runtime/basic.test.ts::tracking-attrs::set tracking attributes in entity instances",
+  "test/runtime/harness.test.ts::runTests - string-based test runner::passing tests"
+ ],
+ "n_flips": 2,
+ "absent_in_det": [],
+ "n_absent_in_det": 0,
+ "skipped_in_det": [],
+ "n_skipped_in_det": 0,
+ "mixed_in_det": [],
+ "n_mixed_in_det": 0,
+ "ids_only_in_det": [],
+ "n_ids_only_in_det": 0,
+ "flip_exceptions": {
+  "test/runtime/basic.test.ts::tracking-attrs::set tracking attributes in entity instances": [
+   [
+    "AssertionError",
+    "call",
+    "",
+    "test/runtime/basic.test.ts:1936"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "",
+    "test/runtime/basic.test.ts:1936"
+   ]
+  ],
+  "test/runtime/harness.test.ts::runTests - string-based test runner::passing tests": [
+   [
+    "AssertionError",
+    "call",
+    "",
+    "test/runtime/harness.test.ts:181"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "",
+    "test/runtime/harness.test.ts:181"
+   ]
+  ]
+ }
+}
