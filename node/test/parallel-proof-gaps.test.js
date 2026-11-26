@@ -271,6 +271,20 @@ process.stdout.write(fs.readFileSync(fs.readdirSync(process.env.DETJS_DIR + '/la
     for (const k of ['dst', 'gone', 'deep/a/b', 'flat', 'mv', 'moved']) assert.ok(fp.w.includes(k), `${k} in ${fp.w}`);
   });
 
+  test('a mkdir of a directory that exists records a read of it, not a write (C1)', () => {
+    // protects=creating distinct children under one existing parent is not a write to the parent: mkdir -p of the
+    // parent before writing a child changes nothing on disk (founder decision 2026-11-26, D2 = A; P2 BREAKDOWN C1:
+    // write-write on the project root and on lerna-lite's e2e dir put whole suites in one lane); fails_when=the
+    // existing src/a or the project root is a w key, or the new dirs flat / deep/a/b are not; no_claim=a mkdir that
+    // races with another lane's create of the same dir (then one lane records w, the other r: a read-write hazard)
+    const fp = record();
+    for (const k of ['src/a', '.']) {
+      assert.ok(!fp.w.includes(k), `${k} must not be a write: ${fp.w}`);
+      assert.ok(fp.r.includes(k), `${k} must be a read: ${fp.r}`);
+    }
+    for (const k of ['flat', 'deep/a/b', 'src/a/new/x']) assert.ok(fp.w.includes(k), `${k} in ${fp.w}`);
+  });
+
   test('DETJS_HAZARD_RECURSIVE=0 records no roots, as release-1 did', () => {
     // protects=the measurement switch; fails_when=it changes nothing; no_claim=the runner side (test_runner_proof.py)
     const fp = record({ DETJS_HAZARD_RECURSIVE: '0' });
@@ -406,6 +420,32 @@ for (const runner of RUNNERS) {
           "test('write', () => { fs.writeFileSync(path.join(process.cwd(), 'tree', 'a', 'b', 'x.txt'), 'y'); expect(1).toBe(1); });",
           { extra: { 'tree/a/b/.keep': '' } });
         assertHazard(runner, det(runner, dir), 'recursive-read', 'tree');
+      });
+
+      test('(C1-distinct) mkdir -p of one existing dir in both lanes, then distinct children: no hazard', T, () => {
+        // protects=distinct children of one directory do not conflict, though both files make sure the directory
+        // exists first (P2 BREAKDOWN C1; founder decision 2026-11-26, D2 = A); fails_when=a write-write hazard on out;
+        // no_claim=a create of the same child (C1-same) or a listing of the dir (C1-list) still conflicts
+        const mk = (n) => `test('${n}', () => { const d = path.join(process.cwd(), 'out'); fs.mkdirSync(d, { recursive: true }); fs.writeFileSync(path.join(d, '${n}.txt'), '${n}'); expect(1).toBe(1); });`;
+        const dir = project(runner, 'c1d', mk('x'), mk('y'), { extra: { 'out/.keep': '' } });
+        assertNoHazard(det(runner, dir));
+      });
+
+      test('(C1-same) mkdir -p of one existing dir in both lanes, then the same child: write-write hazard', T, () => {
+        // protects=the same child of the shared directory is still a conflict; fails_when=proven with no hazard; no_claim=none beyond protects
+        const mk = (n) => `test('${n}', () => { const d = path.join(process.cwd(), 'out'); fs.mkdirSync(d, { recursive: true }); fs.writeFileSync(path.join(d, 'same.txt'), '${n}'); expect(1).toBe(1); });`;
+        const dir = project(runner, 'c1s', mk('x'), mk('y'), { extra: { 'out/.keep': '' } });
+        assertHazard(runner, det(runner, dir), 'write-write', 'out/same.txt');
+      });
+
+      test('(C1-list) a child created under an existing dir in one lane, a listing of the dir in the other: list-write hazard', T, () => {
+        // protects=a listing of the directory still sees the created child (positive control for C1);
+        // fails_when=proven with no hazard; no_claim=none beyond protects
+        const dir = project(runner, 'c1l',
+          "test('create', () => { const d = path.join(process.cwd(), 'out'); fs.mkdirSync(d, { recursive: true }); fs.writeFileSync(path.join(d, 'x.txt'), 'x'); expect(1).toBe(1); });",
+          "test('list', () => { fs.readdirSync(path.join(process.cwd(), 'out')); expect(1).toBe(1); });",
+          { extra: { 'out/.keep': '' } });
+        assertHazard(runner, det(runner, dir), 'list-write', 'out');
       });
 
       test('(b7) rm -r of a dir in one lane, a plain listing of its grandparent in the other: no hazard (B1)', T, () => {
