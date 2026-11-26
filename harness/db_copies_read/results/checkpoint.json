@@ -1,5 +1,5 @@
 {
- "attempts_total": 506,
+ "attempts_total": 912,
  "docs": null,
  "repos": {
   "Ashfaque386/TradingOS-2.0": {
@@ -18,6 +18,36 @@
    "state": "done"
   },
   "Deodat-Lawson/LaunchStack": {
+   "stages": {
+    "comments": "done",
+    "commits": "done",
+    "contributors": "done",
+    "diffs": "done",
+    "files": "done",
+    "issues": "done",
+    "meta": "done",
+    "pathcommits": "done",
+    "pullfiles": "done",
+    "tree": "done"
+   },
+   "state": "done"
+  },
+  "GetStream/Agents": {
+   "stages": {
+    "comments": "done",
+    "commits": "done",
+    "contributors": "done",
+    "diffs": "done",
+    "files": "done",
+    "issues": "done",
+    "meta": "done",
+    "pathcommits": "done",
+    "pullfiles": "done",
+    "tree": "done"
+   },
+   "state": "done"
+  },
+  "MadeByGFK/StackSift": {
    "stages": {
     "comments": "done",
     "commits": "done",
@@ -94,15 +124,93 @@
   },
   "eddiezgq/freecad-ai-parts": {
    "stages": {
+    "comments": "done",
+    "commits": "done",
+    "contributors": "done",
+    "diffs": "done",
+    "files": "done",
+    "issues": "done",
+    "meta": "done",
+    "pathcommits": "done",
+    "pullfiles": "done",
+    "tree": "done"
+   },
+   "state": "done"
+  },
+  "elavoaiservice/alphagasiq": {
+   "stages": {
+    "comments": "done",
+    "commits": "done",
+    "contributors": "done",
+    "diffs": "done",
+    "files": "done",
+    "issues": "done",
+    "meta": "done",
+    "pathcommits": "done",
+    "pullfiles": "done",
+    "tree": "done"
+   },
+   "state": "done"
+  },
+  "kutschersteffen-cmd/Agentic-Research-Pipeline": {
+   "stages": {
+    "comments": "done",
+    "commits": "done",
+    "contributors": "done",
+    "diffs": "done",
+    "files": "done",
+    "issues": "done",
+    "meta": "done",
+    "pathcommits": "done",
+    "pullfiles": "done",
+    "tree": "done"
+   },
+   "state": "done"
+  },
+  "mudassir709/Football-AI-tactical-Analyst": {
+   "stages": {
+    "comments": "done",
+    "commits": "done",
+    "contributors": "done",
+    "diffs": "done",
+    "files": "done",
+    "issues": "done",
+    "meta": "done",
+    "pathcommits": "done",
+    "pullfiles": "done",
+    "tree": "done"
+   },
+   "state": "done"
+  },
+  "nikhilvdev/healix": {
+   "stages": {
+    "comments": "done",
+    "commits": "done",
+    "contributors": "done",
+    "diffs": "done",
+    "files": "done",
+    "issues": "done",
+    "meta": "done",
+    "pathcommits": "done",
+    "pullfiles": "done",
+    "tree": "done"
+   },
+   "state": "done"
+  },
+  "penghaibin9/saas": {
+   "stages": {
+    "commits": "done",
     "contributors": "done",
     "files": "done",
+    "issues": "done",
     "meta": "done",
+    "pathcommits": "done",
     "tree": "done"
    },
    "state": "pending"
   }
  },
- "run_id": "45802651343",
+ "run_id": "45810840271",
  "runs": [
   {
    "attempts": 1,
@@ -129,6 +237,15 @@
    "request": "7.json",
    "reset": 1795692437,
    "run": "45802651343",
+   "status": "paused"
+  },
+  {
+   "attempts": 406,
+   "limit": 5000,
+   "remaining": 991,
+   "request": "8.json",
+   "reset": 1795696040,
+   "run": "45810840271",
    "status": "paused"
   }
  ]
