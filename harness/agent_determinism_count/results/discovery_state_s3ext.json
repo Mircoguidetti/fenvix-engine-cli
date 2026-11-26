@@ -12,6 +12,44 @@
  },
  "finished": null,
  "queries": {
+  "committer-date:>=2024-01-01 retry \"model output\" test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 2854,
+   "leaves": 5,
+   "nodes": 15,
+   "prepass_total": 12714,
+   "stack": [
+    [
+     "2026-07-17",
+     "2026-07-19"
+    ],
+    [
+     "2026-07-20",
+     "2026-07-21"
+    ],
+    [
+     "2026-07-22",
+     "2026-07-25"
+    ],
+    [
+     "2026-07-26",
+     "2026-08-02"
+    ],
+    [
+     "2026-08-03",
+     "2026-08-18"
+    ],
+    [
+     "2026-08-19",
+     "2026-09-20"
+    ],
+    [
+     "2026-09-21",
+     "2026-11-25"
+    ]
+   ]
+  },
   "committer-date:>=2024-01-01 retry anthropic test": {
    "capped": true,
    "done": true,
@@ -37,6 +75,15 @@
    "leaves": 1,
    "nodes": 1,
    "prepass_total": 139964,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 retry gpt test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 142930,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 141636,
    "stack": []
   },
   "committer-date:>=2024-01-01 retry llm test": {
@@ -354,13 +401,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 137
+  "issues": 224
  },
  "search_stats": {
-  "429": 20,
+  "429": 37,
   "limit": 30,
   "remaining": 30,
-  "reset": 1795706736
+  "reset": 1795708077
  },
  "started": "2026-11-26T11:20:43+00:00"
 }
