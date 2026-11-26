@@ -1,0 +1,327 @@
+{
+ "repo": "agentlang",
+ "file": "test/runtime/basic.test.ts",
+ "slug": "db77a52b4b",
+ "engine_commit": "ece09e1f502a1d7354e563226ec890046d196fc7",
+ "cases": {
+  "test/runtime/basic.test.ts::tracking-attrs::set tracking attributes in entity instances": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError:  [call @ test/runtime/basic.test.ts:1936]",
+    "AssertionError:  [call @ test/runtime/basic.test.ts:1936]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/runtime/basic.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "db77a52b4b.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime/basic.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError:  [call @ test/runtime/basic.test.ts:1936]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:26:26.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "db77a52b4b.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime/basic.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError:  [call @ test/runtime/basic.test.ts:1936]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:26:41.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "db77a52b4b.g0.L2a.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime/basic.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.L2a.r1.outcomes.json --det-trace=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError:  [call @ test/runtime/basic.test.ts:1936]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:26:57.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "db77a52b4b.g0.L2a.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime/basic.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.L2a.r2.outcomes.json --det-trace=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError:  [call @ test/runtime/basic.test.ts:1936]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:27:13.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "db77a52b4b.g0.L2b.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime/basic.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.L2b.r1.outcomes.json --det-trace=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError:  [call @ test/runtime/basic.test.ts:1936]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:27:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "db77a52b4b.g0.L2b.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime/basic.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.L2b.r2.outcomes.json --det-trace=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError:  [call @ test/runtime/basic.test.ts:1936]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:27:42.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "db77a52b4b.g0.L3.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime/basic.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.L3.r1.outcomes.json --det-trace=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError:  [call @ test/runtime/basic.test.ts:1936]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:27:57.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "db77a52b4b.g0.L3.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime/basic.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.L3.r2.outcomes.json --det-trace=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError:  [call @ test/runtime/basic.test.ts:1936]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:28:12.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "db77a52b4b.g0.L4.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime/basic.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.L4.r1.outcomes.json --det-trace=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:28:28.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "db77a52b4b.g0.L4.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime/basic.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.L4.r2.outcomes.json --det-trace=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:28:42.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L4",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "db77a52b4b.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/runtime/basic.test.ts --config /root/pm-p3b/repos/agentlang/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/agentlang/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime/basic.test.ts"
+      ]
+     },
+     {
+      "tag": "db77a52b4b.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/runtime/basic.test.ts --config /root/pm-p3b/repos/agentlang/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/agentlang/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime/basic.test.ts"
+      ]
+     },
+     {
+      "tag": "db77a52b4b.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/runtime/basic.test.ts --config /root/pm-p3b/repos/agentlang/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/agentlang/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime/basic.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "db77a52b4b.alone.r1",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime/basic.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.alone.r1.outcomes.json --det-trace=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 14.75,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T10:25:54.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "test/runtime/basic.test.ts::tracking-attrs::set tracking attributes in entity instances": "failed"
+   },
+   "exc": {
+    "test/runtime/basic.test.ts::tracking-attrs::set tracking attributes in entity instances": "AssertionError:  [call @ test/runtime/basic.test.ts:1936]"
+   }
+  },
+  {
+   "tag": "db77a52b4b.alone.r2",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime/basic.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.alone.r2.outcomes.json --det-trace=/root/pm-p3b/find/agentlang/b/runs/db77a52b4b.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 14.93,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T10:26:10.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "test/runtime/basic.test.ts::tracking-attrs::set tracking attributes in entity instances": "failed"
+   },
+   "exc": {
+    "test/runtime/basic.test.ts::tracking-attrs::set tracking attributes in entity instances": "AssertionError:  [call @ test/runtime/basic.test.ts:1936]"
+   }
+  }
+ ],
+ "complete": true
+}

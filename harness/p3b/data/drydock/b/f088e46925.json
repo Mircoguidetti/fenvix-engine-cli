@@ -1,0 +1,628 @@
+{
+ "repo": "drydock",
+ "file": "agent/edge-registration-ownership.test.ts",
+ "slug": "f088e46925",
+ "engine_commit": "ece09e1f502a1d7354e563226ec890046d196fc7",
+ "cases": {
+  "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a disconnected initializer cannot replace the new owner (cleanup throws: false)": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected PortwingDockerBridge{ \u2026(6) } to be undefined [call @ agent/edge-registration-ownership.test.ts:183]",
+    "AssertionError: expected PortwingDockerBridge{ \u2026(6) } to be undefined [call @ agent/edge-registration-ownership.test.ts:183]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/edge-registration-ownership.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "f088e46925.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/edge-registration-ownership.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:32:46.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "f088e46925.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/edge-registration-ownership.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:32:52.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "f088e46925.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/edge-registration-ownership.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/edge-registration-ownership.test.ts"
+      ]
+     },
+     {
+      "tag": "f088e46925.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/edge-registration-ownership.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/edge-registration-ownership.test.ts"
+      ]
+     },
+     {
+      "tag": "f088e46925.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/edge-registration-ownership.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/edge-registration-ownership.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a retired remote trigger initializer cannot publish over the replacement": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected false to be true // Object.is equality [call @ agent/edge-registration-ownership.test.ts:258]",
+    "AssertionError: expected false to be true // Object.is equality [call @ agent/edge-registration-ownership.test.ts:258]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "clear",
+     "repro"
+    ],
+    "reproduces": false
+   },
+   "undecided": "not reproduced outside the whole suite"
+  },
+  "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a retired synthetic trigger initializer cannot publish over the replacement": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:211]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:211]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/edge-registration-ownership.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "f088e46925.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/edge-registration-ownership.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:32:46.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "f088e46925.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/edge-registration-ownership.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:32:52.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "f088e46925.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/edge-registration-ownership.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/edge-registration-ownership.test.ts"
+      ]
+     },
+     {
+      "tag": "f088e46925.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/edge-registration-ownership.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/edge-registration-ownership.test.ts"
+      ]
+     },
+     {
+      "tag": "f088e46925.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/edge-registration-ownership.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/edge-registration-ownership.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::disconnect during the real inventory seed cannot publish the retired watcher": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:106]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:106]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/edge-registration-ownership.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "f088e46925.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/edge-registration-ownership.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:32:46.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "f088e46925.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/edge-registration-ownership.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:32:52.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "f088e46925.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/edge-registration-ownership.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/edge-registration-ownership.test.ts"
+      ]
+     },
+     {
+      "tag": "f088e46925.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/edge-registration-ownership.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/edge-registration-ownership.test.ts"
+      ]
+     },
+     {
+      "tag": "f088e46925.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/edge-registration-ownership.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/edge-registration-ownership.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::wire-ordered repeated syncs replace and clean up the previous live watcher": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:196]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:196]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/edge-registration-ownership.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "f088e46925.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/edge-registration-ownership.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:32:46.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "f088e46925.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/edge-registration-ownership.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:32:52.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "f088e46925.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/edge-registration-ownership.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/edge-registration-ownership.test.ts"
+      ]
+     },
+     {
+      "tag": "f088e46925.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/edge-registration-ownership.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/edge-registration-ownership.test.ts"
+      ]
+     },
+     {
+      "tag": "f088e46925.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/edge-registration-ownership.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/f088e46925.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/edge-registration-ownership.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "f088e46925.alone.r1",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/edge-registration-ownership.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/f088e46925.alone.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/f088e46925.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 5.1,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T10:31:42.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a disconnected initializer cannot replace the new owner (cleanup throws: false)": "failed",
+    "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a retired remote trigger initializer cannot publish over the replacement": "passed",
+    "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a retired synthetic trigger initializer cannot publish over the replacement": "failed",
+    "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::disconnect during the real inventory seed cannot publish the retired watcher": "failed",
+    "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::wire-ordered repeated syncs replace and clean up the previous live watcher": "failed"
+   },
+   "exc": {
+    "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a disconnected initializer cannot replace the new owner (cleanup throws: false)": "AssertionError: expected PortwingDockerBridge{ \u2026(6) } to be undefined [call @ agent/edge-registration-ownership.test.ts:183]",
+    "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a retired remote trigger initializer cannot publish over the replacement": null,
+    "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a retired synthetic trigger initializer cannot publish over the replacement": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:211]",
+    "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::disconnect during the real inventory seed cannot publish the retired watcher": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:106]",
+    "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::wire-ordered repeated syncs replace and clean up the previous live watcher": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:196]"
+   }
+  },
+  {
+   "tag": "f088e46925.alone.r2",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/edge-registration-ownership.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/f088e46925.alone.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/f088e46925.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 5.14,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T10:31:49.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a disconnected initializer cannot replace the new owner (cleanup throws: false)": "failed",
+    "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a retired remote trigger initializer cannot publish over the replacement": "failed",
+    "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a retired synthetic trigger initializer cannot publish over the replacement": "failed",
+    "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::disconnect during the real inventory seed cannot publish the retired watcher": "failed",
+    "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::wire-ordered repeated syncs replace and clean up the previous live watcher": "failed"
+   },
+   "exc": {
+    "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a disconnected initializer cannot replace the new owner (cleanup throws: false)": "AssertionError: expected PortwingDockerBridge{ \u2026(6) } to be undefined [call @ agent/edge-registration-ownership.test.ts:183]",
+    "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a retired remote trigger initializer cannot publish over the replacement": "AssertionError: expected false to be true // Object.is equality [call @ agent/edge-registration-ownership.test.ts:258]",
+    "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a retired synthetic trigger initializer cannot publish over the replacement": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:211]",
+    "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::disconnect during the real inventory seed cannot publish the retired watcher": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:106]",
+    "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::wire-ordered repeated syncs replace and clean up the previous live watcher": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:196]"
+   }
+  }
+ ],
+ "pred": {
+  "src_run": 1,
+  "n_preds": 23,
+  "probes": [],
+  "full": [
+   {
+    "tag": "f088e46925.full.r1",
+    "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/root/pm-p3b/find/drydock/b/runs/f088e46925.full.r1.order.txt --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/f088e46925.full.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/f088e46925.full.r1.trace.jsonl",
+    "exit": 1,
+    "wall_s": 24.83,
+    "meta": {
+     "timers": "virtual",
+     "network": "open",
+     "epoch": "2026-11-26T10:31:55.000Z",
+     "seed": 0
+    },
+    "controls": [
+     "fs",
+     "isolation",
+     "net",
+     "order",
+     "seeds",
+     "time",
+     "timers"
+    ],
+    "outcomes": {
+     "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a retired remote trigger initializer cannot publish over the replacement": "failed"
+    },
+    "exc": {
+     "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a retired remote trigger initializer cannot publish over the replacement": "AssertionError: expected false to be true // Object.is equality [call @ agent/edge-registration-ownership.test.ts:258]"
+    }
+   },
+   {
+    "tag": "f088e46925.full.r2",
+    "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/root/pm-p3b/find/drydock/b/runs/f088e46925.full.r2.order.txt --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/f088e46925.full.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/f088e46925.full.r2.trace.jsonl",
+    "exit": 1,
+    "wall_s": 24.17,
+    "meta": {
+     "timers": "virtual",
+     "network": "open",
+     "epoch": "2026-11-26T10:32:21.000Z",
+     "seed": 0
+    },
+    "controls": [
+     "fs",
+     "isolation",
+     "net",
+     "order",
+     "seeds",
+     "time",
+     "timers"
+    ],
+    "outcomes": {
+     "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a retired remote trigger initializer cannot publish over the replacement": "passed"
+    },
+    "exc": {
+     "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a retired remote trigger initializer cannot publish over the replacement": null
+    }
+   }
+  ],
+  "smallest": [
+   "agent/AgentClient-key-rotation.test.ts",
+   "agent/AgentClient.container-reconcile.test.ts",
+   "agent/AgentClient.inventory.test.ts",
+   "agent/AgentClient.test.ts",
+   "agent/EdgeAgentAdapter.test.ts",
+   "agent/PortwingDockerBridge.test.ts",
+   "agent/agent-ingest.group-policy.test.ts",
+   "agent/agent-inventory.test.ts",
+   "agent/agent-version-alerts.test.ts",
+   "agent/agent-warnings.test.ts",
+   "agent/api/container.test.ts",
+   "agent/api/event.test.ts",
+   "agent/api/index.test.ts",
+   "agent/api/trigger.test.ts",
+   "agent/api/watcher.inventory.test.ts",
+   "agent/api/watcher.test.ts",
+   "agent/components/Agent.test.ts",
+   "agent/components/AgentTrigger.test.ts",
+   "agent/components/AgentWatcher.test.ts",
+   "agent/container-state-alert-relay.test.ts",
+   "agent/controller-docker-transport.test.ts",
+   "agent/ed25519-signer.test.ts",
+   "agent/edge-key-rotation.test.ts"
+  ]
+ },
+ "complete": true
+}

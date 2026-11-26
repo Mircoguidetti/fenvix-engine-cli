@@ -1,0 +1,327 @@
+{
+ "repo": "drydock",
+ "file": "api/totp-factor-management.integration.test.ts",
+ "slug": "a37b3a5b9e",
+ "engine_commit": "ece09e1f502a1d7354e563226ec890046d196fc7",
+ "cases": {
+  "api/totp-factor-management.integration.test.ts::TOTP slice 4: factor-management API::the concurrent-session limit counts live sessions only::a sixth live session still evicts the oldest one, and closes its streams": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected 200 to be 401 // Object.is equality [call @ api/totp-factor-management.integration.test.ts:3063]",
+    "AssertionError: expected 200 to be 401 // Object.is equality [call @ api/totp-factor-management.integration.test.ts:3063]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "api/totp-factor-management.integration.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "a37b3a5b9e.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run api/totp-factor-management.integration.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 200 to be 401 // Object.is equality [call @ api/totp-factor-management.integration.test.ts:3063]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:45:56.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "a37b3a5b9e.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run api/totp-factor-management.integration.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 200 to be 401 // Object.is equality [call @ api/totp-factor-management.integration.test.ts:3063]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:46:18.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "a37b3a5b9e.g0.L2a.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run api/totp-factor-management.integration.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.L2a.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 200 to be 401 // Object.is equality [call @ api/totp-factor-management.integration.test.ts:3063]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:46:39.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "a37b3a5b9e.g0.L2a.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run api/totp-factor-management.integration.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.L2a.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 200 to be 401 // Object.is equality [call @ api/totp-factor-management.integration.test.ts:3063]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:46:59.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "a37b3a5b9e.g0.L2b.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run api/totp-factor-management.integration.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.L2b.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 200 to be 401 // Object.is equality [call @ api/totp-factor-management.integration.test.ts:3063]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:47:20.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "a37b3a5b9e.g0.L2b.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run api/totp-factor-management.integration.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.L2b.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 200 to be 401 // Object.is equality [call @ api/totp-factor-management.integration.test.ts:3063]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:47:41.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "a37b3a5b9e.g0.L3.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run api/totp-factor-management.integration.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.L3.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 200 to be 401 // Object.is equality [call @ api/totp-factor-management.integration.test.ts:3063]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:48:01.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "a37b3a5b9e.g0.L3.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run api/totp-factor-management.integration.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.L3.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 200 to be 401 // Object.is equality [call @ api/totp-factor-management.integration.test.ts:3063]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:48:21.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "a37b3a5b9e.g0.L4.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run api/totp-factor-management.integration.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.L4.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:48:40.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "a37b3a5b9e.g0.L4.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run api/totp-factor-management.integration.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.L4.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:48:59.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L4",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "a37b3a5b9e.g0.control.r1",
+      "cmd": "npx --no-install vitest run api/totp-factor-management.integration.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "api/totp-factor-management.integration.test.ts"
+      ]
+     },
+     {
+      "tag": "a37b3a5b9e.g0.control.r2",
+      "cmd": "npx --no-install vitest run api/totp-factor-management.integration.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "api/totp-factor-management.integration.test.ts"
+      ]
+     },
+     {
+      "tag": "a37b3a5b9e.g0.control.r3",
+      "cmd": "npx --no-install vitest run api/totp-factor-management.integration.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "api/totp-factor-management.integration.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "a37b3a5b9e.alone.r1",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run api/totp-factor-management.integration.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.alone.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 19.46,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T10:45:15.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "api/totp-factor-management.integration.test.ts::TOTP slice 4: factor-management API::the concurrent-session limit counts live sessions only::a sixth live session still evicts the oldest one, and closes its streams": "failed"
+   },
+   "exc": {
+    "api/totp-factor-management.integration.test.ts::TOTP slice 4: factor-management API::the concurrent-session limit counts live sessions only::a sixth live session still evicts the oldest one, and closes its streams": "AssertionError: expected 200 to be 401 // Object.is equality [call @ api/totp-factor-management.integration.test.ts:3063]"
+   }
+  },
+  {
+   "tag": "a37b3a5b9e.alone.r2",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run api/totp-factor-management.integration.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.alone.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/a37b3a5b9e.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 19.82,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T10:45:35.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "api/totp-factor-management.integration.test.ts::TOTP slice 4: factor-management API::the concurrent-session limit counts live sessions only::a sixth live session still evicts the oldest one, and closes its streams": "failed"
+   },
+   "exc": {
+    "api/totp-factor-management.integration.test.ts::TOTP slice 4: factor-management API::the concurrent-session limit counts live sessions only::a sixth live session still evicts the oldest one, and closes its streams": "AssertionError: expected 200 to be 401 // Object.is equality [call @ api/totp-factor-management.integration.test.ts:3063]"
+   }
+  }
+ ],
+ "complete": true
+}

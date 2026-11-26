@@ -1,0 +1,1305 @@
+{
+ "repo": "drydock",
+ "file": "security/scan.test.ts",
+ "slug": "488df30dc4",
+ "engine_commit": "ece09e1f502a1d7354e563226ec890046d196fc7",
+ "cases": {
+  "security/scan.test.ts::runCommand heartbeat::logs every 30 seconds with elapsed time and stops once the scan succeeds": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected [ \u2026(3) ] to have a length of +0 but got 3 [call @ security/scan.test.ts:3581]",
+    "AssertionError: expected [ Array(1) ] to have a length of +0 but got 1 [call @ security/scan.test.ts:3581]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "security/scan.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "488df30dc4.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T11:37:15.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "488df30dc4.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T11:37:19.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "488df30dc4.g0.control.r1",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     },
+     {
+      "tag": "488df30dc4.g0.control.r2",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     },
+     {
+      "tag": "488df30dc4.g0.control.r3",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "security/scan.test.ts::scanImageForVulnerabilities should not execute queued Trivy work after it is aborted": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:311]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:311]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "security/scan.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "488df30dc4.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T11:37:15.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "488df30dc4.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T11:37:19.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "488df30dc4.g0.control.r1",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     },
+     {
+      "tag": "488df30dc4.g0.control.r2",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     },
+     {
+      "tag": "488df30dc4.g0.control.r3",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "security/scan.test.ts::scanImageForVulnerabilities should terminate a command child and detach abort handling": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:236]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:236]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "security/scan.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "488df30dc4.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T11:37:15.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "488df30dc4.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T11:37:19.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "488df30dc4.g0.control.r1",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     },
+     {
+      "tag": "488df30dc4.g0.control.r2",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     },
+     {
+      "tag": "488df30dc4.g0.control.r3",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "security/scan.test.ts::scanImageWithDedup::aborts the provider when its only scheduled waiter aborts and clears the in-flight entry": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2565]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2565]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "security/scan.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "488df30dc4.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T11:37:15.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "488df30dc4.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T11:37:19.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "488df30dc4.g0.control.r1",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     },
+     {
+      "tag": "488df30dc4.g0.control.r2",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     },
+     {
+      "tag": "488df30dc4.g0.control.r3",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "security/scan.test.ts::scanImageWithDedup::does not downgrade a gate-first shared scan when a scheduler joins": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2437]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2437]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "security/scan.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "488df30dc4.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T11:37:15.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "488df30dc4.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T11:37:19.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "488df30dc4.g0.control.r1",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     },
+     {
+      "tag": "488df30dc4.g0.control.r2",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     },
+     {
+      "tag": "488df30dc4.g0.control.r3",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "security/scan.test.ts::scanImageWithDedup::does not retry a scheduler-only shared scan after a transient failure": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2467]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2467]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "security/scan.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "488df30dc4.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T11:37:15.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "488df30dc4.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T11:37:19.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "488df30dc4.g0.control.r1",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     },
+     {
+      "tag": "488df30dc4.g0.control.r2",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     },
+     {
+      "tag": "488df30dc4.g0.control.r3",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "security/scan.test.ts::scanImageWithDedup::keeps a signal-less waiter alive when the first scheduled waiter aborts": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2494]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2494]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "security/scan.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "488df30dc4.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T11:37:15.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "488df30dc4.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T11:37:19.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "488df30dc4.g0.control.r1",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     },
+     {
+      "tag": "488df30dc4.g0.control.r2",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     },
+     {
+      "tag": "488df30dc4.g0.control.r3",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "security/scan.test.ts::scanImageWithDedup::lets a later scheduled waiter abort without cancelling a signal-less first waiter": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2530]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2530]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "security/scan.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "488df30dc4.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T11:37:15.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "488df30dc4.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T11:37:19.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "488df30dc4.g0.control.r1",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     },
+     {
+      "tag": "488df30dc4.g0.control.r2",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     },
+     {
+      "tag": "488df30dc4.g0.control.r3",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "security/scan.test.ts::scanImageWithDedup::replaces an aborted in-flight scan while its shared warm-up is still pending": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2326]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2326]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "security/scan.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "488df30dc4.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T11:37:15.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "488df30dc4.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T11:37:19.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "488df30dc4.g0.control.r1",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     },
+     {
+      "tag": "488df30dc4.g0.control.r2",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     },
+     {
+      "tag": "488df30dc4.g0.control.r3",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "security/scan.test.ts::scanImageWithDedup::single-flights concurrent scans by digest and clears the in-flight entry after settlement": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2635]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2635]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "security/scan.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "488df30dc4.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T11:37:15.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "488df30dc4.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T11:37:19.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "488df30dc4.g0.control.r1",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     },
+     {
+      "tag": "488df30dc4.g0.control.r2",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     },
+     {
+      "tag": "488df30dc4.g0.control.r3",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "security/scan.test.ts::scanImageWithDedup::upgrades a scheduler-first shared scan when a retrying gate joins before failure": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2407]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2407]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "security/scan.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "488df30dc4.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T11:37:15.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "488df30dc4.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T11:37:19.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "488df30dc4.g0.control.r1",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     },
+     {
+      "tag": "488df30dc4.g0.control.r2",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     },
+     {
+      "tag": "488df30dc4.g0.control.r3",
+      "cmd": "npx --no-install vitest run security/scan.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/488df30dc4.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "security/scan.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "488df30dc4.alone.r1",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.alone.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 3.57,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T11:37:06.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "security/scan.test.ts::runCommand heartbeat::logs every 30 seconds with elapsed time and stops once the scan succeeds": "failed",
+    "security/scan.test.ts::scanImageForVulnerabilities should not execute queued Trivy work after it is aborted": "failed",
+    "security/scan.test.ts::scanImageForVulnerabilities should terminate a command child and detach abort handling": "failed",
+    "security/scan.test.ts::scanImageWithDedup::aborts the provider when its only scheduled waiter aborts and clears the in-flight entry": "failed",
+    "security/scan.test.ts::scanImageWithDedup::does not downgrade a gate-first shared scan when a scheduler joins": "failed",
+    "security/scan.test.ts::scanImageWithDedup::does not retry a scheduler-only shared scan after a transient failure": "failed",
+    "security/scan.test.ts::scanImageWithDedup::keeps a signal-less waiter alive when the first scheduled waiter aborts": "failed",
+    "security/scan.test.ts::scanImageWithDedup::lets a later scheduled waiter abort without cancelling a signal-less first waiter": "failed",
+    "security/scan.test.ts::scanImageWithDedup::replaces an aborted in-flight scan while its shared warm-up is still pending": "failed",
+    "security/scan.test.ts::scanImageWithDedup::single-flights concurrent scans by digest and clears the in-flight entry after settlement": "failed",
+    "security/scan.test.ts::scanImageWithDedup::upgrades a scheduler-first shared scan when a retrying gate joins before failure": "failed"
+   },
+   "exc": {
+    "security/scan.test.ts::runCommand heartbeat::logs every 30 seconds with elapsed time and stops once the scan succeeds": "AssertionError: expected [ \u2026(2) ] to have a length of +0 but got 2 [call @ security/scan.test.ts:3581]",
+    "security/scan.test.ts::scanImageForVulnerabilities should not execute queued Trivy work after it is aborted": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:311]",
+    "security/scan.test.ts::scanImageForVulnerabilities should terminate a command child and detach abort handling": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:236]",
+    "security/scan.test.ts::scanImageWithDedup::aborts the provider when its only scheduled waiter aborts and clears the in-flight entry": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2565]",
+    "security/scan.test.ts::scanImageWithDedup::does not downgrade a gate-first shared scan when a scheduler joins": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2437]",
+    "security/scan.test.ts::scanImageWithDedup::does not retry a scheduler-only shared scan after a transient failure": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2467]",
+    "security/scan.test.ts::scanImageWithDedup::keeps a signal-less waiter alive when the first scheduled waiter aborts": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2494]",
+    "security/scan.test.ts::scanImageWithDedup::lets a later scheduled waiter abort without cancelling a signal-less first waiter": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2530]",
+    "security/scan.test.ts::scanImageWithDedup::replaces an aborted in-flight scan while its shared warm-up is still pending": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2326]",
+    "security/scan.test.ts::scanImageWithDedup::single-flights concurrent scans by digest and clears the in-flight entry after settlement": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2635]",
+    "security/scan.test.ts::scanImageWithDedup::upgrades a scheduler-first shared scan when a retrying gate joins before failure": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2407]"
+   }
+  },
+  {
+   "tag": "488df30dc4.alone.r2",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run security/scan.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/488df30dc4.alone.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/488df30dc4.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 3.17,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T11:37:10.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "security/scan.test.ts::runCommand heartbeat::logs every 30 seconds with elapsed time and stops once the scan succeeds": "failed",
+    "security/scan.test.ts::scanImageForVulnerabilities should not execute queued Trivy work after it is aborted": "failed",
+    "security/scan.test.ts::scanImageForVulnerabilities should terminate a command child and detach abort handling": "failed",
+    "security/scan.test.ts::scanImageWithDedup::aborts the provider when its only scheduled waiter aborts and clears the in-flight entry": "failed",
+    "security/scan.test.ts::scanImageWithDedup::does not downgrade a gate-first shared scan when a scheduler joins": "failed",
+    "security/scan.test.ts::scanImageWithDedup::does not retry a scheduler-only shared scan after a transient failure": "failed",
+    "security/scan.test.ts::scanImageWithDedup::keeps a signal-less waiter alive when the first scheduled waiter aborts": "failed",
+    "security/scan.test.ts::scanImageWithDedup::lets a later scheduled waiter abort without cancelling a signal-less first waiter": "failed",
+    "security/scan.test.ts::scanImageWithDedup::replaces an aborted in-flight scan while its shared warm-up is still pending": "failed",
+    "security/scan.test.ts::scanImageWithDedup::single-flights concurrent scans by digest and clears the in-flight entry after settlement": "failed",
+    "security/scan.test.ts::scanImageWithDedup::upgrades a scheduler-first shared scan when a retrying gate joins before failure": "failed"
+   },
+   "exc": {
+    "security/scan.test.ts::runCommand heartbeat::logs every 30 seconds with elapsed time and stops once the scan succeeds": "AssertionError: expected [ \u2026(2) ] to have a length of +0 but got 2 [call @ security/scan.test.ts:3581]",
+    "security/scan.test.ts::scanImageForVulnerabilities should not execute queued Trivy work after it is aborted": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:311]",
+    "security/scan.test.ts::scanImageForVulnerabilities should terminate a command child and detach abort handling": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:236]",
+    "security/scan.test.ts::scanImageWithDedup::aborts the provider when its only scheduled waiter aborts and clears the in-flight entry": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2565]",
+    "security/scan.test.ts::scanImageWithDedup::does not downgrade a gate-first shared scan when a scheduler joins": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2437]",
+    "security/scan.test.ts::scanImageWithDedup::does not retry a scheduler-only shared scan after a transient failure": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2467]",
+    "security/scan.test.ts::scanImageWithDedup::keeps a signal-less waiter alive when the first scheduled waiter aborts": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2494]",
+    "security/scan.test.ts::scanImageWithDedup::lets a later scheduled waiter abort without cancelling a signal-less first waiter": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2530]",
+    "security/scan.test.ts::scanImageWithDedup::replaces an aborted in-flight scan while its shared warm-up is still pending": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2326]",
+    "security/scan.test.ts::scanImageWithDedup::single-flights concurrent scans by digest and clears the in-flight entry after settlement": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2635]",
+    "security/scan.test.ts::scanImageWithDedup::upgrades a scheduler-first shared scan when a retrying gate joins before failure": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2407]"
+   }
+  }
+ ],
+ "complete": true
+}

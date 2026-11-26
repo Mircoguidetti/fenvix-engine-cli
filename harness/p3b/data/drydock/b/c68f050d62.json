@@ -1,0 +1,627 @@
+{
+ "repo": "drydock",
+ "file": "agent/EdgeAgentAdapter.test.ts",
+ "slug": "c68f050d62",
+ "engine_commit": "ece09e1f502a1d7354e563226ec890046d196fc7",
+ "cases": {
+  "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::a failed ordered state frame does not poison the following frame or escape unhandled": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:474]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:474]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/EdgeAgentAdapter.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "c68f050d62.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/EdgeAgentAdapter.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:31:21.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "c68f050d62.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/EdgeAgentAdapter.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:31:26.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "c68f050d62.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/EdgeAgentAdapter.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/EdgeAgentAdapter.test.ts"
+      ]
+     },
+     {
+      "tag": "c68f050d62.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/EdgeAgentAdapter.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/EdgeAgentAdapter.test.ts"
+      ]
+     },
+     {
+      "tag": "c68f050d62.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/EdgeAgentAdapter.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/EdgeAgentAdapter.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::a slow state sync does not block correlated Docker responses": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:443]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:443]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/EdgeAgentAdapter.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "c68f050d62.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/EdgeAgentAdapter.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:31:21.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "c68f050d62.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/EdgeAgentAdapter.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:31:26.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "c68f050d62.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/EdgeAgentAdapter.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/EdgeAgentAdapter.test.ts"
+      ]
+     },
+     {
+      "tag": "c68f050d62.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/EdgeAgentAdapter.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/EdgeAgentAdapter.test.ts"
+      ]
+     },
+     {
+      "tag": "c68f050d62.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/EdgeAgentAdapter.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/EdgeAgentAdapter.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::an ordered frame waiting behind an in-flight sync becomes inert after disconnect": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:490]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:490]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/EdgeAgentAdapter.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "c68f050d62.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/EdgeAgentAdapter.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:31:21.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "c68f050d62.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/EdgeAgentAdapter.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:31:26.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "c68f050d62.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/EdgeAgentAdapter.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/EdgeAgentAdapter.test.ts"
+      ]
+     },
+     {
+      "tag": "c68f050d62.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/EdgeAgentAdapter.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/EdgeAgentAdapter.test.ts"
+      ]
+     },
+     {
+      "tag": "c68f050d62.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/EdgeAgentAdapter.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/EdgeAgentAdapter.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::serializes component sync before the following container sync in wire order": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:410]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:410]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/EdgeAgentAdapter.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "c68f050d62.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/EdgeAgentAdapter.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:31:21.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "c68f050d62.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/EdgeAgentAdapter.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:31:26.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "c68f050d62.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/EdgeAgentAdapter.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/EdgeAgentAdapter.test.ts"
+      ]
+     },
+     {
+      "tag": "c68f050d62.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/EdgeAgentAdapter.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/EdgeAgentAdapter.test.ts"
+      ]
+     },
+     {
+      "tag": "c68f050d62.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/EdgeAgentAdapter.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/EdgeAgentAdapter.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 torn-down adapter inertness regressions::handleContainerSync resolving after a forced disconnect does not resurrect connected state or re-emit agentConnected": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:3345]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:3345]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/EdgeAgentAdapter.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "c68f050d62.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/EdgeAgentAdapter.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:31:21.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "c68f050d62.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/EdgeAgentAdapter.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:31:26.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "c68f050d62.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/EdgeAgentAdapter.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/EdgeAgentAdapter.test.ts"
+      ]
+     },
+     {
+      "tag": "c68f050d62.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/EdgeAgentAdapter.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/EdgeAgentAdapter.test.ts"
+      ]
+     },
+     {
+      "tag": "c68f050d62.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/EdgeAgentAdapter.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/c68f050d62.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/EdgeAgentAdapter.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "c68f050d62.alone.r1",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/EdgeAgentAdapter.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/c68f050d62.alone.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/c68f050d62.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 3.09,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T10:31:14.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::a failed ordered state frame does not poison the following frame or escape unhandled": "failed",
+    "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::a slow state sync does not block correlated Docker responses": "failed",
+    "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::an ordered frame waiting behind an in-flight sync becomes inert after disconnect": "failed",
+    "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::serializes component sync before the following container sync in wire order": "failed",
+    "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 torn-down adapter inertness regressions::handleContainerSync resolving after a forced disconnect does not resurrect connected state or re-emit agentConnected": "failed"
+   },
+   "exc": {
+    "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::a failed ordered state frame does not poison the following frame or escape unhandled": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:474]",
+    "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::a slow state sync does not block correlated Docker responses": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:443]",
+    "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::an ordered frame waiting behind an in-flight sync becomes inert after disconnect": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:490]",
+    "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::serializes component sync before the following container sync in wire order": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:410]",
+    "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 torn-down adapter inertness regressions::handleContainerSync resolving after a forced disconnect does not resurrect connected state or re-emit agentConnected": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:3345]"
+   }
+  },
+  {
+   "tag": "c68f050d62.alone.r2",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/EdgeAgentAdapter.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/c68f050d62.alone.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/c68f050d62.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 2.48,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T10:31:18.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::a failed ordered state frame does not poison the following frame or escape unhandled": "failed",
+    "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::a slow state sync does not block correlated Docker responses": "failed",
+    "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::an ordered frame waiting behind an in-flight sync becomes inert after disconnect": "failed",
+    "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::serializes component sync before the following container sync in wire order": "failed",
+    "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 torn-down adapter inertness regressions::handleContainerSync resolving after a forced disconnect does not resurrect connected state or re-emit agentConnected": "failed"
+   },
+   "exc": {
+    "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::a failed ordered state frame does not poison the following frame or escape unhandled": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:474]",
+    "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::a slow state sync does not block correlated Docker responses": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:443]",
+    "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::an ordered frame waiting behind an in-flight sync becomes inert after disconnect": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:490]",
+    "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::serializes component sync before the following container sync in wire order": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:410]",
+    "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 torn-down adapter inertness regressions::handleContainerSync resolving after a forced disconnect does not resurrect connected state or re-emit agentConnected": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:3345]"
+   }
+  }
+ ],
+ "complete": true
+}

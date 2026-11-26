@@ -1,0 +1,1757 @@
+{
+ "repo": "drydock",
+ "file": "agent/portwing-event-digest.test.ts",
+ "slug": "9019465598",
+ "engine_commit": "ece09e1f502a1d7354e563226ec890046d196fc7",
+ "cases": {
+  "agent/portwing-event-digest.test.ts::a container that first appears through dd:container_added gets a digest check": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/portwing-event-digest.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "9019465598.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:26.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9019465598.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "9019465598.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "agent/portwing-event-digest.test.ts::a dd:container_updated event keeps the detected digest update": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/portwing-event-digest.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "9019465598.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:26.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9019465598.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "9019465598.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "agent/portwing-event-digest.test.ts::a different image id does not inherit previous digest facts": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/portwing-event-digest.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "9019465598.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:26.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9019465598.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "9019465598.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "agent/portwing-event-digest.test.ts::a different image name does not inherit previous digest facts": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/portwing-event-digest.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "9019465598.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:26.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9019465598.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "9019465598.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "agent/portwing-event-digest.test.ts::a different image registry does not inherit previous digest facts": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/portwing-event-digest.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "9019465598.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:26.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9019465598.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "9019465598.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "agent/portwing-event-digest.test.ts::a different image tag does not inherit previous digest facts": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/portwing-event-digest.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "9019465598.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:26.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9019465598.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "9019465598.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "agent/portwing-event-digest.test.ts::a full report of the same image retains controller-derived digest facts": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/portwing-event-digest.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "9019465598.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:26.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9019465598.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "9019465598.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "agent/portwing-event-digest.test.ts::an added event resolves digest watching from Swarm deploy labels": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/portwing-event-digest.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "9019465598.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:26.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9019465598.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "9019465598.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "agent/portwing-event-digest.test.ts::an event whose container disappeared does not erase the detected digest update": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/portwing-event-digest.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "9019465598.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:26.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9019465598.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "9019465598.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "agent/portwing-event-digest.test.ts::an event without a Docker summary ImageID inspects the reported running image": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/portwing-event-digest.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "9019465598.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:26.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9019465598.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "9019465598.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "agent/portwing-event-digest.test.ts::an unavailable Docker image does not erase the detected digest update": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/portwing-event-digest.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "9019465598.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:26.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9019465598.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "9019465598.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "agent/portwing-event-digest.test.ts::an untrackable Docker summary does not erase the detected digest update": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/portwing-event-digest.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "9019465598.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:26.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9019465598.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "9019465598.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "agent/portwing-event-digest.test.ts::control: the scheduled native scan detects the digest update": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/portwing-event-digest.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "9019465598.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:26.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9019465598.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "9019465598.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "agent/portwing-event-digest.test.ts::event image facts come from the running image when a local tag has moved": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/portwing-event-digest.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "9019465598.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:26.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9019465598.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "9019465598.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "agent/portwing-event-digest.test.ts::failed Swarm service inspection preserves the prior digest verdict before image enrichment": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "agent/portwing-event-digest.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "9019465598.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:26.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9019465598.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "9019465598.g0.control.r1",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r2",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     },
+     {
+      "tag": "9019465598.g0.control.r3",
+      "cmd": "npx --no-install vitest run agent/portwing-event-digest.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/9019465598.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "agent/portwing-event-digest.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "9019465598.alone.r1",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.alone.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 4.43,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T10:33:15.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "agent/portwing-event-digest.test.ts::a container that first appears through dd:container_added gets a digest check": "failed",
+    "agent/portwing-event-digest.test.ts::a dd:container_updated event keeps the detected digest update": "failed",
+    "agent/portwing-event-digest.test.ts::a different image id does not inherit previous digest facts": "failed",
+    "agent/portwing-event-digest.test.ts::a different image name does not inherit previous digest facts": "failed",
+    "agent/portwing-event-digest.test.ts::a different image registry does not inherit previous digest facts": "failed",
+    "agent/portwing-event-digest.test.ts::a different image tag does not inherit previous digest facts": "failed",
+    "agent/portwing-event-digest.test.ts::a full report of the same image retains controller-derived digest facts": "failed",
+    "agent/portwing-event-digest.test.ts::an added event resolves digest watching from Swarm deploy labels": "failed",
+    "agent/portwing-event-digest.test.ts::an event whose container disappeared does not erase the detected digest update": "failed",
+    "agent/portwing-event-digest.test.ts::an event without a Docker summary ImageID inspects the reported running image": "failed",
+    "agent/portwing-event-digest.test.ts::an unavailable Docker image does not erase the detected digest update": "failed",
+    "agent/portwing-event-digest.test.ts::an untrackable Docker summary does not erase the detected digest update": "failed",
+    "agent/portwing-event-digest.test.ts::control: the scheduled native scan detects the digest update": "failed",
+    "agent/portwing-event-digest.test.ts::event image facts come from the running image when a local tag has moved": "failed",
+    "agent/portwing-event-digest.test.ts::failed Swarm service inspection preserves the prior digest verdict before image enrichment": "failed"
+   },
+   "exc": {
+    "agent/portwing-event-digest.test.ts::a container that first appears through dd:container_added gets a digest check": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::a dd:container_updated event keeps the detected digest update": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::a different image id does not inherit previous digest facts": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::a different image name does not inherit previous digest facts": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::a different image registry does not inherit previous digest facts": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::a different image tag does not inherit previous digest facts": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::a full report of the same image retains controller-derived digest facts": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::an added event resolves digest watching from Swarm deploy labels": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::an event whose container disappeared does not erase the detected digest update": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::an event without a Docker summary ImageID inspects the reported running image": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::an unavailable Docker image does not erase the detected digest update": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::an untrackable Docker summary does not erase the detected digest update": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::control: the scheduled native scan detects the digest update": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::event image facts come from the running image when a local tag has moved": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::failed Swarm service inspection preserves the prior digest verdict before image enrichment": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   }
+  },
+  {
+   "tag": "9019465598.alone.r2",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run agent/portwing-event-digest.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/9019465598.alone.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/9019465598.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 4.48,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T10:33:21.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "agent/portwing-event-digest.test.ts::a container that first appears through dd:container_added gets a digest check": "failed",
+    "agent/portwing-event-digest.test.ts::a dd:container_updated event keeps the detected digest update": "failed",
+    "agent/portwing-event-digest.test.ts::a different image id does not inherit previous digest facts": "failed",
+    "agent/portwing-event-digest.test.ts::a different image name does not inherit previous digest facts": "failed",
+    "agent/portwing-event-digest.test.ts::a different image registry does not inherit previous digest facts": "failed",
+    "agent/portwing-event-digest.test.ts::a different image tag does not inherit previous digest facts": "failed",
+    "agent/portwing-event-digest.test.ts::a full report of the same image retains controller-derived digest facts": "failed",
+    "agent/portwing-event-digest.test.ts::an added event resolves digest watching from Swarm deploy labels": "failed",
+    "agent/portwing-event-digest.test.ts::an event whose container disappeared does not erase the detected digest update": "failed",
+    "agent/portwing-event-digest.test.ts::an event without a Docker summary ImageID inspects the reported running image": "failed",
+    "agent/portwing-event-digest.test.ts::an unavailable Docker image does not erase the detected digest update": "failed",
+    "agent/portwing-event-digest.test.ts::an untrackable Docker summary does not erase the detected digest update": "failed",
+    "agent/portwing-event-digest.test.ts::control: the scheduled native scan detects the digest update": "failed",
+    "agent/portwing-event-digest.test.ts::event image facts come from the running image when a local tag has moved": "failed",
+    "agent/portwing-event-digest.test.ts::failed Swarm service inspection preserves the prior digest verdict before image enrichment": "failed"
+   },
+   "exc": {
+    "agent/portwing-event-digest.test.ts::a container that first appears through dd:container_added gets a digest check": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::a dd:container_updated event keeps the detected digest update": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::a different image id does not inherit previous digest facts": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::a different image name does not inherit previous digest facts": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::a different image registry does not inherit previous digest facts": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::a different image tag does not inherit previous digest facts": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::a full report of the same image retains controller-derived digest facts": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::an added event resolves digest watching from Swarm deploy labels": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::an event whose container disappeared does not erase the detected digest update": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::an event without a Docker summary ImageID inspects the reported running image": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::an unavailable Docker image does not erase the detected digest update": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::an untrackable Docker summary does not erase the detected digest update": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::control: the scheduled native scan detects the digest update": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::event image facts come from the running image when a local tag has moved": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "agent/portwing-event-digest.test.ts::failed Swarm service inspection preserves the prior digest verdict before image enrichment": "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   }
+  }
+ ],
+ "complete": true
+}

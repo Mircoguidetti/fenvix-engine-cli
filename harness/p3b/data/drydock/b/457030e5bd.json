@@ -1,0 +1,175 @@
+{
+ "repo": "drydock",
+ "file": "api/openapi-scopes.test.ts",
+ "slug": "457030e5bd",
+ "engine_commit": "ece09e1f502a1d7354e563226ec890046d196fc7",
+ "cases": {
+  "api/openapi-scopes.test.ts::the published document::every documented operation the router serves carries its scope": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/openapi-scopes.test.ts:201]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/openapi-scopes.test.ts:201]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "api/openapi-scopes.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "457030e5bd.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run api/openapi-scopes.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/457030e5bd.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/457030e5bd.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:44:06.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "457030e5bd.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run api/openapi-scopes.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/457030e5bd.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/457030e5bd.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:44:13.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "457030e5bd.g0.control.r1",
+      "cmd": "npx --no-install vitest run api/openapi-scopes.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/457030e5bd.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "api/openapi-scopes.test.ts"
+      ]
+     },
+     {
+      "tag": "457030e5bd.g0.control.r2",
+      "cmd": "npx --no-install vitest run api/openapi-scopes.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/457030e5bd.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "api/openapi-scopes.test.ts"
+      ]
+     },
+     {
+      "tag": "457030e5bd.g0.control.r3",
+      "cmd": "npx --no-install vitest run api/openapi-scopes.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/457030e5bd.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "api/openapi-scopes.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "457030e5bd.alone.r1",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run api/openapi-scopes.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/457030e5bd.alone.r1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/457030e5bd.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 5.94,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T10:43:52.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "api/openapi-scopes.test.ts::the published document::every documented operation the router serves carries its scope": "failed"
+   },
+   "exc": {
+    "api/openapi-scopes.test.ts::the published document::every documented operation the router serves carries its scope": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/openapi-scopes.test.ts:201]"
+   }
+  },
+  {
+   "tag": "457030e5bd.alone.r2",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run api/openapi-scopes.test.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/b/runs/457030e5bd.alone.r2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/b/runs/457030e5bd.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 6.1,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T10:43:59.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "api/openapi-scopes.test.ts::the published document::every documented operation the router serves carries its scope": "failed"
+   },
+   "exc": {
+    "api/openapi-scopes.test.ts::the published document::every documented operation the router serves carries its scope": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/openapi-scopes.test.ts:201]"
+   }
+  }
+ ],
+ "complete": true
+}
