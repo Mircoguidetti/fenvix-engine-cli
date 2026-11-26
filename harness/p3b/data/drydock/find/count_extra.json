@@ -1,0 +1,1408 @@
+{
+ "repo": "drydock",
+ "engine_commit": "ece09e1f502a1d7354e563226ec890046d196fc7",
+ "serial_counts": {
+  "flip": 82,
+  "mixed": 0,
+  "absent": 0,
+  "skipped-in-det": 0,
+  "det-only": 0,
+  "reverse": 0,
+  "other": 0
+ },
+ "n_unstable": 0,
+ "n_parallel_only": 4,
+ "parallel_only_both_runs": 0,
+ "runs": [
+  {
+   "kind": "plain",
+   "rep": 1,
+   "exit": 0,
+   "wall_s": 535.27,
+   "cmd": "npx --no-install vitest run --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/plain1.runner.json"
+  },
+  {
+   "kind": "plain",
+   "rep": 2,
+   "exit": 0,
+   "wall_s": 549.47,
+   "cmd": "npx --no-install vitest run --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/plain2.runner.json"
+  },
+  {
+   "kind": "det",
+   "rep": 1,
+   "exit": 1,
+   "wall_s": 515.78,
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/det1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/det1.trace.jsonl"
+  },
+  {
+   "kind": "det",
+   "rep": 2,
+   "exit": 1,
+   "wall_s": 500.25,
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/drydock/det2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/det2.trace.jsonl"
+  },
+  {
+   "kind": "par",
+   "rep": 1,
+   "exit": 1,
+   "wall_s": 229.64,
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det --det-workers=4 --det-outcomes=/root/pm-p3b/find/drydock/par1.outcomes.json --det-trace=/root/pm-p3b/find/drydock/par1.trace.jsonl"
+  },
+  {
+   "kind": "par",
+   "rep": 2,
+   "exit": 1,
+   "wall_s": 233.15,
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det --det-workers=4 --det-outcomes=/root/pm-p3b/find/drydock/par2.outcomes.json --det-trace=/root/pm-p3b/find/drydock/par2.trace.jsonl"
+  }
+ ],
+ "serial_cases": [
+  {
+   "id": "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::a failed ordered state frame does not poison the following frame or escape unhandled",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:474]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:474]"
+   ]
+  },
+  {
+   "id": "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::a slow state sync does not block correlated Docker responses",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:443]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:443]"
+   ]
+  },
+  {
+   "id": "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::an ordered frame waiting behind an in-flight sync becomes inert after disconnect",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:490]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:490]"
+   ]
+  },
+  {
+   "id": "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 frame dispatch::serializes component sync before the following container sync in wire order",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:410]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:410]"
+   ]
+  },
+  {
+   "id": "agent/EdgeAgentAdapter.test.ts::EdgeAgentAdapter \u2014 torn-down adapter inertness regressions::handleContainerSync resolving after a forced disconnect does not resurrect connected state or re-emit agentConnected",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:3345]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/EdgeAgentAdapter.test.ts:3345]"
+   ]
+  },
+  {
+   "id": "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a disconnected initializer cannot replace the new owner (cleanup throws: false)",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected PortwingDockerBridge{ \u2026(6) } to be undefined [call @ agent/edge-registration-ownership.test.ts:183]",
+    "AssertionError: expected PortwingDockerBridge{ \u2026(6) } to be undefined [call @ agent/edge-registration-ownership.test.ts:183]"
+   ]
+  },
+  {
+   "id": "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a retired remote trigger initializer cannot publish over the replacement",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected false to be true // Object.is equality [call @ agent/edge-registration-ownership.test.ts:258]",
+    "AssertionError: expected false to be true // Object.is equality [call @ agent/edge-registration-ownership.test.ts:258]"
+   ]
+  },
+  {
+   "id": "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::a retired synthetic trigger initializer cannot publish over the replacement",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:211]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:211]"
+   ]
+  },
+  {
+   "id": "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::disconnect during the real inventory seed cannot publish the retired watcher",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:106]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:106]"
+   ]
+  },
+  {
+   "id": "agent/edge-registration-ownership.test.ts::edge registration ownership with real component lifecycles::wire-ordered repeated syncs replace and clean up the previous live watcher",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:196]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ agent/edge-registration-ownership.test.ts:196]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::a container that first appears through dd:container_added gets a digest check",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::a dd:container_updated event keeps the detected digest update",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::a different image id does not inherit previous digest facts",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::a different image name does not inherit previous digest facts",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::a different image registry does not inherit previous digest facts",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::a different image tag does not inherit previous digest facts",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::a full report of the same image retains controller-derived digest facts",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::an added event resolves digest watching from Swarm deploy labels",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::an event whose container disappeared does not erase the detected digest update",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::an event without a Docker summary ImageID inspects the reported running image",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::an unavailable Docker image does not erase the detected digest update",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::an untrackable Docker summary does not erase the detected digest update",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::control: the scheduled native scan detects the digest update",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::event image facts come from the running image when a local tag has moved",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "agent/portwing-event-digest.test.ts::failed Swarm service inspection preserves the prior digest verdict before image enrichment",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]",
+    "Error: Hook timed out in 10000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\". [call @ agent/portwing-event-digest.test.ts:73]"
+   ]
+  },
+  {
+   "id": "api/api-key-auth.test.ts::the failed-attempt budget::bounds the tracked addresses, so the budget map is not the memory a spray exhausts",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected 186 to be 1000 // Object.is equality [call @ api/api-key-auth.test.ts:392]",
+    "AssertionError: expected 186 to be 1000 // Object.is equality [call @ api/api-key-auth.test.ts:392]"
+   ]
+  },
+  {
+   "id": "api/api.test.ts::API Router::should expose openapi document endpoint before auth middleware",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/api.test.ts:268]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/api.test.ts:268]"
+   ]
+  },
+  {
+   "id": "api/api.test.ts::API Router::should lazy-load openapi document module when openapi endpoint is requested",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/api.test.ts:294]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/api.test.ts:294]"
+   ]
+  },
+  {
+   "id": "api/api.test.ts::API Router::should serve identical cached JSON string on repeated openapi.json requests",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/api.test.ts:323]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/api.test.ts:323]"
+   ]
+  },
+  {
+   "id": "api/auth-session.test.ts::auth-session::enforceSessionLimitBeforeLogin should clear stale in-memory lock entries",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/auth-session.test.ts:312]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/auth-session.test.ts:312]"
+   ]
+  },
+  {
+   "id": "api/auth-session.test.ts::auth-session::enforceSessionLimitBeforeLogin should serialize concurrent logins for the same username",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/auth-session.test.ts:284]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/auth-session.test.ts:284]"
+   ]
+  },
+  {
+   "id": "api/auth-session.test.ts::auth-session::testable_withBasicSessionLock should not let stale cleanup from an older lock delete a newer lock",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected \"vi.fn()\" to be called 1 times, but got 0 times [call @ api/auth-session.test.ts:424]",
+    "AssertionError: expected \"vi.fn()\" to be called 1 times, but got 0 times [call @ api/auth-session.test.ts:424]"
+   ]
+  },
+  {
+   "id": "api/container/logs.test.ts::api/container/logs::download response headers::destroys the local Docker stream as soon as the download byte limit is exceeded",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/container/logs.test.ts:420]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/container/logs.test.ts:420]"
+   ]
+  },
+  {
+   "id": "api/container/logs.test.ts::api/container/logs::download response headers::downloads a completed bounded local Docker stream",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/container/logs.test.ts:477]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/container/logs.test.ts:477]"
+   ]
+  },
+  {
+   "id": "api/container/logs.test.ts::api/container/logs::download response headers::handles an error from a bounded local Docker stream",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/container/logs.test.ts:496]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/container/logs.test.ts:496]"
+   ]
+  },
+  {
+   "id": "api/container/logs.test.ts::api/container/logs::download response headers::rejects when a bounded local Docker stream closes before completion",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/container/logs.test.ts:509]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/container/logs.test.ts:509]"
+   ]
+  },
+  {
+   "id": "api/icons.test.ts::Icons Router::should continue when cache base directory scan fails during enforcement",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected \"vi.fn()\" to be called with arguments: [ 'docker.svg', \u2026(1) ] / Number of calls: 0 [call @ api/icons.test.ts:875]",
+    "AssertionError: expected \"vi.fn()\" to be called with arguments: [ 'docker.svg', \u2026(1) ] / Number of calls: 0 [call @ api/icons.test.ts:875]"
+   ]
+  },
+  {
+   "id": "api/icons.test.ts::Icons Router::should deduplicate concurrent fetches for the same icon",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/icons.test.ts:1358]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/icons.test.ts:1358]"
+   ]
+  },
+  {
+   "id": "api/icons.test.ts::Icons Router::should skip full cache scan for consecutive writes within enforcement interval",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/icons.test.ts:727]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/icons.test.ts:727]"
+   ]
+  },
+  {
+   "id": "api/icons.test.ts::Icons Router::should skip non-directory and non-file cache entries during enforcement",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/icons.test.ts:779]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/icons.test.ts:779]"
+   ]
+  },
+  {
+   "id": "api/icons.test.ts::Icons Router::should stat provider cache entries in parallel during enforcement",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/icons.test.ts:565]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/icons.test.ts:565]"
+   ]
+  },
+  {
+   "id": "api/icons/fetch.test.ts::icons/fetch::deduplicates concurrent fetches for the same provider and slug",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/icons/fetch.test.ts:218]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/icons/fetch.test.ts:218]"
+   ]
+  },
+  {
+   "id": "api/icons/fetch.test.ts::icons/fetch::times out fetches and allows a later retry for the same icon",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected \"vi.fn()\" to be called 1 times, but got 2 times [call @ api/icons/fetch.test.ts:292]",
+    "AssertionError: expected \"vi.fn()\" to be called 1 times, but got 2 times [call @ api/icons/fetch.test.ts:292]"
+   ]
+  },
+  {
+   "id": "api/index.test.ts::API Index::real Express: GET /api/auth/methods is no longer registered and is answered by the removed-alias tombstone",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/index.test.ts:1056]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/index.test.ts:1056]"
+   ]
+  },
+  {
+   "id": "api/index.test.ts::API Index::real Express: UI paths return a JSON 404 explaining DD_SERVER_UI_ENABLED=false, while /api/v1 and /health are unaffected",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/index.test.ts:1284]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/index.test.ts:1284]"
+   ]
+  },
+  {
+   "id": "api/index.test.ts::API Index::real Express: a non-GET request to a GET-only /api/v1/* route falls through the tombstone to a 404, not a false 410",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/index.test.ts:1150]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/index.test.ts:1150]"
+   ]
+  },
+  {
+   "id": "api/index.test.ts::API Index::real Express: a non-whitelisted /api/* request returns 410 JSON (not 404, not SPA HTML) when DD_COMPAT_WUDCARD is disabled",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/index.test.ts:938]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/index.test.ts:938]"
+   ]
+  },
+  {
+   "id": "api/label-override.test.ts::PATCH /containers/:id/label-overrides::remove clears one field, and removing the last field deletes the row",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected undefined to match object { before: 'hl:x', after: null } [call @ api/label-override.test.ts:433]",
+    "AssertionError: expected undefined to match object { before: 'hl:x', after: null } [call @ api/label-override.test.ts:433]"
+   ]
+  },
+  {
+   "id": "api/log-stream.test.ts::api/log-stream::a log stream ends when its session is revoked::a socket without a session id of its own is not tracked",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/log-stream.test.ts:188]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/log-stream.test.ts:188]"
+   ]
+  },
+  {
+   "id": "api/log-stream.test.ts::api/log-stream::a log stream ends when its session is revoked::closes the socket with a policy close when its session id is revoked",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/log-stream.test.ts:155]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/log-stream.test.ts:155]"
+   ]
+  },
+  {
+   "id": "api/log-stream.test.ts::api/log-stream::a log stream ends when its session is revoked::closing two sockets of one session closes both",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/log-stream.test.ts:198]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/log-stream.test.ts:198]"
+   ]
+  },
+  {
+   "id": "api/log-stream.test.ts::api/log-stream::a log stream ends when its session is revoked::forgets a socket that closed on its own, so a later revocation finds nothing",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/log-stream.test.ts:179]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/log-stream.test.ts:179]"
+   ]
+  },
+  {
+   "id": "api/log-stream.test.ts::api/log-stream::a log stream ends when its session is revoked::is closed by the session re-check once its session row is gone",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/log-stream.test.ts:167]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/log-stream.test.ts:167]"
+   ]
+  },
+  {
+   "id": "api/openapi-scopes.test.ts::the published document::every documented operation the router serves carries its scope",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/openapi-scopes.test.ts:201]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/openapi-scopes.test.ts:201]"
+   ]
+  },
+  {
+   "id": "api/portwing-ws.test.ts::hello verification \u2014 happy path::an old-shaped hello with no capabilities field still completes the handshake",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1165]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1165]"
+   ]
+  },
+  {
+   "id": "api/portwing-ws.test.ts::hello verification \u2014 happy path::hello version normalisation::splits a plain version into the same base and build",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1240]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1240]"
+   ]
+  },
+  {
+   "id": "api/portwing-ws.test.ts::hello verification \u2014 happy path::hello version normalisation::splits a prerelease version into base and build",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1240]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1240]"
+   ]
+  },
+  {
+   "id": "api/portwing-ws.test.ts::hello verification \u2014 happy path::leaves version and build unset when hello carries no version",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1267]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1267]"
+   ]
+  },
+  {
+   "id": "api/portwing-ws.test.ts::hello verification \u2014 happy path::passes only advertised capability strings to the adapter ([\"edge-request-body-stream\"])",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1139]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1139]"
+   ]
+  },
+  {
+   "id": "api/portwing-ws.test.ts::hello verification \u2014 happy path::passes only advertised capability strings to the adapter (undefined)",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1139]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1139]"
+   ]
+  },
+  {
+   "id": "api/portwing-ws.test.ts::hello verification \u2014 happy path::uses the controller-configured poll interval in the welcome and agent metadata",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1202]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1202]"
+   ]
+  },
+  {
+   "id": "api/portwing-ws.test.ts::hello verification \u2014 happy path::welcome advertises the edge-response-body-b64 capability",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1094]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:1094]"
+   ]
+  },
+  {
+   "id": "api/portwing-ws.test.ts::reports the canonical configuration version in the welcome frame",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:338]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/portwing-ws.test.ts:338]"
+   ]
+  },
+  {
+   "id": "api/totp-factor-management.integration.test.ts::TOTP slice 4: factor-management API::the concurrent-session limit counts live sessions only::a sixth live session still evicts the oldest one, and closes its streams",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected 200 to be 401 // Object.is equality [call @ api/totp-factor-management.integration.test.ts:3063]",
+    "AssertionError: expected 200 to be 401 // Object.is equality [call @ api/totp-factor-management.integration.test.ts:3063]"
+   ]
+  },
+  {
+   "id": "registry/index.test.ts::constructComponent should resolve and construct a real provider without calling register or init",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected \"register\" to not be called at all, but actually been called 1 times / Received: / 1st register call: / Array [ [call @ registry/index.test.ts:310]",
+    "AssertionError: expected \"register\" to not be called at all, but actually been called 1 times / Received: / 1st register call: / Array [ [call @ registry/index.test.ts:310]"
+   ]
+  },
+  {
+   "id": "registry/index.test.ts::reconcileComponentsWithConfiguration::treats a component present in state but never registered through registerComponent as absent from the current set",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ registry/index.test.ts:2293]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ registry/index.test.ts:2293]"
+   ]
+  },
+  {
+   "id": "registry/index.test.ts::registerComponent should not track raw configuration for an agent-owned component, and reconcile should never see it",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ registry/index.test.ts:222]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ registry/index.test.ts:222]"
+   ]
+  },
+  {
+   "id": "registry/index.test.ts::registerRegistries should register all registries",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected [ 'alicr.public', \u2026(15) ] to deeply equal [ 'alicr.public', \u2026(14) ] [call @ registry/index.test.ts:351]",
+    "AssertionError: expected [ 'alicr.public', \u2026(15) ] to deeply equal [ 'alicr.public', \u2026(14) ] [call @ registry/index.test.ts:351]"
+   ]
+  },
+  {
+   "id": "security/backends/docker.test.ts::createDockerScannerBackend::stops and removes a worker when its scan is aborted",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected Error: Scanner worker timed out after 100\u2026 to be AbortError: worker cancelled // Object.is equality [call @ security/backends/docker.test.ts:572]",
+    "AssertionError: expected Error: Scanner worker timed out after 100\u2026 to be AbortError: worker cancelled // Object.is equality [call @ security/backends/docker.test.ts:572]"
+   ]
+  },
+  {
+   "id": "security/scan.test.ts::runCommand heartbeat::logs every 30 seconds with elapsed time and stops once the scan succeeds",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected [ \u2026(3) ] to have a length of +0 but got 3 [call @ security/scan.test.ts:3581]",
+    "AssertionError: expected [ Array(1) ] to have a length of +0 but got 1 [call @ security/scan.test.ts:3581]"
+   ]
+  },
+  {
+   "id": "security/scan.test.ts::scanImageForVulnerabilities should not execute queued Trivy work after it is aborted",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:311]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:311]"
+   ]
+  },
+  {
+   "id": "security/scan.test.ts::scanImageForVulnerabilities should terminate a command child and detach abort handling",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:236]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:236]"
+   ]
+  },
+  {
+   "id": "security/scan.test.ts::scanImageWithDedup::aborts the provider when its only scheduled waiter aborts and clears the in-flight entry",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2565]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2565]"
+   ]
+  },
+  {
+   "id": "security/scan.test.ts::scanImageWithDedup::does not downgrade a gate-first shared scan when a scheduler joins",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2437]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2437]"
+   ]
+  },
+  {
+   "id": "security/scan.test.ts::scanImageWithDedup::does not retry a scheduler-only shared scan after a transient failure",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2467]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2467]"
+   ]
+  },
+  {
+   "id": "security/scan.test.ts::scanImageWithDedup::keeps a signal-less waiter alive when the first scheduled waiter aborts",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2494]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2494]"
+   ]
+  },
+  {
+   "id": "security/scan.test.ts::scanImageWithDedup::lets a later scheduled waiter abort without cancelling a signal-less first waiter",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2530]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2530]"
+   ]
+  },
+  {
+   "id": "security/scan.test.ts::scanImageWithDedup::replaces an aborted in-flight scan while its shared warm-up is still pending",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2326]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2326]"
+   ]
+  },
+  {
+   "id": "security/scan.test.ts::scanImageWithDedup::single-flights concurrent scans by digest and clears the in-flight entry after settlement",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2635]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2635]"
+   ]
+  },
+  {
+   "id": "security/scan.test.ts::scanImageWithDedup::upgrades a scheduler-first shared scan when a retrying gate joins before failure",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2407]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ security/scan.test.ts:2407]"
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.watch.test.ts::Docker Watcher::Additional Coverage - watchFromCron and getContainers::should limit concurrent effective label resolution during getContainers",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ watchers/providers/docker/Docker.watch.test.ts:1541]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ watchers/providers/docker/Docker.watch.test.ts:1541]"
+   ]
+  },
+  {
+   "id": "watchers/providers/docker/Docker.watch.test.ts::Docker Watcher::Additional Coverage - watchFromCron and getContainers::should limit concurrent image-detail enrichment during getContainers",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ watchers/providers/docker/Docker.watch.test.ts:1578]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ watchers/providers/docker/Docker.watch.test.ts:1578]"
+   ]
+  }
+ ],
+ "parallel_only": [
+  {
+   "id": "api/api.test.ts::API Router::should mount all sub-routers",
+   "par": [
+    "passed",
+    "failed"
+   ],
+   "first": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/api.test.ts:359]"
+  },
+  {
+   "id": "api/index.test.ts::API Index::real Express: /api/v1/* traffic is never reached by the removed-alias tombstone mounted at /api",
+   "par": [
+    "failed",
+    "passed"
+   ],
+   "first": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/index.test.ts:1104]"
+  },
+  {
+   "id": "api/index.test.ts::API Index::real Express: sendUiDisabledResponse lets unmatched API, health, and metrics paths fall through instead of returning the UI-disabled body",
+   "par": [
+    "passed",
+    "failed"
+   ],
+   "first": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/index.test.ts:1354]"
+  },
+  {
+   "id": "api/index.test.ts::API Index::real Express: whitelisted wud-card endpoints still serve via the compat router while a non-whitelisted /api route still 410s when DD_COMPAT_WUDCARD is enabled",
+   "par": [
+    "failed",
+    "passed"
+   ],
+   "first": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ api/index.test.ts:993]"
+  }
+ ]
+}

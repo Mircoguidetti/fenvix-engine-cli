@@ -51,6 +51,31 @@ here: the engine measured is this checkout).
 
 `python3 -m pytest -q harness/p3b/test_classify.py` → `20 passed in 0.08s`.
 
-## A. Own re-measure
+## A. Own re-measure (2026-11-26, engine ece09e1f on every run)
 
-(filled in at the end of A)
+A1, checked once: `/opt/node24/bin/node --version` → `v24.22.3` (present, no install); system `node` v22.23.5;
+`command -v unshare ip` → `/usr/bin/unshare` only (no `ip`); `id -u` → 0.
+`export PM_WORK=$HOME/pm-p3b; mkdir -p $PM_WORK; set -o pipefail; bash harness/p3b/setup_extra.sh 2>&1 | tee $PM_WORK/setup.log`
+→ exit 0, log ends `EXTRA-SETUP-DONE`, drydock part prints `v24.22.3`.
+
+A2-A3 per repository R (alakajam, agentlang, drydock), each command exit 0:
+
+```
+export PM_WORK=$HOME/pm-p3b; python3 harness/det_pins/pins.py find --repo R --out $PM_WORK/find
+export PM_WORK=$HOME/pm-p3b; python3 harness/p3b/count_extra.py run --repo R --find $PM_WORK/find
+export PM_WORK=$HOME/pm-p3b; python3 harness/p3b/count_extra.py count --repo R --find $PM_WORK/find
+export PM_WORK=$HOME/pm-p3b; python3 harness/p3b/cases.py $PM_WORK/find/R <checkout>
+```
+
+Checkouts: `$PM_WORK/repos/alakajam`, `$PM_WORK/repos/agentlang`, `$PM_WORK/fr/CodesWhat_drydock/app`.
+Each run's command, exit and wall are in `data/R/find/runs.jsonl` (all `engine_commit` = ece09e1f, not `+modified`).
+
+| R | plain 1 / 2 (exit 0) | --det w1 1 / 2 (exit 1) | --det w4 1 / 2 (exit 1) |
+|---|---|---|---|
+| alakajam | 33.34 / 31.65 s | 72.21 / 85.75 s | 86.81 / 91.04 s |
+| agentlang | 79.20 / 80.36 s | 90.73 / 89.55 s | 102.35 / 95.29 s |
+| drydock | 535.27 / 549.47 s | 515.78 / 500.25 s | 229.64 / 233.15 s |
+
+Copied to `data/R/find/` as P3 does (outcome, ids and runner files gzipped with `gzip -n`; `flips.json`,
+`count_extra.json`, `runs.jsonl`, `cases.json` as is). The `det*`/`par*` traces and `runs.log` stay in
+`$PM_WORK/find/R/` (B4 reads the w4 traces).
