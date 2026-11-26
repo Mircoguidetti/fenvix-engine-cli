@@ -251,3 +251,49 @@ stopping after 30.0 min (resumable)
 2026-11-26T19:00:22+00:00 A mutation               size:15626..17188 tc=1010 leaf=False read=- inc=- req=261
 2026-11-26T19:01:02+00:00 A mutation               size:15626..16407 tc=531 leaf=True read=573 inc=False req=267
 stopping after 30.0 min (resumable)
+2026-11-26T19:01:33+00:00 A mutation               size:16408..17188 tc=469 leaf=True read=500 inc=False req=5
+2026-11-26T19:02:34+00:00 A mutation               size:17189..18750 tc=862 leaf=True read=900 inc=False req=14
+2026-11-26T19:02:41+00:00 A mutation               size:18751..25000 tc=2720 leaf=False read=- inc=- req=15
+2026-11-26T19:02:47+00:00 A mutation               size:18751..21875 tc=1540 leaf=False read=- inc=- req=16
+2026-11-26T19:03:48+00:00 A mutation               size:18751..20313 tc=866 leaf=True read=900 inc=False req=25
+2026-11-26T19:04:36+00:00 A mutation               size:20314..21875 tc=661 leaf=True read=700 inc=False req=32
+2026-11-26T19:04:42+00:00 A mutation               size:21876..25000 tc=1118 leaf=False read=- inc=- req=33
+2026-11-26T19:05:23+00:00 A mutation               size:21876..23438 tc=544 leaf=True read=559 inc=False req=39
+2026-11-26T19:06:03+00:00 A mutation               size:23439..25000 tc=539 leaf=True read=545 inc=False req=45
+2026-11-26T19:06:11+00:00 A mutation               size:25001..50000 tc=4056 leaf=False read=- inc=- req=46
+2026-11-26T19:06:17+00:00 A mutation               size:25001..37500 tc=2900 leaf=False read=- inc=- req=47
+2026-11-26T19:06:24+00:00 A mutation               size:25001..31250 tc=1674 leaf=False read=- inc=- req=48
+2026-11-26T19:07:31+00:00 A mutation               size:25001..28125 tc=998 leaf=True read=965 inc=False req=58
+2026-11-26T19:08:19+00:00 A mutation               size:28126..31250 tc=664 leaf=True read=700 inc=False req=65
+2026-11-26T19:08:26+00:00 A mutation               size:31251..37500 tc=1242 leaf=False read=- inc=- req=66
+2026-11-26T19:09:06+00:00 A mutation               size:31251..34375 tc=590 leaf=True read=594 inc=False req=72
+2026-11-26T19:09:47+00:00 A mutation               size:34376..37500 tc=564 leaf=True read=553 inc=False req=78
+2026-11-26T19:09:54+00:00 A mutation               size:37501..50000 tc=1266 leaf=False read=- inc=- req=79
+2026-11-26T19:10:48+00:00 A mutation               size:37501..43750 tc=762 leaf=True read=800 inc=False req=87
+2026-11-26T19:11:28+00:00 A mutation               size:43751..50000 tc=539 leaf=True read=537 inc=False req=93
+2026-11-26T19:11:36+00:00 A mutation               size:50001..100000 tc=1804 leaf=False read=- inc=- req=94
+2026-11-26T19:11:42+00:00 A mutation               size:50001..75000 tc=1214 leaf=False read=- inc=- req=95
+2026-11-26T19:12:43+00:00 A mutation               size:50001..62500 tc=828 leaf=True read=836 inc=False req=104
+2026-11-26T19:13:23+00:00 A mutation               size:62501..75000 tc=554 leaf=True read=545 inc=False req=110
+2026-11-26T19:14:11+00:00 A mutation               size:75001..100000 tc=601 leaf=True read=700 inc=False req=117
+2026-11-26T19:15:12+00:00 A mutation               size:100001..200000 tc=807 leaf=True read=900 inc=False req=126
+2026-11-26T19:15:39+00:00 A mutation               size:200001..400000 tc=372 leaf=True read=371 inc=False req=130
+2026-11-26T19:15:48+00:00 B stryker filename:package.json size:0..400000 tc=10560 leaf=False read=- inc=- req=131
+2026-11-26T19:15:55+00:00 B stryker filename:package.json size:0..200000 tc=10560 leaf=False read=- inc=- req=132
+2026-11-26T19:16:02+00:00 B stryker filename:package.json size:0..100000 tc=10464 leaf=False read=- inc=- req=133
+2026-11-26T19:16:08+00:00 B stryker filename:package.json size:0..50000 tc=10464 leaf=False read=- inc=- req=134
+2026-11-26T19:16:13+00:00 B stryker filename:package.json size:0..25000 tc=10184 leaf=False read=- inc=- req=135
+2026-11-26T19:16:20+00:00 B stryker filename:package.json size:0..12500 tc=9992 leaf=False read=- inc=- req=136
+2026-11-26T19:16:28+00:00 B stryker filename:package.json size:0..6250 tc=9320 leaf=False read=- inc=- req=137
+2026-11-26T19:16:33+00:00 B stryker filename:package.json size:0..3125 tc=7720 leaf=False read=- inc=- req=138
+2026-11-26T19:16:40+00:00 B stryker filename:package.json size:0..1562 tc=4184 leaf=False read=- inc=- req=139
+2026-11-26T19:16:47+00:00 B stryker filename:package.json size:0..781 tc=1644 leaf=False read=- inc=- req=140
+2026-11-26T19:17:20+00:00 B stryker filename:package.json size:0..390 tc=439 leaf=True read=426 inc=False req=145
+2026-11-26T19:17:30+00:00 B stryker filename:package.json size:391..781 tc=1264 leaf=False read=- inc=- req=146
+2026-11-26T19:18:08+00:00 B stryker filename:package.json size:391..586 tc=592 leaf=True read=600 inc=False req=152
+2026-11-26T19:18:57+00:00 B stryker filename:package.json size:587..781 tc=648 leaf=True read=700 inc=False req=159
+2026-11-26T19:19:03+00:00 B stryker filename:package.json size:782..1562 tc=2688 leaf=False read=- inc=- req=160
+2026-11-26T19:19:10+00:00 B stryker filename:package.json size:782..1172 tc=1067 leaf=False read=- inc=- req=161
+2026-11-26T19:19:49+00:00 B stryker filename:package.json size:782..977 tc=514 leaf=True read=550 inc=False req=167
+2026-11-26T19:20:25+00:00 B stryker filename:package.json size:978..1172 tc=489 leaf=True read=500 inc=False req=172
+2026-11-26T19:20:31+00:00 B stryker filename:package.json size:1173..1562 tc=1546 leaf=False read=- inc=- req=173
