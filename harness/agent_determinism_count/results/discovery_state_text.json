@@ -326,6 +326,33 @@
    "prepass_total": 10087,
    "stack": []
   },
+  "committer-date:>=2024-01-01 \"randomly fails\" anthropic test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 528,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 513,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"randomly fails\" llm test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 57,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 57,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"randomly fails\" openai test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 7,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 7,
+   "stack": []
+  },
   "committer-date:>=2024-01-01 flakiness \"ai sdk\" test": {
    "capped": false,
    "done": true,
@@ -650,6 +677,24 @@
    "prepass_total": 62054,
    "stack": []
   },
+  "committer-date:>=2024-01-01 intermittent \"ai sdk\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 406,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 405,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 intermittent \"llama-index\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 23,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 23,
+   "stack": []
+  },
   "committer-date:>=2024-01-01 intermittent \"model output\" test": {
    "capped": false,
    "done": true,
@@ -657,6 +702,24 @@
    "leaves": 1,
    "nodes": 1,
    "prepass_total": 781,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 intermittent \"pydantic-ai\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 72,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 72,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 intermittent agent test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 41491,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 41307,
    "stack": []
   },
   "committer-date:>=2024-01-01 intermittent anthropic test": {
@@ -668,6 +731,15 @@
    "prepass_total": 126549,
    "stack": []
   },
+  "committer-date:>=2024-01-01 intermittent autogen test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 80,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 78,
+   "stack": []
+  },
   "committer-date:>=2024-01-01 intermittent claude test": {
    "capped": true,
    "done": true,
@@ -677,23 +749,23 @@
    "prepass_total": 141567,
    "stack": []
   },
+  "committer-date:>=2024-01-01 intermittent crewai test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 94,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 94,
+   "stack": []
+  },
   "committer-date:>=2024-01-01 intermittent eval test": {
    "capped": false,
-   "done": false,
-   "leaf_total": 4193,
-   "leaves": 7,
-   "nodes": 14,
+   "done": true,
+   "leaf_total": 6497,
+   "leaves": 10,
+   "nodes": 18,
    "prepass_total": 6465,
-   "stack": [
-    [
-     "2026-08-19",
-     "2026-09-20"
-    ],
-    [
-     "2026-09-21",
-     "2026-11-25"
-    ]
-   ]
+   "stack": []
   },
   "committer-date:>=2024-01-01 intermittent gemini test": {
    "capped": false,
@@ -711,6 +783,33 @@
    "leaves": 15,
    "nodes": 28,
    "prepass_total": 7854,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 intermittent langchain test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 286,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 284,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 intermittent langgraph test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 269,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 267,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 intermittent llamaindex test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 30,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 30,
    "stack": []
   },
   "committer-date:>=2024-01-01 intermittent llm test": {
@@ -2966,13 +3065,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 1322
+  "issues": 1413
  },
  "search_stats": {
-  "429": 141,
+  "429": 157,
   "limit": 30,
   "remaining": 28,
-  "reset": 1795681473
+  "reset": 1795682742
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
