@@ -2,6 +2,32 @@
  "budget_end": "2026-11-26T10:54:28+00:00",
  "finished": null,
  "queries": {
+  "committer-date:>=2024-01-01 \"non-deterministic\" llm test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 1187,
+   "leaves": 3,
+   "nodes": 8,
+   "prepass_total": 7949,
+   "stack": [
+    [
+     "2026-03-23",
+     "2026-04-08"
+    ],
+    [
+     "2026-04-09",
+     "2026-05-11"
+    ],
+    [
+     "2026-05-12",
+     "2026-07-16"
+    ],
+    [
+     "2026-07-17",
+     "2026-11-25"
+    ]
+   ]
+  },
   "committer-date:>=2024-01-01 flakiness \"ai sdk\" test": {
    "capped": false,
    "done": true,
@@ -326,6 +352,51 @@
    "prepass_total": 62054,
    "stack": []
   },
+  "committer-date:>=2024-01-01 nondeterministic \"ai sdk\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 39,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 39,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 nondeterministic \"llama-index\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 3,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 3,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 nondeterministic \"model output\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 254,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 255,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 nondeterministic \"pydantic-ai\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 31,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 31,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 nondeterministic agent test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 6763,
+   "leaves": 14,
+   "nodes": 26,
+   "prepass_total": 6729,
+   "stack": []
+  },
   "committer-date:>=2024-01-01 nondeterministic anthropic test": {
    "capped": false,
    "done": true,
@@ -335,6 +406,15 @@
    "prepass_total": 15091,
    "stack": []
   },
+  "committer-date:>=2024-01-01 nondeterministic autogen test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 5,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 5,
+   "stack": []
+  },
   "committer-date:>=2024-01-01 nondeterministic claude test": {
    "capped": false,
    "done": true,
@@ -342,6 +422,24 @@
    "leaves": 33,
    "nodes": 64,
    "prepass_total": 19826,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 nondeterministic crewai test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 8,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 8,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 nondeterministic eval test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 1892,
+   "leaves": 5,
+   "nodes": 8,
+   "prepass_total": 1885,
    "stack": []
   },
   "committer-date:>=2024-01-01 nondeterministic gemini test": {
@@ -362,6 +460,33 @@
    "prepass_total": 1935,
    "stack": []
   },
+  "committer-date:>=2024-01-01 nondeterministic langchain test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 83,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 81,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 nondeterministic langgraph test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 39,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 39,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 nondeterministic llamaindex test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 7,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 7,
+   "stack": []
+  },
   "committer-date:>=2024-01-01 nondeterministic llm test": {
    "capped": false,
    "done": true,
@@ -378,6 +503,15 @@
    "leaves": 6,
    "nodes": 10,
    "prepass_total": 2556,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 nondeterministic prompt test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 4032,
+   "leaves": 11,
+   "nodes": 20,
+   "prepass_total": 4018,
    "stack": []
   },
   "is:public created:>=2024-01-01 \"api costs\" test (llm OR openai OR agent)": {
@@ -2444,13 +2578,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 1421
+  "issues": 1639
  },
  "search_stats": {
-  "429": 78,
+  "429": 97,
   "limit": 30,
-  "remaining": 17,
-  "reset": 1795657956
+  "remaining": 24,
+  "reset": 1795659782
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
