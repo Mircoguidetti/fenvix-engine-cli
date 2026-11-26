@@ -14,7 +14,7 @@ progress (HTTP 404, 15:04Z), so the activity time is the later of the run's star
                                                   file starts the text workflow; pending requests run before it)
 A run is healthy when it is queued, or in progress with its last activity under the limit (20 minutes for a log
 line, 35 for a checkpoint commit). A completed run is
-healthy only when every request file has its requests_done marker (nothing left to run).
+never healthy while reading goes on: a request must be pending or running (16:46Z).
 """
 from __future__ import annotations
 
@@ -50,7 +50,9 @@ def check(status: str, last_log: str | None, now: str, pending: list[str], stale
         return None if age < stale_min else f"last activity {age:.0f} min old"
     if pending:
         return f"no text run in progress or queued; {len(pending)} request(s) pending: {', '.join(pending)}"
-    return None
+    # 16:46Z: run 14 took chunks 4 and 5 together and run 15 found nothing; an idle workflow with nothing queued is
+    # a gap too while reading is not finished
+    return "no text run in progress or queued and no request pending"
 
 
 def record_gap(start: str, end: str, cause: str, res: Path = RES) -> str:
