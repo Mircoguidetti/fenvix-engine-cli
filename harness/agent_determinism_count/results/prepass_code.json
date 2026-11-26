@@ -13,6 +13,20 @@
   "stratum": "S1",
   "total_count": 2
  },
+ "api.anthropic.com path:recordings": {
+  "at": "2026-11-26T08:26:31+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 7
+  },
+  "route": "workflow",
+  "search_429": 1,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 2
+ },
  "api.anthropic.com path:vcr": {
   "at": "2026-11-26T04:14:50+00:00",
   "family": "code",
@@ -37,6 +51,20 @@
   },
   "route": "workflow",
   "search_429": 50,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
+ "api.cohere path:recordings": {
+  "at": "2026-11-26T08:43:34+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 7
+  },
+  "route": "workflow",
+  "search_429": 9,
   "status": 200,
   "stratum": "S1",
   "total_count": 0
@@ -69,6 +97,20 @@
   "stratum": "S1",
   "total_count": 0
  },
+ "api.deepseek.com path:recordings": {
+  "at": "2026-11-26T08:43:47+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 5
+  },
+  "route": "workflow",
+  "search_429": 9,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
  "api.deepseek.com path:vcr": {
   "at": "2026-11-26T05:17:36+00:00",
   "family": "code",
@@ -93,6 +135,20 @@
   },
   "route": "workflow",
   "search_429": 47,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
+ "api.groq.com path:recordings": {
+  "at": "2026-11-26T08:43:20+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 8
+  },
+  "route": "workflow",
+  "search_429": 8,
   "status": 200,
   "stratum": "S1",
   "total_count": 0
@@ -125,6 +181,20 @@
   "stratum": "S1",
   "total_count": 0
  },
+ "api.mistral.ai path:recordings": {
+  "at": "2026-11-26T08:43:06+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 9
+  },
+  "route": "workflow",
+  "search_429": 7,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
  "api.mistral.ai path:vcr": {
   "at": "2026-11-26T05:02:18+00:00",
   "family": "code",
@@ -153,6 +223,20 @@
   "stratum": "S1",
   "total_count": 2
  },
+ "api.openai.com path:recordings": {
+  "at": "2026-11-26T08:26:24+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 8
+  },
+  "route": "workflow",
+  "search_429": 1,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 1
+ },
  "api.openai.com path:vcr": {
   "at": "2026-11-26T03:49:47+00:00",
   "family": "code",
@@ -177,6 +261,20 @@
   },
   "route": "workflow",
   "search_429": 35,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
+ "bedrock-runtime path:recordings": {
+  "at": "2026-11-26T08:40:59+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 9
+  },
+  "route": "workflow",
+  "search_429": 6,
   "status": 200,
   "stratum": "S1",
   "total_count": 0
@@ -335,6 +433,20 @@
   "stratum": "S1",
   "total_count": 28
  },
+ "generativelanguage.googleapis.com path:recordings": {
+  "at": "2026-11-26T08:27:02+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 9
+  },
+  "route": "workflow",
+  "search_429": 3,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 1
+ },
  "generativelanguage.googleapis.com path:vcr": {
   "at": "2026-11-26T04:53:42+00:00",
   "family": "code",
@@ -363,6 +475,20 @@
   "stratum": "S1",
   "total_count": null
  },
+ "openai.azure.com path:recordings": {
+  "at": "2026-11-26T08:27:32+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 8
+  },
+  "route": "workflow",
+  "search_429": 4,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
  "openai.azure.com path:vcr": {
   "at": "2026-11-26T04:58:57+00:00",
   "family": "code",
@@ -390,6 +516,20 @@
   "status": 200,
   "stratum": "S1",
   "total_count": 0
+ },
+ "openrouter.ai path:recordings": {
+  "at": "2026-11-26T08:43:40+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 6
+  },
+  "route": "workflow",
+  "search_429": 9,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 3
  },
  "openrouter.ai path:vcr": {
   "at": "2026-11-26T05:17:22+00:00",

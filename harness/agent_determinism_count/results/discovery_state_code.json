@@ -1,0 +1,35 @@
+{
+ "budget_end": "2026-11-27T03:49:30+00:00",
+ "finished": null,
+ "queries": {
+  "api.openai.com path:cassettes": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 2,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 2,
+   "stack": []
+  },
+  "api.openai.com path:recordings": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 1,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 1,
+   "stack": []
+  }
+ },
+ "search_requests": {
+  "code": 3,
+  "issues": 0
+ },
+ "search_stats": {
+  "429": 1,
+  "limit": 10,
+  "remaining": 3,
+  "reset": 1795682645
+ },
+ "started": "2026-11-26T08:43:47+00:00"
+}
