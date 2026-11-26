@@ -2,31 +2,41 @@
  "budget_end": "2026-11-26T10:54:28+00:00",
  "finished": null,
  "queries": {
+  "committer-date:>=2024-01-01 \"non-deterministic\" anthropic test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 34064,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 34038,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"non-deterministic\" claude test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 44522,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 44155,
+   "stack": []
+  },
   "committer-date:>=2024-01-01 \"non-deterministic\" llm test": {
    "capped": false,
-   "done": false,
-   "leaf_total": 1187,
-   "leaves": 3,
-   "nodes": 8,
+   "done": true,
+   "leaf_total": 7949,
+   "leaves": 14,
+   "nodes": 26,
    "prepass_total": 7949,
-   "stack": [
-    [
-     "2026-03-23",
-     "2026-04-08"
-    ],
-    [
-     "2026-04-09",
-     "2026-05-11"
-    ],
-    [
-     "2026-05-12",
-     "2026-07-16"
-    ],
-    [
-     "2026-07-17",
-     "2026-11-25"
-    ]
-   ]
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"non-deterministic\" openai test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 3796,
+   "leaves": 6,
+   "nodes": 10,
+   "prepass_total": 3801,
+   "stack": []
   },
   "committer-date:>=2024-01-01 flakiness \"ai sdk\" test": {
    "capped": false,
@@ -2578,13 +2588,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 1639
+  "issues": 1819
  },
  "search_stats": {
-  "429": 97,
+  "429": 117,
   "limit": 30,
-  "remaining": 24,
-  "reset": 1795659782
+  "remaining": 19,
+  "reset": 1795661560
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
