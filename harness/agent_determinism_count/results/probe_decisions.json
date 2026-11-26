@@ -2,9 +2,17 @@
  "blocked": false,
  "code_pending": false,
  "code_reprobe": [],
- "code_route": "workflow",
+ "code_route": "session",
+ "code_route_switch": {
+  "at": "2026-11-26T09:56:06Z",
+  "from": "workflow",
+  "session_probe": "results/probe_session_code.json",
+  "to": "session",
+  "why": "coordinator 09:30Z: \u00a70.2a re-probe tie (a1 2=2, a2 1394=1394), session route faster; CHANGES.md item 8",
+  "workflow_run_stopped": 45776621427
+ },
  "code_totals": {
-  "session": -1,
+  "session": 1394,
   "workflow": 1394
  },
  "commits_or_ok": true,
