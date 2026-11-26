@@ -1,0 +1,42 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____ test_det_isolate_read_outside_tests_in_a_later_session_is_not_proven _____
+
+detjs = ('/opt/node22/bin/node /home/user/wt-6e79/node/bin/detjs.js', {})
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-35/test_det_isolate_read_outside_0')
+tmp_path_factory = TempPathFactory(_given_basetemp=None, _trace=<pluggy._tracing.TagTracerSub object at 0x7fe09c232520>, _basetemp=PosixPath('/tmp/pytest-of-root/pytest-35'), _retention_count=3, _retention_policy='all')
+
+    def test_det_isolate_read_outside_tests_in_a_later_session_is_not_proven(detjs, tmp_path, tmp_path_factory):
+        """protects=`fenvix-run node -- --det-isolate` reports NOT PROVEN (exit 1, not_proven_outside >= 1) when a later
+        per-test session reads a CI-volatile variable outside any test; and a clean --det-isolate job stays green (positive
+        control); fails_when=the final header is the first session's and the job is green (release-1 24962a94: the
+        engine's isolate merge kept the first session's signals only); no_claim=the verifier's comparison of two such
+        runs."""
+        env = {"GITHUB_WORKSPACE": "/w/one"}
+        clean = _isolate_project(tmp_path_factory, "iso-clean", late_read=False)
+        code, s, _, log = job(tmp_path, clean, "clean", detjs, "--", "--det-isolate", env=env)
+        assert code == 0 and s.get("exit") == 0, log
+        assert s.get("provable_absent") is None and s.get("not_proven_outside") == 0, s
+        late = _isolate_project(tmp_path_factory, "iso-late", late_read=True)
+        code, s, _, log = job(tmp_path, late, "late", detjs, "--", "--det-isolate", env=env)
+>       assert code == 1 and s.get("exit") == 1, log
+E       AssertionError: [fenvix] runner vitest (from /tmp/pytest-of-root/pytest-35/iso-late0/vitest/package.json)
+E         [fenvix] project /tmp/pytest-of-root/pytest-35/iso-late0/vitest @ ; runner vitest; cache /tmp/pytest-of-root/pytest-35/test_det_isolate_read_outside_0/machine-cache/fixture_vitest-bd3ad422-node22 (warm)
+E         [fenvix] $ /opt/node22/bin/node /home/user/wt-6e79/node/bin/detjs.js vitest --det --det-cache=/tmp/pytest-of-root/pytest-35/test_det_isolate_read_outside_0/machine-cache/fixture_vitest-bd3ad422-node22 --det-cache-receipts=/tmp/pytest-of-root/pytest-35/test_det_isolate_read_outside_0/late/receipts.jsonl --det-cache-summary=/tmp/pytest-of-root/pytest-35/test_det_isolate_read_outside_0/late/cache-summary.json --det-outcomes=/tmp/pytest-of-root/pytest-35/test_det_isolate_read_outside_0/late/outcomes.json --det-trace=/tmp/pytest-of-root/pytest-35/test_det_isolate_read_outside_0/late/trace.jsonl run --det-isolate
+E         detjs vitest --det-isolate: 5 tests, each in a fresh process (one runner session per test)
+E         detjs isolate: ok   fail.test.js::fails on demand: passed
+E         detjs isolate: ok   pass.test.js::adds: passed
+E         detjs isolate: ok   pass.test.js::concatenates: passed
+E         detjs isolate: ok   pass.test.js::sorts: passed
+E         detjs isolate: ok   zz.test.js::reads at module scope: passed
+E         detjs: trace ../../test_det_isolate_read_outside_0/late/trace.jsonl: 5 tests, order digest a95bae8e0fb7133825957bcee79c1e48
+E         detjs cache: --det-isolate: reused with proof 0 of 5 tests; ran 5
+E         [fenvix] tests 1, reused with proof 0, ran 1, saved 0.0 s of test time, failed 0, flaky 0, not proven 0; exit 0
+E         detjs: status: failed=0 not_proven=0 passed=5 skipped=0
+E         
+E       assert (0 == 1)
+
+tests/test_runner_node.py:436: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_runner_node.py::test_det_isolate_read_outside_tests_in_a_later_session_is_not_proven
+1 failed, 48 deselected in 9.63s

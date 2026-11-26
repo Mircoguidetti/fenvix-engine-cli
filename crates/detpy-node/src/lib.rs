@@ -333,6 +333,14 @@ pub fn provable_header(sensor: String, runtime: String) -> String {
     .to_string()
 }
 
+/// The `--det` controls the core requires on for a sensor's declaration to stand (`provable::required_controls`):
+/// the --det-isolate header merge (node/src/isolate-meta.js) checks them before it lets a fully reused session's
+/// `cache-reuse/1` stand with the running sessions' sensor.
+#[napi]
+pub fn provable_required_controls(sensor: String) -> Vec<&'static str> {
+    detpy_core::provable::required_controls(&sensor).to_vec()
+}
+
 /// The runtime keys the accounting table was audited against. A run on anything else is NOT PROVEN, so the shell
 /// checks this before claiming a sensor.
 #[napi]

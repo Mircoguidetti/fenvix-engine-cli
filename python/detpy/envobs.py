@@ -279,6 +279,11 @@ class _RecData(dict):
         self._listed()
         return dict.__iter__(self)
 
+    def __reversed__(self):
+        # the C dict slot lists every name without calling __iter__ or keys (/review: reversed(posix.environ))
+        self._listed()
+        return dict.__reversed__(self)
+
     def keys(self):
         self._listed()
         return dict.keys(self)

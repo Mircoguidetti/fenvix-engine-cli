@@ -46,12 +46,19 @@ is declared rather than hidden:
 
 from __future__ import annotations
 
+import _random
 import os
+import random
 import sys
 
 from . import _core, _sites, _state
 
 _mon = getattr(sys, "monitoring", None)
+_MISSING = getattr(_mon, "MISSING", object())
+_C_RANDOM = _random.Random
+_PY_RANDOM = random.Random
+_C_SEED = _random.Random.seed  # the method descriptor (W8)
+_C_INIT = _random.Random.__init__  # the slot wrapper: a reinitialisation reseeds too (W8, /review red team)
 
 #: Name and version of this sensor, as the trace header declares it. The core refuses a trace whose sensor it
 #: does not know, so this string and the contract version travel together.
@@ -260,6 +267,16 @@ class Sensor:
             f = getattr(c, "__func__", None)  # a bound Python method, a classmethod
             if f is not None and getattr(f, "__code__", None) is not None:
                 return None
+            if code is not _CONTROLLED_INIT_CODE and ((isinstance(c, type) and _unseeded_c_random(c, arg0))
+                                                      or _c_random_reseed(c, arg0)):
+                # Spec "false greens on release-1", W8 (founder decision 2026-11-25: refuse). The C generator
+                # `_random.Random()` built without a seed seeds itself from OS entropy inside C: --det controls
+                # `random.Random` (its Python `seed`, src: seeds.py), not this, so fresh --det runs see different
+                # values. A gap: the test is NOT PROVEN and the cache neither stores nor reuses it.
+                site = _sites.resolve(_CALLER)
+                if site is not None:
+                    self._report("api", f"{getattr(c, '__module__', None) or '_random'}.{getattr(c, '__qualname__', '?')}() "
+                                        "without a seed (C generator seeded from OS entropy)", site or _site(code, offset))
             mod = getattr(c, "__module__", None)
             qual = getattr(c, "__qualname__", None) or getattr(c, "__name__", None)
             if mod is None or qual is None:
@@ -409,6 +426,9 @@ class Sensor:
         # because an event this sensor has no rule for is itself the gap it looks for.
         _core.set_audit_hook(self._on_audit, (), 1)
         self._refresh_standard_streams()
+        # W8 for constructions the CALL event cannot see (C calling the type): see _ControlledCRandom
+        if getattr(_random, "Random", None) is _C_RANDOM:
+            _random.Random = _ControlledCRandom
         self.active = True
         return True
 
@@ -416,6 +436,8 @@ class Sensor:
         if not self.active:
             return
         self.active = False
+        if getattr(_random, "Random", None) is _ControlledCRandom:
+            _random.Random = _C_RANDOM
         try:
             _mon.set_events(self.tool, 0)
             _mon.register_callback(self.tool, _mon.events.CALL, None)
@@ -443,6 +465,104 @@ class Sensor:
         import json
 
         return json.loads(_core.provable_header(SENSOR, runtime_key()))
+
+
+def _unseeded_c_random(c, arg0) -> bool:
+    """W8: is calling ``c`` with first argument ``arg0`` the construction of ``_random.Random`` (or a subclass that
+    does not go through ``random.Random``, whose ``seed`` --det controls) without a seed? A seed of None is none.
+    Asked for every type the tests call (the sensor's hot path): one C-level ``issubclass`` for almost every type,
+    no allocation (/review: a cache keyed by the type cost more and raised for unhashable metaclasses)."""
+    try:
+        if not issubclass(c, _C_RANDOM) or issubclass(c, _PY_RANDOM):
+            return False
+    except TypeError:
+        return False
+    return _entropy_or_address_seed(arg0)
+
+
+def _entropy_or_address_seed(arg0) -> bool:
+    """A seed for the C generator that does not give the same state in every --det run: none (OS entropy), or one
+    ``_random`` reduces with ``hash()`` whose hash may be an object address (founder decision 2026-11-25). int and
+    bool seed the state directly; float, str and bytes hash the same under --det (``hashseed`` pinned)."""
+    if arg0 is None or arg0 is _MISSING:
+        return True
+    return type(arg0) not in (int, bool, float, str, bytes)
+
+
+def _c_random_reseed(c, arg0) -> bool:
+    """W8: a reseed of an existing C generator from OS entropy (/review security and red team findings).
+
+    ``seed``: ``r.seed()`` / ``r.seed(None)`` on a ``_random.Random`` that is not a ``random.Random``, whose Python
+    ``seed`` --det controls and itself calls the C ``seed`` through ``super()`` (seen here as the descriptor or a
+    bound method on a ``random.Random``: not a gap). Called as a method, the event shows the descriptor and the
+    instance (``arg0``), not the seed: such a call is a gap whatever its seed (stricter than needed for ``r.seed(42)``,
+    never looser). Called as a bound method, ``arg0`` is the seed.
+
+    ``__init__``: the C slot (tp_init reseeds, from OS entropy without a seed) on ANY C generator, a ``random.Random``
+    included: nothing in ``random`` or detpy calls it (``random.Random.__init__`` is Python, calls the controlled
+    ``seed``, and as a Python function never reaches this check). The descriptor ``_random.Random.__init__(r)`` is a
+    gap whatever its seed; a bound one (``r.__init__``, ``super(random.Random, r).__init__``) follows its seed."""
+    if c is _C_SEED:
+        return isinstance(arg0, _C_RANDOM) and not isinstance(arg0, _PY_RANDOM)
+    if c is _C_INIT:
+        # ``_random.Random.__init__(r)`` reseeds ``r`` (tp_init: OS entropy without a seed). Unlike ``seed``, nothing in
+        # ``random`` or detpy calls the C ``__init__`` (``random.Random.__init__`` is Python and calls the controlled
+        # ``seed``), so a ``random.Random`` instance is no exception here (/review red team)
+        return isinstance(arg0, _C_RANDOM)
+    s = getattr(c, "__self__", None)
+    if s is None or not isinstance(s, _C_RANDOM) or hasattr(c, "__func__"):
+        return False  # a Python method (random.Random.__init__ / seed, a subclass's): what it calls is seen on its own
+    name = getattr(c, "__name__", None)
+    if name == "__init__" or (name == "seed" and not isinstance(s, _PY_RANDOM)):
+        return _entropy_or_address_seed(arg0)
+    return False
+
+
+class _ControlledMeta(type):
+    """``isinstance`` / ``issubclass`` against the controlled class answer as against the C type: ``random.Random``
+    and every generator built before the sensor derive from the original type, not from this subclass, and user code
+    must see the same answers with and without --det (/review Step 4.7 QA). A user's own subclass keeps the ordinary
+    checks."""
+
+    def __instancecheck__(cls, obj):
+        if cls is _ControlledCRandom:
+            return isinstance(obj, _C_RANDOM)
+        return type.__instancecheck__(cls, obj)
+
+    def __subclasscheck__(cls, sub):
+        if cls is _ControlledCRandom:
+            return issubclass(sub, _C_RANDOM)
+        return type.__subclasscheck__(cls, sub)
+
+
+class _ControlledCRandom(_C_RANDOM, metaclass=_ControlledMeta):
+    """``_random.Random`` while the sensor runs (W8, founder decision 2026-11-25, /plan-eng-review D1 = A).
+
+    The call-site rule (``_unseeded_c_random`` in :meth:`Sensor._on_call`) sees a construction only where Python calls
+    the type. Where C code calls it -- ``map(_random.Random, ...)``, ``functools.partial(_random.Random)()``,
+    ``type.__call__(_random.Random)`` -- no CALL event names it, and the generator seeded from OS entropy went
+    unreported (/review red team, MEASURED: reused with proof). The module attribute is this subclass instead, so
+    every construction, however it is reached, runs this ``__init__``, and so does ``_random.Random.__init__(r)``
+    on any C generator (a ``random.Random`` too). A seed that is missing or hashes by address is the gap; the
+    generator is then (re)seeded through the C slot exactly as before. Stricter only: nothing that was reported
+    stops being reported. Not covered: the class reached through ``random.Random.__mro__`` / ``__bases__`` or bound
+    before the sensor started (docs/LIMITS.md section 10)."""
+
+    __slots__ = ()
+
+    def __init__(self, *args, **kwargs):
+        if _entropy_or_address_seed(args[0] if args else _MISSING) and SENSOR_OBJ.active:
+            site = _sites.resolve(_CALLER)  # resolve, this __init__, then the frame that built the generator
+            if site is not None:
+                SENSOR_OBJ._report("api", "_random.Random() without a seed (C generator seeded from OS entropy)", site)
+        _C_INIT(self, *args, **kwargs)
+
+
+_ControlledCRandom.__module__ = "_random"
+_ControlledCRandom.__name__ = _ControlledCRandom.__qualname__ = "Random"
+#: The controlled class's own call of the C slot, which :meth:`Sensor._on_call` must not report again (it would turn
+#: a seeded ``_random.Random(5)`` into a gap: the slot wrapper called as a descriptor shows no seed).
+_CONTROLLED_INIT_CODE = _ControlledCRandom.__init__.__code__
 
 
 def _site(code, offset) -> str:

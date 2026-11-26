@@ -1,0 +1,47 @@
+TAP version 13
+# Subtest: protects=a cached Vitest test that reads the kernel release through process.report is rerun when the kernel differs (setarch --uname-2.6), and fails as uncached --det does; fails_when=the result is reused with proof (release-1 24962a94 and this branch at ca0bbb9c: MEASURED); no_claim=other machine facts
+not ok 1 - protects=a cached Vitest test that reads the kernel release through process.report is rerun when the kernel differs (setarch --uname-2.6), and fails as uncached --det does; fails_when=the result is reused with proof (release-1 24962a94 and this branch at ca0bbb9c: MEASURED); no_claim=other machine facts
+  ---
+  duration_ms: 2057.234249
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-fenvix-engine-cli/9263695f-2638-5db3-9e41-f4a6f5e42481/scratchpad/red-kernel/kernel-key.test.js:15:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    the cached run must not reuse the pass
+    detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+    detjs: parallel execution in 4 lanes with a fixed plan (default (this machine's CPUs)) (one file at a time per lane, each in a fresh worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+    
+     RUN  v5.1.0 /home/user/wt-ca0b/node/.tmp-red/kernel-key/report
+    
+    No test files found, exiting with code 0
+    
+    detjs cache: reused with proof 1 tests in 1 files (0.111 s recorded); ran 0 files; recorded 0 tests; check 0.001 s, identity 0.059 s, record 0.001 s
+    detjs cache: receipts .detjs/receipts.jsonl
+    detjs: trace .detjs/trace.jsonl: 1 tests, order digest f9fc384397d9103f897297528ee4bc51
+    
+    include: tests/**/*.test.mjs
+    exclude:  **/node_modules/**, **/.git/**
+    
+    detjs: status: failed=0 not_proven=0 passed=1 skipped=0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 0
+  operator: 'notStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-fenvix-engine-cli/9263695f-2638-5db3-9e41-f4a6f5e42481/scratchpad/red-kernel/kernel-key.test.js:31:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2118.707609

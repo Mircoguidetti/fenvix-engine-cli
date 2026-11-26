@@ -1,0 +1,143 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+___ test_wrapper_non_numeric_status_writes_the_summary_and_exits_2[failed-x] ___
+
+stubjob = <function stubjob.<locals>.run at 0x7fde4bbeff60>
+status = {'passed': 4, 'failed': 'x', 'not_proven': 0, 'skipped': 0}
+
+    @pytest.mark.parametrize("status", [
+        {"passed": 4, "failed": "x", "not_proven": 0, "skipped": 0},
+        {"passed": 4, "failed": 0, "not_proven": "1", "skipped": 0},
+        {"passed": 4, "failed": 1.5, "not_proven": 0, "skipped": 0},
+    ], ids=["failed-x", "not_proven-str", "failed-float"])
+    def test_wrapper_non_numeric_status_writes_the_summary_and_exits_2(stubjob, status):
+        """protects=a trace header whose status counts are not whole numbers gives a summary.json with a clear
+        status_error and exit 2 (the run's outcome is unknown), never a traceback; fails_when=int() raises (no summary,
+        a Python traceback) or the job reads green; no_claim=how the engine came to write such a header (it does not)."""
+>       code, s, log = stubjob(meta(status=status))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run):616: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run):383: in run
+    s = json.loads((out / "summary.json").read_text())
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_local.py:546: in read_text
+    return PathBase.read_text(self, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.13/pathlib/_abc.py:632: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-root/pytest-33/test_wrapper_non_numeric_statu0/j/summary.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-root/pytest-33/test_wrapper_non_numeric_statu0/j/summary.json'
+
+/usr/local/lib/python3.13/pathlib/_local.py:537: FileNotFoundError
+_ test_wrapper_non_numeric_status_writes_the_summary_and_exits_2[not_proven-str] _
+
+stubjob = <function stubjob.<locals>.run at 0x7fde4bfdf9c0>
+status = {'passed': 4, 'failed': 0, 'not_proven': '1', 'skipped': 0}
+
+    @pytest.mark.parametrize("status", [
+        {"passed": 4, "failed": "x", "not_proven": 0, "skipped": 0},
+        {"passed": 4, "failed": 0, "not_proven": "1", "skipped": 0},
+        {"passed": 4, "failed": 1.5, "not_proven": 0, "skipped": 0},
+    ], ids=["failed-x", "not_proven-str", "failed-float"])
+    def test_wrapper_non_numeric_status_writes_the_summary_and_exits_2(stubjob, status):
+        """protects=a trace header whose status counts are not whole numbers gives a summary.json with a clear
+        status_error and exit 2 (the run's outcome is unknown), never a traceback; fails_when=int() raises (no summary,
+        a Python traceback) or the job reads green; no_claim=how the engine came to write such a header (it does not)."""
+        code, s, log = stubjob(meta(status=status))
+>       assert code == 2 and s["exit"] == 2, log
+E       AssertionError: [fenvix] runner vitest (from /tmp/pytest-of-root/pytest-33/test_wrapper_non_numeric_statu1/proj/package.json)
+E         [fenvix] project /tmp/pytest-of-root/pytest-33/test_wrapper_non_numeric_statu1/proj @ ; runner vitest; cache /tmp/pytest-of-root/pytest-33/test_wrapper_non_numeric_statu1/cache/proj-e73c023a-node22 (cold)
+E         [fenvix] $ /tmp/pytest-of-root/pytest-33/test_wrapper_non_numeric_statu1/detjs-stub vitest --det --det-cache=/tmp/pytest-of-root/pytest-33/test_wrapper_non_numeric_statu1/cache/proj-e73c023a-node22 --det-cache-receipts=/tmp/pytest-of-root/pytest-33/test_wrapper_non_numeric_statu1/j/receipts.jsonl --det-cache-summary=/tmp/pytest-of-root/pytest-33/test_wrapper_non_numeric_statu1/j/cache-summary.json --det-outcomes=/tmp/pytest-of-root/pytest-33/test_wrapper_non_numeric_statu1/j/outcomes.json --det-trace=/tmp/pytest-of-root/pytest-33/test_wrapper_non_numeric_statu1/j/trace.jsonl run
+E         [fenvix] detjs returned 0 with failed or NOT PROVEN tests (status {'passed': 4, 'failed': 0, 'not_proven': '1', 'skipped': 0}): exit 1
+E         [fenvix] proof incomplete: status.not_proven: the run is NOT PROVEN
+E         ## fenvix · vitest: tests with proof
+E         
+E         Commit `` · cache cold (first job on this machine) · machine `vm`
+E         
+E         | | |
+E         |---|---|
+E         | Tests | **4** |
+E         | Run | 4 |
+E         | Skipped with proof (result reused, receipt kept) | **0** |
+E         | Test time saved | **0.0 s** (0.0% of test time) |
+E         | Test time spent | unknown |
+E         | Failures | 0 |
+E         | Flaky (fail in the suite, pass alone) | 0 |
+E         | Job wall time (detjs vitest) | 0.0 s |
+E         
+E         Outcomes: passed 4.
+E         
+E         Receipts: one line per test (what was checked before a result was reused, or why a test ran): `/tmp/pytest-of-root/pytest-33/test_wrapper_non_numeric_statu1/j/receipts.jsonl`.
+E         
+E         [fenvix] tests 4, reused with proof 0, ran 4, saved 0.0 s of test time, failed 0, flaky 0, not proven 1; exit 1
+E         
+E       assert (1 == 2)
+
+tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run):617: AssertionError
+_ test_wrapper_non_numeric_status_writes_the_summary_and_exits_2[failed-float] _
+
+stubjob = <function stubjob.<locals>.run at 0x7fde4bfdf6a0>
+status = {'passed': 4, 'failed': 1.5, 'not_proven': 0, 'skipped': 0}
+
+    @pytest.mark.parametrize("status", [
+        {"passed": 4, "failed": "x", "not_proven": 0, "skipped": 0},
+        {"passed": 4, "failed": 0, "not_proven": "1", "skipped": 0},
+        {"passed": 4, "failed": 1.5, "not_proven": 0, "skipped": 0},
+    ], ids=["failed-x", "not_proven-str", "failed-float"])
+    def test_wrapper_non_numeric_status_writes_the_summary_and_exits_2(stubjob, status):
+        """protects=a trace header whose status counts are not whole numbers gives a summary.json with a clear
+        status_error and exit 2 (the run's outcome is unknown), never a traceback; fails_when=int() raises (no summary,
+        a Python traceback) or the job reads green; no_claim=how the engine came to write such a header (it does not)."""
+        code, s, log = stubjob(meta(status=status))
+>       assert code == 2 and s["exit"] == 2, log
+E       AssertionError: [fenvix] runner vitest (from /tmp/pytest-of-root/pytest-33/test_wrapper_non_numeric_statu2/proj/package.json)
+E         [fenvix] project /tmp/pytest-of-root/pytest-33/test_wrapper_non_numeric_statu2/proj @ ; runner vitest; cache /tmp/pytest-of-root/pytest-33/test_wrapper_non_numeric_statu2/cache/proj-e73c023a-node22 (cold)
+E         [fenvix] $ /tmp/pytest-of-root/pytest-33/test_wrapper_non_numeric_statu2/detjs-stub vitest --det --det-cache=/tmp/pytest-of-root/pytest-33/test_wrapper_non_numeric_statu2/cache/proj-e73c023a-node22 --det-cache-receipts=/tmp/pytest-of-root/pytest-33/test_wrapper_non_numeric_statu2/j/receipts.jsonl --det-cache-summary=/tmp/pytest-of-root/pytest-33/test_wrapper_non_numeric_statu2/j/cache-summary.json --det-outcomes=/tmp/pytest-of-root/pytest-33/test_wrapper_non_numeric_statu2/j/outcomes.json --det-trace=/tmp/pytest-of-root/pytest-33/test_wrapper_non_numeric_statu2/j/trace.jsonl run
+E         [fenvix] detjs returned 0 with failed or NOT PROVEN tests (status {'passed': 4, 'failed': 1.5, 'not_proven': 0, 'skipped': 0}): exit 1
+E         [fenvix] proof incomplete: status.failed: the run is NOT PROVEN
+E         ## fenvix · vitest: tests with proof
+E         
+E         Commit `` · cache cold (first job on this machine) · machine `vm`
+E         
+E         | | |
+E         |---|---|
+E         | Tests | **4** |
+E         | Run | 4 |
+E         | Skipped with proof (result reused, receipt kept) | **0** |
+E         | Test time saved | **0.0 s** (0.0% of test time) |
+E         | Test time spent | unknown |
+E         | Failures | 0 |
+E         | Flaky (fail in the suite, pass alone) | 0 |
+E         | Job wall time (detjs vitest) | 0.0 s |
+E         
+E         Outcomes: passed 4.
+E         
+E         Receipts: one line per test (what was checked before a result was reused, or why a test ran): `/tmp/pytest-of-root/pytest-33/test_wrapper_non_numeric_statu2/j/receipts.jsonl`.
+E         
+E         [fenvix] tests 4, reused with proof 0, ran 4, saved 0.0 s of test time, failed 0, flaky 0, not proven 1; exit 1
+E         
+E       assert (1 == 2)
+
+tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run):617: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run)::test_wrapper_non_numeric_status_writes_the_summary_and_exits_2[failed-x]
+FAILED tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run)::test_wrapper_non_numeric_status_writes_the_summary_and_exits_2[not_proven-str]
+FAILED tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run)::test_wrapper_non_numeric_status_writes_the_summary_and_exits_2[failed-float]
+3 failed, 84 deselected in 0.57s

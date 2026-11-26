@@ -114,6 +114,7 @@ partial key. Each row has a test that changes only that input and requires the t
 | A2 | A library `dlopen()`ed and `dlclose()`d within one context leaves no mapping to scan. | D (dependency verdict REPORT-2) | Through `ctypes`, the `ctypes.dlopen` audit event names the path: refused as A1 when it is in the project root. A load by C code without an event is A1 or S1 (that C code is itself mapped). | `test_library_loaded_and_unloaded_within_one_test` |
 | A3 | `os.stat` / `os.lstat` / `os.access` bound before the session (`from os import stat` in a plugin loaded with `-p` at startup). | D (coordinator) | At capture start every module global that is the original function is rebound to the recording wrapper (except `posix`, the import system's own module, whose probes the module-lookup finder records). References in closures, default arguments or C code stay unseen (S3, S1). | `test_stat_bound_before_the_session` |
 | A4 | `os.lstat` / `os.path.lexists` / `islink` of a dangling symlink: following the link, it reads as missing either way. | D (coordinator) | `os.lstat` (and `follow_symlinks=False`) records the kind without following a final symlink (`l:<kind>`, kinds `link`, `file`, `dir`, `other`, `missing`). | `test_dangling_symlink_that_goes_away` |
+| A5 | **A stat relative to a directory descriptor** (`os.stat(name, dir_fd=fd)`, and the same through `posix.stat` / `lstat` / `access` / `readlink` since the W3 fix wraps them): the recording wrapper passes any call with `dir_fd` through unrecorded (`python/detpy/_proof.py`, `make()`), because the path alone does not name the file. A test whose outcome depends on such a file's size, mtime or existence is reused after the file changes. Pre-existing for `os.*` on release-1; the posix bindings inherit it. | D (founder 2026-11-26: written limit; fix after 22 Dec) | None today: resolving `fd` to its directory (`/proc/self/fd/<fd>`) and recording the joined path, or a gap, is the fix. | — |
 
 ## A compiled extension nobody has audited makes a test NOT PROVEN (founder, 2026-11-22)
 
@@ -189,6 +190,42 @@ Lifting it needs per-test tracking of the state each test changes (a separate se
 * **No reuse where every test resolves a name.** A name resolution is a network input, so a suite whose setup
   resolves `localhost` in every test (litellm's pytest-socket `socket_allow_hosts`) reuses nothing and pays the
   per-file cost: 220-240 s against 48 s at `-n 4` (MEASURED, litellm 17e6ea8c `tests/unit/llms/vertex_ai`).
+
+**Object addresses differ from uncached `--det` (review R-056 W11; founder decision 2026-11-25: investigate at most 4 h,
+else a written limit).** A test the cache runs (not reused) can get another outcome than under uncached `--det` when
+the outcome depends on object addresses: `id()`, `hash(object())`, the iteration order of a set or dict keyed by
+objects with the default hash. The address of an object depends on every allocation the process made before it, and
+a cached run's history differs from uncached `--det`'s in two ways that cannot be removed: the session loads the
+store and computes keys before it knows which tests to run, and a reused test does not run, so every later test of
+its process starts from another heap. MEASURED on release-1 6e79a62c + fixes, CPython 3.13.18, one test printing the
+order of a set of six default-hash objects and the low 16 bits of three `id()`s: each mode gives the same answer on
+every run, and the modes differ from one another: plain `pytest` `[1, 2, 4, 0, 5, 3]` (`0x9940`, ...), uncached
+`--det` `[3, 1, 2, 5, 0, 4]` (`0xb230`, ...), `--det-cache` `[0, 3, 1, 2, 4, 5]` (`0x9940`, `0xead0`, ...),
+`--det-cache-in-process` `[0, 3, 1, 2, 4, 5]` (`0x9940`, `0xaad0`, ...). A fork at the point uncached `--det` starts
+its first test, told afterwards what to run, still allocates to receive that, and cannot help a test after a reused
+one. Measured direction: the cached run fails a test that uncached `--det` passes (a false red; the test ran, nothing
+was reused). The opposite direction, a cached run that passes such a test where uncached `--det` fails it, is possible
+in principle and would be a false green of the same kind (an outcome, not a reuse); it was not observed. `tests/test_review_r056_pycache.py::test_w11_object_addresses_match_uncached_det`
+stays in the suite, failing (no xfail, no skip).
+
+**The C generator reached around the controlled class (W8; founder decision 2026-11-25, /plan-eng-review D1 = A).**
+While the sensor runs, the module attribute `_random.Random` is a controlled subclass (`provable._ControlledCRandom`):
+every construction or `__init__` through it without a seed (or with one that hashes by address) is a gap, also where C
+code calls the type (`map`, `functools.partial`, `type.__call__`). The original C type is still reachable as
+`random.Random.__mro__[1]` / `random.Random.__bases__[0]`, or through a reference bound before the sensor started
+(`from _random import Random` at import time, S3): a construction through it is seen only where Python calls it
+directly (the CALL-event rule), not from C code. Not covered; no known library does this. `isinstance` / `issubclass`
+against the controlled class answer as against the C type (`provable._ControlledMeta`), so `random.Random` instances
+still pass `isinstance(r, _random.Random)`; `type(x) is _random.Random` is False for a generator built before the
+sensor started (its type is the original one).
+
+**The C seed called around `random.Random.seed` (W8; founder 2026-11-26: written limit).** `super(random.Random, r).seed()`
+on a `random.Random`, and a subclass whose `seed` calls `_random.Random.seed(self)` itself, reseed the generator from OS
+entropy without passing the `seed` --det controls. The sensor sees the C `seed` called on a `random.Random` instance, which
+is exactly what `random.Random.seed` itself does (`super().seed(a)`), so it cannot tell the two apart and lets both through.
+Telling them apart needs the caller's code object (the call from `random.py`'s own `seed` is the controlled one); that
+would also refuse a subclass `seed` that calls `super().seed(42)` (deterministic), a false red whose share is not
+measured. Not covered until then (after 22 Dec).
 
 ## 10. Parallel lanes (`--det-workers=N`, and the default since G-1044): cross-file state on a first run
 

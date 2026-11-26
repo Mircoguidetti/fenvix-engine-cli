@@ -1,0 +1,145 @@
+.F.FFF                                                                   [100%]
+=================================== FAILURES ===================================
+________ test_w4_reads_through_posix_environ_are_noted_like_os_environ _________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-24/test_w4_reads_through_posix_en0')
+
+    def test_w4_reads_through_posix_environ_are_noted_like_os_environ(tmp_path):
+        """protects=a read of ``posix.environ`` (bytes keys: get, [], in, iteration) is noted to the cache's environment
+        record (``_proof._patch_posix_environ`` -> ``_note_env``), and ``os.environ`` keeps sharing the same dict;
+        fails_when=``posix.environ`` stays the plain dict (release-1 6e79a62c: PWD read that way is in no key and no
+        record) or the patch splits ``os.environ._data`` from ``posix.environ`` (a write through one not seen by the other);
+        no_claim=the frame rule of ``_note_env`` (Rust: user reads only; end to end: the R-056 W4 attack test).
+        ``_note_env`` is replaced by a list."""
+        out = _child("""
+            import json, os, posix
+            from detpy import _proof
+    
+            noted = []
+            _proof._note_env = noted.append
+            _proof._patch_posix_environ()
+            posix.environ.get(b"PWD")
+            posix.environ[b"PATH"]
+            b"HOME" in posix.environ
+            list(posix.environ)
+            after_list = len(noted)
+            len(posix.environ)
+            repr(posix.environ)
+            posix.environ.pop(b"R1FG_ABSENT", None)
+            whole = noted[after_list:]
+            same = os.environ._data is posix.environ and os.environb._data is posix.environ
+            os.environ["R1FG_W4"] = "x"
+            seen = posix.environ.get(b"R1FG_W4")
+            print(json.dumps({"noted": [n if isinstance(n, str) else n.decode() for n in noted], "same": same,
+                              "whole": [n if isinstance(n, str) else n.decode() for n in whole],
+                              "seen": seen.decode() if seen else None}))
+        """, tmp_path)
+        assert out["same"] and out["seen"] == "x"
+        for name in ("PWD", "PATH", "HOME", "*"):
+            assert name in out["noted"], out
+>       assert out["whole"] == ["*", "*", "R1FG_ABSENT"], "len, repr and pop are reads too (/review F6)"
+E       AssertionError: len, repr and pop are reads too (/review F6)
+E       assert [] == ['*', '*', 'R1FG_ABSENT']
+E         
+E         Right contains 3 more items, first extra item: '*'
+E         Use -v to get more diff
+
+tests/test_release1_false_greens_cache_units.py:116: AssertionError
+_____ test_w8_an_unseeded_c_generator_is_a_gap_and_controlled_ones_are_not _____
+
+    def test_w8_an_unseeded_c_generator_is_a_gap_and_controlled_ones_are_not():
+        """protects=the sensor's W8 rule (``provable._unseeded_c_random``) names the construction of ``_random.Random``
+        without a seed (or with None), and of a subclass that does not go through ``random.Random``, as a gap; fails_when=
+        it misses the C generator (release-1 6e79a62c: reused while fresh --det runs differ) or flags the generators --det
+        seeds (``random.Random``, its subclasses) or a seeded one; no_claim=the gap's effect on the cache (end to end: the
+        R-056 W8 attack test) and the sensor's call-event plumbing."""
+        import _random
+    
+        from detpy import provable
+    
+        missing = getattr(sys.monitoring, "MISSING")
+    
+        class OwnC(_random.Random):
+            pass
+    
+        class OwnPy(random.Random):
+            pass
+    
+        gap = provable._unseeded_c_random
+        assert gap(_random.Random, missing) and gap(_random.Random, None) and gap(OwnC, missing)
+        assert not gap(_random.Random, 42)
+        assert not gap(random.Random, missing) and not gap(OwnPy, missing) and not gap(random.SystemRandom, missing)
+        assert not gap(int, missing) and not gap(dict, None)
+>       reseed = provable._c_random_reseed
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'detpy.provable' has no attribute '_c_random_reseed'
+
+tests/test_release1_false_greens_cache_units.py:163: AttributeError
+_ test_w3_entry_stat_through_posix_scandir_is_not_reused_after_the_file_changed _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-24/test_w3_entry_stat_through_pos0')
+
+    def test_w3_entry_stat_through_posix_scandir_is_not_reused_after_the_file_changed(tmp_path):
+        """protects=a file's size read through ``posix.scandir(d)`` entries is an input of the cached test (/review red
+        team, W3 family); fails_when=the warm cached run reuses the pass after the file grew while uncached --det fails it
+        (this branch before the fix: MEASURED ``reused 1 result(s) with proof``); no_claim=other ``posix`` calls than
+        those named in docs and tests."""
+        (tmp_path / "d").mkdir()
+        (tmp_path / "d" / "data.txt").write_text("abcd")
+        body = ("import posix\n\ndef test_v():\n    s = [e.stat().st_size for e in posix.scandir('d') if e.name == 'data.txt']"
+                "\n    assert s == [4]\n")
+        cached, uncached, log = _cache_vs_uncached(tmp_path, {"tests/test_v.py": body},
+                                                   lambda r: (r / "d" / "data.txt").write_text("abcdefgh"),
+                                                   "tests/test_v.py::test_v")
+        assert uncached == "failed"
+>       assert cached == "failed", log[-1500:]
+E       AssertionError: .
+E         ==================================== PASSES ====================================
+E         =============================== detpy (Level 0) ================================
+E         trace: /tmp/pytest-of-root/pytest-24/test_w3_entry_stat_through_pos0/.detpy/trace.jsonl  order digest: 0cd70d76556957d43a2d3c28b23098d6  seed: 0
+E         ============================ detpy cache with proof ============================
+E         reused 1 result(s) with proof, ran 0, recorded 0 (check 0.057s, record 0.189s); config 7d6e9219ac960379be236251322a672b, runtime d93f777a7f3bdc46652e5c2bce38fe9f
+E         receipts: /tmp/pytest-of-root/pytest-24/test_w3_entry_stat_through_pos0/.c/receipts.jsonl
+E         =========================== short test summary info ============================
+E         PASSED tests/test_v.py::test_v
+E         1 passed in 0.79s
+E         
+E       assert 'passed' == 'failed'
+E         
+E         - failed
+E         + passed
+
+tests/test_release1_false_greens_cache_units.py:206: AssertionError
+_________ test_w8_reseeding_a_c_generator_from_entropy_is_never_reused _________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-24/test_w8_reseeding_a_c_generato0')
+
+    def test_w8_reseeding_a_c_generator_from_entropy_is_never_reused(tmp_path):
+        """protects=``_random.Random(0).seed()`` (a reseed from OS entropy in C, /review security finding) makes the test
+        NOT PROVEN and never reused, like an unseeded construction (founder decision W8 = refuse); fails_when=the warm
+        cached run reuses it while fresh --det runs read different values (this branch before the fix: MEASURED);
+        no_claim=seeds other than None (a seeded ``r.seed(42)`` called as a method is refused too: stricter, not tested)."""
+        body = "import _random\n\ndef test_e():\n    r = _random.Random(0)\n    r.seed()\n    print('VALUE', r.random())\n"
+        _, _, log = _cache_vs_uncached(tmp_path, {"tests/test_e.py": body}, lambda r: None, "tests/test_e.py::test_e")
+>       assert not any(ln.startswith("reused 1 ") for ln in log.splitlines()), log[-1500:]
+E       AssertionError: .
+E         ==================================== PASSES ====================================
+E         =============================== detpy (Level 0) ================================
+E         trace: /tmp/pytest-of-root/pytest-24/test_w8_reseeding_a_c_generato0/.detpy/trace.jsonl  order digest: 4c01d7447a95e96c885193c5db9b40e1  seed: 0
+E         ============================ detpy cache with proof ============================
+E         reused 1 result(s) with proof, ran 0, recorded 0 (check 0.058s, record 0.249s); config 7d6e9219ac960379be236251322a672b, runtime d93f777a7f3bdc46652e5c2bce38fe9f
+E         receipts: /tmp/pytest-of-root/pytest-24/test_w8_reseeding_a_c_generato0/.c/receipts.jsonl
+E         =========================== short test summary info ============================
+E         PASSED tests/test_e.py::test_e
+E         1 passed in 0.88s
+E         
+E       assert not True
+E        +  where True = any(<generator object test_w8_reseeding_a_c_generator_from_entropy_is_never_reused.<locals>.<genexpr> at 0x7f5e76099f20>)
+
+tests/test_release1_false_greens_cache_units.py:216: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_release1_false_greens_cache_units.py::test_w4_reads_through_posix_environ_are_noted_like_os_environ
+FAILED tests/test_release1_false_greens_cache_units.py::test_w8_an_unseeded_c_generator_is_a_gap_and_controlled_ones_are_not
+FAILED tests/test_release1_false_greens_cache_units.py::test_w3_entry_stat_through_posix_scandir_is_not_reused_after_the_file_changed
+FAILED tests/test_release1_false_greens_cache_units.py::test_w8_reseeding_a_c_generator_from_entropy_is_never_reused
+4 failed, 2 passed in 29.56s

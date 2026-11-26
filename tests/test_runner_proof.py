@@ -37,11 +37,17 @@ W = _load()
 OUT4 = {"a.test.js::1": "passed", "a.test.js::2": "passed", "b.test.js::1": "passed", "b.test.js::2": "passed"}
 
 
+SENSOR = {"sensor": "node-surface/1", "contract": 1, "runtime": "node22", "surface": "x"}
+CONTROLS = ["fs", "isolation", "net", "order", "seeds", "time", "timers"]
+
+
 def meta(**over) -> dict:
     """A parallel final trace header: 2 workers, 4 tests passed, no hazard."""
     m = {
-        # every real header declares its sensor (node/src/session.js provableField); without it the run is NOT PROVEN
-        "provable": {"sensor": "node-surface/1"},
+        # every real header declares its sensor (node/src/session.js provableField); without it the run is NOT PROVEN.
+        # As a real header writes it (contract, runtime, controls): C4 refuses a declaration the core's judge refuses
+        "provable": dict(SENSOR),
+        "controls": list(CONTROLS),
         "status": {"passed": 4, "failed": 0, "not_proven": 0, "skipped": 0},
         # every real parallel header carries the observed placement (node/src/parallel.js collect)
         "parallel": {"workers": 2, "hazards": [], "placement": {"deviations": []},
@@ -492,13 +498,13 @@ def test_engine_signals_fire_without_a_declared_sensor():
     assert W.engine_signals({"status": {}})[0] == "the run declared no sensor"
     assert W.engine_signals({"provable": "x"})[0] == "the run declared no sensor"
     assert W.engine_signals({"provable_absent": ""})[0] == "the run gave no reason"
-    assert W.engine_signals({"provable": {"sensor": "node-surface/1"}}) == (None, 0)
+    assert W.engine_signals({"provable": dict(SENSOR), "controls": CONTROLS}) == (None, 0)
 
 
 def test_engine_signals_shapes():
     """protects=the signal fields' shapes (string or null; a whole number); fails_when=a non-string provable_absent
     is dropped (would read as no signal); no_claim=the engine's wording."""
-    assert W.engine_signals({"provable": {"sensor": "s"}}) == (None, 0)
+    assert W.engine_signals({"provable": dict(SENSOR), "controls": CONTROLS}) == (None, 0)
     assert W.engine_signals({"provable_absent": "x", "not_proven_outside_tests": ["env:A"]}) == ("x", 1)
     assert W.engine_signals({"provable_absent": True})[0] == "true"
 
@@ -558,4 +564,118 @@ def test_wrapper_exit_2_writes_no_proof(stubjob):
     full proof object sits next to exit 2; no_claim=the counts the engine wrote."""
     code, s, log = stubjob(meta(), exit_code=2)
     assert code == 2 and s["exit"] == 2, log
+    assert "proof" not in s
+
+
+# ---------------------------------------------------------------- C4 (spec "false greens on release-1")
+
+
+@pytest.mark.parametrize("edit,why", [
+    (lambda m: m["controls"].remove("timers"), "control `timers` off"),
+    (lambda m: m.__setitem__("controls", []), "control `time` off"),
+    (lambda m: m.pop("controls"), "control `time` off"),
+    (lambda m: m["provable"].__setitem__("sensor", "totally-made-up/9"), "not one the engine has a rule for"),
+    (lambda m: m["provable"].__setitem__("sensor", "py"), "not one the engine has a rule for"),
+    (lambda m: m["provable"].__setitem__("contract", 2), "contract 2"),
+    (lambda m: m["provable"].pop("contract"), "contract None"),
+    (lambda m: m["provable"].__setitem__("runtime", "node99"), "not audited against 'node99'"),
+])
+def test_engine_signals_refuse_what_the_core_judge_refuses(edit, why):
+    """protects=a header whose sensor declaration the core's judge refuses (a required control off, an unknown sensor,
+    another contract, an unaudited runtime) reads as not watched; fails_when=any object in meta.provable reads as
+    watched (runner-proof 6809aa13: a required control switched off and the job green); no_claim=the accounting
+    table's digest (checked by the verifier, not here)."""
+    m = meta()
+    edit(m)
+    pa, _ = W.engine_signals(m)
+    assert pa is not None and why in pa, pa
+
+
+def test_wrapper_required_control_off_is_not_proven(stubjob):
+    """protects=through the whole wrapper, a parallel run whose header declares node-surface/1 with `timers` off is
+    NOT PROVEN (exit 1); fails_when=the declared sensor alone makes it green; no_claim=why the control was off."""
+    m = meta()
+    m["controls"].remove("timers")
+    code, s, log = stubjob(m)
+    assert code == 1 and s["exit"] == 1 and s["not_proven"] >= 1, log
+    assert "timers" in (s["provable_absent"] or ""), s
+
+
+def _judge_cases():
+    """provable::judge's own sensor/controls cases (crates/detpy-core/src/provable.rs tests), for a Node header."""
+    base = list(W._NODE_CONTROLS)
+    cases = [("clean", {}, None)]
+    for drop in W._NODE_CONTROLS:
+        cases.append((f"drop-{drop}", {"controls": [c for c in base if c != drop]}, None))
+    cases.append(("no-controls", {"controls": []}, None))
+    for sensor in ["cache-reuse/2", "totally-made-up/9", "x", "py", "node", "deno-whatever/1", "cache-reuse/1"]:
+        cases.append((f"sensor-{sensor}", {"sensor": sensor}, None))
+    cases += [("contract-2", {"contract": 2}, None), ("runtime-99", {"runtime": "node99"}, None),
+              ("runtime-none", {"runtime": None}, None)]
+    return cases
+
+
+@pytest.fixture(scope="module")
+def real_record(tmp_path_factory):
+    """One test record of a real `detjs node-test --det` run (its fingerprint matches its events), and node's path."""
+    import shutil
+    node = shutil.which("node")
+    if not node or not (ROOT / "node" / "detjs.linux-x64.node").exists():
+        pytest.skip("needs node and the napi addon (node/detjs.linux-x64.node)")
+    d = tmp_path_factory.mktemp("judge-parity")
+    (d / "package.json").write_text('{"name": "judge-parity", "private": true}')
+    (d / "t.test.js").write_text("const test = require('node:test');\ntest('a', () => {});\n")
+    env = {k: v for k, v in os.environ.items() if k not in ("CI", "GITHUB_ACTIONS", "DETJS", "NODE_TEST_CONTEXT", "NODE_OPTIONS")}
+    subprocess.run([node, str(ROOT / "node" / "bin" / "detjs.js"), "node-test", "--det", "--det-workers=1", "t.test.js"],
+                   cwd=d, env=env, capture_output=True, text=True, timeout=300)
+    lines = (d / ".detjs" / "trace.jsonl").read_text().splitlines()
+    return node, json.loads(lines[0]), next(json.loads(ln) for ln in lines[1:] if json.loads(ln).get("type") == "test")
+
+
+@pytest.mark.parametrize("name,edit,_", _judge_cases(), ids=[c[0] for c in _judge_cases()])
+def test_sensor_refusal_parity_with_the_core_judge(tmp_path, real_record, name, edit, _):
+    """protects=the runner's port of judge's clauses 1-3 (sensor_refusal) gives the core's verdict on each of judge's
+    own sensor/controls cases: the core's verdict is read from `detjs verify` on two copies of one clean trace whose
+    header carries the case; fails_when=the port drifts from the core (a sensor, contract, runtime or required control
+    added or changed in provable.rs and not here); no_claim=judge's other clauses (unaccounted calls, marks)."""
+    node, real_header, rec = real_record
+    bin_ = ROOT / "node" / "bin" / "detjs.js"
+    # the real header, with the run-level signals outside tests emptied (the runner of node:test reads some), so the
+    # sensor clauses are the only ground for NOT PROVEN
+    meta_ = json.loads(json.dumps(real_header["meta"]))
+    for k in ("not_proven_outside_tests", "env_read_outside_tests", "files_read_outside_tests"):
+        meta_[k] = []
+    prov = meta_["provable"]
+    meta_["controls"] = ["fs", "isolation", "net", "order", "seeds", "time", "timers"]
+    for k, v in edit.items():
+        if k == "controls":
+            meta_["controls"] = list(v)
+        else:
+            prov[k] = v
+    header = {**real_header, "meta": meta_}
+    trace = tmp_path / "t.jsonl"
+    trace.write_text(json.dumps(header) + "\n" + json.dumps(rec) + "\n")
+    r = subprocess.run([node, str(bin_), "verify", str(trace), str(trace), "--json"], capture_output=True, text=True)
+    rep = json.loads(r.stdout)
+    core_watched = rep["summary"]["identical"] == 1
+    runner_watched = W.sensor_refusal(meta_) is None
+    assert runner_watched == core_watched, (name, W.sensor_refusal(meta_), rep["summary"], rep["tests"][0])
+
+
+# ---------------------------------------------------------------- C5 (spec "false greens on release-1")
+
+
+@pytest.mark.parametrize("status", [
+    {"passed": 4, "failed": "x", "not_proven": 0, "skipped": 0},
+    {"passed": 4, "failed": 0, "not_proven": "1", "skipped": 0},
+    {"passed": 4, "failed": 1.5, "not_proven": 0, "skipped": 0},
+], ids=["failed-x", "not_proven-str", "failed-float"])
+def test_wrapper_non_numeric_status_writes_the_summary_and_exits_2(stubjob, status):
+    """protects=a trace header whose status counts are not whole numbers gives a summary.json with a clear
+    status_error and exit 2 (the run's outcome is unknown), never a traceback; fails_when=int() raises (no summary,
+    a Python traceback) or the job reads green; no_claim=how the engine came to write such a header (it does not)."""
+    code, s, log = stubjob(meta(status=status))
+    assert code == 2 and s["exit"] == 2, log
+    assert "Traceback" not in log, log
+    assert s["status_error"] and "not whole numbers" in s["status_error"], s
     assert "proof" not in s

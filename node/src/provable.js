@@ -315,11 +315,46 @@ function declare() {
     STATE.quietDepth++;
     try {
       fs.mkdirSync(dir, { recursive: true });
-      const line = active ? `ok ${native.provableHeader(SENSOR, runtimeKey())}` : `absent ${reason || 'unknown'}`;
-      fs.writeFileSync(path.join(dir, `${process.pid}.txt`), `${line}\n`);
+      const line = ranFailed ? `absent ${ranFailed}`
+        : active ? `ok ${native.provableHeader(SENSOR, runtimeKey())}` : `absent ${reason || 'unknown'}`;
+      // keyed by process AND thread: Vitest's pool=threads workers share one pid, and a file per pid let the last
+      // thread's line overwrite another's (an `absent` replaced by `ok`: review of claude/runner-proof, C2)
+      // appended, never overwritten (/review F1): a recycled pid with the same threadId adds its line to an earlier
+      // part's instead of replacing it, so an `absent` line is never lost
+      fs.appendFileSync(path.join(dir, `${partId()}.txt`), `${line}\n`);
     } finally { STATE.quietDepth--; }
   } catch { /* the run directory is gone */ }
 }
+
+/** This process and thread, as the name of its files under <run dir>/prov: `<pid>-<threadId>` (0: main thread). */
+function partId() {
+  return `${process.pid}-${require('node:worker_threads').threadId}`;
+}
+
+/**
+ * Mark that this process or thread installed the engine's test hooks (src/controls.js installProcess): an empty
+ * `prov/<pid>-<threadId>.ran`. `session.js` declares the run's sensor only when every marked part also declared
+ * one (`prov/<pid>-<threadId>.txt`): a part that ran test code and declared nothing makes the run declare none.
+ */
+function markRan(dir) {
+  if (!dir) return;
+  const fs = require('node:fs');
+  const path = require('node:path');
+  STATE.quietDepth++;
+  try {
+    fs.mkdirSync(path.join(dir, 'prov'), { recursive: true });
+    fs.writeFileSync(path.join(dir, 'prov', `${partId()}.ran`), '');
+  } catch (e) {
+    // the marker could not be written (ENOSPC, EMFILE, ...): this part would be invisible to session.js, so its
+    // own declaration says absent instead (founder decision 2026-11-25: a markRan write failure fails closed)
+    ranFailed = `the part's test-hook marker could not be written: ${e && e.message}`;
+    // and says so now: a later declare() does not run when an earlier control throws or the sensor is never
+    // installed (/review adversarial). If this write fails too, the same I/O failure takes the part's outcome
+    // records with it and its tests are missing (a red run), as for any part that wrote nothing
+    try { fs.appendFileSync(path.join(dir, 'prov', `${partId()}.txt`), `absent ${ranFailed}\n`); } catch { /* see above */ }
+  } finally { STATE.quietDepth--; }
+}
+let ranFailed = null;
 
 /**
  * `meta.provable` for the trace header, or null when there is no sensor to declare.
@@ -335,4 +370,4 @@ function header() {
 // No startTest hook: `report` keys its set by STATE.testId, so the set resets itself at the first gap of each
 // test and there is nothing for the session to remember to call. An exported hook nobody calls is how the
 // per-test set came to be never cleared in the first place.
-module.exports = { install, header, runtimeKey, declare, SENSOR, get reason() { return reason; } };
+module.exports = { install, header, runtimeKey, declare, markRan, SENSOR, get reason() { return reason; } };

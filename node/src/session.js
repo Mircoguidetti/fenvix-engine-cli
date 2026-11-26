@@ -394,9 +394,10 @@ function envReadOutside(dir) {
   return [...names].sort();
 }
 
-/** The lines of every <run dir>/<sub>/*.txt, deduplicated. */
 /**
- * `meta.provable` for the run, assembled from what every process declared (`prov/<pid>.txt`).
+ * `meta.provable` for the run, assembled from what every process and thread declared (`prov/<pid>-<threadId>.txt`);
+ * a part that installed the engine's test hooks (`prov/<pid>-<threadId>.ran`) and declared nothing makes the run
+ * declare none.
  *
  * The run declares a sensor only when every part declared the same one. A part that could not start a sensor, or
  * a part that wrote nothing, makes the run declare none -- and then the verifier reports every test NOT PROVEN,
@@ -404,9 +405,17 @@ function envReadOutside(dir) {
  * their traces here, so a worker's sensor is not otherwise visible where the header is built.
  */
 function provableField(dir, reusedTests, order) {
-  const lines = [...runLines(dir, 'prov')];
+  // prov/<pid>-<threadId>.txt: a part's declaration (src/provable.js declare); prov/<pid>-<threadId>.ran: the part
+  // installed the engine's test hooks (src/controls.js installProcess), so it must have declared (C2: Vitest threads
+  // share a pid; the files were per pid, and a part that wrote nothing was not noticed)
+  const parts = provParts(dir);
+  const lines = [...new Set([...parts.values()].flatMap((p) => p.lines))];
   const absent = lines.find((l) => l.startsWith('absent '));
   if (absent) return { provable_absent: absent.slice('absent '.length) };
+  const silent = [...parts].filter(([, p]) => p.ran && !p.lines.some((l) => l.startsWith('ok '))).map(([id]) => id);
+  if (silent.length) {
+    return { provable_absent: `${silent.length} process(es)/thread(s) installed the test hooks and declared no sensor (${silent.slice(0, 3).join(', ')}${silent.length > 3 ? ', ...' : ''})` };
+  }
   const decls = new Set(lines.filter((l) => l.startsWith('ok ')).map((l) => l.slice('ok '.length)));
   if (decls.size === 1) {
     try { return { provable: JSON.parse([...decls][0]) }; } catch { return {}; }
@@ -435,6 +444,26 @@ function provableField(dir, reusedTests, order) {
   return {};
 }
 
+/** <run dir>/prov by part (`<pid>-<threadId>`): {ran: a .ran marker exists, lines: the .txt declaration's lines}. */
+function provParts(dir) {
+  const parts = new Map();
+  const get = (id) => { if (!parts.has(id)) parts.set(id, { ran: false, lines: [] }); return parts.get(id); };
+  const d = path.join(dir, 'prov');
+  let names = [];
+  try { names = fs.readdirSync(d); } catch { /* none */ }
+  for (const f of names) {
+    if (f.endsWith('.ran')) get(f.slice(0, -'.ran'.length)).ran = true;
+    else if (f.endsWith('.txt')) {
+      try { get(f.slice(0, -'.txt'.length)).lines.push(...fs.readFileSync(path.join(d, f), 'utf8').split('\n').filter(Boolean)); } catch { /* torn */ }
+    } else {
+      // a file this reader does not know: fail closed (an unknown part's declaration is not taken as one)
+      get(`?${f}`).ran = true;
+    }
+  }
+  return parts;
+}
+
+/** The lines of every <run dir>/<sub>/*.txt, deduplicated. */
 function runLines(dir, sub) {
   const out = new Set();
   const d = path.join(dir, sub);
@@ -669,4 +698,4 @@ function realEntropyTests(tracePath, urandom) {
   return out;
 }
 
-module.exports = { realEntropyTests, parseArgs, resolveEpoch, traceEpochNs, prepare, header, finish, partIds, partOrder, stampStatus, printsStatus, HELP, VERSION };
+module.exports = { realEntropyTests, parseArgs, resolveEpoch, traceEpochNs, prepare, header, finish, partIds, partOrder, provableField, stampStatus, printsStatus, HELP, VERSION };
