@@ -184,9 +184,13 @@ function realPid(pid) {
  * leaves the process (process.kill, child_process arguments, command strings and environment values, `/proc/<pid>`
  * paths, os.getPriority / os.setPriority) passes its value through it. A number above VPID_BASE that is this file's
  * virtual pid or another process's of the run (`<run dir>/vpid/`) becomes the real pid; a string gets every such
- * number in it (as a whole decimal number) replaced; anything else is returned as it is.
+ * number in it replaced where it stands as its own token; anything else is returned as it is.
+ * P3 (ironcurtain `/tmp/ironcurtain-arg-validation-${process.pid}` handed to an MCP server): a token is the number
+ * between the start / whitespace / `/` `=` `"` `'` `(` `,` / a `-` that itself starts a word (`kill -- -<pid>`) and
+ * the end / whitespace / `/` `"` `'` `)` `,` `;` `&` `|`. A number glued to other text (`name-<pid>`, `<pid>.txt`)
+ * is part of a name the test made: the child must get the same name, so it is left as it is.
  */
-const PID_IN_TEXT = /(?<![0-9])[0-9]{7,10}(?![0-9])/g;
+const PID_IN_TEXT = /(?<=^|[\s/="'(,]|(?<!\S)-)[0-9]{7,10}(?=$|[\s/"'),;&|])/g;
 function toRealPid(v) {
   if (typeof v === 'number') return realPid(v);
   if (typeof v !== 'string' || v.length < 7 || !/[0-9]{7}/.test(v)) return v;
