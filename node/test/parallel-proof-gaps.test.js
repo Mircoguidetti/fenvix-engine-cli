@@ -119,11 +119,31 @@ describe('hazards() unit: recursive roots, shared services', () => {
   });
 
   test('a listing of an ancestor of a recursive write root conflicts (the root appears or disappears)', () => {
-    // protects=list of the parent vs rm -r of a child dir; fails_when=readdir('.')/('a') misses rm -r a/b; no_claim=synthetic
+    // protects=list of the parent vs rm -r of a child dir; fails_when=readdir('a') misses rm -r a/b; no_claim=synthetic
     assert.deepEqual(kinds(run({ wr: ['a/b'] }, { l: ['a'] })), ['recursive-write a/b']);
     assert.deepEqual(kinds(run({ wr: ['a/b/c'] }, { lr: ['a'] })).length, 1);
     // a plain read of the parent is not a listing
     assert.deepEqual(run({ wr: ['a/b'] }, { r: ['a'] }), []);
+  });
+
+  test('a plain listing conflicts with a recursive write root only as its parent; a recursive listing as any ancestor (B1)', () => {
+    // protects=a plain listing sees only the direct children of its dir, so it sees a root D appear or disappear only
+    // when it lists dirname(D); a recursive listing sees everything below it (founder decision 2026-11-25, B1; step M:
+    // one test listing /tmp sent every file with a per-test dir under the run's tmpdir to the one-lane re-run);
+    // fails_when=a plain listing of a grandparent is a hazard, or a plain listing of the parent / a recursive listing
+    // of a grandparent is not; no_claim=synthetic footprints
+    assert.deepEqual(run({ wr: ['a/b/c'] }, { l: ['a'] }), []);
+    assert.deepEqual(run({ wr: ['a/b'] }, { l: ['.'] }), []);
+    assert.deepEqual(kinds(run({ wr: ['a'] }, { l: ['.'] })), ['recursive-write a']);
+    assert.deepEqual(kinds(run({ wr: ['a/b/c'] }, { l: ['a/b'] })), ['recursive-write a/b/c']);
+    assert.deepEqual(kinds(run({ wr: ['a/b/c'] }, { lr: ['a'] })), ['recursive-write a/b/c']);
+    assert.deepEqual(kinds(run({ wr: ['a/b/c'] }, { lr: ['.'] })), ['recursive-write a/b/c']);
+    // absolute keys (outside the project): the run's tmpdir under /tmp
+    assert.deepEqual(run({ wr: ['/tmp/pm-x/case-1'] }, { l: ['/tmp'] }), []);
+    assert.deepEqual(run({ wr: ['/tmp/pm-x/case-1'] }, { l: ['/'] }), []);
+    assert.deepEqual(kinds(run({ wr: ['/tmp/pm-x/case-1'] }, { l: ['/tmp/pm-x'] })), ['recursive-write /tmp/pm-x/case-1']);
+    assert.deepEqual(kinds(run({ wr: ['/tmp/pm-x/case-1'] }, { lr: ['/tmp'] })), ['recursive-write /tmp/pm-x/case-1']);
+    assert.deepEqual(kinds(run({ wr: ['/tmp/x'] }, { l: ['/tmp'] })), ['recursive-write /tmp/x']);
   });
 
   test('a recursive read root D (cp source, readdir recursive) conflicts with a write under D', () => {
@@ -386,6 +406,31 @@ for (const runner of RUNNERS) {
           "test('write', () => { fs.writeFileSync(path.join(process.cwd(), 'tree', 'a', 'b', 'x.txt'), 'y'); expect(1).toBe(1); });",
           { extra: { 'tree/a/b/.keep': '' } });
         assertHazard(runner, det(runner, dir), 'recursive-read', 'tree');
+      });
+
+      test('(b7) rm -r of a dir in one lane, a plain listing of its grandparent in the other: no hazard (B1)', T, () => {
+        // protects=a plain readdir of data sees only data's direct children, which rm -r of data/a/b does not change
+        // (founder decision 2026-11-25, B1); fails_when=a recursive-write hazard on data/a/b; no_claim=the listing of
+        // the parent and recursive listings of any ancestor still conflict (unit tests, b4-parent)
+        const dir = project(runner, 'b7',
+          "test('rm', () => { fs.rmSync(path.join(process.cwd(), 'data', 'a', 'b'), { recursive: true, force: true }); expect(1).toBe(1); });",
+          "test('list', () => { fs.readdirSync(path.join(process.cwd(), 'data')); expect(1).toBe(1); });",
+          { extra: { 'data/a/b/.keep': '' } });
+        assertNoHazard(det(runner, dir));
+      });
+
+      test('(b7-rec) rm -r of a dir in one lane, a recursive listing of its grandparent in the other: recursive-write hazard (B1)', T, () => {
+        // protects=a recursive readdir of data sees data/a/b go (positive control for b7: B1 keeps recursive listings
+        // of any ancestor); fails_when=proven with no hazard; no_claim=which of the two kinds is reported (one hazard per
+        // pair: the rm walk's unlink keys under data also meet the recursive listing as recursive-read)
+        const dir = project(runner, 'b7r',
+          "test('rm', () => { fs.rmSync(path.join(process.cwd(), 'data', 'a', 'b'), { recursive: true, force: true }); expect(1).toBe(1); });",
+          "test('list', () => { fs.readdirSync(path.join(process.cwd(), 'data'), { recursive: true }); expect(1).toBe(1); });",
+          { extra: { 'data/a/b/.keep': '' } });
+        const r = det(runner, dir);
+        const h = (par(r).hazards || []).find((x) => x.kind === 'recursive-read' || x.kind === 'recursive-write');
+        assert.ok(h, show(r));
+        assertHazard(runner, r, h.kind, h.kind === 'recursive-read' ? 'data' : 'data/a/b');
       });
 
       test('(b6) rename of a dir in one lane, a read inside the new name in the other: recursive-write hazard', T, () => {

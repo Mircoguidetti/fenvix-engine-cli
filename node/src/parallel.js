@@ -712,15 +712,16 @@ function sortedIndex(entries) {
 /**
  * Cross-lane hazards between files of different lanes, from their footprints. Kinds: read-write, write-write (one
  * key), list-write (a write of a direct child of a listed dir), port (listen-listen, connect to a listener),
- * recursive-write (a recursive write root and any key of the other file inside it, or a listing of one of its
- * ancestors), recursive-read (a recursive read root and a write inside it), shared-service (two files connecting to
+ * recursive-write (a recursive write root and any key of the other file inside it, a plain listing of its
+ * parent, or a recursive listing of one of its ancestors), recursive-read (a recursive read root and a write inside it), shared-service (two files connecting to
  * the same local port or unix socket, or the same remote host:port). One hazard per file pair (the first found).
  */
 function hazards(markers, laneOf) {
   const writers = new Map();
   const listeners = new Map();
   const connectors = new Map();
-  const listers = new Map(); // listed dir (plain or recursive) -> labels
+  const plainListers = new Map(); // dir listed by a plain readdir / opendir -> labels
+  const recListers = new Map(); // dir listed recursively (readdir {recursive}, cp source) -> labels
   const anyKeys = []; // [key, label] of r, w, l, wr, lr
   const writeKeys = []; // [key, label] of w, wr
   const plainWrites = []; // [key, label] of w
@@ -733,7 +734,8 @@ function hazards(markers, laneOf) {
     for (const w of S(f, 'wr')) writeKeys.push([w, label]);
     for (const p of S(f, 'listen')) push(listeners, p, label);
     for (const p of S(f, 'connect')) push(connectors, p, label);
-    for (const n of ['l', 'lr']) for (const d of S(f, n)) push(listers, d, label);
+    for (const d of S(f, 'l')) push(plainListers, d, label);
+    for (const d of S(f, 'lr')) push(recListers, d, label);
     for (const n of ['r', 'w', 'l', 'wr', 'lr']) for (const k of S(f, n)) anyKeys.push([k, label]);
   }
   const anyIdx = sortedIndex(anyKeys);
@@ -766,7 +768,11 @@ function hazards(markers, laneOf) {
     if (process.env.DETJS_HAZARD_SHARED_SERVICE !== '0') for (const p of S(f, 'connect')) for (const o of connectors.get(p) || []) addH(label, o, 'shared-service', p);
     for (const d of S(f, 'wr')) {
       for (const [, o] of anyIdx.under(d)) addH(label, o, 'recursive-write', d);
-      for (const a of keyAncestors(d)) for (const o of listers.get(a) || []) addH(label, o, 'recursive-write', d);
+      // a plain listing sees only direct children: it sees D appear or go only when it lists dirname(D); a
+      // recursive listing sees everything below it (founder decision 2026-11-25, B1)
+      const anc = keyAncestors(d);
+      if (anc.length) for (const o of plainListers.get(anc[0]) || []) addH(label, o, 'recursive-write', d);
+      for (const a of anc) for (const o of recListers.get(a) || []) addH(label, o, 'recursive-write', d);
     }
     for (const d of S(f, 'lr')) for (const [, o] of writeIdx.under(d)) addH(label, o, 'recursive-read', d);
   }
