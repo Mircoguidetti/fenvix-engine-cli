@@ -650,6 +650,55 @@
    "prepass_total": 62054,
    "stack": []
   },
+  "committer-date:>=2024-01-01 intermittent anthropic test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 126966,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 126549,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 intermittent claude test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 142044,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 141567,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 intermittent gemini test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 6784,
+   "leaves": 12,
+   "nodes": 22,
+   "prepass_total": 6775,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 intermittent gpt test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 1633,
+   "leaves": 4,
+   "nodes": 9,
+   "prepass_total": 7854,
+   "stack": [
+    [
+     "2026-05-29",
+     "2026-06-13"
+    ],
+    [
+     "2026-06-14",
+     "2026-07-16"
+    ],
+    [
+     "2026-07-17",
+     "2026-11-25"
+    ]
+   ]
+  },
   "committer-date:>=2024-01-01 intermittent llm test": {
    "capped": false,
    "done": true,
@@ -661,21 +710,12 @@
   },
   "committer-date:>=2024-01-01 intermittent openai test": {
    "capped": false,
-   "done": false,
-   "leaf_total": 13271,
-   "leaves": 25,
-   "nodes": 50,
+   "done": true,
+   "leaf_total": 14960,
+   "leaves": 27,
+   "nodes": 52,
    "prepass_total": 14943,
-   "stack": [
-    [
-     "2026-10-08",
-     "2026-10-23"
-    ],
-    [
-     "2026-10-24",
-     "2026-11-25"
-    ]
-   ]
+   "stack": []
   },
   "committer-date:>=2024-01-01 nondeterministic \"ai sdk\" test": {
    "capped": false,
@@ -2903,13 +2943,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 970
+  "issues": 1145
  },
  "search_stats": {
-  "429": 99,
+  "429": 121,
   "limit": 30,
-  "remaining": 25,
-  "reset": 1795677822
+  "remaining": 28,
+  "reset": 1795679713
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
