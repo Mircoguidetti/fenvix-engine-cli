@@ -182,3 +182,29 @@ test('mergeOutcomes: without --det-order a test only the re-run reported is adde
   assert.deepEqual(m.order, ['b.js::1', 'a.js::1']);
   assert.deepEqual(m.exceptions['a.js::1'], ['E']);
 });
+
+test('mergeOutcomes: an incomplete re-run, or one whose outcomes file cannot be read, leaves pass 1\'s outcomes (Testing pass)', () => {
+  // protects=fail closed: the outcomes file says what the merged trace says, and an incomplete re-run is not in the
+  // trace as reported, so its outcomes must not replace pass 1's; hazard_rerun names the run reported; an unreadable
+  // pass-1 file is left as it is; fails_when=complete is ignored, an unreadable o2 throws or blanks pass 1, or a
+  // corrupt o1 is overwritten; no_claim=main()'s wiring (the integration test in parallel-proof-gaps.test.js)
+  const { mergeOutcomes } = require('../src/parallel-rerun');
+  const fs = require('node:fs'); const os = require('node:os'); const path = require('node:path');
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'mo3-'));
+  const o1 = path.join(d, 'o1.json'); const o2 = path.join(d, 'o2.json');
+  const first = { order: ['a.js::1'], outcomes: { 'a.js::1': 'failed' }, fingerprints: { 'a.js::1': 'f1' }, exceptions: { 'a.js::1': ['E'] } };
+  fs.writeFileSync(o2, JSON.stringify({ order: ['a.js::1'], outcomes: { 'a.js::1': 'passed' }, fingerprints: { 'a.js::1': 'f2' }, exceptions: {} }));
+  fs.writeFileSync(o1, JSON.stringify(first));
+  mergeOutcomes(o1, o2, ['a.js'], false);
+  let m = JSON.parse(fs.readFileSync(o1, 'utf8'));
+  assert.deepEqual([m.outcomes, m.fingerprints, m.exceptions], [first.outcomes, first.fingerprints, first.exceptions]);
+  assert.equal(m.hazard_rerun.reported, 'first run (the re-run was not complete)');
+  fs.writeFileSync(o1, JSON.stringify(first)); fs.writeFileSync(o2, '{not json');
+  mergeOutcomes(o1, o2, ['a.js'], true);
+  m = JSON.parse(fs.readFileSync(o1, 'utf8'));
+  assert.deepEqual(m.outcomes, first.outcomes);
+  assert.equal(m.hazard_rerun.reported, 'first run (the re-run wrote no outcomes file)');
+  fs.writeFileSync(o1, '{corrupt');
+  mergeOutcomes(o1, o2, ['a.js'], true);
+  assert.equal(fs.readFileSync(o1, 'utf8'), '{corrupt');
+});

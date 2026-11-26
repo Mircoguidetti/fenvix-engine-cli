@@ -442,6 +442,31 @@ const wait = (s) => new Promise((res) => { const done = () => { clearTimeout(t);
     assert.ok(r.kinds.includes('shared-service'), JSON.stringify(r));
   });
 
+  test('every special-purpose range is not public, the addresses just outside are (Testing pass: the range table)', { timeout: 60000 }, () => {
+    // protects=each row of the not-public table (RFC 6890 IPv4, IPv6 outside 2000::/3, the non-global blocks inside it,
+    // IPv4-mapped IPv6) pairs, and its prefix length is right; fails_when=a row is missing or its prefix is too short or
+    // too long (an address inside is called public, or one outside is not); no_claim=names (classified at lookup:
+    // tests above) and the founder's choice of which ranges are public
+    const inside = ['0.1.2.3', '100.64.0.1', '100.127.255.254', '169.254.1.1', '172.31.255.254', '192.0.0.9', '192.0.2.1', '192.88.99.1',
+      '198.18.0.1', '198.19.255.254', '198.51.100.1', '203.0.113.1', '224.0.0.1', '239.255.255.250', '240.0.0.1', '255.255.255.255',
+      '::ffff:10.0.0.5', 'fe80::1', 'ff02::1', '2001::1', '2001:2::1', '2001:10::1', '2001:20::1', '2001:db8::1', '2002::1', '3fff:fff::1'];
+    const outside = ['1.1.1.1', '100.63.255.254', '100.128.0.1', '172.15.255.254', '172.32.0.1', '192.0.1.1', '192.0.3.1', '198.17.255.254',
+      '198.20.0.1', '223.255.255.254', '::ffff:8.8.8.8', '2001:1::1', '2001:3::1', '2001:4860:4860::8888', '2003::1', '3fff:1000::1'];
+    const key = (ip) => `tcp:${ip}:5432`;
+    const m = recordJs(`await Promise.all(${JSON.stringify([...inside, ...outside])}.map((host) => wait(net.connect({ host, port: 5432 }))));`);
+    for (const ip of inside) assert.ok(m.footprint.connect.includes(key(ip)) && !m.footprint.pub.includes(key(ip)), `${ip} must pair: pub ${m.footprint.pub}`);
+    for (const ip of outside) assert.ok(m.footprint.pub.includes(key(ip)), `${ip} is public: pub ${m.footprint.pub}`);
+  });
+
+  test('a name whose lookup returns after the file closed pairs, even if the address is public (Testing pass)', { timeout: 60000 }, () => {
+    // protects=the founder's rule "a name whose class is unknown when the footprint closes pairs"; fails_when=a lookup
+    // event after leave() still marks the key public (the cur === file check removed); no_claim=real DNS timing
+    const r = pairJs(`const s = net.connect({ host: 'late.test', port: 5432, lookup: (h, o, cb) => setTimeout(() => (o && o.all ? cb(null, [{ address: '8.8.8.8', family: 4 }]) : cb(null, '8.8.8.8', 4)), 300) });
+    s.on('lookup', () => setImmediate(() => s.destroy())); s.on('error', () => {});`);
+    assert.deepEqual(r.pub, [[], []], JSON.stringify(r));
+    assert.ok(r.kinds.includes('shared-service'), JSON.stringify(r));
+  });
+
   test('two lanes connecting to a public IP address: no hazard (D1 = A kept for public hosts)', { timeout: 60000 }, () => {
     const r = pair('185.199.111.133', 443);
     assert.deepEqual(r.kinds, [], JSON.stringify(r));
