@@ -1,0 +1,499 @@
+{
+ "S1": {
+  "N": 12,
+  "candidates": 12,
+  "capped_queries": [],
+  "incomplete_leaves": 0,
+  "missing": 0,
+  "truncated_leaves": 0,
+  "unfinished": []
+ },
+ "S2": {
+  "N": 26212230,
+  "candidates": 113511,
+  "capped_queries": [
+   "is:public created:>=2024-01-01 \"api costs\" test (llm OR openai OR agent)",
+   "is:public created:>=2024-01-01 \"expensive tests\" (llm OR openai OR agent)",
+   "is:public created:>=2024-01-01 \"live llm\" (llm OR openai OR agent)",
+   "is:public created:>=2024-01-01 \"llm tests\" (llm OR openai OR agent)",
+   "is:public created:>=2024-01-01 \"mock llm\" (llm OR openai OR agent)",
+   "is:public created:>=2024-01-01 \"mock the llm\" (llm OR openai OR agent)",
+   "is:public created:>=2024-01-01 \"non deterministic\" agent test",
+   "is:public created:>=2024-01-01 \"non deterministic\" claude test",
+   "is:public created:>=2024-01-01 \"non deterministic\" eval test",
+   "is:public created:>=2024-01-01 \"non deterministic\" gemini test",
+   "is:public created:>=2024-01-01 \"non deterministic\" llm test",
+   "is:public created:>=2024-01-01 \"non deterministic\" openai test",
+   "is:public created:>=2024-01-01 \"non deterministic\" prompt test",
+   "is:public created:>=2024-01-01 \"non-deterministic\" agent test",
+   "is:public created:>=2024-01-01 \"non-deterministic\" claude test",
+   "is:public created:>=2024-01-01 \"non-deterministic\" eval test",
+   "is:public created:>=2024-01-01 \"non-deterministic\" gemini test",
+   "is:public created:>=2024-01-01 \"non-deterministic\" llm test",
+   "is:public created:>=2024-01-01 \"non-deterministic\" openai test",
+   "is:public created:>=2024-01-01 \"non-deterministic\" prompt test",
+   "is:public created:>=2024-01-01 \"real llm\" test (llm OR openai OR agent)",
+   "is:public created:>=2024-01-01 \"skip llm\" (llm OR openai OR agent)",
+   "is:public created:>=2024-01-01 \"token cost\" test (llm OR openai OR agent)",
+   "is:public created:>=2024-01-01 flakiness agent test",
+   "is:public created:>=2024-01-01 flakiness claude test",
+   "is:public created:>=2024-01-01 flakiness eval test",
+   "is:public created:>=2024-01-01 flakiness llm test",
+   "is:public created:>=2024-01-01 flakiness prompt test",
+   "is:public created:>=2024-01-01 flaky \"ai sdk\" test",
+   "is:public created:>=2024-01-01 flaky \"model output\" test",
+   "is:public created:>=2024-01-01 flaky agent test",
+   "is:public created:>=2024-01-01 flaky anthropic test",
+   "is:public created:>=2024-01-01 flaky claude test",
+   "is:public created:>=2024-01-01 flaky eval test",
+   "is:public created:>=2024-01-01 flaky gemini test",
+   "is:public created:>=2024-01-01 flaky gpt test",
+   "is:public created:>=2024-01-01 flaky langchain test",
+   "is:public created:>=2024-01-01 flaky llm test",
+   "is:public created:>=2024-01-01 flaky openai test",
+   "is:public created:>=2024-01-01 flaky prompt test",
+   "is:public created:>=2024-01-01 intermittent agent test",
+   "is:public created:>=2024-01-01 intermittent anthropic test",
+   "is:public created:>=2024-01-01 intermittent claude test",
+   "is:public created:>=2024-01-01 intermittent eval test",
+   "is:public created:>=2024-01-01 intermittent gpt test",
+   "is:public created:>=2024-01-01 intermittent llm test",
+   "is:public created:>=2024-01-01 intermittent openai test",
+   "is:public created:>=2024-01-01 intermittent prompt test",
+   "is:public created:>=2024-01-01 nondeterministic agent test",
+   "is:public created:>=2024-01-01 nondeterministic claude test",
+   "is:public created:>=2024-01-01 nondeterministic prompt test",
+   "is:public created:>=2024-01-01 rerun \"ai sdk\" test",
+   "is:public created:>=2024-01-01 rerun \"model output\" test",
+   "is:public created:>=2024-01-01 rerun agent test",
+   "is:public created:>=2024-01-01 rerun anthropic test",
+   "is:public created:>=2024-01-01 rerun claude test",
+   "is:public created:>=2024-01-01 rerun eval test",
+   "is:public created:>=2024-01-01 rerun gemini test",
+   "is:public created:>=2024-01-01 rerun gpt test",
+   "is:public created:>=2024-01-01 rerun llm test",
+   "is:public created:>=2024-01-01 rerun openai test",
+   "is:public created:>=2024-01-01 rerun prompt test",
+   "is:public created:>=2024-01-01 retry \"ai sdk\" test",
+   "is:public created:>=2024-01-01 retry \"model output\" test",
+   "is:public created:>=2024-01-01 retry agent test",
+   "is:public created:>=2024-01-01 retry anthropic test",
+   "is:public created:>=2024-01-01 retry claude test",
+   "is:public created:>=2024-01-01 retry eval test",
+   "is:public created:>=2024-01-01 retry gemini test",
+   "is:public created:>=2024-01-01 retry gpt test",
+   "is:public created:>=2024-01-01 retry langchain test",
+   "is:public created:>=2024-01-01 retry langgraph test",
+   "is:public created:>=2024-01-01 retry llm test",
+   "is:public created:>=2024-01-01 retry openai test",
+   "is:public created:>=2024-01-01 retry prompt test",
+   "is:public created:>=2024-01-01 unstable agent test",
+   "is:public created:>=2024-01-01 unstable anthropic test",
+   "is:public created:>=2024-01-01 unstable claude test",
+   "is:public created:>=2024-01-01 unstable eval test",
+   "is:public created:>=2024-01-01 unstable gemini test",
+   "is:public created:>=2024-01-01 unstable gpt test",
+   "is:public created:>=2024-01-01 unstable llm test",
+   "is:public created:>=2024-01-01 unstable openai test",
+   "is:public created:>=2024-01-01 unstable prompt test",
+   "is:public created:>=2024-01-01 xfail agent test",
+   "is:public created:>=2024-01-01 xfail claude test",
+   "is:public created:>=2024-01-01 xfail prompt test"
+  ],
+  "incomplete_leaves": 0,
+  "missing": 26098719,
+  "truncated_leaves": 365,
+  "unfinished": []
+ },
+ "S3": {
+  "N": 10304746,
+  "candidates": 50005,
+  "capped_queries": [
+   "committer-date:>=2024-01-01 \"non deterministic\" anthropic test",
+   "committer-date:>=2024-01-01 \"non deterministic\" claude test",
+   "committer-date:>=2024-01-01 \"non-deterministic\" anthropic test",
+   "committer-date:>=2024-01-01 \"non-deterministic\" claude test",
+   "committer-date:>=2024-01-01 flakiness agent test",
+   "committer-date:>=2024-01-01 flakiness anthropic test",
+   "committer-date:>=2024-01-01 flakiness claude test",
+   "committer-date:>=2024-01-01 flakiness eval test",
+   "committer-date:>=2024-01-01 flakiness llm test",
+   "committer-date:>=2024-01-01 flakiness openai test",
+   "committer-date:>=2024-01-01 flakiness prompt test",
+   "committer-date:>=2024-01-01 flaky agent test",
+   "committer-date:>=2024-01-01 flaky anthropic test",
+   "committer-date:>=2024-01-01 flaky claude test",
+   "committer-date:>=2024-01-01 flaky eval test",
+   "committer-date:>=2024-01-01 flaky llm test",
+   "committer-date:>=2024-01-01 flaky openai test",
+   "committer-date:>=2024-01-01 flaky prompt test",
+   "committer-date:>=2024-01-01 intermittent agent test",
+   "committer-date:>=2024-01-01 intermittent anthropic test",
+   "committer-date:>=2024-01-01 intermittent claude test",
+   "committer-date:>=2024-01-01 intermittent prompt test",
+   "committer-date:>=2024-01-01 xfail anthropic test",
+   "committer-date:>=2024-01-01 xfail claude test"
+  ],
+  "incomplete_leaves": 6,
+  "missing": 10254741,
+  "truncated_leaves": 122,
+  "unfinished": [
+   {
+    "missing": 2341,
+    "query": "committer-date:>=2024-01-01 \"api costs\" test agent"
+   },
+   {
+    "missing": 2213,
+    "query": "committer-date:>=2024-01-01 \"api costs\" test llm"
+   },
+   {
+    "missing": 1619,
+    "query": "committer-date:>=2024-01-01 \"api costs\" test openai"
+   },
+   {
+    "missing": 418,
+    "query": "committer-date:>=2024-01-01 \"expensive tests\" agent"
+   },
+   {
+    "missing": 88,
+    "query": "committer-date:>=2024-01-01 \"expensive tests\" llm"
+   },
+   {
+    "missing": 46,
+    "query": "committer-date:>=2024-01-01 \"expensive tests\" openai"
+   },
+   {
+    "missing": 19248,
+    "query": "committer-date:>=2024-01-01 \"live llm\" test"
+   },
+   {
+    "missing": 46260,
+    "query": "committer-date:>=2024-01-01 \"llm tests\" test"
+   },
+   {
+    "missing": 38017,
+    "query": "committer-date:>=2024-01-01 \"mock llm\" test"
+   },
+   {
+    "missing": 1686,
+    "query": "committer-date:>=2024-01-01 \"mock the llm\" test"
+   },
+   {
+    "missing": 42900,
+    "query": "committer-date:>=2024-01-01 \"real llm\" test"
+   },
+   {
+    "missing": 411,
+    "query": "committer-date:>=2024-01-01 \"record and replay\" llm test"
+   },
+   {
+    "missing": 8498,
+    "query": "committer-date:>=2024-01-01 \"skip llm\" test"
+   },
+   {
+    "missing": 10,
+    "query": "committer-date:>=2024-01-01 \"tests are expensive\" agent"
+   },
+   {
+    "missing": 4,
+    "query": "committer-date:>=2024-01-01 \"tests are expensive\" llm"
+   },
+   {
+    "missing": 4,
+    "query": "committer-date:>=2024-01-01 \"tests are expensive\" openai"
+   },
+   {
+    "missing": 27965,
+    "query": "committer-date:>=2024-01-01 \"token cost\" test agent"
+   },
+   {
+    "missing": 12642,
+    "query": "committer-date:>=2024-01-01 \"token cost\" test llm"
+   },
+   {
+    "missing": 9601,
+    "query": "committer-date:>=2024-01-01 \"token cost\" test openai"
+   },
+   {
+    "missing": 5448,
+    "query": "committer-date:>=2024-01-01 cassette llm test"
+   },
+   {
+    "missing": 997,
+    "query": "committer-date:>=2024-01-01 rerun \"ai sdk\" test"
+   },
+   {
+    "missing": 57,
+    "query": "committer-date:>=2024-01-01 rerun \"llama-index\" test"
+   },
+   {
+    "missing": 1456,
+    "query": "committer-date:>=2024-01-01 rerun \"model output\" test"
+   },
+   {
+    "missing": 112,
+    "query": "committer-date:>=2024-01-01 rerun \"pydantic-ai\" test"
+   },
+   {
+    "missing": 159520,
+    "query": "committer-date:>=2024-01-01 rerun agent test"
+   },
+   {
+    "missing": 265878,
+    "query": "committer-date:>=2024-01-01 rerun anthropic test"
+   },
+   {
+    "missing": 290,
+    "query": "committer-date:>=2024-01-01 rerun autogen test"
+   },
+   {
+    "missing": 314656,
+    "query": "committer-date:>=2024-01-01 rerun claude test"
+   },
+   {
+    "missing": 110,
+    "query": "committer-date:>=2024-01-01 rerun crewai test"
+   },
+   {
+    "missing": 28076,
+    "query": "committer-date:>=2024-01-01 rerun eval test"
+   },
+   {
+    "missing": 10219,
+    "query": "committer-date:>=2024-01-01 rerun gemini test"
+   },
+   {
+    "missing": 44030,
+    "query": "committer-date:>=2024-01-01 rerun gpt test"
+   },
+   {
+    "missing": 1165,
+    "query": "committer-date:>=2024-01-01 rerun langchain test"
+   },
+   {
+    "missing": 956,
+    "query": "committer-date:>=2024-01-01 rerun langgraph test"
+   },
+   {
+    "missing": 74,
+    "query": "committer-date:>=2024-01-01 rerun llamaindex test"
+   },
+   {
+    "missing": 23886,
+    "query": "committer-date:>=2024-01-01 rerun llm test"
+   },
+   {
+    "missing": 50414,
+    "query": "committer-date:>=2024-01-01 rerun openai test"
+   },
+   {
+    "missing": 68628,
+    "query": "committer-date:>=2024-01-01 rerun prompt test"
+   },
+   {
+    "missing": 12623,
+    "query": "committer-date:>=2024-01-01 retry \"ai sdk\" test"
+   },
+   {
+    "missing": 788,
+    "query": "committer-date:>=2024-01-01 retry \"llama-index\" test"
+   },
+   {
+    "missing": 12714,
+    "query": "committer-date:>=2024-01-01 retry \"model output\" test"
+   },
+   {
+    "missing": 2448,
+    "query": "committer-date:>=2024-01-01 retry \"pydantic-ai\" test"
+   },
+   {
+    "missing": 957426,
+    "query": "committer-date:>=2024-01-01 retry agent test"
+   },
+   {
+    "missing": 1909092,
+    "query": "committer-date:>=2024-01-01 retry anthropic test"
+   },
+   {
+    "missing": 1201,
+    "query": "committer-date:>=2024-01-01 retry autogen test"
+   },
+   {
+    "missing": 1964242,
+    "query": "committer-date:>=2024-01-01 retry claude test"
+   },
+   {
+    "missing": 1958,
+    "query": "committer-date:>=2024-01-01 retry crewai test"
+   },
+   {
+    "missing": 111255,
+    "query": "committer-date:>=2024-01-01 retry eval test"
+   },
+   {
+    "missing": 139964,
+    "query": "committer-date:>=2024-01-01 retry gemini test"
+   },
+   {
+    "missing": 141636,
+    "query": "committer-date:>=2024-01-01 retry gpt test"
+   },
+   {
+    "missing": 11493,
+    "query": "committer-date:>=2024-01-01 retry langchain test"
+   },
+   {
+    "missing": 11664,
+    "query": "committer-date:>=2024-01-01 retry langgraph test"
+   },
+   {
+    "missing": 783,
+    "query": "committer-date:>=2024-01-01 retry llamaindex test"
+   },
+   {
+    "missing": 273065,
+    "query": "committer-date:>=2024-01-01 retry llm test"
+   },
+   {
+    "missing": 254811,
+    "query": "committer-date:>=2024-01-01 retry openai test"
+   },
+   {
+    "missing": 536156,
+    "query": "committer-date:>=2024-01-01 retry prompt test"
+   },
+   {
+    "missing": 843,
+    "query": "committer-date:>=2024-01-01 unstable \"ai sdk\" test"
+   },
+   {
+    "missing": 44,
+    "query": "committer-date:>=2024-01-01 unstable \"llama-index\" test"
+   },
+   {
+    "missing": 316,
+    "query": "committer-date:>=2024-01-01 unstable \"model output\" test"
+   },
+   {
+    "missing": 49,
+    "query": "committer-date:>=2024-01-01 unstable \"pydantic-ai\" test"
+   },
+   {
+    "missing": 21879,
+    "query": "committer-date:>=2024-01-01 unstable agent test"
+   },
+   {
+    "missing": 52961,
+    "query": "committer-date:>=2024-01-01 unstable anthropic test"
+   },
+   {
+    "missing": 116,
+    "query": "committer-date:>=2024-01-01 unstable autogen test"
+   },
+   {
+    "missing": 60520,
+    "query": "committer-date:>=2024-01-01 unstable claude test"
+   },
+   {
+    "missing": 31,
+    "query": "committer-date:>=2024-01-01 unstable crewai test"
+   },
+   {
+    "missing": 8069,
+    "query": "committer-date:>=2024-01-01 unstable eval test"
+   },
+   {
+    "missing": 4725,
+    "query": "committer-date:>=2024-01-01 unstable gemini test"
+   },
+   {
+    "missing": 3064,
+    "query": "committer-date:>=2024-01-01 unstable gpt test"
+   },
+   {
+    "missing": 432,
+    "query": "committer-date:>=2024-01-01 unstable langchain test"
+   },
+   {
+    "missing": 271,
+    "query": "committer-date:>=2024-01-01 unstable langgraph test"
+   },
+   {
+    "missing": 15,
+    "query": "committer-date:>=2024-01-01 unstable llamaindex test"
+   },
+   {
+    "missing": 4934,
+    "query": "committer-date:>=2024-01-01 unstable llm test"
+   },
+   {
+    "missing": 5833,
+    "query": "committer-date:>=2024-01-01 unstable openai test"
+   },
+   {
+    "missing": 13177,
+    "query": "committer-date:>=2024-01-01 unstable prompt test"
+   },
+   {
+    "missing": 2743,
+    "query": "committer-date:>=2024-01-01 vcr openai test"
+   },
+   {
+    "missing": 15,
+    "query": "committer-date:>=2024-01-01 xfail \"ai sdk\" test"
+   },
+   {
+    "missing": 27,
+    "query": "committer-date:>=2024-01-01 xfail \"llama-index\" test"
+   },
+   {
+    "missing": 253,
+    "query": "committer-date:>=2024-01-01 xfail \"model output\" test"
+   },
+   {
+    "missing": 112,
+    "query": "committer-date:>=2024-01-01 xfail \"pydantic-ai\" test"
+   },
+   {
+    "missing": 15527,
+    "query": "committer-date:>=2024-01-01 xfail agent test"
+   },
+   {
+    "missing": 134,
+    "query": "committer-date:>=2024-01-01 xfail autogen test"
+   },
+   {
+    "missing": 68,
+    "query": "committer-date:>=2024-01-01 xfail crewai test"
+   },
+   {
+    "missing": 5161,
+    "query": "committer-date:>=2024-01-01 xfail eval test"
+   },
+   {
+    "missing": 1913,
+    "query": "committer-date:>=2024-01-01 xfail gemini test"
+   },
+   {
+    "missing": 1580,
+    "query": "committer-date:>=2024-01-01 xfail gpt test"
+   },
+   {
+    "missing": 822,
+    "query": "committer-date:>=2024-01-01 xfail langchain test"
+   },
+   {
+    "missing": 343,
+    "query": "committer-date:>=2024-01-01 xfail langgraph test"
+   },
+   {
+    "missing": 25,
+    "query": "committer-date:>=2024-01-01 xfail llamaindex test"
+   },
+   {
+    "missing": 9975,
+    "query": "committer-date:>=2024-01-01 xfail prompt test"
+   }
+  ]
+ }
+}
