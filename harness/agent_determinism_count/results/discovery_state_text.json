@@ -2,6 +2,15 @@
  "budget_end": "2026-11-26T10:54:28+00:00",
  "finished": null,
  "queries": {
+  "committer-date:>=2024-01-01 \"non-deterministic\" \"model output\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 920,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 920,
+   "stack": []
+  },
   "committer-date:>=2024-01-01 \"non-deterministic\" anthropic test": {
    "capped": true,
    "done": true,
@@ -18,6 +27,24 @@
    "leaves": 1,
    "nodes": 1,
    "prepass_total": 44155,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"non-deterministic\" gemini test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 2618,
+   "leaves": 6,
+   "nodes": 10,
+   "prepass_total": 2620,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"non-deterministic\" gpt test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 1372,
+   "leaves": 4,
+   "nodes": 6,
+   "prepass_total": 1375,
    "stack": []
   },
   "committer-date:>=2024-01-01 \"non-deterministic\" llm test": {
@@ -37,6 +64,28 @@
    "nodes": 10,
    "prepass_total": 3801,
    "stack": []
+  },
+  "committer-date:>=2024-01-01 \"non-deterministic\" prompt test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 7936,
+   "leaves": 12,
+   "nodes": 25,
+   "prepass_total": 10087,
+   "stack": [
+    [
+     "2026-08-19",
+     "2026-09-04"
+    ],
+    [
+     "2026-09-05",
+     "2026-09-20"
+    ],
+    [
+     "2026-09-21",
+     "2026-11-25"
+    ]
+   ]
   },
   "committer-date:>=2024-01-01 flakiness \"ai sdk\" test": {
    "capped": false,
@@ -2588,13 +2637,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 1819
+  "issues": 2021
  },
  "search_stats": {
-  "429": 117,
+  "429": 137,
   "limit": 30,
-  "remaining": 19,
-  "reset": 1795661560
+  "remaining": 24,
+  "reset": 1795663370
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
