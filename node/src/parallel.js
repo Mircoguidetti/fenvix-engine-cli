@@ -565,8 +565,9 @@ function installFootprint(root) {
   }
   // services (spec parallel-proof-gaps (a), gate notes 4 and 7): a TCP connect to a loopback host is keyed by its port
   // (as listeners are), a unix-socket connect by `unix:<path>`, a TCP connect to any other host by
-  // `tcp:<host as given, lower-cased>:<port>`. Two lanes connecting to one key share a service: a hazard
-  // (`shared-service`), whether or not a lane listens on it. DETJS_HAZARD_SHARED_SERVICE=0 records only loopback ports,
+  // `tcp:<host as given, lower-cased>:<port>`. Two lanes connecting to one loopback port or unix socket share a service:
+  // a hazard (`shared-service`), whether or not a lane listens on it. A remote host key is recorded only, never paired
+  // (founder decision 2026-11-26, D1 = A). DETJS_HAZARD_SHARED_SERVICE=0 records only loopback ports,
   // as before (measurement only; the runner then gives no proof). UDP / dgram is not recorded (known limit).
   const sharedService = process.env.DETJS_HAZARD_SHARED_SERVICE !== '0';
   const LOOPBACK = /^(localhost|127\.|::1$|0:0:0:0:0:0:0:1$|\[::1\]$|0\.0\.0\.0$|::$|::ffff:127\.)/;
@@ -719,7 +720,7 @@ function sortedIndex(entries) {
  * key), list-write (a write of a direct child of a listed dir), port (listen-listen, connect to a listener),
  * recursive-write (a recursive write root and any key of the other file inside it, a plain listing of its
  * parent, or a recursive listing of one of its ancestors), recursive-read (a recursive read root and a write inside it), shared-service (two files connecting to
- * the same local port or unix socket, or the same remote host:port). One hazard per file pair (the first found).
+ * the same loopback port or unix socket; a remote host:port is recorded but never paired). One hazard per file pair (the first found).
  */
 function hazards(markers, laneOf) {
   const writers = new Map();
@@ -770,7 +771,11 @@ function hazards(markers, laneOf) {
     }
     for (const p of S(f, 'listen')) for (const o of listeners.get(p) || []) addH(label, o, 'port', p);
     for (const p of S(f, 'connect')) for (const o of listeners.get(p) || []) addH(label, o, 'port', p);
-    if (process.env.DETJS_HAZARD_SHARED_SERVICE !== '0') for (const p of S(f, 'connect')) for (const o of connectors.get(p) || []) addH(label, o, 'shared-service', p);
+    // a remote host (`tcp:<host>:<port>`) is recorded but never paired: only local services pair lanes (founder
+    // decision 2026-11-26, D1 = A)
+    if (process.env.DETJS_HAZARD_SHARED_SERVICE !== '0') {
+      for (const p of S(f, 'connect')) if (!p.startsWith('tcp:')) for (const o of connectors.get(p) || []) addH(label, o, 'shared-service', p);
+    }
     for (const d of S(f, 'wr')) {
       for (const [, o] of anyIdx.under(d)) addH(label, o, 'recursive-write', d);
       // a plain listing sees only direct children: it sees D appear or go only when it lists dirname(D); a

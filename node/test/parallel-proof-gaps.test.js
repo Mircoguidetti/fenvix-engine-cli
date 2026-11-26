@@ -168,12 +168,21 @@ describe('hazards() unit: recursive roots, shared services', () => {
     assert.deepEqual(h, []);
   });
 
-  test('two lanes connecting to one local port, unix socket or remote host:port: shared-service (a1, a2, a3)', () => {
+  test('two lanes connecting to one local port or unix socket: shared-service (a1, a2)', () => {
     // protects=a shared database / service is a hazard even when no lane listens; fails_when=connect matched only to
     // listeners; no_claim=synthetic keys (the connect wrapper's keys are checked by the integration tests)
     assert.deepEqual(kinds(run({ connect: ['5432'] }, { connect: ['5432'] })), ['shared-service 5432']);
     assert.deepEqual(kinds(run({ connect: ['unix:/run/pg/.s.PGSQL.5432'] }, { connect: ['unix:/run/pg/.s.PGSQL.5432'] })), ['shared-service unix:/run/pg/.s.PGSQL.5432']);
-    assert.deepEqual(kinds(run({ connect: ['tcp:db.example.com:5432'] }, { connect: ['tcp:db.example.com:5432'] })), ['shared-service tcp:db.example.com:5432']);
+  });
+
+  test('a remote host is recorded but never paired; loopback ports and unix sockets are (founder decision D1 = A, 2026-11-26)', () => {
+    // protects=only local services (loopback tcp, unix sockets) pair lanes: two files fetching from one public host
+    // are not a hazard; fails_when=a tcp:<remote host>:<port> key pairs two lanes, or the loopback / unix pairing is
+    // lost with it; no_claim=a remote service two lanes really share (a staging database) is not detected (known limit)
+    assert.deepEqual(run({ connect: ['tcp:raw.githubusercontent.com:443'] }, { connect: ['tcp:raw.githubusercontent.com:443'] }), []);
+    assert.deepEqual(run({ connect: ['tcp:db.example.com:5432'] }, { connect: ['tcp:db.example.com:5432'] }), []);
+    assert.deepEqual(kinds(run({ connect: ['43105'] }, { connect: ['43105'] })), ['shared-service 43105']);
+    assert.deepEqual(kinds(run({ connect: ['unix:/run/docker.sock'] }, { connect: ['unix:/run/docker.sock'] })), ['shared-service unix:/run/docker.sock']);
   });
 
   test('different ports, sockets or hosts: no shared-service hazard; listen rules unchanged', () => {
