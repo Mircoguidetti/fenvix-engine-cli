@@ -61,8 +61,9 @@ jobs:
           [ -f "$out/checkpoint.json" ] || exit 0
           for i in 1 2 3 4 5 6 7 8; do
             git fetch -q origin claude/db-copies-read && git reset -q --soft origin/claude/db-copies-read && git reset -q
-            git add -f "$out/raw" "$out/requests.log" "$out/chunks.jsonl" "$out/checkpoint.json"
-            [ -d "$out/docs" ] && git add -f "$out/docs"
+            for f in raw docs requests.log chunks.jsonl checkpoint.json; do
+              if [ -e "$out/$f" ]; then git add -f "$out/$f"; fi
+            done
             git commit -q -m "db-copies-read: results (run ${{ github.run_id }})" || exit 0
             git push -q origin "HEAD:claude/db-copies-read" && exit 0
             sleep $((5 + RANDOM % 20))

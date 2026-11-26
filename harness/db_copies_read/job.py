@@ -655,7 +655,9 @@ def main() -> int:
     chunk({"status": status, "note": note, "attempts": client.n_requests, "attempts_total": total(),
            "limit": client.limit, "remaining": client.remaining, "reset": client.reset,
            "repos": {k: v["state"] for k, v in cp["repos"].items()}})
-    print(f"status {status} {note}; attempts this run {client.n_requests}, total {total()}")
+    reset = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(client.reset)) if client.reset else None
+    print(f"status {status} {note}; attempts this run {client.n_requests}, total {total()}; "
+          f"core limit {client.limit} remaining {client.remaining} reset {reset}")
     return 0
 
 
