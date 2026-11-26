@@ -12,6 +12,42 @@
  },
  "finished": null,
  "queries": {
+  "committer-date:>=2024-01-01 retry anthropic test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 1956308,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 1909092,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 retry claude test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 2146034,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 1964242,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 retry llm test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 275012,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 273065,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 retry openai test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 273777,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 254811,
+   "stack": []
+  },
   "committer-date:>=2024-01-01 unstable \"ai sdk\" test": {
    "capped": false,
    "done": true,
@@ -46,6 +82,15 @@
    "leaves": 1,
    "nodes": 1,
    "prepass_total": 49,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 unstable agent test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 22305,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 21879,
    "stack": []
   },
   "committer-date:>=2024-01-01 unstable anthropic test": {
@@ -300,13 +345,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 46
+  "issues": 125
  },
  "search_stats": {
-  "429": 6,
+  "429": 18,
   "limit": 30,
   "remaining": 30,
-  "reset": 1795705516
+  "reset": 1795706544
  },
  "started": "2026-11-26T11:20:43+00:00"
 }
