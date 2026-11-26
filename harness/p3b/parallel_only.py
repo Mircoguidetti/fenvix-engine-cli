@@ -16,6 +16,13 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
 OUT = os.path.join(HERE, "PARALLEL-ONLY.md")
 REPOS = ["alakajam", "agentlang", "drydock"]
+# Explanations the coordinator relayed (recorded as given, dated); the case stays in the list.
+EXPLAINED = {
+    "server/user/user.service.spec.ts::User service::delete user::should refuse to delete users with entries":
+        "explained: engine bug, fixed in parallel-proof-gaps cb42cccf (coordinator, 2026-11-26: pass 2 of a hazard "
+        "re-run never rewrote the outcomes file, so par2.outcomes.json kept pass 1's timeout while the trace held the "
+        "one-lane re-run's passed record; not a lane-caused flip)",
+}
 
 
 def header_meta(path):
@@ -89,6 +96,8 @@ def render(cases):
     for c in cases:
         out += ["", f"## {c['repo']}: `{c['id']}`", "", f"- file: `{c['file']}`",
                 f"- w4 outcomes: par1 {c['w4'][0]}, par2 {c['w4'][1]}", f"- first failure line: `{c['first']}`"]
+        if c["id"] in EXPLAINED:
+            out.append(f"- {EXPLAINED[c['id']]}")
         for run in c["runs"]:
             t = run["test"] or {}
             out += ["", f"{run['run']} (`{run['trace']}`): outcomes file {run['outcomes_file']}; trace test record outcome "

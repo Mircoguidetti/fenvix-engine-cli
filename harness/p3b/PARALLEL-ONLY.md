@@ -19,6 +19,7 @@ Total: 5
 - file: `server/user/user.service.spec.ts`
 - w4 outcomes: par1 passed, par2 failed
 - first failure line: `Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout". [call @ server/user/user.service.spec.ts:275]`
+- explained: engine bug, fixed in parallel-proof-gaps cb42cccf (coordinator, 2026-11-26: pass 2 of a hazard re-run never rewrote the outcomes file, so par2.outcomes.json kept pass 1's timeout while the trace held the one-lane re-run's passed record; not a lane-caused flip)
 
 par1 (`/root/pm-p3b/find/alakajam/par1.trace.jsonl`): outcomes file passed; trace test record outcome passed, index 218
 
