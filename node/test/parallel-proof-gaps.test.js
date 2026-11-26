@@ -390,12 +390,56 @@ const resolvesPublic = (name) => new Promise((res) => dns.lookup(name, { all: tr
     ['a 192.168/16 address', '192.168.1.20', 3306],
     ['a link-local address (169.254/16)', '169.254.169.254', 80],
     ['an IPv6 unique-local address (fc00::/7)', 'fd00::1', 5432],
+    ['a 6to4 address with a private IPv4 inside (2002::/16; review delta F3)', '2002:c0a8:101::1', 5432],
+    ['an IPv6 documentation address in 2000::/3 (3fff::/20; review delta F3)', '3fff::1', 5432],
   ]) {
     test(`two lanes connecting to ${what}: shared-service`, { timeout: 60000 }, () => {
       const r = pair(host, port);
       assert.ok(r.kinds.includes('shared-service'), `expected a shared-service hazard; connect keys ${JSON.stringify(r)}`);
     });
   }
+
+  /** One file of one lane running `body` (async, with `net` and `wait(socket)` in scope); returns the marker. */
+  function recordJs(body) {
+    const dir = fs.mkdtempSync(path.join(BASE, 'd1j-'));
+    const code = `
+const net = require('node:net'); const parallel = require(${JSON.stringify(SRC)});
+parallel.installFootprint(process.cwd());
+const wait = (s) => new Promise((res) => { const done = () => { clearTimeout(t); s.destroy(); res(); }; const t = setTimeout(done, 1500); s.on('error', done); s.on('connect', done); });
+(async () => {
+  parallel.enter('f');
+  ${body}
+  parallel.leave('f');
+  const d = process.env.DETJS_DIR + '/lanes';
+  process.stdout.write(require('node:fs').readFileSync(d + '/' + require('node:fs').readdirSync(d).filter((n) => n.endsWith('.json'))[0], 'utf8'));
+})();`;
+    const r = spawnSync(process.execPath, ['-e', code], { cwd: dir, encoding: 'utf8', env: cleanEnv({ DETJS_DIR: path.join(dir, 'run'), DETJS_WORKERS: '2' }), timeout: 30000 });
+    assert.equal(r.status, 0, r.stderr);
+    return JSON.parse(r.stdout);
+  }
+  const pairJs = (body) => {
+    const a = recordJs(body); const b = recordJs(body);
+    return { kinds: hazards(new Map([['A', a], ['B', b]]), new Map([['A', 0], ['B', 1]])).map((x) => x.kind), pub: [a.footprint.pub, b.footprint.pub] };
+  };
+
+  test('a name that resolves to a public and then a loopback address pairs (review delta F1: every address counts)', { timeout: 60000 }, () => {
+    // protects=happy eyeballs (autoSelectFamily) tries every resolved address and can land on the private one: a name
+    // is public only if every address its lookup reported is; fails_when=the first lookup event (a public address)
+    // marks the key public in both lanes and the pair is skipped; no_claim=real DNS (a custom lookup gives the addresses)
+    const r = pairJs(`const s = net.connect({ host: 'mixed.test', port: 5432, autoSelectFamily: true,
+      lookup: (h, o, cb) => (o && o.all ? cb(null, [{ address: '2001:4860:4860::8888', family: 6 }, { address: '127.0.0.1', family: 4 }]) : cb(null, '2001:4860:4860::8888', 6)) });
+    await wait(s);`);
+    assert.ok(r.kinds.includes('shared-service'), JSON.stringify(r));
+  });
+
+  test('a name looked up public once and private once in one file pairs (review delta F2: every connect counts)', { timeout: 60000 }, () => {
+    // protects=DNS round robin / rebinding: one public lookup does not make a key public when another connect of the
+    // same file reached a private address; fails_when=pub is the union over the file's connects; no_claim=real DNS
+    const look = (ip) => `(h, o, cb) => (o && o.all ? cb(null, [{ address: '${ip}', family: 4 }]) : cb(null, '${ip}', 4))`;
+    const r = pairJs(`const a = net.connect({ host: 'flip.test', port: 5432, lookup: ${look('8.8.8.8')} }); await wait(a);
+    const b = net.connect({ host: 'flip.test', port: 5432, lookup: ${look('10.0.0.1')} }); await wait(b);`);
+    assert.ok(r.kinds.includes('shared-service'), JSON.stringify(r));
+  });
 
   test('two lanes connecting to a public IP address: no hazard (D1 = A kept for public hosts)', { timeout: 60000 }, () => {
     const r = pair('185.199.111.133', 443);

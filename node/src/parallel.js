@@ -443,11 +443,11 @@ function installFootprint(root) {
   let cur = null;
   const H = {
     // the real-path memo is per file: a link another file of this process repointed is resolved again (/review F1)
-    begin(label) { dirMemo.clear(); cur = { label, w: new Set(), r: new Set(), l: new Set(), wr: new Set(), lr: new Set(), listen: new Set(), connect: new Set(), pub: new Set() }; },
+    begin(label) { dirMemo.clear(); cur = { label, w: new Set(), r: new Set(), l: new Set(), wr: new Set(), lr: new Set(), listen: new Set(), connect: new Set(), conns: new Map() }; },
     end(label) {
       if (!cur || cur.label !== label) return null;
       const c = cur; cur = null;
-      return { w: [...c.w].sort(), r: [...c.r].sort(), l: [...c.l].sort(), wr: [...c.wr].sort(), lr: [...c.lr].sort(), listen: [...c.listen].sort(), connect: [...c.connect].sort(), pub: [...c.pub].sort() };
+      return { w: [...c.w].sort(), r: [...c.r].sort(), l: [...c.l].sort(), wr: [...c.wr].sort(), lr: [...c.lr].sort(), listen: [...c.listen].sort(), connect: [...c.connect].sort(), pub: [...c.conns].filter(([, rs]) => rs.every((x) => x.pub)).map(([k]) => k).sort() };
     },
     add(set, p) {
       if (!cur) return;
@@ -595,8 +595,9 @@ function installFootprint(root) {
   // `tcp:<host as given, lower-cased>:<port>`. Two lanes connecting to one key share a service: a hazard
   // (`shared-service`), whether or not a lane listens on it -- except a tcp key whose address is a public, globally
   // routable internet address (founder decision 2026-11-26 "nome A", replacing D1 = A): such a key is listed in `pub`.
-  // An IP literal is classified at connect, a name at the socket's lookup event; a name that does not resolve, or
-  // resolves after the file's footprint closed, is not listed (it pairs: the safe side). DETJS_HAZARD_SHARED_SERVICE=0
+  // An IP literal is classified at connect; a name at the socket's lookup events: public only if every address they
+  // reported is public, before the file's footprint closed; a key is listed only if every connect of the file to it was
+  // public. A name that does not resolve, or resolves after the footprint closed, pairs. DETJS_HAZARD_SHARED_SERVICE=0
   // records only loopback ports, as before (measurement only; the runner then gives no proof). UDP / dgram is not
   // recorded (known limit).
   const sharedService = process.env.DETJS_HAZARD_SHARED_SERVICE !== '0';
@@ -608,8 +609,10 @@ function installFootprint(root) {
     ['203.0.113.0', 24], ['224.0.0.0', 4], ['240.0.0.0', 4]]) NOT_PUBLIC.addSubnet(a, n, 'ipv4');
   const V6_PUBLIC = new net.BlockList();
   V6_PUBLIC.addSubnet('2000::', 3, 'ipv6');
+  // not global inside 2000::/3 (review delta F3): Teredo, benchmarking, ORCHIDv2, documentation, 6to4 (safe side)
   const V6_DOC = new net.BlockList();
-  V6_DOC.addSubnet('2001:db8::', 32, 'ipv6');
+  for (const [a, n] of [['2001::', 32], ['2001:2::', 48], ['2001:10::', 28], ['2001:20::', 28], ['2001:db8::', 32], ['2002::', 16],
+    ['3fff::', 20]]) V6_DOC.addSubnet(a, n, 'ipv6');
   const isPublic = (ip) => {
     let x = String(ip || '').replace(/^\[|\]$/g, '');
     const mapped = /^::ffff:(\d+\.\d+\.\d+\.\d+)$/i.exec(x);
@@ -635,12 +638,20 @@ function installFootprint(root) {
       if (!sharedService) return;
       const key = `tcp:${h}:${Number(port)}`;
       cur.connect.add(key);
+      // one record per connect; a key is public in this file only if every connect to it was (end(): review delta F2)
+      const rec = { pub: false };
+      if (!cur.conns.has(key)) cur.conns.set(key, []);
+      cur.conns.get(key).push(rec);
       const bare = h.replace(/^\[|\]$/g, '');
-      if (net.isIP(bare)) { if (isPublic(bare)) cur.pub.add(key); return; }
-      // a name: public only if its lookup returns a public address while this file is still open
+      if (net.isIP(bare)) { rec.pub = isPublic(bare); return; }
+      // a name: public only if every address its lookup reported is public (happy eyeballs reports and tries each:
+      // review delta F1), reported while this file is still open (founder decision: classified at the lookup event)
       const file = cur;
-      if (sock && typeof sock.once === 'function') {
-        sock.once('lookup', (err, address) => { if (!err && cur === file && isPublic(address)) file.pub.add(key); });
+      if (sock && typeof sock.on === 'function') {
+        let bad = false;
+        sock.on('lookup', (err, address) => {
+          if (err || !isPublic(address)) { bad = true; rec.pub = false; } else if (!bad && cur === file) rec.pub = true;
+        });
       }
     });
   }
