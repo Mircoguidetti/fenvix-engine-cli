@@ -572,14 +572,31 @@ function hazards(markers, laneOf) {
     const k = `${x}\u0000${y}`;
     if (!out.has(k)) out.set(k, { a: x, b: y, kind, what });
   };
+  // P2 C4: the written paths by parent directory (up to and including the last '/'), each bucket in the order of
+  // `writers`. A listing of `pre` (ending in '/') sees a written path p when p starts with pre and has no '/' after
+  // it, which holds exactly when p's parent is pre; one lookup replaces a scan of every written path per listing, and
+  // the order in which addH() sees the pairs (the first kind and path found for a pair is the one kept) is unchanged.
+  let byDir = null;
+  const under = (pre) => {
+    if (byDir === null) {
+      byDir = new Map();
+      for (const [p, ws] of writers) {
+        const k = p.slice(0, p.lastIndexOf('/') + 1);
+        if (!byDir.has(k)) byDir.set(k, []);
+        byDir.get(k).push(ws);
+      }
+    }
+    return byDir.get(pre) || [];
+  };
   for (const [label, m] of markers) {
     const f = m.footprint;
     if (!f) continue;
+    if (lane(label) === null) continue; // addH() adds nothing for a file outside the plan
     for (const r of f.r) for (const w of writers.get(r) || []) addH(label, w, 'read-write', r);
     for (const r of f.w) for (const w of writers.get(r) || []) addH(label, w, 'write-write', r);
     for (const d of f.l) {
       const pre = d.endsWith('/') ? d : `${d}/`;
-      for (const [p, ws] of writers) if (p.startsWith(pre) && !p.slice(pre.length).includes('/')) for (const w of ws) addH(label, w, 'list-write', d);
+      for (const ws of under(pre)) for (const w of ws) addH(label, w, 'list-write', d);
     }
     for (const p of f.listen) for (const o of listeners.get(p) || []) addH(label, o, 'port', p);
     for (const p of f.connect) for (const o of listeners.get(p) || []) addH(label, o, 'port', p);
