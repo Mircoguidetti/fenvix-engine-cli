@@ -47,8 +47,64 @@
   "status": 200,
   "total_count": 1216
  },
+ "autogen-ext filename:package.json": {
+  "status": 200,
+  "total_count": 0
+ },
  "autogen-ext filename:pyproject.toml": {
   "status": 200,
   "total_count": 958
+ },
+ "autogen-ext filename:requirements.txt": {
+  "status": 200,
+  "total_count": 2012
+ },
+ "claude-agent-sdk filename:package.json": {
+  "status": 200,
+  "total_count": 10128
+ },
+ "claude-agent-sdk filename:pyproject.toml": {
+  "status": 200,
+  "total_count": 4024
+ },
+ "claude-agent-sdk filename:requirements.txt": {
+  "status": 200,
+  "total_count": 1904
+ },
+ "crewai filename:package.json": {
+  "status": 200,
+  "total_count": 448
+ },
+ "crewai filename:pyproject.toml": {
+  "status": 429,
+  "total_count": null
+ },
+ "crewai filename:requirements.txt": {
+  "status": 200,
+  "total_count": 12560
+ },
+ "crewai-tools filename:package.json": {
+  "status": 200,
+  "total_count": 1
+ },
+ "crewai-tools filename:pyproject.toml": {
+  "status": 200,
+  "total_count": 1856
+ },
+ "crewai-tools filename:requirements.txt": {
+  "status": 200,
+  "total_count": 4272
+ },
+ "dspy filename:package.json": {
+  "status": 200,
+  "total_count": 206
+ },
+ "dspy filename:pyproject.toml": {
+  "status": 200,
+  "total_count": 3004
+ },
+ "dspy filename:requirements.txt": {
+  "status": 200,
+  "total_count": 2408
  }
 }
