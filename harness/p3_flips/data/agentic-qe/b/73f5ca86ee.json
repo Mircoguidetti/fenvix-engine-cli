@@ -1,0 +1,223 @@
+{
+ "repo": "agentic-qe",
+ "file": "tests/integration/coordination/queen-tinydancer-wiring.test.ts",
+ "slug": "73f5ca86ee",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "cases": {
+  "tests/integration/coordination/queen-tinydancer-wiring.test.ts::Queen Coordinator \u2194 TinyDancer Router Wiring::Requirement 1: Component Initialization::TinyDancer router is initialized when enableRouting is true (default)": {
+   "kind": "mixed",
+   "results": [
+    "passed",
+    "passed",
+    "passed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    null,
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/queen-tinydancer-wiring.test.ts:191]"
+   ],
+   "mixed_outcome": true,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/integration/coordination/queen-tinydancer-wiring.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear",
+      "clear",
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "73f5ca86ee.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/queen-tinydancer-wiring.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/73f5ca86ee.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/73f5ca86ee.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:16.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "73f5ca86ee.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/queen-tinydancer-wiring.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/73f5ca86ee.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/73f5ca86ee.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:20.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "73f5ca86ee.g0.L1.r3",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/queen-tinydancer-wiring.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/73f5ca86ee.g0.L1.r3.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/73f5ca86ee.g0.L1.r3.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:24.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "73f5ca86ee.g0.L1.r4",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/queen-tinydancer-wiring.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/73f5ca86ee.g0.L1.r4.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/73f5ca86ee.g0.L1.r4.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "73f5ca86ee.g0.L1.r5",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/queen-tinydancer-wiring.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/73f5ca86ee.g0.L1.r5.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/73f5ca86ee.g0.L1.r5.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:31.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "73f5ca86ee.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/queen-tinydancer-wiring.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/73f5ca86ee.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/queen-tinydancer-wiring.test.ts"
+      ]
+     },
+     {
+      "tag": "73f5ca86ee.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/queen-tinydancer-wiring.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/73f5ca86ee.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/queen-tinydancer-wiring.test.ts"
+      ]
+     },
+     {
+      "tag": "73f5ca86ee.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/queen-tinydancer-wiring.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/73f5ca86ee.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/queen-tinydancer-wiring.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "73f5ca86ee.alone.r1",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/queen-tinydancer-wiring.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/73f5ca86ee.alone.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/73f5ca86ee.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 2.58,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T05:42:09.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/integration/coordination/queen-tinydancer-wiring.test.ts::Queen Coordinator \u2194 TinyDancer Router Wiring::Requirement 1: Component Initialization::TinyDancer router is initialized when enableRouting is true (default)": "failed"
+   },
+   "exc": {
+    "tests/integration/coordination/queen-tinydancer-wiring.test.ts::Queen Coordinator \u2194 TinyDancer Router Wiring::Requirement 1: Component Initialization::TinyDancer router is initialized when enableRouting is true (default)": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/queen-tinydancer-wiring.test.ts:191]"
+   }
+  },
+  {
+   "tag": "73f5ca86ee.alone.r2",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/queen-tinydancer-wiring.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/73f5ca86ee.alone.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/73f5ca86ee.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 2.62,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T05:42:13.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/integration/coordination/queen-tinydancer-wiring.test.ts::Queen Coordinator \u2194 TinyDancer Router Wiring::Requirement 1: Component Initialization::TinyDancer router is initialized when enableRouting is true (default)": "failed"
+   },
+   "exc": {
+    "tests/integration/coordination/queen-tinydancer-wiring.test.ts::Queen Coordinator \u2194 TinyDancer Router Wiring::Requirement 1: Component Initialization::TinyDancer router is initialized when enableRouting is true (default)": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/queen-tinydancer-wiring.test.ts:191]"
+   }
+  }
+ ],
+ "complete": true
+}

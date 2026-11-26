@@ -1,0 +1,1192 @@
+{
+ "repo": "agentic-qe",
+ "file": "tests/integration/coordination/workflow-parallel-composition.test.ts",
+ "slug": "de235c585c",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "cases": {
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::composes disjoint outputs only after both actions finish": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:95]",
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:95]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/integration/coordination/workflow-parallel-composition.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "de235c585c.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:50.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "de235c585c.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:54.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "de235c585c.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     },
+     {
+      "tag": "de235c585c.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     },
+     {
+      "tag": "de235c585c.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::does not commit a successful sibling when another step fails": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:150]",
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:150]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/integration/coordination/workflow-parallel-composition.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "de235c585c.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:50.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "de235c585c.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:54.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "de235c585c.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     },
+     {
+      "tag": "de235c585c.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     },
+     {
+      "tag": "de235c585c.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::does not map a step output before its approval gate accepts it": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:331]",
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:331]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/integration/coordination/workflow-parallel-composition.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "de235c585c.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:50.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "de235c585c.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:54.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "de235c585c.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     },
+     {
+      "tag": "de235c585c.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     },
+     {
+      "tag": "de235c585c.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::does not publish any output if staged composition is invalid": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:318]",
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:318]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/integration/coordination/workflow-parallel-composition.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "de235c585c.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:50.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "de235c585c.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:54.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "de235c585c.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     },
+     {
+      "tag": "de235c585c.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     },
+     {
+      "tag": "de235c585c.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::isolates direct action mutations from sibling inputs and shared context": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:227]",
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:227]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/integration/coordination/workflow-parallel-composition.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "de235c585c.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:50.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "de235c585c.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:54.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "de235c585c.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     },
+     {
+      "tag": "de235c585c.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     },
+     {
+      "tag": "de235c585c.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::keeps a single root step on the sequential path for non-cloneable outputs": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:211]",
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:211]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/integration/coordination/workflow-parallel-composition.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "de235c585c.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:50.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "de235c585c.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:54.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "de235c585c.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     },
+     {
+      "tag": "de235c585c.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     },
+     {
+      "tag": "de235c585c.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::keeps an empty-message hard failure from committing successful sibling output": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:164]",
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:164]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/integration/coordination/workflow-parallel-composition.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "de235c585c.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:50.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "de235c585c.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:54.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "de235c585c.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     },
+     {
+      "tag": "de235c585c.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     },
+     {
+      "tag": "de235c585c.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::preserves completed sibling outputs when an optional step is continueOnFailure": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:183]",
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:183]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/integration/coordination/workflow-parallel-composition.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "de235c585c.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:50.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "de235c585c.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:54.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "de235c585c.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     },
+     {
+      "tag": "de235c585c.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     },
+     {
+      "tag": "de235c585c.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::preserves completed sibling outputs when an optional step is skipped": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:183]",
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:183]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/integration/coordination/workflow-parallel-composition.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "de235c585c.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:50.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "de235c585c.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:54.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "de235c585c.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     },
+     {
+      "tag": "de235c585c.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     },
+     {
+      "tag": "de235c585c.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::produces the same combined-state hash when completion order reverses": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:127]",
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:127]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/integration/coordination/workflow-parallel-composition.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "de235c585c.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:50.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "de235c585c.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:42:54.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "de235c585c.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     },
+     {
+      "tag": "de235c585c.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     },
+     {
+      "tag": "de235c585c.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/coordination/workflow-parallel-composition.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "de235c585c.alone.r1",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.alone.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 2.63,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T05:42:42.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::composes disjoint outputs only after both actions finish": "failed",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::does not commit a successful sibling when another step fails": "failed",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::does not map a step output before its approval gate accepts it": "failed",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::does not publish any output if staged composition is invalid": "failed",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::isolates direct action mutations from sibling inputs and shared context": "failed",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::keeps a single root step on the sequential path for non-cloneable outputs": "failed",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::keeps an empty-message hard failure from committing successful sibling output": "failed",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::preserves completed sibling outputs when an optional step is continueOnFailure": "failed",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::preserves completed sibling outputs when an optional step is skipped": "failed",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::produces the same combined-state hash when completion order reverses": "failed"
+   },
+   "exc": {
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::composes disjoint outputs only after both actions finish": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:95]",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::does not commit a successful sibling when another step fails": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:150]",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::does not map a step output before its approval gate accepts it": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:331]",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::does not publish any output if staged composition is invalid": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:318]",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::isolates direct action mutations from sibling inputs and shared context": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:227]",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::keeps a single root step on the sequential path for non-cloneable outputs": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:211]",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::keeps an empty-message hard failure from committing successful sibling output": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:164]",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::preserves completed sibling outputs when an optional step is continueOnFailure": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:183]",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::preserves completed sibling outputs when an optional step is skipped": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:183]",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::produces the same combined-state hash when completion order reverses": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:127]"
+   }
+  },
+  {
+   "tag": "de235c585c.alone.r2",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/coordination/workflow-parallel-composition.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.alone.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/de235c585c.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 2.66,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T05:42:46.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::composes disjoint outputs only after both actions finish": "failed",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::does not commit a successful sibling when another step fails": "failed",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::does not map a step output before its approval gate accepts it": "failed",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::does not publish any output if staged composition is invalid": "failed",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::isolates direct action mutations from sibling inputs and shared context": "failed",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::keeps a single root step on the sequential path for non-cloneable outputs": "failed",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::keeps an empty-message hard failure from committing successful sibling output": "failed",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::preserves completed sibling outputs when an optional step is continueOnFailure": "failed",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::preserves completed sibling outputs when an optional step is skipped": "failed",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::produces the same combined-state hash when completion order reverses": "failed"
+   },
+   "exc": {
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::composes disjoint outputs only after both actions finish": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:95]",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::does not commit a successful sibling when another step fails": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:150]",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::does not map a step output before its approval gate accepts it": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:331]",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::does not publish any output if staged composition is invalid": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:318]",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::isolates direct action mutations from sibling inputs and shared context": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:227]",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::keeps a single root step on the sequential path for non-cloneable outputs": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:211]",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::keeps an empty-message hard failure from committing successful sibling output": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:164]",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::preserves completed sibling outputs when an optional step is continueOnFailure": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:183]",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::preserves completed sibling outputs when an optional step is skipped": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:183]",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::produces the same combined-state hash when completion order reverses": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/coordination/workflow-parallel-composition.test.ts:127]"
+   }
+  }
+ ],
+ "complete": true
+}
