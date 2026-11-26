@@ -12,30 +12,54 @@
  },
  "finished": null,
  "queries": {
-  "committer-date:>=2024-01-01 xfail gemini test": {
+  "committer-date:>=2024-01-01 xfail \"model output\" test": {
    "capped": false,
    "done": false,
-   "leaf_total": 147,
-   "leaves": 2,
-   "nodes": 3,
-   "prepass_total": 1913,
+   "leaf_total": 0,
+   "leaves": 0,
+   "nodes": 0,
+   "prepass_total": 253,
    "stack": [
     [
-     "2026-03-06",
+     "2024-01-01",
      "2026-11-25"
     ]
    ]
+  },
+  "committer-date:>=2024-01-01 xfail gemini test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 1916,
+   "leaves": 5,
+   "nodes": 8,
+   "prepass_total": 1913,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 xfail gpt test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 1581,
+   "leaves": 4,
+   "nodes": 6,
+   "prepass_total": 1580,
+   "stack": []
   }
+ },
+ "route_check": {
+  "at": "2026-11-26T11:28:34+00:00",
+  "query": "committer-date:>=2024-01-01 xfail \"model output\" test",
+  "session": 251,
+  "workflow": 253
  },
  "search_requests": {
   "code": 0,
-  "issues": 5
+  "issues": 54
  },
  "search_stats": {
-  "429": 0,
+  "429": 5,
   "limit": 30,
   "remaining": 30,
-  "reset": 1795692103
+  "reset": 1795692560
  },
  "started": "2026-11-26T11:20:43+00:00"
 }
