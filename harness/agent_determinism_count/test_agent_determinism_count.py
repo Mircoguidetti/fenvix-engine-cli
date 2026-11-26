@@ -1339,3 +1339,20 @@ def test_extension_route_guard_tolerates_small_index_drift(tmp_path, monkeypatch
         fake = Fake(got)
         monkeypatch.setattr(discover, "_client", lambda route, f=fake: f)
         assert discover.run("text", "session", 60, None, ext=True) == (rc if got != pre else 0), (got, pre)
+
+
+def test_watchdog_flags_stale_or_missing_text_run(tmp_path):
+    import watchdog as W
+    now = "2026-11-26T15:00:00Z"
+    assert W.check("queued", None, now, ["r003.json"]) is None
+    assert W.check("in_progress", "2026-11-26T14:45:00Z", now, []) is None
+    assert "21 min" in W.check("in_progress", "2026-11-26T14:39:00Z", now, [])
+    assert "r003.json" in W.check("completed", None, now, ["r003.json"])  # run 45820191350, 12:34Z
+    assert W.check("completed", None, now, []) is None
+    (tmp_path / "requests").mkdir()
+    (tmp_path / "requests" / "n5.json").write_text("{}")
+    assert W.queue_noop(tmp_path).name == "n6.json"
+    (tmp_path / "results").mkdir()
+    W.record_gap("12:34Z", "14:56Z", "x", tmp_path / "results")
+    W.record_gap("12:34Z", "14:56Z", "x", tmp_path / "results")
+    assert json.loads((tmp_path / "results" / "report_notes.json").read_text())["notes"] == ["Reading gap 12:34Z-14:56Z: x"]

@@ -127,3 +127,11 @@
     returns before run_chunk. Now each request loads only the idx it reads: the chunk's candidates, or the rows of
     the chunk named by a comments request. Reading was stopped from 12:34Z until this push re-queued r003 and r003c,
     and the work session noticed the failure only at 14:58Z.
+17. 2026-11-26 15:05Z, the coordinator's watchdog (14:57Z, after the gaps 09:56-10:54Z and 12:34-14:56Z; no rule
+    change). Every 20 minutes a harness-tracked timer wakes the work session. The session reads the latest text run's
+    status and the time of its last log line with the GitHub tools (the session's gh is limited to search), and runs
+    watchdog.py check. A run is healthy when it is queued, or in progress with a last log line under 20 minutes
+    old, or completed with no pending request. Otherwise watchdog.py gap records the gap and its cause in
+    results/report_notes.json (REPORT "Notes") and results/watchdog.jsonl, and watchdog.py queue writes a noop
+    request whose push starts a run. The 12:34:56-14:56:23Z gap is recorded. Test:
+    test_watchdog_flags_stale_or_missing_text_run.
