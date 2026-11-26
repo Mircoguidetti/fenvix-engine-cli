@@ -122,12 +122,36 @@
    "stack": []
   },
   "B stryker filename:package.json": {
-   "done": false,
-   "leaves": 15,
-   "nodes": 35,
+   "done": true,
+   "leaves": 21,
+   "nodes": 41,
    "root_incomplete": false,
    "root_total": 10560,
+   "stack": []
+  },
+  "B stryker filename:stryker.conf": {
+   "done": false,
+   "leaves": 3,
+   "nodes": 15,
+   "root_incomplete": false,
+   "root_total": 6880,
    "stack": [
+    [
+     391,
+     781
+    ],
+    [
+     782,
+     1562
+    ],
+    [
+     1563,
+     3125
+    ],
+    [
+     3126,
+     6250
+    ],
     [
      6251,
      12500
