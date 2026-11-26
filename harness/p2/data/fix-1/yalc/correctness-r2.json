@@ -2985,39 +2985,266 @@
  "rule2": {
   "allowed_declared_only": [],
   "declared": [],
-  "defects": [],
-  "need_repeat": [
-   "scripts/__tests__/bench-skill-runtime.test.mjs::bench-skill-runtime: --dry-run end-to-end::runs without crashing and writes the JSON report",
-   "src/__tests__/doctor-confidence.test.ts::doctor confidence layer::emits the Preview Confidence header when meta.sections is populated",
-   "src/__tests__/doctor-confidence.test.ts::doctor confidence layer::omits the layer when no preview folder exists",
-   "src/__tests__/doctor-confidence.test.ts::doctor confidence layer::lists low-confidence sections with an actionable hint",
-   "src/__tests__/doctor-confidence.test.ts::doctor confidence layer::treats 0.6 as the medium/low boundary (default threshold)",
-   "src/__tests__/doctor-keys-handoff.test.ts::doctor keys:connect handoff::prints a clickable /keys/connect/<provider> URL for each missing key",
-   "src/__tests__/doctor-keys-handoff.test.ts::doctor keys:connect handoff::does not attempt to boot the SPA server (no port-binding side effects)",
-   "src/__tests__/lint-skill-triggers.test.ts::lint-skill-triggers script::exits 0 when there are no overlapping trigger phrases",
-   "src/__tests__/lint-skill-triggers.test.ts::lint-skill-triggers script::exits 1 and prints both skill names + phrases when triggers overlap (substring)",
-   "src/__tests__/lint-skill-triggers.test.ts::lint-skill-triggers script::exits 1 on exact-match overlapping triggers",
-   "src/__tests__/lint-skill-triggers.test.ts::lint-skill-triggers script::respects trigger_overlap_allowed opt-out from one side",
-   "src/__tests__/lint-skill-triggers.test.ts::lint-skill-triggers script::ignores generic short tokens that happen to be quoted",
-   "src/__tests__/lint-skill-triggers.test.ts::lint-skill-triggers script::treats overlap as bidirectional substring (B contains A and A contains B)",
-   "src/__tests__/output-schema-validation.test.ts::framework runner: output_schema enforcement::halts the run when a step output fails its declared schema"
+  "defects": [
+   {
+    "baseline_event": {
+     "at": "scripts/__tests__/bench-skill-runtime.test.mjs:140",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:da12e8b1fdd5"
+    },
+    "fix_event": {
+     "at": "scripts/__tests__/bench-skill-runtime.test.mjs:140",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:7dd3239aec56"
+    },
+    "nodeid": "scripts/__tests__/bench-skill-runtime.test.mjs::bench-skill-runtime: --dry-run end-to-end::runs without crashing and writes the JSON report",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "src/lib/diagnostics/doctor.ts:103",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:da12e8b1fdd5"
+    },
+    "fix_event": {
+     "at": "src/lib/diagnostics/doctor.ts:103",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:7dd3239aec56"
+    },
+    "nodeid": "src/__tests__/doctor-confidence.test.ts::doctor confidence layer::emits the Preview Confidence header when meta.sections is populated",
+    "why": "undeclared event difference at index 24"
+   },
+   {
+    "baseline_event": {
+     "at": "src/lib/diagnostics/doctor.ts:103",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:da12e8b1fdd5"
+    },
+    "fix_event": {
+     "at": "src/lib/diagnostics/doctor.ts:103",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:7dd3239aec56"
+    },
+    "nodeid": "src/__tests__/doctor-confidence.test.ts::doctor confidence layer::omits the layer when no preview folder exists",
+    "why": "undeclared event difference at index 22"
+   },
+   {
+    "baseline_event": {
+     "at": "src/lib/diagnostics/doctor.ts:103",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:da12e8b1fdd5"
+    },
+    "fix_event": {
+     "at": "src/lib/diagnostics/doctor.ts:103",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:7dd3239aec56"
+    },
+    "nodeid": "src/__tests__/doctor-confidence.test.ts::doctor confidence layer::lists low-confidence sections with an actionable hint",
+    "why": "undeclared event difference at index 22"
+   },
+   {
+    "baseline_event": {
+     "at": "src/lib/diagnostics/doctor.ts:103",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:da12e8b1fdd5"
+    },
+    "fix_event": {
+     "at": "src/lib/diagnostics/doctor.ts:103",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:7dd3239aec56"
+    },
+    "nodeid": "src/__tests__/doctor-confidence.test.ts::doctor confidence layer::treats 0.6 as the medium/low boundary (default threshold)",
+    "why": "undeclared event difference at index 22"
+   },
+   {
+    "baseline_event": {
+     "at": "src/lib/diagnostics/doctor.ts:103",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "205:df89d50c464c"
+    },
+    "fix_event": {
+     "at": "src/lib/diagnostics/doctor.ts:103",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "204:3f71adb74693"
+    },
+    "nodeid": "src/__tests__/doctor-keys-handoff.test.ts::doctor keys:connect handoff::prints a clickable /keys/connect/<provider> URL for each missing key",
+    "why": "undeclared event difference at index 38"
+   },
+   {
+    "baseline_event": {
+     "at": "src/lib/diagnostics/doctor.ts:103",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "205:df89d50c464c"
+    },
+    "fix_event": {
+     "at": "src/lib/diagnostics/doctor.ts:103",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "204:3f71adb74693"
+    },
+    "nodeid": "src/__tests__/doctor-keys-handoff.test.ts::doctor keys:connect handoff::does not attempt to boot the SPA server (no port-binding side effects)",
+    "why": "undeclared event difference at index 37"
+   },
+   {
+    "baseline_event": {
+     "at": "src/__tests__/lint-skill-triggers.test.ts:16",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:da12e8b1fdd5"
+    },
+    "fix_event": {
+     "at": "src/__tests__/lint-skill-triggers.test.ts:16",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:7dd3239aec56"
+    },
+    "nodeid": "src/__tests__/lint-skill-triggers.test.ts::lint-skill-triggers script::exits 0 when there are no overlapping trigger phrases",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "src/__tests__/lint-skill-triggers.test.ts:16",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:da12e8b1fdd5"
+    },
+    "fix_event": {
+     "at": "src/__tests__/lint-skill-triggers.test.ts:16",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:7dd3239aec56"
+    },
+    "nodeid": "src/__tests__/lint-skill-triggers.test.ts::lint-skill-triggers script::exits 1 and prints both skill names + phrases when triggers overlap (substring)",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "src/__tests__/lint-skill-triggers.test.ts:16",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:da12e8b1fdd5"
+    },
+    "fix_event": {
+     "at": "src/__tests__/lint-skill-triggers.test.ts:16",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:7dd3239aec56"
+    },
+    "nodeid": "src/__tests__/lint-skill-triggers.test.ts::lint-skill-triggers script::exits 1 on exact-match overlapping triggers",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "src/__tests__/lint-skill-triggers.test.ts:16",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:da12e8b1fdd5"
+    },
+    "fix_event": {
+     "at": "src/__tests__/lint-skill-triggers.test.ts:16",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:7dd3239aec56"
+    },
+    "nodeid": "src/__tests__/lint-skill-triggers.test.ts::lint-skill-triggers script::respects trigger_overlap_allowed opt-out from one side",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "src/__tests__/lint-skill-triggers.test.ts:16",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:da12e8b1fdd5"
+    },
+    "fix_event": {
+     "at": "src/__tests__/lint-skill-triggers.test.ts:16",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:7dd3239aec56"
+    },
+    "nodeid": "src/__tests__/lint-skill-triggers.test.ts::lint-skill-triggers script::ignores generic short tokens that happen to be quoted",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "src/__tests__/lint-skill-triggers.test.ts:16",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:da12e8b1fdd5"
+    },
+    "fix_event": {
+     "at": "src/__tests__/lint-skill-triggers.test.ts:16",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:7dd3239aec56"
+    },
+    "nodeid": "src/__tests__/lint-skill-triggers.test.ts::lint-skill-triggers script::treats overlap as bidirectional substring (B contains A and A contains B)",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "<node>",
+     "o": "env.get",
+     "s": "other",
+     "t": 0,
+     "v": "NODE_V8_COVERAGE=unset"
+    },
+    "fix_event": {
+     "at": "<node>",
+     "o": "env.get",
+     "s": "other",
+     "t": 0,
+     "v": "WATCH_REPORT_DEPENDENCIES=unset"
+    },
+    "nodeid": "src/__tests__/output-schema-validation.test.ts::framework runner: output_schema enforcement::halts the run when a step output fails its declared schema",
+    "why": "undeclared event difference at index 33"
+   }
   ],
+  "need_repeat": [],
   "passed": 1440,
   "stable_in_baseline": 1454
  },
  "rule3": {
   "count_defects": [
-   {
-    "baseline": [
-     1472,
-     1472
-    ],
-    "count": "passed",
-    "fix": 1471,
-    "kind": "par",
-    "rep": 1,
-    "workers": 4
-   },
    {
     "baseline": [
      3,
@@ -3031,13 +3258,13 @@
    },
    {
     "baseline": [
-     1457,
-     1469
+     1472,
+     1472
     ],
     "count": "passed",
-    "fix": 1470,
-    "kind": "plain_par",
-    "rep": 3,
+    "fix": 1471,
+    "kind": "par",
+    "rep": 1,
     "workers": 4
    },
    {
@@ -3047,6 +3274,17 @@
     ],
     "count": "failed",
     "fix": 5,
+    "kind": "plain_par",
+    "rep": 3,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     1457,
+     1469
+    ],
+    "count": "passed",
+    "fix": 1470,
     "kind": "plain_par",
     "rep": 3,
     "workers": 4

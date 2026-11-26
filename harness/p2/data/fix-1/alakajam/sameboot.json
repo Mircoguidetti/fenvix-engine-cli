@@ -1,0 +1,12 @@
+{
+ "boot_effect": 2,
+ "fix_matches_baseline": [
+  "server/post/like/like.service.spec.ts::Like service::unlike::should remove the like and update counters",
+  "server/user/user.service.spec.ts::User service::entries count from real nodes::should count entries but not posts"
+ ],
+ "fix_vs_ctrl": 92,
+ "repo": "alakajam",
+ "tests": 221,
+ "unexplained": [],
+ "unstable_in_baseline": 90
+}

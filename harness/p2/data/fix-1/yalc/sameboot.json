@@ -1,0 +1,15 @@
+{
+ "boot_effect": 16,
+ "fix_matches_baseline": [
+  "src/__tests__/flag-capture-rich-profile.test.ts::A4 \u2014 flag-capture rich profile synthesis::writeSynthesizedPreview does not clobber rich pre-populated competitors when synthesis emits a thin list",
+  "src/lib/providers/declarative/__tests__/registry-integration.test.ts::registerDeclarativeAdapters::declarative manifest overrides matching built-in (Option A)",
+  "src/lib/providers/declarative/__tests__/registry-integration.test.ts::registerDeclarativeAdapters::registers but flags unavailable when env var missing"
+ ],
+ "fix_vs_ctrl": 25,
+ "repo": "yalc",
+ "tests": 1483,
+ "unexplained": [
+  "src/__tests__/output-schema-validation.test.ts::framework runner: output_schema enforcement::halts the run when a step output fails its declared schema"
+ ],
+ "unstable_in_baseline": 21
+}

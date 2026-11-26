@@ -1147,256 +1147,4102 @@
  "rule2": {
   "allowed_declared_only": [],
   "declared": [],
-  "defects": [],
-  "need_repeat": [
-   "test/apple-container-manager.test.ts@@main::AppleContainerManager::exec::passes workdir and per-exec environment overrides",
-   "test/apple-container-manager.test.ts@@main::AppleContainerManager::streamed pull / build::pulls with plain progress through the container binary",
-   "test/apple-container-manager.test.ts@@main::AppleContainerManager::streamed pull / build::builds with tag, dockerfile, and labels",
-   "test/apple-container-manager.test.ts@@main::AppleContainerManager::streamed pull / build::loads only from the explicit verified OCI archive path",
-   "test/apple-container-manager.test.ts@@main::AppleContainerManager::streamed pull / build::exports one explicit platform image to an OCI archive path",
-   "test/apple-container-manager.test.ts@@main::AppleContainerManager::streamed pull / build::surfaces the Rosetta remediation hint on builder bootstrap failures",
-   "test/argument-roles.test.ts@@main::resolveGitRemote::returns original value when git command fails (no repo)",
-   "test/argument-roles.test.ts@@main::resolveGitRemote::uses path argument as cwd for git command",
-   "test/checkpoint-selection.test.ts@@main::checkpoint-selection::findResumableCheckpoints::returns [] when only completed runs exist",
-   "test/codex-adapter.test.ts@@main::CodexAdapter::passes the mounted PTY orientation as one inert Codex developer-instructions argument",
-   "test/container-command.test.ts@@main::commandExists::finds a binary that exists and caches the probe",
-   "test/container-command.test.ts@@main::commandExists::reports a missing binary as absent",
-   "test/docker-manager.test.ts@@main::DockerManager::exec::inherits per-exec environment overrides without exposing values in argv",
-   "test/docker-manager.test.ts@@main::DockerManager::readContainerLogTail::reads bounded logs from the captured endpoint and includes container stderr",
-   "test/docker-manager.test.ts@@main::DockerManager::captured endpoint::sanitizes outer exec while preserving explicitly requested inner routing and platform values",
-   "test/docker-manager.test.ts@@main::DockerManager::captured endpoint::uses the captured endpoint and server platform for outer image inspection and create",
-   "test/docker-manager.test.ts@@main::DockerManager::captured endpoint::keeps inherited routing and platform overrides out of streamed build operations",
-   "test/docker-manager.test.ts@@main::DockerManager::captured endpoint::keeps inherited routing and platform overrides out of streamed pull operations",
-   "test/docker-manager.test.ts@@main::DockerManager::captured endpoint::keeps inherited routing and platform overrides out of streamed load operations",
-   "test/docker-manager.test.ts@@main::DockerManager::buildImage::passes labels as --label flags",
-   "test/docker-manager.test.ts@@main::DockerManager::buildImage::builds without labels when none provided",
-   "test/docker-manager.test.ts@@main::DockerManager::buildImage::forces BuildKit and plain progress for streamed heartbeats",
-   "test/docker-manager.test.ts@@main::DockerManager::buildImage::surfaces stderr tail when the build exits non-zero",
-   "test/docker-manager.test.ts@@main::DockerManager::loadImageArchive::loads only from the explicit verified archive path",
-   "test/docker-manager.test.ts@@main::DockerManager::pullImage::streams docker pull and resolves on clean exit",
-   "test/docker-manager.test.ts@@main::DockerManager::pullImage::rejects when the spawn itself errors (e.g. docker not on PATH)",
-   "test/docker-manager.test.ts@@main::DockerManager::progress sink dispatch::calls finish(true) and skips dumpRecent on a clean pullImage",
-   "test/docker-manager.test.ts@@main::DockerManager::progress sink dispatch::calls finish(false) then dumpRecent when buildImage exits non-zero",
-   "test/docker-manager.test.ts@@main::DockerManager::progress sink dispatch::also flushes dumpRecent when spawn itself errors",
-   "test/docker-manager.test.ts@@main::DockerManager::progress sink dispatch::skips the progress sink when stdoutSink/stderrSink are injected",
-   "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::applies the undefined environment mode at the final spawn boundary",
-   "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::applies the merge environment mode at the final spawn boundary",
-   "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::rejects with a labeled error when the child stays silent",
-   "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::resets the watchdog when the child emits output",
-   "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::escalates from SIGTERM to SIGKILL after the grace period",
-   "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::skips SIGKILL when the child exits within the grace period",
-   "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::reformats synchronous spawn() throws with the operation label",
-   "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::swallows kill() throws so the watchdog still rejects cleanly",
-   "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::passes operation label and stderr tail in non-zero exit errors",
-   "test/docker-workload/apple-vm-daemon.test.ts@@main::Apple VM nested-daemon frozen commands::enables only namespace-local forwarding before dockerd while retaining the isolation flags",
-   "test/docker-workload/apple-vm-daemon.test.ts@@main::Apple VM nested-daemon frozen commands::keeps the images variant separate and shell-parseable",
-   "test/docker-workload/apple-vm-daemon.test.ts@@main::Apple VM nested-daemon frozen commands::serves both fixed package-profile listeners in one process while dockerd remains registry-only",
-   "test/docker-workload/apple-vm-egress-relay.test.ts@@main::purpose-built Apple VM egress relay::has an exact non-configurable CLI and fixed version output",
-   "test/docker-workload/process-lock.test.ts@@main::Docker-workload process lock::stays busy when process-start adjudication throws",
-   "test/docker-workload/process-lock.test.ts@@main::Docker-workload process lock::does not delete a lock that a racer published after the stale observation",
-   "test/docker-workload/watchdog-supervisor-launch.test.ts@@main::launchDetachedResourceWatchdogSupervisor startup failures::reports a supervisor that exits before attesting without waiting for the deadline",
-   "test/docker/agent-startup.test.ts@@main::Docker agent startup handoff::signals only when CMD runs, preserves argument boundaries and leaves umask unchanged",
-   "test/docker/agent-startup.test.ts@@main::Docker agent startup handoff::rejects a stale marker until the recorded CMD publishes this init identity",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::injects host networking immediately after the supported [ 'build', '.' ] build spelling",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::injects host networking immediately after the supported [ 'image', 'build', '-t', 'demo', '.' ] build spelling",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::injects host networking immediately after the supported [ 'builder', 'build', '.' ] build spelling",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::injects host networking immediately after the supported [ 'buildx', 'build', '.' ] build spelling",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::uses the admitted sidecar socket for builds and rejects the other topology socket",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::allows documented global options and the exact private daemon host",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::routes only the outer build client through the admitted registry proxy",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::pins Buildx to the local default after pass-through state selects a custom builder",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::preserves the explicit supported build network \"--network=none\" without duplication",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::preserves the explicit supported build network \"--network\" without duplication",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::preserves the explicit supported build network \"--network=host\" without duplication",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::preserves the explicit supported build network \"--network\" without duplication #2",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build network bridge before execution",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build network default before execution",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build network ironcurtain before execution",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects duplicate build-network selection before execution",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"--context\" before execution",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"--context=remote\" before execution",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"-c\" before execution",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"-c=remote\" before execution",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"--config\" before execution",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"--config=/tmp/docker\" before execution",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"--host\" before execution",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"--host=tcp://remote:2375\" before execution",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"-H\" before execution",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"-H=tcp://remote:2375\" before execution",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"buildx\" before execution",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"buildx\" before execution #2",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"build\" before execution",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"build\" before execution #2",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"buildx\" before execution #3",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"buildx\" before execution #4",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller-supplied DOCKER_CONTEXT before executing a build",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller-supplied DOCKER_CONFIG before executing a build",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller-supplied BUILDKIT_HOST before executing a build",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller-supplied BUILDX_CONFIG before executing a build",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller-supplied BUILDX_BUILDER before executing a build",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller-supplied DOCKER_TLS_VERIFY before executing a build",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller-supplied DOCKER_CERT_PATH before executing a build",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects a noncanonical DOCKER_HOST but accepts the exact admitted value",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #2",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #3",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #4",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #5",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #6",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #7",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #8",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #9",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #10",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #11",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #12",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"buildx\" before execution",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"bake\" before execution",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::does not mistake Compose option data or non-exact forms for --no-build: \"compose\"",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::does not mistake Compose option data or non-exact forms for --no-build: \"compose\" #2",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::does not mistake Compose option data or non-exact forms for --no-build: \"compose\" #3",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::does not mistake Compose option data or non-exact forms for --no-build: \"compose\" #4",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::does not mistake Compose option data or non-exact forms for --no-build: \"compose\" #5",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::does not mistake Compose option data or non-exact forms for --no-build: \"compose\" #6",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::does not mistake Compose option data or non-exact forms for --no-build: \"compose\" #7",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects Compose watch and navigation-menu controls on an otherwise admitted path: \"compose\"",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects Compose watch and navigation-menu controls on an otherwise admitted path: \"compose\" #2",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects Compose watch and navigation-menu controls on an otherwise admitted path: \"compose\" #3",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects Compose watch and navigation-menu controls on an otherwise admitted path: \"compose\" #4",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects Compose watch and navigation-menu controls on an otherwise admitted path: \"compose\" #5",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects Compose watch and navigation-menu controls on an otherwise admitted path: \"compose\" #6",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects Compose watch and navigation-menu controls on an otherwise admitted path: \"compose\" #7",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects build-capable Compose run without parsing its command payload: \"compose\"",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects build-capable Compose run without parsing its command payload: \"compose\" #2",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::passes non-build argv through exactly with no package-build configuration: \"run\"",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::passes non-build argv through exactly with no package-build configuration: \"pull\"",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::passes non-build argv through exactly with no package-build configuration: \"network\"",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::passes non-build argv through exactly with no package-build configuration: \"system\"",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::passes non-build argv through exactly with no package-build configuration: \"compose\"",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::passes non-build argv through exactly with no package-build configuration: \"compose\" #2",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::pins the navigation menu off for admitted non-building Compose up: \"compose\"",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::pins the navigation menu off for admitted non-building Compose up: \"compose\" #2",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::pins the navigation menu off for admitted non-building Compose up: \"compose\" #3",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::passes admitted non-building Compose create without scanning unavailable watch/menu controls",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::preserves real-client exit status",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::supports a preflight that resolves docker through PATH to the staged shim",
-   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::forwards hostile argv inertly without shell expansion or splitting",
-   "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::serializes an immediate stop behind startup and leaves no listener or lease",
-   "test/docker/qualification-evidence.test.ts@@main::qualification evidence::records nonzero live-gate evidence before failing the qualification",
-   "test/docker/qualification-evidence.test.ts@@main::qualification evidence::records a bounded timeout and the terminating signal",
-   "test/docker/qualification-evidence.test.ts@@main::qualification evidence::bounds both retained and forwarded output when a script floods its pipe",
-   "test/docker/qualification-evidence.test.ts@@main::qualification evidence::does not label a cleanup failure after the deadline as a child timeout",
-   "test/docker/qualification-process.test.ts@@main::qualification process ownership::removes its signal handlers after a normal exit",
-   "test/docker/qualification-process.test.ts@@main::qualification process ownership::handles failed spawn without an unhandled error",
-   "test/docker/qualification-process.test.ts@@main::qualification process ownership::reaps the child and descendant after timeout",
-   "test/docker/qualification-process.test.ts@@main::qualification process ownership::reaps the child and descendant after SIGINT",
-   "test/docker/qualification-process.test.ts@@main::qualification process ownership::reaps the child and descendant after SIGTERM",
-   "test/domain-utils.test.ts@@main::resolveDefaultGitRemote::returns undefined for a non-existent path",
-   "test/domain-utils.test.ts@@main::resolveDefaultGitRemote::returns undefined for a plain directory (not a git repo)",
-   "test/first-start.test.ts@@main::first-start wizard::full flow with auto-approve enabled writes config",
-   "test/first-start.test.ts@@main::first-start wizard::auto-approve declined writes enabled: false",
-   "test/first-start.test.ts@@main::first-start wizard::re-run safety::configures Parallel without asking for an API key",
-   "test/first-start.test.ts@@main::first-start wizard::re-run safety::preserves existing web search API key when re-selecting same provider",
-   "test/first-start.test.ts@@main::first-start wizard::re-run safety::prompts for API key when switching to a new provider",
-   "test/first-start.test.ts@@main::first-start wizard::re-run safety::preserves existing auto-approve state as initialValue",
-   "test/llm-metrics-identity-protector.test.ts@@main::statistics persistence identity protection::publishes exactly one complete key under concurrent multi-process creation",
-   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::rejects response and attempt HTTP statuses outside 100 through 599",
-   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::rejects 'content-shaped' provider labels at the durable boundary",
-   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::rejects 'overlong' provider labels at the durable boundary",
-   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::prunes bounded orphaned retention metadata",
-   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::indexes exchanges by process run for bounded metadata pruning",
-   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::strictly bounds retention management inputs",
-   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::bounds reader admissions while its worker is stalled",
-   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps timed-out retention single-flight until its late lease cleanup settles",
-   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::preserves degraded health when retention lease release fails",
-   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps the independent reader usable after a terminal writer failure",
-   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::bounds its queue and fails open when persistence cannot accept another record",
-   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::bounds flush and exposes dropped work when a worker is unresponsive",
-   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::uses one bounded deadline for queue drain and close",
-   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::disables safely for a future schema without rewriting it",
-   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::persists only the explicit content-free allowlist",
-   "test/llm-metrics-runtime.test.ts@@main::process-scoped LLM metrics runtime::shares concurrent acquisitions and rejects a second active database identity",
-   "test/llm-metrics-runtime.test.ts@@main::process-scoped LLM metrics runtime::serializes last release with a racing reacquisition instead of returning a closing repository",
-   "test/mcp-proxy-server-no-backend.integration.test.ts@@main::mcp-proxy-server no-backend exit::exits non-zero with an ERROR diagnostic when the only configured backend is skipped",
-   "test/mcp-proxy-server-no-backend.integration.test.ts@@main::mcp-proxy-server no-backend exit::warn-skips a backend whose binary is missing instead of dying with a fatal error",
-   "test/mcp-proxy-server.test.ts@@main::parseProxyEnvConfig::parses all environment variables into a typed config object",
-   "test/mcp-proxy-server.test.ts@@main::parseProxyEnvConfig::uses default values when optional env vars are not set",
-   "test/mcp-proxy-server.test.ts@@main::parseProxyEnvConfig::parses SERVER_CREDENTIALS and scrubs from process.env",
-   "test/mcp-proxy-server.test.ts@@main::parseProxyEnvConfig::filters servers when SERVER_FILTER is set",
-   "test/mcp-proxy-server.test.ts@@main::parseProxyEnvConfig::calls process.exit(1) when MCP_SERVERS_CONFIG is missing",
-   "test/mcp-proxy-server.test.ts@@main::parseProxyEnvConfig::calls process.exit(1) when GENERATED_DIR is missing",
-   "test/mcp-proxy-server.test.ts@@main::parseProxyEnvConfig::calls process.exit(1) when SERVER_FILTER references unknown server",
-   "test/mux-input-handler.test.ts@@main::MuxInputHandler::picker mode transitions::/new browse path submit returns to command mode",
-   "test/mux-input-handler.test.ts@@main::MuxInputHandler::persona picker mode::browse submit with persona carries through to picker-spawn",
-   "test/mux-input-handler.test.ts@@main::MuxInputHandler::persona picker mode::browse submit without persona omits persona field",
-   "test/mux-input-handler.test.ts@@main::MuxInputHandler::provider picker mode (G13)::carries the pending workspace/persona through the provider step",
-   "test/policy-engine.test.ts@@main::PolicyEngine::Git remote enrichment (absent remote resolved from filesystem)::with repo whose origin is github.com::enriches absent remote with github.com URL; domain gate passes allowlist",
-   "test/policy-engine.test.ts@@main::PolicyEngine::Git remote enrichment (absent remote resolved from filesystem)::with repo whose origin is github.com::enriches absent remote; domain-constrained allow rule fires for matching domain",
-   "test/policy-engine.test.ts@@main::PolicyEngine::Git remote enrichment (absent remote resolved from filesystem)::with repo whose origin is github.com::enriches absent remote; structural domain gate blocks untrusted domain",
-   "test/policy-engine.test.ts@@main::PolicyEngine::Git remote enrichment (absent remote resolved from filesystem)::with repo whose origin is an untrusted domain::enriches absent remote with evil.com URL; structural domain gate escalates",
-   "test/policy-engine.test.ts@@main::PolicyEngine::Git remote enrichment (absent remote resolved from filesystem)::with tracking branch pointing to non-origin remote::enriches absent remote using tracking remote (not origin)",
-   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 output wiring (onData / serialize)::onData fires with the chunk AFTER the headless buffer reflects it",
-   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 output wiring (onData / serialize)::fires onOutput (grid sink) before onData (stream sink)",
-   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 output wiring (onData / serialize)::onData unsubscribe stops further callbacks",
-   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 output wiring (onData / serialize)::serialize() reflects written screen content",
-   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 output wiring (onData / serialize)::serialize({ scrollback }) caps the tail without throwing",
-   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 termination escalation::escalates from SIGTERM to SIGKILL after the grace period",
-   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 termination escalation::cancels SIGKILL when the child exits during the grace period",
-   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 termination escalation::makes repeated kill calls idempotent while termination is pending",
-   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 termination escalation::retries a failed direct SIGKILL until onExit confirms termination",
-   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 termination escalation::throttles persistent force-kill failure logs while continuing retries",
-   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 session discovery (no fixed timeout)::discovers a registration that appears long after the child spawns",
-   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 session discovery (no fixed timeout)::resolves discovery to null when the child exits before registering",
-   "test/pty-session.test.ts@@main::PTY resize via socat::pgrep -x does not match nonexistent process names",
-   "test/sandbox-integration.test.ts@@main::checkSandboxAvailability::returns a structured result with platformSupported",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::maps a numeric eval_score to verdict evaluated",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::lets evolve-eval read timeout_secs from run_spec unless --timeout is explicit",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::keeps a low numeric score as evaluated, not evaluator_blocked",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::maps evaluator subprocess failure to evaluator_blocked while exiting successfully",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::maps evolve-eval wrapper failure to evaluator_blocked while exiting successfully",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::maps missing or nonnumeric results to evaluator_blocked",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::maps record success and failure to recorded/needs_repair verdicts",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::computes target-met stop signals after the recorded node and gives target precedence",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::rejects <= success criteria for maximize-only stop targets",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::counts patience plateaus from the node-0 baseline",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::uses max_rounds only after target and patience do not stop the run",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::finds an already-recorded analysis node by step_name instead of appending a duplicate",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::promote_cognition reports needs_repair when a recorded lane cannot be reconciled",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::pins PYTHONHASHSEED for engine subprocesses",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::fails loudly when neither flag of a resolver pair is supplied",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::samples a parent, seeds cognition on first entry, and writes current context",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::uses EVOLVE_LANE to route sample scratch files under current/lane_<k> without clearing shared stop signals",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::sample_batch partitions distinct parents into per-lane current directories",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::sample_batch can prepare only missing lanes for a partially recorded batch",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::sample_batch rejects duplicate parent partitions when enough parents exist",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::lane attach_analysis writes only its lane-scoped stop_signals, not the barrier-owned canonical file",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::compute_stop_signals writes the single canonical stop_signals once over the batch-grown nodes",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::counts one workers:3 batch as a single generation: patience not tripped after one no-improvement batch",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::resets the generation plateau counter when a later batch improves the running best",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::trips patience after `patience` generations with no improvement, counting batches not nodes",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::is byte-identical to node-denominated counters at workers:1 (every step_<N> node is its own generation)",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::samples with an empty DB without reseeding a non-empty cognition store",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::resolves current-round flags for evaluate",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::resolves current-round flags from the selected lane",
-   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::attaches analysis with the sampled parent and omits parent when context has none"
+  "defects": [
+   {
+    "baseline_event": {
+     "at": "src/docker/apple-container-manager.ts:571",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/apple-container-manager.ts:571",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/apple-container-manager.test.ts@@main::AppleContainerManager::exec::passes workdir and per-exec environment overrides",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/apple-container-manager.test.ts@@main::AppleContainerManager::streamed pull / build::pulls with plain progress through the container binary",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/apple-container-manager.test.ts@@main::AppleContainerManager::streamed pull / build::builds with tag, dockerfile, and labels",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/apple-container-manager.test.ts@@main::AppleContainerManager::streamed pull / build::loads only from the explicit verified OCI archive path",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/apple-container-manager.test.ts@@main::AppleContainerManager::streamed pull / build::exports one explicit platform image to an OCI archive path",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/apple-container-manager.test.ts@@main::AppleContainerManager::streamed pull / build::surfaces the Rosetta remediation hint on builder bootstrap failures",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/trusted-process/domain-utils.ts:151",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/trusted-process/domain-utils.ts:151",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/argument-roles.test.ts@@main::resolveGitRemote::returns original value when git command fails (no repo)",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "src/trusted-process/domain-utils.ts:151",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/trusted-process/domain-utils.ts:151",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/argument-roles.test.ts@@main::resolveGitRemote::uses path argument as cwd for git command",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "test/codex-adapter.test.ts:88",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/codex-adapter.test.ts:88",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/codex-adapter.test.ts@@main::CodexAdapter::passes the mounted PTY orientation as one inert Codex developer-instructions argument",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "src/trusted-process/container-command.ts:30",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/trusted-process/container-command.ts:30",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/container-command.test.ts@@main::commandExists::finds a binary that exists and caches the probe",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "src/trusted-process/container-command.ts:30",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/trusted-process/container-command.ts:30",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/container-command.test.ts@@main::commandExists::reports a missing binary as absent",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/docker-manager.ts:575",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/docker-manager.ts:575",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::exec::inherits per-exec environment overrides without exposing values in argv",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/docker-endpoint.ts:36",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/docker-endpoint.ts:36",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::readContainerLogTail::reads bounded logs from the captured endpoint and includes container stderr",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/docker-manager.ts:575",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "204:cd85b1484bcf"
+    },
+    "fix_event": {
+     "at": "src/docker/docker-manager.ts:575",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "203:d071bae6f59e"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::captured endpoint::sanitizes outer exec while preserving explicitly requested inner routing and platform values",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/docker-endpoint.ts:36",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "204:cd85b1484bcf"
+    },
+    "fix_event": {
+     "at": "src/docker/docker-endpoint.ts:36",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "203:d071bae6f59e"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::captured endpoint::uses the captured endpoint and server platform for outer image inspection and create",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/docker-manager.ts:464",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "204:cd85b1484bcf"
+    },
+    "fix_event": {
+     "at": "src/docker/docker-manager.ts:464",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "203:d071bae6f59e"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::captured endpoint::keeps inherited routing and platform overrides out of streamed build operations",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/docker-manager.ts:464",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "204:cd85b1484bcf"
+    },
+    "fix_event": {
+     "at": "src/docker/docker-manager.ts:464",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "203:d071bae6f59e"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::captured endpoint::keeps inherited routing and platform overrides out of streamed pull operations",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/docker-manager.ts:464",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "204:cd85b1484bcf"
+    },
+    "fix_event": {
+     "at": "src/docker/docker-manager.ts:464",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "203:d071bae6f59e"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::captured endpoint::keeps inherited routing and platform overrides out of streamed load operations",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::buildImage::passes labels as --label flags",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::buildImage::builds without labels when none provided",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::buildImage::forces BuildKit and plain progress for streamed heartbeats",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::buildImage::surfaces stderr tail when the build exits non-zero",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::loadImageArchive::loads only from the explicit verified archive path",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::pullImage::streams docker pull and resolves on clean exit",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::pullImage::rejects when the spawn itself errors (e.g. docker not on PATH)",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::progress sink dispatch::calls finish(true) and skips dumpRecent on a clean pullImage",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::progress sink dispatch::calls finish(false) then dumpRecent when buildImage exits non-zero",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::progress sink dispatch::also flushes dumpRecent when spawn itself errors",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::progress sink dispatch::skips the progress sink when stdoutSink/stderrSink are injected",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "199:3be43929c2db"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:f2da32c4fe28"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::applies the undefined environment mode at the final spawn boundary",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "199:3be43929c2db"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:f2da32c4fe28"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::applies the merge environment mode at the final spawn boundary",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::rejects with a labeled error when the child stays silent",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::resets the watchdog when the child emits output",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::escalates from SIGTERM to SIGKILL after the grace period",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::skips SIGKILL when the child exits within the grace period",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::reformats synchronous spawn() throws with the operation label",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::swallows kill() throws so the watchdog still rejects cleanly",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker/spawn-with-idle-timeout.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::passes operation label and stderr tail in non-zero exit errors",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker-workload/apple-vm-daemon.test.ts:176",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker-workload/apple-vm-daemon.test.ts:176",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-workload/apple-vm-daemon.test.ts@@main::Apple VM nested-daemon frozen commands::enables only namespace-local forwarding before dockerd while retaining the isolation flags",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker-workload/apple-vm-daemon.test.ts:182",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker-workload/apple-vm-daemon.test.ts:182",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-workload/apple-vm-daemon.test.ts@@main::Apple VM nested-daemon frozen commands::keeps the images variant separate and shell-parseable",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker-workload/apple-vm-daemon.test.ts:201",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker-workload/apple-vm-daemon.test.ts:201",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-workload/apple-vm-daemon.test.ts@@main::Apple VM nested-daemon frozen commands::serves both fixed package-profile listeners in one process while dockerd remains registry-only",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker-workload/apple-vm-egress-relay.test.ts:216",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker-workload/apple-vm-egress-relay.test.ts:216",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-workload/apple-vm-egress-relay.test.ts@@main::purpose-built Apple VM egress relay::has an exact non-configurable CLI and fixed version output",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker-workload/process-lock.ts:264",
+     "o": "fs.stat.mtimeMs",
+     "s": "fs",
+     "t": 0,
+     "v": "+0.001953125"
+    },
+    "fix_event": {
+     "at": "src/docker-workload/process-lock.ts:264",
+     "o": "fs.stat.mtimeMs",
+     "s": "fs",
+     "t": 0,
+     "v": "+0"
+    },
+    "nodeid": "test/docker-workload/process-lock.test.ts@@main::Docker-workload process lock::does not delete a lock that a racer published after the stale observation",
+    "why": "undeclared event difference at index 19"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker-workload/resource-watchdog-supervisor.ts:435",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/docker-workload/resource-watchdog-supervisor.ts:435",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker-workload/watchdog-supervisor-launch.test.ts@@main::launchDetachedResourceWatchdogSupervisor startup failures::reports a supervisor that exits before attesting without waiting for the deadline",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/agent-startup.test.ts:38",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/agent-startup.test.ts:38",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/agent-startup.test.ts@@main::Docker agent startup handoff::signals only when CMD runs, preserves argument boundaries and leaves umask unchanged",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/agent-startup.test.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/agent-startup.test.ts:79",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/agent-startup.test.ts@@main::Docker agent startup handoff::rejects a stale marker until the recorded CMD publishes this init identity",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::injects host networking immediately after the supported [ 'build', '.' ] build spelling",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::injects host networking immediately after the supported [ 'image', 'build', '-t', 'demo', '.' ] build spelling",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::injects host networking immediately after the supported [ 'builder', 'build', '.' ] build spelling",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::injects host networking immediately after the supported [ 'buildx', 'build', '.' ] build spelling",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::uses the admitted sidecar socket for builds and rejects the other topology socket",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::allows documented global options and the exact private daemon host",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::routes only the outer build client through the admitted registry proxy",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::pins Buildx to the local default after pass-through state selects a custom builder",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::preserves the explicit supported build network \"--network=none\" without duplication",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::preserves the explicit supported build network \"--network\" without duplication",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::preserves the explicit supported build network \"--network=host\" without duplication",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::preserves the explicit supported build network \"--network\" without duplication #2",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build network bridge before execution",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build network default before execution",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build network ironcurtain before execution",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects duplicate build-network selection before execution",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"--context\" before execution",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"--context=remote\" before execution",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"-c\" before execution",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"-c=remote\" before execution",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"--config\" before execution",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"--config=/tmp/docker\" before execution",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"--host\" before execution",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"--host=tcp://remote:2375\" before execution",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"-H\" before execution",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"-H=tcp://remote:2375\" before execution",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"buildx\" before execution",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"buildx\" before execution #2",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"build\" before execution",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"build\" before execution #2",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"buildx\" before execution #3",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"buildx\" before execution #4",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller-supplied DOCKER_CONTEXT before executing a build",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller-supplied DOCKER_CONFIG before executing a build",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller-supplied BUILDKIT_HOST before executing a build",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller-supplied BUILDX_CONFIG before executing a build",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller-supplied BUILDX_BUILDER before executing a build",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller-supplied DOCKER_TLS_VERIFY before executing a build",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller-supplied DOCKER_CERT_PATH before executing a build",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects a noncanonical DOCKER_HOST but accepts the exact admitted value",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #2",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #3",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #4",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #5",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #6",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #7",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #8",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #9",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #10",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #11",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #12",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"buildx\" before execution",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"bake\" before execution",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::does not mistake Compose option data or non-exact forms for --no-build: \"compose\"",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::does not mistake Compose option data or non-exact forms for --no-build: \"compose\" #2",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::does not mistake Compose option data or non-exact forms for --no-build: \"compose\" #3",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::does not mistake Compose option data or non-exact forms for --no-build: \"compose\" #4",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::does not mistake Compose option data or non-exact forms for --no-build: \"compose\" #5",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::does not mistake Compose option data or non-exact forms for --no-build: \"compose\" #6",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::does not mistake Compose option data or non-exact forms for --no-build: \"compose\" #7",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects Compose watch and navigation-menu controls on an otherwise admitted path: \"compose\"",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects Compose watch and navigation-menu controls on an otherwise admitted path: \"compose\" #2",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects Compose watch and navigation-menu controls on an otherwise admitted path: \"compose\" #3",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects Compose watch and navigation-menu controls on an otherwise admitted path: \"compose\" #4",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects Compose watch and navigation-menu controls on an otherwise admitted path: \"compose\" #5",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects Compose watch and navigation-menu controls on an otherwise admitted path: \"compose\" #6",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects Compose watch and navigation-menu controls on an otherwise admitted path: \"compose\" #7",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects build-capable Compose run without parsing its command payload: \"compose\"",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects build-capable Compose run without parsing its command payload: \"compose\" #2",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::passes non-build argv through exactly with no package-build configuration: \"run\"",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::passes non-build argv through exactly with no package-build configuration: \"pull\"",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::passes non-build argv through exactly with no package-build configuration: \"network\"",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::passes non-build argv through exactly with no package-build configuration: \"system\"",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::passes non-build argv through exactly with no package-build configuration: \"compose\"",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::passes non-build argv through exactly with no package-build configuration: \"compose\" #2",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::pins the navigation menu off for admitted non-building Compose up: \"compose\"",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::pins the navigation menu off for admitted non-building Compose up: \"compose\" #2",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::pins the navigation menu off for admitted non-building Compose up: \"compose\" #3",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::passes admitted non-building Compose create without scanning unavailable watch/menu controls",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::preserves real-client exit status",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:562",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:562",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::supports a preflight that resolves docker through PATH to the staged shim",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/docker-build-shim.test.ts:269",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::forwards hostile argv inertly without shell expansion or splitting",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/package-egress-proxy.ts:1139",
+     "o": "fs.stat.ino",
+     "s": "fs",
+     "t": 0,
+     "v": "13"
+    },
+    "fix_event": {
+     "at": "src/docker/package-egress-proxy.ts:1139",
+     "o": "fs.stat.ino",
+     "s": "fs",
+     "t": 0,
+     "v": "15"
+    },
+    "nodeid": "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::serializes an immediate stop behind startup and leaves no listener or lease",
+    "why": "undeclared event difference at index 24"
+   },
+   {
+    "baseline_event": {
+     "at": "scripts/qualification-evidence.ts:206",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "scripts/qualification-evidence.ts:206",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/qualification-evidence.test.ts@@main::qualification evidence::records nonzero live-gate evidence before failing the qualification",
+    "why": "undeclared event difference at index 8"
+   },
+   {
+    "baseline_event": {
+     "at": "scripts/qualification-evidence.ts:206",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "scripts/qualification-evidence.ts:206",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/qualification-evidence.test.ts@@main::qualification evidence::records a bounded timeout and the terminating signal",
+    "why": "undeclared event difference at index 8"
+   },
+   {
+    "baseline_event": {
+     "at": "scripts/qualification-evidence.ts:206",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "scripts/qualification-evidence.ts:206",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/qualification-evidence.test.ts@@main::qualification evidence::bounds both retained and forwarded output when a script floods its pipe",
+    "why": "undeclared event difference at index 8"
+   },
+   {
+    "baseline_event": {
+     "at": "scripts/qualification-evidence.ts:206",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "scripts/qualification-evidence.ts:206",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/qualification-evidence.test.ts@@main::qualification evidence::does not label a cleanup failure after the deadline as a child timeout",
+    "why": "undeclared event difference at index 8"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/qualification-process.test.ts:34",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/qualification-process.test.ts:34",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/qualification-process.test.ts@@main::qualification process ownership::removes its signal handlers after a normal exit",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/qualification-process.test.ts:44",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/qualification-process.test.ts:44",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/qualification-process.test.ts@@main::qualification process ownership::handles failed spawn without an unhandled error",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/qualification-process.test.ts:53",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/qualification-process.test.ts:53",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/qualification-process.test.ts@@main::qualification process ownership::reaps the child and descendant after timeout",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/qualification-process.test.ts:53",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/qualification-process.test.ts:53",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/qualification-process.test.ts@@main::qualification process ownership::reaps the child and descendant after SIGINT",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "test/docker/qualification-process.test.ts:53",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/docker/qualification-process.test.ts:53",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/docker/qualification-process.test.ts@@main::qualification process ownership::reaps the child and descendant after SIGTERM",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/trusted-process/domain-utils.ts:170",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/trusted-process/domain-utils.ts:170",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/domain-utils.test.ts@@main::resolveDefaultGitRemote::returns undefined for a non-existent path",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "src/trusted-process/domain-utils.ts:170",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/trusted-process/domain-utils.ts:170",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/domain-utils.test.ts@@main::resolveDefaultGitRemote::returns undefined for a plain directory (not a git repo)",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/docker-probe.ts:130",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "199:8f636d61c9e9"
+    },
+    "fix_event": {
+     "at": "src/docker/docker-probe.ts:130",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6534f7631265"
+    },
+    "nodeid": "test/first-start.test.ts@@main::first-start wizard::full flow with auto-approve enabled writes config",
+    "why": "undeclared event difference at index 14"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/docker-probe.ts:130",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "199:8f636d61c9e9"
+    },
+    "fix_event": {
+     "at": "src/docker/docker-probe.ts:130",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6534f7631265"
+    },
+    "nodeid": "test/first-start.test.ts@@main::first-start wizard::auto-approve declined writes enabled: false",
+    "why": "undeclared event difference at index 14"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/docker-probe.ts:130",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "199:8f636d61c9e9"
+    },
+    "fix_event": {
+     "at": "src/docker/docker-probe.ts:130",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6534f7631265"
+    },
+    "nodeid": "test/first-start.test.ts@@main::first-start wizard::re-run safety::configures Parallel without asking for an API key",
+    "why": "undeclared event difference at index 14"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/docker-probe.ts:130",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "199:8f636d61c9e9"
+    },
+    "fix_event": {
+     "at": "src/docker/docker-probe.ts:130",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6534f7631265"
+    },
+    "nodeid": "test/first-start.test.ts@@main::first-start wizard::re-run safety::preserves existing web search API key when re-selecting same provider",
+    "why": "undeclared event difference at index 16"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/docker-probe.ts:130",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "199:8f636d61c9e9"
+    },
+    "fix_event": {
+     "at": "src/docker/docker-probe.ts:130",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6534f7631265"
+    },
+    "nodeid": "test/first-start.test.ts@@main::first-start wizard::re-run safety::prompts for API key when switching to a new provider",
+    "why": "undeclared event difference at index 16"
+   },
+   {
+    "baseline_event": {
+     "at": "src/docker/docker-probe.ts:130",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "199:8f636d61c9e9"
+    },
+    "fix_event": {
+     "at": "src/docker/docker-probe.ts:130",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6534f7631265"
+    },
+    "nodeid": "test/first-start.test.ts@@main::first-start wizard::re-run safety::preserves existing auto-approve state as initialValue",
+    "why": "undeclared event difference at index 16"
+   },
+   {
+    "baseline_event": {
+     "at": "test/llm-metrics-identity-protector.test.ts:179",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/llm-metrics-identity-protector.test.ts:179",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/llm-metrics-identity-protector.test.ts@@main::statistics persistence identity protection::publishes exactly one complete key under concurrent multi-process creation",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::rejects response and attempt HTTP statuses outside 100 through 599",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::rejects 'content-shaped' provider labels at the durable boundary",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::rejects 'overlong' provider labels at the durable boundary",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::prunes bounded orphaned retention metadata",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::indexes exchanges by process run for bounded metadata pruning",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::strictly bounds retention management inputs",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::bounds reader admissions while its worker is stalled",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/llm-metrics-persistence.test.ts:775",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/llm-metrics-persistence.test.ts:775",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps timed-out retention single-flight until its late lease cleanup settles",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/llm-metrics-persistence.test.ts:836",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/llm-metrics-persistence.test.ts:836",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::preserves degraded health when retention lease release fails",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps the independent reader usable after a terminal writer failure",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::bounds its queue and fails open when persistence cannot accept another record",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/llm-metrics-persistence.test.ts:916",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/llm-metrics-persistence.test.ts:916",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::bounds flush and exposes dropped work when a worker is unresponsive",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "test/llm-metrics-persistence.test.ts:942",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/llm-metrics-persistence.test.ts:942",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::uses one bounded deadline for queue drain and close",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::disables safely for a future schema without rewriting it",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::persists only the explicit content-free allowlist",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/llm-metrics-runtime.test.ts@@main::process-scoped LLM metrics runtime::shares concurrent acquisitions and rejects a second active database identity",
+    "why": "undeclared event difference at index 20"
+   },
+   {
+    "baseline_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/llm-metrics/persistence/sqlite-repository.ts:147",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/llm-metrics-runtime.test.ts@@main::process-scoped LLM metrics runtime::serializes last release with a racing reacquisition instead of returning a closing repository",
+    "why": "undeclared event difference at index 20"
+   },
+   {
+    "baseline_event": {
+     "at": "test/mcp-proxy-server-no-backend.integration.test.ts:39",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/mcp-proxy-server-no-backend.integration.test.ts:39",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/mcp-proxy-server-no-backend.integration.test.ts@@main::mcp-proxy-server no-backend exit::exits non-zero with an ERROR diagnostic when the only configured backend is skipped",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "test/mcp-proxy-server-no-backend.integration.test.ts:83",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/mcp-proxy-server-no-backend.integration.test.ts:83",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/mcp-proxy-server-no-backend.integration.test.ts@@main::mcp-proxy-server no-backend exit::warn-skips a backend whose binary is missing instead of dying with a fatal error",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "test/mcp-proxy-server.test.ts:194",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/mcp-proxy-server.test.ts:194",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/mcp-proxy-server.test.ts@@main::parseProxyEnvConfig::parses all environment variables into a typed config object",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "test/mcp-proxy-server.test.ts:194",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/mcp-proxy-server.test.ts:194",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/mcp-proxy-server.test.ts@@main::parseProxyEnvConfig::uses default values when optional env vars are not set",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "test/mcp-proxy-server.test.ts:194",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/mcp-proxy-server.test.ts:194",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/mcp-proxy-server.test.ts@@main::parseProxyEnvConfig::parses SERVER_CREDENTIALS and scrubs from process.env",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "test/mcp-proxy-server.test.ts:194",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/mcp-proxy-server.test.ts:194",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/mcp-proxy-server.test.ts@@main::parseProxyEnvConfig::filters servers when SERVER_FILTER is set",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "test/mcp-proxy-server.test.ts:194",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/mcp-proxy-server.test.ts:194",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/mcp-proxy-server.test.ts@@main::parseProxyEnvConfig::calls process.exit(1) when MCP_SERVERS_CONFIG is missing",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "test/mcp-proxy-server.test.ts:194",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/mcp-proxy-server.test.ts:194",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/mcp-proxy-server.test.ts@@main::parseProxyEnvConfig::calls process.exit(1) when GENERATED_DIR is missing",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "test/mcp-proxy-server.test.ts:194",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/mcp-proxy-server.test.ts:194",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/mcp-proxy-server.test.ts@@main::parseProxyEnvConfig::calls process.exit(1) when SERVER_FILTER references unknown server",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/mux/mux-input-handler.ts:254",
+     "o": "fs.readdirSync",
+     "s": "fs",
+     "t": 0,
+     "v": "<abs>/tmp|34|42d3ebc9d0e9e9d8b11b275d346fa333"
+    },
+    "fix_event": {
+     "at": "src/mux/mux-input-handler.ts:254",
+     "o": "fs.readdirSync",
+     "s": "fs",
+     "t": 0,
+     "v": "<abs>/tmp|57|fbba66a49d0edd17d78723ee08338ab3"
+    },
+    "nodeid": "test/mux-input-handler.test.ts@@main::MuxInputHandler::picker mode transitions::/new browse path submit returns to command mode",
+    "why": "undeclared event difference at index 9"
+   },
+   {
+    "baseline_event": {
+     "at": "src/mux/mux-input-handler.ts:254",
+     "o": "fs.readdirSync",
+     "s": "fs",
+     "t": 0,
+     "v": "<abs>/user|2|8023f87bc493c706fa36b18a252bf02e"
+    },
+    "fix_event": {
+     "at": "src/mux/mux-input-handler.ts:254",
+     "o": "fs.readdirSync",
+     "s": "fs",
+     "t": 0,
+     "v": "<abs>/user|4|40661ea1ae63340ad09d133d7abfa2d6"
+    },
+    "nodeid": "test/mux-input-handler.test.ts@@main::MuxInputHandler::persona picker mode::browse submit with persona carries through to picker-spawn",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "src/mux/mux-input-handler.ts:254",
+     "o": "fs.readdirSync",
+     "s": "fs",
+     "t": 0,
+     "v": "<abs>/tmp|34|42d3ebc9d0e9e9d8b11b275d346fa333"
+    },
+    "fix_event": {
+     "at": "src/mux/mux-input-handler.ts:254",
+     "o": "fs.readdirSync",
+     "s": "fs",
+     "t": 0,
+     "v": "<abs>/tmp|57|fbba66a49d0edd17d78723ee08338ab3"
+    },
+    "nodeid": "test/mux-input-handler.test.ts@@main::MuxInputHandler::persona picker mode::browse submit without persona omits persona field",
+    "why": "undeclared event difference at index 11"
+   },
+   {
+    "baseline_event": {
+     "at": "src/mux/mux-input-handler.ts:254",
+     "o": "fs.readdirSync",
+     "s": "fs",
+     "t": 0,
+     "v": "<abs>/tmp|34|42d3ebc9d0e9e9d8b11b275d346fa333"
+    },
+    "fix_event": {
+     "at": "src/mux/mux-input-handler.ts:254",
+     "o": "fs.readdirSync",
+     "s": "fs",
+     "t": 0,
+     "v": "<abs>/tmp|57|fbba66a49d0edd17d78723ee08338ab3"
+    },
+    "nodeid": "test/mux-input-handler.test.ts@@main::MuxInputHandler::provider picker mode (G13)::carries the pending workspace/persona through the provider step",
+    "why": "undeclared event difference at index 11"
+   },
+   {
+    "baseline_event": {
+     "at": "src/trusted-process/domain-utils.ts:170",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/trusted-process/domain-utils.ts:170",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/policy-engine.test.ts@@main::PolicyEngine::Git remote enrichment (absent remote resolved from filesystem)::with repo whose origin is github.com::enriches absent remote with github.com URL; domain gate passes allowlist",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "src/trusted-process/domain-utils.ts:170",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/trusted-process/domain-utils.ts:170",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/policy-engine.test.ts@@main::PolicyEngine::Git remote enrichment (absent remote resolved from filesystem)::with repo whose origin is github.com::enriches absent remote; domain-constrained allow rule fires for matching domain",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "src/trusted-process/domain-utils.ts:170",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/trusted-process/domain-utils.ts:170",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/policy-engine.test.ts@@main::PolicyEngine::Git remote enrichment (absent remote resolved from filesystem)::with repo whose origin is github.com::enriches absent remote; structural domain gate blocks untrusted domain",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "src/trusted-process/domain-utils.ts:170",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/trusted-process/domain-utils.ts:170",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/policy-engine.test.ts@@main::PolicyEngine::Git remote enrichment (absent remote resolved from filesystem)::with repo whose origin is an untrusted domain::enriches absent remote with evil.com URL; structural domain gate escalates",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "src/trusted-process/domain-utils.ts:170",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/trusted-process/domain-utils.ts:170",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/policy-engine.test.ts@@main::PolicyEngine::Git remote enrichment (absent remote resolved from filesystem)::with tracking branch pointing to non-origin remote::enriches absent remote using tracking remote (not origin)",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 output wiring (onData / serialize)::onData fires with the chunk AFTER the headless buffer reflects it",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 output wiring (onData / serialize)::fires onOutput (grid sink) before onData (stream sink)",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 output wiring (onData / serialize)::onData unsubscribe stops further callbacks",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 output wiring (onData / serialize)::serialize() reflects written screen content",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 output wiring (onData / serialize)::serialize({ scrollback }) caps the tail without throwing",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 termination escalation::escalates from SIGTERM to SIGKILL after the grace period",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 termination escalation::cancels SIGKILL when the child exits during the grace period",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 termination escalation::makes repeated kill calls idempotent while termination is pending",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 termination escalation::retries a failed direct SIGKILL until onExit confirms termination",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 termination escalation::throttles persistent force-kill failure logs while continuing retries",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 session discovery (no fixed timeout)::discovers a registration that appears long after the child spawns",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "src/pty/pty-bridge.ts:218",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 session discovery (no fixed timeout)::resolves discovery to null when the child exits before registering",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "test/pty-session.test.ts:403",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/pty-session.test.ts:403",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/pty-session.test.ts@@main::PTY resize via socat::pgrep -x does not match nonexistent process names",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/@anthropic-ai/sandbox-runtime/dist/utils/which.js:15",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "<deps>/@anthropic-ai/sandbox-runtime/dist/utils/which.js:15",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/sandbox-integration.test.ts@@main::checkSandboxAvailability::returns a structured result with platformSupported",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::maps a numeric eval_score to verdict evaluated",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::lets evolve-eval read timeout_secs from run_spec unless --timeout is explicit",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::keeps a low numeric score as evaluated, not evaluator_blocked",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::maps evaluator subprocess failure to evaluator_blocked while exiting successfully",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::maps evolve-eval wrapper failure to evaluator_blocked while exiting successfully",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::maps missing or nonnumeric results to evaluator_blocked",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::maps record success and failure to recorded/needs_repair verdicts",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::computes target-met stop signals after the recorded node and gives target precedence",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::rejects <= success criteria for maximize-only stop targets",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::counts patience plateaus from the node-0 baseline",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::uses max_rounds only after target and patience do not stop the run",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::finds an already-recorded analysis node by step_name instead of appending a duplicate",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::promote_cognition reports needs_repair when a recorded lane cannot be reconciled",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::pins PYTHONHASHSEED for engine subprocesses",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:1227",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:1227",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::fails loudly when neither flag of a resolver pair is supplied",
+    "why": "undeclared event difference at index 6"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::samples a parent, seeds cognition on first entry, and writes current context",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::uses EVOLVE_LANE to route sample scratch files under current/lane_<k> without clearing shared stop signals",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::sample_batch partitions distinct parents into per-lane current directories",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::sample_batch can prepare only missing lanes for a partially recorded batch",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::sample_batch rejects duplicate parent partitions when enough parents exist",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::lane attach_analysis writes only its lane-scoped stop_signals, not the barrier-owned canonical file",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::compute_stop_signals writes the single canonical stop_signals once over the batch-grown nodes",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::counts one workers:3 batch as a single generation: patience not tripped after one no-improvement batch",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::resets the generation plateau counter when a later batch improves the running best",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::trips patience after `patience` generations with no improvement, counting batches not nodes",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::is byte-identical to node-denominated counters at workers:1 (every step_<N> node is its own generation)",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::samples with an empty DB without reseeding a non-empty cognition store",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::resolves current-round flags for evaluate",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::resolves current-round flags from the selected lane",
+    "why": "undeclared event difference at index 5"
+   },
+   {
+    "baseline_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:b500070534e9"
+    },
+    "fix_event": {
+     "at": "test/workflow/evolve-result-bridge.test.ts:250",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "196:e866f4a11049"
+    },
+    "nodeid": "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::attaches analysis with the sampled parent and omits parent when context has none",
+    "why": "undeclared event difference at index 5"
+   }
   ],
-  "passed": 6267,
+  "need_repeat": [],
+  "passed": 6269,
   "stable_in_baseline": 6496
  },
  "rule3": {
   "count_defects": [
    {
     "baseline": [
-     19,
-     19
-    ],
-    "count": "failed",
-    "fix": 20,
-    "kind": "plain_par",
-    "rep": 1,
-    "workers": 2
-   },
-   {
-    "baseline": [
      6901,
      6901
     ],
@@ -1413,17 +5259,28 @@
     ],
     "count": "failed",
     "fix": 20,
+    "kind": "plain_par",
+    "rep": 1,
+    "workers": 2
+   },
+   {
+    "baseline": [
+     6901,
+     6901
+    ],
+    "count": "passed",
+    "fix": 6900,
     "kind": "plain_par",
     "rep": 2,
     "workers": 4
    },
    {
     "baseline": [
-     6901,
-     6901
+     19,
+     19
     ],
-    "count": "passed",
-    "fix": 6900,
+    "count": "failed",
+    "fix": 20,
     "kind": "plain_par",
     "rep": 2,
     "workers": 4

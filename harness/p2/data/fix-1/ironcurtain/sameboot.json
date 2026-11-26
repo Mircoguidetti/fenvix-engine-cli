@@ -1,0 +1,22 @@
+{
+ "boot_effect": 235,
+ "fix_matches_baseline": [
+  "test/docker-workload/process-lock.test.ts@@main::Docker-workload process lock::reclaims a lock whose owning PID is gone",
+  "test/docker-workload/qualification-observer.test.ts@@main::qualification observer durable lifecycle::keeps other active-lease resource mutations forbidden: {\"runtimeKind\":\"docker\",\"kind\":\"container\",\"role\":\"agent\"}",
+  "test/docker-workload/qualification-observer.test.ts@@main::qualification observer durable lifecycle::keeps other active-lease resource mutations forbidden: {\"runtimeKind\":\"docker\",\"kind\":\"volume\",\"role\":\"qualification-observer\"}",
+  "test/docker-workload/qualification-observer.test.ts@@main::qualification observer durable lifecycle::keeps other active-lease resource mutations forbidden: {\"runtimeKind\":\"apple-container\",\"kind\":\"container\",\"role\":\"qualification-observer\"}",
+  "test/docker/registry-egress-proxy.test.ts@@main::registry redirect and credential model::keeps the earliest logical deadline across 900 ms origin and 200 ms mirror",
+  "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::max session limit enforced"
+ ],
+ "fix_vs_ctrl": 460,
+ "repo": "ironcurtain",
+ "tests": 7033,
+ "unexplained": [
+  "test/docker-workload/process-lock.test.ts@@main::Docker-workload process lock::does not delete a lock that a racer published after the stale observation",
+  "test/docker-workload/watchdog-supervisor-launch.test.ts@@main::launchDetachedResourceWatchdogSupervisor startup failures::reports a supervisor that exits before attesting without waiting for the deadline",
+  "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::serializes an immediate stop behind startup and leaves no listener or lease",
+  "test/docker/resource-watchdog-supervisor.test.ts@@main::detached resource-watchdog supervisor core::keeps the original byte comparison for a legacy generation",
+  "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::disables safely for a future schema without rewriting it"
+ ],
+ "unstable_in_baseline": 449
+}
