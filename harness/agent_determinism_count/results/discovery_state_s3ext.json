@@ -15,21 +15,13 @@
   "committer-date:>=2024-01-01 retry \"model output\" test": {
    "capped": false,
    "done": false,
-   "leaf_total": 5962,
-   "leaves": 9,
-   "nodes": 20,
+   "leaf_total": 8919,
+   "leaves": 13,
+   "nodes": 26,
    "prepass_total": 12714,
    "stack": [
     [
-     "2026-07-26",
-     "2026-08-02"
-    ],
-    [
-     "2026-08-03",
-     "2026-08-18"
-    ],
-    [
-     "2026-08-19",
+     "2026-09-13",
      "2026-09-20"
     ],
     [
@@ -389,13 +381,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 262
+  "issues": 311
  },
  "search_stats": {
-  "429": 42,
+  "429": 50,
   "limit": 30,
   "remaining": 30,
-  "reset": 1795708483
+  "reset": 1795709147
  },
  "started": "2026-11-26T11:20:43+00:00"
 }
