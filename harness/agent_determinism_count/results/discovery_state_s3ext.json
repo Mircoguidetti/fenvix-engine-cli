@@ -21,6 +21,24 @@
    "prepass_total": 253,
    "stack": []
   },
+  "committer-date:>=2024-01-01 xfail eval test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 3360,
+   "leaves": 6,
+   "nodes": 12,
+   "prepass_total": 5161,
+   "stack": [
+    [
+     "2026-09-21",
+     "2026-10-23"
+    ],
+    [
+     "2026-10-24",
+     "2026-11-25"
+    ]
+   ]
+  },
   "committer-date:>=2024-01-01 xfail gemini test": {
    "capped": false,
    "done": true,
@@ -41,21 +59,12 @@
   },
   "committer-date:>=2024-01-01 xfail prompt test": {
    "capped": false,
-   "done": false,
-   "leaf_total": 3697,
-   "leaves": 14,
-   "nodes": 28,
+   "done": true,
+   "leaf_total": 9992,
+   "leaves": 24,
+   "nodes": 46,
    "prepass_total": 9975,
-   "stack": [
-    [
-     "2026-06-14",
-     "2026-07-16"
-    ],
-    [
-     "2026-07-17",
-     "2026-11-25"
-    ]
-   ]
+   "stack": []
   }
  },
  "route_check": {
@@ -66,13 +75,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 69
+  "issues": 200
  },
  "search_stats": {
-  "429": 6,
+  "429": 18,
   "limit": 30,
   "remaining": 30,
-  "reset": 1795693227
+  "reset": 1795694398
  },
  "started": "2026-11-26T11:20:43+00:00"
 }
