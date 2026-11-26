@@ -80,3 +80,15 @@
    d3 at its max_minutes and no next run was queued) to its budget end at 10:54:28Z, about 58 min. The 1 unfinished
    query enters N_s as truncated with its pre-pass total. Tests: test_build_streams_leaves_and_keeps_hit_order,
    test_fetch_candidates_checks_sha (both fail before the change).
+10. 2026-11-26 11:25Z, an extension the founder decided (main-eng-review-adc-s3-extension-20261126-112500.md,
+    relayed by the coordinator at 11:18Z). One S3 extension runs on the session route, for the 88 S3 queries the
+    24 h budget never started and the 1 it left unfinished, and for no other query. It has a hard stop 6 h after its
+    first request, and any query not done by then stays truncated with its pre-pass total. Rules, shapes and caps are
+    unchanged. `discover.py run --family text --route session --extension` (session_run.sh s3ext, harness-tracked
+    chunks, checkpoint commits every 30 min) keeps its own state (discovery_state_s3ext.json, which copies the
+    unfinished query's stack from the text state), splits (splits_s3ext.jsonl) and leaf parts
+    (leaves_s3ext/s3ext-session-<HHMM>.jsonl.gz, one per chunk, committed to git and indexed in_git). This way the
+    text workflow's commits, whose own list includes discovery_state_text.json, never overwrite it. When it ends, a
+    new {"build": true} request fetches all parts and rebuilds, and the extension's queries replace their unfinished
+    text entries. Reading chunks already started may continue; S3 is read further only after that rebuild. PREREG §1
+    gains the note. Test: test_s3_extension_runs_only_uncovered_s3_queries (fails before the change).

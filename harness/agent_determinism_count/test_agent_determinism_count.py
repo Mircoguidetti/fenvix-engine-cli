@@ -1240,3 +1240,54 @@ def test_fetch_candidates_checks_sha(tmp_path, monkeypatch):
     (tmp_path / "candidates.jsonl.gz").unlink()
     (tmp_path / "candidates_index.json").write_text(json.dumps({**ix, "sha256": "0" * 64}))
     assert parts.fetch_candidates() == 1
+
+
+def test_s3_extension_runs_only_uncovered_s3_queries(tmp_path, monkeypatch):
+    """protects=the founder's S3 extension (2026-11-26): it runs only the S3 queries the 24 h budget left unstarted or
+    unfinished (resuming the unfinished one's stack), stops 6 h after its own first request, keeps its own state,
+    splits and leaf parts, and the build merges it; fails_when=an S2 or finished S3 query is searched again, the text
+    state is rewritten, or the 24 h budget end stops the extension; no_claim=search results themselves."""
+    parts = _parts_env(tmp_path, monkeypatch)
+    monkeypatch.delenv("GITHUB_RUN_ID")
+    monkeypatch.setenv("ADC_PART_ID", "session-1200")
+    qs = [d for d in R.discovery_queries() if d["family"] != "code"]
+    s2 = [d["key"] for d in qs if d["stratum"] == "S2"][0]
+    s3 = [d["key"] for d in qs if d["stratum"] == "S3"]
+    pp = {d["key"]: {"family": d["family"], "stratum": d["stratum"], "status": 200, "total_count": 0,
+                     "at": "2026-11-25T10:54:28+00:00"} for d in qs}
+    (tmp_path / "prepass_text.json").write_text(json.dumps(pp))
+    (tmp_path / "prepass_code.json").write_text(json.dumps({}))
+    (tmp_path / "launch.json").write_text(json.dumps({"launch": "2026-11-25", "at": "x"}))
+    done = {"stack": [], "done": True, "capped": False, "prepass_total": 0, "nodes": 1, "leaves": 1, "leaf_total": 0}
+    open_q = {"stack": [["2024-01-01", "2024-06-30"]], "done": False, "capped": False, "prepass_total": 0,
+              "nodes": 3, "leaves": 2, "leaf_total": 0}
+    text_st = {"started": "2026-11-25T10:54:28+00:00", "finished": None, "budget_reached": "2026-11-26T11:00:43",
+               "queries": {s2: done, s3[0]: done, s3[1]: open_q}}
+    (tmp_path / "discovery_state_text.json").write_text(json.dumps(text_st))
+    fake = SearchFake("none")
+    monkeypatch.setattr(discover, "_client", lambda route: fake)
+    assert discover.run("text", "session", 60, None, ext=True) == 0
+    asked = {urllib.parse.parse_qs(p.split("?")[1])["q"][0] for p in fake.paths}
+    assert not any(q.startswith(s2) or q.startswith(s3[0]) for q in asked)
+    assert any("2024-01-01..2024-06-30" in q for q in asked)  # the unfinished query's stack resumed
+    assert json.loads((tmp_path / "discovery_state_text.json").read_text()) == text_st
+    xs = json.loads((tmp_path / "discovery_state_s3ext.json").read_text())
+    xe = xs["extension"]
+    assert xs["finished"] and xe["resumed_from_text_state"] == [s3[1]]
+    assert dt_hours(xe["first_request"], xe["hard_stop"]) == 6.0
+    assert set(xs["queries"]) == set(s3[1:]) and (tmp_path / "discovery" / "splits_s3ext.jsonl").exists()
+    assert (tmp_path / "discovery" / "leaves_s3ext" / "s3ext-session-1200.jsonl.gz").exists()
+    assert parts.index("s3ext")["s3ext-session-1200.jsonl.gz"]["in_git"]
+    # past the hard stop nothing more is asked
+    xs["finished"], xs["queries"][s3[1]]["done"] = None, False
+    xs["queries"][s3[1]]["stack"] = [["2024-01-01", "2024-06-30"]]
+    xe["hard_stop"] = "2026-11-26T00:00:00+00:00"
+    (tmp_path / "discovery_state_s3ext.json").write_text(json.dumps(xs))
+    n = len(fake.paths)
+    assert discover.run("text", "session", 60, None, ext=True) == 0 and len(fake.paths) == n
+    assert json.loads((tmp_path / "discovery_state_s3ext.json").read_text())["extension"]["stopped_at_hard_stop"]
+
+
+def dt_hours(a: str, b: str) -> float:
+    import datetime as dt
+    return (dt.datetime.fromisoformat(b) - dt.datetime.fromisoformat(a)).total_seconds() / 3600

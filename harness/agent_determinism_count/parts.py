@@ -30,7 +30,7 @@ RES = HERE / "results"
 DISC = RES / "discovery"
 CACHE = HERE / ".artifacts"
 UA = "fenvix-research"
-FAMILIES = ("code", "text")
+FAMILIES = ("code", "text", "s3ext")
 
 
 def run_id() -> str:

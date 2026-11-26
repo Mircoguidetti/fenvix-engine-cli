@@ -194,8 +194,17 @@ def load_prepass() -> dict:
 
 # ---------------------------------------------------------------------------------------------- bisection
 
-def run(family: str, route: str, max_minutes: float, deadline: str | None) -> int:
+EXT = "s3ext"  # founder's S3 extension (2026-11-26 11:25Z): its own state, splits and leaf parts
+EXT_HOURS = 6.0
+
+
+def run(family: str, route: str, max_minutes: float, deadline: str | None, ext: bool = False) -> int:
+    """``ext``: the founder's one S3 extension (session route, 2026-11-26): only the S3 queries the 24 h budget left
+    unstarted or unfinished, with unchanged rules, shapes and caps, until 6 h after its own first request; its state,
+    splits and leaves are kept apart (discovery_state_s3ext.json, splits_s3ext.jsonl, leaves_s3ext/) so the text
+    workflow's commits never overwrite them; the build merges them."""
     DISC.mkdir(parents=True, exist_ok=True)
+    files = EXT if ext else family
     cfg = probe_config()
     pp = load_prepass()
     proj = projection(pp)
@@ -206,7 +215,15 @@ def run(family: str, route: str, max_minutes: float, deadline: str | None) -> in
         print(f"pre-pass stop: projected {family} discovery {proj[family]['hours']:.1f} h > {R.PREPASS_MAX_H} h")
         return 3
     launch = launch_date()
-    sp = RES / f"discovery_state_{family}.json"
+    sp = RES / f"discovery_state_{files}.json"
+    if ext and not sp.exists():
+        base = _json(RES / "discovery_state_text.json", {}) or {}
+        todo = {k: v for k, v in (base.get("queries") or {}).items() if not v.get("done")}
+        _save(sp, {"started": now(), "finished": None, "queries": todo,
+                   "extension": {"decided": "founder, main-eng-review-adc-s3-extension-20261126-112500.md "
+                                            "(coordinator 2026-11-26 11:18Z)", "route": route, "hours": EXT_HOURS,
+                                 "first_request": None, "hard_stop": None,
+                                 "resumed_from_text_state": sorted(todo)}})
     st = _json(sp, {"started": now(), "finished": None, "queries": {}})
     st.setdefault("started", now())
     st.setdefault("queries", {})
@@ -216,10 +233,22 @@ def run(family: str, route: str, max_minutes: float, deadline: str | None) -> in
     budget_end = (dt.datetime.fromisoformat(t_first) + dt.timedelta(hours=R.DISCOVERY_BUDGET_H)).isoformat(
         timespec="seconds")
     st["budget_end"] = budget_end
+    if ext:
+        xe = st["extension"]
+        if not xe.get("first_request"):
+            xe["first_request"] = now()
+            xe["hard_stop"] = (dt.datetime.fromisoformat(xe["first_request"]) + dt.timedelta(hours=EXT_HOURS)
+                               ).isoformat(timespec="seconds")
+            _save(sp, st)
+        budget_end = xe["hard_stop"]
     deadline = min(deadline, budget_end) if deadline else budget_end
     c = _client(route)
     t0 = time.time()
+    text_done = {k for k, v in ((_json(RES / "discovery_state_text.json", {}) or {}).get("queries") or {}).items()
+                 if v.get("done")} if ext else set()
     for d in family_queries(family, cfg):
+        if ext and (d["stratum"] != "S3" or d["key"] in text_done):
+            continue
         if d["key"] not in pp:
             sys.exit(f"no pre-pass total for {d['key']}")
         tc0 = pp[d["key"]].get("total_count") or 0
@@ -233,6 +262,8 @@ def run(family: str, route: str, max_minutes: float, deadline: str | None) -> in
         while qs["stack"]:
             if now() >= budget_end:
                 st["budget_reached"] = now()
+                if ext:
+                    st["extension"]["stopped_at_hard_stop"] = now()
                 _save(sp, st)
                 print("family discovery budget (24 h) reached: unfinished queries enter N_s as truncated leaves")
                 return 0
@@ -268,12 +299,12 @@ def run(family: str, route: str, max_minutes: float, deadline: str | None) -> in
             if kids:
                 qs["stack"] = kids + qs["stack"]
             else:
-                PT.part_path(family, DISC).parent.mkdir(parents=True, exist_ok=True)
-                with gzip.open(PT.part_path(family, DISC), "at") as f:
+                PT.part_path(files, DISC).parent.mkdir(parents=True, exist_ok=True)
+                with gzip.open(PT.part_path(files, DISC), "at") as f:
                     f.write(json.dumps(rec, sort_keys=True) + "\n")
                 qs["leaves"] += 1
                 qs["leaf_total"] += rec.get("total_count") or 0
-            with open(DISC / f"splits_{family}.jsonl", "a") as f:
+            with open(DISC / f"splits_{files}.jsonl", "a") as f:
                 f.write(json.dumps({k: v for k, v in rec.items() if k != "items"}, sort_keys=True) + "\n")
             qs["nodes"] += 1
             st["search_requests"] = c.n_search
@@ -287,7 +318,7 @@ def run(family: str, route: str, max_minutes: float, deadline: str | None) -> in
         _save(sp, st)
     st["finished"] = st["finished"] or now()
     _save(sp, st)
-    print(f"discovery {family} finished")
+    print(f"discovery {files} finished")
     return 0
 
 
@@ -316,7 +347,7 @@ def population(route: str) -> int:
 def _leaf_lines():
     """(file number, line number, record) of every readable leaf line, file by file (streamed)."""
     files = []
-    for fam in ("code", "text"):
+    for fam in ("code", "text", EXT):
         # the leaf files are outside git (parts.py; ``parts.py fetch`` first); the single pre-parts file if present
         legacy = DISC / f"leaves_{fam}.jsonl.gz"
         files += ([legacy] if legacy.exists() else []) + PT.part_files(fam, DISC)
@@ -423,14 +454,18 @@ def main(argv=None) -> int:
     ap.add_argument("--route", default="session")
     ap.add_argument("--max-minutes", type=float, default=24 * 60)
     ap.add_argument("--deadline")
+    ap.add_argument("--extension", action="store_true", help="the founder's S3 extension (text family, session)")
     a = ap.parse_args(argv)
     if a.cmd == "prepass":
         return prepass(a.family, a.route)
     if a.cmd == "run":
-        return run(a.family, a.route, a.max_minutes, a.deadline)
+        return run(a.family, a.route, a.max_minutes, a.deadline, a.extension)
     if a.cmd == "population":
         return population(a.route)
     states = {f: _json(RES / f"discovery_state_{f}.json", {}) for f in ("code", "text")}
+    xs = _json(RES / f"discovery_state_{EXT}.json", None)
+    if xs and states["text"]:  # the S3 extension's queries replace their unfinished text entries
+        states["text"] = {**states["text"], "queries": {**states["text"].get("queries", {}), **xs["queries"]}}
     rows, orders, pool = build(iter_leaves(), states, load_prepass())
     with gzip.open(RES / "candidates.jsonl.gz", "wt") as f:
         for r in rows:

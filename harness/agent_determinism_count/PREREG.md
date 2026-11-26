@@ -168,6 +168,13 @@ owners `langchain-ai`, `crewAIInc`, `run-llama`, `ag2ai`, `agno-agi`, `mastra-ai
 matching `google/adk-*` and `anthropics/claude-agent-sdk-*`; the §0.2d recording packages' source repositories
 (case-insensitive). Excluded candidates with discovery hits are listed as information.
 
+**S3 extension (founder decision, 2026-11-26, main-eng-review-adc-s3-extension-20261126-112500.md; CHANGES.md
+item 10).** One extension of S3 on the session route covers only the S3 queries the 24 h budget left unstarted (88)
+or unfinished (1). Rules, shapes and caps are unchanged. It has a hard stop 6 h after its own first request, and any
+query not done by then stays truncated with its pre-pass total_count (gate note 3). Its state, splits and leaf parts
+are kept apart (`discovery_state_s3ext.json`, `splits_s3ext.jsonl`, `leaves_s3ext/`). The build merges them before
+S3 is read further; reading chunks already started may continue.
+
 ## §2 Membership (workflow chunks, `pipeline.py`)
 
 1. `GET /repos/{r}/git/trees/{default_branch}?recursive=1` (409 = empty repository: no files). `truncated: true` ->

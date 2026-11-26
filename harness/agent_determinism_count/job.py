@@ -108,12 +108,15 @@ def main() -> int:
         chunk.mark_done(name, {"discovery": fam, "rc": rc, "at": chunk.now()})
         return 0
     if req.get("build"):  # {"build": true}: fetch every leaf part (sha256 checked), then discover.py build
-        for fam in ("code", "text"):
+        for fam in ("code", "text", "s3ext"):  # s3ext: the founder's S3 extension (parts committed to git)
             if subprocess.call([sys.executable, str(HERE / "parts.py"), "fetch", "--family", fam]) != 0:
                 print(f"leaf parts of {fam} missing or changed: build not run, {name} stays pending")
                 return 1
-        for fam in ("code", "text"):
-            st = json.loads((HERE / "results" / f"discovery_state_{fam}.json").read_text())
+        for fam in ("code", "text", "s3ext"):
+            sp = HERE / "results" / f"discovery_state_{fam}.json"
+            if fam == "s3ext" and not sp.exists():
+                continue
+            st = json.loads(sp.read_text())
             if not (st.get("finished") or st.get("budget_reached")):
                 print(f"discovery {fam} neither finished nor at its budget: build not run, {name} stays pending")
                 return 1
