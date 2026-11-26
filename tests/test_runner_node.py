@@ -301,9 +301,12 @@ elif mode != "no-outcomes":
     json.dump({"order": ["a.test.js::t"], "outcomes": {"a.test.js::t": outcome}}, open(opt["--det-outcomes"], "w"))
 st = {"failed": int(outcome == "failed"), "not_proven": 0, "passed": int(outcome == "passed"), "skipped": 0}
 with open(opt["--det-trace"], "w") as fh:
-    # a sensor, as every real header declares one (node/src/session.js provableField; fenvix-run engine_signals)
-    fh.write(json.dumps({"type": "header", "meta": {"status": st, "epoch_ns": "1795392000000000000",
-                                                    "provable": {"sensor": "node-surface/1"}}}) + "\n")
+    # a sensor and the controls it rests on, as every real header declares them (node/src/session.js provableField;
+    # fenvix-run engine_signals and sensor_refusal: a sensor without contract, audited runtime or its controls is refused)
+    sensor = {"sensor": "node-surface/1", "contract": 1, "runtime": "node22", "surface": "stub"}
+    fh.write(json.dumps({"type": "header", "meta": {"status": st, "epoch_ns": "1795392000000000000", "provable": sensor,
+                                                    "controls": ["fs", "isolation", "net", "order", "seeds", "time",
+                                                                 "timers"]}}) + "\n")
 sys.exit(0)
 """
 
@@ -326,6 +329,7 @@ def test_detjs_exit_0_without_proof_is_red(stub, tmp_path, mode):
     code, s, md, log = job(tmp_path, proj, "j", detjs, "--no-rerun", env={"STUB_MODE": mode})
     assert code == 1, log
     assert s["exit"] == 1
+    assert s.get("provable_absent") is None, f"red for the stub header, not for {mode}: {log}"
 
 
 def test_verify_counts_a_wrong_reuse_and_keeps_detjs_exit(stub, tmp_path):
@@ -403,3 +407,144 @@ def test_parallel_hazard_run_sends_a_proof_with_the_one_lane_rerun(hazard_projec
     assert p["rerun_one_lane"] == 4 and p["proven"] == 4, p
     assert s["provable_absent"] is None and s["not_proven_outside"] == 0
     record("vitest-hazard", "proof", p)
+
+
+# -- spec parallel-proof-gaps: the three gaps through the wrapper (shared service, recursive dir op, skip dir) --------
+
+_GAP_HEAD = "import { test, expect } from 'vitest'; import fs from 'node:fs'; import net from 'node:net'; import path from 'node:path';\n"
+
+
+def _gap_project(hazard_project: Path, tmp: Path, name: str, a: str, b: str, files: dict | None = None,
+                 config: str | None = None) -> Path:
+    """The installed vitest-hazard fixture with its two test files replaced by `a` and `b` (plus `files`)."""
+    d = tmp / name
+    shutil.copytree(hazard_project, d, symlinks=True, ignore=shutil.ignore_patterns(".detjs", ".fenvix*"))
+    for f in d.glob("*.test.js"):
+        f.unlink()
+    (d / "a.test.js").write_text(_GAP_HEAD + a + "\n")
+    (d / "b.test.js").write_text(_GAP_HEAD + b + "\n")
+    for rel, text in (files or {}).items():
+        (d / rel).parent.mkdir(parents=True, exist_ok=True)
+        (d / rel).write_text(text)
+    if config is not None:
+        (d / "vitest.config.mjs").write_text(config)
+    return d
+
+
+def _gap_run(proj: Path, tmp: Path, detjs) -> tuple[int, dict, dict, str]:
+    code, s, _md, log = job(tmp, proj, "run", detjs, "--no-rerun", "--", "--det-workers=2",
+                            env={"DETJS_PLAN_STATE": str(tmp / "plan-state.json")})
+    header = json.loads(Path(s["trace_file"]).read_text().splitlines()[0])["meta"] if s.get("trace_file") else {}
+    return code, s, header, log
+
+
+def _assert_gap_rerun(code, s, header, log, kind):
+    kinds = [h["kind"] for h in header.get("parallel", {}).get("hazards", [])]
+    assert kind in kinds, f"no {kind} hazard ({kinds}):\n{log}"
+    assert code == 0 and s["exit"] == 0, log
+    p = s.get("proof")
+    assert p is not None, log
+    # every test of the two files is proven by the one-lane re-run, not by the lanes
+    assert p["workers"] == 2 and p["rerun_one_lane"] == p["proven"] == 2 and p["not_proven"] == 0, p
+
+
+def test_gap_shared_service_reruns_the_files_in_one_lane(hazard_project, detjs, tmp_path):
+    """protects=two lanes talking to one local TCP service (served outside the lanes) are proven only through the
+    one-lane re-run; fails_when=release-1's engine records no hazard and the wrapper reports the lanes proven
+    (rerun_one_lane 0); no_claim=a toy echo server stands in for a database."""
+    import socket
+    import threading
+    srv = socket.socket()
+    srv.bind(("127.0.0.1", 0))
+    srv.listen(8)
+    port = srv.getsockname()[1]
+
+    def serve():
+        while True:
+            try:
+                c, _ = srv.accept()
+            except OSError:
+                return
+            c.sendall(b"hi")
+            c.close()
+    threading.Thread(target=serve, daemon=True).start()
+    client = ("test('talks', async () => { const got = await new Promise((res) => { const s = net.connect(%d, '127.0.0.1'); "
+              "let b = ''; s.on('data', (d) => { b += d; }); s.on('end', () => res(b)); s.on('error', (e) => res(String(e.code))); }); "
+              "expect(got).toBe('hi'); });") % port
+    try:
+        proj = _gap_project(hazard_project, tmp_path, "svc", client, client)
+        _assert_gap_rerun(*_gap_run(proj, tmp_path, detjs), "shared-service")
+    finally:
+        srv.close()
+
+
+def test_gap_recursive_rm_reruns_the_files_in_one_lane(hazard_project, detjs, tmp_path):
+    """protects=rm -r of a directory in one lane and a read inside it in the other are proven only through the one-lane
+    re-run; fails_when=no hazard (release-1 matched identical keys only), lanes reported proven; no_claim=the read is of
+    a path absent at rm time (an existing one already gave an unlink key on release-1)."""
+    proj = _gap_project(hazard_project, tmp_path, "rmr",
+                        "test('rm', () => { fs.rmSync(path.join(process.cwd(), 'work'), { recursive: true, force: true }); expect(1).toBe(1); });",
+                        "test('read', () => { expect(fs.existsSync(path.join(process.cwd(), 'work', 'out.json'))).toBe(false); });",
+                        files={"work/.keep": ""})
+    _assert_gap_rerun(*_gap_run(proj, tmp_path, detjs), "recursive-write")
+
+
+def test_gap_project_cache_dir_does_not_hide_a_conflict(hazard_project, detjs, tmp_path):
+    """protects=a Vite cacheDir inside the project does not hide a write-write conflict there: the files are proven
+    only through the one-lane re-run, and the ignored dir is in the trace; fails_when=the conflict is invisible and the
+    lanes are reported proven; no_claim=Vitest 5.1 nests its cache under <cacheDir>/vitest/<sha1(project name)>."""
+    import hashlib
+    sub = f".cache/vite/vitest/{hashlib.sha1(b'').hexdigest()}"
+    body = "test('writes', () => { fs.writeFileSync(path.join(process.cwd(), %s), String(Math.random())); expect(1).toBe(1); });" \
+        % json.dumps(f"{sub}/shared.json")
+    proj = _gap_project(hazard_project, tmp_path, "cachedir", body, body, files={f"{sub}/.keep": ""},
+                        config="export default { cacheDir: '.cache/vite', test: { include: ['*.test.js'] } };\n")
+    code, s, header, log = _gap_run(proj, tmp_path, detjs)
+    _assert_gap_rerun(code, s, header, log, "write-write")
+    ignored = header["parallel"].get("skip_dirs_ignored") or []
+    assert any(x["dir"].endswith(sub) and x["reason"] == "outside node_modules and tmpdir" for x in ignored), ignored
+
+
+def test_gap_clean_two_lane_run_keeps_its_proof_without_rerun(hazard_project, detjs, tmp_path):
+    """protects=the positive control through the wrapper: files with nothing shared are proven by the lanes, with no
+    one-lane re-run; fails_when=the new hazard kinds fire on an isolated pair; no_claim=a two-file suite."""
+    proj = _gap_project(hazard_project, tmp_path, "clean",
+                        "test('a', () => { fs.writeFileSync(path.join(process.cwd(), 'a.out'), 'a'); fs.mkdirSync(path.join(process.cwd(), 'ad', 'x'), { recursive: true }); expect(1).toBe(1); });",
+                        "test('b', () => { fs.writeFileSync(path.join(process.cwd(), 'b.out'), 'b'); fs.rmSync(path.join(process.cwd(), 'bd'), { recursive: true, force: true }); expect(1).toBe(1); });")
+    code, s, header, log = _gap_run(proj, tmp_path, detjs)
+    assert header["parallel"]["hazards"] == [], log
+    assert code == 0 and s["exit"] == 0, log
+    p = s.get("proof")
+    assert p is not None and p["workers"] == 2 and p["proven"] == 2 and p["rerun_one_lane"] == 0 and p["not_proven"] == 0, p
+
+
+# ---------------------------------------------------------------- spec "false greens on release-1", Phase B (runner)
+
+
+def _isolate_project(tmp_path_factory, name: str, late_read: bool) -> Path:
+    d = tmp_path_factory.mktemp(name) / "vitest"
+    shutil.copytree(FIXTURES / "vitest", d)
+    r = subprocess.run(["npm", "ci", "--no-audit", "--no-fund"], cwd=d, capture_output=True, text=True, timeout=600)
+    assert r.returncode == 0, f"npm ci in the vitest fixture failed:\n{r.stdout}\n{r.stderr}"
+    if late_read:
+        # last in file order, so its per-test session is not the first one
+        (d / "zz.test.js").write_text("import { test, expect } from 'vitest';\nconst ws = process.env.GITHUB_WORKSPACE;\n"
+                                      "test('reads at module scope', () => { expect(typeof ws).toBe('string'); });\n")
+    return d
+
+
+def test_det_isolate_read_outside_tests_in_a_later_session_is_not_proven(detjs, tmp_path, tmp_path_factory):
+    """protects=`fenvix-run node -- --det-isolate` reports NOT PROVEN (exit 1, not_proven_outside >= 1) when a later
+    per-test session reads a CI-volatile variable outside any test; and a clean --det-isolate job stays green (positive
+    control); fails_when=the final header is the first session's and the job is green (release-1 24962a94: the
+    engine's isolate merge kept the first session's signals only); no_claim=the verifier's comparison of two such
+    runs."""
+    env = {"GITHUB_WORKSPACE": "/w/one"}
+    clean = _isolate_project(tmp_path_factory, "iso-clean", late_read=False)
+    code, s, _, log = job(tmp_path, clean, "clean", detjs, "--", "--det-isolate", env=env)
+    assert code == 0 and s.get("exit") == 0, log
+    assert s.get("provable_absent") is None and s.get("not_proven_outside") == 0, s
+    late = _isolate_project(tmp_path_factory, "iso-late", late_read=True)
+    code, s, _, log = job(tmp_path, late, "late", detjs, "--", "--det-isolate", env=env)
+    assert code == 1 and s.get("exit") == 1, log
+    assert s.get("not_proven_outside", 0) >= 1, s

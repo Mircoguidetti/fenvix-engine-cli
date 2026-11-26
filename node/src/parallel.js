@@ -22,6 +22,18 @@ const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
 
+// the footprint's own probes (real paths, does a mkdir target exist, is a rename source a directory, the tmpdir) are
+// detjs' own use of patched APIs: they run without recording, neither as events of the trace (STATE.quiet) nor as reads
+// of the cache capture (busy), like src/runners/common.js quiet (on 3457ac64 they were recorded: fs.stat and os.tmpdir
+// events that differ between runs, files the cache did not reuse)
+let QUIET_STATE = null;
+function quiet(fn) {
+  const st = QUIET_STATE || (QUIET_STATE = require('./state').STATE);
+  const cap = globalThis[Symbol.for('detjs.cache.capture')];
+  if (cap) cap.busy++;
+  try { return st.quiet(fn); } finally { if (cap) cap.busy--; }
+}
+
 // real clocks, taken before Level 0 replaces them in this process
 const REAL_NOW = Date.now;
 const now = () => REAL_NOW.call(Date);
@@ -358,21 +370,81 @@ function skipDirs(dirs) {
   process.env.DETJS_FOOTPRINT_SKIP_DIRS = cur.join(path.delimiter);
 }
 
+/** The real path of `d` (symlinks resolved); a path that does not exist: its nearest existing ancestor's real path + the rest. */
+function realDir(d) {
+  try { return quiet(() => fs.realpathSync.native(d)); } catch {
+    const parent = path.dirname(d);
+    return parent === d ? d : path.join(realDir(parent), path.basename(d));
+  }
+}
+
+const isUnder = (p, d) => p === d || p.startsWith(d.endsWith(path.sep) ? d : d + path.sep);
+
+/** Every directory the footprint would leave out: runner and tool caches set by the shells or the environment. */
+function footprintSkipCandidates() {
+  const tmp = quiet(() => os.tmpdir());
+  const uid = typeof process.getuid === 'function' ? process.getuid() : '';
+  return [...(process.env.DETJS_CACHE_SKIP_DIRS || '').split(path.delimiter), ...(process.env.DETJS_FOOTPRINT_SKIP_DIRS || '').split(path.delimiter),
+    path.join(tmp, 'jiti'), path.join(tmp, 'node-jiti'), path.join(tmp, `tsx-${uid}`), path.join(tmp, `v8-compile-cache-${uid}`),
+    path.join(tmp, 'v8-compile-cache'), path.join(tmp, `swc-node-${uid}`)].filter(Boolean);
+}
+
+/**
+ * Which candidate skip dirs the footprint honours (spec parallel-proof-gaps (c), gate note 3): a dir is left out of
+ * the footprint ONLY if it lies under a `node_modules/` directory or strictly under `os.tmpdir()` outside the project,
+ * and never if it is the project root or contains it. Any other location (the root, a parent, an in-repo `.cache/`,
+ * `fixtures/`, `test-data/`) is ignored -- its paths are recorded like any others -- and listed with the reason.
+ * Relative dirs resolve against `root`. Returns { skip: [real dir + sep], ignored: [{dir, reason}] }.
+ * (The test file list is not available in the lanes' processes when the recorder is installed, so the location rule
+ * alone applies, as gate note 8 allows; every test file of the run lies under the root, which is never skipped.)
+ */
+function footprintSkip(root, dirs) {
+  const rootR = realDir(path.resolve(root));
+  const tmpR = realDir(quiet(() => os.tmpdir()));
+  const skip = []; const ignored = []; const seen = new Set();
+  for (const d0 of dirs) {
+    if (typeof d0 !== 'string' || !d0) continue;
+    const d = realDir(path.resolve(rootR, d0));
+    if (seen.has(d)) continue;
+    seen.add(d);
+    let reason = null;
+    if (isUnder(rootR, d)) reason = 'contains the project root';
+    else if (!(d.split(path.sep).includes('node_modules') || (d !== tmpR && isUnder(d, tmpR) && !isUnder(d, rootR)))) reason = 'outside node_modules and tmpdir';
+    if (reason) ignored.push({ dir: d, reason }); else skip.push(d + path.sep);
+  }
+  return { skip, ignored };
+}
+
 /** Install the footprint recorder in this process (once): fs reads, listings, writes; fixed ports. */
 function installFootprint(root) {
   if (PROC.hazard) return;
-  const rootSep = path.resolve(root) + path.sep;
+  // keys are real paths (gate note 7): `path.resolve`, then the real path of the parent directory (memoized) + the
+  // name; under the (real) root they are root-relative with `/` separators (the root itself is '.'), else absolute
+  const rootR = realDir(path.resolve(root));
+  const rootSep = rootR + path.sep;
   // runner and tool caches whose content is a function of their key (Jest's cacheDirectory, Vite's cacheDir and
-  // temporary directories: set by the shells; jiti, tsx, swc-node, v8-compile-cache): every lane writes and reads them
-  const tmp = os.tmpdir();
-  const uid = typeof process.getuid === 'function' ? process.getuid() : '';
-  const skip = [...(process.env.DETJS_CACHE_SKIP_DIRS || '').split(path.delimiter), ...(process.env.DETJS_FOOTPRINT_SKIP_DIRS || '').split(path.delimiter),
-    path.join(tmp, 'jiti'), path.join(tmp, 'node-jiti'), path.join(tmp, `tsx-${uid}`), path.join(tmp, `v8-compile-cache-${uid}`),
-    path.join(tmp, 'v8-compile-cache'), path.join(tmp, `swc-node-${uid}`)].filter(Boolean).map((d) => path.resolve(d) + path.sep);
-  const keyOf = (abs) => {
-    if (abs.startsWith('/proc/') || abs.startsWith('/dev/') || abs.startsWith('/sys/')) return null;
-    if (abs.includes(`${path.sep}node_modules${path.sep}`) || abs.endsWith(`${path.sep}node_modules`)) return null;
+  // temporary directories: set by the shells; jiti, tsx, swc-node, v8-compile-cache): every lane writes and reads them.
+  // Only those under node_modules or the temporary directory are left out (footprintSkip).
+  const { skip } = footprintSkip(rootR, footprintSkipCandidates());
+  const dirMemo = new Map();
+  let linkPending = 0; // async link-changing calls in flight (wrap): the memo is not used meanwhile
+  const realOf = (abs) => {
+    const dir = path.dirname(abs);
+    if (dir === abs) return abs;
+    if (linkPending > 0) return path.join(realDir(dir), path.basename(abs));
+    let r = dirMemo.get(dir);
+    if (r === undefined) { r = realDir(dir); if (dirMemo.size > 50000) dirMemo.clear(); dirMemo.set(dir, r); }
+    return path.join(r, path.basename(abs));
+  };
+  const nm = (abs) => abs.includes(`${path.sep}node_modules${path.sep}`) || abs.endsWith(`${path.sep}node_modules`);
+  // real = false: the path as the call gave it (resolved, symlinks kept), the key release-1 recorded
+  const keyOf = (abs0, real = true) => {
+    if (abs0.startsWith('/proc/') || abs0.startsWith('/dev/') || abs0.startsWith('/sys/')) return null;
+    if (nm(abs0)) return null;
+    const abs = real ? realOf(abs0) : abs0;
+    if (abs !== abs0 && (nm(abs) || abs.startsWith('/proc/') || abs.startsWith('/dev/') || abs.startsWith('/sys/'))) return null;
     for (const d of skip) if (abs.startsWith(d)) return null;
+    if (abs === rootR) return '.';
     if (abs.startsWith(rootSep)) {
       const r = abs.slice(rootSep.length).split(path.sep).join('/');
       if (r === '.detjs' || r.startsWith('.detjs/') || r.startsWith('coverage/')) return null;
@@ -382,25 +454,50 @@ function installFootprint(root) {
   };
   let cur = null;
   const H = {
-    begin(label) { cur = { label, w: new Set(), r: new Set(), l: new Set(), listen: new Set(), connect: new Set() }; },
+    // the real-path memo is per file: a link another file of this process repointed is resolved again (/review F1)
+    begin(label) { dirMemo.clear(); cur = { label, w: new Set(), r: new Set(), l: new Set(), wr: new Set(), lr: new Set(), listen: new Set(), connect: new Set(), conns: new Map() }; },
     end(label) {
       if (!cur || cur.label !== label) return null;
       const c = cur; cur = null;
-      return { w: [...c.w].sort(), r: [...c.r].sort(), l: [...c.l].sort(), listen: [...c.listen].sort(), connect: [...c.connect].sort() };
+      return { w: [...c.w].sort(), r: [...c.r].sort(), l: [...c.l].sort(), wr: [...c.wr].sort(), lr: [...c.lr].sort(), listen: [...c.listen].sort(), connect: [...c.connect].sort(), pub: [...c.conns].filter(([, rs]) => rs.every((x) => x.pub)).map(([k]) => k).sort() };
     },
     add(set, p) {
       if (!cur) return;
       const abs = toPath(p);
       if (abs === null) return;
       const k = keyOf(abs);
-      if (k !== null) cur[set].add(k);
+      if (k === null) return;
+      cur[set].add(k);
+      // a path through a symlink also keeps its literal key (/review F1): a link repointed during the file, or a
+      // lane that reaches the same file by the link's path, still pairs; more keys only add hazards
+      const kl = keyOf(abs, false);
+      if (kl !== null && kl !== k) cur[set].add(kl);
     },
   };
   PROC.hazard = H;
-  const wrap = (obj, name, fn) => {
+  // linkChange: the call can remove, move or repoint a link. Its async forms change it later than the call starts, so
+  // the real-path memo is bypassed while one is pending and dropped when it settles (third /review pass, finding 1)
+  const wrap = (obj, name, fn, linkChange = false) => {
     const real = obj && obj[name];
     if (typeof real !== 'function' || real.__detjsFootprint) return;
-    const w = function (...a) { if (cur) { try { fn(a); } catch { /* never break the call */ } } return real.apply(this, a); };
+    const w = !linkChange
+      ? function (...a) { if (cur) { try { fn(a, this); } catch { /* never break the call */ } } return real.apply(this, a); }
+      : function (...a) {
+        dirMemo.clear();
+        if (cur) { try { fn(a); } catch { /* never break the call */ } }
+        linkPending++;
+        let done = false;
+        const end = () => { if (!done) { done = true; linkPending--; dirMemo.clear(); } };
+        const cb = a.length && typeof a[a.length - 1] === 'function' ? a.length - 1 : -1;
+        if (cb >= 0) { const f = a[cb]; a[cb] = function (...x) { end(); return f.apply(this, x); }; }
+        let r;
+        try { r = real.apply(this, a); } catch (e) { end(); throw e; }
+        // a promise: the caller gets one that settles like r and rethrows its rejection, so a rejection nobody handles
+        // stays unhandled as without the footprint (/review delta of 282bb9a4)
+        if (r && typeof r.then === 'function') return r.then((v) => { end(); return v; }, (e) => { end(); throw e; });
+        if (cb < 0) end();
+        return r;
+      };
     for (const k of Reflect.ownKeys(real)) {
       if (k === 'length' || k === 'name' || k === 'prototype' || k === 'arguments' || k === 'caller') continue;
       try { Object.defineProperty(w, k, Object.getOwnPropertyDescriptor(real, k)); } catch { /* ignore */ }
@@ -417,13 +514,74 @@ function installFootprint(root) {
   const w1 = (a) => H.add('w', a[1]);
   const l0 = (a) => H.add('l', a[0]);
   const open = (a) => { const f = a[1]; if (f !== undefined && f !== null && (typeof f === 'number' ? (f & 3) !== 0 || (f & fs.constants.O_CREAT) : WRITE_FLAGS.test(String(f)))) H.add('w', a[0]); else H.add('r', a[0]); };
+  // recursive operations (spec parallel-proof-gaps (b)): the target of a recursive rm / rmdir, the first directory a
+  // recursive mkdir creates (below), the destination
+  // of a recursive cp and both paths of a directory rename are recursive WRITE roots (`wr`): they conflict with every
+  // key of another lane inside them and with listings of their ancestors; the source of a recursive cp and a recursive
+  // readdir / opendir are recursive READ roots (`lr`): they conflict with every write of another lane inside them.
+  // The plain keys are kept. DETJS_HAZARD_RECURSIVE=0 turns the roots off (measurement only; the runner gives no proof).
+  const recursive = process.env.DETJS_HAZARD_RECURSIVE !== '0';
+  const rec = (o) => Boolean(o && typeof o === 'object' && o.recursive);
+  // the function as found before the wraps below: the probes are neither footprint reads nor calls a test's spy or mock
+  // sees (/review of 298e80df, finding 1)
+  const realLstat = fs.lstatSync;
+  const lstat = (x, o) => quiet(() => realLstat(x, o));
+  const isDir = (p) => { const x = toPath(p); if (x === null) return false; try { const st = lstat(x, { throwIfNoEntry: false }); return Boolean(st && st.isDirectory()); } catch { return false; } };
+  const wRec = (a) => { H.add('w', a[0]); if (recursive && rec(a[1])) H.add('wr', a[0]); };
+  // a recursive mkdir creates only the missing directories of its path: its root is the first of them (the nearest
+  // missing ancestor of the target, checked before the call); when the target exists it creates nothing and has no
+  // root (founder decision 2026-11-25, D1 = A: mkdir -p of /tmp, the tmpdir or the project root sent whole suites to
+  // the one-lane re-run). A path component that cannot be checked counts as missing (a higher root: more hazards).
+  const firstMissing = (p) => {
+    let x = toPath(p);
+    if (x === null) return null;
+    x = path.resolve(x);
+    let missing = null;
+    for (;;) {
+      let st = null;
+      try { st = lstat(x, { throwIfNoEntry: false }); } catch { st = null; }
+      if (st) return missing;
+      missing = x;
+      const up = path.dirname(x);
+      if (up === x) return missing;
+      x = up;
+    }
+  };
+  // mkdir (recursive or not) writes only the directories it creates: a target that exists before the call is a READ
+  // of it (the call observes it: EEXIST, or nothing to do), so files that each make sure one shared parent exists and
+  // then create distinct children do not conflict on the parent (founder decision 2026-11-26, D2 = A; P2 BREAKDOWN C1)
+  const exists = (p) => { const x = toPath(p); if (x === null) return false; try { return Boolean(lstat(x, { throwIfNoEntry: false })); } catch { return false; } };
+  const mkRec = (a) => {
+    if (exists(a[0])) { H.add('r', a[0]); return; }
+    H.add('w', a[0]);
+    if (!recursive || !rec(a[1])) return;
+    const m = firstMissing(a[0]);
+    if (m !== null) H.add('wr', m);
+  };
+  const lRec = (a) => { H.add('l', a[0]); if (recursive && rec(a[1])) H.add('lr', a[0]); };
   for (const o of [fs, P]) {
     for (const n of ['readFile', 'readFileSync', 'createReadStream', 'exists', 'existsSync', 'stat', 'statSync', 'lstat', 'lstatSync', 'access', 'accessSync', 'readlink', 'readlinkSync', 'realpath', 'realpathSync', 'openAsBlob']) wrap(o, n, r0);
-    for (const n of ['readdir', 'readdirSync', 'opendir', 'opendirSync']) wrap(o, n, l0);
-    for (const n of ['writeFile', 'writeFileSync', 'appendFile', 'appendFileSync', 'createWriteStream', 'mkdir', 'mkdirSync', 'rm', 'rmSync', 'rmdir', 'rmdirSync', 'unlink', 'unlinkSync', 'truncate', 'truncateSync', 'chmod', 'chmodSync', 'utimes', 'utimesSync', 'lchown', 'chown', 'chownSync']) wrap(o, n, w0);
-    for (const n of ['rename', 'renameSync']) wrap(o, n, (a) => { H.add('w', a[0]); H.add('w', a[1]); H.add('r', a[0]); });
-    for (const n of ['copyFile', 'copyFileSync', 'cp', 'cpSync']) wrap(o, n, (a) => { H.add('r', a[0]); H.add('w', a[1]); });
-    for (const n of ['symlink', 'symlinkSync', 'link', 'linkSync']) wrap(o, n, w1);
+    for (const n of ['readdir', 'readdirSync', 'opendir', 'opendirSync']) wrap(o, n, lRec);
+    for (const n of ['writeFile', 'writeFileSync', 'appendFile', 'appendFileSync', 'createWriteStream', 'truncate', 'truncateSync', 'chmod', 'chmodSync', 'utimes', 'utimesSync', 'lchown', 'chown', 'chownSync']) wrap(o, n, w0);
+    // calls that can remove, move or repoint a link drop the real-path memo first (second /review pass, finding 2)
+    for (const n of ['unlink', 'unlinkSync']) wrap(o, n, w0, true);
+    for (const n of ['rm', 'rmSync', 'rmdir', 'rmdirSync']) wrap(o, n, wRec, true);
+    for (const n of ['mkdir', 'mkdirSync']) wrap(o, n, mkRec);
+    for (const n of ['rename', 'renameSync']) {
+      wrap(o, n, (a) => {
+        H.add('w', a[0]); H.add('w', a[1]); H.add('r', a[0]);
+        if (recursive && isDir(a[0])) { H.add('wr', a[0]); H.add('wr', a[1]); }
+      }, true);
+    }
+    for (const n of ['copyFile', 'copyFileSync']) wrap(o, n, (a) => { H.add('r', a[0]); H.add('w', a[1]); });
+    // a directory can only be copied with {recursive: true} (Node throws ERR_FS_EISDIR otherwise)
+    for (const n of ['cp', 'cpSync']) {
+      wrap(o, n, (a) => {
+        H.add('r', a[0]); H.add('w', a[1]);
+        if (recursive && rec(typeof a[2] === 'function' ? null : a[2])) { H.add('lr', a[0]); H.add('wr', a[1]); }
+      }, true); // cp copies symlinks as symlinks: a link change for the real-path memo (/review delta, finding 1)
+    }
+    for (const n of ['symlink', 'symlinkSync', 'link', 'linkSync']) wrap(o, n, w1, true);
     for (const n of ['open', 'openSync']) wrap(o, n, open);
   }
   const net = require('node:net');
@@ -434,15 +592,85 @@ function installFootprint(root) {
     if (x && typeof x === 'object' && x.port !== undefined && /^\d+$/.test(String(x.port))) return Number(x.port);
     return null;
   };
-  if (SP) wrap(SP, 'listen', (a) => { const p = portOf(a); if (cur && p) cur.listen.add(String(p)); });
+  // a unix socket a server listens on or a client connects to: `unix:<real path>` (abstract sockets: `unix:\0name`)
+  const unixKey = (p) => (p.startsWith('\0') ? `unix:${p}` : `unix:${realOf(path.resolve(p))}`);
+  const pathOf = (x) => {
+    if (typeof x === 'string' && x && !/^\d+$/.test(x)) return x;
+    if (x && typeof x === 'object' && typeof x.path === 'string' && x.path) return x.path;
+    return null;
+  };
+  if (SP) {
+    wrap(SP, 'listen', (a) => {
+      if (!cur) return;
+      const p = portOf(a);
+      if (p) { cur.listen.add(String(p)); return; }
+      const u = pathOf(a[0]);
+      if (u) cur.listen.add(unixKey(u));
+    });
+  }
+  // services (spec parallel-proof-gaps (a), gate notes 4 and 7): a TCP connect to a loopback host is keyed by its port
+  // (as listeners are), a unix-socket connect by `unix:<path>`, a TCP connect to any other host by
+  // `tcp:<host as given, lower-cased>:<port>`. Two lanes connecting to one key share a service: a hazard
+  // (`shared-service`), whether or not a lane listens on it -- except a tcp key whose address is a public, globally
+  // routable internet address (founder decision 2026-11-26 "nome A", replacing D1 = A): such a key is listed in `pub`.
+  // An IP literal is classified at connect; a name at the socket's lookup events: public only if every address they
+  // reported is public, before the file's footprint closed; a key is listed only if every connect of the file to it was
+  // public. A name that does not resolve, or resolves after the footprint closed, pairs. DETJS_HAZARD_SHARED_SERVICE=0
+  // records only loopback ports, as before (measurement only; the runner then gives no proof). UDP / dgram is not
+  // recorded (known limit).
+  const sharedService = process.env.DETJS_HAZARD_SHARED_SERVICE !== '0';
+  const LOOPBACK = /^(localhost|127\.|::1$|0:0:0:0:0:0:0:1$|\[::1\]$|0\.0\.0\.0$|::$|::ffff:127\.)/;
+  // not public: special-purpose IPv4 ranges (RFC 6890) and, for IPv6, everything outside 2000::/3 plus documentation
+  const NOT_PUBLIC = new net.BlockList();
+  for (const [a, n] of [['0.0.0.0', 8], ['10.0.0.0', 8], ['100.64.0.0', 10], ['127.0.0.0', 8], ['169.254.0.0', 16], ['172.16.0.0', 12],
+    ['192.0.0.0', 24], ['192.0.2.0', 24], ['192.88.99.0', 24], ['192.168.0.0', 16], ['198.18.0.0', 15], ['198.51.100.0', 24],
+    ['203.0.113.0', 24], ['224.0.0.0', 4], ['240.0.0.0', 4]]) NOT_PUBLIC.addSubnet(a, n, 'ipv4');
+  const V6_PUBLIC = new net.BlockList();
+  V6_PUBLIC.addSubnet('2000::', 3, 'ipv6');
+  // not global inside 2000::/3 (review delta F3): Teredo, benchmarking, ORCHIDv2, documentation, 6to4 (safe side)
+  const V6_DOC = new net.BlockList();
+  for (const [a, n] of [['2001::', 32], ['2001:2::', 48], ['2001:10::', 28], ['2001:20::', 28], ['2001:db8::', 32], ['2002::', 16],
+    ['3fff::', 20]]) V6_DOC.addSubnet(a, n, 'ipv6');
+  const isPublic = (ip) => {
+    let x = String(ip || '').replace(/^\[|\]$/g, '');
+    const mapped = /^::ffff:(\d+\.\d+\.\d+\.\d+)$/i.exec(x);
+    if (mapped) x = mapped[1];
+    const v = net.isIP(x);
+    if (v === 4) return !NOT_PUBLIC.check(x, 'ipv4');
+    if (v === 6) return V6_PUBLIC.check(x, 'ipv6') && !V6_DOC.check(x, 'ipv6');
+    return false;
+  };
   const SockP = net.Socket && net.Socket.prototype;
   if (SockP) {
-    wrap(SockP, 'connect', (a) => {
+    wrap(SockP, 'connect', (a, sock) => {
+      if (!cur) return;
       let o = a[0];
       if (Array.isArray(o)) o = o[0];
       let port = null; let host = 'localhost';
+      const u = pathOf(o);
+      if (u) { if (sharedService) cur.connect.add(unixKey(u)); return; }
       if (o && typeof o === 'object') { port = o.port; host = o.host || 'localhost'; } else if (o !== undefined) { port = o; host = typeof a[1] === 'string' ? a[1] : 'localhost'; }
-      if (cur && port && /^(localhost|127\.|::1$|0\.0\.0\.0$)/.test(String(host))) cur.connect.add(String(port));
+      if (!port || !/^\d+$/.test(String(port))) return;
+      const h = String(host).toLowerCase();
+      if (LOOPBACK.test(h)) { cur.connect.add(String(Number(port))); return; }
+      if (!sharedService) return;
+      const key = `tcp:${h}:${Number(port)}`;
+      cur.connect.add(key);
+      // one record per connect; a key is public in this file only if every connect to it was (end(): review delta F2)
+      const rec = { pub: false };
+      if (!cur.conns.has(key)) cur.conns.set(key, []);
+      cur.conns.get(key).push(rec);
+      const bare = h.replace(/^\[|\]$/g, '');
+      if (net.isIP(bare)) { rec.pub = isPublic(bare); return; }
+      // a name: public only if every address its lookup reported is public (happy eyeballs reports and tries each:
+      // review delta F1), reported while this file is still open (founder decision: classified at the lookup event)
+      const file = cur;
+      if (sock && typeof sock.on === 'function') {
+        let bad = false;
+        sock.on('lookup', (err, address) => {
+          if (err || !isPublic(address)) { bad = true; rec.pub = false; } else if (!bad && cur === file) rec.pub = true;
+        });
+      }
     });
   }
   require('node:module').syncBuiltinESMExports();
@@ -539,16 +767,74 @@ function readMarkers(dir) {
   return out;
 }
 
-/** Cross-lane hazards between files of different lanes, from their footprints. */
+// keys: root-relative ('a/b', the root itself '.') or absolute ('/x/y'); a root-relative key is never under an
+// absolute one and the reverse (prefix matching compares keys of the same form only, gate note 7)
+
+/** The ancestors of key `d` (nearest first): 'a/b/c' -> ['a/b', 'a', '.']; '/x/y' -> ['/x', '/']. */
+function keyAncestors(d) {
+  const out = [];
+  if (d === '.' || d === '/') return out;
+  let x = d;
+  for (;;) {
+    const i = x.lastIndexOf('/');
+    if (i < 0) { out.push('.'); return out; }
+    x = i === 0 ? '/' : x.slice(0, i);
+    out.push(x);
+    if (x === '/') return out;
+  }
+}
+
+/** Sorted [key, label] entries: the entries equal to `d` or inside it (a contiguous range, found by binary search). */
+function sortedIndex(entries) {
+  entries.sort((x, y) => (x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : 0));
+  const lower = (k) => { let lo = 0; let hi = entries.length; while (lo < hi) { const m = (lo + hi) >> 1; if (entries[m][0] < k) lo = m + 1; else hi = m; } return lo; };
+  return {
+    under(d) {
+      if (d === '.') return entries.filter((e) => !e[0].startsWith('/'));
+      const out = [];
+      // (for '/' the prefix scan below already starts at '/' itself)
+      if (d !== '/') for (let i = lower(d); i < entries.length && entries[i][0] === d; i++) out.push(entries[i]);
+      const pre = d === '/' ? '/' : `${d}/`; // the root directory: every absolute key (/review F6)
+      for (let i = lower(pre); i < entries.length && entries[i][0].startsWith(pre); i++) out.push(entries[i]);
+      return out;
+    },
+  };
+}
+
+/**
+ * Cross-lane hazards between files of different lanes, from their footprints. Kinds: read-write, write-write (one
+ * key), list-write (a write of a direct child of a listed dir), port (listen-listen, connect to a listener),
+ * recursive-write (a recursive write root and any key of the other file inside it, a plain listing of its
+ * parent, or a recursive listing of one of its ancestors), recursive-read (a recursive read root and a write inside it), shared-service (two files connecting to
+ * the same loopback port, unix socket or tcp host:port, unless both found that address public). One hazard per file pair (the first found).
+ */
 function hazards(markers, laneOf) {
   const writers = new Map();
   const listeners = new Map();
+  const connectors = new Map();
+  const pubOf = new Map(); // label -> tcp keys whose address that file found public
+  const plainListers = new Map(); // dir listed by a plain readdir / opendir -> labels
+  const recListers = new Map(); // dir listed recursively (readdir {recursive}, cp source) -> labels
+  const anyKeys = []; // [key, label] of r, w, l, wr, lr
+  const writeKeys = []; // [key, label] of w, wr
+  const plainWrites = []; // [key, label] of w
+  const S = (f, n) => (Array.isArray(f[n]) ? f[n] : []);
+  const push = (m, k, label) => { if (!m.has(k)) m.set(k, []); m.get(k).push(label); };
   for (const [label, m] of markers) {
     const f = m.footprint;
     if (!f) continue;
-    for (const w of f.w) { if (!writers.has(w)) writers.set(w, []); writers.get(w).push(label); }
-    for (const p of f.listen) { if (!listeners.has(p)) listeners.set(p, []); listeners.get(p).push(label); }
+    for (const w of S(f, 'w')) { push(writers, w, label); plainWrites.push([w, label]); writeKeys.push([w, label]); }
+    for (const w of S(f, 'wr')) writeKeys.push([w, label]);
+    for (const p of S(f, 'listen')) push(listeners, p, label);
+    for (const p of S(f, 'connect')) push(connectors, p, label);
+    pubOf.set(label, new Set(S(f, 'pub')));
+    for (const d of S(f, 'l')) push(plainListers, d, label);
+    for (const d of S(f, 'lr')) push(recListers, d, label);
+    for (const n of ['r', 'w', 'l', 'wr', 'lr']) for (const k of S(f, n)) anyKeys.push([k, label]);
   }
+  const anyIdx = sortedIndex(anyKeys);
+  const writeIdx = sortedIndex(writeKeys);
+  const plainIdx = sortedIndex(plainWrites);
   const out = new Map(); // "a\0b" -> {a, b, kind, what}
   const lane = (l) => (laneOf.has(l) ? laneOf.get(l) : null);
   const addH = (a, b, kind, what) => {
@@ -562,16 +848,46 @@ function hazards(markers, laneOf) {
   for (const [label, m] of markers) {
     const f = m.footprint;
     if (!f) continue;
-    for (const r of f.r) for (const w of writers.get(r) || []) addH(label, w, 'read-write', r);
-    for (const r of f.w) for (const w of writers.get(r) || []) addH(label, w, 'write-write', r);
-    for (const d of f.l) {
-      const pre = d.endsWith('/') ? d : `${d}/`;
-      for (const [p, ws] of writers) if (p.startsWith(pre) && !p.slice(pre.length).includes('/')) for (const w of ws) addH(label, w, 'list-write', d);
+    for (const r of S(f, 'r')) for (const w of writers.get(r) || []) addH(label, w, 'read-write', r);
+    for (const r of S(f, 'w')) for (const w of writers.get(r) || []) addH(label, w, 'write-write', r);
+    for (const d of S(f, 'l')) {
+      for (const [p, w] of plainIdx.under(d)) {
+        if (p === d) continue;
+        const rest = d === '.' ? p : p.slice(d.length + 1);
+        if (!rest.includes('/')) addH(label, w, 'list-write', d);
+      }
     }
-    for (const p of f.listen) for (const o of listeners.get(p) || []) addH(label, o, 'port', p);
-    for (const p of f.connect) for (const o of listeners.get(p) || []) addH(label, o, 'port', p);
+    for (const p of S(f, 'listen')) for (const o of listeners.get(p) || []) addH(label, o, 'port', p);
+    for (const p of S(f, 'connect')) for (const o of listeners.get(p) || []) addH(label, o, 'port', p);
+    // a tcp key pairs unless both files found its address public (founder decision 2026-11-26 "nome A"; a footprint
+    // without `pub`, an older marker, pairs: the safe side)
+    if (process.env.DETJS_HAZARD_SHARED_SERVICE !== '0') {
+      for (const p of S(f, 'connect')) {
+        for (const o of connectors.get(p) || []) {
+          if (p.startsWith('tcp:') && pubOf.get(label).has(p) && pubOf.get(o) && pubOf.get(o).has(p)) continue;
+          addH(label, o, 'shared-service', p);
+        }
+      }
+    }
+    for (const d of S(f, 'wr')) {
+      for (const [, o] of anyIdx.under(d)) addH(label, o, 'recursive-write', d);
+      // a plain listing sees only direct children: it sees D appear or go only when it lists dirname(D); a
+      // recursive listing sees everything below it (founder decision 2026-11-25, B1)
+      const anc = keyAncestors(d);
+      if (anc.length) for (const o of plainListers.get(anc[0]) || []) addH(label, o, 'recursive-write', d);
+      for (const a of anc) for (const o of recListers.get(a) || []) addH(label, o, 'recursive-write', d);
+    }
+    for (const d of S(f, 'lr')) for (const [, o] of writeIdx.under(d)) addH(label, o, 'recursive-read', d);
   }
   return [...out.values()].sort((x, y) => (x.a < y.a ? -1 : x.a > y.a ? 1 : x.b < y.b ? -1 : x.b > y.b ? 1 : 0));
+}
+
+/** The footprint's skip dirs as the lanes applied them: effective (root-relative under the root) and ignored, with why. */
+function skipMeta(root) {
+  const rootR = realDir(path.resolve(root));
+  const { skip, ignored } = footprintSkip(rootR, footprintSkipCandidates());
+  const rel = (d) => (d.startsWith(rootR + path.sep) ? d.slice(rootR.length + 1).split(path.sep).join('/') : d);
+  return { skip_dirs: skip.map((d) => rel(d.slice(0, -path.sep.length))), skip_dirs_ignored: ignored };
 }
 
 /** Real start and end of each file (ms after the first start): how the lanes overlapped. */
@@ -643,6 +959,7 @@ function collect(root, dir, keysIn, plan, { shared, planned, write = true } = {}
       },
       placement: { processes: [...procs.values()], deviations, waited_seconds: Math.round(waited * 1000) / 1000, spans: spansOf(markers, keys) },
       hazards: hz,
+      ...skipMeta(root),
     });
     lines.push(`detjs: parallel: ${plan.workers} lanes, plan ${plan.digest}${plan.replayed ? ' (replayed)' : plan.sticky ? ' (sticky)' : ''}; `
       + `${keys.length} files; ${deviations.length} placement deviations; ${hz.length} cross-worker hazards; ${carried.length} files with carried state`);
@@ -653,7 +970,10 @@ function collect(root, dir, keysIn, plan, { shared, planned, write = true } = {}
   // what serial costs, shown to the user (audit G-1458): the test-file time of this run, and the same files over the
   // machine's CPUs with a plan over these durations (ESTIMATED); for a parallel run, the lanes' wall time
   try {
-    const durs = keys.map((k) => markers.get(k)).filter((m) => m && typeof m.start === 'number').map((m) => [m.label, Math.max(0, m.end - m.start) / 1000]);
+    // the markers whose start and end are both numbers (C3, /review): a marker without end (its file's leave() did not
+    // run) made the test-file time NaN, written null
+    const timed = keys.map((k) => markers.get(k)).filter((m) => m && typeof m.start === 'number' && typeof m.end === 'number');
+    const durs = timed.map((m) => [m.label, Math.max(0, m.end - m.start) / 1000]);
     const total = durs.reduce((a, [, d]) => a + d, 0);
     const r3 = (x) => Math.round(x * 1000) / 1000;
     if (durs.length) {
@@ -669,8 +989,12 @@ function collect(root, dir, keysIn, plan, { shared, planned, write = true } = {}
           lines.push(`detjs: serial run: ${durs.length} files, ${r3(total)} s of test-file time (MEASURED); with --det-workers=${cpus} (this machine's CPUs) about ${r3(est)} s (ESTIMATED: a plan over these durations, worker start-up not counted)`);
         }
       } else {
-        const t0 = Math.min(...keys.map((k) => markers.get(k)).filter(Boolean).map((m) => m.start));
-        const t1 = Math.max(...keys.map((k) => markers.get(k)).filter(Boolean).map((m) => m.end));
+        // C3 (spec "false greens on release-1"): over `timed`, the markers `durs` is computed from (non-empty here); a
+        // marker without start or end made this NaN, written null, which the runner reads as "proof incomplete" on a
+        // clean run. A timing field only: completeness is the outcome records' (exit-status countStatus: a test with no
+        // record is `missing`, failed) and the hazard re-run's accounting
+        const t0 = Math.min(...timed.map((m) => m.start));
+        const t1 = Math.max(...timed.map((m) => m.end));
         meta.timing = { files: durs.length, test_file_seconds: r3(total), lanes_wall_seconds: r3((t1 - t0) / 1000) };
         lines.push(`detjs: parallel: ${r3(total)} s of test-file time ran in ${r3((t1 - t0) / 1000)} s across ${plan.workers} lanes (MEASURED, first file start to last file end, worker start-up included)`);
       }
@@ -682,6 +1006,6 @@ function collect(root, dir, keysIn, plan, { shared, planned, write = true } = {}
 }
 
 module.exports = {
-  PLACEMENT_VARS, workerCount, defaultWorkers, resolveWorkers, makePlan, readReplay, writeRunPlan, enter, leave, markDone, installFootprint, skipDirs,
+  PLACEMENT_VARS, workerCount, defaultWorkers, resolveWorkers, makePlan, readReplay, writeRunPlan, enter, leave, markDone, installFootprint, skipDirs, footprintSkip,
   carriedBefore, carriedAfter, collect, loadState, statePath, hazards,
 };

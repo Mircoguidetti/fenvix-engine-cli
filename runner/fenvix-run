@@ -75,7 +75,8 @@ established) no ``proof`` is written.
 
 **Two run-level signals**, on every Node summary (parallel or not): ``provable_absent`` (the header's, or null: the
 run could not watch what tests touched; also set when the header declares no sensor, ``meta.provable``, and gives no
-reason) and ``not_proven_outside`` (the number of ``meta.not_proven_outside_tests``:
+reason, or declares one the core's rule refuses: an unknown sensor, another contract, an unaudited runtime, a control
+the sensor's accounting rests on switched off: ``sensor_refusal``) and ``not_proven_outside`` (the number of ``meta.not_proven_outside_tests``:
 uncontrolled reads outside the tests, such as ``env:<name>``; not a count of tests). Either one firing makes the
 top-level ``not_proven`` at least 1 and the exit 1 when it was 0. Known limit: after a hazard re-run the merged header
 keeps the first pass's meta, so a signal raised only in the re-run is not seen.
@@ -773,14 +774,62 @@ def node_proof(meta: dict, footer: dict | None, outcomes: dict, reused_outcomes:
 
 # Job variables that steer what detjs records: a hidden footprint (skip dirs), the engine acting as one of its own child
 # passes (it then skips the one-lane re-run and the hazard accounting), another marker directory, controls turned off.
-# The trace does not show them, so a proof under any of them is not given.
+# The trace does not show them, so a proof under any of them is not given. DETJS_HAZARD_RECURSIVE and
+# DETJS_HAZARD_SHARED_SERVICE switch hazard kinds off for measurement only (spec parallel-proof-gaps, gate note 9): any
+# value, 1 included, gives no proof (fail closed: the switch has no job outside a measurement).
 PROOF_ENV = ("DETJS_FOOTPRINT_SKIP_DIRS", "DETJS_CACHE_SKIP_DIRS", "DETJS_HAZARD_RERUN", "DETJS_HAZARD_PASS",
-             "DETJS_EPOCH_RUN", "DETJS_ISOLATE_CHILD", "DETJS_DIR", "DETJS_DISABLE")
+             "DETJS_EPOCH_RUN", "DETJS_ISOLATE_CHILD", "DETJS_DIR", "DETJS_DISABLE",
+             "DETJS_HAZARD_RECURSIVE", "DETJS_HAZARD_SHARED_SERVICE")
 
 
 def proof_env(env: dict) -> str | None:
     """The first PROOF_ENV variable the job sets (non-empty), else None."""
     return next((k for k in PROOF_ENV if env.get(k)), None)
+
+
+# The core's rule for a run's sensor declaration (crates/detpy-core/src/provable.rs `judge`, clauses 1-3: a known
+# sensor, this contract, an audited runtime, every control the sensor's accounting rests on). The engine exposes the
+# judgement only through `verify`, so it is ported here (spec "false greens on release-1", C4); the parity test feeds
+# the core's own judge cases to both (tests/test_runner_proof.py, through `detjs verify`). The accounting table's
+# digest (`surface`) is build data, checked by the verifier, not here.
+_SENSOR_CONTRACT = 1  # provable.rs SENSOR_CONTRACT
+_AUDITED_RUNTIMES = ("cpython3.12", "cpython3.13", "cpython3.14", "node22", "node24", "node26")  # AUDITED_RUNTIMES
+_SENSOR_CACHE_REUSE = "cache-reuse/1"
+_PY_CONTROLS = ("time", "seeds", "fs", "net", "env", "os", "tz", "locale", "hashseed")
+_NODE_CONTROLS = ("time", "seeds", "fs", "net", "timers")
+
+
+def _required_controls(sensor: str) -> tuple[str, ...]:
+    """provable.rs required_controls: an unknown sensor requires every control both shells rest on."""
+    if sensor.startswith("py-"):
+        return _PY_CONTROLS
+    if sensor.startswith("node-") or sensor == _SENSOR_CACHE_REUSE:
+        return _NODE_CONTROLS
+    return tuple(dict.fromkeys(_PY_CONTROLS + _NODE_CONTROLS))
+
+
+def sensor_refusal(meta: dict) -> str | None:
+    """Why the header's ``meta.provable`` does not stand as "watched" (None when it does): judge's clauses 1-3."""
+    p = meta.get("provable")
+    if not isinstance(p, dict):
+        return "the run declared no sensor"
+    sensor = p.get("sensor")
+    if not isinstance(sensor, str) or not sensor:
+        return "the run declared no sensor"
+    if not (sensor.startswith("py-") or sensor.startswith("node-") or sensor == _SENSOR_CACHE_REUSE):
+        return f"sensor {sensor} is not one the engine has a rule for"
+    contract = p.get("contract")
+    if isinstance(contract, bool) or contract != _SENSOR_CONTRACT:
+        return f"sensor {sensor} speaks contract {contract!r}, the engine speaks {_SENSOR_CONTRACT}"
+    runtime = p.get("runtime")
+    if runtime not in _AUDITED_RUNTIMES:
+        return f"the accounting table was not audited against {runtime!r}"
+    controls = meta.get("controls")
+    on = [c for c in controls if isinstance(c, str)] if isinstance(controls, list) else []
+    for need in _required_controls(sensor):
+        if need not in on:
+            return f"the run had the control `{need}` off, and the engine's accounting rests on it"
+    return None
 
 
 def engine_signals(meta: dict) -> tuple[str | None, int]:
@@ -790,10 +839,11 @@ def engine_signals(meta: dict) -> tuple[str | None, int]:
         pa = json.dumps(pa)  # an unexpected shape still fires: never green on it
     elif pa == "":
         pa = "the run gave no reason"
-    elif pa is None and not isinstance(meta.get("provable"), dict):
-        # neither a sensor nor a reason (node/src/session.js provableField returns {} when no process declared one):
-        # the run cannot show what tests touched
-        pa = "the run declared no sensor"
+    elif pa is None:
+        # neither a sensor nor a reason (node/src/session.js provableField returns {} when no process declared one),
+        # or a declaration the core would refuse (an unknown sensor, a required control off: C4): the run cannot
+        # show what tests touched
+        pa = sensor_refusal(meta)
     npo = meta.get("not_proven_outside_tests")
     n = len(npo) if isinstance(npo, list) else (1 if npo else 0)
     return pa, n
@@ -981,6 +1031,17 @@ def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
             or not isinstance(cs, dict):
         log(f"error: unreadable detjs output ({outcomes_p}, {trace_p} or {csum_p}): exit 2")
         return 2
+    # C5 (spec "false greens on release-1"): counts that are not whole numbers ("status": {"failed": "x"}) made
+    # int(...) below raise, a traceback and no summary.json. The run's outcome is then unknown: exit 2, written in the
+    # summary (status_error), the malformed counts never read
+    bad = {k: status[k] for k in ("failed", "not_proven", "passed", "skipped") if k in status and not _whole(status[k])}
+    status_error = None
+    if bad:
+        status_error = (f"the trace header's status counts are not whole numbers "
+                        f"({', '.join(f'{k}={v!r}' for k, v in bad.items())}): the run's outcome is unknown")
+        log(f"error: {status_error}: exit 2")
+        code = 2
+        status = {}
     outcomes: dict[str, str] = res.get("outcomes", {})
     rec = read_receipts(receipts)
     # per-test rows (`file::test`) count the tests; file rows (and a shared-process unit) carry the recorded time
@@ -1086,6 +1147,7 @@ def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
         "failed": real,
         "not_proven": not_proven,
         "status": status or None,
+        "status_error": status_error,
         "provable_absent": provable_absent,
         "not_proven_outside": np_outside,
         "flaky": [{"nodeid": n, "replay": f"{c}  # alone, without the cache: passes",

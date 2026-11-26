@@ -254,6 +254,25 @@ test('criterion 4 (parallel wrapper): protects=a part the merge cannot read make
   assert.match(r.stderr, /detjs: status: unknown \(unreadable trace parts, their tests are not counted: .*\): exit 2, NOT PROVEN/, r.show);
 });
 
+// /review (2026-11-26): finishRerun reports the re-run as complete only when the merged trace holds it
+test('criterion 4 (parallel wrapper, outcomes): protects=an unreadable part makes finishRerun return complete: false, so the --det-outcomes file keeps pass 1 and does not say the one-lane re-run was reported; fails_when=complete stays true on the exit-2 path; no_claim=main()', T, () => {
+  const t1 = path.join(dir, 'skip2-t1.jsonl');
+  const ok = (id, outcome) => testLine(id, 0, outcome, { payload: 'p' });
+  const noEvents = JSON.stringify({ type: 'test', nodeid: 'tests/z.test.js::lost', index: 1, outcome: 'failed' });
+  const meta = { parallel: { hazards: [{ a: 'tests/h.test.js', b: 'tests/k.test.js' }] } };
+  fs.writeFileSync(t1, `${headerLine(meta)}\n${ok('tests/h.test.js::a', 'passed')}\n${noEvents}\n${ok('tests/k.test.js::b', 'passed')}\n`);
+  const t2 = path.join(dir, 'skip2-t2.jsonl');
+  fs.writeFileSync(t2, `${headerLine({})}\n${ok('tests/h.test.js::a', 'passed')}\n${ok('tests/k.test.js::b', 'passed')}\n`);
+  const r = child(`
+    const { finishRerun } = require(${JSON.stringify(path.join(SRC, 'parallel-rerun'))});
+    const out = finishRerun({ t1Path: ${JSON.stringify(t1)}, t2Path: ${JSON.stringify(t2)}, status1: 0, status2: 0, affected: ['tests/h.test.js', 'tests/k.test.js'], tracePath: ${JSON.stringify(t1)}, root: ${JSON.stringify(dir)} });
+    process.stdout.write(JSON.stringify({ status: out.status, complete: out.complete }));
+  `);
+  const out = JSON.parse(r.stdout);
+  assert.equal(out.status, 2, r.show);
+  assert.equal(out.complete, false, r.show);
+});
+
 test('criterion 4 (session): protects=a worker part the merge cannot read makes the run exit 2 with the unknown line, every test passing; fails_when=the part is skipped and the run exits 0 (src/session.js printed one line and went on); no_claim=how a real part gets corrupted (injected: a line that is not JSON appended before the merge)', T, () => {
   const d = project('merge-skip', PASSING);
   const r = detjs(d, ['--det-workers=1'], { NODE_OPTIONS: `--require ${HOOK}`, BIG_TRACE_HOOK: 'merge-skip' });

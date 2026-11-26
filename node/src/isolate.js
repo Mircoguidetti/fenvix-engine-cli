@@ -175,7 +175,10 @@ async function main(runner, argv) {
     process.stderr.write(col.stderr || '');
     process.stderr.write(`detjs ${runner} --det-isolate: the collection run failed (exit ${col.status}); the run is reported failed\n`);
   }
-  let header = null;
+  // the header of every per-test session that wrote a trace, merged below (src/isolate-meta.js): a later session's
+  // signals (a read outside any test, a sensor that could not start) are the run's too
+  const sessionMetas = [];
+  const sessionLabels = [];
   groups.forEach((g, i) => {
     const tr = path.join(work, `t-${i}.jsonl`);
     const rc = path.join(work, `r-${i}.jsonl`);
@@ -185,7 +188,9 @@ async function main(runner, argv) {
     const r = runSession({ det: [`--det-trace=${tr}`, `--det-cache-receipts=${rc}`, `--det-cache-summary=${sm}`] },
       [...fileArg, '-t', `^${g.pattern}$`], { DETJS_CACHE_SCOPE: scope });
     const t = readTrace(tr);
-    if (t && !header) header = t.header;
+    // a trace with records but no header line still counts its tests: its meta is then empty, so the merge finds
+    // no sensor for that session and fails closed (/review F2)
+    if (t) { sessionMetas.push((t.header && t.header.meta) || {}); sessionLabels.push(g.ids[0]); }
     const mine = t ? t.tests.filter((x) => g.ids.includes(x.nodeid)) : [];
     const outcomes = g.ids.map((id) => { const x = mine.find((m) => m.nodeid === id); return x ? x.outcome : 'missing'; });
     const s = readJson(sm);
@@ -215,7 +220,9 @@ async function main(runner, argv) {
     fs.writeFileSync(p, `${JSON.stringify({ type: 'header', format: 'detpy-trace', version: 1, encoding: 2, meta: {}, order: [] })}\n${JSON.stringify(x)}\n`);
     parts.push(p);
   });
-  const meta = { ...((header && header.meta) || {}) };
+  const merged = require('./isolate-meta').mergeSessionMeta(sessionMetas, sessionLabels, argv);
+  const meta = merged.meta;
+  for (const why of merged.failClosed) process.stderr.write(`detjs ${runner} --det-isolate: NOT PROVEN: ${why}\n`);
   meta.isolate_tests = true;
   meta.isolation = `${runner}: --det-isolate, one runner session (a fresh worker process) per test`;
   meta.files = [...new Set(records.map((x) => x.nodeid.split('::', 1)[0]))];

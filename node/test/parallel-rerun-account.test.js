@@ -112,3 +112,135 @@ test('B1: notProvenFiles[].tests sum to the unaccounted tests, one entry per fil
   assert.equal(r.notProvenFiles.reduce((a, x) => a + x.tests, 0), r.unaccounted.length);
   assert.match(r.notProvenFiles[1].cause, /^b\.test\.js: the one-lane re-run ran 0 of its 3 test\(s\)$/);
 });
+
+// founder decision 2026-11-26 ("alakajam A"): alakajam's server/core/rate-limiter.spec.ts is a whole-file describe.skip.
+// Its tests never start in the first pass nor in the one-lane re-run (B5 never-started records both times), and the
+// re-run was NOT PROVEN / incomplete because a never-started re-run record never accounts for a test.
+// protects=a test that never started in the first pass is accounted for by a re-run record of it (never started
+// again); fails_when=such a file makes the re-run incomplete; no_claim=a test the first pass RAN still needs a re-run
+// record that ran (the test above, unchanged)
+test('accountRerun: a test that never started in the first pass is accounted for by its never-started re-run record', () => {
+  const never = (id) => ({ nodeid: id, outcome: 'skipped', never_started: true });
+  const first = [rec('a.test.js::1'), never('a.test.js::skipped 1'), never('a.test.js::skipped 2')];
+  const r = accountRerun(first, [rec('a.test.js::1'), never('a.test.js::skipped 1'), never('a.test.js::skipped 2')], ['a.test.js']);
+  assert.equal(r.complete, true);
+  assert.deepEqual(r.notProven, []);
+  // a never-started first-pass test the re-run does not report at all is still NOT PROVEN
+  const r2 = accountRerun(first, [rec('a.test.js::1'), never('a.test.js::skipped 1')], ['a.test.js']);
+  assert.equal(r2.complete, false);
+  assert.deepEqual(r2.notProven, ['a.test.js::skipped 2']);
+});
+
+// /review (2026-11-26, F5): two tests with one id in the first pass, one ran and one never started
+// protects=a test the first pass ran needs a re-run record that ran, even when a second record of the same id never
+// started; fails_when=the never-started duplicate makes a never-started re-run record account for the test that ran;
+// no_claim=how a runner gives two tests one id (detjs numbers duplicates `name #2`)
+test('accountRerun: a never-started duplicate does not let a test the first pass ran go unproven', () => {
+  const never = (id) => ({ nodeid: id, outcome: 'skipped', never_started: true });
+  const r = accountRerun([rec('f.js::t'), never('f.js::t')], [never('f.js::t')], ['f.js']);
+  assert.equal(r.complete, false);
+  assert.deepEqual(r.notProven, ['f.js::t', 'f.js::t']);
+});
+
+// /review (2026-11-26, F9): mergeOutcomes
+// protects=the re-run's outcome replaces pass 1's for the tests pass 1 reported, a test only the re-run ran (outside a
+// --det-order selection: the re-run runs whole files) is not added, and an outcomes file the first pass did not write
+// is left alone; fails_when=a re-run-only test enters the order or outcomes (repro-p041 "--det-order that interleaves
+// files"), or a stale file of an earlier run is rewritten and stamped as this run's re-run; no_claim=main()'s spawning
+test('mergeOutcomes: pass 1\'s tests take the re-run outcome, no test is added; a file pass 1 did not write is not touched', () => {
+  const { mergeOutcomes } = require('../src/parallel-rerun');
+  const fs = require('node:fs'); const os = require('node:os'); const path = require('node:path');
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'mo-'));
+  const o1 = path.join(d, 'o1.json'); const o2 = path.join(d, 'o2.json');
+  fs.writeFileSync(o1, JSON.stringify({ order: ['a.js::1', 'b.js::1'], outcomes: { 'a.js::1': 'failed', 'b.js::1': 'passed' }, fingerprints: {}, exceptions: { 'a.js::1': ['E'] } }));
+  fs.writeFileSync(o2, JSON.stringify({ order: ['a.js::1', 'a.js::new'], outcomes: { 'a.js::1': 'passed', 'a.js::new': 'failed' }, fingerprints: {}, exceptions: {} }));
+  mergeOutcomes(o1, o2, ['a.js'], true, { selected: true });
+  const m = JSON.parse(fs.readFileSync(o1, 'utf8'));
+  assert.deepEqual(m.outcomes, { 'a.js::1': 'passed', 'b.js::1': 'passed' });
+  assert.deepEqual(m.order, ['a.js::1', 'b.js::1']);
+  assert.equal(m.exceptions['a.js::1'], undefined);
+  assert.equal(m.hazard_rerun.reported, 'one-lane re-run');
+  const before = fs.readFileSync(o1, 'utf8');
+  mergeOutcomes(o1, o2, ['a.js'], true, { fresh: false });
+  assert.equal(fs.readFileSync(o1, 'utf8'), before);
+});
+
+// second /review pass (finding 1): without a --det-order selection the re-run-only tests are added
+// protects=a hazard file whose pass-1 worker died before writing its outcomes still has its re-run outcomes (and
+// failures) in the outcomes file, as in the merged trace; fails_when=only pass 1's ids are rewritten in a run without
+// --det-order (the file records less than the trace); no_claim=main()'s choice of `selected` (opts.order)
+test('mergeOutcomes: without --det-order a test only the re-run reported is added to outcomes and order', () => {
+  const { mergeOutcomes } = require('../src/parallel-rerun');
+  const fs = require('node:fs'); const os = require('node:os'); const path = require('node:path');
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'mo2-'));
+  const o1 = path.join(d, 'o1.json'); const o2 = path.join(d, 'o2.json');
+  fs.writeFileSync(o1, JSON.stringify({ order: ['b.js::1'], outcomes: { 'b.js::1': 'passed' }, fingerprints: {}, exceptions: {} }));
+  fs.writeFileSync(o2, JSON.stringify({ order: ['a.js::1'], outcomes: { 'a.js::1': 'failed' }, fingerprints: { 'a.js::1': 'f' }, exceptions: { 'a.js::1': ['E'] } }));
+  mergeOutcomes(o1, o2, ['a.js'], true, { selected: false });
+  const m = JSON.parse(fs.readFileSync(o1, 'utf8'));
+  assert.deepEqual(m.outcomes, { 'b.js::1': 'passed', 'a.js::1': 'failed' });
+  assert.deepEqual(m.order, ['b.js::1', 'a.js::1']);
+  assert.deepEqual(m.exceptions['a.js::1'], ['E']);
+});
+
+test('mergeOutcomes: an incomplete re-run, or one whose outcomes file cannot be read, leaves pass 1\'s outcomes (Testing pass)', () => {
+  // protects=fail closed: the outcomes file says what the merged trace says, and an incomplete re-run is not in the
+  // trace as reported, so its outcomes must not replace pass 1's; hazard_rerun names the run reported; an unreadable
+  // pass-1 file is left as it is; fails_when=complete is ignored, an unreadable o2 throws or blanks pass 1, or a
+  // corrupt o1 is overwritten; no_claim=main()'s wiring (the integration test in parallel-proof-gaps.test.js)
+  const { mergeOutcomes } = require('../src/parallel-rerun');
+  const fs = require('node:fs'); const os = require('node:os'); const path = require('node:path');
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'mo3-'));
+  const o1 = path.join(d, 'o1.json'); const o2 = path.join(d, 'o2.json');
+  const first = { order: ['a.js::1'], outcomes: { 'a.js::1': 'failed' }, fingerprints: { 'a.js::1': 'f1' }, exceptions: { 'a.js::1': ['E'] } };
+  fs.writeFileSync(o2, JSON.stringify({ order: ['a.js::1'], outcomes: { 'a.js::1': 'passed' }, fingerprints: { 'a.js::1': 'f2' }, exceptions: {} }));
+  fs.writeFileSync(o1, JSON.stringify(first));
+  mergeOutcomes(o1, o2, ['a.js'], false);
+  let m = JSON.parse(fs.readFileSync(o1, 'utf8'));
+  assert.deepEqual([m.outcomes, m.fingerprints, m.exceptions], [first.outcomes, first.fingerprints, first.exceptions]);
+  assert.equal(m.hazard_rerun.reported, 'first run (the re-run was not complete)');
+  fs.writeFileSync(o1, JSON.stringify(first)); fs.writeFileSync(o2, '{not json');
+  mergeOutcomes(o1, o2, ['a.js'], true);
+  m = JSON.parse(fs.readFileSync(o1, 'utf8'));
+  assert.deepEqual(m.outcomes, first.outcomes);
+  assert.equal(m.hazard_rerun.reported, 'first run (the re-run wrote no outcomes file)');
+  fs.writeFileSync(o1, '{corrupt');
+  mergeOutcomes(o1, o2, ['a.js'], true);
+  assert.equal(fs.readFileSync(o1, 'utf8'), '{corrupt');
+});
+
+test('mergeOutcomes: a complete re-run whose outcomes file lacks a pass-1 test of a hazard file drops that test\'s pass-1 entry (/review delta, finding 3)', () => {
+  // protects=the outcomes file never contradicts the merged trace, which holds the re-run's record of every test of a
+  // complete re-run: a pass-1 value with no re-run counterpart is dropped (absent, not wrong; the trace is the
+  // authority); fails_when=pass 1's 'passed' stays while the trace reports the re-run's 'failed'; no_claim=tests of
+  // files that are not hazard files (kept as pass 1 wrote them)
+  const { mergeOutcomes } = require('../src/parallel-rerun');
+  const fs = require('node:fs'); const os = require('node:os'); const path = require('node:path');
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'mo4-'));
+  const o1 = path.join(d, 'o1.json'); const o2 = path.join(d, 'o2.json');
+  fs.writeFileSync(o1, JSON.stringify({ order: ['a.js::1', 'a.js::2', 'b.js::1'], outcomes: { 'a.js::1': 'passed', 'a.js::2': 'passed', 'b.js::1': 'passed' }, fingerprints: { 'a.js::2': 'f' }, exceptions: {} }));
+  fs.writeFileSync(o2, JSON.stringify({ order: ['a.js::1'], outcomes: { 'a.js::1': 'failed' }, fingerprints: {}, exceptions: {} }));
+  mergeOutcomes(o1, o2, ['a.js'], true);
+  const m = JSON.parse(fs.readFileSync(o1, 'utf8'));
+  assert.equal(m.outcomes['a.js::1'], 'failed');
+  assert.equal(m.outcomes['a.js::2'], undefined, JSON.stringify(m.outcomes));
+  assert.equal(m.fingerprints['a.js::2'], undefined);
+  assert.equal(m.outcomes['b.js::1'], 'passed');
+});
+
+test('mergeOutcomes with --det-order: a listed test pass 1 marked error and the re-run lacks keeps its error (/review delta of 282bb9a4)', () => {
+  // protects=a listed test whose file failed before its tests ran (repro.js marks it error, with no trace record) still
+  // shows its error after the re-run, which drops the selection and need not report it; fails_when=the entry is
+  // dropped and the outcomes file lists the test with no outcome; no_claim=without --det-order (every trace id has an
+  // outcome there, so a missing one is not in the trace either: dropped, finding 3)
+  const { mergeOutcomes } = require('../src/parallel-rerun');
+  const fs = require('node:fs'); const os = require('node:os'); const path = require('node:path');
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'mo5-'));
+  const o1 = path.join(d, 'o1.json'); const o2 = path.join(d, 'o2.json');
+  fs.writeFileSync(o1, JSON.stringify({ order: ['a.js::1'], outcomes: { 'a.js::1': 'error' }, fingerprints: {}, exceptions: { 'a.js::1': ['import failed'] } }));
+  fs.writeFileSync(o2, JSON.stringify({ order: [], outcomes: {}, fingerprints: {}, exceptions: {} }));
+  mergeOutcomes(o1, o2, ['a.js'], true, { selected: true });
+  const m = JSON.parse(fs.readFileSync(o1, 'utf8'));
+  assert.equal(m.outcomes['a.js::1'], 'error', JSON.stringify(m));
+  assert.deepEqual(m.exceptions['a.js::1'], ['import failed']);
+});

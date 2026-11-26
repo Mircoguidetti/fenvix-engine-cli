@@ -32,6 +32,9 @@ function installProcess() {
   const c = cfg();
   if (processInstalled || !c.active) return c.active;
   processInstalled = true;
+  // this process or thread runs test code under the engine's hooks: it must declare a sensor (src/session.js
+  // provableField), else the run declares none
+  require('./provable').markRan(c.dir);
   if (c.controls.has('seeds')) seeds.installProcess(PATCHER, c);
   if (c.controls.has('time')) clock.installProcess(PATCHER, c);
   if (c.controls.has('net')) STATE.netMode = network.installProcess(PATCHER, c);  // design A (2026-11-20): CI-volatile variables pinned, and the host name (each runner has its own)

@@ -1,0 +1,4 @@
+E           AssertionError: ['--det']
+E             F                                                                        [100%]
+E             >       assert isinstance(random.Random(0), _random.Random)
+E             E       AssertionError: assert False
