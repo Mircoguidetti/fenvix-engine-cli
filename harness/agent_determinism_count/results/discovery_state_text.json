@@ -337,29 +337,30 @@
   },
   "committer-date:>=2024-01-01 nondeterministic claude test": {
    "capped": false,
-   "done": false,
-   "leaf_total": 368,
-   "leaves": 2,
-   "nodes": 6,
+   "done": true,
+   "leaf_total": 19871,
+   "leaves": 33,
+   "nodes": 64,
    "prepass_total": 19826,
-   "stack": [
-    [
-     "2026-03-06",
-     "2026-04-08"
-    ],
-    [
-     "2026-04-09",
-     "2026-05-11"
-    ],
-    [
-     "2026-05-12",
-     "2026-07-16"
-    ],
-    [
-     "2026-07-17",
-     "2026-11-25"
-    ]
-   ]
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 nondeterministic gemini test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 422,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 422,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 nondeterministic gpt test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 1944,
+   "leaves": 5,
+   "nodes": 8,
+   "prepass_total": 1935,
+   "stack": []
   },
   "committer-date:>=2024-01-01 nondeterministic llm test": {
    "capped": false,
@@ -2443,13 +2444,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 1132
+  "issues": 1421
  },
  "search_stats": {
-  "429": 62,
+  "429": 78,
   "limit": 30,
-  "remaining": 27,
-  "reset": 1795656200
+  "remaining": 17,
+  "reset": 1795657956
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
