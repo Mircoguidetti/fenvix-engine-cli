@@ -1326,8 +1326,10 @@ def test_extension_route_guard_tolerates_small_index_drift(tmp_path, monkeypatch
 
         def get(self, path, search=None):
             self.paths.append(path)
-            return 200, {"total_count": self.tc, "incomplete_results": False, "items": []}, {}
-    for got, pre, rc in ((251, 253, 0), (900, 1000, 4), (6, 12, 4), (95, 100, 0)):
+            q = urllib.parse.parse_qs(path.split("?", 1)[1])["q"][0]
+            tc = self.tc if q.endswith(" " + s3.split(" ", 1)[1]) else 0
+            return 200, {"total_count": tc, "incomplete_results": False, "items": []}, {}
+    for got, pre, rc in ((251, 253, 0), (900, 1000, 4), (6, 12, 4), (95, 100, 0), (51826, 52961, 0)):
         for f in ("discovery_state_s3ext.json", "discovery_state_text.json"):
             (tmp_path / f).unlink(missing_ok=True)
         pp = {d["key"]: {"family": d["family"], "stratum": d["stratum"], "status": 200,

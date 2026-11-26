@@ -279,10 +279,11 @@ def run(family: str, route: str, max_minutes: float, deadline: str | None, ext: 
             # coordinator 09:30Z (route switch): a session-route answer below the workflow route's pre-pass answer
             # for the same root range stops discovery for a report
             # extension (coordinator 11:31Z): only when lower by more than 1% AND by more than 5 hits (the pre-pass is
-            # a day older; 251 vs 253 for 'xfail "model output" test' is the commit index changing)
+            # a day older; 251 vs 253 for 'xfail "model output" test' is the commit index changing); never for a
+            # capped query (coordinator 13:13Z: its total only feeds N_S3 and changes no candidate)
             low = tc0 - (first.get("total_count") or 0)
             if route == "session" and s1 == 200 and [a, b] == [a0, b0] and low > 0 \
-                    and (not ext or (low > 0.01 * tc0 and low > 5)):
+                    and (not ext or (low > 0.01 * tc0 and low > 5 and tc0 <= R.QUERY_CAP)):
                 st["route_check"] = {"query": d["key"], "session": first.get("total_count"), "workflow": tc0,
                                      "at": now()}
                 _save(sp, st)

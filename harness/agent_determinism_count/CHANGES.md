@@ -113,3 +113,10 @@
     rebuild, S3 catches up in its own §4.1 order, so S3's first 300 are still read in order. The reading order inside
     a stratum is seeded, so this changes only when S3 is read, not which S3 candidates are read. Chunks 1 (S1) and 2
     (S2/S3 one to one) were read before the note.
+15. 2026-11-26 13:13Z, a coordinator change to the coordinator's route guard. At 13:11Z the S3 extension stopped on
+    'committer-date:>=2024-01-01 unstable anthropic test': 51,826 on the session route, against 52,961 in the
+    workflow pre-pass of 2026-11-25 (1,135 fewer, 2.1%). That query is above QUERY_CAP, so it is capped and not
+    bisected: its total only feeds N_S3 and changes no candidate. The guard therefore no longer applies to capped
+    queries (pre-pass total above QUERY_CAP). It stays for bisected queries at more than 1% AND more than 5 hits.
+    The hard stop 17:20:43Z is unchanged. Test: test_extension_route_guard_tolerates_small_index_drift gains this
+    case (it fails before the change).
