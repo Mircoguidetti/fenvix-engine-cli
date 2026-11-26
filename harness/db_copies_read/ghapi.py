@@ -96,8 +96,8 @@ class Client:
         if seconds > 0:
             self._sleep(seconds)
 
-    def _wait(self) -> None:
-        if self.below_floor():
+    def _wait(self, floor: bool = True) -> None:
+        if floor and self.below_floor():
             raise Pause(f"rate floor: remaining {self.remaining} < {FLOOR:.0%} of limit {self.limit}")
         gap = PACE - (self._clock() - self._last)
         if gap > 0:
@@ -127,16 +127,17 @@ class Client:
         except Exception as e:  # network error
             return 0, {}, {"exception": repr(e)[:300]}
 
-    def get(self, path: str) -> tuple[int, object, dict]:
+    def get(self, path: str, floor: bool = True) -> tuple[int, object, dict]:
         """GET ``path``. Returns (status, data, headers).
 
         Rate-limit responses wait (within MAX_SLEEP) and retry; transport errors and 5xx are tried
         FIVE_XX_ATTEMPTS times in all, then the last answer is returned (the caller marks the field incomplete).
-        A 403 that is not a rate-limit response raises AccessDenied."""
+        A 403 that is not a rate-limit response raises AccessDenied. ``floor=False`` is used only for the job's own
+        checkpoint-reference calls on this repository (1-2 attempts, still paced and counted)."""
         p = guard(path)
         fails = 0
         while True:
-            self._wait()
+            self._wait(floor)
             self.n_requests += 1
             st, hd, data = self._transport(p)
             self._rate(hd)

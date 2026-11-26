@@ -179,8 +179,9 @@ def test_checkpoint_reference_is_last_committed_success():
                               {"id": 2, "run_number": 2, "conclusion": "success"},
                               {"id": 1, "run_number": 1, "conclusion": "success"}]}
     c, _ = client([(200, {}, runs)])
+    c.remaining, c.limit = 100, 5000  # below the floor: the own-repo reference call still goes out
     ref = J.reference_run(c, "me/x", "4", committed=lambda r: r in ("1", "2"))
-    assert ref == "2"
+    assert ref == "2" and c.n_requests == 1
     assert J.checkpoint_ok({"run_id": "2"}, "2") and not J.checkpoint_ok({"run_id": "1"}, "2")
     assert not J.checkpoint_ok(None, "2") and J.checkpoint_ok(None, None) and not J.checkpoint_ok({"run_id": "1"}, None)
 

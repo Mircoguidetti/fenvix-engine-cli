@@ -466,7 +466,7 @@ def results_committed(run_id: str) -> bool:
 def reference_run(client: ghapi.Client, self_repo: str, current: str, committed=results_committed) -> str | None:
     """Last run of the workflow with conclusion success that committed its results (gate M1, transport change)."""
     e = client.get(f"repos/{self_repo}/actions/workflows/{WORKFLOW}/runs?branch={urllib.parse.quote(BRANCH)}"
-                   f"&status=success&per_page=30")
+                   f"&status=success&per_page=30", floor=False)
     runs = (e[1] or {}).get("workflow_runs") or []
     runs.sort(key=lambda r: r.get("run_number") or 0, reverse=True)
     for r in runs:
@@ -596,7 +596,13 @@ def main() -> int:
 
     client = ghapi.from_env(log=log)
     cp = load_checkpoint(results)
-    ref = reference_run(client, self_repo, run_id)
+    try:
+        ref = reference_run(client, self_repo, run_id)
+    except ghapi.Pause as e:
+        msg = f"paused before the checkpoint check: {e}"
+        print(msg)
+        chunk({"status": "refused", "note": msg, "attempts": client.n_requests})
+        return 1
     if not checkpoint_ok(cp, ref):
         msg = f"stale checkpoint: checkpoint run_id {cp and cp.get('run_id')} vs last successful run {ref}"
         print(msg)
