@@ -1,0 +1,334 @@
+{
+ "counts": {
+  "excluded_a": 0,
+  "excluded_b": 48,
+  "excluded_neither": 0,
+  "not_excluded": 0
+ },
+ "excluded_a": [],
+ "excluded_a_or_b_ids": [
+  "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get handles unusual env var values without crashing (with seed=-472304597)",
+  "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get handles unusual env var values without crashing (with seed=681040642)",
+  "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths and env objects (with seed=-353753129)",
+  "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths and env objects (with seed=1877703581)",
+  "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths with empty env (with seed=-761512998)",
+  "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths with empty env (with seed=338216713)",
+  "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get with realistic DD_ env vars never throws (with seed=2078613066)",
+  "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get with realistic DD_ env vars never throws (with seed=521317240)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::flatten handles validated containers (with seed=-1317632928)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::flatten handles validated containers (with seed=1354010425)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::getLink handles arbitrary string pairs for container/tag (with seed=1334758639)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::getLink handles arbitrary string pairs for container/tag (with seed=1490196152)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::getLink never throws on arbitrary container and tag (with seed=-622725404)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::getLink never throws on arbitrary container and tag (with seed=1488331959)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::validate accepts valid container-shaped objects (with seed=1244681254)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::validate accepts valid container-shaped objects (with seed=1595001256)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::validate handles arbitrary input without crashing (with seed=-1620511464)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::validate handles arbitrary input without crashing (with seed=-1731615245)",
+  "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask handles undefined correctly (with seed=-1340440988)",
+  "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask handles undefined correctly (with seed=-911570602)",
+  "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask never throws on arbitrary strings (with seed=-1673184404)",
+  "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask never throws on arbitrary strings (with seed=470501457)",
+  "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles arbitrary config objects (with seed=-402790226)",
+  "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles arbitrary config objects (with seed=693916700)",
+  "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles dictionary-like configs (with seed=1749864435)",
+  "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles dictionary-like configs (with seed=24625300)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::diff never throws on arbitrary version strings (with seed=-2069249044)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::diff never throws on arbitrary version strings (with seed=66523016)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater handles semver-like strings (with seed=-1909044317)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater handles semver-like strings (with seed=1237490557)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater never throws on arbitrary version strings (with seed=1320337124)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater never throws on arbitrary version strings (with seed=1911229665)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::parse handles version-like strings (with seed=1234761593)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::parse handles version-like strings (with seed=63168074)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::parse never throws on arbitrary strings (with seed=-1218678106)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::parse never throws on arbitrary strings (with seed=257266903)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::transform either returns a string or throws a regex configuration error (with seed=-493192401)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::transform either returns a string or throws a regex configuration error (with seed=53545685)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles a mix of valid and arbitrary image references (with seed=-2070218910)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles a mix of valid and arbitrary image references (with seed=-527004778)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles realistic image name patterns (with seed=-1087989115)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles realistic image name patterns (with seed=-1195262773)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse roundtrips structured image name components (with seed=-24765924)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse roundtrips structured image name components (with seed=738195279)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name always returns an object with expected fields (with seed=350614029)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name always returns an object with expected fields (with seed=830623743)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name never throws on arbitrary strings (with seed=1310013504)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name never throws on arbitrary strings (with seed=1998157141)"
+ ],
+ "excluded_b": [
+  [
+   "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get handles unusual env var values without crashing (with seed=-472304597)",
+   "pattern configuration/index.fuzz.test.ts::configuration/index fuzz tests::get handles unusual env var values without crashing (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get handles unusual env var values without crashing (with seed=1149628392)",
+   "pattern configuration/index.fuzz.test.ts::configuration/index fuzz tests::get handles unusual env var values without crashing (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths and env objects (with seed=1877703581)",
+   "pattern configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths and env objects (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths and env objects (with seed=851397492)",
+   "pattern configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths and env objects (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths with empty env (with seed=-733730690)",
+   "pattern configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths with empty env (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths with empty env (with seed=-761512998)",
+   "pattern configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths with empty env (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get with realistic DD_ env vars never throws (with seed=2078613066)",
+   "pattern configuration/index.fuzz.test.ts::configuration/index fuzz tests::get with realistic DD_ env vars never throws (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get with realistic DD_ env vars never throws (with seed=779037898)",
+   "pattern configuration/index.fuzz.test.ts::configuration/index fuzz tests::get with realistic DD_ env vars never throws (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "model/container.fuzz.test.ts::model/container fuzz tests::flatten handles validated containers (with seed=-1317632928)",
+   "pattern model/container.fuzz.test.ts::model/container fuzz tests::flatten handles validated containers (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "model/container.fuzz.test.ts::model/container fuzz tests::flatten handles validated containers (with seed=524830199)",
+   "pattern model/container.fuzz.test.ts::model/container fuzz tests::flatten handles validated containers (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "model/container.fuzz.test.ts::model/container fuzz tests::getLink handles arbitrary string pairs for container/tag (with seed=-1704865035)",
+   "pattern model/container.fuzz.test.ts::model/container fuzz tests::getLink handles arbitrary string pairs for container/tag (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "model/container.fuzz.test.ts::model/container fuzz tests::getLink handles arbitrary string pairs for container/tag (with seed=1334758639)",
+   "pattern model/container.fuzz.test.ts::model/container fuzz tests::getLink handles arbitrary string pairs for container/tag (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "model/container.fuzz.test.ts::model/container fuzz tests::getLink never throws on arbitrary container and tag (with seed=-622725404)",
+   "pattern model/container.fuzz.test.ts::model/container fuzz tests::getLink never throws on arbitrary container and tag (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "model/container.fuzz.test.ts::model/container fuzz tests::getLink never throws on arbitrary container and tag (with seed=2133973327)",
+   "pattern model/container.fuzz.test.ts::model/container fuzz tests::getLink never throws on arbitrary container and tag (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "model/container.fuzz.test.ts::model/container fuzz tests::validate accepts valid container-shaped objects (with seed=1198876583)",
+   "pattern model/container.fuzz.test.ts::model/container fuzz tests::validate accepts valid container-shaped objects (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "model/container.fuzz.test.ts::model/container fuzz tests::validate accepts valid container-shaped objects (with seed=1244681254)",
+   "pattern model/container.fuzz.test.ts::model/container fuzz tests::validate accepts valid container-shaped objects (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "model/container.fuzz.test.ts::model/container fuzz tests::validate handles arbitrary input without crashing (with seed=-1731615245)",
+   "pattern model/container.fuzz.test.ts::model/container fuzz tests::validate handles arbitrary input without crashing (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "model/container.fuzz.test.ts::model/container fuzz tests::validate handles arbitrary input without crashing (with seed=593238175)",
+   "pattern model/container.fuzz.test.ts::model/container fuzz tests::validate handles arbitrary input without crashing (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask handles undefined correctly (with seed=-911570602)",
+   "pattern registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask handles undefined correctly (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask handles undefined correctly (with seed=1012463084)",
+   "pattern registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask handles undefined correctly (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask never throws on arbitrary strings (with seed=-1673184404)",
+   "pattern registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask never throws on arbitrary strings (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask never throws on arbitrary strings (with seed=326289860)",
+   "pattern registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask never throws on arbitrary strings (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles arbitrary config objects (with seed=2040217586)",
+   "pattern registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles arbitrary config objects (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles arbitrary config objects (with seed=693916700)",
+   "pattern registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles arbitrary config objects (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles dictionary-like configs (with seed=1749864435)",
+   "pattern registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles dictionary-like configs (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles dictionary-like configs (with seed=640880024)",
+   "pattern registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles dictionary-like configs (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::diff never throws on arbitrary version strings (with seed=-1037023345)",
+   "pattern tag/index.fuzz.test.ts::tag/index fuzz tests::diff never throws on arbitrary version strings (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::diff never throws on arbitrary version strings (with seed=-2069249044)",
+   "pattern tag/index.fuzz.test.ts::tag/index fuzz tests::diff never throws on arbitrary version strings (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater handles semver-like strings (with seed=1237490557)",
+   "pattern tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater handles semver-like strings (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater handles semver-like strings (with seed=2010384024)",
+   "pattern tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater handles semver-like strings (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater never throws on arbitrary version strings (with seed=1320337124)",
+   "pattern tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater never throws on arbitrary version strings (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater never throws on arbitrary version strings (with seed=1584224704)",
+   "pattern tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater never throws on arbitrary version strings (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::parse handles version-like strings (with seed=-761860414)",
+   "pattern tag/index.fuzz.test.ts::tag/index fuzz tests::parse handles version-like strings (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::parse handles version-like strings (with seed=1234761593)",
+   "pattern tag/index.fuzz.test.ts::tag/index fuzz tests::parse handles version-like strings (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::parse never throws on arbitrary strings (with seed=-443880242)",
+   "pattern tag/index.fuzz.test.ts::tag/index fuzz tests::parse never throws on arbitrary strings (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::parse never throws on arbitrary strings (with seed=257266903)",
+   "pattern tag/index.fuzz.test.ts::tag/index fuzz tests::parse never throws on arbitrary strings (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::transform either returns a string or throws a regex configuration error (with seed=1953141159)",
+   "pattern tag/index.fuzz.test.ts::tag/index fuzz tests::transform either returns a string or throws a regex configuration error (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::transform either returns a string or throws a regex configuration error (with seed=53545685)",
+   "pattern tag/index.fuzz.test.ts::tag/index fuzz tests::transform either returns a string or throws a regex configuration error (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles a mix of valid and arbitrary image references (with seed=-527004778)",
+   "pattern watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles a mix of valid and arbitrary image references (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles a mix of valid and arbitrary image references (with seed=2098201077)",
+   "pattern watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles a mix of valid and arbitrary image references (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles realistic image name patterns (with seed=-1195262773)",
+   "pattern watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles realistic image name patterns (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles realistic image name patterns (with seed=1326420034)",
+   "pattern watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles realistic image name patterns (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse roundtrips structured image name components (with seed=-1311957858)",
+   "pattern watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse roundtrips structured image name components (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse roundtrips structured image name components (with seed=-24765924)",
+   "pattern watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse roundtrips structured image name components (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name always returns an object with expected fields (with seed=229412959)",
+   "pattern watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name always returns an object with expected fields (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name always returns an object with expected fields (with seed=830623743)",
+   "pattern watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name always returns an object with expected fields (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name never throws on arbitrary strings (with seed=-1500295800)",
+   "pattern watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name never throws on arbitrary strings (with seed=#): no case (the four results agree)"
+  ],
+  [
+   "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name never throws on arbitrary strings (with seed=1310013504)",
+   "pattern watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name never throws on arbitrary strings (with seed=#): no case (the four results agree)"
+  ]
+ ],
+ "excluded_neither": [],
+ "n_differ": 48,
+ "neutral": true,
+ "not_excluded": [],
+ "repo": "drydock",
+ "variable": [
+  "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get handles unusual env var values without crashing (with seed=-472304597)",
+  "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get handles unusual env var values without crashing (with seed=681040642)",
+  "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths and env objects (with seed=-353753129)",
+  "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths and env objects (with seed=1877703581)",
+  "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths with empty env (with seed=-761512998)",
+  "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths with empty env (with seed=338216713)",
+  "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get with realistic DD_ env vars never throws (with seed=2078613066)",
+  "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get with realistic DD_ env vars never throws (with seed=521317240)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::flatten handles validated containers (with seed=-1317632928)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::flatten handles validated containers (with seed=1354010425)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::getLink handles arbitrary string pairs for container/tag (with seed=1334758639)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::getLink handles arbitrary string pairs for container/tag (with seed=1490196152)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::getLink never throws on arbitrary container and tag (with seed=-622725404)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::getLink never throws on arbitrary container and tag (with seed=1488331959)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::validate accepts valid container-shaped objects (with seed=1244681254)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::validate accepts valid container-shaped objects (with seed=1595001256)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::validate handles arbitrary input without crashing (with seed=-1620511464)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::validate handles arbitrary input without crashing (with seed=-1731615245)",
+  "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask handles undefined correctly (with seed=-1340440988)",
+  "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask handles undefined correctly (with seed=-911570602)",
+  "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask never throws on arbitrary strings (with seed=-1673184404)",
+  "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask never throws on arbitrary strings (with seed=470501457)",
+  "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles arbitrary config objects (with seed=-402790226)",
+  "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles arbitrary config objects (with seed=693916700)",
+  "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles dictionary-like configs (with seed=1749864435)",
+  "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles dictionary-like configs (with seed=24625300)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::diff never throws on arbitrary version strings (with seed=-2069249044)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::diff never throws on arbitrary version strings (with seed=66523016)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater handles semver-like strings (with seed=-1909044317)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater handles semver-like strings (with seed=1237490557)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater never throws on arbitrary version strings (with seed=1320337124)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater never throws on arbitrary version strings (with seed=1911229665)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::parse handles version-like strings (with seed=1234761593)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::parse handles version-like strings (with seed=63168074)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::parse never throws on arbitrary strings (with seed=-1218678106)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::parse never throws on arbitrary strings (with seed=257266903)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::transform either returns a string or throws a regex configuration error (with seed=-493192401)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::transform either returns a string or throws a regex configuration error (with seed=53545685)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles a mix of valid and arbitrary image references (with seed=-2070218910)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles a mix of valid and arbitrary image references (with seed=-527004778)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles realistic image name patterns (with seed=-1087989115)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles realistic image name patterns (with seed=-1195262773)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse roundtrips structured image name components (with seed=-24765924)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse roundtrips structured image name components (with seed=738195279)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name always returns an object with expected fields (with seed=350614029)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name always returns an object with expected fields (with seed=830623743)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name never throws on arbitrary strings (with seed=1310013504)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name never throws on arbitrary strings (with seed=1998157141)"
+ ],
+ "variable_shapes": [
+  "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get handles unusual env var values without crashing (with seed=#)",
+  "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths and env objects (with seed=#)",
+  "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths with empty env (with seed=#)",
+  "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get with realistic DD_ env vars never throws (with seed=#)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::flatten handles validated containers (with seed=#)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::getLink handles arbitrary string pairs for container/tag (with seed=#)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::getLink never throws on arbitrary container and tag (with seed=#)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::validate accepts valid container-shaped objects (with seed=#)",
+  "model/container.fuzz.test.ts::model/container fuzz tests::validate handles arbitrary input without crashing (with seed=#)",
+  "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask handles undefined correctly (with seed=#)",
+  "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask never throws on arbitrary strings (with seed=#)",
+  "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles arbitrary config objects (with seed=#)",
+  "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles dictionary-like configs (with seed=#)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::diff never throws on arbitrary version strings (with seed=#)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater handles semver-like strings (with seed=#)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater never throws on arbitrary version strings (with seed=#)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::parse handles version-like strings (with seed=#)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::parse never throws on arbitrary strings (with seed=#)",
+  "tag/index.fuzz.test.ts::tag/index fuzz tests::transform either returns a string or throws a regex configuration error (with seed=#)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles a mix of valid and arbitrary image references (with seed=#)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles realistic image name patterns (with seed=#)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse roundtrips structured image name components (with seed=#)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name always returns an object with expected fields (with seed=#)",
+  "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name never throws on arbitrary strings (with seed=#)"
+ ]
+}

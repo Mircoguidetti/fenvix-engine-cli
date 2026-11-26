@@ -79,3 +79,40 @@ Each run's command, exit and wall are in `data/R/find/runs.jsonl` (all `engine_c
 Copied to `data/R/find/` as P3 does (outcome, ids and runner files gzipped with `gzip -n`; `flips.json`,
 `count_extra.json`, `runs.jsonl`, `cases.json` as is). The `det*`/`par*` traces and `runs.log` stay in
 `$PM_WORK/find/R/` (B4 reads the w4 traces).
+
+## B. Classify every serial case (2026-11-26, engine ece09e1f)
+
+B1, per R, exit 0, all `accepted: true` (alakajam Vitest 5.0.5, agentlang 4.0.18, drydock 4.1.12):
+`export PM_WORK=$HOME/pm-p3b; python3 harness/p3b/seqcheck.py --repo R --find $PM_WORK/find` → `data/R/seqcheck.json`.
+
+B2, per R, exit 0, all `neutral: true` (alakajam 0 differ; agentlang 0; drydock 48 differ, 0 outside plain-variable):
+`export PM_WORK=$HOME/pm-p3b; python3 harness/p3b/ladder.py neutral --repo R --find $PM_WORK/find` → `data/R/neutral.json`.
+
+B3, the ladder per file (`run_b.sh <repo> [budget_s]`, default budget 6600 s), each exit 0, every file `exit 0`,
+none stopped by the budget, logs in `$PM_WORK/logs/b-R.log`:
+
+```
+export PM_WORK=$HOME/pm-p3b; bash harness/p3b/run_b.sh alakajam      # 9 files
+export PM_WORK=$HOME/pm-p3b; bash harness/p3b/run_b.sh agentlang 1500 # 2 files
+export PM_WORK=$HOME/pm-p3b; bash harness/p3b/run_b.sh drydock 5400   # 19 files, one slice
+```
+
+B4: `export PM_WORK=$HOME/pm-p3b; python3 harness/p3b/parallel_only.py --find $PM_WORK/find` → `PARALLEL-ONLY.md`
+(new P3b script; reads `count_extra.json`'s `parallel_only` and the w4 trace headers).
+
+B5, in the spec's order:
+
+| Step | Command | Result |
+|---|---|---|
+| 1 | `python3 harness/p3b/classify.py rows` | 198 rows, exit 0 |
+| 2 | `timeouts.py measure` | not run: no row has reason "cause wrapper (wrapper)", so no input |
+| 3 | `python3 harness/p3b/timeouts.py annotate` | `{"rows": 198, "with_overhead": 0, "timeout_theirs_env_different_line": 0}` |
+| 4 | `python3 harness/p3b/classify.py render` | `CLASSIFY.md` |
+
+Then, each exit 0:
+
+- `export PM_WORK=$HOME/pm-p3b; python3 harness/p3b/report.py excluded --repo R --find $PM_WORK/find` per R;
+- `python3 harness/p3b/report.py render`;
+- `python3 harness/p3b/causes.py`. This compared P3 rows at origin/claude/p3-flips e32e11eb, the branch head at run time, newer than the harness pin 80d13bbb. Only rows.jsonl is read from it.
+
+`python3 -m pytest -q harness/p3b/test_classify.py harness/p3b/test_p3b.py` → `33 passed`.
