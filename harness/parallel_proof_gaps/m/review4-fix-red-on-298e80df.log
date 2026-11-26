@@ -1,0 +1,35 @@
+# red of the 'own existence probes' test: engine of 298e80df (scratch worktree /home/user/fenvix-m72), test file of the next commit
+▶ fs wrapper unit: the recursive roots real fs calls record
+  ✖ the recorder's own existence probes record no keys and are not calls of the test's fs (54.469495ms)
+✖ fs wrapper unit: the recursive roots real fs calls record (55.209369ms)
+ℹ tests 1
+ℹ suites 1
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 113.633521
+
+✖ failing tests:
+
+test at test/parallel-proof-gaps.test.js:492:3
+✖ the recorder's own existence probes record no keys and are not calls of the test's fs (54.469495ms)
+  AssertionError [ERR_ASSERTION]: deep must not be a read: .,deep,deep/a,deep/a/b,dst,flat,gone,gone/y.txt,mv,plain.txt,src,src/a,src/a/new,src/a/new/x
+      at TestContext.<anonymous> (/home/user/fenvix-m72/node/test/parallel-proof-gaps.test.js:500:105)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at node:internal/test_runner/test:1440:71
+      at node:internal/per_context/primordials:466:82
+      at new Promise (<anonymous>)
+      at new SafePromise (node:internal/per_context/primordials:435:3)
+      at node:internal/per_context/primordials:466:9
+      at Array.map (<anonymous>) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

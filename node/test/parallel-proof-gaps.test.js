@@ -25,6 +25,7 @@ const HEAD = {
   jest: "const fs = require('node:fs'); const path = require('node:path'); const net = require('node:net');",
 };
 const BASE = path.join(TMP, 'gaps');
+fs.mkdirSync(BASE, { recursive: true }); // a fresh checkout has no .tmp/ (the mkdtemp cases below need the parent)
 
 function write(dir, files) {
   for (const [name, body] of Object.entries(files)) {
@@ -486,6 +487,30 @@ process.stdout.write(fs.readFileSync(fs.readdirSync(process.env.DETJS_DIR + '/la
     assert.deepEqual(fp.wr, ['deep', 'dst', 'gone', 'moved', 'mv', 'src/a/new']);
     assert.deepEqual(fp.lr, ['src']);
     for (const k of ['dst', 'gone', 'deep/a/b', 'flat', 'mv', 'moved']) assert.ok(fp.w.includes(k), `${k} in ${fp.w}`);
+  });
+
+  test("the recorder's own existence probes record no keys and are not calls of the test's fs", () => {
+    // protects=the lstat probes of the mkdir / rename wrappers (is the target there, its first missing ancestor, is
+    // the source a directory) are detjs' own: they add no read keys (no read-write hazard against a lane that writes
+    // a checked ancestor) and a test's spy or mock on fs.lstatSync does not see them (/review of 298e80df, finding 1:
+    // the probes looked fs.lstatSync up at call time, after the footprint and the test had wrapped it);
+    // fails_when=a recursive mkdir records r keys for the directories it checked, or a spy installed by the test
+    // counts calls the test did not make; no_claim=a mkdir of an existing directory, which is a read of it (C1)
+    const fp = record();
+    for (const k of ['deep', 'deep/a', 'deep/a/b', 'flat', 'src/a/new', 'src/a/new/x', 'moved']) assert.ok(!fp.r.includes(k), `${k} must not be a read: ${fp.r}`);
+    const dir = fs.mkdtempSync(path.join(BASE, 'fsspy-'));
+    const code = `
+const fs = require('node:fs'); const parallel = require(${JSON.stringify(path.join(__dirname, '..', 'src', 'parallel'))});
+parallel.installFootprint(process.cwd());
+parallel.enter('f');
+const orig = fs.lstatSync; let calls = 0; fs.lstatSync = function (...a) { calls++; return orig.apply(this, a); };
+fs.mkdirSync('p/q/r', { recursive: true }); fs.mkdirSync('p/q', { recursive: true }); fs.renameSync('p', 'p2');
+fs.lstatSync = orig;
+parallel.leave('f');
+process.stdout.write(String(calls));`;
+    const r = spawnSync(process.execPath, ['-e', code], { cwd: dir, encoding: 'utf8', env: cleanEnv({ DETJS_DIR: path.join(dir, '.detjs', 'run'), DETJS_WORKERS: '2' }) });
+    assert.equal(r.status, 0, r.stderr);
+    assert.equal(r.stdout, '0', 'the test made no lstatSync call');
   });
 
   test('a mkdir of a directory that exists records a read of it, not a write (C1)', () => {

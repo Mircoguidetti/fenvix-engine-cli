@@ -519,7 +519,10 @@ function installFootprint(root) {
   // The plain keys are kept. DETJS_HAZARD_RECURSIVE=0 turns the roots off (measurement only; the runner gives no proof).
   const recursive = process.env.DETJS_HAZARD_RECURSIVE !== '0';
   const rec = (o) => Boolean(o && typeof o === 'object' && o.recursive);
-  const lstat = (x, o) => quiet(() => fs.lstatSync(x, o));
+  // the function as found before the wraps below: the probes are neither footprint reads nor calls a test's spy or mock
+  // sees (/review of 298e80df, finding 1)
+  const realLstat = fs.lstatSync;
+  const lstat = (x, o) => quiet(() => realLstat(x, o));
   const isDir = (p) => { const x = toPath(p); if (x === null) return false; try { const st = lstat(x, { throwIfNoEntry: false }); return Boolean(st && st.isDirectory()); } catch { return false; } };
   const wRec = (a) => { H.add('w', a[0]); if (recursive && rec(a[1])) H.add('wr', a[0]); };
   // a recursive mkdir creates only the missing directories of its path: its root is the first of them (the nearest
