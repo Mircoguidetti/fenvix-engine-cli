@@ -41,7 +41,7 @@ STRATUM_FIRST = 300
 CHUNK_SIZE = 150
 SIZE_MAX = 400000
 HARD_STOP = "2026-12-14T12:00:00Z"
-READ_BUDGET_H = 24.0
+READ_BUDGET_H = None  # withdrawn by the founder's "lettura A" (2026-11-26 19:01Z, CHANGES.md item 21)
 DISCOVERY_BUDGET_H = 24.0
 PREPASS_MAX_H = 20.0
 CODE_PER_MIN = 9
@@ -911,6 +911,38 @@ def stratum_bound(A: int, read: int, N: float, all_read: bool, any_truncated: bo
     return {"U": U, "B": None, "how": "undefined"}
 
 
+def wilson_lower(k: int, n: int, z: float = Z) -> float:
+    if n == 0:
+        return 0.0
+    p = k / n
+    z2 = z * z
+    return max(0.0, (p + z2 / (2 * n) - z * math.sqrt(p * (1 - p) / n + z2 / (4 * n * n))) / (1 + z2 / n))
+
+
+def project(strata: dict) -> dict:
+    """The founder's "lettura A" projection (2026-11-26 19:01Z; coordinator 19:04Z): over the candidate pool, per
+    stratum the rate times the candidates of the stratum, summed. Point: pain yes / read. Interval: Wilson 95% lower
+    bound of pain yes, upper bound of A_s (pain yes + unknown + uncertain, as in §5, so an unresolved member counts
+    against a DROP). A fully read stratum projects its own counts."""
+    out = {"read": 0, "yes": 0, "point": 0.0, "lower": 0.0, "upper": 0.0, "by_stratum": {}}
+    for s, v in strata.items():
+        n, C = v.get("read") or 0, v.get("candidates") or 0
+        if v.get("all_read"):
+            pt, lo, up = float(v["yes"]), float(v["yes"]), float(v["A"])
+        else:
+            pt = (v["yes"] / n * C) if n else 0.0
+            lo = wilson_lower(v["yes"], n) * C
+            up = wilson_upper(v["A"], n) * C
+        out["by_stratum"][s] = {"read": n, "candidates": C, "yes": v["yes"], "rate": (v["yes"] / n) if n else None,
+                                "point": pt, "lower": lo, "upper": up}
+        out["read"] += n
+        out["yes"] += v["yes"]
+        out["point"] += pt
+        out["lower"] += lo
+        out["upper"] += up
+    return out
+
+
 def zero_bound(N: dict, reads: dict) -> float:
     return sum(Z2 * N[s] / (reads[s] + Z2) for s in N)
 
@@ -920,11 +952,11 @@ def equal_split_reads(N_s: float) -> int:
 
 
 def decide(c: dict) -> dict:
-    """c: yes, handcheck_ok, bounds {S1,S2,S3: B or None}, state (blocked, prepass_stop, budget_end, hard_stop,
-    read_started, rule_failure)."""
+    """c: yes, handcheck_ok, strata {S1,S2,S3: {yes, A, read, candidates, all_read}}, state (blocked, prepass_stop,
+    hard_stop, read_started, rule_failure). The founder's "lettura A" (2026-11-26 19:01Z; coordinator 19:04Z):
+    reading time does not decide; CONTINUE at THRESHOLD; no DROP before the stop (HARD_STOP); at the stop NOT ENOUGH
+    DATA, or DROP when the projection's summed upper bound is below THRESHOLD. The 24 h budget end is withdrawn."""
     st = c.get("state") or {}
-    b = c["bounds"]
-    btxt = ", ".join(f"{s} {'undefined' if b[s] is None else f'{b[s]:.1f}'}" for s in ("S1", "S2", "S3"))
     if st.get("blocked"):
         return {"kind": "NO DECISION", "first": "BLOCKED",
                 "line": "NO DECISION: reading never started; BLOCKED (no code-search route answers 200)."}
@@ -939,15 +971,17 @@ def decide(c: dict) -> dict:
             return {"kind": "NO DECISION", "first": "DONE",
                     "line": "NO DECISION: reading never started; hard stop reached before the first candidate."}
         return {"kind": "NOT STARTED", "first": "NOT DONE", "line": "NOT STARTED: no candidate read yet."}
+    pj = project(c.get("strata") or {})
+    ptxt = (f"{pj['read']} read, pain yes {c['yes']} (rate {c['yes'] / pj['read']:.4f})" if pj["read"] else
+            f"0 read, pain yes {c['yes']}") + \
+        f"; projected over the candidate pool {pj['point']:.1f} (95% {pj['lower']:.1f} to upper {pj['upper']:.1f})"
     if c["yes"] >= THRESHOLD and c.get("handcheck_ok"):
-        return {"kind": "CONTINUE", "first": "DONE",
+        return {"kind": "CONTINUE", "first": "DONE", "projection": pj,
                 "line": f"CONTINUE: {c['yes']} agent repositories with agent-test non-determinism pain."}
-    if all(b[s] is not None for s in b) and sum(b.values()) < THRESHOLD and c.get("handcheck_ok"):
-        return {"kind": "DROP", "first": "DONE",
-                "line": f"DROP: bounds S1 {b['S1']:.1f}, S2 {b['S2']:.1f}, S3 {b['S3']:.1f}, "
-                        f"total {sum(b.values()):.1f} < {THRESHOLD}."}
-    if (st.get("budget_end") or st.get("hard_stop")) and c.get("handcheck_ok"):
-        return {"kind": "DROP (memo line)", "first": "DONE",
-                "line": f"DROP (memo line): {c['yes']} found < {THRESHOLD}; bounds {btxt}."}
-    return {"kind": "IN PROGRESS", "first": "NOT DONE",
-            "line": f"IN PROGRESS: pain yes {c['yes']}; bounds {btxt}."}
+    if st.get("hard_stop") and c.get("handcheck_ok"):
+        if pj["upper"] < THRESHOLD:
+            return {"kind": "DROP", "first": "DONE", "projection": pj,
+                    "line": f"DROP: {ptxt} < {THRESHOLD}."}
+        return {"kind": "NOT ENOUGH DATA", "first": "DONE", "projection": pj,
+                "line": f"NOT ENOUGH DATA: {ptxt}."}
+    return {"kind": "IN PROGRESS", "first": "NOT DONE", "projection": pj, "line": f"IN PROGRESS: {ptxt}."}

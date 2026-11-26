@@ -165,6 +165,13 @@
     and the projected count over the whole pool with its interval. DROP only if that projection's upper bound is
     below 50. Membership and pain rules, the threshold 50 and the date are unchanged. The shared search budget is
     still yielded (test-quality-count, then idea 3 C5.3), with 429 numbers reported per chunk. The watchdog keeps
-    running. Reports go out at each 10 pain-yes and once a day. Put to the coordinator at 19:03Z before decide()
-    changes: which pool the projection uses (the candidates per stratum, or N_s, which counts unread hits), whether
-    the early DROP by bounds stays, and whether the stop is 2026-12-14 12:00 UTC or 15 Dec.
+    running. Reports go out at each 10 pain-yes and once a day. Implementation (coordinator 19:04Z, after three
+    questions at 19:03Z):
+    (1) The projection is over the candidate pool, not N_s: per stratum, the rate times the candidates, summed. The
+    upper bound is the Wilson 95% upper bound of A_s, the lower bound that of pain yes; a fully read stratum projects
+    its counts.
+    (2) There is no early DROP; DROP is judged only at the stop.
+    (3) The stop stays at 2026-12-14 12:00 UTC: report.py sets it from HARD_STOP.
+    decide() is rewritten (rules.project, rules.wilson_lower) and READ_BUDGET_H is withdrawn.
+    test_decision_branches failed first and now covers CONTINUE at 50, no DROP before the stop (also at the old
+    budget end), NOT ENOUGH DATA at the stop, DROP at the stop, and NO DECISION.

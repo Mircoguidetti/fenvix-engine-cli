@@ -13,8 +13,19 @@ CHANGES.md item 21).** Reading time must not decide the idea. There is no 24 h r
 order, until 50 pain-yes members are confirmed (CONTINUE) or until 15 Dec 2026. With fewer than 50 at that point the
 outcome is `NOT ENOUGH DATA`, reported with the read count, the rate and the projected count over the whole pool with
 its interval; DROP only if the upper bound of that projection is below 50. The membership and pain rules are
-unchanged. The `DROP (memo line)` below no longer applies. The pool the projection uses and the early DROP are put to
-the coordinator (2026-11-26 19:03Z); their answer is recorded in CHANGES.md before decide() changes.
+unchanged. The `DROP (memo line)` and the early `DROP: bounds ...` below no longer apply. Implementation
+(coordinator 2026-11-26 19:04Z):
+1. The projection is over the candidate pool. Per stratum it is the rate times the stratum's candidates (pool.json,
+   after the rebuild), summed. The point uses pain yes / read, the lower bound the Wilson 95% lower bound of pain yes,
+   and the upper bound the Wilson 95% upper bound of A_s (pain yes + unknown + uncertain, as in §5). A fully read
+   stratum projects its own counts. N_s is not used: it counts unread hits, and the DROP condition would be
+   unreachable.
+2. No early DROP. Reading goes on until 50 confirmed pain yes, then CONTINUE at once (after that chunk's second reads
+   and AC4), or until the stop.
+3. The stop stays at 2026-12-14 12:00 UTC (HARD_STOP), so REPORT lands before 15 Dec. At the stop, with AC4 passed:
+   `DROP: <read> read, pain yes <P> (rate r); projected ... upper <u> < 50.` when the summed upper bound is below 50,
+   else `NOT ENOUGH DATA: <read> read, pain yes <P> (rate r); projected over the candidate pool <point> (95% <lo> to
+   upper <up>).`
 
 By 15 Dec 2026: if fewer than **50** public agent repositories show agent-test non-determinism pain, the
 "deterministic for agents" second use is dropped and the 24 Nov answer stands. CONTINUE needs 50 actual member

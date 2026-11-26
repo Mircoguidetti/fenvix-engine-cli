@@ -11,6 +11,7 @@ handcheck.json, state.json, population.json, chunks.jsonl; CHANGES.md (listed PR
 """
 from __future__ import annotations
 
+import datetime as dt
 import gzip
 import json
 import math
@@ -161,7 +162,12 @@ def compute(d: dict) -> dict:
     yes = [m for m in members if m["pain"]["pain"] == "yes"]
     hc = handcheck_status(d["handcheck"], yes)
     c = {"yes": len(yes), "handcheck_ok": hc["ok"], "bounds": {s: st[s]["B"] for s in STRATA},
+         # the founder's "lettura A" (CHANGES.md item 21): the projection over the candidate pool
+         "strata": {s: {"yes": st[s]["yes"], "A": st[s]["A"], "read": st[s]["read"],
+                        "candidates": pool[s]["candidates"], "all_read": st[s]["all_read"]} for s in STRATA},
          "read_started": bool(counted or excluded), "state": dict(d["state"])}
+    if dt.datetime.now(dt.timezone.utc) >= dt.datetime.fromisoformat(R.HARD_STOP.replace("Z", "+00:00")):
+        c["state"]["hard_stop"] = True
     if d["cfg"].get("blocked"):
         c["state"]["blocked"] = True
     dec = R.decide(c)

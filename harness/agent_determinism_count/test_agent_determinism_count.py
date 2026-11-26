@@ -576,21 +576,42 @@ def test_full_stratum_uses_count_truncated_undefined():
 
 
 def test_decision_branches():
-    """protects=§5 decision lines (D2 = A memo line, NO DECISION only when reading never started); fails_when=budget
-    end without CONTINUE is not DROP (memo line), or a pre-pass stop / hard stop before reading is not NO DECISION;
+    """protects=§5 decision lines as the founder's "lettura A" (2026-11-26 19:01Z; coordinator 19:04Z) sets them:
+    CONTINUE at 50, no DROP before the stop, at the stop NOT ENOUGH DATA unless the summed Wilson 95% upper bound over
+    the candidate pool is below 50 (then DROP), NO DECISION only when reading never started; fails_when=a DROP comes
+    before the stop, the budget end still gives DROP (memo line), or the projection uses N_s instead of candidates;
     no_claim=the threshold is right (memo, ASSUMED)."""
-    b = {"S1": None, "S2": 30.0, "S3": None}
-    base = {"yes": 12, "handcheck_ok": True, "bounds": b, "read_started": True}
-    assert R.decide({**base, "state": {"budget_end": True}})["kind"] == "DROP (memo line)"
-    assert R.decide({**base, "state": {}})["kind"] == "IN PROGRESS"
+    big = {"S1": {"yes": 0, "A": 0, "read": 12, "candidates": 12, "all_read": True},
+           "S2": {"yes": 8, "A": 9, "read": 825, "candidates": 113511, "all_read": False},
+           "S3": {"yes": 1, "A": 1, "read": 75, "candidates": 50005, "all_read": False}}
+    small = {"S1": {"yes": 0, "A": 0, "read": 12, "candidates": 12, "all_read": True},
+             "S2": {"yes": 2, "A": 2, "read": 4000, "candidates": 9000, "all_read": False},
+             "S3": {"yes": 0, "A": 0, "read": 3000, "candidates": 4000, "all_read": False}}
+    base = {"yes": 9, "handcheck_ok": True, "strata": big, "read_started": True}
+    # CONTINUE at 50, before or at the stop
     assert R.decide({**base, "yes": 50, "state": {}})["kind"] == "CONTINUE"
-    assert R.decide({**base, "bounds": {"S1": 10.0, "S2": 10.0, "S3": 10.0}, "state": {}})["kind"] == "DROP"
+    assert R.decide({**base, "yes": 50, "state": {"hard_stop": True}})["kind"] == "CONTINUE"
+    # no DROP before the stop, however low the upper bound; the withdrawn 24 h budget end changes nothing
+    assert R.decide({**base, "strata": small, "state": {}})["kind"] == "IN PROGRESS"
+    assert R.decide({**base, "state": {"budget_end": True}})["kind"] == "IN PROGRESS"
+    # at the stop: NOT ENOUGH DATA with read count, rate and projection; DROP only when the upper bound is below 50
+    d = R.decide({**base, "state": {"hard_stop": True}})
+    assert d["kind"] == "NOT ENOUGH DATA" and d["first"] == "DONE"
+    p = d["projection"]
+    assert p["read"] == 912 and p["upper"] >= 50 and p["lower"] <= p["point"] <= p["upper"]
+    assert "912 read" in d["line"] and "upper" in d["line"]
+    d = R.decide({**base, "yes": 2, "strata": small, "state": {"hard_stop": True}})
+    assert d["kind"] == "DROP" and d["projection"]["upper"] < 50
+    # a fully read stratum projects its own count
+    assert R.project({"S1": {"yes": 3, "A": 4, "read": 12, "candidates": 12, "all_read": True}})["upper"] == 4
+    # NO DECISION only when reading never started
     d = R.decide({**base, "read_started": False, "state": {"prepass_stop": True}})
     assert d["kind"] == "NO DECISION" and d["first"] == "NOT DONE"
     d = R.decide({**base, "read_started": False, "state": {"hard_stop": True}})
     assert d["kind"] == "NO DECISION"
     assert R.decide({**base, "state": {"blocked": True}})["first"] == "BLOCKED"
     assert R.decide({**base, "yes": 50, "handcheck_ok": False, "state": {}})["kind"] == "IN PROGRESS"
+    assert R.decide({**base, "handcheck_ok": False, "state": {"hard_stop": True}})["kind"] == "IN PROGRESS"
 
 
 def test_excluded_not_read_and_owner_list():
