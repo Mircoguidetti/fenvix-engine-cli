@@ -6,8 +6,8 @@ P3 rows compared: `harness/p3_flips/rows.jsonl` at e32e11eb90c8ebfce7bbcce95ab41
 
 | cause | cases | of which timeout | engine_overhead true | over_budget true | owner (coordinator) |
 |---|---|---|---|---|---|
-| cause time (L4) | 5 | 0 | 0 | 0 | not named yet |
-| cause timers progression (virtual) (L1) | 189 | 176 | 0 | 0 | not named yet |
+| cause time (L4) | 5 | 0 | 0 | 0 | P3 (session_01YAF6DiZseezHVfkYCr45Ei, its step C), named by the coordinator 2026-11-26 |
+| cause timers progression (virtual) (L1) | 189 | 176 | 0 | 0 | P3 (session_01YAF6DiZseezHVfkYCr45Ei), named by the coordinator 2026-11-26; fix waits for the founder's decision |
 
 ## cause time (L4)
 
