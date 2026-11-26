@@ -1,4 +1,8 @@
 {
+ "@ai-sdk filename:pyproject.toml": {
+  "status": 200,
+  "total_count": 1
+ },
  "@anthropic-ai/claude-agent-sdk filename:package.json": {
   "status": 200,
   "total_count": 9616
@@ -10,6 +14,10 @@
  "@anthropic-ai/claude-agent-sdk filename:requirements.txt": {
   "status": 200,
   "total_count": 3
+ },
+ "@langchain filename:package.json": {
+  "status": 200,
+  "total_count": 40896
  },
  "@langchain filename:pyproject.toml": {
   "status": 200,
