@@ -1,0 +1,4419 @@
+{
+ "ok": false,
+ "repo": "codex-multi-auth",
+ "rule1": [
+  {
+   "changes": [
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/account-policy.test.ts::account policy store::leaves a raced newer entry alone when the caller only carried it",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/api-capability-ownership.test.ts::keeps cached evidence when cache lease fails with EACCES",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/api-model-runtime.test.ts::uses typed cancellation and never retries another credential (preaborted=false)",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/api-probe-slot-cancellation.test.ts::cancels daily probe granted without leaking shared permits",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/api-probe-slot-cancellation.test.ts::cancels daily probe queued without leaking shared permits",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/app-bind.test.ts::Codex app runtime rotation bind::fails bind when a spawned router never reports ready for an existing port",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/automatic-api-checks.test.ts::refreshes expired program evidence before consuming the daily pass despite fresh general probes",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/automatic-api-checks.test.ts::repairs corrupt history without an immediate duplicate billable pass: {\"oldFormat\":true}",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/automatic-api-checks.test.ts::revalidates production POST and inventory by visibility membership (remove=true)",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/automatic-subscription-checks.test.ts::automatically enables first-use completion only for the opted-in saved subscription binding",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/automatic-subscription-checks.test.ts::canonicalizes selected Personal quota probes (token)",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/chaos/fs-faults.test.ts::storage fs fault injection::EMFILE is not in the shared retry set and fails on the first attempt",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "not-proven:api"
+     ],
+     "nodeid": "test/chaos/fs-faults.test.ts::storage fs fault injection::ENOSPC mid temp-write fails typed, keeps the committed store, and removes the torn temp",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/chaos/fs-faults.test.ts::storage fs fault injection::persistent EACCES on the temp write exhausts the shared retry budget, then fails typed",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:env"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/codex-bin-wrapper.test.ts::codex bin wrapper::does not clobber sync-back files that change during rename retry backoff",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:env"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/codex-bin-wrapper.test.ts::codex bin wrapper::forwards GPT-5.5 aliases unchanged when the downstream CLI accepts them",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:env"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps interactive resume stdout attached even when capture is forced",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:env"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps xhigh config reasoning when retired mini aliases route to gpt-5.6-terra",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/codex-bin-wrapper.test.ts::codex bin wrapper::syncs copied shadow directories back before cleanup",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/codex-cli-mirror.test.ts::explicit unauthorized id and Codex auth.json::repairs an auth.json that still holds the rejected id, once",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/codex-cli-org-account-alignment.test.ts::org-sourced account alignment with Codex auth.json (#700)::rewrites an org account_id left in auth.json by an older release, once",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/codex-cli-org-account-alignment.test.ts::org-sourced account alignment with Codex auth.json (#700)::stays aligned when the legacy accounts.json keeps the raw org id",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/codex-manager-workspace-command.test.ts::persists a disabled selection and preserves it through account re-enablement",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/first-run.test.ts::ensureFirstRunSetup::v1 marker migration::converges when two processes migrate concurrently",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/issue-474-pin-safety.test.ts::issue #474 \u2014 pin-honored review feedback::AccountManager.buildStorageSnapshot preserves pin/gen::omits pinnedAccountIndex when storage has no pin",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/local-client-tokens.test.ts::local client tokens::does not lose mutations when revoke and add run concurrently",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/local-client-tokens.test.ts::local client tokens::returns null when a persisted tokenHash is malformed or mismatched: sha256:abababababababababababababababababababababababababababababababa",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/local-client-tokens.test.ts::local client tokens::rotates and revokes tokens",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/model-discovery-status.test.ts::merges concurrent checks' probe results instead of replacing the shared cache",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/native-account-storage.test.ts::caches settled primary storage but adopts credential revocation on change",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/native-login-sync.test.ts::adopts login when only auth.json changes (warm cache: false)",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::does not persist completed production discovery after credential rotate",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::does not retain paid evidence when a credential changes regions during a probe",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::renews programs before claiming another daily interval after 1 ms of live evidence",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::renews programs before claiming another daily interval after 86100000 ms of live evidence",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/pr691-switch-revalidation.test.ts::AccountManager save resilience::does not restore stale account state after an intentional clear",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/quota-cache.test.ts::quota cache::does not bump an older observation over a concurrent one it never saw",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/quota-cache.test.ts::quota cache::keeps the cache file valid across concurrent save retries",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/quota-cache.test.ts::quota cache::merges overlapping CLI and automatic cache changes from independent writers",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/resilience-storage.integration.test.ts::does not restore accounts after the store was intentionally cleared",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/resilience-storage.integration.test.ts::rescues a refreshed legacy record after matched fallback token replacement",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/resilience-storage.integration.test.ts::saves the first account from a synthetic missing-store load",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/resilience-storage.integration.test.ts::treats explicit enabled defaults as unchanged during an external disable",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/rotation-integration.test.ts::Multi-Account Rotation Integration::Debounced save::flushPendingSave completes pending save",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/rotation-proxy-state.test.ts::recoverStaleRuntimeState::reloads from disk, swaps the active manager, and records observability",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/routing-profiles.test.ts::routing profiles::survives a backward clock jump between writes (hybrid updatedAt floor)",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/runtime-policy-cache.test.ts::runtime policy cache::re-reads a same-size rewrite that pins mtime back",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/runtime-policy-cache.test.ts::runtime policy cache::re-resolves the project key when a worktree .git pointer is retargeted",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/runtime-policy-cache.test.ts::runtime policy cache::serves the parsed store and re-reads it after a rewrite",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::PR review regressions::revokes a persisted managed bearer when removed",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::PR review regressions::revokes a persisted managed bearer when shorter",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "missing"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 09:05:07 GMT at fifteen minutes",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "missing"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 11:20:41 GMT at fifteen minutes",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::provider re-login while router is running::requires the local client key before reading storage: access-1",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::provider re-login while router is running::requires the local client key before reading storage: undefined",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::provider re-login while router is running::requires the local client key before reading storage: unknown",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/security-stress.test.ts::stress: local token digest edge cases::verify returns null, never throws, for malformed stored hash \"sha256: \"",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/security-stress.test.ts::stress: local token digest edge cases::verify returns null, never throws, for malformed stored hash \"sha256:abababababababababababababababababababababababababababababababa\"",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/storage-recovery-paths.test.ts::storage recovery paths::assesses restore state with latest snapshot metadata",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/storage-recovery-paths.test.ts::storage recovery paths::auto-promotes backup when synthetic fixture accounts are missing accountId fields",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/storage-recovery-paths.test.ts::storage recovery paths::cleans up stale staged backup artifacts during load",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/storage-recovery-paths.test.ts::storage recovery paths::does not use backup recovery when backups are disabled",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/storage-recovery-paths.test.ts::storage recovery paths::excludes reset markers from discovered backup metadata",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/storage-recovery-paths.test.ts::storage recovery paths::suppresses restore eligibility after intentional reset but flags unexpected empty state",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/unified-settings.test.ts::unified settings::recovers dashboard settings from backup when primary settings file is invalid",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/unified-settings.test.ts::unified settings::recovers plugin config from backup when primary settings file is invalid",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/unified-settings.test.ts::unified settings::rethrows async backup read errors when the primary settings file is invalid",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/unified-settings.test.ts::unified settings::serializes concurrent plugin config writes to avoid race corruption",
+     "towards_identical": false,
+     "w": 2
+    }
+   ],
+   "defects": [
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/account-policy.test.ts::account policy store::leaves a raced newer entry alone when the caller only carried it",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/api-capability-ownership.test.ts::keeps cached evidence when cache lease fails with EACCES",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/api-model-runtime.test.ts::uses typed cancellation and never retries another credential (preaborted=false)",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/api-probe-slot-cancellation.test.ts::cancels daily probe granted without leaking shared permits",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/api-probe-slot-cancellation.test.ts::cancels daily probe queued without leaking shared permits",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/app-bind.test.ts::Codex app runtime rotation bind::fails bind when a spawned router never reports ready for an existing port",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/automatic-api-checks.test.ts::refreshes expired program evidence before consuming the daily pass despite fresh general probes",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/automatic-api-checks.test.ts::repairs corrupt history without an immediate duplicate billable pass: {\"oldFormat\":true}",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/automatic-api-checks.test.ts::revalidates production POST and inventory by visibility membership (remove=true)",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/automatic-subscription-checks.test.ts::automatically enables first-use completion only for the opted-in saved subscription binding",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/automatic-subscription-checks.test.ts::canonicalizes selected Personal quota probes (token)",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/chaos/fs-faults.test.ts::storage fs fault injection::EMFILE is not in the shared retry set and fails on the first attempt",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "not-proven:api"
+     ],
+     "nodeid": "test/chaos/fs-faults.test.ts::storage fs fault injection::ENOSPC mid temp-write fails typed, keeps the committed store, and removes the torn temp",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/chaos/fs-faults.test.ts::storage fs fault injection::persistent EACCES on the temp write exhausts the shared retry budget, then fails typed",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:env"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/codex-bin-wrapper.test.ts::codex bin wrapper::does not clobber sync-back files that change during rename retry backoff",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:env"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/codex-bin-wrapper.test.ts::codex bin wrapper::forwards GPT-5.5 aliases unchanged when the downstream CLI accepts them",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:env"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps interactive resume stdout attached even when capture is forced",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:env"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps xhigh config reasoning when retired mini aliases route to gpt-5.6-terra",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/codex-bin-wrapper.test.ts::codex bin wrapper::syncs copied shadow directories back before cleanup",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/codex-cli-mirror.test.ts::explicit unauthorized id and Codex auth.json::repairs an auth.json that still holds the rejected id, once",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/codex-cli-org-account-alignment.test.ts::org-sourced account alignment with Codex auth.json (#700)::rewrites an org account_id left in auth.json by an older release, once",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/codex-cli-org-account-alignment.test.ts::org-sourced account alignment with Codex auth.json (#700)::stays aligned when the legacy accounts.json keeps the raw org id",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/codex-manager-workspace-command.test.ts::persists a disabled selection and preserves it through account re-enablement",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/first-run.test.ts::ensureFirstRunSetup::v1 marker migration::converges when two processes migrate concurrently",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/issue-474-pin-safety.test.ts::issue #474 \u2014 pin-honored review feedback::AccountManager.buildStorageSnapshot preserves pin/gen::omits pinnedAccountIndex when storage has no pin",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/local-client-tokens.test.ts::local client tokens::does not lose mutations when revoke and add run concurrently",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/local-client-tokens.test.ts::local client tokens::returns null when a persisted tokenHash is malformed or mismatched: sha256:abababababababababababababababababababababababababababababababa",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/local-client-tokens.test.ts::local client tokens::rotates and revokes tokens",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/model-discovery-status.test.ts::merges concurrent checks' probe results instead of replacing the shared cache",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/native-account-storage.test.ts::caches settled primary storage but adopts credential revocation on change",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/native-login-sync.test.ts::adopts login when only auth.json changes (warm cache: false)",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::does not persist completed production discovery after credential rotate",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::does not retain paid evidence when a credential changes regions during a probe",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::renews programs before claiming another daily interval after 1 ms of live evidence",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::renews programs before claiming another daily interval after 86100000 ms of live evidence",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/pr691-switch-revalidation.test.ts::AccountManager save resilience::does not restore stale account state after an intentional clear",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/quota-cache.test.ts::quota cache::does not bump an older observation over a concurrent one it never saw",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/quota-cache.test.ts::quota cache::keeps the cache file valid across concurrent save retries",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/quota-cache.test.ts::quota cache::merges overlapping CLI and automatic cache changes from independent writers",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/resilience-storage.integration.test.ts::does not restore accounts after the store was intentionally cleared",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/resilience-storage.integration.test.ts::rescues a refreshed legacy record after matched fallback token replacement",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/resilience-storage.integration.test.ts::saves the first account from a synthetic missing-store load",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/resilience-storage.integration.test.ts::treats explicit enabled defaults as unchanged during an external disable",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/rotation-integration.test.ts::Multi-Account Rotation Integration::Debounced save::flushPendingSave completes pending save",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/rotation-proxy-state.test.ts::recoverStaleRuntimeState::reloads from disk, swaps the active manager, and records observability",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/routing-profiles.test.ts::routing profiles::survives a backward clock jump between writes (hybrid updatedAt floor)",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/runtime-policy-cache.test.ts::runtime policy cache::re-reads a same-size rewrite that pins mtime back",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/runtime-policy-cache.test.ts::runtime policy cache::re-resolves the project key when a worktree .git pointer is retargeted",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/runtime-policy-cache.test.ts::runtime policy cache::serves the parsed store and re-reads it after a rewrite",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::PR review regressions::revokes a persisted managed bearer when removed",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::PR review regressions::revokes a persisted managed bearer when shorter",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "missing"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 09:05:07 GMT at fifteen minutes",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "missing"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 11:20:41 GMT at fifteen minutes",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::provider re-login while router is running::requires the local client key before reading storage: access-1",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::provider re-login while router is running::requires the local client key before reading storage: undefined",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::provider re-login while router is running::requires the local client key before reading storage: unknown",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/security-stress.test.ts::stress: local token digest edge cases::verify returns null, never throws, for malformed stored hash \"sha256: \"",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/security-stress.test.ts::stress: local token digest edge cases::verify returns null, never throws, for malformed stored hash \"sha256:abababababababababababababababababababababababababababababababa\"",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/storage-recovery-paths.test.ts::storage recovery paths::assesses restore state with latest snapshot metadata",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/storage-recovery-paths.test.ts::storage recovery paths::auto-promotes backup when synthetic fixture accounts are missing accountId fields",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/storage-recovery-paths.test.ts::storage recovery paths::cleans up stale staged backup artifacts during load",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/storage-recovery-paths.test.ts::storage recovery paths::does not use backup recovery when backups are disabled",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/storage-recovery-paths.test.ts::storage recovery paths::excludes reset markers from discovered backup metadata",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/storage-recovery-paths.test.ts::storage recovery paths::suppresses restore eligibility after intentional reset but flags unexpected empty state",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/unified-settings.test.ts::unified settings::recovers dashboard settings from backup when primary settings file is invalid",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/unified-settings.test.ts::unified settings::recovers plugin config from backup when primary settings file is invalid",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/unified-settings.test.ts::unified settings::rethrows async backup read errors when the primary settings file is invalid",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/unified-settings.test.ts::unified settings::serializes concurrent plugin config writes to avoid race corruption",
+     "towards_identical": false,
+     "w": 2
+    }
+   ],
+   "rounds_base": 3,
+   "rounds_fix": 3,
+   "variable_class": [
+    "test/account-policy.test.ts::account policy store::keeps updatedAt order for saves without a baseline",
+    "test/account-policy.test.ts::account policy store::survives a backward clock jump between writes (hybrid updatedAt floor)",
+    "test/accounts.test.ts::AccountManager::removeAccount cursor adjustment::adjusts currentAccountIndexByFamily when removing account before current",
+    "test/accounts.test.ts::AccountManager::saveToDiskDebounced::awaits existing pendingSave before starting new save",
+    "test/accounts.test.ts::AccountManager::saveToDiskDebounced::logs warning when debounced save fails",
+    "test/accounts.test.ts::AccountManager::saveToDiskDebounced::uses the manager's captured Windows-style storage path state for delayed saves",
+    "test/accounts.test.ts::AccountManager::saveToDiskDebounced::uses the manager's captured storage path state for delayed saves",
+    "test/api-capability-custom-fetch.test.ts::uses the configured raw transport for daily capability discovery",
+    "test/api-capability-ownership.test.ts::keeps a completed probe when another route discovers new models",
+    "test/api-capability-ownership.test.ts::scopes persisted evidence while preserving legitimate foreign cache",
+    "test/api-capability-ownership.test.ts::scopes persisted evidence while preserving legitimate readd cache",
+    "test/api-model-runtime.test.ts::keeps api failover within the selected pool and region",
+    "test/api-model-runtime.test.ts::keeps zdr failover within the selected pool and region",
+    "test/api-model-runtime.test.ts::preserves the final sanitized setting rejection after trying every ZDR credential",
+    "test/api-model-runtime.test.ts::uses the selected US endpoint for discovery and inference, with separate regional caches",
+    "test/automatic-api-checks.test.ts::does not recreate cleared history from a route snapshot queued behind the wipe lock",
+    "test/automatic-api-checks.test.ts::keeps the next tick anchored when a slow run rejects: false",
+    "test/automatic-api-checks.test.ts::keeps the next tick anchored when a slow run rejects: true",
+    "test/automatic-api-checks.test.ts::migrates legacy ownership before claiming the daily check (discovery writes=true)",
+    "test/automatic-api-checks.test.ts::repairs corrupt history without an immediate duplicate billable pass: not-json",
+    "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with EBUSY",
+    "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with undefined",
+    "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes",
+    "test/automatic-subscription-checks.test.ts::canonicalizes selected Personal quota probes (disabled)",
+    "test/automatic-subscription-checks.test.ts::canonicalizes selected Personal quota probes (mirror)",
+    "test/automatic-subscription-checks.test.ts::canonicalizes selected Personal quota probes (unresolved)",
+    "test/automatic-subscription-checks.test.ts::does not fall back to the organization when the selected Personal workspace is disabled",
+    "test/automatic-subscription-checks.test.ts::does not prime a disabled saved workspace even when a sibling is enabled",
+    "test/automatic-subscription-checks.test.ts::does not probe a selected workspace disabled during refresh",
+    "test/automatic-subscription-checks.test.ts::does not probe credentials replaced while refreshing the saved account",
+    "test/automatic-subscription-checks.test.ts::never exposes selected Personal quota as organization quota to routing",
+    "test/automatic-subscription-checks.test.ts::preserves exhausted organization quota when a Personal check is followed by switching back",
+    "test/automatic-subscription-checks.test.ts::primes both selected Personal workspaces when credentials share an organization binding",
+    "test/automatic-subscription-checks.test.ts::rejects autoPrime corrupted during refresh before priming or observing quota",
+    "test/automatic-subscription-checks.test.ts::rejects drained corrupted during refresh before priming or observing quota",
+    "test/automatic-subscription-checks.test.ts::rejects emergencyOnly corrupted during refresh before priming or observing quota",
+    "test/automatic-subscription-checks.test.ts::rejects malformed drained before consuming an automatic priming attempt",
+    "test/automatic-subscription-checks.test.ts::rejects malformed emergencyOnly before consuming an automatic priming attempt",
+    "test/automatic-subscription-checks.test.ts::rejects malformed paused before consuming an automatic priming attempt",
+    "test/automatic-subscription-checks.test.ts::rejects paused corrupted during refresh before priming or observing quota",
+    "test/automatic-subscription-checks.test.ts::revalidates emergency reservation after token refresh before consuming quota",
+    "test/automatic-subscription-checks.test.ts::round-trips automatic quota through status readers with selected workspace=false",
+    "test/automatic-subscription-checks.test.ts::round-trips automatic quota through status readers with selected workspace=true",
+    "test/automatic-subscription-checks.test.ts::uses the stored binding only when no workspace selection metadata exists",
+    "test/budget-guard.test.ts::budget guard::does not lose a deliberate edit that races a concurrent write under clock skew",
+    "test/budget-guard.test.ts::budget guard::leaves a raced newer limit alone when the caller only carried it",
+    "test/budget-guard.test.ts::budget guard::re-applies update mutations over the freshest store",
+    "test/budget-guard.test.ts::budget guard::survives a backward clock jump between writes (hybrid updatedAt floor)",
+    "test/chaos/fs-faults.test.ts::storage fs fault injection::transient EBUSY on the temp write retries under the shared fs policy",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::accepts the loopback runtime-proxy upstream http://127.0.0.1:80/backend-api",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::accepts the loopback runtime-proxy upstream http://127.9.9.9:8787/backend-api",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::accepts the loopback runtime-proxy upstream http://[::1]:8787/backend-api",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::appends the rotation provider at the end when there is no `--`",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::can forward without capturing child stdio for terminal-sensitive Codex runs",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::classifies a command after a filled prompt slot like native Codex (#673)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::classifies the hidden `execpolicy` subcommand as a command, not a prompt (#673)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::classifies the hidden `stdio-to-uds` subcommand as a command, not a prompt (#673)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::copies generated runtime directories only when explicitly requested",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::derives cmd.exe from SystemRoot when ComSpec is unavailable",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::derives cmd.exe from uppercase SYSTEMROOT when ComSpec is unavailable",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::discovers the real codex bin via npm root fallback for direct script runs on Windows",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::discovers the real codex bin via npm root fallback on POSIX",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::does not read a linked sqlite file whose original was replaced during the launch",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::does not read linked sqlite files when snapshotting or syncing the shadow home",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::does not read linked sqlite sidecars whose originals were replaced during the launch",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::does not read or rewrite a `-m` inside a `--`-forced prompt",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::does not repair local session index for failed forwarded runs",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::does not start runtime rotation proxy for app help",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::does not start runtime rotation proxy for app-server JSON schema generation",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::does not start runtime rotation proxy for app-server TypeScript generation",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::does not start runtime rotation proxy for app-server help",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::fails closed for an unsafe runtime-proxy upstream: http://127.0.0.1.example.com:8787/backend-api",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::fails closed for an unsafe runtime-proxy upstream: http://127.0.0.1/backend-api",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::fails closed for an unsafe runtime-proxy upstream: http://127.0.0.1:8787/backend-api#unsafe",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::fails closed for an unsafe runtime-proxy upstream: http://127.0.0.1:8787/backend-api?route=unsafe",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::fails closed for an unsafe runtime-proxy upstream: http://[::2]:8787/backend-api",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::fails closed for an unsafe runtime-proxy upstream: http://example.com:8787/backend-api",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::fails closed for an unsafe runtime-proxy upstream: http://localhost:8787/backend-api",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::fails closed for an unsafe runtime-proxy upstream: http://user:pass@127.0.0.1:8787/backend-api",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::fails closed for an unsafe runtime-proxy upstream: https://127.0.0.1:8787/backend-api",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::fails closed for an unsafe runtime-proxy upstream: not-a-url",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::fails closed when runtime rotation is off but an upstream is configured",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::forwards `exec -h` without starting the rotation transport (#647)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::forwards `resume --help` without starting the rotation transport (#647)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::forwards `resume -h` without starting the rotation transport (#647)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::forwards `review --help` without starting the rotation transport (#647)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::forwards an explicit loopback upstream through the shadow runtime proxy",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::honors uppercase COMSPEC when resolving the Windows npm root fallback",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::indexes forked rollouts under their own session_meta id",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::injects the rotation provider before a `--` on the exec path",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps `exec` on the shadow Codex home (#647)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps `review` on the shadow Codex home (#647)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps a sideband URL the user configured on the canonical Codex home (#750)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps explicit xhigh reasoning for retired mini aliases routed to gpt-5.6-terra",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps retrying after consecutive stale shadow sync locks",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps the `e` exec alias on the shadow Codex home (#673)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps xhigh overrides for stale bare GPT-5 aliases routed to their replacements",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::leaves a `--account` inside a `--`-forced prompt as prompt text",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::removes orphaned shadow sync locks with corrupt owner metadata",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::removes orphaned shadow sync locks with missing owner metadata",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::removes stale shadow sync locks before publishing refreshed auth state",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::repairs local session index and suppresses known Codex rollout-store noise",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::replaces a sideband line an earlier bind wrote on the canonical Codex home (#750)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::resolves the forced account by --account= form and publishes its 0-based index (#623)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::resolves the forced account by CODEX_MULTI_AUTH_FORCE_ACCOUNT env var and publishes its 0-based index (#623)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::resolves the forced account by account id and publishes its 0-based index (#623)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::resolves the forced account by email and publishes its 0-based index (#623)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::retries preflight destination reads when the sync-back target is transiently locked",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::retries transient shadow sync lock owner write failures before sync-back",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::serializes concurrent local session index repairs",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::skips already indexed rollout files during local session index repair",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::skips the persisted auth-store reconcile when the opt-out env var is disabled",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::still runs a non-request subcommand when an upstream is configured",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::strips --account and publishes the resolved 0-based index for the proxy (#623)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::syncs manager active selection before and after forwarded commands",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::the flag wins over CODEX_MULTI_AUTH_FORCE_ACCOUNT when both are set (#623)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::waits for fresh orphaned shadow sync locks to become stale before stealing",
+    "test/codex-bin-wrapper.test.ts::stale shadow-home sweep::removes dead-owner and aged markerless shadow homes, keeps live ones",
+    "test/codex-cli-mirror.test.ts::explicit unauthorized id and Codex auth.json::writes the authorized id at login and dashboard renders never write the rejected id back",
+    "test/codex-cli-org-account-alignment.test.ts::org-sourced account alignment with Codex auth.json (#700)::rewrites an org auth.json account_id even when a valid accounts.json exists, once",
+    "test/codex-cli-state.test.ts::codex-cli state::forceRefresh reads fresh disk data even while a non-forced load is in flight",
+    "test/codex-cli-state.test.ts::codex-cli state::returns null when auth payload tokens are missing or tokenless",
+    "test/dashboard-settings.test.ts::dashboard settings::preserves plugin config section when saving dashboard settings",
+    "test/h3-token-clobber.test.ts::H3 - cross-process token clobber protection::preserves a refresh token another process rotated to disk during a routine save",
+    "test/issue-474-pin-safety.test.ts::issue #474 \u2014 pin-honored review feedback::AccountManager.buildStorageSnapshot preserves pin/gen::preserves a CLI-bumped affinityGeneration that lands between load and save",
+    "test/issue-474-pin-safety.test.ts::issue #474 \u2014 pin-honored review feedback::AccountManager.buildStorageSnapshot preserves pin/gen::round-trips pinnedAccountIndex and affinityGeneration through saveToDisk",
+    "test/live-account-sync.test.ts::live-account-sync::reloads when file changes are detected by polling",
+    "test/local-client-tokens.test.ts::local client tokens::stores hashes and verifies bearer tokens without persisting plaintext",
+    "test/native-account-storage.test.ts::counts a verified cache hit as fresh so one EBUSY after steady traffic keeps the snapshot",
+    "test/native-account-storage.test.ts::refreshes the bounded fallback age after a verified settled cache hit",
+    "test/native-login-sync.test.ts::adopts a newer access token when native login keeps the refresh token",
+    "test/native-login-sync.test.ts::adopts login when only auth.json changes (warm cache: true)",
+    "test/native-rate-limits.test.ts::keeps the token-bearing home under the user-private multi-auth directory and sweeps stale ones",
+    "test/pending-auth.test.ts::clears the pending journal only after its writer releases the lock",
+    "test/pending-auth.test.ts::never logs journal contents on read or post-save prune failures",
+    "test/pending-auth.test.ts::refuses a late rotated credential after the pool was reset",
+    "test/pending-auth.test.ts::retries a transient Windows lock when clearing pending credentials",
+    "test/pending-auth.test.ts::saves recovered legacy credentials without changing the original record identity",
+    "test/persisted-api-capabilities.test.ts::does not overwrite unrelated evidence updated at the same timestamp",
+    "test/persisted-api-capabilities.test.ts::preserves unreadable EACCES cache without paid probes",
+    "test/persisted-api-capabilities.test.ts::returns documentation without paid probes when another lease times out",
+    "test/quota-cache.test.ts::quota cache::retains a later completed priming result without overwriting concurrent quota",
+    "test/quota-cache.test.ts::quota cache::retains a later failed priming result without overwriting concurrent quota",
+    "test/quota-cache.test.ts::quota cache::round-trips bounded priming evidence and replaces it after a new observation",
+    "test/rate-limit-cache-ttl.test.ts::hourly rate-limit cache revalidation::keeps a newer concurrent rejection when saving a bounded legacy deadline",
+    "test/rate-limit-cache-ttl.test.ts::hourly rate-limit cache revalidation::persists the bound on load so restarts without another save do not slide it",
+    "test/refresh-lease.test.ts::RefreshLeaseCoordinator::ignores mismatched result payload and stale results",
+    "test/refresh-queue.test.ts::RefreshQueue::cross-process lease dedupe::reuses refresh result across queue instances via lease files",
+    "test/release-main-prs-regression.test.ts::release-main-prs regressions::keeps canonical storage and unified settings isolated from Codex CLI mirror files",
+    "test/repo-hygiene.test.ts::repo-hygiene script::has deterministic outcomes when check and clean run concurrently",
+    "test/resilience-storage.integration.test.ts::does not replace a readable inventory after initially loading no snapshot",
+    "test/resilience-storage.integration.test.ts::persists newer fallback tokens for an existing account",
+    "test/resilience-storage.integration.test.ts::preserves independent edits when a health-check clone moves an account to flagged storage",
+    "test/routing-profiles.test.ts::routing profiles::does not lose a deliberate profile edit that races a concurrent write under clock skew",
+    "test/routing-profiles.test.ts::routing profiles::leaves a raced newer profile alone when the caller only carried it",
+    "test/routing-profiles.test.ts::routing profiles::stores profiles keyed by Object.prototype member names without loss",
+    "test/runtime-policy-cache.test.ts::runtime policy cache::does not cache the empty store produced by a failed read",
+    "test/runtime-policy-cache.test.ts::runtime policy cache::never caches a store read raced by a concurrent rewrite",
+    "test/runtime-policy-cache.test.ts::runtime policy cache::picks up a store file created after a cached absent read",
+    "test/runtime-policy-cache.test.ts::runtime policy cache::rejects malformed emergency policy in the production cache loader",
+    "test/runtime-policy-cache.test.ts::runtime policy cache::returns consistent stores across concurrent loads during a rewrite",
+    "test/runtime-policy-cache.test.ts::runtime policy cache::returns the empty store once the file disappears",
+    "test/runtime-rotation-proxy.test.ts::Responses WebSocket fallback::signals the native client to fall back to HTTP after authenticating",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::rejects unreadable or expanded requests before any upstream: gzip",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::rejects unreadable or expanded requests before any upstream: gzip #2",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::rejects unreadable or expanded requests before any upstream: identity",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::rejects unreadable or expanded requests before any upstream: identity #2",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::rejects unreadable or expanded requests before any upstream: unknown",
+    "test/runtime-rotation-proxy.test.ts::native account storage availability::rejects stale managed credentials when the live account store disappears",
+    "test/runtime-rotation-proxy.test.ts::native mode authenticates before touching account storage::never reads storage for a request without credentials",
+    "test/runtime-rotation-proxy.test.ts::routing mutex serializes selection + cursor commit (issue #14 / L4)::never overlaps two enabled-mode select+commit sections, and is reentrant",
+    "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::fails closed when runtime policy cannot be loaded",
+    "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::rejects arbitrary local paths that merely end with responses",
+    "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::rejects oversized request bodies before selecting an account",
+    "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::rejects unauthenticated thread goal requests",
+    "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::requires a bearer for image requests",
+    "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::returns 401 (not 404) for unauthenticated requests to unknown paths",
+    "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::still rejects a web search request that is not a POST",
+    "test/security-stress.test.ts::stress: local token digest edge cases::verify returns null, never throws, for malformed stored hash \"sha256:\"",
+    "test/security-stress.test.ts::stress: local token digest edge cases::verify returns null, never throws, for malformed stored hash \"sha256:not-hex-at-all\"",
+    "test/storage-file-lock.test.ts::keeps the committed result when the owner file cannot be released, and reclaims it next time",
+    "test/storage-file-lock.test.ts::retries its own deferred release even when this process makes no later write",
+    "test/storage-recovery-paths.test.ts::storage recovery paths::auto-promotes backup when primary storage matches synthetic fixture pattern",
+    "test/storage-recovery-paths.test.ts::storage recovery paths::does not revive WAL contents after reset assessment runs before load",
+    "test/storage-recovery-paths.test.ts::storage recovery paths::exposes snapshot metadata and ignores cache-like artifacts",
+    "test/storage-recovery-paths.test.ts::storage recovery paths::falls back to .bak.2 when newer backups are unreadable",
+    "test/storage-recovery-paths.test.ts::storage recovery paths::falls back to historical backup snapshots when the latest backup is unreadable",
+    "test/storage-recovery-paths.test.ts::storage recovery paths::prefers the newest valid discovered snapshot in backup metadata",
+    "test/storage-recovery-paths.test.ts::storage recovery paths::recovers from WAL journal when primary storage is unreadable",
+    "test/storage-recovery-paths.test.ts::storage recovery paths::recovers from backup file when WAL is unavailable",
+    "test/storage-recovery-paths.test.ts::storage recovery paths::recovers from discovered non-standard backup artifact when primary file is missing",
+    "test/storage-recovery-paths.test.ts::storage recovery paths::returns restore eligibility and snapshot when storage is empty",
+    "test/storage-recovery-paths.test.ts::storage recovery paths::suppresses restore once after intentional reset marker",
+    "test/storage-recovery-paths.test.ts::storage recovery paths::surfaces restore eligibility when account pool is empty",
+    "test/storage-workspace-policy-merge.test.ts::does not report a successful enable when the selected replacement was removed concurrently",
+    "test/storage-workspace-policy-merge.test.ts::preserves an explicit re-enable across a concurrent runtime health update (runtime-first)",
+    "test/storage.test.ts::storage::account storage directory hardening::re-asserts owner-only (0o700) on a pre-existing permissive dir after save",
+    "test/storage.test.ts::storage::import/export (TDD)::passes the live flagged snapshot into account+flagged transactions",
+    "test/storage.test.ts::storage::import/export (TDD)::should serialize concurrent transactional updates without losing accounts",
+    "test/storage.test.ts::storage::import/export (TDD)::treats missing flagged storage as empty inside flagged transactions",
+    "test/unified-settings.test.ts::unified settings::falls back to backup when the primary settings file is unreadable",
+    "test/unified-settings.test.ts::unified settings::keeps both sections after concurrent plugin/dashboard writes",
+    "test/unified-settings.test.ts::unified settings::keeps the last good backup when a concurrent writer updates the primary after a backup-derived read",
+    "test/unified-settings.test.ts::unified settings::preserves the last good backup when a write fails after a backup-derived read",
+    "test/unified-settings.test.ts::unified settings::resumes snapshotting after a backup-derived write succeeds",
+    "test/unified-settings.test.ts::unified settings::rethrows sync backup read errors when the primary settings file is invalid",
+    "test/unified-settings.test.ts::unified settings::rethrows transient primary read errors instead of falling back to backup"
+   ],
+   "w": 2
+  },
+  {
+   "changes": [
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/accounts.test.ts::AccountManager::saveToDiskDebounced::awaits existing pendingSave before starting new save",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged"
+     ],
+     "nodeid": "test/accounts.test.ts::AccountManager::saveToDiskDebounced::logs warning when debounced save fails",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/accounts.test.ts::AccountManager::saveToDiskDebounced::uses the manager's captured Windows-style storage path state for delayed saves",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged"
+     ],
+     "nodeid": "test/accounts.test.ts::AccountManager::saveToDiskDebounced::uses the manager's captured storage path state for delayed saves",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/api-capability-ownership.test.ts::keeps cached evidence when cache lease fails with ELOCKED",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/api-capability-ownership.test.ts::keeps cached evidence when routes lease fails with EROFS",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/api-capability-ownership.test.ts::migrates a legacy route before paid probes without requiring a discovery change",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/api-model-runtime.test.ts::answers an API pool whose credentials all return 403 with 503, not an auth status",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/api-model-runtime.test.ts::uses typed cancellation and never retries another credential (preaborted=false)",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/automatic-api-checks.test.ts::does not claim or probe a legacy route when migration readonly prevents completion",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/automatic-api-checks.test.ts::repairs corrupt history without an immediate duplicate billable pass: {\"oldFormat\":true}",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/automatic-subscription-checks.test.ts::automatically enables first-use completion only for the opted-in saved subscription binding",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/automatic-subscription-checks.test.ts::canonicalizes selected Personal quota probes (unresolved)",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/automatic-subscription-checks.test.ts::preserves exhausted organization quota when a Personal check is followed by switching back",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/automatic-subscription-checks.test.ts::primes both selected Personal workspaces when credentials share an organization binding",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:env"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps xhigh config reasoning when retired mini aliases route to gpt-5.6-terra",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/codex-bin-wrapper.test.ts::codex bin wrapper::removes orphaned shadow sync locks with missing owner metadata",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:child"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:child"
+     ],
+     "nodeid": "test/codex-bin-wrapper.test.ts::codex bin wrapper::removes stale shadow sync locks before publishing refreshed auth state",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:env"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/codex-bin-wrapper.test.ts::codex bin wrapper::retries transient shadow sync lock owner write failures before sync-back",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/codex-cli-mirror.test.ts::explicit unauthorized id and Codex auth.json::repairs an auth.json that still holds the rejected id, once",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/codex-cli-org-account-alignment.test.ts::org-sourced account alignment with Codex auth.json (#700)::reads a writer-written org account back as aligned and never rewrites it",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/dashboard-settings.test.ts::dashboard settings::preserves plugin config section when saving dashboard settings",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/first-run.test.ts::ensureFirstRunSetup::v1 marker migration::converges when two processes migrate concurrently",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/inference-activity.test.ts::keeps the newest time when two writers of the same key interleave",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/live-account-sync.test.ts::live-account-sync::reloads when file changes are detected by polling",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/local-client-tokens.test.ts::local client tokens::does not lose mutations when revoke and add run concurrently",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/local-client-tokens.test.ts::local client tokens::returns null when a persisted tokenHash is malformed or mismatched: sha256:ABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABAB",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/local-client-tokens.test.ts::local client tokens::returns null when a persisted tokenHash is malformed or mismatched: sha256:abababababababababababababababababababababababababababababababa",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged"
+     ],
+     "nodeid": "test/local-client-tokens.test.ts::local client tokens::stores hashes and verifies bearer tokens without persisting plaintext",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:env"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/model-discovery-status.test.ts::honours the persisted 15-minute probe cache across fresh CLI processes unless probes are forced",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/model-discovery-status.test.ts::merges concurrent checks' probe results instead of replacing the shared cache",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/model-discovery-status.test.ts::preserves the daily program cache through unrelated capability failures (429)",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/model-inventory-cancellation.test.ts::does not publish an inventory temp file after cancellation during its write",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/model-inventory-cancellation.test.ts::retries exhausted preparation errors shortly without repeating claimed routes",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::does not overwrite unrelated evidence updated at the same timestamp",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::does not persist completed production discovery after credential readd",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::does not retain paid evidence when a credential changes regions during a probe",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::retains disk-only documented efforts after restarted daily checks unless denied: transport",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::retains disk-only documented efforts after restarted daily checks unless denied: unsupported",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::returns completed evidence after ENOSPC and avoids immediate duplicate probes",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::returns documentation without paid probes when another lease times out",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/quota-cache.test.ts::quota cache::merges overlapping CLI and automatic cache changes from independent writers",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/quota-cache.test.ts::quota cache::resolves an equal-timestamp race to the later save",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/rate-limit-cache-ttl.test.ts::hourly rate-limit cache revalidation::persists the bound on load so restarts without another save do not slide it",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not use old mtime to steal a live lock",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/refresh-lease.test.ts::RefreshLeaseCoordinator::rejects array JSON payloads in result and lock files",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/resilience-storage.integration.test.ts::does not restore accounts after the store was intentionally cleared",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/rotation-proxy-state.test.ts::recoverStaleRuntimeState::dedupes within the 1s window and reloads again once it expires",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/routing-profiles.test.ts::routing profiles::stores profiles keyed by Object.prototype member names without loss",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::Responses WebSocket fallback::signals the native client to fall back to HTTP after authenticating",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "missing"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 09:05:07 GMT at fifteen minutes",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "missing"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 11:20:41 GMT at fifteen minutes",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::explicit API model routes::rejects unreadable or expanded requests before any upstream: identity",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::explicit API model routes::rejects unreadable or expanded requests before any upstream: identity #2",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::explicit API model routes::rejects unreadable or expanded requests before any upstream: unknown",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::native account storage availability::rejects stale managed credentials when the live account store disappears",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::native mode authenticates before touching account storage::does not adopt stored credentials on behalf of an unauthenticated caller",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::native mode authenticates before touching account storage::never reads storage for a request without credentials",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::fails closed when runtime policy cannot be loaded",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/security-stress.test.ts::stress: local token digest edge cases::verify returns null, never throws, for malformed stored hash \"sha256:abababababababababababababababababababababababababababababababab \"",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/security-stress.test.ts::stress: local token digest edge cases::verify returns null, never throws, for malformed stored hash \"sha256:abababababababababababababababababababababababababababababababab0\"",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/security-stress.test.ts::stress: local token digest edge cases::verify returns null, never throws, for malformed stored hash \"sha256:not-hex-at-all\"",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/security-stress.test.ts::stress: local token digest edge cases::verify returns null, never throws, for malformed stored hash \"sha256:zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\"",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/unified-settings.test.ts::unified settings::merges plugin and dashboard sections into one file",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/unified-settings.test.ts::unified settings::rethrows async backup read errors when the primary settings file is invalid",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/unified-settings.test.ts::unified settings::serializes concurrent plugin config writes to avoid race corruption",
+     "towards_identical": false,
+     "w": 4
+    }
+   ],
+   "defects": [
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/accounts.test.ts::AccountManager::saveToDiskDebounced::awaits existing pendingSave before starting new save",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged"
+     ],
+     "nodeid": "test/accounts.test.ts::AccountManager::saveToDiskDebounced::logs warning when debounced save fails",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/accounts.test.ts::AccountManager::saveToDiskDebounced::uses the manager's captured Windows-style storage path state for delayed saves",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged"
+     ],
+     "nodeid": "test/accounts.test.ts::AccountManager::saveToDiskDebounced::uses the manager's captured storage path state for delayed saves",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/api-capability-ownership.test.ts::keeps cached evidence when cache lease fails with ELOCKED",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/api-capability-ownership.test.ts::keeps cached evidence when routes lease fails with EROFS",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/api-capability-ownership.test.ts::migrates a legacy route before paid probes without requiring a discovery change",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/api-model-runtime.test.ts::answers an API pool whose credentials all return 403 with 503, not an auth status",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/api-model-runtime.test.ts::uses typed cancellation and never retries another credential (preaborted=false)",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/automatic-api-checks.test.ts::does not claim or probe a legacy route when migration readonly prevents completion",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/automatic-api-checks.test.ts::repairs corrupt history without an immediate duplicate billable pass: {\"oldFormat\":true}",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/automatic-subscription-checks.test.ts::automatically enables first-use completion only for the opted-in saved subscription binding",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/automatic-subscription-checks.test.ts::canonicalizes selected Personal quota probes (unresolved)",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/automatic-subscription-checks.test.ts::preserves exhausted organization quota when a Personal check is followed by switching back",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/automatic-subscription-checks.test.ts::primes both selected Personal workspaces when credentials share an organization binding",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:env"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps xhigh config reasoning when retired mini aliases route to gpt-5.6-terra",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/codex-bin-wrapper.test.ts::codex bin wrapper::removes orphaned shadow sync locks with missing owner metadata",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:child"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:child"
+     ],
+     "nodeid": "test/codex-bin-wrapper.test.ts::codex bin wrapper::removes stale shadow sync locks before publishing refreshed auth state",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:env"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/codex-bin-wrapper.test.ts::codex bin wrapper::retries transient shadow sync lock owner write failures before sync-back",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/codex-cli-mirror.test.ts::explicit unauthorized id and Codex auth.json::repairs an auth.json that still holds the rejected id, once",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/codex-cli-org-account-alignment.test.ts::org-sourced account alignment with Codex auth.json (#700)::reads a writer-written org account back as aligned and never rewrites it",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/dashboard-settings.test.ts::dashboard settings::preserves plugin config section when saving dashboard settings",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/first-run.test.ts::ensureFirstRunSetup::v1 marker migration::converges when two processes migrate concurrently",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/inference-activity.test.ts::keeps the newest time when two writers of the same key interleave",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/live-account-sync.test.ts::live-account-sync::reloads when file changes are detected by polling",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/local-client-tokens.test.ts::local client tokens::does not lose mutations when revoke and add run concurrently",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/local-client-tokens.test.ts::local client tokens::returns null when a persisted tokenHash is malformed or mismatched: sha256:ABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABAB",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/local-client-tokens.test.ts::local client tokens::returns null when a persisted tokenHash is malformed or mismatched: sha256:abababababababababababababababababababababababababababababababa",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged"
+     ],
+     "nodeid": "test/local-client-tokens.test.ts::local client tokens::stores hashes and verifies bearer tokens without persisting plaintext",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:env"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/model-discovery-status.test.ts::honours the persisted 15-minute probe cache across fresh CLI processes unless probes are forced",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/model-discovery-status.test.ts::merges concurrent checks' probe results instead of replacing the shared cache",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/model-discovery-status.test.ts::preserves the daily program cache through unrelated capability failures (429)",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/model-inventory-cancellation.test.ts::does not publish an inventory temp file after cancellation during its write",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/model-inventory-cancellation.test.ts::retries exhausted preparation errors shortly without repeating claimed routes",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::does not overwrite unrelated evidence updated at the same timestamp",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::does not persist completed production discovery after credential readd",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::does not retain paid evidence when a credential changes regions during a probe",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::retains disk-only documented efforts after restarted daily checks unless denied: transport",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::retains disk-only documented efforts after restarted daily checks unless denied: unsupported",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::returns completed evidence after ENOSPC and avoids immediate duplicate probes",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/persisted-api-capabilities.test.ts::returns documentation without paid probes when another lease times out",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/quota-cache.test.ts::quota cache::merges overlapping CLI and automatic cache changes from independent writers",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/quota-cache.test.ts::quota cache::resolves an equal-timestamp race to the later save",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/rate-limit-cache-ttl.test.ts::hourly rate-limit cache revalidation::persists the bound on load so restarts without another save do not slide it",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not use old mtime to steal a live lock",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/refresh-lease.test.ts::RefreshLeaseCoordinator::rejects array JSON payloads in result and lock files",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/resilience-storage.integration.test.ts::does not restore accounts after the store was intentionally cleared",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/rotation-proxy-state.test.ts::recoverStaleRuntimeState::dedupes within the 1s window and reloads again once it expires",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/routing-profiles.test.ts::routing profiles::stores profiles keyed by Object.prototype member names without loss",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::Responses WebSocket fallback::signals the native client to fall back to HTTP after authenticating",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "missing"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 09:05:07 GMT at fifteen minutes",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "missing"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 11:20:41 GMT at fifteen minutes",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::explicit API model routes::rejects unreadable or expanded requests before any upstream: identity",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::explicit API model routes::rejects unreadable or expanded requests before any upstream: identity #2",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::explicit API model routes::rejects unreadable or expanded requests before any upstream: unknown",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::native account storage availability::rejects stale managed credentials when the live account store disappears",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::native mode authenticates before touching account storage::does not adopt stored credentials on behalf of an unauthenticated caller",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::native mode authenticates before touching account storage::never reads storage for a request without credentials",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::fails closed when runtime policy cannot be loaded",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/security-stress.test.ts::stress: local token digest edge cases::verify returns null, never throws, for malformed stored hash \"sha256:abababababababababababababababababababababababababababababababab \"",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/security-stress.test.ts::stress: local token digest edge cases::verify returns null, never throws, for malformed stored hash \"sha256:abababababababababababababababababababababababababababababababab0\"",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/security-stress.test.ts::stress: local token digest edge cases::verify returns null, never throws, for malformed stored hash \"sha256:not-hex-at-all\"",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/security-stress.test.ts::stress: local token digest edge cases::verify returns null, never throws, for malformed stored hash \"sha256:zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\"",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/unified-settings.test.ts::unified settings::merges plugin and dashboard sections into one file",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/unified-settings.test.ts::unified settings::rethrows async backup read errors when the primary settings file is invalid",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:api"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/unified-settings.test.ts::unified settings::serializes concurrent plugin config writes to avoid race corruption",
+     "towards_identical": false,
+     "w": 4
+    }
+   ],
+   "rounds_base": 3,
+   "rounds_fix": 3,
+   "variable_class": [
+    "test/account-policy.test.ts::account policy store::does not lose a deliberate edit that races a concurrent write under clock skew",
+    "test/account-policy.test.ts::account policy store::keeps updatedAt order for saves without a baseline",
+    "test/account-policy.test.ts::account policy store::leaves a raced newer entry alone when the caller only carried it",
+    "test/account-policy.test.ts::account policy store::survives a backward clock jump between writes (hybrid updatedAt floor)",
+    "test/accounts.test.ts::AccountManager::removeAccount cursor adjustment::adjusts currentAccountIndexByFamily when removing account before current",
+    "test/api-capability-custom-fetch.test.ts::uses the configured raw transport for daily capability discovery",
+    "test/api-capability-ownership.test.ts::keeps cached evidence when routes lease fails with EACCES",
+    "test/api-capability-ownership.test.ts::scopes persisted evidence while preserving legitimate foreign cache",
+    "test/api-model-runtime.test.ts::advertises only the configured credential's programs and refreshes metadata without refetching models",
+    "test/api-model-runtime.test.ts::fails over a credential transport AbortError while preserving real client cancellation",
+    "test/api-model-runtime.test.ts::keeps api failover within the selected pool and region",
+    "test/api-model-runtime.test.ts::keeps responses failover within the selected credential region",
+    "test/api-model-runtime.test.ts::preserves the final sanitized setting rejection after trying every ZDR credential",
+    "test/api-model-runtime.test.ts::uses the selected US endpoint for discovery and inference, with separate regional caches",
+    "test/app-bind.test.ts::Codex app runtime rotation bind::fails bind when a spawned router never reports ready for an existing port",
+    "test/app-bind.test.ts::Codex app runtime rotation bind::validates legacy router timestamps and command identity before stopping",
+    "test/automatic-api-checks.test.ts::does not recreate cleared history from a route snapshot queued behind the wipe lock",
+    "test/automatic-api-checks.test.ts::keeps the next tick anchored when a slow run rejects: false",
+    "test/automatic-api-checks.test.ts::keeps the next tick anchored when a slow run rejects: true",
+    "test/automatic-api-checks.test.ts::migrates legacy ownership before claiming the daily check (discovery writes=true)",
+    "test/automatic-api-checks.test.ts::refreshes expired program evidence before consuming the daily pass despite fresh general probes",
+    "test/automatic-api-checks.test.ts::revalidates production POST and inventory by visibility membership (remove=true)",
+    "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with undefined",
+    "test/automatic-subscription-checks.test.ts::canonicalizes selected Personal quota probes (disabled)",
+    "test/automatic-subscription-checks.test.ts::canonicalizes selected Personal quota probes (mirror)",
+    "test/automatic-subscription-checks.test.ts::canonicalizes selected Personal quota probes (token)",
+    "test/automatic-subscription-checks.test.ts::rejects autoPrime corrupted during refresh before priming or observing quota",
+    "test/budget-guard.test.ts::budget guard::does not lose a deliberate edit that races a concurrent write under clock skew",
+    "test/budget-guard.test.ts::budget guard::leaves a raced newer limit alone when the caller only carried it",
+    "test/budget-guard.test.ts::budget guard::re-applies update mutations over the freshest store",
+    "test/budget-guard.test.ts::budget guard::survives a backward clock jump between writes (hybrid updatedAt floor)",
+    "test/chaos/fs-faults.test.ts::storage fs fault injection::ENOSPC mid temp-write fails typed, keeps the committed store, and removes the torn temp",
+    "test/chaos/fs-faults.test.ts::storage fs fault injection::transient EBUSY on the temp write retries under the shared fs policy",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::accepts the loopback runtime-proxy upstream http://127.0.0.1:80/backend-api",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::accepts the loopback runtime-proxy upstream http://127.9.9.9:8787/backend-api",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::accepts the loopback runtime-proxy upstream http://[::1]:8787/backend-api",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::appends the rotation provider at the end when there is no `--`",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::can forward without capturing child stdio for terminal-sensitive Codex runs",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::classifies a command after a filled prompt slot like native Codex (#673)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::classifies the hidden `execpolicy` subcommand as a command, not a prompt (#673)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::classifies the hidden `stdio-to-uds` subcommand as a command, not a prompt (#673)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::copies generated runtime directories only when explicitly requested",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::derives cmd.exe from SystemRoot when ComSpec is unavailable",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::derives cmd.exe from uppercase SYSTEMROOT when ComSpec is unavailable",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::discovers the real codex bin via npm root fallback for direct script runs on Windows",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::discovers the real codex bin via npm root fallback on POSIX",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::does not clobber sync-back files that change during rename retry backoff",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::does not read a linked sqlite file whose original was replaced during the launch",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::does not read linked sqlite files when snapshotting or syncing the shadow home",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::does not read linked sqlite sidecars whose originals were replaced during the launch",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::does not read or rewrite a `-m` inside a `--`-forced prompt",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::does not repair local session index for failed forwarded runs",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::does not start runtime rotation proxy for app help",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::does not start runtime rotation proxy for app-server JSON schema generation",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::does not start runtime rotation proxy for app-server TypeScript generation",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::does not start runtime rotation proxy for app-server help",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::fails closed for an unsafe runtime-proxy upstream: http://127.0.0.1.example.com:8787/backend-api",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::fails closed for an unsafe runtime-proxy upstream: http://127.0.0.1/backend-api",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::fails closed for an unsafe runtime-proxy upstream: http://127.0.0.1:8787/backend-api#unsafe",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::fails closed for an unsafe runtime-proxy upstream: http://127.0.0.1:8787/backend-api?route=unsafe",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::fails closed for an unsafe runtime-proxy upstream: http://[::2]:8787/backend-api",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::fails closed for an unsafe runtime-proxy upstream: http://example.com:8787/backend-api",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::fails closed for an unsafe runtime-proxy upstream: http://localhost:8787/backend-api",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::fails closed for an unsafe runtime-proxy upstream: http://user:pass@127.0.0.1:8787/backend-api",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::fails closed for an unsafe runtime-proxy upstream: https://127.0.0.1:8787/backend-api",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::fails closed for an unsafe runtime-proxy upstream: not-a-url",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::fails closed when runtime rotation is off but an upstream is configured",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::forwards `exec --help` without starting the rotation transport (#647)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::forwards `exec -h` without starting the rotation transport (#647)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::forwards `fork -h` without starting the rotation transport (#647)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::forwards `review -h` without starting the rotation transport (#647)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::forwards an explicit loopback upstream through the shadow runtime proxy",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::forwards the `a` apply alias without starting the rotation transport (#673)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::honors uppercase COMSPEC when resolving the Windows npm root fallback",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::injects the rotation provider before a `--` on the exec path",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps `exec` on the shadow Codex home (#647)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps `review` on the shadow Codex home (#647)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps a sideband URL the user configured on the canonical Codex home (#750)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps explicit xhigh reasoning for retired mini aliases routed to gpt-5.6-terra",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps interactive resume stdout attached even when capture is forced",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps retrying after consecutive stale shadow sync locks",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps the `e` exec alias on the shadow Codex home (#673)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::leaves a `--account` inside a `--`-forced prompt as prompt text",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::repairs local session index and suppresses known Codex rollout-store noise",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::replaces a sideband line an earlier bind wrote on the canonical Codex home (#750)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::resolves the forced account by --account= form and publishes its 0-based index (#623)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::resolves the forced account by account id and publishes its 0-based index (#623)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::resolves the forced account by email and publishes its 0-based index (#623)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::retries preflight destination reads when the sync-back target is transiently locked",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::serializes concurrent local session index repairs",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::skips already indexed rollout files during local session index repair",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::skips the persisted auth-store reconcile when the opt-out env var is disabled",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::still runs a non-request subcommand when an upstream is configured",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::strips --account and publishes the resolved 0-based index for the proxy (#623)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::syncs manager active selection before and after forwarded commands",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::the flag wins over CODEX_MULTI_AUTH_FORCE_ACCOUNT when both are set (#623)",
+    "test/codex-bin-wrapper.test.ts::codex bin wrapper::waits for fresh orphaned shadow sync locks to become stale before stealing",
+    "test/codex-bin-wrapper.test.ts::stale shadow-home sweep::removes dead-owner and aged markerless shadow homes, keeps live ones",
+    "test/codex-cli-mirror.test.ts::explicit unauthorized id and Codex auth.json::follows a new explicit id once the mirror is stale",
+    "test/codex-cli-mirror.test.ts::explicit unauthorized id and Codex auth.json::writes the authorized id at login and dashboard renders never write the rejected id back",
+    "test/codex-cli-org-account-alignment.test.ts::org-sourced account alignment with Codex auth.json (#700)::rewrites an org account_id left in auth.json by an older release, once",
+    "test/codex-cli-org-account-alignment.test.ts::org-sourced account alignment with Codex auth.json (#700)::rewrites an org auth.json account_id even when a valid accounts.json exists, once",
+    "test/codex-cli-org-account-alignment.test.ts::org-sourced account alignment with Codex auth.json (#700)::stays aligned when the legacy accounts.json keeps the raw org id",
+    "test/codex-cli-state.test.ts::codex-cli state::forceRefresh reads fresh disk data even while a non-forced load is in flight",
+    "test/codex-cli-state.test.ts::codex-cli state::returns null when auth payload tokens are missing or tokenless",
+    "test/codex-manager-workspace-command.test.ts::persists a disabled selection and preserves it through account re-enablement",
+    "test/h3-token-clobber.test.ts::H3 - cross-process token clobber protection::preserves a refresh token another process rotated to disk during a routine save",
+    "test/issue-474-pin-safety.test.ts::issue #474 \u2014 pin-honored review feedback::AccountManager.buildStorageSnapshot preserves pin/gen::omits pinnedAccountIndex when storage has no pin",
+    "test/issue-474-pin-safety.test.ts::issue #474 \u2014 pin-honored review feedback::AccountManager.buildStorageSnapshot preserves pin/gen::preserves a CLI-bumped affinityGeneration that lands between load and save",
+    "test/issue-474-pin-safety.test.ts::issue #474 \u2014 pin-honored review feedback::AccountManager.buildStorageSnapshot preserves pin/gen::round-trips pinnedAccountIndex and affinityGeneration through saveToDisk",
+    "test/local-client-tokens.test.ts::local client tokens::rotates and revokes tokens",
+    "test/model-discovery-status.test.ts::does not claim a program check when a model has no whitelisted candidates",
+    "test/model-discovery-status.test.ts::persists daily program evidence separately from the shorter capability cache",
+    "test/model-inventory-cancellation.test.ts::cancels inventory lock contention before its owner releases (daily=true)",
+    "test/native-account-storage.test.ts::caches settled primary storage but adopts credential revocation on change",
+    "test/native-account-storage.test.ts::refreshes the bounded fallback age after a verified settled cache hit",
+    "test/native-login-sync.test.ts::adopts a newer access token when native login keeps the refresh token",
+    "test/native-login-sync.test.ts::adopts login when only auth.json changes (warm cache: false)",
+    "test/native-rate-limits.test.ts::keeps the token-bearing home under the user-private multi-auth directory and sweeps stale ones",
+    "test/pending-auth.test.ts::clears the pending journal only after its writer releases the lock",
+    "test/pending-auth.test.ts::never logs journal contents on read or post-save prune failures",
+    "test/pending-auth.test.ts::refuses a late rotated credential after the pool was reset",
+    "test/pending-auth.test.ts::retries a transient Windows lock when clearing pending credentials",
+    "test/pending-auth.test.ts::saves recovered legacy credentials without changing the original record identity",
+    "test/persisted-api-capabilities.test.ts::does not persist completed production discovery after credential wipe",
+    "test/persisted-api-capabilities.test.ts::does not reuse global paid evidence or daily claims after switching to US",
+    "test/persisted-api-capabilities.test.ts::invalidates retained production evidence after wipe and same-key readd",
+    "test/persisted-api-capabilities.test.ts::preserves unreadable EACCES cache without paid probes",
+    "test/persisted-api-capabilities.test.ts::renews programs before claiming another daily interval after 1 ms of live evidence",
+    "test/persisted-api-capabilities.test.ts::renews programs before claiming another daily interval after 86100000 ms of live evidence",
+    "test/persisted-api-capabilities.test.ts::retains disk-only documented efforts after restarted daily checks unless denied: revoked",
+    "test/pr691-switch-revalidation.test.ts::AccountManager save resilience::does not restore stale account state after an intentional clear",
+    "test/quota-cache.test.ts::quota cache::does not apply stale cache deletion over a concurrent observation",
+    "test/quota-cache.test.ts::quota cache::round-trips bounded priming evidence and replaces it after a new observation",
+    "test/rate-limit-cache-ttl.test.ts::hourly rate-limit cache revalidation::keeps a newer concurrent rejection when saving a bounded legacy deadline",
+    "test/refresh-lease.test.ts::RefreshLeaseCoordinator::ignores mismatched result payload and stale results",
+    "test/refresh-lease.test.ts::RefreshLeaseCoordinator::tightens an already-existing lease dir to 0o700 on POSIX (chmod after mkdir)",
+    "test/release-main-prs-regression.test.ts::release-main-prs regressions::keeps canonical storage and unified settings isolated from Codex CLI mirror files",
+    "test/repo-hygiene.test.ts::repo-hygiene script::has deterministic outcomes when check and clean run concurrently",
+    "test/reset-credits.test.ts::reset credits::serializes redemptions across separate module instances (cross-process)",
+    "test/resilience-storage.integration.test.ts::persists newer fallback tokens for an existing account",
+    "test/resilience-storage.integration.test.ts::preserves independent edits when a health-check clone moves an account to flagged storage",
+    "test/resilience-storage.integration.test.ts::retains a newly signed-in fallback when the stored inventory is empty=true",
+    "test/rotation-proxy-state.test.ts::recoverStaleRuntimeState::reloads from disk, swaps the active manager, and records observability",
+    "test/routing-profiles.test.ts::routing profiles::does not lose a deliberate profile edit that races a concurrent write under clock skew",
+    "test/routing-profiles.test.ts::routing profiles::leaves a raced newer profile alone when the caller only carried it",
+    "test/routing-profiles.test.ts::routing profiles::survives a backward clock jump between writes (hybrid updatedAt floor)",
+    "test/runtime-policy-cache.test.ts::runtime policy cache::does not cache the empty store produced by a failed read",
+    "test/runtime-policy-cache.test.ts::runtime policy cache::never caches a store read raced by a concurrent rewrite",
+    "test/runtime-policy-cache.test.ts::runtime policy cache::picks up a store file created after a cached absent read",
+    "test/runtime-policy-cache.test.ts::runtime policy cache::re-reads a same-size rewrite that pins mtime back",
+    "test/runtime-policy-cache.test.ts::runtime policy cache::rejects malformed emergency policy in the production cache loader",
+    "test/runtime-policy-cache.test.ts::runtime policy cache::returns the empty store once the file disappears",
+    "test/runtime-policy-cache.test.ts::runtime policy cache::serves the parsed store and re-reads it after a rewrite",
+    "test/runtime-rotation-proxy.test.ts::PR review regressions::revokes a persisted managed bearer when removed",
+    "test/runtime-rotation-proxy.test.ts::PR review regressions::revokes a persisted managed bearer when shorter",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::rejects unreadable or expanded requests before any upstream: gzip",
+    "test/runtime-rotation-proxy.test.ts::native OpenAI catalog routing::does not authenticate unknown or disabled OAuth tokens",
+    "test/runtime-rotation-proxy.test.ts::provider re-login while router is running::requires the local client key before reading storage: access-1",
+    "test/runtime-rotation-proxy.test.ts::provider re-login while router is running::requires the local client key before reading storage: undefined",
+    "test/runtime-rotation-proxy.test.ts::provider re-login while router is running::requires the local client key before reading storage: unknown",
+    "test/runtime-rotation-proxy.test.ts::routing mutex serializes selection + cursor commit (issue #14 / L4)::never overlaps two enabled-mode select+commit sections, and is reentrant",
+    "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::does not treat the local capability marker as client authentication",
+    "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::rejects arbitrary local paths that merely end with responses",
+    "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::rejects oversized request bodies before selecting an account",
+    "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::rejects unauthenticated thread goal requests",
+    "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::requires a bearer for image requests",
+    "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::returns 401 (not 404) for unauthenticated requests to unknown paths",
+    "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::still rejects a web search request that is not a POST",
+    "test/security-stress.test.ts::stress: local token digest edge cases::verify returns null, never throws, for malformed stored hash \"sha256: \"",
+    "test/security-stress.test.ts::stress: local token digest edge cases::verify returns null, never throws, for malformed stored hash \"sha256:\"",
+    "test/security-stress.test.ts::stress: local token digest edge cases::verify returns null, never throws, for malformed stored hash \"sha256:abababababababababababababababababababababababababababababababa\"",
+    "test/storage-file-lock.test.ts::keeps the committed result when the owner file cannot be released, and reclaims it next time",
+    "test/storage-file-lock.test.ts::retries its own deferred release even when this process makes no later write",
+    "test/storage-recovery-paths.test.ts::storage recovery paths::assesses restore state with latest snapshot metadata",
+    "test/storage-recovery-paths.test.ts::storage recovery paths::does not use backup recovery when backups are disabled",
+    "test/storage-recovery-paths.test.ts::storage recovery paths::exposes snapshot metadata and ignores cache-like artifacts",
+    "test/storage-recovery-paths.test.ts::storage recovery paths::falls back to historical backup snapshots when the latest backup is unreadable",
+    "test/storage-recovery-paths.test.ts::storage recovery paths::prefers the newest valid discovered snapshot in backup metadata",
+    "test/storage-recovery-paths.test.ts::storage recovery paths::recovers from WAL journal when primary storage is unreadable",
+    "test/storage-recovery-paths.test.ts::storage recovery paths::recovers from backup file when WAL is unavailable",
+    "test/storage-recovery-paths.test.ts::storage recovery paths::returns restore eligibility and snapshot when storage is empty",
+    "test/storage-recovery-paths.test.ts::storage recovery paths::surfaces restore eligibility when account pool is empty",
+    "test/storage.test.ts::storage::account storage directory hardening::re-asserts owner-only (0o700) on a pre-existing permissive dir after save",
+    "test/storage.test.ts::storage::loadAccounts::returns normalized data on valid file",
+    "test/storage.test.ts::storage::loadAccounts::returns null on parse error",
+    "test/storage.test.ts::storage::saveAccounts EPERM/EBUSY retry logic::retries the temp-to-final rename on transient EPERM and succeeds",
+    "test/unified-settings.test.ts::unified settings::falls back to backup when the primary settings file is unreadable",
+    "test/unified-settings.test.ts::unified settings::keeps both sections after concurrent plugin/dashboard writes",
+    "test/unified-settings.test.ts::unified settings::keeps the last good backup when a concurrent writer updates the primary after a backup-derived read",
+    "test/unified-settings.test.ts::unified settings::preserves the last good backup when a write fails after a backup-derived read",
+    "test/unified-settings.test.ts::unified settings::recovers dashboard settings from backup when primary settings file is invalid",
+    "test/unified-settings.test.ts::unified settings::recovers plugin config from backup when primary settings file is invalid",
+    "test/unified-settings.test.ts::unified settings::resumes snapshotting after a backup-derived write succeeds",
+    "test/unified-settings.test.ts::unified settings::rethrows sync backup read errors when the primary settings file is invalid",
+    "test/unified-settings.test.ts::unified settings::rethrows transient primary read errors instead of falling back to backup"
+   ],
+   "w": 4
+  }
+ ],
+ "rule3": {
+  "count_defects": [
+   {
+    "baseline": [
+     70,
+     73
+    ],
+    "count": "failed",
+    "fix": 74,
+    "kind": "par",
+    "rep": 2,
+    "workers": 2
+   },
+   {
+    "baseline": [
+     8577,
+     8580
+    ],
+    "count": "passed",
+    "fix": 8576,
+    "kind": "par",
+    "rep": 2,
+    "workers": 2
+   },
+   {
+    "baseline": [
+     70,
+     73
+    ],
+    "count": "failed",
+    "fix": 75,
+    "kind": "par",
+    "rep": 3,
+    "workers": 2
+   },
+   {
+    "baseline": [
+     8577,
+     8580
+    ],
+    "count": "passed",
+    "fix": 8575,
+    "kind": "par",
+    "rep": 3,
+    "workers": 2
+   },
+   {
+    "baseline": [
+     64,
+     67
+    ],
+    "count": "failed",
+    "fix": 68,
+    "kind": "par",
+    "rep": 1,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     8583,
+     8586
+    ],
+    "count": "passed",
+    "fix": 8582,
+    "kind": "par",
+    "rep": 1,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     64,
+     67
+    ],
+    "count": "failed",
+    "fix": 75,
+    "kind": "par",
+    "rep": 2,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     8583,
+     8586
+    ],
+    "count": "passed",
+    "fix": 8575,
+    "kind": "par",
+    "rep": 2,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     6,
+     6
+    ],
+    "count": "failed",
+    "fix": 7,
+    "kind": "plain_par",
+    "rep": 2,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     8644,
+     8644
+    ],
+    "count": "passed",
+    "fix": 8643,
+    "kind": "plain_par",
+    "rep": 2,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     73,
+     76
+    ],
+    "count": "failed",
+    "fix": 69,
+    "kind": "serial",
+    "rep": 2,
+    "workers": 1
+   },
+   {
+    "baseline": [
+     8574,
+     8577
+    ],
+    "count": "passed",
+    "fix": 8581,
+    "kind": "serial",
+    "rep": 2,
+    "workers": 1
+   },
+   {
+    "baseline": [
+     73,
+     76
+    ],
+    "count": "failed",
+    "fix": 69,
+    "kind": "serial",
+    "rep": 3,
+    "workers": 1
+   },
+   {
+    "baseline": [
+     8574,
+     8577
+    ],
+    "count": "passed",
+    "fix": 8581,
+    "kind": "serial",
+    "rep": 3,
+    "workers": 1
+   }
+  ],
+  "defects": [
+   {
+    "baseline": [
+     "absent"
+    ],
+    "fix": "passed",
+    "fix_round": 1,
+    "kind": "plain",
+    "nodeid": "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 19561"
+   },
+   {
+    "baseline": [
+     "absent"
+    ],
+    "fix": "passed",
+    "fix_round": 1,
+    "kind": "plain",
+    "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 11:10:59 GMT at fifteen minutes"
+   },
+   {
+    "baseline": [
+     "absent"
+    ],
+    "fix": "passed",
+    "fix_round": 2,
+    "kind": "plain",
+    "nodeid": "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 6665"
+   },
+   {
+    "baseline": [
+     "absent"
+    ],
+    "fix": "passed",
+    "fix_round": 2,
+    "kind": "plain",
+    "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 11:38:19 GMT at fifteen minutes"
+   },
+   {
+    "baseline": [
+     "absent"
+    ],
+    "fix": "passed",
+    "fix_round": 3,
+    "kind": "plain",
+    "nodeid": "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 25992"
+   },
+   {
+    "baseline": [
+     "absent"
+    ],
+    "fix": "passed",
+    "fix_round": 3,
+    "kind": "plain",
+    "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 12:05:16 GMT at fifteen minutes"
+   },
+   {
+    "baseline": [
+     "passed"
+    ],
+    "fix": "absent",
+    "fix_round": 1,
+    "kind": "serial",
+    "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 09:05:07 GMT at fifteen minutes"
+   },
+   {
+    "baseline": [
+     "absent"
+    ],
+    "fix": "passed",
+    "fix_round": 1,
+    "kind": "serial",
+    "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 11:20:41 GMT at fifteen minutes"
+   },
+   {
+    "baseline": [
+     "passed"
+    ],
+    "fix": "absent",
+    "fix_round": 2,
+    "kind": "serial",
+    "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 09:05:07 GMT at fifteen minutes"
+   },
+   {
+    "baseline": [
+     "absent"
+    ],
+    "fix": "passed",
+    "fix_round": 2,
+    "kind": "serial",
+    "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 11:20:41 GMT at fifteen minutes"
+   },
+   {
+    "baseline": [
+     "passed"
+    ],
+    "fix": "absent",
+    "fix_round": 3,
+    "kind": "serial",
+    "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 09:05:07 GMT at fifteen minutes"
+   },
+   {
+    "baseline": [
+     "absent"
+    ],
+    "fix": "passed",
+    "fix_round": 3,
+    "kind": "serial",
+    "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 11:20:41 GMT at fifteen minutes"
+   },
+   {
+    "baseline": [
+     "passed"
+    ],
+    "fix": "absent",
+    "fix_round": 1,
+    "kind": "par w2",
+    "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 09:05:07 GMT at fifteen minutes"
+   },
+   {
+    "baseline": [
+     "absent"
+    ],
+    "fix": "passed",
+    "fix_round": 1,
+    "kind": "par w2",
+    "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 11:20:41 GMT at fifteen minutes"
+   },
+   {
+    "baseline": [
+     "passed"
+    ],
+    "fix": "absent",
+    "fix_round": 2,
+    "kind": "par w2",
+    "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 09:05:07 GMT at fifteen minutes"
+   },
+   {
+    "baseline": [
+     "absent"
+    ],
+    "fix": "passed",
+    "fix_round": 2,
+    "kind": "par w2",
+    "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 11:20:41 GMT at fifteen minutes"
+   },
+   {
+    "baseline": [
+     "passed"
+    ],
+    "fix": "absent",
+    "fix_round": 3,
+    "kind": "par w2",
+    "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 09:05:07 GMT at fifteen minutes"
+   },
+   {
+    "baseline": [
+     "absent"
+    ],
+    "fix": "passed",
+    "fix_round": 3,
+    "kind": "par w2",
+    "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 11:20:41 GMT at fifteen minutes"
+   },
+   {
+    "baseline": [
+     "passed"
+    ],
+    "fix": "absent",
+    "fix_round": 1,
+    "kind": "par w4",
+    "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 09:05:07 GMT at fifteen minutes"
+   },
+   {
+    "baseline": [
+     "absent"
+    ],
+    "fix": "passed",
+    "fix_round": 1,
+    "kind": "par w4",
+    "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 11:20:41 GMT at fifteen minutes"
+   },
+   {
+    "baseline": [
+     "passed"
+    ],
+    "fix": "failed",
+    "fix_round": 2,
+    "kind": "par w4",
+    "nodeid": "test/model-inventory-cancellation.test.ts::retries exhausted preparation errors shortly without repeating claimed routes"
+   },
+   {
+    "baseline": [
+     "passed"
+    ],
+    "fix": "failed",
+    "fix_round": 2,
+    "kind": "par w4",
+    "nodeid": "test/persisted-api-capabilities.test.ts::returns completed evidence after ENOSPC and avoids immediate duplicate probes"
+   },
+   {
+    "baseline": [
+     "passed"
+    ],
+    "fix": "absent",
+    "fix_round": 2,
+    "kind": "par w4",
+    "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 09:05:07 GMT at fifteen minutes"
+   },
+   {
+    "baseline": [
+     "absent"
+    ],
+    "fix": "passed",
+    "fix_round": 2,
+    "kind": "par w4",
+    "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 11:20:41 GMT at fifteen minutes"
+   },
+   {
+    "baseline": [
+     "passed"
+    ],
+    "fix": "failed",
+    "fix_round": 3,
+    "kind": "par w4",
+    "nodeid": "test/automatic-api-checks.test.ts::revalidates production POST and inventory by visibility membership (remove=false)"
+   },
+   {
+    "baseline": [
+     "failed"
+    ],
+    "fix": "passed",
+    "fix_round": 3,
+    "kind": "par w4",
+    "nodeid": "test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for `resume` runtime routing (#647)"
+   },
+   {
+    "baseline": [
+     "passed"
+    ],
+    "fix": "absent",
+    "fix_round": 3,
+    "kind": "par w4",
+    "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 09:05:07 GMT at fifteen minutes"
+   },
+   {
+    "baseline": [
+     "absent"
+    ],
+    "fix": "passed",
+    "fix_round": 3,
+    "kind": "par w4",
+    "nodeid": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 11:20:41 GMT at fifteen minutes"
+   }
+  ],
+  "exit_defects": [],
+  "false_green": [],
+  "variable": {
+   "test/app-bind.test.ts::Codex app runtime rotation bind::validates legacy router timestamps and command identity before stopping": [
+    "par w2"
+   ],
+   "test/automatic-api-checks.test.ts::keeps the next tick anchored when a slow run rejects: false": [
+    "serial"
+   ],
+   "test/automatic-api-checks.test.ts::keeps the next tick anchored when a slow run rejects: true": [
+    "serial",
+    "par w2",
+    "par w4"
+   ],
+   "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": [
+    "serial",
+    "par w2",
+    "par w4"
+   ],
+   "test/codex-bin-wrapper.test.ts::codex bin wrapper::force-stops an app helper that ignores SIGTERM (#647)": [
+    "par w4"
+   ],
+   "test/codex-bin-wrapper.test.ts::codex bin wrapper::injects rotation helper args before a `--` on the resume path (#673)": [
+    "serial",
+    "par w2",
+    "par w4"
+   ],
+   "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps a native openai rollout visible while routing its resumed requests through rotation": [
+    "serial",
+    "par w4"
+   ],
+   "test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps both sessions' state when two canonical TUI sessions overlap": [
+    "par w4"
+   ],
+   "test/codex-bin-wrapper.test.ts::codex bin wrapper::resolves the resume provider from a bounded prefix of a large rollout": [
+    "par w4"
+   ],
+   "test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for `fork` runtime routing (#647)": [
+    "par w4"
+   ],
+   "test/model-inventory-cancellation.test.ts::does not publish an inventory temp file after cancellation during its write": [
+    "par w4"
+   ],
+   "test/persisted-api-capabilities.test.ts::caps paid probes across independent routes at four": [
+    "par w2"
+   ],
+   "test/persisted-api-capabilities.test.ts::does not overwrite unrelated evidence updated at the same timestamp": [
+    "par w2"
+   ],
+   "test/persisted-api-capabilities.test.ts::preserves unreadable EACCES cache without paid probes": [
+    "serial",
+    "par w2"
+   ],
+   "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes": [
+    "par w2"
+   ],
+   "test/persisted-api-capabilities.test.ts::returns documentation without paid probes when another lease times out": [
+    "par w2"
+   ],
+   "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 1084": [
+    "plain"
+   ],
+   "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 23022": [
+    "plain"
+   ],
+   "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 3723": [
+    "plain"
+   ],
+   "test/runtime-policy-cache.test.ts::runtime policy cache::never caches a store read raced by a concurrent rewrite": [
+    "par w2",
+    "par w4"
+   ],
+   "test/runtime-policy-cache.test.ts::runtime policy cache::re-resolves when a project marker appears in a previously rootless dir": [
+    "serial"
+   ],
+   "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 08:55:20 GMT at fifteen minutes": [
+    "plain"
+   ],
+   "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 09:40:21 GMT at fifteen minutes": [
+    "plain"
+   ],
+   "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Sat, 26 Dec 2026 10:07:31 GMT at fifteen minutes": [
+    "plain"
+   ],
+   "test/runtime-rotation-proxy.test.ts::keeps session affinity when the client disconnects mid-stream": [
+    "par w4"
+   ]
+  }
+ }
+}
