@@ -2,15 +2,18 @@
 """Text-run watchdog (coordinator 2026-11-26 14:57Z, after the gaps 09:56-10:54Z and 12:34-14:56Z).
 
 Every 20 minutes a harness-tracked timer in the work session wakes the session. The session reads the latest text
-workflow run and the time of its last log line with the GitHub tools (the session's gh is limited to search), then:
-  watchdog.py check --status <run status> --last-log <ISO time> [--now <ISO time>]
+workflow run with the GitHub tools (the session's gh is limited to search). The API serves no log of a job still in
+progress (HTTP 404, 15:04Z), so the activity time is the later of the run's start and its latest results commit
+(the workflow commits a checkpoint every 30 minutes); the limit is then 35 minutes. Then:
+  watchdog.py check --status <run status> --last-log <ISO time> [--stale-min 35] [--now <ISO time>]
                                                   prints "ok", or "gap: <reason>" and exits 3
   watchdog.py gap --start <ISO> --end <ISO> --cause "<text>"
                                                   records the gap in results/report_notes.json (REPORT "Notes") and
                                                   results/watchdog.jsonl
   watchdog.py queue                               writes the next noop request requests/n<k>.json (a push of a request
                                                   file starts the text workflow; pending requests run before it)
-A run is healthy when it is queued, or in progress with a last log line under 20 minutes old. A completed run is
+A run is healthy when it is queued, or in progress with its last activity under the limit (20 minutes for a log
+line, 35 for a checkpoint commit). A completed run is
 healthy only when every request file has its requests_done marker (nothing left to run).
 """
 from __future__ import annotations
@@ -36,7 +39,7 @@ def pending_requests(here: Path = HERE) -> list[str]:
     return sorted(p.name for p in (here / "requests").glob("*.json") if p.name not in done)
 
 
-def check(status: str, last_log: str | None, now: str, pending: list[str]) -> str | None:
+def check(status: str, last_log: str | None, now: str, pending: list[str], stale_min: float = STALE_MIN) -> str | None:
     """None when healthy, else the reason."""
     if status in ("queued", "requested", "waiting", "pending"):
         return None
@@ -44,7 +47,7 @@ def check(status: str, last_log: str | None, now: str, pending: list[str]) -> st
         if not last_log:
             return "run in progress without a log line"
         age = (_t(now) - _t(last_log)).total_seconds() / 60
-        return None if age < STALE_MIN else f"last log line {age:.0f} min old"
+        return None if age < stale_min else f"last activity {age:.0f} min old"
     if pending:
         return f"no text run in progress or queued; {len(pending)} request(s) pending: {', '.join(pending)}"
     return None
@@ -75,6 +78,7 @@ def main(argv=None) -> int:
     c = sub.add_parser("check")
     c.add_argument("--status", required=True)
     c.add_argument("--last-log")
+    c.add_argument("--stale-min", type=float, default=STALE_MIN)
     c.add_argument("--now", default=datetime.now(timezone.utc).isoformat())
     g = sub.add_parser("gap")
     g.add_argument("--start", required=True)
@@ -83,7 +87,7 @@ def main(argv=None) -> int:
     sub.add_parser("queue")
     a = ap.parse_args(argv)
     if a.cmd == "check":
-        r = check(a.status, a.last_log, a.now, pending_requests())
+        r = check(a.status, a.last_log, a.now, pending_requests(), a.stale_min)
         print("ok" if r is None else f"gap: {r}")
         return 0 if r is None else 3
     if a.cmd == "gap":

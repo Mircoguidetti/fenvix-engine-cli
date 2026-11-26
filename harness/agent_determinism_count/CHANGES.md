@@ -129,9 +129,11 @@
     and the work session noticed the failure only at 14:58Z.
 17. 2026-11-26 15:05Z, the coordinator's watchdog (14:57Z, after the gaps 09:56-10:54Z and 12:34-14:56Z; no rule
     change). Every 20 minutes a harness-tracked timer wakes the work session. The session reads the latest text run's
-    status and the time of its last log line with the GitHub tools (the session's gh is limited to search), and runs
-    watchdog.py check. A run is healthy when it is queued, or in progress with a last log line under 20 minutes
-    old, or completed with no pending request. Otherwise watchdog.py gap records the gap and its cause in
+    status with the GitHub tools (the session's gh is limited to search), and runs watchdog.py check. The API serves
+    no log of a job still in progress (HTTP 404 at 15:04Z), so the activity time is the later of the run's start
+    and its latest results commit (a checkpoint every 30 minutes), with a 35-minute limit. A run is healthy when it
+    is queued, or in progress within that limit, or completed with no pending request. A runner that is shut down
+    ends the run (as at 12:34Z), so the check catches it at the next wake. Otherwise watchdog.py gap records the gap and its cause in
     results/report_notes.json (REPORT "Notes") and results/watchdog.jsonl, and watchdog.py queue writes a noop
     request whose push starts a run. The 12:34:56-14:56:23Z gap is recorded. Test:
     test_watchdog_flags_stale_or_missing_text_run.

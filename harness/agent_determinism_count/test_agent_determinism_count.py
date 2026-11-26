@@ -1347,6 +1347,7 @@ def test_watchdog_flags_stale_or_missing_text_run(tmp_path):
     assert W.check("queued", None, now, ["r003.json"]) is None
     assert W.check("in_progress", "2026-11-26T14:45:00Z", now, []) is None
     assert "21 min" in W.check("in_progress", "2026-11-26T14:39:00Z", now, [])
+    assert W.check("in_progress", "2026-11-26T14:31:00Z", now, [], 35) is None  # checkpoint commit, 30 min cadence
     assert "r003.json" in W.check("completed", None, now, ["r003.json"])  # run 45820191350, 12:34Z
     assert W.check("completed", None, now, []) is None
     (tmp_path / "requests").mkdir()
