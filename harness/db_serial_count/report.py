@@ -184,6 +184,26 @@ def build() -> str:
         for r in pwl:
             w(f"- {r['html_url']}: " + "; ".join(r["perworker"]["evidence"][:3]))
         w("")
+    hcl = perworker.read_jsonl(HERE / "handcheck.jsonl")
+    if hcl:
+        last = {}
+        for x in hcl:
+            last[(x["category"], x["repo"].lower())] = x
+        w("## AC4 hand checks")
+        w("")
+        w("From `handcheck.jsonl` (last record per repository and category; evidence printed by `handcheck_show.py` "
+          "from the committed raw responses). qualifying: pass = the >= 10 min step is serial and uses the database; "
+          "a fail makes the row not qualifying. serial_reject: the first 10 rows (in §1 order) rejected at the serial "
+          "stage; pass = the step really runs tests concurrently. per_worker: pass = the §4 hit is a per-worker "
+          "database.")
+        w("")
+        for cat in ("qualifying", "serial_reject", "per_worker"):
+            xs = [x for (k, _), x in last.items() if k == cat]
+            w(f"### {cat}: {sum(1 for x in xs if x['pass'])} pass, {sum(1 for x in xs if not x['pass'])} fail")
+            w("")
+            for x in sorted(xs, key=lambda x: (x["pass"], x["checked_at"])):
+                w(f"- {'PASS' if x['pass'] else 'FAIL'} {x['repo']}: {x['note']}")
+            w("")
     w("## Chunks")
     w("")
     for x in chunks:
@@ -197,6 +217,25 @@ def build() -> str:
     w("- Truncated leaves (listed above) hide files: the count is a lower bound; N_upper counts file hits, so the DROP "
       "estimate errs toward not dropping.")
     w(f"- Runners not covered: PHPUnit/Laravel, Maven/Gradle, others. Covered: {COVERED}.")
+    w("- Rule limits found by the hand checks (no rule was changed; each can move a row either way):")
+    w("  - the runner regex also matches after a hyphen and in prose (echo, comments, SystemExit text), so a "
+      "flag in a comment can decide a step (spatiumddi);")
+    w("  - shlex tokenizing hides flags inside a quoted `sh -c \"...\"`, e.g. pytest `-n` there is not seen "
+      "(sbomify, counted serial, hand check failed);")
+    w("  - the database is detected per job, not per step: a serial step in a database job can run no database "
+      "tests (aelys: SQLite step);")
+    w("  - a step with several runner lines is serial if any of them is serial (tim-ai-platform);")
+    w("  - Vitest multi-project configs: a per-project `fileParallelism` setting is read as global (plur);")
+    w("  - Go: `-p 1` serializes packages but `t.Parallel` inside a package is not inspected; a single-package "
+      "`go test` without `-p 1` is counted not serial although it runs in order (Tengrinews);")
+    w("  - node:test: a single-file `node --test` is counted not serial although it runs one file in order "
+      "(articweb3);")
+    w("  - §4 over-excludes: a database created per test or per scenario (`CREATE DATABASE ... "
+      "TEMPLATE`, fresh-database fixtures), worker-id skip guards and doc comments count as per-worker evidence (7 of 10 per_worker hand checks failed); these rows "
+      "stay excluded, so the qualifying count is a lower bound.")
+    w("- Process: commits from 2026-11-25 22:36Z on are authored under the founder's git identity at the "
+      "coordinator's instruction (GitHub shows them Unverified); earlier commits were not rewritten. Commit "
+      "trailers name the agent session.")
     return "\n".join(out) + "\n"
 
 
