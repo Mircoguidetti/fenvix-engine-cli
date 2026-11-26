@@ -1,0 +1,1102 @@
+{
+ "repo": "codex-multi-auth",
+ "file": "test/automatic-api-checks.test.ts",
+ "slug": "9276a8ff14",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "cases": {
+  "test/automatic-api-checks.test.ts::keeps the next tick anchored when a slow run rejects: false": {
+   "kind": "mixed",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "passed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected \"vi.fn()\" to be called 1 times, but got 2 times [call @ test/automatic-api-checks.test.ts:232]",
+    null
+   ],
+   "mixed_outcome": true,
+   "alone": {
+    "states": [
+     "clear",
+     "repro"
+    ],
+    "reproduces": false
+   },
+   "undecided": "not reproduced outside the whole suite"
+  },
+  "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with EBUSY": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/automatic-api-checks.test.ts:164]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/automatic-api-checks.test.ts:164]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/automatic-api-checks.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "9276a8ff14.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/automatic-api-checks.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T02:10:07.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9276a8ff14.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/automatic-api-checks.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T02:10:11.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "9276a8ff14.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/automatic-api-checks.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/automatic-api-checks.test.ts"
+      ]
+     },
+     {
+      "tag": "9276a8ff14.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/automatic-api-checks.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/automatic-api-checks.test.ts"
+      ]
+     },
+     {
+      "tag": "9276a8ff14.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/automatic-api-checks.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/automatic-api-checks.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with EPERM": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/automatic-api-checks.test.ts:164]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/automatic-api-checks.test.ts:164]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/automatic-api-checks.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "9276a8ff14.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/automatic-api-checks.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T02:10:07.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9276a8ff14.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/automatic-api-checks.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T02:10:11.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "9276a8ff14.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/automatic-api-checks.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/automatic-api-checks.test.ts"
+      ]
+     },
+     {
+      "tag": "9276a8ff14.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/automatic-api-checks.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/automatic-api-checks.test.ts"
+      ]
+     },
+     {
+      "tag": "9276a8ff14.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/automatic-api-checks.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/automatic-api-checks.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with undefined": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/automatic-api-checks.test.ts:164]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/automatic-api-checks.test.ts:164]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/automatic-api-checks.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "9276a8ff14.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/automatic-api-checks.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T02:10:07.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9276a8ff14.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/automatic-api-checks.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T02:10:11.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "9276a8ff14.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/automatic-api-checks.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/automatic-api-checks.test.ts"
+      ]
+     },
+     {
+      "tag": "9276a8ff14.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/automatic-api-checks.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/automatic-api-checks.test.ts"
+      ]
+     },
+     {
+      "tag": "9276a8ff14.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/automatic-api-checks.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/automatic-api-checks.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: A function to advance timers was called but the timers APIs are not mocked. Call `vi.useFakeTimers()` in the test file first. [call @ test/automatic-api-checks.test.ts:265]",
+    "AssertionError: expected [ 6000, 6000 ] to deeply equal [ 6100, 6100 ] [call @ test/automatic-api-checks.test.ts:263]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "clear",
+     "clear"
+    ],
+    "reproduces": false
+   },
+   "set": {
+    "name": "smallest",
+    "files": [
+     "test/account-access.test.ts",
+     "test/account-check-helpers.test.ts",
+     "test/account-check-types.test.ts",
+     "test/account-clear-entry.test.ts",
+     "test/account-clear.test.ts",
+     "test/account-manager-cache-entry.test.ts",
+     "test/automatic-api-checks.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "9276a8ff14.g1.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g1.L1.r1.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g1.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g1.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T02:10:29.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9276a8ff14.g1.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g1.L1.r2.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g1.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g1.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T02:10:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "9276a8ff14.g1.control.r1",
+      "cmd": "npx --no-install vitest run test/account-access.test.ts test/account-check-helpers.test.ts test/account-check-types.test.ts test/account-clear-entry.test.ts test/account-clear.test.ts test/account-manager-cache-entry.test.ts test/automatic-api-checks.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g1.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/automatic-api-checks.test.ts",
+       "test/account-access.test.ts",
+       "test/account-clear.test.ts",
+       "test/account-clear-entry.test.ts",
+       "test/account-manager-cache-entry.test.ts",
+       "test/account-check-helpers.test.ts",
+       "test/account-check-types.test.ts"
+      ]
+     },
+     {
+      "tag": "9276a8ff14.g1.control.r2",
+      "cmd": "npx --no-install vitest run test/account-access.test.ts test/account-check-helpers.test.ts test/account-check-types.test.ts test/account-clear-entry.test.ts test/account-clear.test.ts test/account-manager-cache-entry.test.ts test/automatic-api-checks.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g1.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/automatic-api-checks.test.ts",
+       "test/account-access.test.ts",
+       "test/account-clear.test.ts",
+       "test/account-clear-entry.test.ts",
+       "test/account-check-types.test.ts",
+       "test/account-manager-cache-entry.test.ts",
+       "test/account-check-helpers.test.ts"
+      ]
+     },
+     {
+      "tag": "9276a8ff14.g1.control.r3",
+      "cmd": "npx --no-install vitest run test/account-access.test.ts test/account-check-helpers.test.ts test/account-check-types.test.ts test/account-clear-entry.test.ts test/account-clear.test.ts test/account-manager-cache-entry.test.ts test/automatic-api-checks.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g1.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/automatic-api-checks.test.ts",
+       "test/account-access.test.ts",
+       "test/account-clear.test.ts",
+       "test/account-clear-entry.test.ts",
+       "test/account-manager-cache-entry.test.ts",
+       "test/account-check-helpers.test.ts",
+       "test/account-check-types.test.ts"
+      ]
+     }
+    ]
+   },
+   "condition": {
+    "kind": "order",
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "9276a8ff14.g1.order.r1",
+      "cmd": "npx --no-install vitest run test/account-access.test.ts test/account-check-helpers.test.ts test/account-check-types.test.ts test/account-clear-entry.test.ts test/account-clear.test.ts test/account-manager-cache-entry.test.ts test/automatic-api-checks.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g1.order.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/account-access.test.ts",
+       "test/account-check-helpers.test.ts",
+       "test/account-check-types.test.ts",
+       "test/account-clear-entry.test.ts",
+       "test/account-clear.test.ts",
+       "test/account-manager-cache-entry.test.ts",
+       "test/automatic-api-checks.test.ts"
+      ],
+      "intended": [
+       "test/account-access.test.ts",
+       "test/account-check-helpers.test.ts",
+       "test/account-check-types.test.ts",
+       "test/account-clear-entry.test.ts",
+       "test/account-clear.test.ts",
+       "test/account-manager-cache-entry.test.ts",
+       "test/automatic-api-checks.test.ts"
+      ]
+     },
+     {
+      "tag": "9276a8ff14.g1.order.r2",
+      "cmd": "npx --no-install vitest run test/account-access.test.ts test/account-check-helpers.test.ts test/account-check-types.test.ts test/account-clear-entry.test.ts test/account-clear.test.ts test/account-manager-cache-entry.test.ts test/automatic-api-checks.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g1.order.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/account-access.test.ts",
+       "test/account-check-helpers.test.ts",
+       "test/account-check-types.test.ts",
+       "test/account-clear-entry.test.ts",
+       "test/account-clear.test.ts",
+       "test/account-manager-cache-entry.test.ts",
+       "test/automatic-api-checks.test.ts"
+      ],
+      "intended": [
+       "test/account-access.test.ts",
+       "test/account-check-helpers.test.ts",
+       "test/account-check-types.test.ts",
+       "test/account-clear-entry.test.ts",
+       "test/account-clear.test.ts",
+       "test/account-manager-cache-entry.test.ts",
+       "test/automatic-api-checks.test.ts"
+      ]
+     },
+     {
+      "tag": "9276a8ff14.g1.order.r3",
+      "cmd": "npx --no-install vitest run test/account-access.test.ts test/account-check-helpers.test.ts test/account-check-types.test.ts test/account-clear-entry.test.ts test/account-clear.test.ts test/account-manager-cache-entry.test.ts test/automatic-api-checks.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.g1.order.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/account-access.test.ts",
+       "test/account-check-helpers.test.ts",
+       "test/account-check-types.test.ts",
+       "test/account-clear-entry.test.ts",
+       "test/account-clear.test.ts",
+       "test/account-manager-cache-entry.test.ts",
+       "test/automatic-api-checks.test.ts"
+      ],
+      "intended": [
+       "test/account-access.test.ts",
+       "test/account-check-helpers.test.ts",
+       "test/account-check-types.test.ts",
+       "test/account-clear-entry.test.ts",
+       "test/account-clear.test.ts",
+       "test/account-manager-cache-entry.test.ts",
+       "test/automatic-api-checks.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "9276a8ff14.alone.r1",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/automatic-api-checks.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.alone.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 3.62,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T02:07:34.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "test/automatic-api-checks.test.ts::keeps the next tick anchored when a slow run rejects: false": "passed",
+    "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with EBUSY": "failed",
+    "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with EPERM": "failed",
+    "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with undefined": "failed",
+    "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "passed"
+   },
+   "exc": {
+    "test/automatic-api-checks.test.ts::keeps the next tick anchored when a slow run rejects: false": null,
+    "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with EBUSY": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/automatic-api-checks.test.ts:164]",
+    "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with EPERM": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/automatic-api-checks.test.ts:164]",
+    "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with undefined": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/automatic-api-checks.test.ts:164]",
+    "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": null
+   }
+  },
+  {
+   "tag": "9276a8ff14.alone.r2",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/automatic-api-checks.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.alone.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 3.47,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T02:07:39.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "test/automatic-api-checks.test.ts::keeps the next tick anchored when a slow run rejects: false": "failed",
+    "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with EBUSY": "failed",
+    "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with EPERM": "failed",
+    "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with undefined": "failed",
+    "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "passed"
+   },
+   "exc": {
+    "test/automatic-api-checks.test.ts::keeps the next tick anchored when a slow run rejects: false": "Error: A function to advance timers was called but the timers APIs are not mocked. Call `vi.useFakeTimers()` in the test file first. [call @ test/automatic-api-checks.test.ts:229]",
+    "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with EBUSY": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/automatic-api-checks.test.ts:164]",
+    "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with EPERM": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/automatic-api-checks.test.ts:164]",
+    "test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with undefined": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/automatic-api-checks.test.ts:164]",
+    "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": null
+   }
+  }
+ ],
+ "pred": {
+  "src_run": 1,
+  "n_preds": 54,
+  "probes": [
+   {
+    "n": 1,
+    "files": [
+     "test/account-access.test.ts",
+     "test/account-check-helpers.test.ts",
+     "test/account-check-types.test.ts",
+     "test/account-clear-entry.test.ts",
+     "test/account-clear.test.ts",
+     "test/account-manager-cache-entry.test.ts",
+     "test/account-manager-cache.test.ts",
+     "test/account-model-catalog.test.ts",
+     "test/account-persistence.test.ts",
+     "test/account-policy.test.ts",
+     "test/account-pool.test.ts",
+     "test/account-port.test.ts",
+     "test/account-rate-limits.test.ts",
+     "test/account-reset-target.test.ts",
+     "test/account-save-entry.test.ts",
+     "test/account-save.test.ts",
+     "test/account-select-event.test.ts",
+     "test/account-selection.test.ts",
+     "test/account-snapshot.test.ts",
+     "test/account-status.test.ts",
+     "test/account-storage-scope-entry.test.ts",
+     "test/accounts-edge.test.ts",
+     "test/accounts-load-from-disk.test.ts",
+     "test/accounts-routing-mutex.test.ts",
+     "test/accounts-workspace-baseline.test.ts",
+     "test/accounts.test.ts",
+     "test/active-account-sync.test.ts"
+    ],
+    "reproduces": true,
+    "runs": [
+     {
+      "tag": "9276a8ff14.probe1.r1",
+      "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe1.r1.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe1.r1.trace.jsonl",
+      "exit": 1,
+      "wall_s": 12.53,
+      "meta": {
+       "timers": "virtual",
+       "network": "open",
+       "epoch": "2026-11-26T02:08:49.000Z",
+       "seed": 0
+      },
+      "controls": [
+       "fs",
+       "isolation",
+       "net",
+       "order",
+       "seeds",
+       "time",
+       "timers"
+      ],
+      "outcomes": {
+       "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "failed"
+      },
+      "exc": {
+       "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "Error: A function to advance timers was called but the timers APIs are not mocked. Call `vi.useFakeTimers()` in the test file first. [call @ test/automatic-api-checks.test.ts:265]"
+      }
+     },
+     {
+      "tag": "9276a8ff14.probe1.r2",
+      "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe1.r2.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe1.r2.trace.jsonl",
+      "exit": 1,
+      "wall_s": 13.12,
+      "meta": {
+       "timers": "virtual",
+       "network": "open",
+       "epoch": "2026-11-26T02:09:03.000Z",
+       "seed": 0
+      },
+      "controls": [
+       "fs",
+       "isolation",
+       "net",
+       "order",
+       "seeds",
+       "time",
+       "timers"
+      ],
+      "outcomes": {
+       "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "failed"
+      },
+      "exc": {
+       "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "Error: A function to advance timers was called but the timers APIs are not mocked. Call `vi.useFakeTimers()` in the test file first. [call @ test/automatic-api-checks.test.ts:265]"
+      }
+     }
+    ],
+    "per_case": {
+     "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": true
+    }
+   },
+   {
+    "n": 2,
+    "files": [
+     "test/account-access.test.ts",
+     "test/account-check-helpers.test.ts",
+     "test/account-check-types.test.ts",
+     "test/account-clear-entry.test.ts",
+     "test/account-clear.test.ts",
+     "test/account-manager-cache-entry.test.ts",
+     "test/account-manager-cache.test.ts",
+     "test/account-model-catalog.test.ts",
+     "test/account-persistence.test.ts",
+     "test/account-policy.test.ts",
+     "test/account-pool.test.ts",
+     "test/account-port.test.ts",
+     "test/account-rate-limits.test.ts"
+    ],
+    "reproduces": true,
+    "runs": [
+     {
+      "tag": "9276a8ff14.probe2.r1",
+      "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe2.r1.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe2.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe2.r1.trace.jsonl",
+      "exit": 1,
+      "wall_s": 6.99,
+      "meta": {
+       "timers": "virtual",
+       "network": "open",
+       "epoch": "2026-11-26T02:09:17.000Z",
+       "seed": 0
+      },
+      "controls": [
+       "fs",
+       "isolation",
+       "net",
+       "order",
+       "seeds",
+       "time",
+       "timers"
+      ],
+      "outcomes": {
+       "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "failed"
+      },
+      "exc": {
+       "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "Error: A function to advance timers was called but the timers APIs are not mocked. Call `vi.useFakeTimers()` in the test file first. [call @ test/automatic-api-checks.test.ts:269]"
+      }
+     },
+     {
+      "tag": "9276a8ff14.probe2.r2",
+      "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe2.r2.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe2.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe2.r2.trace.jsonl",
+      "exit": 1,
+      "wall_s": 7.35,
+      "meta": {
+       "timers": "virtual",
+       "network": "open",
+       "epoch": "2026-11-26T02:09:25.000Z",
+       "seed": 0
+      },
+      "controls": [
+       "fs",
+       "isolation",
+       "net",
+       "order",
+       "seeds",
+       "time",
+       "timers"
+      ],
+      "outcomes": {
+       "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "failed"
+      },
+      "exc": {
+       "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "Error: A function to advance timers was called but the timers APIs are not mocked. Call `vi.useFakeTimers()` in the test file first. [call @ test/automatic-api-checks.test.ts:265]"
+      }
+     }
+    ],
+    "per_case": {
+     "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": true
+    }
+   },
+   {
+    "n": 3,
+    "files": [
+     "test/account-access.test.ts",
+     "test/account-check-helpers.test.ts",
+     "test/account-check-types.test.ts",
+     "test/account-clear-entry.test.ts",
+     "test/account-clear.test.ts",
+     "test/account-manager-cache-entry.test.ts"
+    ],
+    "reproduces": true,
+    "runs": [
+     {
+      "tag": "9276a8ff14.probe3.r1",
+      "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe3.r1.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe3.r1.trace.jsonl",
+      "exit": 1,
+      "wall_s": 4.68,
+      "meta": {
+       "timers": "virtual",
+       "network": "open",
+       "epoch": "2026-11-26T02:09:34.000Z",
+       "seed": 0
+      },
+      "controls": [
+       "fs",
+       "isolation",
+       "net",
+       "order",
+       "seeds",
+       "time",
+       "timers"
+      ],
+      "outcomes": {
+       "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "failed"
+      },
+      "exc": {
+       "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "Error: A function to advance timers was called but the timers APIs are not mocked. Call `vi.useFakeTimers()` in the test file first. [call @ test/automatic-api-checks.test.ts:265]"
+      }
+     },
+     {
+      "tag": "9276a8ff14.probe3.r2",
+      "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe3.r2.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe3.r2.trace.jsonl",
+      "exit": 1,
+      "wall_s": 4.54,
+      "meta": {
+       "timers": "virtual",
+       "network": "open",
+       "epoch": "2026-11-26T02:09:39.000Z",
+       "seed": 0
+      },
+      "controls": [
+       "fs",
+       "isolation",
+       "net",
+       "order",
+       "seeds",
+       "time",
+       "timers"
+      ],
+      "outcomes": {
+       "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "failed"
+      },
+      "exc": {
+       "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "Error: A function to advance timers was called but the timers APIs are not mocked. Call `vi.useFakeTimers()` in the test file first. [call @ test/automatic-api-checks.test.ts:269]"
+      }
+     }
+    ],
+    "per_case": {
+     "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": true
+    }
+   },
+   {
+    "n": 4,
+    "files": [
+     "test/account-access.test.ts",
+     "test/account-check-helpers.test.ts",
+     "test/account-check-types.test.ts"
+    ],
+    "reproduces": false,
+    "runs": [
+     {
+      "tag": "9276a8ff14.probe4.r1",
+      "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe4.r1.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe4.r1.trace.jsonl",
+      "exit": 1,
+      "wall_s": 4.08,
+      "meta": {
+       "timers": "virtual",
+       "network": "open",
+       "epoch": "2026-11-26T02:09:45.000Z",
+       "seed": 0
+      },
+      "controls": [
+       "fs",
+       "isolation",
+       "net",
+       "order",
+       "seeds",
+       "time",
+       "timers"
+      ],
+      "outcomes": {
+       "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "passed"
+      },
+      "exc": {
+       "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": null
+      }
+     },
+     {
+      "tag": "9276a8ff14.probe4.r2",
+      "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe4.r2.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe4.r2.trace.jsonl",
+      "exit": 1,
+      "wall_s": 4.14,
+      "meta": {
+       "timers": "virtual",
+       "network": "open",
+       "epoch": "2026-11-26T02:09:50.000Z",
+       "seed": 0
+      },
+      "controls": [
+       "fs",
+       "isolation",
+       "net",
+       "order",
+       "seeds",
+       "time",
+       "timers"
+      ],
+      "outcomes": {
+       "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "failed"
+      },
+      "exc": {
+       "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "Error: A function to advance timers was called but the timers APIs are not mocked. Call `vi.useFakeTimers()` in the test file first. [call @ test/automatic-api-checks.test.ts:265]"
+      }
+     }
+    ],
+    "per_case": {
+     "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": false
+    }
+   },
+   {
+    "n": 5,
+    "files": [
+     "test/account-clear-entry.test.ts",
+     "test/account-clear.test.ts",
+     "test/account-manager-cache-entry.test.ts"
+    ],
+    "reproduces": false,
+    "runs": [
+     {
+      "tag": "9276a8ff14.probe5.r1",
+      "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe5.r1.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe5.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe5.r1.trace.jsonl",
+      "exit": 1,
+      "wall_s": 5.16,
+      "meta": {
+       "timers": "virtual",
+       "network": "open",
+       "epoch": "2026-11-26T02:09:55.000Z",
+       "seed": 0
+      },
+      "controls": [
+       "fs",
+       "isolation",
+       "net",
+       "order",
+       "seeds",
+       "time",
+       "timers"
+      ],
+      "outcomes": {
+       "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "passed"
+      },
+      "exc": {
+       "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": null
+      }
+     },
+     {
+      "tag": "9276a8ff14.probe5.r2",
+      "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe5.r2.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe5.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.probe5.r2.trace.jsonl",
+      "exit": 1,
+      "wall_s": 3.91,
+      "meta": {
+       "timers": "virtual",
+       "network": "open",
+       "epoch": "2026-11-26T02:10:02.000Z",
+       "seed": 0
+      },
+      "controls": [
+       "fs",
+       "isolation",
+       "net",
+       "order",
+       "seeds",
+       "time",
+       "timers"
+      ],
+      "outcomes": {
+       "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "passed"
+      },
+      "exc": {
+       "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": null
+      }
+     }
+    ],
+    "per_case": {
+     "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": false
+    }
+   }
+  ],
+  "full": [
+   {
+    "tag": "9276a8ff14.full.r1",
+    "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.full.r1.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.full.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.full.r1.trace.jsonl",
+    "exit": 1,
+    "wall_s": 32.29,
+    "meta": {
+     "timers": "virtual",
+     "network": "open",
+     "epoch": "2026-11-26T02:07:43.000Z",
+     "seed": 0
+    },
+    "controls": [
+     "fs",
+     "isolation",
+     "net",
+     "order",
+     "seeds",
+     "time",
+     "timers"
+    ],
+    "outcomes": {
+     "test/automatic-api-checks.test.ts::keeps the next tick anchored when a slow run rejects: false": "passed",
+     "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "failed"
+    },
+    "exc": {
+     "test/automatic-api-checks.test.ts::keeps the next tick anchored when a slow run rejects: false": null,
+     "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "Error: A function to advance timers was called but the timers APIs are not mocked. Call `vi.useFakeTimers()` in the test file first. [call @ test/automatic-api-checks.test.ts:265]"
+    }
+   },
+   {
+    "tag": "9276a8ff14.full.r2",
+    "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.full.r2.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.full.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/9276a8ff14.full.r2.trace.jsonl",
+    "exit": 1,
+    "wall_s": 31.74,
+    "meta": {
+     "timers": "virtual",
+     "network": "open",
+     "epoch": "2026-11-26T02:08:17.000Z",
+     "seed": 0
+    },
+    "controls": [
+     "fs",
+     "isolation",
+     "net",
+     "order",
+     "seeds",
+     "time",
+     "timers"
+    ],
+    "outcomes": {
+     "test/automatic-api-checks.test.ts::keeps the next tick anchored when a slow run rejects: false": "passed",
+     "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "failed"
+    },
+    "exc": {
+     "test/automatic-api-checks.test.ts::keeps the next tick anchored when a slow run rejects: false": null,
+     "test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes": "Error: A function to advance timers was called but the timers APIs are not mocked. Call `vi.useFakeTimers()` in the test file first. [call @ test/automatic-api-checks.test.ts:269]"
+    }
+   }
+  ],
+  "smallest": [
+   "test/account-access.test.ts",
+   "test/account-check-helpers.test.ts",
+   "test/account-check-types.test.ts",
+   "test/account-clear-entry.test.ts",
+   "test/account-clear.test.ts",
+   "test/account-manager-cache-entry.test.ts"
+  ]
+ },
+ "complete": true
+}
