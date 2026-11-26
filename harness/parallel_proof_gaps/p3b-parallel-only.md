@@ -35,7 +35,7 @@ All four fail with `Test timed out in 5000ms` and have 0 hazards. In this sessio
 serial and P1/P2 w2/w4 at every Step M point, engines f3c6711d to cb42cccf) each of the four flips between passed and
 failed, in serial runs as well as parallel ones and on the before engine f3c6711d as well (e.g. `api/api.test.ts::...
 should mount all sub-routers` fails in S1 at before, cb, cb3, a, a2 and passes in S1 at cb2; the three `real Express`
-cases fail in S1 at before / a2 and pass at cb2 / cb3). So they are not parallel-only and not a lane hazard: P3b's two
+cases fail in S1 at a2 and pass in S1 at cb2 / cb3, and two of them fail in S1 at before as well). So they are not parallel-only and not a lane hazard: P3b's two
 w1 runs passing was chance. Why these tests take more than 5 s under `--det` (real Express servers and dynamic imports
 under the controls; BASELINE.md lists a related known failure, "a test waiting on real work is not timed out by the
 virtual clock") is open; owner: the serial-ladder / P3 work, not this branch.
