@@ -11,7 +11,27 @@
   "status": 200,
   "total_count": 3
  },
+ "@mastra/core filename:package.json": {
+  "status": 429,
+  "total_count": null
+ },
  "@mastra/core filename:pyproject.toml": {
+  "status": 200,
+  "total_count": 0
+ },
+ "@mastra/core filename:requirements.txt": {
+  "status": 200,
+  "total_count": 0
+ },
+ "@openai/agents filename:package.json": {
+  "status": 200,
+  "total_count": 2920
+ },
+ "@openai/agents filename:pyproject.toml": {
+  "status": 200,
+  "total_count": 0
+ },
+ "@openai/agents filename:requirements.txt": {
   "status": 200,
   "total_count": 0
  },
