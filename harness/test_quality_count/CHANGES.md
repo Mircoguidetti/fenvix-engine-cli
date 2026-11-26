@@ -56,3 +56,7 @@ search request, probe or candidate read (no data existed); none changes the deci
     answered HTTP 422 "Query must include 'is:issue' or 'is:pull-request'" (results/probe_session_first.json). Each
     §4.3 query now runs twice, with `is:issue` and with `is:pull-request` (first 30 results each); both count in the
     300-request cap. Justification: required by GitHub; keeping both kinds keeps issues and pull requests in scope.
+16. Logging only (2026-11-26 21:10Z, during discovery, at the coordinator's request): each rate-limited answer's
+    stderr line also gives the limit headers (`x-ratelimit-resource`, `-limit`, `-remaining`, `-reset`, `retry-after`)
+    and `limit=primary|secondary|unknown`. Justification: 65 code-search 429s in 90 min; find who shares the budget.
+    No rule, regex, query, rate or budget changes; earlier 429 lines lack these fields.

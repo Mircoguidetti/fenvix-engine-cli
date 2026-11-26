@@ -21,6 +21,19 @@ GAPS = {"code": 60.0 / 9 + 0.1, "issues": 60.0 / 25 + 0.1}
 RESOURCE = {"code": "code_search", "issues": "search", None: "core"}
 
 
+LIMIT_KEYS = ("x-ratelimit-resource", "x-ratelimit-limit", "x-ratelimit-remaining", "x-ratelimit-reset",
+              "retry-after")
+
+
+def limit_info(msg: str, h: dict) -> str:
+    """One log field per rate-limited answer: the headers that name the limit, and primary (remaining 0) or secondary
+    (a "secondary" message, or remaining above 0)."""
+    rem = h.get("x-ratelimit-remaining")
+    kind = "secondary" if "secondary" in msg or (rem not in (None, "") and rem != "0") else \
+        "primary" if rem == "0" else "unknown"
+    return "limit=" + kind + " " + " ".join(f"{k}={h.get(k, '-')}" for k in LIMIT_KEYS)
+
+
 def retry_seconds(msg: str, h: dict, now: float | None = None) -> float:
     """Wait after a rate-limit answer. The message ("try again in 7.9s" / "try again in 581.6ms") wins over the
     Retry-After header; then the reset time; else 60 (market-direction f2e649b)."""
@@ -131,7 +144,7 @@ class Client:
             h = {k.lower(): v for k, v in hd.items()}
             if st == 429 or (st == 403 and ("rate limit" in msg or "abuse" in msg or "retry-after" in h)):
                 sl = retry_seconds(msg, h)
-                sys.stderr.write(f"rate limited ({st}) on {path[:90]}: sleeping {sl:.0f}s\n")
+                sys.stderr.write(f"rate limited ({st}) on {path[:90]}: sleeping {sl:.0f}s {limit_info(msg, h)}\n")
                 time.sleep(min(sl, 3700))
                 continue
             if st == 0 or st >= 500:
