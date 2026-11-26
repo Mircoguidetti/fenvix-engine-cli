@@ -1,0 +1,288 @@
+{
+ "repo": "agentic-qe",
+ "file": "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts",
+ "slug": "f17696d83c",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "cases": {
+  "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts::deferred SONA write recovery::keeps the first batch referenced but unrefs a retry after a native failed batch": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts:93]",
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts:93]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "f17696d83c.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/f17696d83c.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/f17696d83c.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:32:49.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "f17696d83c.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/f17696d83c.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/f17696d83c.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:32:54.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "f17696d83c.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/f17696d83c.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts"
+      ]
+     },
+     {
+      "tag": "f17696d83c.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/f17696d83c.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts"
+      ]
+     },
+     {
+      "tag": "f17696d83c.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/f17696d83c.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts::deferred SONA write recovery::references an existing retry when new explicit work starts a fresh batch": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts:105]",
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts:105]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "f17696d83c.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/f17696d83c.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/f17696d83c.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:32:49.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "f17696d83c.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/f17696d83c.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/f17696d83c.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:32:54.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "f17696d83c.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/f17696d83c.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts"
+      ]
+     },
+     {
+      "tag": "f17696d83c.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/f17696d83c.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts"
+      ]
+     },
+     {
+      "tag": "f17696d83c.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/f17696d83c.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "f17696d83c.alone.r1",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/f17696d83c.alone.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/f17696d83c.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 3.3,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T10:32:40.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts::deferred SONA write recovery::keeps the first batch referenced but unrefs a retry after a native failed batch": "failed",
+    "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts::deferred SONA write recovery::references an existing retry when new explicit work starts a fresh batch": "failed"
+   },
+   "exc": {
+    "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts::deferred SONA write recovery::keeps the first batch referenced but unrefs a retry after a native failed batch": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts:93]",
+    "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts::deferred SONA write recovery::references an existing retry when new explicit work starts a fresh batch": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts:105]"
+   }
+  },
+  {
+   "tag": "f17696d83c.alone.r2",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/f17696d83c.alone.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/f17696d83c.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 3.28,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T10:32:45.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts::deferred SONA write recovery::keeps the first batch referenced but unrefs a retry after a native failed batch": "failed",
+    "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts::deferred SONA write recovery::references an existing retry when new explicit work starts a fresh batch": "failed"
+   },
+   "exc": {
+    "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts::deferred SONA write recovery::keeps the first batch referenced but unrefs a retry after a native failed batch": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts:93]",
+    "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts::deferred SONA write recovery::references an existing retry when new explicit work starts a fresh batch": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts:105]"
+   }
+  }
+ ],
+ "complete": true
+}

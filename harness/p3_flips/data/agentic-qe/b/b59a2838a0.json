@@ -1,0 +1,327 @@
+{
+ "repo": "agentic-qe",
+ "file": "tests/unit/integrations/ruvector/sona-three-loop.test.ts",
+ "slug": "b59a2838a0",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "cases": {
+  "tests/unit/integrations/ruvector/sona-three-loop.test.ts::SONAThreeLoopEngine::Instant Loop::should complete adaptation quickly": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected 1185049.372 to be less than 1000 [call @ tests/unit/integrations/ruvector/sona-three-loop.test.ts:395]",
+    "AssertionError: expected 1185049.372 to be less than 1000 [call @ tests/unit/integrations/ruvector/sona-three-loop.test.ts:395]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/unit/integrations/ruvector/sona-three-loop.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "b59a2838a0.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/integrations/ruvector/sona-three-loop.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 1185049.372 to be less than 1000 [call @ tests/unit/integrations/ruvector/sona-three-loop.test.ts:395]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:16.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "b59a2838a0.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/integrations/ruvector/sona-three-loop.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 1185049.372 to be less than 1000 [call @ tests/unit/integrations/ruvector/sona-three-loop.test.ts:395]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:19.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "b59a2838a0.g0.L2a.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/integrations/ruvector/sona-three-loop.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 1185049.372 to be less than 1000 [call @ tests/unit/integrations/ruvector/sona-three-loop.test.ts:395]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:22.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "b59a2838a0.g0.L2a.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/integrations/ruvector/sona-three-loop.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 1185049.372 to be less than 1000 [call @ tests/unit/integrations/ruvector/sona-three-loop.test.ts:395]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:26.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "b59a2838a0.g0.L2b.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/integrations/ruvector/sona-three-loop.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 1185049.372 to be less than 1000 [call @ tests/unit/integrations/ruvector/sona-three-loop.test.ts:395]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:29.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "b59a2838a0.g0.L2b.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/integrations/ruvector/sona-three-loop.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 1185049.372 to be less than 1000 [call @ tests/unit/integrations/ruvector/sona-three-loop.test.ts:395]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:32.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "b59a2838a0.g0.L3.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/integrations/ruvector/sona-three-loop.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 1185049.372 to be less than 1000 [call @ tests/unit/integrations/ruvector/sona-three-loop.test.ts:395]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:36.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "b59a2838a0.g0.L3.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/integrations/ruvector/sona-three-loop.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 1185049.372 to be less than 1000 [call @ tests/unit/integrations/ruvector/sona-three-loop.test.ts:395]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:39.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "b59a2838a0.g0.L4.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/integrations/ruvector/sona-three-loop.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:42.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "b59a2838a0.g0.L4.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/integrations/ruvector/sona-three-loop.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T10:33:45.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L4",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "b59a2838a0.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/integrations/ruvector/sona-three-loop.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/integrations/ruvector/sona-three-loop.test.ts"
+      ]
+     },
+     {
+      "tag": "b59a2838a0.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/integrations/ruvector/sona-three-loop.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/integrations/ruvector/sona-three-loop.test.ts"
+      ]
+     },
+     {
+      "tag": "b59a2838a0.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/integrations/ruvector/sona-three-loop.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/integrations/ruvector/sona-three-loop.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "b59a2838a0.alone.r1",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/integrations/ruvector/sona-three-loop.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.alone.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 2.45,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T10:33:09.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/unit/integrations/ruvector/sona-three-loop.test.ts::SONAThreeLoopEngine::Instant Loop::should complete adaptation quickly": "failed"
+   },
+   "exc": {
+    "tests/unit/integrations/ruvector/sona-three-loop.test.ts::SONAThreeLoopEngine::Instant Loop::should complete adaptation quickly": "AssertionError: expected 1185049.372 to be less than 1000 [call @ tests/unit/integrations/ruvector/sona-three-loop.test.ts:395]"
+   }
+  },
+  {
+   "tag": "b59a2838a0.alone.r2",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/integrations/ruvector/sona-three-loop.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.alone.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b59a2838a0.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 2.09,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T10:33:13.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/unit/integrations/ruvector/sona-three-loop.test.ts::SONAThreeLoopEngine::Instant Loop::should complete adaptation quickly": "failed"
+   },
+   "exc": {
+    "tests/unit/integrations/ruvector/sona-three-loop.test.ts::SONAThreeLoopEngine::Instant Loop::should complete adaptation quickly": "AssertionError: expected 1185049.372 to be less than 1000 [call @ tests/unit/integrations/ruvector/sona-three-loop.test.ts:395]"
+   }
+  }
+ ],
+ "complete": true
+}
