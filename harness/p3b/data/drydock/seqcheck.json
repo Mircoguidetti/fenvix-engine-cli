@@ -1,0 +1,33 @@
+{
+ "repo": "drydock",
+ "vitest": "4.1.12",
+ "files": [
+  "agent/EdgeAgentAdapter.test.ts",
+  "agent/edge-registration-ownership.test.ts"
+ ],
+ "accepted": true,
+ "default": {
+  "cmd": "npx --no-install vitest run agent/EdgeAgentAdapter.test.ts agent/edge-registration-ownership.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/seqcheck.default.runner.json",
+  "exit": 0,
+  "wall_s": 6.68,
+  "applied": [
+   "agent/EdgeAgentAdapter.test.ts",
+   "agent/edge-registration-ownership.test.ts"
+  ],
+  "n_outcomes": 202
+ },
+ "forced": {
+  "cmd": "npx --no-install vitest run agent/EdgeAgentAdapter.test.ts agent/edge-registration-ownership.test.ts --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/seqcheck.forced.runner.json",
+  "exit": 0,
+  "wall_s": 6.47,
+  "applied": [
+   "agent/edge-registration-ownership.test.ts",
+   "agent/EdgeAgentAdapter.test.ts"
+  ],
+  "intended": [
+   "agent/edge-registration-ownership.test.ts",
+   "agent/EdgeAgentAdapter.test.ts"
+  ],
+  "n_outcomes": 202
+ }
+}

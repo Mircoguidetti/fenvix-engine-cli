@@ -1,0 +1,33 @@
+{
+ "repo": "alakajam",
+ "vitest": "5.0.5",
+ "files": [
+  "server/core/security.spec.ts",
+  "server/entry/entry.service.spec.ts"
+ ],
+ "accepted": true,
+ "default": {
+  "cmd": "npx --no-install vitest run server/core/security.spec.ts server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/seqcheck.default.runner.json",
+  "exit": 0,
+  "wall_s": 6.34,
+  "applied": [
+   "server/core/security.spec.ts",
+   "server/entry/entry.service.spec.ts"
+  ],
+  "n_outcomes": 36
+ },
+ "forced": {
+  "cmd": "npx --no-install vitest run server/core/security.spec.ts server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/seqcheck.forced.runner.json",
+  "exit": 0,
+  "wall_s": 5.8,
+  "applied": [
+   "server/entry/entry.service.spec.ts",
+   "server/core/security.spec.ts"
+  ],
+  "intended": [
+   "server/entry/entry.service.spec.ts",
+   "server/core/security.spec.ts"
+  ],
+  "n_outcomes": 36
+ }
+}
