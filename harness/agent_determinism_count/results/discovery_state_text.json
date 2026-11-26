@@ -22,18 +22,31 @@
   },
   "committer-date:>=2024-01-01 flakiness gemini test": {
    "capped": false,
-   "done": false,
-   "leaf_total": 3648,
-   "leaves": 7,
-   "nodes": 14,
+   "done": true,
+   "leaf_total": 18501,
+   "leaves": 34,
+   "nodes": 66,
    "prepass_total": 18551,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 flakiness gpt test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 4909,
+   "leaves": 8,
+   "nodes": 17,
+   "prepass_total": 13489,
    "stack": [
     [
-     "2026-02-01",
-     "2026-03-05"
+     "2026-04-26",
+     "2026-05-11"
     ],
     [
-     "2026-03-06",
+     "2026-05-12",
+     "2026-07-16"
+    ],
+    [
+     "2026-07-17",
      "2026-11-25"
     ]
    ]
@@ -2282,13 +2295,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 331
+  "issues": 600
  },
  "search_stats": {
-  "429": 13,
+  "429": 30,
   "limit": 30,
-  "remaining": 15,
-  "reset": 1795650732
+  "remaining": 26,
+  "reset": 1795652556
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
