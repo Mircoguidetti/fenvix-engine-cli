@@ -29,6 +29,33 @@
    "prepass_total": 3,
    "stack": []
   },
+  "api.cohere path:cassettes": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
+  "api.cohere path:recordings": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
+  "api.cohere path:vcr": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
   "api.groq.com path:cassettes": {
    "capped": false,
    "done": true,
@@ -39,6 +66,15 @@
    "stack": []
   },
   "api.groq.com path:recordings": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
+  "api.groq.com path:vcr": {
    "capped": false,
    "done": true,
    "leaf_total": 0,
@@ -181,17 +217,35 @@
    "nodes": 1,
    "prepass_total": 0,
    "stack": []
+  },
+  "openrouter.ai path:cassettes": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
+  "openrouter.ai path:recordings": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 3,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 3,
+   "stack": []
   }
  },
  "search_requests": {
-  "code": 47,
+  "code": 64,
   "issues": 0
  },
  "search_stats": {
-  "429": 27,
+  "429": 38,
   "limit": 10,
   "remaining": 6,
-  "reset": 1795684722
+  "reset": 1795686343
  },
  "started": "2026-11-26T08:43:47+00:00"
 }
