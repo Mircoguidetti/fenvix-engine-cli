@@ -108,3 +108,8 @@
     when present (in the workflow) and cands_read otherwise. Request r002x ({"cands_backfill": true}) adds the
     records of chunks 1-2, which were read before this existed. The comments passes r001c and r002c (§3.1) are
     queued after their chunks.
+14. 2026-11-26 12:31Z, a listed order note caused by the founder's S3 extension (coordinator; no rule change). Until
+    the rebuild that merges the extension, chunk 3 and later chunks read S2 only, in §4.1 order within S2. After the
+    rebuild, S3 catches up in its own §4.1 order, so S3's first 300 are still read in order. The reading order inside
+    a stratum is seeded, so this changes only when S3 is read, not which S3 candidates are read. Chunks 1 (S1) and 2
+    (S2/S3 one to one) were read before the note.
