@@ -28,7 +28,7 @@ def header(path):
     return None
 
 
-def rows(out):
+def rows(out, rep=1):
     res = os.path.join(out, "results.jsonl")
     if not os.path.exists(res):
         return {}
@@ -37,7 +37,7 @@ def rows(out):
         if not line.strip():
             continue
         j = json.loads(line)
-        if j.get("rep") != 1:
+        if j.get("rep") != rep:
             continue
         by.setdefault(j["repo"], []).append(j)
     table = {}
@@ -46,7 +46,7 @@ def rows(out):
         for r in rs:
             n = r.get("workers")
             if r["kind"] == "par":
-                h = header(os.path.join(out, repo, f"P1w{n}.jsonl")) or {}
+                h = header(os.path.join(out, repo, f"P{rep}w{n}.jsonl")) or {}
                 meta = h.get("meta") or {}
                 hz = ((meta.get("parallel") or {}).get("hazards")) or []
                 kinds = {}
