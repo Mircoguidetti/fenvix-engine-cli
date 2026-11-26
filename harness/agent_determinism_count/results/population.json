@@ -11,6 +11,14 @@
   "status": 200,
   "total_count": 3
  },
+ "@langchain filename:pyproject.toml": {
+  "status": 200,
+  "total_count": 653
+ },
+ "@langchain filename:requirements.txt": {
+  "status": 200,
+  "total_count": 32
+ },
  "@mastra/core filename:package.json": {
   "status": 429,
   "total_count": null
@@ -58,6 +66,18 @@
  "agno filename:requirements.txt": {
   "status": 200,
   "total_count": 12528
+ },
+ "ai filename:package.json": {
+  "status": 200,
+  "total_count": 15237120
+ },
+ "ai filename:pyproject.toml": {
+  "status": 200,
+  "total_count": 1253376
+ },
+ "ai filename:requirements.txt": {
+  "status": 200,
+  "total_count": 1867776
  },
  "autogen-agentchat filename:package.json": {
   "status": 200,
@@ -214,6 +234,18 @@
  "llama-index filename:requirements.txt": {
   "status": 200,
   "total_count": 17728
+ },
+ "llamaindex filename:package.json": {
+  "status": 200,
+  "total_count": 2076
+ },
+ "llamaindex filename:pyproject.toml": {
+  "status": 200,
+  "total_count": 2164
+ },
+ "llamaindex filename:requirements.txt": {
+  "status": 429,
+  "total_count": null
  },
  "openai-agents filename:package.json": {
   "status": 200,
