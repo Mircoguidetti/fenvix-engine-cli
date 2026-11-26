@@ -621,8 +621,8 @@ def test_issue_queries_shape():
     """protects=§4.3 query form (4 OR operators, created filter, one per tool plus mutation); fails_when=a query exceeds
     GitHub's operator limit or misses the tool; no_claim=search relevance."""
     qs = history.issue_queries("o/r", ["stryker", "mutmut"])
-    assert qs == [f"repo:o/r {t} (slow OR timeout OR minutes OR hours OR expensive) created:>=2024-01-01"
-                  for t in ("stryker", "mutmut", "mutation")]
+    assert qs == [f"repo:o/r {t} (slow OR timeout OR minutes OR hours OR expensive) created:>=2024-01-01 {k}"
+                  for t in ("stryker", "mutmut", "mutation") for k in ("is:issue", "is:pull-request")]
     assert all(q.count(" OR ") == 4 for q in qs)
 
 

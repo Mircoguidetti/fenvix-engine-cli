@@ -166,7 +166,9 @@ def _cross(B, repo, per: list[dict], errors: list) -> None:
 def issue_queries(repo: str, tools: list[str]) -> list[str]:
     import pipeline
     terms = [pipeline.QUERY_TERM[t] for t in tools if t in pipeline.QUERY_TERM] + ["mutation"]
-    return [f"repo:{repo} {t} {ISSUE_OR} created:>={R.HISTORY_START}" for t in dict.fromkeys(terms)]
+    # CHANGES.md 15: GitHub answers 422 without `is:issue` or `is:pull-request` (§0.2c probe), so each term runs twice
+    return [f"repo:{repo} {t} {ISSUE_OR} created:>={R.HISTORY_START} {kind}" for t in dict.fromkeys(terms)
+            for kind in ("is:issue", "is:pull-request")]
 
 
 def run_issues(src, repo: str, tools: list[str], cap_left: int) -> dict:

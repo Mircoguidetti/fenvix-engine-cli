@@ -1,0 +1,231 @@
+{
+ "flags": [],
+ "results": [
+  {
+   "at": "2026-11-26T17:23:12+00:00",
+   "attempts": [
+    {
+     "at": 1795713792.4,
+     "method": "GET",
+     "path": "search/code?q=stryker+path%3A.github%2Fworkflows&per_page=100",
+     "search": "code",
+     "status": 200
+    }
+   ],
+   "first_items": [
+    {
+     "path": ".github/workflows/stryker.yml",
+     "repo": "jamescourtney/FlatSharp",
+     "title": null,
+     "url": "https://github.com/jamescourtney/FlatSharp/blob/8da3938633b626e8bc65bbcf61872979f8dc8fa5/.github/workflows/stryker.yml"
+    },
+    {
+     "path": ".github/workflows/stryker.yml",
+     "repo": "brody2consult/create-react-native-module",
+     "title": null,
+     "url": "https://github.com/brody2consult/create-react-native-module/blob/5bcb9ef4edd01c4291ef55df3a86f1766dea1eaf/.github/workflows/stryker.yml"
+    },
+    {
+     "path": ".github/workflows/stryker.yml",
+     "repo": "dotnet-campus/AsyncWorkerCollection",
+     "title": null,
+     "url": "https://github.com/dotnet-campus/AsyncWorkerCollection/blob/a8c4116940201f679088455c2ae395f1ddf7911d/.github/workflows/stryker.yml"
+    }
+   ],
+   "headers": {
+    "x-ratelimit-limit": "10",
+    "x-ratelimit-remaining": "10",
+    "x-ratelimit-resource": "code_search",
+    "x-ratelimit-used": "4"
+   },
+   "incomplete_results": false,
+   "items": 100,
+   "kind": "code",
+   "message": null,
+   "q": "stryker path:.github/workflows",
+   "status": 200,
+   "total_count": 3284
+  },
+  {
+   "at": "2026-11-26T17:23:17+00:00",
+   "attempts": [
+    {
+     "at": 1795713797.7,
+     "method": "GET",
+     "path": "search/code?q=stryker+filename%3Apackage.json&per_page=100",
+     "search": "code",
+     "status": 200
+    }
+   ],
+   "first_items": [
+    {
+     "path": "package.json",
+     "repo": "voidcosmos/npkill",
+     "title": null,
+     "url": "https://github.com/voidcosmos/npkill/blob/ca908483869c51ccf81dcde05a717c165b053785/package.json"
+    },
+    {
+     "path": "package.json",
+     "repo": "glitternetwork/pinme",
+     "title": null,
+     "url": "https://github.com/glitternetwork/pinme/blob/7822b0501607786958ecb458f3bd02a061933efa/package.json"
+    },
+    {
+     "path": "package.json",
+     "repo": "l3tnun/EPGStation",
+     "title": null,
+     "url": "https://github.com/l3tnun/EPGStation/blob/8b0cc6f569792a7115106020523b72b086142c08/package.json"
+    }
+   ],
+   "headers": {
+    "x-ratelimit-limit": "10",
+    "x-ratelimit-remaining": "10",
+    "x-ratelimit-resource": "code_search",
+    "x-ratelimit-used": "5"
+   },
+   "incomplete_results": false,
+   "items": 100,
+   "kind": "code",
+   "message": null,
+   "q": "stryker filename:package.json",
+   "status": 200,
+   "total_count": 10592
+  },
+  {
+   "at": "2026-11-26T17:23:24+00:00",
+   "attempts": [
+    {
+     "at": 1795713804.5,
+     "method": "GET",
+     "path": "search/code?q=mutants+filename%3Amutants.toml+path%3A.cargo&per_page=100",
+     "search": "code",
+     "status": 200
+    }
+   ],
+   "first_items": [
+    {
+     "path": ".cargo/mutants.toml",
+     "repo": "dora-rs/dora",
+     "title": null,
+     "url": "https://github.com/dora-rs/dora/blob/194926c47097450e40d6a85df48dbfa3180c08d8/.cargo/mutants.toml"
+    },
+    {
+     "path": ".cargo/mutants.toml",
+     "repo": "mozilla/neqo",
+     "title": null,
+     "url": "https://github.com/mozilla/neqo/blob/cd9ed602abe3f84c4b21ee6c91da783244d87ee6/.cargo/mutants.toml"
+    },
+    {
+     "path": ".cargo/mutants.toml",
+     "repo": "rust-bitcoin/rust-bitcoin",
+     "title": null,
+     "url": "https://github.com/rust-bitcoin/rust-bitcoin/blob/dc20ce97b3d0838063464d61d0ab7e225de23256/.cargo/mutants.toml"
+    }
+   ],
+   "headers": {
+    "x-ratelimit-limit": "10",
+    "x-ratelimit-remaining": "10",
+    "x-ratelimit-resource": "code_search",
+    "x-ratelimit-used": "6"
+   },
+   "incomplete_results": false,
+   "items": 100,
+   "kind": "code",
+   "message": null,
+   "q": "mutants filename:mutants.toml path:.cargo",
+   "status": 200,
+   "total_count": 1024
+  },
+  {
+   "at": "2026-11-26T17:23:25+00:00",
+   "attempts": [
+    {
+     "at": 1795713805.5,
+     "method": "GET",
+     "path": "search/issues?q=repo%3Astryker-mutator%2Fstryker-js+stryker+%28slow+OR+timeout+OR+minutes+OR+hours+OR+expensive%29+created%3A%3E%3D2024-01-01+is%3Aissue&per_page=30",
+     "search": "issues",
+     "status": 200
+    }
+   ],
+   "first_items": [
+    {
+     "path": null,
+     "repo": null,
+     "title": "Stryker is Slow when trying run with Karma & Jasmine in an Angular Application",
+     "url": "https://github.com/stryker-mutator/stryker-js/issues/5462"
+    },
+    {
+     "path": null,
+     "repo": null,
+     "title": "Typescript checker: what happens between initial test run and first mutant?",
+     "url": "https://github.com/stryker-mutator/stryker-js/issues/6264"
+    },
+    {
+     "path": null,
+     "repo": null,
+     "title": "FileMatcher recompiles the glob for every file, so many mutate entries make ProjectReader take minutes",
+     "url": "https://github.com/stryker-mutator/stryker-js/issues/6333"
+    }
+   ],
+   "headers": {
+    "x-ratelimit-limit": "30",
+    "x-ratelimit-remaining": "30",
+    "x-ratelimit-resource": "search",
+    "x-ratelimit-used": "2"
+   },
+   "incomplete_results": false,
+   "items": 30,
+   "kind": "issues",
+   "message": null,
+   "q": "repo:stryker-mutator/stryker-js stryker (slow OR timeout OR minutes OR hours OR expensive) created:>=2024-01-01 is:issue",
+   "status": 200,
+   "total_count": 193
+  },
+  {
+   "at": "2026-11-26T17:23:28+00:00",
+   "attempts": [
+    {
+     "at": 1795713808.2,
+     "method": "GET",
+     "path": "search/issues?q=repo%3Astryker-mutator%2Fstryker-js+stryker+%28slow+OR+timeout+OR+minutes+OR+hours+OR+expensive%29+created%3A%3E%3D2024-01-01+is%3Apull-request&per_page=30",
+     "search": "issues",
+     "status": 200
+    }
+   ],
+   "first_items": [
+    {
+     "path": null,
+     "repo": null,
+     "title": "fix(jest-runner): report empty coverage when the dry run hits no mutant",
+     "url": "https://github.com/stryker-mutator/stryker-js/pull/6339"
+    },
+    {
+     "path": null,
+     "repo": null,
+     "title": "feat(core): skip the dry run when there are no mutants to test",
+     "url": "https://github.com/stryker-mutator/stryker-js/pull/6325"
+    },
+    {
+     "path": null,
+     "repo": null,
+     "title": "feat(core): re-check wall-clock timeouts before reporting them",
+     "url": "https://github.com/stryker-mutator/stryker-js/pull/6232"
+    }
+   ],
+   "headers": {
+    "x-ratelimit-limit": "30",
+    "x-ratelimit-remaining": "30",
+    "x-ratelimit-resource": "search",
+    "x-ratelimit-used": "3"
+   },
+   "incomplete_results": false,
+   "items": 30,
+   "kind": "issues",
+   "message": null,
+   "q": "repo:stryker-mutator/stryker-js stryker (slow OR timeout OR minutes OR hours OR expensive) created:>=2024-01-01 is:pull-request",
+   "status": 200,
+   "total_count": 106
+  }
+ ],
+ "route": "session"
+}

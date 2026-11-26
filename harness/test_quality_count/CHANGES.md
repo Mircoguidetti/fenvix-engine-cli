@@ -51,3 +51,8 @@ search request, probe or candidate read (no data existed); none changes the deci
     `results/search_budget_free.json`; the workflow processes every request file without a chunk record (a queued run
     cancelled by GitHub loses nothing) and commits only the files a chunk writes (`rows.jsonl`, `chunks.jsonl`,
     `raw/`, `probe_workflow.json`, `issues_wf.jsonl`, `issues_raw_wf/`, `debug/`), never the session's files.
+15. §0.2c probe fix (2026-11-26, after "search budget free", before discovery): the session-route issues query
+    `repo:stryker-mutator/stryker-js stryker (slow OR timeout OR minutes OR hours OR expensive) created:>=2024-01-01`
+    answered HTTP 422 "Query must include 'is:issue' or 'is:pull-request'" (results/probe_session_first.json). Each
+    §4.3 query now runs twice, with `is:issue` and with `is:pull-request` (first 30 results each); both count in the
+    300-request cap. Justification: required by GitHub; keeping both kinds keeps issues and pull requests in scope.

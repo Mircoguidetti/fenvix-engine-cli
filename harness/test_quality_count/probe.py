@@ -19,7 +19,9 @@ CODE = ["stryker path:.github/workflows",                      # (a)
         "stryker filename:package.json",                        # (b) term + filename:
         "mutants filename:mutants.toml path:.cargo"]            # (b) term + filename: + path:
 ISSUES = ["repo:stryker-mutator/stryker-js stryker (slow OR timeout OR minutes OR hours OR expensive) "
-          "created:>=2024-01-01"]                               # (c)
+          "created:>=2024-01-01 is:issue",                      # (c) form fixed after the first probe's 422
+          "repo:stryker-mutator/stryker-js stryker (slow OR timeout OR minutes OR hours OR expensive) "
+          "created:>=2024-01-01 is:pull-request"]
 RATE_KEYS = ("x-ratelimit-limit", "x-ratelimit-remaining", "x-ratelimit-used", "x-ratelimit-resource", "retry-after")
 
 
