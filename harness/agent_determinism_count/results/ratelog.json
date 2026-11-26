@@ -15,7 +15,7 @@
   }
  },
  "note": "The 429 and request counters in a state file are per process (they restart with each run and each request), so the per-checkpoint increase is taken within a process and a drop starts a new process. Hours are UTC. Usage: ratelog.py [--ref origin/claude/agent-determinism-count]   (writes results/ratelog.json) ",
- "ref": "f1db17ab2",
+ "ref": "ad717c64f",
  "text": {
   "2026-11-25T12:00Z": {
    "429": 1,
@@ -109,11 +109,18 @@
    "search_requests": 427
   },
   "2026-11-26T06:00Z": {
-   "429": 21,
+   "429": 41,
+   "checkpoints": 2,
+   "nodes": 79,
+   "queries_done": 2,
+   "search_requests": 360
+  },
+  "2026-11-26T07:00Z": {
+   "429": 20,
    "checkpoints": 1,
-   "nodes": 34,
+   "nodes": 45,
    "queries_done": 0,
-   "search_requests": 179
+   "search_requests": 183
   }
  }
 }
