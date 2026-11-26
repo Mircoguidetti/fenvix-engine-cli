@@ -1,0 +1,1757 @@
+{
+ "repo": "alakajam",
+ "file": "server/entry/entry.service.spec.ts",
+ "slug": "f55e579512",
+ "engine_commit": "ece09e1f502a1d7354e563226ec890046d196fc7",
+ "cases": {
+  "server/entry/entry.service.spec.ts::Entry service::create entry::should create an entry with a manage role for its owner": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:31]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:31]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "server/entry/entry.service.spec.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "f55e579512.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:08.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "f55e579512.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:15.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "f55e579512.g0.control.r1",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r2",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r3",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "server/entry/entry.service.spec.ts::Entry service::create entry::should refuse a second entry for the same event": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:56]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:56]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "server/entry/entry.service.spec.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "f55e579512.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:08.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "f55e579512.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:15.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "f55e579512.g0.control.r1",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r2",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r3",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "server/entry/entry.service.spec.ts::Entry service::create entry::should support external entries (without event)": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:47]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:47]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "server/entry/entry.service.spec.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "f55e579512.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:08.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "f55e579512.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:15.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "f55e579512.g0.control.r1",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r2",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r3",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "server/entry/entry.service.spec.ts::Entry service::delete entry::should delete the entry along with its roles and comments": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:219]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:219]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "server/entry/entry.service.spec.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "f55e579512.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:08.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "f55e579512.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:15.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "f55e579512.g0.control.r1",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r2",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r3",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "server/entry/entry.service.spec.ts::Entry service::delete entry::should detach the entry posts without deleting them": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "QueryFailedError: SQLITE_BUSY: database is locked [call @ ]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:235]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "server/entry/entry.service.spec.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "f55e579512.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:08.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "f55e579512.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:15.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "f55e579512.g0.control.r1",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r2",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r3",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "server/entry/entry.service.spec.ts::Entry service::delete entry::should leave a post sharing the same ID untouched": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:249]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:249]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "server/entry/entry.service.spec.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "f55e579512.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:08.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "f55e579512.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:15.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "f55e579512.g0.control.r1",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r2",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r3",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "server/entry/entry.service.spec.ts::Entry service::find entries not reviewed by user::should hide entries commented or owned by the user": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:159]",
+    "QueryFailedError: SQLITE_BUSY: database is locked [call @ ]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "server/entry/entry.service.spec.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "f55e579512.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:08.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "f55e579512.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:15.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "f55e579512.g0.control.r1",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r2",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r3",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "server/entry/entry.service.spec.ts::Entry service::find entries not reviewed by user::should not hide entries just because the reviewer has a role on a post": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:198]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:198]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "server/entry/entry.service.spec.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "f55e579512.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:08.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "f55e579512.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:15.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "f55e579512.g0.control.r1",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r2",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r3",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "server/entry/entry.service.spec.ts::Entry service::find entries not reviewed by user::should not hide entries just because the user commented a post sharing the same ID": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:177]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:177]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "server/entry/entry.service.spec.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "f55e579512.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:08.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "f55e579512.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:15.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "f55e579512.g0.control.r1",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r2",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r3",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "server/entry/entry.service.spec.ts::Entry service::find user entries::should find all entries of a user": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:81]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:81]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "server/entry/entry.service.spec.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "f55e579512.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:08.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "f55e579512.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:15.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "f55e579512.g0.control.r1",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r2",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r3",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "server/entry/entry.service.spec.ts::Entry service::find user entries::should find entries of a team member": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:96]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:96]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "server/entry/entry.service.spec.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "f55e579512.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:08.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "f55e579512.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:15.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "f55e579512.g0.control.r1",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r2",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r3",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "server/entry/entry.service.spec.ts::Entry service::find user entries::should find entries through the userId filter": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:114]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:114]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "server/entry/entry.service.spec.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "f55e579512.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:08.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "f55e579512.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:15.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "f55e579512.g0.control.r1",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r2",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r3",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "server/entry/entry.service.spec.ts::Entry service::find user entries::should find the entry of a user for an event": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:70]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:70]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "server/entry/entry.service.spec.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "f55e579512.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:08.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "f55e579512.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:15.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "f55e579512.g0.control.r1",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r2",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r3",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "server/entry/entry.service.spec.ts::Entry service::find user entries::should find the latest event entry of a user": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:106]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:106]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "server/entry/entry.service.spec.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "f55e579512.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:08.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "f55e579512.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:15.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "f55e579512.g0.control.r1",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r2",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r3",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "server/entry/entry.service.spec.ts::Entry service::find user entries::should not find entries through roles on a post sharing the same ID": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:127]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:127]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "server/entry/entry.service.spec.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "f55e579512.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:08.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "f55e579512.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:14:15.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "f55e579512.g0.control.r1",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r2",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "f55e579512.g0.control.r3",
+      "cmd": "npx --no-install vitest run server/entry/entry.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/f55e579512.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/entry/entry.service.spec.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "f55e579512.alone.r1",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.alone.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 11.29,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T10:13:48.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "server/entry/entry.service.spec.ts::Entry service::create entry::should create an entry with a manage role for its owner": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::create entry::should refuse a second entry for the same event": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::create entry::should support external entries (without event)": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::delete entry::should delete the entry along with its roles and comments": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::delete entry::should detach the entry posts without deleting them": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::delete entry::should leave a post sharing the same ID untouched": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::find entries not reviewed by user::should hide entries commented or owned by the user": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::find entries not reviewed by user::should not hide entries just because the reviewer has a role on a post": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::find entries not reviewed by user::should not hide entries just because the user commented a post sharing the same ID": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find all entries of a user": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find entries of a team member": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find entries through the userId filter": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find the entry of a user for an event": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find the latest event entry of a user": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should not find entries through roles on a post sharing the same ID": "failed"
+   },
+   "exc": {
+    "server/entry/entry.service.spec.ts::Entry service::create entry::should create an entry with a manage role for its owner": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:31]",
+    "server/entry/entry.service.spec.ts::Entry service::create entry::should refuse a second entry for the same event": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:56]",
+    "server/entry/entry.service.spec.ts::Entry service::create entry::should support external entries (without event)": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:47]",
+    "server/entry/entry.service.spec.ts::Entry service::delete entry::should delete the entry along with its roles and comments": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:219]",
+    "server/entry/entry.service.spec.ts::Entry service::delete entry::should detach the entry posts without deleting them": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:235]",
+    "server/entry/entry.service.spec.ts::Entry service::delete entry::should leave a post sharing the same ID untouched": "QueryFailedError: SQLITE_BUSY: database is locked [call @ ]",
+    "server/entry/entry.service.spec.ts::Entry service::find entries not reviewed by user::should hide entries commented or owned by the user": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:159]",
+    "server/entry/entry.service.spec.ts::Entry service::find entries not reviewed by user::should not hide entries just because the reviewer has a role on a post": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:198]",
+    "server/entry/entry.service.spec.ts::Entry service::find entries not reviewed by user::should not hide entries just because the user commented a post sharing the same ID": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:177]",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find all entries of a user": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:81]",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find entries of a team member": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:96]",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find entries through the userId filter": "QueryFailedError: SQLITE_BUSY: database is locked [call @ ]",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find the entry of a user for an event": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:70]",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find the latest event entry of a user": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:106]",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should not find entries through roles on a post sharing the same ID": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:127]"
+   }
+  },
+  {
+   "tag": "f55e579512.alone.r2",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/entry/entry.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/f55e579512.alone.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/f55e579512.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 6.68,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T10:14:00.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "server/entry/entry.service.spec.ts::Entry service::create entry::should create an entry with a manage role for its owner": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::create entry::should refuse a second entry for the same event": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::create entry::should support external entries (without event)": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::delete entry::should delete the entry along with its roles and comments": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::delete entry::should detach the entry posts without deleting them": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::delete entry::should leave a post sharing the same ID untouched": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::find entries not reviewed by user::should hide entries commented or owned by the user": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::find entries not reviewed by user::should not hide entries just because the reviewer has a role on a post": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::find entries not reviewed by user::should not hide entries just because the user commented a post sharing the same ID": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find all entries of a user": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find entries of a team member": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find entries through the userId filter": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find the entry of a user for an event": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find the latest event entry of a user": "failed",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should not find entries through roles on a post sharing the same ID": "failed"
+   },
+   "exc": {
+    "server/entry/entry.service.spec.ts::Entry service::create entry::should create an entry with a manage role for its owner": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:31]",
+    "server/entry/entry.service.spec.ts::Entry service::create entry::should refuse a second entry for the same event": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:56]",
+    "server/entry/entry.service.spec.ts::Entry service::create entry::should support external entries (without event)": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:47]",
+    "server/entry/entry.service.spec.ts::Entry service::delete entry::should delete the entry along with its roles and comments": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:219]",
+    "server/entry/entry.service.spec.ts::Entry service::delete entry::should detach the entry posts without deleting them": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:235]",
+    "server/entry/entry.service.spec.ts::Entry service::delete entry::should leave a post sharing the same ID untouched": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:249]",
+    "server/entry/entry.service.spec.ts::Entry service::find entries not reviewed by user::should hide entries commented or owned by the user": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:159]",
+    "server/entry/entry.service.spec.ts::Entry service::find entries not reviewed by user::should not hide entries just because the reviewer has a role on a post": "QueryFailedError: SQLITE_BUSY: database is locked [call @ ]",
+    "server/entry/entry.service.spec.ts::Entry service::find entries not reviewed by user::should not hide entries just because the user commented a post sharing the same ID": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:177]",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find all entries of a user": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:81]",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find entries of a team member": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:96]",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find entries through the userId filter": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:114]",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find the entry of a user for an event": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:70]",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find the latest event entry of a user": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:106]",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should not find entries through roles on a post sharing the same ID": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/entry/entry.service.spec.ts:127]"
+   }
+  }
+ ],
+ "complete": true
+}

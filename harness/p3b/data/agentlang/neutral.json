@@ -1,0 +1,15 @@
+{
+ "repo": "agentlang",
+ "cmd": "npx --no-install vitest run --config /root/pm-p3b/repos/agentlang/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/agentlang/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/agentlang/b/runs/neutral.default.runner.json",
+ "exit": 0,
+ "wall_s": 78.37,
+ "n_plain1": 439,
+ "n_harness": 439,
+ "n_differ": 0,
+ "differ": [],
+ "applied_n": 25,
+ "neutral_strict": true,
+ "n_differ_outside_plain_variable": 0,
+ "neutral_outside_plain_variable": true,
+ "neutral": true
+}

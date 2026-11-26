@@ -1,0 +1,256 @@
+{
+ "repo": "drydock",
+ "cmd": "npx --no-install vitest run --config /root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/fr/CodesWhat_drydock/app/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/drydock/b/runs/neutral.default.runner.json",
+ "exit": 0,
+ "wall_s": 541.43,
+ "n_plain1": 21578,
+ "n_harness": 21578,
+ "n_differ": 48,
+ "differ": [
+  [
+   "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get handles unusual env var values without crashing (with seed=-472304597)",
+   "passed",
+   null
+  ],
+  [
+   "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get handles unusual env var values without crashing (with seed=1149628392)",
+   null,
+   "passed"
+  ],
+  [
+   "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths and env objects (with seed=1877703581)",
+   "passed",
+   null
+  ],
+  [
+   "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths and env objects (with seed=851397492)",
+   null,
+   "passed"
+  ],
+  [
+   "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths with empty env (with seed=-733730690)",
+   null,
+   "passed"
+  ],
+  [
+   "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get never throws on arbitrary property paths with empty env (with seed=-761512998)",
+   "passed",
+   null
+  ],
+  [
+   "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get with realistic DD_ env vars never throws (with seed=2078613066)",
+   "passed",
+   null
+  ],
+  [
+   "configuration/index.fuzz.test.ts::configuration/index fuzz tests::get with realistic DD_ env vars never throws (with seed=779037898)",
+   null,
+   "passed"
+  ],
+  [
+   "model/container.fuzz.test.ts::model/container fuzz tests::flatten handles validated containers (with seed=-1317632928)",
+   "passed",
+   null
+  ],
+  [
+   "model/container.fuzz.test.ts::model/container fuzz tests::flatten handles validated containers (with seed=524830199)",
+   null,
+   "passed"
+  ],
+  [
+   "model/container.fuzz.test.ts::model/container fuzz tests::getLink handles arbitrary string pairs for container/tag (with seed=-1704865035)",
+   null,
+   "passed"
+  ],
+  [
+   "model/container.fuzz.test.ts::model/container fuzz tests::getLink handles arbitrary string pairs for container/tag (with seed=1334758639)",
+   "passed",
+   null
+  ],
+  [
+   "model/container.fuzz.test.ts::model/container fuzz tests::getLink never throws on arbitrary container and tag (with seed=-622725404)",
+   "passed",
+   null
+  ],
+  [
+   "model/container.fuzz.test.ts::model/container fuzz tests::getLink never throws on arbitrary container and tag (with seed=2133973327)",
+   null,
+   "passed"
+  ],
+  [
+   "model/container.fuzz.test.ts::model/container fuzz tests::validate accepts valid container-shaped objects (with seed=1198876583)",
+   null,
+   "passed"
+  ],
+  [
+   "model/container.fuzz.test.ts::model/container fuzz tests::validate accepts valid container-shaped objects (with seed=1244681254)",
+   "passed",
+   null
+  ],
+  [
+   "model/container.fuzz.test.ts::model/container fuzz tests::validate handles arbitrary input without crashing (with seed=-1731615245)",
+   "passed",
+   null
+  ],
+  [
+   "model/container.fuzz.test.ts::model/container fuzz tests::validate handles arbitrary input without crashing (with seed=593238175)",
+   null,
+   "passed"
+  ],
+  [
+   "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask handles undefined correctly (with seed=-911570602)",
+   "passed",
+   null
+  ],
+  [
+   "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask handles undefined correctly (with seed=1012463084)",
+   null,
+   "passed"
+  ],
+  [
+   "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask never throws on arbitrary strings (with seed=-1673184404)",
+   "passed",
+   null
+  ],
+  [
+   "registry/Component.fuzz.test.ts::registry/Component fuzz tests::Component.mask never throws on arbitrary strings (with seed=326289860)",
+   null,
+   "passed"
+  ],
+  [
+   "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles arbitrary config objects (with seed=2040217586)",
+   null,
+   "passed"
+  ],
+  [
+   "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles arbitrary config objects (with seed=693916700)",
+   "passed",
+   null
+  ],
+  [
+   "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles dictionary-like configs (with seed=1749864435)",
+   "passed",
+   null
+  ],
+  [
+   "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles dictionary-like configs (with seed=640880024)",
+   null,
+   "passed"
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::diff never throws on arbitrary version strings (with seed=-1037023345)",
+   null,
+   "passed"
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::diff never throws on arbitrary version strings (with seed=-2069249044)",
+   "passed",
+   null
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater handles semver-like strings (with seed=1237490557)",
+   "passed",
+   null
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater handles semver-like strings (with seed=2010384024)",
+   null,
+   "passed"
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater never throws on arbitrary version strings (with seed=1320337124)",
+   "passed",
+   null
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::isGreater never throws on arbitrary version strings (with seed=1584224704)",
+   null,
+   "passed"
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::parse handles version-like strings (with seed=-761860414)",
+   null,
+   "passed"
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::parse handles version-like strings (with seed=1234761593)",
+   "passed",
+   null
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::parse never throws on arbitrary strings (with seed=-443880242)",
+   null,
+   "passed"
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::parse never throws on arbitrary strings (with seed=257266903)",
+   "passed",
+   null
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::transform either returns a string or throws a regex configuration error (with seed=1953141159)",
+   null,
+   "passed"
+  ],
+  [
+   "tag/index.fuzz.test.ts::tag/index fuzz tests::transform either returns a string or throws a regex configuration error (with seed=53545685)",
+   "passed",
+   null
+  ],
+  [
+   "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles a mix of valid and arbitrary image references (with seed=-527004778)",
+   "passed",
+   null
+  ],
+  [
+   "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles a mix of valid and arbitrary image references (with seed=2098201077)",
+   null,
+   "passed"
+  ],
+  [
+   "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles realistic image name patterns (with seed=-1195262773)",
+   "passed",
+   null
+  ],
+  [
+   "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse handles realistic image name patterns (with seed=1326420034)",
+   null,
+   "passed"
+  ],
+  [
+   "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse roundtrips structured image name components (with seed=-1311957858)",
+   null,
+   "passed"
+  ],
+  [
+   "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse roundtrips structured image name components (with seed=-24765924)",
+   "passed",
+   null
+  ],
+  [
+   "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name always returns an object with expected fields (with seed=229412959)",
+   null,
+   "passed"
+  ],
+  [
+   "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name always returns an object with expected fields (with seed=830623743)",
+   "passed",
+   null
+  ],
+  [
+   "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name never throws on arbitrary strings (with seed=-1500295800)",
+   null,
+   "passed"
+  ],
+  [
+   "watchers/providers/docker/Docker.fuzz.test.ts::Docker image name parsing fuzz tests::parse-docker-image-name never throws on arbitrary strings (with seed=1310013504)",
+   "passed",
+   null
+  ]
+ ],
+ "applied_n": 652,
+ "neutral_strict": false,
+ "n_differ_outside_plain_variable": 0,
+ "neutral_outside_plain_variable": true,
+ "neutral": true
+}
