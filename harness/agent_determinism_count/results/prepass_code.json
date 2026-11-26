@@ -27,6 +27,62 @@
   "stratum": "S1",
   "total_count": 3
  },
+ "api.cohere path:cassettes": {
+  "at": "2026-11-26T05:17:02+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 9
+  },
+  "route": "workflow",
+  "search_429": 50,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
+ "api.cohere path:vcr": {
+  "at": "2026-11-26T05:17:08+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 8
+  },
+  "route": "workflow",
+  "search_429": 50,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
+ "api.deepseek.com path:cassettes": {
+  "at": "2026-11-26T05:17:30+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 5
+  },
+  "route": "workflow",
+  "search_429": 50,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
+ "api.deepseek.com path:vcr": {
+  "at": "2026-11-26T05:17:36+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 4
+  },
+  "route": "workflow",
+  "search_429": 50,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
  "api.groq.com path:cassettes": {
   "at": "2026-11-26T05:03:10+00:00",
   "family": "code",
@@ -139,6 +195,132 @@
   "stratum": "S1",
   "total_count": 3
  },
+ "cendor-cassette filename:package.json": {
+  "at": "2026-11-26T05:17:56+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 1
+  },
+  "route": "workflow",
+  "search_429": 50,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
+ "cendor-cassette filename:pyproject.toml": {
+  "at": "2026-11-26T05:17:42+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 3
+  },
+  "route": "workflow",
+  "search_429": 50,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 5
+ },
+ "cendor-cassette filename:requirements.txt": {
+  "at": "2026-11-26T05:17:49+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 2
+  },
+  "route": "workflow",
+  "search_429": 50,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
+ "coding-agent-vcr filename:package.json": {
+  "at": "2026-11-26T05:18:16+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 8
+  },
+  "route": "workflow",
+  "search_429": 50,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
+ "coding-agent-vcr filename:pyproject.toml": {
+  "at": "2026-11-26T05:18:03+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 0
+  },
+  "route": "workflow",
+  "search_429": 50,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 1
+ },
+ "coding-agent-vcr filename:requirements.txt": {
+  "at": "2026-11-26T05:18:09+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 9
+  },
+  "route": "workflow",
+  "search_429": 50,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
+ "evalcraft filename:package.json": {
+  "at": "2026-11-26T05:18:36+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 5
+  },
+  "route": "workflow",
+  "search_429": 50,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 1
+ },
+ "evalcraft filename:pyproject.toml": {
+  "at": "2026-11-26T05:18:23+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 7
+  },
+  "route": "workflow",
+  "search_429": 50,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 1
+ },
+ "evalcraft filename:requirements.txt": {
+  "at": "2026-11-26T05:18:30+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 6
+  },
+  "route": "workflow",
+  "search_429": 50,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 5
+ },
  "generativelanguage.googleapis.com path:cassettes": {
   "at": "2026-11-26T04:14:58+00:00",
   "family": "code",
@@ -191,6 +373,76 @@
   },
   "route": "workflow",
   "search_429": 34,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
+ "openrouter.ai path:cassettes": {
+  "at": "2026-11-26T05:17:15+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 7
+  },
+  "route": "workflow",
+  "search_429": 50,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
+ "openrouter.ai path:vcr": {
+  "at": "2026-11-26T05:17:22+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 6
+  },
+  "route": "workflow",
+  "search_429": 50,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
+ "pytest-agentcontract filename:package.json": {
+  "at": "2026-11-26T05:30:54+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 8
+  },
+  "route": "workflow",
+  "search_429": 51,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
+ "pytest-agentcontract filename:pyproject.toml": {
+  "at": "2026-11-26T05:18:43+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 4
+  },
+  "route": "workflow",
+  "search_429": 50,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 0
+ },
+ "pytest-agentcontract filename:requirements.txt": {
+  "at": "2026-11-26T05:30:47+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 9
+  },
+  "route": "workflow",
+  "search_429": 51,
   "status": 200,
   "stratum": "S1",
   "total_count": 0
