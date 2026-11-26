@@ -38,3 +38,7 @@
    the 429 one); the shape is dropped only if the re-probe answers 200 with 0 results or a real error. Until then
    the S1 pre-pass runs without path:recordings; c4's pre-pass adds those queries. Test:
    test_rate_limited_code_probe_never_drops_a_shape (fails before the fix).
+6. 2026-11-26 04:55Z, harness fix (no rule change): a discovery request that stopped at its max_minutes was marked
+   done (d1 earlier; d2 at 04:22Z), so run 45726858242 found no pending discovery and S2/S3 sent nothing from
+   04:22Z to the next push. job.py now marks a discovery request done only when the family finished or reached its
+   24 h budget; d3 resumes S2/S3. Test: test_discovery_time_limit_leaves_request_pending.

@@ -98,7 +98,14 @@ def main() -> int:
         except ghapi.DeadlineReached as e:  # state is saved after every node: the request stays pending and resumes
             print(f"job deadline: {e}; discovery {fam} resumes in the next run")
             return 0
-        chunk.mark_done(name, {"discovery": fam, "rc": rc, "at": chunk.now()})  # the next request resumes
+        st = json.loads((HERE / "results" / f"discovery_state_{fam}.json").read_text()) \
+            if (HERE / "results" / f"discovery_state_{fam}.json").exists() else {}
+        if rc == 0 and not (st.get("finished") or st.get("budget_reached")):
+            # stopped at max_minutes: not done (run 45677143579 marked d2 done at its time limit and the next run
+            # found nothing to resume, 04:22Z); the request stays pending and the next run resumes it
+            print(f"discovery {fam} stopped at its time limit: {name} stays pending")
+            return 0
+        chunk.mark_done(name, {"discovery": fam, "rc": rc, "at": chunk.now()})
         return 0
     if req.get("probe"):
         rc = subprocess.call([sys.executable, str(HERE / "probe.py"), "workflow"])

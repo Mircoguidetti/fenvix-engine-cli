@@ -1121,3 +1121,31 @@ def test_rate_limited_code_probe_never_drops_a_shape(tmp_path):
     (tmp_path / "probe_workflow_code.json").write_text(json.dumps({"results": recs(200, 0)}))
     out = probe.merge_code_decisions(tmp_path)
     assert "api.openai.com path:recordings" in out["dropped"]
+
+
+def test_discovery_time_limit_leaves_request_pending(tmp_path, monkeypatch):
+    """protects=S2/S3 continuity: a discovery request stopped at max_minutes stays pending so the next run resumes it;
+    fails_when=it is marked done before the family finished or reached its budget (d2, 2026-11-26 04:22Z);
+    no_claim=how long a run lasts."""
+    import job
+    import chunk
+    import discover
+    import parts
+    res = tmp_path / "results"
+    res.mkdir()
+    monkeypatch.setattr(job, "HERE", tmp_path)
+    monkeypatch.setattr(chunk, "RES", res)
+    monkeypatch.setattr(parts, "restore", lambda fam: 0)
+    monkeypatch.setattr(discover, "prepass", lambda fam, route: 0)
+    state = {}
+
+    def fake_run(fam, route, mm, dl):
+        (res / f"discovery_state_{fam}.json").write_text(json.dumps(state))
+        return 0
+    monkeypatch.setattr(discover, "run", fake_run)
+    rp = tmp_path / "d9.json"
+    rp.write_text(json.dumps({"discovery": "text", "max_minutes": 1}))
+    monkeypatch.setattr(sys, "argv", ["job.py", "--request", str(rp)])
+    assert job.main() == 0 and not (res / "requests_done" / "d9.json").exists()
+    state.update(budget_reached="2026-11-26T10:54:28+00:00")
+    assert job.main() == 0 and (res / "requests_done" / "d9.json").exists()
