@@ -1306,3 +1306,34 @@ def test_rebuild_keeps_earlier_candidate_idx():
     got = {r["repo"]: r["idx"] for r in rows2}
     assert got == {"o/b": prev["o/b"], "o/d": prev["o/d"], "o/a": 2} and [r["idx"] for r in rows2] == [0, 1, 2]
     assert sorted(orders2["S3"]) == [0, 1, 2] and pool2["S3"]["candidates"] == 3
+
+
+def test_extension_route_guard_tolerates_small_index_drift(tmp_path, monkeypatch):
+    """protects=the coordinator's extension guard (11:31Z): a session total_count below the day-old workflow pre-pass
+    stops the extension only when lower by more than 1% and by more than 5 hits; fails_when=251 vs 253 stops it, or
+    a large drop passes; no_claim=S1's strict guard (test_session_route_answer_below_workflow_prepass_stops)."""
+    monkeypatch.setattr(discover, "RES", tmp_path)
+    monkeypatch.setattr(discover, "DISC", tmp_path / "discovery")
+    qs = [d for d in R.discovery_queries() if d["family"] != "code"]
+    s3 = [d["key"] for d in qs if d["stratum"] == "S3"][0]
+    (tmp_path / "prepass_code.json").write_text("{}")
+    (tmp_path / "launch.json").write_text(json.dumps({"launch": "2026-11-25", "at": "x"}))
+
+    class Fake(SearchFake):
+        def __init__(self, tc):
+            super().__init__("none")
+            self.tc = tc
+
+        def get(self, path, search=None):
+            self.paths.append(path)
+            return 200, {"total_count": self.tc, "incomplete_results": False, "items": []}, {}
+    for got, pre, rc in ((251, 253, 0), (900, 1000, 4), (6, 12, 4), (95, 100, 0)):
+        for f in ("discovery_state_s3ext.json", "discovery_state_text.json"):
+            (tmp_path / f).unlink(missing_ok=True)
+        pp = {d["key"]: {"family": d["family"], "stratum": d["stratum"], "status": 200,
+                         "total_count": pre if d["key"] == s3 else 0, "at": "2026-11-25T10:54:28+00:00"} for d in qs}
+        (tmp_path / "prepass_text.json").write_text(json.dumps(pp))
+        (tmp_path / "discovery_state_text.json").write_text(json.dumps({"queries": {}}))
+        fake = Fake(got)
+        monkeypatch.setattr(discover, "_client", lambda route, f=fake: f)
+        assert discover.run("text", "session", 60, None, ext=True) == (rc if got != pre else 0), (got, pre)

@@ -96,3 +96,9 @@
     candidate's idx: rows, raw records and the reading orders refer to candidates by idx. New candidates are numbered
     after the earlier ones. The {"build": true} request first fetches the earlier candidates.jsonl.gz by its index.
     Test: test_rebuild_keeps_earlier_candidate_idx (fails before the change).
+12. 2026-11-26 11:31Z, a coordinator change to the coordinator's own route guard (not a founder rule). At 11:28Z the
+    S3 extension stopped on the guard: 'committer-date:>=2024-01-01 xfail "model output" test' answered 251 on the
+    session route, against 253 in its workflow pre-pass of 2026-11-25. A 2-hit difference on a pre-pass 24 h old is
+    the commit index changing. For the extension, the guard now stops only if a session total_count is lower than
+    the workflow pre-pass by more than 1% AND by more than 5 hits. S1 kept the strict guard. The 6 h hard stop is
+    unchanged. Test: test_extension_route_guard_tolerates_small_index_drift (fails before the change).
