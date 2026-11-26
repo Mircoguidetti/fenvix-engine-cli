@@ -11,11 +11,11 @@ Per-run state letters: r = reproduces the --det outcome of A, c = clears (plain 
 | agentic-qe | skipped-in-det | 1 | 0 | 0 | 1 | 0 |
 | agentic-qe | reverse | 6 | 0 | 0 | 6 | 0 |
 | **agentic-qe** | all | 84 | 0 | 0 | 84 | 0 |
-| codex-multi-auth | flip | 64 | 0 | 0 | 64 | 0 |
-| codex-multi-auth | mixed | 6 | 0 | 0 | 6 | 0 |
+| codex-multi-auth | flip | 64 | 0 | 25 | 39 | 0 |
+| codex-multi-auth | mixed | 6 | 0 | 1 | 5 | 0 |
 | codex-multi-auth | det-only | 3 | 0 | 0 | 3 | 3 |
 | codex-multi-auth | other | 4 | 0 | 0 | 4 | 4 |
-| **codex-multi-auth** | all | 77 | 0 | 0 | 77 | 7 |
+| **codex-multi-auth** | all | 77 | 0 | 26 | 51 | 7 |
 | ironcurtain | flip | 16 | 0 | 16 | 0 | 0 |
 | ironcurtain | mixed | 2 | 0 | 1 | 1 | 0 |
 | ironcurtain | skipped-in-det | 10 | 0 | 10 | 0 | 0 |
@@ -26,6 +26,9 @@ Per-run state letters: r = reproduces the --det outcome of A, c = clears (plain 
 
 | repository | cause | cases |
 |---|---|---|
+| codex-multi-auth | cause seeds (L5) | 1 |
+| codex-multi-auth | cause time (L4) | 3 |
+| codex-multi-auth | cause timers progression (virtual) (L1) | 22 |
 | ironcurtain | cause time (L4) | 3 |
 | ironcurtain | cause timers progression (virtual) (L1) | 13 |
 | ironcurtain | cause wrapper (wrapper) | 11 |
@@ -123,35 +126,35 @@ Per-run state letters: r = reproduces the --det outcome of A, c = clears (plain 
 
 | test id | kind | results p1 p2 d1 d2 | alone | set | ladder | control | condition | verdict | reason |
 |---|---|---|---|---|---|---|---|---|---|
-| `test/api-model-runtime.test.ts::does not hold native model discovery open while probes run, then updates the served catalog` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/api-model-runtime.test.ts::returns fresh capabilities to an explicit check even when another refresh supersedes its cache entry` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/api-probe-slot-cancellation.test.ts::cancels daily probe granted without leaking shared permits` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/api-probe-slot-cancellation.test.ts::cancels daily probe queued without leaking shared permits` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/automatic-api-checks.test.ts::keeps the next tick anchored when a slow run rejects: false` | mixed | passed passed failed passed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with EBUSY` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with EPERM` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with undefined` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/codex-bin-wrapper.test.ts::codex bin wrapper::force-stops an app helper that ignores SIGTERM (#647)` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/codex-bin-wrapper.test.ts::codex bin wrapper::forwards an explicit loopback upstream through the interactive helper proxy` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/codex-bin-wrapper.test.ts::codex bin wrapper::injects rotation helper args before a `--` on the resume path (#673)` | mixed | passed passed failed passed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps a native openai rollout visible while routing its resumed requests through rotation` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/codex-bin-wrapper.test.ts::codex bin wrapper::removes its owner file on exit and sweeps dead helpers' metadata on the next launch` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/codex-bin-wrapper.test.ts::codex bin wrapper::resolves the resume provider from a bounded prefix of a large rollout` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/codex-bin-wrapper.test.ts::codex bin wrapper::starts an automatic helper and retries transient app-server shim file operations` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/codex-bin-wrapper.test.ts::codex bin wrapper::starts detached app helpers against the real Codex home instead of a compatibility shadow` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/codex-bin-wrapper.test.ts::codex bin wrapper::stress: metadata stays bounded across many launch/exit cycles` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/codex-bin-wrapper.test.ts::codex bin wrapper::sweeps stale app-server shim directories when a helper starts` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for `fork` runtime routing (#647)` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for `resume` runtime routing (#647)` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for a TUI launch with a `--`-forced prompt that spells a command name (#673)` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for a TUI launch with a prompt after a greedy multi-image option (#673)` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for a TUI launch with a prompt after value-consuming options (#673)` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for interactive TUI runtime routing` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/codex-bin-wrapper.test.ts::codex bin wrapper::waits for fresh orphaned shadow sync locks to become stale before stealing` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/codex-bin-wrapper.test.ts::stale shadow-home sweep::keeps a shadow home whose owner died while its forwarded child still runs` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/codex-bin-wrapper.test.ts::stale shadow-home sweep::reaps a shadow home whose owner PID was recycled by another process` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/codex-bin-wrapper.test.ts::stale shadow-home sweep::removes dead-owner and aged markerless shadow homes, keeps live ones` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
+| `test/api-model-runtime.test.ts::does not hold native model discovery open while probes run, then updates the served catalog` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/api-model-runtime.test.ts::returns fresh capabilities to an explicit check even when another refresh supersedes its cache entry` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/api-probe-slot-cancellation.test.ts::cancels daily probe granted without leaking shared permits` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/api-probe-slot-cancellation.test.ts::cancels daily probe queued without leaking shared permits` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/automatic-api-checks.test.ts::keeps the next tick anchored when a slow run rejects: false` | mixed | passed passed failed passed | cr | - | - | - | - | UNDECIDED | not reproduced outside the whole suite |
+| `test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with EBUSY` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with EPERM` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/automatic-api-checks.test.ts::stops daily discovery and drains owner cleanup with undefined` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/automatic-api-checks.test.ts::uses persisted claim deadlines despite slow claim I/O and later routes` | flip | passed passed failed failed | cc | smallest (6 preds) | L1:cc | ppp | order:ppp | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::force-stops an app helper that ignores SIGTERM (#647)` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::forwards an explicit loopback upstream through the interactive helper proxy` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::injects rotation helper args before a `--` on the resume path (#673)` | mixed | passed passed failed passed | rc | full (88 preds) | L1:ccccc | ppp | order:ppp | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::keeps a native openai rollout visible while routing its resumed requests through rotation` | flip | passed passed failed failed | cc | full (88 preds) | L1:cc | ppp | order:ppp | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::removes its owner file on exit and sweeps dead helpers' metadata on the next launch` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::resolves the resume provider from a bounded prefix of a large rollout` | flip | passed passed failed failed | rc | - | - | - | - | UNDECIDED | not reproduced outside the whole suite |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::starts an automatic helper and retries transient app-server shim file operations` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::starts detached app helpers against the real Codex home instead of a compatibility shadow` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::stress: metadata stays bounded across many launch/exit cycles` | flip | passed passed failed failed | rr | alone | L1:cc | ppd | - | UNDECIDED | plain flaky (control 2/3 plain outcome) |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::sweeps stale app-server shim directories when a helper starts` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for `fork` runtime routing (#647)` | flip | passed passed failed failed | rc | smallest (1 preds) | L1:cc | ppp | order:ppp | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for `resume` runtime routing (#647)` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for a TUI launch with a `--`-forced prompt that spells a command name (#673)` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for a TUI launch with a prompt after a greedy multi-image option (#673)` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for a TUI launch with a prompt after value-consuming options (#673)` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::uses the canonical Codex home for interactive TUI runtime routing` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/codex-bin-wrapper.test.ts::codex bin wrapper::waits for fresh orphaned shadow sync locks to become stale before stealing` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
+| `test/codex-bin-wrapper.test.ts::stale shadow-home sweep::keeps a shadow home whose owner died while its forwarded child still runs` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
+| `test/codex-bin-wrapper.test.ts::stale shadow-home sweep::reaps a shadow home whose owner PID was recycled by another process` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
+| `test/codex-bin-wrapper.test.ts::stale shadow-home sweep::removes dead-owner and aged markerless shadow homes, keeps live ones` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:rr L5:cc | ppp | - | ARTIFACT | cause seeds (L5) |
 | `test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill after the WAL flush: journal holds the intent, primary stays committed, torn primary recovers via WAL` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
 | `test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill after the temp file is durable: orphaned temp holds the full payload, primary stays committed` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
 | `test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill at the rename boundary: primary is untouched, WAL + temp still recoverable` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
