@@ -12,6 +12,15 @@
  },
  "finished": null,
  "queries": {
+  "committer-date:>=2024-01-01 unstable \"model output\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 320,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 316,
+   "stack": []
+  },
   "committer-date:>=2024-01-01 unstable anthropic test": {
    "capped": true,
    "done": true,
@@ -19,6 +28,33 @@
    "leaves": 1,
    "nodes": 1,
    "prepass_total": 52961,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 unstable claude test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 60722,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 60520,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 unstable gemini test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 4713,
+   "leaves": 8,
+   "nodes": 14,
+   "prepass_total": 4725,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 unstable gpt test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 3069,
+   "leaves": 6,
+   "nodes": 10,
+   "prepass_total": 3064,
    "stack": []
   },
   "committer-date:>=2024-01-01 unstable llm test": {
@@ -38,6 +74,32 @@
    "nodes": 18,
    "prepass_total": 5833,
    "stack": []
+  },
+  "committer-date:>=2024-01-01 unstable prompt test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 109,
+   "leaves": 1,
+   "nodes": 4,
+   "prepass_total": 13177,
+   "stack": [
+    [
+     "2024-05-13",
+     "2024-07-17"
+    ],
+    [
+     "2024-07-18",
+     "2024-09-21"
+    ],
+    [
+     "2024-09-22",
+     "2025-06-13"
+    ],
+    [
+     "2025-06-14",
+     "2026-11-25"
+    ]
+   ]
   },
   "committer-date:>=2024-01-01 xfail \"ai sdk\" test": {
    "capped": false,
@@ -174,13 +236,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 13
+  "issues": 146
  },
  "search_stats": {
-  "429": 1,
+  "429": 18,
   "limit": 30,
   "remaining": 30,
-  "reset": 1795699053
+  "reset": 1795700583
  },
  "started": "2026-11-26T11:20:43+00:00"
 }
