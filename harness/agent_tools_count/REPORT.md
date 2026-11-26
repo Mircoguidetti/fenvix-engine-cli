@@ -159,14 +159,26 @@ is under 5%, and the hand read points lower still, but the decision uses the poi
 - Count A sees only commits visible after force-pushes; Claude Code commits count as the agent's only with the
   author login rule, so its agent commits may be undercounted.
 - Request totals are a lower bound (chunk 4's cancelled repository).
+- Found in the pre-landing review and counted from the committed raw responses (disclosed, not changed: the
+  rules are pre-registered). Count B's `skipped-no-agent` test reads one page of the 100 newest pull requests: 75 of
+  the 129 skipped repositories had a full page and in 37 all 100 were created after RACE_FROM, so agent pull requests
+  opened earlier in the window were not seen there; the read set leans away from the busiest repositories, so "random
+  draw" holds for the order, not for which repositories were kept. Count A's base workflow-run listing stops at 3
+  pages (`MAX_RUN_PAGES`) with no flag in the row: 82 frame pull requests hit a full third page (57 not rateable, 19
+  no-later-commit, 4 not-wasted, 2 wasted), where a cut listing can hide an ALREADY_RED X. The PR's own commits are
+  excluded from base evidence using the first 100 only (7 rows have more). `commits/{sha}/status` is read without
+  paging (30 statuses per page), so a commit with more than 30 status contexts loses the rest.
+- `verify.py` re-derives the marked numbers by replaying the raw responses through the same code: it proves the
+  report matches the data and the code, not that the code is right; raw files are not hashed.
 
 ## Acceptance criteria
 
 - AC1 PREREG before data: pass. `PREREG.md` was committed in 73623f9 (2026-11-25T07:36:29Z); the first results commit
   is 91426cc (07:39:00Z, the §0 probe, which does not start the budget); `budget_start` is 07:40:22Z.
 - AC2 tests with fixtures: pass (41 tests, each with `protects=`, `fails_when=`, `no_claim=`).
-- AC3 REPORT numbers re-derived: pass. Every number in REPORT.md is marked with its key; `verify.py` replays the rows
-  from the raw responses, re-derives every marked value and exits 0.
+- AC3 REPORT numbers re-derived: pass. Every result number in the tables and result lines is marked with its key;
+  `verify.py` replays the rows from the raw responses, re-derives every marked value and exits 0. Some counts in the
+  hand-written notes (repositories left, hours, hand-read tallies) are not marked and were checked by hand.
 - AC4 hand reads applied: pass (Count A: 20 wasted pull requests and the 19-row sample; Count B: 60 + 60 issues).
 - AC5 GET only, writes only to this branch, no search endpoint: pass (`LiveSource` sends GET only, tested; no
   `search/` path in the code; every commit is on `claude/agent-tools-count`; no issue, comment, review, star or fork).
