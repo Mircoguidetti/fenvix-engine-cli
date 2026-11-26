@@ -1,0 +1,222 @@
+{
+ "repo": "agentic-qe",
+ "file": "tests/integration/adr-040-agentic-flow-integration.test.ts",
+ "slug": "75092b35e4",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "cases": {
+  "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::End-to-End Integration Tests::should demonstrate cross-domain orchestration": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 60000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/adr-040-agentic-flow-integration.test.ts:780]",
+    "Error: Test timed out in 60000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/adr-040-agentic-flow-integration.test.ts:780]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "invalid",
+     "invalid"
+    ],
+    "reproduces": false
+   },
+   "undecided": "not reproduced outside the whole suite"
+  },
+  "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::End-to-End Integration Tests::should execute full pipeline with MCP tools": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 60000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/adr-040-agentic-flow-integration.test.ts:641]",
+    "Error: Test timed out in 60000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/adr-040-agentic-flow-integration.test.ts:641]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "invalid",
+     "invalid"
+    ],
+    "reproduces": false
+   },
+   "undecided": "not reproduced outside the whole suite"
+  },
+  "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::SONA Integration Tests::should demonstrate pattern adaptation <0.05ms target": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 60000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/adr-040-agentic-flow-integration.test.ts:68]",
+    "Error: Test timed out in 60000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/integration/adr-040-agentic-flow-integration.test.ts:68]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "invalid",
+     "invalid"
+    ],
+    "reproduces": false
+   },
+   "undecided": "not reproduced outside the whole suite"
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "75092b35e4.alone.r1",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/adr-040-agentic-flow-integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/75092b35e4.alone.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/75092b35e4.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 0.05,
+   "meta": null,
+   "controls": null,
+   "outcomes": {
+    "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::End-to-End Integration Tests::should demonstrate cross-domain orchestration": null,
+    "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::End-to-End Integration Tests::should execute full pipeline with MCP tools": null,
+    "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::SONA Integration Tests::should demonstrate pattern adaptation <0.05ms target": null
+   },
+   "exc": {
+    "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::End-to-End Integration Tests::should demonstrate cross-domain orchestration": null,
+    "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::End-to-End Integration Tests::should execute full pipeline with MCP tools": null,
+    "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::SONA Integration Tests::should demonstrate pattern adaptation <0.05ms target": null
+   }
+  },
+  {
+   "tag": "75092b35e4.alone.r2",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/adr-040-agentic-flow-integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/75092b35e4.alone.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/75092b35e4.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 0.04,
+   "meta": null,
+   "controls": null,
+   "outcomes": {
+    "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::End-to-End Integration Tests::should demonstrate cross-domain orchestration": null,
+    "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::End-to-End Integration Tests::should execute full pipeline with MCP tools": null,
+    "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::SONA Integration Tests::should demonstrate pattern adaptation <0.05ms target": null
+   },
+   "exc": {
+    "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::End-to-End Integration Tests::should demonstrate cross-domain orchestration": null,
+    "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::End-to-End Integration Tests::should execute full pipeline with MCP tools": null,
+    "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::SONA Integration Tests::should demonstrate pattern adaptation <0.05ms target": null
+   }
+  }
+ ],
+ "pred": {
+  "src_run": 1,
+  "n_preds": 57,
+  "probes": [],
+  "full": [
+   {
+    "tag": "75092b35e4.full.r1",
+    "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 --det-order=/tmp/pm-p3/find/agentic-qe/b/runs/75092b35e4.full.r1.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/75092b35e4.full.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/75092b35e4.full.r1.trace.jsonl",
+    "exit": 1,
+    "wall_s": 0.04,
+    "meta": null,
+    "controls": null,
+    "outcomes": {
+     "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::End-to-End Integration Tests::should demonstrate cross-domain orchestration": null,
+     "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::End-to-End Integration Tests::should execute full pipeline with MCP tools": null,
+     "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::SONA Integration Tests::should demonstrate pattern adaptation <0.05ms target": null
+    },
+    "exc": {
+     "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::End-to-End Integration Tests::should demonstrate cross-domain orchestration": null,
+     "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::End-to-End Integration Tests::should execute full pipeline with MCP tools": null,
+     "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::SONA Integration Tests::should demonstrate pattern adaptation <0.05ms target": null
+    }
+   },
+   {
+    "tag": "75092b35e4.full.r2",
+    "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 --det-order=/tmp/pm-p3/find/agentic-qe/b/runs/75092b35e4.full.r2.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/75092b35e4.full.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/75092b35e4.full.r2.trace.jsonl",
+    "exit": 1,
+    "wall_s": 0.03,
+    "meta": null,
+    "controls": null,
+    "outcomes": {
+     "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::End-to-End Integration Tests::should demonstrate cross-domain orchestration": null,
+     "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::End-to-End Integration Tests::should execute full pipeline with MCP tools": null,
+     "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::SONA Integration Tests::should demonstrate pattern adaptation <0.05ms target": null
+    },
+    "exc": {
+     "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::End-to-End Integration Tests::should demonstrate cross-domain orchestration": null,
+     "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::End-to-End Integration Tests::should execute full pipeline with MCP tools": null,
+     "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::SONA Integration Tests::should demonstrate pattern adaptation <0.05ms target": null
+    }
+   }
+  ],
+  "smallest": [
+   "tests/agents/devils-advocate.test.ts",
+   "tests/benchmarks/coherence-version-comparison.test.ts",
+   "tests/benchmarks/consensus-latency.test.ts",
+   "tests/benchmarks/mincut-performance.test.ts",
+   "tests/benchmarks/rvf-pattern-store.test.ts",
+   "tests/benchmarks/success-rate-benchmark.test.ts",
+   "tests/boot/fast-paths.test.ts",
+   "tests/boot/parallel-prefetch.test.ts",
+   "tests/context/compaction/compaction-pipeline.test.ts",
+   "tests/context/compaction/context-budget.test.ts",
+   "tests/context/compaction/tier1-microcompact.test.ts",
+   "tests/context/compaction/tier2-session-summary.test.ts",
+   "tests/context/compaction/tier3-llm-compact.test.ts",
+   "tests/context/compaction/tier4-reactive.test.ts",
+   "tests/coordination/adapter-tracing-benchmark.test.ts",
+   "tests/coordination/agent-teams.test.ts",
+   "tests/coordination/competing-hypotheses.test.ts",
+   "tests/coordination/complexity-composition/team-composer.test.ts",
+   "tests/coordination/consensus/sycophancy-scorer.test.ts",
+   "tests/coordination/domain-circuit-breaker.test.ts",
+   "tests/coordination/domain-team-manager.test.ts",
+   "tests/coordination/dynamic-scaling.test.ts",
+   "tests/coordination/federation.test.ts",
+   "tests/coordination/fleet-tiers.test.ts",
+   "tests/coordination/mailbox-cognitive-routing.test.ts",
+   "tests/coordination/queen-pattern-training.test.ts",
+   "tests/coordination/task-dag-prerequisites.test.ts",
+   "tests/coordination/task-dag.test.ts",
+   "tests/coordination/tracing.test.ts",
+   "tests/domains/test-generation/blind-review/blind-review-orchestrator.test.ts",
+   "tests/domains/test-generation/coherence-gate.test.ts",
+   "tests/domains/test-generation/detectors/mobile-detector.test.ts",
+   "tests/domains/test-generation/gates/test-quality-gate.test.ts",
+   "tests/domains/test-generation/generators/flutter-test-generator.test.ts",
+   "tests/domains/test-generation/generators/jest-rn-generator.test.ts",
+   "tests/domains/test-generation/generators/junit5-generator.test.ts",
+   "tests/domains/test-generation/generators/kotlin-junit-generator.test.ts",
+   "tests/domains/test-generation/generators/rust-test-generator.test.ts",
+   "tests/domains/test-generation/generators/swift-testing-generator.test.ts",
+   "tests/domains/test-generation/generators/xunit-generator.test.ts",
+   "tests/domains/test-generation/pattern-injection/edge-case-injector.test.ts",
+   "tests/domains/test-generation/services/compilation-validator.test.ts",
+   "tests/domains/test-generation/services/test-file-resolver.test.ts",
+   "tests/domains/visual-accessibility/services/browser-security-scanner.test.ts",
+   "tests/e2e/llm-router-real-providers.test.ts",
+   "tests/e2e/opencode-aqe-smoke.test.ts",
+   "tests/fixtures/sample-project/tests/index.test.ts",
+   "tests/fixtures/sample-project/tests/utils.test.ts",
+   "tests/hooks/reasoning-bank-pattern-store.test.ts",
+   "tests/hooks/security/config-snapshot.test.ts",
+   "tests/hooks/security/exit-codes.test.ts",
+   "tests/hooks/security/ssrf-guard.test.ts",
+   "tests/hooks/task-completed-hook.test.ts",
+   "tests/hooks/teammate-idle-hook.test.ts",
+   "tests/integration/adapters/a2a/discovery.test.ts",
+   "tests/integration/adapters/a2a/oauth-flow.integration.test.ts",
+   "tests/integration/adapters/ag-ui-integration.test.ts"
+  ]
+ },
+ "complete": true
+}
