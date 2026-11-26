@@ -42,25 +42,17 @@
   "committer-date:>=2024-01-01 xfail prompt test": {
    "capped": false,
    "done": false,
-   "leaf_total": 0,
-   "leaves": 0,
-   "nodes": 2,
+   "leaf_total": 3697,
+   "leaves": 14,
+   "nodes": 28,
    "prepass_total": 9975,
    "stack": [
     [
-     "2024-01-01",
-     "2024-05-12"
+     "2026-06-14",
+     "2026-07-16"
     ],
     [
-     "2024-05-13",
-     "2024-09-21"
-    ],
-    [
-     "2024-09-22",
-     "2025-06-13"
-    ],
-    [
-     "2025-06-14",
+     "2026-07-17",
      "2026-11-25"
     ]
    ]
@@ -74,13 +66,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 5
+  "issues": 69
  },
  "search_stats": {
-  "429": 0,
+  "429": 6,
   "limit": 30,
   "remaining": 30,
-  "reset": 1795692627
+  "reset": 1795693227
  },
  "started": "2026-11-26T11:20:43+00:00"
 }
