@@ -2,16 +2,91 @@
  "budget_end": "2026-11-26T10:54:28+00:00",
  "finished": null,
  "queries": {
+  "committer-date:>=2024-01-01 \"non deterministic\" \"model output\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 920,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 918,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"non deterministic\" anthropic test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 34062,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 33996,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"non deterministic\" claude test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 44497,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 44006,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"non deterministic\" gemini test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 2618,
+   "leaves": 6,
+   "nodes": 10,
+   "prepass_total": 2620,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"non deterministic\" gpt test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 1372,
+   "leaves": 4,
+   "nodes": 6,
+   "prepass_total": 1375,
+   "stack": []
+  },
   "committer-date:>=2024-01-01 \"non deterministic\" llm test": {
    "capped": false,
-   "done": false,
-   "leaf_total": 7429,
-   "leaves": 13,
-   "nodes": 25,
+   "done": true,
+   "leaf_total": 7948,
+   "leaves": 14,
+   "nodes": 26,
    "prepass_total": 7934,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"non deterministic\" openai test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 3797,
+   "leaves": 6,
+   "nodes": 10,
+   "prepass_total": 3779,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"non deterministic\" prompt test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 3906,
+   "leaves": 6,
+   "nodes": 14,
+   "prepass_total": 10080,
    "stack": [
     [
-     "2026-09-21",
+     "2026-05-12",
+     "2026-05-28"
+    ],
+    [
+     "2026-05-29",
+     "2026-06-13"
+    ],
+    [
+     "2026-06-14",
+     "2026-07-16"
+    ],
+    [
+     "2026-07-17",
      "2026-11-25"
     ]
    ]
@@ -2728,13 +2803,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 2464
+  "issues": 215
  },
  "search_stats": {
-  "429": 175,
+  "429": 17,
   "limit": 30,
-  "remaining": 19,
-  "reset": 1795666994
+  "remaining": 22,
+  "reset": 1795670549
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
