@@ -57,7 +57,11 @@ function installClockHook() {
   };
 }
 
-/** Vitest: the runner's safe timers (captured before the controls) create runner deadlines for its timeouts. */
+/**
+ * Vitest: the runner's safe timers (captured before the controls) create runner deadlines for its timeouts. The other
+ * safe timers a test starts (vi.waitFor / expect.poll polling and timeouts) count as pending work of the virtual
+ * driver until they run or are cleared, so virtual time runs at real pace while a poll waits (dropped at test end).
+ */
 function installVitest(g) {
   const sym = Object.getOwnPropertySymbols(g).find((s) => s.description === 'vitest:SAFE_TIMERS');
   if (!sym) return;
@@ -72,7 +76,7 @@ function installVitest(g) {
   const set = function setTimeout(fn, ms, ...args) {
     if (inTest() && typeof fn === 'function') {
       if (isDeadlineCaller()) return clock.DRIVER.deadline(() => fn(...args), clock.normDelay(ms));
-      // P1 prototype: a safe timer of the test (vi.waitFor, expect.poll) counts as pending work until it runs
+      // P3 timers P1: a safe timer of the test (vi.waitFor, expect.poll) counts as pending work until it runs
       let h = null;
       h = realSet(() => { clock.DRIVER.safeDone(h); fn(...args); }, ms);
       clock.DRIVER.safeAdd(h, STATE.testId);
