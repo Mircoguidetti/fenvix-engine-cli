@@ -41,25 +41,17 @@
   "committer-date:>=2024-01-01 \"non deterministic\" agent test": {
    "capped": false,
    "done": false,
-   "leaf_total": 1603,
-   "leaves": 4,
-   "nodes": 10,
+   "leaf_total": 13445,
+   "leaves": 22,
+   "nodes": 44,
    "prepass_total": 14695,
    "stack": [
     [
-     "2026-03-23",
-     "2026-04-08"
+     "2026-09-21",
+     "2026-10-23"
     ],
     [
-     "2026-04-09",
-     "2026-05-11"
-    ],
-    [
-     "2026-05-12",
-     "2026-07-16"
-    ],
-    [
-     "2026-07-17",
+     "2026-10-24",
      "2026-11-25"
     ]
    ]
@@ -2893,13 +2885,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 427
+  "issues": 606
  },
  "search_stats": {
-  "429": 38,
+  "429": 59,
   "limit": 30,
   "remaining": 29,
-  "reset": 1795672488
+  "reset": 1795674304
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
