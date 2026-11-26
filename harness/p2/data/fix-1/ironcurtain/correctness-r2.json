@@ -1,0 +1,1468 @@
+{
+ "ok": false,
+ "repo": "ironcurtain",
+ "rule1": [
+  {
+   "changes": [
+    {
+     "baseline": [
+      "not-proven:env"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged"
+     ],
+     "nodeid": "test/docker/qualification-evidence.test.ts@@main::qualification evidence::retains both output streams and exact live-gate execution metadata",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/docker/registry-egress-proxy.test.ts@@main::registry redirect and credential model::keeps 'anonymous' credentials and 'exact fit' across 'two CDN hops'",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/docker/registry-egress-proxy.test.ts@@main::registry redirect and credential model::keeps 'bearer' credentials and 'exact fit' across 'two CDN hops'",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::deletes in bounded chunks and cascades child attempts",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::isolates a stalled reader from writer flushes and restarts reads lazily",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps fractional monotonic timings while using an integer completion index",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps pagination snapshots stable while newer rows are inserted",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::migrates, writes through WAL, and inserts exchanges idempotently",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::/budget N shows budget for specific session",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::/switch changes which session receives messages",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::approving one escalation leaves the other still pending",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::concurrent: session #1 in-flight when /new and #2 message arrive",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::escalation auto-routes to session with pending escalation",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::full flow: disambiguate then approve one then deny the other",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::max session limit enforced",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::rejects concurrent escalation replies",
+     "towards_identical": false,
+     "w": 2
+    }
+   ],
+   "defects": [
+    {
+     "baseline": [
+      "not-proven:env"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged"
+     ],
+     "nodeid": "test/docker/qualification-evidence.test.ts@@main::qualification evidence::retains both output streams and exact live-gate execution metadata",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/docker/registry-egress-proxy.test.ts@@main::registry redirect and credential model::keeps 'anonymous' credentials and 'exact fit' across 'two CDN hops'",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/docker/registry-egress-proxy.test.ts@@main::registry redirect and credential model::keeps 'bearer' credentials and 'exact fit' across 'two CDN hops'",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::deletes in bounded chunks and cascades child attempts",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::isolates a stalled reader from writer flushes and restarts reads lazily",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps fractional monotonic timings while using an integer completion index",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps pagination snapshots stable while newer rows are inserted",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::migrates, writes through WAL, and inserts exchanges idempotently",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::/budget N shows budget for specific session",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::/switch changes which session receives messages",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::approving one escalation leaves the other still pending",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::concurrent: session #1 in-flight when /new and #2 message arrive",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::escalation auto-routes to session with pending escalation",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::full flow: disambiguate then approve one then deny the other",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::max session limit enforced",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::rejects concurrent escalation replies",
+     "towards_identical": false,
+     "w": 2
+    }
+   ],
+   "rounds_base": 3,
+   "rounds_fix": 3,
+   "variable_class": [
+    "test/docker-infrastructure.test.ts@@main::prepareConversationStateDir::creates nested directories for seed file paths",
+    "test/docker-workload/apple-vm-daemon.test.ts@@main::Apple VM nested-daemon frozen commands::selects the correct runc and privileged newuidmap for images",
+    "test/docker-workload/apple-vm-daemon.test.ts@@main::Apple VM nested-daemon frozen commands::selects the correct runc and privileged newuidmap for offline",
+    "test/docker-workload/apple-vm-daemon.test.ts@@main::Apple VM nested-daemon frozen commands::selects the correct runc and privileged newuidmap for packages",
+    "test/docker-workload/cleanup-ownership.test.ts@@main::Docker-workload lifecycle ownership::cleans the deterministic runtime root for a canonical historical lease without a recorded binding",
+    "test/docker-workload/lifecycle-evidence.test.ts@@main::Docker-workload lifecycle evidence::creates a not-yet-existing evidence directory before the first write",
+    "test/docker-workload/process-lock.test.ts@@main::Docker-workload process lock::refuses to release once the lock has been removed",
+    "test/docker-workload/watchdog-supervisor-launch.test.ts@@main::launchDetachedResourceWatchdogSupervisor startup failures::reports a supervisor that exits before attesting without waiting for the deadline",
+    "test/docker/registry-egress-proxy.test.ts@@main::registry redirect and credential model::keeps the earliest logical deadline across 200 ms origin and 900 ms mirror",
+    "test/job-store.test.ts@@main::job-store::saveRunRecord / loadRecentRuns::respects the limit parameter",
+    "test/job-store.test.ts@@main::job-store::saveRunRecord / loadRecentRuns::returns runs in reverse chronological order",
+    "test/job-store.test.ts@@main::job-store::saveRunRecord / loadRecentRuns::saves and loads a single run record",
+    "test/job-store.test.ts@@main::job-store::saveRunRecord / loadRecentRuns::stores different outcome types correctly",
+    "test/llm-metrics-persistence.test.ts@@main::LLM statistics query service::provides stable pagination and coverage-aware summaries",
+    "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::bounds reader admissions while its worker is stalled",
+    "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::filters and groups by service tier and measurement provenance",
+    "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps the independent reader usable after a terminal writer failure",
+    "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::persists bounded OpenRouter provider labels and the full adapter attempt cap",
+    "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::rejects hostile SQLite query inputs without changing query structure or storage",
+    "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::retires a reader after an operational failure without disabling writes",
+    "test/pipeline-import-boundary.test.ts@@main::Pipeline import boundary (static graph)::scanner produced a non-empty graph rooted at src/",
+    "test/pipeline-import-boundary.test.ts@@main::Pipeline import boundary (static graph)::src/persona/event-bus-progress-reporter.ts has no static value-path to pipeline runtime (except via sanctioned seams)",
+    "test/pipeline-import-boundary.test.ts@@main::Pipeline import boundary (static graph)::src/persona/persona-compile-orchestrator.ts has no static value-path to pipeline runtime (except via sanctioned seams)",
+    "test/pipeline-import-boundary.test.ts@@main::Pipeline import boundary (static graph)::src/persona/persona-service.ts has no static value-path to pipeline runtime (except via sanctioned seams)",
+    "test/pipeline-import-boundary.test.ts@@main::Pipeline import boundary (static graph)::src/web-ui/dispatch/persona-dispatch.ts has no static value-path to pipeline runtime (except via sanctioned seams)",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::#N prefix strips only the prefix from the forwarded message",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::#N prefix to non-existent session shows error",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::/help shows current session label",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::/quit N ends a specific session",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::/quit ends current and auto-switches",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::/sessions lists all active sessions",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::approve #N where N has no pending escalation shows error",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::approve routes to correct session when escalation was set via callback",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::concurrent callback escalations on both sessions require disambiguation",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::creates two concurrent sessions via /new",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::deny with explicit label targets the correct session",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::escalation disambiguation when multiple pending",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::escalation via callback chain labels banner with correct session",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::escalation via callback from session #1 labels banner with #1",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::escalation with explicit label routes directly",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::handles /quit command by ending session",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::handles escalation approve reply",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::handles escalation deny reply",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::race: message sent immediately after /new is routed to the new session",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::reproduces production scenario: session #1 escalation resolved, /new, message to #2 escalates with correct label",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::retries identity check on next message after API failure (no TTL caching of failures)",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::sends fallback message when agent returns empty response",
+    "test/skills-staging.test.ts@@main::stageSkillsToBundle::copies a single skill recursively, including helper files",
+    "test/workflow-dispatch.test.ts@@main::workflows.fileTree -- workspace path resolution::recovers workspacePath from container session metadata for a checkpoint-less past run",
+    "test/workflow-dispatch.test.ts@@main::workflows.fileTree -- workspace path resolution::throws WORKFLOW_NOT_FOUND when neither checkpoint nor container metadata yields a workspacePath",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::accepts lane-scoped result paths under the same containment checks as deterministic result files",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::compute_stop_signals writes the single canonical stop_signals once over the batch-grown nodes",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::finds an already-recorded analysis node by step_name instead of appending a duplicate",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::keeps a low numeric score as evaluated, not evaluator_blocked",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::lane attach_analysis writes only its lane-scoped stop_signals, not the barrier-owned canonical file",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::lets evolve-eval read timeout_secs from run_spec unless --timeout is explicit",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::maps a numeric eval_score to verdict evaluated",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::maps evaluator subprocess failure to evaluator_blocked while exiting successfully",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::maps missing or nonnumeric results to evaluator_blocked",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::pins PYTHONHASHSEED for engine subprocesses",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::promote_cognition reports needs_repair when a recorded lane cannot be reconciled",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::resolves current-round flags for evaluate",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::resolves current-round flags from the selected lane",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::sample_batch can prepare only missing lanes for a partially recorded batch",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::sample_batch partitions distinct parents into per-lane current directories",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::two concurrent lane attach_analysis calls never clobber the barrier-owned canonical stop_signals",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::uses EVOLVE_LANE to route sample scratch files under current/lane_<k> without clearing shared stop signals",
+    "test/workspace-validation.test.ts@@main::validateWorkspacePath::allows persona workspace inside IronCurtain home",
+    "test/workspace-validation.test.ts@@main::validateWorkspacePath::allows persona workspace when IronCurtain home is in protected paths",
+    "test/workspace-validation.test.ts@@main::validateWorkspacePath::allows session sandbox",
+    "test/workspace-validation.test.ts@@main::validateWorkspacePath::allows subdirectories within persona workspace",
+    "test/workspace-validation.test.ts@@main::validateWorkspacePath::rejects nested persona paths with extra directory segments",
+    "test/workspace-validation.test.ts@@main::validateWorkspacePath::rejects non-sandbox session paths",
+    "test/workspace-validation.test.ts@@main::validateWorkspacePath::rejects persona generated dir"
+   ],
+   "w": 2
+  },
+  {
+   "changes": [
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/docker-workload/process-lock.test.ts@@main::Docker-workload process lock::refuses to release once the lock has been removed",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/docker/registry-egress-proxy.test.ts@@main::registry redirect and credential model::keeps 'bearer' credentials and 'exact fit' across 'two CDN hops'",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/llm-metrics-persistence.test.ts@@main::LLM statistics query service::excludes aborted, missing, and nonpositive client delivery from effective output throughput",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps fractional monotonic timings while using an integer completion index",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:env"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::rejects response and attempt HTTP statuses outside 100 through 599",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::/sessions lists all active sessions",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::approve #N where N has no pending escalation shows error",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::concurrent callback escalations on both sessions require disambiguation",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::escalation via callback from session #1 labels banner with #1",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::escalation with explicit label routes directly",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::handles /quit command by ending session",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::max session limit enforced",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::retries identity check on next message after API failure (no TTL caching of failures)",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::routes authorized messages to session",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/skills-staging.test.ts@@main::stageSkillsToBundle::copies a single skill recursively, including helper files",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "not-proven:api"
+     ],
+     "nodeid": "test/workspace-validation.test.ts@@main::validateWorkspacePath::allows persona workspace inside IronCurtain home",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "not-proven:api"
+     ],
+     "nodeid": "test/workspace-validation.test.ts@@main::validateWorkspacePath::allows persona workspace when IronCurtain home is in protected paths",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "not-proven:api"
+     ],
+     "nodeid": "test/workspace-validation.test.ts@@main::validateWorkspacePath::allows session sandbox",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "not-proven:api"
+     ],
+     "nodeid": "test/workspace-validation.test.ts@@main::validateWorkspacePath::allows subdirectories within persona workspace",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "not-proven:api"
+     ],
+     "nodeid": "test/workspace-validation.test.ts@@main::validateWorkspacePath::rejects nested persona paths with extra directory segments",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "not-proven:api"
+     ],
+     "nodeid": "test/workspace-validation.test.ts@@main::validateWorkspacePath::rejects non-sandbox session paths",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "not-proven:api"
+     ],
+     "nodeid": "test/workspace-validation.test.ts@@main::validateWorkspacePath::rejects persona generated dir",
+     "towards_identical": false,
+     "w": 4
+    }
+   ],
+   "defects": [
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/docker-workload/process-lock.test.ts@@main::Docker-workload process lock::refuses to release once the lock has been removed",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/docker/registry-egress-proxy.test.ts@@main::registry redirect and credential model::keeps 'bearer' credentials and 'exact fit' across 'two CDN hops'",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/llm-metrics-persistence.test.ts@@main::LLM statistics query service::excludes aborted, missing, and nonpositive client delivery from effective output throughput",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps fractional monotonic timings while using an integer completion index",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:env"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::rejects response and attempt HTTP statuses outside 100 through 599",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::/sessions lists all active sessions",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::approve #N where N has no pending escalation shows error",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::concurrent callback escalations on both sessions require disambiguation",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::escalation via callback from session #1 labels banner with #1",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::escalation with explicit label routes directly",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::handles /quit command by ending session",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::max session limit enforced",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::retries identity check on next message after API failure (no TTL caching of failures)",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::routes authorized messages to session",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:api"
+     ],
+     "nodeid": "test/skills-staging.test.ts@@main::stageSkillsToBundle::copies a single skill recursively, including helper files",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "not-proven:api"
+     ],
+     "nodeid": "test/workspace-validation.test.ts@@main::validateWorkspacePath::allows persona workspace inside IronCurtain home",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "not-proven:api"
+     ],
+     "nodeid": "test/workspace-validation.test.ts@@main::validateWorkspacePath::allows persona workspace when IronCurtain home is in protected paths",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "not-proven:api"
+     ],
+     "nodeid": "test/workspace-validation.test.ts@@main::validateWorkspacePath::allows session sandbox",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "not-proven:api"
+     ],
+     "nodeid": "test/workspace-validation.test.ts@@main::validateWorkspacePath::allows subdirectories within persona workspace",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "not-proven:api"
+     ],
+     "nodeid": "test/workspace-validation.test.ts@@main::validateWorkspacePath::rejects nested persona paths with extra directory segments",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "not-proven:api"
+     ],
+     "nodeid": "test/workspace-validation.test.ts@@main::validateWorkspacePath::rejects non-sandbox session paths",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "not-proven:api"
+     ],
+     "nodeid": "test/workspace-validation.test.ts@@main::validateWorkspacePath::rejects persona generated dir",
+     "towards_identical": false,
+     "w": 4
+    }
+   ],
+   "rounds_base": 3,
+   "rounds_fix": 3,
+   "variable_class": [
+    "test/conversation-state.test.ts@@main::persisted conversation state::finds persisted codex transcripts",
+    "test/docker-workload/cleanup-ownership.test.ts@@main::Docker-workload lifecycle ownership::cleans the deterministic runtime root for a canonical historical lease without a recorded binding",
+    "test/docker-workload/lifecycle-evidence.test.ts@@main::Docker-workload lifecycle evidence::creates a not-yet-existing evidence directory before the first write",
+    "test/docker-workload/watchdog-supervisor-launch.test.ts@@main::launchDetachedResourceWatchdogSupervisor startup failures::reports a supervisor that exits before attesting without waiting for the deadline",
+    "test/docker/registry-egress-proxy.test.ts@@main::registry redirect and credential model::keeps the earliest logical deadline across 200 ms origin and 900 ms mirror",
+    "test/job-store.test.ts@@main::job-store::saveRunRecord / loadRecentRuns::respects the limit parameter",
+    "test/job-store.test.ts@@main::job-store::saveRunRecord / loadRecentRuns::returns runs in reverse chronological order",
+    "test/job-store.test.ts@@main::job-store::saveRunRecord / loadRecentRuns::saves and loads a single run record",
+    "test/job-store.test.ts@@main::job-store::saveRunRecord / loadRecentRuns::stores different outcome types correctly",
+    "test/llm-metrics-persistence.test.ts@@main::LLM statistics query service::provides stable pagination and coverage-aware summaries",
+    "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::bounds reader admissions while its worker is stalled",
+    "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::deletes in bounded chunks and cascades child attempts",
+    "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps pagination snapshots stable while newer rows are inserted",
+    "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps the independent reader usable after a terminal writer failure",
+    "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::migrates, writes through WAL, and inserts exchanges idempotently",
+    "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::persists bounded OpenRouter provider labels and the full adapter attempt cap",
+    "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::rejects hostile SQLite query inputs without changing query structure or storage",
+    "test/mux-input-handler.test.ts@@main::MuxInputHandler::picker mode transitions::/new browse path submit returns to command mode",
+    "test/session-scanner.test.ts@@main::session-scanner::does not offer legacy Codex sessions until their launcher supports conversation continuation",
+    "test/session-scanner.test.ts@@main::session-scanner::does not recover an unsupported agent from another agent's transcript directory",
+    "test/session-scanner.test.ts@@main::session-scanner::lists and validates legacy Claude conversations without rewriting their snapshot",
+    "test/session-scanner.test.ts@@main::session-scanner::recovers registered adapters with implicit continuation and custom transcript locations",
+    "test/session-scanner.test.ts@@main::session-scanner::still rejects unsafe workspaces when recovering a legacy conversation",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::#N prefix routes message to specified session without switching",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::#N prefix strips only the prefix from the forwarded message",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::#N prefix to non-existent session shows error",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::/budget N shows budget for specific session",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::/help shows current session label",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::/quit N ends a specific session",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::/switch changes which session receives messages",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::approve routes to correct session when escalation was set via callback",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::approving one escalation leaves the other still pending",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::creates two concurrent sessions via /new",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::deny with explicit label targets the correct session",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::escalation auto-routes to session with pending escalation",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::escalation disambiguation when multiple pending",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::escalation via callback chain labels banner with correct session",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::full flow: disambiguate then approve one then deny the other",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::handles escalation approve reply",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::handles escalation deny reply",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::race: message sent immediately after /new is routed to the new session",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::rejects concurrent escalation replies",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::reproduces production scenario: session #1 escalation resolved, /new, message to #2 escalates with correct label",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::sends fallback message when agent returns empty response",
+    "test/signal/signal-bot-daemon.test.ts@@main::SignalBotDaemon::sends online message on start",
+    "test/workflow-dispatch.test.ts@@main::workflows.fileTree -- workspace path resolution::recovers workspacePath from container session metadata for a checkpoint-less past run",
+    "test/workflow-dispatch.test.ts@@main::workflows.fileTree -- workspace path resolution::throws WORKFLOW_NOT_FOUND when neither checkpoint nor container metadata yields a workspacePath",
+    "test/workflow/artifacts.test.ts@@main::FileArtifactManager::findMissing::identifies missing artifacts",
+    "test/workflow/artifacts.test.ts@@main::FileArtifactManager::findMissing::returns empty array when all artifacts are present",
+    "test/workflow/artifacts.test.ts@@main::FileArtifactManager::listArtifactFiles::lists files in an artifact subdirectory",
+    "test/workflow/artifacts.test.ts@@main::FileArtifactManager::listArtifactFiles::returns sorted file names",
+    "test/workflow/artifacts.test.ts@@main::FileArtifactManager::nested directory support::findMissing detects files in subdirectories",
+    "test/workflow/artifacts.test.ts@@main::FileArtifactManager::nested directory support::findMissing treats directories with only empty subdirs as missing",
+    "test/workflow/artifacts.test.ts@@main::FileArtifactManager::nested directory support::listArtifactFiles returns relative paths for nested files",
+    "test/workflow/artifacts.test.ts@@main::FileArtifactManager::nested directory support::read falls back to first file by sorted relative path in nested dirs",
+    "test/workflow/artifacts.test.ts@@main::FileArtifactManager::read::falls back to first file alphabetically when convention name is absent",
+    "test/workflow/artifacts.test.ts@@main::FileArtifactManager::read::returns file content by convention name",
+    "test/workflow/artifacts.test.ts@@main::hasAnyFiles::returns true for deeply nested file",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::accepts lane-scoped result paths under the same containment checks as deterministic result files",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::compute_stop_signals writes the single canonical stop_signals once over the batch-grown nodes",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::finds an already-recorded analysis node by step_name instead of appending a duplicate",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::keeps a low numeric score as evaluated, not evaluator_blocked",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::lane attach_analysis writes only its lane-scoped stop_signals, not the barrier-owned canonical file",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::lets evolve-eval read timeout_secs from run_spec unless --timeout is explicit",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::maps a numeric eval_score to verdict evaluated",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::maps evaluator subprocess failure to evaluator_blocked while exiting successfully",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::maps missing or nonnumeric results to evaluator_blocked",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::pins PYTHONHASHSEED for engine subprocesses",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::promote_cognition reports needs_repair when a recorded lane cannot be reconciled",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::resolves current-round flags for evaluate",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::resolves current-round flags from the selected lane",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::sample_batch can prepare only missing lanes for a partially recorded batch",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::sample_batch partitions distinct parents into per-lane current directories",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::two concurrent lane attach_analysis calls never clobber the barrier-owned canonical stop_signals",
+    "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::uses EVOLVE_LANE to route sample scratch files under current/lane_<k> without clearing shared stop signals"
+   ],
+   "w": 4
+  }
+ ],
+ "rule2": {
+  "allowed_declared_only": [],
+  "declared": [],
+  "defects": [],
+  "need_repeat": [
+   "test/apple-container-manager.test.ts@@main::AppleContainerManager::exec::passes workdir and per-exec environment overrides",
+   "test/apple-container-manager.test.ts@@main::AppleContainerManager::streamed pull / build::pulls with plain progress through the container binary",
+   "test/apple-container-manager.test.ts@@main::AppleContainerManager::streamed pull / build::builds with tag, dockerfile, and labels",
+   "test/apple-container-manager.test.ts@@main::AppleContainerManager::streamed pull / build::loads only from the explicit verified OCI archive path",
+   "test/apple-container-manager.test.ts@@main::AppleContainerManager::streamed pull / build::exports one explicit platform image to an OCI archive path",
+   "test/apple-container-manager.test.ts@@main::AppleContainerManager::streamed pull / build::surfaces the Rosetta remediation hint on builder bootstrap failures",
+   "test/argument-roles.test.ts@@main::resolveGitRemote::returns original value when git command fails (no repo)",
+   "test/argument-roles.test.ts@@main::resolveGitRemote::uses path argument as cwd for git command",
+   "test/checkpoint-selection.test.ts@@main::checkpoint-selection::findResumableCheckpoints::returns [] when only completed runs exist",
+   "test/codex-adapter.test.ts@@main::CodexAdapter::passes the mounted PTY orientation as one inert Codex developer-instructions argument",
+   "test/container-command.test.ts@@main::commandExists::finds a binary that exists and caches the probe",
+   "test/container-command.test.ts@@main::commandExists::reports a missing binary as absent",
+   "test/docker-manager.test.ts@@main::DockerManager::exec::inherits per-exec environment overrides without exposing values in argv",
+   "test/docker-manager.test.ts@@main::DockerManager::readContainerLogTail::reads bounded logs from the captured endpoint and includes container stderr",
+   "test/docker-manager.test.ts@@main::DockerManager::captured endpoint::sanitizes outer exec while preserving explicitly requested inner routing and platform values",
+   "test/docker-manager.test.ts@@main::DockerManager::captured endpoint::uses the captured endpoint and server platform for outer image inspection and create",
+   "test/docker-manager.test.ts@@main::DockerManager::captured endpoint::keeps inherited routing and platform overrides out of streamed build operations",
+   "test/docker-manager.test.ts@@main::DockerManager::captured endpoint::keeps inherited routing and platform overrides out of streamed pull operations",
+   "test/docker-manager.test.ts@@main::DockerManager::captured endpoint::keeps inherited routing and platform overrides out of streamed load operations",
+   "test/docker-manager.test.ts@@main::DockerManager::buildImage::passes labels as --label flags",
+   "test/docker-manager.test.ts@@main::DockerManager::buildImage::builds without labels when none provided",
+   "test/docker-manager.test.ts@@main::DockerManager::buildImage::forces BuildKit and plain progress for streamed heartbeats",
+   "test/docker-manager.test.ts@@main::DockerManager::buildImage::surfaces stderr tail when the build exits non-zero",
+   "test/docker-manager.test.ts@@main::DockerManager::loadImageArchive::loads only from the explicit verified archive path",
+   "test/docker-manager.test.ts@@main::DockerManager::pullImage::streams docker pull and resolves on clean exit",
+   "test/docker-manager.test.ts@@main::DockerManager::pullImage::rejects when the spawn itself errors (e.g. docker not on PATH)",
+   "test/docker-manager.test.ts@@main::DockerManager::progress sink dispatch::calls finish(true) and skips dumpRecent on a clean pullImage",
+   "test/docker-manager.test.ts@@main::DockerManager::progress sink dispatch::calls finish(false) then dumpRecent when buildImage exits non-zero",
+   "test/docker-manager.test.ts@@main::DockerManager::progress sink dispatch::also flushes dumpRecent when spawn itself errors",
+   "test/docker-manager.test.ts@@main::DockerManager::progress sink dispatch::skips the progress sink when stdoutSink/stderrSink are injected",
+   "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::applies the undefined environment mode at the final spawn boundary",
+   "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::applies the merge environment mode at the final spawn boundary",
+   "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::rejects with a labeled error when the child stays silent",
+   "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::resets the watchdog when the child emits output",
+   "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::escalates from SIGTERM to SIGKILL after the grace period",
+   "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::skips SIGKILL when the child exits within the grace period",
+   "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::reformats synchronous spawn() throws with the operation label",
+   "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::swallows kill() throws so the watchdog still rejects cleanly",
+   "test/docker-manager.test.ts@@main::DockerManager::spawnWithIdleTimeout::passes operation label and stderr tail in non-zero exit errors",
+   "test/docker-workload/apple-vm-daemon.test.ts@@main::Apple VM nested-daemon frozen commands::enables only namespace-local forwarding before dockerd while retaining the isolation flags",
+   "test/docker-workload/apple-vm-daemon.test.ts@@main::Apple VM nested-daemon frozen commands::keeps the images variant separate and shell-parseable",
+   "test/docker-workload/apple-vm-daemon.test.ts@@main::Apple VM nested-daemon frozen commands::serves both fixed package-profile listeners in one process while dockerd remains registry-only",
+   "test/docker-workload/apple-vm-egress-relay.test.ts@@main::purpose-built Apple VM egress relay::has an exact non-configurable CLI and fixed version output",
+   "test/docker-workload/process-lock.test.ts@@main::Docker-workload process lock::stays busy when process-start adjudication throws",
+   "test/docker-workload/process-lock.test.ts@@main::Docker-workload process lock::does not delete a lock that a racer published after the stale observation",
+   "test/docker-workload/watchdog-supervisor-launch.test.ts@@main::launchDetachedResourceWatchdogSupervisor startup failures::reports a supervisor that exits before attesting without waiting for the deadline",
+   "test/docker/agent-startup.test.ts@@main::Docker agent startup handoff::signals only when CMD runs, preserves argument boundaries and leaves umask unchanged",
+   "test/docker/agent-startup.test.ts@@main::Docker agent startup handoff::rejects a stale marker until the recorded CMD publishes this init identity",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::injects host networking immediately after the supported [ 'build', '.' ] build spelling",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::injects host networking immediately after the supported [ 'image', 'build', '-t', 'demo', '.' ] build spelling",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::injects host networking immediately after the supported [ 'builder', 'build', '.' ] build spelling",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::injects host networking immediately after the supported [ 'buildx', 'build', '.' ] build spelling",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::uses the admitted sidecar socket for builds and rejects the other topology socket",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::allows documented global options and the exact private daemon host",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::routes only the outer build client through the admitted registry proxy",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::pins Buildx to the local default after pass-through state selects a custom builder",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::preserves the explicit supported build network \"--network=none\" without duplication",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::preserves the explicit supported build network \"--network\" without duplication",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::preserves the explicit supported build network \"--network=host\" without duplication",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::preserves the explicit supported build network \"--network\" without duplication #2",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build network bridge before execution",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build network default before execution",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build network ironcurtain before execution",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects duplicate build-network selection before execution",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"--context\" before execution",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"--context=remote\" before execution",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"-c\" before execution",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"-c=remote\" before execution",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"--config\" before execution",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"--config=/tmp/docker\" before execution",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"--host\" before execution",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"--host=tcp://remote:2375\" before execution",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"-H\" before execution",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"-H=tcp://remote:2375\" before execution",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"buildx\" before execution",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"buildx\" before execution #2",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"build\" before execution",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"build\" before execution #2",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"buildx\" before execution #3",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller daemon/config/builder selector \"buildx\" before execution #4",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller-supplied DOCKER_CONTEXT before executing a build",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller-supplied DOCKER_CONFIG before executing a build",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller-supplied BUILDKIT_HOST before executing a build",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller-supplied BUILDX_CONFIG before executing a build",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller-supplied BUILDX_BUILDER before executing a build",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller-supplied DOCKER_TLS_VERIFY before executing a build",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects caller-supplied DOCKER_CERT_PATH before executing a build",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects a noncanonical DOCKER_HOST but accepts the exact admitted value",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #2",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #3",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #4",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #5",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #6",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #7",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #8",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #9",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #10",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #11",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"compose\" before execution #12",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"buildx\" before execution",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects unsupported build form \"bake\" before execution",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::does not mistake Compose option data or non-exact forms for --no-build: \"compose\"",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::does not mistake Compose option data or non-exact forms for --no-build: \"compose\" #2",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::does not mistake Compose option data or non-exact forms for --no-build: \"compose\" #3",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::does not mistake Compose option data or non-exact forms for --no-build: \"compose\" #4",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::does not mistake Compose option data or non-exact forms for --no-build: \"compose\" #5",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::does not mistake Compose option data or non-exact forms for --no-build: \"compose\" #6",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::does not mistake Compose option data or non-exact forms for --no-build: \"compose\" #7",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects Compose watch and navigation-menu controls on an otherwise admitted path: \"compose\"",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects Compose watch and navigation-menu controls on an otherwise admitted path: \"compose\" #2",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects Compose watch and navigation-menu controls on an otherwise admitted path: \"compose\" #3",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects Compose watch and navigation-menu controls on an otherwise admitted path: \"compose\" #4",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects Compose watch and navigation-menu controls on an otherwise admitted path: \"compose\" #5",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects Compose watch and navigation-menu controls on an otherwise admitted path: \"compose\" #6",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects Compose watch and navigation-menu controls on an otherwise admitted path: \"compose\" #7",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects build-capable Compose run without parsing its command payload: \"compose\"",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::rejects build-capable Compose run without parsing its command payload: \"compose\" #2",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::passes non-build argv through exactly with no package-build configuration: \"run\"",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::passes non-build argv through exactly with no package-build configuration: \"pull\"",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::passes non-build argv through exactly with no package-build configuration: \"network\"",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::passes non-build argv through exactly with no package-build configuration: \"system\"",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::passes non-build argv through exactly with no package-build configuration: \"compose\"",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::passes non-build argv through exactly with no package-build configuration: \"compose\" #2",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::pins the navigation menu off for admitted non-building Compose up: \"compose\"",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::pins the navigation menu off for admitted non-building Compose up: \"compose\" #2",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::pins the navigation menu off for admitted non-building Compose up: \"compose\" #3",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::passes admitted non-building Compose create without scanning unavailable watch/menu controls",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::preserves real-client exit status",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::supports a preflight that resolves docker through PATH to the staged shim",
+   "test/docker/docker-build-shim.test.ts@@main::executable Docker package-build shim::forwards hostile argv inertly without shell expansion or splitting",
+   "test/docker/package-egress-proxy.test.ts@@main::strict package egress proxy::serializes an immediate stop behind startup and leaves no listener or lease",
+   "test/docker/qualification-evidence.test.ts@@main::qualification evidence::records nonzero live-gate evidence before failing the qualification",
+   "test/docker/qualification-evidence.test.ts@@main::qualification evidence::records a bounded timeout and the terminating signal",
+   "test/docker/qualification-evidence.test.ts@@main::qualification evidence::bounds both retained and forwarded output when a script floods its pipe",
+   "test/docker/qualification-evidence.test.ts@@main::qualification evidence::does not label a cleanup failure after the deadline as a child timeout",
+   "test/docker/qualification-process.test.ts@@main::qualification process ownership::removes its signal handlers after a normal exit",
+   "test/docker/qualification-process.test.ts@@main::qualification process ownership::handles failed spawn without an unhandled error",
+   "test/docker/qualification-process.test.ts@@main::qualification process ownership::reaps the child and descendant after timeout",
+   "test/docker/qualification-process.test.ts@@main::qualification process ownership::reaps the child and descendant after SIGINT",
+   "test/docker/qualification-process.test.ts@@main::qualification process ownership::reaps the child and descendant after SIGTERM",
+   "test/domain-utils.test.ts@@main::resolveDefaultGitRemote::returns undefined for a non-existent path",
+   "test/domain-utils.test.ts@@main::resolveDefaultGitRemote::returns undefined for a plain directory (not a git repo)",
+   "test/first-start.test.ts@@main::first-start wizard::full flow with auto-approve enabled writes config",
+   "test/first-start.test.ts@@main::first-start wizard::auto-approve declined writes enabled: false",
+   "test/first-start.test.ts@@main::first-start wizard::re-run safety::configures Parallel without asking for an API key",
+   "test/first-start.test.ts@@main::first-start wizard::re-run safety::preserves existing web search API key when re-selecting same provider",
+   "test/first-start.test.ts@@main::first-start wizard::re-run safety::prompts for API key when switching to a new provider",
+   "test/first-start.test.ts@@main::first-start wizard::re-run safety::preserves existing auto-approve state as initialValue",
+   "test/llm-metrics-identity-protector.test.ts@@main::statistics persistence identity protection::publishes exactly one complete key under concurrent multi-process creation",
+   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::rejects response and attempt HTTP statuses outside 100 through 599",
+   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::rejects 'content-shaped' provider labels at the durable boundary",
+   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::rejects 'overlong' provider labels at the durable boundary",
+   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::prunes bounded orphaned retention metadata",
+   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::indexes exchanges by process run for bounded metadata pruning",
+   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::strictly bounds retention management inputs",
+   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::bounds reader admissions while its worker is stalled",
+   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps timed-out retention single-flight until its late lease cleanup settles",
+   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::preserves degraded health when retention lease release fails",
+   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps the independent reader usable after a terminal writer failure",
+   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::bounds its queue and fails open when persistence cannot accept another record",
+   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::bounds flush and exposes dropped work when a worker is unresponsive",
+   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::uses one bounded deadline for queue drain and close",
+   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::disables safely for a future schema without rewriting it",
+   "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::persists only the explicit content-free allowlist",
+   "test/llm-metrics-runtime.test.ts@@main::process-scoped LLM metrics runtime::shares concurrent acquisitions and rejects a second active database identity",
+   "test/llm-metrics-runtime.test.ts@@main::process-scoped LLM metrics runtime::serializes last release with a racing reacquisition instead of returning a closing repository",
+   "test/mcp-proxy-server-no-backend.integration.test.ts@@main::mcp-proxy-server no-backend exit::exits non-zero with an ERROR diagnostic when the only configured backend is skipped",
+   "test/mcp-proxy-server-no-backend.integration.test.ts@@main::mcp-proxy-server no-backend exit::warn-skips a backend whose binary is missing instead of dying with a fatal error",
+   "test/mcp-proxy-server.test.ts@@main::parseProxyEnvConfig::parses all environment variables into a typed config object",
+   "test/mcp-proxy-server.test.ts@@main::parseProxyEnvConfig::uses default values when optional env vars are not set",
+   "test/mcp-proxy-server.test.ts@@main::parseProxyEnvConfig::parses SERVER_CREDENTIALS and scrubs from process.env",
+   "test/mcp-proxy-server.test.ts@@main::parseProxyEnvConfig::filters servers when SERVER_FILTER is set",
+   "test/mcp-proxy-server.test.ts@@main::parseProxyEnvConfig::calls process.exit(1) when MCP_SERVERS_CONFIG is missing",
+   "test/mcp-proxy-server.test.ts@@main::parseProxyEnvConfig::calls process.exit(1) when GENERATED_DIR is missing",
+   "test/mcp-proxy-server.test.ts@@main::parseProxyEnvConfig::calls process.exit(1) when SERVER_FILTER references unknown server",
+   "test/mux-input-handler.test.ts@@main::MuxInputHandler::picker mode transitions::/new browse path submit returns to command mode",
+   "test/mux-input-handler.test.ts@@main::MuxInputHandler::persona picker mode::browse submit with persona carries through to picker-spawn",
+   "test/mux-input-handler.test.ts@@main::MuxInputHandler::persona picker mode::browse submit without persona omits persona field",
+   "test/mux-input-handler.test.ts@@main::MuxInputHandler::provider picker mode (G13)::carries the pending workspace/persona through the provider step",
+   "test/policy-engine.test.ts@@main::PolicyEngine::Git remote enrichment (absent remote resolved from filesystem)::with repo whose origin is github.com::enriches absent remote with github.com URL; domain gate passes allowlist",
+   "test/policy-engine.test.ts@@main::PolicyEngine::Git remote enrichment (absent remote resolved from filesystem)::with repo whose origin is github.com::enriches absent remote; domain-constrained allow rule fires for matching domain",
+   "test/policy-engine.test.ts@@main::PolicyEngine::Git remote enrichment (absent remote resolved from filesystem)::with repo whose origin is github.com::enriches absent remote; structural domain gate blocks untrusted domain",
+   "test/policy-engine.test.ts@@main::PolicyEngine::Git remote enrichment (absent remote resolved from filesystem)::with repo whose origin is an untrusted domain::enriches absent remote with evil.com URL; structural domain gate escalates",
+   "test/policy-engine.test.ts@@main::PolicyEngine::Git remote enrichment (absent remote resolved from filesystem)::with tracking branch pointing to non-origin remote::enriches absent remote using tracking remote (not origin)",
+   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 output wiring (onData / serialize)::onData fires with the chunk AFTER the headless buffer reflects it",
+   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 output wiring (onData / serialize)::fires onOutput (grid sink) before onData (stream sink)",
+   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 output wiring (onData / serialize)::onData unsubscribe stops further callbacks",
+   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 output wiring (onData / serialize)::serialize() reflects written screen content",
+   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 output wiring (onData / serialize)::serialize({ scrollback }) caps the tail without throwing",
+   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 termination escalation::escalates from SIGTERM to SIGKILL after the grace period",
+   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 termination escalation::cancels SIGKILL when the child exits during the grace period",
+   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 termination escalation::makes repeated kill calls idempotent while termination is pending",
+   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 termination escalation::retries a failed direct SIGKILL until onExit confirms termination",
+   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 termination escalation::throttles persistent force-kill failure logs while continuing retries",
+   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 session discovery (no fixed timeout)::discovers a registration that appears long after the child spawns",
+   "test/pty-bridge.test.ts@@main::createPtyBridge \u2014 session discovery (no fixed timeout)::resolves discovery to null when the child exits before registering",
+   "test/pty-session.test.ts@@main::PTY resize via socat::pgrep -x does not match nonexistent process names",
+   "test/sandbox-integration.test.ts@@main::checkSandboxAvailability::returns a structured result with platformSupported",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::maps a numeric eval_score to verdict evaluated",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::lets evolve-eval read timeout_secs from run_spec unless --timeout is explicit",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::keeps a low numeric score as evaluated, not evaluator_blocked",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::maps evaluator subprocess failure to evaluator_blocked while exiting successfully",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::maps evolve-eval wrapper failure to evaluator_blocked while exiting successfully",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::maps missing or nonnumeric results to evaluator_blocked",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::maps record success and failure to recorded/needs_repair verdicts",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::computes target-met stop signals after the recorded node and gives target precedence",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::rejects <= success criteria for maximize-only stop targets",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::counts patience plateaus from the node-0 baseline",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::uses max_rounds only after target and patience do not stop the run",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::finds an already-recorded analysis node by step_name instead of appending a duplicate",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::promote_cognition reports needs_repair when a recorded lane cannot be reconciled",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::pins PYTHONHASHSEED for engine subprocesses",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::fails loudly when neither flag of a resolver pair is supplied",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::samples a parent, seeds cognition on first entry, and writes current context",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::uses EVOLVE_LANE to route sample scratch files under current/lane_<k> without clearing shared stop signals",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::sample_batch partitions distinct parents into per-lane current directories",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::sample_batch can prepare only missing lanes for a partially recorded batch",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::sample_batch rejects duplicate parent partitions when enough parents exist",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::lane attach_analysis writes only its lane-scoped stop_signals, not the barrier-owned canonical file",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::compute_stop_signals writes the single canonical stop_signals once over the batch-grown nodes",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::counts one workers:3 batch as a single generation: patience not tripped after one no-improvement batch",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::resets the generation plateau counter when a later batch improves the running best",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::trips patience after `patience` generations with no improvement, counting batches not nodes",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::is byte-identical to node-denominated counters at workers:1 (every step_<N> node is its own generation)",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::samples with an empty DB without reseeding a non-empty cognition store",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::resolves current-round flags for evaluate",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::resolves current-round flags from the selected lane",
+   "test/workflow/evolve-result-bridge.test.ts@@main::evolve_result.py bridge::attaches analysis with the sampled parent and omits parent when context has none"
+  ],
+  "passed": 6267,
+  "stable_in_baseline": 6496
+ },
+ "rule3": {
+  "count_defects": [
+   {
+    "baseline": [
+     19,
+     19
+    ],
+    "count": "failed",
+    "fix": 20,
+    "kind": "plain_par",
+    "rep": 1,
+    "workers": 2
+   },
+   {
+    "baseline": [
+     6901,
+     6901
+    ],
+    "count": "passed",
+    "fix": 6900,
+    "kind": "plain_par",
+    "rep": 1,
+    "workers": 2
+   },
+   {
+    "baseline": [
+     19,
+     19
+    ],
+    "count": "failed",
+    "fix": 20,
+    "kind": "plain_par",
+    "rep": 2,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     6901,
+     6901
+    ],
+    "count": "passed",
+    "fix": 6900,
+    "kind": "plain_par",
+    "rep": 2,
+    "workers": 4
+   }
+  ],
+  "defects": [
+   {
+    "baseline": [
+     "passed"
+    ],
+    "fix": "failed",
+    "fix_round": 1,
+    "kind": "serial",
+    "nodeid": "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'disconnect' ('hold')"
+   },
+   {
+    "baseline": [
+     "passed"
+    ],
+    "fix": "failed",
+    "fix_round": 2,
+    "kind": "serial",
+    "nodeid": "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'disconnect' ('hold')"
+   }
+  ],
+  "exit_defects": [],
+  "false_green": [],
+  "variable": {
+   "test/docker-workload/apple-vm-egress-relay.test.ts@@main::purpose-built Apple VM egress relay::bounds package lifetime without preempting a reused registry connection in one profile": [
+    "serial",
+    "par w2",
+    "par w4"
+   ],
+   "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'stop' ('decline')": [
+    "serial"
+   ],
+   "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'stop' ('hold')": [
+    "serial"
+   ]
+  }
+ }
+}
