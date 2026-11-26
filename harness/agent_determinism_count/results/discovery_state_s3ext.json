@@ -42,15 +42,11 @@
   "committer-date:>=2024-01-01 unstable eval test": {
    "capped": false,
    "done": false,
-   "leaf_total": 6710,
-   "leaves": 11,
-   "nodes": 22,
+   "leaf_total": 7385,
+   "leaves": 12,
+   "nodes": 23,
    "prepass_total": 8069,
    "stack": [
-    [
-     "2026-09-21",
-     "2026-10-23"
-    ],
     [
      "2026-10-24",
      "2026-11-25"
@@ -237,13 +233,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 468
+  "issues": 8
  },
  "search_stats": {
-  "429": 68,
+  "429": 1,
   "limit": 30,
   "remaining": 30,
-  "reset": 1795704936
+  "reset": 1795705041
  },
  "started": "2026-11-26T11:20:43+00:00"
 }
