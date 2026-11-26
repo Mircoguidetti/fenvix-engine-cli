@@ -2,6 +2,24 @@
  "budget_end": "2026-11-26T10:54:28+00:00",
  "finished": null,
  "queries": {
+  "committer-date:>=2024-01-01 \"non-deterministic\" \"ai sdk\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 225,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 225,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"non-deterministic\" \"llama-index\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 8,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 8,
+   "stack": []
+  },
   "committer-date:>=2024-01-01 \"non-deterministic\" \"model output\" test": {
    "capped": false,
    "done": true,
@@ -10,6 +28,41 @@
    "nodes": 1,
    "prepass_total": 920,
    "stack": []
+  },
+  "committer-date:>=2024-01-01 \"non-deterministic\" \"pydantic-ai\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 37,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 37,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"non-deterministic\" agent test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 5943,
+   "leaves": 10,
+   "nodes": 22,
+   "prepass_total": 14695,
+   "stack": [
+    [
+     "2026-05-21",
+     "2026-05-28"
+    ],
+    [
+     "2026-05-29",
+     "2026-06-13"
+    ],
+    [
+     "2026-06-14",
+     "2026-07-16"
+    ],
+    [
+     "2026-07-17",
+     "2026-11-25"
+    ]
+   ]
   },
   "committer-date:>=2024-01-01 \"non-deterministic\" anthropic test": {
    "capped": true,
@@ -20,6 +73,15 @@
    "prepass_total": 34038,
    "stack": []
   },
+  "committer-date:>=2024-01-01 \"non-deterministic\" autogen test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 34,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 35,
+   "stack": []
+  },
   "committer-date:>=2024-01-01 \"non-deterministic\" claude test": {
    "capped": true,
    "done": true,
@@ -27,6 +89,24 @@
    "leaves": 1,
    "nodes": 1,
    "prepass_total": 44155,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"non-deterministic\" crewai test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 52,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 52,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"non-deterministic\" eval test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 5738,
+   "leaves": 9,
+   "nodes": 16,
+   "prepass_total": 5728,
    "stack": []
   },
   "committer-date:>=2024-01-01 \"non-deterministic\" gemini test": {
@@ -45,6 +125,33 @@
    "leaves": 4,
    "nodes": 6,
    "prepass_total": 1375,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"non-deterministic\" langchain test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 190,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 190,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"non-deterministic\" langgraph test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 198,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 199,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"non-deterministic\" llamaindex test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 33,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 33,
    "stack": []
   },
   "committer-date:>=2024-01-01 \"non-deterministic\" llm test": {
@@ -67,25 +174,12 @@
   },
   "committer-date:>=2024-01-01 \"non-deterministic\" prompt test": {
    "capped": false,
-   "done": false,
-   "leaf_total": 7936,
-   "leaves": 12,
-   "nodes": 25,
+   "done": true,
+   "leaf_total": 10089,
+   "leaves": 15,
+   "nodes": 28,
    "prepass_total": 10087,
-   "stack": [
-    [
-     "2026-08-19",
-     "2026-09-04"
-    ],
-    [
-     "2026-09-05",
-     "2026-09-20"
-    ],
-    [
-     "2026-09-21",
-     "2026-11-25"
-    ]
-   ]
+   "stack": []
   },
   "committer-date:>=2024-01-01 flakiness \"ai sdk\" test": {
    "capped": false,
@@ -2637,13 +2731,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 2021
+  "issues": 2231
  },
  "search_stats": {
-  "429": 137,
+  "429": 156,
   "limit": 30,
   "remaining": 24,
-  "reset": 1795663370
+  "reset": 1795665146
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
