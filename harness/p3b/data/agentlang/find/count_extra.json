@@ -1,0 +1,95 @@
+{
+ "repo": "agentlang",
+ "engine_commit": "ece09e1f502a1d7354e563226ec890046d196fc7",
+ "serial_counts": {
+  "flip": 2,
+  "mixed": 0,
+  "absent": 0,
+  "skipped-in-det": 0,
+  "det-only": 0,
+  "reverse": 0,
+  "other": 0
+ },
+ "n_unstable": 0,
+ "n_parallel_only": 0,
+ "parallel_only_both_runs": 0,
+ "runs": [
+  {
+   "kind": "plain",
+   "rep": 1,
+   "exit": 0,
+   "wall_s": 79.2,
+   "cmd": "npx --no-install vitest run --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/agentlang/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/agentlang/plain1.runner.json"
+  },
+  {
+   "kind": "plain",
+   "rep": 2,
+   "exit": 0,
+   "wall_s": 80.36,
+   "cmd": "npx --no-install vitest run --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/agentlang/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/agentlang/plain2.runner.json"
+  },
+  {
+   "kind": "det",
+   "rep": 1,
+   "exit": 1,
+   "wall_s": 90.73,
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/agentlang/det1.outcomes.json --det-trace=/root/pm-p3b/find/agentlang/det1.trace.jsonl"
+  },
+  {
+   "kind": "det",
+   "rep": 2,
+   "exit": 1,
+   "wall_s": 89.55,
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/agentlang/det2.outcomes.json --det-trace=/root/pm-p3b/find/agentlang/det2.trace.jsonl"
+  },
+  {
+   "kind": "par",
+   "rep": 1,
+   "exit": 1,
+   "wall_s": 102.35,
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det --det-workers=4 --det-outcomes=/root/pm-p3b/find/agentlang/par1.outcomes.json --det-trace=/root/pm-p3b/find/agentlang/par1.trace.jsonl"
+  },
+  {
+   "kind": "par",
+   "rep": 2,
+   "exit": 1,
+   "wall_s": 95.29,
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det --det-workers=4 --det-outcomes=/root/pm-p3b/find/agentlang/par2.outcomes.json --det-trace=/root/pm-p3b/find/agentlang/par2.trace.jsonl"
+  }
+ ],
+ "serial_cases": [
+  {
+   "id": "test/runtime/basic.test.ts::tracking-attrs::set tracking attributes in entity instances",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError:  [call @ test/runtime/basic.test.ts:1936]",
+    "AssertionError:  [call @ test/runtime/basic.test.ts:1936]"
+   ]
+  },
+  {
+   "id": "test/runtime/harness.test.ts::runTests - string-based test runner::passing tests",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError:  [call @ test/runtime/harness.test.ts:181]",
+    "AssertionError:  [call @ test/runtime/harness.test.ts:181]"
+   ]
+  }
+ ],
+ "parallel_only": []
+}

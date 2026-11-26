@@ -1,0 +1,48 @@
+{
+ "counts": {
+  "flip": 2,
+  "mixed": 0,
+  "absent": 0,
+  "skipped-in-det": 0,
+  "det-only": 0,
+  "reverse": 0,
+  "other": 0
+ },
+ "n_cases": 2,
+ "n_unstable": 0,
+ "cases": [
+  {
+   "id": "test/runtime/basic.test.ts::tracking-attrs::set tracking attributes in entity instances",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError:  [call @ test/runtime/basic.test.ts:1936]",
+    "AssertionError:  [call @ test/runtime/basic.test.ts:1936]"
+   ]
+  },
+  {
+   "id": "test/runtime/harness.test.ts::runTests - string-based test runner::passing tests",
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError:  [call @ test/runtime/harness.test.ts:181]",
+    "AssertionError:  [call @ test/runtime/harness.test.ts:181]"
+   ]
+  }
+ ],
+ "patterns": []
+}
