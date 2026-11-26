@@ -12,6 +12,20 @@
  },
  "finished": null,
  "queries": {
+  "committer-date:>=2024-01-01 unstable anthropic test": {
+   "capped": true,
+   "done": false,
+   "leaf_total": 0,
+   "leaves": 0,
+   "nodes": 0,
+   "prepass_total": 52961,
+   "stack": [
+    [
+     "2024-01-01",
+     "2026-11-25"
+    ]
+   ]
+  },
   "committer-date:>=2024-01-01 unstable llm test": {
    "capped": false,
    "done": true,
@@ -23,17 +37,12 @@
   },
   "committer-date:>=2024-01-01 unstable openai test": {
    "capped": false,
-   "done": false,
-   "leaf_total": 5017,
-   "leaves": 9,
-   "nodes": 17,
+   "done": true,
+   "leaf_total": 5824,
+   "leaves": 10,
+   "nodes": 18,
    "prepass_total": 5833,
-   "stack": [
-    [
-     "2026-09-21",
-     "2026-11-25"
-    ]
-   ]
+   "stack": []
   },
   "committer-date:>=2024-01-01 xfail \"ai sdk\" test": {
    "capped": false,
@@ -163,20 +172,20 @@
   }
  },
  "route_check": {
-  "at": "2026-11-26T11:28:34+00:00",
-  "query": "committer-date:>=2024-01-01 xfail \"model output\" test",
-  "session": 251,
-  "workflow": 253
+  "at": "2026-11-26T13:11:54+00:00",
+  "query": "committer-date:>=2024-01-01 unstable anthropic test",
+  "session": 51826,
+  "workflow": 52961
  },
  "search_requests": {
   "code": 0,
-  "issues": 614
+  "issues": 11
  },
  "search_stats": {
-  "429": 64,
+  "429": 1,
   "limit": 30,
   "remaining": 30,
-  "reset": 1795698645
+  "reset": 1795698706
  },
  "started": "2026-11-26T11:20:43+00:00"
 }
