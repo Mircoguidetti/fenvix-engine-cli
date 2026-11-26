@@ -1,0 +1,36 @@
+{
+ "boot_effect": 106,
+ "fix_matches_baseline": [
+  "test/api-capability-custom-fetch.test.ts::uses the configured raw transport for scheduled capability discovery",
+  "test/api-capability-ownership.test.ts::keeps cached evidence when routes lease fails with EROFS",
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::resolves the forced account by CODEX_MULTI_AUTH_FORCE_ACCOUNT env var and publishes its 0-based index (#623)",
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::does not repair local session index for failed forwarded runs",
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::forwards `resume -h` without starting the rotation transport (#647)",
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::waits for fresh orphaned shadow sync locks to become stale before stealing",
+  "test/h3-token-clobber.test.ts::H3 - cross-process token clobber protection::preserves a refresh token another process rotated to disk during a routine save",
+  "test/local-client-tokens.test.ts::local client tokens::does not lose mutations when revoke and add run concurrently",
+  "test/persisted-api-capabilities.test.ts::retains disk-only documented efforts after restarted daily checks unless denied: revoked",
+  "test/quota-cache.test.ts::quota cache::does not apply stale cache deletion over a concurrent observation",
+  "test/security-stress.test.ts::stress: local token digest edge cases::verify returns null, never throws, for malformed stored hash \"sha256:abababababababababababababababababababababababababababababababa\""
+ ],
+ "fix_vs_ctrl": 1205,
+ "repo": "codex-multi-auth",
+ "tests": 8662,
+ "unexplained": [
+  "test/active-account-sync.test.ts::autoSyncActiveAccountToCodex fingerprint short-circuit::treats a mirror file torn down mid-pass as unsynced",
+  "test/automatic-api-checks.test.ts::keeps the next tick anchored when a slow run rejects: true",
+  "test/automatic-subscription-checks.test.ts::canonicalizes selected Personal quota probes (unresolved)",
+  "test/automatic-subscription-checks.test.ts::canonicalizes selected Personal quota probes (disabled)",
+  "test/budget-guard.test.ts::budget guard::survives a backward clock jump between writes (hybrid updatedAt floor)",
+  "test/codex-bin-wrapper.test.ts::codex bin wrapper::cleans up compatibility shadow homes when staging fails",
+  "test/issue-474-pin-safety.test.ts::issue #474 \u2014 pin-honored review feedback::AccountManager.buildStorageSnapshot preserves pin/gen::round-trips pinnedAccountIndex and affinityGeneration through saveToDisk",
+  "test/local-client-tokens.test.ts::local client tokens::rotates and revokes tokens",
+  "test/local-client-tokens.test.ts::local client tokens::returns null when a persisted tokenHash is malformed or mismatched: sha256:ABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABAB",
+  "test/runtime-policy-cache.test.ts::runtime policy cache::serves the parsed store and re-reads it after a rewrite",
+  "test/runtime-policy-cache.test.ts::runtime policy cache::returns consistent stores across concurrent loads during a rewrite",
+  "test/storage-recovery-paths.test.ts::storage recovery paths::exposes snapshot metadata and ignores cache-like artifacts",
+  "test/storage-workspace-policy-merge.test.ts::preserves an operator exclusion across a concurrent runtime disable (runtime-first)",
+  "test/storage-workspace-policy-merge.test.ts::applies an explicit enable to fresh storage after an already-enabled snapshot (reordered: true)"
+ ],
+ "unstable_in_baseline": 1180
+}
