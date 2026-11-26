@@ -312,7 +312,7 @@ async function main(cmd, argv) {
   const status2 = p2.status ?? 1;
   try {
     const { status, complete } = finishRerun({ t1Path: tracePath, t2Path: t2path, status1, status2, affected, tracePath, root, t1 });
-    if (opts.outcomes) mergeOutcomes(path.resolve(root, opts.outcomes), o2path, affected, Boolean(complete), { fresh: o1Fresh });
+    if (opts.outcomes) mergeOutcomes(path.resolve(root, opts.outcomes), o2path, affected, Boolean(complete), { fresh: o1Fresh, selected: Boolean(opts.order) });
     return { status };
   } finally {
     fs.rmSync(work, { recursive: true, force: true });
@@ -457,7 +457,7 @@ function finishRerun({ t1Path, t2Path, status1, status2, affected, tracePath, ro
  * them. Otherwise pass 1's
  * stay, as in the trace. Either way `hazard_rerun` says which run is reported. Pass 1 wrote no file: nothing is done.
  */
-function mergeOutcomes(o1Path, o2Path, affected, complete, { fresh = true } = {}) {
+function mergeOutcomes(o1Path, o2Path, affected, complete, { fresh = true, selected = false } = {}) {
   if (!fresh) return;
   let o1;
   try { o1 = JSON.parse(fs.readFileSync(o1Path, 'utf8')); } catch { return; }
@@ -465,9 +465,12 @@ function mergeOutcomes(o1Path, o2Path, affected, complete, { fresh = true } = {}
   if (complete && o2Path) { try { o2 = JSON.parse(fs.readFileSync(o2Path, 'utf8')); } catch { o2 = null; } }
   const set = new Set(affected);
   if (o2) {
-    // only the tests pass 1 reported are rewritten, never added: the re-run runs whole files and drops a --det-order
-    // selection, so a test only the re-run reported is not one the user's run selected (/review: F8 left open)
-    const ids = new Set([...Object.keys(o1.outcomes || {}), ...(Array.isArray(o1.order) ? o1.order : [])]);
+    // the hazard files' tests the re-run reported, as in the merged trace (a file whose pass-1 worker died before
+    // writing its outcomes included); with a --det-order selection (`selected`) only the tests pass 1 reported: the
+    // re-run runs whole files and drops the selection, so its other tests are not the user's run (/review, F8)
+    const pass1 = new Set([...Object.keys(o1.outcomes || {}), ...(Array.isArray(o1.order) ? o1.order : [])]);
+    const ids = new Set(pass1);
+    if (!selected) for (const id of [...(Array.isArray(o2.order) ? o2.order : []), ...Object.keys(o2.outcomes || {})]) ids.add(id);
     const has = (o, k) => Boolean(o) && Object.prototype.hasOwnProperty.call(o, k);
     const keys = ['outcomes', 'fingerprints', 'exceptions'];
     const m = Object.fromEntries(keys.map((key) => [key, { ...(o1[key] || {}) }]));
@@ -476,6 +479,11 @@ function mergeOutcomes(o1Path, o2Path, affected, complete, { fresh = true } = {}
       for (const key of keys) { if (has(o2[key], id)) m[key][id] = o2[key][id]; else delete m[key][id]; }
     }
     Object.assign(o1, m);
+    if (!selected) {
+      const order = Array.isArray(o1.order) ? o1.order.slice() : [];
+      for (const id of ids) if (!pass1.has(id) && set.has(fileOf(id)) && Object.prototype.hasOwnProperty.call(o2.outcomes || {}, id)) order.push(id);
+      o1.order = order;
+    }
   }
   o1.hazard_rerun = {
     files: affected,

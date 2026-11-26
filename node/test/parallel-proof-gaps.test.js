@@ -278,6 +278,26 @@ process.stdout.write(JSON.stringify(fs.readdirSync(d).filter((n) => n.endsWith('
     assert.ok(!w2.includes('v1/x'), `v1/x is the old target: ${w2}`);
   });
 
+  test('a link repointed inside one file: the write after it records the new target (second /review pass, finding 2)', () => {
+    // protects=the real-path memo is dropped when the file itself changes a link, so a later call through it records the
+    // target it really reaches; fails_when=the memo filled by an earlier call of the same file records the old target
+    // (T1/x) and a reader of T2/x in another lane pairs with nothing; no_claim=a link another process repoints while this
+    // file runs (its literal key still pairs a lane that uses the link)
+    const dir = fs.mkdtempSync(path.join(BASE, 'fslink2-'));
+    write(dir, { 'T1/.keep': '', 'T2/.keep': '' });
+    fs.symlinkSync('T1', path.join(dir, 'L'));
+    const code = `
+const fs = require('node:fs'); const parallel = require(${JSON.stringify(path.join(__dirname, '..', 'src', 'parallel'))});
+parallel.installFootprint(process.cwd());
+parallel.enter('f'); fs.existsSync('L/x'); fs.unlinkSync('L'); fs.symlinkSync('T2', 'L'); fs.writeFileSync('L/x', '2'); parallel.leave('f');
+const d = process.env.DETJS_DIR + '/lanes';
+process.stdout.write(fs.readFileSync(d + '/' + fs.readdirSync(d).filter((n) => n.endsWith('.json'))[0], 'utf8'));`;
+    const r = spawnSync(process.execPath, ['-e', code], { cwd: dir, encoding: 'utf8', env: cleanEnv({ DETJS_DIR: path.join(dir, '.detjs', 'run'), DETJS_WORKERS: '2' }) });
+    assert.equal(r.status, 0, r.stderr);
+    const w = JSON.parse(r.stdout).footprint.w;
+    assert.ok(w.includes('T2/x'), `the write lands in T2/x: ${w}`);
+  });
+
   test('a listing or a recursive root at / pairs with keys directly under it (F6)', () => {
     // protects=the root directory is matched like any other; fails_when=the prefix of '/' is '//' and nothing is under
     // it; no_claim=synthetic keys

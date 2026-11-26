@@ -154,7 +154,7 @@ test('mergeOutcomes: pass 1\'s tests take the re-run outcome, no test is added; 
   const o1 = path.join(d, 'o1.json'); const o2 = path.join(d, 'o2.json');
   fs.writeFileSync(o1, JSON.stringify({ order: ['a.js::1', 'b.js::1'], outcomes: { 'a.js::1': 'failed', 'b.js::1': 'passed' }, fingerprints: {}, exceptions: { 'a.js::1': ['E'] } }));
   fs.writeFileSync(o2, JSON.stringify({ order: ['a.js::1', 'a.js::new'], outcomes: { 'a.js::1': 'passed', 'a.js::new': 'failed' }, fingerprints: {}, exceptions: {} }));
-  mergeOutcomes(o1, o2, ['a.js'], true);
+  mergeOutcomes(o1, o2, ['a.js'], true, { selected: true });
   const m = JSON.parse(fs.readFileSync(o1, 'utf8'));
   assert.deepEqual(m.outcomes, { 'a.js::1': 'passed', 'b.js::1': 'passed' });
   assert.deepEqual(m.order, ['a.js::1', 'b.js::1']);
@@ -163,4 +163,22 @@ test('mergeOutcomes: pass 1\'s tests take the re-run outcome, no test is added; 
   const before = fs.readFileSync(o1, 'utf8');
   mergeOutcomes(o1, o2, ['a.js'], true, { fresh: false });
   assert.equal(fs.readFileSync(o1, 'utf8'), before);
+});
+
+// second /review pass (finding 1): without a --det-order selection the re-run-only tests are added
+// protects=a hazard file whose pass-1 worker died before writing its outcomes still has its re-run outcomes (and
+// failures) in the outcomes file, as in the merged trace; fails_when=only pass 1's ids are rewritten in a run without
+// --det-order (the file records less than the trace); no_claim=main()'s choice of `selected` (opts.order)
+test('mergeOutcomes: without --det-order a test only the re-run reported is added to outcomes and order', () => {
+  const { mergeOutcomes } = require('../src/parallel-rerun');
+  const fs = require('node:fs'); const os = require('node:os'); const path = require('node:path');
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'mo2-'));
+  const o1 = path.join(d, 'o1.json'); const o2 = path.join(d, 'o2.json');
+  fs.writeFileSync(o1, JSON.stringify({ order: ['b.js::1'], outcomes: { 'b.js::1': 'passed' }, fingerprints: {}, exceptions: {} }));
+  fs.writeFileSync(o2, JSON.stringify({ order: ['a.js::1'], outcomes: { 'a.js::1': 'failed' }, fingerprints: { 'a.js::1': 'f' }, exceptions: { 'a.js::1': ['E'] } }));
+  mergeOutcomes(o1, o2, ['a.js'], true, { selected: false });
+  const m = JSON.parse(fs.readFileSync(o1, 'utf8'));
+  assert.deepEqual(m.outcomes, { 'b.js::1': 'passed', 'a.js::1': 'failed' });
+  assert.deepEqual(m.order, ['b.js::1', 'a.js::1']);
+  assert.deepEqual(m.exceptions['a.js::1'], ['E']);
 });

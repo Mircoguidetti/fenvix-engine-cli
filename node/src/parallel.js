@@ -522,18 +522,21 @@ function installFootprint(root) {
     const m = firstMissing(a[0]);
     if (m !== null) H.add('wr', m);
   };
+  const fresh = (fn) => (a) => { dirMemo.clear(); fn(a); };
   const lRec = (a) => { H.add('l', a[0]); if (recursive && rec(a[1])) H.add('lr', a[0]); };
   for (const o of [fs, P]) {
     for (const n of ['readFile', 'readFileSync', 'createReadStream', 'exists', 'existsSync', 'stat', 'statSync', 'lstat', 'lstatSync', 'access', 'accessSync', 'readlink', 'readlinkSync', 'realpath', 'realpathSync', 'openAsBlob']) wrap(o, n, r0);
     for (const n of ['readdir', 'readdirSync', 'opendir', 'opendirSync']) wrap(o, n, lRec);
-    for (const n of ['writeFile', 'writeFileSync', 'appendFile', 'appendFileSync', 'createWriteStream', 'unlink', 'unlinkSync', 'truncate', 'truncateSync', 'chmod', 'chmodSync', 'utimes', 'utimesSync', 'lchown', 'chown', 'chownSync']) wrap(o, n, w0);
-    for (const n of ['rm', 'rmSync', 'rmdir', 'rmdirSync']) wrap(o, n, wRec);
+    for (const n of ['writeFile', 'writeFileSync', 'appendFile', 'appendFileSync', 'createWriteStream', 'truncate', 'truncateSync', 'chmod', 'chmodSync', 'utimes', 'utimesSync', 'lchown', 'chown', 'chownSync']) wrap(o, n, w0);
+    // calls that can remove, move or repoint a link drop the real-path memo first (second /review pass, finding 2)
+    for (const n of ['unlink', 'unlinkSync']) wrap(o, n, fresh(w0));
+    for (const n of ['rm', 'rmSync', 'rmdir', 'rmdirSync']) wrap(o, n, fresh(wRec));
     for (const n of ['mkdir', 'mkdirSync']) wrap(o, n, mkRec);
     for (const n of ['rename', 'renameSync']) {
-      wrap(o, n, (a) => {
+      wrap(o, n, fresh((a) => {
         H.add('w', a[0]); H.add('w', a[1]); H.add('r', a[0]);
         if (recursive && isDir(a[0])) { H.add('wr', a[0]); H.add('wr', a[1]); }
-      });
+      }));
     }
     for (const n of ['copyFile', 'copyFileSync']) wrap(o, n, (a) => { H.add('r', a[0]); H.add('w', a[1]); });
     // a directory can only be copied with {recursive: true} (Node throws ERR_FS_EISDIR otherwise)
@@ -543,7 +546,7 @@ function installFootprint(root) {
         if (recursive && rec(typeof a[2] === 'function' ? null : a[2])) { H.add('lr', a[0]); H.add('wr', a[1]); }
       });
     }
-    for (const n of ['symlink', 'symlinkSync', 'link', 'linkSync']) wrap(o, n, w1);
+    for (const n of ['symlink', 'symlinkSync', 'link', 'linkSync']) wrap(o, n, fresh(w1));
     for (const n of ['open', 'openSync']) wrap(o, n, open);
   }
   const net = require('node:net');
@@ -713,7 +716,8 @@ function sortedIndex(entries) {
     under(d) {
       if (d === '.') return entries.filter((e) => !e[0].startsWith('/'));
       const out = [];
-      for (let i = lower(d); i < entries.length && entries[i][0] === d; i++) out.push(entries[i]);
+      // (for '/' the prefix scan below already starts at '/' itself)
+      if (d !== '/') for (let i = lower(d); i < entries.length && entries[i][0] === d; i++) out.push(entries[i]);
       const pre = d === '/' ? '/' : `${d}/`; // the root directory: every absolute key (/review F6)
       for (let i = lower(pre); i < entries.length && entries[i][0].startsWith(pre); i++) out.push(entries[i]);
       return out;
