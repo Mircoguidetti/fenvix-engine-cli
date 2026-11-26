@@ -24,25 +24,13 @@
   "committer-date:>=2024-01-01 unstable openai test": {
    "capped": false,
    "done": false,
-   "leaf_total": 1928,
-   "leaves": 3,
-   "nodes": 8,
+   "leaf_total": 5017,
+   "leaves": 9,
+   "nodes": 17,
    "prepass_total": 5833,
    "stack": [
     [
-     "2026-04-09",
-     "2026-04-25"
-    ],
-    [
-     "2026-04-26",
-     "2026-05-11"
-    ],
-    [
-     "2026-05-12",
-     "2026-07-16"
-    ],
-    [
-     "2026-07-17",
+     "2026-09-21",
      "2026-11-25"
     ]
    ]
@@ -182,13 +170,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 566
+  "issues": 614
  },
  "search_stats": {
-  "429": 56,
+  "429": 64,
   "limit": 30,
   "remaining": 30,
-  "reset": 1795697969
+  "reset": 1795698645
  },
  "started": "2026-11-26T11:20:43+00:00"
 }
