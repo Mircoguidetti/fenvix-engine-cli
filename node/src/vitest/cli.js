@@ -31,9 +31,27 @@ function findVitest(root) {
   }
 }
 
+/**
+ * P3 (ironcurtain, `spawn mcp-server-filesystem ENOENT`): `detjs vitest` stands in for `npx vitest` / an npm script,
+ * which put every node_modules/.bin from the working directory up to the filesystem root on PATH (nearest first).
+ * The same directories go on PATH here, in front of the caller's PATH; one already on it is not added again.
+ */
+function binPath(root, envPath) {
+  const have = new Set((envPath || '').split(path.delimiter).filter(Boolean));
+  const add = [];
+  for (let d = root; ; d = path.dirname(d)) {
+    const b = path.join(d, 'node_modules', '.bin');
+    if (!have.has(b) && fs.existsSync(b)) add.push(b);
+    if (path.dirname(d) === d) break;
+  }
+  return add.length ? [...add, ...(envPath ? [envPath] : [])].join(path.delimiter) : envPath;
+}
+
 async function main(argv) {
-  const env0 = { ...process.env }; // the environment at session start (cache inputs are digested against it)
   const root = process.cwd();
+  const pathNow = binPath(root, process.env.PATH);
+  if (pathNow !== undefined) process.env.PATH = pathNow;
+  const env0 = { ...process.env }; // the environment at session start (cache inputs are digested against it)
   const { opts, rest } = session.parseArgs(argv);
   const dir = findVitest(root);
   const pkg = JSON.parse(fs.readFileSync(path.join(dir, 'package.json'), 'utf8'));

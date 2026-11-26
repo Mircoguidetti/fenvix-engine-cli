@@ -11,9 +11,9 @@ Per-run state letters: r = reproduces the --det outcome of A, c = clears (plain 
 | agentic-qe | skipped-in-det | 1 | 0 | 0 | 1 | 0 |
 | agentic-qe | reverse | 6 | 0 | 0 | 6 | 0 |
 | **agentic-qe** | all | 84 | 0 | 0 | 84 | 0 |
-| codex-multi-auth | flip | 64 | 0 | 60 | 4 | 0 |
+| codex-multi-auth | flip | 64 | 0 | 62 | 2 | 0 |
 | codex-multi-auth | mixed | 6 | 0 | 5 | 1 | 0 |
-| **codex-multi-auth** | all | 70 | 0 | 65 | 5 | 0 |
+| **codex-multi-auth** | all | 70 | 0 | 67 | 3 | 0 |
 | ironcurtain | flip | 16 | 0 | 16 | 0 | 0 |
 | ironcurtain | mixed | 2 | 0 | 1 | 1 | 0 |
 | ironcurtain | skipped-in-det | 10 | 0 | 10 | 0 | 0 |
@@ -49,7 +49,7 @@ Ids whose outcome differs between the two plain runs of A, or whose digit patter
 | codex-multi-auth | cause time (L4) | 18 |
 | codex-multi-auth | cause timers (L2a) | 2 |
 | codex-multi-auth | cause timers progression (virtual) (L1) | 37 |
-| codex-multi-auth | cause wrapper (wrapper) | 7 |
+| codex-multi-auth | cause wrapper (wrapper) | 9 |
 | ironcurtain | cause time (L4) | 3 |
 | ironcurtain | cause timers progression (virtual) (L1) | 13 |
 | ironcurtain | cause wrapper (wrapper) | 11 |
@@ -215,8 +215,8 @@ Ids whose outcome differs between the two plain runs of A, or whose digit patter
 | `test/runtime-rotation-proxy.test.ts::learns a stale subscription model entitlement and retries another eligible account` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
 | `test/runtime-rotation-proxy.test.ts::runtime rotation proxy::evicts oldest local thread goal fallbacks when capacity is exceeded` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
 | `test/runtime-rotation-proxy.test.ts::runtime rotation proxy::rotates accounts after native quota rejection without using sibling workspaces` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
-| `test/storage-file-lock.test.ts::reclaims a killed waiter's populated candidate without touching a live writer` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/storage-file-lock.test.ts::recovers a killed writer without relying on a lease expiry` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
+| `test/storage-file-lock.test.ts::reclaims a killed waiter's populated candidate without touching a live writer` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:rr L5:rr L6:rr L7:rr | ppp | - | ARTIFACT | cause wrapper (wrapper) |
+| `test/storage-file-lock.test.ts::recovers a killed writer without relying on a lease expiry` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:rr L5:rr L6:rr L7:rr | ppp | - | ARTIFACT | cause wrapper (wrapper) |
 
 ## ironcurtain
 
