@@ -68,22 +68,35 @@
   },
   "committer-date:>=2024-01-01 retry langchain test": {
    "capped": false,
-   "done": false,
-   "leaf_total": 7287,
-   "leaves": 12,
-   "nodes": 25,
+   "done": true,
+   "leaf_total": 11517,
+   "leaves": 19,
+   "nodes": 36,
    "prepass_total": 11493,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 retry langgraph test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 3012,
+   "leaves": 6,
+   "nodes": 14,
+   "prepass_total": 11664,
    "stack": [
     [
-     "2026-08-03",
-     "2026-08-18"
+     "2026-05-12",
+     "2026-05-28"
     ],
     [
-     "2026-08-19",
-     "2026-09-20"
+     "2026-05-29",
+     "2026-06-13"
     ],
     [
-     "2026-09-21",
+     "2026-06-14",
+     "2026-07-16"
+    ],
+    [
+     "2026-07-17",
      "2026-11-25"
     ]
    ]
@@ -412,13 +425,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 497
+  "issues": 101
  },
  "search_stats": {
-  "429": 68,
+  "429": 8,
   "limit": 30,
   "remaining": 30,
-  "reset": 1795710940
+  "reset": 1795711837
  },
  "started": "2026-11-26T11:20:43+00:00"
 }
