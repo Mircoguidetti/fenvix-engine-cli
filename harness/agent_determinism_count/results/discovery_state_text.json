@@ -2,6 +2,20 @@
  "budget_end": "2026-11-26T10:54:28+00:00",
  "finished": null,
  "queries": {
+  "committer-date:>=2024-01-01 \"non deterministic\" llm test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 7429,
+   "leaves": 13,
+   "nodes": 25,
+   "prepass_total": 7934,
+   "stack": [
+    [
+     "2026-09-21",
+     "2026-11-25"
+    ]
+   ]
+  },
   "committer-date:>=2024-01-01 \"non-deterministic\" \"ai sdk\" test": {
    "capped": false,
    "done": true,
@@ -40,29 +54,12 @@
   },
   "committer-date:>=2024-01-01 \"non-deterministic\" agent test": {
    "capped": false,
-   "done": false,
-   "leaf_total": 5943,
-   "leaves": 10,
-   "nodes": 22,
+   "done": true,
+   "leaf_total": 14715,
+   "leaves": 24,
+   "nodes": 46,
    "prepass_total": 14695,
-   "stack": [
-    [
-     "2026-05-21",
-     "2026-05-28"
-    ],
-    [
-     "2026-05-29",
-     "2026-06-13"
-    ],
-    [
-     "2026-06-14",
-     "2026-07-16"
-    ],
-    [
-     "2026-07-17",
-     "2026-11-25"
-    ]
-   ]
+   "stack": []
   },
   "committer-date:>=2024-01-01 \"non-deterministic\" anthropic test": {
    "capped": true,
@@ -2731,13 +2728,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 2231
+  "issues": 2464
  },
  "search_stats": {
-  "429": 156,
+  "429": 175,
   "limit": 30,
-  "remaining": 24,
-  "reset": 1795665146
+  "remaining": 19,
+  "reset": 1795666994
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
