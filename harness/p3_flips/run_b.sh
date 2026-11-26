@@ -13,6 +13,13 @@ start=$(date +%s)
 work=${PM_WORK:?set PM_WORK}
 mkdir -p "$work/logs"
 log=$work/logs/b-$repo.log
+# preflight: the engine measured (FENVIX_ENGINE, else this checkout) must load, native core included; a worktree
+# without it made every run of a file fail in 0.04 s (2026-11-26, agentic-qe: records dropped)
+eng=${FENVIX_ENGINE:-$here/../..}
+if ! node -e "require(process.argv[1])" "$eng/node/src/native.js" > /dev/null 2>&1; then
+  echo "STOP: the engine at $eng does not load (native core?)"; node -e "require(process.argv[1])" "$eng/node/src/native.js" 2>&1 | head -3
+  exit 2
+fi
 python3 "$here/ladder.py" files --repo "$repo" --find "$work/find" | while read -r f; do
   slug=$(python3 -c "import hashlib,sys;print(hashlib.sha1(f'$repo:{sys.argv[1]}'.encode()).hexdigest()[:10])" "$f")
   rec="$here/data/$repo/b/$slug.json"
