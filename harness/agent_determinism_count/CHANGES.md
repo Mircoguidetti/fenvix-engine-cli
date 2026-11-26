@@ -137,8 +137,8 @@
     results/report_notes.json (REPORT "Notes") and results/watchdog.jsonl, and watchdog.py queue writes a noop
     request whose push starts a run. The 12:34:56-14:56:23Z gap is recorded. Test:
     test_watchdog_flags_stale_or_missing_text_run.
-18. 2026-11-26 16:50Z, a watchdog fix (no rule change). Run 45852220950 fetched the branch after chunk 5 was pushed
+18. 2026-11-26 16:47Z, a watchdog fix (no rule change). Run 45852220950 fetched the branch after chunk 5 was pushed
     and read chunks 4 and 5 together. Run 45852260571 then found no request, and reading stopped at 16:40Z. The
     watchdog counted a completed run with nothing pending as healthy, so the 16:46Z check reported ok. It now counts
     an idle workflow as a gap while reading goes on. At each wake the session keeps at least one unread chunk pending
-    or running. The 16:40-16:50Z gap is recorded in the REPORT notes.
+    or running. The 16:40-16:47Z gap is recorded in the REPORT notes.
