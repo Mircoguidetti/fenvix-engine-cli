@@ -106,8 +106,8 @@
   "unfinished": []
  },
  "S3": {
-  "N": 10304746,
-  "candidates": 50005,
+  "N": 10478336,
+  "candidates": 80478,
   "capped_queries": [
    "committer-date:>=2024-01-01 \"non deterministic\" anthropic test",
    "committer-date:>=2024-01-01 \"non deterministic\" claude test",
@@ -131,12 +131,23 @@
    "committer-date:>=2024-01-01 intermittent anthropic test",
    "committer-date:>=2024-01-01 intermittent claude test",
    "committer-date:>=2024-01-01 intermittent prompt test",
+   "committer-date:>=2024-01-01 retry anthropic test",
+   "committer-date:>=2024-01-01 retry claude test",
+   "committer-date:>=2024-01-01 retry eval test",
+   "committer-date:>=2024-01-01 retry gemini test",
+   "committer-date:>=2024-01-01 retry gpt test",
+   "committer-date:>=2024-01-01 retry llm test",
+   "committer-date:>=2024-01-01 retry openai test",
+   "committer-date:>=2024-01-01 retry prompt test",
+   "committer-date:>=2024-01-01 unstable agent test",
+   "committer-date:>=2024-01-01 unstable anthropic test",
+   "committer-date:>=2024-01-01 unstable claude test",
    "committer-date:>=2024-01-01 xfail anthropic test",
    "committer-date:>=2024-01-01 xfail claude test"
   ],
-  "incomplete_leaves": 6,
-  "missing": 10254741,
-  "truncated_leaves": 122,
+  "incomplete_leaves": 12,
+  "missing": 10397858,
+  "truncated_leaves": 96,
   "unfinished": [
    {
     "missing": 2341,
@@ -291,208 +302,16 @@
     "query": "committer-date:>=2024-01-01 rerun prompt test"
    },
    {
-    "missing": 12623,
+    "missing": 11227,
     "query": "committer-date:>=2024-01-01 retry \"ai sdk\" test"
-   },
-   {
-    "missing": 788,
-    "query": "committer-date:>=2024-01-01 retry \"llama-index\" test"
-   },
-   {
-    "missing": 12714,
-    "query": "committer-date:>=2024-01-01 retry \"model output\" test"
-   },
-   {
-    "missing": 2448,
-    "query": "committer-date:>=2024-01-01 retry \"pydantic-ai\" test"
    },
    {
     "missing": 957426,
     "query": "committer-date:>=2024-01-01 retry agent test"
    },
    {
-    "missing": 1909092,
-    "query": "committer-date:>=2024-01-01 retry anthropic test"
-   },
-   {
-    "missing": 1201,
-    "query": "committer-date:>=2024-01-01 retry autogen test"
-   },
-   {
-    "missing": 1964242,
-    "query": "committer-date:>=2024-01-01 retry claude test"
-   },
-   {
-    "missing": 1958,
-    "query": "committer-date:>=2024-01-01 retry crewai test"
-   },
-   {
-    "missing": 111255,
-    "query": "committer-date:>=2024-01-01 retry eval test"
-   },
-   {
-    "missing": 139964,
-    "query": "committer-date:>=2024-01-01 retry gemini test"
-   },
-   {
-    "missing": 141636,
-    "query": "committer-date:>=2024-01-01 retry gpt test"
-   },
-   {
-    "missing": 11493,
-    "query": "committer-date:>=2024-01-01 retry langchain test"
-   },
-   {
-    "missing": 11664,
-    "query": "committer-date:>=2024-01-01 retry langgraph test"
-   },
-   {
-    "missing": 783,
-    "query": "committer-date:>=2024-01-01 retry llamaindex test"
-   },
-   {
-    "missing": 273065,
-    "query": "committer-date:>=2024-01-01 retry llm test"
-   },
-   {
-    "missing": 254811,
-    "query": "committer-date:>=2024-01-01 retry openai test"
-   },
-   {
-    "missing": 536156,
-    "query": "committer-date:>=2024-01-01 retry prompt test"
-   },
-   {
-    "missing": 843,
-    "query": "committer-date:>=2024-01-01 unstable \"ai sdk\" test"
-   },
-   {
-    "missing": 44,
-    "query": "committer-date:>=2024-01-01 unstable \"llama-index\" test"
-   },
-   {
-    "missing": 316,
-    "query": "committer-date:>=2024-01-01 unstable \"model output\" test"
-   },
-   {
-    "missing": 49,
-    "query": "committer-date:>=2024-01-01 unstable \"pydantic-ai\" test"
-   },
-   {
-    "missing": 21879,
-    "query": "committer-date:>=2024-01-01 unstable agent test"
-   },
-   {
-    "missing": 52961,
-    "query": "committer-date:>=2024-01-01 unstable anthropic test"
-   },
-   {
-    "missing": 116,
-    "query": "committer-date:>=2024-01-01 unstable autogen test"
-   },
-   {
-    "missing": 60520,
-    "query": "committer-date:>=2024-01-01 unstable claude test"
-   },
-   {
-    "missing": 31,
-    "query": "committer-date:>=2024-01-01 unstable crewai test"
-   },
-   {
-    "missing": 8069,
-    "query": "committer-date:>=2024-01-01 unstable eval test"
-   },
-   {
-    "missing": 4725,
-    "query": "committer-date:>=2024-01-01 unstable gemini test"
-   },
-   {
-    "missing": 3064,
-    "query": "committer-date:>=2024-01-01 unstable gpt test"
-   },
-   {
-    "missing": 432,
-    "query": "committer-date:>=2024-01-01 unstable langchain test"
-   },
-   {
-    "missing": 271,
-    "query": "committer-date:>=2024-01-01 unstable langgraph test"
-   },
-   {
-    "missing": 15,
-    "query": "committer-date:>=2024-01-01 unstable llamaindex test"
-   },
-   {
-    "missing": 4934,
-    "query": "committer-date:>=2024-01-01 unstable llm test"
-   },
-   {
-    "missing": 5833,
-    "query": "committer-date:>=2024-01-01 unstable openai test"
-   },
-   {
-    "missing": 13177,
-    "query": "committer-date:>=2024-01-01 unstable prompt test"
-   },
-   {
     "missing": 2743,
     "query": "committer-date:>=2024-01-01 vcr openai test"
-   },
-   {
-    "missing": 15,
-    "query": "committer-date:>=2024-01-01 xfail \"ai sdk\" test"
-   },
-   {
-    "missing": 27,
-    "query": "committer-date:>=2024-01-01 xfail \"llama-index\" test"
-   },
-   {
-    "missing": 253,
-    "query": "committer-date:>=2024-01-01 xfail \"model output\" test"
-   },
-   {
-    "missing": 112,
-    "query": "committer-date:>=2024-01-01 xfail \"pydantic-ai\" test"
-   },
-   {
-    "missing": 15527,
-    "query": "committer-date:>=2024-01-01 xfail agent test"
-   },
-   {
-    "missing": 134,
-    "query": "committer-date:>=2024-01-01 xfail autogen test"
-   },
-   {
-    "missing": 68,
-    "query": "committer-date:>=2024-01-01 xfail crewai test"
-   },
-   {
-    "missing": 5161,
-    "query": "committer-date:>=2024-01-01 xfail eval test"
-   },
-   {
-    "missing": 1913,
-    "query": "committer-date:>=2024-01-01 xfail gemini test"
-   },
-   {
-    "missing": 1580,
-    "query": "committer-date:>=2024-01-01 xfail gpt test"
-   },
-   {
-    "missing": 822,
-    "query": "committer-date:>=2024-01-01 xfail langchain test"
-   },
-   {
-    "missing": 343,
-    "query": "committer-date:>=2024-01-01 xfail langgraph test"
-   },
-   {
-    "missing": 25,
-    "query": "committer-date:>=2024-01-01 xfail llamaindex test"
-   },
-   {
-    "missing": 9975,
-    "query": "committer-date:>=2024-01-01 xfail prompt test"
    }
   ]
  }
