@@ -1,0 +1,288 @@
+{
+ "repo": "agentic-qe",
+ "file": "tests/integration/test-scheduling/vitest-executor-abort.test.ts",
+ "slug": "d05597ee15",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "cases": {
+  "tests/integration/test-scheduling/vitest-executor-abort.test.ts::Vitest executor cancellation quiescence::does not launch a replacement test run after scheduler cancellation": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test process group 2467 survived SIGKILL [call @ src/test-scheduling/executors/vitest-executor.ts:375]",
+    "Error: Test process group 26238 survived SIGKILL [call @ src/test-scheduling/executors/vitest-executor.ts:375]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/integration/test-scheduling/vitest-executor-abort.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "d05597ee15.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/test-scheduling/vitest-executor-abort.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/d05597ee15.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/d05597ee15.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:54:26.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "d05597ee15.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/test-scheduling/vitest-executor-abort.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/d05597ee15.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/d05597ee15.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:54:36.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "d05597ee15.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/test-scheduling/vitest-executor-abort.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/d05597ee15.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/test-scheduling/vitest-executor-abort.test.ts"
+      ]
+     },
+     {
+      "tag": "d05597ee15.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/test-scheduling/vitest-executor-abort.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/d05597ee15.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/test-scheduling/vitest-executor-abort.test.ts"
+      ]
+     },
+     {
+      "tag": "d05597ee15.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/test-scheduling/vitest-executor-abort.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/d05597ee15.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/test-scheduling/vitest-executor-abort.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/integration/test-scheduling/vitest-executor-abort.test.ts::Vitest executor cancellation quiescence::waits for a TERM-resistant worker before abort reports completion": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test process group 2425 survived SIGKILL [call @ src/test-scheduling/executors/vitest-executor.ts:375]",
+    "Error: Test process group 26196 survived SIGKILL [call @ src/test-scheduling/executors/vitest-executor.ts:375]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/integration/test-scheduling/vitest-executor-abort.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "d05597ee15.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/test-scheduling/vitest-executor-abort.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/d05597ee15.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/d05597ee15.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:54:26.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "d05597ee15.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/test-scheduling/vitest-executor-abort.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/d05597ee15.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/d05597ee15.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:54:36.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "d05597ee15.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/test-scheduling/vitest-executor-abort.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/d05597ee15.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/test-scheduling/vitest-executor-abort.test.ts"
+      ]
+     },
+     {
+      "tag": "d05597ee15.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/test-scheduling/vitest-executor-abort.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/d05597ee15.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/test-scheduling/vitest-executor-abort.test.ts"
+      ]
+     },
+     {
+      "tag": "d05597ee15.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/test-scheduling/vitest-executor-abort.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/d05597ee15.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/test-scheduling/vitest-executor-abort.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "d05597ee15.alone.r1",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/test-scheduling/vitest-executor-abort.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/d05597ee15.alone.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/d05597ee15.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 3.42,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T05:54:17.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/integration/test-scheduling/vitest-executor-abort.test.ts::Vitest executor cancellation quiescence::does not launch a replacement test run after scheduler cancellation": "failed",
+    "tests/integration/test-scheduling/vitest-executor-abort.test.ts::Vitest executor cancellation quiescence::waits for a TERM-resistant worker before abort reports completion": "failed"
+   },
+   "exc": {
+    "tests/integration/test-scheduling/vitest-executor-abort.test.ts::Vitest executor cancellation quiescence::does not launch a replacement test run after scheduler cancellation": "Error: Test process group 20826 survived SIGKILL [call @ src/test-scheduling/executors/vitest-executor.ts:375]",
+    "tests/integration/test-scheduling/vitest-executor-abort.test.ts::Vitest executor cancellation quiescence::waits for a TERM-resistant worker before abort reports completion": "Error: Test process group 20784 survived SIGKILL [call @ src/test-scheduling/executors/vitest-executor.ts:375]"
+   }
+  },
+  {
+   "tag": "d05597ee15.alone.r2",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/test-scheduling/vitest-executor-abort.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/d05597ee15.alone.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/d05597ee15.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 3.44,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T05:54:22.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/integration/test-scheduling/vitest-executor-abort.test.ts::Vitest executor cancellation quiescence::does not launch a replacement test run after scheduler cancellation": "failed",
+    "tests/integration/test-scheduling/vitest-executor-abort.test.ts::Vitest executor cancellation quiescence::waits for a TERM-resistant worker before abort reports completion": "failed"
+   },
+   "exc": {
+    "tests/integration/test-scheduling/vitest-executor-abort.test.ts::Vitest executor cancellation quiescence::does not launch a replacement test run after scheduler cancellation": "Error: Test process group 21017 survived SIGKILL [call @ src/test-scheduling/executors/vitest-executor.ts:375]",
+    "tests/integration/test-scheduling/vitest-executor-abort.test.ts::Vitest executor cancellation quiescence::waits for a TERM-resistant worker before abort reports completion": "Error: Test process group 20972 survived SIGKILL [call @ src/test-scheduling/executors/vitest-executor.ts:375]"
+   }
+  }
+ ],
+ "complete": true
+}

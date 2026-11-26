@@ -1,0 +1,327 @@
+{
+ "repo": "agentic-qe",
+ "file": "tests/performance/rvf-pattern-store.test.ts",
+ "slug": "584ab4db72",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "cases": {
+  "tests/performance/rvf-pattern-store.test.ts::RvfPatternStore \u2014 Real Native Benchmarks::ingest 1000 patterns into native HNSW": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected 986049.571 to be less than 10000 [call @ tests/performance/rvf-pattern-store.test.ts:135]",
+    "AssertionError: expected 986049.571 to be less than 10000 [call @ tests/performance/rvf-pattern-store.test.ts:135]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/performance/rvf-pattern-store.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "584ab4db72.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/rvf-pattern-store.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 986049.571 to be less than 10000 [call @ tests/performance/rvf-pattern-store.test.ts:135]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:16:33.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "584ab4db72.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/rvf-pattern-store.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 986049.571 to be less than 10000 [call @ tests/performance/rvf-pattern-store.test.ts:135]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:16:55.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "584ab4db72.g0.L2a.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/rvf-pattern-store.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 986049.571 to be less than 10000 [call @ tests/performance/rvf-pattern-store.test.ts:135]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:17:17.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "584ab4db72.g0.L2a.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/rvf-pattern-store.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 986049.571 to be less than 10000 [call @ tests/performance/rvf-pattern-store.test.ts:135]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:17:40.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "584ab4db72.g0.L2b.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/rvf-pattern-store.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 986049.571 to be less than 10000 [call @ tests/performance/rvf-pattern-store.test.ts:135]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:18:03.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "584ab4db72.g0.L2b.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/rvf-pattern-store.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 986049.571 to be less than 10000 [call @ tests/performance/rvf-pattern-store.test.ts:135]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:18:26.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "584ab4db72.g0.L3.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/rvf-pattern-store.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 986049.571 to be less than 10000 [call @ tests/performance/rvf-pattern-store.test.ts:135]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:18:48.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "584ab4db72.g0.L3.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/rvf-pattern-store.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 986049.571 to be less than 10000 [call @ tests/performance/rvf-pattern-store.test.ts:135]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:19:10.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "584ab4db72.g0.L4.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/rvf-pattern-store.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:19:32.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "584ab4db72.g0.L4.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/rvf-pattern-store.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:19:53.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L4",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "584ab4db72.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/performance/rvf-pattern-store.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/performance/rvf-pattern-store.test.ts"
+      ]
+     },
+     {
+      "tag": "584ab4db72.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/performance/rvf-pattern-store.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/performance/rvf-pattern-store.test.ts"
+      ]
+     },
+     {
+      "tag": "584ab4db72.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/performance/rvf-pattern-store.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/performance/rvf-pattern-store.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "584ab4db72.alone.r1",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/rvf-pattern-store.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.alone.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 20.8,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T06:15:49.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/performance/rvf-pattern-store.test.ts::RvfPatternStore \u2014 Real Native Benchmarks::ingest 1000 patterns into native HNSW": "failed"
+   },
+   "exc": {
+    "tests/performance/rvf-pattern-store.test.ts::RvfPatternStore \u2014 Real Native Benchmarks::ingest 1000 patterns into native HNSW": "AssertionError: expected 986049.571 to be less than 10000 [call @ tests/performance/rvf-pattern-store.test.ts:135]"
+   }
+  },
+  {
+   "tag": "584ab4db72.alone.r2",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/rvf-pattern-store.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.alone.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/584ab4db72.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 20.37,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T06:16:11.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/performance/rvf-pattern-store.test.ts::RvfPatternStore \u2014 Real Native Benchmarks::ingest 1000 patterns into native HNSW": "failed"
+   },
+   "exc": {
+    "tests/performance/rvf-pattern-store.test.ts::RvfPatternStore \u2014 Real Native Benchmarks::ingest 1000 patterns into native HNSW": "AssertionError: expected 986049.571 to be less than 10000 [call @ tests/performance/rvf-pattern-store.test.ts:135]"
+   }
+  }
+ ],
+ "complete": true
+}

@@ -1,0 +1,740 @@
+{
+ "repo": "agentic-qe",
+ "file": "tests/unit/coordination/approval-gate.test.ts",
+ "slug": "5c6037101b",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "cases": {
+  "tests/unit/coordination/approval-gate.test.ts::approval gate::accepts approval delivered synchronously by the approval event consumer": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:293]",
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:293]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/unit/coordination/approval-gate.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "5c6037101b.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:22:12.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "5c6037101b.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:22:17.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "5c6037101b.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/approval-gate.test.ts"
+      ]
+     },
+     {
+      "tag": "5c6037101b.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/approval-gate.test.ts"
+      ]
+     },
+     {
+      "tag": "5c6037101b.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/approval-gate.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/unit/coordination/approval-gate.test.ts::approval gate::closes an indefinite gate when the workflow times out": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:380]",
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:380]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/unit/coordination/approval-gate.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "5c6037101b.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:22:12.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "5c6037101b.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:22:17.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "5c6037101b.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/approval-gate.test.ts"
+      ]
+     },
+     {
+      "tag": "5c6037101b.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/approval-gate.test.ts"
+      ]
+     },
+     {
+      "tag": "5c6037101b.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/approval-gate.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/unit/coordination/approval-gate.test.ts::approval gate::does not dispatch an action when the workflow is cancelled at its gate": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:338]",
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:338]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/unit/coordination/approval-gate.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "5c6037101b.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:22:12.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "5c6037101b.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:22:17.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "5c6037101b.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/approval-gate.test.ts"
+      ]
+     },
+     {
+      "tag": "5c6037101b.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/approval-gate.test.ts"
+      ]
+     },
+     {
+      "tag": "5c6037101b.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/approval-gate.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/unit/coordination/approval-gate.test.ts::approval gate::does not register a gate after cancellation during StepStarted publication": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:359]",
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:359]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/unit/coordination/approval-gate.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "5c6037101b.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:22:12.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "5c6037101b.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:22:17.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "5c6037101b.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/approval-gate.test.ts"
+      ]
+     },
+     {
+      "tag": "5c6037101b.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/approval-gate.test.ts"
+      ]
+     },
+     {
+      "tag": "5c6037101b.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/approval-gate.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/unit/coordination/approval-gate.test.ts::approval gate::expires without executing an unapproved action": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:185]",
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:185]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/unit/coordination/approval-gate.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "5c6037101b.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:22:12.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "5c6037101b.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:22:17.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "5c6037101b.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/approval-gate.test.ts"
+      ]
+     },
+     {
+      "tag": "5c6037101b.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/approval-gate.test.ts"
+      ]
+     },
+     {
+      "tag": "5c6037101b.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/approval-gate.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/unit/coordination/approval-gate.test.ts::approval gate::fails closed when the approval request cannot be published": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:315]",
+    "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:315]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/unit/coordination/approval-gate.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "5c6037101b.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:22:12.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "5c6037101b.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:22:17.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "5c6037101b.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/approval-gate.test.ts"
+      ]
+     },
+     {
+      "tag": "5c6037101b.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/approval-gate.test.ts"
+      ]
+     },
+     {
+      "tag": "5c6037101b.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/approval-gate.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "5c6037101b.alone.r1",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.alone.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 2.16,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T06:22:06.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::accepts approval delivered synchronously by the approval event consumer": "failed",
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::closes an indefinite gate when the workflow times out": "failed",
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::does not dispatch an action when the workflow is cancelled at its gate": "failed",
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::does not register a gate after cancellation during StepStarted publication": "failed",
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::expires without executing an unapproved action": "failed",
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::fails closed when the approval request cannot be published": "failed"
+   },
+   "exc": {
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::accepts approval delivered synchronously by the approval event consumer": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:293]",
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::closes an indefinite gate when the workflow times out": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:380]",
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::does not dispatch an action when the workflow is cancelled at its gate": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:338]",
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::does not register a gate after cancellation during StepStarted publication": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:359]",
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::expires without executing an unapproved action": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:185]",
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::fails closed when the approval request cannot be published": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:315]"
+   }
+  },
+  {
+   "tag": "5c6037101b.alone.r2",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/coordination/approval-gate.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.alone.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/5c6037101b.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 2.09,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T06:22:09.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::accepts approval delivered synchronously by the approval event consumer": "failed",
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::closes an indefinite gate when the workflow times out": "failed",
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::does not dispatch an action when the workflow is cancelled at its gate": "failed",
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::does not register a gate after cancellation during StepStarted publication": "failed",
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::expires without executing an unapproved action": "failed",
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::fails closed when the approval request cannot be published": "failed"
+   },
+   "exc": {
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::accepts approval delivered synchronously by the approval event consumer": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:293]",
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::closes an indefinite gate when the workflow times out": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:380]",
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::does not dispatch an action when the workflow is cancelled at its gate": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:338]",
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::does not register a gate after cancellation during StepStarted publication": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:359]",
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::expires without executing an unapproved action": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:185]",
+    "tests/unit/coordination/approval-gate.test.ts::approval gate::fails closed when the approval request cannot be published": "Error: Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ tests/unit/coordination/approval-gate.test.ts:315]"
+   }
+  }
+ ],
+ "complete": true
+}

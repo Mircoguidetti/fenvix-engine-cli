@@ -1,0 +1,327 @@
+{
+ "repo": "agentic-qe",
+ "file": "tests/integrations/agentic-flow/onnx-embeddings.test.ts",
+ "slug": "9fc2fc9143",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "cases": {
+  "tests/integrations/agentic-flow/onnx-embeddings.test.ts::ONNX Embeddings - ADR-051 Phase 2::Performance Benchmarks::Similarity Search Speed::should search 1000 vectors efficiently": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected 5000 to be less than 500 [call @ tests/integrations/agentic-flow/onnx-embeddings.test.ts:1447]",
+    "AssertionError: expected 5000 to be less than 500 [call @ tests/integrations/agentic-flow/onnx-embeddings.test.ts:1447]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/integrations/agentic-flow/onnx-embeddings.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "9fc2fc9143.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integrations/agentic-flow/onnx-embeddings.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 5000 to be less than 500 [call @ tests/integrations/agentic-flow/onnx-embeddings.test.ts:1447]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:55:22.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9fc2fc9143.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integrations/agentic-flow/onnx-embeddings.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 5000 to be less than 500 [call @ tests/integrations/agentic-flow/onnx-embeddings.test.ts:1447]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:55:25.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "9fc2fc9143.g0.L2a.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integrations/agentic-flow/onnx-embeddings.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 5000 to be less than 500 [call @ tests/integrations/agentic-flow/onnx-embeddings.test.ts:1447]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:55:28.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9fc2fc9143.g0.L2a.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integrations/agentic-flow/onnx-embeddings.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 5000 to be less than 500 [call @ tests/integrations/agentic-flow/onnx-embeddings.test.ts:1447]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:55:32.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "9fc2fc9143.g0.L2b.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integrations/agentic-flow/onnx-embeddings.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 5000 to be less than 500 [call @ tests/integrations/agentic-flow/onnx-embeddings.test.ts:1447]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:55:35.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9fc2fc9143.g0.L2b.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integrations/agentic-flow/onnx-embeddings.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 5000 to be less than 500 [call @ tests/integrations/agentic-flow/onnx-embeddings.test.ts:1447]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:55:38.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "9fc2fc9143.g0.L3.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integrations/agentic-flow/onnx-embeddings.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 5000 to be less than 500 [call @ tests/integrations/agentic-flow/onnx-embeddings.test.ts:1447]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:55:42.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9fc2fc9143.g0.L3.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integrations/agentic-flow/onnx-embeddings.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 5000 to be less than 500 [call @ tests/integrations/agentic-flow/onnx-embeddings.test.ts:1447]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:55:45.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "9fc2fc9143.g0.L4.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integrations/agentic-flow/onnx-embeddings.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:55:48.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "9fc2fc9143.g0.L4.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integrations/agentic-flow/onnx-embeddings.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:55:51.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L4",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "9fc2fc9143.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integrations/agentic-flow/onnx-embeddings.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integrations/agentic-flow/onnx-embeddings.test.ts"
+      ]
+     },
+     {
+      "tag": "9fc2fc9143.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integrations/agentic-flow/onnx-embeddings.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integrations/agentic-flow/onnx-embeddings.test.ts"
+      ]
+     },
+     {
+      "tag": "9fc2fc9143.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integrations/agentic-flow/onnx-embeddings.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integrations/agentic-flow/onnx-embeddings.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "9fc2fc9143.alone.r1",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integrations/agentic-flow/onnx-embeddings.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.alone.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 2.23,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T05:55:16.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/integrations/agentic-flow/onnx-embeddings.test.ts::ONNX Embeddings - ADR-051 Phase 2::Performance Benchmarks::Similarity Search Speed::should search 1000 vectors efficiently": "failed"
+   },
+   "exc": {
+    "tests/integrations/agentic-flow/onnx-embeddings.test.ts::ONNX Embeddings - ADR-051 Phase 2::Performance Benchmarks::Similarity Search Speed::should search 1000 vectors efficiently": "AssertionError: expected 5000 to be less than 500 [call @ tests/integrations/agentic-flow/onnx-embeddings.test.ts:1447]"
+   }
+  },
+  {
+   "tag": "9fc2fc9143.alone.r2",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integrations/agentic-flow/onnx-embeddings.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.alone.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/9fc2fc9143.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 2.04,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T05:55:19.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/integrations/agentic-flow/onnx-embeddings.test.ts::ONNX Embeddings - ADR-051 Phase 2::Performance Benchmarks::Similarity Search Speed::should search 1000 vectors efficiently": "failed"
+   },
+   "exc": {
+    "tests/integrations/agentic-flow/onnx-embeddings.test.ts::ONNX Embeddings - ADR-051 Phase 2::Performance Benchmarks::Similarity Search Speed::should search 1000 vectors efficiently": "AssertionError: expected 5000 to be less than 500 [call @ tests/integrations/agentic-flow/onnx-embeddings.test.ts:1447]"
+   }
+  }
+ ],
+ "complete": true
+}

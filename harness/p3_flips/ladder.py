@@ -145,6 +145,13 @@ class Ctx:
                 sel += [p] + (["--project", proj] if proj else [])
         cmd = (["node", DETJS, "vitest", "run"] + self.args + sel +
                ["--det", "--det-workers=1", f"--det-outcomes={of}", f"--det-trace={tf}"] + flags)
+        # resume cache: a run of the same tag, command and engine that finished earlier is reused (a file whose
+        # whole suite takes 38 min would otherwise restart from zero after each budget stop)
+        cp = f"{d}/{tag}.result.json"
+        if os.path.exists(cp):
+            c = json.load(open(cp))
+            if c.get("cmd") == " ".join(cmd) and c.get("engine_commit") == pins.engine_commit():
+                return c["result"]
         row = self.run(tag, cmd)
         oc, ex = pins.det_outcomes(of)
         meta, controls = trace_meta(tf), None
@@ -153,9 +160,12 @@ class Ctx:
         for p in (tf,):  # traces are large; the meta is kept in the row
             if os.path.exists(p):
                 os.remove(p)
-        return {"tag": tag, "cmd": row["cmd"], "exit": row["exit"], "wall_s": row["wall_s"],
-                "outcomes": {k: norm(v) for k, v in oc.items()}, "exc": {k: pins.first_line(v) for k, v in ex.items()},
-                "meta": meta, "controls": controls, "order": (json.load(open(of)).get("order") if os.path.exists(of) else None)}
+        out = {"tag": tag, "cmd": row["cmd"], "exit": row["exit"], "wall_s": row["wall_s"],
+               "outcomes": {k: norm(v) for k, v in oc.items()}, "exc": {k: pins.first_line(v) for k, v in ex.items()},
+               "meta": meta, "controls": controls, "order": (json.load(open(of)).get("order") if os.path.exists(of) else None)}
+        with open(cp, "w") as f:
+            json.dump({"cmd": row["cmd"], "engine_commit": pins.engine_commit(), "result": out}, f)
+        return out
 
     def plain(self, tag, files, order=None, harness=True, prefix=None):
         """One plain serial run (no detjs, no engine path) of `files` through the harness config; `order` = the file

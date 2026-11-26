@@ -1,0 +1,895 @@
+{
+ "repo": "agentic-qe",
+ "file": "tests/performance/milestone1-baselines.test.ts",
+ "slug": "a4913c42df",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "cases": {
+  "tests/performance/milestone1-baselines.test.ts::Baseline Summary::all baseline measurements within expected bounds": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected [ \u2026(2) ] to deeply equal [] [call @ tests/performance/milestone1-baselines.test.ts:801]",
+    "AssertionError: expected [ \u2026(2) ] to deeply equal [] [call @ tests/performance/milestone1-baselines.test.ts:801]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/performance/milestone1-baselines.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "a4913c42df.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ \u2026(2) ] to deeply equal [] [call @ tests/performance/milestone1-baselines.test.ts:801]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:12:11.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "a4913c42df.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ \u2026(2) ] to deeply equal [] [call @ tests/performance/milestone1-baselines.test.ts:801]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:12:30.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "a4913c42df.g0.L2a.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ \u2026(2) ] to deeply equal [] [call @ tests/performance/milestone1-baselines.test.ts:801]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:12:50.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "a4913c42df.g0.L2a.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ \u2026(2) ] to deeply equal [] [call @ tests/performance/milestone1-baselines.test.ts:801]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:13:08.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "a4913c42df.g0.L2b.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ \u2026(2) ] to deeply equal [] [call @ tests/performance/milestone1-baselines.test.ts:801]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:13:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "a4913c42df.g0.L2b.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ \u2026(2) ] to deeply equal [] [call @ tests/performance/milestone1-baselines.test.ts:801]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:13:47.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "a4913c42df.g0.L3.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ \u2026(2) ] to deeply equal [] [call @ tests/performance/milestone1-baselines.test.ts:801]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:14:06.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "a4913c42df.g0.L3.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ \u2026(2) ] to deeply equal [] [call @ tests/performance/milestone1-baselines.test.ts:801]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:14:26.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "a4913c42df.g0.L4.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ Array(1) ] to deeply equal [] [call @ tests/performance/milestone1-baselines.test.ts:801]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:14:45.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "a4913c42df.g0.L4.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ Array(1) ] to deeply equal [] [call @ tests/performance/milestone1-baselines.test.ts:801]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:15:03.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L5": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "a4913c42df.g0.L5.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L5.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L5.r1.trace.jsonl --det-disable=time,timers,net,fs,seeds",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:15:22.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "a4913c42df.g0.L5.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L5.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L5.r2.trace.jsonl --det-disable=time,timers,net,fs,seeds",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:15:28.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L5",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "a4913c42df.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/performance/milestone1-baselines.test.ts"
+      ]
+     },
+     {
+      "tag": "a4913c42df.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/performance/milestone1-baselines.test.ts"
+      ]
+     },
+     {
+      "tag": "a4913c42df.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/performance/milestone1-baselines.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/performance/milestone1-baselines.test.ts::Baseline: Coherence Gate Energy::computeEnergy: complex artifact (retrieval tier)": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected 170098.94400000572 to be less than 5000 [call @ tests/performance/milestone1-baselines.test.ts:385]",
+    "AssertionError: expected 170098.94400000572 to be less than 5000 [call @ tests/performance/milestone1-baselines.test.ts:385]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/performance/milestone1-baselines.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "a4913c42df.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 170098.94400000572 to be less than 5000 [call @ tests/performance/milestone1-baselines.test.ts:385]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:12:11.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "a4913c42df.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 170098.94400000572 to be less than 5000 [call @ tests/performance/milestone1-baselines.test.ts:385]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:12:30.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "a4913c42df.g0.L2a.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 170098.94400000572 to be less than 5000 [call @ tests/performance/milestone1-baselines.test.ts:385]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:12:50.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "a4913c42df.g0.L2a.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 170098.94400000572 to be less than 5000 [call @ tests/performance/milestone1-baselines.test.ts:385]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:13:08.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "a4913c42df.g0.L2b.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 170098.94400000572 to be less than 5000 [call @ tests/performance/milestone1-baselines.test.ts:385]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:13:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "a4913c42df.g0.L2b.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 170098.94400000572 to be less than 5000 [call @ tests/performance/milestone1-baselines.test.ts:385]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:13:47.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "a4913c42df.g0.L3.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 170098.94400000572 to be less than 5000 [call @ tests/performance/milestone1-baselines.test.ts:385]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:14:06.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "a4913c42df.g0.L3.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 170098.94400000572 to be less than 5000 [call @ tests/performance/milestone1-baselines.test.ts:385]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:14:26.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "a4913c42df.g0.L4.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:14:45.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "a4913c42df.g0.L4.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:15:03.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L4",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "a4913c42df.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/performance/milestone1-baselines.test.ts"
+      ]
+     },
+     {
+      "tag": "a4913c42df.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/performance/milestone1-baselines.test.ts"
+      ]
+     },
+     {
+      "tag": "a4913c42df.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/performance/milestone1-baselines.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/performance/milestone1-baselines.test.ts::Baseline: Coherence Gate Energy::computeEnergy: simple artifact (reflex tier)": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected 2998004.8572 to be less than 100 [call @ tests/performance/milestone1-baselines.test.ts:355]",
+    "AssertionError: expected 2998004.8572 to be less than 100 [call @ tests/performance/milestone1-baselines.test.ts:355]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/performance/milestone1-baselines.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "a4913c42df.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 2998004.8572 to be less than 100 [call @ tests/performance/milestone1-baselines.test.ts:355]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:12:11.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "a4913c42df.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 2998004.8572 to be less than 100 [call @ tests/performance/milestone1-baselines.test.ts:355]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:12:30.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "a4913c42df.g0.L2a.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 2998004.8572 to be less than 100 [call @ tests/performance/milestone1-baselines.test.ts:355]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:12:50.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "a4913c42df.g0.L2a.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 2998004.8572 to be less than 100 [call @ tests/performance/milestone1-baselines.test.ts:355]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:13:08.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "a4913c42df.g0.L2b.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 2998004.8572 to be less than 100 [call @ tests/performance/milestone1-baselines.test.ts:355]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:13:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "a4913c42df.g0.L2b.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 2998004.8572 to be less than 100 [call @ tests/performance/milestone1-baselines.test.ts:355]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:13:47.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "a4913c42df.g0.L3.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 2998004.8572 to be less than 100 [call @ tests/performance/milestone1-baselines.test.ts:355]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:14:06.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "a4913c42df.g0.L3.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 2998004.8572 to be less than 100 [call @ tests/performance/milestone1-baselines.test.ts:355]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:14:26.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "a4913c42df.g0.L4.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:14:45.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "a4913c42df.g0.L4.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:15:03.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L4",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "a4913c42df.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/performance/milestone1-baselines.test.ts"
+      ]
+     },
+     {
+      "tag": "a4913c42df.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/performance/milestone1-baselines.test.ts"
+      ]
+     },
+     {
+      "tag": "a4913c42df.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/performance/milestone1-baselines.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "a4913c42df.alone.r1",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.alone.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 20.2,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T06:11:31.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/performance/milestone1-baselines.test.ts::Baseline Summary::all baseline measurements within expected bounds": "failed",
+    "tests/performance/milestone1-baselines.test.ts::Baseline: Coherence Gate Energy::computeEnergy: complex artifact (retrieval tier)": "failed",
+    "tests/performance/milestone1-baselines.test.ts::Baseline: Coherence Gate Energy::computeEnergy: simple artifact (reflex tier)": "failed"
+   },
+   "exc": {
+    "tests/performance/milestone1-baselines.test.ts::Baseline Summary::all baseline measurements within expected bounds": "AssertionError: expected [ \u2026(2) ] to deeply equal [] [call @ tests/performance/milestone1-baselines.test.ts:801]",
+    "tests/performance/milestone1-baselines.test.ts::Baseline: Coherence Gate Energy::computeEnergy: complex artifact (retrieval tier)": "AssertionError: expected 170098.94400000572 to be less than 5000 [call @ tests/performance/milestone1-baselines.test.ts:385]",
+    "tests/performance/milestone1-baselines.test.ts::Baseline: Coherence Gate Energy::computeEnergy: simple artifact (reflex tier)": "AssertionError: expected 2998004.8572 to be less than 100 [call @ tests/performance/milestone1-baselines.test.ts:355]"
+   }
+  },
+  {
+   "tag": "a4913c42df.alone.r2",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/performance/milestone1-baselines.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.alone.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/a4913c42df.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 17.68,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T06:11:53.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/performance/milestone1-baselines.test.ts::Baseline Summary::all baseline measurements within expected bounds": "failed",
+    "tests/performance/milestone1-baselines.test.ts::Baseline: Coherence Gate Energy::computeEnergy: complex artifact (retrieval tier)": "failed",
+    "tests/performance/milestone1-baselines.test.ts::Baseline: Coherence Gate Energy::computeEnergy: simple artifact (reflex tier)": "failed"
+   },
+   "exc": {
+    "tests/performance/milestone1-baselines.test.ts::Baseline Summary::all baseline measurements within expected bounds": "AssertionError: expected [ \u2026(2) ] to deeply equal [] [call @ tests/performance/milestone1-baselines.test.ts:801]",
+    "tests/performance/milestone1-baselines.test.ts::Baseline: Coherence Gate Energy::computeEnergy: complex artifact (retrieval tier)": "AssertionError: expected 170098.94400000572 to be less than 5000 [call @ tests/performance/milestone1-baselines.test.ts:385]",
+    "tests/performance/milestone1-baselines.test.ts::Baseline: Coherence Gate Energy::computeEnergy: simple artifact (reflex tier)": "AssertionError: expected 2998004.8572 to be less than 100 [call @ tests/performance/milestone1-baselines.test.ts:355]"
+   }
+  }
+ ],
+ "complete": true
+}

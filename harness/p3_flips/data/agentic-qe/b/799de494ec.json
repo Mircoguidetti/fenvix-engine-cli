@@ -1,0 +1,401 @@
+{
+ "repo": "agentic-qe",
+ "file": "tests/unit/coordination/handlers/coverage-runner.test.ts",
+ "slug": "799de494ec",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "cases": {
+  "tests/unit/coordination/handlers/coverage-runner.test.ts::#995 review B1 \u2014 process-tree timeout::leaves no surviving child and no temp dir after a hanging test run": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: worker survived the timeout: expected true to be false // Object.is equality [call @ tests/unit/coordination/handlers/coverage-runner.test.ts:102]",
+    "AssertionError: worker survived the timeout: expected true to be false // Object.is equality [call @ tests/unit/coordination/handlers/coverage-runner.test.ts:102]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/unit/coordination/handlers/coverage-runner.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "799de494ec.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/coordination/handlers/coverage-runner.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:22:46.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "799de494ec.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/coordination/handlers/coverage-runner.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:22:58.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "799de494ec.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/handlers/coverage-runner.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/handlers/coverage-runner.test.ts"
+      ]
+     },
+     {
+      "tag": "799de494ec.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/handlers/coverage-runner.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/handlers/coverage-runner.test.ts"
+      ]
+     },
+     {
+      "tag": "799de494ec.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/handlers/coverage-runner.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/handlers/coverage-runner.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/unit/coordination/handlers/coverage-runner.test.ts::#995 review BL1 \u2014 coverage group dies with the host::kills the group and removes the temp dir when the client closes stdin": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: runner survived the host: expected true to be false // Object.is equality [call @ tests/unit/coordination/handlers/coverage-runner.test.ts:196]",
+    "AssertionError: runner survived the host: expected true to be false // Object.is equality [call @ tests/unit/coordination/handlers/coverage-runner.test.ts:196]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/unit/coordination/handlers/coverage-runner.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "799de494ec.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/coordination/handlers/coverage-runner.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:22:46.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "799de494ec.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/coordination/handlers/coverage-runner.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:22:58.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "799de494ec.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/handlers/coverage-runner.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/handlers/coverage-runner.test.ts"
+      ]
+     },
+     {
+      "tag": "799de494ec.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/handlers/coverage-runner.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/handlers/coverage-runner.test.ts"
+      ]
+     },
+     {
+      "tag": "799de494ec.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/handlers/coverage-runner.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/handlers/coverage-runner.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/unit/coordination/handlers/coverage-runner.test.ts::#995 review BL1 \u2014 coverage group dies with the host::kills the group and removes the temp dir when the host gets SIGTERM": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: runner survived the host: expected true to be false // Object.is equality [call @ tests/unit/coordination/handlers/coverage-runner.test.ts:196]",
+    "AssertionError: runner survived the host: expected true to be false // Object.is equality [call @ tests/unit/coordination/handlers/coverage-runner.test.ts:196]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/unit/coordination/handlers/coverage-runner.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "799de494ec.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/coordination/handlers/coverage-runner.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:22:46.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "799de494ec.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/coordination/handlers/coverage-runner.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:22:58.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "799de494ec.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/handlers/coverage-runner.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/handlers/coverage-runner.test.ts"
+      ]
+     },
+     {
+      "tag": "799de494ec.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/handlers/coverage-runner.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/handlers/coverage-runner.test.ts"
+      ]
+     },
+     {
+      "tag": "799de494ec.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/coordination/handlers/coverage-runner.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/coordination/handlers/coverage-runner.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "799de494ec.alone.r1",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/coordination/handlers/coverage-runner.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.alone.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 4.71,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T06:22:34.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/unit/coordination/handlers/coverage-runner.test.ts::#995 review B1 \u2014 process-tree timeout::leaves no surviving child and no temp dir after a hanging test run": "failed",
+    "tests/unit/coordination/handlers/coverage-runner.test.ts::#995 review BL1 \u2014 coverage group dies with the host::kills the group and removes the temp dir when the client closes stdin": "failed",
+    "tests/unit/coordination/handlers/coverage-runner.test.ts::#995 review BL1 \u2014 coverage group dies with the host::kills the group and removes the temp dir when the host gets SIGTERM": "failed"
+   },
+   "exc": {
+    "tests/unit/coordination/handlers/coverage-runner.test.ts::#995 review B1 \u2014 process-tree timeout::leaves no surviving child and no temp dir after a hanging test run": "AssertionError: worker survived the timeout: expected true to be false // Object.is equality [call @ tests/unit/coordination/handlers/coverage-runner.test.ts:102]",
+    "tests/unit/coordination/handlers/coverage-runner.test.ts::#995 review BL1 \u2014 coverage group dies with the host::kills the group and removes the temp dir when the client closes stdin": "AssertionError: runner survived the host: expected true to be false // Object.is equality [call @ tests/unit/coordination/handlers/coverage-runner.test.ts:196]",
+    "tests/unit/coordination/handlers/coverage-runner.test.ts::#995 review BL1 \u2014 coverage group dies with the host::kills the group and removes the temp dir when the host gets SIGTERM": "AssertionError: runner survived the host: expected true to be false // Object.is equality [call @ tests/unit/coordination/handlers/coverage-runner.test.ts:196]"
+   }
+  },
+  {
+   "tag": "799de494ec.alone.r2",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/coordination/handlers/coverage-runner.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.alone.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/799de494ec.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 4.82,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T06:22:40.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/unit/coordination/handlers/coverage-runner.test.ts::#995 review B1 \u2014 process-tree timeout::leaves no surviving child and no temp dir after a hanging test run": "failed",
+    "tests/unit/coordination/handlers/coverage-runner.test.ts::#995 review BL1 \u2014 coverage group dies with the host::kills the group and removes the temp dir when the client closes stdin": "failed",
+    "tests/unit/coordination/handlers/coverage-runner.test.ts::#995 review BL1 \u2014 coverage group dies with the host::kills the group and removes the temp dir when the host gets SIGTERM": "failed"
+   },
+   "exc": {
+    "tests/unit/coordination/handlers/coverage-runner.test.ts::#995 review B1 \u2014 process-tree timeout::leaves no surviving child and no temp dir after a hanging test run": "AssertionError: worker survived the timeout: expected true to be false // Object.is equality [call @ tests/unit/coordination/handlers/coverage-runner.test.ts:102]",
+    "tests/unit/coordination/handlers/coverage-runner.test.ts::#995 review BL1 \u2014 coverage group dies with the host::kills the group and removes the temp dir when the client closes stdin": "AssertionError: runner survived the host: expected true to be false // Object.is equality [call @ tests/unit/coordination/handlers/coverage-runner.test.ts:196]",
+    "tests/unit/coordination/handlers/coverage-runner.test.ts::#995 review BL1 \u2014 coverage group dies with the host::kills the group and removes the temp dir when the host gets SIGTERM": "AssertionError: runner survived the host: expected true to be false // Object.is equality [call @ tests/unit/coordination/handlers/coverage-runner.test.ts:196]"
+   }
+  }
+ ],
+ "complete": true
+}

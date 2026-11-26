@@ -1,0 +1,2183 @@
+{
+ "repo": "agentic-qe",
+ "file": "tests/integration/package-exports-esm.integration.test.ts",
+ "slug": "8da226420a",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "cases": {
+  "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::exposes pattern mutation outcomes from the package root": {
+   "kind": "reverse",
+   "results": [
+    "failed",
+    "failed",
+    "skipped",
+    "skipped"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-759 / npm error code ENOENT / npm error syscall open / npm error path / [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+    "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-24532 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/integration/package-exports-esm.integration.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18787 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:18.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18895 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:24.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L2a.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18999 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:31.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L2a.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19104 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:37.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L2b.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19209 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:43.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L2b.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19327 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:49.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L3.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19434 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:55.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L3.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19539 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:01.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L4.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19650 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:08.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L4.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19755 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:14.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L5": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L5.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r1.trace.jsonl --det-disable=time,timers,net,fs,seeds",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: node:internal/modules/esm/resolve:275 / throw new ERR_MODULE_NOT_FOUND( / ^ / Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19859/node_ [call @ tests/integration/package-exports-esm.integration.test.ts:78]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:21.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L5.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r2.trace.jsonl --det-disable=time,timers,net,fs,seeds",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: node:internal/modules/esm/resolve:275 / throw new ERR_MODULE_NOT_FOUND( / ^ / Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-20021/node_ [call @ tests/integration/package-exports-esm.integration.test.ts:78]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:36.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L5",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "8da226420a.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "failed",
+      "failure": "AssertionError: node:internal/modules/esm/resolve:275",
+      "applied": [
+       "tests/integration/package-exports-esm.integration.test.ts"
+      ]
+     },
+     {
+      "tag": "8da226420a.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "failed",
+      "failure": "AssertionError: node:internal/modules/esm/resolve:275",
+      "applied": [
+       "tests/integration/package-exports-esm.integration.test.ts"
+      ]
+     },
+     {
+      "tag": "8da226420a.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "failed",
+      "failure": "AssertionError: node:internal/modules/esm/resolve:275",
+      "applied": [
+       "tests/integration/package-exports-esm.integration.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::includes the published verdict schemas": {
+   "kind": "skipped-in-det",
+   "results": [
+    "passed",
+    "passed",
+    "skipped",
+    "skipped"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-759 / npm error code ENOENT / npm error syscall open / npm error path / [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+    "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-24532 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/integration/package-exports-esm.integration.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18787 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:18.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18895 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:24.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L2a.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18999 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:31.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L2a.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19104 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:37.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L2b.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19209 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:43.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L2b.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19327 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:49.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L3.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19434 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:55.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L3.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19539 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:01.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L4.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19650 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:08.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L4.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19755 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:14.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L5": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L5.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r1.trace.jsonl --det-disable=time,timers,net,fs,seeds",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:21.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L5.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r2.trace.jsonl --det-disable=time,timers,net,fs,seeds",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:36.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L5",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "8da226420a.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/package-exports-esm.integration.test.ts"
+      ]
+     },
+     {
+      "tag": "8da226420a.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/package-exports-esm.integration.test.ts"
+      ]
+     },
+     {
+      "tag": "8da226420a.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/integration/package-exports-esm.integration.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::reports the package version from the public CLI export": {
+   "kind": "reverse",
+   "results": [
+    "failed",
+    "failed",
+    "skipped",
+    "skipped"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-759 / npm error code ENOENT / npm error syscall open / npm error path / [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+    "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-24532 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/integration/package-exports-esm.integration.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18787 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:18.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18895 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:24.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L2a.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18999 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:31.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L2a.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19104 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:37.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L2b.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19209 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:43.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L2b.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19327 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:49.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L3.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19434 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:55.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L3.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19539 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:01.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L4.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19650 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:08.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L4.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19755 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:14.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L5": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L5.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r1.trace.jsonl --det-disable=time,timers,net,fs,seeds",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: node:internal/modules/esm/resolve:275 / throw new ERR_MODULE_NOT_FOUND( / ^ / Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19859/node_ [call @ tests/integration/package-exports-esm.integration.test.ts:61]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:21.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L5.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r2.trace.jsonl --det-disable=time,timers,net,fs,seeds",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: node:internal/modules/esm/resolve:275 / throw new ERR_MODULE_NOT_FOUND( / ^ / Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-20021/node_ [call @ tests/integration/package-exports-esm.integration.test.ts:61]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:36.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L5",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "8da226420a.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "failed",
+      "failure": "AssertionError: node:internal/modules/esm/resolve:275",
+      "applied": [
+       "tests/integration/package-exports-esm.integration.test.ts"
+      ]
+     },
+     {
+      "tag": "8da226420a.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "failed",
+      "failure": "AssertionError: node:internal/modules/esm/resolve:275",
+      "applied": [
+       "tests/integration/package-exports-esm.integration.test.ts"
+      ]
+     },
+     {
+      "tag": "8da226420a.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "failed",
+      "failure": "AssertionError: node:internal/modules/esm/resolve:275",
+      "applied": [
+       "tests/integration/package-exports-esm.integration.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::runs the installed QE Court executable from the packed artifact": {
+   "kind": "reverse",
+   "results": [
+    "failed",
+    "failed",
+    "skipped",
+    "skipped"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-759 / npm error code ENOENT / npm error syscall open / npm error path / [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+    "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-24532 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/integration/package-exports-esm.integration.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18787 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:18.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18895 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:24.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L2a.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18999 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:31.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L2a.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19104 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:37.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L2b.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19209 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:43.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L2b.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19327 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:49.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L3.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19434 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:55.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L3.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19539 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:01.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L4.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19650 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:08.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L4.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19755 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:14.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L5": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L5.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r1.trace.jsonl --det-disable=time,timers,net,fs,seeds",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: node:internal/modules/cjs/loader:1433 / throw err; / ^ / Error: Cannot find module '/tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19859/node_modules/agentic-qe/dist/skills/qe-court/cli. [call @ tests/integration/package-exports-esm.integration.test.ts:106]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:21.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L5.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r2.trace.jsonl --det-disable=time,timers,net,fs,seeds",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: node:internal/modules/cjs/loader:1433 / throw err; / ^ / Error: Cannot find module '/tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-20021/node_modules/agentic-qe/dist/skills/qe-court/cli. [call @ tests/integration/package-exports-esm.integration.test.ts:106]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:36.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L5",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "8da226420a.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "failed",
+      "failure": "AssertionError: node:internal/modules/cjs/loader:1433",
+      "applied": [
+       "tests/integration/package-exports-esm.integration.test.ts"
+      ]
+     },
+     {
+      "tag": "8da226420a.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "failed",
+      "failure": "AssertionError: node:internal/modules/cjs/loader:1433",
+      "applied": [
+       "tests/integration/package-exports-esm.integration.test.ts"
+      ]
+     },
+     {
+      "tag": "8da226420a.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "failed",
+      "failure": "AssertionError: node:internal/modules/cjs/loader:1433",
+      "applied": [
+       "tests/integration/package-exports-esm.integration.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::should_importCoordinatorGNN_when_loadedByNativeNodeESM": {
+   "kind": "reverse",
+   "results": [
+    "failed",
+    "failed",
+    "skipped",
+    "skipped"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-759 / npm error code ENOENT / npm error syscall open / npm error path / [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+    "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-24532 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/integration/package-exports-esm.integration.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18787 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:18.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18895 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:24.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L2a.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18999 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:31.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L2a.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19104 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:37.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L2b.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19209 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:43.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L2b.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19327 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:49.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L3.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19434 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:55.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L3.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19539 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:01.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L4.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19650 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:08.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L4.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19755 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:14.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L5": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L5.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r1.trace.jsonl --det-disable=time,timers,net,fs,seeds",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: code-intelligence coordinator GNN: node:internal/modules/esm/resolve:275 / throw new ERR_MODULE_NOT_FOUND( / ^ / Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/pm-p3/repos/agentic-qe/node_modu [call @ tests/integration/package-exports-esm.integration.test.ts:125]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:21.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L5.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r2.trace.jsonl --det-disable=time,timers,net,fs,seeds",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: code-intelligence coordinator GNN: node:internal/modules/esm/resolve:275 / throw new ERR_MODULE_NOT_FOUND( / ^ / Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/pm-p3/repos/agentic-qe/node_modu [call @ tests/integration/package-exports-esm.integration.test.ts:125]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:36.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L5",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "8da226420a.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "failed",
+      "failure": "AssertionError: code-intelligence coordinator GNN: node:internal/modules/esm/resolve:275",
+      "applied": [
+       "tests/integration/package-exports-esm.integration.test.ts"
+      ]
+     },
+     {
+      "tag": "8da226420a.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "failed",
+      "failure": "AssertionError: code-intelligence coordinator GNN: node:internal/modules/esm/resolve:275",
+      "applied": [
+       "tests/integration/package-exports-esm.integration.test.ts"
+      ]
+     },
+     {
+      "tag": "8da226420a.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "failed",
+      "failure": "AssertionError: code-intelligence coordinator GNN: node:internal/modules/esm/resolve:275",
+      "applied": [
+       "tests/integration/package-exports-esm.integration.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::should_importEveryDeclaredExport_when_loadedByNativeNodeESM": {
+   "kind": "reverse",
+   "results": [
+    "failed",
+    "failed",
+    "skipped",
+    "skipped"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-759 / npm error code ENOENT / npm error syscall open / npm error path / [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+    "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-24532 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/integration/package-exports-esm.integration.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18787 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:18.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18895 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:24.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L2a.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18999 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:31.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L2a.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19104 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:37.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L2b.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19209 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:43.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L2b.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19327 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:49.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L3.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19434 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:55.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L3.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19539 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:01.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L4.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19650 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:08.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L4.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19755 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:14.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L5": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L5.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r1.trace.jsonl --det-disable=time,timers,net,fs,seeds",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: package export .: node:internal/modules/esm/resolve:275 / throw new ERR_MODULE_NOT_FOUND( / ^ / Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pa [call @ tests/integration/package-exports-esm.integration.test.ts:125]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:21.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L5.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r2.trace.jsonl --det-disable=time,timers,net,fs,seeds",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: package export .: node:internal/modules/esm/resolve:275 / throw new ERR_MODULE_NOT_FOUND( / ^ / Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pa [call @ tests/integration/package-exports-esm.integration.test.ts:125]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:36.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L5",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "8da226420a.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "failed",
+      "failure": "AssertionError: package export .: node:internal/modules/esm/resolve:275",
+      "applied": [
+       "tests/integration/package-exports-esm.integration.test.ts"
+      ]
+     },
+     {
+      "tag": "8da226420a.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "failed",
+      "failure": "AssertionError: package export .: node:internal/modules/esm/resolve:275",
+      "applied": [
+       "tests/integration/package-exports-esm.integration.test.ts"
+      ]
+     },
+     {
+      "tag": "8da226420a.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "failed",
+      "failure": "AssertionError: package export .: node:internal/modules/esm/resolve:275",
+      "applied": [
+       "tests/integration/package-exports-esm.integration.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::should_importRuVectorBarrel_when_loadedByNativeNodeESM": {
+   "kind": "reverse",
+   "results": [
+    "failed",
+    "failed",
+    "skipped",
+    "skipped"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-759 / npm error code ENOENT / npm error syscall open / npm error path / [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+    "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-24532 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/integration/package-exports-esm.integration.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18787 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:18.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18895 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:24.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L2a.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18999 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:31.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L2a.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19104 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:37.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L2b.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19209 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:43.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L2b.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19327 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:49.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L3.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19434 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:52:55.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L3.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19539 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:01.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L4.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19650 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:08.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L4.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "skipped",
+       "failure": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-19755 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:14.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L5": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "8da226420a.g0.L5.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r1.trace.jsonl --det-disable=time,timers,net,fs,seeds",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: RuVector barrel: node:internal/modules/esm/resolve:275 / throw new ERR_MODULE_NOT_FOUND( / ^ / Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pac [call @ tests/integration/package-exports-esm.integration.test.ts:125]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:21.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8da226420a.g0.L5.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.L5.r2.trace.jsonl --det-disable=time,timers,net,fs,seeds",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: RuVector barrel: node:internal/modules/esm/resolve:275 / throw new ERR_MODULE_NOT_FOUND( / ^ / Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pac [call @ tests/integration/package-exports-esm.integration.test.ts:125]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:53:36.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L5",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "8da226420a.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "failed",
+      "failure": "AssertionError: RuVector barrel: node:internal/modules/esm/resolve:275",
+      "applied": [
+       "tests/integration/package-exports-esm.integration.test.ts"
+      ]
+     },
+     {
+      "tag": "8da226420a.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "failed",
+      "failure": "AssertionError: RuVector barrel: node:internal/modules/esm/resolve:275",
+      "applied": [
+       "tests/integration/package-exports-esm.integration.test.ts"
+      ]
+     },
+     {
+      "tag": "8da226420a.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "failed",
+      "failure": "AssertionError: RuVector barrel: node:internal/modules/esm/resolve:275",
+      "applied": [
+       "tests/integration/package-exports-esm.integration.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "8da226420a.alone.r1",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.alone.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 5.05,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T05:52:06.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::exposes pattern mutation outcomes from the package root": "skipped",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::includes the published verdict schemas": "skipped",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::reports the package version from the public CLI export": "skipped",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::runs the installed QE Court executable from the packed artifact": "skipped",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::should_importCoordinatorGNN_when_loadedByNativeNodeESM": "skipped",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::should_importEveryDeclaredExport_when_loadedByNativeNodeESM": "skipped",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::should_importRuVectorBarrel_when_loadedByNativeNodeESM": "skipped"
+   },
+   "exc": {
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::exposes pattern mutation outcomes from the package root": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18579 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::includes the published verdict schemas": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18579 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::reports the package version from the public CLI export": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18579 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::runs the installed QE Court executable from the packed artifact": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18579 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::should_importCoordinatorGNN_when_loadedByNativeNodeESM": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18579 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::should_importEveryDeclaredExport_when_loadedByNativeNodeESM": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18579 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::should_importRuVectorBarrel_when_loadedByNativeNodeESM": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18579 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]"
+   }
+  },
+  {
+   "tag": "8da226420a.alone.r2",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/integration/package-exports-esm.integration.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.alone.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/8da226420a.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 4.78,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T05:52:12.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::exposes pattern mutation outcomes from the package root": "skipped",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::includes the published verdict schemas": "skipped",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::reports the package version from the public CLI export": "skipped",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::runs the installed QE Court executable from the packed artifact": "skipped",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::should_importCoordinatorGNN_when_loadedByNativeNodeESM": "skipped",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::should_importEveryDeclaredExport_when_loadedByNativeNodeESM": "skipped",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::should_importRuVectorBarrel_when_loadedByNativeNodeESM": "skipped"
+   },
+   "exc": {
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::exposes pattern mutation outcomes from the package root": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18683 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::includes the published verdict schemas": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18683 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::reports the package version from the public CLI export": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18683 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::runs the installed QE Court executable from the packed artifact": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18683 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::should_importCoordinatorGNN_when_loadedByNativeNodeESM": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18683 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::should_importEveryDeclaredExport_when_loadedByNativeNodeESM": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18683 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]",
+    "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::should_importRuVectorBarrel_when_loadedByNativeNodeESM": "Error: Command failed: npm pack --json --ignore-scripts --pack-destination /tmp/pm-p3/repos/agentic-qe/node_modules/.cache/aqe-pack-esm-18683 / npm error code ENOENT / npm error syscall open / npm error path [setup @ tests/integration/package-exports-esm.integration.test.ts:23]"
+   }
+  }
+ ],
+ "complete": true
+}

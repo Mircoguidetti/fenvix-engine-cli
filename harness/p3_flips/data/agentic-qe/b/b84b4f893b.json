@@ -1,0 +1,668 @@
+{
+ "repo": "agentic-qe",
+ "file": "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts",
+ "slug": "b84b4f893b",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "cases": {
+  "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts::brain-checkpoint generated helper keeps the last checkpoint (#1238)::should_sweepTempFilesOfAKilledRun_andKeepThoseOfALiveOne": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+    "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "b84b4f893b.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:29:41.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "b84b4f893b.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:29:45.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "b84b4f893b.g0.L2a.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:29:49.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "b84b4f893b.g0.L2a.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:29:52.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "b84b4f893b.g0.L2b.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:29:57.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "b84b4f893b.g0.L2b.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:30:01.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "b84b4f893b.g0.L3.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:30:04.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "b84b4f893b.g0.L3.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:30:08.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "b84b4f893b.g0.L4.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:30:12.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "b84b4f893b.g0.L4.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:30:16.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L5": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "b84b4f893b.g0.L5.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L5.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L5.r1.trace.jsonl --det-disable=time,timers,net,fs,seeds",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:30:19.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "b84b4f893b.g0.L5.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L5.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L5.r2.trace.jsonl --det-disable=time,timers,net,fs,seeds",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:30:23.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L5",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "b84b4f893b.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts"
+      ]
+     },
+     {
+      "tag": "b84b4f893b.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts"
+      ]
+     },
+     {
+      "tag": "b84b4f893b.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts::brain-checkpoint shipped helper keeps the last checkpoint (#1238)::should_sweepTempFilesOfAKilledRun_andKeepThoseOfALiveOne": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+    "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "b84b4f893b.g0.L1.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:29:41.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "b84b4f893b.g0.L1.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T06:29:45.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "b84b4f893b.g0.L2a.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:29:49.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "b84b4f893b.g0.L2a.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:29:52.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "b84b4f893b.g0.L2b.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:29:57.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "b84b4f893b.g0.L2b.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:30:01.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "b84b4f893b.g0.L3.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:30:04.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "b84b4f893b.g0.L3.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:30:08.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "b84b4f893b.g0.L4.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:30:12.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "b84b4f893b.g0.L4.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:30:16.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L5": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "b84b4f893b.g0.L5.r1",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L5.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L5.r1.trace.jsonl --det-disable=time,timers,net,fs,seeds",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:30:19.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "b84b4f893b.g0.L5.r2",
+       "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L5.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.L5.r2.trace.jsonl --det-disable=time,timers,net,fs,seeds",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T06:30:23.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L5",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "b84b4f893b.g0.control.r1",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts"
+      ]
+     },
+     {
+      "tag": "b84b4f893b.g0.control.r2",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts"
+      ]
+     },
+     {
+      "tag": "b84b4f893b.g0.control.r3",
+      "cmd": "npx --no-install vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --config /tmp/pm-p3/repos/agentic-qe/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/agentic-qe/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "b84b4f893b.alone.r1",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.alone.r1.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 2.64,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T06:29:34.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts::brain-checkpoint generated helper keeps the last checkpoint (#1238)::should_sweepTempFilesOfAKilledRun_andKeepThoseOfALiveOne": "failed",
+    "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts::brain-checkpoint shipped helper keeps the last checkpoint (#1238)::should_sweepTempFilesOfAKilledRun_andKeepThoseOfALiveOne": "failed"
+   },
+   "exc": {
+    "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts::brain-checkpoint generated helper keeps the last checkpoint (#1238)::should_sweepTempFilesOfAKilledRun_andKeepThoseOfALiveOne": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+    "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts::brain-checkpoint shipped helper keeps the last checkpoint (#1238)::should_sweepTempFilesOfAKilledRun_andKeepThoseOfALiveOne": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]"
+   }
+  },
+  {
+   "tag": "b84b4f893b.alone.r2",
+   "cmd": "node /tmp/pm-p3/engine-base/node/bin/detjs.js vitest run --bail=0 tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.alone.r2.outcomes.json --det-trace=/tmp/pm-p3/find/agentic-qe/b/runs/b84b4f893b.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 2.69,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T06:29:38.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts::brain-checkpoint generated helper keeps the last checkpoint (#1238)::should_sweepTempFilesOfAKilledRun_andKeepThoseOfALiveOne": "failed",
+    "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts::brain-checkpoint shipped helper keeps the last checkpoint (#1238)::should_sweepTempFilesOfAKilledRun_andKeepThoseOfALiveOne": "failed"
+   },
+   "exc": {
+    "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts::brain-checkpoint generated helper keeps the last checkpoint (#1238)::should_sweepTempFilesOfAKilledRun_andKeepThoseOfALiveOne": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]",
+    "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts::brain-checkpoint shipped helper keeps the last checkpoint (#1238)::should_sweepTempFilesOfAKilledRun_andKeepThoseOfALiveOne": "AssertionError: expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ] [call @ tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153]"
+   }
+  }
+ ],
+ "complete": true
+}
