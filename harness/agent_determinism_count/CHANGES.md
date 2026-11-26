@@ -158,3 +158,13 @@
     the rate-limited answers (429, or 403 with a rate-limit message). It also carries sleep_s, the seconds slept by
     cause: rate_limit, pacing and server_error. Chunk 8 is the first chunk recorded this way; chunk 6 took 47.0 min
     against 18-30 min for chunks 4-5, with no count recorded. Test: test_client_counts_rate_limits_and_sleep_by_cause.
+21. 2026-11-26 19:01Z, a founder decision ("lettura A", main-ceo-review-adc-reading-time-20261126-190500.md, relayed by
+    the coordinator). Reading time must not decide the idea. The 24 h reading budget (READ_BUDGET_H) is withdrawn,
+    and so is the `DROP (memo line)` it triggered. Reading goes on in §4.1 order until 50 pain-yes members are
+    confirmed (CONTINUE) or until 15 Dec 2026. Fewer than 50 then gives `NOT ENOUGH DATA`: the read count, the rate,
+    and the projected count over the whole pool with its interval. DROP only if that projection's upper bound is
+    below 50. Membership and pain rules, the threshold 50 and the date are unchanged. The shared search budget is
+    still yielded (test-quality-count, then idea 3 C5.3), with 429 numbers reported per chunk. The watchdog keeps
+    running. Reports go out at each 10 pain-yes and once a day. Put to the coordinator at 19:03Z before decide()
+    changes: which pool the projection uses (the candidates per stratum, or N_s, which counts unread hits), whether
+    the early DROP by bounds stays, and whether the stop is 2026-12-14 12:00 UTC or 15 Dec.

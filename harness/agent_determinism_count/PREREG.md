@@ -8,6 +8,14 @@ with its reason, before any result. The code constants live in `rules.py`; the a
 
 ## Decision line (memo; threshold ASSUMED by the coordinator)
 
+**Reading time (founder decision "lettura A", 2026-11-26 19:01Z, main-ceo-review-adc-reading-time-20261126-190500.md;
+CHANGES.md item 21).** Reading time must not decide the idea. There is no 24 h reading cap: reading goes on, in §4.1
+order, until 50 pain-yes members are confirmed (CONTINUE) or until 15 Dec 2026. With fewer than 50 at that point the
+outcome is `NOT ENOUGH DATA`, reported with the read count, the rate and the projected count over the whole pool with
+its interval; DROP only if the upper bound of that projection is below 50. The membership and pain rules are
+unchanged. The `DROP (memo line)` below no longer applies. The pool the projection uses and the early DROP are put to
+the coordinator (2026-11-26 19:03Z); their answer is recorded in CHANGES.md before decide() changes.
+
 By 15 Dec 2026: if fewer than **50** public agent repositories show agent-test non-determinism pain, the
 "deterministic for agents" second use is dropped and the 24 Nov answer stands. CONTINUE needs 50 actual member
 repositories with pain `yes` (all strata) and the AC4 hand check passing.
