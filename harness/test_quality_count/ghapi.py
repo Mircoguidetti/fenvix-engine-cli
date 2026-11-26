@@ -17,10 +17,12 @@ import urllib.request
 
 API = "https://api.github.com"
 UA = "fenvix-research"
-GAPS = {"code": 60.0 / 9 + 0.1, "issues": 60.0 / 25 + 0.1}
+GAPS = {"code": 7.0,  # CHANGES.md 17 (was 60/9 + 0.1)
+        "issues": 60.0 / 25 + 0.1}
 RESOURCE = {"code": "code_search", "issues": "search", None: "core"}
 
 
+SECONDARY_WAIT = 60.0
 LIMIT_KEYS = ("x-ratelimit-resource", "x-ratelimit-limit", "x-ratelimit-remaining", "x-ratelimit-reset",
               "retry-after")
 
@@ -144,6 +146,8 @@ class Client:
             h = {k.lower(): v for k, v in hd.items()}
             if st == 429 or (st == 403 and ("rate limit" in msg or "abuse" in msg or "retry-after" in h)):
                 sl = retry_seconds(msg, h)
+                if search == "code" and "limit=secondary" in limit_info(msg, h):
+                    sl = max(sl, SECONDARY_WAIT)  # CHANGES.md 17
                 sys.stderr.write(f"rate limited ({st}) on {path[:90]}: sleeping {sl:.0f}s {limit_info(msg, h)}\n")
                 time.sleep(min(sl, 3700))
                 continue

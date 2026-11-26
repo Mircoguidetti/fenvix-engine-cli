@@ -60,3 +60,8 @@ search request, probe or candidate read (no data existed); none changes the deci
     stderr line also gives the limit headers (`x-ratelimit-resource`, `-limit`, `-remaining`, `-reset`, `retry-after`)
     and `limit=primary|secondary|unknown`. Justification: 65 code-search 429s in 90 min; find who shares the budget.
     No rule, regex, query, rate or budget changes; earlier 429 lines lack these fields.
+17. Pacing change (2026-11-26 22:46Z, during discovery, at the coordinator's request): code search is spaced at least
+    7.0 s between requests (was 60/9 + 0.1 = 6.77 s; still one request at a time, still within <= 9/min), and after a
+    code-search 429 marked `limit=secondary` the next request waits max(retry_seconds, 60 s). Justification: 132
+    secondary 429s in 3 slices with the primary budget untouched (CHANGES.md 16); this is GitHub's secondary limit on
+    our own pace. No rule, regex, query or budget changes.
