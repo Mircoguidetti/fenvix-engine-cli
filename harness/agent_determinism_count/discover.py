@@ -199,6 +199,26 @@ EXT_HOURS = 6.0
 
 
 def run(family: str, route: str, max_minutes: float, deadline: str | None, ext: bool = False) -> int:
+    """_run, stopped cleanly when the client reaches the budget end or hard stop (a node cut short is not recorded and
+    stays on the stack, so it enters N_s as truncated)."""
+    import ghapi
+    try:
+        return _run(family, route, max_minutes, deadline, ext)
+    except ghapi.DeadlineReached as e:
+        sp = RES / f"discovery_state_{EXT if ext else family}.json"
+        st = _json(sp, {}) or {}
+        end = (st.get("extension") or {}).get("hard_stop") if ext else st.get("budget_end")
+        if not end or now() < end:
+            raise  # the workflow job deadline: job.py keeps the request pending
+        st["budget_reached"] = st.get("budget_reached") or now()
+        if ext:
+            st["extension"]["stopped_at_hard_stop"] = st["extension"].get("stopped_at_hard_stop") or now()
+        _save(sp, st)
+        print(f"{e}; family discovery budget reached: unfinished queries enter N_s as truncated leaves")
+        return 0
+
+
+def _run(family: str, route: str, max_minutes: float, deadline: str | None, ext: bool = False) -> int:
     """``ext``: the founder's one S3 extension (session route, 2026-11-26): only the S3 queries the 24 h budget left
     unstarted or unfinished, with unchanged rules, shapes and caps, until 6 h after its own first request; its state,
     splits and leaves are kept apart (discovery_state_s3ext.json, splits_s3ext.jsonl, leaves_s3ext/) so the text
@@ -243,6 +263,9 @@ def run(family: str, route: str, max_minutes: float, deadline: str | None, ext: 
         budget_end = xe["hard_stop"]
     deadline = min(deadline, budget_end) if deadline else budget_end
     c = _client(route)
+    end_epoch = dt.datetime.fromisoformat(budget_end).timestamp()
+    cur = getattr(c, "deadline", 0)
+    c.deadline = min(cur, end_epoch) if cur else end_epoch  # no request past the budget end
     t0 = time.time()
     text_done = {k for k, v in ((_json(RES / "discovery_state_text.json", {}) or {}).get("queries") or {}).items()
                  if v.get("done")} if ext else set()

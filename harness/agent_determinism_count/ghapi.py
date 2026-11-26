@@ -92,6 +92,9 @@ class Client:
         time.sleep(sl)
 
     def _wait(self, search: str | None) -> None:
+        # no request once the deadline has passed (the S3 extension read one leaf 35 s past its hard stop, 17:21Z)
+        if self.deadline and time.time() >= self.deadline:
+            raise DeadlineReached("the deadline has passed: no further request")
         if search:
             wait = GAPS[search] - (time.time() - self._last_search[search])
             if wait > 0:

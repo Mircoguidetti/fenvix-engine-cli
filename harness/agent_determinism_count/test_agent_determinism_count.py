@@ -1357,3 +1357,35 @@ def test_watchdog_flags_stale_or_missing_text_run(tmp_path):
     W.record_gap("12:34Z", "14:56Z", "x", tmp_path / "results")
     W.record_gap("12:34Z", "14:56Z", "x", tmp_path / "results")
     assert json.loads((tmp_path / "results" / "report_notes.json").read_text())["notes"] == ["Reading gap 12:34Z-14:56Z: x"]
+
+
+def test_no_request_past_the_deadline_and_extension_stops_at_hard_stop(tmp_path, monkeypatch):
+    """protects=the hard stop (coordinator 17:21Z: the S3 extension read one leaf 35 s past 17:20:43Z after a rate-limit
+    sleep); fails_when=a request is sent once the client deadline has passed, or a deadline reached at the hard stop
+    leaves the extension state without budget_reached; no_claim=the workflow job deadline (still raised to job.py)."""
+    import time as _t
+    import ghapi
+    import discover
+    c = ghapi.Client(token="x")
+    c.deadline = _t.time() - 1
+    try:
+        c._wait("commits")
+        raise AssertionError("request allowed past the deadline")
+    except ghapi.DeadlineReached:
+        pass
+    monkeypatch.setattr(discover, "RES", tmp_path)
+    sp = tmp_path / "discovery_state_s3ext.json"
+    sp.write_text(json.dumps({"queries": {}, "extension": {"hard_stop": "2026-11-26T17:20:43+00:00"}}))
+
+    def boom(*a, **k):
+        raise ghapi.DeadlineReached("past")
+    monkeypatch.setattr(discover, "_run", boom)
+    assert discover.run("text", "session", 60, None, ext=True) == 0
+    st = json.loads(sp.read_text())
+    assert st["budget_reached"] and st["extension"]["stopped_at_hard_stop"]
+    sp.write_text(json.dumps({"queries": {}, "extension": {"hard_stop": "2999-01-01T00:00:00+00:00"}}))
+    try:
+        discover.run("text", "session", 60, None, ext=True)
+        raise AssertionError("a job deadline before the hard stop must reach job.py")
+    except ghapi.DeadlineReached:
+        pass

@@ -142,3 +142,11 @@
     watchdog counted a completed run with nothing pending as healthy, so the 16:46Z check reported ok. It now counts
     an idle workflow as a gap while reading goes on. At each wake the session keeps at least one unread chunk pending
     or running. The 16:40-16:47Z gap is recorded in the REPORT notes.
+19. 2026-11-26 17:25Z, a fix (no rule change). The S3 extension's hard stop was 17:20:43Z, but it stopped at 17:21:18Z.
+    On the session route the search client had no deadline. A 60 s rate-limit sleep that began at about 17:19:57Z ran
+    past the hard stop, and then one leaf was read: 'committer-date:>=2024-01-01 retry "ai sdk" test',
+    2025-12-30..2026-01-31, 594 hits, about 6 search requests between 17:21:00 and 17:21:18Z. Whether that leaf stays
+    in the pool was put to the coordinator at 17:22Z, and the rebuild waits for the answer. Now the client's deadline
+    is the budget end (or the hard stop), and no request is sent once it has passed. A deadline reached at the budget
+    end stops discovery cleanly with budget_reached set, and the node cut short stays truncated. Test:
+    test_no_request_past_the_deadline_and_extension_stops_at_hard_stop.
