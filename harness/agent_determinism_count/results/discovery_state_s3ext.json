@@ -69,17 +69,21 @@
   "committer-date:>=2024-01-01 retry langchain test": {
    "capped": false,
    "done": false,
-   "leaf_total": 2074,
-   "leaves": 4,
-   "nodes": 8,
+   "leaf_total": 7287,
+   "leaves": 12,
+   "nodes": 25,
    "prepass_total": 11493,
    "stack": [
     [
-     "2025-12-30",
-     "2026-03-05"
+     "2026-08-03",
+     "2026-08-18"
     ],
     [
-     "2026-03-06",
+     "2026-08-19",
+     "2026-09-20"
+    ],
+    [
+     "2026-09-21",
      "2026-11-25"
     ]
    ]
@@ -408,13 +412,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 424
+  "issues": 497
  },
  "search_stats": {
-  "429": 62,
+  "429": 68,
   "limit": 30,
   "remaining": 30,
-  "reset": 1795710336
+  "reset": 1795710940
  },
  "started": "2026-11-26T11:20:43+00:00"
 }
