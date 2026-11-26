@@ -6,6 +6,25 @@ Hazard records: copied from the header `meta` of each w4 trace, filtered to the 
 
 Total: 5
 
+Overlap with the serial rows (`rows.jsonl`): 0 parallel-only ids are serial rows. Serial rows in the same files: 17
+- alakajam `server/user/user.service.spec.ts::User service::approved user::should approve mods`: ARTIFACT cause timers progression (virtual) (L1)
+- alakajam `server/user/user.service.spec.ts::User service::approved user::should approve team members of an event entry`: ARTIFACT cause timers progression (virtual) (L1)
+- alakajam `server/user/user.service.spec.ts::User service::approved user::should approve users with an event entry`: ARTIFACT cause timers progression (virtual) (L1)
+- alakajam `server/user/user.service.spec.ts::User service::approved user::should not approve users with only event posts`: ARTIFACT cause timers progression (virtual) (L1)
+- alakajam `server/user/user.service.spec.ts::User service::approved user::should not approve users with only external entries`: ARTIFACT cause timers progression (virtual) (L1)
+- alakajam `server/user/user.service.spec.ts::User service::approved user::should not approve users without entries`: ARTIFACT cause timers progression (virtual) (L1)
+- alakajam `server/user/user.service.spec.ts::User service::delete user::should delete comments and roles of other users on the deleted user's posts`: ARTIFACT cause timers progression (virtual) (L1)
+- alakajam `server/user/user.service.spec.ts::User service::delete user::should delete the user along with their posts, comments, likes and roles`: ARTIFACT cause timers progression (virtual) (L1)
+- alakajam `server/user/user.service.spec.ts::User service::entries count from real nodes::should count entries but not posts`: ARTIFACT cause timers progression (virtual) (L1)
+- alakajam `server/user/user.service.spec.ts::User service::entries count from real nodes::should not consider users with only posts as having entries`: ARTIFACT cause timers progression (virtual) (L1)
+- drydock `api/api.test.ts::API Router::should expose openapi document endpoint before auth middleware`: ARTIFACT cause timers progression (virtual) (L1)
+- drydock `api/api.test.ts::API Router::should lazy-load openapi document module when openapi endpoint is requested`: ARTIFACT cause timers progression (virtual) (L1)
+- drydock `api/api.test.ts::API Router::should serve identical cached JSON string on repeated openapi.json requests`: ARTIFACT cause timers progression (virtual) (L1)
+- drydock `api/index.test.ts::API Index::real Express: GET /api/auth/methods is no longer registered and is answered by the removed-alias tombstone`: ARTIFACT cause timers progression (virtual) (L1)
+- drydock `api/index.test.ts::API Index::real Express: UI paths return a JSON 404 explaining DD_SERVER_UI_ENABLED=false, while /api/v1 and /health are unaffected`: UNDECIDED not reproduced outside the whole suite
+- drydock `api/index.test.ts::API Index::real Express: a non-GET request to a GET-only /api/v1/* route falls through the tombstone to a 404, not a false 410`: UNDECIDED not reproduced outside the whole suite
+- drydock `api/index.test.ts::API Index::real Express: a non-whitelisted /api/* request returns 410 JSON (not 404, not SPA HTML) when DD_COMPAT_WUDCARD is disabled`: UNDECIDED not reproduced outside the whole suite
+
 | repository | test id | w4 run 1 / 2 | first failure line |
 |---|---|---|---|
 | alakajam | `server/user/user.service.spec.ts::User service::delete user::should refuse to delete users with entries` | passed / failed | Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with " |
@@ -56,6 +75,7 @@ par2 (`/root/pm-p3b/find/alakajam/par2.trace.jsonl`): outcomes file failed; trac
 - file: `api/api.test.ts`
 - w4 outcomes: par1 passed, par2 failed
 - first failure line: `Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout". [call @ api/api.test.ts:359]`
+- explained: serial-flaky under --det, not a lane cause (coordinator, 2026-11-26, from parallel-proof-gaps harness/parallel_proof_gaps/p3b-parallel-only.md @ e14724c8: passed and failed across serial runs in its 36 drydock traces, also on engine f3c6711d, 0 hazards; P3b's two w1 passes were chance)
 
 par1 (`/root/pm-p3b/find/drydock/par1.trace.jsonl`): outcomes file passed; trace test record outcome passed, index 1859
 
@@ -72,6 +92,7 @@ par2 (`/root/pm-p3b/find/drydock/par2.trace.jsonl`): outcomes file failed; trace
 - file: `api/index.test.ts`
 - w4 outcomes: par1 failed, par2 passed
 - first failure line: `Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout". [call @ api/index.test.ts:1104]`
+- explained: serial-flaky under --det, not a lane cause (coordinator, 2026-11-26, from parallel-proof-gaps harness/parallel_proof_gaps/p3b-parallel-only.md @ e14724c8: passed and failed across serial runs in its 36 drydock traces, also on engine f3c6711d, 0 hazards; P3b's two w1 passes were chance)
 
 par1 (`/root/pm-p3b/find/drydock/par1.trace.jsonl`): outcomes file failed; trace test record outcome failed, index 4407
 
@@ -88,6 +109,7 @@ par2 (`/root/pm-p3b/find/drydock/par2.trace.jsonl`): outcomes file passed; trace
 - file: `api/index.test.ts`
 - w4 outcomes: par1 passed, par2 failed
 - first failure line: `Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout". [call @ api/index.test.ts:1354]`
+- explained: serial-flaky under --det, not a lane cause (coordinator, 2026-11-26, from parallel-proof-gaps harness/parallel_proof_gaps/p3b-parallel-only.md @ e14724c8: passed and failed across serial runs in its 36 drydock traces, also on engine f3c6711d, 0 hazards; P3b's two w1 passes were chance)
 
 par1 (`/root/pm-p3b/find/drydock/par1.trace.jsonl`): outcomes file passed; trace test record outcome passed, index 4412
 
@@ -104,6 +126,7 @@ par2 (`/root/pm-p3b/find/drydock/par2.trace.jsonl`): outcomes file failed; trace
 - file: `api/index.test.ts`
 - w4 outcomes: par1 failed, par2 passed
 - first failure line: `Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout". [call @ api/index.test.ts:993]`
+- explained: serial-flaky under --det, not a lane cause (coordinator, 2026-11-26, from parallel-proof-gaps harness/parallel_proof_gaps/p3b-parallel-only.md @ e14724c8: passed and failed across serial runs in its 36 drydock traces, also on engine f3c6711d, 0 hazards; P3b's two w1 passes were chance)
 
 par1 (`/root/pm-p3b/find/drydock/par1.trace.jsonl`): outcomes file failed; trace test record outcome failed, index 4405
 
