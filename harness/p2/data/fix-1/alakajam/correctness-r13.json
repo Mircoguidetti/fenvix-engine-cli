@@ -8,7 +8,7 @@
      "baseline": [
       "diverged"
      ],
-     "explanation": null,
+     "explanation": "w2: varies with the baseline engine: classes ['diverged', 'not-proven:native'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:native'] | w4: varies with the baseline engine: classes ['diverged', 'not-proven:native'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:native']",
      "fix": [
       "diverged",
       "not-proven:native"
@@ -34,7 +34,7 @@
      "baseline": [
       "not-proven:native"
      ],
-     "explanation": null,
+     "explanation": "w2: varies with the baseline engine: classes ['diverged', 'not-proven:native'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:native']",
      "fix": [
       "diverged",
       "not-proven:native"
@@ -47,7 +47,7 @@
      "baseline": [
       "diverged"
      ],
-     "explanation": null,
+     "explanation": "w2: varies with the baseline engine: classes ['diverged', 'not-proven:native'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:native']",
      "fix": [
       "diverged",
       "not-proven:native"
@@ -80,46 +80,7 @@
       "diverged",
       "not-proven:native"
      ],
-     "nodeid": "server/core/security.spec.ts::Security::post permissions::should give no write permissions to other users",
-     "towards_identical": false,
-     "w": 2
-    },
-    {
-     "baseline": [
-      "diverged"
-     ],
-     "explanation": null,
-     "fix": [
-      "diverged",
-      "not-proven:native"
-     ],
      "nodeid": "server/entry/entry.service.spec.ts::Entry service::find user entries::should find all entries of a user",
-     "towards_identical": false,
-     "w": 2
-    },
-    {
-     "baseline": [
-      "not-proven:native"
-     ],
-     "explanation": null,
-     "fix": [
-      "diverged",
-      "not-proven:native"
-     ],
-     "nodeid": "server/entry/team/team.service.spec.ts::Team service::find team members::should only list the current user for a new entry",
-     "towards_identical": false,
-     "w": 2
-    },
-    {
-     "baseline": [
-      "diverged"
-     ],
-     "explanation": null,
-     "fix": [
-      "diverged",
-      "not-proven:native"
-     ],
-     "nodeid": "server/entry/team/team.service.spec.ts::Team service::set team members::should report users who already entered the event with another entry",
      "towards_identical": false,
      "w": 2
     },
@@ -204,7 +165,7 @@
      "baseline": [
       "diverged"
      ],
-     "explanation": null,
+     "explanation": "w2: varies with the baseline engine: classes ['diverged', 'not-proven:native'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:native'] | w4: varies with the baseline engine: classes ['diverged', 'not-proven:native'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:native']",
      "fix": [
       "diverged",
       "not-proven:native"
@@ -243,7 +204,7 @@
      "baseline": [
       "diverged"
      ],
-     "explanation": null,
+     "explanation": "w4: varies with the baseline engine: classes ['diverged', 'not-proven:native'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:native']",
      "fix": [
       "diverged",
       "not-proven:native"
@@ -256,7 +217,7 @@
      "baseline": [
       "diverged"
      ],
-     "explanation": null,
+     "explanation": "w4: varies with the baseline engine: classes ['diverged', 'not-proven:native'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:native']",
      "fix": [
       "diverged",
       "not-proven:native"
@@ -282,7 +243,7 @@
      "baseline": [
       "diverged"
      ],
-     "explanation": null,
+     "explanation": "w4: varies with the baseline engine: classes ['diverged', 'not-proven:native'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:native']",
      "fix": [
       "diverged",
       "not-proven:native"
@@ -334,19 +295,6 @@
     },
     {
      "baseline": [
-      "diverged"
-     ],
-     "explanation": null,
-     "fix": [
-      "diverged",
-      "not-proven:native"
-     ],
-     "nodeid": "server/core/security.spec.ts::Security::post permissions::should give no write permissions to other users",
-     "towards_identical": false,
-     "w": 4
-    },
-    {
-     "baseline": [
       "not-proven:native"
      ],
      "explanation": null,
@@ -380,46 +328,7 @@
       "diverged",
       "not-proven:native"
      ],
-     "nodeid": "server/entry/team/team.service.spec.ts::Team service::find team members::should not list users with roles on a post sharing the same ID",
-     "towards_identical": false,
-     "w": 4
-    },
-    {
-     "baseline": [
-      "diverged"
-     ],
-     "explanation": null,
-     "fix": [
-      "diverged",
-      "not-proven:native"
-     ],
-     "nodeid": "server/entry/team/team.service.spec.ts::Team service::set team members::should invite new members",
-     "towards_identical": false,
-     "w": 4
-    },
-    {
-     "baseline": [
-      "diverged"
-     ],
-     "explanation": null,
-     "fix": [
-      "diverged",
-      "not-proven:native"
-     ],
      "nodeid": "server/post/like/like.service.spec.ts::Like service::like::should count likes from several users",
-     "towards_identical": false,
-     "w": 4
-    },
-    {
-     "baseline": [
-      "diverged"
-     ],
-     "explanation": null,
-     "fix": [
-      "diverged",
-      "not-proven:native"
-     ],
-     "nodeid": "server/post/post.service.spec.ts::Post service::find post by ID::should return the post with its author, roles, event & entry",
      "towards_identical": false,
      "w": 4
     },
@@ -476,17 +385,6 @@
   "count_defects": [
    {
     "baseline": [
-     102,
-     103
-    ],
-    "count": "passed",
-    "fix": 105,
-    "kind": "par",
-    "rep": 1,
-    "workers": 2
-   },
-   {
-    "baseline": [
      114,
      115
     ],
@@ -502,9 +400,9 @@
      103
     ],
     "count": "passed",
-    "fix": 104,
+    "fix": 105,
     "kind": "par",
-    "rep": 2,
+    "rep": 1,
     "workers": 2
    },
    {
@@ -520,14 +418,14 @@
    },
    {
     "baseline": [
-     103,
-     108
+     102,
+     103
     ],
     "count": "passed",
-    "fix": 102,
+    "fix": 104,
     "kind": "par",
-    "rep": 1,
-    "workers": 4
+    "rep": 2,
+    "workers": 2
    },
    {
     "baseline": [
@@ -536,6 +434,17 @@
     ],
     "count": "failed",
     "fix": 115,
+    "kind": "par",
+    "rep": 1,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     103,
+     108
+    ],
+    "count": "passed",
+    "fix": 102,
     "kind": "par",
     "rep": 1,
     "workers": 4

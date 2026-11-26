@@ -1,0 +1,6 @@
+{
+ "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::continues after failures with --no-bail and preserves the failure status on EOF": "w2: varies with the baseline engine: classes ['diverged', 'not-proven:env'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:env'] | w4: varies with the baseline engine: classes ['diverged', 'not-proven:env'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:env']",
+ "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::executes the initial inventory only when --no-ignore-initial is requested": "w2: varies with the baseline engine: classes ['diverged', 'not-proven:env'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:env']",
+ "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves PR #1411 cross-env-shell expansion and PATH resolution (stream=true)": "w2: varies with the baseline engine: classes ['diverged', 'not-proven:env'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:env']",
+ "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::queues changes during a running command without overlap or dropped files": "w2: varies with the baseline engine: classes ['diverged', 'not-proven:env'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:env']"
+}

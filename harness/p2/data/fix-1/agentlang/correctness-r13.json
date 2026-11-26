@@ -47,7 +47,7 @@
      "baseline": [
       "not-proven:native"
      ],
-     "explanation": null,
+     "explanation": "w4: varies with the baseline engine: classes ['diverged', 'not-proven:native'] over its rounds in baseline, base-b; the fix showed ['diverged']",
      "fix": [
       "diverged"
      ],
@@ -56,20 +56,7 @@
      "w": 4
     }
    ],
-   "defects": [
-    {
-     "baseline": [
-      "not-proven:native"
-     ],
-     "explanation": null,
-     "fix": [
-      "diverged"
-     ],
-     "nodeid": "test/api/mcp.test.ts::MCP over Streamable HTTP::workflow errors are returned as tool errors",
-     "towards_identical": false,
-     "w": 4
-    }
-   ],
+   "defects": [],
    "rounds_base": 3,
    "rounds_fix": 3,
    "variable_class": [
@@ -83,17 +70,6 @@
   "count_defects": [
    {
     "baseline": [
-     392,
-     439
-    ],
-    "count": "passed",
-    "fix": 389,
-    "kind": "plain_par",
-    "rep": 2,
-    "workers": 2
-   },
-   {
-    "baseline": [
      0,
      47
     ],
@@ -105,14 +81,14 @@
    },
    {
     "baseline": [
-     376,
-     430
+     392,
+     439
     ],
     "count": "passed",
-    "fix": 439,
+    "fix": 389,
     "kind": "plain_par",
-    "rep": 1,
-    "workers": 4
+    "rep": 2,
+    "workers": 2
    },
    {
     "baseline": [
@@ -133,7 +109,7 @@
     "count": "passed",
     "fix": 439,
     "kind": "plain_par",
-    "rep": 2,
+    "rep": 1,
     "workers": 4
    },
    {
@@ -154,17 +130,28 @@
     ],
     "count": "passed",
     "fix": 439,
+    "kind": "plain_par",
+    "rep": 2,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     9,
+     63
+    ],
+    "count": "failed",
+    "fix": 0,
     "kind": "plain_par",
     "rep": 3,
     "workers": 4
    },
    {
     "baseline": [
-     9,
-     63
+     376,
+     430
     ],
-    "count": "failed",
-    "fix": 0,
+    "count": "passed",
+    "fix": 439,
     "kind": "plain_par",
     "rep": 3,
     "workers": 4

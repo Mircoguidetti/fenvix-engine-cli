@@ -1,0 +1,4 @@
+{
+ "api/index.test.ts::API Index::real Express: the legacy-alias usage tracker still records a hit for a request the tombstone answers with 410": "w2: varies with the baseline engine: classes ['diverged', 'not-proven:io'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:io']",
+ "registry/index.test.ts::reconcileComponentsWithConfiguration::deregisters a removed trigger": "w2: varies with the baseline engine: classes ['diverged', 'not-proven:env'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:env']"
+}

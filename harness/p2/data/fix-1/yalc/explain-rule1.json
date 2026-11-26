@@ -1,0 +1,5 @@
+{
+ "src/__tests__/framework-resume.test.ts::framework:resume (HOME-isolated)::resume continues from the right step after approve": "w4: varies with the baseline engine: classes ['diverged', 'not-proven:native'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:native']",
+ "src/__tests__/framework-runner.test.ts::framework runner (HOME-isolated)::happy-path: executes both steps and writes a run JSON without error field": "w2: varies with the baseline engine: classes ['diverged', 'not-proven:native'] over its rounds in baseline, base-b; the fix showed ['not-proven:native']",
+ "src/__tests__/gates-api.test.ts::GET /api/gates/awaiting::lists every awaiting-gate sentinel currently on disk": "w2: varies with the baseline engine: classes ['diverged', 'not-proven:native'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:native'] | w4: varies with the baseline engine: classes ['diverged', 'not-proven:native'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:native']"
+}

@@ -8,7 +8,7 @@
      "baseline": [
       "diverged"
      ],
-     "explanation": null,
+     "explanation": "w2: varies with the baseline engine: classes ['diverged', 'not-proven:native'] over its rounds in baseline, base-b; the fix showed ['not-proven:native']",
      "fix": [
       "not-proven:native"
      ],
@@ -20,7 +20,7 @@
      "baseline": [
       "diverged"
      ],
-     "explanation": null,
+     "explanation": "w2: varies with the baseline engine: classes ['diverged', 'not-proven:native'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:native'] | w4: varies with the baseline engine: classes ['diverged', 'not-proven:native'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:native']",
      "fix": [
       "diverged",
       "not-proven:native"
@@ -43,31 +43,6 @@
     }
    ],
    "defects": [
-    {
-     "baseline": [
-      "diverged"
-     ],
-     "explanation": null,
-     "fix": [
-      "not-proven:native"
-     ],
-     "nodeid": "src/__tests__/framework-runner.test.ts::framework runner (HOME-isolated)::happy-path: executes both steps and writes a run JSON without error field",
-     "towards_identical": false,
-     "w": 2
-    },
-    {
-     "baseline": [
-      "diverged"
-     ],
-     "explanation": null,
-     "fix": [
-      "diverged",
-      "not-proven:native"
-     ],
-     "nodeid": "src/__tests__/gates-api.test.ts::GET /api/gates/awaiting::lists every awaiting-gate sentinel currently on disk",
-     "towards_identical": false,
-     "w": 2
-    },
     {
      "baseline": [
       "not-proven:native"
@@ -1471,7 +1446,7 @@
      "baseline": [
       "not-proven:native"
      ],
-     "explanation": null,
+     "explanation": "w4: varies with the baseline engine: classes ['diverged', 'not-proven:native'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:native']",
      "fix": [
       "diverged",
       "not-proven:native"
@@ -1484,7 +1459,7 @@
      "baseline": [
       "diverged"
      ],
-     "explanation": null,
+     "explanation": "w2: varies with the baseline engine: classes ['diverged', 'not-proven:native'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:native'] | w4: varies with the baseline engine: classes ['diverged', 'not-proven:native'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:native']",
      "fix": [
       "diverged",
       "not-proven:native"
@@ -1534,32 +1509,6 @@
     }
    ],
    "defects": [
-    {
-     "baseline": [
-      "not-proven:native"
-     ],
-     "explanation": null,
-     "fix": [
-      "diverged",
-      "not-proven:native"
-     ],
-     "nodeid": "src/__tests__/framework-resume.test.ts::framework:resume (HOME-isolated)::resume continues from the right step after approve",
-     "towards_identical": false,
-     "w": 4
-    },
-    {
-     "baseline": [
-      "diverged"
-     ],
-     "explanation": null,
-     "fix": [
-      "diverged",
-      "not-proven:native"
-     ],
-     "nodeid": "src/__tests__/gates-api.test.ts::GET /api/gates/awaiting::lists every awaiting-gate sentinel currently on disk",
-     "towards_identical": false,
-     "w": 4
-    },
     {
      "baseline": [
       "not-proven:native"
@@ -3006,17 +2955,6 @@
   "count_defects": [
    {
     "baseline": [
-     1472,
-     1472
-    ],
-    "count": "passed",
-    "fix": 1471,
-    "kind": "par",
-    "rep": 1,
-    "workers": 4
-   },
-   {
-    "baseline": [
      3,
      3
     ],
@@ -3033,9 +2971,9 @@
     ],
     "count": "passed",
     "fix": 1471,
-    "kind": "plain_par",
+    "kind": "par",
     "rep": 1,
-    "workers": 2
+    "workers": 4
    },
    {
     "baseline": [
@@ -3050,14 +2988,14 @@
    },
    {
     "baseline": [
-     1468,
+     1472,
      1472
     ],
     "count": "passed",
-    "fix": 1460,
+    "fix": 1471,
     "kind": "plain_par",
     "rep": 1,
-    "workers": 4
+    "workers": 2
    },
    {
     "baseline": [
@@ -3076,9 +3014,9 @@
      1472
     ],
     "count": "passed",
-    "fix": 1458,
+    "fix": 1460,
     "kind": "plain_par",
-    "rep": 2,
+    "rep": 1,
     "workers": 4
    },
    {
@@ -3088,6 +3026,17 @@
     ],
     "count": "failed",
     "fix": 17,
+    "kind": "plain_par",
+    "rep": 2,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     1468,
+     1472
+    ],
+    "count": "passed",
+    "fix": 1458,
     "kind": "plain_par",
     "rep": 2,
     "workers": 4

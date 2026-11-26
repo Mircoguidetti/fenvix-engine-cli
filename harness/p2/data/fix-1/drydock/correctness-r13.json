@@ -21,7 +21,7 @@
      "baseline": [
       "diverged"
      ],
-     "explanation": null,
+     "explanation": "w2: varies with the baseline engine: classes ['diverged', 'not-proven:io'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:io']",
      "fix": [
       "diverged",
       "not-proven:io"
@@ -203,7 +203,7 @@
      "baseline": [
       "diverged"
      ],
-     "explanation": null,
+     "explanation": "w2: varies with the baseline engine: classes ['diverged', 'not-proven:env'] over its rounds in baseline, base-b; the fix showed ['diverged', 'not-proven:env']",
      "fix": [
       "diverged",
       "not-proven:env"
@@ -385,19 +385,6 @@
     },
     {
      "baseline": [
-      "diverged"
-     ],
-     "explanation": null,
-     "fix": [
-      "diverged",
-      "not-proven:io"
-     ],
-     "nodeid": "api/index.test.ts::API Index::real Express: the legacy-alias usage tracker still records a hit for a request the tombstone answers with 410",
-     "towards_identical": false,
-     "w": 2
-    },
-    {
-     "baseline": [
       "missing"
      ],
      "explanation": null,
@@ -562,19 +549,6 @@
       "not-proven:api"
      ],
      "nodeid": "registry/Component.fuzz.test.ts::registry/Component fuzz tests::validateConfiguration handles dictionary-like configs (with seed=223438078)",
-     "towards_identical": false,
-     "w": 2
-    },
-    {
-     "baseline": [
-      "diverged"
-     ],
-     "explanation": null,
-     "fix": [
-      "diverged",
-      "not-proven:env"
-     ],
-     "nodeid": "registry/index.test.ts::reconcileComponentsWithConfiguration::deregisters a removed trigger",
      "towards_identical": false,
      "w": 2
     },
@@ -44076,17 +44050,6 @@
   "count_defects": [
    {
     "baseline": [
-     21494,
-     21495
-    ],
-    "count": "passed",
-    "fix": 21491,
-    "kind": "par",
-    "rep": 1,
-    "workers": 2
-   },
-   {
-    "baseline": [
      82,
      83
     ],
@@ -44098,14 +44061,14 @@
    },
    {
     "baseline": [
-     21492,
+     21494,
      21495
     ],
     "count": "passed",
     "fix": 21491,
     "kind": "par",
     "rep": 1,
-    "workers": 4
+    "workers": 2
    },
    {
     "baseline": [
@@ -44124,9 +44087,9 @@
      21495
     ],
     "count": "passed",
-    "fix": 21496,
+    "fix": 21491,
     "kind": "par",
-    "rep": 2,
+    "rep": 1,
     "workers": 4
    },
    {
@@ -44146,9 +44109,9 @@
      21495
     ],
     "count": "passed",
-    "fix": 21491,
+    "fix": 21496,
     "kind": "par",
-    "rep": 3,
+    "rep": 2,
     "workers": 4
    },
    {
@@ -44158,6 +44121,17 @@
     ],
     "count": "failed",
     "fix": 86,
+    "kind": "par",
+    "rep": 3,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     21492,
+     21495
+    ],
+    "count": "passed",
+    "fix": 21491,
     "kind": "par",
     "rep": 3,
     "workers": 4

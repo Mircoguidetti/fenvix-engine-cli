@@ -1,0 +1,1693 @@
+{
+ "ok": false,
+ "repo": "lerna-lite",
+ "rule1": [
+  {
+   "changes": [],
+   "defects": [],
+   "rounds_base": 3,
+   "rounds_fix": 3,
+   "variable_class": [
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::applies package selection (--scope=foo --include-dependents), glob, ignores and delimiter to actual callbacks",
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::applies package selection (--scope=foobar --include-dependencies), glob, ignores and delimiter to actual callbacks",
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::continues after failures with --no-bail and preserves the failure status on EOF",
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::detects new nested files, dotfiles and renames, and streams more than one callback",
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::executes the initial inventory only when --no-ignore-initial is requested",
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves PR #1411 cross-env-shell expansion and PATH resolution (stream=false)",
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves PR #1411 cross-env-shell expansion and PATH resolution (stream=true)",
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::queues changes during a running command without overlap or dropped files"
+   ],
+   "w": 2
+  },
+  {
+   "changes": [
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::applies package selection (--scope=foo --include-dependents), glob, ignores and delimiter to actual callbacks",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:env"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves PR #1411 cross-env-shell expansion and PATH resolution (stream=false)",
+     "towards_identical": false,
+     "w": 4
+    }
+   ],
+   "defects": [
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::applies package selection (--scope=foo --include-dependents), glob, ignores and delimiter to actual callbacks",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:env"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves PR #1411 cross-env-shell expansion and PATH resolution (stream=false)",
+     "towards_identical": false,
+     "w": 4
+    }
+   ],
+   "rounds_base": 3,
+   "rounds_fix": 3,
+   "variable_class": [
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::applies package selection (--scope=foobar --include-dependencies), glob, ignores and delimiter to actual callbacks",
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::continues after failures with --no-bail and preserves the failure status on EOF",
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::detects new nested files, dotfiles and renames, and streams more than one callback",
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::executes the initial inventory only when --no-ignore-initial is requested",
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves PR #1411 cross-env-shell expansion and PATH resolution (stream=true)",
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves literal arguments with --no-shell, including spaces and shell characters",
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::queues changes during a running command without overlap or dropped files"
+   ],
+   "w": 4
+  }
+ ],
+ "rule2": {
+  "allowed_declared_only": [],
+  "declared": [],
+  "defects": [
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/changed/changed.spec.ts::lerna-changed::with no prior release tags::should assume all public packages have changed",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/changed/changed.spec.ts::lerna-changed::with a change to package-c since the last release::should list package-a and package-c as changed",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/changed/changed.spec.ts::lerna-changed::with a change to package-c since the last release::--json::should list package-a and package-c as changed in json format",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/changed/changed.spec.ts::lerna-changed::with a change to package-c since the last release::--ndjson::should list package-a and package-c as changed in newline-delimited json format",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/changed/changed.spec.ts::lerna-changed::with a change to package-c since the last release::--all::should list package-a, package-b, and package-c as changed",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/changed/changed.spec.ts::lerna-changed::with a change to package-c since the last release::-a::should list package-a, package-b, and package-c as changed",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/changed/changed.spec.ts::lerna-changed::with a change to package-c since the last release::--long::should list package-a and package-c as changed with additional information",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/changed/changed.spec.ts::lerna-changed::with a change to package-c since the last release::-l::should list package-a and package-c as changed with additional information",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/changed/changed.spec.ts::lerna-changed::with a change to package-c since the last release::--parseable::should list package-a and package-c as changed with parseable output instead of columnified view",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/changed/changed.spec.ts::lerna-changed::with a change to package-c since the last release::-p::should list package-a and package-c as changed with parseable output instead of columnified view",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/changed/changed.spec.ts::lerna-changed::with a change to package-c since the last release::-pla::should list package-a, package-b, and package-c as changed, with version and package info, in a parseable output",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/changed/changed.spec.ts::lerna-changed::with a change to package-c since the last release::--toposort::should list package-a and package-c as changed, but in topological order",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/changed/changed.spec.ts::lerna-changed::with a change to package-c since the last release::--graph::should list package-a and package-c as changed with their dependencies in a json list",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/changed/changed.spec.ts::lerna-changed::--include-merged-tags::should list package-e and not package-c when including merged tag from modification to package-c",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/diff/diff.spec.ts::lerna-diff::should output diff for all packages",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/diff/diff.spec.ts::lerna-diff::should output diff for single package",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/exec/exec.spec.ts::lerna-exec::should run command on all child packages",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/exec/exec.spec.ts::lerna-exec::should run command on all child packages and suppress npm output",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/exec/exec.spec.ts::lerna-exec::--stream::should run command on all child packages with output streaming",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/exec/exec.spec.ts::lerna-exec::--parallel::should run command on all child packages in parallel",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/exec/exec.spec.ts::lerna-exec::--no-prefix::--parallel::should run command on all child packages and suppress package name prefixes",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/exec/exec.spec.ts::lerna-exec::--no-prefix::--stream::should run command on all child packages and suppress package name prefixes",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/exec/exec.spec.ts::lerna-exec::--scope::should run command only on scoped packages",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/exec/exec.spec.ts::lerna-exec::--ignore::should not run command on ignored packages",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/exec/exec.spec.ts::lerna exec --no-bail::should continue execution even when a command fails",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/list/list.spec.ts::lerna-list::should list all packages",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/list/list.spec.ts::lerna-list::should list with --json flag",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/list/list.spec.ts::lerna-list::should list only public packages",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/list/list.spec.ts::lerna-list::should list all packages including private with --all",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/list/list.spec.ts::lerna-list::should show package graph with --graph",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/list/list.spec.ts::lerna-list::resolves root catalogs when invoked from a workspace package",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/publish/publish-dirty-tree.spec.ts::lerna publish with tracked changes::refuses to publish from-git before reaching the registry",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/publish/publish-dirty-tree.spec.ts::lerna publish with tracked changes::refuses to publish from-package before reaching the registry",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/publish/publish-dirty-tree.spec.ts::lerna publish with tracked changes::refuses to publish --canary before reaching the registry",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/publish/publish-dirty-tree.spec.ts::lerna publish with tracked changes::rejects --allow-dirty with  before reaching the registry",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/publish/publish-dirty-tree.spec.ts::lerna publish with tracked changes::rejects --allow-dirty with from-git before reaching the registry",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/publish/publish-dirty-tree.spec.ts::lerna publish with tracked changes::rejects --allow-dirty with --canary before reaching the registry",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/publish/publish-dirty-tree.spec.ts::lerna publish with tracked changes::rejects --allow-dirty with from-git --no-allow-dirty --allow-dirty=**/*.md before reaching the registry",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/publish/publish-dirty-tree.spec.ts::lerna publish with tracked changes::accepts --allow-dirty from CLI for from-package",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/publish/publish-dirty-tree.spec.ts::lerna publish with tracked changes::accepts --allow-dirty from configuration for from-package",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/publish/publish-dirty-tree.spec.ts::lerna publish with tracked changes::accepts allow-dirty glob patterns from CLI",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/publish/publish-dirty-tree.spec.ts::lerna publish with tracked changes::accepts allow-dirty glob patterns from configuration",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/publish/publish-dry-run.spec.ts::lerna-publish dry-run::should show what would be published without actually publishing",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/publish/publish-dry-run.spec.ts::lerna-publish dry-run::should work with --canary flag",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/publish/publish-dry-run.spec.ts::lerna-publish dry-run::leaves an existing generated manifest untouched when sync is not enabled",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/publish/publish-npmrc-auth.spec.ts::lerna-publish with .npmrc authentication::environment variable substitution in .npmrc::should handle authentication token with environment variable placeholder",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/publish/publish-npmrc-auth.spec.ts::lerna-publish with .npmrc authentication::environment variable substitution in .npmrc::should handle scoped registry with environment variable in auth token",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/publish/publish-npmrc-auth.spec.ts::lerna-publish with .npmrc authentication::environment variable substitution in .npmrc::should fail gracefully when environment variable is not set",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/publish/publish-npmrc-auth.spec.ts::lerna-publish with .npmrc authentication::multiple authentication tokens::should handle .npmrc with multiple environment variables",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/publish/publish-verdaccio.spec.ts::lerna-publish with verdaccio::from-git::should publish to verdaccio registry",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/publish/publish-verdaccio.spec.ts::lerna-publish with verdaccio::from-package::should publish packages with updated versions",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/publish/publish-verdaccio.spec.ts::lerna-publish with verdaccio::--canary::should publish canary versions",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/run/run.spec.ts::lerna-run::should run script on all child packages",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/run/run.spec.ts::lerna-run::should run script with --stream flag",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/run/run.spec.ts::lerna-run::should run script with --parallel flag",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/run/run.spec.ts::lerna-run::should run script with --scope flag",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/run/run.spec.ts::lerna-run::should run script with --ignore flag",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/run/run.spec.ts::lerna-run::should run script with --no-prefix and --parallel",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/run/run.spec.ts::lerna-run::should run script with --no-prefix and --stream",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/run/run.spec.ts::lerna-run::should run script with --include-dependencies",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/run/run.spec.ts::lerna-run::should handle script errors with --no-bail",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/run/run.spec.ts::lerna-run::should log CI mode with --ci",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/run/run.spec.ts::lerna-run::should buffer and print output after each parallel process finishes with --aggregate-output",
+    "why": "undeclared event difference at index 0"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/run/run.spec.ts::lerna-run::should only print output for failed packages with --aggregate-output=failures-only",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/version/version.spec.ts::lerna-version::patch::should bump versions by patch",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/version/version.spec.ts::lerna-version::minor::should bump versions by minor",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/version/version.spec.ts::lerna-version::major::should bump versions by major",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/version/version.spec.ts::lerna-version::--conventional-commits::should use conventional commits to determine version bump",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/version/version.spec.ts::lerna-version::--no-git-tag-version::should update versions but skip git tagging",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/version/version.spec.ts::lerna-version::with dependencies::should update dependent package versions",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:144",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:144",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves PR #1411 PATH resolution and argv in default shell mode (stream=false)",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:144",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:144",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves PR #1411 PATH resolution and argv in default shell mode (stream=true)",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:144",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:144",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves PR #1411 cross-env-shell expansion and PATH resolution (stream=false)",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:144",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:144",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves PR #1411 cross-env-shell expansion and PATH resolution (stream=true)",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:144",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:144",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves literal arguments with --no-shell, including spaces and shell characters",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:81",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:81",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::exits with the child failure status when bail is enabled",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:81",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:81",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::returns conventional signal exit codes for SIGINT and SIGTERM",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/watch/watch.spec.ts::lerna watch::should watch all packages by default",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/watch/watch.spec.ts::lerna watch::should watch only specified packages with --scope",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/watch/watch.spec.ts::lerna watch::should replace package name and changed file names",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/watch/watch.spec.ts::lerna watch::should watch one package and its dependencies with --scope and --include-dependencies",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/watch/watch.spec.ts::lerna watch::should respect --glob option to watch only specific file patterns",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/watch/watch.spec.ts::lerna watch::should respect --ignored option to ignore specific patterns",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/watch/watch.spec.ts::lerna watch::should use custom file delimiter with --file-delimiter",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/watch/watch.spec.ts::lerna watch::should run command with --stream flag",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/watch/watch.spec.ts::lerna watch::should handle --no-bail flag to continue on errors",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/watch/watch.spec.ts::lerna watch::should use --debounce to control event batching",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:6d60e4a70a87"
+    },
+    "fix_event": {
+     "at": "e2e-utils/src/fixture.ts:264",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:1fcb7e86b975"
+    },
+    "nodeid": "e2e/watch/watch.spec.ts::lerna watch::should work with --ignore option",
+    "why": "undeclared event difference at index 3"
+   }
+  ],
+  "need_repeat": [],
+  "passed": 0,
+  "stable_in_baseline": 88
+ },
+ "rule3": {
+  "count_defects": [],
+  "defects": [],
+  "exit_defects": [],
+  "false_green": [],
+  "variable": {}
+ }
+}

@@ -1,0 +1,12 @@
+{
+ "boot_effect": 88,
+ "fix_matches_baseline": [],
+ "fix_vs_ctrl": 16,
+ "repo": "lerna-lite",
+ "tests": 107,
+ "unexplained": [
+  "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves PR #1411 cross-env-shell expansion and PATH resolution (stream=false)",
+  "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves PR #1411 cross-env-shell expansion and PATH resolution (stream=true)"
+ ],
+ "unstable_in_baseline": 14
+}
