@@ -518,7 +518,24 @@ def _c_random_reseed(c, arg0) -> bool:
     return False
 
 
-class _ControlledCRandom(_C_RANDOM):
+class _ControlledMeta(type):
+    """``isinstance`` / ``issubclass`` against the controlled class answer as against the C type: ``random.Random``
+    and every generator built before the sensor derive from the original type, not from this subclass, and user code
+    must see the same answers with and without --det (/review Step 4.7 QA). A user's own subclass keeps the ordinary
+    checks."""
+
+    def __instancecheck__(cls, obj):
+        if cls is _ControlledCRandom:
+            return isinstance(obj, _C_RANDOM)
+        return type.__instancecheck__(cls, obj)
+
+    def __subclasscheck__(cls, sub):
+        if cls is _ControlledCRandom:
+            return issubclass(sub, _C_RANDOM)
+        return type.__subclasscheck__(cls, sub)
+
+
+class _ControlledCRandom(_C_RANDOM, metaclass=_ControlledMeta):
     """``_random.Random`` while the sensor runs (W8, founder decision 2026-11-25, /plan-eng-review D1 = A).
 
     The call-site rule (``_unseeded_c_random`` in :meth:`Sensor._on_call`) sees a construction only where Python calls

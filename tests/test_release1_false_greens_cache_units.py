@@ -412,3 +412,31 @@ def test_posix_statvfs_is_recorded_like_os_statvfs(tmp_path, call):
     trace = (tmp_path / ".detpy" / "trace.jsonl").read_text()
     name = call.split("(")[0].replace("posix.", "os.")
     assert f'"{name}"' in trace, trace[-2000:]
+
+
+def test_the_controlled_class_keeps_isinstance_and_issubclass_of_the_c_type(tmp_path):
+    """protects=under --det user code sees ``_random.Random`` as the C type for ``isinstance`` / ``issubclass``: a
+    ``random.Random`` (whose base is the original C type), a ``SystemRandom`` and a generator built before the sensor
+    are instances, ``random.Random`` is a subclass; a user's own subclass of ``_random.Random`` keeps ordinary checks;
+    fails_when=the controlled subclass answers only for its own instances (this branch at 3b08fa26: all False under
+    --det, True without it -- /review Step 4.7 QA, capture 002); no_claim=``type(x) is _random.Random`` for a generator
+    built before the sensor started (docs/LIMITS.md section 10)."""
+    (tmp_path / "pytest.ini").write_text("[pytest]\npythonpath = .\n")
+    (tmp_path / "tests").mkdir()
+    (tmp_path / "tests" / "test_t.py").write_text(
+        "import _random, random\n\n"
+        "def test_t():\n"
+        "    assert isinstance(random.Random(0), _random.Random)\n"
+        "    assert isinstance(random.SystemRandom(), _random.Random)\n"
+        "    assert issubclass(random.Random, _random.Random) and issubclass(_random.Random, _random.Random)\n"
+        "    assert isinstance(_random.Random(1), _random.Random) and type(_random.Random(1)) is _random.Random\n"
+        "    assert not isinstance(1, _random.Random) and not issubclass(int, _random.Random)\n"
+        "    class R(_random.Random):\n        pass\n"
+        "    assert isinstance(R(2), R) and isinstance(R(2), _random.Random)\n"
+        "    assert not isinstance(_random.Random(2), R) and not isinstance(random.Random(0), R)\n"
+        "    assert not issubclass(random.Random, R)\n")
+    env = {k: v for k, v in os.environ.items() if k not in ("PYTEST_ADDOPTS",)}
+    for args in ([], ["--det"]):
+        p = subprocess.run([sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider", "-p", "no:randomly", *args,
+                            "tests"], cwd=tmp_path, capture_output=True, text=True, env=env, timeout=600)
+        assert p.returncode == 0, f"{args}\n{p.stdout[-2000:]}"
