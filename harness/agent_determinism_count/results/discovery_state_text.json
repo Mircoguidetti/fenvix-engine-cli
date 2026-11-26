@@ -2,6 +2,33 @@
  "budget_end": "2026-11-26T10:54:28+00:00",
  "finished": null,
  "queries": {
+  "committer-date:>=2024-01-01 \"fails randomly\" anthropic test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 576,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 574,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"fails randomly\" llm test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 32,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 28,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"fails randomly\" openai test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 7,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 6,
+   "stack": []
+  },
   "committer-date:>=2024-01-01 \"non deterministic\" \"ai sdk\" test": {
    "capped": false,
    "done": true,
@@ -326,6 +353,51 @@
    "prepass_total": 10087,
    "stack": []
   },
+  "committer-date:>=2024-01-01 \"randomly fails\" \"ai sdk\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 2,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 2,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"randomly fails\" \"llama-index\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"randomly fails\" \"model output\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 4,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 4,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"randomly fails\" \"pydantic-ai\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"randomly fails\" agent test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 245,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 240,
+   "stack": []
+  },
   "committer-date:>=2024-01-01 \"randomly fails\" anthropic test": {
    "capped": false,
    "done": true,
@@ -333,6 +405,87 @@
    "leaves": 1,
    "nodes": 1,
    "prepass_total": 513,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"randomly fails\" autogen test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"randomly fails\" claude test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 640,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 631,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"randomly fails\" crewai test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 7,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 7,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"randomly fails\" eval test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 52,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 52,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"randomly fails\" gemini test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 5,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 5,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"randomly fails\" gpt test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 9,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 9,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"randomly fails\" langchain test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"randomly fails\" langgraph test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"randomly fails\" llamaindex test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
    "stack": []
   },
   "committer-date:>=2024-01-01 \"randomly fails\" llm test": {
@@ -351,6 +504,15 @@
    "leaves": 1,
    "nodes": 1,
    "prepass_total": 7,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 \"randomly fails\" prompt test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 71,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 70,
    "stack": []
   },
   "committer-date:>=2024-01-01 flakiness \"ai sdk\" test": {
@@ -3065,13 +3227,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 1413
+  "issues": 1503
  },
  "search_stats": {
-  "429": 157,
+  "429": 180,
   "limit": 30,
-  "remaining": 28,
-  "reset": 1795682742
+  "remaining": 29,
+  "reset": 1795684371
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
