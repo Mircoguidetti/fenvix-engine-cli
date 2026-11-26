@@ -1,11 +1,11 @@
 {
- "next_chunk": 6,
- "running": "chunk 5 (B, remaining 1,032 repositories) pushed fb9e16e 00:29Z, cap 320 min, ends ~05:50Z",
+ "next_chunk": 7,
+ "running": "chunk 6 (B, remaining 835 repositories) pushed ~05:55Z; job stops at the 24 h end 07:40:22Z (partial-budget)",
  "budget_start": "2026-11-25T07:40:22Z",
- "updated": "2026-11-26T01:00Z",
+ "updated": "2026-11-26T05:55Z",
  "count_a": "done: chunks 1-3, 1,500 items; change 2 applied offline (7745c6d); Rate A 15/115",
  "hand_a": "done (handread_a.jsonl 20 PRs, handread_a_sample.jsonl 19 rows)",
  "commit_rule": "from 2026-11-25 22:36Z: commit under the founder's git identity (repo git config set); no Co-Authored-By line; keep the Claude-Session line; no history rewrite",
- "after_chunk5": "push request 6 (remaining B repositories, max_minutes so the job stops by 07:40Z) within 15 min; commit session_state with it",
- "chunk4": "139 repos, 4,679 issues, 9,681 requests, 2.07/issue; interim Rate B 40/1,559 = 2.6%"
+ "chunk4": "139 repos, 4,679 issues, 9,681 requests, 2.07/issue; interim Rate B 40/1,559 = 2.6%",
+ "chunk5": "197 repos, 15,796 requests, last item interrupted (re-read in chunk 6)"
 }
