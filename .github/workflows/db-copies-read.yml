@@ -1,0 +1,66 @@
+name: db-copies-read
+
+# db-copies-read (harness/db_copies_read/): GET-only reads of public repository data with this workflow's
+# GITHUB_TOKEN. A run starts when a push to this branch adds a request file harness/db_copies_read/requests/<n>.json;
+# only request files added by the push are processed (git diff --diff-filter=A before..sha). The workflow makes no
+# commit: its outputs are uploaded as the artifact db-copies-read-<request n>, and the work session commits them.
+
+on:
+  push:
+    branches: [claude/db-copies-read]
+    paths:
+      - harness/db_copies_read/requests/**
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: db-copies-read
+  cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
+
+jobs:
+  read:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Request files added by this push
+        id: req
+        run: |
+          mkdir -p "$RUNNER_TEMP/req"
+          before="${{ github.event.before }}"
+          if [ -z "$before" ] || [ "$before" = "0000000000000000000000000000000000000000" ]; then
+            before=$(git rev-list --max-parents=0 HEAD | tail -1)
+          fi
+          git diff --name-only --diff-filter=A "$before" "${{ github.sha }}" -- harness/db_copies_read/requests/ \
+            | sort | while read -r f; do cp "$f" "$RUNNER_TEMP/req/"; echo "request: $f"; done
+          n=$(ls -1 "$RUNNER_TEMP/req" | sort -n | tail -1 | sed 's/\.json$//')
+          echo "n=${n:-none}" >> "$GITHUB_OUTPUT"
+          ls -1 "$RUNNER_TEMP/req"
+      - name: Read
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for f in $(ls -1 "$RUNNER_TEMP/req" | sort -n); do
+            echo "== $f"; cat "$RUNNER_TEMP/req/$f"
+            python3 harness/db_copies_read/job.py --request "$RUNNER_TEMP/req/$f"
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: db-copies-read-${{ steps.req.outputs.n }}
+          retention-days: 30
+          if-no-files-found: ignore
+          path: |
+            harness/db_copies_read/results/raw/
+            harness/db_copies_read/results/docs/
+            harness/db_copies_read/results/requests.log
+            harness/db_copies_read/results/chunks.jsonl
+            harness/db_copies_read/results/checkpoint.json
