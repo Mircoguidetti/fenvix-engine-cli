@@ -25,6 +25,22 @@
    "root_total": 101,
    "stack": []
   },
+  "A go-mutesting": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 39,
+   "stack": []
+  },
+  "A gremlins": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 503,
+   "stack": []
+  },
   "A infection": {
    "done": true,
    "leaves": 9,
@@ -33,13 +49,45 @@
    "root_total": 1836,
    "stack": []
   },
+  "A mull-runner": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 64,
+   "stack": []
+  },
   "A mutant": {
-   "done": false,
-   "leaves": 6,
-   "nodes": 17,
+   "done": true,
+   "leaves": 15,
+   "nodes": 29,
    "root_incomplete": false,
    "root_total": 8096,
+   "stack": []
+  },
+  "A mutatest": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 10,
+   "stack": []
+  },
+  "A mutation": {
+   "done": false,
+   "leaves": 26,
+   "nodes": 59,
+   "root_incomplete": false,
+   "root_total": 47360,
    "stack": [
+    [
+     3908,
+     4688
+    ],
+    [
+     4689,
+     6250
+    ],
     [
      6251,
      12500
@@ -72,6 +120,14 @@
    "nodes": 1,
    "root_incomplete": false,
    "root_total": 587,
+   "stack": []
+  },
+  "A muter": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 170,
    "stack": []
   },
   "A mutmut": {
