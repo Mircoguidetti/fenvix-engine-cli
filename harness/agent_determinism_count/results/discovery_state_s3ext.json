@@ -78,25 +78,17 @@
   "committer-date:>=2024-01-01 unstable prompt test": {
    "capped": false,
    "done": false,
-   "leaf_total": 109,
-   "leaves": 1,
-   "nodes": 4,
+   "leaf_total": 6848,
+   "leaves": 14,
+   "nodes": 28,
    "prepass_total": 13177,
    "stack": [
     [
-     "2024-05-13",
-     "2024-07-17"
+     "2026-07-01",
+     "2026-07-16"
     ],
     [
-     "2024-07-18",
-     "2024-09-21"
-    ],
-    [
-     "2024-09-22",
-     "2025-06-13"
-    ],
-    [
-     "2025-06-14",
+     "2026-07-17",
      "2026-11-25"
     ]
    ]
@@ -236,13 +228,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 146
+  "issues": 272
  },
  "search_stats": {
-  "429": 18,
+  "429": 41,
   "limit": 30,
   "remaining": 30,
-  "reset": 1795700583
+  "reset": 1795702508
  },
  "started": "2026-11-26T11:20:43+00:00"
 }
