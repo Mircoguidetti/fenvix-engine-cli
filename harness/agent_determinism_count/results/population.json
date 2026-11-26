@@ -1,7 +1,15 @@
 {
+ "@ai-sdk filename:package.json": {
+  "status": 200,
+  "total_count": 87424
+ },
  "@ai-sdk filename:pyproject.toml": {
   "status": 200,
   "total_count": 1
+ },
+ "@ai-sdk filename:requirements.txt": {
+  "status": 200,
+  "total_count": 7
  },
  "@anthropic-ai/claude-agent-sdk filename:package.json": {
   "status": 200,
@@ -26,6 +34,18 @@
  "@langchain filename:requirements.txt": {
   "status": 200,
   "total_count": 32
+ },
+ "@llamaindex filename:package.json": {
+  "status": 200,
+  "total_count": 985
+ },
+ "@llamaindex filename:pyproject.toml": {
+  "status": 200,
+  "total_count": 136
+ },
+ "@llamaindex filename:requirements.txt": {
+  "status": 200,
+  "total_count": 1
  },
  "@mastra/core filename:package.json": {
   "status": 429,
