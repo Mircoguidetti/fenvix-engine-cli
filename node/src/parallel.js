@@ -22,6 +22,18 @@ const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
 
+// the footprint's own probes (real paths, does a mkdir target exist, is a rename source a directory, the tmpdir) are
+// detjs' own use of patched APIs: they run without recording, neither as events of the trace (STATE.quiet) nor as reads
+// of the cache capture (busy), like src/runners/common.js quiet (on 3457ac64 they were recorded: fs.stat and os.tmpdir
+// events that differ between runs, files the cache did not reuse)
+let QUIET_STATE = null;
+function quiet(fn) {
+  const st = QUIET_STATE || (QUIET_STATE = require('./state').STATE);
+  const cap = globalThis[Symbol.for('detjs.cache.capture')];
+  if (cap) cap.busy++;
+  try { return st.quiet(fn); } finally { if (cap) cap.busy--; }
+}
+
 // real clocks, taken before Level 0 replaces them in this process
 const REAL_NOW = Date.now;
 const now = () => REAL_NOW.call(Date);
@@ -360,7 +372,7 @@ function skipDirs(dirs) {
 
 /** The real path of `d` (symlinks resolved); a path that does not exist: its nearest existing ancestor's real path + the rest. */
 function realDir(d) {
-  try { return fs.realpathSync.native(d); } catch {
+  try { return quiet(() => fs.realpathSync.native(d)); } catch {
     const parent = path.dirname(d);
     return parent === d ? d : path.join(realDir(parent), path.basename(d));
   }
@@ -370,7 +382,7 @@ const isUnder = (p, d) => p === d || p.startsWith(d.endsWith(path.sep) ? d : d +
 
 /** Every directory the footprint would leave out: runner and tool caches set by the shells or the environment. */
 function footprintSkipCandidates() {
-  const tmp = os.tmpdir();
+  const tmp = quiet(() => os.tmpdir());
   const uid = typeof process.getuid === 'function' ? process.getuid() : '';
   return [...(process.env.DETJS_CACHE_SKIP_DIRS || '').split(path.delimiter), ...(process.env.DETJS_FOOTPRINT_SKIP_DIRS || '').split(path.delimiter),
     path.join(tmp, 'jiti'), path.join(tmp, 'node-jiti'), path.join(tmp, `tsx-${uid}`), path.join(tmp, `v8-compile-cache-${uid}`),
@@ -388,7 +400,7 @@ function footprintSkipCandidates() {
  */
 function footprintSkip(root, dirs) {
   const rootR = realDir(path.resolve(root));
-  const tmpR = realDir(os.tmpdir());
+  const tmpR = realDir(quiet(() => os.tmpdir()));
   const skip = []; const ignored = []; const seen = new Set();
   for (const d0 of dirs) {
     if (typeof d0 !== 'string' || !d0) continue;
@@ -507,7 +519,7 @@ function installFootprint(root) {
   // The plain keys are kept. DETJS_HAZARD_RECURSIVE=0 turns the roots off (measurement only; the runner gives no proof).
   const recursive = process.env.DETJS_HAZARD_RECURSIVE !== '0';
   const rec = (o) => Boolean(o && typeof o === 'object' && o.recursive);
-  const lstat = fs.lstatSync;
+  const lstat = (x, o) => quiet(() => fs.lstatSync(x, o));
   const isDir = (p) => { const x = toPath(p); if (x === null) return false; try { const st = lstat(x, { throwIfNoEntry: false }); return Boolean(st && st.isDirectory()); } catch { return false; } };
   const wRec = (a) => { H.add('w', a[0]); if (recursive && rec(a[1])) H.add('wr', a[0]); };
   // a recursive mkdir creates only the missing directories of its path: its root is the first of them (the nearest
