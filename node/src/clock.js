@@ -333,6 +333,7 @@ class Driver {
     this.deferrals = 0;
     this.released = new Set(); // timers a finished test left pending, now real timers (releaseTest)
     this.deadlines = new Set(); // the runners' test and hook timeouts of the running test (runner deadlines)
+    this.safePending = new Map(); // P1 prototype: real safe-timer handle -> test id (safeAdd)
     this.progress = 0; // virtual timers fired so far (a runner deadline's real watchdog waits while it grows)
   }
 
@@ -352,7 +353,19 @@ class Driver {
   }
 
   ioPending() {
-    return sched.isPending();
+    return sched.isPending() || this.safePending.size > 0;
+  }
+
+  // P3 S3 prototype (P1): a runner safe timer that a test started and that is not a runner deadline (Vitest's
+  // vi.waitFor / expect.poll intervals and timeouts) is real-time work the test waits for: while one is pending the
+  // virtual timers run at real pace (as with pending I/O), so a long virtual timer does not jump past the poll.
+  safeAdd(h, testId) {
+    this.safePending.set(h, testId);
+    this.rearm();
+  }
+
+  safeDone(h) {
+    if (this.safePending.delete(h)) this.rearm();
   }
 
   // Runner deadlines -----------------------------------------------------------------------------------------
@@ -600,6 +613,7 @@ class Driver {
    */
   releaseTest(testId) {
     for (const d of [...this.deadlines]) if (d._test === testId) this.clear(d); // a runner leaves none behind
+    for (const [h, id] of [...this.safePending]) if (id === testId) this.safePending.delete(h); // P1: no carry-over
     const leaked = this.queue.filter((t) => t._test === testId);
     if (!leaked.length) return 0;
     this.queue = this.queue.filter((t) => t._test !== testId);
