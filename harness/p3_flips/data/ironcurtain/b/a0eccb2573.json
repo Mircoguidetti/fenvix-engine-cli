@@ -1,0 +1,26 @@
+{
+ "repo": "ironcurtain",
+ "file": "test/docker-workload/apple-vm-egress-relay.test.ts@@main",
+ "slug": "a0eccb2573",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "cases": {
+  "test/docker-workload/apple-vm-egress-relay.test.ts@@main::purpose-built Apple VM egress relay::bounds package lifetime without preempting a reused registry connection in one profile": {
+   "kind": "other",
+   "results": [
+    "failed",
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    null,
+    null
+   ],
+   "mixed_outcome": false
+  }
+ },
+ "steps": [],
+ "complete": true
+}

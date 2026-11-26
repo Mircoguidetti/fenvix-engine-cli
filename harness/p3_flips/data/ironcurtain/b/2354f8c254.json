@@ -1,0 +1,440 @@
+{
+ "repo": "ironcurtain",
+ "file": "test/llm-metrics-query-safety.test.ts@@main",
+ "slug": "2354f8c254",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "cases": {
+  "test/llm-metrics-query-safety.test.ts@@main::LLM statistics query output safety::rejects grouped summaries with high-cardinality maximum-length identifiers": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected [Function] to throw error including 'Statistics response exceeds the outpu\u2026' but got 'Statistics query exceeds the aggregat\u2026' [call @ test/llm-metrics-query-safety.test.ts:358]",
+    "AssertionError: expected [Function] to throw error including 'Statistics response exceeds the outpu\u2026' but got 'Statistics query exceeds the aggregat\u2026' [call @ test/llm-metrics-query-safety.test.ts:358]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/llm-metrics-query-safety.test.ts@@main"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "2354f8c254.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/llm-metrics-query-safety.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [Function] to throw error including 'Statistics response exceeds the outpu\u2026' but got 'Statistics query exceeds the aggregat\u2026' [call @ test/llm-metrics-query-safety.test.ts:358]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T02:02:14.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "2354f8c254.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/llm-metrics-query-safety.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [Function] to throw error including 'Statistics response exceeds the outpu\u2026' but got 'Statistics query exceeds the aggregat\u2026' [call @ test/llm-metrics-query-safety.test.ts:358]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T02:02:18.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "2354f8c254.g0.L2a.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/llm-metrics-query-safety.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [Function] to throw error including 'Statistics response exceeds the outpu\u2026' but got 'Statistics query exceeds the aggregat\u2026' [call @ test/llm-metrics-query-safety.test.ts:358]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T02:02:21.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "2354f8c254.g0.L2a.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/llm-metrics-query-safety.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [Function] to throw error including 'Statistics response exceeds the outpu\u2026' but got 'Statistics query exceeds the aggregat\u2026' [call @ test/llm-metrics-query-safety.test.ts:358]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T02:02:25.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "2354f8c254.g0.L2b.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/llm-metrics-query-safety.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [Function] to throw error including 'Statistics response exceeds the outpu\u2026' but got 'Statistics query exceeds the aggregat\u2026' [call @ test/llm-metrics-query-safety.test.ts:358]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T02:02:29.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "2354f8c254.g0.L2b.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/llm-metrics-query-safety.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [Function] to throw error including 'Statistics response exceeds the outpu\u2026' but got 'Statistics query exceeds the aggregat\u2026' [call @ test/llm-metrics-query-safety.test.ts:358]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T02:02:32.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "2354f8c254.g0.L3.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/llm-metrics-query-safety.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [Function] to throw error including 'Statistics response exceeds the outpu\u2026' but got 'Statistics query exceeds the aggregat\u2026' [call @ test/llm-metrics-query-safety.test.ts:358]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T02:02:36.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "2354f8c254.g0.L3.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/llm-metrics-query-safety.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [Function] to throw error including 'Statistics response exceeds the outpu\u2026' but got 'Statistics query exceeds the aggregat\u2026' [call @ test/llm-metrics-query-safety.test.ts:358]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T02:02:39.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "2354f8c254.g0.L4.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/llm-metrics-query-safety.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T02:02:43.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "2354f8c254.g0.L4.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/llm-metrics-query-safety.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T02:02:46.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L4",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "2354f8c254.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/llm-metrics-query-safety.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/llm-metrics-query-safety.test.ts"
+      ]
+     },
+     {
+      "tag": "2354f8c254.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/llm-metrics-query-safety.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/llm-metrics-query-safety.test.ts"
+      ]
+     },
+     {
+      "tag": "2354f8c254.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/llm-metrics-query-safety.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/llm-metrics-query-safety.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/llm-metrics-query-safety.test.ts@@main::LLM statistics query output safety::yields to the event loop between expensive aggregation operations": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected 0 to be greater than 0 [call @ test/llm-metrics-query-safety.test.ts:126]",
+    "AssertionError: expected 0 to be greater than 0 [call @ test/llm-metrics-query-safety.test.ts:126]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/llm-metrics-query-safety.test.ts@@main"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "2354f8c254.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/llm-metrics-query-safety.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T02:02:14.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "2354f8c254.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/llm-metrics-query-safety.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T02:02:18.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "2354f8c254.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/llm-metrics-query-safety.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/llm-metrics-query-safety.test.ts"
+      ]
+     },
+     {
+      "tag": "2354f8c254.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/llm-metrics-query-safety.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/llm-metrics-query-safety.test.ts"
+      ]
+     },
+     {
+      "tag": "2354f8c254.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/llm-metrics-query-safety.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/llm-metrics-query-safety.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "2354f8c254.alone.r1",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/llm-metrics-query-safety.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.alone.r1.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 2.6,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T02:02:07.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "test/llm-metrics-query-safety.test.ts@@main::LLM statistics query output safety::rejects grouped summaries with high-cardinality maximum-length identifiers": "failed",
+    "test/llm-metrics-query-safety.test.ts@@main::LLM statistics query output safety::yields to the event loop between expensive aggregation operations": "failed"
+   },
+   "exc": {
+    "test/llm-metrics-query-safety.test.ts@@main::LLM statistics query output safety::rejects grouped summaries with high-cardinality maximum-length identifiers": "AssertionError: expected [Function] to throw error including 'Statistics response exceeds the outpu\u2026' but got 'Statistics query exceeds the aggregat\u2026' [call @ test/llm-metrics-query-safety.test.ts:358]",
+    "test/llm-metrics-query-safety.test.ts@@main::LLM statistics query output safety::yields to the event loop between expensive aggregation operations": "AssertionError: expected 0 to be greater than 0 [call @ test/llm-metrics-query-safety.test.ts:126]"
+   }
+  },
+  {
+   "tag": "2354f8c254.alone.r2",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/llm-metrics-query-safety.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.alone.r2.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/2354f8c254.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 2.57,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T02:02:11.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "test/llm-metrics-query-safety.test.ts@@main::LLM statistics query output safety::rejects grouped summaries with high-cardinality maximum-length identifiers": "failed",
+    "test/llm-metrics-query-safety.test.ts@@main::LLM statistics query output safety::yields to the event loop between expensive aggregation operations": "failed"
+   },
+   "exc": {
+    "test/llm-metrics-query-safety.test.ts@@main::LLM statistics query output safety::rejects grouped summaries with high-cardinality maximum-length identifiers": "AssertionError: expected [Function] to throw error including 'Statistics response exceeds the outpu\u2026' but got 'Statistics query exceeds the aggregat\u2026' [call @ test/llm-metrics-query-safety.test.ts:358]",
+    "test/llm-metrics-query-safety.test.ts@@main::LLM statistics query output safety::yields to the event loop between expensive aggregation operations": "AssertionError: expected 0 to be greater than 0 [call @ test/llm-metrics-query-safety.test.ts:126]"
+   }
+  }
+ ],
+ "complete": true
+}

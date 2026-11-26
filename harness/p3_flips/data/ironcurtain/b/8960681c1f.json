@@ -1,0 +1,175 @@
+{
+ "repo": "ironcurtain",
+ "file": "test/llm-metrics-persistence.test.ts@@main",
+ "slug": "8960681c1f",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "cases": {
+  "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps timed-out retention single-flight until its late lease cleanup settles": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: promise resolved \"{ status: 'complete', \u2026(4) }\" instead of rejecting [call @ test/llm-metrics-persistence.test.ts:813]",
+    "AssertionError: promise resolved \"{ status: 'complete', \u2026(4) }\" instead of rejecting [call @ test/llm-metrics-persistence.test.ts:813]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/llm-metrics-persistence.test.ts@@main"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "8960681c1f.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/llm-metrics-persistence.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/8960681c1f.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/8960681c1f.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T02:01:29.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "8960681c1f.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/llm-metrics-persistence.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/8960681c1f.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/8960681c1f.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T02:01:39.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "8960681c1f.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/llm-metrics-persistence.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/8960681c1f.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/llm-metrics-persistence.test.ts"
+      ]
+     },
+     {
+      "tag": "8960681c1f.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/llm-metrics-persistence.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/8960681c1f.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/llm-metrics-persistence.test.ts"
+      ]
+     },
+     {
+      "tag": "8960681c1f.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/llm-metrics-persistence.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/8960681c1f.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/llm-metrics-persistence.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "8960681c1f.alone.r1",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/llm-metrics-persistence.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/8960681c1f.alone.r1.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/8960681c1f.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 8.86,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T02:01:09.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps timed-out retention single-flight until its late lease cleanup settles": "failed"
+   },
+   "exc": {
+    "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps timed-out retention single-flight until its late lease cleanup settles": "AssertionError: promise resolved \"{ status: 'complete', \u2026(4) }\" instead of rejecting [call @ test/llm-metrics-persistence.test.ts:813]"
+   }
+  },
+  {
+   "tag": "8960681c1f.alone.r2",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/llm-metrics-persistence.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/8960681c1f.alone.r2.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/8960681c1f.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 8.67,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T02:01:19.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps timed-out retention single-flight until its late lease cleanup settles": "failed"
+   },
+   "exc": {
+    "test/llm-metrics-persistence.test.ts@@main::SQLite LLM metrics repository::keeps timed-out retention single-flight until its late lease cleanup settles": "AssertionError: promise resolved \"{ status: 'complete', \u2026(4) }\" instead of rejecting [call @ test/llm-metrics-persistence.test.ts:813]"
+   }
+  }
+ ],
+ "complete": true
+}

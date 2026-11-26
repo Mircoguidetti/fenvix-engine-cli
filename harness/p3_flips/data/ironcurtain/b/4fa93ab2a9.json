@@ -1,0 +1,978 @@
+{
+ "repo": "ironcurtain",
+ "file": "test/docker/mitm-domain-model.test.ts@@main",
+ "slug": "4fa93ab2a9",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "cases": {
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'CONNECT' authorization follows add/remove/re-add (uppercase=false)": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]",
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/docker/mitm-domain-model.test.ts@@main"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "4fa93ab2a9.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/docker/mitm-domain-model.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T01:57:56.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "4fa93ab2a9.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/docker/mitm-domain-model.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T01:58:02.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "4fa93ab2a9.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/docker/mitm-domain-model.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/docker/mitm-domain-model.test.ts"
+      ]
+     },
+     {
+      "tag": "4fa93ab2a9.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/docker/mitm-domain-model.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/docker/mitm-domain-model.test.ts"
+      ]
+     },
+     {
+      "tag": "4fa93ab2a9.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/docker/mitm-domain-model.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/docker/mitm-domain-model.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'CONNECT' authorization follows add/remove/re-add (uppercase=true)": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]",
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/docker/mitm-domain-model.test.ts@@main"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "4fa93ab2a9.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/docker/mitm-domain-model.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T01:57:56.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "4fa93ab2a9.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/docker/mitm-domain-model.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T01:58:02.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "4fa93ab2a9.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/docker/mitm-domain-model.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/docker/mitm-domain-model.test.ts"
+      ]
+     },
+     {
+      "tag": "4fa93ab2a9.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/docker/mitm-domain-model.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/docker/mitm-domain-model.test.ts"
+      ]
+     },
+     {
+      "tag": "4fa93ab2a9.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/docker/mitm-domain-model.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/docker/mitm-domain-model.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'WebSocket' authorization follows add/remove/re-add (uppercase=false)": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]",
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/docker/mitm-domain-model.test.ts@@main"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "4fa93ab2a9.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/docker/mitm-domain-model.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T01:57:56.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "4fa93ab2a9.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/docker/mitm-domain-model.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T01:58:02.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "4fa93ab2a9.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/docker/mitm-domain-model.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/docker/mitm-domain-model.test.ts"
+      ]
+     },
+     {
+      "tag": "4fa93ab2a9.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/docker/mitm-domain-model.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/docker/mitm-domain-model.test.ts"
+      ]
+     },
+     {
+      "tag": "4fa93ab2a9.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/docker/mitm-domain-model.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/docker/mitm-domain-model.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'WebSocket' authorization follows add/remove/re-add (uppercase=true)": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]",
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/docker/mitm-domain-model.test.ts@@main"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "4fa93ab2a9.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/docker/mitm-domain-model.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T01:57:56.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "4fa93ab2a9.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/docker/mitm-domain-model.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T01:58:02.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "4fa93ab2a9.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/docker/mitm-domain-model.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/docker/mitm-domain-model.test.ts"
+      ]
+     },
+     {
+      "tag": "4fa93ab2a9.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/docker/mitm-domain-model.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/docker/mitm-domain-model.test.ts"
+      ]
+     },
+     {
+      "tag": "4fa93ab2a9.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/docker/mitm-domain-model.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/docker/mitm-domain-model.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'disconnect' ('hold')": {
+   "kind": "mixed",
+   "results": [
+    "passed",
+    "passed",
+    "passed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    null,
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:277]"
+   ],
+   "mixed_outcome": true,
+   "alone": {
+    "states": [
+     "clear",
+     "repro"
+    ],
+    "reproduces": false
+   },
+   "undecided": "not reproduced outside the whole suite"
+  },
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'stop' ('decline')": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:277]",
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:277]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/docker/mitm-domain-model.test.ts@@main"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "4fa93ab2a9.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/docker/mitm-domain-model.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T01:57:56.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "4fa93ab2a9.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/docker/mitm-domain-model.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T01:58:02.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "4fa93ab2a9.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/docker/mitm-domain-model.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/docker/mitm-domain-model.test.ts"
+      ]
+     },
+     {
+      "tag": "4fa93ab2a9.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/docker/mitm-domain-model.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/docker/mitm-domain-model.test.ts"
+      ]
+     },
+     {
+      "tag": "4fa93ab2a9.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/docker/mitm-domain-model.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/docker/mitm-domain-model.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'stop' ('hold')": {
+   "kind": "mixed",
+   "results": [
+    "passed",
+    "passed",
+    "passed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    null,
+    "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:277]"
+   ],
+   "mixed_outcome": true,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/docker/mitm-domain-model.test.ts@@main"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear",
+      "clear",
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "4fa93ab2a9.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/docker/mitm-domain-model.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T01:57:56.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "4fa93ab2a9.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/docker/mitm-domain-model.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T01:58:02.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "4fa93ab2a9.g0.L1.r3",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/docker/mitm-domain-model.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r3.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r3.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T01:58:09.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "4fa93ab2a9.g0.L1.r4",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/docker/mitm-domain-model.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r4.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r4.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T01:58:15.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "4fa93ab2a9.g0.L1.r5",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/docker/mitm-domain-model.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r5.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.L1.r5.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T01:58:21.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "4fa93ab2a9.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/docker/mitm-domain-model.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/docker/mitm-domain-model.test.ts"
+      ]
+     },
+     {
+      "tag": "4fa93ab2a9.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/docker/mitm-domain-model.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/docker/mitm-domain-model.test.ts"
+      ]
+     },
+     {
+      "tag": "4fa93ab2a9.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/docker/mitm-domain-model.test.ts --project main --config /tmp/pm-p3/repos/ironcurtain/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/ironcurtain/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/docker/mitm-domain-model.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "4fa93ab2a9.alone.r1",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/docker/mitm-domain-model.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.alone.r1.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 5.1,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T01:55:30.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'CONNECT' authorization follows add/remove/re-add (uppercase=false)": "failed",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'CONNECT' authorization follows add/remove/re-add (uppercase=true)": "failed",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'WebSocket' authorization follows add/remove/re-add (uppercase=false)": "failed",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'WebSocket' authorization follows add/remove/re-add (uppercase=true)": "failed",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'disconnect' ('hold')": "passed",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'stop' ('decline')": "failed",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'stop' ('hold')": "failed"
+   },
+   "exc": {
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'CONNECT' authorization follows add/remove/re-add (uppercase=false)": "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'CONNECT' authorization follows add/remove/re-add (uppercase=true)": "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'WebSocket' authorization follows add/remove/re-add (uppercase=false)": "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'WebSocket' authorization follows add/remove/re-add (uppercase=true)": "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'disconnect' ('hold')": null,
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'stop' ('decline')": "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:277]",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'stop' ('hold')": "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:277]"
+   }
+  },
+  {
+   "tag": "4fa93ab2a9.alone.r2",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/docker/mitm-domain-model.test.ts --project main --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.alone.r2.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 5.2,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T01:55:36.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'CONNECT' authorization follows add/remove/re-add (uppercase=false)": "failed",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'CONNECT' authorization follows add/remove/re-add (uppercase=true)": "failed",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'WebSocket' authorization follows add/remove/re-add (uppercase=false)": "failed",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'WebSocket' authorization follows add/remove/re-add (uppercase=true)": "failed",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'disconnect' ('hold')": "failed",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'stop' ('decline')": "failed",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'stop' ('hold')": "failed"
+   },
+   "exc": {
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'CONNECT' authorization follows add/remove/re-add (uppercase=false)": "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'CONNECT' authorization follows add/remove/re-add (uppercase=true)": "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'WebSocket' authorization follows add/remove/re-add (uppercase=false)": "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'WebSocket' authorization follows add/remove/re-add (uppercase=true)": "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:196]",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'disconnect' ('hold')": "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:277]",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'stop' ('decline')": "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:277]",
+    "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'stop' ('hold')": "Error: Test timed out in 30000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/docker/mitm-domain-model.test.ts:277]"
+   }
+  }
+ ],
+ "pred": {
+  "src_run": 2,
+  "n_preds": 99,
+  "probes": [],
+  "full": [
+   {
+    "tag": "4fa93ab2a9.full.r1",
+    "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.full.r1.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.full.r1.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.full.r1.trace.jsonl",
+    "exit": 1,
+    "wall_s": 64.97,
+    "meta": {
+     "timers": "virtual",
+     "network": "open",
+     "epoch": "2026-11-26T01:55:42.000Z",
+     "seed": 0
+    },
+    "controls": [
+     "fs",
+     "isolation",
+     "net",
+     "order",
+     "seeds",
+     "time",
+     "timers"
+    ],
+    "outcomes": {
+     "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'disconnect' ('hold')": "passed"
+    },
+    "exc": {
+     "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'disconnect' ('hold')": null
+    }
+   },
+   {
+    "tag": "4fa93ab2a9.full.r2",
+    "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.full.r2.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.full.r2.outcomes.json --det-trace=/tmp/pm-p3/find/ironcurtain/b/runs/4fa93ab2a9.full.r2.trace.jsonl",
+    "exit": 1,
+    "wall_s": 66.97,
+    "meta": {
+     "timers": "virtual",
+     "network": "open",
+     "epoch": "2026-11-26T01:56:48.000Z",
+     "seed": 0
+    },
+    "controls": [
+     "fs",
+     "isolation",
+     "net",
+     "order",
+     "seeds",
+     "time",
+     "timers"
+    ],
+    "outcomes": {
+     "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'disconnect' ('hold')": "passed"
+    },
+    "exc": {
+     "test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::closes an unfinished proxy request on 'disconnect' ('hold')": null
+    }
+   }
+  ],
+  "smallest": [
+   "src/web-ui/__tests__/config-dispatch.test.ts@@main",
+   "src/web-ui/__tests__/json-rpc-dispatch.test.ts@@main",
+   "test/agent-model-guard.test.ts@@main",
+   "test/apple-container-manager.test.ts@@main",
+   "test/apple-container.integration.test.ts@@main",
+   "test/approval-whitelist.test.ts@@main",
+   "test/argument-roles.test.ts@@main",
+   "test/argument-validation.integration.test.ts@@main",
+   "test/audit-log-errors.test.ts@@main",
+   "test/audit-log-tailer.test.ts@@main",
+   "test/audit-redactor.test.ts@@main",
+   "test/auth/auth-command.test.ts@@main",
+   "test/auth/google-scopes.test.ts@@main",
+   "test/auth/oauth-flow.test.ts@@main",
+   "test/auth/oauth-provider.test.ts@@main",
+   "test/auth/oauth-registry.test.ts@@main",
+   "test/auth/oauth-token-provider.test.ts@@main",
+   "test/auth/oauth-token-store.test.ts@@main",
+   "test/auto-approver-integration.test.ts@@main",
+   "test/auto-approver.test.ts@@main",
+   "test/auto-save-memory.test.ts@@main",
+   "test/build-corpus.test.ts@@main",
+   "test/ca.test.ts@@main",
+   "test/call-circuit-breaker.test.ts@@main",
+   "test/checkpoint-selection.test.ts@@main",
+   "test/cli-transport-shutdown.test.ts@@main",
+   "test/codex-adapter.test.ts@@main",
+   "test/compile-policy-cli.test.ts@@main",
+   "test/config-command.test.ts@@main",
+   "test/constitution-compiler.test.ts@@main",
+   "test/constitution-customizer.test.ts@@main",
+   "test/constitution-freshness.test.ts@@main",
+   "test/container-command.test.ts@@main",
+   "test/control-socket.test.ts@@main",
+   "test/conversation-state.test.ts@@main",
+   "test/coordinator-control-server.test.ts@@main",
+   "test/cron-prompts.test.ts@@main",
+   "test/cron-scheduler.test.ts@@main",
+   "test/daemon-client.test.ts@@main",
+   "test/definition-loader.test.ts@@main",
+   "test/diagnose-corpus.test.ts@@main",
+   "test/docker-agent-adapter.test.ts@@main",
+   "test/docker-agent-session-retry.test.ts@@main",
+   "test/docker-infrastructure.test.ts@@main",
+   "test/docker-manager.test.ts@@main",
+   "test/docker-progress-sink.test.ts@@main",
+   "test/docker-resource-lifecycle.integration.test.ts@@main",
+   "test/docker-resource-lifecycle.test.ts@@main",
+   "test/docker-resource-limits.integration.test.ts@@main",
+   "test/docker-resource-limits.test.ts@@main",
+   "test/docker-session.test.ts@@main",
+   "test/docker-workload/apple-vm-daemon.test.ts@@main",
+   "test/docker-workload/apple-vm-egress-relay.test.ts@@main",
+   "test/docker-workload/cleanup-ownership.test.ts@@main",
+   "test/docker-workload/config.test.ts@@main",
+   "test/docker-workload/docker-desktop-sidecar.test.ts@@main",
+   "test/docker-workload/environment.test.ts@@main",
+   "test/docker-workload/infrastructure-admission.test.ts@@main",
+   "test/docker-workload/infrastructure-fuse-guard.test.ts@@main",
+   "test/docker-workload/infrastructure-reconciliation.test.ts@@main",
+   "test/docker-workload/infrastructure-teardown.test.ts@@main",
+   "test/docker-workload/lease-recovery-model.test.ts@@main",
+   "test/docker-workload/lifecycle-evidence.test.ts@@main",
+   "test/docker-workload/nested-daemon-identity.test.ts@@main",
+   "test/docker-workload/private-docker.test.ts@@main",
+   "test/docker-workload/process-lock.test.ts@@main",
+   "test/docker-workload/profile-ceiling.test.ts@@main",
+   "test/docker-workload/qualification-observer.test.ts@@main",
+   "test/docker-workload/toolchain-source.test.ts@@main",
+   "test/docker-workload/watchdog-sigkill.integration.test.ts@@main",
+   "test/docker-workload/watchdog-supervisor-launch.test.ts@@main",
+   "test/docker/agent-startup.integration.test.ts@@main",
+   "test/docker/agent-startup.test.ts@@main",
+   "test/docker/apple-private-docker.test.ts@@main",
+   "test/docker/backend-qualification-plan.test.ts@@main",
+   "test/docker/base-image.test.ts@@main",
+   "test/docker/bounded-log-tail.test.ts@@main",
+   "test/docker/bundle-lease.test.ts@@main",
+   "test/docker/bundle-revocation.test.ts@@main",
+   "test/docker/client-toolchain.test.ts@@main",
+   "test/docker/completion-endpoint.test.ts@@main",
+   "test/docker/desktop-relay-uds.integration.test.ts@@main",
+   "test/docker/desktop-relay.integration.test.ts@@main",
+   "test/docker/desktop-relay.test.ts@@main",
+   "test/docker/destroy-bundle-outer-resources.test.ts@@main",
+   "test/docker/docker-build-shim-lifecycle.test.ts@@main",
+   "test/docker/docker-build-shim.test.ts@@main",
+   "test/docker/docker-endpoint.test.ts@@main",
+   "test/docker/docker-workload-admission.test.ts@@main",
+   "test/docker/docker-workload-egress.test.ts@@main",
+   "test/docker/docker-workload-prepare-failure.test.ts@@main",
+   "test/docker/docker-workload-wiring.test.ts@@main",
+   "test/docker/egress-forwarding.test.ts@@main",
+   "test/docker/linux-dependency-abi.test.ts@@main",
+   "test/docker/llm-observation-content-decoder.test.ts@@main",
+   "test/docker/llm-observation-hub.test.ts@@main",
+   "test/docker/llm-observation-sse-event-framer.test.ts@@main",
+   "test/docker/mitm-capture-model.test.ts@@main",
+   "test/docker/mitm-cascade.test.ts@@main"
+  ]
+ },
+ "complete": true
+}
