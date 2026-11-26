@@ -223,6 +223,21 @@ def check_report(v) -> None:
                 err(f"REPORT.md lacks the decision line {line!r}")
 
 
+def check_chunks() -> None:
+    """A chunk line written after the run (``reconstructed``) must agree with that chunk's raw file."""
+    import gzip
+    for c in J.read_jsonl(HERE / "results" / "chunks.jsonl"):
+        if not c.get("reconstructed"):
+            continue
+        raw = HERE / "results" / "raw" / f"{c['part'].lower()}_{c['chunk']}.jsonl.gz"
+        with gzip.open(raw, "rt") as f:
+            recs = [json.loads(line) for line in f]
+        if (len(recs), sum(r["requests"] for r in recs)) != (c["items_done"], c["requests"]):
+            err(f"chunk {c['chunk']}: reconstructed line differs from {raw.name}")
+        if recs and (recs[0]["item"], recs[-1]["item"]) != (c["first"], c["last"]):
+            err(f"chunk {c['chunk']}: reconstructed first/last differ from {raw.name}")
+
+
 def main() -> int:
     if hashlib.md5((HERE / "frame.jsonl").read_bytes()).hexdigest() != FRAME_MD5:
         err("frame.jsonl md5 differs")
@@ -232,6 +247,7 @@ def main() -> int:
     replay_a(arows)
     check_rule1(arows)
     replay_b(brows)
+    check_chunks()
     ha, hs, hb = load_hand()
     check_hand(arows, brows, ha, hs, hb)
     check_report(values(arows, brows, ha, hs, hb))

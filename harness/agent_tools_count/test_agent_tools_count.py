@@ -555,3 +555,27 @@ def test_live_source_is_get_only():
     src = inspect.getsource(P)
     assert "method=" not in src and "data=" not in src
     assert "search/" not in src and "search/" not in inspect.getsource(J)
+
+
+def test_reconstructed_chunk_line_checked_against_raw(tmp_path, monkeypatch):
+    """protects=a chunk summary line written after a cancelled run (``reconstructed``) is re-derived from that
+    chunk's raw file by verify.py (items, requests, first and last item); fails_when=check_chunks skips
+    reconstructed lines or compares other fields; no_claim=the requests of a repository cancelled mid-read are
+    known (they are not in the raw file)."""
+    import gzip
+    import json
+    import verify as V
+    (tmp_path / "results" / "raw").mkdir(parents=True)
+    with gzip.open(tmp_path / "results" / "raw" / "b_4.jsonl.gz", "wt") as f:
+        for item, n in (("o/a", 3), ("o/b", 4)):
+            f.write(json.dumps({"item": item, "requests": n}) + "\n")
+    line = {"chunk": "4", "part": "B", "first": "o/a", "last": "o/b", "items_done": 2, "requests": 7,
+            "reconstructed": "test"}
+    monkeypatch.setattr(V, "HERE", tmp_path)
+    monkeypatch.setattr(V, "errors", [])
+    (tmp_path / "results" / "chunks.jsonl").write_text(json.dumps(line) + "\n")
+    V.check_chunks()
+    assert V.errors == []
+    (tmp_path / "results" / "chunks.jsonl").write_text(json.dumps(dict(line, requests=8)) + "\n")
+    V.check_chunks()
+    assert len(V.errors) == 1
