@@ -92,3 +92,7 @@
     new {"build": true} request fetches all parts and rebuilds, and the extension's queries replace their unfinished
     text entries. Reading chunks already started may continue; S3 is read further only after that rebuild. PREREG §1
     gains the note. Test: test_s3_extension_runs_only_uncovered_s3_queries (fails before the change).
+11. 2026-11-26 11:35Z, harness only (no rule change). The rebuild after the S3 extension keeps every earlier
+    candidate's idx: rows, raw records and the reading orders refer to candidates by idx. New candidates are numbered
+    after the earlier ones. The {"build": true} request first fetches the earlier candidates.jsonl.gz by its index.
+    Test: test_rebuild_keeps_earlier_candidate_idx (fails before the change).

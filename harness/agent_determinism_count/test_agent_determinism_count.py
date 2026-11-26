@@ -1291,3 +1291,18 @@ def test_s3_extension_runs_only_uncovered_s3_queries(tmp_path, monkeypatch):
 def dt_hours(a: str, b: str) -> float:
     import datetime as dt
     return (dt.datetime.fromisoformat(b) - dt.datetime.fromisoformat(a)).total_seconds() / 3600
+
+
+def test_rebuild_keeps_earlier_candidate_idx():
+    """protects=rows, raw records and orders refer to candidates by idx: a rebuild after the S3 extension keeps every
+    earlier candidate's idx and numbers new ones after them; fails_when=a new repository sorts into the middle and
+    shifts the idx of candidates already read; no_claim=hit content."""
+    def lf(q, a, repo):
+        return {"query": q, "stratum": "S3", "a": a, "b": a, "items": [{"repo": repo, "url": f"u-{repo}"}]}
+    rows, orders, _ = discover.build([lf("q", "1", "o/b"), lf("q", "2", "o/d")], {}, {})
+    prev = {r["repo"].lower(): r["idx"] for r in rows}
+    rows2, orders2, pool2 = discover.build([lf("q", "1", "o/b"), lf("q", "2", "o/d"), lf("x", "1", "o/a")], {}, {},
+                                           prev)
+    got = {r["repo"]: r["idx"] for r in rows2}
+    assert got == {"o/b": prev["o/b"], "o/d": prev["o/d"], "o/a": 2} and [r["idx"] for r in rows2] == [0, 1, 2]
+    assert sorted(orders2["S3"]) == [0, 1, 2] and pool2["S3"]["candidates"] == 3

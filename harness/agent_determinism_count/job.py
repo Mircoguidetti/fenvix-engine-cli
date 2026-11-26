@@ -120,6 +120,10 @@ def main() -> int:
             if not (st.get("finished") or st.get("budget_reached")):
                 print(f"discovery {fam} neither finished nor at its budget: build not run, {name} stays pending")
                 return 1
+        import parts
+        if parts.fetch_candidates() != 0:  # a rebuild keeps the earlier candidates' idx
+            print(f"earlier candidates missing or changed: build not run, {name} stays pending")
+            return 1
         rc = subprocess.call([sys.executable, str(HERE / "discover.py"), "build"])
         if rc == 0:
             chunk.mark_done(name, {"build": True, "at": chunk.now()})

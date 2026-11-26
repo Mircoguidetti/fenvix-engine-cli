@@ -385,9 +385,10 @@ def read_leaves() -> list[dict]:
 STRATA = ("S1", "S2", "S3")
 
 
-def build(leaves, states: dict, prepass_all: dict) -> tuple[list[dict], dict, dict]:
+def build(leaves, states: dict, prepass_all: dict, prev: dict | None = None) -> tuple[list[dict], dict, dict]:
     """``leaves`` may be any iterable (one pass). Hits keep the order of the leaves sorted by (stratum, query, a, b),
-    then item order, and the first hit per (url, query)."""
+    then item order, and the first hit per (url, query). ``prev`` ({repo lower: idx} of an earlier build): a rebuild
+    keeps every earlier candidate's idx (rows and raw records refer to it) and numbers new candidates after them."""
     cand: dict[str, dict] = {}
     pool = {s: {"candidates": 0, "missing": 0, "truncated_leaves": 0, "incomplete_leaves": 0,
                 "capped_queries": [], "unfinished": []} for s in STRATA}
@@ -421,8 +422,17 @@ def build(leaves, states: dict, prepass_all: dict) -> tuple[list[dict], dict, di
                 hits.append(h)
         row["hits"] = hits
     rows = sorted(cand.values(), key=lambda r: r["html_url"])
-    for i, r in enumerate(rows):
-        r["idx"] = i
+    if prev:
+        nxt = max(prev.values()) + 1
+        for r in rows:
+            if r["repo"].lower() in prev:
+                r["idx"] = prev[r["repo"].lower()]
+            else:
+                r["idx"], nxt = nxt, nxt + 1
+        rows.sort(key=lambda r: r["idx"])
+    else:
+        for i, r in enumerate(rows):
+            r["idx"] = i
     orders = {s: [r["idx"] for r in R.stratum_order([r for r in rows if r["stratum"] == s])] for s in STRATA}
     for s in STRATA:
         pool[s]["candidates"] = len(orders[s])
@@ -466,7 +476,12 @@ def main(argv=None) -> int:
     xs = _json(RES / f"discovery_state_{EXT}.json", None)
     if xs and states["text"]:  # the S3 extension's queries replace their unfinished text entries
         states["text"] = {**states["text"], "queries": {**states["text"].get("queries", {}), **xs["queries"]}}
-    rows, orders, pool = build(iter_leaves(), states, load_prepass())
+    prev = None
+    if (RES / "candidates.jsonl.gz").exists():  # a rebuild (S3 extension): earlier candidates keep their idx
+        with gzip.open(RES / "candidates.jsonl.gz", "rt") as f:
+            prev = {json.loads(x)["repo"].lower(): json.loads(x)["idx"] for x in f if x.strip()}
+        print(f"rebuild: {len(prev)} earlier candidates keep their idx")
+    rows, orders, pool = build(iter_leaves(), states, load_prepass(), prev)
     with gzip.open(RES / "candidates.jsonl.gz", "wt") as f:
         for r in rows:
             f.write(json.dumps(r, sort_keys=True) + "\n")
