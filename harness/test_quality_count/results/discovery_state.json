@@ -121,31 +121,15 @@
    "root_total": 3284,
    "stack": []
   },
-  "B stryker filename:package.json": {
-   "done": true,
-   "leaves": 21,
-   "nodes": 41,
-   "root_incomplete": false,
-   "root_total": 10560,
-   "stack": []
-  },
-  "B stryker filename:stryker.conf": {
-   "done": true,
-   "leaves": 19,
-   "nodes": 37,
-   "root_incomplete": false,
-   "root_total": 6880,
-   "stack": []
-  },
-  "B stryker filename:stryker.config": {
+  "B infection filename:composer.json": {
    "done": false,
-   "leaves": 5,
-   "nodes": 18,
+   "leaves": 3,
+   "nodes": 14,
    "root_incomplete": false,
-   "root_total": 4504,
+   "root_total": 7264,
    "stack": [
     [
-     1173,
+     1368,
      1562
     ],
     [
@@ -181,6 +165,38 @@
      400000
     ]
    ]
+  },
+  "B stryker filename:package.json": {
+   "done": true,
+   "leaves": 21,
+   "nodes": 41,
+   "root_incomplete": false,
+   "root_total": 10560,
+   "stack": []
+  },
+  "B stryker filename:stryker-config.json": {
+   "done": true,
+   "leaves": 11,
+   "nodes": 21,
+   "root_incomplete": false,
+   "root_total": 1540,
+   "stack": []
+  },
+  "B stryker filename:stryker.conf": {
+   "done": true,
+   "leaves": 19,
+   "nodes": 37,
+   "root_incomplete": false,
+   "root_total": 6880,
+   "stack": []
+  },
+  "B stryker filename:stryker.config": {
+   "done": true,
+   "leaves": 14,
+   "nodes": 27,
+   "root_incomplete": false,
+   "root_total": 4504,
+   "stack": []
   }
  },
  "rate_limit": {
