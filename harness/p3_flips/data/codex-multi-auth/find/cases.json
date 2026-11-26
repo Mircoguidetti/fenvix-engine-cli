@@ -4,12 +4,12 @@
   "mixed": 6,
   "absent": 0,
   "skipped-in-det": 0,
-  "det-only": 3,
+  "det-only": 1,
   "reverse": 0,
-  "other": 4
+  "other": 2
  },
- "n_cases": 77,
- "n_unstable": 7,
+ "n_cases": 73,
+ "n_unstable": 3,
  "cases": [
   {
    "id": "test/api-model-runtime.test.ts::does not hold native model discovery open while probes run, then updates the served catalog",
@@ -876,70 +876,6 @@
    ]
   },
   {
-   "id": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, 25 Dec 2026 21:27:20 GMT at fifteen minutes",
-   "kind": "other",
-   "results": [
-    "passed",
-    null,
-    null,
-    null
-   ],
-   "unstable": true,
-   "pattern": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, # Dec # #:#:# GMT at fifteen minutes",
-   "det_failure": [
-    null,
-    null
-   ]
-  },
-  {
-   "id": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, 25 Dec 2026 21:35:33 GMT at fifteen minutes",
-   "kind": "other",
-   "results": [
-    null,
-    "passed",
-    null,
-    null
-   ],
-   "unstable": true,
-   "pattern": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, # Dec # #:#:# GMT at fifteen minutes",
-   "det_failure": [
-    null,
-    null
-   ]
-  },
-  {
-   "id": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, 25 Dec 2026 21:40:12 GMT at fifteen minutes",
-   "kind": "det-only",
-   "results": [
-    null,
-    null,
-    "passed",
-    null
-   ],
-   "unstable": true,
-   "pattern": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, # Dec # #:#:# GMT at fifteen minutes",
-   "det_failure": [
-    null,
-    null
-   ]
-  },
-  {
-   "id": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, 25 Dec 2026 21:47:48 GMT at fifteen minutes",
-   "kind": "det-only",
-   "results": [
-    null,
-    null,
-    null,
-    "passed"
-   ],
-   "unstable": true,
-   "pattern": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, # Dec # #:#:# GMT at fifteen minutes",
-   "det_failure": [
-    null,
-    null
-   ]
-  },
-  {
    "id": "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type application/json",
    "kind": "flip",
    "results": [
@@ -1242,6 +1178,52 @@
     "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/storage-file-lock.test.ts:75]",
     "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/storage-file-lock.test.ts:75]"
    ]
+  }
+ ],
+ "patterns": [
+  {
+   "pattern": "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: #",
+   "matches_per_run": [
+    2,
+    2,
+    2,
+    2
+   ],
+   "ids": [
+    "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 28183",
+    "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 393851524",
+    "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 7900"
+   ],
+   "matched": false
+  },
+  {
+   "pattern": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, # Dec # #:#:# GMT at fifteen minutes",
+   "matches_per_run": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "ids": [
+    "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, 25 Dec 2026 21:27:20 GMT at fifteen minutes",
+    "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, 25 Dec 2026 21:35:33 GMT at fifteen minutes",
+    "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, 25 Dec 2026 21:40:12 GMT at fifteen minutes",
+    "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, 25 Dec 2026 21:47:48 GMT at fifteen minutes"
+   ],
+   "matched": true,
+   "matched_ids": [
+    "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, 25 Dec 2026 21:27:20 GMT at fifteen minutes",
+    "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, 25 Dec 2026 21:35:33 GMT at fifteen minutes",
+    "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, 25 Dec 2026 21:40:12 GMT at fifteen minutes",
+    "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, 25 Dec 2026 21:47:48 GMT at fifteen minutes"
+   ],
+   "results": [
+    "passed",
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "kind": null
   }
  ]
 }

@@ -11,16 +11,37 @@ Per-run state letters: r = reproduces the --det outcome of A, c = clears (plain 
 | agentic-qe | skipped-in-det | 1 | 0 | 0 | 1 | 0 |
 | agentic-qe | reverse | 6 | 0 | 0 | 6 | 0 |
 | **agentic-qe** | all | 84 | 0 | 0 | 84 | 0 |
-| codex-multi-auth | flip | 64 | 0 | 25 | 39 | 0 |
-| codex-multi-auth | mixed | 6 | 0 | 1 | 5 | 0 |
-| codex-multi-auth | det-only | 3 | 0 | 0 | 3 | 3 |
-| codex-multi-auth | other | 4 | 0 | 0 | 4 | 4 |
-| **codex-multi-auth** | all | 77 | 0 | 26 | 51 | 7 |
+| codex-multi-auth | flip | 64 | 0 | 38 | 26 | 0 |
+| codex-multi-auth | mixed | 6 | 0 | 4 | 2 | 0 |
+| codex-multi-auth | det-only | 1 | 0 | 0 | 1 | 1 |
+| codex-multi-auth | other | 2 | 0 | 0 | 2 | 2 |
+| **codex-multi-auth** | all | 73 | 0 | 42 | 31 | 3 |
 | ironcurtain | flip | 16 | 0 | 16 | 0 | 0 |
 | ironcurtain | mixed | 2 | 0 | 1 | 1 | 0 |
 | ironcurtain | skipped-in-det | 10 | 0 | 10 | 0 | 0 |
 | ironcurtain | other | 1 | 0 | 0 | 1 | 0 |
 | **ironcurtain** | all | 29 | 0 | 27 | 2 | 0 |
+
+## Unstable-id patterns (founder D2)
+
+A pattern is matched when it names exactly one id in each of the four runs of A (p1 p2 d1 d2).
+
+| repository | pattern | matches per run | matched | became |
+|---|---|---|---|---|
+| codex-multi-auth | `test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: #` | 2 2 2 2 | no | 3 cases UNDECIDED unstable id |
+| codex-multi-auth | `test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, # Dec # #:#:# GMT at fifteen minutes` | 1 1 1 1 | yes | no case (the four results agree) |
+
+## Ids excluded from the neutrality check (founder D3)
+
+Ids whose outcome differs between the two plain runs of A, or whose digit pattern is such an id's.
+
+| repository | test id | plain A run 1 / harness config |
+|---|---|---|
+| codex-multi-auth | `test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 29065` | None / passed |
+| codex-multi-auth | `test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 7900` | passed / None |
+| codex-multi-auth | `test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, 25 Dec 2026 21:27:20 GMT at fifteen minutes` | passed / None |
+| codex-multi-auth | `test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, 25 Dec 2026 22:00:48 GMT at fifteen minutes` | None / passed |
+| ironcurtain | `test/docker-workload/apple-vm-egress-relay.test.ts@@main::purpose-built Apple VM egress relay::bounds package lifetime without preempting a reused registry connection in one profile` | failed / passed |
 
 ## ARTIFACT causes
 
@@ -28,7 +49,8 @@ Per-run state letters: r = reproduces the --det outcome of A, c = clears (plain 
 |---|---|---|
 | codex-multi-auth | cause seeds (L5) | 1 |
 | codex-multi-auth | cause time (L4) | 3 |
-| codex-multi-auth | cause timers progression (virtual) (L1) | 22 |
+| codex-multi-auth | cause timers progression (virtual) (L1) | 31 |
+| codex-multi-auth | cause wrapper (wrapper) | 7 |
 | ironcurtain | cause time (L4) | 3 |
 | ironcurtain | cause timers progression (virtual) (L1) | 13 |
 | ironcurtain | cause wrapper (wrapper) | 11 |
@@ -155,23 +177,23 @@ Per-run state letters: r = reproduces the --det outcome of A, c = clears (plain 
 | `test/codex-bin-wrapper.test.ts::stale shadow-home sweep::keeps a shadow home whose owner died while its forwarded child still runs` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
 | `test/codex-bin-wrapper.test.ts::stale shadow-home sweep::reaps a shadow home whose owner PID was recycled by another process` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
 | `test/codex-bin-wrapper.test.ts::stale shadow-home sweep::removes dead-owner and aged markerless shadow homes, keeps live ones` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:rr L5:cc | ppp | - | ARTIFACT | cause seeds (L5) |
-| `test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill after the WAL flush: journal holds the intent, primary stays committed, torn primary recovers via WAL` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill after the temp file is durable: orphaned temp holds the full payload, primary stays committed` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill at the rename boundary: primary is untouched, WAL + temp still recoverable` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill immediately after the atomic rename commits: primary carries the new store` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill while holding the write lock: dead owner is reclaimed, store untouched` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/crash-mid-write.test.ts::SIGKILL mid-write recovery::torn primary with no WAL recovers through the rotated .bak` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/health-check.test.ts::checks usable accounts concurrently while committing results in account order` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/json-store-lock.test.ts::never lets a stale takeover unlink a live lock owned by another process` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/local-bridge.test.ts::propagates a disconnected Decisions caller to upstream cancellation` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/model-inventory-cancellation.test.ts::cancels inventory lock contention before its owner releases (daily=true)` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/model-inventory-cancellation.test.ts::does not publish an inventory temp file after cancellation during its write` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/model-inventory-cancellation.test.ts::retries exhausted preparation errors shortly without repeating claimed routes` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/persisted-api-capabilities.test.ts::caps paid probes across independent routes at four` | mixed | passed passed failed passed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/persisted-api-capabilities.test.ts::does not overwrite unrelated evidence updated at the same timestamp` | mixed | passed passed failed passed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/persisted-api-capabilities.test.ts::does not put non-probing inference metadata behind a paid probe lease` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes` | mixed | passed passed failed passed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/persisted-api-capabilities.test.ts::returns documentation without paid probes when another lease times out` | mixed | passed passed failed passed | - | - | - | - | - | UNDECIDED | not processed in B |
+| `test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill after the WAL flush: journal holds the intent, primary stays committed, torn primary recovers via WAL` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:rr L5:rr L6:rr L7:rr | ppp | - | ARTIFACT | cause wrapper (wrapper) |
+| `test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill after the temp file is durable: orphaned temp holds the full payload, primary stays committed` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:rr L5:rr L6:rr L7:rr | ppp | - | ARTIFACT | cause wrapper (wrapper) |
+| `test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill at the rename boundary: primary is untouched, WAL + temp still recoverable` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:rr L5:rr L6:rr L7:rr | ppp | - | ARTIFACT | cause wrapper (wrapper) |
+| `test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill immediately after the atomic rename commits: primary carries the new store` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:rr L5:rr L6:rr L7:rr | ppp | - | ARTIFACT | cause wrapper (wrapper) |
+| `test/crash-mid-write.test.ts::SIGKILL mid-write recovery::kill while holding the write lock: dead owner is reclaimed, store untouched` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:rr L5:rr L6:rr L7:rr | ppp | - | ARTIFACT | cause wrapper (wrapper) |
+| `test/crash-mid-write.test.ts::SIGKILL mid-write recovery::torn primary with no WAL recovers through the rotated .bak` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:rr L5:rr L6:rr L7:rr | ppp | - | ARTIFACT | cause wrapper (wrapper) |
+| `test/health-check.test.ts::checks usable accounts concurrently while committing results in account order` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/json-store-lock.test.ts::never lets a stale takeover unlink a live lock owned by another process` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:rr L5:rr L6:rr L7:rr | ppp | - | ARTIFACT | cause wrapper (wrapper) |
+| `test/local-bridge.test.ts::propagates a disconnected Decisions caller to upstream cancellation` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/model-inventory-cancellation.test.ts::cancels inventory lock contention before its owner releases (daily=true)` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/model-inventory-cancellation.test.ts::does not publish an inventory temp file after cancellation during its write` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/model-inventory-cancellation.test.ts::retries exhausted preparation errors shortly without repeating claimed routes` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/persisted-api-capabilities.test.ts::caps paid probes across independent routes at four` | mixed | passed passed failed passed | rr | alone | L1:ccccc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/persisted-api-capabilities.test.ts::does not overwrite unrelated evidence updated at the same timestamp` | mixed | passed passed failed passed | rr | alone | L1:ccccc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/persisted-api-capabilities.test.ts::does not put non-probing inference metadata behind a paid probe lease` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes` | mixed | passed passed failed passed | cr | - | - | - | - | UNDECIDED | control runs invalid or missing ([]) |
+| `test/persisted-api-capabilities.test.ts::returns documentation without paid probes when another lease times out` | mixed | passed passed failed passed | rr | alone | L1:ccccc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
 | `test/property/rotation.property.test.ts::HealthScoreTracker property tests::score is always in [0, 100] range after any operation` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
 | `test/property/rotation.property.test.ts::TokenBucketTracker property tests::tokens never go negative` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
 | `test/property/rotation.property.test.ts::TokenBucketTracker property tests::tryConsume returns false when bucket is empty` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
@@ -180,10 +202,6 @@ Per-run state letters: r = reproduces the --det outcome of A, c = clears (plain 
 | `test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 7900` | other | passed None None None | - | - | - | - | - | UNDECIDED | kind other |
 | `test/runtime-policy-cache.test.ts::runtime policy cache::never caches a store read raced by a concurrent rewrite` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
 | `test/runtime-rotation-proxy.test.ts::Luna Reserve fallback::reconsiders a Luna capability-rejected workspace after switching to Reserve` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, 25 Dec 2026 21:27:20 GMT at fifteen minutes` | other | passed None None None | - | - | - | - | - | UNDECIDED | kind other |
-| `test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, 25 Dec 2026 21:35:33 GMT at fifteen minutes` | other | None passed None None | - | - | - | - | - | UNDECIDED | kind other |
-| `test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, 25 Dec 2026 21:40:12 GMT at fifteen minutes` | det-only | None None passed None | - | - | - | - | - | UNDECIDED | unstable id (test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, # Dec # #:#:# GMT at fifteen minutes) |
-| `test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, 25 Dec 2026 21:47:48 GMT at fifteen minutes` | det-only | None None None passed | - | - | - | - | - | UNDECIDED | unstable id (test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, # Dec # #:#:# GMT at fifteen minutes) |
 | `test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type application/json` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
 | `test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type null` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
 | `test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type text/event-stream` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
@@ -213,7 +231,7 @@ Per-run state letters: r = reproduces the --det outcome of A, c = clears (plain 
 | `test/argument-validation.integration.test.ts@@main::argument name validation -- real filesystem server::succeeds with correct parameter names after correction` | skipped-in-det | passed passed skipped skipped | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:rr L5:rr L6:rr L7:rr | ppp | - | ARTIFACT | cause wrapper (wrapper) |
 | `test/argument-validation.integration.test.ts@@main::argument name validation -- real filesystem server::uses real inputSchema from server (has properties field)` | skipped-in-det | passed passed skipped skipped | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:rr L5:rr L6:rr L7:rr | ppp | - | ARTIFACT | cause wrapper (wrapper) |
 | `test/ca.test.ts@@main::loadOrCreateCA::publishes one authority under concurrent first-use creator/loaders` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
-| `test/docker-workload/apple-vm-egress-relay.test.ts@@main::purpose-built Apple VM egress relay::bounds package lifetime without preempting a reused registry connection in one profile` | other | failed passed passed passed | - | - | - | - | - | UNDECIDED | kind other |
+| `test/docker-workload/apple-vm-egress-relay.test.ts@@main::purpose-built Apple VM egress relay::bounds package lifetime without preempting a reused registry connection in one profile` | other | failed passed passed passed | - | - | - | - | - | UNDECIDED | plain flaky (plain runs of A: failed / passed) |
 | `test/docker-workload/watchdog-sigkill.integration.test.ts@@main::resource watchdog supervisor across a coordinator SIGKILL::outlives the coordinator and revokes a post-mortem hard-threshold breach` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
 | `test/docker/docker-workload-admission.test.ts@@main::secure nested Docker resolved-variant admission::pins Docker Desktop agent identity for 'packages' without Apple archive transport` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:rr L5:rr L6:rr L7:rr | ppp | - | ARTIFACT | cause wrapper (wrapper) |
 | `test/docker/mitm-domain-model.test.ts@@main::MITM dynamic domain and tunnel model::'CONNECT' authorization follows add/remove/re-add (uppercase=false)` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |

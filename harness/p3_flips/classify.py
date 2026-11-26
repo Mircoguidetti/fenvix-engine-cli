@@ -35,6 +35,11 @@ CAUSE = {"L1": "timers progression (virtual)", "L2a": "timers", "L2b": "net", "L
 def verdict(row, neutral=True):
     """-> (verdict, reason, flags). `neutral`: the repository's harness config passed the neutrality check."""
     flags = []
+    res = row.get("results") or [None] * 4
+    if not row.get("unstable") and res[0] != res[1]:
+        # founder D3: an id that differs between the two plain runs of A is excluded from the neutrality check and
+        # stays UNDECIDED (its plain outcome is not one outcome)
+        return "UNDECIDED", f"plain flaky (plain runs of A: {res[0]} / {res[1]})", flags
     if row["kind"] == "other":
         return "UNDECIDED", "kind other", flags
     if row.get("unstable"):
@@ -102,6 +107,19 @@ def gone(kind, d1, d2, small_plain_5=None, was_mixed_outcome=False):
 
 
 # ------------------------------------------------------------------------------------------------- rows
+PATTERNS, NEUTRAL_DIFFER = {}, {}
+
+
+def load_side(data=DATA):
+    for repo in sorted(os.listdir(data)):
+        cp = os.path.join(data, repo, "find", "cases.json")
+        if os.path.exists(cp):
+            PATTERNS[repo] = json.load(open(cp)).get("patterns") or []
+        np_ = os.path.join(data, repo, "neutral.json")
+        if os.path.exists(np_):
+            NEUTRAL_DIFFER[repo] = json.load(open(np_)).get("differ") or []
+
+
 def build_rows(data=DATA):
     rows = []
     for repo in sorted(os.listdir(data)):
@@ -172,6 +190,21 @@ def render(rows):
         c = {v: sum(1 for r in rr if r["verdict"] == v) for v in ("THEIRS-ENV", "ARTIFACT", "UNDECIDED")}
         out.append(f"| **{repo}** | all | {len(rr)} | {c['THEIRS-ENV']} | {c['ARTIFACT']} | {c['UNDECIDED']} | "
                    f"{sum(1 for r in rr if r.get('unstable'))} |")
+    out += ["", "## Unstable-id patterns (founder D2)", "",
+            "A pattern is matched when it names exactly one id in each of the four runs of A (p1 p2 d1 d2).", "",
+            "| repository | pattern | matches per run | matched | became |", "|---|---|---|---|---|"]
+    for repo in repos:
+        for p in (PATTERNS.get(repo) or []):
+            became = (p.get("kind") or "no case (the four results agree)") if p.get("matched") else \
+                f"{len(p['ids'])} cases UNDECIDED unstable id"
+            out.append(f"| {repo} | `{p['pattern'].replace('|', '/')}` | {' '.join(map(str, p['matches_per_run']))} | "
+                       f"{'yes' if p.get('matched') else 'no'} | {became} |")
+    out += ["", "## Ids excluded from the neutrality check (founder D3)", "",
+            "Ids whose outcome differs between the two plain runs of A, or whose digit pattern is such an id's.", "",
+            "| repository | test id | plain A run 1 / harness config |", "|---|---|---|"]
+    for repo in repos:
+        for d in (NEUTRAL_DIFFER.get(repo) or []):
+            out.append(f"| {repo} | `{d[0].replace('|', '/')}` | {d[1]} / {d[2]} |")
     out += ["", "## ARTIFACT causes", "", "| repository | cause | cases |", "|---|---|---|"]
     for repo in repos:
         causes = {}
@@ -208,6 +241,7 @@ def main():
         write_rows(rows)
         print(f"{len(rows)} rows -> {ROWS}")
     if cmd in ("rows", "render"):
+        load_side()
         text = render(load_rows())
         with open(OUT, "w") as f:
             f.write(text)

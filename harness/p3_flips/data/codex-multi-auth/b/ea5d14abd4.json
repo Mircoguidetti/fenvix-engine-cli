@@ -1,0 +1,175 @@
+{
+ "repo": "codex-multi-auth",
+ "file": "test/local-bridge.test.ts",
+ "slug": "ea5d14abd4",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "cases": {
+  "test/local-bridge.test.ts::propagates a disconnected Decisions caller to upstream cancellation": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/local-bridge.test.ts:355]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/local-bridge.test.ts:355]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/local-bridge.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "ea5d14abd4.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/local-bridge.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/ea5d14abd4.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/ea5d14abd4.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T03:55:20.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "ea5d14abd4.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/local-bridge.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/ea5d14abd4.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/ea5d14abd4.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T03:55:23.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "ea5d14abd4.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/local-bridge.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/ea5d14abd4.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/local-bridge.test.ts"
+      ]
+     },
+     {
+      "tag": "ea5d14abd4.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/local-bridge.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/ea5d14abd4.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/local-bridge.test.ts"
+      ]
+     },
+     {
+      "tag": "ea5d14abd4.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/local-bridge.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/ea5d14abd4.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/local-bridge.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "ea5d14abd4.alone.r1",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/local-bridge.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/ea5d14abd4.alone.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/ea5d14abd4.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 1.31,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T03:55:15.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "test/local-bridge.test.ts::propagates a disconnected Decisions caller to upstream cancellation": "failed"
+   },
+   "exc": {
+    "test/local-bridge.test.ts::propagates a disconnected Decisions caller to upstream cancellation": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/local-bridge.test.ts:355]"
+   }
+  },
+  {
+   "tag": "ea5d14abd4.alone.r2",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/local-bridge.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/ea5d14abd4.alone.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/ea5d14abd4.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 1.36,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T03:55:18.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "test/local-bridge.test.ts::propagates a disconnected Decisions caller to upstream cancellation": "failed"
+   },
+   "exc": {
+    "test/local-bridge.test.ts::propagates a disconnected Decisions caller to upstream cancellation": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/local-bridge.test.ts:355]"
+   }
+  }
+ ],
+ "complete": true
+}

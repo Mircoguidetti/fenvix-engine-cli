@@ -1,0 +1,1428 @@
+{
+ "repo": "codex-multi-auth",
+ "file": "test/persisted-api-capabilities.test.ts",
+ "slug": "26cb2d48fc",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "cases": {
+  "test/persisted-api-capabilities.test.ts::caps paid probes across independent routes at four": {
+   "kind": "mixed",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "passed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/persisted-api-capabilities.test.ts:267]",
+    null
+   ],
+   "mixed_outcome": true,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/persisted-api-capabilities.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear",
+      "clear",
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "26cb2d48fc.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/persisted-api-capabilities.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T04:17:15.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "26cb2d48fc.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/persisted-api-capabilities.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T04:17:21.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "26cb2d48fc.g0.L1.r3",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/persisted-api-capabilities.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r3.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r3.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T04:17:28.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "26cb2d48fc.g0.L1.r4",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/persisted-api-capabilities.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r4.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r4.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T04:17:34.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "26cb2d48fc.g0.L1.r5",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/persisted-api-capabilities.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r5.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r5.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T04:17:40.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "26cb2d48fc.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/persisted-api-capabilities.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/persisted-api-capabilities.test.ts"
+      ]
+     },
+     {
+      "tag": "26cb2d48fc.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/persisted-api-capabilities.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/persisted-api-capabilities.test.ts"
+      ]
+     },
+     {
+      "tag": "26cb2d48fc.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/persisted-api-capabilities.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/persisted-api-capabilities.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/persisted-api-capabilities.test.ts::does not overwrite unrelated evidence updated at the same timestamp": {
+   "kind": "mixed",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "passed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Cannot reset active API capability checks [call @ lib/runtime/persisted-api-capabilities.ts:50]",
+    null
+   ],
+   "mixed_outcome": true,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/persisted-api-capabilities.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear",
+      "clear",
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "26cb2d48fc.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/persisted-api-capabilities.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T04:17:15.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "26cb2d48fc.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/persisted-api-capabilities.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T04:17:21.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "26cb2d48fc.g0.L1.r3",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/persisted-api-capabilities.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r3.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r3.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T04:17:28.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "26cb2d48fc.g0.L1.r4",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/persisted-api-capabilities.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r4.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r4.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T04:17:34.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "26cb2d48fc.g0.L1.r5",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/persisted-api-capabilities.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r5.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r5.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T04:17:40.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "26cb2d48fc.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/persisted-api-capabilities.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/persisted-api-capabilities.test.ts"
+      ]
+     },
+     {
+      "tag": "26cb2d48fc.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/persisted-api-capabilities.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/persisted-api-capabilities.test.ts"
+      ]
+     },
+     {
+      "tag": "26cb2d48fc.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/persisted-api-capabilities.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/persisted-api-capabilities.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/persisted-api-capabilities.test.ts::does not put non-probing inference metadata behind a paid probe lease": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/persisted-api-capabilities.test.ts:227]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/persisted-api-capabilities.test.ts:227]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/persisted-api-capabilities.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "26cb2d48fc.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/persisted-api-capabilities.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T04:17:15.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "26cb2d48fc.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/persisted-api-capabilities.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T04:17:21.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "26cb2d48fc.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/persisted-api-capabilities.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/persisted-api-capabilities.test.ts"
+      ]
+     },
+     {
+      "tag": "26cb2d48fc.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/persisted-api-capabilities.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/persisted-api-capabilities.test.ts"
+      ]
+     },
+     {
+      "tag": "26cb2d48fc.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/persisted-api-capabilities.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/persisted-api-capabilities.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes": {
+   "kind": "mixed",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "passed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected 10 to be +0 // Object.is equality [call @ test/persisted-api-capabilities.test.ts:368]",
+    null
+   ],
+   "mixed_outcome": true,
+   "alone": {
+    "states": [
+     "clear",
+     "repro"
+    ],
+    "reproduces": false
+   }
+  },
+  "test/persisted-api-capabilities.test.ts::returns documentation without paid probes when another lease times out": {
+   "kind": "mixed",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "passed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Cannot reset active API capability checks [call @ lib/runtime/persisted-api-capabilities.ts:50]",
+    null
+   ],
+   "mixed_outcome": true,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/persisted-api-capabilities.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear",
+      "clear",
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "26cb2d48fc.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/persisted-api-capabilities.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T04:17:15.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "26cb2d48fc.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/persisted-api-capabilities.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T04:17:21.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "26cb2d48fc.g0.L1.r3",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/persisted-api-capabilities.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r3.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r3.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T04:17:28.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "26cb2d48fc.g0.L1.r4",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/persisted-api-capabilities.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r4.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r4.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T04:17:34.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "26cb2d48fc.g0.L1.r5",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/persisted-api-capabilities.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r5.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.L1.r5.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T04:17:40.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "26cb2d48fc.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/persisted-api-capabilities.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/persisted-api-capabilities.test.ts"
+      ]
+     },
+     {
+      "tag": "26cb2d48fc.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/persisted-api-capabilities.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/persisted-api-capabilities.test.ts"
+      ]
+     },
+     {
+      "tag": "26cb2d48fc.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/persisted-api-capabilities.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/persisted-api-capabilities.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "26cb2d48fc.alone.r1",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/persisted-api-capabilities.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.alone.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 4.68,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T03:56:42.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "test/persisted-api-capabilities.test.ts::caps paid probes across independent routes at four": "failed",
+    "test/persisted-api-capabilities.test.ts::does not overwrite unrelated evidence updated at the same timestamp": "failed",
+    "test/persisted-api-capabilities.test.ts::does not put non-probing inference metadata behind a paid probe lease": "failed",
+    "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes": "passed",
+    "test/persisted-api-capabilities.test.ts::returns documentation without paid probes when another lease times out": "failed"
+   },
+   "exc": {
+    "test/persisted-api-capabilities.test.ts::caps paid probes across independent routes at four": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/persisted-api-capabilities.test.ts:267]",
+    "test/persisted-api-capabilities.test.ts::does not overwrite unrelated evidence updated at the same timestamp": "Error: Cannot reset active API capability checks [call @ lib/runtime/persisted-api-capabilities.ts:50]",
+    "test/persisted-api-capabilities.test.ts::does not put non-probing inference metadata behind a paid probe lease": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/persisted-api-capabilities.test.ts:227]",
+    "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes": null,
+    "test/persisted-api-capabilities.test.ts::returns documentation without paid probes when another lease times out": "Error: Cannot reset active API capability checks [call @ lib/runtime/persisted-api-capabilities.ts:50]"
+   }
+  },
+  {
+   "tag": "26cb2d48fc.alone.r2",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/persisted-api-capabilities.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.alone.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 4.61,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T03:56:47.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "test/persisted-api-capabilities.test.ts::caps paid probes across independent routes at four": "failed",
+    "test/persisted-api-capabilities.test.ts::does not overwrite unrelated evidence updated at the same timestamp": "failed",
+    "test/persisted-api-capabilities.test.ts::does not put non-probing inference metadata behind a paid probe lease": "failed",
+    "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes": "failed",
+    "test/persisted-api-capabilities.test.ts::returns documentation without paid probes when another lease times out": "failed"
+   },
+   "exc": {
+    "test/persisted-api-capabilities.test.ts::caps paid probes across independent routes at four": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/persisted-api-capabilities.test.ts:267]",
+    "test/persisted-api-capabilities.test.ts::does not overwrite unrelated evidence updated at the same timestamp": "Error: Cannot reset active API capability checks [call @ lib/runtime/persisted-api-capabilities.ts:50]",
+    "test/persisted-api-capabilities.test.ts::does not put non-probing inference metadata behind a paid probe lease": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/persisted-api-capabilities.test.ts:227]",
+    "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes": "AssertionError: expected 10 to be +0 // Object.is equality [call @ test/persisted-api-capabilities.test.ts:368]",
+    "test/persisted-api-capabilities.test.ts::returns documentation without paid probes when another lease times out": "Error: Cannot reset active API capability checks [call @ lib/runtime/persisted-api-capabilities.ts:50]"
+   }
+  }
+ ],
+ "pred": {
+  "src_run": 1,
+  "n_preds": 275,
+  "probes": [
+   {
+    "n": 1,
+    "files": [
+     "test/account-access.test.ts",
+     "test/account-check-helpers.test.ts",
+     "test/account-check-types.test.ts",
+     "test/account-clear-entry.test.ts",
+     "test/account-clear.test.ts",
+     "test/account-manager-cache-entry.test.ts",
+     "test/account-manager-cache.test.ts",
+     "test/account-model-catalog.test.ts",
+     "test/account-persistence.test.ts",
+     "test/account-policy.test.ts",
+     "test/account-pool.test.ts",
+     "test/account-port.test.ts",
+     "test/account-rate-limits.test.ts",
+     "test/account-reset-target.test.ts",
+     "test/account-save-entry.test.ts",
+     "test/account-save.test.ts",
+     "test/account-select-event.test.ts",
+     "test/account-selection.test.ts",
+     "test/account-snapshot.test.ts",
+     "test/account-status.test.ts",
+     "test/account-storage-scope-entry.test.ts",
+     "test/accounts-edge.test.ts",
+     "test/accounts-load-from-disk.test.ts",
+     "test/accounts-routing-mutex.test.ts",
+     "test/accounts-workspace-baseline.test.ts",
+     "test/accounts.test.ts",
+     "test/active-account-sync.test.ts",
+     "test/affinity-generation.test.ts",
+     "test/ansi.test.ts",
+     "test/api-capability-custom-fetch.test.ts",
+     "test/api-capability-ownership.test.ts",
+     "test/api-coordinated-backoff.test.ts",
+     "test/api-declared-image-input.test.ts",
+     "test/api-epoch-migration-concurrency.test.ts",
+     "test/api-full-model-profile.test.ts",
+     "test/api-literal-ultra.test.ts",
+     "test/api-login-menu.test.ts",
+     "test/api-model-capabilities.test.ts",
+     "test/api-model-runtime.test.ts",
+     "test/api-probe-slot-cancellation.test.ts",
+     "test/api-route-store.test.ts",
+     "test/app-bind-io-retry.test.ts",
+     "test/app-bind.test.ts",
+     "test/app-helper-selection.test.ts",
+     "test/audit-dev-allowlist.test.ts",
+     "test/audit-phase1-regression.test.ts",
+     "test/audit.test.ts",
+     "test/auth-logging.test.ts",
+     "test/auth-menu-builder.test.ts",
+     "test/auth-menu-hotkeys.test.ts",
+     "test/auth-menu-quota-bar.test.ts",
+     "test/auth-rate-limit.test.ts",
+     "test/auth.test.ts",
+     "test/automatic-account-checks.test.ts",
+     "test/automatic-api-checks.test.ts",
+     "test/automatic-subscription-checks.test.ts",
+     "test/backend-category-entry.test.ts",
+     "test/backend-category-helpers.test.ts",
+     "test/backend-category-prompt.test.ts",
+     "test/backend-settings-controller.test.ts",
+     "test/backend-settings-entry.test.ts",
+     "test/backend-settings-helpers.test.ts",
+     "test/backend-settings-prompt.test.ts",
+     "test/backup-metadata-builder.test.ts",
+     "test/backup-metadata.test.ts",
+     "test/backup-paths.test.ts",
+     "test/backup-restore.test.ts",
+     "test/bench-format-render.test.ts",
+     "test/benchmark-render-dashboard-script.test.ts",
+     "test/benchmark-runtime-path-script.test.ts",
+     "test/browser-oauth-flow.test.ts",
+     "test/browser.test.ts",
+     "test/budget-guard.test.ts",
+     "test/callback-guidance.test.ts",
+     "test/capability-boost.test.ts",
+     "test/capability-policy.test.ts",
+     "test/carry-runtime-quota-state.test.ts",
+     "test/chaos/fault-injection.test.ts",
+     "test/chaos/fs-faults.test.ts",
+     "test/chaos/net-faults.test.ts",
+     "test/check-pack-budget.test.ts",
+     "test/check-progress.test.ts",
+     "test/ci-workflows.test.ts",
+     "test/circuit-breaker.test.ts",
+     "test/cli-auth-menu.test.ts",
+     "test/cli-output-contracts.test.ts",
+     "test/cli.test.ts",
+     "test/codex-app-router.test.ts",
+     "test/codex-bin-wrapper.test.ts",
+     "test/codex-cli-mirror.test.ts",
+     "test/codex-cli-org-account-alignment.test.ts",
+     "test/codex-cli-state.test.ts",
+     "test/codex-cli-sync.test.ts",
+     "test/codex-cli-version.test.ts",
+     "test/codex-cli-writer-callers.test.ts",
+     "test/codex-cli-writer.test.ts",
+     "test/codex-host-resolver.test.ts",
+     "test/codex-manager-account-command.test.ts",
+     "test/codex-manager-account-pool-write.test.ts",
+     "test/codex-manager-best-command.test.ts",
+     "test/codex-manager-bridge-command.test.ts",
+     "test/codex-manager-budget-command.test.ts",
+     "test/codex-manager-check-command.test.ts",
+     "test/codex-manager-cli.test.ts",
+     "test/codex-manager-credentials.test.ts",
+     "test/codex-manager-detail-tone.test.ts",
+     "test/codex-manager-emergency-diagnostics.test.ts",
+     "test/codex-manager-forecast-command.test.ts",
+     "test/codex-manager-formatters.test.ts",
+     "test/codex-manager-help.test.ts",
+     "test/codex-manager-history-command.test.ts",
+     "test/codex-manager-integrations-command.test.ts",
+     "test/codex-manager-login-menu-refresh.test.ts",
+     "test/codex-manager-login-workspace-512.test.ts",
+     "test/codex-manager-manual-callback.test.ts",
+     "test/codex-manager-models-command.test.ts",
+     "test/codex-manager-monitor-command.test.ts",
+     "test/codex-manager-org-override.test.ts",
+     "test/codex-manager-quota-cache-helpers.test.ts",
+     "test/codex-manager-report-command.test.ts",
+     "test/codex-manager-resets.test.ts",
+     "test/codex-manager-rotation-command.test.ts",
+     "test/codex-manager-selection-diagnostics.test.ts",
+     "test/codex-manager-status-command.test.ts",
+     "test/codex-manager-switch-command.test.ts",
+     "test/codex-manager-uninstall-dispatch.test.ts",
+     "test/codex-manager-usage-command.test.ts",
+     "test/codex-manager-verify-command.test.ts",
+     "test/codex-manager-why-selected-command.test.ts",
+     "test/codex-manager-workspace-command.test.ts",
+     "test/codex-model-resolution.test.ts",
+     "test/codex-multi-auth-bin-wrapper.test.ts",
+     "test/codex-multi-auth-wrapper.test.ts",
+     "test/codex-prompts.test.ts",
+     "test/codex-routing.test.ts",
+     "test/codex.test.ts",
+     "test/concurrency.test.ts"
+    ],
+    "reproduces": false,
+    "runs": [
+     {
+      "tag": "26cb2d48fc.probe1.r1",
+      "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.probe1.r1.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.probe1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.probe1.r1.trace.jsonl",
+      "exit": 1,
+      "wall_s": 184.97,
+      "meta": {
+       "timers": "virtual",
+       "network": "open",
+       "epoch": "2026-11-26T04:06:52.000Z",
+       "seed": 0
+      },
+      "controls": [
+       "fs",
+       "isolation",
+       "net",
+       "order",
+       "seeds",
+       "time",
+       "timers"
+      ],
+      "outcomes": {
+       "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes": "failed"
+      },
+      "exc": {
+       "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes": "AssertionError: expected 10 to be +0 // Object.is equality [call @ test/persisted-api-capabilities.test.ts:368]"
+      }
+     },
+     {
+      "tag": "26cb2d48fc.probe1.r2",
+      "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.probe1.r2.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.probe1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.probe1.r2.trace.jsonl",
+      "exit": 1,
+      "wall_s": 184.44,
+      "meta": {
+       "timers": "virtual",
+       "network": "open",
+       "epoch": "2026-11-26T04:09:58.000Z",
+       "seed": 0
+      },
+      "controls": [
+       "fs",
+       "isolation",
+       "net",
+       "order",
+       "seeds",
+       "time",
+       "timers"
+      ],
+      "outcomes": {
+       "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes": "passed"
+      },
+      "exc": {
+       "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes": null
+      }
+     }
+    ],
+    "per_case": {
+     "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes": false
+    }
+   },
+   {
+    "n": 2,
+    "files": [
+     "test/config-explain.test.ts",
+     "test/config-files.test.ts",
+     "test/config-save.test.ts",
+     "test/config-schema-generated.test.ts",
+     "test/config-schema-templates.test.ts",
+     "test/config-toml-restore.test.ts",
+     "test/config.test.ts",
+     "test/confirmed-reset-reconciler.test.ts",
+     "test/context-budget-guard-proxy.test.ts",
+     "test/context-budget-guard.test.ts",
+     "test/context-budget-response.test.ts",
+     "test/context-budget-window-coverage.test.ts",
+     "test/context-overflow.test.ts",
+     "test/copy-oauth-success.test.ts",
+     "test/crash-mid-write.test.ts",
+     "test/credential-probe-leases.test.ts",
+     "test/credential-sidecars.test.ts",
+     "test/dashboard-display-panel.test.ts",
+     "test/dashboard-formatters.test.ts",
+     "test/dashboard-settings-controller.test.ts",
+     "test/dashboard-settings-data.test.ts",
+     "test/dashboard-settings-entry.test.ts",
+     "test/dashboard-settings.test.ts",
+     "test/debug-bundle-redact.test.ts",
+     "test/decisions-runtime.test.ts",
+     "test/device-auth.test.ts",
+     "test/discovery-pacing.test.ts",
+     "test/display-width.test.ts",
+     "test/documentation.test.ts",
+     "test/effort-suffix-stripping.test.ts",
+     "test/entitlement-cache.test.ts",
+     "test/env-parsing.test.ts",
+     "test/errors.test.ts",
+     "test/eslint-config.test.ts",
+     "test/event-handler.test.ts",
+     "test/experimental-settings-entry.test.ts",
+     "test/experimental-settings-prompt.test.ts",
+     "test/experimental-settings-schema.test.ts",
+     "test/experimental-sync-target-entry.test.ts",
+     "test/experimental-sync-target.test.ts",
+     "test/failover-config.test.ts",
+     "test/failure-policy.test.ts",
+     "test/fetch-helpers.test.ts",
+     "test/first-run.test.ts",
+     "test/fixture-guards.test.ts",
+     "test/flagged-entry.test.ts",
+     "test/flagged-load-entry.test.ts",
+     "test/flagged-save-entry.test.ts",
+     "test/flagged-storage-io.test.ts",
+     "test/flagged-storage.test.ts",
+     "test/forecast-report-shared.test.ts",
+     "test/forecast.test.ts",
+     "test/fs-retry.test.ts",
+     "test/gitignore.test.ts",
+     "test/global-sandbox.test.ts",
+     "test/gpt56-models.test.ts",
+     "test/gpt6-astra-models.test.ts",
+     "test/gpt6-sol-luna-models.test.ts",
+     "test/gpt61-sol-models.test.ts",
+     "test/gpt61-terra-models.test.ts",
+     "test/gpt62-models.test.ts",
+     "test/h3-token-clobber.test.ts",
+     "test/hashline-tools.test.ts",
+     "test/health-check.test.ts",
+     "test/health.test.ts",
+     "test/host-codex-prompt.test.ts",
+     "test/hydrate-emails.test.ts",
+     "test/image-runtime-lifecycle.test.ts",
+     "test/imagegen-canonical-provider.test.ts",
+     "test/import-export.test.ts",
+     "test/index-retry.test.ts",
+     "test/index.test.ts",
+     "test/inference-activity.test.ts",
+     "test/init-config-command.test.ts",
+     "test/input-utils.test.ts",
+     "test/install-codex-auth-retry.test.ts",
+     "test/install-codex-auth.test.ts",
+     "test/integration-generators.test.ts",
+     "test/issue-474-affinity-invalidation.test.ts",
+     "test/issue-474-pin-end-to-end.test.ts",
+     "test/issue-474-pin-honored.test.ts",
+     "test/issue-474-pin-safety.test.ts",
+     "test/issue-689-model-capacity-retry.test.ts",
+     "test/json-store-lock.test.ts",
+     "test/limits-command.test.ts",
+     "test/live-account-sync-edge.test.ts",
+     "test/live-account-sync.test.ts",
+     "test/live-proxy-parallel.test.ts",
+     "test/live-sync-entry.test.ts",
+     "test/loader-setup.test.ts",
+     "test/local-bridge.test.ts",
+     "test/local-client-tokens.test.ts",
+     "test/locale.test.ts",
+     "test/lockfile-version-floor.test.ts",
+     "test/logger.test.ts",
+     "test/login-flow.test.ts",
+     "test/login-menu-accounts.test.ts",
+     "test/login-menu-actions.test.ts",
+     "test/login-menu-data.test.ts",
+     "test/login-oauth-callback-guidance.test.ts",
+     "test/login-oauth-selection.test.ts",
+     "test/login-workspace-choice.test.ts",
+     "test/luna-reserve-usage.test.ts",
+     "test/luna-reserve.test.ts",
+     "test/manual-oauth-flow.test.ts",
+     "test/mcodex-launcher.test.ts",
+     "test/mcodex-statusline-scope.test.ts",
+     "test/metadata-section.test.ts",
+     "test/model-capability-matrix.test.ts",
+     "test/model-discovery-status.test.ts",
+     "test/model-inventory-cancellation.test.ts",
+     "test/model-map.test.ts",
+     "test/model-route-policy.test.ts",
+     "test/module-boundaries.test.ts",
+     "test/multi-proc-save.test.ts",
+     "test/named-backup-entry.test.ts",
+     "test/named-backup-export.test.ts",
+     "test/named-backups-entry.test.ts",
+     "test/native-account-storage.test.ts",
+     "test/native-account-sync.test.ts",
+     "test/native-client-auth.test.ts",
+     "test/native-login-sync.test.ts",
+     "test/native-provider-config.test.ts",
+     "test/native-rate-limits.test.ts",
+     "test/native-usage-command.test.ts",
+     "test/native-wrapper-binding.test.ts",
+     "test/oauth-server-port-conflict.test.ts",
+     "test/oauth-server.integration.test.ts",
+     "test/oc-chatgpt-import-adapter.test.ts",
+     "test/oc-chatgpt-orchestrator.test.ts",
+     "test/oc-chatgpt-target-detection.test.ts",
+     "test/owned-pids-helper.test.ts",
+     "test/package-bin.test.ts",
+     "test/parallel-probe.test.ts",
+     "test/paths.test.ts",
+     "test/pending-auth.test.ts",
+     "test/persist-selected-account.test.ts",
+     "test/persisted-api-capabilities-repair.test.ts"
+    ],
+    "reproduces": false,
+    "runs": [
+     {
+      "tag": "26cb2d48fc.probe2.r1",
+      "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.probe2.r1.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.probe2.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.probe2.r1.trace.jsonl",
+      "exit": 1,
+      "wall_s": 123.79,
+      "meta": {
+       "timers": "virtual",
+       "network": "open",
+       "epoch": "2026-11-26T04:13:03.000Z",
+       "seed": 0
+      },
+      "controls": [
+       "fs",
+       "isolation",
+       "net",
+       "order",
+       "seeds",
+       "time",
+       "timers"
+      ],
+      "outcomes": {
+       "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes": "failed"
+      },
+      "exc": {
+       "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes": "AssertionError: expected 10 to be +0 // Object.is equality [call @ test/persisted-api-capabilities.test.ts:368]"
+      }
+     },
+     {
+      "tag": "26cb2d48fc.probe2.r2",
+      "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.probe2.r2.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.probe2.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.probe2.r2.trace.jsonl",
+      "exit": 1,
+      "wall_s": 126.1,
+      "meta": {
+       "timers": "virtual",
+       "network": "open",
+       "epoch": "2026-11-26T04:15:08.000Z",
+       "seed": 0
+      },
+      "controls": [
+       "fs",
+       "isolation",
+       "net",
+       "order",
+       "seeds",
+       "time",
+       "timers"
+      ],
+      "outcomes": {
+       "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes": "passed"
+      },
+      "exc": {
+       "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes": null
+      }
+     }
+    ],
+    "per_case": {
+     "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes": false
+    }
+   }
+  ],
+  "full": [
+   {
+    "tag": "26cb2d48fc.full.r1",
+    "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.full.r1.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.full.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.full.r1.trace.jsonl",
+    "exit": 1,
+    "wall_s": 295.58,
+    "meta": {
+     "timers": "virtual",
+     "network": "open",
+     "epoch": "2026-11-26T03:56:53.000Z",
+     "seed": 0
+    },
+    "controls": [
+     "fs",
+     "isolation",
+     "net",
+     "order",
+     "seeds",
+     "time",
+     "timers"
+    ],
+    "outcomes": {
+     "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes": "failed"
+    },
+    "exc": {
+     "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes": "AssertionError: expected 10 to be +0 // Object.is equality [call @ test/persisted-api-capabilities.test.ts:368]"
+    }
+   },
+   {
+    "tag": "26cb2d48fc.full.r2",
+    "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run --det-order=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.full.r2.order.txt --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.full.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/26cb2d48fc.full.r2.trace.jsonl",
+    "exit": 1,
+    "wall_s": 300.64,
+    "meta": {
+     "timers": "virtual",
+     "network": "open",
+     "epoch": "2026-11-26T04:01:50.000Z",
+     "seed": 0
+    },
+    "controls": [
+     "fs",
+     "isolation",
+     "net",
+     "order",
+     "seeds",
+     "time",
+     "timers"
+    ],
+    "outcomes": {
+     "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes": "failed"
+    },
+    "exc": {
+     "test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes": "AssertionError: expected 10 to be +0 // Object.is equality [call @ test/persisted-api-capabilities.test.ts:368]"
+    }
+   }
+  ],
+  "smallest": [
+   "test/account-access.test.ts",
+   "test/account-check-helpers.test.ts",
+   "test/account-check-types.test.ts",
+   "test/account-clear-entry.test.ts",
+   "test/account-clear.test.ts",
+   "test/account-manager-cache-entry.test.ts",
+   "test/account-manager-cache.test.ts",
+   "test/account-model-catalog.test.ts",
+   "test/account-persistence.test.ts",
+   "test/account-policy.test.ts",
+   "test/account-pool.test.ts",
+   "test/account-port.test.ts",
+   "test/account-rate-limits.test.ts",
+   "test/account-reset-target.test.ts",
+   "test/account-save-entry.test.ts",
+   "test/account-save.test.ts",
+   "test/account-select-event.test.ts",
+   "test/account-selection.test.ts",
+   "test/account-snapshot.test.ts",
+   "test/account-status.test.ts",
+   "test/account-storage-scope-entry.test.ts",
+   "test/accounts-edge.test.ts",
+   "test/accounts-load-from-disk.test.ts",
+   "test/accounts-routing-mutex.test.ts",
+   "test/accounts-workspace-baseline.test.ts",
+   "test/accounts.test.ts",
+   "test/active-account-sync.test.ts",
+   "test/affinity-generation.test.ts",
+   "test/ansi.test.ts",
+   "test/api-capability-custom-fetch.test.ts",
+   "test/api-capability-ownership.test.ts",
+   "test/api-coordinated-backoff.test.ts",
+   "test/api-declared-image-input.test.ts",
+   "test/api-epoch-migration-concurrency.test.ts",
+   "test/api-full-model-profile.test.ts",
+   "test/api-literal-ultra.test.ts",
+   "test/api-login-menu.test.ts",
+   "test/api-model-capabilities.test.ts",
+   "test/api-model-runtime.test.ts",
+   "test/api-probe-slot-cancellation.test.ts",
+   "test/api-route-store.test.ts",
+   "test/app-bind-io-retry.test.ts",
+   "test/app-bind.test.ts",
+   "test/app-helper-selection.test.ts",
+   "test/audit-dev-allowlist.test.ts",
+   "test/audit-phase1-regression.test.ts",
+   "test/audit.test.ts",
+   "test/auth-logging.test.ts",
+   "test/auth-menu-builder.test.ts",
+   "test/auth-menu-hotkeys.test.ts",
+   "test/auth-menu-quota-bar.test.ts",
+   "test/auth-rate-limit.test.ts",
+   "test/auth.test.ts",
+   "test/automatic-account-checks.test.ts",
+   "test/automatic-api-checks.test.ts",
+   "test/automatic-subscription-checks.test.ts",
+   "test/backend-category-entry.test.ts",
+   "test/backend-category-helpers.test.ts",
+   "test/backend-category-prompt.test.ts",
+   "test/backend-settings-controller.test.ts",
+   "test/backend-settings-entry.test.ts",
+   "test/backend-settings-helpers.test.ts",
+   "test/backend-settings-prompt.test.ts",
+   "test/backup-metadata-builder.test.ts",
+   "test/backup-metadata.test.ts",
+   "test/backup-paths.test.ts",
+   "test/backup-restore.test.ts",
+   "test/bench-format-render.test.ts",
+   "test/benchmark-render-dashboard-script.test.ts",
+   "test/benchmark-runtime-path-script.test.ts",
+   "test/browser-oauth-flow.test.ts",
+   "test/browser.test.ts",
+   "test/budget-guard.test.ts",
+   "test/callback-guidance.test.ts",
+   "test/capability-boost.test.ts",
+   "test/capability-policy.test.ts",
+   "test/carry-runtime-quota-state.test.ts",
+   "test/chaos/fault-injection.test.ts",
+   "test/chaos/fs-faults.test.ts",
+   "test/chaos/net-faults.test.ts",
+   "test/check-pack-budget.test.ts",
+   "test/check-progress.test.ts",
+   "test/ci-workflows.test.ts",
+   "test/circuit-breaker.test.ts",
+   "test/cli-auth-menu.test.ts",
+   "test/cli-output-contracts.test.ts",
+   "test/cli.test.ts",
+   "test/codex-app-router.test.ts",
+   "test/codex-bin-wrapper.test.ts",
+   "test/codex-cli-mirror.test.ts",
+   "test/codex-cli-org-account-alignment.test.ts",
+   "test/codex-cli-state.test.ts",
+   "test/codex-cli-sync.test.ts",
+   "test/codex-cli-version.test.ts",
+   "test/codex-cli-writer-callers.test.ts",
+   "test/codex-cli-writer.test.ts",
+   "test/codex-host-resolver.test.ts",
+   "test/codex-manager-account-command.test.ts",
+   "test/codex-manager-account-pool-write.test.ts",
+   "test/codex-manager-best-command.test.ts",
+   "test/codex-manager-bridge-command.test.ts",
+   "test/codex-manager-budget-command.test.ts",
+   "test/codex-manager-check-command.test.ts",
+   "test/codex-manager-cli.test.ts",
+   "test/codex-manager-credentials.test.ts",
+   "test/codex-manager-detail-tone.test.ts",
+   "test/codex-manager-emergency-diagnostics.test.ts",
+   "test/codex-manager-forecast-command.test.ts",
+   "test/codex-manager-formatters.test.ts",
+   "test/codex-manager-help.test.ts",
+   "test/codex-manager-history-command.test.ts",
+   "test/codex-manager-integrations-command.test.ts",
+   "test/codex-manager-login-menu-refresh.test.ts",
+   "test/codex-manager-login-workspace-512.test.ts",
+   "test/codex-manager-manual-callback.test.ts",
+   "test/codex-manager-models-command.test.ts",
+   "test/codex-manager-monitor-command.test.ts",
+   "test/codex-manager-org-override.test.ts",
+   "test/codex-manager-quota-cache-helpers.test.ts",
+   "test/codex-manager-report-command.test.ts",
+   "test/codex-manager-resets.test.ts",
+   "test/codex-manager-rotation-command.test.ts",
+   "test/codex-manager-selection-diagnostics.test.ts",
+   "test/codex-manager-status-command.test.ts",
+   "test/codex-manager-switch-command.test.ts",
+   "test/codex-manager-uninstall-dispatch.test.ts",
+   "test/codex-manager-usage-command.test.ts",
+   "test/codex-manager-verify-command.test.ts",
+   "test/codex-manager-why-selected-command.test.ts",
+   "test/codex-manager-workspace-command.test.ts",
+   "test/codex-model-resolution.test.ts",
+   "test/codex-multi-auth-bin-wrapper.test.ts",
+   "test/codex-multi-auth-wrapper.test.ts",
+   "test/codex-prompts.test.ts",
+   "test/codex-routing.test.ts",
+   "test/codex.test.ts",
+   "test/concurrency.test.ts",
+   "test/config-explain.test.ts",
+   "test/config-files.test.ts",
+   "test/config-save.test.ts",
+   "test/config-schema-generated.test.ts",
+   "test/config-schema-templates.test.ts",
+   "test/config-toml-restore.test.ts",
+   "test/config.test.ts",
+   "test/confirmed-reset-reconciler.test.ts",
+   "test/context-budget-guard-proxy.test.ts",
+   "test/context-budget-guard.test.ts",
+   "test/context-budget-response.test.ts",
+   "test/context-budget-window-coverage.test.ts",
+   "test/context-overflow.test.ts",
+   "test/copy-oauth-success.test.ts",
+   "test/crash-mid-write.test.ts",
+   "test/credential-probe-leases.test.ts",
+   "test/credential-sidecars.test.ts",
+   "test/dashboard-display-panel.test.ts",
+   "test/dashboard-formatters.test.ts",
+   "test/dashboard-settings-controller.test.ts",
+   "test/dashboard-settings-data.test.ts",
+   "test/dashboard-settings-entry.test.ts",
+   "test/dashboard-settings.test.ts",
+   "test/debug-bundle-redact.test.ts",
+   "test/decisions-runtime.test.ts",
+   "test/device-auth.test.ts",
+   "test/discovery-pacing.test.ts",
+   "test/display-width.test.ts",
+   "test/documentation.test.ts",
+   "test/effort-suffix-stripping.test.ts",
+   "test/entitlement-cache.test.ts",
+   "test/env-parsing.test.ts",
+   "test/errors.test.ts",
+   "test/eslint-config.test.ts",
+   "test/event-handler.test.ts",
+   "test/experimental-settings-entry.test.ts",
+   "test/experimental-settings-prompt.test.ts",
+   "test/experimental-settings-schema.test.ts",
+   "test/experimental-sync-target-entry.test.ts",
+   "test/experimental-sync-target.test.ts",
+   "test/failover-config.test.ts",
+   "test/failure-policy.test.ts",
+   "test/fetch-helpers.test.ts",
+   "test/first-run.test.ts",
+   "test/fixture-guards.test.ts",
+   "test/flagged-entry.test.ts",
+   "test/flagged-load-entry.test.ts",
+   "test/flagged-save-entry.test.ts",
+   "test/flagged-storage-io.test.ts",
+   "test/flagged-storage.test.ts",
+   "test/forecast-report-shared.test.ts",
+   "test/forecast.test.ts",
+   "test/fs-retry.test.ts",
+   "test/gitignore.test.ts",
+   "test/global-sandbox.test.ts",
+   "test/gpt56-models.test.ts",
+   "test/gpt6-astra-models.test.ts",
+   "test/gpt6-sol-luna-models.test.ts",
+   "test/gpt61-sol-models.test.ts",
+   "test/gpt61-terra-models.test.ts",
+   "test/gpt62-models.test.ts",
+   "test/h3-token-clobber.test.ts",
+   "test/hashline-tools.test.ts",
+   "test/health-check.test.ts",
+   "test/health.test.ts",
+   "test/host-codex-prompt.test.ts",
+   "test/hydrate-emails.test.ts",
+   "test/image-runtime-lifecycle.test.ts",
+   "test/imagegen-canonical-provider.test.ts",
+   "test/import-export.test.ts",
+   "test/index-retry.test.ts",
+   "test/index.test.ts",
+   "test/inference-activity.test.ts",
+   "test/init-config-command.test.ts",
+   "test/input-utils.test.ts",
+   "test/install-codex-auth-retry.test.ts",
+   "test/install-codex-auth.test.ts",
+   "test/integration-generators.test.ts",
+   "test/issue-474-affinity-invalidation.test.ts",
+   "test/issue-474-pin-end-to-end.test.ts",
+   "test/issue-474-pin-honored.test.ts",
+   "test/issue-474-pin-safety.test.ts",
+   "test/issue-689-model-capacity-retry.test.ts",
+   "test/json-store-lock.test.ts",
+   "test/limits-command.test.ts",
+   "test/live-account-sync-edge.test.ts",
+   "test/live-account-sync.test.ts",
+   "test/live-proxy-parallel.test.ts",
+   "test/live-sync-entry.test.ts",
+   "test/loader-setup.test.ts",
+   "test/local-bridge.test.ts",
+   "test/local-client-tokens.test.ts",
+   "test/locale.test.ts",
+   "test/lockfile-version-floor.test.ts",
+   "test/logger.test.ts",
+   "test/login-flow.test.ts",
+   "test/login-menu-accounts.test.ts",
+   "test/login-menu-actions.test.ts",
+   "test/login-menu-data.test.ts",
+   "test/login-oauth-callback-guidance.test.ts",
+   "test/login-oauth-selection.test.ts",
+   "test/login-workspace-choice.test.ts",
+   "test/luna-reserve-usage.test.ts",
+   "test/luna-reserve.test.ts",
+   "test/manual-oauth-flow.test.ts",
+   "test/mcodex-launcher.test.ts",
+   "test/mcodex-statusline-scope.test.ts",
+   "test/metadata-section.test.ts",
+   "test/model-capability-matrix.test.ts",
+   "test/model-discovery-status.test.ts",
+   "test/model-inventory-cancellation.test.ts",
+   "test/model-map.test.ts",
+   "test/model-route-policy.test.ts",
+   "test/module-boundaries.test.ts",
+   "test/multi-proc-save.test.ts",
+   "test/named-backup-entry.test.ts",
+   "test/named-backup-export.test.ts",
+   "test/named-backups-entry.test.ts",
+   "test/native-account-storage.test.ts",
+   "test/native-account-sync.test.ts",
+   "test/native-client-auth.test.ts",
+   "test/native-login-sync.test.ts",
+   "test/native-provider-config.test.ts",
+   "test/native-rate-limits.test.ts",
+   "test/native-usage-command.test.ts",
+   "test/native-wrapper-binding.test.ts",
+   "test/oauth-server-port-conflict.test.ts",
+   "test/oauth-server.integration.test.ts",
+   "test/oc-chatgpt-import-adapter.test.ts",
+   "test/oc-chatgpt-orchestrator.test.ts",
+   "test/oc-chatgpt-target-detection.test.ts",
+   "test/owned-pids-helper.test.ts",
+   "test/package-bin.test.ts",
+   "test/parallel-probe.test.ts",
+   "test/paths.test.ts",
+   "test/pending-auth.test.ts",
+   "test/persist-selected-account.test.ts",
+   "test/persisted-api-capabilities-repair.test.ts"
+  ]
+ }
+}

@@ -191,3 +191,26 @@ def test_gone_rule_per_kind():
     assert not classify.gone("mixed", "passed", "passed", small_plain_5=4, was_mixed_outcome=True)
     assert classify.gone("mixed", "passed", "passed", small_plain_5=5, was_mixed_outcome=True)
     assert not classify.gone("other", "passed", "passed")
+
+
+def test_plain_flaky_in_a_is_undecided():
+    # protects: founder D3, an id whose two plain runs of A differ is UNDECIDED "plain flaky", whatever B found;
+    # fails_when: any other verdict; no_claim: none beyond protects
+    r = row(kind="other", results=["failed", "passed", "failed", "failed"], clears_at="L1")
+    v, why, _ = classify.verdict(r)
+    assert v == "UNDECIDED" and why.startswith("plain flaky (plain runs of A")
+
+
+def test_pattern_matched_once_per_run_is_one_case():
+    # protects: founder D2, a pattern naming exactly one id per run is one ordinary case (or none when the four agree);
+    # any other count keeps its ids unstable; fails_when: a 2-per-run pattern is merged, or a 1-per-run one is not;
+    # no_claim: the shape rule itself (digits, leading minus) beyond the two ids used here
+    a = [{"t::x 1": "passed"}, {"t::x 2": "passed"}, {"t::x 3": "failed"}, {"t::x 4": "failed"}]
+    sh = [{cases.shape(k): {k} for k in r} for r in a]
+    mem = [{"id": k, "kind": "other", "unstable": True, "pattern": "t::x #", "results": None} for r in a for k in r]
+    det = [({}, {}), ({}, {})]
+    out, rep = cases.match_patterns(mem, a, sh, det)
+    assert [c["kind"] for c in out] == ["flip"] and rep[0]["matches_per_run"] == [1, 1, 1, 1]
+    sh2 = [dict(s, **{"t::x #": s["t::x #"] | {"t::x 9"}}) for s in sh]
+    out2, rep2 = cases.match_patterns(mem, a, sh2, det)
+    assert len(out2) == 4 and all(c["unstable"] for c in out2) and rep2[0]["matched"] is False
