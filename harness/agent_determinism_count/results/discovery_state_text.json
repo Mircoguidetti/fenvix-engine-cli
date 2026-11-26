@@ -40,21 +40,12 @@
   },
   "committer-date:>=2024-01-01 \"non deterministic\" agent test": {
    "capped": false,
-   "done": false,
-   "leaf_total": 13445,
-   "leaves": 22,
-   "nodes": 44,
+   "done": true,
+   "leaf_total": 14710,
+   "leaves": 24,
+   "nodes": 46,
    "prepass_total": 14695,
-   "stack": [
-    [
-     "2026-09-21",
-     "2026-10-23"
-    ],
-    [
-     "2026-10-24",
-     "2026-11-25"
-    ]
-   ]
+   "stack": []
   },
   "committer-date:>=2024-01-01 \"non deterministic\" anthropic test": {
    "capped": true,
@@ -658,6 +649,37 @@
    "nodes": 1,
    "prepass_total": 62054,
    "stack": []
+  },
+  "committer-date:>=2024-01-01 intermittent llm test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 10721,
+   "leaves": 20,
+   "nodes": 38,
+   "prepass_total": 10715,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 intermittent openai test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 598,
+   "leaves": 2,
+   "nodes": 5,
+   "prepass_total": 14943,
+   "stack": [
+    [
+     "2025-10-25",
+     "2025-12-29"
+    ],
+    [
+     "2025-12-30",
+     "2026-03-05"
+    ],
+    [
+     "2026-03-06",
+     "2026-11-25"
+    ]
+   ]
   },
   "committer-date:>=2024-01-01 nondeterministic \"ai sdk\" test": {
    "capped": false,
@@ -2885,13 +2907,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 606
+  "issues": 787
  },
  "search_stats": {
-  "429": 59,
+  "429": 79,
   "limit": 30,
-  "remaining": 29,
-  "reset": 1795674304
+  "remaining": 23,
+  "reset": 1795676055
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
