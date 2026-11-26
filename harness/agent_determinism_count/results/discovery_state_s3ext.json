@@ -42,15 +42,11 @@
   "committer-date:>=2024-01-01 retry crewai test": {
    "capped": false,
    "done": false,
-   "leaf_total": 503,
-   "leaves": 2,
-   "nodes": 4,
+   "leaf_total": 1216,
+   "leaves": 3,
+   "nodes": 5,
    "prepass_total": 1958,
    "stack": [
-    [
-     "2026-03-06",
-     "2026-07-16"
-    ],
     [
      "2026-07-17",
      "2026-11-25"
@@ -426,13 +422,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 219
+  "issues": 228
  },
  "search_stats": {
-  "429": 16,
+  "429": 17,
   "limit": 30,
   "remaining": 30,
-  "reset": 1795712775
+  "reset": 1795712894
  },
  "started": "2026-11-26T11:20:43+00:00"
 }
