@@ -87,3 +87,4 @@
 {"counts": false, "excerpt": "*  - the optional local search index (SQLite IndexedStorage, PGLite);", "path": "packages/core/test/remote-only-derived-copies.test.ts", "repo": "plur-ai/plur", "status": 200, "term": "pglite"}
 {"counts": true, "excerpt": "\"\"\"A reachable server. ``admin_url`` may create databases and roles.\"\"\"", "path": "tests/pg_support.py", "repo": "vbcherepanov/total-agent-memory", "status": 200, "term": "\"CREATE DATABASE\" TEMPLATE"}
 {"counts": true, "excerpt": "admin.execute(sql.SQL(\"CREATE DATABASE {} TEMPLATE template0 ENCODING 'UTF8' LOCALE_PROVIDER icu \"", "path": "tests/test_db_check.py", "repo": "vbcherepanov/total-agent-memory", "status": 200, "term": "\"CREATE DATABASE\" TEMPLATE"}
+{"counts": true, "excerpt": "xdist exposes ``PYTEST_XDIST_WORKER`` per worker process (``gw0``,", "path": "backend/tests/conftest.py", "repo": "spatiumnorth/spatiumddi", "status": 200, "term": "PYTEST_XDIST_WORKER"}
