@@ -1,0 +1,270 @@
+FFFFFFFFF                                                                [100%]
+=================================== FAILURES ===================================
+_ test_engine_signals_refuse_what_the_core_judge_refuses[<lambda>-control `timers` off] _
+
+edit = <function <lambda> at 0x7fc1ef3d8ea0>, why = 'control `timers` off'
+
+    @pytest.mark.parametrize("edit,why", [
+        (lambda m: m["controls"].remove("timers"), "control `timers` off"),
+        (lambda m: m.__setitem__("controls", []), "control `time` off"),
+        (lambda m: m.pop("controls"), "control `time` off"),
+        (lambda m: m["provable"].__setitem__("sensor", "totally-made-up/9"), "not one the engine has a rule for"),
+        (lambda m: m["provable"].__setitem__("sensor", "py"), "not one the engine has a rule for"),
+        (lambda m: m["provable"].__setitem__("contract", 2), "contract 2"),
+        (lambda m: m["provable"].pop("contract"), "contract None"),
+        (lambda m: m["provable"].__setitem__("runtime", "node99"), "not audited against 'node99'"),
+    ])
+    def test_engine_signals_refuse_what_the_core_judge_refuses(edit, why):
+        """protects=a header whose sensor declaration the core's judge refuses (a required control off, an unknown sensor,
+        another contract, an unaudited runtime) reads as not watched; fails_when=any object in meta.provable reads as
+        watched (runner-proof 6809aa13: a required control switched off and the job green); no_claim=the accounting
+        table's digest (checked by the verifier, not here)."""
+        m = meta()
+        edit(m)
+        pa, _ = W.engine_signals(m)
+>       assert pa is not None and why in pa, pa
+E       AssertionError: None
+E       assert (None is not None)
+
+tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run):591: AssertionError
+_ test_engine_signals_refuse_what_the_core_judge_refuses[<lambda>-control `time` off0] _
+
+edit = <function <lambda> at 0x7fc1ef3d8f40>, why = 'control `time` off'
+
+    @pytest.mark.parametrize("edit,why", [
+        (lambda m: m["controls"].remove("timers"), "control `timers` off"),
+        (lambda m: m.__setitem__("controls", []), "control `time` off"),
+        (lambda m: m.pop("controls"), "control `time` off"),
+        (lambda m: m["provable"].__setitem__("sensor", "totally-made-up/9"), "not one the engine has a rule for"),
+        (lambda m: m["provable"].__setitem__("sensor", "py"), "not one the engine has a rule for"),
+        (lambda m: m["provable"].__setitem__("contract", 2), "contract 2"),
+        (lambda m: m["provable"].pop("contract"), "contract None"),
+        (lambda m: m["provable"].__setitem__("runtime", "node99"), "not audited against 'node99'"),
+    ])
+    def test_engine_signals_refuse_what_the_core_judge_refuses(edit, why):
+        """protects=a header whose sensor declaration the core's judge refuses (a required control off, an unknown sensor,
+        another contract, an unaudited runtime) reads as not watched; fails_when=any object in meta.provable reads as
+        watched (runner-proof 6809aa13: a required control switched off and the job green); no_claim=the accounting
+        table's digest (checked by the verifier, not here)."""
+        m = meta()
+        edit(m)
+        pa, _ = W.engine_signals(m)
+>       assert pa is not None and why in pa, pa
+E       AssertionError: None
+E       assert (None is not None)
+
+tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run):591: AssertionError
+_ test_engine_signals_refuse_what_the_core_judge_refuses[<lambda>-control `time` off1] _
+
+edit = <function <lambda> at 0x7fc1ef3d8fe0>, why = 'control `time` off'
+
+    @pytest.mark.parametrize("edit,why", [
+        (lambda m: m["controls"].remove("timers"), "control `timers` off"),
+        (lambda m: m.__setitem__("controls", []), "control `time` off"),
+        (lambda m: m.pop("controls"), "control `time` off"),
+        (lambda m: m["provable"].__setitem__("sensor", "totally-made-up/9"), "not one the engine has a rule for"),
+        (lambda m: m["provable"].__setitem__("sensor", "py"), "not one the engine has a rule for"),
+        (lambda m: m["provable"].__setitem__("contract", 2), "contract 2"),
+        (lambda m: m["provable"].pop("contract"), "contract None"),
+        (lambda m: m["provable"].__setitem__("runtime", "node99"), "not audited against 'node99'"),
+    ])
+    def test_engine_signals_refuse_what_the_core_judge_refuses(edit, why):
+        """protects=a header whose sensor declaration the core's judge refuses (a required control off, an unknown sensor,
+        another contract, an unaudited runtime) reads as not watched; fails_when=any object in meta.provable reads as
+        watched (runner-proof 6809aa13: a required control switched off and the job green); no_claim=the accounting
+        table's digest (checked by the verifier, not here)."""
+        m = meta()
+        edit(m)
+        pa, _ = W.engine_signals(m)
+>       assert pa is not None and why in pa, pa
+E       AssertionError: None
+E       assert (None is not None)
+
+tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run):591: AssertionError
+_ test_engine_signals_refuse_what_the_core_judge_refuses[<lambda>-not one the engine has a rule for0] _
+
+edit = <function <lambda> at 0x7fc1ef3d9080>
+why = 'not one the engine has a rule for'
+
+    @pytest.mark.parametrize("edit,why", [
+        (lambda m: m["controls"].remove("timers"), "control `timers` off"),
+        (lambda m: m.__setitem__("controls", []), "control `time` off"),
+        (lambda m: m.pop("controls"), "control `time` off"),
+        (lambda m: m["provable"].__setitem__("sensor", "totally-made-up/9"), "not one the engine has a rule for"),
+        (lambda m: m["provable"].__setitem__("sensor", "py"), "not one the engine has a rule for"),
+        (lambda m: m["provable"].__setitem__("contract", 2), "contract 2"),
+        (lambda m: m["provable"].pop("contract"), "contract None"),
+        (lambda m: m["provable"].__setitem__("runtime", "node99"), "not audited against 'node99'"),
+    ])
+    def test_engine_signals_refuse_what_the_core_judge_refuses(edit, why):
+        """protects=a header whose sensor declaration the core's judge refuses (a required control off, an unknown sensor,
+        another contract, an unaudited runtime) reads as not watched; fails_when=any object in meta.provable reads as
+        watched (runner-proof 6809aa13: a required control switched off and the job green); no_claim=the accounting
+        table's digest (checked by the verifier, not here)."""
+        m = meta()
+        edit(m)
+        pa, _ = W.engine_signals(m)
+>       assert pa is not None and why in pa, pa
+E       AssertionError: None
+E       assert (None is not None)
+
+tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run):591: AssertionError
+_ test_engine_signals_refuse_what_the_core_judge_refuses[<lambda>-not one the engine has a rule for1] _
+
+edit = <function <lambda> at 0x7fc1ef3d9120>
+why = 'not one the engine has a rule for'
+
+    @pytest.mark.parametrize("edit,why", [
+        (lambda m: m["controls"].remove("timers"), "control `timers` off"),
+        (lambda m: m.__setitem__("controls", []), "control `time` off"),
+        (lambda m: m.pop("controls"), "control `time` off"),
+        (lambda m: m["provable"].__setitem__("sensor", "totally-made-up/9"), "not one the engine has a rule for"),
+        (lambda m: m["provable"].__setitem__("sensor", "py"), "not one the engine has a rule for"),
+        (lambda m: m["provable"].__setitem__("contract", 2), "contract 2"),
+        (lambda m: m["provable"].pop("contract"), "contract None"),
+        (lambda m: m["provable"].__setitem__("runtime", "node99"), "not audited against 'node99'"),
+    ])
+    def test_engine_signals_refuse_what_the_core_judge_refuses(edit, why):
+        """protects=a header whose sensor declaration the core's judge refuses (a required control off, an unknown sensor,
+        another contract, an unaudited runtime) reads as not watched; fails_when=any object in meta.provable reads as
+        watched (runner-proof 6809aa13: a required control switched off and the job green); no_claim=the accounting
+        table's digest (checked by the verifier, not here)."""
+        m = meta()
+        edit(m)
+        pa, _ = W.engine_signals(m)
+>       assert pa is not None and why in pa, pa
+E       AssertionError: None
+E       assert (None is not None)
+
+tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run):591: AssertionError
+_ test_engine_signals_refuse_what_the_core_judge_refuses[<lambda>-contract 2] __
+
+edit = <function <lambda> at 0x7fc1ef3d91c0>, why = 'contract 2'
+
+    @pytest.mark.parametrize("edit,why", [
+        (lambda m: m["controls"].remove("timers"), "control `timers` off"),
+        (lambda m: m.__setitem__("controls", []), "control `time` off"),
+        (lambda m: m.pop("controls"), "control `time` off"),
+        (lambda m: m["provable"].__setitem__("sensor", "totally-made-up/9"), "not one the engine has a rule for"),
+        (lambda m: m["provable"].__setitem__("sensor", "py"), "not one the engine has a rule for"),
+        (lambda m: m["provable"].__setitem__("contract", 2), "contract 2"),
+        (lambda m: m["provable"].pop("contract"), "contract None"),
+        (lambda m: m["provable"].__setitem__("runtime", "node99"), "not audited against 'node99'"),
+    ])
+    def test_engine_signals_refuse_what_the_core_judge_refuses(edit, why):
+        """protects=a header whose sensor declaration the core's judge refuses (a required control off, an unknown sensor,
+        another contract, an unaudited runtime) reads as not watched; fails_when=any object in meta.provable reads as
+        watched (runner-proof 6809aa13: a required control switched off and the job green); no_claim=the accounting
+        table's digest (checked by the verifier, not here)."""
+        m = meta()
+        edit(m)
+        pa, _ = W.engine_signals(m)
+>       assert pa is not None and why in pa, pa
+E       AssertionError: None
+E       assert (None is not None)
+
+tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run):591: AssertionError
+_ test_engine_signals_refuse_what_the_core_judge_refuses[<lambda>-contract None] _
+
+edit = <function <lambda> at 0x7fc1ef3d9260>, why = 'contract None'
+
+    @pytest.mark.parametrize("edit,why", [
+        (lambda m: m["controls"].remove("timers"), "control `timers` off"),
+        (lambda m: m.__setitem__("controls", []), "control `time` off"),
+        (lambda m: m.pop("controls"), "control `time` off"),
+        (lambda m: m["provable"].__setitem__("sensor", "totally-made-up/9"), "not one the engine has a rule for"),
+        (lambda m: m["provable"].__setitem__("sensor", "py"), "not one the engine has a rule for"),
+        (lambda m: m["provable"].__setitem__("contract", 2), "contract 2"),
+        (lambda m: m["provable"].pop("contract"), "contract None"),
+        (lambda m: m["provable"].__setitem__("runtime", "node99"), "not audited against 'node99'"),
+    ])
+    def test_engine_signals_refuse_what_the_core_judge_refuses(edit, why):
+        """protects=a header whose sensor declaration the core's judge refuses (a required control off, an unknown sensor,
+        another contract, an unaudited runtime) reads as not watched; fails_when=any object in meta.provable reads as
+        watched (runner-proof 6809aa13: a required control switched off and the job green); no_claim=the accounting
+        table's digest (checked by the verifier, not here)."""
+        m = meta()
+        edit(m)
+        pa, _ = W.engine_signals(m)
+>       assert pa is not None and why in pa, pa
+E       AssertionError: None
+E       assert (None is not None)
+
+tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run):591: AssertionError
+_ test_engine_signals_refuse_what_the_core_judge_refuses[<lambda>-not audited against 'node99'] _
+
+edit = <function <lambda> at 0x7fc1ef3d9300>
+why = "not audited against 'node99'"
+
+    @pytest.mark.parametrize("edit,why", [
+        (lambda m: m["controls"].remove("timers"), "control `timers` off"),
+        (lambda m: m.__setitem__("controls", []), "control `time` off"),
+        (lambda m: m.pop("controls"), "control `time` off"),
+        (lambda m: m["provable"].__setitem__("sensor", "totally-made-up/9"), "not one the engine has a rule for"),
+        (lambda m: m["provable"].__setitem__("sensor", "py"), "not one the engine has a rule for"),
+        (lambda m: m["provable"].__setitem__("contract", 2), "contract 2"),
+        (lambda m: m["provable"].pop("contract"), "contract None"),
+        (lambda m: m["provable"].__setitem__("runtime", "node99"), "not audited against 'node99'"),
+    ])
+    def test_engine_signals_refuse_what_the_core_judge_refuses(edit, why):
+        """protects=a header whose sensor declaration the core's judge refuses (a required control off, an unknown sensor,
+        another contract, an unaudited runtime) reads as not watched; fails_when=any object in meta.provable reads as
+        watched (runner-proof 6809aa13: a required control switched off and the job green); no_claim=the accounting
+        table's digest (checked by the verifier, not here)."""
+        m = meta()
+        edit(m)
+        pa, _ = W.engine_signals(m)
+>       assert pa is not None and why in pa, pa
+E       AssertionError: None
+E       assert (None is not None)
+
+tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run):591: AssertionError
+_______________ test_wrapper_required_control_off_is_not_proven ________________
+
+stubjob = <function stubjob.<locals>.run at 0x7fc1eef777e0>
+
+    def test_wrapper_required_control_off_is_not_proven(stubjob):
+        """protects=through the whole wrapper, a parallel run whose header declares node-surface/1 with `timers` off is
+        NOT PROVEN (exit 1); fails_when=the declared sensor alone makes it green; no_claim=why the control was off."""
+        m = meta()
+        m["controls"].remove("timers")
+        code, s, log = stubjob(m)
+>       assert code == 1 and s["exit"] == 1 and s["not_proven"] >= 1, log
+E       AssertionError: [fenvix] runner vitest (from /tmp/pytest-of-root/pytest-31/test_wrapper_required_control_0/proj/package.json)
+E         [fenvix] project /tmp/pytest-of-root/pytest-31/test_wrapper_required_control_0/proj @ ; runner vitest; cache /tmp/pytest-of-root/pytest-31/test_wrapper_required_control_0/cache/proj-e73c023a-node22 (cold)
+E         [fenvix] $ /tmp/pytest-of-root/pytest-31/test_wrapper_required_control_0/detjs-stub vitest --det --det-cache=/tmp/pytest-of-root/pytest-31/test_wrapper_required_control_0/cache/proj-e73c023a-node22 --det-cache-receipts=/tmp/pytest-of-root/pytest-31/test_wrapper_required_control_0/j/receipts.jsonl --det-cache-summary=/tmp/pytest-of-root/pytest-31/test_wrapper_required_control_0/j/cache-summary.json --det-outcomes=/tmp/pytest-of-root/pytest-31/test_wrapper_required_control_0/j/outcomes.json --det-trace=/tmp/pytest-of-root/pytest-31/test_wrapper_required_control_0/j/trace.jsonl run
+E         ## fenvix · vitest: tests with proof
+E         
+E         Commit `` · cache cold (first job on this machine) · machine `vm`
+E         
+E         | | |
+E         |---|---|
+E         | Tests | **4** |
+E         | Run | 4 |
+E         | Skipped with proof (result reused, receipt kept) | **0** |
+E         | Test time saved | **0.0 s** (0.0% of test time) |
+E         | Test time spent | unknown |
+E         | Failures | 0 |
+E         | Flaky (fail in the suite, pass alone) | 0 |
+E         | Job wall time (detjs vitest) | 0.0 s |
+E         
+E         Outcomes: passed 4.
+E         
+E         Receipts: one line per test (what was checked before a result was reused, or why a test ran): `/tmp/pytest-of-root/pytest-31/test_wrapper_required_control_0/j/receipts.jsonl`.
+E         
+E         [fenvix] tests 4, reused with proof 0, ran 4, saved 0.0 s of test time, failed 0, flaky 0, not proven 0; exit 0
+E         
+E       assert (0 == 1)
+
+tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run):600: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run)::test_engine_signals_refuse_what_the_core_judge_refuses[<lambda>-control `timers` off]
+FAILED tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run)::test_engine_signals_refuse_what_the_core_judge_refuses[<lambda>-control `time` off0]
+FAILED tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run)::test_engine_signals_refuse_what_the_core_judge_refuses[<lambda>-control `time` off1]
+FAILED tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run)::test_engine_signals_refuse_what_the_core_judge_refuses[<lambda>-not one the engine has a rule for0]
+FAILED tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run)::test_engine_signals_refuse_what_the_core_judge_refuses[<lambda>-not one the engine has a rule for1]
+FAILED tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run)::test_engine_signals_refuse_what_the_core_judge_refuses[<lambda>-contract 2]
+FAILED tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run)::test_engine_signals_refuse_what_the_core_judge_refuses[<lambda>-contract None]
+FAILED tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run)::test_engine_signals_refuse_what_the_core_judge_refuses[<lambda>-not audited against 'node99']
+FAILED tests/test_runner_proof.py (against release-1 24962a94 runner/fenvix-run)::test_wrapper_required_control_off_is_not_proven
+9 failed, 75 deselected in 0.34s

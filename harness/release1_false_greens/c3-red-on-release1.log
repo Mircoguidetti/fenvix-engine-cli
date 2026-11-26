@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: protects=lanes_wall_seconds is a finite number when one lane marker has no end (its file's leave() did not run); fails_when=the marker without end makes it NaN, written null, which the runner reads as "proof incomplete" (release-1 24962a94); no_claim=the placement checks on such a marker (deviations: their own fields)
+not ok 1 - protects=lanes_wall_seconds is a finite number when one lane marker has no end (its file's leave() did not run); fails_when=the marker without end makes it NaN, written null, which the runner reads as "proof incomplete" (release-1 24962a94); no_claim=the placement checks on such a marker (deviations: their own fields)
+  ---
+  duration_ms: 2.744914
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-fenvix-engine-cli/9263695f-2638-5db3-9e41-f4a6f5e42481/scratchpad/red-c3/lanes-timing.test.js:24:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"files":2,"test_file_seconds":null,"lanes_wall_seconds":null}
+    
+    'object' !== 'number'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'number'
+  actual: 'object'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-fenvix-engine-cli/9263695f-2638-5db3-9e41-f4a6f5e42481/scratchpad/red-c3/lanes-timing.test.js:32:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: protects=a parallel run in which a test file crashes in the middle of a test is red; fails_when=the crash leaves the run green (its tests have no outcome record); no_claim=the exit code's exact value beyond non-zero
+ok 2 - protects=a parallel run in which a test file crashes in the middle of a test is red; fails_when=the crash leaves the run green (its tests have no outcome record); no_claim=the exit code's exact value beyond non-zero
+  ---
+  duration_ms: 823.933898
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 930.307496
