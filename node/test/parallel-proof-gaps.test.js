@@ -302,6 +302,21 @@ process.stdout.write(fs.readFileSync(d + '/' + fs.readdirSync(d).filter((n) => n
     assert.ok(fp.r.includes('shared/f'), `the read through the copied link lands in shared/f: ${fp.r}`);
   });
 
+  test('an unawaited fs.promises link change that fails is still an unhandled rejection (/review delta of 282bb9a4)', () => {
+    // protects=the footprint never changes what the test's own calls do: a rejected fs.promises.unlink / rm / rename /
+    // cp nobody awaits crashes the process serially, and must in a lane too; fails_when=the wrapper's own settle handler
+    // on the user's promise marks the rejection handled (the run passes in lanes, a wrong green); no_claim=awaited calls
+    const dir = fs.mkdtempSync(path.join(BASE, 'unh-'));
+    const code = `
+const fs = require('node:fs'); const parallel = require(${JSON.stringify(path.join(__dirname, '..', 'src', 'parallel'))});
+parallel.installFootprint(process.cwd());
+parallel.enter('f'); fs.promises.unlink('missing.txt');
+setTimeout(() => { parallel.leave('f'); process.exit(0); }, 300);`;
+    const r = spawnSync(process.execPath, ['-e', code], { cwd: dir, encoding: 'utf8', env: cleanEnv({ DETJS_DIR: path.join(dir, '.detjs', 'run'), DETJS_WORKERS: '2' }) });
+    assert.notEqual(r.status, 0, `the unhandled ENOENT must end the process: status ${r.status}, ${r.stderr}`);
+    assert.match(r.stderr, /ENOENT/);
+  });
+
   test('a link repointed inside one file: the write after it records the new target (second /review pass, finding 2)', () => {
     // protects=the real-path memo is dropped when the file itself changes a link, so a later call through it records the
     // target it really reaches; fails_when=the memo filled by an earlier call of the same file records the old target

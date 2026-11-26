@@ -477,8 +477,9 @@ function mergeOutcomes(o1Path, o2Path, affected, complete, { fresh = true, selec
     for (const id of ids) {
       if (!set.has(fileOf(id))) continue;
       // a hazard-file test the complete re-run's file lacks: dropped, never pass 1's value against the trace's re-run
-      // record (/review delta, finding 3)
-      if (!has(o2.outcomes, id)) { for (const key of keys) delete m[key][id]; continue; }
+      // record (/review delta, finding 3). With a --det-order selection pass 1's value stays: the re-run drops the
+      // selection, and a listed test pass 1 marked error (its file failed first) has no trace record to contradict
+      if (!has(o2.outcomes, id)) { if (!selected) for (const key of keys) delete m[key][id]; continue; }
       for (const key of keys) { if (has(o2[key], id)) m[key][id] = o2[key][id]; else delete m[key][id]; }
     }
     Object.assign(o1, m);

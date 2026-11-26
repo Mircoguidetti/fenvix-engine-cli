@@ -1,0 +1,56 @@
+▶ /review fixes (2026-11-26): symlinks, the root directory
+  ✖ an unawaited fs.promises link change that fails is still an unhandled rejection (/review delta of 282bb9a4) (360.07904ms)
+✖ /review fixes (2026-11-26): symlinks, the root directory (361.021519ms)
+✖ mergeOutcomes with --det-order: a listed test pass 1 marked error and the re-run lacks keeps its error (/review delta of 282bb9a4) (2.577248ms)
+ℹ tests 2
+ℹ suites 1
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 612.985722
+
+✖ failing tests:
+
+test at test/parallel-proof-gaps.test.js:305:3
+✖ an unawaited fs.promises link change that fails is still an unhandled rejection (/review delta of 282bb9a4) (360.07904ms)
+  AssertionError [ERR_ASSERTION]: the unhandled ENOENT must end the process: status 0, 
+      at TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/parallel-proof-gaps.test.js:316:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at node:internal/test_runner/test:1440:71
+      at node:internal/per_context/primordials:466:82
+      at new Promise (<anonymous>)
+      at new SafePromise (node:internal/per_context/primordials:435:3)
+      at node:internal/per_context/primordials:466:9
+      at Array.map (<anonymous>) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/parallel-rerun-account.test.js:231:1
+✖ mergeOutcomes with --det-order: a listed test pass 1 marked error and the re-run lacks keeps its error (/review delta of 282bb9a4) (2.577248ms)
+  AssertionError [ERR_ASSERTION]: {"order":["a.js::1"],"outcomes":{},"fingerprints":{},"exceptions":{},"hazard_rerun":{"files":["a.js"],"reported":"one-lane re-run"}}
+  + actual - expected
+  
+  + undefined
+  - 'error'
+  
+      at TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/parallel-rerun-account.test.js:244:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'error',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

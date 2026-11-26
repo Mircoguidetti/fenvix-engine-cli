@@ -227,3 +227,20 @@ test('mergeOutcomes: a complete re-run whose outcomes file lacks a pass-1 test o
   assert.equal(m.fingerprints['a.js::2'], undefined);
   assert.equal(m.outcomes['b.js::1'], 'passed');
 });
+
+test('mergeOutcomes with --det-order: a listed test pass 1 marked error and the re-run lacks keeps its error (/review delta of 282bb9a4)', () => {
+  // protects=a listed test whose file failed before its tests ran (repro.js marks it error, with no trace record) still
+  // shows its error after the re-run, which drops the selection and need not report it; fails_when=the entry is
+  // dropped and the outcomes file lists the test with no outcome; no_claim=without --det-order (every trace id has an
+  // outcome there, so a missing one is not in the trace either: dropped, finding 3)
+  const { mergeOutcomes } = require('../src/parallel-rerun');
+  const fs = require('node:fs'); const os = require('node:os'); const path = require('node:path');
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'mo5-'));
+  const o1 = path.join(d, 'o1.json'); const o2 = path.join(d, 'o2.json');
+  fs.writeFileSync(o1, JSON.stringify({ order: ['a.js::1'], outcomes: { 'a.js::1': 'error' }, fingerprints: {}, exceptions: { 'a.js::1': ['import failed'] } }));
+  fs.writeFileSync(o2, JSON.stringify({ order: [], outcomes: {}, fingerprints: {}, exceptions: {} }));
+  mergeOutcomes(o1, o2, ['a.js'], true, { selected: true });
+  const m = JSON.parse(fs.readFileSync(o1, 'utf8'));
+  assert.equal(m.outcomes['a.js::1'], 'error', JSON.stringify(m));
+  assert.deepEqual(m.exceptions['a.js::1'], ['import failed']);
+});

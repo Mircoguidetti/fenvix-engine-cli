@@ -492,7 +492,10 @@ function installFootprint(root) {
         if (cb >= 0) { const f = a[cb]; a[cb] = function (...x) { end(); return f.apply(this, x); }; }
         let r;
         try { r = real.apply(this, a); } catch (e) { end(); throw e; }
-        if (r && typeof r.then === 'function') r.then(end, end); else if (cb < 0) end();
+        // a promise: the caller gets one that settles like r and rethrows its rejection, so a rejection nobody handles
+        // stays unhandled as without the footprint (/review delta of 282bb9a4)
+        if (r && typeof r.then === 'function') return r.then((v) => { end(); return v; }, (e) => { end(); throw e; });
+        if (cb < 0) end();
         return r;
       };
     for (const k of Reflect.ownKeys(real)) {
