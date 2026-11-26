@@ -145,8 +145,11 @@
 19. 2026-11-26 17:25Z, a fix (no rule change). The S3 extension's hard stop was 17:20:43Z, but it stopped at 17:21:18Z.
     On the session route the search client had no deadline. A 60 s rate-limit sleep that began at about 17:19:57Z ran
     past the hard stop, and then one leaf was read: 'committer-date:>=2024-01-01 retry "ai sdk" test',
-    2025-12-30..2026-01-31, 594 hits, about 6 search requests between 17:21:00 and 17:21:18Z. Whether that leaf stays
-    in the pool was put to the coordinator at 17:22Z, and the rebuild waits for the answer. Now the client's deadline
+    2025-12-30..2026-01-31, 594 hits, about 6 search requests between 17:20:56 and 17:21:18Z. The coordinator decided at
+    17:23Z (option b) that the leaf is dropped, because the 6 h hard stop is the founder's. The new part
+    s3ext-session-1722drop records it again as a truncated leaf with 0 read; the build keeps the last record per leaf.
+    So the 594 hits enter N_S3 as missing and add no candidate. The committed parts are unchanged, and the state
+    records the drop (extension.dropped_after_hard_stop). Now the client's deadline
     is the budget end (or the hard stop), and no request is sent once it has passed. A deadline reached at the budget
     end stops discovery cleanly with budget_reached set, and the node cut short stays truncated. Test:
     test_no_request_past_the_deadline_and_extension_stops_at_hard_stop.
