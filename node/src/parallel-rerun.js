@@ -172,7 +172,13 @@ function accountRerun(firstTests, rerunTests, files) {
   // (readTrace computes it while streaming: `never_started`; a record with its events, as the unit tests give, is
   // read the same way)
   const ran = (r) => !(r.never_started || (r.events || []).some((e) => e && e.o === 'sched.never_started'));
-  const got = new Set((rerunTests || []).filter(ran).map((r) => r.nodeid));
+  // a test that never started in the first pass either (a whole describe.skip file: alakajam's rate-limiter.spec.ts)
+  // is accounted for by any re-run record of it; a test the first pass ran needs a re-run record that ran (founder
+  // decision 2026-11-26, alakajam A)
+  // (an id with a first-pass record that ran is not in it, even when another record of that id never started: /review F5)
+  const ranFirst = new Set((firstTests || []).filter((r) => set.has(fileOf(r.nodeid)) && ran(r)).map((r) => r.nodeid));
+  const neverFirst = new Set((firstTests || []).filter((r) => set.has(fileOf(r.nodeid)) && !ran(r) && !ranFirst.has(r.nodeid)).map((r) => r.nodeid));
+  const got = new Set((rerunTests || []).filter((r) => ran(r) || neverFirst.has(r.nodeid)).map((r) => r.nodeid));
   const unaccounted = want.filter((id) => !got.has(id));
   const complete = Array.isArray(rerunTests) && unaccounted.length === 0;
   const notProvenFiles = [];
@@ -236,6 +242,7 @@ async function main(cmd, argv) {
 
   // ---- pass 1: the run exactly as it is today, straight to the user's terminal and the user's files ----
   const before = traceStamp(tracePath);
+  const outcomesStamp1 = opts.outcomes ? traceStamp(path.resolve(root, opts.outcomes)) : null;
   const p1 = spawnSync(process.execPath, [...process.execArgv, BIN, cmd, ...argv], { cwd: root, env: env1, stdio: 'inherit' });
   if (p1.signal) return { signal: p1.signal };
   const status1 = p1.status ?? 1;
@@ -268,6 +275,11 @@ async function main(cmd, argv) {
   fs.rmSync(work, { recursive: true, force: true });
   fs.mkdirSync(work, { recursive: true });
   const t2path = path.join(work, 'rerun.jsonl');
+  // --det-outcomes: pass 1 writes the user's file; pass 2 writes its own here, and the wrapper puts the re-run's
+  // outcomes of the hazard files into the user's file when it reports the re-run (mergeOutcomes)
+  const o2path = opts.outcomes ? path.join(work, 'rerun.outcomes.json') : null;
+  // pass 1 wrote the user's outcomes file only if its identity changed (an earlier run's file is never rewritten: /review F9)
+  const o1Fresh = opts.outcomes ? outcomesStamp1 !== traceStamp(path.resolve(root, opts.outcomes)) : false;
   // The argument form of src/isolate.js: the user's own arguments, then the files. Jest needs --runTestsByPath for
   // paths to be paths; Vitest and node:test take them as they are.
   //
@@ -293,13 +305,14 @@ async function main(cmd, argv) {
   const kept = dropPatterns(rerunArgs(argv));
   const args2 = cmd === 'vitest'
     ? [...process.execArgv, BIN, cmd, 'run', ...(['run', 'watch', 'dev'].includes(kept[0]) ? kept.slice(1) : kept),
-      '--det-workers=1', `--det-trace=${t2path}`, ...fileArgs]
-    : [...process.execArgv, BIN, cmd, ...kept, '--det-workers=1', `--det-trace=${t2path}`, ...fileArgs];
+      '--det-workers=1', `--det-trace=${t2path}`, ...(o2path ? [`--det-outcomes=${o2path}`] : []), ...fileArgs]
+    : [...process.execArgv, BIN, cmd, ...kept, '--det-workers=1', `--det-trace=${t2path}`, ...(o2path ? [`--det-outcomes=${o2path}`] : []), ...fileArgs];
   const p2 = spawnSync(process.execPath, args2, { cwd: root, env: env2, stdio: 'inherit' });
   if (p2.signal) { fs.rmSync(work, { recursive: true, force: true }); return { signal: p2.signal }; }
   const status2 = p2.status ?? 1;
   try {
-    const { status } = finishRerun({ t1Path: tracePath, t2Path: t2path, status1, status2, affected, tracePath, root, t1 });
+    const { status, complete } = finishRerun({ t1Path: tracePath, t2Path: t2path, status1, status2, affected, tracePath, root, t1 });
+    if (opts.outcomes) mergeOutcomes(path.resolve(root, opts.outcomes), o2path, affected, Boolean(complete), { fresh: o1Fresh, selected: Boolean(opts.order) });
     return { status };
   } finally {
     fs.rmSync(work, { recursive: true, force: true });
@@ -411,7 +424,8 @@ function finishRerun({ t1Path, t2Path, status1, status2, affected, tracePath, ro
   // P0 big trace: a part the merge could not read is missing from the trace with its tests: status unknown, exit 2
   if (res.skipped.length) {
     exitStatus.recordUnknown(`unreadable trace parts, their tests are not counted: ${res.skipped.join('; ')}`);
-    return { status: exitStatus.runExit({ internalError: true }), res };
+    // the merged trace is missing parts: it does not hold the re-run as reported, so neither may the outcomes file
+    return { status: exitStatus.runExit({ internalError: true }), res, complete: false };
   }
 
   process.stderr.write(`${exitStatus.statusLine(status)}\n`);
@@ -432,7 +446,54 @@ function finishRerun({ t1Path, t2Path, status1, status2, affected, tracePath, ro
     process.stderr.write(`detjs: parallel: the one-lane re-run of the hazard files passed, but the first run's exit code ${status1}`
       + ' stands: a re-run never turns a red into a green (src/parallel-rerun.js wrapperRunnerCode)\n');
   }
-  return { status: exitStatus.runExit({ ...status, runnerCode: wrapperRunnerCode(status1, status2, Boolean(t2)) }), res };
+  return { status: exitStatus.runExit({ ...status, runnerCode: wrapperRunnerCode(status1, status2, Boolean(t2)) }), res, complete };
 }
 
-module.exports = { main, finishRerun, spliceRecords, readTrace, writeRecordParts, shouldWrap, hazardFiles, rerunArgs, fileOf, labelFile, accountRerun, wrapperRunnerCode };
+/**
+ * The --det-outcomes file after a hazard re-run (founder decision 2026-11-26, alakajam A; P3b found alakajam par2's
+ * outcomes file saying failed where the merged trace said passed). Pass 1 wrote `o1Path`; when the re-run is complete
+ * (the merged trace holds the re-run's records of the hazard files) the outcomes, fingerprints and exceptions of the
+ * hazard files' tests pass 1 reported are replaced by pass 2's (`o2Path`), so the file says what the trace says for
+ * them. Otherwise pass 1's
+ * stay, as in the trace. Either way `hazard_rerun` says which run is reported. Pass 1 wrote no file: nothing is done.
+ */
+function mergeOutcomes(o1Path, o2Path, affected, complete, { fresh = true, selected = false } = {}) {
+  if (!fresh) return;
+  let o1;
+  try { o1 = JSON.parse(fs.readFileSync(o1Path, 'utf8')); } catch { return; }
+  let o2 = null;
+  if (complete && o2Path) { try { o2 = JSON.parse(fs.readFileSync(o2Path, 'utf8')); } catch { o2 = null; } }
+  const set = new Set(affected);
+  if (o2) {
+    // the hazard files' tests the re-run reported, as in the merged trace (a file whose pass-1 worker died before
+    // writing its outcomes included); with a --det-order selection (`selected`) only the tests pass 1 reported: the
+    // re-run runs whole files and drops the selection, so its other tests are not the user's run (/review, F8)
+    const pass1 = new Set([...Object.keys(o1.outcomes || {}), ...(Array.isArray(o1.order) ? o1.order : [])]);
+    const ids = new Set(pass1);
+    if (!selected) for (const id of [...(Array.isArray(o2.order) ? o2.order : []), ...Object.keys(o2.outcomes || {})]) ids.add(id);
+    const has = (o, k) => Boolean(o) && Object.prototype.hasOwnProperty.call(o, k);
+    const keys = ['outcomes', 'fingerprints', 'exceptions'];
+    const m = Object.fromEntries(keys.map((key) => [key, { ...(o1[key] || {}) }]));
+    for (const id of ids) {
+      if (!set.has(fileOf(id))) continue;
+      // a hazard-file test the complete re-run's file lacks: dropped, never pass 1's value against the trace's re-run
+      // record (/review delta, finding 3). With a --det-order selection pass 1's value stays: the re-run drops the
+      // selection, and a listed test pass 1 marked error (its file failed first) has no trace record to contradict
+      if (!has(o2.outcomes, id)) { if (!selected) for (const key of keys) delete m[key][id]; continue; }
+      for (const key of keys) { if (has(o2[key], id)) m[key][id] = o2[key][id]; else delete m[key][id]; }
+    }
+    Object.assign(o1, m);
+    if (!selected) {
+      const order = Array.isArray(o1.order) ? o1.order.slice() : [];
+      for (const id of ids) if (!pass1.has(id) && set.has(fileOf(id)) && Object.prototype.hasOwnProperty.call(o2.outcomes || {}, id)) order.push(id);
+      o1.order = order;
+    }
+  }
+  o1.hazard_rerun = {
+    files: affected,
+    reported: o2 ? 'one-lane re-run' : complete ? 'first run (the re-run wrote no outcomes file)' : 'first run (the re-run was not complete)',
+  };
+  fs.writeFileSync(o1Path, JSON.stringify(o1));
+}
+
+module.exports = { main, finishRerun, mergeOutcomes, spliceRecords, readTrace, writeRecordParts, shouldWrap, hazardFiles, rerunArgs, fileOf, labelFile, accountRerun, wrapperRunnerCode };

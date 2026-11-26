@@ -1,0 +1,1996 @@
+# red-on-release-1: the branch's test files at 298e80df (+ the .tmp/gaps mkdir fix of the next commit) run against the release-1 engine ece09e1f
+# worktree /home/user/fenvix-r1 (ece09e1f) + copied: node/test/{big-trace,parallel-proof-gaps,parallel-rerun-account}.test.js, tests/test_runner_{node,proof}.py; the release-1 node/test/.tmp/ did not exist
+# node v22.23.5, 2026-11-26T19:07:17Z, nice 19 while the final suites ran
+
+## node --test --test-concurrency=1 test/parallel-proof-gaps.test.js test/parallel-rerun-account.test.js test/big-trace.test.js
+detjs: status: failed=0 not_proven=0 passed=640 skipped=0
+detjs: parallel: the one-lane re-run of the hazard files passed, but the first run's exit code 1 stands: a re-run never turns a red into a green (src/parallel-rerun.js wrapperRunnerCode)
+detjs: trace par-t1.jsonl: 640 tests, order digest 874553db307f2a01a822cfd238d64983 (2 file(s) re-run in one lane)
+detjs: parallel: the one-lane re-run is what is reported for tests/h.test.js, tests/k.test.js: 0 failed of 26 test(s); 13 failure(s) of the first run did not recur in one lane (the exit code is not lowered): tests/h.test.js::case 7, tests/h.test.js::case 57, tests/h.test.js::case 107, tests/h.test.js::case 157, tests/h.test.js::case 207 (+8)
+detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+detjs: trace not-yet/deeper/trace.jsonl: 2 tests, order digest fb860b1344f6d5b3cf7d1028ed319b27 (2 file(s) re-run in one lane)
+detjs: parallel: the one-lane re-run is what is reported for tests/h.test.js, tests/k.test.js: 0 failed of 2 test(s)
+✔ criterion 1: protects=stampStatus counts a trace over 600 MiB (3 failed of 640), stamps meta.status into the header only and copies the body byte for byte; fails_when=the trace is read into one string (ERR_STRING_TOO_LONG, status null, exit decided by the runner code 0) or any byte after the header changes; no_claim=bin/detjs.js end to end on such a trace (a real run of that size does not fit in test time; harness/p0_big_trace/REPORT.md re-measures agentic-qe) (5734.84633ms)
+✔ criterion 2 (unit): protects=a stamp whose rename fails makes stampStatus throw, on the >600 MiB trace; fails_when=the failure is caught and the counts returned as if the trace carried them (the run then decides on counts its trace does not hold); no_claim=other write failures (same catch) (1240.696148ms)
+✔ criterion 2 (bin/detjs.js): protects=a run whose meta.status cannot be stamped (rename fails) exits 2 with the unknown line, although every test passed; fails_when=the stamp failure is swallowed and the run exits 0; no_claim=which runner (vitest, one lane, the normal path of bin/detjs.js) (1903.338231ms)
+✔ criterion 3: protects=the parallel wrapper gives exit 2 when pass 1 wrote a trace it cannot read back (injected read error); fails_when=the wrapper forwards pass 1's code (0: the agentic-qe false green); no_claim=pass 2 (an unreadable re-run trace stays NOT PROVEN, exit 1: test/parallel-rerun-account.test.js) (1777.098782ms)
+✔ criterion 3: protects=finishRerun gives exit 2 for a first trace that is not JSON; fails_when=an unreadable t1 is treated as "no hazard" and pass 1's code stands; no_claim=the >600 MiB case (next test) (50.584431ms)
+✔ criterion 3: protects=the hazard re-run path runs on a first trace over 600 MiB: every test is in the merged trace and each record is a byte copy of its source line (index aside); fails_when=t1 is read into one string (no re-run, pass 1's code stands) or records are re-serialized/lost; no_claim=spawning the two passes (finishRerun is called directly with both traces) (6925.951775ms)
+✔ criterion 3: protects=writeRecordParts copies each record's raw line byte for byte from t1 or t2 (a CRLF line and non-ASCII text included); fails_when=a record is re-serialized (JSON.stringify) or taken from the wrong trace; no_claim=what the Rust merge then writes (previous test) (2.342413ms)
+✔ criterion 4 (parallel wrapper): protects=a part the merge cannot read makes finishRerun exit 2 with the unknown line; fails_when=the part is skipped with a printed line and its tests (and failures) vanish from a green trace; no_claim=why a part is unreadable (here: a record without n_events, which JavaScript reads and the Rust merge refuses) (51.678741ms)
+✖ criterion 4 (parallel wrapper, outcomes): protects=an unreadable part makes finishRerun return complete: false, so the --det-outcomes file keeps pass 1 and does not say the one-lane re-run was reported; fails_when=complete stays true on the exit-2 path; no_claim=main() (59.708928ms)
+✔ criterion 4 (session): protects=a worker part the merge cannot read makes the run exit 2 with the unknown line, every test passing; fails_when=the part is skipped and the run exits 0 (src/session.js printed one line and went on); no_claim=how a real part gets corrupted (injected: a line that is not JSON appended before the merge) (993.819065ms)
+✔ criterion 4 (isolate): protects=--det-isolate exits 2 with the unknown line when a per-test part cannot be merged; fails_when=its tests vanish and the run exits 0; no_claim=the per-test sessions themselves (not faulted: DETJS_ISOLATE_CHILD) (4843.087722ms)
+✔ repro: protects=an unreadable trace writes no --det-outcomes file and says why; fails_when=outcomes are taken from the side states instead (a result the trace does not back, which runner/fenvix-run would then accept); no_claim=the runner's own exit (runner/fenvix-run:759-766, tests/test_runner_node.py) (1.327762ms)
+✔ exit-status: protects=recordUnknown is sticky: record(status) after it still gives 2, also when bin/detjs.js recomputes from recordedStatus(); fails_when=a later record() of a clean status clears it to 0; no_claim=the printed cause beyond its form (46.809651ms)
+✔ vitest exit 0 (item 5): protects=a runner's own process.exit(0) after detjs decided does not lower the exit code (agentic-qe tests/global-teardown.ts: setTimeout(() => process.exit(0), 5000) in vitest's main process, which is the detjs process); fails_when=a run whose status line says failed=1 exits 0; no_claim=a runner that kills the process with a signal (2296.564216ms)
+✔ session (review fix): protects=the order of a part with 150 000 tests is read whole; fails_when=the ids are spread into push() (RangeError: Maximum call stack size exceeded, the part is reported unreadable and a clean run exits 2); no_claim=parts too large for the 256 MiB line limit (124.649771ms)
+✔ session (review fix): protects=a part whose ids cannot be read makes the run exit 2 with the unknown line; fails_when=the read error is swallowed (partIds returning [] as on f67be4a3) and the run exits 0; no_claim=which part (the injected EIO hits every part) (953.437315ms)
+✔ session (review fix): protects=a merged trace that cannot be read back makes the run exit 2 with the unknown line; fails_when=stampStatus returns null and the runner's code 0 decides (the original agentic-qe false green); no_claim=why it cannot be read (an injected EIO here, ERR_STRING_TOO_LONG on f67be4a3) (888.003458ms)
+✔ parallel wrapper (review fix): protects=finishRerun writes the merged trace into a directory that does not exist yet; fails_when=its temporary merge directory is created inside that directory before it exists (ENOENT thrown before any status is decided); no_claim=a directory that cannot be created (7.345344ms)
+✔ parallel wrapper (review fix): protects=a complete re-run of a hazard file with 150 000 tests is spliced into the merged records whole and in order; fails_when=the file's records are spread into push() (RangeError: Maximum call stack size exceeded, the wrapper dies without its status line); no_claim=writing the merged trace (finishRerun tests above) (266.460175ms)
+▶ hazards() unit: recursive roots, shared services
+  ✖ rm/rename/cp-dest recursive root D conflicts with a read, write or listing under D (2.052909ms)
+  ✖ a listing of an ancestor of a recursive write root conflicts (the root appears or disappears) (0.514327ms)
+  ✖ a plain listing conflicts with a recursive write root only as its parent; a recursive listing as any ancestor (B1) (0.686129ms)
+  ✖ a recursive read root D (cp source, readdir recursive) conflicts with a write under D (0.386096ms)
+  ✔ prefix matching is by path component: tmp does not match tmpdir/x (b-neg) (0.229654ms)
+  ✔ the same file in one lane: no hazard, whatever it touches (0.153123ms)
+  ✖ two lanes connecting to one local port or unix socket: shared-service (a1, a2) (0.258452ms)
+  ✖ a tcp host pairs unless both files found its address public; loopback ports and unix sockets pair (founder decision "nome A", 2026-11-26) (0.381039ms)
+  ✔ different ports, sockets or hosts: no shared-service hazard; listen rules unchanged (0.588986ms)
+  ✔ footprints without the new sets (older markers) still work (0.488998ms)
+  ✔ scale: 400 files x 300 keys each match in well under a second (120.966236ms)
+✖ hazards() unit: recursive roots, shared services (128.116972ms)
+▶ connect wrapper unit: the keys a real socket connect records (a3)
+  ✖ non-local host:port, loopback forms and unix paths get their own keys (66.819587ms)
+  ✔ DETJS_HAZARD_SHARED_SERVICE=0 records only loopback ports, as release-1 did (61.959695ms)
+✖ connect wrapper unit: the keys a real socket connect records (a3) (128.945757ms)
+▶ /review fixes (2026-11-26): symlinks, the root directory
+  ✖ a path through a symlink records its literal key too, and a repointed link is resolved again per file (F1) (42.483543ms)
+  ✖ a link repointed inside one file: the write after it records the new target (second /review pass, finding 2) (51.272148ms)
+  ✖ an async link swap in flight: a call during it does not cache the old target (third /review pass, finding 1) (134.675374ms)
+  ✖ a listing or a recursive root at / pairs with keys directly under it (F6) (6.202615ms)
+✖ /review fixes (2026-11-26): symlinks, the root directory (234.868738ms)
+▶ connect wrapper + hazards(): tcp keys pair unless public (founder decision "nome A", 2026-11-26)
+  ✖ two lanes connecting to a name that does not resolve (CI service container `postgres`, here postgres.invalid): shared-service (296.715765ms)
+  ✖ two lanes connecting to host.docker.internal (does not resolve outside Docker Desktop): shared-service (246.930298ms)
+  ✖ two lanes connecting to the machine's own hostname (resolves to a local address): shared-service (321.492196ms)
+  ✖ two lanes connecting to a private IPv4 address (10/8): shared-service (81.559912ms)
+  ✖ two lanes connecting to a docker bridge address (172.16/12): shared-service (102.128266ms)
+  ✖ two lanes connecting to a 192.168/16 address: shared-service (175.768809ms)
+  ✖ two lanes connecting to a link-local address (169.254/16): shared-service (146.46568ms)
+  ✖ two lanes connecting to an IPv6 unique-local address (fc00::/7): shared-service (109.430321ms)
+  ✖ two lanes connecting to a 6to4 address with a private IPv4 inside (2002::/16; review delta F3): shared-service (184.99932ms)
+  ✖ two lanes connecting to an IPv6 documentation address in 2000::/3 (3fff::/20; review delta F3): shared-service (136.820219ms)
+  ✖ a name that resolves to a public and then a loopback address pairs (review delta F1: every address counts) (87.150518ms)
+  ✖ a name looked up public once and private once in one file pairs (review delta F2: every connect counts) (124.966289ms)
+  ✔ two lanes connecting to a public IP address: no hazard (D1 = A kept for public hosts) (86.013032ms)
+  ✔ two lanes connecting to a name that resolves only to public addresses: no hazard (209.025049ms)
+  ✔ a different private address or port in each lane: no hazard (71.634771ms)
+✖ connect wrapper + hazards(): tcp keys pair unless public (founder decision "nome A", 2026-11-26) (2381.991796ms)
+▶ fs wrapper unit: the recursive roots real fs calls record
+  ✖ recursive cp, rm, mkdir, readdir and a directory rename record wr / lr roots; plain calls do not (35.082744ms)
+  ✖ a mkdir of a directory that exists records a read of it, not a write (C1) (36.875729ms)
+  ✖ DETJS_HAZARD_RECURSIVE=0 records no roots, as release-1 did (42.570352ms)
+✖ fs wrapper unit: the recursive roots real fs calls record (114.769344ms)
+▶ footprint skip dirs unit: only node_modules and tmpdir (c)
+  ✖ the project root, its parent, a dir inside the project: ignored with a reason (0.159276ms)
+  ✖ a dir under node_modules (in the project) is honoured (0.064434ms)
+  ✖ a dir under os.tmpdir() outside the project is honoured; tmpdir itself is not (0.106937ms)
+  ✖ a project that itself lives under tmpdir: its own dirs are still ignored (8.645548ms)
+  ✖ a relative dir is resolved against the project root, empty entries are dropped (0.123959ms)
+✖ footprint skip dirs unit: only node_modules and tmpdir (c) (9.461588ms)
+▶ vitest: recursive directory operations (b)
+  ✖ (b1) rm -r of a dir in one lane, a read inside it in the other: recursive-write hazard, one-lane re-run (751.278142ms)
+  ✖ (b4) mkdir -p creating a new subtree in one lane, a write inside it in the other: recursive-write hazard (754.022581ms)
+  ✖ (b4-parent) mkdir -p creating a new subtree in one lane, a listing of its parent in the other: recursive-write hazard (661.65409ms)
+  ✔ (b4-neg) mkdir -p of a dir that exists in one lane, a write inside it in the other: no hazard (853.05089ms)
+  ✖ (b2) cp -r into a dir in one lane, a write inside the destination in the other: recursive-write hazard (852.469436ms)
+  ✖ (b3) cp -r from a dir in one lane, a write inside the source in the other: recursive-read hazard (828.314421ms)
+  ✖ (b5) readdir recursive in one lane, a write two levels down in the other: recursive-read hazard (917.034249ms)
+  ✖ (C1-distinct) mkdir -p of one existing dir in both lanes, then distinct children: no hazard (1808.480623ms)
+  ✖ (C1-same) mkdir -p of one existing dir in both lanes, then the same child: write-write hazard (1699.210118ms)
+  ✔ (C1-list) a child created under an existing dir in one lane, a listing of the dir in the other: list-write hazard (2160.899047ms)
+  ✔ (b7) rm -r of a dir in one lane, a plain listing of its grandparent in the other: no hazard (B1) (978.897588ms)
+  ✖ (b7-rec) rm -r of a dir in one lane, a recursive listing of its grandparent in the other: recursive-write hazard (B1) (860.690391ms)
+  ✖ (b6) rename of a dir in one lane, a read inside the new name in the other: recursive-write hazard (931.497319ms)
+✖ vitest: recursive directory operations (b) (14058.154664ms)
+▶ vitest: skip dirs from the project configuration (c)
+  ✖ (c1) cacheDir ".": ignored and recorded, a write-write conflict there is a hazard (859.470505ms)
+  ✖ (c2) cacheDir "..": ignored and recorded, a write-write conflict there is a hazard (975.1515ms)
+  ✖ (c3) cacheDir ".cache/vite": ignored and recorded, a write-write conflict there is a hazard (997.935368ms)
+  ✖ (c-neg) cacheDir under node_modules stays skipped and is listed as an effective skip dir (1040.391525ms)
+✖ vitest: skip dirs from the project configuration (c) (3873.209689ms)
+▶ vitest: shared local services (a)
+  ✖ (a1) two lanes connect to one local TCP port served outside the lanes: shared-service hazard (1026.063986ms)
+  ✖ (a2) two lanes connect to one unix socket: shared-service hazard (935.242981ms)
+  ✔ (a-neg) two lanes connect to two different local ports: no hazard, proven (1009.396849ms)
+✖ vitest: shared local services (a) (2973.886502ms)
+▶ vitest: the one-lane re-run of a hazard (founder decision 2026-11-26, alakajam A)
+  ✖ a hazard file with a whole describe.skip block: the re-run is complete, nothing NOT PROVEN (2287.477085ms)
+  ✖ --det-outcomes reports what the trace reports: the re-run outcome of the hazard files (1851.671965ms)
+✖ vitest: the one-lane re-run of a hazard (founder decision 2026-11-26, alakajam A) (4139.35322ms)
+▶ vitest: positive control
+  ✔ a clean two-lane run (no shared path, port or socket) keeps its proof (913.482923ms)
+✔ vitest: positive control (913.57551ms)
+▶ jest: recursive directory operations (b)
+  ✖ (b1) rm -r of a dir in one lane, a read inside it in the other: recursive-write hazard, one-lane re-run (1656.450343ms)
+  ✖ (b4) mkdir -p creating a new subtree in one lane, a write inside it in the other: recursive-write hazard (1897.709837ms)
+  ✖ (b4-parent) mkdir -p creating a new subtree in one lane, a listing of its parent in the other: recursive-write hazard (2093.520296ms)
+  ✔ (b4-neg) mkdir -p of a dir that exists in one lane, a write inside it in the other: no hazard (1684.975973ms)
+✖ jest: recursive directory operations (b) (7332.877112ms)
+▶ jest: skip dirs from the project configuration (c)
+  ✖ (c4) jest cacheDirectory <rootDir>: ignored and recorded, a write-write conflict in the repo is a hazard (2055.868354ms)
+✖ jest: skip dirs from the project configuration (c) (2055.950792ms)
+▶ jest: shared local services (a)
+  ✖ (a1) two lanes connect to one local TCP port served outside the lanes: shared-service hazard (2076.091501ms)
+✖ jest: shared local services (a) (2076.478127ms)
+▶ jest: the one-lane re-run of a hazard (founder decision 2026-11-26, alakajam A)
+  ✔ a hazard file with a whole describe.skip block: the re-run is complete, nothing NOT PROVEN (3067.508806ms)
+  ✖ --det-outcomes reports what the trace reports: the re-run outcome of the hazard files (3289.336216ms)
+✖ jest: the one-lane re-run of a hazard (founder decision 2026-11-26, alakajam A) (6356.951041ms)
+▶ jest: positive control
+  ✔ a clean two-lane run (no shared path, port or socket) keeps its proof (2018.902261ms)
+✔ jest: positive control (2018.99279ms)
+✔ B4: project-qualified ids of a named Vitest project match their hazard file (1.618727ms)
+✔ B3: a hazard file with 0 matching re-run tests yields its first-pass tests as NOT PROVEN (0.347078ms)
+✔ B3: a missing re-run trace makes every first-pass test of the hazard files NOT PROVEN (0.24042ms)
+✔ appendix 4: a partly accounted re-run makes the unaccounted tests NOT PROVEN (0.1291ms)
+✔ the bfaf70b4 defect: a project-qualified id is wanted, and with no re-run record of it is NOT PROVEN (0.238432ms)
+✔ wrapperRunnerCode: the re-run may raise the first pass's code, never lower it (default-deny) (0.15189ms)
+✔ rerunArgs drops the runners' file selectors (shard, changed, related, only-failures) (0.441443ms)
+✔ accountRerun: a never-started record in the re-run does not account for the test (0.217895ms)
+✔ isolate namePattern: " #n" stripped only for a real duplicate, "::" inside a name matched (1.128122ms)
+✔ B1: notProvenFiles[].tests sum to the unaccounted tests, one entry per file, want.length counts the hazard files only (0.409209ms)
+✖ accountRerun: a test that never started in the first pass is accounted for by its never-started re-run record (0.999707ms)
+✔ accountRerun: a never-started duplicate does not let a test the first pass ran go unproven (0.114107ms)
+✖ mergeOutcomes: pass 1's tests take the re-run outcome, no test is added; a file pass 1 did not write is not touched (0.399952ms)
+✖ mergeOutcomes: without --det-order a test only the re-run reported is added to outcomes and order (1.548875ms)
+ℹ tests 105
+ℹ suites 16
+ℹ pass 46
+ℹ fail 59
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 77895.154209
+
+✖ failing tests:
+
+test at test/big-trace.test.js:258:1
+✖ criterion 4 (parallel wrapper, outcomes): protects=an unreadable part makes finishRerun return complete: false, so the --det-outcomes file keeps pass 1 and does not say the one-lane re-run was reported; fails_when=complete stays true on the exit-2 path; no_claim=main() (59.708928ms)
+  AssertionError [ERR_ASSERTION]: status=2
+  stdout={"status":2}
+  stderr=detjs: status: unknown (unreadable trace parts, their tests are not counted: /tmp/big-trace-Phh0Ez/.detjs-merge-fMKiYc/parts/000001.jsonl: parse error at line 2: missing field `fingerprint`): exit 2, NOT PROVEN
+  
+  + actual - expected
+  
+  + undefined
+  - false
+  
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/big-trace.test.js:273:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:111:3
+✖ rm/rename/cp-dest recursive root D conflicts with a read, write or listing under D (2.052909ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + []
+  - [
+  -   'recursive-write tmp'
+  - ]
+  
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:114:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at node:internal/test_runner/test:1440:71
+      at node:internal/per_context/primordials:466:82
+      at new Promise (<anonymous>)
+      at new SafePromise (node:internal/per_context/primordials:435:3)
+      at node:internal/per_context/primordials:466:9
+      at Array.map (<anonymous>) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [],
+    expected: [ 'recursive-write tmp' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:122:3
+✖ a listing of an ancestor of a recursive write root conflicts (the root appears or disappears) (0.514327ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + []
+  - [
+  -   'recursive-write a/b'
+  - ]
+  
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:124:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [],
+    expected: [ 'recursive-write a/b' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:130:3
+✖ a plain listing conflicts with a recursive write root only as its parent; a recursive listing as any ancestor (B1) (0.686129ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + []
+  - [
+  -   'recursive-write a'
+  - ]
+  
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:138:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [],
+    expected: [ 'recursive-write a' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:150:3
+✖ a recursive read root D (cp source, readdir recursive) conflicts with a write under D (0.386096ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + []
+  - [
+  -   'recursive-read tree'
+  - ]
+  
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:152:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [],
+    expected: [ 'recursive-read tree' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:172:3
+✖ two lanes connecting to one local port or unix socket: shared-service (a1, a2) (0.258452ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + []
+  - [
+  -   'shared-service 5432'
+  - ]
+  
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:175:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [],
+    expected: [ 'shared-service 5432' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:179:3
+✖ a tcp host pairs unless both files found its address public; loopback ports and unix sockets pair (founder decision "nome A", 2026-11-26) (0.381039ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + []
+  - [
+  -   'shared-service tcp:raw.githubusercontent.com:443'
+  - ]
+  
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:186:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [],
+    expected: [ 'shared-service tcp:raw.githubusercontent.com:443' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:240:3
+✖ non-local host:port, loopback forms and unix paths get their own keys (66.819587ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   '/run/x/t.sock',
+  -   '7000',
+  -   '7001',
+      '7002',
+  -   'tcp:db.example.com:5432',
+  -   'tcp:redis.internal:6379',
+  -   'unix:/run/x/s.sock',
+  -   'unix:/run/x/t.sock'
+    ]
+  
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:246:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at node:internal/test_runner/test:1440:71
+      at node:internal/per_context/primordials:466:82
+      at new Promise (<anonymous>)
+      at new SafePromise (node:internal/per_context/primordials:435:3)
+      at node:internal/per_context/primordials:466:9
+      at Array.map (<anonymous>) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '/run/x/t.sock', '7002' ],
+    expected: [ '7000', '7001', '7002', 'tcp:db.example.com:5432', 'tcp:redis.internal:6379', 'unix:/run/x/s.sock', 'unix:/run/x/t.sock' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:258:3
+✖ a path through a symlink records its literal key too, and a repointed link is resolved again per file (F1) (42.483543ms)
+  AssertionError [ERR_ASSERTION]: the write of f2 lands in v2/x: [["cur/x"],["cur/x"]]
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:280:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at node:internal/test_runner/test:1440:71
+      at node:internal/per_context/primordials:466:82
+      at new Promise (<anonymous>)
+      at new SafePromise (node:internal/per_context/primordials:435:3)
+      at node:internal/per_context/primordials:466:9
+      at Array.map (<anonymous>) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:285:3
+✖ a link repointed inside one file: the write after it records the new target (second /review pass, finding 2) (51.272148ms)
+  AssertionError [ERR_ASSERTION]: the write lands in T2/x: L,L/x
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:302:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:305:3
+✖ an async link swap in flight: a call during it does not cache the old target (third /review pass, finding 1) (134.675374ms)
+  AssertionError [ERR_ASSERTION]: the existsSync ran before the swap (else this test proves nothing): cur/q,tmplink
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:328:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:332:3
+✖ a listing or a recursive root at / pairs with keys directly under it (F6) (6.202615ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + []
+  - [
+  -   'recursive-write /'
+  - ]
+  
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:338:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [],
+    expected: [ 'recursive-write /' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:397:5
+✖ two lanes connecting to a name that does not resolve (CI service container `postgres`, here postgres.invalid): shared-service (296.715765ms)
+  AssertionError [ERR_ASSERTION]: expected a shared-service hazard; connect keys {"kinds":[],"a":[],"b":[]}
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:399:14)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at node:internal/test_runner/test:1440:71
+      at node:internal/per_context/primordials:466:82
+      at new Promise (<anonymous>)
+      at new SafePromise (node:internal/per_context/primordials:435:3)
+      at node:internal/per_context/primordials:466:9
+      at Array.map (<anonymous>) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:397:5
+✖ two lanes connecting to host.docker.internal (does not resolve outside Docker Desktop): shared-service (246.930298ms)
+  AssertionError [ERR_ASSERTION]: expected a shared-service hazard; connect keys {"kinds":[],"a":[],"b":[]}
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:399:14)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:397:5
+✖ two lanes connecting to the machine's own hostname (resolves to a local address): shared-service (321.492196ms)
+  AssertionError [ERR_ASSERTION]: expected a shared-service hazard; connect keys {"kinds":[],"a":[],"b":[]}
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:399:14)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:397:5
+✖ two lanes connecting to a private IPv4 address (10/8): shared-service (81.559912ms)
+  AssertionError [ERR_ASSERTION]: expected a shared-service hazard; connect keys {"kinds":[],"a":[],"b":[]}
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:399:14)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:397:5
+✖ two lanes connecting to a docker bridge address (172.16/12): shared-service (102.128266ms)
+  AssertionError [ERR_ASSERTION]: expected a shared-service hazard; connect keys {"kinds":[],"a":[],"b":[]}
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:399:14)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:397:5
+✖ two lanes connecting to a 192.168/16 address: shared-service (175.768809ms)
+  AssertionError [ERR_ASSERTION]: expected a shared-service hazard; connect keys {"kinds":[],"a":[],"b":[]}
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:399:14)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:397:5
+✖ two lanes connecting to a link-local address (169.254/16): shared-service (146.46568ms)
+  AssertionError [ERR_ASSERTION]: expected a shared-service hazard; connect keys {"kinds":[],"a":[],"b":[]}
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:399:14)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:397:5
+✖ two lanes connecting to an IPv6 unique-local address (fc00::/7): shared-service (109.430321ms)
+  AssertionError [ERR_ASSERTION]: expected a shared-service hazard; connect keys {"kinds":[],"a":[],"b":[]}
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:399:14)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:397:5
+✖ two lanes connecting to a 6to4 address with a private IPv4 inside (2002::/16; review delta F3): shared-service (184.99932ms)
+  AssertionError [ERR_ASSERTION]: expected a shared-service hazard; connect keys {"kinds":[],"a":[],"b":[]}
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:399:14)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:397:5
+✖ two lanes connecting to an IPv6 documentation address in 2000::/3 (3fff::/20; review delta F3): shared-service (136.820219ms)
+  AssertionError [ERR_ASSERTION]: expected a shared-service hazard; connect keys {"kinds":[],"a":[],"b":[]}
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:399:14)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:426:3
+✖ a name that resolves to a public and then a loopback address pairs (review delta F1: every address counts) (87.150518ms)
+  AssertionError [ERR_ASSERTION]: {"kinds":[],"pub":[null,null]}
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:433:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:436:3
+✖ a name looked up public once and private once in one file pairs (review delta F2: every connect counts) (124.966289ms)
+  AssertionError [ERR_ASSERTION]: {"kinds":[],"pub":[null,null]}
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:442:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:480:3
+✖ recursive cp, rm, mkdir, readdir and a directory rename record wr / lr roots; plain calls do not (35.082744ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + undefined
+  - [
+  -   'deep',
+  -   'dst',
+  -   'gone',
+  -   'moved',
+  -   'mv',
+  -   'src/a/new'
+  - ]
+  
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:487:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at node:internal/test_runner/test:1440:71
+      at node:internal/per_context/primordials:466:82
+      at new Promise (<anonymous>)
+      at new SafePromise (node:internal/per_context/primordials:435:3)
+      at node:internal/per_context/primordials:466:9
+      at Array.map (<anonymous>) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: [ 'deep', 'dst', 'gone', 'moved', 'mv', 'src/a/new' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:492:3
+✖ a mkdir of a directory that exists records a read of it, not a write (C1) (36.875729ms)
+  AssertionError [ERR_ASSERTION]: src/a must not be a write: /home/user/fenvix-r1/node/test/.tmp/gaps/fsrec-z3GMJJ,deep/a/b,dst,flat,gone,gone/y.txt,moved,mv,plain.txt,plain2.txt,src/a,src/a/new/x
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:500:14)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:506:3
+✖ DETJS_HAZARD_RECURSIVE=0 records no roots, as release-1 did (42.570352ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   undefined,
+  +   undefined
+  -   [],
+  -   []
+    ]
+  
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:509:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ undefined, undefined ],
+    expected: [ [], [] ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:520:3
+✖ the project root, its parent, a dir inside the project: ignored with a reason (0.159276ms)
+  TypeError: footprintSkip is not a function
+      at reasons (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:518:48)
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:522:15)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+
+test at test/parallel-proof-gaps.test.js:529:3
+✖ a dir under node_modules (in the project) is honoured (0.064434ms)
+  TypeError: footprintSkip is not a function
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:531:15)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+
+test at test/parallel-proof-gaps.test.js:536:3
+✖ a dir under os.tmpdir() outside the project is honoured; tmpdir itself is not (0.106937ms)
+  TypeError: footprintSkip is not a function
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:540:15)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+
+test at test/parallel-proof-gaps.test.js:545:3
+✖ a project that itself lives under tmpdir: its own dirs are still ignored (8.645548ms)
+  TypeError: footprintSkip is not a function
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:549:36)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+
+test at test/parallel-proof-gaps.test.js:555:3
+✖ a relative dir is resolved against the project root, empty entries are dropped (0.123959ms)
+  TypeError: footprintSkip is not a function
+      at reasons (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:518:48)
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:557:15)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+
+test at test/parallel-proof-gaps.test.js:569:5
+✖ (b1) rm -r of a dir in one lane, a read inside it in the other: recursive-write hazard, one-lane re-run (751.278142ms)
+  AssertionError [ERR_ASSERTION]: expected a recursive-write hazard on tmp; hazards=[]
+  status=0
+  stdout=detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: parallel execution in 2 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  
+   RUN  v5.1.0 /home/user/fenvix-r1/node/test/.tmp/gaps/vitest/b1
+  
+  
+   Test Files  2 passed (2)
+        Tests  2 passed (2)
+     Start at  19:07:49
+     Duration  306ms (worker 73%, tests 15%, transform 7%, import 4%)
+  
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest c4cbd210553ea46506e0fa4bf1119822
+  
+  stderr=(node:29073) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:29072) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  detjs: parallel: 2 lanes, plan d7e7dd5172681c30dcc969f95b455f59 (replayed); 2 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+  detjs: parallel: 0.076 s of test-file time ran in 0.1 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+  
+      at assertHazard (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:86:10)
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:578:7)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at node:internal/test_runner/test:1440:71
+      at node:internal/per_context/primordials:466:82
+      at new Promise (<anonymous>)
+      at new SafePromise (node:internal/per_context/primordials:435:3)
+      at node:internal/per_context/primordials:466:9 {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:581:5
+✖ (b4) mkdir -p creating a new subtree in one lane, a write inside it in the other: recursive-write hazard (754.022581ms)
+  AssertionError [ERR_ASSERTION]: expected a recursive-write hazard on data/new; hazards=[]
+  status=0
+  stdout=detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: parallel execution in 2 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  
+   RUN  v5.1.0 /home/user/fenvix-r1/node/test/.tmp/gaps/vitest/b4
+  
+  
+   Test Files  2 passed (2)
+        Tests  2 passed (2)
+     Start at  19:07:50
+     Duration  233ms (worker 79%, transform 10%, import 6%, tests 5%)
+  
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest e7e83da27a1fa9ad35ee5575cd2b41f2
+  
+  stderr=(node:29145) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:29146) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  detjs: parallel: 2 lanes, plan d7e7dd5172681c30dcc969f95b455f59 (replayed); 2 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+  detjs: parallel: 0.059 s of test-file time ran in 0.045 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+  
+      at assertHazard (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:86:10)
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:589:7)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:592:5
+✖ (b4-parent) mkdir -p creating a new subtree in one lane, a listing of its parent in the other: recursive-write hazard (661.65409ms)
+  AssertionError [ERR_ASSERTION]: expected a recursive-write hazard on data/new; hazards=[]
+  status=0
+  stdout=detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: parallel execution in 2 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  
+   RUN  v5.1.0 /home/user/fenvix-r1/node/test/.tmp/gaps/vitest/b4p
+  
+  
+   Test Files  2 passed (2)
+        Tests  2 passed (2)
+     Start at  19:07:51
+     Duration  241ms (worker 68%, transform 20%, import 6%, tests 6%)
+  
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest cdcceaae5ad86964cad09690083a28a6
+  
+  stderr=(node:29206) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:29207) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  detjs: parallel: 2 lanes, plan d7e7dd5172681c30dcc969f95b455f59 (replayed); 2 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+  detjs: parallel: 0.092 s of test-file time ran in 0.057 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+  
+      at assertHazard (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:86:10)
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:599:7)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:616:7
+✖ (b2) cp -r into a dir in one lane, a write inside the destination in the other: recursive-write hazard (852.469436ms)
+  AssertionError [ERR_ASSERTION]: expected a recursive-write hazard on out; hazards=[]
+  status=0
+  stdout=detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: parallel execution in 2 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  
+   RUN  v5.1.0 /home/user/fenvix-r1/node/test/.tmp/gaps/vitest/b2
+  
+  
+   Test Files  2 passed (2)
+        Tests  2 passed (2)
+     Start at  19:07:52
+     Duration  368ms (worker 76%, transform 9%, tests 9%, import 6%)
+  
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest de80594b57e2c4a282c2d3a64d3af798
+  
+  stderr=(node:29460) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:29458) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  detjs: parallel: 2 lanes, plan d7e7dd5172681c30dcc969f95b455f59 (replayed); 2 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+  detjs: parallel: 0.076 s of test-file time ran in 0.156 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+  
+      at assertHazard (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:86:10)
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:622:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:625:7
+✖ (b3) cp -r from a dir in one lane, a write inside the source in the other: recursive-read hazard (828.314421ms)
+  AssertionError [ERR_ASSERTION]: expected a recursive-read hazard on fixtures; hazards=[]
+  status=0
+  stdout=detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: parallel execution in 2 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  
+   RUN  v5.1.0 /home/user/fenvix-r1/node/test/.tmp/gaps/vitest/b3
+  
+  
+   Test Files  2 passed (2)
+        Tests  2 passed (2)
+     Start at  19:07:53
+     Duration  285ms (worker 65%, transform 15%, tests 12%, import 9%)
+  
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest de80594b57e2c4a282c2d3a64d3af798
+  
+  stderr=(node:29517) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:29516) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  detjs: parallel: 2 lanes, plan d7e7dd5172681c30dcc969f95b455f59 (replayed); 2 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+  detjs: parallel: 0.098 s of test-file time ran in 0.06 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+  
+      at assertHazard (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:86:10)
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:631:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:634:7
+✖ (b5) readdir recursive in one lane, a write two levels down in the other: recursive-read hazard (917.034249ms)
+  AssertionError [ERR_ASSERTION]: expected a recursive-read hazard on tree; hazards=[]
+  status=0
+  stdout=detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: parallel execution in 2 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  
+   RUN  v5.1.0 /home/user/fenvix-r1/node/test/.tmp/gaps/vitest/b5
+  
+  
+   Test Files  2 passed (2)
+        Tests  2 passed (2)
+     Start at  19:07:54
+     Duration  319ms (worker 76%, import 10%, transform 7%, tests 7%)
+  
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest 5ad164f74787e8d5be39577447fd281f
+  
+  stderr=(node:29591) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:29590) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  detjs: parallel: 2 lanes, plan d7e7dd5172681c30dcc969f95b455f59 (replayed); 2 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+  detjs: parallel: 0.069 s of test-file time ran in 0.109 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+  
+      at assertHazard (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:86:10)
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:640:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:643:7
+✖ (C1-distinct) mkdir -p of one existing dir in both lanes, then distinct children: no hazard (1808.480623ms)
+  AssertionError [ERR_ASSERTION]: status=0
+  stdout=detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: parallel execution in 2 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  
+   RUN  v5.1.0 /home/user/fenvix-r1/node/test/.tmp/gaps/vitest/c1d
+  
+  
+   Test Files  2 passed (2)
+        Tests  2 passed (2)
+     Start at  19:07:55
+     Duration  295ms (worker 80%, transform 10%, import 5%, tests 5%)
+  
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest 1e53505653d3b0cbb3675c63cdfb2d87
+  detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: serial execution (one worker, files in sequence; --det-workers=N or --maxWorkers=N for parallel lanes); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  
+   RUN  v5.1.0 /home/user/fenvix-r1/node/test/.tmp/gaps/vitest/c1d
+  
+  
+   Test Files  2 passed (2)
+        Tests  2 passed (2)
+     Start at  19:07:56
+     Duration  421ms (worker 81%, import 9%, tests 5%, transform 4%)
+  
+  detjs: trace .detjs/hazard-rerun-29606/rerun.jsonl: 2 tests, order digest 1e53505653d3b0cbb3675c63cdfb2d87
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest 1e53505653d3b0cbb3675c63cdfb2d87 (2 file(s) re-run in one lane)
+  detjs: parallel: the one-lane re-run is what is reported for tests/x.test.mjs, tests/y.test.mjs: 0 failed of 2 test(s)
+  
+  stderr=(node:29672) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:29673) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  detjs: parallel: 2 lanes, plan d7e7dd5172681c30dcc969f95b455f59 (replayed); 2 files; 0 placement deviations; 1 cross-worker hazards; 0 files with carried state
+  detjs: CROSS-WORKER write-write out: tests/x.test.mjs (lane 1) / tests/y.test.mjs (lane 2); the next plan puts them in one lane
+  detjs: parallel: 0.053 s of test-file time ran in 0.121 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: parallel: 2 file(s) named by a cross-worker hazard run again in one lane, because a placement must never decide an outcome: tests/x.test.mjs, tests/y.test.mjs
+  (node:29765) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:29788) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  detjs: serial run: 2 files, 0.046 s of test-file time (MEASURED); with --det-workers=4 (this machine's CPUs) about 0.029 s (ESTIMATED: a plan over these durations, worker start-up not counted)
+  detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+  
+  + actual - expected
+  
+  + [
+  +   {
+  +     a: 'tests/x.test.mjs',
+  +     b: 'tests/y.test.mjs',
+  +     kind: 'write-write',
+  +     what: 'out'
+  +   }
+  + ]
+  - []
+  
+      at assertNoHazard (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:97:10)
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:649:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ { a: 'tests/x.test.mjs', b: 'tests/y.test.mjs', kind: 'write-write', what: 'out' } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:652:7
+✖ (C1-same) mkdir -p of one existing dir in both lanes, then the same child: write-write hazard (1699.210118ms)
+  AssertionError [ERR_ASSERTION]: expected a write-write hazard on out/same.txt; hazards=[{"a":"tests/x.test.mjs","b":"tests/y.test.mjs","kind":"write-write","what":"out"}]
+  status=0
+  stdout=detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: parallel execution in 2 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  
+   RUN  v5.1.0 /home/user/fenvix-r1/node/test/.tmp/gaps/vitest/c1s
+  
+  
+   Test Files  2 passed (2)
+        Tests  2 passed (2)
+     Start at  19:07:57
+     Duration  265ms (worker 81%, transform 8%, import 5%, tests 5%)
+  
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest 1e53505653d3b0cbb3675c63cdfb2d87
+  detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: serial execution (one worker, files in sequence; --det-workers=N or --maxWorkers=N for parallel lanes); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  
+   RUN  v5.1.0 /home/user/fenvix-r1/node/test/.tmp/gaps/vitest/c1s
+  
+  
+   Test Files  2 passed (2)
+        Tests  2 passed (2)
+     Start at  19:07:57
+     Duration  443ms (worker 81%, import 9%, tests 6%, transform 4%)
+  
+  detjs: trace .detjs/hazard-rerun-29821/rerun.jsonl: 2 tests, order digest 1e53505653d3b0cbb3675c63cdfb2d87
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest 1e53505653d3b0cbb3675c63cdfb2d87 (2 file(s) re-run in one lane)
+  detjs: parallel: the one-lane re-run is what is reported for tests/x.test.mjs, tests/y.test.mjs: 0 failed of 2 test(s)
+  
+  stderr=(node:29878) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:29880) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  detjs: parallel: 2 lanes, plan d7e7dd5172681c30dcc969f95b455f59 (replayed); 2 files; 0 placement deviations; 1 cross-worker hazards; 0 files with carried state
+  detjs: CROSS-WORKER write-write out: tests/x.test.mjs (lane 1) / tests/y.test.mjs (lane 2); the next plan puts them in one lane
+  detjs: parallel: 0.052 s of test-file time ran in 0.059 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: parallel: 2 file(s) named by a cross-worker hazard run again in one lane, because a placement must never decide an outcome: tests/x.test.mjs, tests/y.test.mjs
+  (node:30002) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:30045) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  detjs: serial run: 2 files, 0.05 s of test-file time (MEASURED); with --det-workers=4 (this machine's CPUs) about 0.033 s (ESTIMATED: a plan over these durations, worker start-up not counted)
+  detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+  
+      at assertHazard (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:86:10)
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:656:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:680:7
+✖ (b7-rec) rm -r of a dir in one lane, a recursive listing of its grandparent in the other: recursive-write hazard (B1) (860.690391ms)
+  AssertionError [ERR_ASSERTION]: status=0
+  stdout=detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: parallel execution in 2 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  
+   RUN  v5.1.0 /home/user/fenvix-r1/node/test/.tmp/gaps/vitest/b7r
+  
+  
+   Test Files  2 passed (2)
+        Tests  2 passed (2)
+     Start at  19:08:02
+     Duration  295ms (worker 68%, transform 16%, tests 11%, import 5%)
+  
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest f69bf16c360a9b9da07e81d31d701fcb
+  
+  stderr=(node:30498) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:30499) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  detjs: parallel: 2 lanes, plan d7e7dd5172681c30dcc969f95b455f59 (replayed); 2 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+  detjs: parallel: 0.1 s of test-file time ran in 0.112 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+  
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:690:16)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:694:7
+✖ (b6) rename of a dir in one lane, a read inside the new name in the other: recursive-write hazard (931.497319ms)
+  AssertionError [ERR_ASSERTION]: expected a recursive-write hazard on final; hazards=[]
+  status=0
+  stdout=detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: parallel execution in 2 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  
+   RUN  v5.1.0 /home/user/fenvix-r1/node/test/.tmp/gaps/vitest/b6
+  
+  
+   Test Files  2 passed (2)
+        Tests  2 passed (2)
+     Start at  19:08:02
+     Duration  365ms (worker 76%, transform 12%, tests 7%, import 4%)
+  
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest 11e806df19813a9144e1eec1000ded05
+  
+  stderr=(node:30618) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:30619) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  detjs: parallel: 2 lanes, plan d7e7dd5172681c30dcc969f95b455f59 (replayed); 2 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+  detjs: parallel: 0.1 s of test-file time ran in 0.071 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+  
+      at assertHazard (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:86:10)
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:700:9)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:717:9
+✖ (c1) cacheDir ".": ignored and recorded, a write-write conflict there is a hazard (859.470505ms)
+  AssertionError [ERR_ASSERTION]: expected a write-write hazard on vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/shared.json; hazards=[]
+  status=0
+  stdout=detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: parallel execution in 2 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  
+   RUN  v5.1.0 /home/user/fenvix-r1/node/test/.tmp/gaps/vitest/c1
+  
+  
+   Test Files  2 passed (2)
+        Tests  2 passed (2)
+     Start at  19:08:03
+     Duration  329ms (worker 68%, import 12%, transform 11%, tests 10%)
+  
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest b59b5b01910990e1ce2e2272e13eba13
+  
+  stderr=(node:30729) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:30730) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  detjs: parallel: 2 lanes, plan d7e7dd5172681c30dcc969f95b455f59 (replayed); 2 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+  detjs: parallel: 0.106 s of test-file time ran in 0.086 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+  
+      at assertHazard (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:86:10)
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:730:11)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at node:internal/test_runner/test:1440:71
+      at node:internal/per_context/primordials:466:82
+      at new Promise (<anonymous>)
+      at new SafePromise (node:internal/per_context/primordials:435:3)
+      at node:internal/per_context/primordials:466:9 {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:717:9
+✖ (c2) cacheDir "..": ignored and recorded, a write-write conflict there is a hazard (975.1515ms)
+  AssertionError [ERR_ASSERTION]: expected a write-write hazard on /home/user/fenvix-r1/node/test/.tmp/gaps/vitest/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/shared.json; hazards=[]
+  status=0
+  stdout=detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: parallel execution in 2 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  
+   RUN  v5.1.0 /home/user/fenvix-r1/node/test/.tmp/gaps/vitest/c2
+  
+  
+   Test Files  2 passed (2)
+        Tests  2 passed (2)
+     Start at  19:08:04
+     Duration  392ms (worker 68%, transform 19%, tests 7%, import 6%)
+  
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest b59b5b01910990e1ce2e2272e13eba13
+  
+  stderr=(node:30850) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:30848) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  detjs: parallel: 2 lanes, plan d7e7dd5172681c30dcc969f95b455f59 (replayed); 2 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+  detjs: parallel: 0.114 s of test-file time ran in 0.181 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+  
+      at assertHazard (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:86:10)
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:730:11)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:717:9
+✖ (c3) cacheDir ".cache/vite": ignored and recorded, a write-write conflict there is a hazard (997.935368ms)
+  AssertionError [ERR_ASSERTION]: expected a write-write hazard on .cache/vite/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/shared.json; hazards=[]
+  status=0
+  stdout=detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: parallel execution in 2 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  
+   RUN  v5.1.0 /home/user/fenvix-r1/node/test/.tmp/gaps/vitest/c3
+  
+  
+   Test Files  2 passed (2)
+        Tests  2 passed (2)
+     Start at  19:08:05
+     Duration  410ms (worker 82%, transform 6%, import 6%, tests 6%)
+  
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest b59b5b01910990e1ce2e2272e13eba13
+  
+  stderr=(node:30950) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:30951) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  detjs: parallel: 2 lanes, plan d7e7dd5172681c30dcc969f95b455f59 (replayed); 2 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+  detjs: parallel: 0.078 s of test-file time ran in 0.052 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+  
+      at assertHazard (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:86:10)
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:730:11)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:737:7
+✖ (c-neg) cacheDir under node_modules stays skipped and is listed as an effective skip dir (1040.391525ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok((par(r).skip_dirs || []).some((d) => d === 'node_modules/.vite-custom' || d.startsWith('node_modules/.vite-custom/')), JSON.stringify(par(r).skip_dirs))
+  
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:746:16)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:780:5
+✖ (a1) two lanes connect to one local TCP port served outside the lanes: shared-service hazard (1026.063986ms)
+  AssertionError [ERR_ASSERTION]: expected a shared-service hazard on 42165; hazards=[]
+  status=0
+  stdout=detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: parallel execution in 2 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  
+   RUN  v5.1.0 /home/user/fenvix-r1/node/test/.tmp/gaps/vitest/a1
+  
+  
+   Test Files  2 passed (2)
+        Tests  2 passed (2)
+     Start at  19:08:07
+     Duration  362ms (worker 59%, tests 31%, transform 5%, import 5%)
+  
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest b3b1d3f719f3e12963c05a70ab206867
+  
+  stderr=(node:31137) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:31138) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  detjs: parallel: 2 lanes, plan d7e7dd5172681c30dcc969f95b455f59 (replayed); 2 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+  detjs: parallel: 0.175 s of test-file time ran in 0.1 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+  
+      at assertHazard (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:86:10)
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:785:7)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:789:7
+✖ (a2) two lanes connect to one unix socket: shared-service hazard (935.242981ms)
+  AssertionError [ERR_ASSERTION]: expected a shared-service hazard on unix:/home/user/fenvix-r1/node/test/.tmp/gaps/sock-Qpm0jc/s.sock; hazards=[]
+  status=0
+  stdout=detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: parallel execution in 2 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  
+   RUN  v5.1.0 /home/user/fenvix-r1/node/test/.tmp/gaps/vitest/a2
+  
+  
+   Test Files  2 passed (2)
+        Tests  2 passed (2)
+     Start at  19:08:08
+     Duration  280ms (worker 69%, transform 16%, tests 9%, import 5%)
+  
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest b3b1d3f719f3e12963c05a70ab206867
+  
+  stderr=(node:31244) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:31243) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  detjs: parallel: 2 lanes, plan d7e7dd5172681c30dcc969f95b455f59 (replayed); 2 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+  detjs: parallel: 0.113 s of test-file time ran in 0.081 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+  
+      at assertHazard (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:86:10)
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:795:9)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:810:5
+✖ a hazard file with a whole describe.skip block: the re-run is complete, nothing NOT PROVEN (2287.477085ms)
+  AssertionError [ERR_ASSERTION]: status=1
+  stdout=detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: parallel execution in 2 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  
+   RUN  v5.1.0 /home/user/fenvix-r1/node/test/.tmp/gaps/vitest/rerun-skip
+  
+  
+   Test Files  2 passed (2)
+        Tests  2 passed | 2 skipped (4)
+     Start at  19:08:10
+     Duration  533ms (worker 71%, import 18%, transform 7%, tests 3%)
+  
+  detjs: trace .detjs/trace.jsonl: 4 tests, order digest 4f729c2d3691747ef8ecea669964ee28
+  detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: serial execution (one worker, files in sequence; --det-workers=N or --maxWorkers=N for parallel lanes); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  
+   RUN  v5.1.0 /home/user/fenvix-r1/node/test/.tmp/gaps/vitest/rerun-skip
+  
+  
+   Test Files  2 passed (2)
+        Tests  2 passed | 2 skipped (4)
+     Start at  19:08:12
+     Duration  403ms (worker 85%, import 6%, tests 6%, transform 4%)
+  
+  detjs: trace .detjs/hazard-rerun-31407/rerun.jsonl: 4 tests, order digest 4f729c2d3691747ef8ecea669964ee28
+  detjs: trace .detjs/trace.jsonl: 4 tests, order digest 4f729c2d3691747ef8ecea669964ee28 (2 file(s) re-run in one lane)
+  
+  stderr=(node:31483) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:31482) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  detjs: parallel: 2 lanes, plan d7e7dd5172681c30dcc969f95b455f59 (replayed); 2 files; 0 placement deviations; 1 cross-worker hazards; 0 files with carried state
+  detjs: CROSS-WORKER read-write shared.txt: tests/x.test.mjs (lane 1) / tests/y.test.mjs (lane 2); the next plan puts them in one lane
+  detjs: parallel: 0.122 s of test-file time ran in 0.276 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: parallel: 2 file(s) named by a cross-worker hazard run again in one lane, because a placement must never decide an outcome: tests/x.test.mjs, tests/y.test.mjs
+  (node:31580) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:31596) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  detjs: serial run: 2 files, 0.047 s of test-file time (MEASURED); with --det-workers=4 (this machine's CPUs) about 0.027 s (ESTIMATED: a plan over these durations, worker start-up not counted)
+  detjs: parallel: the one-lane re-run could not account for 2 test(s) of the affected files; the first run's records stay, nothing was cleared, and its unaccounted tests are NOT PROVEN (first: tests/x.test.mjs::off::s1)
+  detjs: parallel: NOT PROVEN tests/x.test.mjs: the one-lane re-run did not account for its tests (tests/x.test.mjs: the one-lane re-run ran 1 of its 3 test(s))
+  detjs: status: failed=0 not_proven=2 passed=2 skipped=0
+  
+  
+  false !== true
+  
+      at assertHazard (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:91:10)
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:818:7)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at node:internal/test_runner/test:1440:71
+      at node:internal/per_context/primordials:466:82
+      at new Promise (<anonymous>)
+      at new SafePromise (node:internal/per_context/primordials:435:3)
+      at node:internal/per_context/primordials:466:9 {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:823:5
+✖ --det-outcomes reports what the trace reports: the re-run outcome of the hazard files (1851.671965ms)
+  AssertionError [ERR_ASSERTION]: outcomes file: {"tests/x.test.mjs::w":"failed","tests/y.test.mjs::r":"passed"}
+  status=1
+  stdout=2 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  
+   RUN  v5.1.0 /home/user/fenvix-r1/node/test/.tmp/gaps/vitest/rerun-outcomes
+  
+   [31m❯[39m tests/x.test.mjs (1 test | 1 failed) 24ms
+     [31m×[39m w 18ms
+  
+   Test Files  1 failed | 1 passed (2)
+        Tests  1 failed | 1 passed (2)
+     Start at  19:08:13
+     Duration  314ms (worker 67%, import 12%, tests 11%, transform 10%)
+  
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest ab1886b3a8484580208c0b3ff916e9ae
+  1 test(s) failed under --det (seed 0, fixed order). Turn each into a reproducible defect (cause, seed, order, replay command):
+      fenvix repro tests/x.test.mjs::w --runner=vitest
+    rerun the failing file with the same seeds and order: detjs vitest run --det tests/x.test.mjs
+    the same run again: detjs vitest run --det (with the same arguments)
+  detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: serial execution (one worker, files in sequence; --det-workers=N or --maxWorkers=N for parallel lanes); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  
+   RUN  v5.1.0 /home/user/fenvix-r1/node/test/.tmp/gaps/vitest/rerun-outcomes
+  
+  
+   Test Files  2 passed (2)
+        Tests  2 passed (2)
+     Start at  19:08:13
+     Duration  428ms (worker 82%, import 9%, tests 6%, transform 3%)
+  
+  detjs: trace .detjs/hazard-rerun-31615/rerun.jsonl: 2 tests, order digest ab1886b3a8484580208c0b3ff916e9ae
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest ab1886b3a8484580208c0b3ff916e9ae (2 file(s) re-run in one lane)
+  detjs: parallel: the one-lane re-run is what is reported for tests/x.test.mjs, tests/y.test.mjs: 0 failed of 2 test(s); 1 failure(s) of the first run did not recur in one lane (the exit code is not lowered): tests/x.test.mjs::w
+  
+  stderr=(node:31676) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:31675) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  
+  ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+  
+   FAIL  tests/x.test.mjs[2m > [22mw
+  AssertionError: expected true to be false // Object.is equality
+  
+  - Expected
+  + Received
+  
+  - false
+  + true
+  
+   ❯ tests/x.test.mjs:2:203
+  
+  
+  ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+  
+  detjs: parallel: 2 lanes, plan d7e7dd5172681c30dcc969f95b455f59 (replayed); 2 files; 0 placement deviations; 1 cross-worker hazards; 0 files with carried state
+  detjs: CROSS-WORKER read-write shared.txt: tests/x.test.mjs (lane 1) / tests/y.test.mjs (lane 2); the next plan puts them in one lane
+  detjs: parallel: 0.113 s of test-file time ran in 0.074 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: parallel: 2 file(s) named by a cross-worker hazard run again in one lane, because a placement must never decide an outcome: tests/x.test.mjs, tests/y.test.mjs
+  (node:31752) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:31765) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  detjs: serial run: 2 files, 0.053 s of test-file time (MEASURED); with --det-workers=4 (this machine's CPUs) about 0.032 s (ESTIMATED: a plan over these durations, worker start-up not counted)
+  detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+  detjs: parallel: the one-lane re-run of the hazard files passed, but the first run's exit code 1 stands: a re-run never turns a red into a green (src/parallel-rerun.js wrapperRunnerCode)
+  
+  
+  'failed' !== 'passed'
+  
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:841:14)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'failed',
+    expected: 'passed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:569:5
+✖ (b1) rm -r of a dir in one lane, a read inside it in the other: recursive-write hazard, one-lane re-run (1656.450343ms)
+  AssertionError [ERR_ASSERTION]: expected a recursive-write hazard on tmp; hazards=[]
+  status=0
+  stdout=detjs 0.1.0: Level 0 active; runner=jest 30.5.2; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: parallel execution in 2 lanes with a fixed plan (--det-workers) (--maxWorkers=2, one lane per worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest 11c19b364f0ad4cb213f9855ccb233d0
+  
+  stderr=(node:31962) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:31974) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  
+  Test Suites: 2 passed, 2 total
+  Tests:       2 passed, 2 total
+  Snapshots:   0 total
+  Time:        0.9 s
+  Ran all test suites.
+  detjs: parallel: 2 lanes, plan 7b763bd6f0906c0b166a490ad805c95d (replayed); 2 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+  detjs: parallel: 0.828 s of test-file time ran in 0.454 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+  
+      at assertHazard (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:86:10)
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:578:7)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at node:internal/test_runner/test:1440:71
+      at node:internal/per_context/primordials:466:82
+      at new Promise (<anonymous>)
+      at new SafePromise (node:internal/per_context/primordials:435:3)
+      at node:internal/per_context/primordials:466:9 {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:581:5
+✖ (b4) mkdir -p creating a new subtree in one lane, a write inside it in the other: recursive-write hazard (1897.709837ms)
+  AssertionError [ERR_ASSERTION]: expected a recursive-write hazard on data/new; hazards=[]
+  status=0
+  stdout=detjs 0.1.0: Level 0 active; runner=jest 30.5.2; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: parallel execution in 2 lanes with a fixed plan (--det-workers) (--maxWorkers=2, one lane per worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest ce24fe223469dd37b9863009c70f1023
+  
+  stderr=(node:32147) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:32141) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  
+  Test Suites: 2 passed, 2 total
+  Tests:       2 passed, 2 total
+  Snapshots:   0 total
+  Time:        1.013 s
+  Ran all test suites.
+  detjs: parallel: 2 lanes, plan 7b763bd6f0906c0b166a490ad805c95d (replayed); 2 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+  detjs: parallel: 0.778 s of test-file time ran in 0.393 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+  
+      at assertHazard (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:86:10)
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:589:7)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:592:5
+✖ (b4-parent) mkdir -p creating a new subtree in one lane, a listing of its parent in the other: recursive-write hazard (2093.520296ms)
+  AssertionError [ERR_ASSERTION]: expected a recursive-write hazard on data/new; hazards=[]
+  status=0
+  stdout=detjs 0.1.0: Level 0 active; runner=jest 30.5.2; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: parallel execution in 2 lanes with a fixed plan (--det-workers) (--maxWorkers=2, one lane per worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest 2fd57d3ea24243492d282470f14bb873
+  
+  stderr=(node:32322) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:32316) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  
+  Test Suites: 2 passed, 2 total
+  Tests:       2 passed, 2 total
+  Snapshots:   0 total
+  Time:        1.16 s
+  Ran all test suites.
+  detjs: parallel: 2 lanes, plan 7b763bd6f0906c0b166a490ad805c95d (replayed); 2 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+  detjs: parallel: 0.989 s of test-file time ran in 0.555 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+  
+      at assertHazard (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:86:10)
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:599:7)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:750:7
+✖ (c4) jest cacheDirectory <rootDir>: ignored and recorded, a write-write conflict in the repo is a hazard (2055.868354ms)
+  AssertionError [ERR_ASSERTION]: hazards=[]
+  status=0
+  stdout=detjs 0.1.0: Level 0 active; runner=jest 30.5.2; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: parallel execution in 2 lanes with a fixed plan (--det-workers) (--maxWorkers=2, one lane per worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest ea41d60c229bbf4feca86cd69c53ae96
+  
+  stderr=(node:32605) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:32607) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  
+  Test Suites: 2 passed, 2 total
+  Tests:       2 passed, 2 total
+  Snapshots:   0 total
+  Time:        0.967 s
+  Ran all test suites.
+  detjs: parallel: 2 lanes, plan 7b763bd6f0906c0b166a490ad805c95d (replayed); 2 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+  detjs: parallel: 0.835 s of test-file time ran in 0.559 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+  
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:757:16)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at node:internal/test_runner/test:1440:71
+      at node:internal/per_context/primordials:466:82
+      at new Promise (<anonymous>)
+      at new SafePromise (node:internal/per_context/primordials:435:3)
+      at node:internal/per_context/primordials:466:9
+      at Array.map (<anonymous>) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:780:5
+✖ (a1) two lanes connect to one local TCP port served outside the lanes: shared-service hazard (2076.091501ms)
+  AssertionError [ERR_ASSERTION]: expected a shared-service hazard on 32853; hazards=[]
+  status=0
+  stdout=detjs 0.1.0: Level 0 active; runner=jest 30.5.2; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: parallel execution in 2 lanes with a fixed plan (--det-workers) (--maxWorkers=2, one lane per worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest 5efe843efee1954eb6b90fb439cb2d95
+  
+  stderr=(node:328) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:334) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  
+  Test Suites: 2 passed, 2 total
+  Tests:       2 passed, 2 total
+  Snapshots:   0 total
+  Time:        1.011 s
+  Ran all test suites.
+  detjs: parallel: 2 lanes, plan 7b763bd6f0906c0b166a490ad805c95d (replayed); 2 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+  detjs: parallel: 0.851 s of test-file time ran in 0.553 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+  
+      at assertHazard (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:86:10)
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:785:7)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/parallel-proof-gaps.test.js:823:5
+✖ --det-outcomes reports what the trace reports: the re-run outcome of the hazard files (3289.336216ms)
+  AssertionError [ERR_ASSERTION]: outcomes file: {"tests/x.test.js::w":"failed","tests/y.test.js::r":"passed"}
+  status=1
+  stdout=detjs 0.1.0: Level 0 active; runner=jest 30.5.2; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: parallel execution in 2 lanes with a fixed plan (--det-workers) (--maxWorkers=2, one lane per worker); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest 6b1e9d04fd340a79006b4609ab522cb9
+  1 test(s) failed under --det (seed 0, fixed order). Turn each into a reproducible defect (cause, seed, order, replay command):
+      fenvix repro tests/x.test.js::w --runner=jest
+    rerun the failing file with the same seeds and order: detjs jest --det tests/x.test.js
+    the same run again: detjs jest --det (with the same arguments)
+  detjs 0.1.0: Level 0 active; runner=jest 30.5.2; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+  detjs: serial execution (runInBand; Jest alone would use 3 workers: --det-workers=N or -w N for parallel lanes); network=open; timers=virtual; entropy=controlled (--det-urandom=off to observe it instead); node v22.23.5
+  detjs: trace .detjs/hazard-rerun-651/rerun.jsonl: 2 tests, order digest 6b1e9d04fd340a79006b4609ab522cb9
+  detjs: trace .detjs/trace.jsonl: 2 tests, order digest 6b1e9d04fd340a79006b4609ab522cb9 (2 file(s) re-run in one lane)
+  detjs: parallel: the one-lane re-run is what is reported for tests/x.test.js, tests/y.test.js: 0 failed of 2 test(s); 1 failure(s) of the first run did not recur in one lane (the exit code is not lowered): tests/x.test.js::w
+  
+  stderr=(node:762) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  (node:756) [DEP0129] DeprecationWarning: _channel is deprecated. Use ChildProcess.channel instead.
+  (Use `node --trace-deprecation ...` to show where the warning was created)
+  FAIL tests/x.test.js
+    ● w
+  
+      expect(received).toBe(expected) // Object.is equality
+  
+      Expected: false
+      Received: true
+  
+        1 | const fs = require('node:fs'); const path = require('node:path'); const net = require('node:net');
+      > 2 | test('w', () => { fs.writeFileSync(path.join(process.cwd(), 'shared.txt'), 'x'); const m = path.join(process.cwd(), 'ran-once'); const first = !fs.existsSync(m); fs.writeFileSync(m, '1'); expect(first).toBe(false); });
+          |                                                                                                                                                                                                           ^
+        3 |
+  
+        at Object.toBe (tests/x.test.js:2:203)
+        at detjsJestRunner (../../../../../src/jest/runner.js:374:14)
+  
+  Test Suites: 1 failed, 1 passed, 2 total
+  Tests:       1 failed, 1 passed, 2 total
+  Snapshots:   0 total
+  Time:        0.978 s
+  Ran all test suites.
+  detjs: parallel: 2 lanes, plan 7b763bd6f0906c0b166a490ad805c95d (replayed); 2 files; 0 placement deviations; 1 cross-worker hazards; 0 files with carried state
+  detjs: CROSS-WORKER read-write shared.txt: tests/x.test.js (lane 1) / tests/y.test.js (lane 2); the next plan puts them in one lane
+  detjs: parallel: 0.846 s of test-file time ran in 0.466 s across 2 lanes (MEASURED, first file start to last file end, worker start-up included)
+  detjs: parallel: 2 file(s) named by a cross-worker hazard run again in one lane, because a placement must never decide an outcome: tests/x.test.js, tests/y.test.js
+  
+  Test Suites: 2 passed, 2 total
+  Tests:       2 passed, 2 total
+  Snapshots:   0 total
+  Time:        0.572 s
+  Ran all test suites within paths "/home/user/fenvix-r1/node/test/.tmp/gaps/jest/rerun-outcomes/tests/x.test.js", "/home/user/fenvix-r1/node/test/.tmp/gaps/jest/rerun-outcomes/tests/y.test.js".
+  detjs: serial run: 2 files, 0.377 s of test-file time (MEASURED); with --det-workers=2 (this machine's CPUs) about 0.314 s (ESTIMATED: a plan over these durations, worker start-up not counted)
+  detjs: status: failed=0 not_proven=0 passed=2 skipped=0
+  detjs: parallel: the one-lane re-run of the hazard files passed, but the first run's exit code 1 stands: a re-run never turns a red into a green (src/parallel-rerun.js wrapperRunnerCode)
+  
+  
+  'failed' !== 'passed'
+  
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-proof-gaps.test.js:841:14)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'failed',
+    expected: 'passed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/parallel-rerun-account.test.js:122:1
+✖ accountRerun: a test that never started in the first pass is accounted for by its never-started re-run record (0.999707ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-rerun-account.test.js:126:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/parallel-rerun-account.test.js:150:1
+✖ mergeOutcomes: pass 1's tests take the re-run outcome, no test is added; a file pass 1 did not write is not touched (0.399952ms)
+  TypeError: mergeOutcomes is not a function
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-rerun-account.test.js:157:3)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+
+test at test/parallel-rerun-account.test.js:172:1
+✖ mergeOutcomes: without --det-order a test only the re-run reported is added to outcomes and order (1.548875ms)
+  TypeError: mergeOutcomes is not a function
+      at TestContext.<anonymous> (/home/user/fenvix-r1/node/test/parallel-rerun-account.test.js:179:3)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+rc=1
+
+## python -m pytest -p no:randomly tests/test_runner_node.py -k gap tests/test_runner_proof.py -k 'steers_the_engine'
+E         | Tests | **4** |
+E         | Run | 4 |
+E         | Skipped with proof (result reused, receipt kept) | **0** |
+E         | Test time saved | **0.0 s** (0.0% of test time) |
+E         | Test time spent | unknown |
+E         | Failures | 0 |
+E         | Flaky (fail in the suite, pass alone) | 0 |
+E         | Job wall time (detjs vitest) | 0.0 s |
+E         
+E         Outcomes: passed 4.
+E         
+E         Receipts: one line per test (what was checked before a result was reused, or why a test ran): `/tmp/pytest-of-root/pytest-32/test_wrapper_job_env_that_stee9/j/receipts.jsonl`.
+E         
+E         [fenvix] tests 4, reused with proof 0, ran 4, saved 0.0 s of test time, failed 0, flaky 0, not proven 0; exit 0
+E         
+E       assert (0 == 1)
+
+tests/test_runner_proof.py:559: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_runner_node.py::test_gap_shared_service_reruns_the_files_in_one_lane
+FAILED tests/test_runner_node.py::test_gap_recursive_rm_reruns_the_files_in_one_lane
+FAILED tests/test_runner_node.py::test_gap_project_cache_dir_does_not_hide_a_conflict
+FAILED tests/test_runner_proof.py::test_wrapper_job_env_that_steers_the_engine_fails_closed[DETJS_HAZARD_RECURSIVE-0]
+FAILED tests/test_runner_proof.py::test_wrapper_job_env_that_steers_the_engine_fails_closed[DETJS_HAZARD_SHARED_SERVICE-0]
+5 failed, 9 passed, 145 deselected in 14.55s
+rc=1

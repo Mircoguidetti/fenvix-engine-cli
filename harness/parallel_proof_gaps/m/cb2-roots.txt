@@ -1,0 +1,45 @@
+== agentlang w2: hazards 0, files re-run 0, re-run complete None
+== agentlang w4: hazards 0, files re-run 0, re-run complete None
+== agentsys w2: hazards 6, files re-run 7, re-run complete True
+== agentsys w4: hazards 8, files re-run 9, re-run complete True
+== alakajam w2: hazards 34, files re-run 21, re-run complete False
+   recursive-write 10 root data
+== alakajam w4: hazards 60, files re-run 27, re-run complete False
+   recursive-write 11 root data
+   recursive-write 11 root data/uploads
+== codex-multi-auth w2: hazards 72, files re-run 73, re-run complete True
+   recursive-write 1 root /tmp/pm-codex-multi-auth/codex-multi-auth-account-clear-tests
+   recursive-write 1 root /tmp/pm-codex-multi-auth/codex-account-policy-6wrqft
+   recursive-write 1 root /tmp/pm-codex-multi-auth/cma-test-home-BCkUSJ/.codex
+   recursive-write 1 root /tmp/pm-codex-multi-auth/cma-test-home-Luu2KA/.codex
+   recursive-write 1 root /tmp/pm-codex-multi-auth/capability-custom-fetch-5Bodry
+   recursive-write 1 root /tmp/pm-codex-multi-auth/api-declared-image-iO2ZIR
+== codex-multi-auth w4: hazards 106, files re-run 108, re-run complete True
+   recursive-write 1 root /tmp/pm-codex-multi-auth/codex-multi-auth-account-clear-tests
+   recursive-write 1 root /tmp/pm-codex-multi-auth/codex-account-policy-6wrqft
+   recursive-write 1 root /tmp/pm-codex-multi-auth/reset-mirror-FMVS4D
+   recursive-write 1 root /tmp/pm-codex-multi-auth/cma-test-home-L0IQqy/.codex
+   recursive-write 1 root /tmp/pm-codex-multi-auth/cma-test-home-e0uYzd/.codex
+   recursive-write 1 root /tmp/pm-codex-multi-auth/cma-active-sync-5VaVzd
+== drydock w2: hazards 1, files re-run 2, re-run complete True
+== drydock w4: hazards 1, files re-run 2, re-run complete True
+== ironcurtain w2: hazards 117, files re-run 104, re-run complete False
+   recursive-write 1 root /tmp/pm-ironcurtain/ironcurtain-config-dispatch-158Ucp
+   recursive-write 1 root /tmp/pm-ironcurtain/audit-err-4pCAzX
+   recursive-write 1 root /tmp/pm-ironcurtain/audit-tailer-test-2o9t0r
+   recursive-write 1 root /tmp/pm-ironcurtain/ironcurtain-test-auth-935631300-1795645758000
+   recursive-write 1 root /tmp/pm-ironcurtain/ironcurtain-token-provider-test-1363860436-1795645758000
+   recursive-write 1 root /tmp/pm-ironcurtain/ironcurtain-autoapprove-3Qw3ph
+== ironcurtain w4: hazards 158, files re-run 137, re-run complete False
+   recursive-write 2 root /root/.ironcurtain/run/testsessioni
+   recursive-write 1 root /tmp/pm-ironcurtain/ironcurtain-config-dispatch-158Ucp
+   recursive-write 1 root /tmp/pm-ironcurtain/audit-err-4pCAzX
+   recursive-write 1 root /tmp/pm-ironcurtain/audit-tailer-test-2o9t0r
+   recursive-write 1 root /tmp/pm-ironcurtain/ironcurtain-test-auth-935631300-1795645758000
+   recursive-write 1 root /tmp/pm-ironcurtain/ironcurtain-token-provider-test-1363860436-1795645758000
+== lerna-lite w2: hazards 36, files re-run 12, re-run complete True
+== lerna-lite w4: hazards 54, files re-run 12, re-run complete True
+== nestjs-pino w2: hazards 0, files re-run 0, re-run complete None
+== nestjs-pino w4: hazards 0, files re-run 0, re-run complete None
+== yalc w2: hazards 646, files re-run 62, re-run complete False
+== yalc w4: hazards 944, files re-run 62, re-run complete False

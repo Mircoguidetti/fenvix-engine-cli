@@ -1,0 +1,64 @@
+TAP version 13
+# Subtest: hazards() unit: recursive roots, shared services
+    # Subtest: a remote host is recorded but never paired; loopback ports and unix sockets are (founder decision D1 = A, 2026-11-26)
+    not ok 1 - a remote host is recorded but never paired; loopback ports and unix sockets are (founder decision D1 = A, 2026-11-26)
+      ---
+      duration_ms: 3.903386
+      type: 'test'
+      location: '/home/user/fenvix-engine-cli/node/test/parallel-proof-gaps.test.js:178:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   {
+        +     a: 'A',
+        +     b: 'B',
+        +     kind: 'shared-service',
+        +     what: 'tcp:raw.githubusercontent.com:443'
+        +   }
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0:
+          a: 'A'
+          b: 'B'
+          kind: 'shared-service'
+          what: 'tcp:raw.githubusercontent.com:443'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/parallel-proof-gaps.test.js:182:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    1..1
+not ok 1 - hazards() unit: recursive roots, shared services
+  ---
+  duration_ms: 5.163976
+  type: 'suite'
+  location: '/home/user/fenvix-engine-cli/node/test/parallel-proof-gaps.test.js:104:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 81.998822

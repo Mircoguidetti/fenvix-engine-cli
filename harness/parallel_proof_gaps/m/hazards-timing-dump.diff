@@ -1,0 +1,12 @@
+diff --git a/node/src/parallel.js b/node/src/parallel.js
+index b175cf59..dd86d9b7 100644
+--- a/node/src/parallel.js
++++ b/node/src/parallel.js
+@@ -850,6 +850,7 @@ function collect(root, dir, keysIn, plan, { shared, planned, write = true } = {}
+       if (m.pool_id && plan.mode === 'vitest' && String(lane + 1) !== m.pool_id) deviations.push({ file: k, what: `VITEST_POOL_ID ${m.pool_id}, planned lane ${lane + 1}` });
+       if (m.jest_worker_id && plan.mode === 'jest-workers' && String(lane + 1) !== m.jest_worker_id) deviations.push({ file: k, what: `JEST_WORKER_ID ${m.jest_worker_id}, planned lane ${lane + 1}` });
+     }
++    if (process.env.DETJS_DUMP_MARKERS) require('fs').writeFileSync(process.env.DETJS_DUMP_MARKERS, JSON.stringify({ markers: [...markers], laneOf: [...laneOf] })); // SCRATCH ONLY
+     const hz = hazards(markers, laneOf);
+     for (const h of hz) {
+       const d = `${h.kind} ${h.what}: ${h.a} (lane ${laneOf.get(h.a) + 1}) and ${h.b} (lane ${laneOf.get(h.b) + 1})`;

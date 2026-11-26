@@ -548,6 +548,8 @@ def test_an_empty_carried_list_keeps_the_proof():
     ("DETJS_ISOLATE_CHILD", "1"),
     ("DETJS_DIR", "/tmp/x"),
     ("DETJS_DISABLE", "clock"),
+    ("DETJS_HAZARD_RECURSIVE", "0"),
+    ("DETJS_HAZARD_SHARED_SERVICE", "0"),
 ])
 def test_wrapper_job_env_that_steers_the_engine_fails_closed(stubjob, name, value):
     """protects=a job environment that hides paths from the footprint recorder, turns the engine into one of its own

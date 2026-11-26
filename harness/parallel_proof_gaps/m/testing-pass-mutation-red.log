@@ -1,0 +1,51 @@
+# Testing pass (2026-11-26): the three new tests against mutated copies of the 32375895 engine (scratch /home/user/fenvix-m72); each mutation must turn its test red
+
+## mutation M1a: parallel.js: `['100.64.0.0', 10]` -> `['100.64.0.0', 11]`
+      error: '100.127.255.254 must pair: pub tcp:1.1.1.1:5432,tcp:100.127.255.254:5432,tcp:100.128.0.1:5432,tcp:100.63.255.254:5432,tcp:172.15.255.254:5432,tcp:172.32.0.1:5432,tcp:192.0.1.1:5432,tcp:192.0.3.1:5432,tcp:198.17.255.254:5432,tcp:198.20.0.1:5432,tcp:2001:1::1:5432,tcp:2001:3::1:5432,tcp:2001:4860:4860::8888:5432,tcp:2003::1:5432,tcp:223.255.255.254:5432,tcp:3fff:1000::1:5432,tcp:::ffff:8.8.8.8:5432'
+      name: 'AssertionError'
+    # Subtest: a name whose lookup returns after the file closed pairs, even if the address is public (Testing pass)
+    ok 2 - a name whose lookup returns after the file closed pairs, even if the address is public (Testing pass)
+not ok 1 - connect wrapper + hazards(): tcp keys pair unless public (founder decision "nome A", 2026-11-26)
+# pass 1
+# fail 1
+
+## mutation M1b: parallel.js: `['172.16.0.0', 12]` -> `['172.16.0.0', 11]`
+      error: '172.15.255.254 is public: pub tcp:1.1.1.1:5432,tcp:100.128.0.1:5432,tcp:100.63.255.254:5432,tcp:172.32.0.1:5432,tcp:192.0.1.1:5432,tcp:192.0.3.1:5432,tcp:198.17.255.254:5432,tcp:198.20.0.1:5432,tcp:2001:1::1:5432,tcp:2001:3::1:5432,tcp:2001:4860:4860::8888:5432,tcp:2003::1:5432,tcp:223.255.255.254:5432,tcp:3fff:1000::1:5432,tcp:::ffff:8.8.8.8:5432'
+      name: 'AssertionError'
+    # Subtest: a name whose lookup returns after the file closed pairs, even if the address is public (Testing pass)
+    ok 2 - a name whose lookup returns after the file closed pairs, even if the address is public (Testing pass)
+not ok 1 - connect wrapper + hazards(): tcp keys pair unless public (founder decision "nome A", 2026-11-26)
+# pass 1
+# fail 1
+
+## mutation M1c: parallel.js: `['2001:db8::', 32], ` -> ``
+      error: '2001:db8::1 must pair: pub tcp:1.1.1.1:5432,tcp:100.128.0.1:5432,tcp:100.63.255.254:5432,tcp:172.15.255.254:5432,tcp:172.32.0.1:5432,tcp:192.0.1.1:5432,tcp:192.0.3.1:5432,tcp:198.17.255.254:5432,tcp:198.20.0.1:5432,tcp:2001:1::1:5432,tcp:2001:3::1:5432,tcp:2001:4860:4860::8888:5432,tcp:2001:db8::1:5432,tcp:2003::1:5432,tcp:223.255.255.254:5432,tcp:3fff:1000::1:5432,tcp:::ffff:8.8.8.8:5432'
+      name: 'AssertionError'
+    # Subtest: a name whose lookup returns after the file closed pairs, even if the address is public (Testing pass)
+    ok 2 - a name whose lookup returns after the file closed pairs, even if the address is public (Testing pass)
+not ok 1 - connect wrapper + hazards(): tcp keys pair unless public (founder decision "nome A", 2026-11-26)
+# pass 1
+# fail 1
+
+## mutation M2: parallel.js: `else if (!bad && cur === file) rec.pub = true;` -> `else if (!bad) rec.pub = true;`
+    # Subtest: a name whose lookup returns after the file closed pairs, even if the address is public (Testing pass)
+    ok 2 - a name whose lookup returns after the file closed pairs, even if the address is public (Testing pass)
+ok 1 - connect wrapper + hazards(): tcp keys pair unless public (founder decision "nome A", 2026-11-26)
+# pass 2
+# fail 0
+
+## mutation M3: parallel-rerun.js: `if (complete && o2Path) {` -> `if (o2Path) {`
+not ok 1 - mergeOutcomes: an incomplete re-run, or one whose outcomes file cannot be read, leaves pass 1's outcomes (Testing pass)
+  name: 'AssertionError'
+# pass 0
+# fail 1
+
+M2 is an equivalent mutation: the marker is written at leave(), so a lookup after it cannot change the file's pub (the guard only keeps the in-memory record consistent). The late-lookup test is shown red against a credible regression instead:
+
+## mutation M2b: parallel.js: `const rec = { pub: false };` -> `const rec = { pub: true };` (a name is public until its lookup says otherwise)
+    not ok 2 - a name whose lookup returns after the file closed pairs, even if the address is public (Testing pass)
+      error: |-
+not ok 1 - connect wrapper + hazards(): tcp keys pair unless public (founder decision "nome A", 2026-11-26)
+  error: '1 subtest failed'
+# pass 1
+# fail 1

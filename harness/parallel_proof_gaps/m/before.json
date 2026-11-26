@@ -1,0 +1,397 @@
+{
+ "agentlang": {
+  "serial": {
+   "exit": 1,
+   "wall_s": 81.6,
+   "tests": 439
+  },
+  "par": {
+   "2": {
+    "exit": 1,
+    "wall_s": 74.48,
+    "noisy": false,
+    "tests": 439,
+    "hazards": 0,
+    "hazard_kinds": {},
+    "rerun_files": 0,
+    "rerun_complete": null,
+    "skip_dirs_ignored": 0,
+    "verify_tests": 439,
+    "proven": 0,
+    "not_proven": 437,
+    "proven_share": 0.0
+   },
+   "4": {
+    "exit": 1,
+    "wall_s": 80.67,
+    "noisy": false,
+    "tests": 439,
+    "hazards": 0,
+    "hazard_kinds": {},
+    "rerun_files": 0,
+    "rerun_complete": null,
+    "skip_dirs_ignored": 0,
+    "verify_tests": 439,
+    "proven": 0,
+    "not_proven": 437,
+    "proven_share": 0.0
+   }
+  },
+  "best_workers": "2"
+ },
+ "agentsys": {
+  "serial": {
+   "exit": 1,
+   "wall_s": 24.44,
+   "tests": 2224
+  },
+  "par": {
+   "2": {
+    "exit": 1,
+    "wall_s": 24.1,
+    "noisy": false,
+    "tests": 2224,
+    "hazards": 5,
+    "hazard_kinds": {
+     "read-write": 4,
+     "list-write": 1
+    },
+    "rerun_files": 6,
+    "rerun_complete": true,
+    "skip_dirs_ignored": 0,
+    "verify_tests": 2224,
+    "proven": 1544,
+    "not_proven": 200,
+    "proven_share": 69.4
+   },
+   "4": {
+    "exit": 1,
+    "wall_s": 18.7,
+    "noisy": false,
+    "tests": 2224,
+    "hazards": 7,
+    "hazard_kinds": {
+     "read-write": 6,
+     "list-write": 1
+    },
+    "rerun_files": 8,
+    "rerun_complete": true,
+    "skip_dirs_ignored": 0,
+    "verify_tests": 2224,
+    "proven": 1542,
+    "not_proven": 202,
+    "proven_share": 69.3
+   }
+  },
+  "best_workers": "4"
+ },
+ "alakajam": {
+  "serial": {
+   "exit": 1,
+   "wall_s": 85.27,
+   "tests": 221
+  },
+  "par": {
+   "2": {
+    "exit": 1,
+    "wall_s": 93.78,
+    "noisy": false,
+    "tests": 221,
+    "hazards": 24,
+    "hazard_kinds": {
+     "read-write": 19,
+     "write-write": 5
+    },
+    "rerun_files": 11,
+    "rerun_complete": true,
+    "skip_dirs_ignored": 0,
+    "verify_tests": 221,
+    "proven": 0,
+    "not_proven": 116,
+    "proven_share": 0.0
+   },
+   "4": {
+    "exit": 1,
+    "wall_s": 70.75,
+    "noisy": false,
+    "tests": 221,
+    "hazards": 38,
+    "hazard_kinds": {
+     "read-write": 29,
+     "write-write": 9
+    },
+    "rerun_files": 11,
+    "rerun_complete": true,
+    "skip_dirs_ignored": 0,
+    "verify_tests": 221,
+    "proven": 0,
+    "not_proven": 109,
+    "proven_share": 0.0
+   }
+  },
+  "best_workers": "4"
+ },
+ "codex-multi-auth": {
+  "serial": {
+   "exit": 1,
+   "wall_s": 403.28,
+   "tests": 8662
+  },
+  "par": {
+   "2": {
+    "exit": 1,
+    "wall_s": 336.51,
+    "noisy": false,
+    "tests": 8662,
+    "hazards": 1,
+    "hazard_kinds": {
+     "read-write": 1
+    },
+    "rerun_files": 2,
+    "rerun_complete": true,
+    "skip_dirs_ignored": 0,
+    "verify_tests": 8662,
+    "proven": 0,
+    "not_proven": 7407,
+    "proven_share": 0.0
+   },
+   "4": {
+    "exit": 1,
+    "wall_s": 288.57,
+    "noisy": false,
+    "tests": 8662,
+    "hazards": 2,
+    "hazard_kinds": {
+     "port": 1,
+     "read-write": 1
+    },
+    "rerun_files": 4,
+    "rerun_complete": true,
+    "skip_dirs_ignored": 0,
+    "verify_tests": 8662,
+    "proven": 0,
+    "not_proven": 7318,
+    "proven_share": 0.0
+   }
+  },
+  "best_workers": "4"
+ },
+ "drydock": {
+  "serial": {
+   "exit": 1,
+   "wall_s": 406.42,
+   "tests": 21578
+  },
+  "par": {
+   "2": {
+    "exit": 1,
+    "wall_s": 278.73,
+    "noisy": false,
+    "tests": 21578,
+    "hazards": 0,
+    "hazard_kinds": {},
+    "rerun_files": 0,
+    "rerun_complete": null,
+    "skip_dirs_ignored": 0,
+    "verify_tests": 21578,
+    "proven": 0,
+    "not_proven": 0,
+    "proven_share": 0.0
+   },
+   "4": {
+    "exit": 1,
+    "wall_s": 189.28,
+    "noisy": false,
+    "tests": 21578,
+    "hazards": 0,
+    "hazard_kinds": {},
+    "rerun_files": 0,
+    "rerun_complete": null,
+    "skip_dirs_ignored": 0,
+    "verify_tests": 21578,
+    "proven": 0,
+    "not_proven": 0,
+    "proven_share": 0.0
+   }
+  },
+  "best_workers": "4"
+ },
+ "ironcurtain": {
+  "serial": {
+   "exit": 1,
+   "wall_s": 203.36,
+   "tests": 7033
+  },
+  "par": {
+   "2": {
+    "exit": 1,
+    "wall_s": 185.7,
+    "noisy": false,
+    "tests": 7033,
+    "hazards": 50,
+    "hazard_kinds": {
+     "read-write": 34,
+     "list-write": 16
+    },
+    "rerun_files": 42,
+    "rerun_complete": false,
+    "skip_dirs_ignored": 0,
+    "verify_tests": 7033,
+    "proven": 0,
+    "not_proven": 5992,
+    "proven_share": 0.0
+   },
+   "4": {
+    "exit": 1,
+    "wall_s": 100.74,
+    "noisy": false,
+    "tests": 7033,
+    "hazards": 66,
+    "hazard_kinds": {
+     "read-write": 42,
+     "list-write": 24
+    },
+    "rerun_files": 51,
+    "rerun_complete": false,
+    "skip_dirs_ignored": 0,
+    "verify_tests": 7033,
+    "proven": 0,
+    "not_proven": 6005,
+    "proven_share": 0.0
+   }
+  },
+  "best_workers": "4"
+ },
+ "lerna-lite": {
+  "serial": {
+   "exit": 0,
+   "wall_s": 600.42,
+   "tests": 107
+  },
+  "par": {
+   "2": {
+    "exit": 1,
+    "wall_s": 1136.76,
+    "noisy": false,
+    "tests": 107,
+    "hazards": 36,
+    "hazard_kinds": {
+     "write-write": 36
+    },
+    "rerun_files": 12,
+    "rerun_complete": true,
+    "skip_dirs_ignored": 0,
+    "verify_tests": 107,
+    "proven": 0,
+    "not_proven": 87,
+    "proven_share": 0.0
+   },
+   "4": {
+    "exit": 0,
+    "wall_s": 905.06,
+    "noisy": false,
+    "tests": 107,
+    "hazards": 54,
+    "hazard_kinds": {
+     "write-write": 54
+    },
+    "rerun_files": 12,
+    "rerun_complete": true,
+    "skip_dirs_ignored": 0,
+    "verify_tests": 107,
+    "proven": 0,
+    "not_proven": 88,
+    "proven_share": 0.0
+   }
+  },
+  "best_workers": "4"
+ },
+ "nestjs-pino": {
+  "serial": {
+   "exit": 0,
+   "wall_s": 25.37,
+   "tests": 269
+  },
+  "par": {
+   "2": {
+    "exit": 0,
+    "wall_s": 12.96,
+    "noisy": false,
+    "tests": 269,
+    "hazards": 0,
+    "hazard_kinds": {},
+    "rerun_files": 0,
+    "rerun_complete": null,
+    "skip_dirs_ignored": 0,
+    "verify_tests": 269,
+    "proven": 258,
+    "not_proven": 9,
+    "proven_share": 95.9
+   },
+   "4": {
+    "exit": 0,
+    "wall_s": 9.94,
+    "noisy": false,
+    "tests": 269,
+    "hazards": 0,
+    "hazard_kinds": {},
+    "rerun_files": 0,
+    "rerun_complete": null,
+    "skip_dirs_ignored": 0,
+    "verify_tests": 269,
+    "proven": 258,
+    "not_proven": 8,
+    "proven_share": 95.9
+   }
+  },
+  "best_workers": "4"
+ },
+ "yalc": {
+  "serial": {
+   "exit": 1,
+   "wall_s": 90.86,
+   "tests": 1483
+  },
+  "par": {
+   "2": {
+    "exit": 1,
+    "wall_s": 111.37,
+    "noisy": false,
+    "tests": 1483,
+    "hazards": 646,
+    "hazard_kinds": {
+     "write-write": 599,
+     "list-write": 45,
+     "read-write": 2
+    },
+    "rerun_files": 62,
+    "rerun_complete": false,
+    "skip_dirs_ignored": 0,
+    "verify_tests": 1483,
+    "proven": 0,
+    "not_proven": 1368,
+    "proven_share": 0.0
+   },
+   "4": {
+    "exit": 1,
+    "wall_s": 87.8,
+    "noisy": false,
+    "tests": 1483,
+    "hazards": 944,
+    "hazard_kinds": {
+     "write-write": 872,
+     "list-write": 67,
+     "read-write": 5
+    },
+    "rerun_files": 62,
+    "rerun_complete": false,
+    "skip_dirs_ignored": 0,
+    "verify_tests": 1483,
+    "proven": 0,
+    "not_proven": 1370,
+    "proven_share": 0.0
+   }
+  },
+  "best_workers": "4"
+ }
+}
