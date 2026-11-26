@@ -78,15 +78,11 @@
   "committer-date:>=2024-01-01 retry langgraph test": {
    "capped": false,
    "done": false,
-   "leaf_total": 4278,
-   "leaves": 8,
-   "nodes": 17,
+   "leaf_total": 4995,
+   "leaves": 9,
+   "nodes": 18,
    "prepass_total": 11664,
    "stack": [
-    [
-     "2026-06-14",
-     "2026-06-30"
-    ],
     [
      "2026-07-01",
      "2026-07-16"
@@ -421,13 +417,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 116
+  "issues": 125
  },
  "search_stats": {
-  "429": 9,
+  "429": 10,
   "limit": 30,
   "remaining": 30,
-  "reset": 1795711945
+  "reset": 1795712063
  },
  "started": "2026-11-26T11:20:43+00:00"
 }
