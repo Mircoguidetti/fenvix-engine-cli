@@ -269,7 +269,12 @@ function enter(label, { runner } = {}) {
         // a predecessor that started in another process which has died: it will never finish
         let st = null;
         try { st = JSON.parse(fs.readFileSync(started, 'utf8')); } catch { st = null; }
-        if (st && st.pid !== process.pid && !alive(st.pid)) { info.note = `lane predecessor ${pred} died (process ${st.pid})`; break; }
+        // (the done marker is checked again first: a predecessor that finished and exited during the sleep above
+        // wrote it before exiting, and is not a death; P2 C2)
+        if (st && st.pid !== process.pid && !alive(st.pid)) {
+          if (!fs.existsSync(done)) info.note = `lane predecessor ${pred} died (process ${st.pid})`;
+          break;
+        }
         // every worker slot waits for a file the runner has not started: the runner's dispatch order differs from
         // the plan (a stall); go on and report it
         if (!st) {
@@ -329,6 +334,11 @@ function leave(label, extra = {}) {
     fs.writeFileSync(marker(dir, label, 'json'), JSON.stringify(rec));
     fs.writeFileSync(marker(dir, label, 'done'), '');
   } catch { /* ignore */ }
+}
+
+/** Whether `label` is marked finished (its `.done` marker, the one `enter()` waits for). */
+function isFinished(dir, label) {
+  try { return fs.existsSync(marker(dir, label, 'done')); } catch { return false; }
 }
 
 /** The main process marks a file finished when its runner reports it final (a worker that died never does). */
@@ -685,6 +695,6 @@ function collect(root, dir, keysIn, plan, { shared, planned, write = true } = {}
 }
 
 module.exports = {
-  PLACEMENT_VARS, workerCount, defaultWorkers, resolveWorkers, makePlan, readReplay, writeRunPlan, enter, leave, markDone, installFootprint, skipDirs,
+  PLACEMENT_VARS, workerCount, defaultWorkers, resolveWorkers, makePlan, readReplay, writeRunPlan, enter, leave, markDone, isFinished, installFootprint, skipDirs,
   carriedBefore, carriedAfter, collect, loadState, statePath, hazards,
 };

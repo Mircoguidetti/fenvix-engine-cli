@@ -300,11 +300,21 @@ async function main(argv) {
     par.poll.unref();
   }
   require('../phases').mark('workers_spawn', { workers: par.workers });
+  // P2 C2: a free slot goes to a queued file whose lane predecessor has finished (src/vitest/lanequeue.js)
+  // (DETJS_LANE_QUEUE=fifo keeps Vitest's own first-in-first-out start order: the before/after comparison of the tests)
+  const lq = par.workers > 1 && process.env.DETJS_LANE_QUEUE !== 'fifo'
+    ? require('./lanequeue').install({ plan: () => par.plan, keyOf: par.keyOf, finished: (k) => parallel.isFinished(run.dir, k) })
+    : null;
   try {
     await ctx.start(filters);
   } catch (e) {
     if (!(e && e.code === 'VITEST_FILES_NOT_FOUND')) throw e;
     process.exitCode = 1;
+  } finally {
+    if (lq) {
+      lq.uninstall();
+      require('../phases').mark('lane_queue', lq.stats);
+    }
   }
   const files = ctx.state && ctx.state.getFiles ? ctx.state.getFiles() : [];
   const failed = files.some((f) => f.result && f.result.state === 'fail')
