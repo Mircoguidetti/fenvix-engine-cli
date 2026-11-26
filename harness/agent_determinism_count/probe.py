@@ -75,12 +75,12 @@ def probe_queries() -> list[dict]:
     return qs
 
 
-def run_github(route: str, kinds: tuple = ("code", "issues", "commits")) -> list[dict]:
+def run_github(route: str, kinds: tuple = ("code", "issues", "commits"), ids: tuple = ()) -> list[dict]:
     import ghapi
     c = ghapi.Client(use_gh=True) if route == "session" else ghapi.from_env()
     out = []
     for p in probe_queries():
-        if p["kind"] not in kinds:
+        if p["kind"] not in kinds or (ids and p["id"] not in ids):
             continue
         path = f"search/{p['kind']}?" + urllib.parse.urlencode({"q": p["q"], "per_page": 100})
         st, d, hd = c.get(path, search="code" if p["kind"] == "code" else "issues")
@@ -165,8 +165,16 @@ def decide(session: list[dict], workflow: list[dict], registries: list[dict]) ->
     dropped, fixes = [], []
     shape_ids = {"b-code-cassette": "path:cassette", "b-code-recordings": "path:recordings",
                  "b-code-vcr": "path:vcr", "a1": "path:cassettes"}
+    reprobe = []
+
+    def limited(r):  # a rate-limited answer says nothing about the shape: re-probe it, never drop it (fix, 04:10Z)
+        return bool(r) and (r.get("status") == 429 or r.get("rate_limited"))
     for i, shape in shape_ids.items() if code_probed else []:
         r = C.get(i)
+        if limited(r):
+            reprobe.append(i)
+            fixes.append(f"code shape {shape}: rate limited (status {r.get('status')}) -> re-probe, kept")
+            continue
         if not ok(r) or tc(r) == 0:
             dropped += [f"{h} {shape}" for h in R.HOST_TERMS]
             fixes.append(f"code shape {shape}: status {(r or {}).get('status')} total {tc(r)} -> dropped")
@@ -181,6 +189,10 @@ def decide(session: list[dict], workflow: list[dict], registries: list[dict]) ->
     for i, fn in (("b-code-pyproject", "filename:pyproject.toml"), ("b-code-requirements", "filename:requirements.txt"),
                   ("b-code-packagejson", "filename:package.json")) if code_probed else []:
         r = C.get(i)
+        if limited(r):
+            reprobe.append(i)
+            fixes.append(f"code shape {fn}: rate limited (status {r.get('status')}) -> re-probe, kept")
+            continue
         if not ok(r) or tc(r) == 0:
             dropped += [f"{p} {fn}" for p in recording]
             fixes.append(f"code shape {fn}: status {(r or {}).get('status')} -> dropped")
@@ -195,7 +207,7 @@ def decide(session: list[dict], workflow: list[dict], registries: list[dict]) ->
     repo_shapes_ok = all(ok(T.get(i)) and tc(T.get(i)) > 0 for i in ("b-r-issues-pain", "b-r-issues-model",
                                                                      "b-r-commits-pain", "b-r-commits-model"))
     return {"blocked": False, "code_route": code_route, "code_totals": {"session": cs, "workflow": cw},
-            "code_pending": not code_probed, "text_route": text_route, "issues_route": issues_route,
+            "code_pending": not code_probed, "code_reprobe": sorted(reprobe), "text_route": text_route, "issues_route": issues_route,
             "commits_route": commits_route, "nested_path_ok": nested, "issues_or_ok": issues_or_ok,
             "commits_or_ok": commits_or_ok, "issues_type_split": type_split, "dropped": sorted(set(dropped)),
             "recording_packages": sorted(recording), "excluded_repos": sorted(set(excluded_repos)),
@@ -213,7 +225,7 @@ def load_records(res: Path = RES) -> tuple[list, list, list]:
             (ses.get("registries") or []) + (wft.get("registries") or []))
 
 
-CODE_KEYS = ("code_route", "code_totals", "code_pending", "nested_path_ok")
+CODE_KEYS = ("code_route", "code_totals", "code_pending", "code_reprobe", "nested_path_ok")
 
 
 def merge_code_decisions(res: Path = RES) -> dict:
@@ -227,10 +239,12 @@ def merge_code_decisions(res: Path = RES) -> dict:
         out.update(code_route=None, code_pending=False, code_blocked=new.get("why"))
     else:
         out.update({k: new[k] for k in CODE_KEYS})
-        code_drop = [x for x in new.get("dropped") or [] if x not in (old.get("dropped") or [])]
-        out["dropped"] = sorted(set((old.get("dropped") or []) + code_drop))
-        out["fixes"] = (old.get("fixes") or []) + [f for f in new.get("fixes") or [] if f.startswith("code shape")
-                                                   and f not in (old.get("fixes") or [])]
+        # the code drops and fixes are recomputed from the code probes (a re-probe can restore a shape); text stays
+        is_code = (lambda x: " path:" in x or " filename:" in x)
+        out["dropped"] = sorted(set([x for x in old.get("dropped") or [] if not is_code(x)] +
+                                    [x for x in new.get("dropped") or [] if is_code(x)]))
+        out["fixes"] = [f for f in old.get("fixes") or [] if not f.startswith("code shape")] + \
+            [f for f in new.get("fixes") or [] if f.startswith("code shape")]
     p.write_text(json.dumps(out, indent=1, sort_keys=True) + "\n")
     print(json.dumps({k: out.get(k) for k in CODE_KEYS + ("code_blocked", "dropped", "fixes")}, sort_keys=True))
     return out
@@ -246,8 +260,15 @@ def main(argv=None) -> int:
         (RES / "probe_workflow_text.json").write_text(json.dumps(doc, indent=1, sort_keys=True) + "\n")
         return 0
     if mode == "workflow-code":  # coordinator 2026-11-26 03:05Z: code search freed, workflow route (GITHUB_TOKEN)
-        doc = {"route": "workflow", "results": run_github("workflow", ("code",))}
-        (RES / "probe_workflow_code.json").write_text(json.dumps(doc, indent=1, sort_keys=True) + "\n")
+        ids = tuple(argv[1:])  # re-probe: only these ids; their new records replace the earlier ones
+        new = run_github("workflow", ("code",), ids)
+        p = RES / "probe_workflow_code.json"
+        prev = (json.loads(p.read_text()).get("results") or []) if (ids and p.exists()) else []
+        got = {r["id"] for r in new}
+        doc = {"route": "workflow", "results": [r for r in prev if r["id"] not in got] + new}
+        if ids:
+            doc["reprobed"] = sorted(got)
+        p.write_text(json.dumps(doc, indent=1, sort_keys=True) + "\n")
         merge_code_decisions()
         return 0
     if mode in ("session", "workflow"):

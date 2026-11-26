@@ -55,9 +55,10 @@ def main() -> int:
             chunk.mark_done(name, {"probe_text": True, "at": chunk.now()})
         return rc
     if req.get("probe_code"):  # §0.2a and the code shapes of §0.2b, workflow route (coordinator 2026-11-26 03:05Z)
-        rc = subprocess.call([sys.executable, str(HERE / "probe.py"), "workflow-code"])
+        ids = [i for i in (req.get("ids") or []) if isinstance(i, str)]  # {"probe_code": true, "ids": [...]}: re-probe
+        rc = subprocess.call([sys.executable, str(HERE / "probe.py"), "workflow-code", *ids])
         if rc == 0:
-            chunk.mark_done(name, {"probe_code": True, "at": chunk.now()})
+            chunk.mark_done(name, {"probe_code": True, "ids": ids, "at": chunk.now()})
         return rc
     fam = req.get("discovery") or req.get("prepass") or ("code" if req.get("population") else None)
     if fam == "code" and code_route() != "workflow":  # the session route waits for the coordinator (market reading)

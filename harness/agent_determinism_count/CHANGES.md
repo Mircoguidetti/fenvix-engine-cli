@@ -30,3 +30,11 @@
    workflow-code: only the code fields of probe_decisions.json change, every text decision stays), c2 the S1 pre-pass,
    c3 the population counts, c4 S1 bisection. A code request waits while the code route is not the workflow route.
    No rule, query or count change; S1's 24 h budget runs from its own first request.
+5. 2026-11-26 04:10Z, harness fix (coordinator): the c1 probe b-code-recordings answered 429 on all 6 attempts
+   (03:32Z), and decide() dropped the code shape path:recordings for every host because it treated a rate-limited
+   answer as 0 results. A 429 is no answer, so the §0.2b drop rule (0 results or an error) had not fired. decide()
+   now keeps a rate-limited shape and lists it in code_reprobe; merge_code_decisions recomputes the code drops from
+   the code probes, so a re-probe can restore a shape. Request c1b re-probes b-code-recordings (its record replaces
+   the 429 one); the shape is dropped only if the re-probe answers 200 with 0 results or a real error. Until then
+   the S1 pre-pass runs without path:recordings; c4's pre-pass adds those queries. Test:
+   test_rate_limited_code_probe_never_drops_a_shape (fails before the fix).

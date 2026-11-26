@@ -1091,3 +1091,33 @@ def test_code_request_waits_without_workflow_route(tmp_path, monkeypatch, capsys
     assert "left pending" in capsys.readouterr().out
     chunk.mark_done("c9.json", {"x": 1})
     assert (res / "requests_done_code" / "c9.json").exists()
+
+
+def test_rate_limited_code_probe_never_drops_a_shape(tmp_path):
+    """protects=§0.2b drop rule (a code shape is dropped on 0 results or an error, not on a rate-limit answer);
+    fails_when=a 429 probe (b-code-recordings, 2026-11-26 03:32Z) drops path:recordings or a re-probe answering 200
+    does not restore it; no_claim=GitHub's rate limits."""
+    import probe
+    base = {"code_route": None, "code_pending": True, "text_route": "workflow", "dropped": [], "fixes": []}
+
+    def recs(rec_status, rec_total):
+        out = []
+        for i in ("a1", "a2", "b-code-cassette", "b-code-recordings", "b-code-vcr", "b-code-pyproject",
+                  "b-code-requirements", "b-code-packagejson"):
+            r = {"id": i, "kind": "code", "status": 200, "total_count": 5, "paths": []}
+            if i == "b-code-recordings":
+                r.update(status=rec_status, total_count=rec_total, rate_limited=rec_status == 429)
+            out.append(r)
+        return out
+    old = dict(base, dropped=["api.openai.com path:recordings"], fixes=["code shape path:recordings: x -> dropped"])
+    (tmp_path / "probe_decisions.json").write_text(json.dumps(old))
+    (tmp_path / "probe_workflow_code.json").write_text(json.dumps({"results": recs(429, None)}))
+    out = probe.merge_code_decisions(tmp_path)
+    assert not any("path:recordings" in x for x in out["dropped"])
+    assert out["code_reprobe"] == ["b-code-recordings"]
+    (tmp_path / "probe_workflow_code.json").write_text(json.dumps({"results": recs(200, 3)}))
+    out = probe.merge_code_decisions(tmp_path)
+    assert out["dropped"] == [] and out["code_reprobe"] == []
+    (tmp_path / "probe_workflow_code.json").write_text(json.dumps({"results": recs(200, 0)}))
+    out = probe.merge_code_decisions(tmp_path)
+    assert "api.openai.com path:recordings" in out["dropped"]
