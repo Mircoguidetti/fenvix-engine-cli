@@ -1,0 +1,853 @@
+{
+ "repo": "alakajam",
+ "file": "server/post/like/like.service.spec.ts",
+ "slug": "e8235ff170",
+ "engine_commit": "ece09e1f502a1d7354e563226ec890046d196fc7",
+ "cases": {
+  "server/post/like/like.service.spec.ts::Like service::like::should count likes from several users": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:46]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:46]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "server/post/like/like.service.spec.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "e8235ff170.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/post/like/like.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:23:28.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "e8235ff170.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/post/like/like.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:23:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "e8235ff170.g0.control.r1",
+      "cmd": "npx --no-install vitest run server/post/like/like.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/post/like/like.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "e8235ff170.g0.control.r2",
+      "cmd": "npx --no-install vitest run server/post/like/like.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/post/like/like.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "e8235ff170.g0.control.r3",
+      "cmd": "npx --no-install vitest run server/post/like/like.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/post/like/like.service.spec.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "server/post/like/like.service.spec.ts::Like service::like::should like a post and update its counters": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:31]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:31]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "server/post/like/like.service.spec.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "e8235ff170.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/post/like/like.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:23:28.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "e8235ff170.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/post/like/like.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:23:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "e8235ff170.g0.control.r1",
+      "cmd": "npx --no-install vitest run server/post/like/like.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/post/like/like.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "e8235ff170.g0.control.r2",
+      "cmd": "npx --no-install vitest run server/post/like/like.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/post/like/like.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "e8235ff170.g0.control.r3",
+      "cmd": "npx --no-install vitest run server/post/like/like.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/post/like/like.service.spec.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "server/post/like/like.service.spec.ts::Like service::like::should not like twice": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:59]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:59]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "server/post/like/like.service.spec.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "e8235ff170.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/post/like/like.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:23:28.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "e8235ff170.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/post/like/like.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:23:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "e8235ff170.g0.control.r1",
+      "cmd": "npx --no-install vitest run server/post/like/like.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/post/like/like.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "e8235ff170.g0.control.r2",
+      "cmd": "npx --no-install vitest run server/post/like/like.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/post/like/like.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "e8235ff170.g0.control.r3",
+      "cmd": "npx --no-install vitest run server/post/like/like.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/post/like/like.service.spec.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "server/post/like/like.service.spec.ts::Like service::like::should not mix up likes of different posts": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:79]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:79]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "server/post/like/like.service.spec.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "e8235ff170.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/post/like/like.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:23:28.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "e8235ff170.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/post/like/like.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:23:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "e8235ff170.g0.control.r1",
+      "cmd": "npx --no-install vitest run server/post/like/like.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/post/like/like.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "e8235ff170.g0.control.r2",
+      "cmd": "npx --no-install vitest run server/post/like/like.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/post/like/like.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "e8235ff170.g0.control.r3",
+      "cmd": "npx --no-install vitest run server/post/like/like.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/post/like/like.service.spec.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "server/post/like/like.service.spec.ts::Like service::post deletion::should delete the likes of the post": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:159]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:159]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "server/post/like/like.service.spec.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "e8235ff170.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/post/like/like.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:23:28.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "e8235ff170.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/post/like/like.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:23:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "e8235ff170.g0.control.r1",
+      "cmd": "npx --no-install vitest run server/post/like/like.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/post/like/like.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "e8235ff170.g0.control.r2",
+      "cmd": "npx --no-install vitest run server/post/like/like.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/post/like/like.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "e8235ff170.g0.control.r3",
+      "cmd": "npx --no-install vitest run server/post/like/like.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/post/like/like.service.spec.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "server/post/like/like.service.spec.ts::Like service::unlike::should clear like details when the last like is removed": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:106]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:106]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "server/post/like/like.service.spec.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "e8235ff170.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/post/like/like.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:23:28.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "e8235ff170.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/post/like/like.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:23:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "e8235ff170.g0.control.r1",
+      "cmd": "npx --no-install vitest run server/post/like/like.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/post/like/like.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "e8235ff170.g0.control.r2",
+      "cmd": "npx --no-install vitest run server/post/like/like.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/post/like/like.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "e8235ff170.g0.control.r3",
+      "cmd": "npx --no-install vitest run server/post/like/like.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/post/like/like.service.spec.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "server/post/like/like.service.spec.ts::Like service::unlike::should remove the like and update counters": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:90]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:90]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "server/post/like/like.service.spec.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "e8235ff170.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/post/like/like.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:23:28.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "e8235ff170.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/post/like/like.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T10:23:35.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "e8235ff170.g0.control.r1",
+      "cmd": "npx --no-install vitest run server/post/like/like.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/post/like/like.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "e8235ff170.g0.control.r2",
+      "cmd": "npx --no-install vitest run server/post/like/like.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/post/like/like.service.spec.ts"
+      ]
+     },
+     {
+      "tag": "e8235ff170.g0.control.r3",
+      "cmd": "npx --no-install vitest run server/post/like/like.service.spec.ts --config /root/pm-p3b/repos/alakajam/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/root/pm-p3b/repos/alakajam/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "server/post/like/like.service.spec.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "e8235ff170.alone.r1",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/post/like/like.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.alone.r1.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 5.61,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T10:23:15.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "server/post/like/like.service.spec.ts::Like service::like::should count likes from several users": "failed",
+    "server/post/like/like.service.spec.ts::Like service::like::should like a post and update its counters": "failed",
+    "server/post/like/like.service.spec.ts::Like service::like::should not like twice": "failed",
+    "server/post/like/like.service.spec.ts::Like service::like::should not mix up likes of different posts": "failed",
+    "server/post/like/like.service.spec.ts::Like service::post deletion::should delete the likes of the post": "failed",
+    "server/post/like/like.service.spec.ts::Like service::unlike::should clear like details when the last like is removed": "failed",
+    "server/post/like/like.service.spec.ts::Like service::unlike::should remove the like and update counters": "failed"
+   },
+   "exc": {
+    "server/post/like/like.service.spec.ts::Like service::like::should count likes from several users": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:46]",
+    "server/post/like/like.service.spec.ts::Like service::like::should like a post and update its counters": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:31]",
+    "server/post/like/like.service.spec.ts::Like service::like::should not like twice": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:59]",
+    "server/post/like/like.service.spec.ts::Like service::like::should not mix up likes of different posts": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:79]",
+    "server/post/like/like.service.spec.ts::Like service::post deletion::should delete the likes of the post": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:159]",
+    "server/post/like/like.service.spec.ts::Like service::unlike::should clear like details when the last like is removed": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:106]",
+    "server/post/like/like.service.spec.ts::Like service::unlike::should remove the like and update counters": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:90]"
+   }
+  },
+  {
+   "tag": "e8235ff170.alone.r2",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run server/post/like/like.service.spec.ts --det --det-workers=1 --det-outcomes=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.alone.r2.outcomes.json --det-trace=/root/pm-p3b/find/alakajam/b/runs/e8235ff170.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 5.4,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T10:23:21.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "server/post/like/like.service.spec.ts::Like service::like::should count likes from several users": "failed",
+    "server/post/like/like.service.spec.ts::Like service::like::should like a post and update its counters": "failed",
+    "server/post/like/like.service.spec.ts::Like service::like::should not like twice": "failed",
+    "server/post/like/like.service.spec.ts::Like service::like::should not mix up likes of different posts": "failed",
+    "server/post/like/like.service.spec.ts::Like service::post deletion::should delete the likes of the post": "failed",
+    "server/post/like/like.service.spec.ts::Like service::unlike::should clear like details when the last like is removed": "failed",
+    "server/post/like/like.service.spec.ts::Like service::unlike::should remove the like and update counters": "failed"
+   },
+   "exc": {
+    "server/post/like/like.service.spec.ts::Like service::like::should count likes from several users": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:46]",
+    "server/post/like/like.service.spec.ts::Like service::like::should like a post and update its counters": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:31]",
+    "server/post/like/like.service.spec.ts::Like service::like::should not like twice": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:59]",
+    "server/post/like/like.service.spec.ts::Like service::like::should not mix up likes of different posts": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:79]",
+    "server/post/like/like.service.spec.ts::Like service::post deletion::should delete the likes of the post": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:159]",
+    "server/post/like/like.service.spec.ts::Like service::unlike::should clear like details when the last like is removed": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:106]",
+    "server/post/like/like.service.spec.ts::Like service::unlike::should remove the like and update counters": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ server/post/like/like.service.spec.ts:90]"
+   }
+  }
+ ],
+ "complete": true
+}
