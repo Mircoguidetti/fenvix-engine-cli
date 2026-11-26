@@ -13,9 +13,7 @@ Per-run state letters: r = reproduces the --det outcome of A, c = clears (plain 
 | **agentic-qe** | all | 84 | 0 | 0 | 84 | 0 |
 | codex-multi-auth | flip | 64 | 0 | 38 | 26 | 0 |
 | codex-multi-auth | mixed | 6 | 0 | 4 | 2 | 0 |
-| codex-multi-auth | det-only | 1 | 0 | 0 | 1 | 1 |
-| codex-multi-auth | other | 2 | 0 | 0 | 2 | 2 |
-| **codex-multi-auth** | all | 73 | 0 | 42 | 31 | 3 |
+| **codex-multi-auth** | all | 70 | 0 | 42 | 28 | 0 |
 | ironcurtain | flip | 16 | 0 | 16 | 0 | 0 |
 | ironcurtain | mixed | 2 | 0 | 1 | 1 | 0 |
 | ironcurtain | skipped-in-det | 10 | 0 | 10 | 0 | 0 |
@@ -24,11 +22,11 @@ Per-run state letters: r = reproduces the --det outcome of A, c = clears (plain 
 
 ## Unstable-id patterns (founder D2)
 
-A pattern is matched when it names exactly one id in each of the four runs of A (p1 p2 d1 d2).
+A pattern is matched when it names exactly one id in each of the four runs of A (p1 p2 d1 d2); ids present by exact name in all four runs are left out of that count.
 
 | repository | pattern | matches per run | matched | became |
 |---|---|---|---|---|
-| codex-multi-auth | `test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: #` | 2 2 2 2 | no | 3 cases UNDECIDED unstable id |
+| codex-multi-auth | `test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: #` | 1 1 1 1 | yes | no case (the four results agree) |
 | codex-multi-auth | `test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, # Dec # #:#:# GMT at fifteen minutes` | 1 1 1 1 | yes | no case (the four results agree) |
 
 ## Ids excluded from the neutrality check (founder D3)
@@ -197,9 +195,6 @@ Ids whose outcome differs between the two plain runs of A, or whose digit patter
 | `test/property/rotation.property.test.ts::HealthScoreTracker property tests::score is always in [0, 100] range after any operation` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
 | `test/property/rotation.property.test.ts::TokenBucketTracker property tests::tokens never go negative` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
 | `test/property/rotation.property.test.ts::TokenBucketTracker property tests::tryConsume returns false when bucket is empty` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 28183` | other | None passed None None | - | - | - | - | - | UNDECIDED | kind other |
-| `test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 393851524` | det-only | None None passed passed | - | - | - | - | - | UNDECIDED | unstable id (test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: #) |
-| `test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 7900` | other | passed None None None | - | - | - | - | - | UNDECIDED | kind other |
 | `test/runtime-policy-cache.test.ts::runtime policy cache::never caches a store read raced by a concurrent rewrite` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
 | `test/runtime-rotation-proxy.test.ts::Luna Reserve fallback::reconsiders a Luna capability-rejected workspace after switching to Reserve` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
 | `test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type application/json` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |

@@ -16,7 +16,7 @@ failed, `pending`/`todo` as skipped):
 An id is marked `unstable` when it is missing from at least one of the four runs and some other id of the same file,
 with digits replaced by `#`, is present in that run: the test name embeds a run-dependent value (pid, wall clock).
 Founder D2 (2026-11-26): an unstable id's pattern (digits replaced, a leading minus included) is matched when it
-names exactly one id in each of the four runs; the four matched results then make one ordinary case of its kind (id =
+names exactly one id in each of the four runs, ids present by exact name in all four runs left out of the count; the four matched results then make one ordinary case of its kind (id =
 the pattern, `matched_ids` = the id per run), or no case when the four agree. Any other match count leaves every id of
 the pattern an unstable case (UNDECIDED "unstable id"). `patterns` in the output lists each pattern, its match count
 per run and what became of it.
@@ -101,7 +101,9 @@ def match_patterns(cases, runs, shapes, det):
     pats = sorted({c["pattern"] for c in cases if c["unstable"]})
     out, report = [c for c in cases if not c["unstable"] or c["pattern"] not in pats], []
     for pat in pats:
-        ids = [sorted(shapes[i].get(pat, set())) for i in range(4)]
+        # founder D2 (2026-11-26 04:47): an id whose exact name is in all four runs is matched by name, not counted
+        stable = set.intersection(*(set(r) for r in runs))
+        ids = [sorted(shapes[i].get(pat, set()) - stable) for i in range(4)]
         n = [len(x) for x in ids]
         members = [c for c in cases if c["unstable"] and c["pattern"] == pat]
         rec = {"pattern": pat, "matches_per_run": n, "ids": [c["id"] for c in members]}

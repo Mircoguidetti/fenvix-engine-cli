@@ -4,12 +4,12 @@
   "mixed": 6,
   "absent": 0,
   "skipped-in-det": 0,
-  "det-only": 1,
+  "det-only": 0,
   "reverse": 0,
-  "other": 2
+  "other": 0
  },
- "n_cases": 73,
- "n_unstable": 3,
+ "n_cases": 70,
+ "n_unstable": 0,
  "cases": [
   {
    "id": "test/api-model-runtime.test.ts::does not hold native model discovery open while probes run, then updates the served catalog",
@@ -796,54 +796,6 @@
    ]
   },
   {
-   "id": "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 28183",
-   "kind": "other",
-   "results": [
-    null,
-    "passed",
-    null,
-    null
-   ],
-   "unstable": true,
-   "pattern": "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: #",
-   "det_failure": [
-    null,
-    null
-   ]
-  },
-  {
-   "id": "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 393851524",
-   "kind": "det-only",
-   "results": [
-    null,
-    null,
-    "passed",
-    "passed"
-   ],
-   "unstable": true,
-   "pattern": "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: #",
-   "det_failure": [
-    null,
-    null
-   ]
-  },
-  {
-   "id": "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 7900",
-   "kind": "other",
-   "results": [
-    "passed",
-    null,
-    null,
-    null
-   ],
-   "unstable": true,
-   "pattern": "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: #",
-   "det_failure": [
-    null,
-    null
-   ]
-  },
-  {
    "id": "test/runtime-policy-cache.test.ts::runtime policy cache::never caches a store read raced by a concurrent rewrite",
    "kind": "flip",
    "results": [
@@ -1184,17 +1136,30 @@
   {
    "pattern": "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: #",
    "matches_per_run": [
-    2,
-    2,
-    2,
-    2
+    1,
+    1,
+    1,
+    1
    ],
    "ids": [
     "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 28183",
     "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 393851524",
     "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 7900"
    ],
-   "matched": false
+   "matched": true,
+   "matched_ids": [
+    "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 7900",
+    "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 28183",
+    "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 393851524",
+    "test/refresh-lease.test.ts::RefreshLeaseCoordinator::does not reclaim an expired lock, even after owner exit: 393851524"
+   ],
+   "results": [
+    "passed",
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "kind": null
   },
   {
    "pattern": "test/runtime-rotation-proxy.test.ts::catalog review concurrency and backoff::caps a catalog Retry-After of Fri, # Dec # #:#:# GMT at fifteen minutes",

@@ -211,6 +211,11 @@ def test_pattern_matched_once_per_run_is_one_case():
     det = [({}, {}), ({}, {})]
     out, rep = cases.match_patterns(mem, a, sh, det)
     assert [c["kind"] for c in out] == ["flip"] and rep[0]["matches_per_run"] == [1, 1, 1, 1]
+    # a sibling present by exact name in all four runs is left out of the count: still matched
+    a3 = [dict(r, **{"t::x 99": "passed"}) for r in a]
+    sh3 = [{cases.shape(k): set(r) for k in r} for r in a3]
+    out3, rep3 = cases.match_patterns(mem, a3, sh3, det)
+    assert [c["kind"] for c in out3] == ["flip"] and rep3[0]["matches_per_run"] == [1, 1, 1, 1]
     sh2 = [dict(s, **{"t::x #": s["t::x #"] | {"t::x 9"}}) for s in sh]
     out2, rep2 = cases.match_patterns(mem, a, sh2, det)
     assert len(out2) == 4 and all(c["unstable"] for c in out2) and rep2[0]["matched"] is False

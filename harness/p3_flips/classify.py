@@ -191,7 +191,7 @@ def render(rows):
         out.append(f"| **{repo}** | all | {len(rr)} | {c['THEIRS-ENV']} | {c['ARTIFACT']} | {c['UNDECIDED']} | "
                    f"{sum(1 for r in rr if r.get('unstable'))} |")
     out += ["", "## Unstable-id patterns (founder D2)", "",
-            "A pattern is matched when it names exactly one id in each of the four runs of A (p1 p2 d1 d2).", "",
+            "A pattern is matched when it names exactly one id in each of the four runs of A (p1 p2 d1 d2); ids present by exact name in all four runs are left out of that count.", "",
             "| repository | pattern | matches per run | matched | became |", "|---|---|---|---|---|"]
     for repo in repos:
         for p in (PATTERNS.get(repo) or []):
