@@ -1,0 +1,15 @@
+{
+ "boot_effect": 522,
+ "fix_matches_baseline": [
+  "registry/index.test.ts::init should prune containers from removed agents after registerAgents",
+  "registry/index.test.ts::reconcileComponentsWithConfiguration::treats a component present in state but never registered through registerComponent as absent from the current set",
+  "registry/index.test.ts::reconcileComponentsWithConfiguration::a reload after init({ agent: true }) never desires the controller-only local watcher or a disallowed trigger"
+ ],
+ "fix_vs_ctrl": 271,
+ "repo": "drydock",
+ "tests": 21578,
+ "unexplained": [
+  "registry/index.test.ts::init should register agents and their watchers/triggers"
+ ],
+ "unstable_in_baseline": 267
+}
