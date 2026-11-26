@@ -14,17 +14,12 @@
  "queries": {
   "committer-date:>=2024-01-01 unstable anthropic test": {
    "capped": true,
-   "done": false,
-   "leaf_total": 0,
-   "leaves": 0,
-   "nodes": 0,
+   "done": true,
+   "leaf_total": 53377,
+   "leaves": 1,
+   "nodes": 1,
    "prepass_total": 52961,
-   "stack": [
-    [
-     "2024-01-01",
-     "2026-11-25"
-    ]
-   ]
+   "stack": []
   },
   "committer-date:>=2024-01-01 unstable llm test": {
    "capped": false,
@@ -179,13 +174,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 11
+  "issues": 13
  },
  "search_stats": {
   "429": 1,
   "limit": 30,
   "remaining": 30,
-  "reset": 1795698706
+  "reset": 1795699053
  },
  "started": "2026-11-26T11:20:43+00:00"
 }
