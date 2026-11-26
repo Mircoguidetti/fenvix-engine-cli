@@ -1,6 +1,6 @@
 {
  "budget_end": "2026-11-27T03:49:30+00:00",
- "finished": null,
+ "finished": "2026-11-26T10:13:17+00:00",
  "queries": {
   "api.anthropic.com path:cassettes": {
    "capped": false,
@@ -191,6 +191,87 @@
    "prepass_total": 3,
    "stack": []
   },
+  "cendor-cassette filename:package.json": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
+  "cendor-cassette filename:pyproject.toml": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 5,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 5,
+   "stack": []
+  },
+  "cendor-cassette filename:requirements.txt": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
+  "coding-agent-vcr filename:package.json": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
+  "coding-agent-vcr filename:pyproject.toml": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 1,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 1,
+   "stack": []
+  },
+  "coding-agent-vcr filename:requirements.txt": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
+  "evalcraft filename:package.json": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 1,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 1,
+   "stack": []
+  },
+  "evalcraft filename:pyproject.toml": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 1,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 1,
+   "stack": []
+  },
+  "evalcraft filename:requirements.txt": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 5,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 5,
+   "stack": []
+  },
   "generativelanguage.googleapis.com path:cassettes": {
    "capped": false,
    "done": true,
@@ -271,17 +352,44 @@
    "nodes": 1,
    "prepass_total": 0,
    "stack": []
+  },
+  "pytest-agentcontract filename:package.json": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
+  "pytest-agentcontract filename:pyproject.toml": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
+  },
+  "pytest-agentcontract filename:requirements.txt": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 0,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 0,
+   "stack": []
   }
  },
  "search_requests": {
-  "code": 4,
+  "code": 16,
   "issues": 0
  },
  "search_stats": {
   "429": 0,
   "limit": 10,
   "remaining": 10,
-  "reset": 1795687956
+  "reset": 1795688023
  },
  "started": "2026-11-26T08:43:47+00:00"
 }
