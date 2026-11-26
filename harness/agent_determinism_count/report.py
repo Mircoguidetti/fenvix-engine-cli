@@ -65,6 +65,7 @@ def load(res: Path = RES) -> dict:
         "handcheck": _json(res / "handcheck.json", {}) or {}, "state": _json(res / "state.json", {}) or {},
         "population": _json(res / "population.json", {}) or {}, "chunks": _jsonl(res / "chunks.jsonl"),
         "changes": (here / "CHANGES.md").read_text() if (here / "CHANGES.md").exists() else "",
+        "notes": (_json(res / "report_notes.json", {}) or {}).get("notes") or [],
     }
 
 
@@ -263,6 +264,8 @@ def render(d: dict) -> tuple[str, dict]:
     if nc or d["cfg"].get("dropped"):
         L += ["Not covered in detail: " + "; ".join([f"unfinished `{u['query']}` ({u['missing']} hits)" for u in nc] +
                                                     [f"dropped `{q}`" for q in d["cfg"].get("dropped") or []]), ""]
+    if d.get("notes"):  # coordinator-requested notes (not rule changes): results/report_notes.json
+        L += ["## Notes (not rule changes)", ""] + [f"- {x}" for x in d["notes"]] + [""]
     # ------------------------------------------------------------ timing and probes
     bf, la = d["budget_free"] or {}, d["launch"] or {}
     first_search = min([r.get("at") for p in (d["probe_session"], d["probe_workflow"]) if p

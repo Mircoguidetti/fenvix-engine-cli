@@ -1,0 +1,9 @@
+{
+ "at": "2026-11-26T11:20:00Z",
+ "from": "coordinator 11:10Z request",
+ "notes": [
+  "S3 discovery: 89 of the 466 pre-pass queries are not covered: 88 never started and 1 started but unfinished (`committer-date:>=2024-01-01 xfail gemini test`); together 7,749,239 pre-pass hits. They enter N_S3 as truncated with their pre-pass total_count (gate note 3) and are listed under 'Not covered in detail'. Whether to leave them truncated or extend S3 to run them is a question for the founder (coordinator 2026-11-26 11:10Z); no discovery query runs until he answers.",
+  "S2/S3 gap: run 45758051807 stopped d3 at its max_minutes (300) at 09:53Z and ended at 09:56Z. The work session had not queued the next text run, so S2/S3 sent no search request from 09:56Z to its 24 h budget end at 10:54:28Z (about 58 min). Cause: the session's queueing step was missed (fix 142684a had kept d3 pending; no run was queued to resume it).",
+  "Reading of the work session, not a rule change: N_s counts unread hits of capped, truncated and unfinished queries (mostly issues and commits), not repositories, so N_S2 = 26,212,230 and N_S3 = 10,304,746 against 113,511 and 50,005 candidates. The equal-split reads for a DROP by bounds (S2 6,041,811; S3 2,375,199) exceed every candidate and any reading budget, and B_S3 is undefined while S3 has incomplete leaves (6). A DROP by bounds below 50 is therefore out of reach; the reachable outcomes are CONTINUE (>= 50 members with pain yes) or DROP (memo line) at budget end or hard stop."
+ ]
+}
