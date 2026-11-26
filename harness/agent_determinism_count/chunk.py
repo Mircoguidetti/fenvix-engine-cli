@@ -59,8 +59,11 @@ def opts_of(cfg: dict) -> dict:
             "excluded_repos": cfg.get("excluded_repos") or []}
 
 
-def candidates() -> dict:
-    return {c["idx"]: c for c in read_jsonl(RES / "candidates.jsonl.gz")}
+def candidates(only=None) -> dict:
+    """Candidate records by idx; ``only``: keep just these idx (the full file is ~0.9 GB uncompressed: run 45820191350
+    held two full copies and the runner was shut down)."""
+    keep = None if only is None else set(only)
+    return {c["idx"]: c for c in read_jsonl(RES / "candidates.jsonl.gz") if keep is None or c["idx"] in keep}
 
 
 def _append(p: Path, rec: dict) -> None:
@@ -143,7 +146,8 @@ def run_chunk(req: dict, name: str | None = None) -> int:
         return (time.time() - t0) / 60 > maxm or bool(client.deadline and time.time() > client.deadline - 600)
     try:
         if req.get("comments") is not None:
-            cands = candidates()
+            cands = candidates(r["idx"] for r in read_jsonl(RES / "rows.jsonl")
+                               if str(r.get("chunk")) == str(req["comments"]))
             done = {r["repo"].lower() for r in read_jsonl(RES / "comments.jsonl")}
             searches = search_records()
             for row in read_jsonl(RES / "rows.jsonl"):
@@ -161,8 +165,8 @@ def run_chunk(req: dict, name: str | None = None) -> int:
                              "hits": []} for i, r in enumerate(req["repos"])}
                 order = list(cands)
             else:
-                cands = candidates()
                 order = req["candidates"]
+                cands = candidates(order)
             rows = {r["idx"]: r for r in read_jsonl(out / "rows.jsonl")}
             wf_text = req.get("text_route") == "workflow"
             searched = {r["repo"].lower() for r in read_jsonl(out / "texts_search_wf.jsonl")}

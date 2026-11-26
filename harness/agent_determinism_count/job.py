@@ -145,11 +145,12 @@ def main() -> int:
         import gzip
         cr = HERE / "results" / "cands_read.jsonl.gz"
         have = {r["idx"] for r in chunk.read_jsonl(cr)} if cr.exists() else set()
-        allc = chunk.candidates()
+        allc = chunk.candidates(req["candidates"])
         with gzip.open(cr, "at") as f:
             for i in req["candidates"]:
                 if i not in have and i in allc:
                     f.write(json.dumps(allc[i], sort_keys=True) + "\n")
+        del allc
         if req.get("cands_backfill"):
             chunk.mark_done(name, {"cands_backfill": len(req["candidates"]), "at": chunk.now()})
             return 0

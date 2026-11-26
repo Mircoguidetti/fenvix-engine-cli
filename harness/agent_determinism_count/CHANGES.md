@@ -120,3 +120,10 @@
     queries (pre-pass total above QUERY_CAP). It stays for bisected queries at more than 1% AND more than 5 hits.
     The hard stop 17:20:43Z is unchanged. Test: test_extension_route_guard_tolerates_small_index_drift gains this
     case (it fails before the change).
+16. 2026-11-26 15:00Z, a fix with no rule change. Text run 45820191350 (chunk 3, r003) lost its runner at 12:34:56Z,
+    about 90 s after it loaded the candidates file. job.py held all 163,528 candidate records (about 0.9 GB
+    uncompressed) for cands_read while run_chunk loaded a second full copy, so the runner most likely ran out of
+    memory. Nothing was read and nothing was committed. Run 11 had loaded the file only once, because the backfill
+    returns before run_chunk. Now each request loads only the idx it reads: the chunk's candidates, or the rows of
+    the chunk named by a comments request. Reading was stopped from 12:34Z until this push re-queued r003 and r003c,
+    and the work session noticed the failure only at 14:58Z.
