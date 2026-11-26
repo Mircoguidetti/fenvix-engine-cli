@@ -1389,3 +1389,18 @@ def test_no_request_past_the_deadline_and_extension_stops_at_hard_stop(tmp_path,
         raise AssertionError("a job deadline before the hard stop must reach job.py")
     except ghapi.DeadlineReached:
         pass
+
+
+def test_client_counts_rate_limits_and_sleep_by_cause(monkeypatch):
+    """protects=the per-chunk 429 count and sleep seconds in the done markers (coordinator 17:53Z, to see whether a
+    shared search limit slows reading); fails_when=a rate-limited answer is not counted or its sleep is not added to
+    rate_limit seconds; no_claim=the length of GitHub's reset windows."""
+    import time as _t
+    import ghapi
+    c = ghapi.Client(token="x")
+    answers = [(429, {"message": "rate limit"}, {"retry-after": "7"}), (200, {"items": []}, {})]
+    monkeypatch.setattr(c, "_once", lambda path: answers.pop(0))
+    monkeypatch.setattr(c, "_wait", lambda search: None)
+    monkeypatch.setattr(_t, "sleep", lambda s: None)
+    st, data, _ = c.get("repos/a/b")
+    assert st == 200 and c.n_429 == 1 and c.slept["rate_limit"] >= 7

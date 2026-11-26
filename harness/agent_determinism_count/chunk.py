@@ -202,7 +202,10 @@ def run_chunk(req: dict, name: str | None = None) -> int:
     rec = {"chunk": chunk, "items": n, "requests": client.n_requests, "search_requests": client.n_search,
            "requests_per_candidate": sorted(per_cand), "methods": sorted({x["method"] for x in log}),
            "rate_limit": client.limit, "remaining": client.remaining, "minutes": round((time.time() - t0) / 60, 1),
-           "stopped": stopped, "at": now(), "request": name}
+           "stopped": stopped, "at": now(), "request": name,
+           # coordinator 17:53Z: rate-limited answers (429, or 403 rate limit) and seconds slept, by cause
+           "n_429": getattr(client, "n_429", None),
+           "sleep_s": {k: round(v, 1) for k, v in (getattr(client, "slept", None) or {}).items()}}
     _append(out / "chunks.jsonl", rec)
     if name and not stopped:
         mark_done(name, rec)

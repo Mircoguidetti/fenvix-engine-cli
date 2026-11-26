@@ -57,6 +57,8 @@ class Client:
         self.n_requests = 0
         self.n_search = {"code": 0, "issues": 0}
         self.n_429 = 0
+        # seconds slept, by cause (coordinator 17:53Z: per-chunk 429s and sleep, to see a shared search limit)
+        self.slept = {"rate_limit": 0.0, "pacing": 0.0, "server_error": 0.0}
         self.deadline = float(os.environ.get("ADC_DEADLINE") or 0)  # epoch seconds; 0 = none
         self.log = log  # optional list: every request (method, path, status, time) for AC5
         self._last = 0.0
@@ -89,6 +91,7 @@ class Client:
         """Sleep, unless it would pass the job deadline (``deadline``, epoch seconds): then stop cleanly."""
         if self.deadline and time.time() + sl > self.deadline:
             raise DeadlineReached(f"a {sl:.0f}s rate-limit sleep would pass the job deadline")
+        self.slept["rate_limit"] += sl
         time.sleep(sl)
 
     def _wait(self, search: str | None) -> None:
@@ -98,11 +101,13 @@ class Client:
         if search:
             wait = GAPS[search] - (time.time() - self._last_search[search])
             if wait > 0:
+                self.slept["pacing"] += wait
                 time.sleep(wait)
             self._last_search[search] = time.time()
         else:
             wait = self.pace - (time.time() - self._last)
             if wait > 0:
+                self.slept["pacing"] += wait
                 time.sleep(wait)
             self._last = time.time()
         res = RESOURCE[search]
@@ -178,6 +183,7 @@ class Client:
                 self._sleep(min(sl, 3700))
                 continue
             if st == 0 or st >= 500:
+                self.slept["server_error"] += 5 * (attempt + 1)
                 time.sleep(5 * (attempt + 1))
                 continue
             return last

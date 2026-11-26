@@ -153,3 +153,8 @@
     is the budget end (or the hard stop), and no request is sent once it has passed. A deadline reached at the budget
     end stops discovery cleanly with budget_reached set, and the node cut short stays truncated. Test:
     test_no_request_past_the_deadline_and_extension_stops_at_hard_stop.
+20. 2026-11-26 17:58Z, harness bookkeeping (coordinator 17:53Z; no rule change). Discovery is over, so test-quality-count
+    now shares the account's search limit. Each chunk's record in chunks.jsonl and requests_done/ now carries n_429,
+    the rate-limited answers (429, or 403 with a rate-limit message). It also carries sleep_s, the seconds slept by
+    cause: rate_limit, pacing and server_error. Chunk 8 is the first chunk recorded this way; chunk 6 took 47.0 min
+    against 18-30 min for chunks 4-5, with no count recorded. Test: test_client_counts_rate_limits_and_sleep_by_cause.
