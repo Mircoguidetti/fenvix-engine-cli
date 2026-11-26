@@ -73,3 +73,16 @@ declare contract, runtime, surface, controls); green on the final head and in Gi
 release-1.yml cancels the sibling shards of a matrix about 10-16 s after the first red shard, so no LIGHT run with a
 baseline failure reports every shard. Since 3c9d2b09 (Node code identical to 2ca21db1) the two runs together ran every
 Python shard and Node shards s0, s2, s3; Node s1 was cancelled in both (local final s1: the same failures as base).
+
+## Final head `9f6bd4d3` (after the founder's D1 = A items: LIMITS lines, /review QA charter fix)
+
+Local (`suites.sh`, Python only; Node, crates and runner are unchanged since `3c9d2b09`, so the Node results above stand):
+
+| suite | failures | classification |
+|---|---|---|
+| py s0, s1 | `test_py_cache` x2, `test_r023c_fixes::test_e2_shutil_copy2...`, `test_review_r015::test_F3...` | base (x2), ENV (x2), as above |
+| py s2 | `test_packaging` gate; W11; W7 x3; `test_capture_rust::test_capture_sessions_match_reference`; `test_review_r023b::test_3_namespace_package_gains_init[n2]`, `::test_3_new_pth_file[serial]` | base; known limit; ENV; the last three ran alone: capture_rust 1 passed (branch); r023b 4 passed on the branch AND on base 24962a94 (concurrent-run interference: the shared venv briefly held `r019c_plug.py` written by `test_absent_inputs_r019c.py` in the s0/s1 run) |
+| py s3 | none | |
+| attacks, Python | W11; W7 x3 | known limit; ENV (green on GitHub) |
+
+GitHub LIGHT run 45755774138 on `9f6bd4d3`: build, smoke (node, python), Python s1 and s3 green. Red: Python s2 (`test_packaging` gate only), attacks (W11 only; Node attacks 60/60), Node s3 (`host-values-timers` (b), `runner-node-test:258`). Cancelled by the matrix fail-fast before printing results: Node s0, s1, s2 and Python s0 (local s0 on `9f6bd4d3` and Node s0-s2 on `3c9d2b09`: base failures only). Not run: install, publish-engine (skipped by the workflow). No failure outside the base set.
