@@ -504,7 +504,12 @@ function installFootprint(root) {
       x = up;
     }
   };
+  // mkdir (recursive or not) writes only the directories it creates: a target that exists before the call is a READ
+  // of it (the call observes it: EEXIST, or nothing to do), so files that each make sure one shared parent exists and
+  // then create distinct children do not conflict on the parent (founder decision 2026-11-26, D2 = A; P2 BREAKDOWN C1)
+  const exists = (p) => { const x = toPath(p); if (x === null) return false; try { return Boolean(lstat(x, { throwIfNoEntry: false })); } catch { return false; } };
   const mkRec = (a) => {
+    if (exists(a[0])) { H.add('r', a[0]); return; }
     H.add('w', a[0]);
     if (!recursive || !rec(a[1])) return;
     const m = firstMissing(a[0]);
