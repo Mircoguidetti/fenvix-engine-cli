@@ -309,6 +309,7 @@ def do_file(o):
             json.dump(res, f, indent=1)
 
     if not work:
+        res["complete"] = True
         save()
         return
     # B1 triage: the file alone, 2 runs
@@ -380,6 +381,7 @@ def do_file(o):
         save()
         plain_repro(ctx, res, slug, gi, g)
         save()
+    res["complete"] = True  # run_b.sh resumes any file whose record lacks this (killed mid-file)
     save()
 
 
