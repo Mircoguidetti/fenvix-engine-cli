@@ -28,7 +28,9 @@ import sys
 import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ENGINE = os.path.abspath(os.path.join(HERE, "..", ".."))
+# FENVIX_ENGINE: another checkout of the engine to measure (P3: step B stays on the step-A engine, a worktree of
+# 24962a94, while step C changes this checkout); default this checkout
+ENGINE = os.path.abspath(os.environ.get("FENVIX_ENGINE") or os.path.join(HERE, "..", ".."))
 DETJS = os.path.join(ENGINE, "node", "bin", "detjs.js")
 VOLATILE = ("CI", "GITHUB_ACTIONS", "DETJS", "NODE_OPTIONS", "DETJS_SEED", "DETJS_CACHE_DIR", "PYTEST_ADDOPTS")
 
