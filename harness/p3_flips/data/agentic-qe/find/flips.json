@@ -1,0 +1,1185 @@
+{
+ "repo": "agentic-qe",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "plain_counts": [
+  {
+   "passed": 30391,
+   "failed": 80,
+   "skipped": 294
+  },
+  {
+   "passed": 30391,
+   "failed": 80,
+   "skipped": 294
+  }
+ ],
+ "det_counts": [
+  {
+   "passed": 30314,
+   "failed": 150,
+   "skipped": 301
+  },
+  {
+   "passed": 30314,
+   "failed": 150,
+   "skipped": 301
+  }
+ ],
+ "plain_both_passed": 30391,
+ "det_both_passed": 30313,
+ "flips": [
+  "tests/benchmarks/mincut-performance.test.ts::MinCut Performance Benchmarks::Health Monitor::should handle 1000 health checks per second",
+  "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::End-to-End Integration Tests::should demonstrate cross-domain orchestration",
+  "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::End-to-End Integration Tests::should execute full pipeline with MCP tools",
+  "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::SONA Integration Tests::should demonstrate pattern adaptation <0.05ms target",
+  "tests/integration/code-intelligence/knowledge-graph-real.test.ts::Knowledge Graph Real I/O::indexing actual v3 source files::should index kernel directory and create nodes",
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::composes disjoint outputs only after both actions finish",
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::does not commit a successful sibling when another step fails",
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::does not map a step output before its approval gate accepts it",
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::does not publish any output if staged composition is invalid",
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::isolates direct action mutations from sibling inputs and shared context",
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::keeps a single root step on the sequential path for non-cloneable outputs",
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::keeps an empty-message hard failure from committing successful sibling output",
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::preserves completed sibling outputs when an optional step is continueOnFailure",
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::preserves completed sibling outputs when an optional step is skipped",
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::produces the same combined-state hash when completion order reverses",
+  "tests/integration/governance/wasm-compatibility.test.ts::WASM Kernel Compatibility::Performance Metrics::should meet performance thresholds",
+  "tests/integration/learning/dream-foreground-write-durability.test.ts::#1060 acknowledged foreground writes survive an in-flight dream::a dream killed with SIGKILL stays running until the abandoned-cycle sweep marks it interrupted",
+  "tests/integration/test-scheduling/vitest-executor-abort.test.ts::Vitest executor cancellation quiescence::does not launch a replacement test run after scheduler cancellation",
+  "tests/integration/test-scheduling/vitest-executor-abort.test.ts::Vitest executor cancellation quiescence::waits for a TERM-resistant worker before abort reports completion",
+  "tests/integrations/agentic-flow/onnx-embeddings.test.ts::ONNX Embeddings - ADR-051 Phase 2::Performance Benchmarks::Similarity Search Speed::should search 1000 vectors efficiently",
+  "tests/integrations/rl-suite/sona.test.ts::SONA Performance Benchmarks::Adaptation Performance::should meet performance target with verifyPerformance method",
+  "tests/integrations/rl-suite/sona.test.ts::SONA Performance Benchmarks::Pattern Recall Performance::should recall patterns quickly",
+  "tests/performance/milestone1-baselines.test.ts::Baseline Summary::all baseline measurements within expected bounds",
+  "tests/performance/milestone1-baselines.test.ts::Baseline: Coherence Gate Energy::computeEnergy: complex artifact (retrieval tier)",
+  "tests/performance/milestone1-baselines.test.ts::Baseline: Coherence Gate Energy::computeEnergy: simple artifact (reflex tier)",
+  "tests/performance/rvf-pattern-store.test.ts::RvfPatternStore \u2014 Real Native Benchmarks::ingest 1000 patterns into native HNSW",
+  "tests/unit/cli/commands/learning-backfill-embeddings.test.ts::learning backfill-embeddings command (#584)::should pass the requested batch size to the repair operation",
+  "tests/unit/cli/commands/learning-curation-1426.test.ts::#1426 selectUnmark and applyUnmark::waits for another process's write lock instead of failing at once",
+  "tests/unit/coordination/approval-gate.test.ts::approval gate::accepts approval delivered synchronously by the approval event consumer",
+  "tests/unit/coordination/approval-gate.test.ts::approval gate::closes an indefinite gate when the workflow times out",
+  "tests/unit/coordination/approval-gate.test.ts::approval gate::does not dispatch an action when the workflow is cancelled at its gate",
+  "tests/unit/coordination/approval-gate.test.ts::approval gate::does not register a gate after cancellation during StepStarted publication",
+  "tests/unit/coordination/approval-gate.test.ts::approval gate::expires without executing an unapproved action",
+  "tests/unit/coordination/approval-gate.test.ts::approval gate::fails closed when the approval request cannot be published",
+  "tests/unit/coordination/handlers/coverage-runner.test.ts::#995 review B1 \u2014 process-tree timeout::leaves no surviving child and no temp dir after a hanging test run",
+  "tests/unit/coordination/handlers/coverage-runner.test.ts::#995 review BL1 \u2014 coverage group dies with the host::kills the group and removes the temp dir when the client closes stdin",
+  "tests/unit/coordination/handlers/coverage-runner.test.ts::#995 review BL1 \u2014 coverage group dies with the host::kills the group and removes the temp dir when the host gets SIGTERM",
+  "tests/unit/coordination/queen-coordinator-memory-leak.test.ts::PAP-003: QueenCoordinator Memory Leak Fix::subscription tracking::should create subscriptions for all domains during initialize",
+  "tests/unit/coordination/task-executor.test.ts::DomainTaskExecutor::duration tracking::should track execution duration",
+  "tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts::caller termination ownership::reaps collection descendants and artifacts when the caller receives SIGHUP",
+  "tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts::caller termination ownership::reaps collection descendants and artifacts when the caller receives SIGINT",
+  "tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts::caller termination ownership::reaps collection descendants and artifacts when the caller receives SIGTERM",
+  "tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts::caller termination ownership::reaps collection descendants and artifacts when the caller receives exit",
+  "tests/unit/domains/coverage-analysis/sublinear-analyzer.test.ts::SublinearCoverageAnalyzer::performance benchmarks::should demonstrate sublinear scaling characteristics",
+  "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts::brain-checkpoint generated helper keeps the last checkpoint (#1238)::should_sweepTempFilesOfAKilledRun_andKeepThoseOfALiveOne",
+  "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts::brain-checkpoint shipped helper keeps the last checkpoint (#1238)::should_sweepTempFilesOfAKilledRun_andKeepThoseOfALiveOne",
+  "tests/unit/hooks/brain-checkpoint-richness.test.ts::brain-checkpoint generated helper richness guard (#1251)::should_dropTheAckAndApplyTheNormalPolicy_when_theCliIgnoresIt",
+  "tests/unit/hooks/brain-checkpoint-richness.test.ts::brain-checkpoint generated helper richness guard (#1251)::should_endTheBackOff_when_theShrinkIsAcknowledgedAfterTheRefusal",
+  "tests/unit/hooks/brain-checkpoint-richness.test.ts::brain-checkpoint generated helper richness guard (#1251)::should_keepTheAck_when_theAcknowledgedExportFails",
+  "tests/unit/hooks/brain-checkpoint-richness.test.ts::brain-checkpoint generated helper richness guard (#1251)::should_overwriteOnceAndSpendTheAck_when_aShrinkWasAcknowledged",
+  "tests/unit/hooks/brain-checkpoint-richness.test.ts::brain-checkpoint shipped helper richness guard (#1251)::should_dropTheAckAndApplyTheNormalPolicy_when_theCliIgnoresIt",
+  "tests/unit/hooks/brain-checkpoint-richness.test.ts::brain-checkpoint shipped helper richness guard (#1251)::should_endTheBackOff_when_theShrinkIsAcknowledgedAfterTheRefusal",
+  "tests/unit/hooks/brain-checkpoint-richness.test.ts::brain-checkpoint shipped helper richness guard (#1251)::should_keepTheAck_when_theAcknowledgedExportFails",
+  "tests/unit/hooks/brain-checkpoint-richness.test.ts::brain-checkpoint shipped helper richness guard (#1251)::should_overwriteOnceAndSpendTheAck_when_aShrinkWasAcknowledged",
+  "tests/unit/init/init-wizard-pipeline.test.ts::Init wizard pipeline - full orchestration over a temp project::should complete full auto-mode initialization with all steps succeeding",
+  "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts::deferred SONA write recovery::keeps the first batch referenced but unrefs a retry after a native failed batch",
+  "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts::deferred SONA write recovery::references an existing retry when new explicit work starts a fresh batch",
+  "tests/unit/integrations/ruvector/sona-three-loop.test.ts::SONAThreeLoopEngine::Instant Loop::should complete adaptation quickly",
+  "tests/unit/kernel/startup-schema-1356.test.ts::first use under a held lock (#1356)::control: without the startup step the same DDL blocks on the lock",
+  "tests/unit/learning/embedder-endpoint-client.test.ts::EmbedderEndpointClient::#1216: after the window the trial probe runs in the background, and its success closes the breaker",
+  "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts::QEReasoningBank \u2014 recordOutcome qe_pattern_usage feedback loop::should early-return ok when enableLearning is false",
+  "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts::QEReasoningBank \u2014 recordOutcome qe_pattern_usage feedback loop::should not fail when db.prepare().run() throws",
+  "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts::QEReasoningBank \u2014 recordOutcome qe_pattern_usage feedback loop::should not fail when getDatabase() throws",
+  "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts::QEReasoningBank \u2014 recordOutcome qe_pattern_usage feedback loop::should not fail when unified memory is NOT available",
+  "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts::QEReasoningBank \u2014 recordOutcome qe_pattern_usage feedback loop::should record success=false outcome and not increment successfulOutcomes",
+  "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts::QEReasoningBank \u2014 recordOutcome qe_pattern_usage feedback loop::should record success=true outcome and increment stats correctly",
+  "tests/unit/mcp/handlers/memory-share-collisions.test.ts::knowledge sharing collision resistance (memory)::retains two different findings admitted in the same millisecond",
+  "tests/unit/mcp/mcp-performance-benchmark.test.ts::MCP Performance Benchmarks::Load Balancer Performance::should select agents in O(1) time",
+  "tests/unit/mcp/mcp-performance-benchmark.test.ts::MCP Performance Benchmarks::Tool Registry Performance::should achieve <1ms tool lookup",
+  "tests/unit/performance/benchmarks.test.ts::PerformanceProfiler::Results::should sort sections by total time",
+  "tests/unit/routing/neural-tiny-dancer-router.test.ts::ADR-082 Success Criteria::Criterion 2: Routing latency < 100us p99::should route 1000 decisions within 100us p99",
+  "tests/unit/shared/io/confined-read-1161.test.ts::confined reads (#1161)::never returns outside content while the checked name is swapped for a symlink (race)",
+  "tests/unit/shared/io/file-reader-project-root.test.ts::FileReader projectRoot containment::TOCTOU: concurrent symlink swaps (bounded race, #1021 round 2b)::never reads outside when a directory component is swapped for a symlink",
+  "tests/unit/shared/utils/binary-insert.test.ts::Performance: binaryInsert vs Array.sort::should be faster than sort for many insertions",
+  "tests/unit/strange-loop/infra-healing/coordination-lock.test.ts::CoordinationLock::getActiveLocks()::excludes expired locks"
+ ],
+ "n_flips": 75,
+ "absent_in_det": [],
+ "n_absent_in_det": 0,
+ "skipped_in_det": [
+  {
+   "id": "tests/integration/package-exports-esm.integration.test.ts::packed package native ESM contracts::includes the published verdict schemas",
+   "det1": "skipped",
+   "det2": "skipped"
+  }
+ ],
+ "n_skipped_in_det": 1,
+ "mixed_in_det": [
+  {
+   "id": "tests/integration/coordination/queen-tinydancer-wiring.test.ts::Queen Coordinator \u2194 TinyDancer Router Wiring::Requirement 1: Component Initialization::TinyDancer router is initialized when enableRouting is true (default)",
+   "det1": "passed",
+   "det2": "failed"
+  },
+  {
+   "id": "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts::QEReasoningBank \u2014 recordOutcome qe_pattern_usage feedback loop::should pass null feedback when outcome has no feedback",
+   "det1": "failed",
+   "det2": "passed"
+  }
+ ],
+ "n_mixed_in_det": 2,
+ "ids_only_in_det": [],
+ "n_ids_only_in_det": 0,
+ "flip_exceptions": {
+  "tests/benchmarks/mincut-performance.test.ts::MinCut Performance Benchmarks::Health Monitor::should handle 1000 health checks per second": [
+   [
+    "AssertionError",
+    "call",
+    "expected 14049.543 to be less than 1000",
+    "tests/benchmarks/mincut-performance.test.ts:270"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 14049.543 to be less than 1000",
+    "tests/benchmarks/mincut-performance.test.ts:270"
+   ]
+  ],
+  "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::End-to-End Integration Tests::should demonstrate cross-domain orchestration": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 60000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/adr-040-agentic-flow-integration.test.ts:780"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 60000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/adr-040-agentic-flow-integration.test.ts:780"
+   ]
+  ],
+  "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::End-to-End Integration Tests::should execute full pipeline with MCP tools": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 60000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/adr-040-agentic-flow-integration.test.ts:641"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 60000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/adr-040-agentic-flow-integration.test.ts:641"
+   ]
+  ],
+  "tests/integration/adr-040-agentic-flow-integration.test.ts::ADR-040 Agentic-Flow Integration Tests::SONA Integration Tests::should demonstrate pattern adaptation <0.05ms target": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 60000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/adr-040-agentic-flow-integration.test.ts:68"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 60000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/adr-040-agentic-flow-integration.test.ts:68"
+   ]
+  ],
+  "tests/integration/code-intelligence/knowledge-graph-real.test.ts::Knowledge Graph Real I/O::indexing actual v3 source files::should index kernel directory and create nodes": [
+   [
+    "AssertionError",
+    "call",
+    "expected 0 to be greater than 0",
+    "tests/integration/code-intelligence/knowledge-graph-real.test.ts:201"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 0 to be greater than 0",
+    "tests/integration/code-intelligence/knowledge-graph-real.test.ts:201"
+   ]
+  ],
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::composes disjoint outputs only after both actions finish": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts:95"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts:95"
+   ]
+  ],
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::does not commit a successful sibling when another step fails": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts:150"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts:150"
+   ]
+  ],
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::does not map a step output before its approval gate accepts it": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts:331"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts:331"
+   ]
+  ],
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::does not publish any output if staged composition is invalid": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts:318"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts:318"
+   ]
+  ],
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::isolates direct action mutations from sibling inputs and shared context": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts:227"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts:227"
+   ]
+  ],
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::keeps a single root step on the sequential path for non-cloneable outputs": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts:211"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts:211"
+   ]
+  ],
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::keeps an empty-message hard failure from committing successful sibling output": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts:164"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts:164"
+   ]
+  ],
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::preserves completed sibling outputs when an optional step is continueOnFailure": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts:183"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts:183"
+   ]
+  ],
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::preserves completed sibling outputs when an optional step is skipped": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts:183"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts:183"
+   ]
+  ],
+  "tests/integration/coordination/workflow-parallel-composition.test.ts::parallel workflow output composition (#720)::produces the same combined-state hash when completion order reverses": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts:127"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/integration/coordination/workflow-parallel-composition.test.ts:127"
+   ]
+  ],
+  "tests/integration/governance/wasm-compatibility.test.ts::WASM Kernel Compatibility::Performance Metrics::should meet performance thresholds": [
+   [
+    "AssertionError",
+    "call",
+    "expected 1004.049553 to be less than 1",
+    "tests/integration/governance/wasm-compatibility.test.ts:370"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 1004.049553 to be less than 1",
+    "tests/integration/governance/wasm-compatibility.test.ts:370"
+   ]
+  ],
+  "tests/integration/learning/dream-foreground-write-durability.test.ts::#1060 acknowledged foreground writes survive an in-flight dream::a dream killed with SIGKILL stays running until the abandoned-cycle sweep marks it interrupted": [
+   [
+    "AssertionError",
+    "call",
+    "expected +0 to be 1 // Object.is equality",
+    "tests/integration/learning/dream-foreground-write-durability.test.ts:221"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected +0 to be 1 // Object.is equality",
+    "tests/integration/learning/dream-foreground-write-durability.test.ts:221"
+   ]
+  ],
+  "tests/integration/test-scheduling/vitest-executor-abort.test.ts::Vitest executor cancellation quiescence::does not launch a replacement test run after scheduler cancellation": [
+   [
+    "Error",
+    "call",
+    "Test process group 2467 survived SIGKILL",
+    "src/test-scheduling/executors/vitest-executor.ts:375"
+   ],
+   [
+    "Error",
+    "call",
+    "Test process group 26238 survived SIGKILL",
+    "src/test-scheduling/executors/vitest-executor.ts:375"
+   ]
+  ],
+  "tests/integration/test-scheduling/vitest-executor-abort.test.ts::Vitest executor cancellation quiescence::waits for a TERM-resistant worker before abort reports completion": [
+   [
+    "Error",
+    "call",
+    "Test process group 2425 survived SIGKILL",
+    "src/test-scheduling/executors/vitest-executor.ts:375"
+   ],
+   [
+    "Error",
+    "call",
+    "Test process group 26196 survived SIGKILL",
+    "src/test-scheduling/executors/vitest-executor.ts:375"
+   ]
+  ],
+  "tests/integrations/agentic-flow/onnx-embeddings.test.ts::ONNX Embeddings - ADR-051 Phase 2::Performance Benchmarks::Similarity Search Speed::should search 1000 vectors efficiently": [
+   [
+    "AssertionError",
+    "call",
+    "expected 5000 to be less than 500",
+    "tests/integrations/agentic-flow/onnx-embeddings.test.ts:1447"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 5000 to be less than 500",
+    "tests/integrations/agentic-flow/onnx-embeddings.test.ts:1447"
+   ]
+  ],
+  "tests/integrations/rl-suite/sona.test.ts::SONA Performance Benchmarks::Adaptation Performance::should meet performance target with verifyPerformance method": [
+   [
+    "AssertionError",
+    "call",
+    "expected 1485.819028 to be less than 0.1",
+    "tests/integrations/rl-suite/sona.test.ts:1030"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 1485.819028 to be less than 0.1",
+    "tests/integrations/rl-suite/sona.test.ts:1030"
+   ]
+  ],
+  "tests/integrations/rl-suite/sona.test.ts::SONA Performance Benchmarks::Pattern Recall Performance::should recall patterns quickly": [
+   [
+    "AssertionError",
+    "call",
+    "expected 5128.917326000001 to be less than 0.5",
+    "tests/integrations/rl-suite/sona.test.ts:1078"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 5128.917326000001 to be less than 0.5",
+    "tests/integrations/rl-suite/sona.test.ts:1078"
+   ]
+  ],
+  "tests/performance/milestone1-baselines.test.ts::Baseline Summary::all baseline measurements within expected bounds": [
+   [
+    "AssertionError",
+    "call",
+    "expected [ \u2026(2) ] to deeply equal []",
+    "tests/performance/milestone1-baselines.test.ts:801"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected [ \u2026(2) ] to deeply equal []",
+    "tests/performance/milestone1-baselines.test.ts:801"
+   ]
+  ],
+  "tests/performance/milestone1-baselines.test.ts::Baseline: Coherence Gate Energy::computeEnergy: complex artifact (retrieval tier)": [
+   [
+    "AssertionError",
+    "call",
+    "expected 170098.94400000572 to be less than 5000",
+    "tests/performance/milestone1-baselines.test.ts:385"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 170098.94400000572 to be less than 5000",
+    "tests/performance/milestone1-baselines.test.ts:385"
+   ]
+  ],
+  "tests/performance/milestone1-baselines.test.ts::Baseline: Coherence Gate Energy::computeEnergy: simple artifact (reflex tier)": [
+   [
+    "AssertionError",
+    "call",
+    "expected 2998004.8572 to be less than 100",
+    "tests/performance/milestone1-baselines.test.ts:355"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 2998004.8572 to be less than 100",
+    "tests/performance/milestone1-baselines.test.ts:355"
+   ]
+  ],
+  "tests/performance/rvf-pattern-store.test.ts::RvfPatternStore \u2014 Real Native Benchmarks::ingest 1000 patterns into native HNSW": [
+   [
+    "AssertionError",
+    "call",
+    "expected 986049.571 to be less than 10000",
+    "tests/performance/rvf-pattern-store.test.ts:135"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 986049.571 to be less than 10000",
+    "tests/performance/rvf-pattern-store.test.ts:135"
+   ]
+  ],
+  "tests/unit/cli/commands/learning-backfill-embeddings.test.ts::learning backfill-embeddings command (#584)::should pass the requested batch size to the repair operation": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/cli/commands/learning-backfill-embeddings.test.ts:41"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/cli/commands/learning-backfill-embeddings.test.ts:41"
+   ]
+  ],
+  "tests/unit/cli/commands/learning-curation-1426.test.ts::#1426 selectUnmark and applyUnmark::waits for another process's write lock instead of failing at once": [
+   [
+    "AssertionError",
+    "call",
+    "expected 0 to be greater than 200",
+    "tests/unit/cli/commands/learning-curation-1426.test.ts:259"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 0 to be greater than 200",
+    "tests/unit/cli/commands/learning-curation-1426.test.ts:259"
+   ]
+  ],
+  "tests/unit/coordination/approval-gate.test.ts::approval gate::accepts approval delivered synchronously by the approval event consumer": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/coordination/approval-gate.test.ts:293"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/coordination/approval-gate.test.ts:293"
+   ]
+  ],
+  "tests/unit/coordination/approval-gate.test.ts::approval gate::closes an indefinite gate when the workflow times out": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/coordination/approval-gate.test.ts:380"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/coordination/approval-gate.test.ts:380"
+   ]
+  ],
+  "tests/unit/coordination/approval-gate.test.ts::approval gate::does not dispatch an action when the workflow is cancelled at its gate": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/coordination/approval-gate.test.ts:338"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/coordination/approval-gate.test.ts:338"
+   ]
+  ],
+  "tests/unit/coordination/approval-gate.test.ts::approval gate::does not register a gate after cancellation during StepStarted publication": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/coordination/approval-gate.test.ts:359"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/coordination/approval-gate.test.ts:359"
+   ]
+  ],
+  "tests/unit/coordination/approval-gate.test.ts::approval gate::expires without executing an unapproved action": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/coordination/approval-gate.test.ts:185"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/coordination/approval-gate.test.ts:185"
+   ]
+  ],
+  "tests/unit/coordination/approval-gate.test.ts::approval gate::fails closed when the approval request cannot be published": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/coordination/approval-gate.test.ts:315"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/coordination/approval-gate.test.ts:315"
+   ]
+  ],
+  "tests/unit/coordination/handlers/coverage-runner.test.ts::#995 review B1 \u2014 process-tree timeout::leaves no surviving child and no temp dir after a hanging test run": [
+   [
+    "AssertionError",
+    "call",
+    "worker survived the timeout: expected true to be false // Object.is equality",
+    "tests/unit/coordination/handlers/coverage-runner.test.ts:102"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "worker survived the timeout: expected true to be false // Object.is equality",
+    "tests/unit/coordination/handlers/coverage-runner.test.ts:102"
+   ]
+  ],
+  "tests/unit/coordination/handlers/coverage-runner.test.ts::#995 review BL1 \u2014 coverage group dies with the host::kills the group and removes the temp dir when the client closes stdin": [
+   [
+    "AssertionError",
+    "call",
+    "runner survived the host: expected true to be false // Object.is equality",
+    "tests/unit/coordination/handlers/coverage-runner.test.ts:196"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "runner survived the host: expected true to be false // Object.is equality",
+    "tests/unit/coordination/handlers/coverage-runner.test.ts:196"
+   ]
+  ],
+  "tests/unit/coordination/handlers/coverage-runner.test.ts::#995 review BL1 \u2014 coverage group dies with the host::kills the group and removes the temp dir when the host gets SIGTERM": [
+   [
+    "AssertionError",
+    "call",
+    "runner survived the host: expected true to be false // Object.is equality",
+    "tests/unit/coordination/handlers/coverage-runner.test.ts:196"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "runner survived the host: expected true to be false // Object.is equality",
+    "tests/unit/coordination/handlers/coverage-runner.test.ts:196"
+   ]
+  ],
+  "tests/unit/coordination/queen-coordinator-memory-leak.test.ts::PAP-003: QueenCoordinator Memory Leak Fix::subscription tracking::should create subscriptions for all domains during initialize": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/coordination/queen-coordinator-memory-leak.test.ts:304"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/coordination/queen-coordinator-memory-leak.test.ts:304"
+   ]
+  ],
+  "tests/unit/coordination/task-executor.test.ts::DomainTaskExecutor::duration tracking::should track execution duration": [
+   [
+    "AssertionError",
+    "call",
+    "expected 0 to be greater than 0",
+    "tests/unit/coordination/task-executor.test.ts:854"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 0 to be greater than 0",
+    "tests/unit/coordination/task-executor.test.ts:854"
+   ]
+  ],
+  "tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts::caller termination ownership::reaps collection descendants and artifacts when the caller receives SIGHUP": [
+   [
+    "AssertionError",
+    "call",
+    "expected true to be false // Object.is equality",
+    "tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts:248"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected true to be false // Object.is equality",
+    "tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts:248"
+   ]
+  ],
+  "tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts::caller termination ownership::reaps collection descendants and artifacts when the caller receives SIGINT": [
+   [
+    "AssertionError",
+    "call",
+    "expected true to be false // Object.is equality",
+    "tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts:248"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected true to be false // Object.is equality",
+    "tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts:248"
+   ]
+  ],
+  "tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts::caller termination ownership::reaps collection descendants and artifacts when the caller receives SIGTERM": [
+   [
+    "AssertionError",
+    "call",
+    "expected true to be false // Object.is equality",
+    "tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts:248"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected true to be false // Object.is equality",
+    "tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts:248"
+   ]
+  ],
+  "tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts::caller termination ownership::reaps collection descendants and artifacts when the caller receives exit": [
+   [
+    "AssertionError",
+    "call",
+    "expected true to be false // Object.is equality",
+    "tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts:248"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected true to be false // Object.is equality",
+    "tests/unit/domains/code-intelligence/test-counter-vitest-list.test.ts:248"
+   ]
+  ],
+  "tests/unit/domains/coverage-analysis/sublinear-analyzer.test.ts::SublinearCoverageAnalyzer::performance benchmarks::should demonstrate sublinear scaling characteristics": [
+   [
+    "AssertionError",
+    "call",
+    "expected 1124999.9999946284 to be less than 50",
+    "tests/unit/domains/coverage-analysis/sublinear-analyzer.test.ts:417"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 1124999.9999946284 to be less than 50",
+    "tests/unit/domains/coverage-analysis/sublinear-analyzer.test.ts:417"
+   ]
+  ],
+  "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts::brain-checkpoint generated helper keeps the last checkpoint (#1238)::should_sweepTempFilesOfAKilledRun_andKeepThoseOfALiveOne": [
+   [
+    "AssertionError",
+    "call",
+    "expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ]",
+    "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ]",
+    "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153"
+   ]
+  ],
+  "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts::brain-checkpoint shipped helper keeps the last checkpoint (#1238)::should_sweepTempFilesOfAKilledRun_andKeepThoseOfALiveOne": [
+   [
+    "AssertionError",
+    "call",
+    "expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ]",
+    "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected [] to deeply equal [ 'aqe.rvf.tmp-1253336163-cafecafe' ]",
+    "tests/unit/hooks/brain-checkpoint-keeps-checkpoint.test.ts:153"
+   ]
+  ],
+  "tests/unit/hooks/brain-checkpoint-richness.test.ts::brain-checkpoint generated helper richness guard (#1251)::should_dropTheAckAndApplyTheNormalPolicy_when_theCliIgnoresIt": [
+   [
+    "AssertionError",
+    "call",
+    "expected '[brain-checkpoint] Ignored the shrink\u2026' to contain 'Ignored the shrink acknowledgement (t\u2026'",
+    "tests/unit/hooks/brain-checkpoint-richness.test.ts:180"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected '[brain-checkpoint] Ignored the shrink\u2026' to contain 'Ignored the shrink acknowledgement (t\u2026'",
+    "tests/unit/hooks/brain-checkpoint-richness.test.ts:180"
+   ]
+  ],
+  "tests/unit/hooks/brain-checkpoint-richness.test.ts::brain-checkpoint generated helper richness guard (#1251)::should_endTheBackOff_when_theShrinkIsAcknowledgedAfterTheRefusal": [
+   [
+    "AssertionError",
+    "call",
+    "expected { Object (exported, skipped, ...) } to match object { exported: true, \u2026(1) } / (3 matching properties omitted from actual)",
+    "tests/unit/hooks/brain-checkpoint-richness.test.ts:207"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected { Object (exported, skipped, ...) } to match object { exported: true, \u2026(1) } / (3 matching properties omitted from actual)",
+    "tests/unit/hooks/brain-checkpoint-richness.test.ts:207"
+   ]
+  ],
+  "tests/unit/hooks/brain-checkpoint-richness.test.ts::brain-checkpoint generated helper richness guard (#1251)::should_keepTheAck_when_theAcknowledgedExportFails": [
+   [
+    "AssertionError",
+    "call",
+    "expected false to be true // Object.is equality",
+    "tests/unit/hooks/brain-checkpoint-richness.test.ts:218"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected false to be true // Object.is equality",
+    "tests/unit/hooks/brain-checkpoint-richness.test.ts:218"
+   ]
+  ],
+  "tests/unit/hooks/brain-checkpoint-richness.test.ts::brain-checkpoint generated helper richness guard (#1251)::should_overwriteOnceAndSpendTheAck_when_aShrinkWasAcknowledged": [
+   [
+    "AssertionError",
+    "call",
+    "expected { exported: true, patterns: 5 } to match object { exported: true, \u2026(1) } / (1 matching property omitted from actual)",
+    "tests/unit/hooks/brain-checkpoint-richness.test.ts:164"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected { exported: true, patterns: 5 } to match object { exported: true, \u2026(1) } / (1 matching property omitted from actual)",
+    "tests/unit/hooks/brain-checkpoint-richness.test.ts:164"
+   ]
+  ],
+  "tests/unit/hooks/brain-checkpoint-richness.test.ts::brain-checkpoint shipped helper richness guard (#1251)::should_dropTheAckAndApplyTheNormalPolicy_when_theCliIgnoresIt": [
+   [
+    "AssertionError",
+    "call",
+    "expected '[brain-checkpoint] Ignored the shrink\u2026' to contain 'Ignored the shrink acknowledgement (t\u2026'",
+    "tests/unit/hooks/brain-checkpoint-richness.test.ts:180"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected '[brain-checkpoint] Ignored the shrink\u2026' to contain 'Ignored the shrink acknowledgement (t\u2026'",
+    "tests/unit/hooks/brain-checkpoint-richness.test.ts:180"
+   ]
+  ],
+  "tests/unit/hooks/brain-checkpoint-richness.test.ts::brain-checkpoint shipped helper richness guard (#1251)::should_endTheBackOff_when_theShrinkIsAcknowledgedAfterTheRefusal": [
+   [
+    "AssertionError",
+    "call",
+    "expected { Object (exported, skipped, ...) } to match object { exported: true, \u2026(1) } / (3 matching properties omitted from actual)",
+    "tests/unit/hooks/brain-checkpoint-richness.test.ts:207"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected { Object (exported, skipped, ...) } to match object { exported: true, \u2026(1) } / (3 matching properties omitted from actual)",
+    "tests/unit/hooks/brain-checkpoint-richness.test.ts:207"
+   ]
+  ],
+  "tests/unit/hooks/brain-checkpoint-richness.test.ts::brain-checkpoint shipped helper richness guard (#1251)::should_keepTheAck_when_theAcknowledgedExportFails": [
+   [
+    "AssertionError",
+    "call",
+    "expected false to be true // Object.is equality",
+    "tests/unit/hooks/brain-checkpoint-richness.test.ts:218"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected false to be true // Object.is equality",
+    "tests/unit/hooks/brain-checkpoint-richness.test.ts:218"
+   ]
+  ],
+  "tests/unit/hooks/brain-checkpoint-richness.test.ts::brain-checkpoint shipped helper richness guard (#1251)::should_overwriteOnceAndSpendTheAck_when_aShrinkWasAcknowledged": [
+   [
+    "AssertionError",
+    "call",
+    "expected { exported: true, patterns: 5 } to match object { exported: true, \u2026(1) } / (1 matching property omitted from actual)",
+    "tests/unit/hooks/brain-checkpoint-richness.test.ts:164"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected { exported: true, patterns: 5 } to match object { exported: true, \u2026(1) } / (1 matching property omitted from actual)",
+    "tests/unit/hooks/brain-checkpoint-richness.test.ts:164"
+   ]
+  ],
+  "tests/unit/init/init-wizard-pipeline.test.ts::Init wizard pipeline - full orchestration over a temp project::should complete full auto-mode initialization with all steps succeeding": [
+   [
+    "AssertionError",
+    "call",
+    "expected 0 to be greater than 0",
+    "tests/unit/init/init-wizard-pipeline.test.ts:100"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 0 to be greater than 0",
+    "tests/unit/init/init-wizard-pipeline.test.ts:100"
+   ]
+  ],
+  "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts::deferred SONA write recovery::keeps the first batch referenced but unrefs a retry after a native failed batch": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts:93"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts:93"
+   ]
+  ],
+  "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts::deferred SONA write recovery::references an existing retry when new explicit work starts a fresh batch": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts:105"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/integrations/ruvector/sona-deferred-save-recovery.test.ts:105"
+   ]
+  ],
+  "tests/unit/integrations/ruvector/sona-three-loop.test.ts::SONAThreeLoopEngine::Instant Loop::should complete adaptation quickly": [
+   [
+    "AssertionError",
+    "call",
+    "expected 1185049.372 to be less than 1000",
+    "tests/unit/integrations/ruvector/sona-three-loop.test.ts:395"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 1185049.372 to be less than 1000",
+    "tests/unit/integrations/ruvector/sona-three-loop.test.ts:395"
+   ]
+  ],
+  "tests/unit/kernel/startup-schema-1356.test.ts::first use under a held lock (#1356)::control: without the startup step the same DDL blocks on the lock": [
+   [
+    "AssertionError",
+    "call",
+    "expected 0 to be greater than or equal to 1900",
+    "tests/unit/kernel/startup-schema-1356.test.ts:364"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 0 to be greater than or equal to 1900",
+    "tests/unit/kernel/startup-schema-1356.test.ts:364"
+   ]
+  ],
+  "tests/unit/learning/embedder-endpoint-client.test.ts::EmbedderEndpointClient::#1216: after the window the trial probe runs in the background, and its success closes the breaker": [
+   [
+    "AssertionError",
+    "call",
+    "expected false to be true // Object.is equality",
+    "tests/unit/learning/embedder-endpoint-client.test.ts:576"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected false to be true // Object.is equality",
+    "tests/unit/learning/embedder-endpoint-client.test.ts:576"
+   ]
+  ],
+  "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts::QEReasoningBank \u2014 recordOutcome qe_pattern_usage feedback loop::should early-return ok when enableLearning is false": [
+   [
+    "Error",
+    "call",
+    "Hook timed out in 15000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\".",
+    "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts:59"
+   ],
+   [
+    "Error",
+    "call",
+    "Hook timed out in 15000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\".",
+    "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts:59"
+   ]
+  ],
+  "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts::QEReasoningBank \u2014 recordOutcome qe_pattern_usage feedback loop::should not fail when db.prepare().run() throws": [
+   [
+    "Error",
+    "call",
+    "Hook timed out in 15000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\".",
+    "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts:59"
+   ],
+   [
+    "Error",
+    "call",
+    "Hook timed out in 15000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\".",
+    "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts:59"
+   ]
+  ],
+  "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts::QEReasoningBank \u2014 recordOutcome qe_pattern_usage feedback loop::should not fail when getDatabase() throws": [
+   [
+    "Error",
+    "call",
+    "Hook timed out in 15000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\".",
+    "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts:59"
+   ],
+   [
+    "Error",
+    "call",
+    "Hook timed out in 15000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\".",
+    "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts:59"
+   ]
+  ],
+  "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts::QEReasoningBank \u2014 recordOutcome qe_pattern_usage feedback loop::should not fail when unified memory is NOT available": [
+   [
+    "Error",
+    "call",
+    "Hook timed out in 15000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\".",
+    "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts:59"
+   ],
+   [
+    "Error",
+    "call",
+    "Hook timed out in 15000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\".",
+    "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts:59"
+   ]
+  ],
+  "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts::QEReasoningBank \u2014 recordOutcome qe_pattern_usage feedback loop::should record success=false outcome and not increment successfulOutcomes": [
+   [
+    "Error",
+    "call",
+    "Hook timed out in 15000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\".",
+    "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts:59"
+   ],
+   [
+    "Error",
+    "call",
+    "Hook timed out in 15000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\".",
+    "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts:59"
+   ]
+  ],
+  "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts::QEReasoningBank \u2014 recordOutcome qe_pattern_usage feedback loop::should record success=true outcome and increment stats correctly": [
+   [
+    "Error",
+    "call",
+    "Hook timed out in 15000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\".",
+    "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts:59"
+   ],
+   [
+    "Error",
+    "call",
+    "Hook timed out in 15000ms. / If this is a long-running hook, pass a timeout value as the last argument or configure it globally with \"hookTimeout\".",
+    "tests/unit/learning/qe-reasoning-bank-feedback-loop.test.ts:59"
+   ]
+  ],
+  "tests/unit/mcp/handlers/memory-share-collisions.test.ts::knowledge sharing collision resistance (memory)::retains two different findings admitted in the same millisecond": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/mcp/handlers/memory-share-collisions.test.ts:49"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 10000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/mcp/handlers/memory-share-collisions.test.ts:49"
+   ]
+  ],
+  "tests/unit/mcp/mcp-performance-benchmark.test.ts::MCP Performance Benchmarks::Load Balancer Performance::should select agents in O(1) time": [
+   [
+    "AssertionError",
+    "call",
+    "expected 2000 to be less than 1",
+    "tests/unit/mcp/mcp-performance-benchmark.test.ts:192"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 2000 to be less than 1",
+    "tests/unit/mcp/mcp-performance-benchmark.test.ts:192"
+   ]
+  ],
+  "tests/unit/mcp/mcp-performance-benchmark.test.ts::MCP Performance Benchmarks::Tool Registry Performance::should achieve <1ms tool lookup": [
+   [
+    "AssertionError",
+    "call",
+    "expected 1000 to be less than 1",
+    "tests/unit/mcp/mcp-performance-benchmark.test.ts:335"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 1000 to be less than 1",
+    "tests/unit/mcp/mcp-performance-benchmark.test.ts:335"
+   ]
+  ],
+  "tests/unit/performance/benchmarks.test.ts::PerformanceProfiler::Results::should sort sections by total time": [
+   [
+    "AssertionError",
+    "call",
+    "expected 'fast' to be 'slow' // Object.is equality",
+    "tests/unit/performance/benchmarks.test.ts:189"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 'fast' to be 'slow' // Object.is equality",
+    "tests/unit/performance/benchmarks.test.ts:189"
+   ]
+  ],
+  "tests/unit/routing/neural-tiny-dancer-router.test.ts::ADR-082 Success Criteria::Criterion 2: Routing latency < 100us p99::should route 1000 decisions within 100us p99": [
+   [
+    "AssertionError",
+    "call",
+    "expected 6000000 to be less than 500",
+    "tests/unit/routing/neural-tiny-dancer-router.test.ts:855"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 6000000 to be less than 500",
+    "tests/unit/routing/neural-tiny-dancer-router.test.ts:855"
+   ]
+  ],
+  "tests/unit/shared/io/confined-read-1161.test.ts::confined reads (#1161)::never returns outside content while the checked name is swapped for a symlink (race)": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 20000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/shared/io/confined-read-1161.test.ts:113"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 20000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/shared/io/confined-read-1161.test.ts:113"
+   ]
+  ],
+  "tests/unit/shared/io/file-reader-project-root.test.ts::FileReader projectRoot containment::TOCTOU: concurrent symlink swaps (bounded race, #1021 round 2b)::never reads outside when a directory component is swapped for a symlink": [
+   [
+    "Error",
+    "call",
+    "Test timed out in 15000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/shared/io/file-reader-project-root.test.ts:181"
+   ],
+   [
+    "Error",
+    "call",
+    "Test timed out in 15000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "tests/unit/shared/io/file-reader-project-root.test.ts:181"
+   ]
+  ],
+  "tests/unit/shared/utils/binary-insert.test.ts::Performance: binaryInsert vs Array.sort::should be faster than sort for many insertions": [
+   [
+    "AssertionError",
+    "call",
+    "expected 0.0009999999999763531 to be less than 0.0009999999999763531",
+    "tests/unit/shared/utils/binary-insert.test.ts:275"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected 0.0009999999999763531 to be less than 0.0009999999999763531",
+    "tests/unit/shared/utils/binary-insert.test.ts:275"
+   ]
+  ],
+  "tests/unit/strange-loop/infra-healing/coordination-lock.test.ts::CoordinationLock::getActiveLocks()::excludes expired locks": [
+   [
+    "AssertionError",
+    "call",
+    "expected [] to have a length of 1 but got +0",
+    "tests/unit/strange-loop/infra-healing/coordination-lock.test.ts:186"
+   ],
+   [
+    "AssertionError",
+    "call",
+    "expected [] to have a length of 1 but got +0",
+    "tests/unit/strange-loop/infra-healing/coordination-lock.test.ts:186"
+   ]
+  ]
+ }
+}
