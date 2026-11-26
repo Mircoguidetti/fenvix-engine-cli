@@ -1,0 +1,733 @@
+{
+ "ok": false,
+ "repo": "alakajam",
+ "rule1": [
+  {
+   "changes": [
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/entry/entry.service.spec.ts::Entry service::find user entries::should find all entries of a user",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/like/like.service.spec.ts::Like service::like::should not like twice",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/post.service.spec.ts::Post service::attach posts to entry::should not attach posts when the user only has a role on an entry sharing the same ID",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/user/user.service.spec.ts::User service::approved user::should not approve users without entries",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/user/user.service.spec.ts::User service::entries count from real nodes::should count entries but not posts",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/user/user.service.spec.ts::User service::entries count from real nodes::should not consider users with only posts as having entries",
+     "towards_identical": false,
+     "w": 2
+    }
+   ],
+   "defects": [
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/entry/entry.service.spec.ts::Entry service::find user entries::should find all entries of a user",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/like/like.service.spec.ts::Like service::like::should not like twice",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/post.service.spec.ts::Post service::attach posts to entry::should not attach posts when the user only has a role on an entry sharing the same ID",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/user/user.service.spec.ts::User service::approved user::should not approve users without entries",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/user/user.service.spec.ts::User service::entries count from real nodes::should count entries but not posts",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/user/user.service.spec.ts::User service::entries count from real nodes::should not consider users with only posts as having entries",
+     "towards_identical": false,
+     "w": 2
+    }
+   ],
+   "rounds_base": 3,
+   "rounds_fix": 3,
+   "variable_class": [
+    "server/core/migration-0047-node-table.spec.ts::Migration 0047_node_table (SQLite)::on a populated database::should make new nodes start above the floor",
+    "server/core/security.spec.ts::Security::post permissions::should give no write permissions to other users",
+    "server/core/security.spec.ts::Security::post permissions::should let anyone read published posts by approved users",
+    "server/entry/entry.service.spec.ts::Entry service::create entry::should create an entry with a manage role for its owner",
+    "server/entry/entry.service.spec.ts::Entry service::create entry::should support external entries (without event)",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find entries through the userId filter",
+    "server/entry/highscore/highscore.service.spec.ts::High score service::find user scores::should exclude suspended scores by default (#636)",
+    "server/entry/highscore/highscore.service.spec.ts::High score service::find user scores::should include suspended scores when requested",
+    "server/entry/team/team.service.spec.ts::Team service::find team members::should list the owner, members and invites of an entry",
+    "server/entry/team/team.service.spec.ts::Team service::find team members::should not list users with roles on a post sharing the same ID",
+    "server/entry/team/team.service.spec.ts::Team service::find team members::should only list the current user for a new entry",
+    "server/entry/team/team.service.spec.ts::Team service::set team members::should invite new members",
+    "server/entry/team/team.service.spec.ts::Team service::set team members::should report users who already entered the event with another entry",
+    "server/event/tournament/tournament.service.spec.ts::Tournament service::count submitted scores::should count active scores over all tournament games, ignoring suspended and unrelated scores",
+    "server/event/tournament/tournament.service.spec.ts::Tournament service::count submitted scores::should return nothing for events that are not tournaments",
+    "server/post/comment/comment.service.spec.ts::Comment service::create comment::should comment a post",
+    "server/post/comment/comment.service.spec.ts::Comment service::create comment::should comment an entry",
+    "server/post/comment/comment.service.spec.ts::Comment service::create comment::should keep comments of a post and an entry sharing the same ID separate",
+    "server/post/comment/comment.service.spec.ts::Comment service::create comment::should sort comments of a node by creation date",
+    "server/post/comment/comment.service.spec.ts::Comment service::edit comment::should update the comment body",
+    "server/post/like/like.service.spec.ts::Like service::like::should ignore invalid like types",
+    "server/post/like/like.service.spec.ts::Like service::unlike::should clear like details when the last like is removed",
+    "server/post/like/like.service.spec.ts::Like service::unlike::should do nothing if the post was not liked",
+    "server/post/like/like.service.spec.ts::Like service::unlike::should remove the like and update counters",
+    "server/post/post.service.spec.ts::Post service::create post::should store the event ID on the author role",
+    "server/post/post.service.spec.ts::Post service::find post by ID::should return nothing for an unknown ID",
+    "server/post/post.service.spec.ts::Post service::find post by ID::should return the post with its author, roles, event & entry",
+    "server/user/user.service.spec.ts::User service::approved user::should approve team members of an event entry",
+    "server/user/user.service.spec.ts::User service::approved user::should not approve users with only external entries",
+    "server/user/user.service.spec.ts::User service::refresh references::should refresh user roles when user title changes"
+   ],
+   "w": 2
+  },
+  {
+   "changes": [
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/core/migration-0047-node-table.spec.ts::Migration 0047_node_table (SQLite)::on a populated database::should cascade node deletions when foreign keys are enforced",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/core/migration-0047-node-table.spec.ts::Migration 0047_node_table (SQLite)::safety checks::should refuse to run when post IDs reach the floor",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/core/security.spec.ts::Security::entry permissions::should give all permissions to the entry owner",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/entry/highscore/highscore.service.spec.ts::High score service::find user scores::should exclude suspended scores by default (#636)",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/entry/highscore/highscore.service.spec.ts::High score service::find user scores::should include suspended scores when requested",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/entry/team/team.service.spec.ts::Team service::find team members::should list the owner, members and invites of an entry",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/like/like.service.spec.ts::Like service::like::should count likes from several users",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/like/like.service.spec.ts::Like service::like::should not like twice",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/like/like.service.spec.ts::Like service::unlike::should remove the like and update counters",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/post.service.spec.ts::Post service::create post::should store the event ID on the author role",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/user/user.service.spec.ts::User service::approved user::should not approve users with only external entries",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/user/user.service.spec.ts::User service::approved user::should not approve users without entries",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/user/user.service.spec.ts::User service::entries count from real nodes::should count entries but not posts",
+     "towards_identical": false,
+     "w": 4
+    }
+   ],
+   "defects": [
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/core/migration-0047-node-table.spec.ts::Migration 0047_node_table (SQLite)::on a populated database::should cascade node deletions when foreign keys are enforced",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/core/migration-0047-node-table.spec.ts::Migration 0047_node_table (SQLite)::safety checks::should refuse to run when post IDs reach the floor",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/core/security.spec.ts::Security::entry permissions::should give all permissions to the entry owner",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/entry/highscore/highscore.service.spec.ts::High score service::find user scores::should exclude suspended scores by default (#636)",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/entry/highscore/highscore.service.spec.ts::High score service::find user scores::should include suspended scores when requested",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/entry/team/team.service.spec.ts::Team service::find team members::should list the owner, members and invites of an entry",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/like/like.service.spec.ts::Like service::like::should count likes from several users",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/like/like.service.spec.ts::Like service::like::should not like twice",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/like/like.service.spec.ts::Like service::unlike::should remove the like and update counters",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/post.service.spec.ts::Post service::create post::should store the event ID on the author role",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/user/user.service.spec.ts::User service::approved user::should not approve users with only external entries",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/user/user.service.spec.ts::User service::approved user::should not approve users without entries",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/user/user.service.spec.ts::User service::entries count from real nodes::should count entries but not posts",
+     "towards_identical": false,
+     "w": 4
+    }
+   ],
+   "rounds_base": 3,
+   "rounds_fix": 3,
+   "variable_class": [
+    "server/core/security.spec.ts::Security::post permissions::should give no write permissions to other users",
+    "server/core/security.spec.ts::Security::post permissions::should let anyone read published posts by approved users",
+    "server/entry/entry.service.spec.ts::Entry service::create entry::should create an entry with a manage role for its owner",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find all entries of a user",
+    "server/entry/entry.service.spec.ts::Entry service::find user entries::should find entries of a team member",
+    "server/entry/team/team.service.spec.ts::Team service::find team members::should not list users with roles on a post sharing the same ID",
+    "server/entry/team/team.service.spec.ts::Team service::find team members::should only list the current user for a new entry",
+    "server/entry/team/team.service.spec.ts::Team service::set team members::should invite new members",
+    "server/event/tournament/tournament.service.spec.ts::Tournament service::count submitted scores::should count active scores over all tournament games, ignoring suspended and unrelated scores",
+    "server/post/comment/comment.service.spec.ts::Comment service::create comment::should comment a post",
+    "server/post/comment/comment.service.spec.ts::Comment service::create comment::should comment an entry",
+    "server/post/comment/comment.service.spec.ts::Comment service::create comment::should keep comments of a post and an entry sharing the same ID separate",
+    "server/post/comment/comment.service.spec.ts::Comment service::create comment::should sort comments of a node by creation date",
+    "server/post/comment/comment.service.spec.ts::Comment service::delete comment::should delete a post comment",
+    "server/post/comment/comment.service.spec.ts::Comment service::delete comment::should delete an anonymous entry comment along with its author link",
+    "server/post/like/like.service.spec.ts::Like service::like::should ignore invalid like types",
+    "server/post/like/like.service.spec.ts::Like service::unlike::should clear like details when the last like is removed",
+    "server/post/like/like.service.spec.ts::Like service::unlike::should do nothing if the post was not liked",
+    "server/post/post.service.spec.ts::Post service::find post by ID::should return nothing for an unknown ID",
+    "server/post/post.service.spec.ts::Post service::find post by ID::should return the post with its author, roles, event & entry",
+    "server/user/user.service.spec.ts::User service::refresh references::should refresh user roles when user title changes"
+   ],
+   "w": 4
+  }
+ ],
+ "rule2": {
+  "allowed_declared_only": [],
+  "declared": [],
+  "defects": [],
+  "need_repeat": [
+   "server/event/tournament/tournament.service.spec.ts::Tournament service::count submitted scores::should count active scores over all tournament games, ignoring suspended and unrelated scores",
+   "server/post/post.service.spec.ts::Post service::find post by ID::should return the post with its author, roles, event & entry"
+  ],
+  "passed": 116,
+  "stable_in_baseline": 118
+ },
+ "rule3": {
+  "count_defects": [
+   {
+    "baseline": [
+     103,
+     118
+    ],
+    "count": "passed",
+    "fix": 102,
+    "kind": "par",
+    "rep": 3,
+    "workers": 2
+   },
+   {
+    "baseline": [
+     99,
+     114
+    ],
+    "count": "failed",
+    "fix": 115,
+    "kind": "par",
+    "rep": 3,
+    "workers": 2
+   },
+   {
+    "baseline": [
+     103,
+     107
+    ],
+    "count": "passed",
+    "fix": 102,
+    "kind": "par",
+    "rep": 1,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     110,
+     114
+    ],
+    "count": "failed",
+    "fix": 115,
+    "kind": "par",
+    "rep": 1,
+    "workers": 4
+   }
+  ],
+  "defects": [
+   {
+    "baseline": [
+     "failed"
+    ],
+    "fix": "passed",
+    "fix_round": 3,
+    "kind": "serial",
+    "nodeid": "server/user/user.service.spec.ts::User service::entries count from real nodes::should not consider users with only posts as having entries"
+   },
+   {
+    "baseline": [
+     "failed"
+    ],
+    "fix": "passed",
+    "fix_round": 2,
+    "kind": "par w2",
+    "nodeid": "server/user/user.service.spec.ts::User service::entries count from real nodes::should not consider users with only posts as having entries"
+   }
+  ],
+  "exit_defects": [],
+  "false_green": [],
+  "variable": {
+   "server/core/security.spec.ts::Security::add user right::should create a role on a post": [
+    "serial",
+    "par w2",
+    "par w4"
+   ],
+   "server/core/security.spec.ts::Security::add user right::should not duplicate an existing role": [
+    "serial",
+    "par w2",
+    "par w4"
+   ],
+   "server/core/security.spec.ts::Security::add user right::should upgrade an existing role to a higher permission, but never downgrade it": [
+    "serial",
+    "par w2",
+    "par w4"
+   ],
+   "server/core/security.spec.ts::Security::comment permissions::should only let the comment author edit it": [
+    "serial",
+    "par w2",
+    "par w4"
+   ],
+   "server/core/security.spec.ts::Security::event permissions::should let anyone read events but only mods edit them, and only admins once closed": [
+    "serial",
+    "par w2",
+    "par w4"
+   ],
+   "server/core/security.spec.ts::Security::post permissions::should always refuse when no model is given": [
+    "par w2",
+    "par w4"
+   ],
+   "server/core/security.spec.ts::Security::post permissions::should require user roles to be loaded": [
+    "serial",
+    "par w2"
+   ],
+   "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should create anonymous comments on entries allowing them": [
+    "serial",
+    "par w2"
+   ],
+   "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should not create anonymous comments for users disallowed to": [
+    "serial",
+    "par w2"
+   ],
+   "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should not create anonymous comments on entries disallowing them": [
+    "serial",
+    "par w2"
+   ],
+   "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should not create anonymous comments on posts": [
+    "serial",
+    "par w2"
+   ],
+   "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should only find own anonymous comments of the requested node": [
+    "serial",
+    "par w2"
+   ],
+   "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should tell that a regular comment is not an own anonymous comment": [
+    "serial",
+    "par w2"
+   ],
+   "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should tell that an anonymous comment belongs to its author": [
+    "serial",
+    "par w2"
+   ],
+   "server/post/comment/comment.service.spec.ts::Comment service::delete comment::should delete a post comment": [
+    "serial",
+    "par w2"
+   ],
+   "server/post/comment/comment.service.spec.ts::Comment service::delete comment::should delete an anonymous entry comment along with its author link": [
+    "serial",
+    "par w2"
+   ],
+   "server/post/comment/comment.service.spec.ts::Comment service::edit comment::should only allow the comment author to edit it": [
+    "serial",
+    "par w2"
+   ],
+   "server/user/user.service.spec.ts::User service::approved user::should not approve users without entries": [
+    "par w2",
+    "par w4"
+   ]
+  }
+ }
+}

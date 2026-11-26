@@ -1,0 +1,99 @@
+{
+ "ok": false,
+ "repo": "nestjs-pino",
+ "rule1": [
+  {
+   "changes": [],
+   "defects": [],
+   "rounds_base": 3,
+   "rounds_fix": 3,
+   "variable_class": [
+    "__tests__/module.spec.ts::module initialization::FastifyAdapter::forRoot::should work properly without params",
+    "__tests__/runtime-update.spec.ts::runtime update::doesn't work with useExisting"
+   ],
+   "w": 2
+  },
+  {
+   "changes": [
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "__tests__/module.spec.ts::module initialization::ExpressAdapter::forRoot::should work properly without params",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "__tests__/runtime-update.spec.ts::runtime update::doesn't work with useExisting",
+     "towards_identical": false,
+     "w": 4
+    }
+   ],
+   "defects": [
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "__tests__/module.spec.ts::module initialization::ExpressAdapter::forRoot::should work properly without params",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:io"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:io"
+     ],
+     "nodeid": "__tests__/runtime-update.spec.ts::runtime update::doesn't work with useExisting",
+     "towards_identical": false,
+     "w": 4
+    }
+   ],
+   "rounds_base": 3,
+   "rounds_fix": 3,
+   "variable_class": [
+    "__tests__/module.spec.ts::module initialization::FastifyAdapter::forRoot::should work properly without params",
+    "__tests__/use-existing.spec.ts::useExisting property::FastifyAdapter::should use adapter logger in req context and default beyond"
+   ],
+   "w": 4
+  }
+ ],
+ "rule2": {
+  "allowed_declared_only": [],
+  "declared": [],
+  "defects": [],
+  "need_repeat": [
+   "__tests__/get-logger-token.spec.ts::get-logger-token::should work"
+  ],
+  "passed": 268,
+  "stable_in_baseline": 269
+ },
+ "rule3": {
+  "count_defects": [],
+  "defects": [],
+  "exit_defects": [],
+  "false_green": [],
+  "variable": {}
+ }
+}

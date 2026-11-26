@@ -1,0 +1,255 @@
+{
+ "ok": false,
+ "repo": "agentlang",
+ "rule1": [
+  {
+   "changes": [
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "test/api/mcp.test.ts::MCP over Streamable HTTP::GET on the MCP endpoint is not allowed in stateless mode",
+     "towards_identical": false,
+     "w": 2
+    }
+   ],
+   "defects": [
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "test/api/mcp.test.ts::MCP over Streamable HTTP::GET on the MCP endpoint is not allowed in stateless mode",
+     "towards_identical": false,
+     "w": 2
+    }
+   ],
+   "rounds_base": 3,
+   "rounds_fix": 3,
+   "variable_class": [
+    "test/api/mcp.test.ts::MCP over Streamable HTTP::tools/call on an unexposed event is rejected",
+    "test/api/mcp.test.ts::MCP over Streamable HTTP::workflow errors are returned as tool errors"
+   ],
+   "w": 2
+  },
+  {
+   "changes": [
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "test/api/mcp.test.ts::MCP over Streamable HTTP::GET on the MCP endpoint is not allowed in stateless mode",
+     "towards_identical": false,
+     "w": 4
+    }
+   ],
+   "defects": [
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "test/api/mcp.test.ts::MCP over Streamable HTTP::GET on the MCP endpoint is not allowed in stateless mode",
+     "towards_identical": false,
+     "w": 4
+    }
+   ],
+   "rounds_base": 3,
+   "rounds_fix": 3,
+   "variable_class": [
+    "test/api/mcp.test.ts::MCP over Streamable HTTP::workflow errors are returned as tool errors"
+   ],
+   "w": 4
+  }
+ ],
+ "rule2": {
+  "allowed_declared_only": [],
+  "declared": [],
+  "defects": [],
+  "need_repeat": [],
+  "passed": 435,
+  "stable_in_baseline": 435
+ },
+ "rule3": {
+  "count_defects": [
+   {
+    "baseline": [
+     386,
+     419
+    ],
+    "count": "passed",
+    "fix": 439,
+    "kind": "plain_par",
+    "rep": 1,
+    "workers": 2
+   },
+   {
+    "baseline": [
+     20,
+     53
+    ],
+    "count": "failed",
+    "fix": 0,
+    "kind": "plain_par",
+    "rep": 1,
+    "workers": 2
+   },
+   {
+    "baseline": [
+     386,
+     419
+    ],
+    "count": "passed",
+    "fix": 439,
+    "kind": "plain_par",
+    "rep": 3,
+    "workers": 2
+   },
+   {
+    "baseline": [
+     20,
+     53
+    ],
+    "count": "failed",
+    "fix": 0,
+    "kind": "plain_par",
+    "rep": 3,
+    "workers": 2
+   },
+   {
+    "baseline": [
+     387,
+     423
+    ],
+    "count": "passed",
+    "fix": 439,
+    "kind": "plain_par",
+    "rep": 1,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     16,
+     52
+    ],
+    "count": "failed",
+    "fix": 0,
+    "kind": "plain_par",
+    "rep": 1,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     387,
+     423
+    ],
+    "count": "passed",
+    "fix": 439,
+    "kind": "plain_par",
+    "rep": 2,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     16,
+     52
+    ],
+    "count": "failed",
+    "fix": 0,
+    "kind": "plain_par",
+    "rep": 2,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     387,
+     423
+    ],
+    "count": "passed",
+    "fix": 439,
+    "kind": "plain_par",
+    "rep": 3,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     16,
+     52
+    ],
+    "count": "failed",
+    "fix": 0,
+    "kind": "plain_par",
+    "rep": 3,
+    "workers": 4
+   }
+  ],
+  "defects": [],
+  "exit_defects": [
+   {
+    "baseline": [
+     1
+    ],
+    "fix": 0,
+    "kind": "plain_par",
+    "rep": 1,
+    "workers": 2
+   },
+   {
+    "baseline": [
+     1
+    ],
+    "fix": 0,
+    "kind": "plain_par",
+    "rep": 3,
+    "workers": 2
+   },
+   {
+    "baseline": [
+     1
+    ],
+    "fix": 0,
+    "kind": "plain_par",
+    "rep": 1,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     1
+    ],
+    "fix": 0,
+    "kind": "plain_par",
+    "rep": 2,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     1
+    ],
+    "fix": 0,
+    "kind": "plain_par",
+    "rep": 3,
+    "workers": 4
+   }
+  ],
+  "false_green": [],
+  "variable": {}
+ }
+}

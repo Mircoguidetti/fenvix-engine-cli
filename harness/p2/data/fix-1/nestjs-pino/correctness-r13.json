@@ -1,0 +1,40 @@
+{
+ "ok": true,
+ "repo": "nestjs-pino",
+ "rule1": [
+  {
+   "changes": [],
+   "defects": [],
+   "rounds_base": 3,
+   "rounds_fix": 3,
+   "variable_class": [
+    "__tests__/module.spec.ts::module initialization::FastifyAdapter::forRoot::should work properly with single value of `httpPino` property",
+    "__tests__/module.spec.ts::module initialization::FastifyAdapter::forRoot::should work properly without params",
+    "__tests__/runtime-update.spec.ts::runtime update::doesn't work with useExisting"
+   ],
+   "w": 2
+  },
+  {
+   "changes": [],
+   "defects": [],
+   "rounds_base": 3,
+   "rounds_fix": 3,
+   "variable_class": [
+    "__tests__/module.spec.ts::module initialization::ExpressAdapter::forRoot::should work properly with single value of `httpPino` property",
+    "__tests__/module.spec.ts::module initialization::ExpressAdapter::forRoot::should work properly without params",
+    "__tests__/module.spec.ts::module initialization::FastifyAdapter::forRoot::should work properly with single value of `httpPino` property",
+    "__tests__/module.spec.ts::module initialization::FastifyAdapter::forRoot::should work properly without params",
+    "__tests__/runtime-update.spec.ts::runtime update::doesn't work with useExisting",
+    "__tests__/use-existing.spec.ts::useExisting property::FastifyAdapter::should use adapter logger in req context and default beyond"
+   ],
+   "w": 4
+  }
+ ],
+ "rule3": {
+  "count_defects": [],
+  "defects": [],
+  "exit_defects": [],
+  "false_green": [],
+  "variable": {}
+ }
+}
