@@ -48,6 +48,11 @@ def _jsonl(p: Path) -> list[dict]:
     return out
 
 
+def _search_files(res: Path) -> list[Path]:
+    import chunk as CH
+    return CH.search_files(res)
+
+
 def _json(p: Path, default=None):
     return json.loads(p.read_text()) if p.exists() else default
 
@@ -63,7 +68,7 @@ def load(res: Path = RES) -> dict:
         # the full file when present (workflow), else the records each chunk committed (work session)
         "candidates": _jsonl(res / "candidates.jsonl.gz") if (res / "candidates.jsonl.gz").exists()
         else _jsonl(res / "cands_read.jsonl.gz"), "rows": _jsonl(res / "rows.jsonl"),
-        "search": _jsonl(res / "texts_search.jsonl") + _jsonl(res / "texts_search_wf.jsonl"),
+        "search": [r for f in _search_files(res) for r in _jsonl(f)],
         "comments": _jsonl(res / "comments.jsonl"), "reads": _jsonl(res / "reads.jsonl"),
         "s3_pool_split": _json(res / "s3_pool_split.json", {}) or {},
         "handcheck": _json(res / "handcheck.json", {}) or {}, "state": _json(res / "state.json", {}) or {},

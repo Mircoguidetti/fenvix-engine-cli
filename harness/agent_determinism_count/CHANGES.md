@@ -194,3 +194,14 @@
     sleep until reset" rule, which ghapi applies to the core quota and not to search, but the record did not name
     the quota. Each chunk record now also carries rate_limit_sleep_by: the seconds by cause and resource
     (low_remaining_core, low_remaining_search, rate_limited_core, ...). Chunk 10 is the first chunk with it.
+24. 2026-11-26 22:55Z, a fix (no rule change). Run 45894243468 (chunk 12) read its 150 candidates (Chunks step
+    21:31-22:38Z). Every push of its results was then refused, the 22:31Z checkpoint and all 8 tries of the final
+    commit: results/texts_search_wf.jsonl, the §3.2 search records appended uncompressed, had reached 106.92 MB, and
+    GitHub refuses files over 100 MB. Chunk 12's results are in artifact agent-determinism-count-results-45894243468
+    (108 files, 87.6 MB, sha256 a88cb221…), not in git. Run 45899018197 started on the old head without chunk 12's
+    done marker, so it was redoing chunk 12 with the same failure ahead; it was cancelled. texts_search_wf.jsonl is
+    now frozen at its last committed 101,329,224 bytes. New records go to one gzip part per chunk,
+    results/texts_search_wf/<chunk>.jsonl.gz. Every reader (chunk.search_records, the resume check, texts.py,
+    report.py, verify.py) reads chunk.search_files(): the session file, the frozen file, then the parts in chunk
+    order. commit_results.sh commits the new folder. Chunk 12 is read again by the next run, and its done marker
+    comes with that run's commit. Test: test_search_records_span_the_frozen_file_and_gzip_parts.

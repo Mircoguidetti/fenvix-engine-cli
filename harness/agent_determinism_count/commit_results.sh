@@ -4,7 +4,7 @@
 set -u
 out=harness/agent_determinism_count/results
 [ -d "$out" ] || exit 0
-own="rows.jsonl raw chunks.jsonl chunk_errors.jsonl requests_done texts_search_wf.jsonl texts_raw_wf comments.jsonl comments_raw probe_workflow.json probe_workflow_text.json prepass_text.json launch.json discovery_state_text.json discovery/leaf_parts_text.json discovery/restore_text.json discovery/splits_text.jsonl debug pool.json orders.json candidates_index.json cands_read.jsonl.gz"
+own="rows.jsonl raw chunks.jsonl chunk_errors.jsonl requests_done texts_search_wf.jsonl texts_search_wf texts_raw_wf comments.jsonl comments_raw probe_workflow.json probe_workflow_text.json prepass_text.json launch.json discovery_state_text.json discovery/leaf_parts_text.json discovery/restore_text.json discovery/splits_text.jsonl debug pool.json orders.json candidates_index.json cands_read.jsonl.gz"
 # the S1 code workflow (ADC_FAMILY=code) commits only its own files, so two parallel jobs never overwrite each other
 own_code="requests_done_code probe_workflow_code.json probe_decisions.json prepass_code.json discovery_state_code.json discovery/leaf_parts_code.json discovery/splits_code.jsonl population.json"
 if [ "${ADC_FAMILY:-text}" = code ]; then own="$own_code"; fi

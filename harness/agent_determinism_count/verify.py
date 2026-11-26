@@ -79,8 +79,8 @@ def check_rows(res: Path) -> list[str]:
                 if _norm({k: x[k] for k in ("queries", "hits")}) != _norm(again):
                     errs.append(f"texts {rr['repo']}: record differs from its replay")
     crecs = {(r["repo"].lower(), r["at"]): r for r in report._jsonl(res / "comments.jsonl")}
-    search = {(r["repo"].lower(), r["at"]): r for f in ("texts_search.jsonl", "texts_search_wf.jsonl")
-              for r in report._jsonl(res / f)}
+    import chunk as CH
+    search = {(r["repo"].lower(), r["at"]): r for f in CH.search_files(res) for r in report._jsonl(f)}
     d = res / "comments_raw"
     for raw in sorted(d.glob("*.jsonl.gz")) if d.exists() else []:
         for rr in report._jsonl(raw):

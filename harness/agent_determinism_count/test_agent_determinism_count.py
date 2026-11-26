@@ -1436,3 +1436,20 @@ def test_s3_old_new_pool_check_flags_disjoint_intervals():
     assert not R.intervals_disjoint(2, 150, 3, 225)
     assert R.intervals_disjoint(0, 300, 40, 300)
     assert R.intervals_disjoint(40, 300, 0, 300)
+
+
+def test_search_records_span_the_frozen_file_and_gzip_parts(tmp_path):
+    """protects=the §3.2 search records after texts_search_wf.jsonl passed GitHub's 100 MB limit (run 45894243468,
+    106.9 MB: every push refused); fails_when=a reader misses a per-chunk part or the frozen file, or parts sort
+    10 before 9; no_claim=the size of any future part."""
+    import gzip
+    import chunk as CH
+    (tmp_path / "texts_search_wf.jsonl").write_text(json.dumps({"repo": "a/old", "at": "1"}) + "\n")
+    d = tmp_path / "texts_search_wf"
+    d.mkdir()
+    for ch, repo in (("10", "c/ten"), ("9", "b/nine")):
+        with gzip.open(d / f"{ch}.jsonl.gz", "wt") as f:
+            f.write(json.dumps({"repo": repo, "at": "2"}) + "\n")
+    files = CH.search_files(tmp_path)
+    assert [f.name for f in files] == ["texts_search.jsonl", "texts_search_wf.jsonl", "9.jsonl.gz", "10.jsonl.gz"]
+    assert [r["repo"] for f in files for r in CH.read_jsonl(f)] == ["a/old", "b/nine", "c/ten"]

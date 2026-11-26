@@ -31,6 +31,15 @@ RES = HERE / "results"
 probe_config = discover.probe_config
 
 
+def search_files(res: Path) -> list[Path]:
+    """The §3.2 search-record files, oldest first: the session's texts_search.jsonl, the workflow's frozen
+    texts_search_wf.jsonl (it reached 106.9 MB in run 45894243468 and GitHub refuses files over 100 MB; frozen at its
+    last committed 101,329,224 bytes), then one gzip part per chunk under texts_search_wf/ (CHANGES.md item 24)."""
+    d = res / "texts_search_wf"
+    return [res / "texts_search.jsonl", res / "texts_search_wf.jsonl"] + \
+        (sorted(d.glob("*.jsonl.gz"), key=lambda q: (len(q.name), q.name)) if d.exists() else [])
+
+
 def read_jsonl(p: Path) -> list[dict]:
     """JSON lines; a truncated last line or gzip member (a job killed mid-write) is dropped."""
     if not p.exists():
@@ -89,7 +98,7 @@ def text_pass(client, row: dict, cand: dict, chunk, cfg: dict, out: Path, search
             rec = {"repo": row["repo"], "query_repo": repo, "chunk": chunk, "route": "workflow", "at": now(), **res}
             _append(out / "texts_raw_wf" / f"{chunk}.jsonl.gz",
                     {"repo": row["repo"], "at": rec["at"], "cfg": cfg, "responses": src.responses})
-            _append(out / "texts_search_wf.jsonl", rec)
+            _append(out / "texts_search_wf" / f"{chunk}.jsonl.gz", rec)
         else:
             rec = (searches or {}).get(row["repo"].lower())
         if rec is None:
@@ -112,8 +121,8 @@ def text_pass(client, row: dict, cand: dict, chunk, cfg: dict, out: Path, search
 
 def search_records() -> dict:
     out = {}
-    for f in ("texts_search.jsonl", "texts_search_wf.jsonl"):
-        for r in read_jsonl(RES / f):
+    for f in search_files(RES):
+        for r in read_jsonl(f):
             out[r["repo"].lower()] = r
     return out
 
@@ -169,7 +178,7 @@ def run_chunk(req: dict, name: str | None = None) -> int:
                 cands = candidates(order)
             rows = {r["idx"]: r for r in read_jsonl(out / "rows.jsonl")}
             wf_text = req.get("text_route") == "workflow"
-            searched = {r["repo"].lower() for r in read_jsonl(out / "texts_search_wf.jsonl")}
+            searched = {r["repo"].lower() for f in search_files(out)[1:] for r in read_jsonl(f)}
             for idx in order:
                 if over():
                     stopped = "time limit"

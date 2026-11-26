@@ -174,8 +174,7 @@ def main(argv=None) -> int:
     a = ap.parse_args(argv)
     cfg = CH.probe_config()
     sfx = "_wf" if a.route == "workflow" else ""
-    have = {r["repo"].lower() for f in ("texts_search.jsonl", "texts_search_wf.jsonl")
-            for r in CH.read_jsonl(RES / f)}
+    have = {r["repo"].lower() for f in CH.search_files(RES) for r in CH.read_jsonl(f)}
     rows = [r for r in CH.read_jsonl(RES / "rows.jsonl") if str(r.get("chunk")) == str(a.chunk)
             and r.get("cls") == "member" and not (r.get("recordings") or {}).get("yes")]
     c = ghapi.Client(use_gh=True) if a.route == "session" else ghapi.from_env()
