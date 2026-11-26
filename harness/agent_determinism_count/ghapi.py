@@ -59,6 +59,7 @@ class Client:
         self.n_429 = 0
         # seconds slept, by cause (coordinator 17:53Z: per-chunk 429s and sleep, to see a shared search limit)
         self.slept = {"rate_limit": 0.0, "pacing": 0.0, "server_error": 0.0}
+        self.slept_by: dict = {}  # rate-limit sleep seconds by cause and resource (low_remaining_core, ...)
         self.deadline = float(os.environ.get("ADC_DEADLINE") or 0)  # epoch seconds; 0 = none
         self.log = log  # optional list: every request (method, path, status, time) for AC5
         self._last = 0.0
@@ -115,6 +116,8 @@ class Client:
         if rem is not None and rem < 50 and not (search and self.limit.get(res, 0) <= 50):
             sl = max(self.reset.get(res, 0) - time.time(), 0) + 3
             sys.stderr.write(f"rate limit {res} remaining {rem}: sleeping {sl:.0f}s\n")
+            # by resource (coordinator 19:30Z report: chunk 8 slept 1,975 s with no 429; which quota?)
+            self.slept_by[f"low_remaining_{res}"] = self.slept_by.get(f"low_remaining_{res}", 0.0) + min(sl, 3700)
             self._sleep(min(sl, 3700))
 
     def _once(self, path: str) -> tuple[int, dict, object]:
@@ -180,6 +183,8 @@ class Client:
                 self.n_429 += 1
                 sl = retry_seconds(msg, h)
                 sys.stderr.write(f"rate limited ({st}) on {path[:90]}: sleeping {sl:.0f}s\n")
+                k = f"rate_limited_{RESOURCE.get(search, 'core')}"
+                self.slept_by[k] = self.slept_by.get(k, 0.0) + min(sl, 3700)
                 self._sleep(min(sl, 3700))
                 continue
             if st == 0 or st >= 500:

@@ -1425,6 +1425,7 @@ def test_client_counts_rate_limits_and_sleep_by_cause(monkeypatch):
     monkeypatch.setattr(_t, "sleep", lambda s: None)
     st, data, _ = c.get("repos/a/b")
     assert st == 200 and c.n_429 == 1 and c.slept["rate_limit"] >= 7
+    assert c.slept_by.get("rate_limited_core", 0) >= 7  # by resource (chunk 8: 1,975 s with no 429)
 
 
 def test_s3_old_new_pool_check_flags_disjoint_intervals():

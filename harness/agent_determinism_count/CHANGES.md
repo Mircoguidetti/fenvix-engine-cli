@@ -189,3 +189,8 @@
     the projection it flags when the two Wilson 95% intervals do not overlap (rules.intervals_disjoint). decide() is
     unchanged. Item 14's claim is corrected there. Chunk 9 is the next 150 S3 in the new order (plan_next). Test:
     test_s3_old_new_pool_check_flags_disjoint_intervals.
+23. 2026-11-26 19:33Z, harness bookkeeping (no rule change). Chunk 8 (the first chunk with item 20's numbers) took
+    48.0 min: n_429 0, rate_limit sleep 1,975.1 s, pacing 355.8 s. With no 429, that sleep is the "remaining < 50:
+    sleep until reset" rule, which ghapi applies to the core quota and not to search, but the record did not name
+    the quota. Each chunk record now also carries rate_limit_sleep_by: the seconds by cause and resource
+    (low_remaining_core, low_remaining_search, rate_limited_core, ...). Chunk 10 is the first chunk with it.
