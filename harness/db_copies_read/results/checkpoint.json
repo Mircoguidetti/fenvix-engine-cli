@@ -1,5 +1,5 @@
 {
- "attempts_total": 1401,
+ "attempts_total": 1448,
  "docs": null,
  "repos": {
   "Ashfaque386/TradingOS-2.0": {
@@ -302,18 +302,18 @@
     "comments": "done",
     "commits": "done",
     "contributors": "done",
-    "diffs": "redo",
-    "files": "redo",
+    "diffs": "done",
+    "files": "done",
     "issues": "done",
     "meta": "done",
-    "pathcommits": "redo",
+    "pathcommits": "done",
     "pullfiles": "done",
     "tree": "done"
    },
-   "state": "pending"
+   "state": "done"
   }
  },
- "run_id": "45823223378",
+ "run_id": "45829405014",
  "runs": [
   {
    "attempts": 1,
@@ -368,6 +368,15 @@
    "reset": 1795699643,
    "run": "45823223378",
    "status": "paused"
+  },
+  {
+   "attempts": 47,
+   "limit": 5000,
+   "remaining": 4469,
+   "request": "11.json",
+   "reset": 1795703246,
+   "run": "45829405014",
+   "status": "done"
   }
  ]
 }
