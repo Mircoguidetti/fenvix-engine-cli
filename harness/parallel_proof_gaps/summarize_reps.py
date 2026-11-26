@@ -3,10 +3,12 @@
 
     summarize_reps.py OUT_DIR OUT_DIR_PREVIOUS   -> JSON on stdout, Markdown table + STOP RULE line on stderr
 
-Founder decision D2 = A (2026-11-26): the stop rule judges the mean of the rounds per repository and worker count,
-against the previous point (before, one round). Best worker count = the lowest mean parallel wall time. Stop rule:
-best-worker mean wall time up by more than 25 % against the previous point's best-worker wall time, or mean proven
-share down by more than 25 percentage points at a worker count. The table gives each round's numbers as well.
+Founder decision on reading this re-measure (2026-11-26, "misura A"; it replaces the mean reading of D2 = A): per
+repository and worker count, speed ratio = parallel wall / serial wall of the same round. STOP RULE: the round-1
+(cold) ratio more than 25 % worse (higher) than the same ratio at the previous point (before), or the round-1 proven
+share down by more than 25 percentage points. Round 2 is warm (measure.py keeps the engine state between rounds: learned
+costs and together-groups), so its ratios, the raw walls and the means are information only (second table and the
+"information" line: the mean-wall rule as first decided).
 """
 from __future__ import annotations
 
@@ -70,7 +72,33 @@ def main():
                        f"{' / '.join(str(x.get('hazards')) for x in rr)} | {' / '.join(str(x.get('rerun_files')) for x in rr)} | "
                        f"{v['proven_share']} | {delta} |")
     out.append("")
-    out.append("STOP RULE (mean of rounds vs before): " + ("; ".join(stops) if stops else "not triggered"))
+    out.append("information only, mean wall rule (D2 = A as first decided): " + ("; ".join(stops) if stops else "not triggered"))
+    out.append("")
+    out.append("| repository | w | ratio before (par / serial) | ratio round 1 (cold) | change | ratio round 2 (warm, info) | round 1 proven % | before proven % |")
+    out.append("|---|---|---|---|---|---|---|---|")
+    rstops = []
+    serial = {r: {repo: ((t.get(repo) or {}).get("serial") or {}).get("wall_s") for repo in t} for r, t in per_rep.items()}
+    for repo, d in cur.items():
+        pr = prev.get(repo) or {}
+        ps = (pr.get("serial") or {}).get("wall_s")
+        for w, v in d["par"].items():
+            p = pr.get("par", {}).get(w) or {}
+            rb = p.get("wall_s") / ps if p.get("wall_s") and ps else None
+            rr = []
+            for i, r in enumerate(reps):
+                x = v["rounds"][i].get("wall_s"); sw = serial[r].get(repo)
+                rr.append(x / sw if x and sw else None)
+            ch = 100.0 * (rr[0] - rb) / rb if rr and rr[0] is not None and rb else None
+            if ch is not None and ch > 25.0:
+                rstops.append(f"{repo} w{w}: ratio {rb:.3f} -> {rr[0]:.3f} ({ch:+.1f} %)")
+            p1 = v["rounds"][0].get("proven_share")
+            if p1 is not None and p.get("proven_share") is not None and p["proven_share"] - p1 > 25.0:
+                rstops.append(f"{repo} w{w}: round-1 proven share {p['proven_share']} % -> {p1} %")
+            f = lambda z: f"{z:.3f}" if z is not None else "-"
+            out.append(f"| {repo} | {w} | {f(rb)} | {f(rr[0] if rr else None)} | {f'{ch:+.1f} %' if ch is not None else '-'} | "
+                       f"{' / '.join(f(z) for z in rr[1:]) or '-'} | {p1} | {p.get('proven_share')} |")
+    out.append("")
+    out.append("STOP RULE (round-1 speed ratio vs before, misura A): " + ("; ".join(rstops) if rstops else "not triggered"))
     print("\n".join(out), file=sys.stderr)
 
 
