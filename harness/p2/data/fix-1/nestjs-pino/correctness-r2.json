@@ -82,10 +82,27 @@
  "rule2": {
   "allowed_declared_only": [],
   "declared": [],
-  "defects": [],
-  "need_repeat": [
-   "__tests__/get-logger-token.spec.ts::get-logger-token::should work"
+  "defects": [
+   {
+    "baseline_event": {
+     "at": "<deps>/debug/src/node.js:124",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "198:85d20795ead0"
+    },
+    "fix_event": {
+     "at": "<deps>/debug/src/node.js:124",
+     "o": "env.list",
+     "s": "other",
+     "t": 0,
+     "v": "197:227ce6a00710"
+    },
+    "nodeid": "__tests__/get-logger-token.spec.ts::get-logger-token::should work",
+    "why": "undeclared event difference at index 23"
+   }
   ],
+  "need_repeat": [],
   "passed": 268,
   "stable_in_baseline": 269
  },

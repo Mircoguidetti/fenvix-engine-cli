@@ -574,11 +574,8 @@
   "allowed_declared_only": [],
   "declared": [],
   "defects": [],
-  "need_repeat": [
-   "server/event/tournament/tournament.service.spec.ts::Tournament service::count submitted scores::should count active scores over all tournament games, ignoring suspended and unrelated scores",
-   "server/post/post.service.spec.ts::Post service::find post by ID::should return the post with its author, roles, event & entry"
-  ],
-  "passed": 116,
+  "need_repeat": [],
+  "passed": 118,
   "stable_in_baseline": 118
  },
  "rule3": {
