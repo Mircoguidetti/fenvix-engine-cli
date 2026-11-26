@@ -1,21 +1,45 @@
 {
  "blocked": false,
- "code_pending": true,
- "code_route": null,
+ "code_pending": false,
+ "code_route": "workflow",
  "code_totals": {
   "session": -1,
-  "workflow": -1
+  "workflow": 1394
  },
  "commits_or_ok": true,
  "commits_route": "workflow",
- "dropped": [],
+ "dropped": [
+  "api.anthropic.com path:cassette",
+  "api.anthropic.com path:recordings",
+  "api.cohere path:cassette",
+  "api.cohere path:recordings",
+  "api.deepseek.com path:cassette",
+  "api.deepseek.com path:recordings",
+  "api.groq.com path:cassette",
+  "api.groq.com path:recordings",
+  "api.mistral.ai path:cassette",
+  "api.mistral.ai path:recordings",
+  "api.openai.com path:cassette",
+  "api.openai.com path:recordings",
+  "bedrock-runtime path:cassette",
+  "bedrock-runtime path:recordings",
+  "generativelanguage.googleapis.com path:cassette",
+  "generativelanguage.googleapis.com path:recordings",
+  "openai.azure.com path:cassette",
+  "openai.azure.com path:recordings",
+  "openrouter.ai path:cassette",
+  "openrouter.ai path:recordings"
+ ],
  "excluded_repos": [
   "beyhangl/evalcraft",
   "cendorhq/cendor-libs",
   "dmallya93/llmreplay",
   "mikiships/pytest-agentcontract"
  ],
- "fixes": [],
+ "fixes": [
+  "code shape path:cassette: status 200 total 0 -> dropped",
+  "code shape path:recordings: status 429 total 0 -> dropped"
+ ],
  "issues_or_ok": true,
  "issues_route": "workflow",
  "issues_type_split": false,

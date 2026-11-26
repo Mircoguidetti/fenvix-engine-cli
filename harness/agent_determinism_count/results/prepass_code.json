@@ -1,0 +1,44 @@
+{
+ "api.anthropic.com path:cassettes": {
+  "at": "2026-11-26T04:02:22+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 9
+  },
+  "route": "workflow",
+  "search_429": 6,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 2
+ },
+ "api.openai.com path:cassettes": {
+  "at": "2026-11-26T03:49:30+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 9
+  },
+  "route": "workflow",
+  "search_429": 3,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 2
+ },
+ "api.openai.com path:vcr": {
+  "at": "2026-11-26T03:49:47+00:00",
+  "family": "code",
+  "incomplete": false,
+  "rate": {
+   "limit": 10,
+   "remaining": 8
+  },
+  "route": "workflow",
+  "search_429": 4,
+  "status": 200,
+  "stratum": "S1",
+  "total_count": 7
+ }
+}
