@@ -1,0 +1,101 @@
+{
+ "code": {},
+ "code_prepass": {
+  "2026-11-26T03:00Z": {
+   "429_max": 4,
+   "prepass_answers": 2
+  },
+  "2026-11-26T04:00Z": {
+   "429_max": 8,
+   "prepass_answers": 3
+  }
+ },
+ "note": "The 429 and request counters in a state file are per process (they restart with each run and each request), so the per-checkpoint increase is taken within a process and a drop starts a new process. Hours are UTC. Usage: ratelog.py [--ref origin/claude/agent-determinism-count]   (writes results/ratelog.json) ",
+ "ref": "142684a",
+ "text": {
+  "2026-11-25T12:00Z": {
+   "429": 1,
+   "checkpoints": 2,
+   "nodes": 89,
+   "queries_done": 9,
+   "search_requests": 401
+  },
+  "2026-11-25T18:00Z": {
+   "429": 2,
+   "checkpoints": 1,
+   "nodes": 771,
+   "queries_done": 75,
+   "search_requests": 421
+  },
+  "2026-11-25T19:00Z": {
+   "429": 1,
+   "checkpoints": 2,
+   "nodes": 226,
+   "queries_done": 54,
+   "search_requests": 913
+  },
+  "2026-11-25T20:00Z": {
+   "429": 2,
+   "checkpoints": 2,
+   "nodes": 209,
+   "queries_done": 24,
+   "search_requests": 867
+  },
+  "2026-11-25T21:00Z": {
+   "429": 4,
+   "checkpoints": 2,
+   "nodes": 185,
+   "queries_done": 23,
+   "search_requests": 863
+  },
+  "2026-11-25T22:00Z": {
+   "429": 7,
+   "checkpoints": 2,
+   "nodes": 167,
+   "queries_done": 32,
+   "search_requests": 829
+  },
+  "2026-11-25T23:00Z": {
+   "429": 13,
+   "checkpoints": 3,
+   "nodes": 197,
+   "queries_done": 24,
+   "search_requests": 331
+  },
+  "2026-11-26T00:00Z": {
+   "429": 34,
+   "checkpoints": 2,
+   "nodes": 125,
+   "queries_done": 14,
+   "search_requests": 539
+  },
+  "2026-11-26T01:00Z": {
+   "429": 31,
+   "checkpoints": 2,
+   "nodes": 130,
+   "queries_done": 6,
+   "search_requests": 551
+  },
+  "2026-11-26T02:00Z": {
+   "429": 39,
+   "checkpoints": 2,
+   "nodes": 101,
+   "queries_done": 16,
+   "search_requests": 398
+  },
+  "2026-11-26T03:00Z": {
+   "429": 39,
+   "checkpoints": 2,
+   "nodes": 91,
+   "queries_done": 13,
+   "search_requests": 412
+  },
+  "2026-11-26T04:00Z": {
+   "429": 19,
+   "checkpoints": 1,
+   "nodes": 49,
+   "queries_done": 1,
+   "search_requests": 233
+  }
+ }
+}
