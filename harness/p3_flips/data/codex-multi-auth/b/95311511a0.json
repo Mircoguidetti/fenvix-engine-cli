@@ -1,0 +1,857 @@
+{
+ "repo": "codex-multi-auth",
+ "file": "test/property/rotation.property.test.ts",
+ "slug": "95311511a0",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "cases": {
+  "test/property/rotation.property.test.ts::HealthScoreTracker property tests::score is always in [0, 100] range after any operation": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 52 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:21]",
+    "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 52 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:21]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/property/rotation.property.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "95311511a0.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 52 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:21]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:10:45.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "95311511a0.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 52 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:21]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:10:48.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "95311511a0.g0.L2a.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 52 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:21]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:10:50.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "95311511a0.g0.L2a.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 52 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:21]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:10:53.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "95311511a0.g0.L2b.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 52 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:21]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:10:56.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "95311511a0.g0.L2b.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 52 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:21]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:10:58.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "95311511a0.g0.L3.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 52 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:21]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:11:01.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "95311511a0.g0.L3.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 52 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:21]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:11:04.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "95311511a0.g0.L4.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:11:07.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "95311511a0.g0.L4.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:11:09.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L4",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "95311511a0.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/property/rotation.property.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/property/rotation.property.test.ts"
+      ]
+     },
+     {
+      "tag": "95311511a0.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/property/rotation.property.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/property/rotation.property.test.ts"
+      ]
+     },
+     {
+      "tag": "95311511a0.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/property/rotation.property.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/property/rotation.property.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/property/rotation.property.test.ts::TokenBucketTracker property tests::tokens never go negative": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 10 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:136]",
+    "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 10 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:136]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/property/rotation.property.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "95311511a0.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 10 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:136]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:10:45.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "95311511a0.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 10 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:136]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:10:48.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "95311511a0.g0.L2a.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 10 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:136]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:10:50.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "95311511a0.g0.L2a.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 10 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:136]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:10:53.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "95311511a0.g0.L2b.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 10 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:136]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:10:56.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "95311511a0.g0.L2b.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 10 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:136]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:10:58.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "95311511a0.g0.L3.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 10 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:136]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:11:01.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "95311511a0.g0.L3.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 10 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:136]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:11:04.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "95311511a0.g0.L4.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:11:07.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "95311511a0.g0.L4.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:11:09.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L4",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "95311511a0.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/property/rotation.property.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/property/rotation.property.test.ts"
+      ]
+     },
+     {
+      "tag": "95311511a0.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/property/rotation.property.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/property/rotation.property.test.ts"
+      ]
+     },
+     {
+      "tag": "95311511a0.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/property/rotation.property.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/property/rotation.property.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/property/rotation.property.test.ts::TokenBucketTracker property tests::tryConsume returns false when bucket is empty": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 94 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:155]",
+    "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 94 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:155]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/property/rotation.property.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "95311511a0.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 94 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:155]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:10:45.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "95311511a0.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 94 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:155]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:10:48.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "95311511a0.g0.L2a.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 94 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:155]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:10:50.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "95311511a0.g0.L2a.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 94 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:155]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:10:53.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "95311511a0.g0.L2b.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 94 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:155]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:10:56.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "95311511a0.g0.L2b.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 94 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:155]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:10:58.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "95311511a0.g0.L3.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 94 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:155]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:11:01.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "95311511a0.g0.L3.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 94 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:155]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:11:04.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "95311511a0.g0.L4.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:11:07.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "95311511a0.g0.L4.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 0,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:11:09.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L4",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "95311511a0.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/property/rotation.property.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.control.r1.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/property/rotation.property.test.ts"
+      ]
+     },
+     {
+      "tag": "95311511a0.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/property/rotation.property.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.control.r2.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/property/rotation.property.test.ts"
+      ]
+     },
+     {
+      "tag": "95311511a0.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/property/rotation.property.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.g0.control.r3.runner.json",
+      "exit": 0,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/property/rotation.property.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "95311511a0.alone.r1",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.alone.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 1.68,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T05:10:39.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "test/property/rotation.property.test.ts::HealthScoreTracker property tests::score is always in [0, 100] range after any operation": "failed",
+    "test/property/rotation.property.test.ts::TokenBucketTracker property tests::tokens never go negative": "failed",
+    "test/property/rotation.property.test.ts::TokenBucketTracker property tests::tryConsume returns false when bucket is empty": "failed"
+   },
+   "exc": {
+    "test/property/rotation.property.test.ts::HealthScoreTracker property tests::score is always in [0, 100] range after any operation": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 52 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:21]",
+    "test/property/rotation.property.test.ts::TokenBucketTracker property tests::tokens never go negative": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 10 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:136]",
+    "test/property/rotation.property.test.ts::TokenBucketTracker property tests::tryConsume returns false when bucket is empty": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 94 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:155]"
+   }
+  },
+  {
+   "tag": "95311511a0.alone.r2",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/property/rotation.property.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.alone.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/95311511a0.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 1.85,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T05:10:42.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "test/property/rotation.property.test.ts::HealthScoreTracker property tests::score is always in [0, 100] range after any operation": "failed",
+    "test/property/rotation.property.test.ts::TokenBucketTracker property tests::tokens never go negative": "failed",
+    "test/property/rotation.property.test.ts::TokenBucketTracker property tests::tryConsume returns false when bucket is empty": "failed"
+   },
+   "exc": {
+    "test/property/rotation.property.test.ts::HealthScoreTracker property tests::score is always in [0, 100] range after any operation": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 52 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:21]",
+    "test/property/rotation.property.test.ts::TokenBucketTracker property tests::tokens never go negative": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 10 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:136]",
+    "test/property/rotation.property.test.ts::TokenBucketTracker property tests::tryConsume returns false when bucket is empty": "Error: Failed to run property, too many pre-condition failures encountered / { seed: 24301 } / Ran 94 time(s) / Skipped 10001 time(s) [call @ test/property/rotation.property.test.ts:155]"
+   }
+  }
+ ],
+ "complete": true
+}

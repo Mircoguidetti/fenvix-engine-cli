@@ -11,9 +11,9 @@ Per-run state letters: r = reproduces the --det outcome of A, c = clears (plain 
 | agentic-qe | skipped-in-det | 1 | 0 | 0 | 1 | 0 |
 | agentic-qe | reverse | 6 | 0 | 0 | 6 | 0 |
 | **agentic-qe** | all | 84 | 0 | 0 | 84 | 0 |
-| codex-multi-auth | flip | 64 | 0 | 38 | 26 | 0 |
-| codex-multi-auth | mixed | 6 | 0 | 4 | 2 | 0 |
-| **codex-multi-auth** | all | 70 | 0 | 42 | 28 | 0 |
+| codex-multi-auth | flip | 64 | 0 | 60 | 4 | 0 |
+| codex-multi-auth | mixed | 6 | 0 | 5 | 1 | 0 |
+| **codex-multi-auth** | all | 70 | 0 | 65 | 5 | 0 |
 | ironcurtain | flip | 16 | 0 | 16 | 0 | 0 |
 | ironcurtain | mixed | 2 | 0 | 1 | 1 | 0 |
 | ironcurtain | skipped-in-det | 10 | 0 | 10 | 0 | 0 |
@@ -46,8 +46,9 @@ Ids whose outcome differs between the two plain runs of A, or whose digit patter
 | repository | cause | cases |
 |---|---|---|
 | codex-multi-auth | cause seeds (L5) | 1 |
-| codex-multi-auth | cause time (L4) | 3 |
-| codex-multi-auth | cause timers progression (virtual) (L1) | 31 |
+| codex-multi-auth | cause time (L4) | 18 |
+| codex-multi-auth | cause timers (L2a) | 2 |
+| codex-multi-auth | cause timers progression (virtual) (L1) | 37 |
 | codex-multi-auth | cause wrapper (wrapper) | 7 |
 | ironcurtain | cause time (L4) | 3 |
 | ironcurtain | cause timers progression (virtual) (L1) | 13 |
@@ -190,30 +191,30 @@ Ids whose outcome differs between the two plain runs of A, or whose digit patter
 | `test/persisted-api-capabilities.test.ts::caps paid probes across independent routes at four` | mixed | passed passed failed passed | rr | alone | L1:ccccc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
 | `test/persisted-api-capabilities.test.ts::does not overwrite unrelated evidence updated at the same timestamp` | mixed | passed passed failed passed | rr | alone | L1:ccccc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
 | `test/persisted-api-capabilities.test.ts::does not put non-probing inference metadata behind a paid probe lease` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
-| `test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes` | mixed | passed passed failed passed | cr | - | - | - | - | UNDECIDED | control runs invalid or missing ([]) |
+| `test/persisted-api-capabilities.test.ts::preserves unreadable corrupt cache without paid probes` | mixed | passed passed failed passed | cr | smallest (275 preds) | L1:ccccc | ppp | order:ppp | ARTIFACT | cause timers progression (virtual) (L1) |
 | `test/persisted-api-capabilities.test.ts::returns documentation without paid probes when another lease times out` | mixed | passed passed failed passed | rr | alone | L1:ccccc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
-| `test/property/rotation.property.test.ts::HealthScoreTracker property tests::score is always in [0, 100] range after any operation` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/property/rotation.property.test.ts::TokenBucketTracker property tests::tokens never go negative` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/property/rotation.property.test.ts::TokenBucketTracker property tests::tryConsume returns false when bucket is empty` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/runtime-policy-cache.test.ts::runtime policy cache::never caches a store read raced by a concurrent rewrite` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/runtime-rotation-proxy.test.ts::Luna Reserve fallback::reconsiders a Luna capability-rejected workspace after switching to Reserve` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type application/json` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type null` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type text/event-stream` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type text/plain` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type null` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type text/event-stream` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type text/plain` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/runtime-rotation-proxy.test.ts::does not dispatch for a pinned client that disconnected during the reset check` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted api streams as cancellation` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted psp streams as cancellation` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted zdr streams as cancellation` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/runtime-rotation-proxy.test.ts::explicit API model routes::uses sniffed SSE for zdr usage and completion (response.completed)` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/runtime-rotation-proxy.test.ts::explicit API model routes::uses sniffed SSE for zdr usage and completion (response.created)` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/runtime-rotation-proxy.test.ts::keeps session affinity when the client disconnects mid-stream` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/runtime-rotation-proxy.test.ts::learns a stale subscription model entitlement and retries another eligible account` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/runtime-rotation-proxy.test.ts::runtime rotation proxy::evicts oldest local thread goal fallbacks when capacity is exceeded` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
-| `test/runtime-rotation-proxy.test.ts::runtime rotation proxy::rotates accounts after native quota rejection without using sibling workspaces` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
+| `test/property/rotation.property.test.ts::HealthScoreTracker property tests::score is always in [0, 100] range after any operation` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
+| `test/property/rotation.property.test.ts::TokenBucketTracker property tests::tokens never go negative` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
+| `test/property/rotation.property.test.ts::TokenBucketTracker property tests::tryConsume returns false when bucket is empty` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
+| `test/runtime-policy-cache.test.ts::runtime policy cache::never caches a store read raced by a concurrent rewrite` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
+| `test/runtime-rotation-proxy.test.ts::Luna Reserve fallback::reconsiders a Luna capability-rejected workspace after switching to Reserve` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
+| `test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type application/json` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
+| `test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type null` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
+| `test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type text/event-stream` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
+| `test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type text/plain` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
+| `test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type null` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
+| `test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type text/event-stream` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
+| `test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type text/plain` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
+| `test/runtime-rotation-proxy.test.ts::does not dispatch for a pinned client that disconnected during the reset check` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted api streams as cancellation` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted psp streams as cancellation` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted zdr streams as cancellation` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/runtime-rotation-proxy.test.ts::explicit API model routes::uses sniffed SSE for zdr usage and completion (response.completed)` | flip | passed passed failed failed | rr | alone | L1:rr L2a:cc | ppp | - | ARTIFACT | cause timers (L2a) |
+| `test/runtime-rotation-proxy.test.ts::explicit API model routes::uses sniffed SSE for zdr usage and completion (response.created)` | flip | passed passed failed failed | rr | alone | L1:rr L2a:cc | ppp | - | ARTIFACT | cause timers (L2a) |
+| `test/runtime-rotation-proxy.test.ts::keeps session affinity when the client disconnects mid-stream` | flip | passed passed failed failed | rr | alone | L1:cc | ppp | - | ARTIFACT | cause timers progression (virtual) (L1) |
+| `test/runtime-rotation-proxy.test.ts::learns a stale subscription model entitlement and retries another eligible account` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
+| `test/runtime-rotation-proxy.test.ts::runtime rotation proxy::evicts oldest local thread goal fallbacks when capacity is exceeded` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
+| `test/runtime-rotation-proxy.test.ts::runtime rotation proxy::rotates accounts after native quota rejection without using sibling workspaces` | flip | passed passed failed failed | rr | alone | L1:rr L2a:rr L2b:rr L3:rr L4:cc | ppp | - | ARTIFACT | cause time (L4) |
 | `test/storage-file-lock.test.ts::reclaims a killed waiter's populated candidate without touching a live writer` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
 | `test/storage-file-lock.test.ts::recovers a killed writer without relying on a lease expiry` | flip | passed passed failed failed | - | - | - | - | - | UNDECIDED | not processed in B |
 

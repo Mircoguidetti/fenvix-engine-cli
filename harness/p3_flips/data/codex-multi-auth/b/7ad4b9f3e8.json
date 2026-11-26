@@ -1,0 +1,3844 @@
+{
+ "repo": "codex-multi-auth",
+ "file": "test/runtime-rotation-proxy.test.ts",
+ "slug": "7ad4b9f3e8",
+ "engine_commit": "24962a94121f67b8504c662058c2d73809d71e87",
+ "cases": {
+  "test/runtime-rotation-proxy.test.ts::Luna Reserve fallback::reconsiders a Luna capability-rejected workspace after switching to Reserve": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected [ [ 'acc_2', 'gpt-6-luna' ], \u2026(1) ] to deeply equal [ [ 'acc_1', 'gpt-6-luna' ], \u2026(2) ] [call @ test/runtime-rotation-proxy.test.ts:8398]",
+    "AssertionError: expected [ [ 'acc_2', 'gpt-6-luna' ], \u2026(1) ] to deeply equal [ [ 'acc_1', 'gpt-6-luna' ], \u2026(2) ] [call @ test/runtime-rotation-proxy.test.ts:8398]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/runtime-rotation-proxy.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ [ 'acc_2', 'gpt-6-luna' ], \u2026(1) ] to deeply equal [ [ 'acc_1', 'gpt-6-luna' ], \u2026(2) ] [call @ test/runtime-rotation-proxy.test.ts:8398]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:13:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ [ 'acc_2', 'gpt-6-luna' ], \u2026(1) ] to deeply equal [ [ 'acc_1', 'gpt-6-luna' ], \u2026(2) ] [call @ test/runtime-rotation-proxy.test.ts:8398]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:12.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ [ 'acc_2', 'gpt-6-luna' ], \u2026(1) ] to deeply equal [ [ 'acc_1', 'gpt-6-luna' ], \u2026(2) ] [call @ test/runtime-rotation-proxy.test.ts:8398]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:57.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ [ 'acc_2', 'gpt-6-luna' ], \u2026(1) ] to deeply equal [ [ 'acc_1', 'gpt-6-luna' ], \u2026(2) ] [call @ test/runtime-rotation-proxy.test.ts:8398]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:15:40.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2b.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ [ 'acc_2', 'gpt-6-luna' ], \u2026(1) ] to deeply equal [ [ 'acc_1', 'gpt-6-luna' ], \u2026(2) ] [call @ test/runtime-rotation-proxy.test.ts:8398]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:16:24.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2b.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ [ 'acc_2', 'gpt-6-luna' ], \u2026(1) ] to deeply equal [ [ 'acc_1', 'gpt-6-luna' ], \u2026(2) ] [call @ test/runtime-rotation-proxy.test.ts:8398]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:17:06.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L3.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ [ 'acc_2', 'gpt-6-luna' ], \u2026(1) ] to deeply equal [ [ 'acc_1', 'gpt-6-luna' ], \u2026(2) ] [call @ test/runtime-rotation-proxy.test.ts:8398]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:17:48.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L3.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ [ 'acc_2', 'gpt-6-luna' ], \u2026(1) ] to deeply equal [ [ 'acc_1', 'gpt-6-luna' ], \u2026(2) ] [call @ test/runtime-rotation-proxy.test.ts:8398]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:18:29.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L4.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:19:10.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L4.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:19:46.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L4",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "7ad4b9f3e8.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type application/json": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+    "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/runtime-rotation-proxy.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:13:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:12.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:57.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:15:40.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2b.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:16:24.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2b.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:17:06.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L3.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:17:48.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L3.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:18:29.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L4.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:19:10.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L4.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:19:46.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L4",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "7ad4b9f3e8.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type null": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+    "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/runtime-rotation-proxy.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:13:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:12.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:57.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:15:40.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2b.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:16:24.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2b.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:17:06.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L3.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:17:48.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L3.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:18:29.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L4.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:19:10.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L4.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:19:46.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L4",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "7ad4b9f3e8.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type text/event-stream": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+    "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/runtime-rotation-proxy.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:13:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:12.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:57.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:15:40.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2b.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:16:24.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2b.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:17:06.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L3.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:17:48.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L3.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:18:29.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L4.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:19:10.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L4.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:19:46.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L4",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "7ad4b9f3e8.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type text/plain": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+    "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/runtime-rotation-proxy.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:13:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:12.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:57.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:15:40.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2b.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:16:24.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2b.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:17:06.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L3.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:17:48.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L3.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:18:29.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L4.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:19:10.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L4.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:19:46.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L4",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "7ad4b9f3e8.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type null": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+    "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/runtime-rotation-proxy.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:13:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:12.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (21 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:57.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (21 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:15:40.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2b.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (21 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:16:24.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2b.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (21 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:17:06.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L3.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (21 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:17:48.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L3.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (21 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:18:29.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L4.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:19:10.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L4.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:19:46.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L4",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "7ad4b9f3e8.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type text/event-stream": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+    "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/runtime-rotation-proxy.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:13:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:12.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (21 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:57.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (21 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:15:40.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2b.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (21 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:16:24.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2b.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (21 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:17:06.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L3.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (21 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:17:48.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L3.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (21 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:18:29.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L4.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:19:10.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L4.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:19:46.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L4",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "7ad4b9f3e8.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type text/plain": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+    "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/runtime-rotation-proxy.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:13:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:12.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (21 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:57.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (21 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:15:40.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2b.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (21 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:16:24.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2b.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (21 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:17:06.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L3.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (21 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:17:48.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L3.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (21 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:18:29.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L4.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:19:10.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L4.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:19:46.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L4",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "7ad4b9f3e8.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/runtime-rotation-proxy.test.ts::does not dispatch for a pinned client that disconnected during the reset check": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/runtime-rotation-proxy.test.ts:588]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/runtime-rotation-proxy.test.ts:588]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/runtime-rotation-proxy.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:13:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:12.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "7ad4b9f3e8.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted api streams as cancellation": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/runtime-rotation-proxy.test.ts:7050]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/runtime-rotation-proxy.test.ts:7050]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/runtime-rotation-proxy.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:13:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:12.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "7ad4b9f3e8.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted psp streams as cancellation": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/runtime-rotation-proxy.test.ts:7050]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/runtime-rotation-proxy.test.ts:7050]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/runtime-rotation-proxy.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:13:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:12.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "7ad4b9f3e8.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted zdr streams as cancellation": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/runtime-rotation-proxy.test.ts:7050]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/runtime-rotation-proxy.test.ts:7050]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/runtime-rotation-proxy.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:13:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:12.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "7ad4b9f3e8.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/runtime-rotation-proxy.test.ts::explicit API model routes::uses sniffed SSE for zdr usage and completion (response.completed)": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'success', \u2026(2) } / (14 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:7095]",
+    "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'success', \u2026(2) } / (14 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:7095]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/runtime-rotation-proxy.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'success', \u2026(2) } / (14 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:7095]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:13:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'success', \u2026(2) } / (14 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:7095]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:12.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:57.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:15:40.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L2a",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "7ad4b9f3e8.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/runtime-rotation-proxy.test.ts::explicit API model routes::uses sniffed SSE for zdr usage and completion (response.created)": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(2) } / (14 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:7095]",
+    "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(2) } / (14 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:7095]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/runtime-rotation-proxy.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(2) } / (14 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:7095]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:13:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(2) } / (14 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:7095]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:12.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:57.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:15:40.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L2a",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "7ad4b9f3e8.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/runtime-rotation-proxy.test.ts::keeps session affinity when the client disconnects mid-stream": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/runtime-rotation-proxy.test.ts:7658]",
+    "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/runtime-rotation-proxy.test.ts:7658]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/runtime-rotation-proxy.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:13:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:12.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L1",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "7ad4b9f3e8.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/runtime-rotation-proxy.test.ts::learns a stale subscription model entitlement and retries another eligible account": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:7278]",
+    "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:7278]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/runtime-rotation-proxy.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:7278]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:13:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:7278]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:12.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:7278]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:57.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:7278]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:15:40.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2b.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:7278]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:16:24.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2b.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:7278]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:17:06.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L3.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:7278]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:17:48.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L3.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:7278]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:18:29.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L4.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:19:10.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L4.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:19:46.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L4",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "7ad4b9f3e8.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::evicts oldest local thread goal fallbacks when capacity is exceeded": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected 503 to be 200 // Object.is equality [call @ test/runtime-rotation-proxy.test.ts:3722]",
+    "AssertionError: expected 503 to be 200 // Object.is equality [call @ test/runtime-rotation-proxy.test.ts:3722]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/runtime-rotation-proxy.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 503 to be 200 // Object.is equality [call @ test/runtime-rotation-proxy.test.ts:3722]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:13:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 503 to be 200 // Object.is equality [call @ test/runtime-rotation-proxy.test.ts:3722]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:12.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 503 to be 200 // Object.is equality [call @ test/runtime-rotation-proxy.test.ts:3722]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:57.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 503 to be 200 // Object.is equality [call @ test/runtime-rotation-proxy.test.ts:3722]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:15:40.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2b.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 503 to be 200 // Object.is equality [call @ test/runtime-rotation-proxy.test.ts:3722]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:16:24.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2b.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 503 to be 200 // Object.is equality [call @ test/runtime-rotation-proxy.test.ts:3722]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:17:06.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L3.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 503 to be 200 // Object.is equality [call @ test/runtime-rotation-proxy.test.ts:3722]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:17:48.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L3.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected 503 to be 200 // Object.is equality [call @ test/runtime-rotation-proxy.test.ts:3722]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:18:29.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L4.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:19:10.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L4.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:19:46.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L4",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "7ad4b9f3e8.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     }
+    ]
+   }
+  },
+  "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::rotates accounts after native quota rejection without using sibling workspaces": {
+   "kind": "flip",
+   "results": [
+    "passed",
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "unstable": false,
+   "pattern": null,
+   "det_failure": [
+    "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:2752]",
+    "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:2752]"
+   ],
+   "mixed_outcome": false,
+   "alone": {
+    "states": [
+     "repro",
+     "repro"
+    ],
+    "reproduces": true
+   },
+   "set": {
+    "name": "alone",
+    "files": [
+     "test/runtime-rotation-proxy.test.ts"
+    ]
+   },
+   "ladder": {
+    "L1": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r1.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:2752]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:13:27.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L1.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L1.r2.trace.jsonl --det-timers=real",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "meta timers=real",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:2752]",
+       "meta": {
+        "timers": "real",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:12.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2a": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r1.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:2752]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:14:57.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2a.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2a.r2.trace.jsonl --det-disable=timers",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:2752]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:15:40.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L2b": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L2b.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r1.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:2752]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:16:24.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L2b.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L2b.r2.trace.jsonl --det-disable=timers,net",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:2752]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:17:06.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L3": {
+     "states": [
+      "repro",
+      "repro"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L3.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r1.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:2752]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:17:48.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L3.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L3.r2.trace.jsonl --det-disable=timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "failed",
+       "failure": "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:2752]",
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:18:29.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    },
+    "L4": {
+     "states": [
+      "clear",
+      "clear"
+     ],
+     "runs": [
+      {
+       "tag": "7ad4b9f3e8.g0.L4.r1",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r1.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:19:10.000Z",
+        "seed": 0
+       }
+      },
+      {
+       "tag": "7ad4b9f3e8.g0.L4.r2",
+       "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.L4.r2.trace.jsonl --det-disable=time,timers,net,fs",
+       "exit": 1,
+       "valid": true,
+       "valid_why": "ok",
+       "outcome": "passed",
+       "failure": null,
+       "meta": {
+        "timers": "virtual",
+        "network": "open",
+        "epoch": "2026-11-26T05:19:46.000Z",
+        "seed": 0
+       }
+      }
+     ]
+    }
+   },
+   "clears_at": "L4",
+   "control": {
+    "states": [
+     "plain",
+     "plain",
+     "plain"
+    ],
+    "runs": [
+     {
+      "tag": "7ad4b9f3e8.g0.control.r1",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r1.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r2",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r2.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     },
+     {
+      "tag": "7ad4b9f3e8.g0.control.r3",
+      "cmd": "npx --no-install vitest run test/runtime-rotation-proxy.test.ts --config /tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/p3.vitest.config.mjs --no-file-parallelism --reporter=default --reporter=/tmp/pm-p3/repos/codex-multi-auth/.fenvix-harness/vitest_ids_reporter.mjs --reporter=json --outputFile.json=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.g0.control.r3.runner.json",
+      "exit": 1,
+      "outcome": "passed",
+      "failure": null,
+      "applied": [
+       "test/runtime-rotation-proxy.test.ts"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [],
+ "alone": [
+  {
+   "tag": "7ad4b9f3e8.alone.r1",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.alone.r1.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.alone.r1.trace.jsonl",
+   "exit": 1,
+   "wall_s": 46.44,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T05:11:51.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "test/runtime-rotation-proxy.test.ts::Luna Reserve fallback::reconsiders a Luna capability-rejected workspace after switching to Reserve": "failed",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type application/json": "failed",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type null": "failed",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type text/event-stream": "failed",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type text/plain": "failed",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type null": "failed",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type text/event-stream": "failed",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type text/plain": "failed",
+    "test/runtime-rotation-proxy.test.ts::does not dispatch for a pinned client that disconnected during the reset check": "failed",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted api streams as cancellation": "failed",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted psp streams as cancellation": "failed",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted zdr streams as cancellation": "failed",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::uses sniffed SSE for zdr usage and completion (response.completed)": "failed",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::uses sniffed SSE for zdr usage and completion (response.created)": "failed",
+    "test/runtime-rotation-proxy.test.ts::keeps session affinity when the client disconnects mid-stream": "failed",
+    "test/runtime-rotation-proxy.test.ts::learns a stale subscription model entitlement and retries another eligible account": "failed",
+    "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::evicts oldest local thread goal fallbacks when capacity is exceeded": "failed",
+    "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::rotates accounts after native quota rejection without using sibling workspaces": "failed"
+   },
+   "exc": {
+    "test/runtime-rotation-proxy.test.ts::Luna Reserve fallback::reconsiders a Luna capability-rejected workspace after switching to Reserve": "AssertionError: expected [ [ 'acc_2', 'gpt-6-luna' ], \u2026(1) ] to deeply equal [ [ 'acc_1', 'gpt-6-luna' ], \u2026(2) ] [call @ test/runtime-rotation-proxy.test.ts:8398]",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type application/json": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type null": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type text/event-stream": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type text/plain": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type null": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type text/event-stream": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type text/plain": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+    "test/runtime-rotation-proxy.test.ts::does not dispatch for a pinned client that disconnected during the reset check": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/runtime-rotation-proxy.test.ts:588]",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted api streams as cancellation": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/runtime-rotation-proxy.test.ts:7050]",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted psp streams as cancellation": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/runtime-rotation-proxy.test.ts:7050]",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted zdr streams as cancellation": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/runtime-rotation-proxy.test.ts:7050]",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::uses sniffed SSE for zdr usage and completion (response.completed)": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'success', \u2026(2) } / (14 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:7095]",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::uses sniffed SSE for zdr usage and completion (response.created)": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(2) } / (14 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:7095]",
+    "test/runtime-rotation-proxy.test.ts::keeps session affinity when the client disconnects mid-stream": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/runtime-rotation-proxy.test.ts:7658]",
+    "test/runtime-rotation-proxy.test.ts::learns a stale subscription model entitlement and retries another eligible account": "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:7278]",
+    "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::evicts oldest local thread goal fallbacks when capacity is exceeded": "AssertionError: expected 503 to be 200 // Object.is equality [call @ test/runtime-rotation-proxy.test.ts:3722]",
+    "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::rotates accounts after native quota rejection without using sibling workspaces": "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:2752]"
+   }
+  },
+  {
+   "tag": "7ad4b9f3e8.alone.r2",
+   "cmd": "node /home/user/fenvix-engine-cli/node/bin/detjs.js vitest run test/runtime-rotation-proxy.test.ts --det --det-workers=1 --det-outcomes=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.alone.r2.outcomes.json --det-trace=/tmp/pm-p3/find/codex-multi-auth/b/runs/7ad4b9f3e8.alone.r2.trace.jsonl",
+   "exit": 1,
+   "wall_s": 47.07,
+   "meta": {
+    "timers": "virtual",
+    "network": "open",
+    "epoch": "2026-11-26T05:12:38.000Z",
+    "seed": 0
+   },
+   "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+   ],
+   "outcomes": {
+    "test/runtime-rotation-proxy.test.ts::Luna Reserve fallback::reconsiders a Luna capability-rejected workspace after switching to Reserve": "failed",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type application/json": "failed",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type null": "failed",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type text/event-stream": "failed",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type text/plain": "failed",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type null": "failed",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type text/event-stream": "failed",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type text/plain": "failed",
+    "test/runtime-rotation-proxy.test.ts::does not dispatch for a pinned client that disconnected during the reset check": "failed",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted api streams as cancellation": "failed",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted psp streams as cancellation": "failed",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted zdr streams as cancellation": "failed",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::uses sniffed SSE for zdr usage and completion (response.completed)": "failed",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::uses sniffed SSE for zdr usage and completion (response.created)": "failed",
+    "test/runtime-rotation-proxy.test.ts::keeps session affinity when the client disconnects mid-stream": "failed",
+    "test/runtime-rotation-proxy.test.ts::learns a stale subscription model entitlement and retries another eligible account": "failed",
+    "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::evicts oldest local thread goal fallbacks when capacity is exceeded": "failed",
+    "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::rotates accounts after native quota rejection without using sibling workspaces": "failed"
+   },
+   "exc": {
+    "test/runtime-rotation-proxy.test.ts::Luna Reserve fallback::reconsiders a Luna capability-rejected workspace after switching to Reserve": "AssertionError: expected [ [ 'acc_2', 'gpt-6-luna' ], \u2026(1) ] to deeply equal [ [ 'acc_1', 'gpt-6-luna' ], \u2026(2) ] [call @ test/runtime-rotation-proxy.test.ts:8398]",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type application/json": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type null": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type text/event-stream": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::records real ledger counts for SSE with Content-Type text/plain": "AssertionError: expected { version: 1, \u2026(14) } to match object { Object (outcome, tokens) } / (15 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6193]",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type null": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type text/event-stream": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+    "test/runtime-rotation-proxy.test.ts::chooseAccount sequential mode (issue #509)::requires the terminal event for SSE with Content-Type text/plain": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(1) } / (18 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:6211]",
+    "test/runtime-rotation-proxy.test.ts::does not dispatch for a pinned client that disconnected during the reset check": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/runtime-rotation-proxy.test.ts:588]",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted api streams as cancellation": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/runtime-rotation-proxy.test.ts:7050]",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted psp streams as cancellation": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/runtime-rotation-proxy.test.ts:7050]",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::records interrupted zdr streams as cancellation": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/runtime-rotation-proxy.test.ts:7050]",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::uses sniffed SSE for zdr usage and completion (response.completed)": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'success', \u2026(2) } / (14 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:7095]",
+    "test/runtime-rotation-proxy.test.ts::explicit API model routes::uses sniffed SSE for zdr usage and completion (response.created)": "AssertionError: expected { version: 1, \u2026(14) } to match object { outcome: 'failure', \u2026(2) } / (14 matching properties omitted from actual) [call @ test/runtime-rotation-proxy.test.ts:7095]",
+    "test/runtime-rotation-proxy.test.ts::keeps session affinity when the client disconnects mid-stream": "Error: Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\". [call @ test/runtime-rotation-proxy.test.ts:7658]",
+    "test/runtime-rotation-proxy.test.ts::learns a stale subscription model entitlement and retries another eligible account": "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:7278]",
+    "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::evicts oldest local thread goal fallbacks when capacity is exceeded": "AssertionError: expected 503 to be 200 // Object.is equality [call @ test/runtime-rotation-proxy.test.ts:3722]",
+    "test/runtime-rotation-proxy.test.ts::runtime rotation proxy::rotates accounts after native quota rejection without using sibling workspaces": "AssertionError: expected [ 'acc_2', 'acc_2' ] to deeply equal [ 'acc_1', 'acc_2', 'acc_2' ] [call @ test/runtime-rotation-proxy.test.ts:2752]"
+   }
+  }
+ ],
+ "complete": true
+}
