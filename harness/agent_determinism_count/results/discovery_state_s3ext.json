@@ -39,6 +39,24 @@
    "prepass_total": 1964242,
    "stack": []
   },
+  "committer-date:>=2024-01-01 retry crewai test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 503,
+   "leaves": 2,
+   "nodes": 4,
+   "prepass_total": 1958,
+   "stack": [
+    [
+     "2026-03-06",
+     "2026-07-16"
+    ],
+    [
+     "2026-07-17",
+     "2026-11-25"
+    ]
+   ]
+  },
   "committer-date:>=2024-01-01 retry eval test": {
    "capped": true,
    "done": true,
@@ -77,21 +95,12 @@
   },
   "committer-date:>=2024-01-01 retry langgraph test": {
    "capped": false,
-   "done": false,
-   "leaf_total": 4995,
-   "leaves": 9,
-   "nodes": 18,
+   "done": true,
+   "leaf_total": 11688,
+   "leaves": 18,
+   "nodes": 34,
    "prepass_total": 11664,
-   "stack": [
-    [
-     "2026-07-01",
-     "2026-07-16"
-    ],
-    [
-     "2026-07-17",
-     "2026-11-25"
-    ]
-   ]
+   "stack": []
   },
   "committer-date:>=2024-01-01 retry llm test": {
    "capped": true,
@@ -417,13 +426,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 125
+  "issues": 219
  },
  "search_stats": {
-  "429": 10,
+  "429": 16,
   "limit": 30,
   "remaining": 30,
-  "reset": 1795712063
+  "reset": 1795712775
  },
  "started": "2026-11-26T11:20:43+00:00"
 }
