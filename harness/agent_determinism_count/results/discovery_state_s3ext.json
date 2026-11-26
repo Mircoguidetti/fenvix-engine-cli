@@ -12,6 +12,24 @@
  },
  "finished": null,
  "queries": {
+  "committer-date:>=2024-01-01 xfail \"ai sdk\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 15,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 15,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 xfail \"llama-index\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 27,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 27,
+   "stack": []
+  },
   "committer-date:>=2024-01-01 xfail \"model output\" test": {
    "capped": false,
    "done": true,
@@ -21,16 +39,29 @@
    "prepass_total": 253,
    "stack": []
   },
-  "committer-date:>=2024-01-01 xfail eval test": {
+  "committer-date:>=2024-01-01 xfail \"pydantic-ai\" test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 112,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 112,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 xfail agent test": {
    "capped": false,
    "done": false,
-   "leaf_total": 3360,
-   "leaves": 6,
-   "nodes": 12,
-   "prepass_total": 5161,
+   "leaf_total": 8746,
+   "leaves": 15,
+   "nodes": 31,
+   "prepass_total": 15527,
    "stack": [
     [
      "2026-09-21",
+     "2026-10-07"
+    ],
+    [
+     "2026-10-08",
      "2026-10-23"
     ],
     [
@@ -38,6 +69,33 @@
      "2026-11-25"
     ]
    ]
+  },
+  "committer-date:>=2024-01-01 xfail autogen test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 134,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 134,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 xfail crewai test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 68,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 68,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 xfail eval test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 5176,
+   "leaves": 8,
+   "nodes": 14,
+   "prepass_total": 5161,
+   "stack": []
   },
   "committer-date:>=2024-01-01 xfail gemini test": {
    "capped": false,
@@ -55,6 +113,33 @@
    "leaves": 4,
    "nodes": 6,
    "prepass_total": 1580,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 xfail langchain test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 823,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 822,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 xfail langgraph test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 343,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 343,
+   "stack": []
+  },
+  "committer-date:>=2024-01-01 xfail llamaindex test": {
+   "capped": false,
+   "done": true,
+   "leaf_total": 25,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 25,
    "stack": []
   },
   "committer-date:>=2024-01-01 xfail prompt test": {
@@ -75,13 +160,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 200
+  "issues": 379
  },
  "search_stats": {
-  "429": 18,
+  "429": 38,
   "limit": 30,
   "remaining": 30,
-  "reset": 1795694398
+  "reset": 1795696195
  },
  "started": "2026-11-26T11:20:43+00:00"
 }
