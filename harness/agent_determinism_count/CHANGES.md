@@ -65,3 +65,18 @@
    workflow pre-pass answer for the same query, discovery stops (state route_check) for a report. The build also
    keeps the leaves before a gzip member cut by a cancelled job. Tests: test_session_route_answer_below_workflow_prepass_stops,
    test_cut_gzip_member_and_session_part_in_git (both fail before the change). No rule, query or threshold change.
+9. 2026-11-26 11:05Z, harness only (no rule, query or count change). The candidate build moves to the text workflow.
+   The text leaf parts are about 1.2 GB gzip in four artifacts, and the work session cannot download artifacts (the
+   proxy refuses the blob storage host). Request {"build": true} (requests/e1.json) runs `parts.py fetch` for both
+   families (sha256 checked against the committed index), checks that each family finished or reached its 24 h
+   budget, then runs `discover.py build`. Otherwise the request stays pending. read_leaves streams the parts in two
+   passes, keeping the last record per (query, a, b), and memory holds candidates, not leaves. Hits keep the order
+   of the leaves sorted by (stratum, query, a, b), then item order, then the first hit per (url, query). This is the
+   order of the earlier in-memory build. candidates.jsonl.gz holds issue/commit bodies, so it stays out of git: the
+   build run uploads it as the artifact agent-determinism-count-candidates-<run>, and git holds
+   results/candidates_index.json (sha256, bytes, lines). Every later chunk request fetches it by that index
+   (sha256 checked) before it runs. pool.json and orders.json are committed. The same run resumes d3 first, which
+   records S2/S3's budget_reached and marks d3 done. Gap: S2/S3 sent nothing from 09:56Z (run 45758051807 stopped
+   d3 at its max_minutes and no next run was queued) to its budget end at 10:54:28Z, about 58 min. The 1 unfinished
+   query enters N_s as truncated with its pre-pass total. Tests: test_build_streams_leaves_and_keeps_hit_order,
+   test_fetch_candidates_checks_sha (both fail before the change).

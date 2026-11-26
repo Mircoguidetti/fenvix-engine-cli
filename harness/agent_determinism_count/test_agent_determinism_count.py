@@ -752,8 +752,10 @@ def test_workflow_trigger_and_owned_files():
     assert on["push"]["paths"] == ["harness/agent_determinism_count/requests/**"]
     own = [ln for ln in script.splitlines() if ln.strip().startswith('own="')][0]
     for session_file in ("reads.jsonl", "texts_search.jsonl ", "discovery_state_code", "leaves_code", "prepass_code",
-                         "search_budget_free", "handcheck", "probe_session", "probe_decisions", "candidates"):
+                         "search_budget_free", "handcheck", "probe_session", "probe_decisions", "candidates.jsonl.gz"):
         assert session_file not in own
+    # the build moved to the workflow (2026-11-26, CHANGES.md item 9): it commits pool, orders and the candidates index
+    assert all(f in own for f in ("pool.json", "orders.json", "candidates_index.json"))
     # the S1 code workflow: its own requests, group and markers; it never commits the text family's or session files
     wfc = yaml.safe_load((HERE.parent.parent / ".github/workflows/agent-determinism-count-code.yml").read_text())
     assert wfc[True]["push"]["paths"] == ["harness/agent_determinism_count/requests_code/**"]
@@ -1196,3 +1198,45 @@ def test_cut_gzip_member_and_session_part_in_git(tmp_path, monkeypatch):
     assert parts.fetch("code") == 0
     sp.write_bytes(whole + whole)
     assert parts.fetch("code") == 1
+
+
+def test_build_streams_leaves_and_keeps_hit_order(tmp_path, monkeypatch):
+    """protects=the build over ~1.2 GB of leaf parts: leaves are streamed (last record per (query, a, b) across parts),
+    hits keep (stratum, query, a) order and the first hit per (url, query), whatever the file order; the candidates
+    file leaves git with a sha256 index; fails_when=a re-run leaf is counted twice, hit order depends on file order, or
+    candidates.jsonl.gz is committed; no_claim=memory use itself."""
+    parts = _parts_env(tmp_path, monkeypatch)
+    d = tmp_path / "discovery" / "leaves_text"
+    d.mkdir(parents=True)
+
+    def lf(q, a, items, **kw):
+        return {"query": q, "stratum": "S2", "a": a, "b": a, "items": [{"repo": r, "url": u} for r, u in items], **kw}
+    (d / "text-2.jsonl.gz").write_bytes(_gz_lines([lf("q", "9", [("o/x", "u9")]),
+                                                   lf("q", "1", [("o/x", "u1"), ("o/x", "u1")], truncated=True,
+                                                      total_count=50, read=10)]))
+    (d / "text-3.jsonl.gz").write_bytes(_gz_lines([lf("q", "1", [("o/x", "u1"), ("o/y", "u2")])]))  # re-run of q/1
+    got = list(discover.iter_leaves())
+    assert len(got) == 2 and not any(g.get("truncated") for g in got)
+    rows, orders, pool = discover.build(iter(got[::-1]), {"text": {}}, {})
+    x = [r for r in rows if r["repo"] == "o/x"][0]
+    assert [h["url"] for h in x["hits"]] == ["u1", "u9"] and pool["S2"]["candidates"] == 2
+    assert pool["S2"]["truncated_leaves"] == 0
+    script = (HERE / "commit_results.sh").read_text()
+    own = [ln for ln in script.splitlines() if ln.strip().startswith('own="')][0]
+    assert "candidates_index.json" in own and "candidates.jsonl.gz" not in own
+
+
+def test_fetch_candidates_checks_sha(tmp_path, monkeypatch):
+    """protects=chunk runs read exactly the built candidates: candidates.jsonl.gz is taken from the build artifact by
+    its committed index and its sha256 checked; fails_when=a changed candidates file is read; no_claim=network."""
+    parts = _parts_env(tmp_path, monkeypatch)
+    assert parts.fetch_candidates() == 0  # no build yet
+    body = _gz_lines([{"idx": 0, "repo": "o/x"}])
+    _zip(tmp_path / ".artifacts" / "agent-determinism-count-candidates-8.zip", {"candidates.jsonl.gz": body})
+    ix = {"run_id": "8", "artifact": "agent-determinism-count-candidates-8", "artifact_path": "candidates.jsonl.gz",
+          "sha256": hashlib.sha256(body).hexdigest(), "bytes": len(body), "lines": 1}
+    (tmp_path / "candidates_index.json").write_text(json.dumps(ix))
+    assert parts.fetch_candidates() == 0 and (tmp_path / "candidates.jsonl.gz").read_bytes() == body
+    (tmp_path / "candidates.jsonl.gz").unlink()
+    (tmp_path / "candidates_index.json").write_text(json.dumps({**ix, "sha256": "0" * 64}))
+    assert parts.fetch_candidates() == 1

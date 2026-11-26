@@ -8,7 +8,7 @@ commit_results.sh. ``fetch`` downloads every indexed part that is missing locall
 ``restore`` (results/discovery/restore_<family>.json = {"run_id": N}) takes a run's discovery state, splits, pre-pass
 and leaf file from its results artifact (run 45603465040 wrote its leaves before this scheme existed).
 
-Usage: parts.py index | fetch --family F | restore --family F
+Usage: parts.py index | fetch --family F | restore --family F | candidates
 Every request is GET (Actions artifacts of this repository, GITHUB_TOKEN with actions: read).
 """
 from __future__ import annotations
@@ -182,6 +182,26 @@ def fetch(family: str) -> int:
     return 1 if bad else 0
 
 
+def fetch_candidates() -> int:
+    """results/candidates.jsonl.gz from the build run's artifact, by results/candidates_index.json (sha256 checked);
+    0 when present and matching or when no build has run yet."""
+    ix = _load(RES / "candidates_index.json", None)
+    p = RES / "candidates.jsonl.gz"
+    if not ix:
+        return 0
+    if p.exists() and file_facts(p)["sha256"] == ix["sha256"]:
+        return 0
+    if not _extract(artifact_zip(ix["run_id"], ix["artifact"]), ix["artifact_path"], p):
+        print(f"candidates: {ix['artifact_path']} not in {ix['artifact']}")
+        return 1
+    got = file_facts(p)["sha256"]
+    if got != ix["sha256"]:
+        print(f"candidates: sha256 {got} != index {ix['sha256']}")
+        return 1
+    print(f"candidates: {ix['lines']} rows from {ix['artifact']}")
+    return 0
+
+
 def _nodes(st: dict) -> int:
     return sum(q.get("nodes", 0) for q in (st.get("queries") or {}).values())
 
@@ -230,13 +250,15 @@ def restore(family: str) -> int:
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["index", "fetch", "restore"])
+    ap.add_argument("cmd", choices=["index", "fetch", "restore", "candidates"])
     ap.add_argument("--family", choices=FAMILIES)
     a = ap.parse_args(argv)
     if a.cmd == "index":
         for fam in FAMILIES:
             index(fam)
         return 0
+    if a.cmd == "candidates":
+        return fetch_candidates()
     return fetch(a.family) if a.cmd == "fetch" else restore(a.family)
 
 

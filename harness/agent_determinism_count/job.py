@@ -8,7 +8,7 @@ next push.
 Request kinds: {"chunk": "probe", "probe": true} (§0.2 workflow route probe), {"probe_text": true} (§0.2c/d: the
 issues/commits probes and the registry pages, workflow route), {"discovery": "text"} (§1 S2/S3 pre-pass and bisection
 in the workflow, resumable; one request per job run), {"chunk": n, "candidates": [...]} and
-{"chunk": "<n>c", "comments": n} and {"chunk": "debug-x", "debug": true, "repos": [...]} (chunk.py).
+{"build": true} (leaf parts fetched, then discover.py build), {"chunk": "<n>c", "comments": n} and {"chunk": "debug-x", "debug": true, "repos": [...]} (chunk.py).
 S1 (code search, requests_code/, workflow agent-determinism-count-code.yml): {"probe_code": true},
 {"prepass": "code"}, {"population": true}, {"discovery": "code"}; a code request waits while the code route is not
 the workflow route.
@@ -107,11 +107,29 @@ def main() -> int:
             return 0
         chunk.mark_done(name, {"discovery": fam, "rc": rc, "at": chunk.now()})
         return 0
+    if req.get("build"):  # {"build": true}: fetch every leaf part (sha256 checked), then discover.py build
+        for fam in ("code", "text"):
+            if subprocess.call([sys.executable, str(HERE / "parts.py"), "fetch", "--family", fam]) != 0:
+                print(f"leaf parts of {fam} missing or changed: build not run, {name} stays pending")
+                return 1
+        for fam in ("code", "text"):
+            st = json.loads((HERE / "results" / f"discovery_state_{fam}.json").read_text())
+            if not (st.get("finished") or st.get("budget_reached")):
+                print(f"discovery {fam} neither finished nor at its budget: build not run, {name} stays pending")
+                return 1
+        rc = subprocess.call([sys.executable, str(HERE / "discover.py"), "build"])
+        if rc == 0:
+            chunk.mark_done(name, {"build": True, "at": chunk.now()})
+        return rc
     if req.get("probe"):
         rc = subprocess.call([sys.executable, str(HERE / "probe.py"), "workflow"])
         if rc == 0:
             chunk.mark_done(name, {"probe": True, "at": chunk.now()})
         return rc
+    import parts
+    if parts.fetch_candidates() != 0:  # candidates.jsonl.gz is outside git (build artifact, sha256 index)
+        print(f"candidates missing or changed: {name} stays pending")
+        return 1
     return chunk.run_chunk(req, name)
 
 

@@ -72,6 +72,8 @@ jobs:
           path: |
             harness/agent_determinism_count/results/
             !harness/agent_determinism_count/results/discovery/leaves_*/
+            !harness/agent_determinism_count/results/candidates.jsonl.gz
+            !harness/agent_determinism_count/results/build_out/
           if-no-files-found: ignore
           retention-days: 90   # covers the final report (hard stop 2026-12-14) + 30 days
       # this run's discovery leaf files (over GitHub's 100 MB file limit, so outside git; index in leaf_parts_*.json)
@@ -80,6 +82,16 @@ jobs:
         with:
           name: agent-determinism-count-leaves-${{ github.run_id }}
           path: harness/agent_determinism_count/results/discovery/leaves_*/*-${{ github.run_id }}.jsonl.gz
+          if-no-files-found: ignore
+          retention-days: 90   # covers the final report (hard stop 2026-12-14) + 30 days
+          compression-level: 0
+      # candidates.jsonl.gz from a {"build": true} request (issue/commit bodies, over 100 MB: outside git; index in
+      # results/candidates_index.json); later runs fetch it by that index and never re-upload it
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: agent-determinism-count-candidates-${{ github.run_id }}
+          path: harness/agent_determinism_count/results/build_out/candidates.jsonl.gz
           if-no-files-found: ignore
           retention-days: 90   # covers the final report (hard stop 2026-12-14) + 30 days
           compression-level: 0

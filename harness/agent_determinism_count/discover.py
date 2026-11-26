@@ -313,50 +313,52 @@ def population(route: str) -> int:
 
 # ---------------------------------------------------------------------------------------------- build
 
-def read_leaves() -> list[dict]:
-    recs = []
+def _leaf_lines():
+    """(file number, line number, record) of every readable leaf line, file by file (streamed)."""
+    files = []
     for fam in ("code", "text"):
         # the leaf files are outside git (parts.py; ``parts.py fetch`` first); the single pre-parts file if present
         legacy = DISC / f"leaves_{fam}.jsonl.gz"
-        for p in ([legacy] if legacy.exists() else []) + PT.part_files(fam, DISC):
-            try:
-                with gzip.open(p, "rt") as f:
-                    for x in f:
-                        try:
-                            recs.append(json.loads(x))
-                        except json.JSONDecodeError:  # a line cut by a stopped job
-                            pass
-            except (EOFError, OSError):  # a gzip member cut by a cancelled job: the lines before it are kept
-                pass
-    by = {}
-    for r in recs:  # a leaf re-run after an interruption: the last record per (query, a, b)
-        by[(r["query"], str(r["a"]), str(r["b"]))] = r
-    return list(by.values())
+        files += ([legacy] if legacy.exists() else []) + PT.part_files(fam, DISC)
+    for fi, p in enumerate(files):
+        try:
+            with gzip.open(p, "rt") as f:
+                for li, x in enumerate(f):
+                    try:
+                        yield fi, li, json.loads(x)
+                    except json.JSONDecodeError:  # a line cut by a stopped job
+                        pass
+        except (EOFError, OSError):  # a gzip member cut by a cancelled job: the lines before it are kept
+            pass
+
+
+def _leaf_key(r: dict) -> tuple:
+    return r["query"], str(r["a"]), str(r["b"])
+
+
+def iter_leaves():
+    """The last record per (query, a, b) (a leaf re-run after an interruption), streamed in two passes so that memory
+    holds keys, not the ~1.2 GB of leaf bodies (2026-11-26 build)."""
+    last = {}
+    for fi, li, r in _leaf_lines():
+        last[_leaf_key(r)] = (fi, li)
+    for fi, li, r in _leaf_lines():
+        if last.get(_leaf_key(r)) == (fi, li):
+            yield r
+
+
+def read_leaves() -> list[dict]:
+    return list(iter_leaves())
 
 
 STRATA = ("S1", "S2", "S3")
 
 
-def build(leaves: list[dict], states: dict, prepass_all: dict) -> tuple[list[dict], dict, dict]:
+def build(leaves, states: dict, prepass_all: dict) -> tuple[list[dict], dict, dict]:
+    """``leaves`` may be any iterable (one pass). Hits keep the order of the leaves sorted by (stratum, query, a, b),
+    then item order, and the first hit per (url, query)."""
     cand: dict[str, dict] = {}
-    for lf in sorted(leaves, key=lambda x: (STRATA.index(x["stratum"]), x["query"], str(x["a"]))):
-        for it in lf.get("items") or []:
-            repo = it.get("repo")
-            if not repo:
-                continue
-            k = repo.lower()
-            row = cand.setdefault(k, {"repo": repo, "html_url": f"https://github.com/{repo}", "stratum": lf["stratum"],
-                                      "hits": []})
-            if STRATA.index(lf["stratum"]) < STRATA.index(row["stratum"]):
-                row["stratum"] = lf["stratum"]
-            h = {"stratum": lf["stratum"], "query": lf["query"], **{x: v for x, v in it.items() if x != "repo"}}
-            if not any(z.get("url") == h.get("url") and z["query"] == h["query"] for z in row["hits"]):
-                row["hits"].append(h)
-    rows = sorted(cand.values(), key=lambda r: r["html_url"])
-    for i, r in enumerate(rows):
-        r["idx"] = i
-    orders = {s: [r["idx"] for r in R.stratum_order([r for r in rows if r["stratum"] == s])] for s in STRATA}
-    pool = {s: {"candidates": len(orders[s]), "missing": 0, "truncated_leaves": 0, "incomplete_leaves": 0,
+    pool = {s: {"candidates": 0, "missing": 0, "truncated_leaves": 0, "incomplete_leaves": 0,
                 "capped_queries": [], "unfinished": []} for s in STRATA}
     for lf in leaves:
         p = pool[lf["stratum"]]
@@ -367,6 +369,32 @@ def build(leaves: list[dict], states: dict, prepass_all: dict) -> tuple[list[dic
             p["incomplete_leaves"] += 1
         if lf.get("capped_query"):
             p["capped_queries"].append(lf["query"])
+        si = STRATA.index(lf["stratum"])
+        for pos, it in enumerate(lf.get("items") or []):
+            repo = it.get("repo")
+            if not repo:
+                continue
+            k = repo.lower()
+            row = cand.setdefault(k, {"repo": repo, "html_url": f"https://github.com/{repo}", "stratum": lf["stratum"],
+                                      "hits": []})
+            if si < STRATA.index(row["stratum"]):
+                row["stratum"] = lf["stratum"]
+            row["hits"].append(((si, lf["query"], str(lf["a"]), str(lf["b"]), pos),
+                                {"stratum": lf["stratum"], "query": lf["query"],
+                                 **{x: v for x, v in it.items() if x != "repo"}}))
+    for row in cand.values():
+        hits, seen = [], set()
+        for _, h in sorted(row["hits"], key=lambda t: t[0]):
+            if (h.get("url"), h["query"]) not in seen:
+                seen.add((h.get("url"), h["query"]))
+                hits.append(h)
+        row["hits"] = hits
+    rows = sorted(cand.values(), key=lambda r: r["html_url"])
+    for i, r in enumerate(rows):
+        r["idx"] = i
+    orders = {s: [r["idx"] for r in R.stratum_order([r for r in rows if r["stratum"] == s])] for s in STRATA}
+    for s in STRATA:
+        pool[s]["candidates"] = len(orders[s])
     # gate note 3: unfinished queries and leaves enter N_s as truncated leaves with their pre-pass total_count
     for fam, st in states.items():
         qsd = (st or {}).get("queries") or {}
@@ -403,12 +431,22 @@ def main(argv=None) -> int:
     if a.cmd == "population":
         return population(a.route)
     states = {f: _json(RES / f"discovery_state_{f}.json", {}) for f in ("code", "text")}
-    rows, orders, pool = build(read_leaves(), states, load_prepass())
+    rows, orders, pool = build(iter_leaves(), states, load_prepass())
     with gzip.open(RES / "candidates.jsonl.gz", "wt") as f:
         for r in rows:
             f.write(json.dumps(r, sort_keys=True) + "\n")
     _save(RES / "orders.json", orders)
     _save(RES / "pool.json", pool)
+    # candidates.jsonl.gz (issue/commit bodies) stays out of git like the leaves: its index is committed and the file
+    # travels in this run's results artifact (parts.fetch_candidates)
+    import shutil
+    (RES / "build_out").mkdir(exist_ok=True)
+    shutil.copyfile(RES / "candidates.jsonl.gz", RES / "build_out" / "candidates.jsonl.gz")  # this run's upload
+    _save(RES / "candidates_index.json", {**PT.file_facts(RES / "candidates.jsonl.gz"), "run_id": PT.run_id(),
+                                          "artifact": f"agent-determinism-count-candidates-{PT.run_id()}",
+                                          "artifact_path": "candidates.jsonl.gz", "at": now()})
+    import resource
+    print(f"build peak RSS {resource.getrusage(resource.RUSAGE_SELF).ru_maxrss // 1024} MB")
     print(json.dumps({s: {k: v for k, v in pool[s].items() if k not in ("unfinished",)} for s in STRATA},
                      sort_keys=True))
     return 0
