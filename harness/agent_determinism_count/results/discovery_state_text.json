@@ -662,21 +662,17 @@
   "committer-date:>=2024-01-01 intermittent openai test": {
    "capped": false,
    "done": false,
-   "leaf_total": 598,
-   "leaves": 2,
-   "nodes": 5,
+   "leaf_total": 13271,
+   "leaves": 25,
+   "nodes": 50,
    "prepass_total": 14943,
    "stack": [
     [
-     "2025-10-25",
-     "2025-12-29"
+     "2026-10-08",
+     "2026-10-23"
     ],
     [
-     "2025-12-30",
-     "2026-03-05"
-    ],
-    [
-     "2026-03-06",
+     "2026-10-24",
      "2026-11-25"
     ]
    ]
@@ -2907,13 +2903,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 787
+  "issues": 970
  },
  "search_stats": {
-  "429": 79,
+  "429": 99,
   "limit": 30,
-  "remaining": 23,
-  "reset": 1795676055
+  "remaining": 25,
+  "reset": 1795677822
  },
  "started": "2026-11-25T12:06:45+00:00"
 }
