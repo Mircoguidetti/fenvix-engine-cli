@@ -137,6 +137,22 @@ def main() -> int:
     if parts.fetch_candidates() != 0:  # candidates.jsonl.gz is outside git (build artifact, sha256 index)
         print(f"candidates missing or changed: {name} stays pending")
         return 1
+    if req.get("cands_backfill"):  # candidate records of every row already read (chunks before cands_read existed)
+        req = {**req, "candidates": sorted({r["idx"] for r in chunk.read_jsonl(HERE / "results" / "rows.jsonl")})}
+    if req.get("candidates") and not req.get("debug"):
+        # the work session cannot download candidates.jsonl.gz (artifact storage host refused): each chunk commits
+        # the candidate records it reads to results/cands_read.jsonl.gz (hand reads and REPORT use them)
+        import gzip
+        cr = HERE / "results" / "cands_read.jsonl.gz"
+        have = {r["idx"] for r in chunk.read_jsonl(cr)} if cr.exists() else set()
+        allc = chunk.candidates()
+        with gzip.open(cr, "at") as f:
+            for i in req["candidates"]:
+                if i not in have and i in allc:
+                    f.write(json.dumps(allc[i], sort_keys=True) + "\n")
+        if req.get("cands_backfill"):
+            chunk.mark_done(name, {"cands_backfill": len(req["candidates"]), "at": chunk.now()})
+            return 0
     return chunk.run_chunk(req, name)
 
 

@@ -102,3 +102,9 @@
     the commit index changing. For the extension, the guard now stops only if a session total_count is lower than
     the workflow pre-pass by more than 1% AND by more than 5 hits. S1 kept the strict guard. The 6 h hard stop is
     unchanged. Test: test_extension_route_guard_tolerates_small_index_drift (fails before the change).
+13. 2026-11-26 11:45Z, harness only (no rule change). The work session cannot download candidates.jsonl.gz: the
+    proxy refuses the artifact storage host. Each chunk request now appends the candidate records it reads to
+    results/cands_read.jsonl.gz, which is committed by the text workflow. Hand reads and REPORT use the full file
+    when present (in the workflow) and cands_read otherwise. Request r002x ({"cands_backfill": true}) adds the
+    records of chunks 1-2, which were read before this existed. The comments passes r001c and r002c (§3.1) are
+    queued after their chunks.

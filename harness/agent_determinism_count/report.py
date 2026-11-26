@@ -59,7 +59,9 @@ def load(res: Path = RES) -> dict:
         "launch": _json(res / "launch.json"),
         "prepass": {**(_json(res / "prepass_code.json", {}) or {}), **(_json(res / "prepass_text.json", {}) or {})},
         "pool": _json(res / "pool.json"), "orders": _json(res / "orders.json", {}) or {},
-        "candidates": _jsonl(res / "candidates.jsonl.gz"), "rows": _jsonl(res / "rows.jsonl"),
+        # the full file when present (workflow), else the records each chunk committed (work session)
+        "candidates": _jsonl(res / "candidates.jsonl.gz") if (res / "candidates.jsonl.gz").exists()
+        else _jsonl(res / "cands_read.jsonl.gz"), "rows": _jsonl(res / "rows.jsonl"),
         "search": _jsonl(res / "texts_search.jsonl") + _jsonl(res / "texts_search_wf.jsonl"),
         "comments": _jsonl(res / "comments.jsonl"), "reads": _jsonl(res / "reads.jsonl"),
         "handcheck": _json(res / "handcheck.json", {}) or {}, "state": _json(res / "state.json", {}) or {},
