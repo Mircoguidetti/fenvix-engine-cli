@@ -20,7 +20,6 @@ import sys
 
 
 def header(path):
-    op = gzip.open if path.endswith(".gz") else open
     for p in (path, path + ".gz"):
         if os.path.exists(p):
             with (gzip.open if p.endswith(".gz") else open)(p, "rt") as f:

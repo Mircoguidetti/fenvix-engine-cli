@@ -175,7 +175,9 @@ function accountRerun(firstTests, rerunTests, files) {
   // a test that never started in the first pass either (a whole describe.skip file: alakajam's rate-limiter.spec.ts)
   // is accounted for by any re-run record of it; a test the first pass ran needs a re-run record that ran (founder
   // decision 2026-11-26, alakajam A)
-  const neverFirst = new Set((firstTests || []).filter((r) => set.has(fileOf(r.nodeid)) && !ran(r)).map((r) => r.nodeid));
+  // (an id with a first-pass record that ran is not in it, even when another record of that id never started: /review F5)
+  const ranFirst = new Set((firstTests || []).filter((r) => set.has(fileOf(r.nodeid)) && ran(r)).map((r) => r.nodeid));
+  const neverFirst = new Set((firstTests || []).filter((r) => set.has(fileOf(r.nodeid)) && !ran(r) && !ranFirst.has(r.nodeid)).map((r) => r.nodeid));
   const got = new Set((rerunTests || []).filter((r) => ran(r) || neverFirst.has(r.nodeid)).map((r) => r.nodeid));
   const unaccounted = want.filter((id) => !got.has(id));
   const complete = Array.isArray(rerunTests) && unaccounted.length === 0;
@@ -240,6 +242,7 @@ async function main(cmd, argv) {
 
   // ---- pass 1: the run exactly as it is today, straight to the user's terminal and the user's files ----
   const before = traceStamp(tracePath);
+  const outcomesStamp1 = opts.outcomes ? traceStamp(path.resolve(root, opts.outcomes)) : null;
   const p1 = spawnSync(process.execPath, [...process.execArgv, BIN, cmd, ...argv], { cwd: root, env: env1, stdio: 'inherit' });
   if (p1.signal) return { signal: p1.signal };
   const status1 = p1.status ?? 1;
@@ -275,6 +278,8 @@ async function main(cmd, argv) {
   // --det-outcomes: pass 1 writes the user's file; pass 2 writes its own here, and the wrapper puts the re-run's
   // outcomes of the hazard files into the user's file when it reports the re-run (mergeOutcomes)
   const o2path = opts.outcomes ? path.join(work, 'rerun.outcomes.json') : null;
+  // pass 1 wrote the user's outcomes file only if its identity changed (an earlier run's file is never rewritten: /review F9)
+  const o1Fresh = opts.outcomes ? outcomesStamp1 !== traceStamp(path.resolve(root, opts.outcomes)) : false;
   // The argument form of src/isolate.js: the user's own arguments, then the files. Jest needs --runTestsByPath for
   // paths to be paths; Vitest and node:test take them as they are.
   //
@@ -307,7 +312,7 @@ async function main(cmd, argv) {
   const status2 = p2.status ?? 1;
   try {
     const { status, complete } = finishRerun({ t1Path: tracePath, t2Path: t2path, status1, status2, affected, tracePath, root, t1 });
-    if (opts.outcomes) mergeOutcomes(path.resolve(root, opts.outcomes), o2path, affected, Boolean(complete));
+    if (opts.outcomes) mergeOutcomes(path.resolve(root, opts.outcomes), o2path, affected, Boolean(complete), { fresh: o1Fresh });
     return { status };
   } finally {
     fs.rmSync(work, { recursive: true, force: true });
@@ -419,7 +424,8 @@ function finishRerun({ t1Path, t2Path, status1, status2, affected, tracePath, ro
   // P0 big trace: a part the merge could not read is missing from the trace with its tests: status unknown, exit 2
   if (res.skipped.length) {
     exitStatus.recordUnknown(`unreadable trace parts, their tests are not counted: ${res.skipped.join('; ')}`);
-    return { status: exitStatus.runExit({ internalError: true }), res, complete };
+    // the merged trace is missing parts: it does not hold the re-run as reported, so neither may the outcomes file
+    return { status: exitStatus.runExit({ internalError: true }), res, complete: false };
   }
 
   process.stderr.write(`${exitStatus.statusLine(status)}\n`);
@@ -447,22 +453,29 @@ function finishRerun({ t1Path, t2Path, status1, status2, affected, tracePath, ro
  * The --det-outcomes file after a hazard re-run (founder decision 2026-11-26, alakajam A; P3b found alakajam par2's
  * outcomes file saying failed where the merged trace said passed). Pass 1 wrote `o1Path`; when the re-run is complete
  * (the merged trace holds the re-run's records of the hazard files) the outcomes, fingerprints and exceptions of the
- * hazard files' tests are replaced by pass 2's (`o2Path`), so the file says what the trace says. Otherwise pass 1's
+ * hazard files' tests pass 1 reported are replaced by pass 2's (`o2Path`), so the file says what the trace says for
+ * them. Otherwise pass 1's
  * stay, as in the trace. Either way `hazard_rerun` says which run is reported. Pass 1 wrote no file: nothing is done.
  */
-function mergeOutcomes(o1Path, o2Path, affected, complete) {
+function mergeOutcomes(o1Path, o2Path, affected, complete, { fresh = true } = {}) {
+  if (!fresh) return;
   let o1;
   try { o1 = JSON.parse(fs.readFileSync(o1Path, 'utf8')); } catch { return; }
   let o2 = null;
   if (complete && o2Path) { try { o2 = JSON.parse(fs.readFileSync(o2Path, 'utf8')); } catch { o2 = null; } }
   const set = new Set(affected);
   if (o2) {
-    for (const key of ['outcomes', 'fingerprints', 'exceptions']) {
-      const m = { ...(o1[key] || {}) };
-      for (const id of Object.keys(m)) if (set.has(fileOf(id))) delete m[id];
-      for (const [id, v] of Object.entries(o2[key] || {})) if (set.has(fileOf(id))) m[id] = v;
-      o1[key] = m;
+    // only the tests pass 1 reported are rewritten, never added: the re-run runs whole files and drops a --det-order
+    // selection, so a test only the re-run reported is not one the user's run selected (/review: F8 left open)
+    const ids = new Set([...Object.keys(o1.outcomes || {}), ...(Array.isArray(o1.order) ? o1.order : [])]);
+    const has = (o, k) => Boolean(o) && Object.prototype.hasOwnProperty.call(o, k);
+    const keys = ['outcomes', 'fingerprints', 'exceptions'];
+    const m = Object.fromEntries(keys.map((key) => [key, { ...(o1[key] || {}) }]));
+    for (const id of ids) {
+      if (!set.has(fileOf(id)) || !has(o2.outcomes, id)) continue;
+      for (const key of keys) { if (has(o2[key], id)) m[key][id] = o2[key][id]; else delete m[key][id]; }
     }
+    Object.assign(o1, m);
   }
   o1.hazard_rerun = {
     files: affected,

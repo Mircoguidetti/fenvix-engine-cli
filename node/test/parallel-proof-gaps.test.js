@@ -250,6 +250,45 @@ process.stdout.write(require('node:fs').readFileSync(require('node:fs').readdirS
   });
 });
 
+describe('/review fixes (2026-11-26): symlinks, the root directory', () => {
+  test('a path through a symlink records its literal key too, and a repointed link is resolved again per file (F1)', () => {
+    // protects=a lane that writes cur/x after another file of its process repointed cur keeps the key release-1 gave
+    // (cur/x) and the real key of the new target (v2/x), so a reader of either in another lane pairs with it;
+    // fails_when=the real path of cur is cached from the first file (the write recorded under the old target v1/x,
+    // no hazard with a reader of v2/x or cur/x); no_claim=a link repointed by another process during one file
+    // (the literal key still pairs it)
+    const dir = fs.mkdtempSync(path.join(BASE, 'fslink-'));
+    write(dir, { 'v1/.keep': '', 'v2/.keep': '' });
+    fs.symlinkSync('v1', path.join(dir, 'cur'));
+    const code = `
+const fs = require('node:fs'); const parallel = require(${JSON.stringify(path.join(__dirname, '..', 'src', 'parallel'))});
+parallel.installFootprint(process.cwd());
+parallel.enter('f1'); fs.writeFileSync('cur/x', '1'); parallel.leave('f1');
+fs.unlinkSync('cur'); fs.symlinkSync('v2', 'cur');
+parallel.enter('f2'); fs.writeFileSync('cur/x', '2'); parallel.leave('f2');
+const d = process.env.DETJS_DIR + '/lanes';
+process.stdout.write(JSON.stringify(fs.readdirSync(d).filter((n) => n.endsWith('.json')).map((n) => JSON.parse(fs.readFileSync(d + '/' + n, 'utf8')))));`;
+    const r = spawnSync(process.execPath, ['-e', code], { cwd: dir, encoding: 'utf8', env: cleanEnv({ DETJS_DIR: path.join(dir, '.detjs', 'run'), DETJS_WORKERS: '2' }) });
+    assert.equal(r.status, 0, r.stderr);
+    const all = JSON.parse(r.stdout);
+    const by = (k) => all.find((m) => m.file === k || m.label === k || m.key === k) || all[k === 'f1' ? 0 : 1];
+    const w2 = by('f2').footprint.w;
+    assert.ok(w2.includes('v2/x'), `the write of f2 lands in v2/x: ${JSON.stringify(all.map((m) => m.footprint.w))}`);
+    assert.ok(w2.includes('cur/x'), `the literal key cur/x is kept: ${w2}`);
+    assert.ok(!w2.includes('v1/x'), `v1/x is the old target: ${w2}`);
+  });
+
+  test('a listing or a recursive root at / pairs with keys directly under it (F6)', () => {
+    // protects=the root directory is matched like any other; fails_when=the prefix of '/' is '//' and nothing is under
+    // it; no_claim=synthetic keys
+    const { hazards } = require('../src/parallel');
+    const run = (a, b) => hazards(new Map([['A', { footprint: { w: [], r: [], l: [], listen: [], connect: [], ...a } }], ['B', { footprint: { w: [], r: [], l: [], listen: [], connect: [], ...b } }]]), new Map([['A', 0], ['B', 1]]));
+    assert.deepEqual(run({ l: ['/'] }, { w: ['/x'] }).map((h) => `${h.kind} ${h.what}`), ['list-write /']);
+    assert.deepEqual(run({ wr: ['/'] }, { r: ['/x/y'] }).map((h) => `${h.kind} ${h.what}`), ['recursive-write /']);
+    assert.deepEqual(run({ lr: ['/'] }, { w: ['/x/y'] }).map((h) => `${h.kind} ${h.what}`), ['recursive-read /']);
+  });
+});
+
 describe('fs wrapper unit: the recursive roots real fs calls record', () => {
   const record = (env = {}) => {
     const dir = fs.mkdtempSync(path.join(BASE, 'fsrec-'));

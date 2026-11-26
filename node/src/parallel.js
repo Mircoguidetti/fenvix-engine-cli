@@ -423,10 +423,11 @@ function installFootprint(root) {
     return path.join(r, path.basename(abs));
   };
   const nm = (abs) => abs.includes(`${path.sep}node_modules${path.sep}`) || abs.endsWith(`${path.sep}node_modules`);
-  const keyOf = (abs0) => {
+  // real = false: the path as the call gave it (resolved, symlinks kept), the key release-1 recorded
+  const keyOf = (abs0, real = true) => {
     if (abs0.startsWith('/proc/') || abs0.startsWith('/dev/') || abs0.startsWith('/sys/')) return null;
     if (nm(abs0)) return null;
-    const abs = realOf(abs0);
+    const abs = real ? realOf(abs0) : abs0;
     if (abs !== abs0 && (nm(abs) || abs.startsWith('/proc/') || abs.startsWith('/dev/') || abs.startsWith('/sys/'))) return null;
     for (const d of skip) if (abs.startsWith(d)) return null;
     if (abs === rootR) return '.';
@@ -439,7 +440,8 @@ function installFootprint(root) {
   };
   let cur = null;
   const H = {
-    begin(label) { cur = { label, w: new Set(), r: new Set(), l: new Set(), wr: new Set(), lr: new Set(), listen: new Set(), connect: new Set() }; },
+    // the real-path memo is per file: a link another file of this process repointed is resolved again (/review F1)
+    begin(label) { dirMemo.clear(); cur = { label, w: new Set(), r: new Set(), l: new Set(), wr: new Set(), lr: new Set(), listen: new Set(), connect: new Set() }; },
     end(label) {
       if (!cur || cur.label !== label) return null;
       const c = cur; cur = null;
@@ -450,7 +452,12 @@ function installFootprint(root) {
       const abs = toPath(p);
       if (abs === null) return;
       const k = keyOf(abs);
-      if (k !== null) cur[set].add(k);
+      if (k === null) return;
+      cur[set].add(k);
+      // a path through a symlink also keeps its literal key (/review F1): a link repointed during the file, or a
+      // lane that reaches the same file by the link's path, still pairs; more keys only add hazards
+      const kl = keyOf(abs, false);
+      if (kl !== null && kl !== k) cur[set].add(kl);
     },
   };
   PROC.hazard = H;
@@ -683,7 +690,6 @@ function readMarkers(dir) {
 
 // keys: root-relative ('a/b', the root itself '.') or absolute ('/x/y'); a root-relative key is never under an
 // absolute one and the reverse (prefix matching compares keys of the same form only, gate note 7)
-const keyUnder = (k, d) => (d === '.' ? !k.startsWith('/') : k === d || k.startsWith(`${d}/`));
 
 /** The ancestors of key `d` (nearest first): 'a/b/c' -> ['a/b', 'a', '.']; '/x/y' -> ['/x', '/']. */
 function keyAncestors(d) {
@@ -708,7 +714,7 @@ function sortedIndex(entries) {
       if (d === '.') return entries.filter((e) => !e[0].startsWith('/'));
       const out = [];
       for (let i = lower(d); i < entries.length && entries[i][0] === d; i++) out.push(entries[i]);
-      const pre = `${d}/`;
+      const pre = d === '/' ? '/' : `${d}/`; // the root directory: every absolute key (/review F6)
       for (let i = lower(pre); i < entries.length && entries[i][0].startsWith(pre); i++) out.push(entries[i]);
       return out;
     },
