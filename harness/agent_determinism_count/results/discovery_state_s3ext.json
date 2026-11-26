@@ -30,6 +30,15 @@
    "prepass_total": 1964242,
    "stack": []
   },
+  "committer-date:>=2024-01-01 retry gemini test": {
+   "capped": true,
+   "done": true,
+   "leaf_total": 140502,
+   "leaves": 1,
+   "nodes": 1,
+   "prepass_total": 139964,
+   "stack": []
+  },
   "committer-date:>=2024-01-01 retry llm test": {
    "capped": true,
    "done": true,
@@ -345,13 +354,13 @@
  },
  "search_requests": {
   "code": 0,
-  "issues": 125
+  "issues": 137
  },
  "search_stats": {
-  "429": 18,
+  "429": 20,
   "limit": 30,
   "remaining": 30,
-  "reset": 1795706544
+  "reset": 1795706736
  },
  "started": "2026-11-26T11:20:43+00:00"
 }
