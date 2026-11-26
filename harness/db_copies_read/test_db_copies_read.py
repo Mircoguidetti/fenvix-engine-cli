@@ -618,3 +618,137 @@ def test_derivation_xchain_runner_from_package_json(derived):
     assert x["runner_line"] == "mocha --no-config --timeout 120000 --exit 'test/integration/**/*.test.js'"
     assert x["runner_src"] == "package.json"
 
+
+
+# ============================================================================================ review fixes (+12)
+def test_second_request_in_same_run_accepts_own_checkpoint():
+    """protects=a run that processes two request files keeps going after the first wrote its checkpoint (review
+    finding: the second was refused as stale and the whole run lost); fails_when=a checkpoint from the current run is
+    refused; no_claim=checkpoint_ok only; the workflow loop is not run."""
+    assert J.checkpoint_ok({"run_id": "7"}, "5", current="7")
+    assert not J.checkpoint_ok({"run_id": "6"}, "5", current="7")
+
+
+def test_request_errors_found_before_any_get():
+    """protects=an unknown repository, a bad redo stage or a bound above 2,280 refuses the request before a GET;
+    fails_when=any passes; no_claim=validation only."""
+    rows = {"o/r": {}}
+    assert J.request_errors({"repos": ["o/r"]}, rows, 1500) == []
+    assert J.request_errors({"repos": ["x/y"]}, rows, 1500)
+    assert J.request_errors({"repos": ["o/r"], "redo": {"o/r": ["meta"]}}, rows, 1500)
+    assert J.request_errors({"repos": ["o/r"]}, rows, 2281)
+
+
+def test_client_ceiling_pauses_inside_a_repository():
+    """protects=the 2,280 bound holds per request, not only between repositories; fails_when=a request is sent at the
+    ceiling; no_claim=fake transport."""
+    c, _ = client()
+    c.ceiling = 2
+    c.get("repos/o/r")
+    c.get("repos/o/r")
+    with pytest.raises(ghapi.Pause):
+        c.get("repos/o/r")
+    assert c.n_requests == 2
+
+
+def test_client_rate_limit_retries_are_capped():
+    """protects=repeated secondary-limit answers end in a checkpoint, not endless retries; fails_when=a fourth retry is
+    sent; no_claim=fake transport with short waits."""
+    rl = (403, {"retry-after": "1"}, {"message": "secondary rate limit"})
+    c, _ = client([rl] * 10)
+    with pytest.raises(ghapi.Pause):
+        c.get("repos/o/r")
+    assert c.n_requests == ghapi.RATE_LIMIT_RETRIES + 1
+
+
+@pytest.mark.parametrize("line", ["pytest -nauto", "pytest -n4", "addopts = -n auto"])
+def test_attached_and_config_n_forms_are_parallel(line):
+    """protects=-nauto, -n4 and an addopts -n are parallel tokens; fails_when=any is missed (would turn an 'on' row
+    into 'off'); no_claim=none beyond protects."""
+    assert [p for p, _ in R.flag_tokens(line)] == ["parallel"]
+
+
+def test_addopts_list_form_is_on(tmp_path):
+    """protects=addopts written as a TOML list ["-n", "auto"] makes state on; fails_when=state off (inflates
+    free_off); no_claim=fixture pyproject."""
+    t = level_of(tmp_path, "pytest", "pytest -q", {WF: "  - run: pytest -q\n",
+                                                   "pyproject.toml": '[tool.pytest.ini_options]\naddopts = ["-n", "auto"]\n',
+                                                   "requirements.txt": "django\npytest-django\npytest-xdist\n"})
+    assert t["state"] == "on" and t["free_off"] == "no"
+
+
+def test_pytest_addopts_env_is_on(tmp_path):
+    """protects=PYTEST_ADDOPTS: -n auto in the workflow makes state on; fails_when=state off; no_claim=fixture."""
+    t = level_of(tmp_path, "pytest", "pytest -q", {WF: "env:\n  PYTEST_ADDOPTS: -n auto\nsteps:\n  - run: pytest -q\n",
+                                                   "requirements.txt": "django\npytest-django\npytest-xdist\n"})
+    assert t["state"] == "on"
+
+
+def test_manage_parallel_one_is_serial():
+    """protects=manage.py test --parallel 1 is serial; fails_when=it reads parallel (state on, free_off undercounted);
+    no_claim=none beyond protects."""
+    assert R.flag_tokens("python manage.py test --parallel 1") == [("serial", "--parallel 1")]
+
+
+def test_worker_count_tuning_is_not_a_revert(tmp_path):
+    """protects=changing -n auto to -n 4 later is not a reverted parallel attempt; fails_when=the earlier item gets
+    P3-revert; no_claim=fixture diffs."""
+    d = {"a1": [{"filename": "pytest.ini", "patch": "@@\n-addopts = -q\n+addopts = -q -n auto\n"}],
+         "a2": [{"filename": "pytest.ini", "patch": "@@\n-addopts = -q -n auto\n+addopts = -q -n 4\n"}]}
+    cs = [commit("a1", "ci: xdist", "2025-01-01T00:00:00Z"), commit("a2", "ci: four workers", "2025-02-01T00:00:00Z")]
+    _, items = items_for(tmp_path, commits=cs, diffs=d)
+    first = by_url(items, "https://github.com/o/r/commit/a1")
+    assert "P3-revert" not in first["rules"]
+
+
+def test_counted_item_without_hand_check_is_incomplete():
+    """protects=a counted item with no hand-check decision gives INCOMPLETE; fails_when=it is silently a fail;
+    no_claim=synthetic rows."""
+    table = [{"repo": f"r{i}", "status": "done", "free_off": "no"} for i in range(20)]
+    items = [{"repo": "r0", "url": "u0", "counted": True, "counted_rules": ["P1"], "p1_db": False}]
+    assert LN.compute(table, items, [], [])["outcome"] == "INCOMPLETE"
+
+
+def test_locate_needs_more_than_the_runner_word():
+    """protects=off evidence is not any line that merely contains 'pytest'; fails_when=a pip install line is taken for
+    'pytest --cov -q'; no_claim=none beyond protects."""
+    text = "pip install pytest-xdist\nrun: something else\n"
+    assert B.locate(text, "pytest --cov -q") is None
+    assert B.locate("  - run: pytest\n", "pytest") == {"line": 1, "text": "  - run: pytest"}
+
+
+def test_run_repo_unavailable_and_incomplete_resume(tmp_path):
+    """protects=a 404 repository is unavailable with no further reads; a 5xx stage is incomplete and the next run
+    resumes only that stage; fails_when=either path records the wrong state or re-reads done stages; no_claim=fake
+    reader methods stand in for GitHub."""
+    class Fake(J.Reader):
+        def __init__(self, results, meta_status=200, fail=None):
+            super().__init__(None, results)
+            self.meta_status, self.fail, self.calls = meta_status, fail, []
+
+        def s_meta(self, repo, row):
+            self.calls.append("meta")
+            return {"responses": [{"path": "m", "status": self.meta_status, "headers": {},
+                                   "data": {"default_branch": "main", "archived": False}}]}
+
+        def __getattribute__(self, name):
+            if name.startswith("s_") and name != "s_meta":
+                stage = name[2:]
+
+                def f(*a, **k):
+                    self.calls.append(stage)
+                    if stage == self.fail:
+                        raise J.Incomplete(stage)
+                    return {"responses": []}
+                return f
+            return object.__getattribute__(self, name)
+
+    cp = J.new_checkpoint()
+    assert J.run_repo(Fake(tmp_path, meta_status=404), "o/gone", ROW, cp) == "unavailable"
+    assert cp["repos"]["o/gone"]["state"] == "unavailable"
+    cp = J.new_checkpoint()
+    r1 = Fake(tmp_path, fail="issues")
+    assert J.run_repo(r1, "o/r", ROW, cp) == "incomplete" and cp["repos"]["o/r"]["stages"]["issues"] == "incomplete"
+    r2 = Fake(tmp_path)
+    assert J.run_repo(r2, "o/r", ROW, cp) == "done"
+    assert r2.calls[0] == "issues" and "meta" not in r2.calls

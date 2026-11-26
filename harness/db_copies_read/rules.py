@@ -6,7 +6,6 @@ first table row exists is allowed only for a code bug (PREREG "Changes after PRE
 from __future__ import annotations
 
 import re
-from datetime import datetime, timezone
 
 WINDOW_START = "2024-01-01T00:00:00Z"
 
@@ -51,7 +50,7 @@ def _num(s: str) -> int | None:
 
 
 def _is_pytest_line(line: str) -> bool:
-    return bool(re.search(r"\b(?:py\.test|pytest)\b", line, re.I)) or bool(re.search(r"\baddopts\b", line, re.I))
+    return bool(re.search(r"\b(?:py\.test|pytest)\b", line, re.I)) or bool(re.search(r"(?:\b|PYTEST_)addopts\b", line, re.I))
 
 
 def _is_go_test_line(line: str) -> bool:
@@ -77,7 +76,7 @@ def flag_tokens(line: str) -> list[tuple[str, str]]:
     Jest lines; ``-p`` ``go test`` lines only; ``--jobs`` mocha lines."""
     out: list[tuple[str, str]] = []
     if _is_pytest_line(line):
-        for m in re.finditer(L + r"-n" + N + r"(auto|\d+)" + R, line):
+        for m in re.finditer(L + r"-n(?:" + N + r")?(auto|\d+)" + R, line):
             v = m.group(1)
             if v == "auto" or (_num(v) or 0) >= 2:
                 out.append(("parallel", m.group(0)))
@@ -91,7 +90,7 @@ def flag_tokens(line: str) -> list[tuple[str, str]]:
             out.append(("serial", m.group(0)))
     if _is_manage_test_line(line):
         for m in re.finditer(L + r"--parallel(?:" + N + r"(auto|\d+))?" + R, line):
-            out.append(("parallel", m.group(0)))
+            out.append(("serial" if m.group(1) in ("0", "1") else "parallel", m.group(0)))
     for m in re.finditer(r"\bparallelize\(", line):
         out.append(("parallel", m.group(0)))
     for m in re.finditer(L + r"(?:--maxWorkers" + N + r"|maxWorkers:\s*)['\"]?(\d+%?)['\"]?" + R, line):
@@ -345,10 +344,6 @@ def pick_runner_check(step: dict, kind: str) -> dict | None:
 
 
 # ---------------------------------------------------------------------------------------------- levels (§4)
-def dep_names(text: str) -> set[str]:
-    """Lower-case package names that look like dependencies in a dependency file's text."""
-    return set(m.group(1).lower() for m in re.finditer(r"(?<![\w.-])([A-Za-z][\w.-]*)", text or ""))
-
 
 def strip_comments(text: str) -> str:
     """Dependency text without ``#`` comments (requirements, TOML, Pipfile, setup.cfg); a comment is not a dependency."""
@@ -403,6 +398,11 @@ def django_project(dep_texts: list[str], dsm_texts: list[str], tree_paths: list[
     return False, ""
 
 
+def option_text(line: str) -> str:
+    """An addopts/list line with quotes, brackets and commas removed, so ``["-n", "auto"]`` reads ``-n auto``."""
+    return re.sub(r"\s+", " ", re.sub(r"[\[\]\"',]", " ", line))
+
+
 def addopts_lines(config_texts: dict[str, str]) -> list[tuple[str, int, str]]:
     """(file, line number, text) of every ``addopts`` line (and its continuation lines) in pytest config files."""
     out = []
@@ -447,7 +447,7 @@ def state_for(level: str, kind: str, runner_line: str, addopts: list[tuple[str, 
             return "unknown", "settings mention parallel or TEST_RUNNER"
         return "off", "manage.py test without --parallel; no parallel default or TEST_RUNNER in settings"
     on_line = any(p == "parallel" for p, _ in flag_tokens(runner_line))
-    on_cfg = [a for a in addopts if any(p == "parallel" for p, _ in flag_tokens(a[2]))]
+    on_cfg = [a for a in addopts if any(p == "parallel" for p, _ in flag_tokens(option_text(a[2])))]
     if on_line or on_cfg:
         return "on", "-n/--numprocesses present"
     return "off", "no -n/--numprocesses in the timed command or addopts"
@@ -467,8 +467,3 @@ def per_test_notes(files: dict[str, str]) -> list[dict]:
                     return out
     return out
 
-
-def parse_time(s: str | None) -> datetime | None:
-    if not s:
-        return None
-    return datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)

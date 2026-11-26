@@ -32,8 +32,12 @@ jobs:
         with: {fetch-depth: 0}
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
+      - name: This push is the branch tip (no request runs on a stale checkout)
+        run: |
+          tip=$(git ls-remote origin refs/heads/claude/db-copies-read | cut -f1)
+          echo "tip $tip, this run ${{ github.sha }}"
+          [ "$tip" = "${{ github.sha }}" ] || { echo "stale checkout: the branch moved after this push; refusing"; exit 1; }
       - name: Request files added by this push
-        id: req
         run: |
           mkdir -p "$RUNNER_TEMP/req"
           before="${{ github.event.before }}"
@@ -42,8 +46,6 @@ jobs:
           fi
           git diff --name-only --diff-filter=A "$before" "${{ github.sha }}" -- harness/db_copies_read/requests/ \
             | sort | while read -r f; do cp "$f" "$RUNNER_TEMP/req/"; echo "request: $f"; done
-          n=$(ls -1 "$RUNNER_TEMP/req" | sort -n | tail -1 | sed 's/\.json$//')
-          echo "n=${n:-none}" >> "$GITHUB_OUTPUT"
           ls -1 "$RUNNER_TEMP/req"
       - name: Read
         env:

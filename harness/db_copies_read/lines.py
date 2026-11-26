@@ -43,13 +43,16 @@ def passed_items(items: list[dict], hand: list[dict], recheck: list[dict]) -> li
 def compute(table: list[dict], items: list[dict], hand: list[dict], recheck: list[dict]) -> dict:
     if len(table) != DENOM:
         raise SystemExit(f"table has {len(table)} rows, not {DENOM}")
-    incomplete = any(t["status"] not in ("done", "unavailable") for t in table)
+    decided = {(h["repo"], h["url"]) for h in hand if h.get("decision") in ("pass", "fail")}
+    unchecked = sorted({i["repo"] for i in items if i["counted"] and (i["repo"], i["url"]) not in decided})
+    incomplete = any(t["status"] not in ("done", "unavailable") for t in table) or bool(unchecked)
     passed = passed_items(items, hand, recheck)
     pain_repos = sorted({i["repo"] for i in passed})
     db_repos = sorted({i["repo"] for i in passed if i.get("p1_db") or any(r in DB_RULES for r in i["counted_rules"])})
     free = sorted(t["repo"] for t in table if t.get("free_off") == "yes")
     return {"outcome": outcome(len(pain_repos), len(free), incomplete), "pain": pain_repos, "free_off": free,
-            "pain_db": db_repos, "incomplete": [t["repo"] for t in table if t["status"] not in ("done", "unavailable")]}
+            "pain_db": db_repos, "incomplete": [t["repo"] for t in table if t["status"] not in ("done", "unavailable")],
+            "unchecked": unchecked}
 
 
 def render(r: dict) -> str:

@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import json
 import os
-import re
 import sys
 import time
 import urllib.error
@@ -25,6 +24,7 @@ MAX_SLEEP = 600.0
 PACE = 2.0
 FLOOR = 0.20
 FIVE_XX_ATTEMPTS = 3
+RATE_LIMIT_RETRIES = 3
 
 
 class SearchRefused(Exception):
@@ -72,6 +72,7 @@ class Client:
         self.limit: int | None = None
         self.reset: int | None = None
         self.n_requests = 0
+        self.ceiling: int | None = None  # attempts this client may make (the job sets 2,280 minus earlier runs)
         self._last = 0.0
         self._log = log  # callable(dict) or None
         self._sleep, self._clock = sleep, clock
@@ -135,8 +136,10 @@ class Client:
         A 403 that is not a rate-limit response raises AccessDenied. ``floor=False`` is used only for the job's own
         checkpoint-reference calls on this repository (1-2 attempts, still paced and counted)."""
         p = guard(path)
-        fails = 0
+        fails = limited = 0
         while True:
+            if self.ceiling is not None and self.n_requests >= self.ceiling:
+                raise Pause(f"attempt ceiling reached: {self.n_requests}")
             self._wait(floor)
             self.n_requests += 1
             st, hd, data = self._transport(p)
@@ -153,6 +156,9 @@ class Client:
                     wait = max(int(h["x-ratelimit-reset"]) - self._clock(), 0) + 3
                 else:
                     wait = 60
+                limited += 1
+                if limited > RATE_LIMIT_RETRIES:
+                    raise Pause(f"rate-limit response {limited} times on {p[:80]}")
                 sys.stderr.write(f"rate limited ({st}) on {p[:80]}: wait {wait:.0f}s\n")
                 self._nap(wait, "rate-limit response")
                 continue

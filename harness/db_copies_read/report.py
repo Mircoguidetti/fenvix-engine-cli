@@ -11,7 +11,6 @@ from __future__ import annotations
 import argparse
 import collections
 import json
-import re
 import statistics
 import sys
 from pathlib import Path
@@ -29,25 +28,6 @@ class CheckFailed(Exception):
     pass
 
 
-def _strings(obj, out: list[str]) -> None:
-    if isinstance(obj, str):
-        out.append(obj)
-    elif isinstance(obj, dict):
-        for v in obj.values():
-            _strings(v, out)
-    elif isinstance(obj, list):
-        for v in obj:
-            _strings(v, out)
-
-
-def raw_strings(results: Path, repo: str) -> list[str]:
-    out: list[str] = []
-    base = results / "raw" / J.slug(repo)
-    for p in sorted(base.glob("*.json.gz")) if base.exists() else []:
-        _strings(J.jload(p), out)
-    return out
-
-
 def stored_file_text(results: Path, repo: str, path: str) -> str | None:
     p = results / "raw" / J.slug(repo) / "files.json.gz"
     if not p.exists():
@@ -55,13 +35,42 @@ def stored_file_text(results: Path, repo: str, path: str) -> str | None:
     return J.file_texts(J.jload(p)).get(path)
 
 
+def item_texts(results: Path, repo: str) -> dict[str, str]:
+    """The stored text of every item of a repository, by html_url: title+body, message or comment body, plus the
+    patches of its fetched commit diff or pull files."""
+    base = results / "raw" / J.slug(repo)
+    out: dict[str, str] = {}
+    issues = J.jload(base / "issues.json.gz")
+    for it in J.issue_items(issues):
+        out[it["html_url"]] = f"{it['title']}\n{it['body']}"
+    for c in J.commit_items(J.jload(base / "commits.json.gz")):
+        out[c["html_url"]] = c["message"]
+    for e in J.jload(base / "comments.json.gz").get("responses") or []:
+        for cm in e.get("data") or []:
+            if isinstance(cm, dict):
+                out[cm.get("html_url")] = cm.get("body") or ""
+    by_num = {it["number"]: it["html_url"] for it in J.issue_items(issues)}
+    for e in J.jload(base / "pullfiles.json.gz").get("responses") or []:
+        n = int(e["path"].split("/pulls/")[1].split("/")[0])
+        url = by_num.get(n)
+        if url:
+            out[url] = out.get(url, "") + "\n" + "\n".join(f.get("patch") or "" for f in e.get("data") or [])
+    for e in J.jload(base / "diffs.json.gz").get("responses") or []:
+        d = e.get("data") or {}
+        if isinstance(d, dict) and d.get("html_url"):
+            out[d["html_url"]] = out.get(d["html_url"], "") + "\n" + "\n".join(
+                f.get("patch") or "" for f in d.get("files") or [])
+    return out
+
+
 def check_quotes(results: Path, passed: list[dict]) -> None:
-    cache: dict[str, str] = {}
+    cache: dict[str, dict[str, str]] = {}
     for i in passed:
         if i["repo"] not in cache:
-            cache[i["repo"]] = "\n\x00".join(raw_strings(results, i["repo"]))
-        if not i["quote"] or i["quote"] not in cache[i["repo"]]:
-            raise CheckFailed(f"quote not in stored raw text: {i['url']}: {i['quote'][:80]!r}")
+            cache[i["repo"]] = item_texts(results, i["repo"])
+        text = cache[i["repo"]].get(i["url"])
+        if not i["quote"] or text is None or i["quote"] not in text:
+            raise CheckFailed(f"quote not in the item's stored text: {i['url']}: {i['quote'][:80]!r}")
 
 
 def check_off(results: Path, table: list[dict]) -> None:
@@ -103,8 +112,8 @@ def per_stack(table: list[dict], pain: set[str]) -> tuple[list[str], str]:
     rows.append(f"| total | | {total} | {len(pain)} | {sum(1 for t in table if t.get('free_off') == 'yes')} | "
                 f"{sum(1 for t in table if t.get('building_block'))} | "
                 f"{statistics.median(t['median_s'] for t in table) / 60:.1f} |")
-    if total != 20:
-        raise CheckFailed(f"per-stack summary sums to {total}, not 20")
+    if total != LN.DENOM:
+        raise CheckFailed(f"per-stack summary sums to {total}, not {LN.DENOM}")
     hits = collections.Counter((t["runner"], t.get("level") or "n/a") for t in table
                                if t["repo"] in pain or t.get("free_off") == "yes")
     if hits:
@@ -148,6 +157,8 @@ def build(results: Path, partial: bool) -> str:
     if partial and res["outcome"] != "INCOMPLETE":
         head = head.replace(res["outcome"], "INCOMPLETE", 1)
     out = [head.rstrip("\n"), ""]
+    if res.get("unchecked"):
+        out += [f"Counted items without a hand-check decision in: {', '.join(res['unchecked'])}.", ""]
     if partial or res["outcome"] == "INCOMPLETE":
         left = [t["repo"] for t in table if t["status"] not in ("done", "unavailable")]
         out += [f"Partial report: {len(left)} repositories not read yet: {', '.join(left) or 'none'}.", ""]
@@ -196,6 +207,10 @@ def build(results: Path, partial: bool) -> str:
         out.append("Not done yet.")
     out += ["", "### Coordinator re-check (§3.5)", ""]
     if recheck:
+        kept = sum(1 for r in recheck if r.get("answer") == "keep")
+        local = sum(1 for r in recheck if "local-machine" in (r.get("reason") or ""))
+        out.append(f"{kept} of {len(recheck)} kept, {len(recheck) - kept} rejected; {local} of the {len(recheck)} "
+                   "re-checked items are local-machine durations, not CI.")
         for r in recheck:
             out.append(f"- {r['url']}: {r['answer']}" + (f" ({md(r.get('reason'))})" if r.get("reason") else ""))
     else:
@@ -241,15 +256,14 @@ def build(results: Path, partial: bool) -> str:
             "any such line, can be missed.",
             "- The pre-registered failure-term list has no timeout wording, so a parallel attempt that failed by "
             "timing out on a shared database (Deodat-Lawson/LaunchStack #567) is reported apart as P2, not counted "
-            "as P3.", ""]
+            "as P3.",
+            "- One request file per push, pushed only after the previous run's results commit was pulled: the "
+            "workflow's concurrency group keeps one pending run and cancels older pending ones, and a run whose push "
+            "is no longer the branch tip refuses to start.", ""]
     out += ["## 9. Budget", "", "| run | request | status | attempts | limit | remaining at end |", "|---|---|---|---|---|---|"]
     for r in cp.get("runs") or []:
         out.append(f"| {r['run']} | {r['request']} | {r['status']} | {r['attempts']} | {r.get('limit')} | {r.get('remaining')} |")
     out.append(f"\nGitHub API attempts in all: {cp.get('attempts_total')}.")
-    tl = results / "transport.log"
-    if tl.exists():
-        hosts = sorted({json.loads(x).get("host") for x in tl.read_text().splitlines() if x.strip()})
-        out.append(f"Artifact download hosts: {', '.join(h for h in hosts if h)}.")
     return "\n".join(out) + "\n"
 
 

@@ -34,7 +34,7 @@ def locate(text: str | None, runner_line: str) -> dict | None:
         return None
     toks = runner_line.split()
     lines = text.splitlines()
-    for k in range(len(toks), 0, -1):
+    for k in range(len(toks), min(len(toks), 3) - 1, -1):
         pre = " ".join(toks[:k])
         word, _ = R.command_word(pre)
         if not word:
@@ -111,7 +111,9 @@ def build_repo(results: Path, row: dict, cp_state: dict | None) -> tuple[dict, l
     is_dj, dj_why = R.django_project(dep_texts, dsm_texts, sorted(tree_files))
     level = R.level_for(row["kind"], is_dj, dep_texts)
     cfg = {p: t for p, t in texts.items() if re.search(r"(^|/)(pytest\.ini|pyproject\.toml|setup\.cfg|tox\.ini)$", p)}
-    addopts = R.addopts_lines(cfg)
+    addopts = R.addopts_lines(cfg) + [
+        (row["file"], n + 1, ln) for n, ln in enumerate((texts.get(row["file"]) or "").splitlines())
+        if re.search(r"PYTEST_ADDOPTS", ln)]
     settings_path = (files.get("info") or {}).get("settings_module")
     st, why = R.state_for(level, row["kind"], row["runner_line"], addopts, texts.get(settings_path) if settings_path else None)
     ev = locate(texts.get(row["runner_src"]), row["runner_line"])
@@ -226,8 +228,11 @@ def build_items(repo: str, iitems: list[dict], citems: list[dict], stages: dict)
             hit = "revert" in msg.lower() and (
                 (rec.get("sha") and rec["sha"][:7] in msg) or (rec["title"] and rec["title"] in msg))
             if not hit and toks and c["sha"] in diffs:
-                rem = {x["token"] for x in R.diff_changes(diffs[c["sha"]])["removed_parallel"]}
-                hit = bool(toks & rem)
+                ch = R.diff_changes(diffs[c["sha"]])
+                rem = {x["token"] for x in ch["removed_parallel"]}
+                flag = lambda t: t.split(" ")[0]  # noqa: E731
+                readded = {flag(x["token"]) for x in ch["added_parallel"]}
+                hit = bool({t for t in toks & rem if flag(t) not in readded})
             if hit:
                 rec["rules"] = sorted(set(rec["rules"]) | {"P3-revert"})
                 rec["revert_evidence"] = c["html_url"]

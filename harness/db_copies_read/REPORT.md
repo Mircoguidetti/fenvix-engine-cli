@@ -11,6 +11,13 @@ pain tied to the database (P1-db or P3/P4): 8 of 20
 - 2026-11-26, after the 20 rows existed (two code bugs, no rule change; every affected row regenerated):
   1. Dependency matching read `#` comments: tina4stack/tina4-python's `pyproject.toml` comment "bottle / django / fastapi / flask → COMPETITOR frameworks" made it a Django project (level plugin-not-installed). PREREG §4a defines a Django project by `django` "as a dependency"; comments are now stripped before dependency matching. tina4-python becomes level `none`. All 20 rows rebuilt offline from the stored files; no other row changed level.
   2. The settings module named in `manage.py` (`os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")`) was not resolved, because the job looked for `DJANGO_SETTINGS_MODULE` only in the workflow and pytest config files and its pattern did not accept the `setdefault("…", "…")` form. PREREG §4a says to fetch "the settings module named in `DJANGO_SETTINGS_MODULE`". zmadon8/Quill (state `unknown`: settings module not fetched) has its `files`, `pathcommits` and `diffs` stages re-read by request 10 (`redo`), then its row is rebuilt.
+- 2026-11-26, after the read, from gstack /review cycle 1 (code bugs; no rule changed; all 20 rows rebuilt offline and compared field by field with the previous table: no row changed, outcome unchanged):
+  1. A run with two request files refused its second file as a stale checkpoint (the checkpoint now accepts its own run's id). Never triggered: every push here added one request file.
+  2. The workflow now refuses to start when its push is no longer the branch tip (a request pushed during a running read could check out a stale checkpoint). Never triggered: every request was pushed after the previous results commit was pulled.
+  3. The whole request is validated (unknown repository, bad redo stage, bound) before any GET; the 2,280 bound is enforced per request (client ceiling), not only between repositories; rate-limit retries are capped at 3, then the job checkpoints.
+  4. Matching implementation bugs against the stated PREREG rules: `-nauto` / `-n4` (attached forms), addopts written as a list (`["-n", "auto"]`) and `PYTEST_ADDOPTS` in the workflow are now read as `-n`; `manage.py test --parallel 1` is serial, not parallel; a later commit that only changes the worker count (`-n auto` to `-n 4`) is no longer a P3 revert. None of the 20 repositories has any of these forms (checked on the stored files), so no row changed.
+  5. lines.py prints INCOMPLETE when a counted item has no hand-check decision (none here); report.py checks each quote against that item's own stored text (title+body, message, comment, its diff or pull patches), not any string of the repository; the "off" evidence line must match at least three tokens of the runner line (or the whole line when shorter).
+  6. Dead code removed (unused imports, two unused functions, the transport.log block, an unused workflow output, an unused parameter).
 
 ## 3. Per-repository table
 
@@ -1377,7 +1384,12 @@ Seeded sample (random.Random(20261126).sample over 10 no-pain repositories, 3): 
 
 ### Coordinator re-check (§3.5)
 
-Not done yet.
+5 of 5 kept, 0 rejected; 2 of the 5 re-checked items are local-machine durations, not CI.
+- https://github.com/bertalan/mpmv/pull/660: keep (make test not run (about 90 minutes here): a local full run skipped for its length; local-machine duration, not CI)
+- https://github.com/bertalan/mpmv/pull/838: keep (the full run would take about 2 hours on this machine; local-machine duration, not CI)
+- https://github.com/penghaibin9/saas/pull/250: keep (pytest run killed at its 60-min budget (exit 124), raised to 80m)
+- https://github.com/trustedoss/trusca/issues/575: keep (backend-integration takes about 30 minutes and is the critical path of every PR)
+- https://github.com/trustedoss/trusca/commit/c57f3d2d9ef59d18012240a882fe1c505a501d29: keep (keep under P1: the commit text has about ten minutes of tests per shard; the session's reason line was inaccurate (no 22-37 min range on this page) and is corrected)
 
 ### Context notes (failed or apart, never counted)
 
@@ -1436,6 +1448,7 @@ Most common stack among `pain` or `free_off` rows: pytest/none (7 repositories)
 - No GitHub search request of any kind was sent; fields that would need search are not filled.
 - Hand-check method: 1,023 counted candidates plus the P2 items were too many to read in full one by one. The session read every item's title and quote; read in full every item with a speed term and a test term on the same prose line, a P2-diff, P3 or P4 match, or a CI/test/parallel title; and failed the rest with that stated reason (`handcheck.jsonl`). A pain signal written only deep in a long body, away from any such line, can be missed.
 - The pre-registered failure-term list has no timeout wording, so a parallel attempt that failed by timing out on a shared database (Deodat-Lawson/LaunchStack #567) is reported apart as P2, not counted as P3.
+- One request file per push, pushed only after the previous run's results commit was pulled: the workflow's concurrency group keeps one pending run and cancels older pending ones, and a run whose push is no longer the branch tip refuses to start.
 
 ## 9. Budget
 

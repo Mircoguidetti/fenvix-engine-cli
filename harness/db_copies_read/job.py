@@ -231,7 +231,7 @@ class Reader:
         st, data, hd = self.c.get(path)
         return {"path": ghapi.normalise(path), "status": st, "headers": keep(hd), "data": data}
 
-    def ok(self, e: dict, allow=(200,)) -> dict:
+    def ok(self, e: dict) -> dict:
         if e["status"] == 0 or e["status"] >= 500:
             raise Incomplete(f"{e['path']}: {e['status']}")
         return e
@@ -503,11 +503,29 @@ def reference_run(client: ghapi.Client, self_repo: str, current: str, committed=
     return None
 
 
-def checkpoint_ok(cp: dict | None, ref: str | None) -> bool:
-    """No checkpoint only before the first reference run; otherwise the checkpoint must come from the reference."""
+def checkpoint_ok(cp: dict | None, ref: str | None, current: str | None = None) -> bool:
+    """No checkpoint only before the first reference run; otherwise the checkpoint must come from the reference
+    (or from an earlier request file of this same run)."""
+    if cp is not None and current is not None and str(cp.get("run_id")) == str(current):
+        return True
     if ref is None:
         return cp is None
     return cp is not None and str(cp.get("run_id")) == ref
+
+
+def request_errors(req: dict, rows: dict, bound: int) -> list[str]:
+    """Every problem with a request file, found before any GET is sent."""
+    errs = []
+    if bound > HARD_BOUND:
+        errs.append(f"bound {bound} above {HARD_BOUND}")
+    for repo in req.get("repos") or []:
+        if repo not in rows:
+            errs.append(f"unknown repository {repo}")
+    for repo, stages in (req.get("redo") or {}).items():
+        if repo not in (req.get("repos") or []):
+            errs.append(f"redo for {repo} not in repos")
+        errs += [f"bad redo stage {s}" for s in stages if s not in STAGES or s == "meta"]
+    return errs
 
 
 def load_checkpoint(results: Path) -> dict | None:
@@ -525,7 +543,7 @@ def fetch_docs(results: Path, urls: list[dict]) -> list[dict]:
     for u in urls:
         rec = {"tool": u["tool"], "url": u["url"], "fetched_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
         try:
-            req = urllib.request.Request(u["url"], method="GET", headers={"User-Agent": "fenvix-research"})
+            req = urllib.request.Request(u["url"], method="GET", headers={"User-Agent": ghapi.UA})
             with urllib.request.urlopen(req, timeout=60) as r:
                 body = r.read()
                 rec.update(status=r.status, final_url=r.geturl(), bytes=len(body))
@@ -629,7 +647,7 @@ def main() -> int:
         print(msg)
         chunk({"status": "refused", "note": msg, "attempts": client.n_requests})
         return 1
-    if not checkpoint_ok(cp, ref):
+    if not checkpoint_ok(cp, ref, run_id):
         msg = f"stale checkpoint: checkpoint run_id {cp and cp.get('run_id')} vs last successful run {ref}"
         print(msg)
         chunk({"status": "refused", "note": msg, "attempts": client.n_requests})
@@ -648,21 +666,17 @@ def main() -> int:
             cp["docs"] = {"run": run_id, "pages": len(recs), "ok": sum(1 for r in recs if r.get("status") == 200)}
         else:
             bound = int(req.get("bound") or CHECKPOINT_AT)
-            if bound > HARD_BOUND:
-                raise SystemExit("bound above 2,280")
+            bad = request_errors(req, rows, bound)
+            if bad:
+                print("refused request: " + "; ".join(bad))
+                chunk({"status": "refused", "note": "; ".join(bad)[:400]})
+                return 1
+            client.ceiling = HARD_BOUND - base_total
             for repo in req.get("repos") or []:
-                if repo not in rows:
-                    print(f"unknown repository in request: {repo}")
-                    chunk({"status": "refused", "note": f"unknown repo {repo}"})
-                    return 1
                 redo = (req.get("redo") or {}).get(repo) or []
                 if redo:
                     st = cp["repos"].setdefault(repo, {"stages": {}, "state": "pending"})
                     for s in redo:
-                        if s not in STAGES or s == "meta":
-                            print(f"bad redo stage {s}")
-                            chunk({"status": "refused", "note": f"bad redo stage {s}"})
-                            return 1
                         st["stages"][s] = "redo"
                     st["state"] = "pending"
                     st.setdefault("redone", []).append({"run": run_id, "stages": redo})
