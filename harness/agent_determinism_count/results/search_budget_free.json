@@ -13,13 +13,20 @@
    "from": "coordinator session_01YAF6Dhwca7oHHXydksThJK",
    "quote": "code search free (second message of the approved search split, main-eng-review-search-split-20261125-104500.md): market-direction discovery ENDED 2026-11-26T01:44:55Z. You may start S1 (code search), the \u00a70.2a/b code shapes and population counts, with S1's own clock starting at its first request. Constraint: market's leaf reading still uses the ACCOUNT token's code search at 9/min until about 09:00Z. So run S1 from the workflow route (GITHUB_TOKEN, separate budget) if its \u00a70.2a probe works; use the session/account route only after I tell you market reading is done.",
    "received_at": "2026-11-26T03:01:50Z"
+  },
+  {
+   "at": "2026-11-26T09:26:39Z",
+   "from": "coordinator session_01YAF6Dhwca7oHHXydksThJK",
+   "quote": "Coordinator 09:27 UTC: market reading done. The market session finished its search reading at 09:25:26Z. Re-run the \u00a70.2a route probe on both routes now and choose the route by the spec rule: the larger total_count, and on a tie the faster route. Report the choice with the numbers.",
+   "received_at": "2026-11-26T09:26:41Z"
   }
  ],
- "note": "code: code search through the workflow's GITHUB_TOKEN only; the session route ('session' scope) stays closed until the coordinator says market reading is done",
+ "note": "code: workflow route (GITHUB_TOKEN) from 03:05Z; the session route ('session' scope) opened 09:27Z when the coordinator reported market reading done, for the \u00a70.2a route re-probe and the route the spec's rule then picks",
  "quote": "PARTIAL \"search budget free\" (founder D1 = A, 2026-11-25 ...). Free NOW, and only through the fenvix-engine-cli GitHub Actions workflow route (GITHUB_TOKEN ...): \u00a70.2c the issues and commits shapes of \u00a70.2b and \u00a73.2, the OR check, the is:issue/is:pr check; \u00a70.2d PyPI/npm pages; \u00a71 pre-pass and bisection of S2 (search/issues) and S3 (search/commits), <= 25/min. ... Code search (\u00a70.2a, the code shapes of \u00a70.2b, S1, the population counts) stays FORBIDDEN until my second message.",
  "received_at": "2026-11-25T10:47:03Z",
  "scopes": [
   "text-workflow",
-  "code"
+  "code",
+  "session"
  ]
 }
