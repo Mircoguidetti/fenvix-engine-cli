@@ -789,3 +789,12 @@ def test_locate_follows_backslash_continuation():
     off row into unknown); no_claim=none beyond protects."""
     text = "steps:\n  run: pytest \\\n    --cov -q tests/\n"
     assert B.locate(text, "pytest --cov -q tests/") == {"line": 2, "text": "  run: pytest \\"}
+
+
+def test_commented_multiline_addopts_is_on(tmp_path):
+    """protects=an inline comment with ';' inside a multi-line addopts list does not hide "-n", "auto" (review cycle 3);
+    fails_when=state off; no_claim=fixture pyproject."""
+    py = '[tool.pytest.ini_options]\naddopts = [\n  "-q",  # quiet; see docs\n  "-n", "auto",\n]\n'
+    t = level_of(tmp_path, "pytest", "pytest -q", {WF: "  - run: pytest -q\n", "pyproject.toml": py,
+                                                   "requirements.txt": "django\npytest-django\npytest-xdist\n"})
+    assert t["state"] == "on"

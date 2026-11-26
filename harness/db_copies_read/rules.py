@@ -413,6 +413,16 @@ def option_text(line: str) -> str:
     return re.sub(r"\s+", " ", re.sub(r"[\[\]\"',]", " ", line))
 
 
+def joined_options(lines: list[str]) -> str:
+    """One file's addopts lines as one option string: comments (``#``, ini ``;``) cut per line, list punctuation and
+    shell separators removed, prefixed with ``addopts`` so the pytest scope always applies."""
+    parts = []
+    for ln in lines:
+        ln = re.sub(r"(^|\s)[#;].*$", "", ln)
+        parts.append(re.sub(r"[;|&]", " ", option_text(ln)))
+    return "addopts " + re.sub(r"\s+", " ", " ".join(parts)).strip()
+
+
 def addopts_lines(config_texts: dict[str, str]) -> list[tuple[str, int, str]]:
     """(file, line number, text) of every ``addopts`` line (and its continuation lines) in pytest config files."""
     out = []
@@ -461,7 +471,7 @@ def state_for(level: str, kind: str, runner_line: str, addopts: list[tuple[str, 
     for a in addopts:
         by_file.setdefault(a[0], []).append(a)
     on_cfg = [v[0] for v in by_file.values()
-              if any(p == "parallel" for p, _ in flag_tokens(option_text(" ".join(x[2] for x in v))))]
+              if any(p == "parallel" for p, _ in flag_tokens(joined_options([x[2] for x in v])))]
     if on_line or on_cfg:
         return "on", "-n/--numprocesses present"
     return "off", "no -n/--numprocesses in the timed command or addopts"

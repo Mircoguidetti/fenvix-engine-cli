@@ -134,8 +134,8 @@ def build_repo(results: Path, row: dict, cp_state: dict | None) -> tuple[dict, l
             st, why = "unknown", "runner line not found in the stored file"
     on_ev = None
     if st == "on":
-        on_files = {a[0] for a in addopts if any(p == "parallel" for p, _ in R.flag_tokens(R.option_text(
-            " ".join(x[2] for x in addopts if x[0] == a[0]))))}
+        on_files = {a[0] for a in addopts if any(p == "parallel" for p, _ in R.flag_tokens(R.joined_options(
+            [x[2] for x in addopts if x[0] == a[0]])))}
         on_ev = [{"file": a[0], "line": a[1], "text": a[2]} for a in addopts if a[0] in on_files] or (
             [{"file": row["runner_src"], "line": ev["line"], "text": ev["text"]}] if ev else [])
     free_off = "yes" if level in ("built-in", "plugin-installed") and st == "off" else "no"
