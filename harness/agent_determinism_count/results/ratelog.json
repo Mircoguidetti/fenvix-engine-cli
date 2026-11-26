@@ -1,5 +1,13 @@
 {
- "code": {},
+ "code": {
+  "2026-11-26T08:00Z": {
+   "429": 0,
+   "checkpoints": 1,
+   "nodes": 0,
+   "queries_done": 0,
+   "search_requests": 0
+  }
+ },
  "code_prepass": {
   "2026-11-26T03:00Z": {
    "429_max": 4,
@@ -12,10 +20,14 @@
   "2026-11-26T05:00Z": {
    "429_max": 51,
    "prepass_answers": 23
+  },
+  "2026-11-26T08:00Z": {
+   "429_max": 9,
+   "prepass_answers": 10
   }
  },
  "note": "The 429 and request counters in a state file are per process (they restart with each run and each request), so the per-checkpoint increase is taken within a process and a drop starts a new process. Hours are UTC. Usage: ratelog.py [--ref origin/claude/agent-determinism-count]   (writes results/ratelog.json) ",
- "ref": "ad717c64f",
+ "ref": "bd0fc36d3",
  "text": {
   "2026-11-25T12:00Z": {
    "429": 1,
@@ -116,11 +128,18 @@
    "search_requests": 360
   },
   "2026-11-26T07:00Z": {
-   "429": 20,
-   "checkpoints": 1,
-   "nodes": 45,
-   "queries_done": 0,
-   "search_requests": 183
+   "429": 42,
+   "checkpoints": 2,
+   "nodes": 80,
+   "queries_done": 4,
+   "search_requests": 358
+  },
+  "2026-11-26T08:00Z": {
+   "429": 36,
+   "checkpoints": 2,
+   "nodes": 51,
+   "queries_done": 16,
+   "search_requests": 268
   }
  }
 }
