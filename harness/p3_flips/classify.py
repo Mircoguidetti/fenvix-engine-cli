@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """P3 step B4-B5: raw evidence -> one row per case -> one verdict per case -> CLASSIFY.md.
 
-    python3 harness/p3_flips/classify.py rows      data/<repo>/cases.json + data/<repo>/b/*.json -> rows.jsonl
+    python3 harness/p3_flips/classify.py rows      data/<repo>/find/cases.json + data/<repo>/b/*.json -> rows.jsonl
     python3 harness/p3_flips/classify.py render    rows.jsonl -> CLASSIFY.md (byte-identical for the same rows)
 
 Verdict rule (spec B4; exactly one per case, no group verdicts):
@@ -105,7 +105,7 @@ def gone(kind, d1, d2, small_plain_5=None, was_mixed_outcome=False):
 def build_rows(data=DATA):
     rows = []
     for repo in sorted(os.listdir(data)):
-        cp = os.path.join(data, repo, "cases.json")
+        cp = os.path.join(data, repo, "find", "cases.json")  # count-only repos have count_extra.json instead: skipped
         if not os.path.exists(cp):
             continue
         cases = json.load(open(cp))["cases"]
