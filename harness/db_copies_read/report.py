@@ -200,6 +200,10 @@ def build(results: Path, partial: bool) -> str:
             out.append(f"- {r['url']}: {r['answer']}" + (f" ({md(r.get('reason'))})" if r.get("reason") else ""))
     else:
         out.append("Not done yet.")
+    out += ["", "### Context notes (failed or apart, never counted)", ""]
+    for h in hand:
+        if "context" in (h.get("reason") or "") or (h.get("decision") == "pass" and not h.get("counted")):
+            out.append(f"- {h['url']} ({h['rule']}, {h['decision']}): {md(h['reason'])}")
     out += ["", "## 5. Counted apart", ""]
     for t in table:
         notes = []
@@ -229,7 +233,15 @@ def build(results: Path, partial: bool) -> str:
             "- The 20 are db-serial-count's qualifying list: a lower-bound sample of its frame, not the market; the "
             "11 per_worker exclusions are not read.",
             "- Context fields (stars, contributors, owner type) are not demand.",
-            "- No GitHub search request of any kind was sent; fields that would need search are not filled.", ""]
+            "- No GitHub search request of any kind was sent; fields that would need search are not filled.",
+            "- Hand-check method: 1,023 counted candidates plus the P2 items were too many to read in full one by one. "
+            "The session read every item's title and quote; read in full every item with a speed term and a test "
+            "term on the same prose line, a P2-diff, P3 or P4 match, or a CI/test/parallel title; and failed the rest "
+            "with that stated reason (`handcheck.jsonl`). A pain signal written only deep in a long body, away from "
+            "any such line, can be missed.",
+            "- The pre-registered failure-term list has no timeout wording, so a parallel attempt that failed by "
+            "timing out on a shared database (Deodat-Lawson/LaunchStack #567) is reported apart as P2, not counted "
+            "as P3.", ""]
     out += ["## 9. Budget", "", "| run | request | status | attempts | limit | remaining at end |", "|---|---|---|---|---|---|"]
     for r in cp.get("runs") or []:
         out.append(f"| {r['run']} | {r['request']} | {r['status']} | {r['attempts']} | {r.get('limit')} | {r.get('remaining')} |")
