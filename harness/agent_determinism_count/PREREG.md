@@ -187,6 +187,11 @@ owners `langchain-ai`, `crewAIInc`, `run-llama`, `ag2ai`, `agno-agi`, `mastra-ai
 matching `google/adk-*` and `anthropics/claude-agent-sdk-*`; the §0.2d recording packages' source repositories
 (case-insensitive). Excluded candidates with discovery hits are listed as information.
 
+**S3 order after the rebuild (coordinator 2026-11-26 19:10Z, main-eng-review-adc-s3-order-20261126-191500.md;
+CHANGES.md item 22).** S3 is read in the rule's seeded order over the rebuilt pool, skipping ids already read; the
+75 read before the rebuild stay counted. REPORT shows the S3 rate for old-pool and new-pool candidates and flags it
+next to the projection when their Wilson 95% intervals do not overlap (a check, not a rule; decide() unchanged).
+
 **S3 extension (founder decision, 2026-11-26, main-eng-review-adc-s3-extension-20261126-112500.md; CHANGES.md
 item 10).** One extension of S3 on the session route covers only the S3 queries the 24 h budget left unstarted (88)
 or unfinished (1). Rules, shapes and caps are unchanged. It has a hard stop 6 h after its own first request, and any

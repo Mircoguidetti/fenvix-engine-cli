@@ -1425,3 +1425,13 @@ def test_client_counts_rate_limits_and_sleep_by_cause(monkeypatch):
     monkeypatch.setattr(_t, "sleep", lambda s: None)
     st, data, _ = c.get("repos/a/b")
     assert st == 200 and c.n_429 == 1 and c.slept["rate_limit"] >= 7
+
+
+def test_s3_old_new_pool_check_flags_disjoint_intervals():
+    """protects=the S3 old/new pool check in REPORT (coordinator 2026-11-26 19:10Z, a check not a rule); fails_when=
+    overlapping intervals are flagged, disjoint ones are not, or an empty pool is flagged; no_claim=which pool is
+    right."""
+    assert not R.intervals_disjoint(1, 72, 0, 0)
+    assert not R.intervals_disjoint(2, 150, 3, 225)
+    assert R.intervals_disjoint(0, 300, 40, 300)
+    assert R.intervals_disjoint(40, 300, 0, 300)

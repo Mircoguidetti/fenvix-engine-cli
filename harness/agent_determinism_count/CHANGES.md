@@ -113,6 +113,9 @@
     rebuild, S3 catches up in its own §4.1 order, so S3's first 300 are still read in order. The reading order inside
     a stratum is seeded, so this changes only when S3 is read, not which S3 candidates are read. Chunks 1 (S1) and 2
     (S2/S3 one to one) were read before the note.
+    Correction (2026-11-26 19:20Z, item 22): that claim was wrong. The order is a seeded shuffle of the stratum's
+    candidates sorted by URL (rules.stratum_order). The rebuild e2 added 30,473 S3 candidates, so the S3 order is a new
+    permutation, and none of the 75 S3 candidates read in chunk 2 is among its first 75.
 15. 2026-11-26 13:13Z, a coordinator change to the coordinator's route guard. At 13:11Z the S3 extension stopped on
     'committer-date:>=2024-01-01 unstable anthropic test': 51,826 on the session route, against 52,961 in the
     workflow pre-pass of 2026-11-25 (1,135 fewer, 2.1%). That query is above QUERY_CAP, so it is capped and not
@@ -175,3 +178,14 @@
     decide() is rewritten (rules.project, rules.wilson_lower) and READ_BUDGET_H is withdrawn.
     test_decision_branches failed first and now covers CONTINUE at 50, no DROP before the stop (also at the old
     budget end), NOT ENOUGH DATA at the stop, DROP at the stop, and NO DECISION.
+22. 2026-11-26 19:20Z, a coordinator decision (main-eng-review-adc-s3-order-20261126-191500.md, 19:10Z; no rule
+    change). S3 is read in the rule's seeded order over the rebuilt pool of 80,478 candidates, skipping ids already
+    read. That is option (a), as "ricerche A" accepted: new candidates join the pool by a rebuild before their stratum
+    is read further. Keeping the old order with the new candidates appended (b) would be a rule change after seeing
+    data. The 75 S3 candidates read in chunk 2, from the old order over 50,005, stay counted. S3's first 300 are
+    therefore 75 from the old pool and 225 from the new order, so old-pool candidates are slightly over-represented.
+    One check was added, not a rule. REPORT shows the S3 pain-yes rate for old-pool candidates (idx < 163528) and for
+    new-pool candidates (the extension's, numbered from 163528 by the rebuild; results/s3_pool_split.json). Next to
+    the projection it flags when the two Wilson 95% intervals do not overlap (rules.intervals_disjoint). decide() is
+    unchanged. Item 14's claim is corrected there. Chunk 9 is the next 150 S3 in the new order (plan_next). Test:
+    test_s3_old_new_pool_check_flags_disjoint_intervals.

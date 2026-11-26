@@ -65,6 +65,7 @@ def load(res: Path = RES) -> dict:
         else _jsonl(res / "cands_read.jsonl.gz"), "rows": _jsonl(res / "rows.jsonl"),
         "search": _jsonl(res / "texts_search.jsonl") + _jsonl(res / "texts_search_wf.jsonl"),
         "comments": _jsonl(res / "comments.jsonl"), "reads": _jsonl(res / "reads.jsonl"),
+        "s3_pool_split": _json(res / "s3_pool_split.json", {}) or {},
         "handcheck": _json(res / "handcheck.json", {}) or {}, "state": _json(res / "state.json", {}) or {},
         "population": _json(res / "population.json", {}) or {}, "chunks": _jsonl(res / "chunks.jsonl"),
         "changes": (here / "CHANGES.md").read_text() if (here / "CHANGES.md").exists() else "",
@@ -171,7 +172,21 @@ def compute(d: dict) -> dict:
     if d["cfg"].get("blocked"):
         c["state"]["blocked"] = True
     dec = R.decide(c)
-    return {"rows": rows, "counted": counted, "excluded": excluded, "members": members, "strata": st, "pool": pool,
+    # coordinator 19:10Z (a check, not a rule): S3 pain-yes rate for old-pool and new-pool candidates (the rebuild e2
+    # numbered the S3 extension's candidates from new_from_idx); flagged when the Wilson 95% intervals do not overlap
+    split = d.get("s3_pool_split") or {}
+    s3_split = None
+    if split.get("new_from_idx") is not None:
+        cut = split["new_from_idx"]
+        s3_split = {}
+        for part, keep in (("old", lambda i: i < cut), ("new", lambda i: i >= cut)):
+            rs = [r for r in counted if r.get("stratum") == "S3" and keep(r["idx"])]
+            k = sum(1 for r in rs if r.get("cls") == "member" and pain_of[r["idx"]]["pain"] == "yes")
+            s3_split[part] = {"read": len(rs), "yes": k, "lo": R.wilson_lower(k, len(rs)),
+                              "up": R.wilson_upper(k, len(rs))}
+        o, w = s3_split["old"], s3_split["new"]
+        s3_split["flag"] = R.intervals_disjoint(o["yes"], o["read"], w["yes"], w["read"])
+    return {"s3_split": s3_split, "rows": rows, "counted": counted, "excluded": excluded, "members": members, "strata": st, "pool": pool,
             "yes": yes, "c": c, "dec": dec, "handcheck": hc, "reads": reads, "cands": cands,
             "text_of": lambda t, m=None: T.text_of(t, (m or {}).get("comments") if m else _comments_for(members, t))}
 
@@ -259,6 +274,15 @@ def render(d: dict) -> tuple[str, dict]:
           f", no {n('no', sum(1 for m in x['members'] if m['pain']['pain'] == 'no'))}, uncertain "
           f"{n('uncertain', sum(1 for r in x['counted'] if r.get('cls') == 'uncertain'))}; bounds S1 {bt('S1')}, "
           f"S2 {bt('S2')}, S3 {bt('S3')}; hand check: {'pass' if x['handcheck']['ok'] else 'not passed'}.", ""]
+    sp = x.get("s3_split")
+    if sp:
+        o, w = sp["old"], sp["new"]
+        L += [f"S3 by pool (a check, not a rule; coordinator 2026-11-26 19:10Z): old-pool read "
+              f"{n('S3_old_read', o['read'])}, pain yes {n('S3_old_yes', o['yes'])} (95% {o['lo']:.4f} to "
+              f"{o['up']:.4f}); new-pool (the S3 extension) read {n('S3_new_read', w['read'])}, pain yes "
+              f"{n('S3_new_yes', w['yes'])} (95% {w['lo']:.4f} to {w['up']:.4f})."
+              + (" **The two intervals do not overlap: the S3 rate differs by pool, read the projection with "
+                 "care.**" if sp["flag"] else " The intervals overlap."), ""]
     L += ["| stratum | candidates | N_s | read | A_s | U_s | B_s | how |", "|---|---|---|---|---|---|---|---|"]
     for s in STRATA:
         L.append(f"| {s} | {n(f'cand_{s}', pool[s]['candidates'])} | {n(f'N_{s}', pool[s]['N'])} | "

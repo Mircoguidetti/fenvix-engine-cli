@@ -1,0 +1,5 @@
+{
+ "new_from_idx": 163528,
+ "why": "rebuild e2 (run 45867420801, 2026-11-26 18:38Z) kept every earlier idx and numbered its new candidates from 163528; the 30,473 S3 candidates with idx >= 163528 came from the S3 extension (old S3 pool 50,005)",
+ "check": "coordinator 2026-11-26 19:10Z (main-eng-review-adc-s3-order-20261126-191500.md): REPORT shows the S3 rate for old-pool and new-pool candidates and flags it next to the projection if the two Wilson 95% intervals do not overlap; not a rule, decide() is unchanged"
+}

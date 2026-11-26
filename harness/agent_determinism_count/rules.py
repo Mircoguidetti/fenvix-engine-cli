@@ -919,6 +919,14 @@ def wilson_lower(k: int, n: int, z: float = Z) -> float:
     return max(0.0, (p + z2 / (2 * n) - z * math.sqrt(p * (1 - p) / n + z2 / (4 * n * n))) / (1 + z2 / n))
 
 
+def intervals_disjoint(k1: int, n1: int, k2: int, n2: int) -> bool:
+    """True when both samples are non-empty and their Wilson 95% intervals do not overlap (the S3 old/new pool check,
+    coordinator 2026-11-26 19:10Z)."""
+    if not n1 or not n2:
+        return False
+    return wilson_upper(k1, n1) < wilson_lower(k2, n2) or wilson_upper(k2, n2) < wilson_lower(k1, n1)
+
+
 def project(strata: dict) -> dict:
     """The founder's "lettura A" projection (2026-11-26 19:01Z; coordinator 19:04Z): over the candidate pool, per
     stratum the rate times the candidates of the stratum, summed. Point: pain yes / read. Interval: Wilson 95% lower
