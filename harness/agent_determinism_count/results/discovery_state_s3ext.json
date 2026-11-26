@@ -1,0 +1,41 @@
+{
+ "budget_end": "2026-11-26T10:54:28+00:00",
+ "extension": {
+  "decided": "founder, main-eng-review-adc-s3-extension-20261126-112500.md (coordinator 2026-11-26 11:18Z)",
+  "first_request": "2026-11-26T11:20:43+00:00",
+  "hard_stop": "2026-11-26T17:20:43+00:00",
+  "hours": 6.0,
+  "resumed_from_text_state": [
+   "committer-date:>=2024-01-01 xfail gemini test"
+  ],
+  "route": "session"
+ },
+ "finished": null,
+ "queries": {
+  "committer-date:>=2024-01-01 xfail gemini test": {
+   "capped": false,
+   "done": false,
+   "leaf_total": 147,
+   "leaves": 2,
+   "nodes": 3,
+   "prepass_total": 1913,
+   "stack": [
+    [
+     "2026-03-06",
+     "2026-11-25"
+    ]
+   ]
+  }
+ },
+ "search_requests": {
+  "code": 0,
+  "issues": 5
+ },
+ "search_stats": {
+  "429": 0,
+  "limit": 30,
+  "remaining": 30,
+  "reset": 1795692103
+ },
+ "started": "2026-11-26T11:20:43+00:00"
+}
