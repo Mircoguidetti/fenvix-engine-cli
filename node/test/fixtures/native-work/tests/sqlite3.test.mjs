@@ -40,6 +40,21 @@ test('after the queries a 20 s virtual sleep stays virtual (the pending work is 
   await sleep(20000);
 }, 30000);
 
+// alakajam tournament.service (2026-11-27, on 881e56b6): a test ends while its query still runs on the pool's only
+// connection; the next test waits for that connection (tarn's queue: no sqlite3 call of its own yet) with a long
+// guard timer pending. The query in flight must still count in the next test.
+let connectionFree = null;
+test('leaves a slow query running on the pool connection', () => {
+  const db = new sqlite3.Database(':memory:');
+  connectionFree = new Promise((r) => db.all(SLOW, () => db.close(r)));
+});
+
+test('the next test waits for that connection with a 60 s guard timer pending and is not timed out', async () => {
+  const guard = setTimeout(() => {}, 60000);
+  await connectionFree;
+  clearTimeout(guard);
+}, 5000);
+
 test('each with only a row callback and zero rows releases its pending work (20 s sleep after it stays virtual)', async () => {
   const db = new sqlite3.Database(':memory:');
   await new Promise((r) => db.exec('CREATE TABLE e(x)', r));
@@ -64,6 +79,8 @@ test('a statement prepared without a callback that fails: its queued call is rel
   bad.get(() => {});
   await new Promise((r) => setImmediate(r));
 }, 30000);
+
+test('the test after it may still count that call (released at the end of the test after the one that started it)', () => {});
 
 test('the next test: a 20 s virtual sleep stays virtual', async () => {
   await sleep(20000);
