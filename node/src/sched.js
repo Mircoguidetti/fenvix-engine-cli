@@ -111,13 +111,15 @@ const NATIVE_WORK = [
     match: (b) => typeof b.Database === 'function' && typeof b.Statement === 'function' && typeof b.OPEN_READWRITE === 'number',
     classes: [['Database', ['close', 'exec', 'wait', 'loadExtension']],
       ['Statement', ['bind', 'get', 'run', 'all', 'each', 'reset', 'finalize']], ['Backup', ['step', 'finish']]],
-    // a statement that failed to prepare reports the error to its own callback (or as an 'error' event) and never
-    // calls back the calls queued on it: their pending work ends with that error
+    // a statement that failed to prepare (its own callback gets the error, or an 'error' event) never calls back the
+    // calls queued on it
     failing: 'Statement',
   },
 ];
 
 const OPEN = new WeakMap(); // native object -> Set of release functions of its calls in flight
+const BY_TEST = new Map(); // test id -> Set of release functions of the calls that test started
+const POISONED = new WeakSet(); // statements that failed to prepare: their calls never call back, so are not counted
 function releaseAll(o) {
   const s = o && OPEN.get(o);
   if (!s) return;
@@ -125,16 +127,29 @@ function releaseAll(o) {
   for (const r of [...s]) r();
 }
 
-/** trackWork for the methods of a native class: each call in flight is also remembered on its object (releaseAll). */
+/** A test ended: the native calls it started and that never called back stop counting (any path not caught above). */
+function releaseTestWork(testId) {
+  const s = BY_TEST.get(testId);
+  if (!s) return;
+  BY_TEST.delete(testId);
+  for (const r of [...s]) r();
+}
+
+/**
+ * trackWork for the methods of a native class: each call in flight is also remembered on its object (releaseAll)
+ * and on the running test (releaseTestWork). `each` is released by its completion callback: with only a row
+ * callback (no rows: never called) one that only releases is added.
+ */
 function trackOwned(patcher, P, names) {
   for (const n of names) {
     const real = P[n];
     if (typeof real !== 'function' || real.__detjsWork) continue;
     const w = function (...a) {
+      const self = this;
+      if (self && typeof self === 'object' && POISONED.has(self)) return real.apply(this, a);
       const i = a.length - 1;
       if (i < 0 || typeof a[i] !== 'function') return real.apply(this, a);
-      const cb = a[i];
-      const self = this;
+      const test = STATE.testId;
       let done = false;
       const release = () => {
         if (done) return;
@@ -142,11 +157,14 @@ function trackOwned(patcher, P, names) {
         work -= 1;
         const s = OPEN.get(self);
         if (s) s.delete(release);
+        const t = BY_TEST.get(test);
+        if (t) t.delete(release);
       };
-      a[i] = function (...r) { release(); return cb.apply(this, r); };
-      wrapEmit(P);
+      if (n === 'each' && !(i >= 1 && typeof a[i - 1] === 'function')) a.push(function eachDone() { release(); });
+      else { const cb = a[i]; a[i] = function (...r) { release(); return cb.apply(this, r); }; }
       work += 1;
       if (self && typeof self === 'object') { let s = OPEN.get(self); if (!s) OPEN.set(self, (s = new Set())); s.add(release); }
+      if (test !== null) { let t = BY_TEST.get(test); if (!t) BY_TEST.set(test, (t = new Set())); t.add(release); }
       try {
         return real.apply(this, a);
       } catch (e) {
@@ -160,34 +178,29 @@ function trackOwned(patcher, P, names) {
   }
 }
 
-// The failing class's prototype gets its emit from EventEmitter after the addon loaded (node-sqlite3's lib copies
-// it): its 'error' event is wrapped at the first call tracked on it (wrapEmit), not at load.
-const EMIT_ON = new WeakMap(); // prototype -> patcher
-function wrapEmit(P) {
-  const patcher = EMIT_ON.get(P);
-  if (!patcher) return;
-  const emit = P.emit;
-  if (typeof emit !== 'function' || emit.__detjsWork) return;
-  const e2 = function emitTracked(ev, ...a) { if (ev === 'error') releaseAll(this); return emit.call(this, ev, ...a); };
-  Object.defineProperty(e2, '__detjsWork', { value: true });
-  patcher.set(P, 'emit', e2);
-}
-
-/** The failing class: its constructor's callback with an error, or its 'error' event, ends its calls in flight. */
+/**
+ * The failing class: its constructor's callback with an error (also when it runs inside the constructor, as on a
+ * closed database) ends its calls in flight, and later calls on it are not counted. A failure without a callback
+ * (an 'error' event on it or on its database) is left to releaseTestWork.
+ */
 function releaseOnError(patcher, b, c) {
   const Real = b[c];
   if (!Real || Real.__detjsWorkCtor) return;
-  if (Real.prototype) EMIT_ON.set(Real.prototype, patcher);
   const P = new Proxy(Real, {
     construct(target, args, nt) {
       let o = null;
+      let failedEarly = false;
       const i = args.length - 1;
       if (i >= 0 && typeof args[i] === 'function') {
         const cb = args[i];
         args = [...args];
-        args[i] = function (err, ...r) { if (err) releaseAll(o); return cb.call(this, err, ...r); };
+        args[i] = function (err, ...r) {
+          if (err) { if (o === null) failedEarly = true; else { POISONED.add(o); releaseAll(o); } }
+          return cb.call(this, err, ...r);
+        };
       }
       o = Reflect.construct(target, args, nt === P ? target : nt);
+      if (failedEarly && o && typeof o === 'object') POISONED.add(o);
       return o;
     },
     get(t, k, r) { return k === '__detjsWorkCtor' ? true : Reflect.get(t, k, r); },
@@ -220,6 +233,7 @@ function installNativeWork(patcher) {
   }
   Object.defineProperty(w, '__detjsNativeWork', { value: true });
   patcher.set(Module, '_load', w);
+  if (Array.isArray(STATE.onTestEnd)) STATE.onTestEnd.push((id) => releaseTestWork(id));
   // already loaded (an earlier file of this process)
   for (const [file, mod] of Object.entries(require.cache)) {
     if (file.endsWith('.node') && mod && mod.exports && typeof mod.exports === 'object') { try { nativeWork(patcher, mod.exports); } catch { /* ignore */ } }
