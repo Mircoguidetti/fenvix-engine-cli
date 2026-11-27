@@ -130,12 +130,14 @@ function releaseAll(o) {
 // A native call in flight counts as pending for as long as it runs: no real-time grace stops it while its test, or
 // the next one, may still be waiting on it (a 3 s or 12 s grace made the alakajam pattern a wrong red as soon as a
 // query outlived it: coordinator /review, 2026-11-27). Only its callback, the error paths above (eachDone,
-// releaseOnError) or the start of the next test file end it: no test of an earlier file can still wait on a call
-// that never called back. That release is reported as a choice real time made. Cost of a call that never calls back:
+// releaseOnError) or the opening of the next test file end it: no test of an earlier file can still wait on a call
+// that never called back. The release itself is not a choice of any test (none of the new file waits on the call);
+// a timer of the earlier file that fired while the call counted was recorded then (timerChosen, with the call among
+// the pending work). Cost of a call that never calls back:
 // the rest of its file runs its timers at real pace (a test still ends at its runner deadline, on the real watchdog),
 // never a different outcome.
 function releaseFileWork() {
-  for (const r of [...IN_FLIGHT]) r.expire();
+  for (const r of [...IN_FLIGHT]) r();
 }
 
 /**
@@ -169,11 +171,6 @@ function trackOwned(patcher, P, names) {
         if (two) { const cb = a[i]; a[i] = function (...r) { release(); return cb.apply(this, r); }; } else a.push(function eachDone() { release(); });
       } else { const cb = a[i]; a[i] = function (...r) { release(); return cb.apply(this, r); }; }
       work += 1;
-      release.expire = () => {
-        if (done) return;
-        release();
-        if (STATE.onRealClock) STATE.onRealClock('a node-sqlite3 call that never called back stopped counting as pending work at the next file (real time decided)');
-      };
       if (self && typeof self === 'object') { let s = OPEN.get(self); if (!s) OPEN.set(self, (s = new Set())); s.add(release); }
       IN_FLIGHT.add(release);
       try {
@@ -347,9 +344,12 @@ function trackWork(patcher, m, names) {
   }
 }
 
-/** Handles and requests present now are the runner's own: never counted (taken when a test file starts). */
+/**
+ * Handles and requests present now are the runner's own: never counted (taken when a test file opens and again at its
+ * first test). It does not release native calls in flight: a call the file's module scope or hooks started may be one
+ * its first test waits on (releaseFileWork runs only when a file opens, src/controls.js openFile).
+ */
 function takeBaseline() {
-  releaseFileWork(); // a new test file: no test of it waits on a native call an earlier file left in flight
   if (HAS_HANDLES) {
     baseline = new WeakSet();
     for (const h of process._getActiveHandles()) if (h && typeof h === 'object') baseline.add(h);
@@ -374,17 +374,17 @@ function stableId(site) {
   siteCounters.set(s, n);
   return `${s}#${n}`;
 }
-function startTest() { siteCounters = new Map(); CHOSEN_WHY.clear(); }
+function startTest() { siteCounters = new Map(); CHOSEN_WHY = new Set(); }
 
 // per-test state of a concurrent test (src/concur.js)
-require('./concur').register({ name: 'sched', save: () => siteCounters, restore: (x) => { siteCounters = x; } });
+require('./concur').register({ name: 'sched', save: () => [siteCounters, CHOSEN_WHY], restore: (x) => { [siteCounters, CHOSEN_WHY] = x; } });
 
 /**
  * A virtual timer was chosen by real time: while `n` operations of the test were still pending, or (n = 0) while the
  * driver ran at real pace for a runner poll or a child-starting test; `why` is the reason given to the cache (once
  * per test and reason: the capture keeps one flag per reason).
  */
-const CHOSEN_WHY = new Set();
+let CHOSEN_WHY = new Set(); // per test (also per concurrent test: saved with its context above)
 function timerChosen(site, n, why) {
   STATE.recordAt('sched', 'sched.timer', site || '', `0/${1 + n}:${stableId(site)}`);
   // real time decided the order: the test's result is not reusable (src/cache/capture.js)

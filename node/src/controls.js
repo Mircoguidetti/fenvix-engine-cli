@@ -341,6 +341,8 @@ function openFile(fileId, project) {
   if (c.controls.has('seeds')) require('./facts').startFile(label);
   if (c.controls.has('net')) network.startFile(label);
   if (c.controls.has('time')) {
+    // a new test file: no test of it waits on a native call an earlier file left in flight
+    require('./sched').releaseFileWork();
     clock.DRIVER.takeBaseline();
     clock.startFile();
     require('./fstime').startFile();

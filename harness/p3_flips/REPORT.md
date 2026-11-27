@@ -32,9 +32,11 @@ Rules as built:
   row callback called with an error); a statement whose constructor or prepare callback gets an error is not counted
   from then on; a call counts for as long as it runs, whatever test ends meanwhile (no real-time grace: a 3 s or
   12 s grace made a query that outlived it a wrong red, coordinator /review 2026-11-27); a call that never calls back
-  counts until the next test file starts, then stops counting and is reported as a choice real time made. A timer
+  counts until the next test file opens (not at the file's first test: a hook's query may be what it waits on), then
+  stops counting; each timer that fires while it counts is recorded as a choice real time made. A timer
   fired at real pace because a runner poll of its own test (P1) or a child-starting test (P2) keeps the driver slow
-  is recorded as a choice real time made, in the timer's own test context (also `test.concurrent`).
+  is recorded as a choice real time made, decided and recorded in the timer's own test context (also
+  `test.concurrent`; once per test and reason).
 
 Test (b) passes from b6ec7638 on (CHANGELOG "Fixed"; harness/det_host_values/REPORT.md section 8).
 

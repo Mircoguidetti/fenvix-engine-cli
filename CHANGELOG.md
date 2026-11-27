@@ -40,8 +40,9 @@ All notable changes of the fenvix engine. One version for every component (`rele
     (`node/test/p3-timers-child.test.js`).
   - node-sqlite3 (npm `sqlite3`) calls in flight count as pending work (they run on the thread pool and leave no
     active resource): no virtual jump to a pool's long guard timer past the runner deadline; a call counts for as
-    long as it runs, whatever test ends meanwhile; one that never calls back counts until the next test file (the
-    rest of its file runs its timers at real pace, a waiting test still ends at its runner deadline)
+    long as it runs, whatever test ends meanwhile; one that never calls back counts until the next test file opens,
+    also past the file's first test (the rest of its file runs its timers at real pace, a waiting test still ends at
+    its runner deadline)
     (`node/test/native-work.test.js`). alakajam under `--det`: 114 failed (105-107 "Test timed out in 5000ms",
     7-9 SQLITE_BUSY) before, 217 passed / 4 skipped as in the plain run after (2 runs each).
 
