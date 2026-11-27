@@ -2,7 +2,7 @@
 // Real-time decisions of the P3 timer rule and native work must be recorded (founder decision on the coordinator's
 // /review of claude/p3-timers-merge @ 105cdcad, 2026-11-27, findings 1 and 2).
 //
-// protects: (1) a timer fired at real pace because a runner poll (P1, safePending) or a child-starting test (P2,
+// protects: (1) P1 and (1b) P2: a timer fired at real pace because a runner poll (P1, safePending) or a child-starting test (P2,
 //   childPaced) keeps the driver slow is a decision real time made: the test's result is not reused by --det-cache;
 //   (2) a node-sqlite3 call still in flight keeps counting when another test (a concurrent sibling) ends: the 3 s
 //   real-time grace starts only when the test that started the call ends.
@@ -17,7 +17,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
-const { BIN, TMP } = require('./helpers');
+const { BIN, sqlite3Pkg } = require('./helpers');
 const { fixture, crun, show, reused } = require('./runner-helpers');
 
 const T = { timeout: 600000 };
@@ -40,6 +40,8 @@ test('a vi.waitFor racing a 50 ms test timer', async () => {
   const r2 = crun('vitest', dir, ['run']);
   assert.ok(reused(r2).includes('tests/control.test.mjs'), `the control file is reused\n${show(r2)}`);
   assert.ok(!reused(r2).includes('tests/race.test.mjs'), `WRONG REUSE: real time decided the race\n${show(r2)}`);
+  const why = JSON.stringify((r1.summary && r1.summary.not_cached_detail) || {});
+  assert.match(why, /fired at real pace while a runner poll/, `run 1 names the runner poll as the reason\n${show(r1)}`);
 });
 
 test('(1b) P2: short timers paced after a child process are decided by real time and not reused', T, () => {
@@ -61,19 +63,9 @@ test('a child, then short timers at real pace', async () => {
   assert.ok(!reused(r2).includes('tests/paced.test.mjs'), `WRONG REUSE: the paced timers ran at real pace\n${show(r2)}`);
 });
 
-const PKGS = path.join(TMP, 'pkgs-sqlite3');
-function sqlite3() {
-  if (!fs.existsSync(path.join(PKGS, 'node_modules', 'sqlite3', 'package.json'))) {
-    fs.mkdirSync(PKGS, { recursive: true });
-    fs.writeFileSync(path.join(PKGS, 'package.json'), JSON.stringify({ name: 'pkgs-sqlite3', private: true }));
-    const r = spawnSync('npm', ['install', '--no-audit', '--no-fund', 'sqlite3@5.1.7'], { cwd: PKGS, encoding: 'utf8', timeout: 600000 });
-    assert.equal(r.status, 0, `node-sqlite3 5.1.7 could not be installed\n${r.stdout}\n${r.stderr}`);
-  }
-  return path.join(PKGS, 'package.json');
-}
 
 function env() {
-  const e = { ...process.env, FIXTURE_SQLITE3: sqlite3() };
+  const e = { ...process.env, FIXTURE_SQLITE3: sqlite3Pkg() };
   for (const k of ['CI', 'GITHUB_ACTIONS', 'DETJS', 'NODE_OPTIONS', 'NODE_TEST_CONTEXT', 'DETJS_EPOCH', 'DETJS_CACHE_DIR']) delete e[k];
   return e;
 }
@@ -84,21 +76,85 @@ test('(2) a still-running query keeps counting when a concurrent sibling ends', 
     'tests/sibling.test.mjs': `import { test, expect } from 'vitest';
 import { createRequire } from 'node:module';
 const sqlite3 = createRequire(process.env.FIXTURE_SQLITE3)('sqlite3');
-// about 4-5 s of real work: longer than the 3 s grace
-const SLOW = 'WITH RECURSIVE c(x) AS (SELECT 1 UNION ALL SELECT x+1 FROM c WHERE x<30000000) SELECT sum(x) s FROM c';
+// several seconds of real work: longer than the 3 s grace (the outer test checks it in the plain run)
+const SLOW = 'WITH RECURSIVE c(x) AS (SELECT 1 UNION ALL SELECT x+1 FROM c WHERE x<50000000) SELECT sum(x) s FROM c';
 test.concurrent('a slow query with a 60 s guard timer pending (as tarn) is not timed out', async () => {
   const db = new sqlite3.Database(':memory:');
   const guard = setTimeout(() => {}, 60000);
   const rows = await new Promise((res, rej) => db.all(SLOW, (e, r) => (e ? rej(e) : res(r))));
   clearTimeout(guard);
-  expect(rows[0].s).toBe(450000015000000);
+  expect(rows[0].s).toBe(1250000025000000);
   await new Promise((r) => db.close(r));
 }, 30000);
 test.concurrent('a sibling that ends at once', () => { expect(1).toBe(1); });
 `,
   });
+  const t0 = Date.now();
+  const plain = spawnSync(process.execPath, [path.join(__dirname, '..', 'node_modules', 'vitest', 'vitest.mjs'), 'run', '-t', 'slow query'], { cwd: dir, encoding: 'utf8', env: env(), timeout: 240000 });
+  const plainWall = (Date.now() - t0) / 1000;
+  assert.equal(plain.status, 0, `the plain run passes\n${plain.stdout}\n${plain.stderr}`);
+  assert.ok(plainWall > 4.5, `the query must outlast the 3 s grace for this test to mean anything: the plain run took ${plainWall} s`);
   const r = spawnSync(process.execPath, [BIN, 'vitest', 'run', '--det', '--det-workers=1'],
     { cwd: dir, encoding: 'utf8', env: env(), timeout: 240000 });
   const text = `${(r.stdout || '').slice(-3000)}\n${(r.stderr || '').slice(-2000)}`;
   assert.equal(r.status, 0, `the --det run passes (the query kept counting)\n${text}`);
+});
+
+test('(2b) a node-sqlite3 call whose grace ends while still in flight: the file is not reused', T, () => {
+  const dir = fixture('p3-real', 'grace-expiry', {
+    ...CONFIG, ...CONTROL,
+    'tests/expire.test.mjs': `import { test } from 'vitest';
+import { createRequire } from 'node:module';
+const sqlite3 = createRequire(process.env.FIXTURE_SQLITE3)('sqlite3');
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+test('starts a call that never calls back', () => {
+  const db = new sqlite3.Database(':memory:');
+  db.on('error', () => {});
+  const bad = db.prepare('SELECT * FROM never_there');
+  bad.on('error', () => {});
+  bad.get(() => {});
+});
+test('runs while that call is still counted, until its grace ends', async () => { await sleep(5000); }, 30000);
+`,
+  });
+  const e = { FIXTURE_SQLITE3: sqlite3Pkg() };
+  const r1 = crun('vitest', dir, ['run'], { env: e });
+  assert.equal(r1.status, 0, show(r1));
+  const r2 = crun('vitest', dir, ['run'], { env: e });
+  assert.ok(reused(r2).includes('tests/control.test.mjs'), `the control file is reused\n${show(r2)}`);
+  assert.ok(!reused(r2).includes('tests/expire.test.mjs'), `WRONG REUSE: real time decided when the call stopped counting\n${show(r2)}`);
+});
+
+// Unit level (a fake node-sqlite3 binding): a call whose owning test already ended (adversarial F1: issued from held
+// I/O delivered during that test's end) and a call whose owner never ends both still stop counting in bounded time.
+test('(3) a native call whose owner already ended, or never ends, still stops counting', { timeout: 60000 }, async () => {
+  const sched = require('../src/sched');
+  const { STATE } = require('../src/state');
+  const patcher = { set(o, k, v) { o[k] = v; } };
+  function Database() {}
+  Database.prototype.exec = function exec() { /* never calls back */ };
+  function Statement() {}
+  const b = { Database, Statement, OPEN_READWRITE: 2 };
+  sched.nativeWork(patcher, b);
+  const saved = STATE.testId;
+  try {
+    STATE.testId = 'unit-A';
+    sched.releaseTestWork('unit-A'); // A's end sweep ran ...
+    new b.Database().exec('x', () => {}); // ... then a call is issued while STATE.testId is still A
+    STATE.testId = null;
+    assert.ok(sched.isPending(), 'the call counts');
+    sched.releaseTestWork('unit-B'); // the next test end
+    await new Promise((r) => setTimeout(r, 3500));
+    assert.ok(!sched.isPending(), 'a call whose owner had already ended stops counting 3 s after the next test end');
+    STATE.testId = 'unit-C';
+    new b.Database().exec('y', () => {}); // owner C, whose end never comes
+    STATE.testId = null;
+    sched.releaseTestWork('unit-D');
+    await new Promise((r) => setTimeout(r, 3500));
+    assert.ok(sched.isPending(), 'another test end gives a still-owned call more time than its own end does');
+    await new Promise((r) => setTimeout(r, 9000));
+    assert.ok(!sched.isPending(), 'a call whose owner never ends stops counting 12 s after another test end');
+  } finally {
+    STATE.testId = saved;
+  }
 });

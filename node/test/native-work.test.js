@@ -26,19 +26,9 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
-const { BIN, TMP } = require('./helpers');
+const { BIN, TMP, sqlite3Pkg } = require('./helpers');
 
-const PKGS = path.join(TMP, 'pkgs-sqlite3');
-function sqlite3() {
-  const main = path.join(PKGS, 'node_modules', 'sqlite3', 'package.json');
-  if (!fs.existsSync(main)) {
-    fs.mkdirSync(PKGS, { recursive: true });
-    fs.writeFileSync(path.join(PKGS, 'package.json'), JSON.stringify({ name: 'pkgs-sqlite3', private: true }));
-    const r = spawnSync('npm', ['install', '--no-audit', '--no-fund', 'sqlite3@5.1.7'], { cwd: PKGS, encoding: 'utf8', timeout: 600000 });
-    assert.equal(r.status, 0, `node-sqlite3 5.1.7 could not be installed\n${r.stdout}\n${r.stderr}`);
-  }
-  return path.join(PKGS, 'package.json');
-}
+const sqlite3 = sqlite3Pkg;
 
 test('a node-sqlite3 query in flight is pending work: no virtual jump to the runner deadline', { timeout: 900000 }, () => {
   const src = path.join(__dirname, 'fixtures', 'native-work');
