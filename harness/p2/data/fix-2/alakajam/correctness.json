@@ -1,0 +1,2453 @@
+{
+ "ok": false,
+ "repo": "alakajam",
+ "rule1": [
+  {
+   "changes": [
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/core/security.spec.ts::Security::post permissions::should let anyone read published posts by approved users",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/entry/team/team.service.spec.ts::Team service::find team members::should list the owner, members and invites of an entry",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/entry/team/team.service.spec.ts::Team service::find team members::should only list the current user for a new entry",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::edit comment::should update the comment body",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/like/like.service.spec.ts::Like service::like::should not like twice",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/like/like.service.spec.ts::Like service::unlike::should remove the like and update counters",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/user/user.service.spec.ts::User service::approved user::should not approve users without entries",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/user/user.service.spec.ts::User service::entries count from real nodes::should not consider users with only posts as having entries",
+     "towards_identical": false,
+     "w": 2
+    }
+   ],
+   "defects": [
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/core/security.spec.ts::Security::post permissions::should let anyone read published posts by approved users",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/entry/team/team.service.spec.ts::Team service::find team members::should list the owner, members and invites of an entry",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/entry/team/team.service.spec.ts::Team service::find team members::should only list the current user for a new entry",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::edit comment::should update the comment body",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/like/like.service.spec.ts::Like service::like::should not like twice",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/like/like.service.spec.ts::Like service::unlike::should remove the like and update counters",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/user/user.service.spec.ts::User service::approved user::should not approve users without entries",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/user/user.service.spec.ts::User service::entries count from real nodes::should not consider users with only posts as having entries",
+     "towards_identical": false,
+     "w": 2
+    }
+   ],
+   "rounds_base": 3,
+   "rounds_fix": 3,
+   "variable_class": [
+    "server/core/security.spec.ts::Security::post permissions::should give no write permissions to other users",
+    "server/entry/entry.service.spec.ts::Entry service::create entry::should create an entry with a manage role for its owner",
+    "server/entry/entry.service.spec.ts::Entry service::create entry::should support external entries (without event)",
+    "server/entry/team/team.service.spec.ts::Team service::find team members::should not list users with roles on a post sharing the same ID",
+    "server/entry/team/team.service.spec.ts::Team service::set team members::should invite new members",
+    "server/event/tournament/tournament.service.spec.ts::Tournament service::count submitted scores::should count active scores over all tournament games, ignoring suspended and unrelated scores",
+    "server/event/tournament/tournament.service.spec.ts::Tournament service::count submitted scores::should return nothing for events that are not tournaments",
+    "server/post/comment/comment.service.spec.ts::Comment service::delete comment::should delete a post comment",
+    "server/post/like/like.service.spec.ts::Like service::like::should count likes from several users",
+    "server/post/like/like.service.spec.ts::Like service::like::should ignore invalid like types",
+    "server/post/like/like.service.spec.ts::Like service::unlike::should clear like details when the last like is removed",
+    "server/post/like/like.service.spec.ts::Like service::unlike::should do nothing if the post was not liked",
+    "server/post/post.service.spec.ts::Post service::create post::should store the event ID on the author role",
+    "server/post/post.service.spec.ts::Post service::find post by ID::should return nothing for an unknown ID",
+    "server/post/post.service.spec.ts::Post service::find post by ID::should return the post with its author, roles, event & entry",
+    "server/user/user.service.spec.ts::User service::approved user::should approve team members of an event entry",
+    "server/user/user.service.spec.ts::User service::approved user::should approve users with an event entry",
+    "server/user/user.service.spec.ts::User service::entries count from real nodes::should count entries but not posts",
+    "server/user/user.service.spec.ts::User service::refresh references::should refresh user roles when user title changes"
+   ],
+   "w": 2
+  },
+  {
+   "changes": [
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/entry/team/team.service.spec.ts::Team service::find team members::should not list users with roles on a post sharing the same ID",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/entry/team/team.service.spec.ts::Team service::set team members::should detach posts of removed members from the entry",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/entry/team/team.service.spec.ts::Team service::set team members::should invite new members",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/entry/team/team.service.spec.ts::Team service::set team members::should not touch roles of a post sharing the same ID",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should create anonymous comments on entries allowing them",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::delete comment::should delete an anonymous entry comment along with its author link",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged"
+     ],
+     "nodeid": "server/post/like/like.service.spec.ts::Like service::like::should ignore invalid like types",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/like/like.service.spec.ts::Like service::unlike::should clear like details when the last like is removed",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/post.service.spec.ts::Post service::create post::should create a post authored by the user, with a manage role",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/post.service.spec.ts::Post service::find post by ID::should return nothing for an unknown ID",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/user/user.service.spec.ts::User service::refresh references::should refresh user roles when user title changes",
+     "towards_identical": false,
+     "w": 4
+    }
+   ],
+   "defects": [
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/entry/team/team.service.spec.ts::Team service::find team members::should not list users with roles on a post sharing the same ID",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/entry/team/team.service.spec.ts::Team service::set team members::should detach posts of removed members from the entry",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/entry/team/team.service.spec.ts::Team service::set team members::should invite new members",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/entry/team/team.service.spec.ts::Team service::set team members::should not touch roles of a post sharing the same ID",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should create anonymous comments on entries allowing them",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::delete comment::should delete an anonymous entry comment along with its author link",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged"
+     ],
+     "nodeid": "server/post/like/like.service.spec.ts::Like service::like::should ignore invalid like types",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/like/like.service.spec.ts::Like service::unlike::should clear like details when the last like is removed",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/post.service.spec.ts::Post service::create post::should create a post authored by the user, with a manage role",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/post/post.service.spec.ts::Post service::find post by ID::should return nothing for an unknown ID",
+     "towards_identical": false,
+     "w": 4
+    },
+    {
+     "baseline": [
+      "not-proven:native"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:native"
+     ],
+     "nodeid": "server/user/user.service.spec.ts::User service::refresh references::should refresh user roles when user title changes",
+     "towards_identical": false,
+     "w": 4
+    }
+   ],
+   "rounds_base": 3,
+   "rounds_fix": 3,
+   "variable_class": [
+    "server/core/migration-0047-node-table.spec.ts::Migration 0047_node_table (SQLite)::on a populated database::should drop the node_type columns and their indexes",
+    "server/core/migration-0047-node-table.spec.ts::Migration 0047_node_table (SQLite)::safety checks::should refuse to run when post IDs reach the floor",
+    "server/core/security.spec.ts::Security::post permissions::should give no write permissions to other users",
+    "server/core/security.spec.ts::Security::post permissions::should let anyone read published posts by approved users",
+    "server/core/security.spec.ts::Security::post permissions::should only let users with roles read drafts",
+    "server/entry/entry.service.spec.ts::Entry service::create entry::should create an entry with a manage role for its owner",
+    "server/entry/highscore/highscore.service.spec.ts::High score service::find user scores::should exclude suspended scores by default (#636)",
+    "server/entry/highscore/highscore.service.spec.ts::High score service::find user scores::should include suspended scores when requested",
+    "server/entry/team/team.service.spec.ts::Team service::find team members::should list the owner, members and invites of an entry",
+    "server/event/tournament/tournament.service.spec.ts::Tournament service::count submitted scores::should count active scores over all tournament games, ignoring suspended and unrelated scores",
+    "server/event/tournament/tournament.service.spec.ts::Tournament service::count submitted scores::should return nothing for events that are not tournaments",
+    "server/post/comment/comment.service.spec.ts::Comment service::delete comment::should delete a post comment",
+    "server/post/comment/comment.service.spec.ts::Comment service::edit comment::should update the comment body",
+    "server/post/like/like.service.spec.ts::Like service::like::should count likes from several users",
+    "server/post/like/like.service.spec.ts::Like service::like::should not like twice",
+    "server/post/like/like.service.spec.ts::Like service::unlike::should do nothing if the post was not liked",
+    "server/post/like/like.service.spec.ts::Like service::unlike::should remove the like and update counters",
+    "server/post/post.service.spec.ts::Post service::create post::should store the event ID on the author role",
+    "server/post/post.service.spec.ts::Post service::find post by ID::should return the post with its author, roles, event & entry",
+    "server/user/user.service.spec.ts::User service::approved user::should approve users with an event entry",
+    "server/user/user.service.spec.ts::User service::approved user::should not approve users without entries",
+    "server/user/user.service.spec.ts::User service::entries count from real nodes::should count entries but not posts"
+   ],
+   "w": 4
+  }
+ ],
+ "rule2": {
+  "allowed_declared_only": [],
+  "declared": [],
+  "defects": [
+   {
+    "baseline_event": {
+     "at": "<deps>/tarn/dist/PendingOperation.js:41",
+     "o": "setTimeout",
+     "s": "time",
+     "t": 0,
+     "v": "schedule:60000000000"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "6000"
+    },
+    "nodeid": "server/core/security.spec.ts::Security::post permissions::should only let users with roles read drafts",
+    "why": "undeclared event difference at index 45"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/core/security.spec.ts::Security::post permissions::should let mods and admins in when allowed",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "nodeid": "server/core/security.spec.ts::Security::post permissions::should require user roles to be loaded",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/core/security.spec.ts::Security::post permissions::should always refuse when no model is given",
+    "why": "outcome differs"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/random-key/index.js:4",
+     "o": "crypto.randomBytes",
+     "s": "entropy",
+     "t": 0,
+     "v": "2:b051aadfcb2f16ee916fb3d9c6002aee"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "nodeid": "server/core/security.spec.ts::Security::entry permissions::should give all permissions to the entry owner",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/tarn/dist/PendingOperation.js:41",
+     "o": "setTimeout",
+     "s": "time",
+     "t": 0,
+     "v": "schedule:60000000000"
+    },
+    "fix_event": {
+     "at": "<deps>/knex/lib/util/nanoid.js:24",
+     "o": "Math.random",
+     "s": "random",
+     "t": 0,
+     "v": "0.591019016565527"
+    },
+    "nodeid": "server/core/security.spec.ts::Security::entry permissions::should give write permissions to team members",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/random-key/index.js:4",
+     "o": "crypto.randomBytes",
+     "s": "entropy",
+     "t": 0,
+     "v": "2:4090f66c83f0988f4c999ff286caeab4"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "nodeid": "server/core/security.spec.ts::Security::comment permissions::should only let the comment author edit it",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/core/security.spec.ts::Security::comment permissions::should let users read comments on readable nodes",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "nodeid": "server/core/security.spec.ts::Security::event permissions::should let anyone read events but only mods edit them, and only admins once closed",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/core/security.spec.ts::Security::add user right::should create a role on a post",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "4000"
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "4000"
+    },
+    "nodeid": "server/core/security.spec.ts::Security::add user right::should upgrade an existing role to a higher permission, but never downgrade it",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/core/security.spec.ts::Security::add user right::should not duplicate an existing role",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "4000"
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "4000"
+    },
+    "nodeid": "server/core/security.spec.ts::Security::add user right::should not grant rights on an entry sharing the same ID as the post",
+    "why": "undeclared event difference at index 3"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "13000"
+    },
+    "fix_event": {
+     "at": "<deps>/random-key/index.js:4",
+     "o": "crypto.randomBytes",
+     "s": "entropy",
+     "t": 0,
+     "v": "2:2aedc8f88513a5b7d4704c9cd1637417"
+    },
+    "nodeid": "server/core/security.spec.ts::Security::remove user right::should remove a role with the exact permission",
+    "why": "undeclared event difference at index 28"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/core/security.spec.ts::Security::remove user right::should do nothing if the permission does not match exactly",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "nodeid": "server/core/security.spec.ts::Security::remove user right::should not remove roles of a post sharing the same ID as the entry",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "5000"
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "5000"
+    },
+    "nodeid": "server/entry/entry.service.spec.ts::Entry service::create entry::should support external entries (without event)",
+    "why": "undeclared event difference at index 64"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/tarn/dist/PendingOperation.js:41",
+     "o": "setTimeout",
+     "s": "time",
+     "t": 0,
+     "v": "schedule:60000000000"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "18000"
+    },
+    "nodeid": "server/entry/entry.service.spec.ts::Entry service::create entry::should refuse a second entry for the same event",
+    "why": "undeclared event difference at index 102"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "nodeid": "server/entry/entry.service.spec.ts::Entry service::find user entries::should find the entry of a user for an event",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/PendingOperation.js:41",
+     "o": "setTimeout",
+     "s": "time",
+     "t": 0,
+     "v": "schedule:60000000000"
+    },
+    "nodeid": "server/entry/entry.service.spec.ts::Entry service::find user entries::should find all entries of a user",
+    "why": "undeclared event difference at index 25"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "fix_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "nodeid": "server/entry/entry.service.spec.ts::Entry service::find user entries::should find entries of a team member",
+    "why": "undeclared event difference at index 25"
+   },
+   {
+    "baseline_event": {
+     "at": "server/entity/timestamped.entity.ts:44",
+     "o": "Date",
+     "s": "time",
+     "t": 0,
+     "v": "5000"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "5000"
+    },
+    "nodeid": "server/entry/entry.service.spec.ts::Entry service::find user entries::should find the latest event entry of a user",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "nodeid": "server/entry/entry.service.spec.ts::Entry service::find user entries::should find entries through the userId filter",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/random-key/index.js:4",
+     "o": "crypto.randomBytes",
+     "s": "entropy",
+     "t": 0,
+     "v": "2:3e6ef34896514a6efe6d6a766bfa4521"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "nodeid": "server/entry/entry.service.spec.ts::Entry service::find user entries::should not find entries through roles on a post sharing the same ID",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/entry/entry.service.spec.ts::Entry service::find entries not reviewed by user::should hide entries commented or owned by the user",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/random-key/index.js:4",
+     "o": "crypto.randomBytes",
+     "s": "entropy",
+     "t": 0,
+     "v": "2:ac0eb9fd08a7d1e1dc0661792d345a20"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "nodeid": "server/entry/entry.service.spec.ts::Entry service::find entries not reviewed by user::should not hide entries just because the user commented a post sharing the same ID",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "server/entity/timestamped.entity.ts:44",
+     "o": "Date",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "nodeid": "server/entry/entry.service.spec.ts::Entry service::find entries not reviewed by user::should not hide entries just because the reviewer has a role on a post",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/entry/entry.service.spec.ts::Entry service::delete entry::should delete the entry along with its roles and comments",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "5000"
+    },
+    "fix_event": {
+     "at": "<deps>/random-key/index.js:4",
+     "o": "crypto.randomBytes",
+     "s": "entropy",
+     "t": 0,
+     "v": "2:c58af124019cf9531efc5f502e58d8ba"
+    },
+    "nodeid": "server/entry/entry.service.spec.ts::Entry service::delete entry::should detach the entry posts without deleting them",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/random-key/index.js:4",
+     "o": "crypto.randomBytes",
+     "s": "entropy",
+     "t": 0,
+     "v": "2:39f375bac0f1cfe75baeb0015cfa0ed1"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "7000"
+    },
+    "nodeid": "server/entry/entry.service.spec.ts::Entry service::delete entry::should leave a post sharing the same ID untouched",
+    "why": "undeclared event difference at index 6"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "nodeid": "server/entry/team/team.service.spec.ts::Team service::find team members::should only list the current user for a new entry",
+    "why": "undeclared event difference at index 25"
+   },
+   {
+    "baseline_event": {
+     "at": "<runner>",
+     "o": "runner.timeout",
+     "s": "time",
+     "t": 0,
+     "v": "virtual:5000"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "5000"
+    },
+    "nodeid": "server/entry/team/team.service.spec.ts::Team service::find team members::should not list users with roles on a post sharing the same ID",
+    "why": "undeclared event difference at index 28"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/entry/team/team.service.spec.ts::Team service::set team members::should invite new members",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/entry/team/team.service.spec.ts::Team service::set team members::should remove members and invites not in the list",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "",
+     "o": "outcome",
+     "s": "outcome",
+     "t": 0,
+     "v": "failed"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "15000"
+    },
+    "nodeid": "server/entry/team/team.service.spec.ts::Team service::set team members::should report users who already entered the event with another entry",
+    "why": "undeclared event difference at index 52"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "nodeid": "server/entry/team/team.service.spec.ts::Team service::set team members::should only keep the owner on solo entries",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/entry/team/team.service.spec.ts::Team service::set team members::should not touch roles of a post sharing the same ID",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "4000"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "4000"
+    },
+    "nodeid": "server/entry/team/team.service.spec.ts::Team service::set team members::should detach posts of removed members from the entry",
+    "why": "undeclared event difference at index 19"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "5000"
+    },
+    "fix_event": {
+     "at": "<deps>/random-key/index.js:4",
+     "o": "crypto.randomBytes",
+     "s": "entropy",
+     "t": 0,
+     "v": "2:87af233b5d960ac64c193aeeb6dc0d0f"
+    },
+    "nodeid": "server/entry/team/team.service.spec.ts::Team service::search for team members::should tell which users already entered the event",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "5000"
+    },
+    "fix_event": {
+     "at": "<deps>/random-key/index.js:4",
+     "o": "crypto.randomBytes",
+     "s": "entropy",
+     "t": 0,
+     "v": "2:b218f5e2bbcd2c99c7d85c70b5c78ddd"
+    },
+    "nodeid": "server/entry/team/team.service.spec.ts::Team service::search for team members::should tell which users are in the external entry",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "nodeid": "server/entry/team/team.service.spec.ts::Team service::search for team members::should ignore roles on posts",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "nodeid": "server/entry/team/team.service.spec.ts::Team service::team invites::should find the invites of a user",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/entry/team/team.service.spec.ts::Team service::team invites::should create a write role when accepting an invite",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "fix_event": {
+     "at": "<deps>/random-key/index.js:4",
+     "o": "crypto.randomBytes",
+     "s": "entropy",
+     "t": 0,
+     "v": "2:eea39b6d65f10e3408f2e272b885dee8"
+    },
+    "nodeid": "server/entry/team/team.service.spec.ts::Team service::team invites::should clear other invites from the same event and attach the user's posts when accepting",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "fix_event": {
+     "at": "server/entity/timestamped.entity.ts:44",
+     "o": "Date",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "nodeid": "server/entry/team/team.service.spec.ts::Team service::team invites::should promote an existing role when accepting an invite for a higher permission",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/random-key/index.js:4",
+     "o": "crypto.randomBytes",
+     "s": "entropy",
+     "t": 0,
+     "v": "2:41ae3095e120acfb02bef740a26134e4"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "9000"
+    },
+    "nodeid": "server/entry/team/team.service.spec.ts::Team service::team invites::should not create a role when accepting an invite to a solo entry",
+    "why": "undeclared event difference at index 8"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "fix_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "nodeid": "server/entry/team/team.service.spec.ts::Team service::team invites::should not create a role without an invite",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "fix_event": {
+     "at": "server/entity/timestamped.entity.ts:44",
+     "o": "Date",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "nodeid": "server/entry/team/team.service.spec.ts::Team service::team invites::should delete the invite when declining",
+    "why": "undeclared event difference at index 18"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "nodeid": "server/entry/team/team.service.spec.ts::Team service::team invites::should only create a role on the entry, not on a post sharing the same ID",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "25000"
+    },
+    "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::edit comment::should only allow the comment author to edit it",
+    "why": "undeclared event difference at index 111"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should create anonymous comments on entries allowing them",
+    "why": "undeclared event difference at index 23"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should not create anonymous comments on entries disallowing them",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/random-key/index.js:4",
+     "o": "crypto.randomBytes",
+     "s": "entropy",
+     "t": 0,
+     "v": "2:bdcbd0c902b19f117ebff00580a4d662"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "5000"
+    },
+    "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should not create anonymous comments for users disallowed to",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/random-key/index.js:4",
+     "o": "crypto.randomBytes",
+     "s": "entropy",
+     "t": 0,
+     "v": "2:32c50f2606bb47d70fdff0286aefcd38"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "7000"
+    },
+    "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should not create anonymous comments on posts",
+    "why": "undeclared event difference at index 6"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should only find own anonymous comments of the requested node",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/tarn/dist/PendingOperation.js:41",
+     "o": "setTimeout",
+     "s": "time",
+     "t": 0,
+     "v": "schedule:60000000000"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "27000"
+    },
+    "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should tell that a regular comment is not an own anonymous comment",
+    "why": "undeclared event difference at index 42"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should tell that an anonymous comment belongs to its author",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::find comments by user::should find all comments of a user on posts and entries, latest first",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::find comments by user::should find comments of a user on entries of an event",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/tarn/dist/PendingOperation.js:41",
+     "o": "setTimeout",
+     "s": "time",
+     "t": 0,
+     "v": "schedule:60000000000"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "17000"
+    },
+    "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::find comments by user::should not find event comments made on a post sharing the ID of an event entry",
+    "why": "undeclared event difference at index 32"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/PendingOperation.js:41",
+     "o": "setTimeout",
+     "s": "time",
+     "t": 0,
+     "v": "schedule:60000000000"
+    },
+    "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::find comments to user::should find comments made by others on the user's posts and entries",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::find comments to user::should find comments on nodes where the user has any role",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::find comments to user::should find comments mentioning the user",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "fix_event": {
+     "at": "<deps>/random-key/index.js:4",
+     "o": "crypto.randomBytes",
+     "s": "entropy",
+     "t": 0,
+     "v": "2:46d062bbf61a79850c2bd494f295731c"
+    },
+    "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::find comments to user::should not find comments on an entry sharing the ID of the user's post",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::find latest comments::should only return comments on nodes readable by anonymous users",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/post/comment/comment.service.spec.ts::Comment service::comment count::should be refreshable after creating and deleting comments",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/tarn/dist/PendingOperation.js:41",
+     "o": "setTimeout",
+     "s": "time",
+     "t": 0,
+     "v": "schedule:60000000000"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "6000"
+    },
+    "nodeid": "server/post/like/like.service.spec.ts::Like service::like::should count likes from several users",
+    "why": "undeclared event difference at index 46"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "nodeid": "server/post/like/like.service.spec.ts::Like service::like::should not like twice",
+    "why": "undeclared event difference at index 25"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/tarn/dist/PendingOperation.js:41",
+     "o": "setTimeout",
+     "s": "time",
+     "t": 0,
+     "v": "schedule:60000000000"
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "1000"
+    },
+    "nodeid": "server/post/post.service.spec.ts::Post service::find post by ID::should return nothing for an unknown ID",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "fix_event": {
+     "at": "<deps>/bookshelf/lib/base/model.js:788",
+     "o": "Date",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "nodeid": "server/post/post.service.spec.ts::Post service::find post by ID::should not load roles of an entry sharing the same ID",
+    "why": "undeclared event difference at index 26"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "nodeid": "server/post/post.service.spec.ts::Post service::find posts::should only find posts on which the user has write permissions or above",
+    "why": "undeclared event difference at index 25"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/random-key/index.js:4",
+     "o": "crypto.randomBytes",
+     "s": "entropy",
+     "t": 0,
+     "v": "2:ccdd7e20fcb5f2312ff00e987a806e61"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "nodeid": "server/post/post.service.spec.ts::Post service::find posts::should not find posts through roles on an entry sharing the same ID",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/post/post.service.spec.ts::Post service::find posts::should exclude drafts unless allowed",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/post/post.service.spec.ts::Post service::find posts::should filter by event and entry",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/post/post.service.spec.ts::Post service::find posts::should load user roles of the found posts",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "nodeid": "server/post/post.service.spec.ts::Post service::refresh comment count::should count the comments of a post",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "nodeid": "server/post/post.service.spec.ts::Post service::refresh comment count::should count the comments of an entry",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "nodeid": "server/post/post.service.spec.ts::Post service::refresh comment count::should not count comments of an entry sharing the same ID",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/random-key/index.js:4",
+     "o": "crypto.randomBytes",
+     "s": "entropy",
+     "t": 0,
+     "v": "2:1b9c35137db2841362625ceaa609bc36"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "nodeid": "server/post/post.service.spec.ts::Post service::delete post::should delete the post along with its roles, comments and likes",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/post/post.service.spec.ts::Post service::delete post::should leave other posts and entries untouched",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "nodeid": "server/post/post.service.spec.ts::Post service::attach posts to entry::should attach the user's posts from the same event to the entry",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/post/post.service.spec.ts::Post service::attach posts to entry::should be triggered when creating an entry for an event",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "fix_event": {
+     "at": "<deps>/random-key/index.js:4",
+     "o": "crypto.randomBytes",
+     "s": "entropy",
+     "t": 0,
+     "v": "2:22b7ca1adae0503f1bd1f4113a1fbcba"
+    },
+    "nodeid": "server/post/post.service.spec.ts::Post service::attach posts to entry::should not attach posts when the user only has a role on an entry sharing the same ID",
+    "why": "undeclared event difference at index 4"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "25000"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "25000"
+    },
+    "nodeid": "server/user/user.service.spec.ts::User service::entries count from real nodes::should count entries but not posts",
+    "why": "undeclared event difference at index 40"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "6000"
+    },
+    "nodeid": "server/user/user.service.spec.ts::User service::entries count from real nodes::should not consider users with only posts as having entries",
+    "why": "undeclared event difference at index 66"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/bluebird/js/release/schedule.js:12",
+     "o": "setImmediate",
+     "s": "time",
+     "t": 0,
+     "v": ""
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/user/user.service.spec.ts::User service::approved user::should not approve users without entries",
+    "why": "outcome differs"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/user/user.service.spec.ts::User service::approved user::should approve users with an event entry",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/user/user.service.spec.ts::User service::approved user::should approve team members of an event entry",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/user/user.service.spec.ts::User service::approved user::should not approve users with only external entries",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:76",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "fix_event": {
+     "at": "server/entity/timestamped.entity.ts:44",
+     "o": "Date",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "nodeid": "server/user/user.service.spec.ts::User service::approved user::should not approve users with only event posts",
+    "why": "undeclared event difference at index 2"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "3000"
+    },
+    "fix_event": {
+     "at": "<deps>/random-key/index.js:4",
+     "o": "crypto.randomBytes",
+     "s": "entropy",
+     "t": 0,
+     "v": "2:ba821b0167c25d885ad72ba5066e4038"
+    },
+    "nodeid": "server/user/user.service.spec.ts::User service::approved user::should approve mods",
+    "why": "outcome differs"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/user/user.service.spec.ts::User service::delete user::should refuse to delete users with entries",
+    "why": "outcome differs"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/user/user.service.spec.ts::User service::delete user::should delete the user along with their posts, comments, likes and roles",
+    "why": "undeclared event difference at index 1"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/typeorm/src/driver/sqlite/SqliteQueryRunner.ts:102",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "fix_event": {
+     "at": "<deps>/tarn/dist/utils.js:26",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "2000"
+    },
+    "nodeid": "server/user/user.service.spec.ts::User service::delete user::should delete comments and roles of other users on the deleted user's posts",
+    "why": "undeclared event difference at index 1"
+   }
+  ],
+  "need_repeat": [],
+  "passed": 127,
+  "stable_in_baseline": 221
+ },
+ "rule3": {
+  "count_defects": [
+   {
+    "baseline": [
+     102,
+     103
+    ],
+    "count": "passed",
+    "fix": 114,
+    "kind": "par",
+    "rep": 1,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     114,
+     115
+    ],
+    "count": "failed",
+    "fix": 103,
+    "kind": "par",
+    "rep": 1,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     141,
+     143
+    ],
+    "count": "skipped",
+    "fix": 128,
+    "kind": "plain_par",
+    "rep": 2,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     0,
+     0
+    ],
+    "count": "failed",
+    "fix": 15,
+    "kind": "plain_par",
+    "rep": 2,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     102,
+     106
+    ],
+    "count": "passed",
+    "fix": 108,
+    "kind": "serial",
+    "rep": 1,
+    "workers": 1
+   },
+   {
+    "baseline": [
+     111,
+     115
+    ],
+    "count": "failed",
+    "fix": 109,
+    "kind": "serial",
+    "rep": 1,
+    "workers": 1
+   },
+   {
+    "baseline": [
+     102,
+     106
+    ],
+    "count": "passed",
+    "fix": 114,
+    "kind": "serial",
+    "rep": 3,
+    "workers": 1
+   },
+   {
+    "baseline": [
+     111,
+     115
+    ],
+    "count": "failed",
+    "fix": 103,
+    "kind": "serial",
+    "rep": 3,
+    "workers": 1
+   }
+  ],
+  "defects": [
+   {
+    "baseline": [
+     "failed"
+    ],
+    "fix": "passed",
+    "fix_round": 1,
+    "kind": "serial",
+    "nodeid": "server/core/security.spec.ts::Security::add user right::should create a role on a post"
+   },
+   {
+    "baseline": [
+     "failed"
+    ],
+    "fix": "passed",
+    "fix_round": 1,
+    "kind": "serial",
+    "nodeid": "server/core/security.spec.ts::Security::add user right::should not duplicate an existing role"
+   },
+   {
+    "baseline": [
+     "failed"
+    ],
+    "fix": "passed",
+    "fix_round": 1,
+    "kind": "serial",
+    "nodeid": "server/core/security.spec.ts::Security::add user right::should upgrade an existing role to a higher permission, but never downgrade it"
+   },
+   {
+    "baseline": [
+     "failed"
+    ],
+    "fix": "passed",
+    "fix_round": 1,
+    "kind": "serial",
+    "nodeid": "server/core/security.spec.ts::Security::comment permissions::should only let the comment author edit it"
+   },
+   {
+    "baseline": [
+     "failed"
+    ],
+    "fix": "passed",
+    "fix_round": 1,
+    "kind": "serial",
+    "nodeid": "server/core/security.spec.ts::Security::event permissions::should let anyone read events but only mods edit them, and only admins once closed"
+   }
+  ],
+  "exit_defects": [],
+  "false_green": [],
+  "variable": {
+   "server/core/security.spec.ts::Security::post permissions::should always refuse when no model is given": [
+    "serial"
+   ],
+   "server/core/security.spec.ts::Security::post permissions::should require user roles to be loaded": [
+    "serial"
+   ],
+   "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should create anonymous comments on entries allowing them": [
+    "par w2"
+   ],
+   "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should not create anonymous comments for users disallowed to": [
+    "par w2"
+   ],
+   "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should not create anonymous comments on entries disallowing them": [
+    "par w2"
+   ],
+   "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should not create anonymous comments on posts": [
+    "par w2"
+   ],
+   "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should only find own anonymous comments of the requested node": [
+    "par w2"
+   ],
+   "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should tell that a regular comment is not an own anonymous comment": [
+    "par w2"
+   ],
+   "server/post/comment/comment.service.spec.ts::Comment service::anonymous comments::should tell that an anonymous comment belongs to its author": [
+    "par w2"
+   ],
+   "server/post/comment/comment.service.spec.ts::Comment service::delete comment::should delete a post comment": [
+    "par w2"
+   ],
+   "server/post/comment/comment.service.spec.ts::Comment service::delete comment::should delete an anonymous entry comment along with its author link": [
+    "par w2"
+   ],
+   "server/post/comment/comment.service.spec.ts::Comment service::edit comment::should only allow the comment author to edit it": [
+    "par w2"
+   ],
+   "server/user/user.service.spec.ts::User service::approved user::should approve mods": [
+    "serial"
+   ],
+   "server/user/user.service.spec.ts::User service::approved user::should not approve users without entries": [
+    "serial",
+    "par w2",
+    "par w4"
+   ],
+   "server/user/user.service.spec.ts::User service::delete user::should refuse to delete users with entries": [
+    "serial",
+    "par w2"
+   ]
+  }
+ }
+}

@@ -1,0 +1,687 @@
+{
+ "ok": false,
+ "repo": "agentsys",
+ "rule1": [
+  {
+   "changes": [
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "identical"
+     ],
+     "nodeid": "__tests__/sources.test.js::custom-handler::buildCustomConfig::should build file config",
+     "towards_identical": true,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "identical"
+     ],
+     "nodeid": "__tests__/sources.test.js::security::path traversal prevention::should allow valid tool names",
+     "towards_identical": true,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "identical"
+     ],
+     "nodeid": "__tests__/sources.test.js::source-cache::clearCache::should remove all cached files",
+     "towards_identical": true,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "identical"
+     ],
+     "nodeid": "__tests__/sources.test.js::source-cache::getToolCapabilities::should return null for unknown tool",
+     "towards_identical": true,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "identical"
+     ],
+     "nodeid": "__tests__/sources.test.js::source-cache::isPreferred::should return false for non-matching source",
+     "towards_identical": true,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "identical"
+     ],
+     "nodeid": "__tests__/sources.test.js::source-cache::isPreferred::should return false when no preference cached",
+     "towards_identical": true,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "identical"
+     ],
+     "nodeid": "__tests__/sources.test.js::source-cache::isPreferred::should return true for matching source",
+     "towards_identical": true,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "identical"
+     ],
+     "nodeid": "__tests__/sources.test.js::source-cache::savePreference::should overwrite existing preference",
+     "towards_identical": true,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "identical"
+     ],
+     "nodeid": "__tests__/sources.test.js::source-cache::savePreference::should save custom source preference with type and tool",
+     "towards_identical": true,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "identical"
+     ],
+     "nodeid": "__tests__/sources.test.js::source-cache::savePreference::should save simple source preference",
+     "towards_identical": true,
+     "w": 2
+    }
+   ],
+   "defects": [
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "identical"
+     ],
+     "nodeid": "__tests__/sources.test.js::custom-handler::buildCustomConfig::should build file config",
+     "towards_identical": true,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "identical"
+     ],
+     "nodeid": "__tests__/sources.test.js::security::path traversal prevention::should allow valid tool names",
+     "towards_identical": true,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "identical"
+     ],
+     "nodeid": "__tests__/sources.test.js::source-cache::clearCache::should remove all cached files",
+     "towards_identical": true,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "identical"
+     ],
+     "nodeid": "__tests__/sources.test.js::source-cache::getToolCapabilities::should return null for unknown tool",
+     "towards_identical": true,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "identical"
+     ],
+     "nodeid": "__tests__/sources.test.js::source-cache::isPreferred::should return false for non-matching source",
+     "towards_identical": true,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "identical"
+     ],
+     "nodeid": "__tests__/sources.test.js::source-cache::isPreferred::should return false when no preference cached",
+     "towards_identical": true,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "identical"
+     ],
+     "nodeid": "__tests__/sources.test.js::source-cache::isPreferred::should return true for matching source",
+     "towards_identical": true,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "identical"
+     ],
+     "nodeid": "__tests__/sources.test.js::source-cache::savePreference::should overwrite existing preference",
+     "towards_identical": true,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "identical"
+     ],
+     "nodeid": "__tests__/sources.test.js::source-cache::savePreference::should save custom source preference with type and tool",
+     "towards_identical": true,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "identical"
+     ],
+     "nodeid": "__tests__/sources.test.js::source-cache::savePreference::should save simple source preference",
+     "towards_identical": true,
+     "w": 2
+    }
+   ],
+   "rounds_base": 3,
+   "rounds_fix": 3,
+   "variable_class": [
+    "__tests__/dev-cli.test.js::async handler support::detect handler returns a promise that resolves to 0",
+    "__tests__/dev-cli.test.js::error handling::bump handler with no version returns help (exits 0)",
+    "__tests__/fetch-plugin-pins.test.js::current marketplace pins::a full install fetches every plugin at its pinned commit, not its tag or main",
+    "__tests__/fetch-plugin-pins.test.js::current marketplace pins::every remote plugin carries a full commit pin",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::a commit pin requests that SHA only, even when the version tag is elsewhere",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::a commit pin wins over a ref pin",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::a connection reset mid-download fails the fetch instead of hanging, and leaves nothing",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::a fetch whose rename into the cache fails still installs, by copying",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::a malformed commit pin is an error, not an unpinned fetch",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::a missing pinned commit fails instead of falling back to a tag or main",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::a ref pin requests that ref only, with no fallback",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::a reinstall at the same pin reuses the cache; a new pin or an old cache refetches",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::an abbreviated commit pin is an error, so a pin names exactly one commit",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::an archive built from another commit than the pin is rejected and not cached",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::an archive that does not name its commit is rejected for a commit pin",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::an unpinned entry keeps the old order: v<version>, <version>, main, master",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::an unpinned entry stops at the first ref that exists",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::cache markers shipped inside an archive are replaced, never trusted",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::installed.json records the commit the cache holds",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::when the copy fallback fails and the staging dir cannot be removed, no partial cache is left",
+    "__tests__/fetch-plugin-pins.test.js::plugins resolved the way Claude Code reads the marketplace::a cache without plugin.json from an earlier version gets one without a refetch",
+    "__tests__/fetch-plugin-pins.test.js::plugins resolved the way Claude Code reads the marketplace::a folder outside the repo or missing from it is an error and leaves nothing",
+    "__tests__/fetch-plugin-pins.test.js::plugins resolved the way Claude Code reads the marketplace::a folder reached through a symlink out of the repo is refused",
+    "__tests__/fetch-plugin-pins.test.js::plugins resolved the way Claude Code reads the marketplace::a git-subdir source installs the plugin from its folder",
+    "__tests__/fetch-plugin-pins.test.js::plugins resolved the way Claude Code reads the marketplace::a git-subdir source keeps its folder, and owner/repo is a GitHub repo",
+    "__tests__/fetch-plugin-pins.test.js::plugins resolved the way Claude Code reads the marketplace::a manifest reached through a symlink out of the plugin is not read",
+    "__tests__/fetch-plugin-pins.test.js::plugins resolved the way Claude Code reads the marketplace::a plugin.json is never written through a symlink",
+    "__tests__/fetch-plugin-pins.test.js::plugins resolved the way Claude Code reads the marketplace::a plugin.json the plugin ships is kept as it is",
+    "__tests__/fetch-plugin-pins.test.js::plugins resolved the way Claude Code reads the marketplace::agnix names its plugin/ folder; zig-lsp is its repo root",
+    "__tests__/generate-plugin-list.test.js::generate-plugin-list::--check fails on a stale file and leaves it as it was",
+    "__tests__/generate-plugin-list.test.js::generate-plugin-list::--check fails when plugins.txt is missing",
+    "__tests__/generate-plugin-list.test.js::generate-plugin-list::--check passes on a fresh file and changes nothing",
+    "__tests__/generate-plugin-list.test.js::generate-plugin-list::writes the checked-in plugins.txt byte for byte from marketplace.json",
+    "__tests__/marketplace-standalone-contract.test.js::foreman is listed in the docs, the site, the Codex metadata and the docs generator",
+    "__tests__/preflight.test.js::runGapChecks::returns array of results",
+    "__tests__/preflight.test.js::runGapChecks::runs all gap checks with --all flag",
+    "__tests__/ship-repo-intel-removed.test.js::lib/ has no repo-intel enrichment or embedder, which only the repo-intel plugin drove",
+    "__tests__/ship-repo-intel-removed.test.js::nothing checks or syncs lib/ against agent-core",
+    "__tests__/ten-plugins-removed.test.js::pre-push hook agnix step::blocks the push when agnix reports an error",
+    "__tests__/ten-plugins-removed.test.js::pre-push hook agnix step::lints only the changed agent configs and passes when agnix does",
+    "__tests__/validation-scripts.test.js::validate-counts::checkProjectInstructions::requires one nonempty instruction file and rejects a mirror"
+   ],
+   "w": 2
+  },
+  {
+   "changes": [
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "identical"
+     ],
+     "nodeid": "tests/lib-package.test.js::@agentsys/lib workspace::require resolution::should resolve root require(@agentsys/lib)",
+     "towards_identical": true,
+     "w": 4
+    }
+   ],
+   "defects": [
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "identical"
+     ],
+     "nodeid": "tests/lib-package.test.js::@agentsys/lib workspace::require resolution::should resolve root require(@agentsys/lib)",
+     "towards_identical": true,
+     "w": 4
+    }
+   ],
+   "rounds_base": 3,
+   "rounds_fix": 3,
+   "variable_class": [
+    "__tests__/fetch-plugin-pins.test.js::current marketplace pins::a full install fetches every plugin at its pinned commit, not its tag or main",
+    "__tests__/fetch-plugin-pins.test.js::current marketplace pins::every remote plugin carries a full commit pin",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::a commit pin requests that SHA only, even when the version tag is elsewhere",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::a commit pin wins over a ref pin",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::a connection reset mid-download fails the fetch instead of hanging, and leaves nothing",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::a fetch whose rename into the cache fails still installs, by copying",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::a malformed commit pin is an error, not an unpinned fetch",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::a missing pinned commit fails instead of falling back to a tag or main",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::a ref pin requests that ref only, with no fallback",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::a reinstall at the same pin reuses the cache; a new pin or an old cache refetches",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::an abbreviated commit pin is an error, so a pin names exactly one commit",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::an archive built from another commit than the pin is rejected and not cached",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::an archive that does not name its commit is rejected for a commit pin",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::an unpinned entry keeps the old order: v<version>, <version>, main, master",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::an unpinned entry stops at the first ref that exists",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::cache markers shipped inside an archive are replaced, never trusted",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::installed.json records the commit the cache holds",
+    "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::when the copy fallback fails and the staging dir cannot be removed, no partial cache is left",
+    "__tests__/fetch-plugin-pins.test.js::plugins resolved the way Claude Code reads the marketplace::a cache without plugin.json from an earlier version gets one without a refetch",
+    "__tests__/fetch-plugin-pins.test.js::plugins resolved the way Claude Code reads the marketplace::a folder outside the repo or missing from it is an error and leaves nothing",
+    "__tests__/fetch-plugin-pins.test.js::plugins resolved the way Claude Code reads the marketplace::a folder reached through a symlink out of the repo is refused",
+    "__tests__/fetch-plugin-pins.test.js::plugins resolved the way Claude Code reads the marketplace::a git-subdir source installs the plugin from its folder",
+    "__tests__/fetch-plugin-pins.test.js::plugins resolved the way Claude Code reads the marketplace::a git-subdir source keeps its folder, and owner/repo is a GitHub repo",
+    "__tests__/fetch-plugin-pins.test.js::plugins resolved the way Claude Code reads the marketplace::a manifest reached through a symlink out of the plugin is not read",
+    "__tests__/fetch-plugin-pins.test.js::plugins resolved the way Claude Code reads the marketplace::a plugin.json is never written through a symlink",
+    "__tests__/fetch-plugin-pins.test.js::plugins resolved the way Claude Code reads the marketplace::a plugin.json the plugin ships is kept as it is",
+    "__tests__/fetch-plugin-pins.test.js::plugins resolved the way Claude Code reads the marketplace::agnix names its plugin/ folder; zig-lsp is its repo root",
+    "__tests__/generate-plugin-list.test.js::generate-plugin-list::--check fails on a stale file and leaves it as it was",
+    "__tests__/generate-plugin-list.test.js::generate-plugin-list::--check fails when plugins.txt is missing",
+    "__tests__/generate-plugin-list.test.js::generate-plugin-list::--check passes on a fresh file and changes nothing",
+    "__tests__/generate-plugin-list.test.js::generate-plugin-list::writes the checked-in plugins.txt byte for byte from marketplace.json",
+    "__tests__/preflight.test.js::runGapChecks::returns array of results",
+    "__tests__/preflight.test.js::runGapChecks::runs all gap checks with --all flag",
+    "__tests__/sources.test.js::custom-handler::buildCustomConfig::should build file config",
+    "__tests__/sources.test.js::security::path traversal prevention::should allow valid tool names",
+    "__tests__/sources.test.js::source-cache::clearCache::should remove all cached files",
+    "__tests__/sources.test.js::source-cache::getToolCapabilities::should return null for unknown tool",
+    "__tests__/sources.test.js::source-cache::isPreferred::should return false for non-matching source",
+    "__tests__/sources.test.js::source-cache::isPreferred::should return false when no preference cached",
+    "__tests__/sources.test.js::source-cache::isPreferred::should return true for matching source",
+    "__tests__/sources.test.js::source-cache::savePreference::should overwrite existing preference",
+    "__tests__/sources.test.js::source-cache::savePreference::should save custom source preference with type and tool",
+    "__tests__/sources.test.js::source-cache::savePreference::should save simple source preference",
+    "__tests__/ten-plugins-removed.test.js::pre-push hook agnix step::blocks the push when agnix reports an error",
+    "__tests__/ten-plugins-removed.test.js::pre-push hook agnix step::lints only the changed agent configs and passes when agnix does",
+    "__tests__/validation-scripts.test.js::validate-counts::checkProjectInstructions::requires one nonempty instruction file and rejects a mirror"
+   ],
+   "w": 4
+  }
+ ],
+ "rule2": {
+  "allowed_declared_only": [],
+  "declared": [],
+  "defects": [
+   {
+    "baseline_event": {
+     "at": "<deps>/@babel/core/src/config/files/utils.ts:29",
+     "o": "fs.stat.mtimeMs",
+     "s": "fs",
+     "t": 0,
+     "v": "-159566544.39379883"
+    },
+    "fix_event": {
+     "at": "<deps>/@babel/core/src/config/files/utils.ts:29",
+     "o": "fs.stat.mtimeMs",
+     "s": "fs",
+     "t": 0,
+     "v": "-159920455.80419922"
+    },
+    "nodeid": "__tests__/dev-cli.test.js::async handler support::verify handler returns a promise that resolves to 0",
+    "why": "undeclared event difference at index 13"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/@babel/core/src/config/files/utils.ts:29",
+     "o": "fs.stat.mtimeMs",
+     "s": "fs",
+     "t": 0,
+     "v": "-159567648.5847168"
+    },
+    "fix_event": {
+     "at": "<deps>/@babel/core/src/config/files/utils.ts:29",
+     "o": "fs.stat.mtimeMs",
+     "s": "fs",
+     "t": 0,
+     "v": "-159921658.7680664"
+    },
+    "nodeid": "__tests__/dev-cli.test.js::error handling::status handler returns 0",
+    "why": "undeclared event difference at index 13"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/@babel/core/src/config/files/utils.ts:29",
+     "o": "fs.stat.mtimeMs",
+     "s": "fs",
+     "t": 0,
+     "v": "-159567685.42578125"
+    },
+    "fix_event": {
+     "at": "<deps>/@babel/core/src/config/files/utils.ts:29",
+     "o": "fs.stat.mtimeMs",
+     "s": "fs",
+     "t": 0,
+     "v": "-159921696.11206055"
+    },
+    "nodeid": "__tests__/dev-cli.test.js::argument forwarding::validate platform-docs forwards --json flag",
+    "why": "undeclared event difference at index 13"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/@babel/core/src/config/files/utils.ts:29",
+     "o": "fs.stat.mtimeMs",
+     "s": "fs",
+     "t": 0,
+     "v": "-159567795.515625"
+    },
+    "fix_event": {
+     "at": "<deps>/@babel/core/src/config/files/utils.ts:29",
+     "o": "fs.stat.mtimeMs",
+     "s": "fs",
+     "t": 0,
+     "v": "-159921806.85791016"
+    },
+    "nodeid": "__tests__/dev-install.test.js::dev-install script::external commands::routes the claude shim through cmd.exe on Windows",
+    "why": "undeclared event difference at index 13"
+   },
+   {
+    "baseline_event": {
+     "at": "bin/cli.js:235",
+     "o": "fs.opendirSync",
+     "s": "fs",
+     "t": 0,
+     "v": ".detjs|2|1005ccb62c3c1a5cfc2b2169ab44ee1e"
+    },
+    "fix_event": {
+     "at": "bin/cli.js:235",
+     "o": "fs.opendirSync",
+     "s": "fs",
+     "t": 0,
+     "v": ".detjs|2|856094591b63c98884728e75db2c4805"
+    },
+    "nodeid": "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::a first install for a local platform keeps the plugin it fetched and records its commit",
+    "why": "undeclared event difference at index 49"
+   },
+   {
+    "baseline_event": {
+     "at": "bin/cli.js:235",
+     "o": "fs.opendirSync",
+     "s": "fs",
+     "t": 0,
+     "v": ".detjs|2|1005ccb62c3c1a5cfc2b2169ab44ee1e"
+    },
+    "fix_event": {
+     "at": "bin/cli.js:235",
+     "o": "fs.opendirSync",
+     "s": "fs",
+     "t": 0,
+     "v": ".detjs|2|856094591b63c98884728e75db2c4805"
+    },
+    "nodeid": "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::an install whose pinned fetch fails installs and records nothing",
+    "why": "undeclared event difference at index 49"
+   },
+   {
+    "baseline_event": {
+     "at": "bin/cli.js:235",
+     "o": "fs.opendirSync",
+     "s": "fs",
+     "t": 0,
+     "v": ".detjs|2|1005ccb62c3c1a5cfc2b2169ab44ee1e"
+    },
+    "fix_event": {
+     "at": "bin/cli.js:235",
+     "o": "fs.opendirSync",
+     "s": "fs",
+     "t": 0,
+     "v": ".detjs|2|856094591b63c98884728e75db2c4805"
+    },
+    "nodeid": "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::a cut-off download leaves no cache dir, and a later install does not install it",
+    "why": "undeclared event difference at index 52"
+   },
+   {
+    "baseline_event": {
+     "at": "bin/cli.js:235",
+     "o": "fs.opendirSync",
+     "s": "fs",
+     "t": 0,
+     "v": ".detjs|2|1005ccb62c3c1a5cfc2b2169ab44ee1e"
+    },
+    "fix_event": {
+     "at": "bin/cli.js:235",
+     "o": "fs.opendirSync",
+     "s": "fs",
+     "t": 0,
+     "v": ".detjs|2|856094591b63c98884728e75db2c4805"
+    },
+    "nodeid": "__tests__/fetch-plugin-pins.test.js::fetching plugins at their marketplace pins::a first local install keeps the records of plugins installed before it",
+    "why": "undeclared event difference at index 54"
+   },
+   {
+    "baseline_event": {
+     "at": "bin/cli.js:235",
+     "o": "fs.opendirSync",
+     "s": "fs",
+     "t": 0,
+     "v": ".detjs|2|1005ccb62c3c1a5cfc2b2169ab44ee1e"
+    },
+    "fix_event": {
+     "at": "bin/cli.js:235",
+     "o": "fs.opendirSync",
+     "s": "fs",
+     "t": 0,
+     "v": ".detjs|2|856094591b63c98884728e75db2c4805"
+    },
+    "nodeid": "__tests__/fetch-plugin-pins.test.js::plugins resolved the way Claude Code reads the marketplace::a plugin with no plugin.json at its pin installs its command, agent and skill",
+    "why": "undeclared event difference at index 50"
+   },
+   {
+    "baseline_event": {
+     "at": "bin/cli.js:235",
+     "o": "fs.opendirSync",
+     "s": "fs",
+     "t": 0,
+     "v": ".detjs|2|1005ccb62c3c1a5cfc2b2169ab44ee1e"
+    },
+    "fix_event": {
+     "at": "bin/cli.js:235",
+     "o": "fs.opendirSync",
+     "s": "fs",
+     "t": 0,
+     "v": ".detjs|2|856094591b63c98884728e75db2c4805"
+    },
+    "nodeid": "__tests__/fetch-plugin-pins.test.js::plugins resolved the way Claude Code reads the marketplace::agnix installs its command, agent and skill from plugin/, as Claude Code does",
+    "why": "undeclared event difference at index 52"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/@babel/core/src/config/files/utils.ts:29",
+     "o": "fs.stat.mtimeMs",
+     "s": "fs",
+     "t": 0,
+     "v": "-159571255.60375977"
+    },
+    "fix_event": {
+     "at": "<deps>/@babel/core/src/config/files/utils.ts:29",
+     "o": "fs.stat.mtimeMs",
+     "s": "fs",
+     "t": 0,
+     "v": "-159925636.0378418"
+    },
+    "nodeid": "__tests__/generate-plugin-list.test.js::generate-plugin-list::lists every marketplace plugin once, sorted, one per line",
+    "why": "undeclared event difference at index 13"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/@babel/core/src/config/files/utils.ts:29",
+     "o": "fs.stat.mtimeMs",
+     "s": "fs",
+     "t": 0,
+     "v": "-159571394.22143555"
+    },
+    "fix_event": {
+     "at": "<deps>/@babel/core/src/config/files/utils.ts:29",
+     "o": "fs.stat.mtimeMs",
+     "s": "fs",
+     "t": 0,
+     "v": "-159925799.56201172"
+    },
+    "nodeid": "__tests__/generate-plugin-list.test.js::generate-plugin-list::preflight runs the plugin list check when the marketplace changes",
+    "why": "undeclared event difference at index 13"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/@babel/core/src/config/files/utils.ts:29",
+     "o": "fs.stat.mtimeMs",
+     "s": "fs",
+     "t": 0,
+     "v": "-159571677.6586914"
+    },
+    "fix_event": {
+     "at": "<deps>/@babel/core/src/config/files/utils.ts:29",
+     "o": "fs.stat.mtimeMs",
+     "s": "fs",
+     "t": 0,
+     "v": "-159926120.1003418"
+    },
+    "nodeid": "__tests__/next-task-leftovers.test.js::lib has no policy-question library or export",
+    "why": "undeclared event difference at index 12"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/@babel/core/src/config/files/utils.ts:29",
+     "o": "fs.stat.mtimeMs",
+     "s": "fs",
+     "t": 0,
+     "v": "-159574032.7060547"
+    },
+    "fix_event": {
+     "at": "<deps>/@babel/core/src/config/files/utils.ts:29",
+     "o": "fs.stat.mtimeMs",
+     "s": "fs",
+     "t": 0,
+     "v": "-159928188.69726562"
+    },
+    "nodeid": "__tests__/preflight.test.js::runExistingValidators::runs validators when --all is true",
+    "why": "undeclared event difference at index 14"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/write-file-atomic/lib/index.js:197",
+     "o": "fs.stat",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/jest-transform-cache-a0bfbffea823356fff3640219cd5103d-33e9a252a52783adb262261baf4dff05/ce/package_ceadcd405f1924f562015e3493711211|missing"
+    },
+    "fix_event": {
+     "at": "<deps>/write-file-atomic/lib/index.js:197",
+     "o": "fs.stat",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/jest-transform-cache-a0bfbffea823356fff3640219cd5103d-33e9a252a52783adb262261baf4dff05/24/package_24d769a885f50dc8fccb0b33f1683f78|missing"
+    },
+    "nodeid": "tests/lib-package.test.js::agentsys package security::does not ship the unused js-yaml parser",
+    "why": "undeclared event difference at index 2"
+   }
+  ],
+  "need_repeat": [],
+  "passed": 2209,
+  "stable_in_baseline": 2224
+ },
+ "rule3": {
+  "count_defects": [],
+  "defects": [],
+  "exit_defects": [],
+  "false_green": [],
+  "variable": {}
+ }
+}

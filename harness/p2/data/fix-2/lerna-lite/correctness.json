@@ -1,0 +1,401 @@
+{
+ "ok": false,
+ "repo": "lerna-lite",
+ "rule1": [
+  {
+   "changes": [
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves PR #1411 cross-env-shell expansion and PATH resolution (stream=false)",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:env"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::queues changes during a running command without overlap or dropped files",
+     "towards_identical": false,
+     "w": 2
+    }
+   ],
+   "defects": [
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves PR #1411 cross-env-shell expansion and PATH resolution (stream=false)",
+     "towards_identical": false,
+     "w": 2
+    },
+    {
+     "baseline": [
+      "not-proven:env"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::queues changes during a running command without overlap or dropped files",
+     "towards_identical": false,
+     "w": 2
+    }
+   ],
+   "rounds_base": 3,
+   "rounds_fix": 3,
+   "variable_class": [
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::applies package selection (--scope=foo --include-dependents), glob, ignores and delimiter to actual callbacks",
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::applies package selection (--scope=foobar --include-dependencies), glob, ignores and delimiter to actual callbacks",
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::executes the initial inventory only when --no-ignore-initial is requested",
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves PR #1411 cross-env-shell expansion and PATH resolution (stream=true)"
+   ],
+   "w": 2
+  },
+  {
+   "changes": [
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves PR #1411 cross-env-shell expansion and PATH resolution (stream=false)",
+     "towards_identical": false,
+     "w": 4
+    }
+   ],
+   "defects": [
+    {
+     "baseline": [
+      "diverged"
+     ],
+     "explanation": null,
+     "fix": [
+      "diverged",
+      "not-proven:env"
+     ],
+     "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves PR #1411 cross-env-shell expansion and PATH resolution (stream=false)",
+     "towards_identical": false,
+     "w": 4
+    }
+   ],
+   "rounds_base": 3,
+   "rounds_fix": 3,
+   "variable_class": [
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::applies package selection (--scope=foo --include-dependents), glob, ignores and delimiter to actual callbacks",
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::applies package selection (--scope=foobar --include-dependencies), glob, ignores and delimiter to actual callbacks",
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::executes the initial inventory only when --no-ignore-initial is requested",
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves PR #1411 cross-env-shell expansion and PATH resolution (stream=true)",
+    "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::queues changes during a running command without overlap or dropped files"
+   ],
+   "w": 4
+  }
+ ],
+ "rule2": {
+  "allowed_declared_only": [],
+  "declared": [],
+  "defects": [
+   {
+    "baseline_event": {
+     "at": "e2e/exec/exec.spec.ts:149",
+     "o": "fs.stat",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/lerna-exec-npm-1735689600000-0/lerna-workspace/Lerna-Profile-20261127T204423.json|present"
+    },
+    "fix_event": {
+     "at": "e2e/exec/exec.spec.ts:149",
+     "o": "fs.stat",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/lerna-exec-npm-1735689600000-0/lerna-workspace/Lerna-Profile-20261127T234412.json|present"
+    },
+    "nodeid": "e2e/exec/exec.spec.ts::lerna-exec::--profile::should run command on all child packages and create a performance profile",
+    "why": "undeclared event difference at index 214"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e/exec/exec.spec.ts:167",
+     "o": "fs.stat",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/lerna-exec-npm-1735689600000-0/lerna-workspace/profiles/Lerna-Profile-20261127T204423.json|present"
+    },
+    "fix_event": {
+     "at": "e2e/exec/exec.spec.ts:167",
+     "o": "fs.stat",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/lerna-exec-npm-1735689600000-0/lerna-workspace/profiles/Lerna-Profile-20261127T234413.json|present"
+    },
+    "nodeid": "e2e/exec/exec.spec.ts::lerna-exec::--profile --profile-location::should run command on all child packages and create a performance profile at provided location",
+    "why": "undeclared event difference at index 214"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e/publish/publish-dry-run.spec.ts:69",
+     "o": "fs.promises.readdir",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/lerna-publish-dry-run-npm-1735689600000-2/lerna-workspace/test-temp|1|2467d30dc71f56d5ceba5886a00761d2"
+    },
+    "fix_event": {
+     "at": "e2e/publish/publish-dry-run.spec.ts:69",
+     "o": "fs.promises.readdir",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/lerna-publish-dry-run-npm-1735689600000-2/lerna-workspace/test-temp|1|30faf9559b934b5fb1adceecb013056c"
+    },
+    "nodeid": "e2e/publish/publish-dry-run.spec.ts::lerna-publish dry-run::packs a configured directory with workspace and project placeholders",
+    "why": "undeclared event difference at index 228"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e/publish/publish-dry-run.spec.ts:106",
+     "o": "fs.promises.readdir",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/lerna-publish-dry-run-npm-1735689600000-3/lerna-workspace/test-temp|2|2de8e84ffd65c1017efcea2457a144e8"
+    },
+    "fix_event": {
+     "at": "e2e/publish/publish-dry-run.spec.ts:106",
+     "o": "fs.promises.readdir",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/lerna-publish-dry-run-npm-1735689600000-3/lerna-workspace/test-temp|2|0d7de4bc02a30a39f223375e0bd9a218"
+    },
+    "nodeid": "e2e/publish/publish-dry-run.spec.ts::lerna-publish dry-run::packs each package from its configured directory when a package overrides the root",
+    "why": "undeclared event difference at index 230"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e/publish/publish-dry-run.spec.ts:157",
+     "o": "fs.promises.readdir",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/lerna-publish-dry-run-npm-1735689600000-4/lerna-workspace/test-temp|2|7d7a4777d1adad9cee759b9fdcf34445"
+    },
+    "fix_event": {
+     "at": "e2e/publish/publish-dry-run.spec.ts:157",
+     "o": "fs.promises.readdir",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/lerna-publish-dry-run-npm-1735689600000-4/lerna-workspace/test-temp|2|63cbe345540623d9965858944a97cf00"
+    },
+    "nodeid": "e2e/publish/publish-dry-run.spec.ts::lerna-publish dry-run::builds from package scripts before stripping them from the packed manifest",
+    "why": "undeclared event difference at index 230"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e/publish/publish-dry-run.spec.ts:208",
+     "o": "fs.promises.readdir",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/lerna-publish-dry-run-npm-1735689600000-5/lerna-workspace/test-temp|1|7e0514f848649c16be91f8b35e4df89b"
+    },
+    "fix_event": {
+     "at": "e2e/publish/publish-dry-run.spec.ts:208",
+     "o": "fs.promises.readdir",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/lerna-publish-dry-run-npm-1735689600000-5/lerna-workspace/test-temp|1|f2917008178262fa51373cc77d1bbbda"
+    },
+    "nodeid": "e2e/publish/publish-dry-run.spec.ts::lerna-publish dry-run::syncs the generated manifest after prepack and packs it during a dry run",
+    "why": "undeclared event difference at index 232"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e/run/run.spec.ts:149",
+     "o": "fs.stat",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/lerna-run-pnpm-1735689600000-0/lerna-workspace/Lerna-Profile-20261127T205307.json|present"
+    },
+    "fix_event": {
+     "at": "e2e/run/run.spec.ts:149",
+     "o": "fs.stat",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/lerna-run-pnpm-1735689600000-0/lerna-workspace/Lerna-Profile-20261127T235255.json|present"
+    },
+    "nodeid": "e2e/run/run.spec.ts::lerna-run::should create performance profile with --profile",
+    "why": "undeclared event difference at index 214"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e/run/run.spec.ts:168",
+     "o": "fs.stat",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/lerna-run-pnpm-1735689600000-0/lerna-workspace/profiles/Lerna-Profile-20261127T205307.json|present"
+    },
+    "fix_event": {
+     "at": "e2e/run/run.spec.ts:168",
+     "o": "fs.stat",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/lerna-run-pnpm-1735689600000-0/lerna-workspace/profiles/Lerna-Profile-20261127T235256.json|present"
+    },
+    "nodeid": "e2e/run/run.spec.ts::lerna-run::should create performance profile in custom location with --profile-location",
+    "why": "undeclared event difference at index 214"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e/version/version.spec.ts:116",
+     "o": "fs.read.outside",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/lerna-version-npm-1735689600000-4/lerna-workspace/CHANGELOG.md|223:69b516791f6d37e576816a970bf9ca83"
+    },
+    "fix_event": {
+     "at": "e2e/version/version.spec.ts:116",
+     "o": "fs.read.outside",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/lerna-version-npm-1735689600000-4/lerna-workspace/CHANGELOG.md|223:0fed3718ee1a680c35c5334c91a0124d"
+    },
+    "nodeid": "e2e/version/version.spec.ts::lerna-version::--conventional-commits::should generate a changelog entry for conventional commits",
+    "why": "undeclared event difference at index 228"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:102",
+     "o": "fs.read.outside",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/results.jsonl|237:d3e087b4fd6142f7025ba89b805d49a7"
+    },
+    "fix_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:102",
+     "o": "fs.read.outside",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/results.jsonl|477:fece0d2ff7614b2c0cc4a9d7d6cf3cc0"
+    },
+    "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves PR #1411 cross-env-shell expansion and PATH resolution (stream=false)",
+    "why": "undeclared event difference at index 224"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:102",
+     "o": "fs.read.outside",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/results.jsonl|477:a27a98529c95f64d5c3d95b134179b82"
+    },
+    "fix_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:102",
+     "o": "fs.read.outside",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/results.jsonl|237:7e1f83135d3ad1d5734aa62788f9fdfa"
+    },
+    "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves PR #1411 cross-env-shell expansion and PATH resolution (stream=true)",
+    "why": "undeclared event difference at index 224"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:102",
+     "o": "fs.read.outside",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/results.jsonl|105:ccac39208dde62f837ce1462e69479d4"
+    },
+    "fix_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:102",
+     "o": "fs.read.outside",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/results.jsonl|170:2690e897d7116cf9005041587f622cab"
+    },
+    "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::applies package selection (--scope=foobar --include-dependencies), glob, ignores and delimiter to actual callbacks",
+    "why": "undeclared event difference at index 223"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:397",
+     "o": "fs.read.outside",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/results.jsonl|11:5e20b01e02ecfbe42ed4ce93ce7d3a22"
+    },
+    "fix_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:397",
+     "o": "fs.read.outside",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/results.jsonl|13:7d318ac634a6ec1851294de2e1209cfc"
+    },
+    "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::stops an active command and its descendants on EOF (shell=false)",
+    "why": "undeclared event difference at index 217"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:397",
+     "o": "fs.read.outside",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/results.jsonl|11:cdf0d851c7e1283ce60c24cc809683ee"
+    },
+    "fix_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:397",
+     "o": "fs.read.outside",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/results.jsonl|13:47d92e65934f39b05b87653172c055e0"
+    },
+    "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::stops an active command and its descendants on EOF (shell=true)",
+    "why": "undeclared event difference at index 217"
+   },
+   {
+    "baseline_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:448",
+     "o": "fs.read.outside",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/results.jsonl|4:6993570c88eee14a53a0f9c3e805e4eb"
+    },
+    "fix_event": {
+     "at": "e2e/watch/watch-lifecycle.spec.ts:448",
+     "o": "fs.read.outside",
+     "s": "fs",
+     "t": 0,
+     "v": "<tmp>/results.jsonl|5:4936120c019c9a4027f3376c19161c9b"
+    },
+    "nodeid": "e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::forwards Ctrl+C to an active command and stops queued work",
+    "why": "undeclared event difference at index 217"
+   }
+  ],
+  "need_repeat": [],
+  "passed": 92,
+  "stable_in_baseline": 107
+ },
+ "rule3": {
+  "count_defects": [],
+  "defects": [],
+  "exit_defects": [],
+  "false_green": [],
+  "variable": {}
+ }
+}

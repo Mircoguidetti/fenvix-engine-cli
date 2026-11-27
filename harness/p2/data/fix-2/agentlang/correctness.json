@@ -1,0 +1,154 @@
+{
+ "ok": false,
+ "repo": "agentlang",
+ "rule1": [
+  {
+   "changes": [],
+   "defects": [],
+   "rounds_base": 3,
+   "rounds_fix": 3,
+   "variable_class": [
+    "test/api/mcp.test.ts::MCP over Streamable HTTP::GET on the MCP endpoint is not allowed in stateless mode",
+    "test/api/mcp.test.ts::MCP over Streamable HTTP::workflow errors are returned as tool errors"
+   ],
+   "w": 2
+  },
+  {
+   "changes": [],
+   "defects": [],
+   "rounds_base": 3,
+   "rounds_fix": 3,
+   "variable_class": [
+    "test/api/mcp.test.ts::MCP over Streamable HTTP::GET on the MCP endpoint is not allowed in stateless mode",
+    "test/api/mcp.test.ts::MCP over Streamable HTTP::tools/call on an unexposed event is rejected",
+    "test/api/mcp.test.ts::MCP over Streamable HTTP::workflow errors are returned as tool errors"
+   ],
+   "w": 4
+  }
+ ],
+ "rule2": {
+  "allowed_declared_only": [],
+  "declared": [],
+  "defects": [
+   {
+    "baseline_event": {
+     "at": "src/api/http.ts:101",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "6000"
+    },
+    "fix_event": {
+     "at": "<deps>/@hono/node-server/dist/index.mjs:513",
+     "o": "setTimeout",
+     "s": "time",
+     "t": 0,
+     "v": "schedule:1000000"
+    },
+    "nodeid": "test/api/mcp.test.ts::MCP over Streamable HTTP::tools/call evaluates the event and returns its result",
+    "why": "undeclared event difference at index 10"
+   },
+   {
+    "baseline_event": {
+     "at": "src/api/http.ts:101",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "1019000"
+    },
+    "fix_event": {
+     "at": "<deps>/@hono/node-server/dist/index.mjs:513",
+     "o": "sched.timer",
+     "s": "sched",
+     "t": 0,
+     "v": "0/6:<deps>/@hono/node-server/dist/index.mjs:513#2"
+    },
+    "nodeid": "test/api/mcp.test.ts::MCP over Streamable HTTP::tools/call on an unexposed event is rejected",
+    "why": "undeclared event difference at index 50"
+   },
+   {
+    "baseline_event": {
+     "at": "<deps>/@hono/node-server/dist/index.mjs:513",
+     "o": "sched.timer",
+     "s": "sched",
+     "t": 0,
+     "v": "0/5:<deps>/@hono/node-server/dist/index.mjs:513#1"
+    },
+    "fix_event": {
+     "at": "src/api/http.ts:101",
+     "o": "Date.now",
+     "s": "time",
+     "t": 0,
+     "v": "16000"
+    },
+    "nodeid": "test/api/mcp.test.ts::MCP over Streamable HTTP::workflow errors are returned as tool errors",
+    "why": "undeclared event difference at index 28"
+   }
+  ],
+  "need_repeat": [],
+  "passed": 436,
+  "stable_in_baseline": 439
+ },
+ "rule3": {
+  "count_defects": [
+   {
+    "baseline": [
+     404,
+     439
+    ],
+    "count": "passed",
+    "fix": 385,
+    "kind": "plain_par",
+    "rep": 1,
+    "workers": 2
+   },
+   {
+    "baseline": [
+     0,
+     35
+    ],
+    "count": "failed",
+    "fix": 54,
+    "kind": "plain_par",
+    "rep": 1,
+    "workers": 2
+   },
+   {
+    "baseline": [
+     402,
+     433
+    ],
+    "count": "passed",
+    "fix": 439,
+    "kind": "plain_par",
+    "rep": 3,
+    "workers": 4
+   },
+   {
+    "baseline": [
+     6,
+     37
+    ],
+    "count": "failed",
+    "fix": 0,
+    "kind": "plain_par",
+    "rep": 3,
+    "workers": 4
+   }
+  ],
+  "defects": [],
+  "exit_defects": [
+   {
+    "baseline": [
+     1
+    ],
+    "fix": 0,
+    "kind": "plain_par",
+    "rep": 3,
+    "workers": 4
+   }
+  ],
+  "false_green": [],
+  "variable": {}
+ }
+}
