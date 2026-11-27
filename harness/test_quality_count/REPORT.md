@@ -83,18 +83,18 @@ search request, probe or candidate read (no data existed); none changes the deci
 
 ## Decision
 
-**KEEP READING: read 115, running 10, pain yes 4, U_R×N 24699.2, U_P×N 22580.0.**
+**KEEP READING: read 227, running 20, pain yes 10, U_R×N 24458.1, U_P×N 23397.5.**
 
 covered: GitHub Actions, tools stryker (JS/.NET/Scala), mutmut, cosmic-ray, PIT (Maven, Gradle), cargo-mutants, Infection, mutant, go-mutesting, gremlins, Mull, Muter, mutatest; not covered: other CI systems, private repositories, tools not listed.
 
-read 115, running 10, not-running 77, uncertain 28; pain yes 4, unknown 2, no 4; N 58715; U_R 0.42066 (U_R×N 24699.2), U_P 0.38457 (U_P×N 22580.0); whole frame read: no; truncated leaves: 2; incomplete leaves: 0; hand check: not passed.
+read 227, running 20, not-running 147, uncertain 60; pain yes 10, unknown 6, no 4; N 58715; U_R 0.41656 (U_R×N 24458.1), U_P 0.39849 (U_P×N 23397.5); whole frame read: no; truncated leaves: 2; incomplete leaves: 0; hand check: not passed.
 
 ## Discovery
 
 leaves 341, candidates 57499, unread hits on truncated leaves 1216, N 58715.
 DROP reachable via U_P at r >= 11275 (assumes no uncertain or unknown rows).
 
-Observed uncertain share 0.243; DROP still reachable within the frame: no.
+Observed uncertain share 0.264; DROP still reachable within the frame: no.
 
 | query | leaves | total_count | repos | only this query | unread hits | contribution to N | truncated |
 |---|---|---|---|---|---|---|---|
@@ -135,31 +135,39 @@ Truncated leaves: `B infection filename:infection.json` size:371..371 total 1608
 
 ## Funnel
 
-- candidates 57499 -> rows 150 -> excluded 35 (maintainer 1, stale 34) -> read 115
-- has-mutation-job 12, unresolved 2, tool-present-unlinked 26, no-mutation 75, error 0
-- running 10, configured-not-running 2, uncertain with a mutation job 0 (runs cap 0, unsupported 0)
-- duration read 10, duration pain 4
-- pain yes 4, unknown 2, no 4
+- candidates 57499 -> rows 300 -> excluded 73 (maintainer 2, stale 72) -> read 227
+- has-mutation-job 28, unresolved 6, tool-present-unlinked 51, no-mutation 142, error 0
+- running 20, configured-not-running 5, uncertain with a mutation job 3 (runs cap 2, unsupported 0)
+- duration read 20, duration pain 10
+- pain yes 10, unknown 6, no 4
 
-Pain unknown reasons (a repository can have several): history-error 2
+Pain unknown reasons (a repository can have several): candidate not hand-read 4, history-error 2
 
 ## Per tool (running repositories)
 
 | tool | running | every-change | scheduled | manual | other | median duration min (quartiles) | machine min per run (median) | wrapped |
 |---|---|---|---|---|---|---|---|---|
-| stryker | 4 | 1 | 3 | 0 | 0 | 2.7 (Q1 1.1, Q3 29.9) | 2.7 | 0 |
-| mutmut | 1 | 0 | 1 | 0 | 0 | 347.0 (one value) | 347.0 | 0 |
-| cargo-mutants | 3 | 1 | 1 | 1 | 0 | 38.3 (Q1 28.2, Q3 166.7) | 253.0 | 0 |
-| infection | 2 | 1 | 1 | 0 | 0 | 0.5 (Q1 0.4, Q3 0.6) | 0.5 | 0 |
+| stryker | 6 | 2 | 4 | 0 | 0 | 55.6 (Q1 1.9, Q3 117.1) | 55.6 | 0 |
+| mutmut | 2 | 0 | 2 | 0 | 0 | 209.0 (Q1 140.0, Q3 278.0) | 209.0 | 0 |
+| pitest | 1 | 1 | 0 | 0 | 0 | 1.7 (one value) | 1.7 | 0 |
+| cargo-mutants | 8 | 3 | 4 | 1 | 0 | 69.9 (Q1 22.5, Q3 203.2) | 162.3 | 0 |
+| infection | 3 | 2 | 1 | 0 | 0 | 0.6 (Q1 0.5, Q3 9.1) | 0.6 | 0 |
+| gremlins | 1 | 0 | 1 | 0 | 0 | 342.4 (one value) | 342.4 | 0 |
 
 ## Pain list
 
 | repository | tool | frequency | minutes | kind | date | quote / evidence |
 |---|---|---|---|---|---|---|
 | https://github.com/anesis-dev/anesis-cli | cargo-mutants | scheduled | 295.2 | duration | - | median of 8 runs, `.github/workflows/ci.yml` job `mutants` |
+| https://github.com/boredompeaks/perfume-store-backend | mutmut | scheduled | 71.0 | duration | - | median of 3 runs, `.github/workflows/mutation-weekly.yml` job `mutate` |
 | https://github.com/breimanntools/aaanalysis | mutmut | scheduled | 347.0 | duration | - | median of 10 runs, `.github/workflows/mutation_nightly.yml` job `nightly` |
+| https://github.com/erenmeren/alice | gremlins | scheduled | 342.4 | duration | - | median of 10 runs, `.github/workflows/nightly.yml` job `fuzz` |
 | https://github.com/ext-sakamoro/ALICE-Zip | cargo-mutants | every-change | 38.3 | duration | - | median of 10 runs, `.github/workflows/quality-deep.yml` job `mutants` |
+| https://github.com/JoaoPucci/ani-gui | cargo-mutants, stryker | scheduled | 360.3 | duration | - | median of 10 runs, `.github/workflows/mutation.yml` job `cargo-mutants` |
+| https://github.com/lucasreali/hive | cargo-mutants | every-change | 101.6 | duration | - | median of 10 runs, `.github/workflows/mutants-full.yml` job `windows` |
+| https://github.com/sandreialexandru/Smart-Heating-Control | stryker | every-change | 120.4 | duration | - | median of 10 runs, `.github/workflows/mutation.yml` job `card` |
 | https://github.com/ttu/emergency-supply-tracker | stryker | scheduled | 107.0 | duration | - | median of 6 runs, `.github/workflows/mutation-testing.yml` job `mutation-test` |
+| https://github.com/warpllm/warpllm | cargo-mutants | scheduled | 172.5 | duration | - | median of 10 runs, `.github/workflows/cron-weekly-cargo-mutants.yml` job `cargo-mutants` |
 
 ## Information (not pain, not counted)
 
@@ -169,25 +177,29 @@ Pain unknown reasons (a repository can have several): history-error 2
   - manji-0/rdra-ish-dsl issue:204: "CPU cost is high. Each mutant rebuilds and reruns the corpus, which takes minutes." https://github.com/manji-0/rdra-ish-dsl/issues/204
 - narrowing changes whose text mentions a timeout: 1
   - Halildeu/platform-web 940c4c4
-- configured-not-running: 2
+- configured-not-running: 5
+  - 3rikF/ConsoleProgress
+  - Syavne/d-OAuth-Server
   - clementefalcone/goya-ledger
   - kotteletfisk/mtogo
+  - tongxin779977/VectaHub
 - uses-action matches: 0
 - excluded maintainer repositories that run mutation testing in CI: 0
 
 ## Hand check (AC4)
 
-samples: pain-yes 4, running 10, not-running 10, tool-present-unlinked 10, rejected 10, uses-action 0; missing verdicts 44; failures none; rule fix required: no.
+samples: pain-yes 10, running 20, not-running 10, tool-present-unlinked 10, rejected 10, uses-action 0; missing verdicts 60; failures none; rule fix required: no.
 
-- pain-yes: anesis-dev/anesis-cli, breimanntools/aaanalysis, ext-sakamoro/ALICE-Zip, ttu/emergency-supply-tracker
-- running: DhirendraHudda98/ParkIndia, Gusto/baerly-storage, Halildeu/platform-web, Lex-Studios/Stellar-Spend, anesis-dev/anesis-cli, breimanntools/aaanalysis, eclipxe13/enum, ext-sakamoro/ALICE-Zip, manji-0/rdra-ish-dsl, ttu/emergency-supply-tracker
-- not-running: RedGarland/the-blue-fern-co-dispatches, danthespal/Backport, indonetsoft-acc/api, joshvern/citylens-web, loophp/phptree, lyse-labs/lyse, povio/ai-reviewer, priyamsinghjhs/kareshafaa, rowan-vr/memuki, triciaaleee/SPM-G6T5
-- tool-present-unlinked: AtyaLibraries/Atya.Templates.UiAutomation, Azure/aks-durable-agents, TOOleksandr-0101/TeleBlast, callstack/agent-device, civictechdc/dc-reentry-unlocked, coreyleavitt/sello, deniskorbakov/skeleton-php-docker, evelagin/evetis-wb-analytics, lml-layer-system/agent-buccet, luis-mc/dev-standards
-- rejected: gusto/baerly-storage|issue:142, gusto/baerly-storage|issue:84, halildeu/platform-web|issue:1086, halildeu/platform-web|issue:1096, halildeu/platform-web|issue:1178, halildeu/platform-web|issue:1179, halildeu/platform-web|issue:839, halildeu/platform-web|issue:937, lex-studios/stellar-spend|issue:1572, lex-studios/stellar-spend|issue:1576
+- pain-yes: JoaoPucci/ani-gui, anesis-dev/anesis-cli, boredompeaks/perfume-store-backend, breimanntools/aaanalysis, erenmeren/alice, ext-sakamoro/ALICE-Zip, lucasreali/hive, sandreialexandru/Smart-Heating-Control, ttu/emergency-supply-tracker, warpllm/warpllm
+- running: DhirendraHudda98/ParkIndia, Gusto/baerly-storage, Halildeu/platform-web, JoaoPucci/ani-gui, Lex-Studios/Stellar-Spend, NotPellew/Thalvi, SuarezPM/kitty-code, anesis-dev/anesis-cli, boredompeaks/perfume-store-backend, breimanntools/aaanalysis, codeigniter4/shield, eclipxe13/enum, erenmeren/alice, ext-sakamoro/ALICE-Zip, lucasreali/hive, manji-0/rdra-ish-dsl, psyHFM/Staff-Engagement-POC, sandreialexandru/Smart-Heating-Control, ttu/emergency-supply-tracker, warpllm/warpllm
+- not-running: BestDevOfc/CTFs_and_hacking_solutions, CSCI-435-SE/excalidraw, clementefalcone/goya-ledger, ensj/trade-blotter, hongyime/sgConnectSphere2026, jmandel/smart-permission-tickets-ri, noam0127/beagu-index, radarlabs/radar-sdk-js, shivyadavus/open-kioku, triciaaleee/SPM-G6T5
+- tool-present-unlinked: Azure/aks-durable-agents, Raftersecurity/rafter-secrets, Shehabhub/ORVION, TrillionniumFoundation/HeptaKernel, Vaddi-Srisanth/Ion_IDE, assertpy/assertpy, evelagin/evetis-wb-analytics, lecomputeur/vibez, luis-mc/dev-standards, unicity-sphere/sphere-sdk
+- rejected: gusto/baerly-storage|issue:84, halildeu/platform-web|issue:1086, halildeu/platform-web|issue:1097, halildeu/platform-web|issue:937, lex-studios/stellar-spend|issue:1085, lex-studios/stellar-spend|issue:1226, lex-studios/stellar-spend|issue:1572, lex-studios/stellar-spend|issue:1576, lex-studios/stellar-spend|issue:1579, lex-studios/stellar-spend|issue:833
 
 ## Budget
 
 - chunk 1: 150 candidates, 2573 requests, 17.15 per candidate, 129.0 per running repository, X-RateLimit-Remaining {'core': 3646}, 102.7 min, methods ['GET'], stopped None
+- chunk 2: 150 candidates, 2721 requests, 18.14 per candidate, 66.2 per running repository, X-RateLimit-Remaining {'core': 698}, 127.2 min, methods ['GET'], stopped None
 - pool: 58715, requests per candidate observed 17.15, requests per running repository observed 129.0, X-RateLimit-Remaining observed {'core': 3646}, fits 24 h: no
 
 ## Limits
