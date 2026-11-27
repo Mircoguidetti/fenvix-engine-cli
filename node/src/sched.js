@@ -97,6 +97,133 @@ function installProcess(patcher) {
     'generateKey', 'generatePrime', 'checkPrime', 'hkdf', 'sign', 'verify']);
   trackWork(patcher, require('node:zlib'), ['deflate', 'deflateRaw', 'inflate', 'inflateRaw', 'gzip', 'gunzip', 'unzip',
     'brotliCompress', 'brotliDecompress', 'zstdCompress', 'zstdDecompress']);
+  installNativeWork(patcher);
+}
+
+// Native addons whose callback-style calls run on the libuv thread pool and leave no active resource (so pending()
+// cannot see them): each listed method of the addon's classes counts as pending work until its callback runs, as for
+// crypto and zlib above. Found on alakajam (P3, founder decision D2 = A, 2026-11-27): a node-sqlite3 query in flight
+// looked idle, so virtual time jumped to tarn's 60 s acquire timeout and the 5 s runner deadline fired first.
+// harness/p3_flips/NATIVE.md lists the other addons of the measured repositories and why they are not here.
+const NATIVE_WORK = [
+  {
+    name: 'node-sqlite3', // npm `sqlite3` (better-sqlite3 is synchronous; its addon has no OPEN_READWRITE)
+    match: (b) => typeof b.Database === 'function' && typeof b.Statement === 'function' && typeof b.OPEN_READWRITE === 'number',
+    classes: [['Database', ['close', 'exec', 'wait', 'loadExtension']],
+      ['Statement', ['bind', 'get', 'run', 'all', 'each', 'reset', 'finalize']], ['Backup', ['step', 'finish']]],
+    // a statement that failed to prepare reports the error to its own callback (or as an 'error' event) and never
+    // calls back the calls queued on it: their pending work ends with that error
+    failing: 'Statement',
+  },
+];
+
+const OPEN = new WeakMap(); // native object -> Set of release functions of its calls in flight
+function releaseAll(o) {
+  const s = o && OPEN.get(o);
+  if (!s) return;
+  OPEN.delete(o);
+  for (const r of [...s]) r();
+}
+
+/** trackWork for the methods of a native class: each call in flight is also remembered on its object (releaseAll). */
+function trackOwned(patcher, P, names) {
+  for (const n of names) {
+    const real = P[n];
+    if (typeof real !== 'function' || real.__detjsWork) continue;
+    const w = function (...a) {
+      const i = a.length - 1;
+      if (i < 0 || typeof a[i] !== 'function') return real.apply(this, a);
+      const cb = a[i];
+      const self = this;
+      let done = false;
+      const release = () => {
+        if (done) return;
+        done = true;
+        work -= 1;
+        const s = OPEN.get(self);
+        if (s) s.delete(release);
+      };
+      a[i] = function (...r) { release(); return cb.apply(this, r); };
+      wrapEmit(P);
+      work += 1;
+      if (self && typeof self === 'object') { let s = OPEN.get(self); if (!s) OPEN.set(self, (s = new Set())); s.add(release); }
+      try {
+        return real.apply(this, a);
+      } catch (e) {
+        release();
+        throw e;
+      }
+    };
+    Object.defineProperty(w, 'name', { value: real.name, configurable: true });
+    Object.defineProperty(w, '__detjsWork', { value: true });
+    patcher.set(P, n, w);
+  }
+}
+
+// The failing class's prototype gets its emit from EventEmitter after the addon loaded (node-sqlite3's lib copies
+// it): its 'error' event is wrapped at the first call tracked on it (wrapEmit), not at load.
+const EMIT_ON = new WeakMap(); // prototype -> patcher
+function wrapEmit(P) {
+  const patcher = EMIT_ON.get(P);
+  if (!patcher) return;
+  const emit = P.emit;
+  if (typeof emit !== 'function' || emit.__detjsWork) return;
+  const e2 = function emitTracked(ev, ...a) { if (ev === 'error') releaseAll(this); return emit.call(this, ev, ...a); };
+  Object.defineProperty(e2, '__detjsWork', { value: true });
+  patcher.set(P, 'emit', e2);
+}
+
+/** The failing class: its constructor's callback with an error, or its 'error' event, ends its calls in flight. */
+function releaseOnError(patcher, b, c) {
+  const Real = b[c];
+  if (!Real || Real.__detjsWorkCtor) return;
+  if (Real.prototype) EMIT_ON.set(Real.prototype, patcher);
+  const P = new Proxy(Real, {
+    construct(target, args, nt) {
+      let o = null;
+      const i = args.length - 1;
+      if (i >= 0 && typeof args[i] === 'function') {
+        const cb = args[i];
+        args = [...args];
+        args[i] = function (err, ...r) { if (err) releaseAll(o); return cb.call(this, err, ...r); };
+      }
+      o = Reflect.construct(target, args, nt === P ? target : nt);
+      return o;
+    },
+    get(t, k, r) { return k === '__detjsWorkCtor' ? true : Reflect.get(t, k, r); },
+  });
+  patcher.set(b, c, P);
+}
+
+function nativeWork(patcher, b) {
+  for (const n of NATIVE_WORK) {
+    if (!n.match(b)) continue;
+    for (const [c, names] of n.classes) if (b[c] && b[c].prototype) trackOwned(patcher, b[c].prototype, names);
+    if (n.failing) releaseOnError(patcher, b, n.failing);
+  }
+}
+
+function installNativeWork(patcher) {
+  const Module = require('node:module');
+  const realLoad = Module._load;
+  if (realLoad.__detjsNativeWork) return;
+  const w = function _load(request, ...rest) {
+    const r = realLoad.call(this, request, ...rest);
+    if (typeof request === 'string' && request.endsWith('.node') && r && typeof r === 'object') {
+      try { nativeWork(patcher, r); } catch { /* never break the load */ }
+    }
+    return r;
+  };
+  for (const k of Reflect.ownKeys(realLoad)) {
+    if (['length', 'name', 'prototype', 'arguments', 'caller'].includes(k)) continue;
+    try { Object.defineProperty(w, k, Object.getOwnPropertyDescriptor(realLoad, k)); } catch { /* ignore */ }
+  }
+  Object.defineProperty(w, '__detjsNativeWork', { value: true });
+  patcher.set(Module, '_load', w);
+  // already loaded (an earlier file of this process)
+  for (const [file, mod] of Object.entries(require.cache)) {
+    if (file.endsWith('.node') && mod && mod.exports && typeof mod.exports === 'object') { try { nativeWork(patcher, mod.exports); } catch { /* ignore */ } }
+  }
 }
 
 /** A worker is busy from its start until it is first heard from, and from a message posted to it until its next message. */
@@ -156,7 +283,7 @@ function pendingByNames() {
   return out;
 }
 
-let work = 0; // thread-pool jobs in flight (crypto, zlib callback forms)
+let work = 0; // thread-pool jobs in flight (crypto, zlib callback forms, NATIVE_WORK addons)
 let held = 0; // completions src/ioorder.js holds for ordering: delivered later, so still pending
 function setHeld(n) { held = n; }
 
