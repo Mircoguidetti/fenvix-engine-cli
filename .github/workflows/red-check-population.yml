@@ -41,10 +41,15 @@ jobs:
         with: {python-version: "3.12"}
       - run: pip install pyyaml==6.0.2
       - name: Request files of this run
+        env:
+          REQ: ${{ github.event.inputs.request }}
         run: |
           mkdir -p "$RUNNER_TEMP/req"
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            cp "${{ github.event.inputs.request }}" "$RUNNER_TEMP/req/"; ls -1 "$RUNNER_TEMP/req"; exit 0
+            # The input reaches the shell only as data, and only a request file of this harness is accepted.
+            case "$REQ" in "$RC_DIR"/requests/*.json) ;; *) echo "not a request file: $REQ"; exit 1;; esac
+            case "$REQ" in *..*) echo "not a request file: $REQ"; exit 1;; esac
+            cp -- "$REQ" "$RUNNER_TEMP/req/"; ls -1 "$RUNNER_TEMP/req"; exit 0
           fi
           before="${{ github.event.before }}"
           if [ -z "$before" ] || [ "$before" = "0000000000000000000000000000000000000000" ]; then

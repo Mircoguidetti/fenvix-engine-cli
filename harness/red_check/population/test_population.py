@@ -5,6 +5,7 @@ Each test states its card: protects=<observable>; fails_when=<wrong result>; no_
 from __future__ import annotations
 
 import base64
+import collections
 import datetime as dt
 import json
 import subprocess
@@ -383,3 +384,77 @@ def test_select_script_is_byte_reproducible(tmp_path):
         subprocess.run([sys.executable, str(d / "select_repos.py")], check=True, capture_output=True)
         outs.append((d / "selected.json").read_bytes())
     assert outs[0] == outs[1] and json.loads(outs[0])["n_selected"] == 3
+
+
+# ---------------------------------------------------------------- review fixes (2026-11-27)
+
+def test_30_repository_stop_checked_before_each_pr():
+    """protects=PREREG 2.4: once 30 repositories have been read, no further PR is read, even of the 30th repository;
+    fails_when=the stop is checked only between repositories (the 30th is read to its 40th PR); no_claim=none."""
+    pool = [p for i in range(30) for p in _pool(f"r{i:02d}/x", 3)]
+    prs = {(p["repo"], p["number"]): {"head": f"{p['repo']}#{p['number']}", "created_at": p["created_at"], "jobs": []}
+           for p in pool}
+    repos = {p["repo"]: {"fork": False, "archived": False, "private": False, "created_at": "2020-01-01T00:00:00Z"}
+             for p in pool}
+    state, rows = C.new_state(pool), []
+    assert C.collect(FakeAPI(repos, prs, {}, {}), state, pool, rows.append) == "30 repositories read"
+    by_repo = collections.Counter(r["repo"] for r in rows)
+    assert len(by_repo) == 30 and sorted(by_repo.values()) == [1] + [3] * 29
+
+
+def test_resume_never_reads_a_recorded_url_again():
+    """protects=a PR already in prs.jsonl.gz is not read again on resume (no duplicate rows, no double-counted
+    requests); fails_when=the checkpoint alone decides; no_claim=none."""
+    pool = _pool("a/x", 3)
+    prs = {(p["repo"], p["number"]): {"head": f"h{p['number']}", "created_at": p["created_at"], "jobs": []} for p in pool}
+    repos = {"a/x": {"fork": False, "archived": False, "private": False, "created_at": "2020-01-01T00:00:00Z"}}
+    rows = []
+    C.collect(FakeAPI(repos, prs, {}, {}), C.new_state(pool), pool, rows.append, seen={pool[2]["url"], pool[1]["url"]})
+    assert [r["number"] for r in rows] == [1]
+
+
+def test_selection_counts_unique_prs_not_rows():
+    """protects=a duplicated qualifying row cannot push a repository over the threshold; fails_when=rows are counted;
+    no_claim=none."""
+    rows = _rows("a/a", 2)
+    assert S.select(rows + rows)["n_selected"] == 0
+
+
+def test_max_minutes_is_a_chunk_stop():
+    """protects=the deadline stops the chunk without a final stop (the next chunk resumes); fails_when=it is stored
+    as the final stop or ignored; no_claim=none."""
+    pool = _pool("a/x", 2)
+    repos = {"a/x": {"fork": False, "archived": False, "private": False, "created_at": "2020-01-01T00:00:00Z"}}
+    state, rows = C.new_state(pool), []
+    assert C.collect(FakeAPI(repos, {}, {}, {}), state, pool, rows.append, deadline=0.0) == "max_minutes"
+    assert state["stopped"] is None and rows == []
+
+
+def test_workflow_path_and_ref_are_url_quoted_and_unparseable_reason():
+    """protects=a workflow path with a space or '#' is read as one path (not cut or refused), and an unparseable
+    workflow says so; fails_when=the path is interpolated raw; no_claim=GitHub's handling of every character."""
+    api = FakeAPI({}, {}, {}, {"b0h1": "not: [a mapping with jobs"})
+    st, wf, reason = C._yaml(api, "o/r", ".github/workflows/my ci#1.yml", "b0h1")
+    assert api.paths[-1] == "repos/o/r/contents/.github/workflows/my%20ci%231.yml?ref=b0h1"
+    assert (st, wf, reason) == (200, None, "workflow_unparseable")
+
+
+def test_oracle_newest_completed_run_of_the_same_path():
+    """protects=2.8: the newest completed push run of the same workflow path (any @ref suffix ignored) and the job of
+    the same display name; fails_when=an in-progress or other-path run is used, or a missing job counts; no_claim=none."""
+    class O:
+        n_requests = 0
+
+        def get_json(self, path):
+            if "/jobs" in path:
+                rid = int(path.split("/runs/")[1].split("/")[0])
+                return 200, {"jobs": [{"id": rid * 10, "name": "test (18.x)", "conclusion": "failure"}]}
+            return 200, {"workflow_runs": [
+                {"id": 1, "status": "completed", "path": ".github/workflows/ci.yml@refs/heads/main", "created_at": "2026-11-01"},
+                {"id": 2, "status": "completed", "path": ".github/workflows/ci.yml", "created_at": "2026-11-02"},
+                {"id": 3, "status": "in_progress", "path": ".github/workflows/ci.yml", "created_at": "2026-11-03"},
+                {"id": 4, "status": "completed", "path": ".github/workflows/other.yml", "created_at": "2026-11-04"}]}
+    pr = {"url": "u", "repo": "o/r", "B0": "b0", "workflow_path": ".github/workflows/ci.yml", "job_name": "test (18.x)"}
+    out = C.oracle(O(), pr)
+    assert (out["run_id"], out["job_id"], out["conclusion"], out["has_job"]) == (2, 20, "failure", True)
+    assert C.oracle(O(), {**pr, "job_name": "lint"})["has_job"] is False

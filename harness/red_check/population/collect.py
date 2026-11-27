@@ -19,6 +19,7 @@ import hashlib
 import json
 import sys
 import time
+import urllib.parse
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -46,7 +47,7 @@ def read_jsonl(p: Path) -> list[dict]:
 def _yaml(src, repo: str, path: str, ref: str):
     """(status, parsed workflow | None, reason | None)."""
     import yaml
-    st, d = src.get_json(f"repos/{repo}/contents/{path}?ref={ref}")
+    st, d = src.get_json(f"repos/{repo}/contents/{urllib.parse.quote(path, safe='/')}?ref={urllib.parse.quote(ref, safe='')}")
     if st != 200:
         return st, None, ("job_absent_at_base" if st == 404 else "workflow_unreadable")
     try:
@@ -60,7 +61,8 @@ def _yaml(src, repo: str, path: str, ref: str):
 
 
 def read_pr(src, pr: dict, store_log=None) -> dict:
-    """Run 2.4 steps 1-6 for one pool PR. ``store_log(job_id, body, runner, idx)`` keeps the log (excerpt, artifact)."""
+    """Run 2.4 steps 1-6 for one pool PR. ``store_log(job_id, body, text, idx, candidate)`` keeps the log (excerpt,
+    artifact)."""
     repo, n = pr["repo"], pr["number"]
     out = {k: pr.get(k) for k in ("url", "repo", "number", "family", "families", "created_at")}
     st, p = src.get_json(f"repos/{repo}/pulls/{n}")
@@ -124,7 +126,8 @@ def read_pr(src, pr: dict, store_log=None) -> dict:
     _st, head_wf, _r = _yaml(src, repo, path, out["head_sha"])
     st, wf, reason = _yaml(src, repo, path, b0)
     if reason:
-        return {**out, "verdict": reason, "reason": f"workflow at B0 HTTP {st}"}
+        why = "YAML is not a mapping with a jobs mapping" if reason == "workflow_unparseable" else f"HTTP {st}"
+        return {**out, "verdict": reason, "reason": f"workflow at B0: {why}"}
     found, key = R.match_job(wf, q["name"] or "")
     if found != R.FOUND:
         return {**out, "verdict": found, "reason": key}
@@ -161,8 +164,11 @@ def new_state(pool: list[dict]) -> dict:
             "repos_read": 0, "requests": 0, "stopped": None}
 
 
-def collect(src, state: dict, pool: list[dict], emit, store_log=None, deadline: float | None = None) -> str:
-    """Advance ``state``; ``emit(row)`` records each PR row. Returns why this chunk stopped."""
+def collect(src, state: dict, pool: list[dict], emit, store_log=None, deadline: float | None = None,
+            seen: set | None = None) -> str:
+    """Advance ``state``; ``emit(row)`` records each PR row. ``seen``: URLs already in prs.jsonl.gz (never read again).
+    Returns why this chunk stopped."""
+    seen = seen or set()
     base = src.n_requests
     used = lambda: state["requests"] + src.n_requests - base  # noqa: E731
     by_repo: dict[str, list[dict]] = {}
@@ -211,12 +217,12 @@ def collect(src, state: dict, pool: list[dict], emit, store_log=None, deadline: 
                 else:
                     eligible.append(p)
             for p in eligible[:MAX_PRS_PER_REPO]:
-                if p["url"] in rs["done_urls"]:
+                if p["url"] in rs["done_urls"] or p["url"] in seen:
                     continue
-                for check in ("cap", "low", "time"):
-                    why = _chunk_stop(check, used(), src, deadline)
+                for check in ("repos", "cap", "low", "time"):
+                    why = _chunk_stop(check, used(), src, deadline, state)
                     if why:
-                        if check == "cap":
+                        if check in ("repos", "cap"):
                             state["stopped"] = why
                         return why
                 before = src.n_requests
@@ -233,7 +239,9 @@ def collect(src, state: dict, pool: list[dict], emit, store_log=None, deadline: 
         state["requests"] = used()
 
 
-def _chunk_stop(check: str, used: int, src, deadline) -> str | None:
+def _chunk_stop(check: str, used: int, src, deadline, state: dict | None = None) -> str | None:
+    if check == "repos" and state is not None and state["repos_read"] >= MAX_REPOS:
+        return f"{MAX_REPOS} repositories read"
     if check == "cap" and used >= MAX_REQUESTS:
         return f"{MAX_REQUESTS} requests made"
     if check == "low" and src.low():
@@ -295,18 +303,22 @@ def main(argv: list[str]) -> int:
             print(f"already stopped: {state['stopped']}")
             return 0
         deadline = t0 + 60 * req["max_minutes"] if req.get("max_minutes") else None
-        n = [0]
-        with gzip.open(res / "prs.jsonl.gz", "at") as f:
-            def emit(row):
-                row["chunk"] = req["chunk"]
-                f.write(json.dumps(row, sort_keys=True) + "\n")
-                f.flush()
-                n[0] += 1
-            try:
-                why = collect(src, state, pool, emit, Store(res, HERE / "logs"), deadline)
-            finally:
-                cp.write_text(json.dumps(state, indent=1, sort_keys=True) + "\n")
-        why = f"{why}; {n[0]} PR rows"
+        rows: list[dict] = []
+        seen = {r["url"] for r in read_jsonl(res / "prs.jsonl.gz")}
+
+        def emit(row):
+            row["chunk"] = req["chunk"]
+            rows.append(row)
+        try:
+            why = collect(src, state, pool, emit, Store(res, HERE / "logs"), deadline, seen)
+        finally:
+            # The chunk's rows and its checkpoint are written together, at its end: a chunk killed before this point
+            # leaves both as they were, and the next chunk reads the same PRs again (nothing duplicated or lost).
+            with gzip.open(res / "prs.jsonl.gz", "at") as f:
+                for row in rows:
+                    f.write(json.dumps(row, sort_keys=True) + "\n")
+            cp.write_text(json.dumps(state, indent=1, sort_keys=True) + "\n")
+        why = f"{why}; {len(rows)} PR rows"
     with open(res / "chunks.jsonl", "a") as f:
         f.write(json.dumps({"chunk": req["chunk"], "kind": req["kind"], "requests": src.n_requests,
                             "remaining": src.remaining, "limit": src.limit, "reset": src.reset,

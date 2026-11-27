@@ -23,7 +23,7 @@ def select(rows: list[dict]) -> dict:
         names.setdefault(k, r["repo"])
         if r["verdict"] == "qualifying":
             qual.setdefault(k, []).append(r)
-    counts = {k: len(v) for k, v in qual.items()}
+    counts = {k: len({r["url"] for r in v}) for k, v in qual.items()}  # unique PRs, never rows
     eligible = sorted((k for k, c in counts.items() if c >= MIN_COUNT), key=lambda k: (-counts[k], k))
     chosen = eligible[:N_REPOS]
     repos = []
