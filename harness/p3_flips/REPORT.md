@@ -28,9 +28,10 @@ Rules as built:
   `DETJS_CHILD_PACE_MS` overrides the bound, `0` turns it off. Longer timers and other tests stay virtual.
 - Native work (`src/sched.js` `NATIVE_WORK`): node-sqlite3's callback calls (Database close / exec / wait /
   loadExtension, Statement bind / get / run / all / each / reset / finalize, Backup step / finish) count as pending
-  until their callback runs; `each` with only a row callback gets a completion callback; a statement that fails in
-  its constructor or prepare is not counted; a call still in flight when its test ends counts through the next test
-  and is released at its end.
+  until their callback runs (`each`: its completion callback, an added one when it has only a row callback, or its
+  row callback called with an error); a statement whose constructor or prepare callback gets an error is not counted
+  from then on; a call still in flight when a test ends keeps counting for up to 3 s of real time, then stops (a call
+  that never calls back, started by a test, a hook or module scope, costs at most that).
 
 Test (b) passes from b6ec7638 on (CHANGELOG "Fixed"; harness/det_host_values/REPORT.md section 8).
 

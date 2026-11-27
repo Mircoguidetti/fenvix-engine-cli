@@ -685,7 +685,11 @@ const MAX_DEFERRALS = 1000;
 const SLOW_POLL_MS = 25;
 // P3 timers P2: timers up to this delay (a polling interval) of a test that started a child run at real pace
 // (founder decision D1 = A: 1000 ms); DETJS_CHILD_PACE_MS overrides it, 0 turns the pacing off.
-const CHILD_PACE_MS = (() => { const v = Number(process.env.DETJS_CHILD_PACE_MS); return process.env.DETJS_CHILD_PACE_MS !== undefined && Number.isFinite(v) && v >= 0 ? v : 1000; })();
+const CHILD_PACE_MS = (() => {
+  const raw = process.env.DETJS_CHILD_PACE_MS; // unset or empty: 1000; a number >= 0: that bound (0: no timer is paced)
+  const v = raw === undefined || raw.trim() === '' ? NaN : Number(raw);
+  return Number.isFinite(v) && v >= 0 ? v : 1000;
+})();
 // set by src/ioorder.js: whether an operation of the running test that just started (a file operation, a connection
 // waiting for its first data) is still pending (the grace of the slow mode)
 let freshIO = null;
