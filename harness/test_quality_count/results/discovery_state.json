@@ -122,18 +122,34 @@
    "stack": []
   },
   "B infection filename:composer.json": {
-   "done": false,
-   "leaves": 7,
-   "nodes": 22,
+   "done": true,
+   "leaves": 16,
+   "nodes": 31,
    "root_incomplete": false,
    "root_total": 7264,
+   "stack": []
+  },
+  "B infection filename:infection.json": {
+   "done": false,
+   "leaves": 2,
+   "nodes": 14,
+   "root_incomplete": false,
+   "root_total": 6232,
    "stack": [
     [
-     2345,
-     2735
+     294,
+     390
     ],
     [
-     2736,
+     391,
+     781
+    ],
+    [
+     782,
+     1562
+    ],
+    [
+     1563,
      3125
     ],
     [
