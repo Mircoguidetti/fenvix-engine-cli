@@ -97,11 +97,24 @@ def analyse(repo):
             r["newly_diverged"] = len(new)
             r["newly_diverged_in_rerun_files"] = sum(1 for k in new if k.split("::", 1)[0] in files)
             r["rerun_files_seen_with_baseline_engine"] = tuple(r["rerun_files"] or []) in base_rerun_sets
+        # rule 1 over all same-boot rounds, explained as explain_rule1.py does but with every baseline-engine round
+        rr = tuple(r["round"] for r in per["fix-1"])
+        r1 = correctness.rule1(dirs["base-b"], dirs["fix-1"], n, rounds=rr)
+        union = {}
+        for name in ("baseline", "base-b"):
+            sets, _ = correctness.class_sets(dirs[name], n, tuple(r["round"] for r in per[name]))
+            for k, st in sets.items():
+                union.setdefault(k, set()).update(st)
+        unexpl = [ch for ch in r1["changes"] if not (len(union.get(ch["nodeid"], ())) > 1 and set(ch["fix"]) <= union[ch["nodeid"]])]
+        gain = sum(1 for ch in unexpl if "diverged" in ch["fix"] and "diverged" not in union.get(ch["nodeid"], ()))
+        lose = sum(1 for ch in unexpl if "diverged" not in ch["fix"] and "diverged" in ch["baseline"])
         fix = [r["diverged"] for r in per["fix-1"]]
         res["w"][n] = {
             "rounds": {k: [{x: y for x, y in r.items() if x != "_div"} for r in v] for k, v in per.items()},
             "baseline_engine_range_all": [lo, hi], "baseline_engine_range_same_boot": [lo_b, hi_b],
             "fix_range": [min(fix), max(fix)],
+            "rule1_rounds": len(rr), "rule1_changes": len(r1["changes"]), "rule1_unexplained": len(unexpl),
+            "rule1_unexplained_gain_diverged": gain, "rule1_unexplained_lose_diverged": lose,
             "fix_rounds_above_baseline_range_same_boot": sum(1 for x in fix if x > hi_b),
             "fix_rounds_above_baseline_range_all": sum(1 for x in fix if x > hi),
             "fix_rounds_below_baseline_range_same_boot": sum(1 for x in fix if x < lo_b),
@@ -120,7 +133,9 @@ def main(argv=None):
             print(f"{o['repo']} w{n}: diverged baseline engine {x['baseline_engine_range_all']} (same boot "
                   f"{x['baseline_engine_range_same_boot']}), fix {x['fix_range']}, fix rounds above same-boot range "
                   f"{x['fix_rounds_above_baseline_range_same_boot']}/{len(x['rounds']['fix-1'])}, below "
-                  f"{x['fix_rounds_below_baseline_range_same_boot']}")
+                  f"{x['fix_rounds_below_baseline_range_same_boot']}; rule 1 over {x['rule1_rounds']} rounds: changes "
+                  f"{x['rule1_changes']}, unexplained {x['rule1_unexplained']} (gain diverged {x['rule1_unexplained_gain_diverged']}, "
+                  f"lose {x['rule1_unexplained_lose_diverged']})")
             for k in ("baseline", "base-b", "fix-1"):
                 for r in x["rounds"][k]:
                     extra = ""

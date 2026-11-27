@@ -107,6 +107,89 @@ no test becomes `identical` falsely. Placement checks are clean on every fix-1 p
 file started after its lane predecessor ended), and the hazards are the same as the base runs except one run each in
 ironcurtain (r2 w4: 9 → 8) and drydock (r1 w4: 0 → 1).
 
+## D4 = B: three more rounds per engine on codex-multi-auth and ironcurtain
+
+Rounds 4, 5 and 6 per engine, alternating (base, fix, base, ...), on the same boot `591ebcd0`, with nothing else timed on
+the machine (26 Nov 23:2x to 27 Nov 03:31 UTC). Analysis: `d4.py --repo codex-multi-auth --repo ironcurtain --json
+data/fix-1/D4.json`. "Baseline engine" ranges below are over its 6 same-boot rounds (`data/base-b`); the 3 first-boot
+rounds (`data/baseline`) are given where they widen the range.
+
+### Verify `diverged` per round
+
+| repo | w | baseline engine, same boot (all 9 rounds) | fix-1, 6 rounds | fix rounds above the same-boot range |
+|---|---|---|---|---|
+| codex-multi-auth | 2 | 1275-1362 (1275-1363) | 1342-1371 | 2 / 6 |
+| codex-multi-auth | 4 | 1314-1371 | 1371-1401 | 5 / 6 |
+| ironcurtain | 2 | 1007-1027 (1007-1041) | 1026-1039 | 5 / 6 |
+| ironcurtain | 4 | 995-1034 (995-1044) | 1021-1035 | 1 / 6 |
+
+No fix round is below the baseline engine's range on any of the four.
+
+One event explains the largest fix round: in fix round 5 every one of the 43 tests of
+`test/persisted-api-capabilities.test.ts` is `diverged`, at w2 and at w4. The cause is in that round's serial run
+`S5` (w1, where the C2 code is not installed): its header records a run input file `<tmp>/api-capability-probes.json`
+(413 bytes) read outside any test by that test file, which no other serial run of either engine records; verify then
+reports every test of the file as `diverged` ("run input file ... differs ... vs <not recorded>"). Without that one file
+the counts are:
+
+| repo | w | baseline engine, 6 rounds | fix-1, 6 rounds | fix rounds above |
+|---|---|---|---|---|
+| codex-multi-auth | 2 | 1268-1358 | 1328-1354 | 0 / 6 |
+| codex-multi-auth | 4 | 1306-1364 | 1358-1377 | 4 / 6 |
+
+### Rule 1 over 6 rounds (`d4.py`, explained the same way as `explain_rule1.py`, over all 9 baseline-engine rounds)
+
+| repo | w | changes | unexplained | of which gain `diverged` / lose it |
+|---|---|---|---|---|
+| codex-multi-auth | 2 | 74 | 56 | 46 / 1 |
+| codex-multi-auth | 4 | 76 | 62 | 49 / 1 |
+| ironcurtain | 2 | 5 | 3 | 2 / 0 |
+| ironcurtain | 4 | 13 | 12 | 2 / 0 |
+
+On codex-multi-auth, 28 (w2) and 27 (w4) of the gains are the round-5 file above. Of the rest, almost all are
+`diverged` in exactly 1 of the 6 fix rounds (w2: 39 of 46 gains, w4: 40 of 49, including the round-5 file), and their
+baseline class is `not-proven` (`api` or `io`), never `identical`: no test moves to or from `identical`.
+
+### Finding (not noise)
+
+On ironcurtain the shift is inside the baseline engine's range at w4, and inside its first-boot range at w2. On
+codex-multi-auth at w4 it stays one-sided beyond the baseline engine's own same-boot range even without the round-5
+event: 4 of 6 fix rounds above it, median about +15 `diverged` tests of 8662 (fix 1366-1370 middle pair against
+1345-1360). Under D4 this is reported as a finding for the coordinator: to fix, or for the founder to accept. What it is:
+tests whose class with the baseline engine is `not-proven` reach `diverged` in one round at the fix; the direction is
+the safe one (no test becomes `identical`). The mechanism is not proven; the likely one is the one stated above (more
+overlap in real time between files of different lanes).
+
+### Wall time and serial re-runs caused by the newly diverged tests
+
+| repo | E best median, 3 rounds base → fix1 | E best median, 6 rounds base → fix1 |
+|---|---|---|
+| codex-multi-auth | 159.75 → 174.63 | 167.81 → 157.10 |
+| ironcurtain | 97.35 → 89.36 | 84.37 → 86.22 |
+
+(`table.py compare data/base-b data/fix-1`; the cold rounds are unchanged: codex 320.46 → 202.06, ironcurtain 148.09
+→ 117.53.) The 159.75 → 174.63 of the first 3 rounds does not hold over 6.
+
+Serial re-runs caused by the newly diverged tests: 0 per repository and w. The measured commands do not use
+`--det-cache`, so a `diverged` verdict re-runs nothing; the only re-run in a parallel run is the one-lane re-run of the
+files a hazard names (`meta.hazard_rerun.files`), and none of the newly diverged tests (per fix round, against all 9
+baseline-engine rounds) is in a re-run file. Hazard re-run files per round:
+
+| repo | w | baseline engine r1-r6 | fix-1 r1-r6 |
+|---|---|---|---|
+| codex-multi-auth | 2 | 2, 0, 0, 0, 0, 0 | 2, 0, 0, 0, 0, 0 |
+| codex-multi-auth | 4 | 4, 0, 0, 0, 0, 0 | 4, 0, 0, 0, 0, 0 |
+| ironcurtain | 2 | 42, 26, 0, 0, 0, 0 | 42, 26, 0, 0, 0, 0 |
+| ironcurtain | 4 | 53, 11, 0, 0, 2, 0 | 53, 10, 0, 2, 0, 0 |
+
+The seconds of these re-runs are not in the timed rounds' traces (no per-file or re-run time is recorded there). The
+only measured figure is Phase B (`data/phaseB/codex-multi-auth/phases-summary.json`, one w4 run of the baseline engine):
+4 files, 1.98 s. ironcurtain has no Phase B data.
+
+One wall time stands out: ironcurtain fix round 4 w4, par 119.50 s, against 73.43-86.93 for the other rounds of both
+engines after round 2. It is the round with a 2-file hazard re-run; the baseline engine's round 5 also had one and took
+86.93 s. The cause is not known.
+
 ## Changes to proof fields, tests and tools (each on its own line)
 
 - `meta.parallel.placement.deviations`: the false "lane predecessor ... died" notes are gone (the `enter()` fix): a
@@ -116,4 +199,5 @@ ironcurtain (r2 w4: 9 → 8) and drydock (r1 w4: 0 → 1).
 - New test: `node/test/p2-enter-race.test.js` (fails on 6e79a62, passes at the head).
 - Test change: `node/test/p2-phases.test.js`, the assertion now checks `['.phases.jsonl','DETJS_PHASES']`, because the
   fixture path itself contains "p2-phases". This was a false failure of my own new test.
-- New analysis scripts (no thresholds, no validator change): `harness/p2/sameboot.py`, `harness/p2/explain_rule1.py`.
+- New analysis scripts (no thresholds, no validator change): `harness/p2/sameboot.py`, `harness/p2/explain_rule1.py`,
+  `harness/p2/d4.py`.

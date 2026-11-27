@@ -1,0 +1,1004 @@
+[
+ {
+  "repo": "codex-multi-auth",
+  "w": {
+   "2": {
+    "rounds": {
+     "baseline": [
+      {
+       "round": 1,
+       "par_wall_s": 419.41,
+       "diverged": 1277,
+       "rerun_files": [
+        "test/runtime-policy-cache.test.ts",
+        "test/transactions.test.ts"
+       ]
+      },
+      {
+       "round": 2,
+       "par_wall_s": 289.18,
+       "diverged": 1342,
+       "rerun_files": []
+      },
+      {
+       "round": 3,
+       "par_wall_s": 293.64,
+       "diverged": 1363,
+       "rerun_files": []
+      }
+     ],
+     "base-b": [
+      {
+       "round": 1,
+       "par_wall_s": 392.34,
+       "diverged": 1275,
+       "rerun_files": [
+        "test/runtime-policy-cache.test.ts",
+        "test/transactions.test.ts"
+       ]
+      },
+      {
+       "round": 2,
+       "par_wall_s": 276.92,
+       "diverged": 1362,
+       "rerun_files": []
+      },
+      {
+       "round": 3,
+       "par_wall_s": 264.85,
+       "diverged": 1351,
+       "rerun_files": []
+      },
+      {
+       "round": 4,
+       "par_wall_s": 269.37,
+       "diverged": 1328,
+       "rerun_files": []
+      },
+      {
+       "round": 5,
+       "par_wall_s": 286.6,
+       "diverged": 1347,
+       "rerun_files": []
+      },
+      {
+       "round": 6,
+       "par_wall_s": 273.84,
+       "diverged": 1334,
+       "rerun_files": []
+      }
+     ],
+     "fix-1": [
+      {
+       "round": 1,
+       "par_wall_s": 272.62,
+       "diverged": 1349,
+       "rerun_files": [
+        "test/runtime-policy-cache.test.ts",
+        "test/transactions.test.ts"
+       ],
+       "newly_diverged": 5,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": true
+      },
+      {
+       "round": 2,
+       "par_wall_s": 266.62,
+       "diverged": 1355,
+       "rerun_files": [],
+       "newly_diverged": 4,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": true
+      },
+      {
+       "round": 3,
+       "par_wall_s": 270.6,
+       "diverged": 1363,
+       "rerun_files": [],
+       "newly_diverged": 8,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": true
+      },
+      {
+       "round": 4,
+       "par_wall_s": 266.87,
+       "diverged": 1347,
+       "rerun_files": [],
+       "newly_diverged": 5,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": true
+      },
+      {
+       "round": 5,
+       "par_wall_s": 266.34,
+       "diverged": 1371,
+       "rerun_files": [],
+       "newly_diverged": 32,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": true
+      },
+      {
+       "round": 6,
+       "par_wall_s": 259.11,
+       "diverged": 1342,
+       "rerun_files": [],
+       "newly_diverged": 5,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": true
+      }
+     ]
+    },
+    "baseline_engine_range_all": [
+     1275,
+     1363
+    ],
+    "baseline_engine_range_same_boot": [
+     1275,
+     1362
+    ],
+    "fix_range": [
+     1342,
+     1371
+    ],
+    "rule1_rounds": 6,
+    "rule1_changes": 74,
+    "rule1_unexplained": 56,
+    "rule1_unexplained_gain_diverged": 46,
+    "rule1_unexplained_lose_diverged": 1,
+    "fix_rounds_above_baseline_range_same_boot": 2,
+    "fix_rounds_above_baseline_range_all": 1,
+    "fix_rounds_below_baseline_range_same_boot": 0
+   },
+   "4": {
+    "rounds": {
+     "baseline": [
+      {
+       "round": 1,
+       "par_wall_s": 317.82,
+       "diverged": 1355,
+       "rerun_files": [
+        "test/oauth-server-port-conflict.test.ts",
+        "test/oauth-server.integration.test.ts",
+        "test/runtime-policy-cache.test.ts",
+        "test/transactions.test.ts"
+       ]
+      },
+      {
+       "round": 2,
+       "par_wall_s": 174.7,
+       "diverged": 1351,
+       "rerun_files": []
+      },
+      {
+       "round": 3,
+       "par_wall_s": 180.07,
+       "diverged": 1341,
+       "rerun_files": []
+      }
+     ],
+     "base-b": [
+      {
+       "round": 1,
+       "par_wall_s": 317.52,
+       "diverged": 1355,
+       "rerun_files": [
+        "test/oauth-server-port-conflict.test.ts",
+        "test/oauth-server.integration.test.ts",
+        "test/runtime-policy-cache.test.ts",
+        "test/transactions.test.ts"
+       ]
+      },
+      {
+       "round": 2,
+       "par_wall_s": 157.01,
+       "diverged": 1368,
+       "rerun_files": []
+      },
+      {
+       "round": 3,
+       "par_wall_s": 152.46,
+       "diverged": 1314,
+       "rerun_files": []
+      },
+      {
+       "round": 4,
+       "par_wall_s": 172.02,
+       "diverged": 1318,
+       "rerun_files": []
+      },
+      {
+       "round": 5,
+       "par_wall_s": 172.28,
+       "diverged": 1364,
+       "rerun_files": []
+      },
+      {
+       "round": 6,
+       "par_wall_s": 158.26,
+       "diverged": 1371,
+       "rerun_files": []
+      }
+     ],
+     "fix-1": [
+      {
+       "round": 1,
+       "par_wall_s": 199.32,
+       "diverged": 1371,
+       "rerun_files": [
+        "test/oauth-server-port-conflict.test.ts",
+        "test/oauth-server.integration.test.ts",
+        "test/runtime-policy-cache.test.ts",
+        "test/transactions.test.ts"
+       ],
+       "newly_diverged": 9,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": true
+      },
+      {
+       "round": 2,
+       "par_wall_s": 171.57,
+       "diverged": 1388,
+       "rerun_files": [],
+       "newly_diverged": 6,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": true
+      },
+      {
+       "round": 3,
+       "par_wall_s": 154.17,
+       "diverged": 1380,
+       "rerun_files": [],
+       "newly_diverged": 10,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": true
+      },
+      {
+       "round": 4,
+       "par_wall_s": 154.69,
+       "diverged": 1380,
+       "rerun_files": [],
+       "newly_diverged": 5,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": true
+      },
+      {
+       "round": 5,
+       "par_wall_s": 146.78,
+       "diverged": 1401,
+       "rerun_files": [],
+       "newly_diverged": 30,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": true
+      },
+      {
+       "round": 6,
+       "par_wall_s": 147.22,
+       "diverged": 1376,
+       "rerun_files": [],
+       "newly_diverged": 4,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": true
+      }
+     ]
+    },
+    "baseline_engine_range_all": [
+     1314,
+     1371
+    ],
+    "baseline_engine_range_same_boot": [
+     1314,
+     1371
+    ],
+    "fix_range": [
+     1371,
+     1401
+    ],
+    "rule1_rounds": 6,
+    "rule1_changes": 76,
+    "rule1_unexplained": 62,
+    "rule1_unexplained_gain_diverged": 49,
+    "rule1_unexplained_lose_diverged": 1,
+    "fix_rounds_above_baseline_range_same_boot": 5,
+    "fix_rounds_above_baseline_range_all": 5,
+    "fix_rounds_below_baseline_range_same_boot": 0
+   }
+  }
+ },
+ {
+  "repo": "ironcurtain",
+  "w": {
+   "2": {
+    "rounds": {
+     "baseline": [
+      {
+       "round": 1,
+       "par_wall_s": 182.26,
+       "diverged": 1041,
+       "rerun_files": [
+        "test/approval-whitelist.test.ts",
+        "test/audit-redactor.test.ts",
+        "test/coordinator-control-server.test.ts",
+        "test/docker-infrastructure.test.ts",
+        "test/docker-session.test.ts",
+        "test/docker/desktop-relay.test.ts",
+        "test/docker/workflow-runtime-deps.integration.test.ts",
+        "test/docker/wsl-qualification-preparation.test.ts",
+        "test/dynamic-lists.test.ts",
+        "test/escalation-scenarios.test.ts",
+        "test/handwritten-scenarios.test.ts",
+        "test/headless-transport.test.ts",
+        "test/interaction-log.test.ts",
+        "test/mcp-roots-race.integration.test.ts",
+        "test/mux-input-handler.test.ts",
+        "test/persona-broad-policy-validator.test.ts",
+        "test/persona-dispatch-crud.test.ts",
+        "test/persona-policy-mutation-audit.test.ts",
+        "test/persona-service.test.ts",
+        "test/pipeline-atomicity.test.ts",
+        "test/pipeline-golden.test.ts",
+        "test/pipeline-integration.test.ts",
+        "test/pipeline-mcp-lists-disallowed.test.ts",
+        "test/point-fix-repair.test.ts",
+        "test/policy-engine-stress.test.ts",
+        "test/policy-engine.test.ts",
+        "test/policy-verifier.test.ts",
+        "test/preflight.test.ts",
+        "test/pty-web-escalation.integration.test.ts",
+        "test/sandbox-integration.test.ts",
+        "test/session-memory-gate.test.ts",
+        "test/session-metadata.test.ts",
+        "test/session-readonly-mounts.test.ts",
+        "test/session.test.ts",
+        "test/smoke-environment.test.ts",
+        "test/spike-git-branch-roles.test.ts",
+        "test/tool-call-coordinator.test.ts",
+        "test/workflow-file-dispatch.test.ts",
+        "test/workflow/artifacts.test.ts",
+        "test/workflow/evolve-experiment-harness.integration.test.ts",
+        "test/workflow/evolve-multi-round.integration.test.ts",
+        "test/workflow/evolve-single-round.integration.test.ts"
+       ]
+      },
+      {
+       "round": 2,
+       "par_wall_s": 204.86,
+       "diverged": 1033,
+       "rerun_files": [
+        "test/argument-validation.integration.test.ts",
+        "test/audit-redactor.test.ts",
+        "test/constitution-compiler.test.ts",
+        "test/docker/agent-startup.test.ts",
+        "test/file-lock.test.ts",
+        "test/job-store.test.ts",
+        "test/llm-logger.test.ts",
+        "test/mux-input-handler.test.ts",
+        "test/persona-compile-orchestrator.test.ts",
+        "test/persona-session.test.ts",
+        "test/pipeline-shared.test.ts",
+        "test/policy-dir-validation.test.ts",
+        "test/roots-expansion-bridging.integration.test.ts",
+        "test/session-readonly-mounts-validation.test.ts",
+        "test/session-scanner.test.ts",
+        "test/skills-borrow-restage.test.ts",
+        "test/skills-end-to-end.integration.test.ts",
+        "test/workflow-snapshot-resume.integration.test.ts",
+        "test/workflow/checkpoint.test.ts",
+        "test/workflow/deterministic-verdict-smoke.integration.test.ts",
+        "test/workflow/evolve-correctness.integration.test.ts",
+        "test/workflow/evolve-human-surface.integration.test.ts",
+        "test/workflow/evolve-search-quality.integration.test.ts",
+        "test/workflow/worktree.test.ts"
+       ]
+      },
+      {
+       "round": 3,
+       "par_wall_s": 135.82,
+       "diverged": 1022,
+       "rerun_files": []
+      }
+     ],
+     "base-b": [
+      {
+       "round": 1,
+       "par_wall_s": 165.57,
+       "diverged": 1027,
+       "rerun_files": [
+        "test/approval-whitelist.test.ts",
+        "test/audit-redactor.test.ts",
+        "test/coordinator-control-server.test.ts",
+        "test/docker-infrastructure.test.ts",
+        "test/docker-session.test.ts",
+        "test/docker/desktop-relay.test.ts",
+        "test/docker/workflow-runtime-deps.integration.test.ts",
+        "test/docker/wsl-qualification-preparation.test.ts",
+        "test/dynamic-lists.test.ts",
+        "test/escalation-scenarios.test.ts",
+        "test/handwritten-scenarios.test.ts",
+        "test/headless-transport.test.ts",
+        "test/interaction-log.test.ts",
+        "test/mcp-roots-race.integration.test.ts",
+        "test/mux-input-handler.test.ts",
+        "test/persona-broad-policy-validator.test.ts",
+        "test/persona-dispatch-crud.test.ts",
+        "test/persona-policy-mutation-audit.test.ts",
+        "test/persona-service.test.ts",
+        "test/pipeline-atomicity.test.ts",
+        "test/pipeline-golden.test.ts",
+        "test/pipeline-integration.test.ts",
+        "test/pipeline-mcp-lists-disallowed.test.ts",
+        "test/point-fix-repair.test.ts",
+        "test/policy-engine-stress.test.ts",
+        "test/policy-engine.test.ts",
+        "test/policy-verifier.test.ts",
+        "test/preflight.test.ts",
+        "test/pty-web-escalation.integration.test.ts",
+        "test/sandbox-integration.test.ts",
+        "test/session-memory-gate.test.ts",
+        "test/session-metadata.test.ts",
+        "test/session-readonly-mounts.test.ts",
+        "test/session.test.ts",
+        "test/smoke-environment.test.ts",
+        "test/spike-git-branch-roles.test.ts",
+        "test/tool-call-coordinator.test.ts",
+        "test/workflow-file-dispatch.test.ts",
+        "test/workflow/artifacts.test.ts",
+        "test/workflow/evolve-experiment-harness.integration.test.ts",
+        "test/workflow/evolve-multi-round.integration.test.ts",
+        "test/workflow/evolve-single-round.integration.test.ts"
+       ]
+      },
+      {
+       "round": 2,
+       "par_wall_s": 155.13,
+       "diverged": 1013,
+       "rerun_files": [
+        "test/argument-validation.integration.test.ts",
+        "test/audit-redactor.test.ts",
+        "test/constitution-compiler.test.ts",
+        "test/daemon-client.test.ts",
+        "test/docker-workload/apple-vm-egress-relay.test.ts",
+        "test/docker/agent-startup.test.ts",
+        "test/file-lock.test.ts",
+        "test/job-store.test.ts",
+        "test/llm-logger.test.ts",
+        "test/mux-input-handler.test.ts",
+        "test/persona-compile-orchestrator.test.ts",
+        "test/persona-session.test.ts",
+        "test/pipeline-shared.test.ts",
+        "test/policy-dir-validation.test.ts",
+        "test/roots-expansion-bridging.integration.test.ts",
+        "test/session-readonly-mounts-validation.test.ts",
+        "test/session-scanner.test.ts",
+        "test/skills-borrow-restage.test.ts",
+        "test/skills-end-to-end.integration.test.ts",
+        "test/workflow-snapshot-resume.integration.test.ts",
+        "test/workflow/checkpoint.test.ts",
+        "test/workflow/deterministic-verdict-smoke.integration.test.ts",
+        "test/workflow/evolve-correctness.integration.test.ts",
+        "test/workflow/evolve-human-surface.integration.test.ts",
+        "test/workflow/evolve-search-quality.integration.test.ts",
+        "test/workflow/worktree.test.ts"
+       ]
+      },
+      {
+       "round": 3,
+       "par_wall_s": 128.55,
+       "diverged": 1027,
+       "rerun_files": []
+      },
+      {
+       "round": 4,
+       "par_wall_s": 112.74,
+       "diverged": 1016,
+       "rerun_files": []
+      },
+      {
+       "round": 5,
+       "par_wall_s": 110.12,
+       "diverged": 1007,
+       "rerun_files": []
+      },
+      {
+       "round": 6,
+       "par_wall_s": 116.71,
+       "diverged": 1013,
+       "rerun_files": []
+      }
+     ],
+     "fix-1": [
+      {
+       "round": 1,
+       "par_wall_s": 142.56,
+       "diverged": 1037,
+       "rerun_files": [
+        "test/approval-whitelist.test.ts",
+        "test/audit-redactor.test.ts",
+        "test/coordinator-control-server.test.ts",
+        "test/docker-infrastructure.test.ts",
+        "test/docker-session.test.ts",
+        "test/docker/desktop-relay.test.ts",
+        "test/docker/workflow-runtime-deps.integration.test.ts",
+        "test/docker/wsl-qualification-preparation.test.ts",
+        "test/dynamic-lists.test.ts",
+        "test/escalation-scenarios.test.ts",
+        "test/handwritten-scenarios.test.ts",
+        "test/headless-transport.test.ts",
+        "test/interaction-log.test.ts",
+        "test/mcp-roots-race.integration.test.ts",
+        "test/mux-input-handler.test.ts",
+        "test/persona-broad-policy-validator.test.ts",
+        "test/persona-dispatch-crud.test.ts",
+        "test/persona-policy-mutation-audit.test.ts",
+        "test/persona-service.test.ts",
+        "test/pipeline-atomicity.test.ts",
+        "test/pipeline-golden.test.ts",
+        "test/pipeline-integration.test.ts",
+        "test/pipeline-mcp-lists-disallowed.test.ts",
+        "test/point-fix-repair.test.ts",
+        "test/policy-engine-stress.test.ts",
+        "test/policy-engine.test.ts",
+        "test/policy-verifier.test.ts",
+        "test/preflight.test.ts",
+        "test/pty-web-escalation.integration.test.ts",
+        "test/sandbox-integration.test.ts",
+        "test/session-memory-gate.test.ts",
+        "test/session-metadata.test.ts",
+        "test/session-readonly-mounts.test.ts",
+        "test/session.test.ts",
+        "test/smoke-environment.test.ts",
+        "test/spike-git-branch-roles.test.ts",
+        "test/tool-call-coordinator.test.ts",
+        "test/workflow-file-dispatch.test.ts",
+        "test/workflow/artifacts.test.ts",
+        "test/workflow/evolve-experiment-harness.integration.test.ts",
+        "test/workflow/evolve-multi-round.integration.test.ts",
+        "test/workflow/evolve-single-round.integration.test.ts"
+       ],
+       "newly_diverged": 1,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": true
+      },
+      {
+       "round": 2,
+       "par_wall_s": 149.73,
+       "diverged": 1039,
+       "rerun_files": [
+        "test/argument-validation.integration.test.ts",
+        "test/audit-redactor.test.ts",
+        "test/constitution-compiler.test.ts",
+        "test/docker-workload/apple-vm-egress-relay.test.ts",
+        "test/docker/agent-startup.test.ts",
+        "test/file-lock.test.ts",
+        "test/job-store.test.ts",
+        "test/llm-logger.test.ts",
+        "test/mux-input-handler.test.ts",
+        "test/parallel-search-provider.test.ts",
+        "test/persona-compile-orchestrator.test.ts",
+        "test/persona-session.test.ts",
+        "test/pipeline-shared.test.ts",
+        "test/policy-dir-validation.test.ts",
+        "test/roots-expansion-bridging.integration.test.ts",
+        "test/session-readonly-mounts-validation.test.ts",
+        "test/session-scanner.test.ts",
+        "test/skills-borrow-restage.test.ts",
+        "test/skills-end-to-end.integration.test.ts",
+        "test/workflow-snapshot-resume.integration.test.ts",
+        "test/workflow/checkpoint.test.ts",
+        "test/workflow/deterministic-verdict-smoke.integration.test.ts",
+        "test/workflow/evolve-correctness.integration.test.ts",
+        "test/workflow/evolve-human-surface.integration.test.ts",
+        "test/workflow/evolve-search-quality.integration.test.ts",
+        "test/workflow/worktree.test.ts"
+       ],
+       "newly_diverged": 0,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": false
+      },
+      {
+       "round": 3,
+       "par_wall_s": 120.69,
+       "diverged": 1034,
+       "rerun_files": [],
+       "newly_diverged": 2,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": true
+      },
+      {
+       "round": 4,
+       "par_wall_s": 117.58,
+       "diverged": 1026,
+       "rerun_files": [],
+       "newly_diverged": 0,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": true
+      },
+      {
+       "round": 5,
+       "par_wall_s": 112.72,
+       "diverged": 1035,
+       "rerun_files": [],
+       "newly_diverged": 1,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": true
+      },
+      {
+       "round": 6,
+       "par_wall_s": 113.88,
+       "diverged": 1038,
+       "rerun_files": [],
+       "newly_diverged": 0,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": true
+      }
+     ]
+    },
+    "baseline_engine_range_all": [
+     1007,
+     1041
+    ],
+    "baseline_engine_range_same_boot": [
+     1007,
+     1027
+    ],
+    "fix_range": [
+     1026,
+     1039
+    ],
+    "rule1_rounds": 6,
+    "rule1_changes": 5,
+    "rule1_unexplained": 3,
+    "rule1_unexplained_gain_diverged": 2,
+    "rule1_unexplained_lose_diverged": 0,
+    "fix_rounds_above_baseline_range_same_boot": 5,
+    "fix_rounds_above_baseline_range_all": 0,
+    "fix_rounds_below_baseline_range_same_boot": 0
+   },
+   "4": {
+    "rounds": {
+     "baseline": [
+      {
+       "round": 1,
+       "par_wall_s": 208.6,
+       "diverged": 1021,
+       "rerun_files": [
+        "test/approval-whitelist.test.ts",
+        "test/argument-validation.integration.test.ts",
+        "test/audit-redactor.test.ts",
+        "test/constitution-compiler.test.ts",
+        "test/coordinator-control-server.test.ts",
+        "test/docker-infrastructure.test.ts",
+        "test/docker-session.test.ts",
+        "test/docker-workload/apple-vm-egress-relay.test.ts",
+        "test/docker/desktop-relay.test.ts",
+        "test/docker/registry-egress-proxy.test.ts",
+        "test/docker/workflow-runtime-deps.integration.test.ts",
+        "test/docker/wsl-qualification-preparation.test.ts",
+        "test/dynamic-lists.test.ts",
+        "test/escalation-scenarios.test.ts",
+        "test/file-lock.test.ts",
+        "test/handwritten-scenarios.test.ts",
+        "test/headless-transport.test.ts",
+        "test/interaction-log.test.ts",
+        "test/llm-logger.test.ts",
+        "test/mcp-roots-race.integration.test.ts",
+        "test/mux-input-handler.test.ts",
+        "test/persona-broad-policy-validator.test.ts",
+        "test/persona-dispatch-crud.test.ts",
+        "test/persona-policy-mutation-audit.test.ts",
+        "test/persona-service.test.ts",
+        "test/pipeline-atomicity.test.ts",
+        "test/pipeline-golden.test.ts",
+        "test/pipeline-integration.test.ts",
+        "test/pipeline-mcp-lists-disallowed.test.ts",
+        "test/pipeline-shared.test.ts",
+        "test/point-fix-repair.test.ts",
+        "test/policy-dir-validation.test.ts",
+        "test/policy-engine-stress.test.ts",
+        "test/policy-engine.test.ts",
+        "test/policy-verifier.test.ts",
+        "test/preflight.test.ts",
+        "test/pty-web-escalation.integration.test.ts",
+        "test/roots-expansion-bridging.integration.test.ts",
+        "test/sandbox-integration.test.ts",
+        "test/session-memory-gate.test.ts",
+        "test/session-metadata.test.ts",
+        "test/session-readonly-mounts-validation.test.ts",
+        "test/session-readonly-mounts.test.ts",
+        "test/session.test.ts",
+        "test/smoke-environment.test.ts",
+        "test/spike-git-branch-roles.test.ts",
+        "test/tool-call-coordinator.test.ts",
+        "test/workflow-file-dispatch.test.ts",
+        "test/workflow/artifacts.test.ts",
+        "test/workflow/evolve-experiment-harness.integration.test.ts",
+        "test/workflow/evolve-multi-round.integration.test.ts",
+        "test/workflow/evolve-search-quality.integration.test.ts",
+        "test/workflow/evolve-single-round.integration.test.ts"
+       ]
+      },
+      {
+       "round": 2,
+       "par_wall_s": 93.55,
+       "diverged": 1032,
+       "rerun_files": [
+        "test/audit-redactor.test.ts",
+        "test/job-store.test.ts",
+        "test/mux-input-handler.test.ts",
+        "test/persona-session.test.ts",
+        "test/session-scanner.test.ts",
+        "test/skills-end-to-end.integration.test.ts",
+        "test/workflow/checkpoint.test.ts",
+        "test/workflow/deterministic-verdict-smoke.integration.test.ts",
+        "test/workflow/evolve-human-surface.integration.test.ts",
+        "test/workflow/worktree.test.ts"
+       ]
+      },
+      {
+       "round": 3,
+       "par_wall_s": 82.49,
+       "diverged": 1044,
+       "rerun_files": [
+        "test/audit-redactor.test.ts",
+        "test/docker/agent-startup.test.ts",
+        "test/mux-input-handler.test.ts",
+        "test/workflow-snapshot-resume.integration.test.ts",
+        "test/workflow/evolve-correctness.integration.test.ts"
+       ]
+      }
+     ],
+     "base-b": [
+      {
+       "round": 1,
+       "par_wall_s": 146.44,
+       "diverged": 1013,
+       "rerun_files": [
+        "test/approval-whitelist.test.ts",
+        "test/argument-validation.integration.test.ts",
+        "test/audit-redactor.test.ts",
+        "test/constitution-compiler.test.ts",
+        "test/coordinator-control-server.test.ts",
+        "test/docker-infrastructure.test.ts",
+        "test/docker-session.test.ts",
+        "test/docker-workload/apple-vm-egress-relay.test.ts",
+        "test/docker/desktop-relay.test.ts",
+        "test/docker/registry-egress-proxy.test.ts",
+        "test/docker/workflow-runtime-deps.integration.test.ts",
+        "test/docker/wsl-qualification-preparation.test.ts",
+        "test/dynamic-lists.test.ts",
+        "test/escalation-scenarios.test.ts",
+        "test/file-lock.test.ts",
+        "test/handwritten-scenarios.test.ts",
+        "test/headless-transport.test.ts",
+        "test/interaction-log.test.ts",
+        "test/llm-logger.test.ts",
+        "test/mcp-roots-race.integration.test.ts",
+        "test/mux-input-handler.test.ts",
+        "test/persona-broad-policy-validator.test.ts",
+        "test/persona-dispatch-crud.test.ts",
+        "test/persona-policy-mutation-audit.test.ts",
+        "test/persona-service.test.ts",
+        "test/pipeline-atomicity.test.ts",
+        "test/pipeline-golden.test.ts",
+        "test/pipeline-integration.test.ts",
+        "test/pipeline-mcp-lists-disallowed.test.ts",
+        "test/pipeline-shared.test.ts",
+        "test/point-fix-repair.test.ts",
+        "test/policy-dir-validation.test.ts",
+        "test/policy-engine-stress.test.ts",
+        "test/policy-engine.test.ts",
+        "test/policy-verifier.test.ts",
+        "test/preflight.test.ts",
+        "test/pty-web-escalation.integration.test.ts",
+        "test/roots-expansion-bridging.integration.test.ts",
+        "test/sandbox-integration.test.ts",
+        "test/session-memory-gate.test.ts",
+        "test/session-metadata.test.ts",
+        "test/session-readonly-mounts-validation.test.ts",
+        "test/session-readonly-mounts.test.ts",
+        "test/session.test.ts",
+        "test/smoke-environment.test.ts",
+        "test/spike-git-branch-roles.test.ts",
+        "test/tool-call-coordinator.test.ts",
+        "test/workflow-file-dispatch.test.ts",
+        "test/workflow/artifacts.test.ts",
+        "test/workflow/evolve-experiment-harness.integration.test.ts",
+        "test/workflow/evolve-multi-round.integration.test.ts",
+        "test/workflow/evolve-search-quality.integration.test.ts",
+        "test/workflow/evolve-single-round.integration.test.ts"
+       ]
+      },
+      {
+       "round": 2,
+       "par_wall_s": 95.58,
+       "diverged": 995,
+       "rerun_files": [
+        "test/audit-redactor.test.ts",
+        "test/mux-input-handler.test.ts",
+        "test/persona-compile-orchestrator.test.ts",
+        "test/persona-session.test.ts",
+        "test/session-scanner.test.ts",
+        "test/workflow-snapshot-resume.integration.test.ts",
+        "test/workflow/checkpoint.test.ts",
+        "test/workflow/deterministic-verdict-smoke.integration.test.ts",
+        "test/workflow/evolve-correctness.integration.test.ts",
+        "test/workflow/evolve-human-surface.integration.test.ts",
+        "test/workflow/worktree.test.ts"
+       ]
+      },
+      {
+       "round": 3,
+       "par_wall_s": 78.73,
+       "diverged": 1022,
+       "rerun_files": []
+      },
+      {
+       "round": 4,
+       "par_wall_s": 73.43,
+       "diverged": 1031,
+       "rerun_files": []
+      },
+      {
+       "round": 5,
+       "par_wall_s": 86.93,
+       "diverged": 1013,
+       "rerun_files": [
+        "test/docker-workload/apple-vm-egress-relay.test.ts",
+        "test/signal/signal-bot-daemon.test.ts"
+       ]
+      },
+      {
+       "round": 6,
+       "par_wall_s": 77.2,
+       "diverged": 1034,
+       "rerun_files": []
+      }
+     ],
+     "fix-1": [
+      {
+       "round": 1,
+       "par_wall_s": 115.88,
+       "diverged": 1035,
+       "rerun_files": [
+        "test/approval-whitelist.test.ts",
+        "test/argument-validation.integration.test.ts",
+        "test/audit-redactor.test.ts",
+        "test/constitution-compiler.test.ts",
+        "test/coordinator-control-server.test.ts",
+        "test/docker-infrastructure.test.ts",
+        "test/docker-session.test.ts",
+        "test/docker-workload/apple-vm-egress-relay.test.ts",
+        "test/docker/desktop-relay.test.ts",
+        "test/docker/workflow-runtime-deps.integration.test.ts",
+        "test/docker/wsl-qualification-preparation.test.ts",
+        "test/dynamic-lists.test.ts",
+        "test/escalation-scenarios.test.ts",
+        "test/file-lock.test.ts",
+        "test/handwritten-scenarios.test.ts",
+        "test/headless-transport.test.ts",
+        "test/interaction-log.test.ts",
+        "test/llm-logger.test.ts",
+        "test/mcp-roots-race.integration.test.ts",
+        "test/mux-input-handler.test.ts",
+        "test/persona-broad-policy-validator.test.ts",
+        "test/persona-dispatch-crud.test.ts",
+        "test/persona-policy-mutation-audit.test.ts",
+        "test/persona-service.test.ts",
+        "test/pipeline-atomicity.test.ts",
+        "test/pipeline-golden.test.ts",
+        "test/pipeline-integration.test.ts",
+        "test/pipeline-mcp-lists-disallowed.test.ts",
+        "test/pipeline-shared.test.ts",
+        "test/point-fix-repair.test.ts",
+        "test/policy-dir-validation.test.ts",
+        "test/policy-engine-stress.test.ts",
+        "test/policy-engine.test.ts",
+        "test/policy-verifier.test.ts",
+        "test/preflight.test.ts",
+        "test/pty-web-escalation.integration.test.ts",
+        "test/roots-expansion-bridging.integration.test.ts",
+        "test/sandbox-integration.test.ts",
+        "test/session-memory-gate.test.ts",
+        "test/session-metadata.test.ts",
+        "test/session-readonly-mounts-validation.test.ts",
+        "test/session-readonly-mounts.test.ts",
+        "test/session.test.ts",
+        "test/signal/signal-bot-daemon.test.ts",
+        "test/smoke-environment.test.ts",
+        "test/spike-git-branch-roles.test.ts",
+        "test/tool-call-coordinator.test.ts",
+        "test/workflow-file-dispatch.test.ts",
+        "test/workflow/artifacts.test.ts",
+        "test/workflow/evolve-experiment-harness.integration.test.ts",
+        "test/workflow/evolve-multi-round.integration.test.ts",
+        "test/workflow/evolve-search-quality.integration.test.ts",
+        "test/workflow/evolve-single-round.integration.test.ts"
+       ],
+       "newly_diverged": 0,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": false
+      },
+      {
+       "round": 2,
+       "par_wall_s": 87.86,
+       "diverged": 1026,
+       "rerun_files": [
+        "test/audit-redactor.test.ts",
+        "test/docker/agent-startup.test.ts",
+        "test/job-store.test.ts",
+        "test/mux-input-handler.test.ts",
+        "test/persona-session.test.ts",
+        "test/skills-end-to-end.integration.test.ts",
+        "test/workflow-snapshot-resume.integration.test.ts",
+        "test/workflow/evolve-correctness.integration.test.ts",
+        "test/workflow/evolve-human-surface.integration.test.ts",
+        "test/workflow/worktree.test.ts"
+       ],
+       "newly_diverged": 0,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": false
+      },
+      {
+       "round": 3,
+       "par_wall_s": 81.52,
+       "diverged": 1025,
+       "rerun_files": [],
+       "newly_diverged": 1,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": true
+      },
+      {
+       "round": 4,
+       "par_wall_s": 119.5,
+       "diverged": 1032,
+       "rerun_files": [
+        "test/docker-workload/apple-vm-egress-relay.test.ts",
+        "test/docker/registry-egress-proxy.test.ts"
+       ],
+       "newly_diverged": 0,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": false
+      },
+      {
+       "round": 5,
+       "par_wall_s": 80.57,
+       "diverged": 1021,
+       "rerun_files": [],
+       "newly_diverged": 1,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": true
+      },
+      {
+       "round": 6,
+       "par_wall_s": 75.62,
+       "diverged": 1028,
+       "rerun_files": [],
+       "newly_diverged": 0,
+       "newly_diverged_in_rerun_files": 0,
+       "rerun_files_seen_with_baseline_engine": true
+      }
+     ]
+    },
+    "baseline_engine_range_all": [
+     995,
+     1044
+    ],
+    "baseline_engine_range_same_boot": [
+     995,
+     1034
+    ],
+    "fix_range": [
+     1021,
+     1035
+    ],
+    "rule1_rounds": 6,
+    "rule1_changes": 13,
+    "rule1_unexplained": 12,
+    "rule1_unexplained_gain_diverged": 2,
+    "rule1_unexplained_lose_diverged": 0,
+    "fix_rounds_above_baseline_range_same_boot": 1,
+    "fix_rounds_above_baseline_range_all": 0,
+    "fix_rounds_below_baseline_range_same_boot": 0
+   }
+  }
+ }
+]
