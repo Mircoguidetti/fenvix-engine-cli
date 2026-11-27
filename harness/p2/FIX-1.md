@@ -110,7 +110,7 @@ ironcurtain (r2 w4: 9 → 8) and drydock (r1 w4: 0 → 1).
 ## D4 = B: three more rounds per engine on codex-multi-auth and ironcurtain
 
 Rounds 4, 5 and 6 per engine, alternating (base, fix, base, ...), on the same boot `591ebcd0`, with nothing else timed on
-the machine (26 Nov 23:2x to 27 Nov 03:31 UTC). Analysis: `d4.py --repo codex-multi-auth --repo ironcurtain --json
+the machine (26 Nov 23:22 to 27 Nov 03:31 UTC). Analysis: `d4.py --repo codex-multi-auth --repo ironcurtain --json
 data/fix-1/D4.json`. "Baseline engine" ranges below are over its 6 same-boot rounds (`data/base-b`); the 3 first-boot
 rounds (`data/baseline`) are given where they widen the range.
 
