@@ -601,8 +601,10 @@ class Driver {
         let err = null;
         try {
           if (!fastMode && this.mode === 'virtual' && t._test === STATE.testId && STATE.testId !== null) {
-            // chosen before I/O that is still pending: a decision real time made (Level 1, recorded)
-            const p = sched.pending();
+            // chosen before I/O that is still pending: a decision real time made (Level 1, recorded). Only for a serial
+            // test: pending I/O is the process's, so next to concurrent siblings it would be theirs too (their child, their
+            // query) and the record would depend on the interleaving (parallel-p041 placement effects)
+            const p = concur.active() ? [] : sched.pending();
             if (p.length) sched.timerChosen(t._site, p.length);
             // at the real pace a runner poll of the timer's test (P1) or its child (P2) set: also a decision real
             // time made
