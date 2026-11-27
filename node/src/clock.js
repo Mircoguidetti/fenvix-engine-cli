@@ -334,7 +334,7 @@ class Driver {
     this.released = new Set(); // timers a finished test left pending, now real timers (releaseTest)
     this.deadlines = new Set(); // the runners' test and hook timeouts of the running test (runner deadlines)
     this.safePending = new Map(); // P3 timers P1: real safe-timer handle -> test id (safeAdd)
-    this.childTest = null; // P3 timers P2: the test that started a child process or worker (childStarted)
+    this.childTests = new Set(); // P3 timers P2: the running tests that started a child process or worker
     this.progress = 0; // virtual timers fired so far (a runner deadline's real watchdog waits while it grows)
   }
 
@@ -494,16 +494,17 @@ class Driver {
   // P3 timers P2: a test that started a child process (or a worker) may wait on what the child, or a process it left
   // behind, does in real time: a short timer of that test (a polling interval, <= CHILD_PACE_MS) runs at real pace,
   // so a Date.now() poll loop does not use up its virtual deadline before the real work is done. Long timers stay
-  // virtual; other tests are not paced (the running test must be the one that started the child).
+  // virtual; other tests are not paced (the timer must belong to a test that started a child; concurrent tests each
+  // count on their own). A child started outside a test (a hook of the file, module scope) paces nothing.
   childStarted(testId) {
-    if (testId === null || this.childTest === testId) return;
-    this.childTest = testId;
+    if (testId === null || this.childTests.has(testId)) return;
+    this.childTests.add(testId);
     this.rearm();
   }
 
   childPaced() {
     const h = this.queue[0];
-    return this.childTest !== null && this.childTest === STATE.testId && !!h && h._test === this.childTest && h._delayMs <= CHILD_PACE_MS;
+    return !!h && h._delayMs <= CHILD_PACE_MS && this.childTests.has(h._test);
   }
 
   rearm() {
@@ -631,7 +632,7 @@ class Driver {
     for (const d of [...this.deadlines]) if (d._test === testId) this.clear(d); // a runner leaves none behind
     let dropped = false; // P3 timers P1: a test's safe timers do not outlive it
     for (const [h, id] of [...this.safePending]) if (id === testId) dropped = this.safePending.delete(h);
-    if (this.childTest === testId) { this.childTest = null; dropped = true; } // P3 timers P2
+    if (this.childTests.delete(testId)) dropped = true; // P3 timers P2
     if (dropped) this.rearm(); // back to fast virtual time now, not at the next timer event
     const leaked = this.queue.filter((t) => t._test === testId);
     if (!leaked.length) return 0;
@@ -682,7 +683,9 @@ class Driver {
 
 const MAX_DEFERRALS = 1000;
 const SLOW_POLL_MS = 25;
-const CHILD_PACE_MS = Number(process.env.DETJS_CHILD_PACE_MS) || 1000; // P3 timers P2: the pacing bound (founder D1 = A)
+// P3 timers P2: timers up to this delay (a polling interval) of a test that started a child run at real pace
+// (founder decision D1 = A: 1000 ms); DETJS_CHILD_PACE_MS overrides it, 0 turns the pacing off.
+const CHILD_PACE_MS = (() => { const v = Number(process.env.DETJS_CHILD_PACE_MS); return process.env.DETJS_CHILD_PACE_MS !== undefined && Number.isFinite(v) && v >= 0 ? v : 1000; })();
 // set by src/ioorder.js: whether an operation of the running test that just started (a file operation, a connection
 // waiting for its first data) is still pending (the grace of the slow mode)
 let freshIO = null;

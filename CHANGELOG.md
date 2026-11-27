@@ -31,11 +31,12 @@ All notable changes of the fenvix engine. One version for every component (`rele
   (P3, 2026-11-27; the regression test (b), `node/test/host-values-timers.test.js`, passes):
   - Vitest's `vi.waitFor` / `expect.poll` (the runner's safe timers a test starts, not its deadlines) count as
     pending work: virtual time runs at real pace while a poll waits (`node/test/p3-timers-safe-poll.test.js`).
-  - after a test started a child process or a worker, its timers of up to 1000 ms (`DETJS_CHILD_PACE_MS`) run at
-    real pace: a `Date.now()` poll loop waiting on what the child, or a process it left behind, does no longer runs
+  - after a test started a child process or a worker, its timers of up to 1000 ms (`DETJS_CHILD_PACE_MS`; `0` turns
+    this off) run at real pace: a `Date.now()` poll loop waiting on what the child, or a process it left behind, does no longer runs
     out in virtual time; longer timers and other tests stay virtual (`node/test/p3-timers-child.test.js`).
   - node-sqlite3 (npm `sqlite3`) calls in flight count as pending work (they run on the thread pool and leave no
-    active resource): no virtual jump to a pool's long guard timer past the runner deadline
+    active resource): no virtual jump to a pool's long guard timer past the runner deadline; a call that never
+    calls back stops counting when its test ends
     (`node/test/native-work.test.js`). alakajam under `--det`: 114 failed (105-107 "Test timed out in 5000ms",
     7-9 SQLITE_BUSY) before, 217 passed / 4 skipped as in the plain run after (2 runs each).
 
