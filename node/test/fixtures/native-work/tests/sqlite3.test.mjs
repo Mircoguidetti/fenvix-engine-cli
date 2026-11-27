@@ -25,6 +25,9 @@ test('statement methods, exec and an error callback count too', async () => {
   await new Promise((res, rej) => st.run(1, (e) => (e ? rej(e) : res())));
   await new Promise((r) => st.finalize(r));
   await expect(all(db, 'SELECT * FROM missing_table')).rejects.toThrow(/no such table/);
+  // prepared without a callback: the error is an 'error' event, and the queued call is never called back
+  const bad = db.prepare('SELECT * FROM missing_too');
+  await new Promise((r) => { bad.on('error', () => r()); bad.all(() => {}); });
   expect((await all(db, SLOW))[0].s).toBe(2000001000000);
   clearTimeout(guard);
   await new Promise((r) => db.close(r));
