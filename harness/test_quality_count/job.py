@@ -4,7 +4,8 @@
 Usage: job.py --request requests/<n>.json
 Request kinds: {"chunk": n, "probe": true} (§0 probes from the workflow route), {"chunk": n, "candidates": [...]}
 (§2-§4.3 rows), {"chunk": "debug-x", "debug": true, "repos": [...]} (pipeline check on repositories named in the
-tests; results/debug/, not counted), {"chunk": n, "issues": true, "repos": [...]} (§4.3 on the workflow route).
+tests; results/debug/, not counted), {"chunk": n, "issues": true, "repos": [...]} (§4.3 on the workflow route),
+{"chunk": "ac4", "ac4": true} (AC4 evidence fetch, CHANGES.md 20).
 """
 from __future__ import annotations
 
@@ -21,6 +22,8 @@ def done(req: dict) -> bool:
     res = HERE / "results"
     if req.get("probe"):
         return (res / "probe_workflow.json").exists()
+    if req.get("ac4"):
+        return (res / "ac4_wf" / "done.json").exists()
     if req.get("issues"):
         return False  # issues.py skips repositories already searched
     p = res / ("debug" if req.get("debug") else "") / "chunks.jsonl"
@@ -42,6 +45,9 @@ def main() -> int:
     if req.get("probe"):
         import probe
         return probe.main(["workflow"])
+    if req.get("ac4"):
+        import ac4fetch
+        return ac4fetch.main(req)
     if req.get("issues"):
         import issues
         return issues.main(["--route", "workflow", "--chunk", str(req["chunk"])] +

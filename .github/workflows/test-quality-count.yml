@@ -56,7 +56,7 @@ jobs:
           [ -d "$out" ] || exit 0
           # only the files a chunk writes (the work session never writes these; one chunk runs at a time)
           paths=""
-          for p in rows.jsonl chunks.jsonl raw probe_workflow.json issues_wf.jsonl issues_raw_wf debug; do
+          for p in rows.jsonl chunks.jsonl raw probe_workflow.json issues_wf.jsonl issues_raw_wf debug ac4_wf; do
             [ -e "$out/$p" ] && paths="$paths $out/$p"
           done
           [ -n "$paths" ] || exit 0
