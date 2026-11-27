@@ -83,18 +83,18 @@ search request, probe or candidate read (no data existed); none changes the deci
 
 ## Decision
 
-**KEEP READING: read 346, running 33, pain yes 14, U_R×N 24949.2, U_P×N 22697.6.**
+**KEEP READING: read 555, running 48, pain yes 17, U_R×N 22906.6, U_P×N 20742.9.**
 
 covered: GitHub Actions, tools stryker (JS/.NET/Scala), mutmut, cosmic-ray, PIT (Maven, Gradle), cargo-mutants, Infection, mutant, go-mutesting, gremlins, Mull, Muter, mutatest; not covered: other CI systems, private repositories, tools not listed.
 
-read 346, running 33, not-running 217, uncertain 96; pain yes 14, unknown 6, no 13; N 58715; U_R 0.42492 (U_R×N 24949.2), U_P 0.38657 (U_P×N 22697.6); whole frame read: no; truncated leaves: 2; incomplete leaves: 0; hand check: not passed.
+read 555, running 48, not-running 361, uncertain 146; pain yes 17, unknown 11, no 20; N 58715; U_R 0.39013 (U_R×N 22906.6), U_P 0.35328 (U_P×N 20742.9); whole frame read: no; truncated leaves: 2; incomplete leaves: 0; hand check: not passed.
 
 ## Discovery
 
 leaves 341, candidates 57499, unread hits on truncated leaves 1216, N 58715.
 DROP reachable via U_P at r >= 11275 (assumes no uncertain or unknown rows).
 
-Observed uncertain share 0.277; DROP still reachable within the frame: no.
+Observed uncertain share 0.263; DROP still reachable within the frame: no.
 
 | query | leaves | total_count | repos | only this query | unread hits | contribution to N | truncated |
 |---|---|---|---|---|---|---|---|
@@ -135,34 +135,38 @@ Truncated leaves: `B infection filename:infection.json` size:371..371 total 1608
 
 ## Funnel
 
-- candidates 57499 -> rows 450 -> excluded 104 (maintainer 2, stale 103) -> read 346
-- has-mutation-job 44, unresolved 7, tool-present-unlinked 85, no-mutation 210, error 0
-- running 33, configured-not-running 7, uncertain with a mutation job 4 (runs cap 3, unsupported 0)
-- duration read 33, duration pain 11
-- pain yes 14, unknown 6, no 13
+- candidates 57499 -> rows 750 -> excluded 195 (maintainer 2, stale 194) -> read 555
+- has-mutation-job 64, unresolved 9, tool-present-unlinked 132, no-mutation 350, error 0
+- running 48, configured-not-running 11, uncertain with a mutation job 5 (runs cap 4, unsupported 0)
+- duration read 45, duration pain 14
+- pain yes 17, unknown 11, no 20
 
-Pain unknown reasons (a repository can have several): 300-request cap 3, another mutation job uncertain 2, history not run 3, history-error 4, issues search not run 3
+Pain unknown reasons (a repository can have several): 300-request cap 4, another mutation job uncertain 2, history not run 4, history-error 5, issues search not run 4, runs cap with < 3 values 1, too_few_runs 3
 
 ## Per tool (running repositories)
 
 | tool | running | every-change | scheduled | manual | other | median duration min (quartiles) | machine min per run (median) | wrapped |
 |---|---|---|---|---|---|---|---|---|
-| stryker | 11 | 4 | 7 | 0 | 0 | 3.3 (Q1 1.0, Q3 63.3) | 3.3 | 0 |
-| mutmut | 5 | 2 | 3 | 0 | 0 | 6.1 (Q1 2.9, Q3 71.0) | 6.1 | 0 |
+| stryker | 19 | 10 | 9 | 0 | 0 | 3.3 (Q1 1.1, Q3 14.6) | 3.3 | 0 |
+| mutmut | 7 | 4 | 3 | 0 | 0 | 10.1 (Q1 4.5, Q3 57.3) | 10.1 | 0 |
 | pitest | 2 | 2 | 0 | 0 | 0 | 2.2 (Q1 2.0, Q3 2.5) | 2.2 | 0 |
-| cargo-mutants | 12 | 4 | 6 | 2 | 0 | 28.4 (Q1 22.7, Q3 119.3) | 212.7 | 0 |
+| cargo-mutants | 17 | 8 | 6 | 3 | 0 | 25.8 (Q1 18.1, Q3 172.5) | 172.5 | 0 |
 | infection | 4 | 3 | 1 | 0 | 0 | 1.4 (Q1 0.6, Q3 5.9) | 3.1 | 0 |
 | gremlins | 1 | 0 | 1 | 0 | 0 | 342.4 (one value) | 342.4 | 0 |
+| uses-action | 1 | 1 | 0 | 0 | 0 | 9.4 (one value) | 9.4 | 0 |
 
 ## Pain list
 
 | repository | tool | frequency | minutes | kind | date | quote / evidence |
 |---|---|---|---|---|---|---|
+| https://github.com/46b-ETYKiAL/SCR1B3 | cargo-mutants | every-change | 360.4 | duration | - | median of 10 runs, `.github/workflows/ci.yml` job `mutation` |
 | https://github.com/adfree-app/adfree | cargo-mutants | scheduled | 31.1 | duration | - | median of 6 runs, `.github/workflows/verify.yml` job `mutants` |
 | https://github.com/anesis-dev/anesis-cli | cargo-mutants | scheduled | 295.2 | duration | - | median of 8 runs, `.github/workflows/ci.yml` job `mutants` |
 | https://github.com/boredompeaks/perfume-store-backend | mutmut | scheduled | 71.0 | duration | - | median of 3 runs, `.github/workflows/mutation-weekly.yml` job `mutate` |
 | https://github.com/breimanntools/aaanalysis | mutmut | scheduled | 347.0 | duration | - | median of 10 runs, `.github/workflows/mutation_nightly.yml` job `nightly` |
+| https://github.com/chussenot/judgment | cargo-mutants | every-change | 350.3 | duration | - | median of 6 runs, `.github/workflows/mutants.yml` job `weekly` |
 | https://github.com/co3moz/aperio | cargo-mutants | manual | 25.8 | moved-off-change | 2026-08-19 | "Mutation testing is hours across eight runners and is now workflow_dispatch" https://github.com/co3moz/aperio/commit/1b35fd738c175c1d82746eda35e3cb6a8fd56ef1 |
+| https://github.com/DataDog/dd-license-attribution | mutmut | every-change | 43.5 | duration | - | median of 10 runs, `.github/workflows/mutation-base-cache.yml` job `mutation-base` |
 | https://github.com/drmrd/vernacular | stryker | scheduled | 0.3 | issue | 2026-11-22 | "On PR #1085 the mutation check for the schema commit ran about 18,000 mutants for 25 minutes on a fast local machine, and the CI proof job stopped at its 60-minute limit." https://github.com/drmrd/vernacular/pull/1086 |
 | https://github.com/erenmeren/alice | gremlins | scheduled | 342.4 | duration | - | median of 10 runs, `.github/workflows/nightly.yml` job `fuzz` |
 | https://github.com/ext-sakamoro/ALICE-Zip | cargo-mutants | every-change | 38.3 | duration | - | median of 10 runs, `.github/workflows/quality-deep.yml` job `mutants` |
@@ -178,7 +182,7 @@ Pain unknown reasons (a repository can have several): 300-request cap 3, another
 
 ## Information (not pain, not counted)
 
-- complaint-only or timeout texts (hand-read `information`): 27
+- complaint-only or timeout texts (hand-read `information`): 33
   - aeterna-universe/aeterna issue:35: "- **`pr-deep.yml`** — opt-in via `deep` label. tarpaulin coverage + `cargo-mutants --in-diff origin/master`." https://github.com/aeterna-universe/aeterna/pull/35
   - drmrd/vernacular issue:1013: "4. Stryker mutates the covered added lines. Each surviving mutant is a warning. CI caps this check at 15 minutes and starts with the newest GREEN commit." https://github.com/drmrd/vernacular/pull/1013
   - drmrd/vernacular issue:1036: "- The contributing guide now says that the weekly mutation job runs in incremental mode from the `stryker-incremental` branch, and that a run from scratch does not fit in the 360-minute job." https://github.com/drmrd/vernacular/pull/1036
@@ -194,6 +198,7 @@ Pain unknown reasons (a repository can have several): 300-request cap 3, another
   - halildeu/platform-web commit:940c4c4b83d5d0b5149052834ff213c4e034b430: "**Chart wrappers excluded** — tests render ECharts canvases that timeout under mutation analysis. Wrappers covered via option-shape + visual regression." https://github.com/Halildeu/platform-web/commit/940c4c4b83d5d0b5149052834ff213c4e034b430
   - halildeu/platform-web issue:200: "**Chart wrappers excluded** — tests render ECharts canvases that timeout under mutation analysis. Wrappers covered via option-shape + visual regression." https://github.com/Halildeu/platform-web/pull/200
   - manji-0/rdra-ish-dsl issue:204: "CPU cost is high. Each mutant rebuilds and reruns the corpus, which takes minutes." https://github.com/manji-0/rdra-ish-dsl/issues/204
+  - nasa-jpl/mango-ui issue:209: "including mutation testing for now, though we may want to change the cadence for this in the future as it currently extends action run time by several minutes" https://github.com/nasa-jpl/mango-ui/pull/209
   - notpellew/thalvi issue:247: "On a GitHub runner that is about 21s per mutant, so a whole-workspace run would take about 18 hours. Hence diff-only." https://github.com/NotPellew/Thalvi/pull/247
   - notpellew/thalvi issue:395: "#416 already made PR steps change-aware and moved diff-scoped mutation testing to the heavy tier." https://github.com/NotPellew/Thalvi/issues/395
   - notpellew/thalvi issue:403: "On #384 `ce46e6a`, shards 2 and 4 hit the 60-minute step limit after about 49 and 78 of 127 mutants. Both were green." https://github.com/NotPellew/Thalvi/pull/403
@@ -206,34 +211,47 @@ Pain unknown reasons (a repository can have several): 300-request cap 3, another
   - notpellew/thalvi issue:754: "Running these for hours on the owner's main PC competes with training and interactive work." https://github.com/NotPellew/Thalvi/pull/754
   - psyhfm/staff-engagement-poc issue:11: "**Stryker is local-only** (not in CI) for runtime reasons." https://github.com/psyHFM/Staff-Engagement-POC/pull/11
   - psyhfm/staff-engagement-poc issue:28: "Deferred (user-run heavy steps): PITest/JaCoCo on employee (Group 5.4) and local Stryker run (6.6)." https://github.com/psyHFM/Staff-Engagement-POC/pull/28
+  - sateno/rl_studio issue:2: "uses one mutation worker to avoid parallel-run timeouts" https://github.com/Sateno/rl_studio/pull/2
+  - seazn-club/seazn.club.engine issue:14: "The six cancelled legs are being re-run at a 300-minute limit from a throwaway branch; setbased-6 is the one the strict drift check still names, until it is measured." https://github.com/seazn-club/seazn.club.engine/pull/14
+  - seazn-club/seazn.club.engine issue:17: "Records the six legs that the 2026-11-01 cold re-measure cancelled at their stale limits." https://github.com/seazn-club/seazn.club.engine/pull/17
+  - seazn-club/seazn.club.engine issue:5: "`stryker-timeouts.json`: regenerated from the sizing test's own hint (1.5 × measured wall). **core-3 goes 18 → 93 minutes**" https://github.com/seazn-club/seazn.club.engine/pull/5
+  - seazn-club/seazn.club.engine issue:9: "**`stryker-timeouts.json`, core-2**: 183 → **282**, computed as ceil(1.5 × 11,270 / 60), within the 10 to 300 bounds." https://github.com/seazn-club/seazn.club.engine/pull/9
 - narrowing changes whose text mentions a timeout: 1
   - Halildeu/platform-web 940c4c4
-- configured-not-running: 7
+- configured-not-running: 11
   - 3rikF/ConsoleProgress
   - CPS-IT/bravo-handlebars-content
+  - LeoVie/clover-crap-check
   - Syavne/d-OAuth-Server
+  - andriy-git/stocksTUI
   - clementefalcone/goya-ledger
+  - impalah/celery-cloud
   - kotteletfisk/mtogo
+  - pvandervelde/release_regent
   - tongxin779977/VectaHub
   - virtengine/bosun
-- uses-action matches: 0
+- uses-action matches: 1
+  - itdojp/ae-framework: `./.github/actions/mutation-auto-diff`
 - excluded maintainer repositories that run mutation testing in CI: 0
 
 ## Hand check (AC4)
 
-samples: pain-yes 14, running 20, not-running 10, tool-present-unlinked 10, rejected 10, uses-action 0; missing verdicts 64; failures none; rule fix required: no.
+samples: pain-yes 17, running 20, not-running 10, tool-present-unlinked 10, rejected 10, uses-action 1; missing verdicts 68; failures none; rule fix required: no.
 
-- pain-yes: JoaoPucci/ani-gui, NotPellew/Thalvi, adfree-app/adfree, anesis-dev/anesis-cli, boredompeaks/perfume-store-backend, breimanntools/aaanalysis, co3moz/aperio, drmrd/vernacular, erenmeren/alice, ext-sakamoro/ALICE-Zip, lucasreali/hive, sandreialexandru/Smart-Heating-Control, ttu/emergency-supply-tracker, warpllm/warpllm
-- running: AndreasLohr/mailgun-dotnet, DhirendraHudda98/ParkIndia, Gusto/baerly-storage, JoaoPucci/ani-gui, Lex-Studios/Stellar-Spend, RoRoche/kstreamsmatchers, SafeVixAI/SafeVixAI, SuarezPM/kitty-code, adfree-app/adfree, aeterna-universe/aeterna, boredompeaks/perfume-store-backend, drmrd/vernacular, erenmeren/alice, ext-sakamoro/ALICE-Zip, hemsoft-dev/hs-buddy, lucasreali/hive, manji-0/rdra-ish-dsl, osolmaz/harbor-hf-customization, ryusoh/networking, ttu/emergency-supply-tracker
-- not-running: Assyauq26/Gheverhan, Ban-NUE/InformationHeritageGallery, TeaShaman-cyber/nakama-test, boldaxolotl/booley, braintrustdata/braintrust-sdk-java, digistackops-EMART-project/Digistack-Emart-App, ensj/trade-blotter, fortress07/LLM-Data-Poisoning-Simulation-Sandbox, fptu-se-su26/swp391-su26-ai-audit-project-swp391_se20a04_group-03-1, hyperpolymath/cccp
-- tool-present-unlinked: Canhada-Labs/ceo-orchestration, TOOleksandr-0101/TeleBlast, TrillionniumFoundation/HeptaKernel, aspectflow/reyta-transfer-protocol, assertpy/assertpy, diegonmarcos/cloudy_db_assets-cdn, kajisha/quint-tree-sitter, lecomputeur/vibez, ppcavalcante/flow-orchestrator, sandeepannandi/Cipher
-- rejected: eventjet/eventjet-json|issue:83, gusto/baerly-storage|issue:159, gusto/baerly-storage|issue:176, gusto/baerly-storage|issue:188, halildeu/platform-web|issue:917, lex-studios/stellar-spend|issue:1129, notpellew/thalvi|issue:40, notpellew/thalvi|issue:404, notpellew/thalvi|issue:655, ryusoh/networking|issue:136
+- pain-yes: 46b-ETYKiAL/SCR1B3, DataDog/dd-license-attribution, JoaoPucci/ani-gui, NotPellew/Thalvi, adfree-app/adfree, anesis-dev/anesis-cli, boredompeaks/perfume-store-backend, breimanntools/aaanalysis, chussenot/judgment, co3moz/aperio, drmrd/vernacular, erenmeren/alice, ext-sakamoro/ALICE-Zip, lucasreali/hive, sandreialexandru/Smart-Heating-Control, ttu/emergency-supply-tracker, warpllm/warpllm
+- running: Amirault/fix-mutants, AndreasLohr/mailgun-dotnet, DhirendraHudda98/ParkIndia, Halildeu/platform-web, Lex-Studios/Stellar-Spend, SafeVixAI/SafeVixAI, SuarezPM/kitty-code, aeterna-universe/aeterna, breimanntools/aaanalysis, co3moz/aperio, drmrd/vernacular, eclipxe13/enum, ext-sakamoro/ALICE-Zip, gabrielrufino/samplesize, manji-0/rdra-ish-dsl, nasa-jpl/mango-ui, psyHFM/Staff-Engagement-POC, ryusoh/networking, sandreialexandru/Smart-Heating-Control, ttu/emergency-supply-tracker
+- not-running: AudrenThibault/OPLBend-Tracker, BlackNugg3t/tarmacview, PortZeroNetwork/portzero, clementefalcone/goya-ledger, elastic/elastic-agent, ethanasm/vacation-price-tracker, hatan4ik/engineering-intelligence-platform, jentic/jentic-one, mohamadhelal94/Build-a-Complete-Medical-Chatbot-, pilotspace/moon
+- tool-present-unlinked: Cerberux77/HeptaCore, TrillionniumFoundation/HeptaKernel, ashishsinha1602/schemagate, aspectflow/reyta-transfer-protocol, deniskorbakov/skeleton-php-docker, diegonmarcos/cloudy_db_assets-cdn, kristos80/hook, marfarin/moysklad-mcp-ru, zalkilabs/zalki, zth/rescript-relay
+- rejected: halildeu/platform-web|issue:1001, halildeu/platform-web|issue:1173, lex-studios/stellar-spend|issue:1240, notpellew/thalvi|issue:393, notpellew/thalvi|issue:456, notpellew/thalvi|issue:462, psyhfm/staff-engagement-poc|issue:33, roroche/kstreamsmatchers|issue:194, ryusoh/networking|issue:219, seazn-club/seazn.club.engine|issue:13
+- uses-action: itdojp/ae-framework
 
 ## Budget
 
 - chunk 1: 150 candidates, 2573 requests, 17.15 per candidate, 129.0 per running repository, X-RateLimit-Remaining {'core': 3646}, 102.7 min, methods ['GET'], stopped None
 - chunk 2: 150 candidates, 2721 requests, 18.14 per candidate, 66.2 per running repository, X-RateLimit-Remaining {'core': 698}, 127.2 min, methods ['GET'], stopped None
 - chunk 3: 150 candidates, 3984 requests, 26.56 per candidate, 159.23 per running repository, X-RateLimit-Remaining {'core': 3753}, 33.6 min, methods ['GET'], stopped None
+- chunk 4: 150 candidates, 2731 requests, 18.21 per candidate, 122.89 per running repository, X-RateLimit-Remaining {'core': 375}, 28.5 min, methods ['GET'], stopped None
+- chunk 5: 150 candidates, 2969 requests, 19.79 per candidate, 125.5 per running repository, X-RateLimit-Remaining {'core': 1557}, 38.1 min, methods ['GET'], stopped None
 - pool: 58715, requests per candidate observed 17.15, requests per running repository observed 129.0, X-RateLimit-Remaining observed {'core': 3646}, fits 24 h: no
 
 ## Limits
