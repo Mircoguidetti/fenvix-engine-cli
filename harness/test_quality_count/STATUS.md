@@ -1,5 +1,9 @@
 # test-quality-count status
 
+PAUSED 2026-11-27 20:25Z until Mon 2026-12-01 09:00 UTC or the coordinator's RESUME (credits). On resume: pull the
+re-read results of chunks 1-3 (run 46036935910, pushes on its own), re-queue requests 4-6 then 7-10 (150 each,
+max_minutes 105, issues_route session), then issues, hand reads, report, verify, AC4 round 2.
+
 RESUMED 2026-11-27 10:05Z (coordinator instruction, early resume). Paused 05:40Z-10:05Z.
 
 - Discovery: done (N 58,715; 341 leaves, 0 incomplete, 0 pages lost).
