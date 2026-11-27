@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Workflow entry point: run one request file by its "kind" (probe | collect | oracle)."""
+"""Workflow entry point: run one request file by its "kind" (probe | collect | oracle | screen_r2 | collect_r2 |
+oracle_r2)."""
 from __future__ import annotations
 
 import json

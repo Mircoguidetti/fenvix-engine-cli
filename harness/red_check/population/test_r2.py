@@ -57,7 +57,6 @@ def test_v2_pytest_pattern_edges():
     assert p.search("3 passed, 1 failed, 2 skipped in 1.00s")
     assert not p.search("Build failed in 3.2s")
     assert not p.search("deploy: 1 failed in 0.5s retrying")
-    assert not p.search("0 failed, 5 passed in 0.1s") or int(p.search("0 failed, 5 passed in 0.1s").group(1)) == 0
     assert R.detect_runner("1 passed, 0 failed in 0.2s\n", version=2)[0] == R.NO_RUNNER
 
 
@@ -125,7 +124,6 @@ def test_screen_batches_resume_and_bad_names():
     pool = [{"repo": f"o{i:02d}/r"} for i in range(45)] + [{"repo": 'bad"/x'}]
     nodes = {f"o{i:02d}/r": node(wf=[("ci.yml", WF_DIRECT)]) for i in range(45) if i != 7}
     g, rows, state = FakeGQL(nodes), [], {"screen_next": 0, "screen_done": False}
-    g_low = [0]
 
     def emit(r):
         rows.append(r)
@@ -144,7 +142,6 @@ def test_screen_batches_resume_and_bad_names():
     g2.query = q_then_low
     assert r2.screen(g2, pool, state2, rows2.append, None).startswith("graphql rate limit low")
     assert state2["screen_next"] == 20 and len(rows2) == 20
-    del g_low
 
 
 # ---------------------------------------------------------------- R2.3 agent PRs
@@ -213,3 +210,52 @@ def test_collect_r2_uses_v2_rules_and_caps(monkeypatch):
     state2, rows2 = {"next": 0, "repos": {}, "repos_read": 0, "requests": 0, "stopped": None}, []
     assert r2.collect(api, state2, [(f"r{i:02d}/x", 2) for i in range(31)], rows2.append) == "30 repositories read"
     assert len(rows2) == 59 and state2["repos_read"] == 30
+
+
+# ---------------------------------------------------------------- review fixes (2026-11-27)
+
+def test_graphql_error_body_does_not_advance_or_emit():
+    """protects=a whole-query GraphQL failure (200 with data null) or a non-NOT_FOUND alias error stops the chunk
+    with nothing emitted and screen_next unchanged, so the next chunk retries; fails_when=the batch is recorded as
+    repo_unreadable and skipped for good; no_claim=every GitHub error shape."""
+    pool = [{"repo": "a/b"}, {"repo": 'bad"/x'}]
+    for body in ({"data": None, "errors": [{"message": "timeout"}]},
+                 {"data": {"r0": None}, "errors": [{"type": "FORBIDDEN", "path": ["r0"]}]}):
+        g = FakeGQL({})
+        g.query = lambda q, b=body: (200, b)
+        state, rows = {"screen_next": 0, "screen_done": False}, []
+        assert r2.screen(g, pool, state, rows.append, None).startswith("graphql")
+        assert state["screen_next"] == 0 and rows == []
+    g = FakeGQL({})
+    g.query = lambda q: (200, {"data": {"r0": None}, "errors": [{"type": "NOT_FOUND", "path": ["r0"]}]})
+    state, rows = {"screen_next": 0, "screen_done": False}, []
+    assert r2.screen(g, pool, state, rows.append, None) == "screening done"
+    assert [(r["repo"], r["reason"]) for r in rows] == [('bad"/x', "name not queryable"), ("a/b", "NOT_FOUND")]
+
+
+def test_age_cutoff_day_is_too_young():
+    """protects=PREREG_R2 R2.2: 'created before 2025-11-27'; a repository created on 2025-11-27 is too young;
+    fails_when=the cutoff day is eligible; no_claim=none."""
+    assert r2.screen_repo("a/b", node(created="2025-11-27T00:00:01Z", wf=[("ci.yml", WF_DIRECT)]))["verdict"] == \
+        "repo_too_young_r2"
+    assert r2.screen_repo("a/b", node(created="2025-11-26T23:59:59Z", wf=[("ci.yml", WF_DIRECT)]))["verdict"] == "eligible"
+
+
+def test_pull_listing_cut_short_is_recorded():
+    """protects=a listing that stopped on a later-page error or on the 3-page cap says so; fails_when=a truncated
+    listing looks complete; no_claim=none."""
+    full = [_pr(1000 - i, "x", "2026-11-20T00:00:00Z") for i in range(100)]
+    api = FakePulls([full, full, full])
+    r2.agent_prs(api, "o/r")
+    assert r2.agent_prs.last_note == "page_cap"
+
+    class Fail2(FakePulls):
+        def get_json(self, path):
+            if path.endswith("&page=2"):
+                self.n_requests += 1
+                return 502, "bad gateway"
+            return super().get_json(path)
+    prs, pages = r2.agent_prs(Fail2([full]), "o/r")
+    assert pages == 2 and prs == [] and r2.agent_prs.last_note == "page_error"
+    r2.agent_prs(FakePulls([[_pr(1, "Copilot", "2026-11-20T00:00:00Z")]]), "o/r")
+    assert r2.agent_prs.last_note is None

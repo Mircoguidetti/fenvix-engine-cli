@@ -75,7 +75,7 @@ def screen_repo(full_name: str, node: dict | None) -> dict:
     for k in ("fork", "archived", "private"):
         if out[k]:
             return {**out, "verdict": k}
-    if R.ts(out["created_at"]).date() > D - dt.timedelta(days=MIN_AGE_DAYS):
+    if R.ts(out["created_at"]).date() >= D - dt.timedelta(days=MIN_AGE_DAYS):  # created before 2025-11-27
         return {**out, "verdict": "repo_too_young_r2"}
     pkg = package_test_script(((node.get("pkg") or {}).get("text")))
     out["package_test"] = pkg
@@ -116,15 +116,26 @@ def screen(gql, pool: list[dict], state: dict, emit, deadline: float | None) -> 
             return "max_minutes"
         batch = order[state["screen_next"]: state["screen_next"] + BATCH]
         ok = [n for n in batch if NAME.match(n)]
-        for n in batch:
-            if n not in ok:
-                emit({"repo": n, "verdict": "repo_unreadable", "reason": "name not queryable"})
         st, d = gql.query(graphql_batch(ok)) if ok else (200, {"data": {}})
-        if st != 200 or not isinstance(d, dict) or "data" not in d:
-            return f"graphql HTTP {st}: {str(d)[:200]}"
-        data = d.get("data") or {}
+        if st != 200 or not isinstance(d, dict) or not isinstance(d.get("data"), dict):
+            return f"graphql HTTP {st}: {str(d)[:200]}"  # nothing emitted; the next chunk retries the batch
+        # Per-alias errors: only NOT_FOUND makes a repository unreadable; any other error stops the chunk (retry).
+        not_found = set()
+        for e in d.get("errors") or []:
+            alias = (e.get("path") or [None])[0]
+            if e.get("type") == "NOT_FOUND" and isinstance(alias, str):
+                not_found.add(alias)
+            else:
+                return f"graphql error: {str(e)[:200]}"
+        data = d["data"]
+        rows = [{"repo": n, "verdict": "repo_unreadable", "reason": "name not queryable"} for n in batch if n not in ok]
         for i, n in enumerate(ok):
-            emit(screen_repo(n, data.get(f"r{i}")))
+            row = screen_repo(n, data.get(f"r{i}"))
+            if row["verdict"] == "repo_unreadable":
+                row["reason"] = "NOT_FOUND" if f"r{i}" in not_found else "null without error"
+            rows.append(row)
+        for row in rows:
+            emit(row)
         state["screen_next"] += len(batch)
     state["screen_done"] = True
     return "screening done"
@@ -147,13 +158,18 @@ def families_of(p: dict) -> list[str]:
 
 
 def agent_prs(src, repo: str) -> tuple[list[dict] | None, int]:
-    """(agent PRs of the window newest first, or None when page 1 is unreadable; pages read)."""
+    """(agent PRs of the window newest first, or None when page 1 is unreadable; pages read). ``agent_prs.last_note``
+    says why a listing stopped early: 'page_error' (a later page failed) or 'page_cap' (3 pages, still in the window)."""
+    agent_prs.last_note = None
     out, pages = [], 0
     for page in range(1, MAX_PULL_PAGES + 1):
         st, d = src.get_json(f"repos/{repo}/pulls?state=all&sort=created&direction=desc&per_page=100&page={page}")
         pages += 1
         if st != 200 or not isinstance(d, list):
-            return (None, pages) if page == 1 else (out, pages)
+            if page == 1:
+                return None, pages
+            agent_prs.last_note = "page_error"
+            break
         for p in d:
             created = R.ts(p["created_at"]).date()
             fams = families_of(p)
@@ -162,6 +178,8 @@ def agent_prs(src, repo: str) -> tuple[list[dict] | None, int]:
                             "families": fams, "created_at": p["created_at"]})
         if len(d) < 100 or R.ts(d[-1]["created_at"]).date() < WINDOW_START:
             break
+        if page == MAX_PULL_PAGES:
+            agent_prs.last_note = "page_cap"
     out.sort(key=lambda r: (r["created_at"], r["url"]), reverse=True)
     return out, pages
 
@@ -198,7 +216,8 @@ def collect(src, state: dict, eligible: list[tuple[str, int]], emit, store_log=N
                     rs.update(status="excluded", reason="pulls_unreadable")
                     state["next"] += 1
                     continue
-                rs.update(prs=[p["url"] for p in prs][:C.MAX_PRS_PER_REPO], pull_pages=pages, n_agent_prs=len(prs))
+                rs.update(prs=[p["url"] for p in prs][:C.MAX_PRS_PER_REPO], pull_pages=pages, n_agent_prs=len(prs),
+                          pull_note=getattr(agent_prs, "last_note", None))
                 rs["pr_rows"] = {p["url"]: p for p in prs[:C.MAX_PRS_PER_REPO]}
             for url in rs["prs"]:
                 if url in rs["done_urls"] or url in seen:

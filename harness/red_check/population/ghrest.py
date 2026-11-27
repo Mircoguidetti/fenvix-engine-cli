@@ -152,7 +152,11 @@ class GraphQL:
                 with self.c.opener.open(graphql_request(self.url, self.c.token, q), timeout=120) as r:
                     st, h, body = r.status, r.headers, r.read()
             except urllib.error.HTTPError as e:
-                st, h, body = e.code, e.headers, e.read()
+                try:
+                    body = e.read()
+                except Exception:  # noqa: BLE001
+                    body = b""
+                st, h = e.code, e.headers
             except Exception as e:  # noqa: BLE001  network
                 st, h, body = "network", None, str(e)[:300].encode()
             if h is not None and h.get("X-RateLimit-Remaining") is not None:
