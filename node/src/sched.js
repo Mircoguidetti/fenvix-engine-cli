@@ -118,8 +118,7 @@ const NATIVE_WORK = [
 ];
 
 const OPEN = new WeakMap(); // native object -> Set of release functions of its calls in flight
-const BY_TEST = new Map(); // test id -> Set of release functions of the calls that test started
-let carried = new Set(); // calls the previous test left in flight: still counted until the end of this test
+const IN_FLIGHT = new Set(); // release functions of every node-sqlite3 call in flight (in a test, a hook, anywhere)
 const POISONED = new WeakSet(); // statements that failed to prepare: their calls never call back, so are not counted
 function releaseAll(o) {
   const s = o && OPEN.get(o);
@@ -128,23 +127,26 @@ function releaseAll(o) {
   for (const r of [...s]) r();
 }
 
-/**
- * A test ended: the native calls the previous test left in flight and that still have not called back stop counting
- * (any leak path not caught above costs at most two tests, not the rest of the worker). The calls this test left in
- * flight keep counting through the next test: it may wait on them (alakajam: the pool's connection is still busy
- * with the previous test's query while the next test waits in tarn's queue with a 60 s acquire timeout pending).
- */
-function releaseTestWork(testId) {
-  for (const r of [...carried]) r();
-  const s = BY_TEST.get(testId);
-  BY_TEST.delete(testId);
-  carried = s || new Set();
+// A native call still in flight when a test ends keeps counting for at most NATIVE_GRACE_MS of real time after that
+// end, then stops counting. A query the next test waits on (alakajam: the pool's connection still busy with the
+// previous test's query while the next test waits in tarn's queue) is done long before; a call that never calls back
+// (a path not caught by the callback wrap, eachDone or releaseOnError: a database whose open failed, a statement that
+// failed without a callback) costs at most that much real time, whoever started it (a test, a hook, module scope),
+// however many tests end meanwhile (skipped, concurrent).
+const NATIVE_GRACE_MS = 3000;
+function releaseTestWork() {
+  const { REAL } = require('./clock');
+  for (const r of IN_FLIGHT) {
+    if (r.expiry) continue;
+    r.expiry = REAL.setTimeout(r, NATIVE_GRACE_MS);
+    if (r.expiry && r.expiry.unref) r.expiry.unref();
+  }
 }
 
 /**
  * trackWork for the methods of a native class: each call in flight is also remembered on its object (releaseAll)
- * and on the running test (releaseTestWork). `each` is released by its completion callback: with only a row
- * callback (no rows: never called) one that only releases is added.
+ * and in IN_FLIGHT (releaseTestWork). `each` is released by its completion callback (with only a row callback, one
+ * that only releases is added) or by its row callback called with an error (a finalized statement calls only that).
  */
 function trackOwned(patcher, P, names) {
   for (const n of names) {
@@ -155,7 +157,6 @@ function trackOwned(patcher, P, names) {
       if (self && typeof self === 'object' && POISONED.has(self)) return real.apply(this, a);
       const i = a.length - 1;
       if (i < 0 || typeof a[i] !== 'function') return real.apply(this, a);
-      const test = STATE.testId;
       let done = false;
       const release = () => {
         if (done) return;
@@ -163,15 +164,19 @@ function trackOwned(patcher, P, names) {
         work -= 1;
         const s = OPEN.get(self);
         if (s) s.delete(release);
-        const t = BY_TEST.get(test);
-        if (t) t.delete(release);
-        carried.delete(release);
+        IN_FLIGHT.delete(release);
+        if (release.expiry) require('./clock').REAL.clearTimeout(release.expiry);
       };
-      if (n === 'each' && !(i >= 1 && typeof a[i - 1] === 'function')) a.push(function eachDone() { release(); });
-      else { const cb = a[i]; a[i] = function (...r) { release(); return cb.apply(this, r); }; }
+      if (n === 'each') {
+        const two = i >= 1 && typeof a[i - 1] === 'function';
+        const row = two ? i - 1 : i;
+        const rowCb = a[row];
+        a[row] = function (err, ...r) { if (err) release(); return rowCb.call(this, err, ...r); };
+        if (two) { const cb = a[i]; a[i] = function (...r) { release(); return cb.apply(this, r); }; } else a.push(function eachDone() { release(); });
+      } else { const cb = a[i]; a[i] = function (...r) { release(); return cb.apply(this, r); }; }
       work += 1;
       if (self && typeof self === 'object') { let s = OPEN.get(self); if (!s) OPEN.set(self, (s = new Set())); s.add(release); }
-      if (test !== null) { let t = BY_TEST.get(test); if (!t) BY_TEST.set(test, (t = new Set())); t.add(release); }
+      IN_FLIGHT.add(release);
       try {
         return real.apply(this, a);
       } catch (e) {
@@ -240,7 +245,7 @@ function installNativeWork(patcher) {
   }
   Object.defineProperty(w, '__detjsNativeWork', { value: true });
   patcher.set(Module, '_load', w);
-  if (Array.isArray(STATE.onTestEnd)) STATE.onTestEnd.push((id) => releaseTestWork(id));
+  if (Array.isArray(STATE.onTestEnd)) STATE.onTestEnd.push(() => releaseTestWork());
   // already loaded (an earlier file of this process)
   for (const [file, mod] of Object.entries(require.cache)) {
     if (file.endsWith('.node') && mod && mod.exports && typeof mod.exports === 'object') { try { nativeWork(patcher, mod.exports); } catch { /* ignore */ } }

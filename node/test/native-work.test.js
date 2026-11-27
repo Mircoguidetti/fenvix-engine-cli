@@ -17,8 +17,9 @@
 //   deadline ("Test timed out in 5000ms") and the run ends (tests/deadline.test.mjs); fails_when the pending work
 //   keeps the scheduler waiting past the deadline (the run hangs: killed after 240 s) or a later sleep stays slow.
 // no_claim: native calls without a callback (stmt.finalize()), the Database constructor's open, a node-sqlite3 that
-//   was loaded before the engine's hooks, and other addons (listed in harness/p3_flips/NATIVE.md) are not covered. Needs node-sqlite3 5.1.7 from the npm registry
-//   (installed once into test/.tmp/pkgs-sqlite3); if it cannot be installed the test fails, it does not skip.
+//   was loaded before the engine's hooks, and other addons (listed in harness/p3_flips/NATIVE.md) are not covered.
+//   Needs node-sqlite3 5.1.7 from the npm registry (installed once into test/.tmp/pkgs-sqlite3); if it cannot be
+//   installed the test fails, it does not skip.
 // Run: cd node && node --test --test-concurrency=1 test/native-work.test.js
 const { test } = require('node:test');
 const assert = require('node:assert/strict');

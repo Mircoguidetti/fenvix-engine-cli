@@ -7,10 +7,11 @@
 //   and every timer of the next test.
 // fails_when: a long timer (> the pacing bound) of a child-starting test runs at real pace; or the pacing outlives
 //   the test that started the child.
-// no_claim: that a test's short timers are virtual after it started a child (they are paced on purpose); that the
-//   reset at test end is needed (pacing also requires the running test to be the one that started the child, so no
-//   guard can catch a missing reset). The wall bound is generous (30 s of virtual sleep must take under 8 s of real
-//   time).
+//   Guard (2) also catches a pacing set not reset at test end (the next test's short timers would be paced); guards
+//   (3) and (4) check the asynchronous spawn and the Worker paths pace like spawnSync.
+// no_claim: that a test's short timers are virtual after it started a child (they are paced on purpose); concurrent
+//   tests (test.concurrent) are not covered. The wall bound is generous (30 s of virtual sleep must take under 8 s of
+//   real time).
 // Run: cd node && node --test --test-concurrency=1 test/p3-timers-child.test.js
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
