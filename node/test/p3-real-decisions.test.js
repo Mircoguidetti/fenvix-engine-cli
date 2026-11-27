@@ -158,3 +158,80 @@ test('(3) a native call whose owner already ended, or never ends, still stops co
     STATE.testId = saved;
   }
 });
+
+// Coordinator /review of 105cdcad..8b59fa8f (2026-11-27): (4) CRITICAL 1 with test.concurrent; (5) and (6) CRITICAL 2:
+// a query still running must keep counting for as long as it runs, whatever ends meanwhile (no real-time grace).
+test('(4) P1 with test.concurrent: a vi.waitFor racing a test timer is not reused', T, () => {
+  const dir = fixture('p3-real', 'p1-race-concurrent', {
+    ...CONFIG, ...CONTROL,
+    'tests/race.test.mjs': `import { test, vi } from 'vitest';
+test.concurrent('a vi.waitFor racing a 50 ms test timer', async () => {
+  let flag = 0;
+  setTimeout(() => { flag = 1; }, 50);
+  await vi.waitFor(() => { if (!flag) throw new Error('not yet'); }, { interval: 50, timeout: 60 }).catch(() => {});
+});
+test.concurrent('a sibling', async () => { await new Promise((r) => setTimeout(r, 10)); });
+`,
+  });
+  const r1 = crun('vitest', dir, ['run']);
+  assert.equal(r1.status, 0, show(r1));
+  const r2 = crun('vitest', dir, ['run']);
+  assert.ok(reused(r2).includes('tests/control.test.mjs'), `the control file is reused\n${show(r2)}`);
+  assert.ok(!reused(r2).includes('tests/race.test.mjs'), `WRONG REUSE: real time decided the race of a concurrent test\n${show(r2)}`);
+});
+
+// count(*) over a recursive CTE: tens of seconds of real work without an integer overflow
+const LONG = (n) => `WITH RECURSIVE c(x) AS (SELECT 1 UNION ALL SELECT x+1 FROM c WHERE x<${n}) SELECT count(*) n FROM c`;
+
+function plainAndDet(dir, minPlain, label) {
+  const t0 = Date.now();
+  const plain = spawnSync(process.execPath, [path.join(__dirname, '..', 'node_modules', 'vitest', 'vitest.mjs'), 'run'], { cwd: dir, encoding: 'utf8', env: env(), timeout: 300000 });
+  const plainWall = (Date.now() - t0) / 1000;
+  assert.equal(plain.status, 0, `the plain run passes\n${plain.stdout}\n${plain.stderr}`);
+  assert.ok(plainWall > minPlain, `${label}: the query must run longer than ${minPlain} s for this test to mean anything (plain ${plainWall} s)`);
+  const r = spawnSync(process.execPath, [BIN, 'vitest', 'run', '--det', '--det-workers=1'], { cwd: dir, encoding: 'utf8', env: env(), timeout: 300000 });
+  const text = `${(r.stdout || '').slice(-3000)}\n${(r.stderr || '').slice(-2000)}`;
+  assert.equal(r.status, 0, `${label}: the --det run passes like the plain run (no wrong red)\n${text}`);
+}
+
+test('(5) a concurrent query running longer than 12 s keeps counting when its sibling ends', T, () => {
+  const dir = fixture('p3-real', 'sibling-long', {
+    ...CONFIG,
+    'tests/sibling.test.mjs': `import { test, expect } from 'vitest';
+import { createRequire } from 'node:module';
+const sqlite3 = createRequire(process.env.FIXTURE_SQLITE3)('sqlite3');
+test.concurrent('a long query with a 60 s guard timer pending is not timed out', async () => {
+  const db = new sqlite3.Database(':memory:');
+  const guard = setTimeout(() => {}, 60000);
+  const rows = await new Promise((res, rej) => db.all(${JSON.stringify(LONG(150000000))}, (e, r) => (e ? rej(e) : res(r))));
+  clearTimeout(guard);
+  expect(rows[0].n).toBe(150000000);
+  await new Promise((r) => db.close(r));
+}, 55000);
+test.concurrent('a sibling that ends at once', () => { expect(1).toBe(1); });
+`,
+  });
+  plainAndDet(dir, 14, '(5)');
+});
+
+test('(6) a query still running when its test ends keeps counting while the next test waits for it', T, () => {
+  const dir = fixture('p3-real', 'carry-long', {
+    ...CONFIG,
+    'tests/carry.test.mjs': `import { test, expect } from 'vitest';
+import { createRequire } from 'node:module';
+const sqlite3 = createRequire(process.env.FIXTURE_SQLITE3)('sqlite3');
+let connectionFree = null;
+test('leaves a long query running on the pool connection', () => {
+  const db = new sqlite3.Database(':memory:');
+  connectionFree = new Promise((r) => db.all(${JSON.stringify(LONG(60000000))}, () => db.close(r)));
+});
+test('the next test waits for that connection with a 60 s guard timer pending (as tarn)', async () => {
+  const guard = setTimeout(() => {}, 60000);
+  await connectionFree;
+  clearTimeout(guard);
+  expect(1).toBe(1);
+}, 40000);
+`,
+  });
+  plainAndDet(dir, 5, '(6)');
+});
