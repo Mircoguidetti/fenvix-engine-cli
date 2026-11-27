@@ -1,7 +1,464 @@
 {
  "graphql_requests": 183,
- "next": 8,
+ "next": 11,
  "repos": {
+  "berriai/litellm": {
+   "done_urls": [
+    "https://github.com/BerriAI/litellm/pull/54754",
+    "https://github.com/BerriAI/litellm/pull/54748",
+    "https://github.com/BerriAI/litellm/pull/54746",
+    "https://github.com/BerriAI/litellm/pull/54745",
+    "https://github.com/BerriAI/litellm/pull/54742",
+    "https://github.com/BerriAI/litellm/pull/54741",
+    "https://github.com/BerriAI/litellm/pull/54736",
+    "https://github.com/BerriAI/litellm/pull/54735",
+    "https://github.com/BerriAI/litellm/pull/54728",
+    "https://github.com/BerriAI/litellm/pull/54721",
+    "https://github.com/BerriAI/litellm/pull/54718",
+    "https://github.com/BerriAI/litellm/pull/54709",
+    "https://github.com/BerriAI/litellm/pull/54708",
+    "https://github.com/BerriAI/litellm/pull/54697",
+    "https://github.com/BerriAI/litellm/pull/54696",
+    "https://github.com/BerriAI/litellm/pull/54695",
+    "https://github.com/BerriAI/litellm/pull/54673",
+    "https://github.com/BerriAI/litellm/pull/54669",
+    "https://github.com/BerriAI/litellm/pull/54662",
+    "https://github.com/BerriAI/litellm/pull/54627",
+    "https://github.com/BerriAI/litellm/pull/54616",
+    "https://github.com/BerriAI/litellm/pull/54602",
+    "https://github.com/BerriAI/litellm/pull/54600",
+    "https://github.com/BerriAI/litellm/pull/54599",
+    "https://github.com/BerriAI/litellm/pull/54593",
+    "https://github.com/BerriAI/litellm/pull/54581",
+    "https://github.com/BerriAI/litellm/pull/54580",
+    "https://github.com/BerriAI/litellm/pull/54579",
+    "https://github.com/BerriAI/litellm/pull/54578",
+    "https://github.com/BerriAI/litellm/pull/54560",
+    "https://github.com/BerriAI/litellm/pull/54558",
+    "https://github.com/BerriAI/litellm/pull/54556",
+    "https://github.com/BerriAI/litellm/pull/54555",
+    "https://github.com/BerriAI/litellm/pull/54554",
+    "https://github.com/BerriAI/litellm/pull/54546",
+    "https://github.com/BerriAI/litellm/pull/54532",
+    "https://github.com/BerriAI/litellm/pull/54525"
+   ],
+   "n_agent_prs": 37,
+   "name": "BerriAI/litellm",
+   "pr_rows": {
+    "https://github.com/BerriAI/litellm/pull/54525": {
+     "created_at": "2026-11-25T21:44:44Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54525,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54525"
+    },
+    "https://github.com/BerriAI/litellm/pull/54532": {
+     "created_at": "2026-11-25T22:06:08Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54532,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54532"
+    },
+    "https://github.com/BerriAI/litellm/pull/54546": {
+     "created_at": "2026-11-25T22:45:47Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54546,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54546"
+    },
+    "https://github.com/BerriAI/litellm/pull/54554": {
+     "created_at": "2026-11-25T23:37:00Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54554,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54554"
+    },
+    "https://github.com/BerriAI/litellm/pull/54555": {
+     "created_at": "2026-11-25T23:42:50Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54555,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54555"
+    },
+    "https://github.com/BerriAI/litellm/pull/54556": {
+     "created_at": "2026-11-26T00:03:07Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54556,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54556"
+    },
+    "https://github.com/BerriAI/litellm/pull/54558": {
+     "created_at": "2026-11-26T00:13:32Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54558,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54558"
+    },
+    "https://github.com/BerriAI/litellm/pull/54560": {
+     "created_at": "2026-11-26T00:14:18Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54560,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54560"
+    },
+    "https://github.com/BerriAI/litellm/pull/54578": {
+     "created_at": "2026-11-26T02:13:41Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 54578,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54578"
+    },
+    "https://github.com/BerriAI/litellm/pull/54579": {
+     "created_at": "2026-11-26T02:13:44Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 54579,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54579"
+    },
+    "https://github.com/BerriAI/litellm/pull/54580": {
+     "created_at": "2026-11-26T02:13:47Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 54580,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54580"
+    },
+    "https://github.com/BerriAI/litellm/pull/54581": {
+     "created_at": "2026-11-26T02:13:50Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 54581,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54581"
+    },
+    "https://github.com/BerriAI/litellm/pull/54593": {
+     "created_at": "2026-11-26T02:41:37Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54593,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54593"
+    },
+    "https://github.com/BerriAI/litellm/pull/54599": {
+     "created_at": "2026-11-26T02:52:13Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54599,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54599"
+    },
+    "https://github.com/BerriAI/litellm/pull/54600": {
+     "created_at": "2026-11-26T02:53:23Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 54600,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54600"
+    },
+    "https://github.com/BerriAI/litellm/pull/54602": {
+     "created_at": "2026-11-26T03:00:12Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54602,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54602"
+    },
+    "https://github.com/BerriAI/litellm/pull/54616": {
+     "created_at": "2026-11-26T03:30:10Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 54616,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54616"
+    },
+    "https://github.com/BerriAI/litellm/pull/54627": {
+     "created_at": "2026-11-26T04:18:32Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54627,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54627"
+    },
+    "https://github.com/BerriAI/litellm/pull/54662": {
+     "created_at": "2026-11-26T08:04:37Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54662,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54662"
+    },
+    "https://github.com/BerriAI/litellm/pull/54669": {
+     "created_at": "2026-11-26T08:22:24Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54669,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54669"
+    },
+    "https://github.com/BerriAI/litellm/pull/54673": {
+     "created_at": "2026-11-26T08:47:22Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54673,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54673"
+    },
+    "https://github.com/BerriAI/litellm/pull/54695": {
+     "created_at": "2026-11-26T12:25:41Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 54695,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54695"
+    },
+    "https://github.com/BerriAI/litellm/pull/54696": {
+     "created_at": "2026-11-26T12:25:44Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 54696,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54696"
+    },
+    "https://github.com/BerriAI/litellm/pull/54697": {
+     "created_at": "2026-11-26T12:25:47Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 54697,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54697"
+    },
+    "https://github.com/BerriAI/litellm/pull/54708": {
+     "created_at": "2026-11-26T13:33:01Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 54708,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54708"
+    },
+    "https://github.com/BerriAI/litellm/pull/54709": {
+     "created_at": "2026-11-26T13:58:43Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 54709,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54709"
+    },
+    "https://github.com/BerriAI/litellm/pull/54718": {
+     "created_at": "2026-11-26T16:24:31Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54718,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54718"
+    },
+    "https://github.com/BerriAI/litellm/pull/54721": {
+     "created_at": "2026-11-26T16:52:04Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 54721,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54721"
+    },
+    "https://github.com/BerriAI/litellm/pull/54728": {
+     "created_at": "2026-11-26T17:54:06Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54728,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54728"
+    },
+    "https://github.com/BerriAI/litellm/pull/54735": {
+     "created_at": "2026-11-26T18:53:43Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54735,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54735"
+    },
+    "https://github.com/BerriAI/litellm/pull/54736": {
+     "created_at": "2026-11-26T18:53:45Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54736,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54736"
+    },
+    "https://github.com/BerriAI/litellm/pull/54741": {
+     "created_at": "2026-11-26T19:17:07Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54741,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54741"
+    },
+    "https://github.com/BerriAI/litellm/pull/54742": {
+     "created_at": "2026-11-26T19:17:17Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54742,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54742"
+    },
+    "https://github.com/BerriAI/litellm/pull/54745": {
+     "created_at": "2026-11-26T20:24:39Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54745,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54745"
+    },
+    "https://github.com/BerriAI/litellm/pull/54746": {
+     "created_at": "2026-11-26T21:08:42Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54746,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54746"
+    },
+    "https://github.com/BerriAI/litellm/pull/54748": {
+     "created_at": "2026-11-26T21:32:18Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54748,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54748"
+    },
+    "https://github.com/BerriAI/litellm/pull/54754": {
+     "created_at": "2026-11-26T22:55:25Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 54754,
+     "repo": "BerriAI/litellm",
+     "url": "https://github.com/BerriAI/litellm/pull/54754"
+    }
+   },
+   "prs": [
+    "https://github.com/BerriAI/litellm/pull/54754",
+    "https://github.com/BerriAI/litellm/pull/54748",
+    "https://github.com/BerriAI/litellm/pull/54746",
+    "https://github.com/BerriAI/litellm/pull/54745",
+    "https://github.com/BerriAI/litellm/pull/54742",
+    "https://github.com/BerriAI/litellm/pull/54741",
+    "https://github.com/BerriAI/litellm/pull/54736",
+    "https://github.com/BerriAI/litellm/pull/54735",
+    "https://github.com/BerriAI/litellm/pull/54728",
+    "https://github.com/BerriAI/litellm/pull/54721",
+    "https://github.com/BerriAI/litellm/pull/54718",
+    "https://github.com/BerriAI/litellm/pull/54709",
+    "https://github.com/BerriAI/litellm/pull/54708",
+    "https://github.com/BerriAI/litellm/pull/54697",
+    "https://github.com/BerriAI/litellm/pull/54696",
+    "https://github.com/BerriAI/litellm/pull/54695",
+    "https://github.com/BerriAI/litellm/pull/54673",
+    "https://github.com/BerriAI/litellm/pull/54669",
+    "https://github.com/BerriAI/litellm/pull/54662",
+    "https://github.com/BerriAI/litellm/pull/54627",
+    "https://github.com/BerriAI/litellm/pull/54616",
+    "https://github.com/BerriAI/litellm/pull/54602",
+    "https://github.com/BerriAI/litellm/pull/54600",
+    "https://github.com/BerriAI/litellm/pull/54599",
+    "https://github.com/BerriAI/litellm/pull/54593",
+    "https://github.com/BerriAI/litellm/pull/54581",
+    "https://github.com/BerriAI/litellm/pull/54580",
+    "https://github.com/BerriAI/litellm/pull/54579",
+    "https://github.com/BerriAI/litellm/pull/54578",
+    "https://github.com/BerriAI/litellm/pull/54560",
+    "https://github.com/BerriAI/litellm/pull/54558",
+    "https://github.com/BerriAI/litellm/pull/54556",
+    "https://github.com/BerriAI/litellm/pull/54555",
+    "https://github.com/BerriAI/litellm/pull/54554",
+    "https://github.com/BerriAI/litellm/pull/54546",
+    "https://github.com/BerriAI/litellm/pull/54532",
+    "https://github.com/BerriAI/litellm/pull/54525"
+   ],
+   "pull_pages": 3,
+   "read": 37,
+   "status": "done"
+  },
   "bible-on-site/bible-on-site": {
    "done_urls": [],
    "n_agent_prs": 0,
@@ -2477,11 +2934,538 @@
    "read": 40,
    "status": "done"
   },
+  "kyegomez/swarms": {
+   "done_urls": [
+    "https://github.com/kyegomez/swarms/pull/3801",
+    "https://github.com/kyegomez/swarms/pull/3800",
+    "https://github.com/kyegomez/swarms/pull/3799",
+    "https://github.com/kyegomez/swarms/pull/3797",
+    "https://github.com/kyegomez/swarms/pull/3796",
+    "https://github.com/kyegomez/swarms/pull/3775",
+    "https://github.com/kyegomez/swarms/pull/3774",
+    "https://github.com/kyegomez/swarms/pull/3773",
+    "https://github.com/kyegomez/swarms/pull/3769",
+    "https://github.com/kyegomez/swarms/pull/3768",
+    "https://github.com/kyegomez/swarms/pull/3767",
+    "https://github.com/kyegomez/swarms/pull/3763",
+    "https://github.com/kyegomez/swarms/pull/3761",
+    "https://github.com/kyegomez/swarms/pull/3759",
+    "https://github.com/kyegomez/swarms/pull/3757",
+    "https://github.com/kyegomez/swarms/pull/3755",
+    "https://github.com/kyegomez/swarms/pull/3754",
+    "https://github.com/kyegomez/swarms/pull/3753",
+    "https://github.com/kyegomez/swarms/pull/3750",
+    "https://github.com/kyegomez/swarms/pull/3748",
+    "https://github.com/kyegomez/swarms/pull/3747",
+    "https://github.com/kyegomez/swarms/pull/3746",
+    "https://github.com/kyegomez/swarms/pull/3742",
+    "https://github.com/kyegomez/swarms/pull/3741",
+    "https://github.com/kyegomez/swarms/pull/3740",
+    "https://github.com/kyegomez/swarms/pull/3739",
+    "https://github.com/kyegomez/swarms/pull/3738",
+    "https://github.com/kyegomez/swarms/pull/3737",
+    "https://github.com/kyegomez/swarms/pull/3733",
+    "https://github.com/kyegomez/swarms/pull/3732",
+    "https://github.com/kyegomez/swarms/pull/3730",
+    "https://github.com/kyegomez/swarms/pull/3728",
+    "https://github.com/kyegomez/swarms/pull/3726",
+    "https://github.com/kyegomez/swarms/pull/3718",
+    "https://github.com/kyegomez/swarms/pull/3717",
+    "https://github.com/kyegomez/swarms/pull/3713",
+    "https://github.com/kyegomez/swarms/pull/3711"
+   ],
+   "n_agent_prs": 270,
+   "name": "kyegomez/swarms",
+   "pr_rows": {
+    "https://github.com/kyegomez/swarms/pull/3708": {
+     "created_at": "2026-11-23T22:44:55Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3708,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3708"
+    },
+    "https://github.com/kyegomez/swarms/pull/3709": {
+     "created_at": "2026-11-23T22:57:33Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3709,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3709"
+    },
+    "https://github.com/kyegomez/swarms/pull/3710": {
+     "created_at": "2026-11-24T00:56:38Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3710,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3710"
+    },
+    "https://github.com/kyegomez/swarms/pull/3711": {
+     "created_at": "2026-11-24T03:25:37Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3711,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3711"
+    },
+    "https://github.com/kyegomez/swarms/pull/3713": {
+     "created_at": "2026-11-24T11:28:30Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3713,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3713"
+    },
+    "https://github.com/kyegomez/swarms/pull/3717": {
+     "created_at": "2026-11-24T13:36:16Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3717,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3717"
+    },
+    "https://github.com/kyegomez/swarms/pull/3718": {
+     "created_at": "2026-11-24T13:46:38Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3718,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3718"
+    },
+    "https://github.com/kyegomez/swarms/pull/3726": {
+     "created_at": "2026-11-24T16:31:51Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3726,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3726"
+    },
+    "https://github.com/kyegomez/swarms/pull/3728": {
+     "created_at": "2026-11-24T16:47:58Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3728,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3728"
+    },
+    "https://github.com/kyegomez/swarms/pull/3730": {
+     "created_at": "2026-11-24T17:04:05Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3730,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3730"
+    },
+    "https://github.com/kyegomez/swarms/pull/3732": {
+     "created_at": "2026-11-24T17:36:19Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3732,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3732"
+    },
+    "https://github.com/kyegomez/swarms/pull/3733": {
+     "created_at": "2026-11-24T17:59:11Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3733,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3733"
+    },
+    "https://github.com/kyegomez/swarms/pull/3737": {
+     "created_at": "2026-11-24T18:56:54Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3737,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3737"
+    },
+    "https://github.com/kyegomez/swarms/pull/3738": {
+     "created_at": "2026-11-24T19:27:18Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3738,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3738"
+    },
+    "https://github.com/kyegomez/swarms/pull/3739": {
+     "created_at": "2026-11-24T21:17:25Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3739,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3739"
+    },
+    "https://github.com/kyegomez/swarms/pull/3740": {
+     "created_at": "2026-11-24T21:27:36Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3740,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3740"
+    },
+    "https://github.com/kyegomez/swarms/pull/3741": {
+     "created_at": "2026-11-24T21:34:03Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3741,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3741"
+    },
+    "https://github.com/kyegomez/swarms/pull/3742": {
+     "created_at": "2026-11-25T00:02:55Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3742,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3742"
+    },
+    "https://github.com/kyegomez/swarms/pull/3746": {
+     "created_at": "2026-11-25T17:54:57Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3746,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3746"
+    },
+    "https://github.com/kyegomez/swarms/pull/3747": {
+     "created_at": "2026-11-25T17:55:45Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3747,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3747"
+    },
+    "https://github.com/kyegomez/swarms/pull/3748": {
+     "created_at": "2026-11-25T17:59:24Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3748,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3748"
+    },
+    "https://github.com/kyegomez/swarms/pull/3750": {
+     "created_at": "2026-11-25T18:18:49Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3750,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3750"
+    },
+    "https://github.com/kyegomez/swarms/pull/3753": {
+     "created_at": "2026-11-25T19:05:24Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3753,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3753"
+    },
+    "https://github.com/kyegomez/swarms/pull/3754": {
+     "created_at": "2026-11-25T19:20:28Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3754,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3754"
+    },
+    "https://github.com/kyegomez/swarms/pull/3755": {
+     "created_at": "2026-11-25T19:50:40Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3755,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3755"
+    },
+    "https://github.com/kyegomez/swarms/pull/3757": {
+     "created_at": "2026-11-25T21:19:32Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3757,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3757"
+    },
+    "https://github.com/kyegomez/swarms/pull/3759": {
+     "created_at": "2026-11-25T23:36:59Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3759,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3759"
+    },
+    "https://github.com/kyegomez/swarms/pull/3761": {
+     "created_at": "2026-11-26T02:46:22Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3761,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3761"
+    },
+    "https://github.com/kyegomez/swarms/pull/3763": {
+     "created_at": "2026-11-26T03:10:31Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3763,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3763"
+    },
+    "https://github.com/kyegomez/swarms/pull/3767": {
+     "created_at": "2026-11-26T03:26:38Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3767,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3767"
+    },
+    "https://github.com/kyegomez/swarms/pull/3768": {
+     "created_at": "2026-11-26T12:07:56Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3768,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3768"
+    },
+    "https://github.com/kyegomez/swarms/pull/3769": {
+     "created_at": "2026-11-26T12:11:02Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3769,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3769"
+    },
+    "https://github.com/kyegomez/swarms/pull/3773": {
+     "created_at": "2026-11-26T15:40:33Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3773,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3773"
+    },
+    "https://github.com/kyegomez/swarms/pull/3774": {
+     "created_at": "2026-11-26T15:43:13Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3774,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3774"
+    },
+    "https://github.com/kyegomez/swarms/pull/3775": {
+     "created_at": "2026-11-26T16:01:55Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3775,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3775"
+    },
+    "https://github.com/kyegomez/swarms/pull/3796": {
+     "created_at": "2026-11-26T21:45:59Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3796,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3796"
+    },
+    "https://github.com/kyegomez/swarms/pull/3797": {
+     "created_at": "2026-11-26T21:49:21Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3797,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3797"
+    },
+    "https://github.com/kyegomez/swarms/pull/3799": {
+     "created_at": "2026-11-26T22:01:03Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3799,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3799"
+    },
+    "https://github.com/kyegomez/swarms/pull/3800": {
+     "created_at": "2026-11-26T22:05:27Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3800,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3800"
+    },
+    "https://github.com/kyegomez/swarms/pull/3801": {
+     "created_at": "2026-11-26T22:16:06Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3801,
+     "repo": "kyegomez/swarms",
+     "url": "https://github.com/kyegomez/swarms/pull/3801"
+    }
+   },
+   "prs": [
+    "https://github.com/kyegomez/swarms/pull/3801",
+    "https://github.com/kyegomez/swarms/pull/3800",
+    "https://github.com/kyegomez/swarms/pull/3799",
+    "https://github.com/kyegomez/swarms/pull/3797",
+    "https://github.com/kyegomez/swarms/pull/3796",
+    "https://github.com/kyegomez/swarms/pull/3775",
+    "https://github.com/kyegomez/swarms/pull/3774",
+    "https://github.com/kyegomez/swarms/pull/3773",
+    "https://github.com/kyegomez/swarms/pull/3769",
+    "https://github.com/kyegomez/swarms/pull/3768",
+    "https://github.com/kyegomez/swarms/pull/3767",
+    "https://github.com/kyegomez/swarms/pull/3763",
+    "https://github.com/kyegomez/swarms/pull/3761",
+    "https://github.com/kyegomez/swarms/pull/3759",
+    "https://github.com/kyegomez/swarms/pull/3757",
+    "https://github.com/kyegomez/swarms/pull/3755",
+    "https://github.com/kyegomez/swarms/pull/3754",
+    "https://github.com/kyegomez/swarms/pull/3753",
+    "https://github.com/kyegomez/swarms/pull/3750",
+    "https://github.com/kyegomez/swarms/pull/3748",
+    "https://github.com/kyegomez/swarms/pull/3747",
+    "https://github.com/kyegomez/swarms/pull/3746",
+    "https://github.com/kyegomez/swarms/pull/3742",
+    "https://github.com/kyegomez/swarms/pull/3741",
+    "https://github.com/kyegomez/swarms/pull/3740",
+    "https://github.com/kyegomez/swarms/pull/3739",
+    "https://github.com/kyegomez/swarms/pull/3738",
+    "https://github.com/kyegomez/swarms/pull/3737",
+    "https://github.com/kyegomez/swarms/pull/3733",
+    "https://github.com/kyegomez/swarms/pull/3732",
+    "https://github.com/kyegomez/swarms/pull/3730",
+    "https://github.com/kyegomez/swarms/pull/3728",
+    "https://github.com/kyegomez/swarms/pull/3726",
+    "https://github.com/kyegomez/swarms/pull/3718",
+    "https://github.com/kyegomez/swarms/pull/3717",
+    "https://github.com/kyegomez/swarms/pull/3713",
+    "https://github.com/kyegomez/swarms/pull/3711",
+    "https://github.com/kyegomez/swarms/pull/3710",
+    "https://github.com/kyegomez/swarms/pull/3709",
+    "https://github.com/kyegomez/swarms/pull/3708"
+   ],
+   "pull_pages": 3,
+   "read": 37,
+   "status": "reading"
+  },
   "makr-code/themisdb": {
    "done_urls": [
     "https://github.com/makr-code/ThemisDB/pull/8397",
     "https://github.com/makr-code/ThemisDB/pull/8375",
-    "https://github.com/makr-code/ThemisDB/pull/8365"
+    "https://github.com/makr-code/ThemisDB/pull/8365",
+    "https://github.com/makr-code/ThemisDB/pull/8360",
+    "https://github.com/makr-code/ThemisDB/pull/8265",
+    "https://github.com/makr-code/ThemisDB/pull/8160",
+    "https://github.com/makr-code/ThemisDB/pull/8109",
+    "https://github.com/makr-code/ThemisDB/pull/8108",
+    "https://github.com/makr-code/ThemisDB/pull/8096",
+    "https://github.com/makr-code/ThemisDB/pull/8095",
+    "https://github.com/makr-code/ThemisDB/pull/8094",
+    "https://github.com/makr-code/ThemisDB/pull/8093",
+    "https://github.com/makr-code/ThemisDB/pull/8088",
+    "https://github.com/makr-code/ThemisDB/pull/8086",
+    "https://github.com/makr-code/ThemisDB/pull/8085",
+    "https://github.com/makr-code/ThemisDB/pull/8084",
+    "https://github.com/makr-code/ThemisDB/pull/8082",
+    "https://github.com/makr-code/ThemisDB/pull/8081",
+    "https://github.com/makr-code/ThemisDB/pull/8080",
+    "https://github.com/makr-code/ThemisDB/pull/8079",
+    "https://github.com/makr-code/ThemisDB/pull/8078",
+    "https://github.com/makr-code/ThemisDB/pull/8077",
+    "https://github.com/makr-code/ThemisDB/pull/8076",
+    "https://github.com/makr-code/ThemisDB/pull/8073",
+    "https://github.com/makr-code/ThemisDB/pull/8072",
+    "https://github.com/makr-code/ThemisDB/pull/8071",
+    "https://github.com/makr-code/ThemisDB/pull/8070",
+    "https://github.com/makr-code/ThemisDB/pull/8062",
+    "https://github.com/makr-code/ThemisDB/pull/8061",
+    "https://github.com/makr-code/ThemisDB/pull/8060",
+    "https://github.com/makr-code/ThemisDB/pull/8059",
+    "https://github.com/makr-code/ThemisDB/pull/8058",
+    "https://github.com/makr-code/ThemisDB/pull/8057",
+    "https://github.com/makr-code/ThemisDB/pull/8056",
+    "https://github.com/makr-code/ThemisDB/pull/8055",
+    "https://github.com/makr-code/ThemisDB/pull/8050",
+    "https://github.com/makr-code/ThemisDB/pull/8049",
+    "https://github.com/makr-code/ThemisDB/pull/8048",
+    "https://github.com/makr-code/ThemisDB/pull/8047",
+    "https://github.com/makr-code/ThemisDB/pull/8046"
    ],
    "n_agent_prs": 145,
    "name": "makr-code/ThemisDB",
@@ -2930,8 +3914,8 @@
     "https://github.com/makr-code/ThemisDB/pull/8046"
    ],
    "pull_pages": 3,
-   "read": 3,
-   "status": "reading"
+   "read": 40,
+   "status": "done"
   },
   "mythiipanda/dime": {
    "done_urls": [
@@ -3421,6 +4405,499 @@
     "https://github.com/mythiipanda/dime/pull/625",
     "https://github.com/mythiipanda/dime/pull/624",
     "https://github.com/mythiipanda/dime/pull/623"
+   ],
+   "pull_pages": 3,
+   "read": 40,
+   "status": "done"
+  },
+  "outliner-online/outliner": {
+   "done_urls": [
+    "https://github.com/outliner-online/outliner/pull/5922",
+    "https://github.com/outliner-online/outliner/pull/5914",
+    "https://github.com/outliner-online/outliner/pull/5913",
+    "https://github.com/outliner-online/outliner/pull/5906",
+    "https://github.com/outliner-online/outliner/pull/5905",
+    "https://github.com/outliner-online/outliner/pull/5903",
+    "https://github.com/outliner-online/outliner/pull/5901",
+    "https://github.com/outliner-online/outliner/pull/5896",
+    "https://github.com/outliner-online/outliner/pull/5895",
+    "https://github.com/outliner-online/outliner/pull/5821",
+    "https://github.com/outliner-online/outliner/pull/5820",
+    "https://github.com/outliner-online/outliner/pull/5818",
+    "https://github.com/outliner-online/outliner/pull/5817",
+    "https://github.com/outliner-online/outliner/pull/5816",
+    "https://github.com/outliner-online/outliner/pull/5805",
+    "https://github.com/outliner-online/outliner/pull/5804",
+    "https://github.com/outliner-online/outliner/pull/5800",
+    "https://github.com/outliner-online/outliner/pull/5781",
+    "https://github.com/outliner-online/outliner/pull/5780",
+    "https://github.com/outliner-online/outliner/pull/5779",
+    "https://github.com/outliner-online/outliner/pull/5778",
+    "https://github.com/outliner-online/outliner/pull/5777",
+    "https://github.com/outliner-online/outliner/pull/5776",
+    "https://github.com/outliner-online/outliner/pull/5769",
+    "https://github.com/outliner-online/outliner/pull/5766",
+    "https://github.com/outliner-online/outliner/pull/5765",
+    "https://github.com/outliner-online/outliner/pull/5751",
+    "https://github.com/outliner-online/outliner/pull/5748",
+    "https://github.com/outliner-online/outliner/pull/5744",
+    "https://github.com/outliner-online/outliner/pull/5742",
+    "https://github.com/outliner-online/outliner/pull/5741",
+    "https://github.com/outliner-online/outliner/pull/5722",
+    "https://github.com/outliner-online/outliner/pull/5717",
+    "https://github.com/outliner-online/outliner/pull/5716",
+    "https://github.com/outliner-online/outliner/pull/5715",
+    "https://github.com/outliner-online/outliner/pull/5705",
+    "https://github.com/outliner-online/outliner/pull/5704",
+    "https://github.com/outliner-online/outliner/pull/5703",
+    "https://github.com/outliner-online/outliner/pull/5697",
+    "https://github.com/outliner-online/outliner/pull/5695"
+   ],
+   "n_agent_prs": 55,
+   "name": "outliner-online/outliner",
+   "pr_rows": {
+    "https://github.com/outliner-online/outliner/pull/5695": {
+     "created_at": "2026-10-19T01:53:04Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5695,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5695"
+    },
+    "https://github.com/outliner-online/outliner/pull/5697": {
+     "created_at": "2026-10-19T02:47:39Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5697,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5697"
+    },
+    "https://github.com/outliner-online/outliner/pull/5703": {
+     "created_at": "2026-10-19T13:54:13Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5703,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5703"
+    },
+    "https://github.com/outliner-online/outliner/pull/5704": {
+     "created_at": "2026-10-20T00:16:54Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5704,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5704"
+    },
+    "https://github.com/outliner-online/outliner/pull/5705": {
+     "created_at": "2026-10-20T02:17:41Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5705,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5705"
+    },
+    "https://github.com/outliner-online/outliner/pull/5715": {
+     "created_at": "2026-10-21T00:06:24Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5715,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5715"
+    },
+    "https://github.com/outliner-online/outliner/pull/5716": {
+     "created_at": "2026-10-21T01:59:16Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5716,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5716"
+    },
+    "https://github.com/outliner-online/outliner/pull/5717": {
+     "created_at": "2026-10-21T02:03:22Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5717,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5717"
+    },
+    "https://github.com/outliner-online/outliner/pull/5722": {
+     "created_at": "2026-10-21T13:38:46Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5722,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5722"
+    },
+    "https://github.com/outliner-online/outliner/pull/5741": {
+     "created_at": "2026-10-22T01:30:57Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5741,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5741"
+    },
+    "https://github.com/outliner-online/outliner/pull/5742": {
+     "created_at": "2026-10-22T01:59:16Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5742,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5742"
+    },
+    "https://github.com/outliner-online/outliner/pull/5744": {
+     "created_at": "2026-10-22T15:12:27Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5744,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5744"
+    },
+    "https://github.com/outliner-online/outliner/pull/5748": {
+     "created_at": "2026-10-23T03:37:14Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5748,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5748"
+    },
+    "https://github.com/outliner-online/outliner/pull/5751": {
+     "created_at": "2026-10-23T08:18:42Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5751,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5751"
+    },
+    "https://github.com/outliner-online/outliner/pull/5765": {
+     "created_at": "2026-10-23T19:57:00Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5765,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5765"
+    },
+    "https://github.com/outliner-online/outliner/pull/5766": {
+     "created_at": "2026-10-24T00:59:31Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5766,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5766"
+    },
+    "https://github.com/outliner-online/outliner/pull/5769": {
+     "created_at": "2026-10-24T07:55:58Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5769,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5769"
+    },
+    "https://github.com/outliner-online/outliner/pull/5776": {
+     "created_at": "2026-10-25T00:29:31Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5776,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5776"
+    },
+    "https://github.com/outliner-online/outliner/pull/5777": {
+     "created_at": "2026-10-25T02:38:12Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5777,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5777"
+    },
+    "https://github.com/outliner-online/outliner/pull/5778": {
+     "created_at": "2026-10-25T11:48:50Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5778,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5778"
+    },
+    "https://github.com/outliner-online/outliner/pull/5779": {
+     "created_at": "2026-10-25T16:04:28Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5779,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5779"
+    },
+    "https://github.com/outliner-online/outliner/pull/5780": {
+     "created_at": "2026-10-26T01:10:49Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5780,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5780"
+    },
+    "https://github.com/outliner-online/outliner/pull/5781": {
+     "created_at": "2026-10-26T03:50:44Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5781,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5781"
+    },
+    "https://github.com/outliner-online/outliner/pull/5800": {
+     "created_at": "2026-10-26T16:26:07Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5800,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5800"
+    },
+    "https://github.com/outliner-online/outliner/pull/5804": {
+     "created_at": "2026-10-27T01:48:49Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5804,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5804"
+    },
+    "https://github.com/outliner-online/outliner/pull/5805": {
+     "created_at": "2026-10-27T02:52:03Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5805,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5805"
+    },
+    "https://github.com/outliner-online/outliner/pull/5816": {
+     "created_at": "2026-10-27T13:57:22Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5816,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5816"
+    },
+    "https://github.com/outliner-online/outliner/pull/5817": {
+     "created_at": "2026-10-28T00:38:52Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5817,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5817"
+    },
+    "https://github.com/outliner-online/outliner/pull/5818": {
+     "created_at": "2026-10-28T03:18:18Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5818,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5818"
+    },
+    "https://github.com/outliner-online/outliner/pull/5820": {
+     "created_at": "2026-10-28T14:01:58Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5820,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5820"
+    },
+    "https://github.com/outliner-online/outliner/pull/5821": {
+     "created_at": "2026-10-29T01:32:46Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5821,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5821"
+    },
+    "https://github.com/outliner-online/outliner/pull/5895": {
+     "created_at": "2026-11-05T00:31:24Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5895,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5895"
+    },
+    "https://github.com/outliner-online/outliner/pull/5896": {
+     "created_at": "2026-11-05T02:03:51Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5896,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5896"
+    },
+    "https://github.com/outliner-online/outliner/pull/5901": {
+     "created_at": "2026-11-06T14:39:05Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5901,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5901"
+    },
+    "https://github.com/outliner-online/outliner/pull/5903": {
+     "created_at": "2026-11-07T00:05:03Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5903,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5903"
+    },
+    "https://github.com/outliner-online/outliner/pull/5905": {
+     "created_at": "2026-11-07T02:09:37Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5905,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5905"
+    },
+    "https://github.com/outliner-online/outliner/pull/5906": {
+     "created_at": "2026-11-08T00:11:56Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5906,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5906"
+    },
+    "https://github.com/outliner-online/outliner/pull/5913": {
+     "created_at": "2026-11-10T00:22:48Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5913,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5913"
+    },
+    "https://github.com/outliner-online/outliner/pull/5914": {
+     "created_at": "2026-11-10T02:55:50Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5914,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5914"
+    },
+    "https://github.com/outliner-online/outliner/pull/5922": {
+     "created_at": "2026-11-12T00:13:11Z",
+     "families": [
+      "jules"
+     ],
+     "family": "jules",
+     "number": 5922,
+     "repo": "outliner-online/outliner",
+     "url": "https://github.com/outliner-online/outliner/pull/5922"
+    }
+   },
+   "prs": [
+    "https://github.com/outliner-online/outliner/pull/5922",
+    "https://github.com/outliner-online/outliner/pull/5914",
+    "https://github.com/outliner-online/outliner/pull/5913",
+    "https://github.com/outliner-online/outliner/pull/5906",
+    "https://github.com/outliner-online/outliner/pull/5905",
+    "https://github.com/outliner-online/outliner/pull/5903",
+    "https://github.com/outliner-online/outliner/pull/5901",
+    "https://github.com/outliner-online/outliner/pull/5896",
+    "https://github.com/outliner-online/outliner/pull/5895",
+    "https://github.com/outliner-online/outliner/pull/5821",
+    "https://github.com/outliner-online/outliner/pull/5820",
+    "https://github.com/outliner-online/outliner/pull/5818",
+    "https://github.com/outliner-online/outliner/pull/5817",
+    "https://github.com/outliner-online/outliner/pull/5816",
+    "https://github.com/outliner-online/outliner/pull/5805",
+    "https://github.com/outliner-online/outliner/pull/5804",
+    "https://github.com/outliner-online/outliner/pull/5800",
+    "https://github.com/outliner-online/outliner/pull/5781",
+    "https://github.com/outliner-online/outliner/pull/5780",
+    "https://github.com/outliner-online/outliner/pull/5779",
+    "https://github.com/outliner-online/outliner/pull/5778",
+    "https://github.com/outliner-online/outliner/pull/5777",
+    "https://github.com/outliner-online/outliner/pull/5776",
+    "https://github.com/outliner-online/outliner/pull/5769",
+    "https://github.com/outliner-online/outliner/pull/5766",
+    "https://github.com/outliner-online/outliner/pull/5765",
+    "https://github.com/outliner-online/outliner/pull/5751",
+    "https://github.com/outliner-online/outliner/pull/5748",
+    "https://github.com/outliner-online/outliner/pull/5744",
+    "https://github.com/outliner-online/outliner/pull/5742",
+    "https://github.com/outliner-online/outliner/pull/5741",
+    "https://github.com/outliner-online/outliner/pull/5722",
+    "https://github.com/outliner-online/outliner/pull/5717",
+    "https://github.com/outliner-online/outliner/pull/5716",
+    "https://github.com/outliner-online/outliner/pull/5715",
+    "https://github.com/outliner-online/outliner/pull/5705",
+    "https://github.com/outliner-online/outliner/pull/5704",
+    "https://github.com/outliner-online/outliner/pull/5703",
+    "https://github.com/outliner-online/outliner/pull/5697",
+    "https://github.com/outliner-online/outliner/pull/5695"
    ],
    "pull_pages": 3,
    "read": 40,
@@ -3920,8 +5397,8 @@
    "status": "done"
   }
  },
- "repos_read": 8,
- "requests": 663,
+ "repos_read": 11,
+ "requests": 1835,
  "screen_done": true,
  "screen_next": 3635,
  "stopped": null
