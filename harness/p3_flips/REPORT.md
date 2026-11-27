@@ -72,6 +72,21 @@ runs only where node-sqlite3 is loaded; none of the six has it installed (NATIVE
 The 1-rep codex-multi-auth reading on b6ec7638 (1.107) was replaced by the 3-rep reading on 881e56b6 (1.038). The
 P2 prototype (same rule, not yet per-test) read 0.951 / 1.005 / 1.101 (3 reps: 1.064) / 0.981 / 0.608 / 1.009.
 
+### Merge head a1cf3a3b (after /review round 4) against bb41d043
+
+| repository | identical trunk / branch | allowed drop | wall par branch / trunk (reps) | exits |
+|---|---|---|---|---|
+| nestjs-pino | 258 / 258 | 1.3 | 1.001 (1) | 0 -> 0 |
+| agentsys | 1552 / 1552 | 11.1 | 1.011 (1), 0.989 (3) | 1 -> 1 |
+| claudekit | 791 / 789 | 4.1 | 0.929 (1) | 0 -> 0 |
+| sqlectron | 14 / 14 | 0.1 | 0.978 (1) | 1 -> 1 |
+| ironcurtain | 0 / 0 | 35.2 | 0.595 (1) | 1 -> 1 |
+| codex-multi-auth | 0 / 0 | 43.3 | 1.066 (3) | 1 -> 1 |
+
+All bounds met. claudekit's two: `performance.now` (React scheduler) and an `fs.stat` mtime value, not timer or native
+work. alakajam on a1cf3a3b: 217 passed / 4 skipped in both `--det` runs, 0 timeouts, 0 SQLITE_BUSY (b6ec7638: 115 /
+112 failed, 110 / 105 timeouts; plain 217 passed / 4 skipped, 29.9 s).
+
 ### Cases cleared at L1 (timers real) by each fix, 2 `--det` runs each
 
 Sets of step B's L1 rows (`rows.jsonl`) and P3b's alakajam / drydock rows (claude/p3b-engine-only @ 7f94795, read
@@ -108,6 +123,12 @@ connection the previous query still held. b4d87b1e (red test 59cfdd43) fixes it.
 - /review of P1 (cae15081..e93dbc84): 0 critical, 8 informational; items 3-7 fixed in 7e0bd791 / 27260389; open as
   known slowdowns (no outcome change): runner safe timers never cleared (waitUntil's failure path, settle grace) keep
   a test at real pace until they fire; one global safe-timer set slows concurrent siblings.
+- Coordinator /review of 105cdcad..8b59fa8f and gstack /review round 4 of 8b59fa8f..aa9f2342 (2026-11-27): no
+  real-time grace (3 s / 12 s made wrong reds); paced records in the timer's own context; the release of native calls
+  only when a file opens (it ran at a file's first test too, dropping a hook's query the test waited on: red uvu
+  test); the once-per-reason flag per test; concurrent timers record no process-wide pending I/O (red:
+  parallel-p041 vitest placement effects on 5c48a0d6). Kept by design: a call that never calls back slows the rest
+  of its file without bound (LIMITS CN2).
 - /review of P2 and native work (bb41d043..ecc7864e): two pending-work leaks (each() with only a row callback and no
   rows; a statement failing in its constructor on a closed database) and an over-broad 'error'-event release, fixed
   test-first in 92d3b682 / 881e56b6 with per-test child pacing and `DETJS_CHILD_PACE_MS=0`. Open: synchronous spawns
