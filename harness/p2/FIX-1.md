@@ -160,6 +160,9 @@ tests whose class with the baseline engine is `not-proven` reach `diverged` in o
 the safe one (no test becomes `identical`). The mechanism is not proven; the likely one is the one stated above (more
 overlap in real time between files of different lanes).
 
+Decision (founder, 2026-11-27, D5 = A): accepted as known behaviour. The shift is in the safe direction (`not-proven`
+to `diverged`, never towards `identical`) and its mechanism is not proven; no fix work is done for it.
+
 ### Wall time and serial re-runs caused by the newly diverged tests
 
 | repo | E best median, 3 rounds base → fix1 | E best median, 6 rounds base → fix1 |
