@@ -399,5 +399,5 @@ function ioChosen(site, kind, n) {
 
 module.exports = {
   installProcess, takeBaseline, pending, isPending, graceFor, timerChosen, ioChosen, startTest, setHeld,
-  kindOf, HAS_HANDLES,
+  kindOf, HAS_HANDLES, nativeWork, releaseTestWork,
 };

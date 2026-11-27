@@ -110,4 +110,19 @@ function resetGolden(dir) {
   fs.rmSync(path.join(dir, 'golden'), { recursive: true, force: true });
 }
 
-module.exports = { project, run, failed, resetGolden, readTrace, RUNNERS, TMP, NODE_DIR, BIN };
+/**
+ * node-sqlite3 5.1.7 for the native-work tests, installed once from the npm registry into test/.tmp/pkgs-sqlite3;
+ * returns the package.json path a fixture passes to createRequire (FIXTURE_SQLITE3). Fails, never skips.
+ */
+function sqlite3Pkg() {
+  const pkgs = path.join(TMP, 'pkgs-sqlite3');
+  if (!fs.existsSync(path.join(pkgs, 'node_modules', 'sqlite3', 'package.json'))) {
+    fs.mkdirSync(pkgs, { recursive: true });
+    fs.writeFileSync(path.join(pkgs, 'package.json'), JSON.stringify({ name: 'pkgs-sqlite3', private: true }));
+    const r = require('node:child_process').spawnSync('npm', ['install', '--no-audit', '--no-fund', 'sqlite3@5.1.7'], { cwd: pkgs, encoding: 'utf8', timeout: 600000 });
+    if (r.status !== 0) throw new Error(`node-sqlite3 5.1.7 could not be installed\n${r.stdout}\n${r.stderr}`);
+  }
+  return path.join(pkgs, 'package.json');
+}
+
+module.exports = { project, run, failed, resetGolden, readTrace, RUNNERS, TMP, NODE_DIR, BIN, sqlite3Pkg };
