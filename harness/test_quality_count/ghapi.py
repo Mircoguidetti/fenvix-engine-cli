@@ -17,7 +17,7 @@ import urllib.request
 
 API = "https://api.github.com"
 UA = "fenvix-research"
-GAPS = {"code": 7.0,  # CHANGES.md 17 (was 60/9 + 0.1)
+GAPS = {"code": 14.0,  # CHANGES.md 18 (7.0 in CHANGES.md 17; was 60/9 + 0.1)
         "issues": 60.0 / 25 + 0.1}
 RESOURCE = {"code": "code_search", "issues": "search", None: "core"}
 

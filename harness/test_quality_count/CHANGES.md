@@ -65,3 +65,6 @@ search request, probe or candidate read (no data existed); none changes the deci
     code-search 429 marked `limit=secondary` the next request waits max(retry_seconds, 60 s). Justification: 132
     secondary 429s in 3 slices with the primary budget untouched (CHANGES.md 16); this is GitHub's secondary limit on
     our own pace. No rule, regex, query or budget changes.
+18. Pacing change (2026-11-27 00:25Z, during discovery, coordinator's rule "still above 10 per slice, double the
+    spacing"): code search spaced at least 14.0 s (was 7.0 s). Secondary 429s per 30-min slice at 7 s: 27 and 25
+    (slice 1 of that task, partly at 6.77 s: 46). No rule, regex, query or budget changes.
