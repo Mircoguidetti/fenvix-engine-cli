@@ -460,3 +460,119 @@ stopping after 30.0 min (resumable)
 stopping after 30.0 min (resumable)
 2026-11-27T00:23:19+00:00 B infection filename:infection.json size:294..390 tc=1986 leaf=False read=- inc=- req=1
 2026-11-27T00:23:40+00:00 B infection filename:infection.json size:294..342 tc=251 leaf=True read=300 inc=False req=4
+2026-11-27T00:23:47+00:00 B infection filename:infection.json size:343..390 tc=1706 leaf=False read=- inc=- req=5
+2026-11-27T00:24:01+00:00 B infection filename:infection.json size:343..366 tc=125 leaf=True read=145 inc=False req=7
+2026-11-27T00:24:08+00:00 B infection filename:infection.json size:367..390 tc=1646 leaf=False read=- inc=- req=8
+2026-11-27T00:24:15+00:00 B infection filename:infection.json size:367..378 tc=1602 leaf=False read=- inc=- req=9
+2026-11-27T00:24:22+00:00 B infection filename:infection.json size:367..372 tc=1602 leaf=False read=- inc=- req=10
+2026-11-27T00:24:29+00:00 B infection filename:infection.json size:367..369 tc=10 leaf=True read=10 inc=False req=11
+2026-11-27T00:24:36+00:00 B infection filename:infection.json size:370..372 tc=1608 leaf=False read=- inc=- req=12
+2026-11-27T00:24:43+00:00 B infection filename:infection.json size:370..371 tc=1608 leaf=False read=- inc=- req=13
+2026-11-27T00:24:50+00:00 B infection filename:infection.json size:370..370 tc=29 leaf=True read=29 inc=False req=14
+2026-11-27T00:27:00+00:00 B infection filename:infection.json size:371..371 tc=1608 leaf=True read=1000 inc=False req=25
+2026-11-27T00:27:07+00:00 B infection filename:infection.json size:372..372 tc=3 leaf=True read=3 inc=False req=26
+2026-11-27T00:27:14+00:00 B infection filename:infection.json size:373..378 tc=36 leaf=True read=36 inc=False req=27
+2026-11-27T00:27:21+00:00 B infection filename:infection.json size:379..390 tc=68 leaf=True read=68 inc=False req=28
+2026-11-27T00:27:28+00:00 B infection filename:infection.json size:391..781 tc=1014 leaf=False read=- inc=- req=29
+2026-11-27T00:28:10+00:00 B infection filename:infection.json size:391..586 tc=590 leaf=True read=600 inc=False req=35
+2026-11-27T00:29:38+00:00 B infection filename:infection.json size:587..781 tc=362 leaf=True read=400 inc=False req=40
+2026-11-27T00:30:13+00:00 B infection filename:infection.json size:782..1562 tc=454 leaf=True read=500 inc=False req=45
+2026-11-27T00:31:42+00:00 B infection filename:infection.json size:1563..3125 tc=307 leaf=True read=368 inc=False req=50
+2026-11-27T00:32:02+00:00 B infection filename:infection.json size:3126..6250 tc=238 leaf=True read=239 inc=False req=53
+2026-11-27T00:32:17+00:00 B infection filename:infection.json size:6251..12500 tc=199 leaf=True read=200 inc=False req=55
+2026-11-27T00:33:31+00:00 B infection filename:infection.json size:12501..25000 tc=175 leaf=True read=190 inc=False req=58
+2026-11-27T00:33:45+00:00 B infection filename:infection.json size:25001..50000 tc=119 leaf=True read=146 inc=False req=60
+2026-11-27T00:33:52+00:00 B infection filename:infection.json size:50001..100000 tc=71 leaf=True read=71 inc=False req=61
+2026-11-27T00:33:59+00:00 B infection filename:infection.json size:100001..200000 tc=27 leaf=True read=27 inc=False req=62
+2026-11-27T00:34:06+00:00 B infection filename:infection.json size:200001..400000 tc=31 leaf=True read=31 inc=False req=63
+2026-11-27T00:34:13+00:00 B infection filename:infection.json5 size:0..400000 tc=1252 leaf=False read=- inc=- req=64
+2026-11-27T00:34:20+00:00 B infection filename:infection.json5 size:0..200000 tc=1252 leaf=False read=- inc=- req=65
+2026-11-27T00:34:27+00:00 B infection filename:infection.json5 size:0..100000 tc=1248 leaf=False read=- inc=- req=66
+2026-11-27T00:34:34+00:00 B infection filename:infection.json5 size:0..50000 tc=1240 leaf=False read=- inc=- req=67
+2026-11-27T00:34:41+00:00 B infection filename:infection.json5 size:0..25000 tc=1220 leaf=False read=- inc=- req=68
+2026-11-27T00:34:48+00:00 B infection filename:infection.json5 size:0..12500 tc=1220 leaf=False read=- inc=- req=69
+2026-11-27T00:34:55+00:00 B infection filename:infection.json5 size:0..6250 tc=1228 leaf=False read=- inc=- req=70
+2026-11-27T00:35:02+00:00 B infection filename:infection.json5 size:0..3125 tc=1170 leaf=False read=- inc=- req=71
+2026-11-27T00:35:09+00:00 B infection filename:infection.json5 size:0..1562 tc=1024 leaf=False read=- inc=- req=72
+2026-11-27T00:36:12+00:00 B infection filename:infection.json5 size:0..781 tc=857 leaf=True read=900 inc=False req=81
+2026-11-27T00:36:33+00:00 B infection filename:infection.json5 size:782..1562 tc=208 leaf=True read=222 inc=False req=84
+2026-11-27T00:36:47+00:00 B infection filename:infection.json5 size:1563..3125 tc=149 leaf=True read=177 inc=False req=86
+2026-11-27T00:36:54+00:00 B infection filename:infection.json5 size:3126..6250 tc=52 leaf=True read=52 inc=False req=87
+2026-11-27T00:37:01+00:00 B infection filename:infection.json5 size:6251..12500 tc=15 leaf=True read=15 inc=False req=88
+2026-11-27T00:37:08+00:00 B infection filename:infection.json5 size:12501..25000 tc=5 leaf=True read=5 inc=False req=89
+2026-11-27T00:37:15+00:00 B infection filename:infection.json5 size:25001..50000 tc=4 leaf=True read=4 inc=False req=90
+2026-11-27T00:37:21+00:00 B infection filename:infection.json5 size:50001..100000 tc=1 leaf=True read=1 inc=False req=91
+2026-11-27T00:37:29+00:00 B infection filename:infection.json5 size:100001..200000 tc=2 leaf=True read=2 inc=False req=92
+2026-11-27T00:37:35+00:00 B infection filename:infection.json5 size:200001..400000 tc=0 leaf=True read=0 inc=False req=93
+2026-11-27T00:37:43+00:00 B infection filename:infection.json.dist size:0..400000 tc=2404 leaf=False read=- inc=- req=94
+2026-11-27T00:37:50+00:00 B infection filename:infection.json.dist size:0..200000 tc=2404 leaf=False read=- inc=- req=95
+2026-11-27T00:37:57+00:00 B infection filename:infection.json.dist size:0..100000 tc=2404 leaf=False read=- inc=- req=96
+2026-11-27T00:38:04+00:00 B infection filename:infection.json.dist size:0..50000 tc=2404 leaf=False read=- inc=- req=97
+2026-11-27T00:38:11+00:00 B infection filename:infection.json.dist size:0..25000 tc=2404 leaf=False read=- inc=- req=98
+2026-11-27T00:38:18+00:00 B infection filename:infection.json.dist size:0..12500 tc=2396 leaf=False read=- inc=- req=99
+2026-11-27T00:38:25+00:00 B infection filename:infection.json.dist size:0..6250 tc=2396 leaf=False read=- inc=- req=100
+2026-11-27T00:38:32+00:00 B infection filename:infection.json.dist size:0..3125 tc=2396 leaf=False read=- inc=- req=101
+2026-11-27T00:38:39+00:00 B infection filename:infection.json.dist size:0..1562 tc=2364 leaf=False read=- inc=- req=102
+2026-11-27T00:38:46+00:00 B infection filename:infection.json.dist size:0..781 tc=2324 leaf=False read=- inc=- req=103
+2026-11-27T00:38:53+00:00 B infection filename:infection.json.dist size:0..390 tc=2144 leaf=False read=- inc=- req=104
+2026-11-27T00:39:14+00:00 B infection filename:infection.json.dist size:0..195 tc=201 leaf=True read=292 inc=False req=107
+2026-11-27T00:39:21+00:00 B infection filename:infection.json.dist size:196..390 tc=2006 leaf=False read=- inc=- req=108
+2026-11-27T00:39:42+00:00 B infection filename:infection.json.dist size:196..293 tc=295 leaf=True read=300 inc=False req=111
+2026-11-27T00:39:49+00:00 B infection filename:infection.json.dist size:294..390 tc=1794 leaf=False read=- inc=- req=112
+2026-11-27T00:40:02+00:00 B infection filename:infection.json.dist size:294..342 tc=119 leaf=True read=119 inc=False req=114
+2026-11-27T00:40:10+00:00 B infection filename:infection.json.dist size:343..390 tc=1666 leaf=False read=- inc=- req=115
+2026-11-27T00:40:17+00:00 B infection filename:infection.json.dist size:343..366 tc=66 leaf=True read=66 inc=False req=116
+2026-11-27T00:40:24+00:00 B infection filename:infection.json.dist size:367..390 tc=1638 leaf=False read=- inc=- req=117
+2026-11-27T00:40:31+00:00 B infection filename:infection.json.dist size:367..378 tc=1610 leaf=False read=- inc=- req=118
+2026-11-27T00:40:38+00:00 B infection filename:infection.json.dist size:367..372 tc=1610 leaf=False read=- inc=- req=119
+2026-11-27T00:40:44+00:00 B infection filename:infection.json.dist size:367..369 tc=2 leaf=True read=2 inc=False req=120
+2026-11-27T00:40:52+00:00 B infection filename:infection.json.dist size:370..372 tc=1608 leaf=False read=- inc=- req=121
+2026-11-27T00:40:59+00:00 B infection filename:infection.json.dist size:370..371 tc=1608 leaf=False read=- inc=- req=122
+2026-11-27T00:41:05+00:00 B infection filename:infection.json.dist size:370..370 tc=0 leaf=True read=0 inc=False req=123
+2026-11-27T00:42:16+00:00 B infection filename:infection.json.dist size:371..371 tc=1608 leaf=True read=1000 inc=False req=133
+2026-11-27T00:42:22+00:00 B infection filename:infection.json.dist size:372..372 tc=0 leaf=True read=0 inc=False req=134
+2026-11-27T00:42:30+00:00 B infection filename:infection.json.dist size:373..378 tc=2 leaf=True read=2 inc=False req=135
+2026-11-27T00:42:37+00:00 B infection filename:infection.json.dist size:379..390 tc=34 leaf=True read=34 inc=False req=136
+2026-11-27T00:42:51+00:00 B infection filename:infection.json.dist size:391..781 tc=192 leaf=True read=200 inc=False req=138
+2026-11-27T00:42:58+00:00 B infection filename:infection.json.dist size:782..1562 tc=57 leaf=True read=57 inc=False req=139
+2026-11-27T00:43:05+00:00 B infection filename:infection.json.dist size:1563..3125 tc=18 leaf=True read=18 inc=False req=140
+2026-11-27T00:43:12+00:00 B infection filename:infection.json.dist size:3126..6250 tc=8 leaf=True read=8 inc=False req=141
+2026-11-27T00:43:19+00:00 B infection filename:infection.json.dist size:6251..12500 tc=1 leaf=True read=1 inc=False req=142
+2026-11-27T00:43:26+00:00 B infection filename:infection.json.dist size:12501..25000 tc=5 leaf=True read=5 inc=False req=143
+2026-11-27T00:43:32+00:00 B infection filename:infection.json.dist size:25001..50000 tc=0 leaf=True read=0 inc=False req=144
+2026-11-27T00:43:39+00:00 B infection filename:infection.json.dist size:50001..100000 tc=0 leaf=True read=0 inc=False req=145
+2026-11-27T00:43:46+00:00 B infection filename:infection.json.dist size:100001..200000 tc=0 leaf=True read=0 inc=False req=146
+2026-11-27T00:43:54+00:00 B infection filename:infection.json.dist size:200001..400000 tc=0 leaf=True read=0 inc=False req=147
+2026-11-27T00:44:01+00:00 B mutants filename:mutants.toml path:.cargo size:0..400000 tc=1030 leaf=False read=- inc=- req=148
+2026-11-27T00:44:08+00:00 B mutants filename:mutants.toml path:.cargo size:0..200000 tc=1030 leaf=False read=- inc=- req=149
+2026-11-27T00:44:15+00:00 B mutants filename:mutants.toml path:.cargo size:0..100000 tc=1030 leaf=False read=- inc=- req=150
+2026-11-27T00:44:22+00:00 B mutants filename:mutants.toml path:.cargo size:0..50000 tc=1030 leaf=False read=- inc=- req=151
+2026-11-27T00:44:29+00:00 B mutants filename:mutants.toml path:.cargo size:0..25000 tc=1014 leaf=False read=- inc=- req=152
+2026-11-27T00:45:39+00:00 B mutants filename:mutants.toml path:.cargo size:0..12500 tc=964 leaf=True read=951 inc=False req=162
+2026-11-27T00:45:46+00:00 B mutants filename:mutants.toml path:.cargo size:12501..25000 tc=44 leaf=True read=44 inc=False req=163
+2026-11-27T00:45:53+00:00 B mutants filename:mutants.toml path:.cargo size:25001..50000 tc=23 leaf=True read=23 inc=False req=164
+2026-11-27T00:46:00+00:00 B mutants filename:mutants.toml path:.cargo size:50001..100000 tc=4 leaf=True read=4 inc=False req=165
+2026-11-27T00:46:06+00:00 B mutants filename:mutants.toml path:.cargo size:100001..200000 tc=0 leaf=True read=0 inc=False req=166
+2026-11-27T00:46:14+00:00 B mutants filename:mutants.toml path:.cargo size:200001..400000 tc=0 leaf=True read=0 inc=False req=167
+2026-11-27T00:46:56+00:00 B mutmut filename:setup.cfg size:0..400000 tc=561 leaf=True read=600 inc=False req=173
+2026-11-27T00:47:03+00:00 B mutmut filename:pyproject.toml size:0..400000 tc=2744 leaf=False read=- inc=- req=174
+2026-11-27T00:47:10+00:00 B mutmut filename:pyproject.toml size:0..200000 tc=2744 leaf=False read=- inc=- req=175
+2026-11-27T00:47:17+00:00 B mutmut filename:pyproject.toml size:0..100000 tc=2728 leaf=False read=- inc=- req=176
+2026-11-27T00:47:24+00:00 B mutmut filename:pyproject.toml size:0..50000 tc=2728 leaf=False read=- inc=- req=177
+2026-11-27T00:47:31+00:00 B mutmut filename:pyproject.toml size:0..25000 tc=2676 leaf=False read=- inc=- req=178
+2026-11-27T00:47:38+00:00 B mutmut filename:pyproject.toml size:0..12500 tc=2540 leaf=False read=- inc=- req=179
+2026-11-27T00:47:45+00:00 B mutmut filename:pyproject.toml size:0..6250 tc=2044 leaf=False read=- inc=- req=180
+2026-11-27T00:47:52+00:00 B mutmut filename:pyproject.toml size:0..3125 tc=1420 leaf=False read=- inc=- req=181
+2026-11-27T00:48:48+00:00 B mutmut filename:pyproject.toml size:0..1562 tc=796 leaf=True read=800 inc=False req=189
+2026-11-27T00:49:44+00:00 B mutmut filename:pyproject.toml size:1563..3125 tc=727 leaf=True read=719 inc=False req=197
+2026-11-27T00:50:26+00:00 B mutmut filename:pyproject.toml size:3126..6250 tc=560 leaf=True read=600 inc=False req=203
+2026-11-27T00:52:01+00:00 B mutmut filename:pyproject.toml size:6251..12500 tc=436 leaf=True read=490 inc=False req=209
+2026-11-27T00:52:22+00:00 B mutmut filename:pyproject.toml size:12501..25000 tc=201 leaf=True read=221 inc=False req=212
+2026-11-27T00:52:29+00:00 B mutmut filename:pyproject.toml size:25001..50000 tc=85 leaf=True read=85 inc=False req=213
+2026-11-27T00:52:36+00:00 B mutmut filename:pyproject.toml size:50001..100000 tc=10 leaf=True read=10 inc=False req=214
+2026-11-27T00:52:43+00:00 B mutmut filename:pyproject.toml size:100001..200000 tc=4 leaf=True read=4 inc=False req=215
+2026-11-27T00:52:50+00:00 B mutmut filename:pyproject.toml size:200001..400000 tc=0 leaf=True read=0 inc=False req=216
+2026-11-27T00:53:04+00:00 B cosmic-ray filename:cosmic-ray.toml size:0..400000 tc=134 leaf=True read=141 inc=False req=218
+2026-11-27T00:53:13+00:00 B pitest filename:pom.xml size:0..400000 tc=12816 leaf=False read=- inc=- req=219
+2026-11-27T00:54:21+00:00 B pitest filename:pom.xml size:0..200000 tc=12816 leaf=False read=- inc=- req=221
+stopping after 30.0 min (resumable)

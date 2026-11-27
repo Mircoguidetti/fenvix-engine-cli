@@ -121,6 +121,14 @@
    "root_total": 3284,
    "stack": []
   },
+  "B cosmic-ray filename:cosmic-ray.toml": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 134,
+   "stack": []
+  },
   "B infection filename:composer.json": {
    "done": true,
    "leaves": 16,
@@ -130,46 +138,62 @@
    "stack": []
   },
   "B infection filename:infection.json": {
-   "done": false,
-   "leaves": 3,
-   "nodes": 16,
+   "done": true,
+   "leaves": 21,
+   "nodes": 41,
    "root_incomplete": false,
    "root_total": 6232,
+   "stack": []
+  },
+  "B infection filename:infection.json.dist": {
+   "done": true,
+   "leaves": 20,
+   "nodes": 39,
+   "root_incomplete": false,
+   "root_total": 2404,
+   "stack": []
+  },
+  "B infection filename:infection.json5": {
+   "done": true,
+   "leaves": 10,
+   "nodes": 19,
+   "root_incomplete": false,
+   "root_total": 1252,
+   "stack": []
+  },
+  "B mutants filename:mutants.toml path:.cargo": {
+   "done": true,
+   "leaves": 6,
+   "nodes": 11,
+   "root_incomplete": false,
+   "root_total": 1030,
+   "stack": []
+  },
+  "B mutmut filename:pyproject.toml": {
+   "done": true,
+   "leaves": 9,
+   "nodes": 17,
+   "root_incomplete": false,
+   "root_total": 2744,
+   "stack": []
+  },
+  "B mutmut filename:setup.cfg": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 561,
+   "stack": []
+  },
+  "B pitest filename:pom.xml": {
+   "done": false,
+   "leaves": 0,
+   "nodes": 2,
+   "root_incomplete": false,
+   "root_total": 12816,
    "stack": [
     [
-     343,
-     390
-    ],
-    [
-     391,
-     781
-    ],
-    [
-     782,
-     1562
-    ],
-    [
-     1563,
-     3125
-    ],
-    [
-     3126,
-     6250
-    ],
-    [
-     6251,
-     12500
-    ],
-    [
-     12501,
-     25000
-    ],
-    [
-     25001,
-     50000
-    ],
-    [
-     50001,
+     0,
      100000
     ],
     [
