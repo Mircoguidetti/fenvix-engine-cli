@@ -185,19 +185,23 @@
    "root_total": 561,
    "stack": []
   },
-  "B pitest filename:pom.xml": {
+  "B pitest filename:build.gradle": {
    "done": false,
-   "leaves": 16,
-   "nodes": 37,
+   "leaves": 6,
+   "nodes": 18,
    "root_incomplete": false,
-   "root_total": 12816,
+   "root_total": 5840,
    "stack": [
     [
-     15626,
-     18750
+     3126,
+     6250
     ],
     [
-     18751,
+     6251,
+     12500
+    ],
+    [
+     12501,
      25000
     ],
     [
@@ -217,6 +221,14 @@
      400000
     ]
    ]
+  },
+  "B pitest filename:pom.xml": {
+   "done": true,
+   "leaves": 22,
+   "nodes": 43,
+   "root_incomplete": false,
+   "root_total": 12816,
+   "stack": []
   },
   "B stryker filename:package.json": {
    "done": true,

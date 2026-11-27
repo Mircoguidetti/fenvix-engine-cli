@@ -613,3 +613,28 @@ stopping after 30.0 min (resumable)
 2026-11-27T01:54:08+00:00 B pitest filename:pom.xml size:12501..18750 tc=1354 leaf=False read=- inc=- req=78
 2026-11-27T01:58:13+00:00 B pitest filename:pom.xml size:12501..15625 tc=869 leaf=True read=891 inc=False req=89
 stopping after 30.0 min (resumable)
+2026-11-27T02:00:25+00:00 B pitest filename:pom.xml size:15626..18750 tc=422 leaf=True read=458 inc=False req=6
+2026-11-27T02:04:02+00:00 B pitest filename:pom.xml size:18751..25000 tc=674 leaf=True read=700 inc=False req=15
+2026-11-27T02:07:41+00:00 B pitest filename:pom.xml size:25001..50000 tc=624 leaf=True read=662 inc=False req=24
+2026-11-27T02:08:09+00:00 B pitest filename:pom.xml size:50001..100000 tc=132 leaf=True read=160 inc=False req=26
+2026-11-27T02:09:24+00:00 B pitest filename:pom.xml size:100001..200000 tc=24 leaf=True read=24 inc=False req=28
+2026-11-27T02:09:38+00:00 B pitest filename:pom.xml size:200001..400000 tc=23 leaf=True read=23 inc=False req=29
+2026-11-27T02:09:52+00:00 B pitest filename:build.gradle size:0..400000 tc=5840 leaf=False read=- inc=- req=30
+2026-11-27T02:10:06+00:00 B pitest filename:build.gradle size:0..200000 tc=5840 leaf=False read=- inc=- req=31
+2026-11-27T02:10:19+00:00 B pitest filename:build.gradle size:0..100000 tc=5808 leaf=False read=- inc=- req=32
+2026-11-27T02:10:34+00:00 B pitest filename:build.gradle size:0..50000 tc=5792 leaf=False read=- inc=- req=33
+2026-11-27T02:10:47+00:00 B pitest filename:build.gradle size:0..25000 tc=5712 leaf=False read=- inc=- req=34
+2026-11-27T02:11:01+00:00 B pitest filename:build.gradle size:0..12500 tc=5232 leaf=False read=- inc=- req=35
+2026-11-27T02:11:16+00:00 B pitest filename:build.gradle size:0..6250 tc=4952 leaf=False read=- inc=- req=36
+2026-11-27T02:12:30+00:00 B pitest filename:build.gradle size:0..3125 tc=3936 leaf=False read=- inc=- req=38
+2026-11-27T02:12:44+00:00 B pitest filename:build.gradle size:0..1562 tc=1944 leaf=False read=- inc=- req=39
+2026-11-27T02:13:54+00:00 B pitest filename:build.gradle size:0..781 tc=489 leaf=True read=500 inc=False req=44
+2026-11-27T02:14:08+00:00 B pitest filename:build.gradle size:782..1562 tc=1314 leaf=False read=- inc=- req=45
+2026-11-27T02:18:15+00:00 B pitest filename:build.gradle size:782..1172 tc=822 leaf=True read=900 inc=False req=56
+2026-11-27T02:20:25+00:00 B pitest filename:build.gradle size:1173..1562 tc=449 leaf=True read=500 inc=False req=62
+2026-11-27T02:20:40+00:00 B pitest filename:build.gradle size:1563..3125 tc=1896 leaf=False read=- inc=- req=63
+2026-11-27T02:20:52+00:00 B pitest filename:build.gradle size:1563..2344 tc=1416 leaf=False read=- inc=- req=64
+2026-11-27T02:23:02+00:00 B pitest filename:build.gradle size:1563..1953 tc=431 leaf=True read=418 inc=False req=70
+2026-11-27T02:27:23+00:00 B pitest filename:build.gradle size:1954..2344 tc=1000 leaf=True read=991 inc=False req=82
+2026-11-27T02:30:01+00:00 B pitest filename:build.gradle size:2345..3125 tc=633 leaf=True read=664 inc=False req=90
+stopping after 30.0 min (resumable)
