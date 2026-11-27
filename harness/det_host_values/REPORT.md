@@ -416,6 +416,6 @@ separately, each test-first and by founder decision:
   1000 ms run at real pace.
 
 Proof/wall on the six repositories of section 4 (same `measure.py` call as `proof_run.sh`), the committed P2 engine
-b6ec7638 against bb41d043 (P1 + release-1 519bf1a0): identical counts within 0.5% and exits unchanged on all six;
-wall time and the reps behind it in harness/p3_flips/REPORT.md. The codex-multi-auth flip count of section 7 (69) is
-re-measured there on the final engine.
+b6ec7638 against bb41d043 (P1 + release-1 519bf1a0), and the engine after the /review fixes (881e56b6): identical
+counts within 0.5% and exits unchanged on all six; wall time and the reps behind it in harness/p3_flips/REPORT.md.
+The codex-multi-auth flip count of section 7 (69) is not re-measured yet: that is P3 step D.
