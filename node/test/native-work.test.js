@@ -12,6 +12,9 @@
 //   constructor (closed database), or at the end of the test after the one that started a call that never calls
 //   back (a later virtual sleep then runs at real pace: 80 s of virtual sleep must take under 15 s); or a query still
 //   running when its test ends stops counting before the next test, which waits on it (alakajam tournament.service).
+// F4 (founder, 2026-11-27): an idle pooled connection, and a call that never calls back, each fail at the runner
+//   deadline ("Test timed out in 5000ms") and the run ends (tests/deadline.test.mjs); fails_when the pending work
+//   keeps the scheduler waiting past the deadline (the run hangs: killed after 240 s) or a later sleep stays slow.
 // no_claim: native calls without a callback (stmt.finalize()), the Database constructor's open, a node-sqlite3 that
 //   was loaded before the engine's hooks, and other addons (listed in harness/p3_flips/NATIVE.md) are not covered. Needs node-sqlite3 5.1.7 from the npm registry
 //   (installed once into test/.tmp/pkgs-sqlite3); if it cannot be installed the test fails, it does not skip.
@@ -45,9 +48,31 @@ test('a node-sqlite3 query in flight is pending work: no virtual jump to the run
   const plain = spawnSync(process.execPath, [path.join(__dirname, '..', 'node_modules', 'vitest', 'vitest.mjs'), 'run', '-t', 'in flight|statement methods'], { cwd: dir, encoding: 'utf8', env });
   assert.equal(plain.status, 0, `the plain run passes\n${plain.stdout}\n${plain.stderr}`);
   const t0 = Date.now();
-  const r = spawnSync(process.execPath, [BIN, 'vitest', 'run', '--det', '--det-workers=1'], { cwd: dir, encoding: 'utf8', env, timeout: 240000 });
+  const r = spawnSync(process.execPath, [BIN, 'vitest', 'run', 'tests/sqlite3.test.mjs', '--det', '--det-workers=1'], { cwd: dir, encoding: 'utf8', env, timeout: 240000 });
   const wall = (Date.now() - t0) / 1000;
   const text = `${(r.stdout || '').slice(-3000)}\n${(r.stderr || '').slice(-2000)}`;
   assert.equal(r.status, 0, `the --det run passes too\n${text}`);
   assert.ok(wall < 15, `80 s of virtual sleep took ${wall} s of real time (pending work not released)\n${text}`);
+});
+
+test('F4: an idle pooled connection and a never-settling call end at the runner deadline, never hang', { timeout: 900000 }, () => {
+  const src = path.join(__dirname, 'fixtures', 'native-work');
+  const dir = path.join(TMP, 'native-work-deadline');
+  fs.rmSync(dir, { recursive: true, force: true });
+  fs.cpSync(src, dir, { recursive: true });
+  const env = { ...process.env, FIXTURE_SQLITE3: sqlite3() };
+  for (const k of ['CI', 'GITHUB_ACTIONS', 'DETJS', 'NODE_OPTIONS', 'NODE_TEST_CONTEXT', 'DETJS_EPOCH', 'DETJS_CACHE_DIR']) delete env[k];
+  const out = path.join(dir, 'outcomes.json');
+  const t0 = Date.now();
+  const r = spawnSync(process.execPath, [BIN, 'vitest', 'run', 'tests/deadline.test.mjs', '--det', '--det-workers=1', `--det-outcomes=${out}`], { cwd: dir, encoding: 'utf8', env, timeout: 240000 });
+  const wall = (Date.now() - t0) / 1000;
+  const text = `${(r.stdout || '').slice(-3000)}\n${(r.stderr || '').slice(-2000)}`;
+  assert.equal(r.signal, null, `the run hung and was killed after 240 s\n${text}`);
+  assert.notEqual(r.status, 0, `the two waiting tests must fail\n${text}`);
+  const o = JSON.parse(fs.readFileSync(out, 'utf8'));
+  const failed = Object.entries(o.outcomes).filter(([, v]) => v === 'failed').map(([k]) => k.split('::').pop()).sort();
+  assert.deepEqual(failed, ['a node-sqlite3 call that never calls back: timed out at the deadline',
+    'an idle pooled connection while the test waits forever: timed out at the deadline'], text);
+  assert.equal((text.match(/Test timed out in 5000ms/g) || []).length >= 2, true, `both fail with the runner's timeout\n${text}`);
+  assert.ok(wall < 40, `the run took ${wall} s: a deadline waited past its time, or the 20 s sleep ran at real pace\n${text}`);
 });
