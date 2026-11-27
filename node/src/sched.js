@@ -119,6 +119,7 @@ const NATIVE_WORK = [
 
 const OPEN = new WeakMap(); // native object -> Set of release functions of its calls in flight
 const BY_TEST = new Map(); // test id -> Set of release functions of the calls that test started
+let carried = new Set(); // calls the previous test left in flight: still counted until the end of this test
 const POISONED = new WeakSet(); // statements that failed to prepare: their calls never call back, so are not counted
 function releaseAll(o) {
   const s = o && OPEN.get(o);
@@ -127,12 +128,17 @@ function releaseAll(o) {
   for (const r of [...s]) r();
 }
 
-/** A test ended: the native calls it started and that never called back stop counting (any path not caught above). */
+/**
+ * A test ended: the native calls the previous test left in flight and that still have not called back stop counting
+ * (any leak path not caught above costs at most two tests, not the rest of the worker). The calls this test left in
+ * flight keep counting through the next test: it may wait on them (alakajam: the pool's connection is still busy
+ * with the previous test's query while the next test waits in tarn's queue with a 60 s acquire timeout pending).
+ */
 function releaseTestWork(testId) {
+  for (const r of [...carried]) r();
   const s = BY_TEST.get(testId);
-  if (!s) return;
   BY_TEST.delete(testId);
-  for (const r of [...s]) r();
+  carried = s || new Set();
 }
 
 /**
@@ -159,6 +165,7 @@ function trackOwned(patcher, P, names) {
         if (s) s.delete(release);
         const t = BY_TEST.get(test);
         if (t) t.delete(release);
+        carried.delete(release);
       };
       if (n === 'each' && !(i >= 1 && typeof a[i - 1] === 'function')) a.push(function eachDone() { release(); });
       else { const cb = a[i]; a[i] = function (...r) { release(); return cb.apply(this, r); }; }

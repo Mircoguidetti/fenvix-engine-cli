@@ -9,8 +9,9 @@
 //   virtual jump (the plain run passes); a failing query (error callback) also ends its pending work.
 // fails_when: node-sqlite3's Database / Statement callbacks are not counted as pending; or a count is not released:
 //   when the callback runs, for each() with only a row callback and no rows, for a statement that failed in its
-//   constructor (closed database), or at the end of the test that started a call that never calls back (a later
-//   virtual sleep then runs at real pace: 80 s of virtual sleep must take under 15 s).
+//   constructor (closed database), or at the end of the test after the one that started a call that never calls
+//   back (a later virtual sleep then runs at real pace: 80 s of virtual sleep must take under 15 s); or a query still
+//   running when its test ends stops counting before the next test, which waits on it (alakajam tournament.service).
 // no_claim: native calls without a callback (stmt.finalize()), the Database constructor's open, a node-sqlite3 that
 //   was loaded before the engine's hooks, and other addons (listed in harness/p3_flips/NATIVE.md) are not covered. Needs node-sqlite3 5.1.7 from the npm registry
 //   (installed once into test/.tmp/pkgs-sqlite3); if it cannot be installed the test fails, it does not skip.
