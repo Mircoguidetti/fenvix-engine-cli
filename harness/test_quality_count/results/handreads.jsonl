@@ -158,3 +158,96 @@
 {"at": "2026-11-27T04:40:11+00:00", "id": "issue:143", "quote": "", "repo": "Gusto/baerly-storage", "url": "https://github.com/Gusto/baerly-storage/pull/143", "verdict": "rejected"}
 {"at": "2026-11-27T04:40:11+00:00", "id": "issue:159", "quote": "", "repo": "Gusto/baerly-storage", "url": "https://github.com/Gusto/baerly-storage/pull/159", "verdict": "rejected"}
 {"at": "2026-11-27T04:40:12+00:00", "id": "issue:145", "quote": "", "repo": "Gusto/baerly-storage", "url": "https://github.com/Gusto/baerly-storage/pull/145", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:30+00:00", "id": "issue:22", "quote": "", "repo": "SuarezPM/kitty-code", "url": "https://github.com/SuarezPM/kitty-code/pull/22", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:31+00:00", "id": "issue:1395", "quote": "", "repo": "codeigniter4/shield", "url": "https://github.com/codeigniter4/shield/pull/1395", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:31+00:00", "id": "issue:1406", "quote": "", "repo": "codeigniter4/shield", "url": "https://github.com/codeigniter4/shield/pull/1406", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:32+00:00", "id": "issue:1404", "quote": "", "repo": "codeigniter4/shield", "url": "https://github.com/codeigniter4/shield/pull/1404", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:32+00:00", "id": "commit:9f52d77f5785ee1ad53281f016b1f7fd6cdc204f", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/commit/9f52d77f5785ee1ad53281f016b1f7fd6cdc204f", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:33+00:00", "id": "issue:733", "quote": "On 2026-11-26 four dev-job jobs (two `cargo mutants`) pushed the load to about 70 on 16 threads.", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/733", "verdict": "information"}
+{"at": "2026-11-27T10:08:33+00:00", "id": "issue:601", "quote": "On 2026-11-20, the developer chose to **replace** the advisory workspace-wide sweep with the failing high-risk `examine_globs` subset (faster runs, clear signal).", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/601", "verdict": "confirmed"}
+{"at": "2026-11-27T10:08:34+00:00", "id": "issue:414", "quote": "on the main PC, 250 cargo-mutants runs wrote 577 GiB of 680 GiB in 4.5 hours on 12\u201313 Nov.", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/414", "verdict": "information"}
+{"at": "2026-11-27T10:08:34+00:00", "id": "issue:298", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/298", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:35+00:00", "id": "issue:732", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/732", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:35+00:00", "id": "issue:406", "quote": "PRs get a fast answer. Mutation testing runs on `main`, and a real failure there files one issue for the dispatcher.", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/406", "verdict": "confirmed"}
+{"at": "2026-11-27T10:08:36+00:00", "id": "issue:400", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/400", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:36+00:00", "id": "issue:393", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/393", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:37+00:00", "id": "issue:375", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/375", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:37+00:00", "id": "issue:404", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/404", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:38+00:00", "id": "issue:271", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/271", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:39+00:00", "id": "issue:754", "quote": "Running these for hours on the owner's main PC competes with training and interactive work.", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/754", "verdict": "information"}
+{"at": "2026-11-27T10:08:39+00:00", "id": "issue:403", "quote": "On #384 `ce46e6a`, shards 2 and 4 hit the 60-minute step limit after about 49 and 78 of 127 mutants. Both were green.", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/403", "verdict": "information"}
+{"at": "2026-11-27T10:08:40+00:00", "id": "issue:514", "quote": "A mutant that stops an event is caught only after minutes, or reported as a timeout, and shard 4 overran its 60-minute step.", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/514", "verdict": "information"}
+{"at": "2026-11-27T10:08:40+00:00", "id": "issue:247", "quote": "On a GitHub runner that is about 21s per mutant, so a whole-workspace run would take about 18 hours. Hence diff-only.", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/247", "verdict": "information"}
+{"at": "2026-11-27T10:08:41+00:00", "id": "issue:692", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/692", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:41+00:00", "id": "issue:613", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/613", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:42+00:00", "id": "issue:621", "quote": "All eight shards also hit the separate 60-minute action cap.", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/621", "verdict": "information"}
+{"at": "2026-11-27T10:08:42+00:00", "id": "issue:529", "quote": "**`mutants (1)`**: the shard ran out of its 60-minute step.", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/529", "verdict": "information"}
+{"at": "2026-11-27T10:08:43+00:00", "id": "issue:348", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/348", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:43+00:00", "id": "issue:320", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/320", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:44+00:00", "id": "issue:304", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/304", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:44+00:00", "id": "issue:434", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/434", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:45+00:00", "id": "issue:457", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/457", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:45+00:00", "id": "issue:301", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/301", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:46+00:00", "id": "issue:424", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/424", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:46+00:00", "id": "issue:416", "quote": "Every Rust PR runs every CI job, Windows included, plus eight advisory mutants shards. PRs wait for all of that, and survivors appear only as capped annotations.", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/416", "verdict": "confirmed"}
+{"at": "2026-11-27T10:08:47+00:00", "id": "issue:421", "quote": "`AGENTS.md` reads as an order to run `cargo mutants` locally (250 runs wrote 577 GiB in 4.5 hours on 12\u201313 Nov)", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/421", "verdict": "information"}
+{"at": "2026-11-27T10:08:47+00:00", "id": "issue:744", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/744", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:48+00:00", "id": "issue:738", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/738", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:48+00:00", "id": "issue:462", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/462", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:49+00:00", "id": "issue:420", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/420", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:50+00:00", "id": "issue:719", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/719", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:50+00:00", "id": "issue:748", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/748", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:51+00:00", "id": "issue:392", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/392", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:51+00:00", "id": "issue:307", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/307", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:52+00:00", "id": "issue:530", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/530", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:52+00:00", "id": "issue:318", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/318", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:53+00:00", "id": "issue:369", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/369", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:53+00:00", "id": "issue:309", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/309", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:54+00:00", "id": "issue:379", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/379", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:54+00:00", "id": "issue:596", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/596", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:55+00:00", "id": "issue:395", "quote": "#416 already made PR steps change-aware and moved diff-scoped mutation testing to the heavy tier.", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/395", "verdict": "information"}
+{"at": "2026-11-27T10:08:55+00:00", "id": "issue:599", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/599", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:56+00:00", "id": "issue:704", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/704", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:56+00:00", "id": "issue:524", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/524", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:57+00:00", "id": "issue:466", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/466", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:57+00:00", "id": "issue:600", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/600", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:58+00:00", "id": "issue:598", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/598", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:58+00:00", "id": "issue:595", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/595", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:59+00:00", "id": "issue:620", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/620", "verdict": "rejected"}
+{"at": "2026-11-27T10:08:59+00:00", "id": "issue:597", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/597", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:00+00:00", "id": "issue:330", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/330", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:00+00:00", "id": "issue:329", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/329", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:01+00:00", "id": "issue:192", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/192", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:01+00:00", "id": "issue:488", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/issues/488", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:02+00:00", "id": "issue:607", "quote": "Its Heavy run hit the existing timeout in mutation shard 5, so the five qualification runs temporarily omitted the mutation matrix on the qualification branch.", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/607", "verdict": "confirmed"}
+{"at": "2026-11-27T10:09:02+00:00", "id": "issue:293", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/293", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:03+00:00", "id": "issue:708", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/708", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:03+00:00", "id": "issue:493", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/493", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:04+00:00", "id": "issue:655", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/655", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:04+00:00", "id": "issue:150", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/150", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:05+00:00", "id": "issue:521", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/521", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:05+00:00", "id": "issue:275", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/275", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:06+00:00", "id": "issue:40", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/40", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:06+00:00", "id": "issue:324", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/324", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:07+00:00", "id": "issue:38", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/38", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:07+00:00", "id": "issue:740", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/740", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:08+00:00", "id": "issue:456", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/456", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:08+00:00", "id": "issue:149", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/149", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:09+00:00", "id": "issue:116", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/116", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:09+00:00", "id": "issue:195", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/195", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:10+00:00", "id": "issue:405", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/405", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:11+00:00", "id": "issue:121", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/121", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:11+00:00", "id": "issue:469", "quote": "", "repo": "NotPellew/Thalvi", "url": "https://github.com/NotPellew/Thalvi/pull/469", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:12+00:00", "id": "issue:30", "quote": "", "repo": "psyHFM/Staff-Engagement-POC", "url": "https://github.com/psyHFM/Staff-Engagement-POC/pull/30", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:12+00:00", "id": "issue:11", "quote": "**Stryker is local-only** (not in CI) for runtime reasons.", "repo": "psyHFM/Staff-Engagement-POC", "url": "https://github.com/psyHFM/Staff-Engagement-POC/pull/11", "verdict": "information"}
+{"at": "2026-11-27T10:09:13+00:00", "id": "issue:22", "quote": "", "repo": "psyHFM/Staff-Engagement-POC", "url": "https://github.com/psyHFM/Staff-Engagement-POC/pull/22", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:13+00:00", "id": "issue:33", "quote": "", "repo": "psyHFM/Staff-Engagement-POC", "url": "https://github.com/psyHFM/Staff-Engagement-POC/pull/33", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:14+00:00", "id": "issue:36", "quote": "", "repo": "psyHFM/Staff-Engagement-POC", "url": "https://github.com/psyHFM/Staff-Engagement-POC/pull/36", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:14+00:00", "id": "issue:28", "quote": "Deferred (user-run heavy steps): PITest/JaCoCo on employee (Group 5.4) and local Stryker run (6.6).", "repo": "psyHFM/Staff-Engagement-POC", "url": "https://github.com/psyHFM/Staff-Engagement-POC/pull/28", "verdict": "information"}
+{"at": "2026-11-27T10:09:15+00:00", "id": "issue:17", "quote": "", "repo": "psyHFM/Staff-Engagement-POC", "url": "https://github.com/psyHFM/Staff-Engagement-POC/pull/17", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:15+00:00", "id": "issue:23", "quote": "", "repo": "psyHFM/Staff-Engagement-POC", "url": "https://github.com/psyHFM/Staff-Engagement-POC/pull/23", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:16+00:00", "id": "issue:18", "quote": "", "repo": "psyHFM/Staff-Engagement-POC", "url": "https://github.com/psyHFM/Staff-Engagement-POC/pull/18", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:17+00:00", "id": "issue:63", "quote": "", "repo": "psyHFM/Staff-Engagement-POC", "url": "https://github.com/psyHFM/Staff-Engagement-POC/pull/63", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:17+00:00", "id": "issue:29", "quote": "", "repo": "psyHFM/Staff-Engagement-POC", "url": "https://github.com/psyHFM/Staff-Engagement-POC/pull/29", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:18+00:00", "id": "issue:42", "quote": "", "repo": "psyHFM/Staff-Engagement-POC", "url": "https://github.com/psyHFM/Staff-Engagement-POC/pull/42", "verdict": "rejected"}
+{"at": "2026-11-27T10:09:18+00:00", "id": "issue:40", "quote": "", "repo": "psyHFM/Staff-Engagement-POC", "url": "https://github.com/psyHFM/Staff-Engagement-POC/pull/40", "verdict": "rejected"}

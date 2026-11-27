@@ -83,11 +83,11 @@ search request, probe or candidate read (no data existed); none changes the deci
 
 ## Decision
 
-**KEEP READING: read 227, running 20, pain yes 10, U_R×N 24458.1, U_P×N 23397.5.**
+**KEEP READING: read 227, running 20, pain yes 11, U_R×N 24458.1, U_P×N 22598.4.**
 
 covered: GitHub Actions, tools stryker (JS/.NET/Scala), mutmut, cosmic-ray, PIT (Maven, Gradle), cargo-mutants, Infection, mutant, go-mutesting, gremlins, Mull, Muter, mutatest; not covered: other CI systems, private repositories, tools not listed.
 
-read 227, running 20, not-running 147, uncertain 60; pain yes 10, unknown 6, no 4; N 58715; U_R 0.41656 (U_R×N 24458.1), U_P 0.39849 (U_P×N 23397.5); whole frame read: no; truncated leaves: 2; incomplete leaves: 0; hand check: not passed.
+read 227, running 20, not-running 147, uncertain 60; pain yes 11, unknown 2, no 7; N 58715; U_R 0.41656 (U_R×N 24458.1), U_P 0.38488 (U_P×N 22598.4); whole frame read: no; truncated leaves: 2; incomplete leaves: 0; hand check: not passed.
 
 ## Discovery
 
@@ -139,9 +139,9 @@ Truncated leaves: `B infection filename:infection.json` size:371..371 total 1608
 - has-mutation-job 28, unresolved 6, tool-present-unlinked 51, no-mutation 142, error 0
 - running 20, configured-not-running 5, uncertain with a mutation job 3 (runs cap 2, unsupported 0)
 - duration read 20, duration pain 10
-- pain yes 10, unknown 6, no 4
+- pain yes 11, unknown 2, no 7
 
-Pain unknown reasons (a repository can have several): candidate not hand-read 4, history-error 2
+Pain unknown reasons (a repository can have several): history-error 2
 
 ## Per tool (running repositories)
 
@@ -165,16 +165,32 @@ Pain unknown reasons (a repository can have several): candidate not hand-read 4,
 | https://github.com/ext-sakamoro/ALICE-Zip | cargo-mutants | every-change | 38.3 | duration | - | median of 10 runs, `.github/workflows/quality-deep.yml` job `mutants` |
 | https://github.com/JoaoPucci/ani-gui | cargo-mutants, stryker | scheduled | 360.3 | duration | - | median of 10 runs, `.github/workflows/mutation.yml` job `cargo-mutants` |
 | https://github.com/lucasreali/hive | cargo-mutants | every-change | 101.6 | duration | - | median of 10 runs, `.github/workflows/mutants-full.yml` job `windows` |
+| https://github.com/NotPellew/Thalvi | cargo-mutants | every-change | 24.0 | issue | 2026-11-20 | "On 2026-11-20, the developer chose to **replace** the advisory workspace-wide sweep with the failing high-risk `examine_globs` subset (faster runs, clear signal)." https://github.com/NotPellew/Thalvi/issues/601 |
+| https://github.com/NotPellew/Thalvi | cargo-mutants | every-change | 24.0 | issue | 2026-11-13 | "PRs get a fast answer. Mutation testing runs on `main`, and a real failure there files one issue for the dispatcher." https://github.com/NotPellew/Thalvi/issues/406 |
+| https://github.com/NotPellew/Thalvi | cargo-mutants | every-change | 24.0 | issue | 2026-11-13 | "Every Rust PR runs every CI job, Windows included, plus eight advisory mutants shards. PRs wait for all of that, and survivors appear only as capped annotations." https://github.com/NotPellew/Thalvi/pull/416 |
+| https://github.com/NotPellew/Thalvi | cargo-mutants | every-change | 24.0 | issue | 2026-11-20 | "Its Heavy run hit the existing timeout in mutation shard 5, so the five qualification runs temporarily omitted the mutation matrix on the qualification branch." https://github.com/NotPellew/Thalvi/pull/607 |
 | https://github.com/sandreialexandru/Smart-Heating-Control | stryker | every-change | 120.4 | duration | - | median of 10 runs, `.github/workflows/mutation.yml` job `card` |
 | https://github.com/ttu/emergency-supply-tracker | stryker | scheduled | 107.0 | duration | - | median of 6 runs, `.github/workflows/mutation-testing.yml` job `mutation-test` |
 | https://github.com/warpllm/warpllm | cargo-mutants | scheduled | 172.5 | duration | - | median of 10 runs, `.github/workflows/cron-weekly-cargo-mutants.yml` job `cargo-mutants` |
 
 ## Information (not pain, not counted)
 
-- complaint-only or timeout texts (hand-read `information`): 3
+- complaint-only or timeout texts (hand-read `information`): 15
   - halildeu/platform-web commit:940c4c4b83d5d0b5149052834ff213c4e034b430: "**Chart wrappers excluded** — tests render ECharts canvases that timeout under mutation analysis. Wrappers covered via option-shape + visual regression." https://github.com/Halildeu/platform-web/commit/940c4c4b83d5d0b5149052834ff213c4e034b430
   - halildeu/platform-web issue:200: "**Chart wrappers excluded** — tests render ECharts canvases that timeout under mutation analysis. Wrappers covered via option-shape + visual regression." https://github.com/Halildeu/platform-web/pull/200
   - manji-0/rdra-ish-dsl issue:204: "CPU cost is high. Each mutant rebuilds and reruns the corpus, which takes minutes." https://github.com/manji-0/rdra-ish-dsl/issues/204
+  - notpellew/thalvi issue:247: "On a GitHub runner that is about 21s per mutant, so a whole-workspace run would take about 18 hours. Hence diff-only." https://github.com/NotPellew/Thalvi/pull/247
+  - notpellew/thalvi issue:395: "#416 already made PR steps change-aware and moved diff-scoped mutation testing to the heavy tier." https://github.com/NotPellew/Thalvi/issues/395
+  - notpellew/thalvi issue:403: "On #384 `ce46e6a`, shards 2 and 4 hit the 60-minute step limit after about 49 and 78 of 127 mutants. Both were green." https://github.com/NotPellew/Thalvi/pull/403
+  - notpellew/thalvi issue:414: "on the main PC, 250 cargo-mutants runs wrote 577 GiB of 680 GiB in 4.5 hours on 12–13 Nov." https://github.com/NotPellew/Thalvi/issues/414
+  - notpellew/thalvi issue:421: "`AGENTS.md` reads as an order to run `cargo mutants` locally (250 runs wrote 577 GiB in 4.5 hours on 12–13 Nov)" https://github.com/NotPellew/Thalvi/pull/421
+  - notpellew/thalvi issue:514: "A mutant that stops an event is caught only after minutes, or reported as a timeout, and shard 4 overran its 60-minute step." https://github.com/NotPellew/Thalvi/pull/514
+  - notpellew/thalvi issue:529: "**`mutants (1)`**: the shard ran out of its 60-minute step." https://github.com/NotPellew/Thalvi/pull/529
+  - notpellew/thalvi issue:621: "All eight shards also hit the separate 60-minute action cap." https://github.com/NotPellew/Thalvi/pull/621
+  - notpellew/thalvi issue:733: "On 2026-11-26 four dev-job jobs (two `cargo mutants`) pushed the load to about 70 on 16 threads." https://github.com/NotPellew/Thalvi/issues/733
+  - notpellew/thalvi issue:754: "Running these for hours on the owner's main PC competes with training and interactive work." https://github.com/NotPellew/Thalvi/pull/754
+  - psyhfm/staff-engagement-poc issue:11: "**Stryker is local-only** (not in CI) for runtime reasons." https://github.com/psyHFM/Staff-Engagement-POC/pull/11
+  - psyhfm/staff-engagement-poc issue:28: "Deferred (user-run heavy steps): PITest/JaCoCo on employee (Group 5.4) and local Stryker run (6.6)." https://github.com/psyHFM/Staff-Engagement-POC/pull/28
 - narrowing changes whose text mentions a timeout: 1
   - Halildeu/platform-web 940c4c4
 - configured-not-running: 5
@@ -188,13 +204,13 @@ Pain unknown reasons (a repository can have several): candidate not hand-read 4,
 
 ## Hand check (AC4)
 
-samples: pain-yes 10, running 20, not-running 10, tool-present-unlinked 10, rejected 10, uses-action 0; missing verdicts 60; failures none; rule fix required: no.
+samples: pain-yes 11, running 20, not-running 10, tool-present-unlinked 10, rejected 10, uses-action 0; missing verdicts 61; failures none; rule fix required: no.
 
-- pain-yes: JoaoPucci/ani-gui, anesis-dev/anesis-cli, boredompeaks/perfume-store-backend, breimanntools/aaanalysis, erenmeren/alice, ext-sakamoro/ALICE-Zip, lucasreali/hive, sandreialexandru/Smart-Heating-Control, ttu/emergency-supply-tracker, warpllm/warpllm
+- pain-yes: JoaoPucci/ani-gui, NotPellew/Thalvi, anesis-dev/anesis-cli, boredompeaks/perfume-store-backend, breimanntools/aaanalysis, erenmeren/alice, ext-sakamoro/ALICE-Zip, lucasreali/hive, sandreialexandru/Smart-Heating-Control, ttu/emergency-supply-tracker, warpllm/warpllm
 - running: DhirendraHudda98/ParkIndia, Gusto/baerly-storage, Halildeu/platform-web, JoaoPucci/ani-gui, Lex-Studios/Stellar-Spend, NotPellew/Thalvi, SuarezPM/kitty-code, anesis-dev/anesis-cli, boredompeaks/perfume-store-backend, breimanntools/aaanalysis, codeigniter4/shield, eclipxe13/enum, erenmeren/alice, ext-sakamoro/ALICE-Zip, lucasreali/hive, manji-0/rdra-ish-dsl, psyHFM/Staff-Engagement-POC, sandreialexandru/Smart-Heating-Control, ttu/emergency-supply-tracker, warpllm/warpllm
 - not-running: BestDevOfc/CTFs_and_hacking_solutions, CSCI-435-SE/excalidraw, clementefalcone/goya-ledger, ensj/trade-blotter, hongyime/sgConnectSphere2026, jmandel/smart-permission-tickets-ri, noam0127/beagu-index, radarlabs/radar-sdk-js, shivyadavus/open-kioku, triciaaleee/SPM-G6T5
 - tool-present-unlinked: Azure/aks-durable-agents, Raftersecurity/rafter-secrets, Shehabhub/ORVION, TrillionniumFoundation/HeptaKernel, Vaddi-Srisanth/Ion_IDE, assertpy/assertpy, evelagin/evetis-wb-analytics, lecomputeur/vibez, luis-mc/dev-standards, unicity-sphere/sphere-sdk
-- rejected: gusto/baerly-storage|issue:84, halildeu/platform-web|issue:1086, halildeu/platform-web|issue:1097, halildeu/platform-web|issue:937, lex-studios/stellar-spend|issue:1085, lex-studios/stellar-spend|issue:1226, lex-studios/stellar-spend|issue:1572, lex-studios/stellar-spend|issue:1576, lex-studios/stellar-spend|issue:1579, lex-studios/stellar-spend|issue:833
+- rejected: gusto/baerly-storage|issue:400, halildeu/platform-web|issue:103, halildeu/platform-web|issue:1036, halildeu/platform-web|issue:917, lex-studios/stellar-spend|issue:1223, lex-studios/stellar-spend|issue:1522, lex-studios/stellar-spend|issue:1560, lex-studios/stellar-spend|issue:668, notpellew/thalvi|issue:304, psyhfm/staff-engagement-poc|issue:33
 
 ## Budget
 
