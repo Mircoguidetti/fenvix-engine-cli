@@ -35,8 +35,8 @@ All notable changes of the fenvix engine. One version for every component (`rele
     this off) run at real pace: a `Date.now()` poll loop waiting on what the child, or a process it left behind, does no longer runs
     out in virtual time; longer timers and other tests stay virtual (`node/test/p3-timers-child.test.js`).
   - node-sqlite3 (npm `sqlite3`) calls in flight count as pending work (they run on the thread pool and leave no
-    active resource): no virtual jump to a pool's long guard timer past the runner deadline; a call that never
-    calls back stops counting when its test ends
+    active resource): no virtual jump to a pool's long guard timer past the runner deadline; a call still in
+    flight when its test ends counts through the next test, then stops counting
     (`node/test/native-work.test.js`). alakajam under `--det`: 114 failed (105-107 "Test timed out in 5000ms",
     7-9 SQLITE_BUSY) before, 217 passed / 4 skipped as in the plain run after (2 runs each).
 
