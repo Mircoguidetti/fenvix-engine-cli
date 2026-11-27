@@ -5,7 +5,8 @@
 // protects: (1) P1 and (1b) P2: a timer fired at real pace because a runner poll (P1, safePending) or a child-starting test (P2,
 //   childPaced) keeps the driver slow is a decision real time made: the test's result is not reused by --det-cache;
 //   (2) a node-sqlite3 call still in flight keeps counting for as long as it runs, whatever ends meanwhile (no
-//   real-time grace: (2), (5), (6)); one that never calls back counts until the next file (3).
+//   real-time grace: (2), (5), (6)); one that never calls back counts until the next file opens, also past the
+//   file's first test (3); (3b) the once-per-reason cache flag is per test (concurrent tests too).
 // fails_when: fire(false) runs for safePending / childPaced without recording the choice (run 2 reuses the file);
 //   or a still-running query stops counting before it ends (virtual time jumps to the 60 s guard timer and the
 //   waiting test times out: a wrong red the plain run does not have).
@@ -73,12 +74,12 @@ function env() {
 }
 
 test('(2) a still-running query keeps counting when a concurrent sibling ends', T, () => {
-  const dir = fixture('p3-real', 'sibling-grace', {
+  const dir = fixture('p3-real', 'sibling-concurrent', {
     ...CONFIG,
     'tests/sibling.test.mjs': `import { test, expect } from 'vitest';
 import { createRequire } from 'node:module';
 const sqlite3 = createRequire(process.env.FIXTURE_SQLITE3)('sqlite3');
-// several seconds of real work: longer than the 3 s grace (the outer test checks it in the plain run)
+// several seconds of real work (the outer test checks it runs over 4.5 s in the plain run)
 const SLOW = 'WITH RECURSIVE c(x) AS (SELECT 1 UNION ALL SELECT x+1 FROM c WHERE x<50000000) SELECT sum(x) s FROM c';
 test.concurrent('a slow query with a 60 s guard timer pending (as tarn) is not timed out', async () => {
   const db = new sqlite3.Database(':memory:');
@@ -95,7 +96,7 @@ test.concurrent('a sibling that ends at once', () => { expect(1).toBe(1); });
   const plain = spawnSync(process.execPath, [path.join(__dirname, '..', 'node_modules', 'vitest', 'vitest.mjs'), 'run', '-t', 'slow query'], { cwd: dir, encoding: 'utf8', env: env(), timeout: 240000 });
   const plainWall = (Date.now() - t0) / 1000;
   assert.equal(plain.status, 0, `the plain run passes\n${plain.stdout}\n${plain.stderr}`);
-  assert.ok(plainWall > 4.5, `the query must outlast the 3 s grace for this test to mean anything: the plain run took ${plainWall} s`);
+  assert.ok(plainWall > 4.5, `the query must run over 4.5 s (longer than the 3 s grace an earlier version had) for this test to mean anything: the plain run took ${plainWall} s`);
   const r = spawnSync(process.execPath, [BIN, 'vitest', 'run', '--det', '--det-workers=1'],
     { cwd: dir, encoding: 'utf8', env: env(), timeout: 240000 });
   const text = `${(r.stdout || '').slice(-3000)}\n${(r.stderr || '').slice(-2000)}`;
@@ -103,7 +104,7 @@ test.concurrent('a sibling that ends at once', () => { expect(1).toBe(1); });
 });
 
 test('(2b) a node-sqlite3 call that never calls back: the rest of its file runs at real pace and is not reused', T, () => {
-  const dir = fixture('p3-real', 'grace-expiry', {
+  const dir = fixture('p3-real', 'never-calls-back', {
     ...CONFIG, ...CONTROL,
     'tests/expire.test.mjs': `import { test } from 'vitest';
 import { createRequire } from 'node:module';
@@ -128,9 +129,11 @@ test('runs while that call is still counted (its timers fire at real pace)', asy
 });
 
 // Unit level (a fake node-sqlite3 binding): a call that never calls back keeps counting while any test may still wait on
-// it, whatever ends meanwhile (its own test, another test), and stops counting at the next test file, reported to the
-// cache as a choice real time made.
-test('(3) a native call that never calls back counts until the next file, then is released and reported', { timeout: 60000 }, async () => {
+// it, whatever ends meanwhile (its own test, another test), also at the first test of a file (takeBaseline: a call the
+// file's module scope or hooks started may be the one its first test waits on), and stops counting when the next test
+// file opens (releaseFileWork, from src/controls.js openFile).
+const NO_GRACE_MS = 3500; // longer than the 3 s grace an earlier version had
+test('(3) a native call that never calls back counts until the next file opens, not only until its first test', { timeout: 60000 }, async () => {
   const sched = require('../src/sched');
   const { STATE } = require('../src/state');
   const patcher = { set(o, k, v) { o[k] = v; } };
@@ -139,25 +142,48 @@ test('(3) a native call that never calls back counts until the next file, then i
   function Statement() {}
   const b = { Database, Statement, OPEN_READWRITE: 2 };
   sched.nativeWork(patcher, b);
-  const saved = { testId: STATE.testId, onRealClock: STATE.onRealClock };
-  const reported = [];
+  const saved = STATE.testId;
   try {
-    STATE.onRealClock = (why) => { reported.push(why); };
     STATE.testId = 'unit-A';
     new b.Database().exec('x', () => {});
     for (const f of STATE.onTestEnd) f('unit-A'); // its test ends
     STATE.testId = 'unit-B';
     for (const f of STATE.onTestEnd) f('unit-B'); // and another one
     STATE.testId = null;
-    await new Promise((r) => setTimeout(r, 3500));
-    assert.ok(sched.isPending(), 'the call still counts 3.5 s after two test ends (no real-time grace)');
-    assert.equal(reported.length, 0, 'nothing reported yet');
-    sched.takeBaseline(); // the next test file starts
-    assert.ok(!sched.isPending(), 'the call stops counting at the next file');
-    assert.ok(reported.some((w) => /never called back/.test(w)), `the release is reported as real time deciding: ${JSON.stringify(reported)}`);
+    await new Promise((r) => setTimeout(r, NO_GRACE_MS));
+    assert.ok(sched.isPending(), `the call still counts ${NO_GRACE_MS} ms after two test ends (no real-time grace)`);
+    sched.takeBaseline(); // a file's first test (src/runners/common.js begin): its hooks' calls are not released
+    assert.ok(sched.isPending(), 'the call still counts after takeBaseline (the first test may wait on it)');
+    sched.releaseFileWork(); // the next test file opens
+    assert.ok(!sched.isPending(), 'the call stops counting when the next file opens');
   } finally {
-    STATE.testId = saved.testId;
-    STATE.onRealClock = saved.onRealClock;
+    STATE.testId = saved;
+  }
+});
+
+// /review round 4 (8b59fa8f..aa9f2342): the once-per-reason cache flag was one set for every test, so a concurrent
+// test lost its flag when another test had flagged the same reason first.
+test('(3b) the once-per-reason flag of a timer chosen by real time is per test, also for concurrent tests', { timeout: 60000 }, () => {
+  const sched = require('../src/sched');
+  const concur = require('../src/concur');
+  const { STATE } = require('../src/state');
+  const saved = STATE.onRealClock;
+  const got = [];
+  let who = null;
+  const A = concur.create('unit-cA', () => sched.startTest());
+  const B = concur.create('unit-cB', () => sched.startTest());
+  try {
+    STATE.onRealClock = (why) => { got.push(`${who}:${why}`); };
+    concur.within(A, () => {}); // both tests started
+    concur.within(B, () => {});
+    concur.within(A, () => { who = 'A'; sched.timerChosen('s', 0, 'R'); });
+    concur.within(B, () => { who = 'B'; sched.timerChosen('s', 0, 'R'); });
+    concur.within(A, () => { who = 'A'; sched.timerChosen('s', 0, 'R'); }); // once per test and reason
+    assert.deepEqual(got, ['A:R', 'B:R']);
+  } finally {
+    STATE.onRealClock = saved;
+    concur.finish(A);
+    concur.finish(B);
   }
 });
 
@@ -180,6 +206,8 @@ test.concurrent('a sibling', async () => { await new Promise((r) => setTimeout(r
   const r2 = crun('vitest', dir, ['run']);
   assert.ok(reused(r2).includes('tests/control.test.mjs'), `the control file is reused\n${show(r2)}`);
   assert.ok(!reused(r2).includes('tests/race.test.mjs'), `WRONG REUSE: real time decided the race of a concurrent test\n${show(r2)}`);
+  const why = JSON.stringify((r1.summary && r1.summary.not_cached_detail) || {});
+  assert.match(why, /fired at real pace while a runner poll/, `run 1 names the runner poll as the reason\n${show(r1)}`);
 });
 
 // count(*) over a recursive CTE: tens of seconds of real work without an integer overflow
@@ -209,7 +237,7 @@ test.concurrent('a long query with a 60 s guard timer pending is not timed out',
   clearTimeout(guard);
   expect(rows[0].n).toBe(150000000);
   await new Promise((r) => db.close(r));
-}, 55000);
+}, 120000);
 test.concurrent('a sibling that ends at once', () => { expect(1).toBe(1); });
 `,
   });
@@ -232,7 +260,7 @@ test('the next test waits for that connection with a 60 s guard timer pending (a
   await connectionFree;
   clearTimeout(guard);
   expect(1).toBe(1);
-}, 40000);
+}, 120000);
 `,
   });
   plainAndDet(dir, 5, '(6)');

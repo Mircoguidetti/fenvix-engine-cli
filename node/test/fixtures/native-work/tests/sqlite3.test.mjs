@@ -79,7 +79,6 @@ test('a query on a closed database (its statement fails in the constructor) rele
   await sleep(20000);
 }, 30000);
 
-
-test('the next test: a 20 s virtual sleep stays virtual', async () => {
+test('then: a 20 s virtual sleep stays virtual', async () => {
   await sleep(20000);
 }, 30000);
